@@ -1,3 +1,4 @@
+import { HealthComponent } from "../combat/components/health-component";
 import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import Phaser from "phaser";
 import { Subject } from "rxjs";
@@ -36,7 +37,12 @@ function fixture(research = false) {
           : undefined
     );
   const scene = { events: new Phaser.Events.EventEmitter(), sys: { isActive: () => true } };
-  const actor = { scene, once: jest.fn(), emit: jest.fn() } as unknown as Phaser.GameObjects.GameObject;
+  const actor = {
+    scene,
+    once: jest.fn(),
+    emit: jest.fn(),
+    getData: jest.fn()
+  } as unknown as Phaser.GameObjects.GameObject;
   const queue = new QueueComponent(actor, { queueCount: 2, capacityPerQueue: 3 });
   const item: UnifiedQueueItem = {
     type: research ? QueueItemType.Research : QueueItemType.Production,
@@ -129,6 +135,33 @@ describe("shared physical queue mutation authority", () => {
       [false, true]
     ]);
     expect(f.queue.length).toBe(0);
+  });
+
+  it("cancels the addressed same-product handle rather than the earlier paid item", () => {
+    const f = fixture();
+    const second = structuredClone(f.item);
+    f.queue.addItem(f.item);
+    f.queue.addItem(second);
+    if (!second.productionData) throw new Error("production_missing");
+    expect(f.queue.cancelProductionItem(second.productionData)).toBe(true);
+    expect(f.queue.allItems).toEqual([f.item]);
+    expect(f.queue.allItems[0]).toBe(f.item);
+  });
+
+  it("death stops physical queue work immediately and destroy does not publish a second terminal", () => {
+    const f = fixture();
+    f.queue.addItem(f.item);
+    const callbacks = jest.mocked(f.actor.once).mock.calls;
+    const killed = callbacks.find(([event]) => event === HealthComponent.KilledEvent)?.[1];
+    const destroyed = callbacks.find(([event]) => event === Phaser.GameObjects.Events.DESTROY)?.[1];
+    if (!killed || !destroyed) throw new Error("native_cleanup_listener_missing");
+    killed.call(f.queue);
+    f.ticks.next(1);
+    destroyed.call(f.queue);
+    expect(f.item.remainingTime).toBe(100);
+    expect(f.log.filter((event) => event === "terminal")).toHaveLength(1);
+    expect(f.log).not.toContain("spawn");
+    expect(f.ticks.observed).toBe(false);
   });
 
   it("research refunds before its actual splice and terminal callback", () => {

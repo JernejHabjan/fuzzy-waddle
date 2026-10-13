@@ -100,6 +100,16 @@ export function compareRuntimeProductionSetups(
     };
     a.definition = clearTransform(a.definition);
     b.definition = clearTransform(b.definition);
+    // This cached local renderer flag follows the moved actor's position; vision rules and AI knowledge remain compared.
+    const clearLocalVisibility = (definition: unknown) => {
+      if (!definition || typeof definition !== "object" || !("vision" in definition)) return definition;
+      const vision = definition.vision;
+      if (!vision || typeof vision !== "object") return definition;
+      const rules = Object.fromEntries(Object.entries(vision).filter(([key]) => key !== "visibilityByCurrentPlayer"));
+      return { ...definition, vision: rules };
+    };
+    a.definition = clearLocalVisibility(a.definition);
+    b.definition = clearLocalVisibility(b.definition);
   }
   return JSON.stringify(lhs) === JSON.stringify(rhs) ? [] : ["production_pair_actual_world_mismatch"];
 }

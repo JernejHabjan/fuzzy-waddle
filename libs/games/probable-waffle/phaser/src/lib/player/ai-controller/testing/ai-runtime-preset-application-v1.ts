@@ -6,7 +6,7 @@ export interface AiRuntimePresetApplicationV1 {
   readonly sourceRevision: string;
   readonly fixtureDigest: string;
   readonly createdActorNames: readonly string[];
-  /** Authoritative actor IDs keyed by authored fixture ID, for independent runtime assertions. */
+  /** Native role bindings for new actors and explicitly bound inherited actors; this map is not a creation count. */
   readonly createdActorIds: Readonly<Record<string, string>>;
   readonly resourceGrantCount: number;
   readonly resourceStartCount: number;

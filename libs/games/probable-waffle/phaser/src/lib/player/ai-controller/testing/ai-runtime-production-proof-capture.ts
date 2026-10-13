@@ -1,3 +1,5 @@
+import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
+import { NavigationService } from "../../../world/services/navigation.service";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import type { UnifiedQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
 import { getActorComponent } from "../../../data/actor-component";
@@ -38,6 +40,7 @@ export class AiRuntimeProductionProofCapture {
       throw new Error("production_frontier_player_scope_invalid");
     }
     const clock = getSceneService(this.scene, SimulationTickService);
+    const navigation = getSceneService(this.scene, NavigationService);
     let history = this.frontiers.get(playerNumber);
     if (!history) {
       history = new AiRuntimeProductionFrontiers();
@@ -50,6 +53,8 @@ export class AiRuntimeProductionProofCapture {
         (tick) => {
           if (getSceneService(this.scene, SimulationTickService) !== clock)
             throw new Error("production_frontier_clock_replaced");
+          if (getSceneService(this.scene, NavigationService) !== navigation)
+            throw new Error("production_frontier_navigation_replaced");
           for (const [player, entry] of this.frontiers) {
             if (entry.active)
               entry.close(tick, () => ({
@@ -85,6 +90,17 @@ export class AiRuntimeProductionProofCapture {
 
   observe(fact: AiRuntimeProductionFactV1): void {
     if (fact.kind === "actor_unregistered") this.exposure.forEach((binding) => binding.invalidate(fact.actorId));
+    if (fact.kind === "command_delivered" && fact.command.type === "SET_RALLY_POINT" && fact.command.targetObjectId) {
+      this.pinOwned(fact.playerNumber, fact.command.targetObjectId);
+    }
+    if (
+      fact.kind === "spatial_authority" &&
+      fact.spatial.kind === "builder_path" &&
+      fact.spatial.phase === "requested"
+    ) {
+      if (fact.spatial.source.actorId) this.pinOwned(fact.playerNumber, fact.spatial.source.actorId);
+      if (fact.spatial.target.actorId) this.pinOwned(fact.playerNumber, fact.spatial.target.actorId);
+    }
     const ids = this.tracked.get(fact.playerNumber);
     if (fact.kind === "actor_registered" && fact.actor.actorId) ids?.add(fact.actor.actorId);
     if (fact.kind === "spatial_authority" && fact.spatial.kind === "placement" && fact.spatial.site.actorId) {
@@ -111,6 +127,25 @@ export class AiRuntimeProductionProofCapture {
     if (this.frontiers.size && isSnapshotApplyInProgress(this.scene)) {
       this.frontiers.forEach((entry) => entry.lose("snapshot_restore"));
     }
+  }
+
+  /** Actual owned shared-service targets may be pinned before arm; this does not discover live enemy actors. */
+  private pinOwned(playerNumber: number, id: string): void {
+    const actor = getSceneService(this.scene, ActorIndexSystem)?.getActorById(id);
+    if (!actor || actor.scene !== this.scene || captureAiRuntimeCreatedActor(actor).playerNumber !== playerNumber)
+      return;
+    if (this.tracked.size >= 16 && !this.tracked.has(playerNumber)) {
+      if (!this.setupGaps.includes("production_frontier_player_overflow"))
+        this.setupGaps.push("production_frontier_player_overflow");
+      return;
+    }
+    const ids = this.tracked.get(playerNumber) ?? new Set<string>();
+    if (ids.size >= 256 && !ids.has(id)) {
+      this.frontiers.get(playerNumber)?.lose("production_frontier_actor_overflow");
+      return;
+    }
+    ids.add(id);
+    this.tracked.set(playerNumber, ids);
   }
 
   read(playerNumber: number) {

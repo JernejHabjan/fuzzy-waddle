@@ -24,7 +24,7 @@ function fixture(remainingTime = 100) {
       service === SimulationTickService ? ({ tick$: ticks } as never) : undefined
     );
   const scene = { events: new Phaser.Events.EventEmitter(), sys: { isActive: () => true } };
-  const actor = { scene, once: jest.fn() } as unknown as Phaser.GameObjects.GameObject;
+  const actor = { scene, once: jest.fn(), getData: jest.fn() } as unknown as Phaser.GameObjects.GameObject;
   const queue = new QueueComponent(actor, { queueCount: 1, capacityPerQueue: 2 });
   const item = {
     type: QueueItemType.Production,

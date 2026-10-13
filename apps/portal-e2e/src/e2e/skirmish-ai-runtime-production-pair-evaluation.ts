@@ -1,3 +1,4 @@
+import type { RuntimeProductionPairInput } from "./skirmish-ai-runtime-production-pair-input";
 import type { RuntimeAssertionV1 } from "./skirmish-ai-runtime-assertion";
 import type { RuntimeProductionContractV1 } from "./skirmish-ai-runtime-production-contract";
 import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
@@ -24,17 +25,7 @@ function balances(variant: Pick<RuntimeVariantResultV1, "presetInitialResourceBa
 export function evaluateRuntimeProductionPairs(
   scenarioId: string,
   assertion: RuntimeAssertionV1,
-  variants: readonly Pick<
-    RuntimeVariantResultV1,
-    | "variantId"
-    | "aiFaction"
-    | "mapLabel"
-    | "seed"
-    | "presetFixtureId"
-    | "presetInitialResourceBalances"
-    | "productionEvidence"
-    | "productionEvidenceV2"
-  >[]
+  variants: readonly RuntimeProductionPairInput[]
 ): string[] {
   if (scenarioId !== "PRO-03" && scenarioId !== "PRO-06" && scenarioId !== "PRO-07") return [];
   const failures: string[] = [];

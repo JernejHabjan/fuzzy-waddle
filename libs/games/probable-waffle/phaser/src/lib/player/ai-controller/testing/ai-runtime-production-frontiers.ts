@@ -55,6 +55,7 @@ export class AiRuntimeProductionFrontiers {
       actors: state.actors,
       queues: state.queues,
       completedResearch: state.completedResearch,
+      navigation: state.navigation,
       exposure: state.exposure
     });
     const previous = this.intervals.at(-1);

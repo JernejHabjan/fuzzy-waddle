@@ -122,6 +122,37 @@ function fixture() {
 
 describe("current producer target exposure", () => {
   afterEach(() => jest.restoreAllMocks());
+  it("accepts reordered domain sets and excludes unfinished producers without erasing ready bindings", () => {
+    const f = fixture();
+    const threat = requireAiTestEntry(f.observation.actors, 1);
+    if (threat.combatProfile?.status !== "known") throw new Error("profile_missing");
+    const observed = threat.combatProfile.value;
+    const reordered = {
+      ...threat,
+      combatProfile: {
+        ...threat.combatProfile,
+        value: {
+          ...observed,
+          attacks: observed.attacks.map((attack) => ({ ...attack, targetDomains: ["water", "ground"] as const }))
+        }
+      }
+    };
+    const ready = requireAiTestEntry(f.observation.actors, 0);
+    const unfinished = {
+      ...ready,
+      actorId: "unfinished",
+      constructionProgress: { status: "known" as const, observedTick: 20, value: 50 }
+    };
+    const result = captureAiProducerExposure(
+      f.scene,
+      { ...f.observation, actors: [ready, reordered, unfinished] },
+      20,
+      false
+    );
+    expect(result.gaps).toEqual([]);
+    expect(result.pairs).toHaveLength(1);
+    expect(result.pairs[0]?.status).toBe("known");
+  });
   it("retains real equal-damage attack choice separately from positioning range and minimum-range band", () => {
     const f = fixture();
     expect(requireAiTestEntry(captureAiProducerExposure(f.scene, f.observation, 20, false).pairs, 0)).toMatchObject({

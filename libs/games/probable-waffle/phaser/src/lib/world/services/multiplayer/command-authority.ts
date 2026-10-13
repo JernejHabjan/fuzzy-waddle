@@ -161,13 +161,13 @@ export class CommandAuthority {
     this.onEpochAdvance();
   }
 
-  stampCommand(command: GameCommandInput, tick: number): GameCommand {
+  stampCommand(command: GameCommandInput, tick: number, sourceOverride?: GameCommandExecution["source"]): GameCommand {
     const supplied = command.execution;
     const sequence = supplied?.sequence ?? this.allocateSequence(command.playerNumber);
     const authorityEpoch = supplied?.authorityEpoch ?? this.authorityEpoch;
     const commandId =
       supplied?.commandId ?? `${command.playerNumber}:${authorityEpoch}:${sequence}:${this.scene.gameInstanceId}`;
-    const source = supplied?.source ?? this.inferSource(command.playerNumber);
+    const source = sourceOverride ?? supplied?.source ?? this.inferSource(command.playerNumber);
     const execution: GameCommandExecution = {
       schemaVersion: 1,
       commandId,

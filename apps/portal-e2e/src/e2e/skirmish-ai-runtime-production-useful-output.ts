@@ -1,3 +1,4 @@
+import { runtimeProductionRouteCurrent } from "./skirmish-ai-runtime-production-route-current";
 import type { RuntimeProductionEvidenceV2 } from "./skirmish-ai-runtime-production-evidence-v2";
 import { productionActorRetained } from "./skirmish-ai-runtime-production-authority-evaluation";
 import type { RuntimeProductionContractV1 } from "./skirmish-ai-runtime-production-contract";
@@ -35,20 +36,37 @@ export function runtimeProductionUsefulOutputs(
     const supplied = new Set([
       "production_route_useful_arrival_missing",
       "production_spatial_navigation_history_unverified",
-      "production_spatial_native_cache_mutable_result_history_missing"
+      "production_spatial_native_cache_mutable_result_history_missing",
+      "production_route_order_useful_effect_missing",
+      "production_route_complete_order_history_missing"
     ]);
-    const route = evidence.routes.paths.find(
-      (path) =>
+    const route = evidence.routes.paths.find((path) => {
+      const current = runtimeProductionRouteCurrent(evidence, path);
+      return (
+        path.requested.spatial.kind === "producer_path" &&
+        path.requested.spatial.target?.actorId === boundary.target?.actorId &&
         path.output?.boundary.sequence === output.boundary.sequence &&
         path.orderLineage.queryCallerAttributed &&
-        path.currentAtResolution &&
-        path.gaps.every((gap) => supplied.has(gap)) &&
+        current &&
+        path.gaps.every(
+          (gap) =>
+            supplied.has(gap) ||
+            (gap === "production_route_shared_service_command_missing" &&
+              path.orderLineage.rally?.spatial.kind === "route_rally_order" &&
+              path.orderLineage.rally.spatial.outputId === boundary.outputId) ||
+            (current &&
+              [
+                "production_route_stale_or_missing_actor_binding",
+                "production_route_awaited_history_unverified"
+              ].includes(gap))
+        ) &&
         path.nativeNavigation.completedRebuildInterval === "same_completed" &&
         path.nativeNavigation.queryGenerationAtTerminal === "same_native_generation" &&
         ["same_requested_generation", "uncached_overlay"].includes(path.nativeNavigation.cacheLineage) &&
         path.terminal.spatial.kind === "producer_path" &&
         path.terminal.spatial.result === "path"
-    );
+      );
+    });
     if (!route) return [];
     const arrival = evidence.movements.find(
       (movement) =>

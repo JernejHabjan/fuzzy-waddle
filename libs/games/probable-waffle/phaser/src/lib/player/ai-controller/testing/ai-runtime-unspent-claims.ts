@@ -192,6 +192,12 @@ export class AiRuntimeUnspentClaims {
   /** Admission preserves the amount; application requires an observed payment or physical liability transfer. */
   observeOutcome(outcome: GameCommandOutcome): void {
     const owner = this.owner(outcome.playerNumber);
+    if (!outcome.intentId || !outcome.effectId) {
+      if ([...owner.entries.values()].some((entry) => entry.commandId === outcome.commandId)) {
+        owner.gaps.add("unspent_outcome_mismatch");
+      }
+      return;
+    }
     const entry = [...owner.entries.values()].find((entry) =>
       outcome.kind === "dispatched"
         ? entry.request?.correlation.intentId === outcome.intentId &&
@@ -238,6 +244,19 @@ export class AiRuntimeUnspentClaims {
     }
     if (outcome.kind === "rejected" || outcome.kind === "failed" || outcome.kind === "cancelled")
       entry.state = "released";
+    if (outcome.kind === "completed" && outcome.detail === "site_reconciled" && entry.intent.kind === "construct") {
+      const intent = entry.intent;
+      const existing = outcome.worldLinkIds.length === 1 ? this.sites.get(outcome.worldLinkIds[0] ?? "") : undefined;
+      if (
+        existing?.playerNumber === outcome.playerNumber &&
+        existing.execution?.commandId !== outcome.commandId &&
+        existing.siteKey === intent.siteKey &&
+        existing.actorName === intent.objectName &&
+        JSON.stringify(existing.tileVec3) === JSON.stringify(intent.logicalPosition)
+      ) {
+        entry.state = "released";
+      } else owner.gaps.add("unspent_construction_reconciled_site_missing");
+    }
     if (
       (outcome.kind === "applied" || outcome.kind === "completed") &&
       entry.state === "admitted" &&

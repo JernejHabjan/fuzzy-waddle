@@ -1,3 +1,4 @@
+import { hasPendingPlayerResearch } from "./has-pending-player-research";
 import { observeQueueCompletionAuthority } from "../queue/observe-queue-completion-authority";
 import { emitQueueItemResource } from "../../../data/emit-queue-item-resource";
 import { GameEventEmitter as EventEmitter } from "@fuzzy-waddle/platform-game-host";
@@ -107,6 +108,10 @@ export class ResearchComponent {
       return { canStart: false, reason: "Already researched" };
     }
 
+    if (hasPendingPlayerResearch(this.gameObject, owner, type)) {
+      return { canStart: false, reason: "Already researching" };
+    }
+
     if (this.techTreeService && !this.techTreeService.isContentAllowed(owner, "research", type)) {
       return { canStart: false, reason: "Campaign progression limit" };
     }
@@ -170,8 +175,13 @@ export class ResearchComponent {
     };
 
     // Pay resources immediately
-    emitQueueItemResource({ producer: this.gameObject, item: unifiedItem, playerNumber: owner,
-      operation: "immediate_charge", amounts: researchData.cost });
+    emitQueueItemResource({
+      producer: this.gameObject,
+      item: unifiedItem,
+      playerNumber: owner,
+      operation: "immediate_charge",
+      amounts: researchData.cost
+    });
 
     // Delegate to SharedQueueComponent
     const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
@@ -244,8 +254,11 @@ export class ResearchComponent {
    * Called before item removal; the applied cancellation is carried separately from the purchase execution.
    */
   public handleResearchRefund(
-    type: ResearchType, remainingTime: number, totalTime: number,
-    item: UnifiedQueueItem, cancellationCommand?: CancelResearchCommand
+    type: ResearchType,
+    remainingTime: number,
+    totalTime: number,
+    item: UnifiedQueueItem,
+    cancellationCommand?: CancelResearchCommand
   ): void {
     const owner = this.ownerComponent?.getOwner();
     if (owner === undefined) return;
@@ -264,8 +277,14 @@ export class ResearchComponent {
       }
     }
 
-    emitQueueItemResource({ producer: this.gameObject, item, playerNumber: owner,
-      operation: "cancellation_refund", amounts: refundedResources, cancellationCommand });
+    emitQueueItemResource({
+      producer: this.gameObject,
+      item,
+      playerNumber: owner,
+      operation: "cancellation_refund",
+      amounts: refundedResources,
+      cancellationCommand
+    });
   }
 
   /**

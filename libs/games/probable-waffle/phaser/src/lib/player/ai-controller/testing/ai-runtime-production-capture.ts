@@ -1,3 +1,4 @@
+import { AI_RUNTIME_PRESET_CONTROL_EVENT, type AiRuntimePresetControlEvent } from "./ai-runtime-preset-control-event";
 import { AiRuntimeProductionWorldCapture } from "./ai-runtime-production-world-capture";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
 import Phaser from "phaser";
@@ -130,6 +131,7 @@ export class AiRuntimeProductionCapture {
         (player) => this.boundary(player),
         (fact, item) => this.append(fact, item)
       );
+      scene.events.on(AI_RUNTIME_PRESET_CONTROL_EVENT, this.observeControl, this);
       scene.events.on(AI_DECISION_DISPATCH_EVENT, this.observeDecision, this);
       scene.events.on(AI_INTENT_COMMAND_DISPATCH_EVENT, this.observeDispatch, this);
       scene.events.on(CONSTRUCTION_AUTHORITY_EVENT, this.observeConstruction, this);
@@ -299,6 +301,7 @@ export class AiRuntimeProductionCapture {
     this.facts.length = 0;
     this.pendingCommands.dispose();
     this.unspentClaims.dispose();
+    this.scene.events.off(AI_RUNTIME_PRESET_CONTROL_EVENT, this.observeControl, this);
     this.scene.events.off(AI_DECISION_DISPATCH_EVENT, this.observeDecision, this);
     this.scene.events.off(AI_INTENT_COMMAND_DISPATCH_EVENT, this.observeDispatch, this);
     this.scene.events.off(CONSTRUCTION_AUTHORITY_EVENT, this.observeConstruction, this);
@@ -341,6 +344,11 @@ export class AiRuntimeProductionCapture {
     if (!resources) throw new Error("production_capture_player_missing");
     return { ...resources };
   }
+
+  /** Explicit test-controller provenance enters the same bounded sequence as native callbacks. */
+  private readonly observeControl = (control: AiRuntimePresetControlEvent): void => {
+    this.append({ ...this.boundary(control.playerNumber), kind: "preset_control", control });
+  };
 
   /** The selected result precedes dispatch, even when the saved brain/debug view still names the prior decision. */
   private readonly observeDecision = (decision: AiDecisionDispatchEvent): void => {

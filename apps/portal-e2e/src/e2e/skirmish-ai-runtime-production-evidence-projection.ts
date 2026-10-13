@@ -24,9 +24,20 @@ export function projectRuntimeProductionEvidenceV2(
   const commitments = new Map<string, string>();
   for (const fact of facts) {
     if (fact.kind !== "decision_selected") continue;
-    const normalized = causal.decisions.find((entry) => entry.selectedSequence === fact.sequence);
-    if (!normalized || !fact.decision.input) {
+    if (!fact.decision.input) {
       gaps.add("production_v2_decision_missing");
+      continue;
+    }
+    fact.decision.input.gaps.forEach((gap) => gaps.add(gap));
+    if (!fact.decision.input.capabilityCatalog) gaps.add("production_v2_selected_catalog_missing");
+    if (
+      fact.decision.input.snapshotRestoreInProgress ||
+      fact.decision.input.observation?.tick !== fact.decision.identity.tick ||
+      fact.decision.input.observation?.generation !== fact.decision.identity.generation ||
+      fact.decision.input.observation?.playerNumber !== fact.playerNumber ||
+      fact.decision.identity.tick > fact.tick
+    ) {
+      failures.push("production_v2_selected_input_identity_invalid");
       continue;
     }
     decisions.push({

@@ -1,3 +1,6 @@
+import type { projectRuntimeControlledOutputs } from "./skirmish-ai-runtime-controlled-output";
+import type { projectRuntimeControlledRefunds } from "./skirmish-ai-runtime-production-controlled-refund";
+import type { projectRuntimeControlledCommands } from "./skirmish-ai-runtime-production-controlled-commands";
 import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
 import type { RuntimeProductionEvidenceV1 } from "./skirmish-ai-runtime-production-evidence";
 // prettier-ignore
@@ -9,6 +12,10 @@ import type { AiRuntimeProductionFactV1 } from
 
 /** Native typed joins, retaining requests without fabricated money frames and every distinct teardown/refund callback. */
 export interface RuntimeProductionLifecycleV2 {
+  /** Real test-controller requests/application, independent of AI selection and resource callbacks. */
+  readonly controlledOutputs?: ReturnType<typeof projectRuntimeControlledOutputs>;
+  readonly controlledRefunds?: ReturnType<typeof projectRuntimeControlledRefunds>;
+  readonly controlledCommands?: ReturnType<typeof projectRuntimeControlledCommands>["commands"];
   readonly queues: readonly (RuntimeProductionEvidenceV1["events"][number] & {
     /** Actual callback clock. Scheduled request and consumed/selected clocks remain independent. */
     readonly applicationTick: number;

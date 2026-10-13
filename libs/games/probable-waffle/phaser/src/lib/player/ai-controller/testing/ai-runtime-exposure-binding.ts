@@ -35,6 +35,7 @@ export class AiRuntimeExposureBinding {
         (actor) =>
           actor.relation === "self" &&
           actor.visibility === "owned" &&
+          (actor.constructionProgress?.status !== "known" || actor.constructionProgress.value >= 100) &&
           (actor.queue.status === "known" || actor.capabilities.some((capability) => capability.family === "produce"))
       ) ?? [];
     if (

@@ -1,3 +1,6 @@
+import { bindAiRuntimeExistingActors } from "./bind-ai-runtime-existing-actors";
+import { installAiRuntimeProductionRallies } from "./install-ai-runtime-production-rallies";
+import { installAiRuntimePresetControls } from "./install-ai-runtime-preset-controls";
 import { environment } from "@fuzzy-waddle/environments/environment";
 import type Phaser from "phaser";
 import { ObjectNames, ResourceType, type PlayerStateResources } from "@fuzzy-waddle/probable-waffle-protocol";
@@ -56,7 +59,9 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
     if (!validOwners.has(event.owner)) throw new Error(`runtime_preset_event_owner_unknown:${event.id}`);
   }
   for (const queue of preset.queues ?? []) {
-    const producer = preset.actors.find((actor) => actor.fixtureActorId === queue.producerFixtureActorId);
+    const producer = [...preset.actors, ...(preset.existingActorBindings ?? [])].find(
+      (actor) => actor.fixtureActorId === queue.producerFixtureActorId
+    );
     const available =
       producer && getPwActorDefinition(producer.actorName, null)?.components?.production?.availableProduceActors;
     const cost = getPwActorDefinition(queue.actorName, null)?.components?.productionCost;
@@ -67,6 +72,7 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
   const createdActorNames: string[] = [];
   const createdActors = new Map<string, Phaser.GameObjects.GameObject>();
   const createdActorIds: Record<string, string> = {};
+  bindAiRuntimeExistingActors(scene, preset, createdActors, createdActorIds);
   for (const actor of preset.actors) {
     const created = creator.createFinishedActor(
       actor.actorName as ObjectNames,
@@ -133,8 +139,16 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
       eventResults: []
     });
     installAiRuntimePresetEvents(scene, preset, createdActors);
+    installAiRuntimePresetControls(scene, preset, createdActors);
+    installAiRuntimeProductionRallies(scene, preset, createdActors);
   };
-  if ((preset.queues?.length ?? 0) + (preset.researchQueues?.length ?? 0) > 0) {
+  if (
+    (preset.queues?.length ?? 0) +
+      (preset.researchQueues?.length ?? 0) +
+      (preset.controls?.length ?? 0) +
+      (preset.productionRallies?.length ?? 0) >
+    0
+  ) {
     scheduleAiRuntimePresetSetup(scene, completeSetup);
   } else {
     completeSetup();

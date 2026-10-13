@@ -19,6 +19,7 @@ export function appendAiRuntimeProductionFact(
   }
   try {
     const boundaryState = [
+      "preset_control",
       "decision_selected",
       "intent_dispatch",
       "outcome",

@@ -12,7 +12,10 @@ import { createAiResourceCostClaims } from "./ai-resource-cost-claims";
 import type { AiProductionTransitionV1 } from "../contracts/brain-state/ai-production-transition-v1";
 import { canAffordAiEconomyCost } from "./ai-economy-policy";
 import {
-  isAiProducerPositionExposed, needsAiProducerResilience, observedAiProducerThreats, reachableAiConstructionTiles
+  isAiProducerPositionExposed,
+  needsAiProducerResilience,
+  observedAiProducerThreats,
+  reachableAiConstructionTiles
 } from "./ai-producer-safety";
 
 /** Proposes throughput only when a dated force deficit needs more producer capacity. */
@@ -38,8 +41,21 @@ export function proposeAiMilitaryCapacity(args: {
   readonly producers: readonly AiObservationV1["actors"][number][];
 } {
   const {
-    observation, state, catalog, self, pressureDomain, targetMilitary, militaryCount, queuedMilitaryCount,
-    openingComplete, workforceRecoveryOwnsFood, reservedActorIds, selectedConstructionTileKeys, priorIntents, ordinal, transition
+    observation,
+    state,
+    catalog,
+    self,
+    pressureDomain,
+    targetMilitary,
+    militaryCount,
+    queuedMilitaryCount,
+    openingComplete,
+    workforceRecoveryOwnsFood,
+    reservedActorIds,
+    selectedConstructionTileKeys,
+    priorIntents,
+    ordinal,
+    transition
   } = args;
   const producers = self
     .filter(isFinishedActor)
@@ -49,26 +65,44 @@ export function proposeAiMilitaryCapacity(args: {
     })
     .sort((left, right) => left.actorId.localeCompare(right.actorId));
   const assessment = state.strategy.assessment;
-  const usefulDeficit = assessment && ["pressure", "finish"].includes(assessment.choice) ?
-    Math.max(0, Math.min(targetMilitary, assessment.requiredForce) - militaryCount - queuedMilitaryCount) : 0;
-  const lostCriticalDemand = producers.length === 0 && usefulDeficit > 0 ? state.economyProduction.demands.find((demand) =>
-    demand.purpose === "critical_producer_resilience" && demand.preferredObjectNames.some((objectName) =>
-      producerMilitaryProducts(objectName, catalog, pressureDomain).length > 0)) : undefined;
-  const primaryObjectName = transition?.status === "committed" ? transition.producerObjectName :
-    producers[0]?.objectName ?? lostCriticalDemand?.preferredObjectNames[0];
+  const usefulDeficit =
+    assessment && ["pressure", "finish"].includes(assessment.choice)
+      ? Math.max(0, Math.min(targetMilitary, assessment.requiredForce) - militaryCount - queuedMilitaryCount)
+      : 0;
+  const lostCriticalDemand =
+    producers.length === 0 && usefulDeficit > 0
+      ? state.economyProduction.demands.find(
+          (demand) =>
+            demand.purpose === "critical_producer_resilience" &&
+            demand.preferredObjectNames.some(
+              (objectName) => producerMilitaryProducts(objectName, catalog, pressureDomain).length > 0
+            )
+        )
+      : undefined;
+  const primaryObjectName =
+    transition?.status === "committed"
+      ? transition.producerObjectName
+      : (producers[0]?.objectName ?? lostCriticalDemand?.preferredObjectNames[0]);
   if (!primaryObjectName) return { demand: null, intent: null, producers };
-  const resilient = openingComplete && (lostCriticalDemand !== undefined ||
-    needsAiProducerResilience(observation, producers, usefulDeficit));
-  const throughput = transition?.status === "committed" ? transition.desiredProducers :
-    openingComplete ? plannedAiProducerCount(targetMilitary, militaryCount, queuedMilitaryCount) : 1;
+  const resilient =
+    openingComplete &&
+    (lostCriticalDemand !== undefined || needsAiProducerResilience(observation, producers, usefulDeficit));
+  const throughput =
+    transition?.status === "committed"
+      ? transition.desiredProducers
+      : openingComplete
+        ? plannedAiProducerCount(targetMilitary, militaryCount, queuedMilitaryCount)
+        : 1;
   const desiredCount = resilient ? Math.max(throughput, producers.length + 1) : throughput;
   const constructing = self
     .filter((actor) => actor.objectName === primaryObjectName && !isFinishedActor(actor))
     .sort((left, right) => left.actorId.localeCompare(right.actorId));
   const acceptedEffectIds = unresolvedReservedEffectIds(state, `effect:capacity:${primaryObjectName}:effect:`);
   const entry = catalog.entries.find((candidate) => candidate.sourceObjectName === primaryObjectName);
-  const demandId = transition?.status === "committed" ? `demand:capacity:${transition.planId}` as const :
-    "demand:capacity:first-army" as AiDemandV1["demandId"];
+  const demandId =
+    transition?.status === "committed"
+      ? (`demand:capacity:${transition.planId}` as const)
+      : ("demand:capacity:first-army" as AiDemandV1["demandId"]);
   const demand: AiDemandV1 = {
     demandId,
     purpose: resilient ? "critical_producer_resilience" : "dated_military_throughput",
@@ -86,21 +120,25 @@ export function proposeAiMilitaryCapacity(args: {
   if (!openingComplete || workforceRecoveryOwnsFood || committed >= desiredCount) {
     return { demand, intent: null, producers };
   }
-  if ((resilient || transition?.status === "committed") && (!entry?.constructionProfile ||
-    !canAffordAiEconomyCost(observation, entry.constructionProfile.resourceCost))) return { demand, intent: null, producers };
+  if (
+    (resilient || transition?.status === "committed") &&
+    (!entry?.constructionProfile || !canAffordAiEconomyCost(observation, entry.constructionProfile.resourceCost))
+  )
+    return { demand, intent: null, producers };
   const alreadyClaimed = claimedActorIds(priorIntents);
   const builder = self
     .filter(isAvailableBuilder)
     .filter((actor) => !reservedActorIds.has(actor.actorId) && !alreadyClaimed.has(actor.actorId))
     .filter((actor) =>
       catalog.entries.some(
-        (candidate) => candidate.sourceObjectName === actor.objectName && candidate.constructs.includes(primaryObjectName)
+        (candidate) =>
+          candidate.sourceObjectName === actor.objectName && candidate.constructs.includes(primaryObjectName)
       )
     )
     .sort((left, right) => {
       const leftIdle = left.activeOrder?.status === "known" && left.activeOrder.value === null ? 1 : 0;
       const rightIdle = right.activeOrder?.status === "known" && right.activeOrder.value === null ? 1 : 0;
-      return leftIdle - rightIdle || left.actorId.localeCompare(right.actorId);
+      return rightIdle - leftIdle || left.actorId.localeCompare(right.actorId);
     })[0];
   if (!builder) return { demand, intent: null, producers };
   const safePolicy = resilient || transition?.status === "committed";
@@ -113,8 +151,11 @@ export function proposeAiMilitaryCapacity(args: {
     ordinal,
     selectedConstructionTileKeys,
     entry?.constructionProfile?.footprintRadiusTiles ?? 0,
-    safePolicy ? (cell) => reachable?.has(cell.tileKey) === true &&
-      !isAiProducerPositionExposed({ ...cell.position, z: cell.elevation }, threats) : undefined
+    safePolicy
+      ? (cell) =>
+          reachable?.has(cell.tileKey) === true &&
+          !isAiProducerPositionExposed({ ...cell.position, z: cell.elevation }, threats)
+      : undefined
   );
   if (!position) return { demand, intent: null, producers };
   const next = nextIds(state, `capacity:${primaryObjectName}`, ordinal);
@@ -147,9 +188,15 @@ export function proposeAiMilitaryCapacity(args: {
         effectId: next.effectId
       }
     ],
-    reasonCode: `capacity:dated_target=${targetMilitary}:ready=${producers.length}:committed=${committed}/${desiredCount}` +
-      (resilient ? lostCriticalDemand ? ":critical_recovery" : ":critical_exposed" :
-        transition?.status === "committed" ? `:future=${transition.beginsTick}` : ""),
+    reasonCode:
+      `capacity:dated_target=${targetMilitary}:ready=${producers.length}:committed=${committed}/${desiredCount}` +
+      (resilient
+        ? lostCriticalDemand
+          ? ":critical_recovery"
+          : ":critical_exposed"
+        : transition?.status === "committed"
+          ? `:future=${transition.beginsTick}`
+          : ""),
     builderIds: [builder.actorId],
     objectName: primaryObjectName,
     logicalPosition: position,

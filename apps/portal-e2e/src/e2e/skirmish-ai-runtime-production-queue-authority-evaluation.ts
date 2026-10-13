@@ -4,7 +4,7 @@ import { runtimeProductionUsefulOutputs } from "./skirmish-ai-runtime-production
 import { evaluateRuntimeProductionPayments } from "./skirmish-ai-runtime-production-refund-evaluation";
 import { researchDefinitions } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/research/research-definitions";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import { productionWorldAt } from "./skirmish-ai-runtime-production-authority-evaluation";
+import { productionActorRetained, productionWorldAt } from "./skirmish-ai-runtime-production-authority-evaluation";
 
 /** Joins operation-time producer definitions to individual items; changing global product prices cannot overwrite history. */
 export function evaluateRuntimeProductionQueueAuthority(
@@ -14,7 +14,11 @@ export function evaluateRuntimeProductionQueueAuthority(
   const failures: string[] = [];
   const events = evidence.lifecycle.queues ?? [];
   const enqueues = events.filter((event) => event.kind === "enqueue");
-  if (!enqueues.length || new Set(enqueues.map((event) => event.itemId)).size !== enqueues.length) {
+  const controlledRefund = contract.branch === "cancel_pending_refund" && evidence.lifecycle.controlledRefunds?.length;
+  if (
+    (!enqueues.length && !controlledRefund) ||
+    new Set(enqueues.map((event) => event.itemId)).size !== enqueues.length
+  ) {
     failures.push("production_v2_enqueue_identity_missing");
   }
   failures.push(...evaluateRuntimeProductionQueuePayments(evidence));
@@ -76,6 +80,31 @@ export function evaluateRuntimeProductionQueueAuthority(
       failures.push("production_v2_strategic_contention_missing");
     if (events.some((event) => event.kind === "cancel")) failures.push("production_v2_contention_cancelled");
   } else if (contract.branch === "cancel_pending_refund") {
+    const controlled = evidence.lifecycle.controlledRefunds;
+    if (controlled?.length) {
+      const experiment = controlled[0];
+      if (controlled.length !== 1 || !experiment) return [...failures, "production_v2_controlled_refund_count_invalid"];
+      failures.push(...experiment.failures);
+      const commandId = experiment.post?.command.execution?.commandId;
+      if (
+        !evidence.lifecycle.controlledOutputs?.some(
+          (output) =>
+            output.commandId === commandId &&
+            output.targetActorId &&
+            evidence.setup?.roles[output.targetActorId] === `fixture:${contract.usefulRallyActorRole}` &&
+            output.arrivedTick + contract.stableForTicks <= contract.latestTick &&
+            productionActorRetained(
+              evidence,
+              output.actorId,
+              output.arrivedTick,
+              output.arrivedTick + contract.stableForTicks
+            )
+        )
+      ) {
+        failures.push("production_v2_controlled_refund_useful_output_missing");
+      }
+      return [...new Set(failures)];
+    }
     const cancellations = events.filter((event) => event.kind === "cancel");
     const cancel = cancellations[0];
     const request = evidence.lifecycle.cancellationRequests.find((entry) => entry.itemId === cancel?.itemId);

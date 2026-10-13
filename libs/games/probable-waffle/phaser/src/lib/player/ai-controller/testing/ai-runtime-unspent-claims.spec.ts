@@ -4,6 +4,20 @@ import { unspentClaimFixture } from "./ai-runtime-unspent-claim-fixtures";
 import { pendingCommandOutcome } from "./ai-runtime-pending-command-fixtures";
 
 describe("AiRuntimeUnspentClaims synthetic contracts", () => {
+  it("an unrelated human outcome cannot admit or invalidate selected AI cash", () => {
+    const f = unspentClaimFixture();
+    const ledger = new AiRuntimeUnspentClaims();
+    ledger.observeDecision(f.decision);
+    const before = ledger.snapshot(2);
+    ledger.observeOutcome({
+      ...pendingCommandOutcome(),
+      commandId: "human-rally",
+      intentId: undefined,
+      effectId: undefined
+    });
+    expect(ledger.snapshot(2)).toEqual(before);
+  });
+
   it("retains one selected claim through admission, then retires only the actual completed payment", () => {
     const f = unspentClaimFixture();
     const ledger = new AiRuntimeUnspentClaims();

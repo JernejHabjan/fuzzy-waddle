@@ -21,21 +21,36 @@ import type { AiDecisionProducerExposureV1 } from "./ai-decision-producer-exposu
 
 /** Called only by listener-gated decision capture; known current contacts are bound before target-specific reads. */
 export function captureAiProducerExposure(
-  scene: Phaser.Scene, observation: AiObservationV1, currentTick: number | null, restoring: boolean
+  scene: Phaser.Scene,
+  observation: AiObservationV1,
+  currentTick: number | null,
+  restoring: boolean
 ): AiDecisionProducerExposureV1 {
   const pairs: AiDecisionProducerExposureV1["pairs"][number][] = [];
   const gaps = new Set<string>();
   const result = () => ({ tick: observation.tick, generation: observation.generation, pairs, gaps: [...gaps].sort() });
   if (restoring || currentTick !== observation.tick) {
-    gaps.add("production_exposure_current_input_missing"); return result();
+    gaps.add("production_exposure_current_input_missing");
+    return result();
   }
-  const producers = observation.actors.filter((actor) => actor.relation === "self" && actor.visibility === "owned" &&
-    (actor.queue.status === "known" || actor.capabilities.some((capability) => capability.family === "produce")));
+  const producers = observation.actors.filter(
+    (actor) =>
+      actor.relation === "self" &&
+      actor.visibility === "owned" &&
+      (actor.constructionProgress?.status !== "known" || actor.constructionProgress.value >= 100) &&
+      (actor.queue.status === "known" || actor.capabilities.some((capability) => capability.family === "produce"))
+  );
   const threats = observation.actors.filter((actor) => actor.relation === "enemy" && actor.visibility === "visible");
-  if (producers.length * threats.length > 256) { gaps.add("production_exposure_pair_overflow"); return result(); }
+  if (producers.length * threats.length > 256) {
+    gaps.add("production_exposure_pair_overflow");
+    return result();
+  }
   if (!producers.length || !threats.length) return result();
   const index = getSceneService(scene, ActorIndexSystem);
-  if (!index) { gaps.add("production_exposure_index_missing"); return result(); }
+  if (!index) {
+    gaps.add("production_exposure_index_missing");
+    return result();
+  }
   const visibility = new AiObservationVisibilityPolicy(scene, observation.playerNumber);
   for (const threat of threats) {
     const attacker = index.getActorById(threat.actorId);
@@ -44,58 +59,117 @@ export function captureAiProducerExposure(
     const component = current && attacker ? getActorComponent(attacker, AttackComponent) : undefined;
     const attacks = component?.getAttacks();
     const observed = threat.combatProfile?.status === "known" ? threat.combatProfile.value.attacks : null;
-    const sameWeapons = attacks && observed && attacks.length === observed.length && attacks.every((weapon, i) => {
-      const value = observed[i];
-      return !!value && weapon.damage === value.damage && weapon.range === value.range && weapon.minRange === value.minRange &&
-        (weapon.highGroundRangeBonus ?? 0) === value.highGroundRangeBonus &&
-        millisecondsToSimulationTicks(weapon.cooldown) === value.cooldownTicks &&
-        millisecondsToSimulationTicks(weapon.delays.hit) === value.impactDelayTicks &&
-        (weapon.meleeAoe?.range ?? 0) === value.areaRadius &&
-        value.targetDomains.join(",") === (weapon.canTargetAir ? "ground,water,air" : "ground,water");
-    });
+    const sameWeapons =
+      attacks &&
+      observed &&
+      attacks.length === observed.length &&
+      attacks.every((weapon, i) => {
+        const value = observed[i];
+        return (
+          !!value &&
+          weapon.damage === value.damage &&
+          weapon.range === value.range &&
+          weapon.minRange === value.minRange &&
+          (weapon.highGroundRangeBonus ?? 0) === value.highGroundRangeBonus &&
+          millisecondsToSimulationTicks(weapon.cooldown) === value.cooldownTicks &&
+          millisecondsToSimulationTicks(weapon.delays.hit) === value.impactDelayTicks &&
+          (weapon.meleeAoe?.range ?? 0) === value.areaRadius &&
+          value.targetDomains.length === (weapon.canTargetAir ? 3 : 2) &&
+          new Set(value.targetDomains).size === value.targetDomains.length &&
+          (weapon.canTargetAir ? ["ground", "water", "air"] : ["ground", "water"]).every((domain) =>
+            value.targetDomains.some((observedDomain) => observedDomain === domain)
+          )
+        );
+      });
     for (const producer of producers) {
-      const row = { producerActorId: producer.actorId, threatActorId: threat.actorId, status: "unavailable" as const,
-        attackIndex: null, range: null, positioningRange: null, highGroundBonus: null, attackerElevation: null, targetElevation: null,
-        distanceTiles: null, withinSelectedWeaponBand: null };
+      const row = {
+        producerActorId: producer.actorId,
+        threatActorId: threat.actorId,
+        status: "unavailable" as const,
+        attackIndex: null,
+        range: null,
+        positioningRange: null,
+        highGroundBonus: null,
+        attackerElevation: null,
+        targetElevation: null,
+        distanceTiles: null,
+        withinSelectedWeaponBand: null
+      };
       const target = index.getActorById(producer.actorId);
-      if (!current || !attacker || !target ||
-        !matchesConsumedActor(scene, target, producer) || getActorComponent(target, FlyingComponent) ||
+      if (
+        !current ||
+        !attacker ||
+        !target ||
+        !matchesConsumedActor(scene, target, producer) ||
+        getActorComponent(target, FlyingComponent) ||
         (!getActorComponent(target, ProductionComponent) && !getActorComponent(target, ResearchComponent)) ||
-        getActorComponent(target, ConstructionSiteComponent)?.isFinished === false) {
-        gaps.add("production_exposure_current_binding_missing"); pairs.push(row); continue;
+        getActorComponent(target, ConstructionSiteComponent)?.isFinished === false
+      ) {
+        gaps.add("production_exposure_current_binding_missing");
+        pairs.push(row);
+        continue;
       }
-      if (!component && observed?.length === 0) { pairs.push({ ...row, status: "no_attack" }); continue; }
+      if (!component && observed?.length === 0) {
+        pairs.push({ ...row, status: "no_attack" });
+        continue;
+      }
       if (!component || !sameWeapons || !attacks) {
-        gaps.add("production_exposure_current_binding_missing"); pairs.push(row); continue;
+        gaps.add("production_exposure_current_binding_missing");
+        pairs.push(row);
+        continue;
       }
       const selected = component.getAttack(target);
       if (!selected) {
-        if (attacks.length) { gaps.add("production_exposure_selected_weapon_missing"); pairs.push(row); }
-        else pairs.push({ ...row, status: "no_attack" });
+        if (attacks.length) {
+          gaps.add("production_exposure_selected_weapon_missing");
+          pairs.push(row);
+        } else pairs.push({ ...row, status: "no_attack" });
         continue;
       }
       const attackIndex = attacks.indexOf(selected);
       const bonus = getHighGroundRangeBonus(attacker, target, selected);
       const distance = DistanceHelper.getTileDistanceBetweenGameObjects(attacker, target);
       if (attackIndex < 0 || distance === null) {
-        gaps.add("production_exposure_selected_weapon_missing"); pairs.push(row); continue;
+        gaps.add("production_exposure_selected_weapon_missing");
+        pairs.push(row);
+        continue;
       }
-      pairs.push({ ...row, status: "known", attackIndex, range: selected.range + bonus,
-        positioningRange: component.getAttackRange(target) ?? null, highGroundBonus: bonus,
-        attackerElevation: getActorElevation(attacker), targetElevation: getActorElevation(target), distanceTiles: distance,
-        withinSelectedWeaponBand: selected.damage > 0 && distance >= selected.minRange && distance <= selected.range + bonus });
+      pairs.push({
+        ...row,
+        status: "known",
+        attackIndex,
+        range: selected.range + bonus,
+        positioningRange: component.getAttackRange(target) ?? null,
+        highGroundBonus: bonus,
+        attackerElevation: getActorElevation(attacker),
+        targetElevation: getActorElevation(target),
+        distanceTiles: distance,
+        withinSelectedWeaponBand:
+          selected.damage > 0 && distance >= selected.minRange && distance <= selected.range + bonus
+      });
     }
   }
   return result();
 }
 
 /** Exact identity, current tile/base elevation and representable authority; no zero-elevation fallback. */
-function matchesConsumedActor(scene: Phaser.Scene, live: Phaser.GameObjects.GameObject, observed: AiObservedActorV1): boolean {
-  if (live.scene !== scene || !live.active || getActorComponent(live, HealthComponent)?.killed ||
-    getActorComponent(live, IdComponent)?.id !== observed.actorId || live.name !== observed.objectName ||
+function matchesConsumedActor(
+  scene: Phaser.Scene,
+  live: Phaser.GameObjects.GameObject,
+  observed: AiObservedActorV1
+): boolean {
+  if (
+    live.scene !== scene ||
+    !live.active ||
+    getActorComponent(live, HealthComponent)?.killed ||
+    getActorComponent(live, IdComponent)?.id !== observed.actorId ||
+    live.name !== observed.objectName ||
     (getActorComponent(live, OwnerComponent)?.getOwner() ?? null) !== observed.owner ||
-    !getActorComponent(live, RepresentableComponent) || observed.logicalPosition.status !== "known" ||
-    observed.logicalPosition.observedTick !== observed.observedTick) return false;
+    !getActorComponent(live, RepresentableComponent) ||
+    observed.logicalPosition.status !== "known" ||
+    observed.logicalPosition.observedTick !== observed.observedTick
+  )
+    return false;
   const tile = getGameObjectCurrentTile(live);
   const world = getGameObjectLogicalTransform(live);
   const position = observed.logicalPosition.value;

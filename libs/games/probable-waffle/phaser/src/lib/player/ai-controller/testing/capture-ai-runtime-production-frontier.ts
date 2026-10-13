@@ -1,7 +1,8 @@
+import { NavigationService } from "../../../world/services/navigation.service";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import type { UnifiedQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
 import { getActorComponent } from "../../../data/actor-component";
-import { getGameObjectLogicalTransform } from "../../../data/game-object-helper";
+import { getGameObjectCurrentTile, getGameObjectLogicalTransform } from "../../../data/game-object-helper";
 import { isSnapshotApplyInProgress } from "../../../data/scene-data";
 import { LevelComponent } from "../../../entity/components/level/level-component";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
@@ -37,6 +38,7 @@ export function captureAiRuntimeProductionFrontier(
     actors: actors.map(({ actor, identity }) => ({
       identity,
       position: getGameObjectLogicalTransform(actor),
+      tile: getGameObjectCurrentTile?.(actor) ?? null,
       level: getActorComponent(actor, LevelComponent)?.currentLevel ?? 1
     })),
     queues: actors.flatMap(({ actor }) => {
@@ -55,6 +57,7 @@ export function captureAiRuntimeProductionFrontier(
           ]
         : [];
     }),
+    navigation: getSceneService(scene, NavigationService)?.getNativeNavigationBoundary?.() ?? null,
     completedResearch: [...tech.getPlayerResearch(playerNumber)].sort()
   };
 }

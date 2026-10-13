@@ -2,7 +2,9 @@ import { expect, test } from "@playwright/test";
 import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import { ConstructionStateEnum, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiRuntimeConstructionV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-construction-v1";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+// prettier-ignore
+import type { AiRuntimeProductionFactV1 } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
 import { productionSpatialFixture } from "./skirmish-ai-runtime-production-spatial-fixture";
 import { normalizeRuntimeConstructionAuthority } from "./skirmish-ai-runtime-construction-authority";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
@@ -64,13 +66,13 @@ test("construction retains native free pre-start/repeated refunds and changed cu
   expect(normalizeRuntimeProductionCausality(capture).constructionAuthority).toEqual(result.records);
 });
 
-test("configured immediate construction can legitimately retain the native skipped charge predicate", () => {
+test("configured per-tick construction skips its initial charge independently of work duration", () => {
   const f = fixture();
   const skipped = {
     ...f.resource,
     operation: "start_charge" as const,
     status: "skipped" as const,
-    configuredCostType: 0,
+    configuredCostType: 1,
     ownerArgument: null,
     requested: null,
     refundFactor: null,
@@ -82,16 +84,17 @@ test("configured immediate construction can legitimately retain the native skipp
   };
   const result = normalizeRuntimeConstructionAuthority({ ...f.capture, facts: [f.fact(skipped, 1)] });
   expect(result.failures).toEqual([]);
-  expect(result.gaps).toContain("production_construction_configured_immediate_native_charge_skipped");
+  expect(result.gaps).toContain("production_construction_payment_history_missing");
   expect(requireAiTestEntry(result.records, 0).construction).toMatchObject({ status: "skipped", requested: null });
 });
 
-test("a zero-work native charge and denial stay separate from configured payment mode", () => {
+test("an immediate native charge and denial use the cost policy despite nonzero work duration", () => {
   const f = fixture();
   const charge = {
     ...f.resource,
     operation: "start_charge" as const,
-    requiredWorkMs: 0,
+    requiredWorkMs: 150,
+    configuredCostType: 0,
     requested: { food: 11 },
     callbackAmounts: { food: 11 },
     after: { ...f.resource.after, food: 89 },

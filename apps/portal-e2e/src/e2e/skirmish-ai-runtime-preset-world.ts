@@ -1,3 +1,9 @@
+// prettier-ignore
+import type { AiRuntimePresetWorldV1 } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-world-v1";
+// prettier-ignore
+import type { AiRuntimePresetControlV1 } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-control-v1";
 export interface RuntimePresetWorldV1 {
   readonly fixtureId: string;
   readonly requireFactionRoster?: true;
@@ -6,6 +12,12 @@ export interface RuntimePresetWorldV1 {
     readonly actorName: string;
     readonly owner: number | null;
     readonly position: { readonly x: number; readonly y: number; readonly z: number };
+  }[];
+  /** Bind a unique actual inherited owned actor; this never creates, moves or rewrites it. */
+  readonly existingActorBindings?: readonly {
+    readonly fixtureActorId: string;
+    readonly actorName: string;
+    readonly owner: number;
   }[];
   readonly resourceGrants: readonly {
     readonly playerNumber: number;
@@ -31,6 +43,8 @@ export interface RuntimePresetWorldV1 {
     readonly sourceFixtureActorId: string;
     readonly kind: "gather";
   }[];
+  readonly productionRallies?: AiRuntimePresetWorldV1["productionRallies"];
+  readonly controls?: readonly AiRuntimePresetControlV1[];
   readonly events?: readonly {
     readonly id: string;
     readonly tick: number;

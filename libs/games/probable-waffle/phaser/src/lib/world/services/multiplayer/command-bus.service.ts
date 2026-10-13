@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { Subject } from "rxjs";
 import {
   type GameCommand,
+  type GameCommandSource,
   type GameCommandAuthorityState,
   type GameCommandInput,
   type GameCommandOutcome,
@@ -167,8 +168,8 @@ export class CommandBusService {
     } as GameCommandInput);
   }
 
-  /** Documents the dispatch deterministic member and its declared contract at this boundary. */
-  dispatchDeterministic(command: GameCommandInput): GameCommandDispatchReceipt {
+  /** Immediate shared application for deterministic owners. An explicit source identifies a controller independently of player type. */
+  dispatchDeterministic(command: GameCommandInput, source?: GameCommandSource): GameCommandDispatchReceipt {
     const tick = this.tickService?.currentTick ?? 0;
     const inputError = getInputAddressError(this.scene, this.transport, command);
     if (inputError) {
@@ -178,7 +179,7 @@ export class CommandBusService {
     }
     const normalized = normalizeCommand(this.scene, this.transport, command);
     if (!normalized) return { status: "rejected", reason: "invalid_owner" };
-    const stamped = this.authority.stampCommand(normalized, tick);
+    const stamped = this.authority.stampCommand(normalized, tick, source);
     this.authority.reportOutcome(stamped, "dispatched", "accepted_for_dispatch");
     this.authority.emitForApplication(stamped);
     return { status: "dispatched", command: stamped };

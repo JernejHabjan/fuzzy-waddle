@@ -29,9 +29,11 @@ export function checkRuntimeProductionReportBridge(scenarioId: string, variant: 
   const capture = variant.productionCapture;
   const report = variant.productionCausality;
   if (!capture || !report) return [`runtime_production_report_missing:${scenarioId}:${variant.variantId}`];
-  const selected = capture.facts.filter((fact) => fact.kind === "decision_selected");
-  const failures: string[] = [];
   const v2 = variant.productionEvidenceV2;
+  const selected = capture.facts
+    .filter((fact) => fact.kind === "decision_selected")
+    .filter((fact) => !v2?.coverage || fact.tick <= (v2.coverage.latestTick ?? Infinity));
+  const failures: string[] = [];
   if (v2) {
     if (
       JSON.stringify(v2.coverage) !== JSON.stringify(capture.frontiers ?? null) ||
@@ -57,9 +59,13 @@ export function checkRuntimeProductionReportBridge(scenarioId: string, variant: 
       }
     } else failures.push(`runtime_production_v2_setup_unavailable:${variant.variantId}`);
   }
-  if (selected.length === 0 || report.decisions.length !== selected.length) {
+  if (
+    selected.length === 0 ||
+    (v2 ? v2.decisions.length !== selected.length : report.decisions.length !== selected.length)
+  ) {
     failures.push(`runtime_production_decision_bridge_incomplete:${scenarioId}:${variant.variantId}`);
   } else if (
+    !v2 &&
     selected.some((fact, index) => {
       if (fact.kind !== "decision_selected") return true;
       const decision = report.decisions[index];

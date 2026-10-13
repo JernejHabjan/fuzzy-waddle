@@ -16,11 +16,11 @@ export function assertRuntimePresetRoster(
   const ids = Object.values(application.createdActorIds);
   if (
     !sameNames(
-      preset.actors.map((actor) => actor.fixtureActorId),
+      [...preset.actors, ...(preset.existingActorBindings ?? [])].map((actor) => actor.fixtureActorId),
       Object.keys(application.createdActorIds)
     ) ||
     ids.some((id) => !id) ||
-    new Set(ids).size !== preset.actors.length ||
+    new Set(ids).size !== preset.actors.length + (preset.existingActorBindings?.length ?? 0) ||
     !sameNames(
       preset.actors.map((actor) => actor.actorName),
       application.createdActorNames
@@ -28,7 +28,9 @@ export function assertRuntimePresetRoster(
   ) {
     throw new Error("runtime_preset_created_roster_mismatch");
   }
-  const owned = preset.actors.filter((actor) => actor.owner === playerNumber).map((actor) => actor.actorName);
+  const owned = [...preset.actors, ...(preset.existingActorBindings ?? [])]
+    .filter((actor) => actor.owner === playerNumber)
+    .map((actor) => actor.actorName);
   const remaining = [...initial.ownedActorNames];
   for (const name of owned) {
     const index = remaining.indexOf(name);

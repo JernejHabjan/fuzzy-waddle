@@ -1,3 +1,4 @@
+import type { AiRuntimePresetControlEvent } from "./ai-runtime-preset-control-event";
 import type { AiRuntimeQueueCompletionV1 } from "./ai-runtime-queue-completion-v1";
 import type { AiRuntimeCreatedActorV1 } from "./ai-runtime-created-actor-v1";
 import type { AiRuntimeQueueMutationV1 } from "./ai-runtime-queue-mutation-v1";
@@ -43,6 +44,7 @@ export type AiRuntimeProductionFactV1 = {
       /** Exact consumed read only at decision start; still closes every earlier selected generation. */
       readonly incomingRead?: AiResourceInputRead;
     }
+  | { readonly kind: "preset_control"; readonly control: AiRuntimePresetControlEvent }
   | { readonly kind: "recipient_resources_installed"; readonly resources: Record<ResourceType, number> | null }
   | { readonly kind: "recipient_resource_mutation"; readonly mutation: AiRuntimeRecipientMutationV1 }
   | {

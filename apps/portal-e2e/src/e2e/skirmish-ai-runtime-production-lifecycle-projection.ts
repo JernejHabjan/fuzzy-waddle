@@ -1,3 +1,6 @@
+import { projectRuntimeControlledOutputs } from "./skirmish-ai-runtime-controlled-output";
+import { projectRuntimeControlledRefunds } from "./skirmish-ai-runtime-production-controlled-refund";
+import { projectRuntimeControlledCommands } from "./skirmish-ai-runtime-production-controlled-commands";
 // prettier-ignore
 import type { AiRuntimeProductionCaptureV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
@@ -15,17 +18,31 @@ export function projectRuntimeProductionLifecycleV2(
   causal: RuntimeProductionCausalityV1,
   preset?: AiRuntimePresetApplicationV1
 ): RuntimeProductionLifecycleV2 {
+  const controlled = projectRuntimeControlledCommands(capture);
   const gaps = new Set<string>();
-  const failures: string[] = [];
+  const failures: string[] = [...controlled.failures];
   const setupIds = new Set(capture.setup?.actors.map((actor) => actor.actorId));
-  const setupConstruction = causal.constructionLineage.filter(
-    (entry) =>
-      entry.boundary.construction.site.actorId !== null && setupIds.has(entry.boundary.construction.site.actorId)
-  );
-  const construction = causal.constructionLineage.filter(
-    (entry) =>
-      entry.boundary.construction.site.actorId === null || !setupIds.has(entry.boundary.construction.site.actorId)
-  );
+  const firstSelected = capture.facts.find((fact) => fact.kind === "decision_selected")?.sequence ?? Infinity;
+  const isSetup = (entry: RuntimeProductionCausalityV1["constructionLineage"][number]) => {
+    const record = entry.boundary.construction;
+    if (record.site.actorId !== null && setupIds.has(record.site.actorId)) return true;
+    // Native finished-actor initialization precedes deterministic ID registration. It is never runtime work or payment.
+    return (
+      !!capture.setup &&
+      capture.setup.tick === 0 &&
+      entry.boundary.tick === 0 &&
+      entry.boundary.sequence < firstSelected &&
+      record.kind === "lifecycle" &&
+      record.transition === "restored" &&
+      record.remainingWorkMs === 0 &&
+      record.site.finished &&
+      !record.site.indexed &&
+      !record.sceneActive &&
+      !record.snapshotRestoreInProgress
+    );
+  };
+  const setupConstruction = causal.constructionLineage.filter(isSetup);
+  const construction = causal.constructionLineage.filter((entry) => !isSetup(entry));
   for (const entry of construction) {
     entry.gaps.forEach((gap) => gaps.add(gap));
     const record = entry.boundary.construction;
@@ -131,7 +148,6 @@ export function projectRuntimeProductionLifecycleV2(
     }
   }
   // Money, removal and completion require their own frames. Requests deliberately use their separate identity-only channel.
-  const firstSelected = capture.facts.find((fact) => fact.kind === "decision_selected")?.sequence ?? Infinity;
   for (const fact of capture.facts.filter(
     (fact) =>
       fact.sequence >= firstSelected &&
@@ -166,6 +182,9 @@ export function projectRuntimeProductionLifecycleV2(
   )
     gaps.add("production_v2_refund_or_removal_frame_missing");
   return structuredClone({
+    controlledOutputs: projectRuntimeControlledOutputs(capture, causal),
+    controlledRefunds: projectRuntimeControlledRefunds(capture, preset),
+    controlledCommands: controlled.commands,
     queues,
     cancellationRequests,
     construction,

@@ -40,6 +40,7 @@ export function evaluateRuntimeProductionRecovery(
     (entry) =>
       entry.inputTick === entry.selectedTick &&
       entry.result.input?.producerExposure &&
+      entry.result.input.accessGraph?.status === "ready" &&
       entry.result.opening?.plan.steps.length &&
       entry.result.opening.plan.steps.every((checkpoint) => ["completed", "skipped"].includes(checkpoint.state)) &&
       entry.result.input.observation?.actors.some(

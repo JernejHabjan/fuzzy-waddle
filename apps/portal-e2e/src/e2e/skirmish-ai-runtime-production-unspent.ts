@@ -1,3 +1,4 @@
+import { reconcileRuntimeConstructionUnspent } from "./skirmish-ai-runtime-construction-unspent";
 import { reconcileRuntimeUnspentEntry } from "./skirmish-ai-runtime-unspent-entry";
 import { isRuntimeProductionBalance } from "./skirmish-ai-runtime-production-balance";
 import { isDeepStrictEqual } from "node:util";
@@ -10,8 +11,8 @@ import { sameRuntimeQueueVector } from "./skirmish-ai-runtime-scoped-queue-payme
 export { isRuntimeProductionBalance } from "./skirmish-ai-runtime-production-balance";
 
 /**
- * Independently reconciles the captured queue-claim subset at one exact callback. Native accepted leases, admission,
- * completed scoped payment and physical liability transfer justify each state. Missing global/non-queue ownership
+ * Independently reconciles the captured queue and immediate-construction claims at one exact callback. Native accepted leases, admission,
+ * completed scoped payment and physical liability transfer justify each state. Missing other claim-family ownership
  * remains null; this does not replace the full production reservation/cadence authority. beforeCallback excludes
  * the enclosing event from lifecycle reconciliation while retaining its real sampled physical state and sequence.
  */
@@ -49,7 +50,7 @@ export function reconcileRuntimeProductionUnspent(
     const selected = selections[0];
     const intent = entry.intent;
     const claims = intent.claims.filter((claim) => claim.kind === "resource");
-    if (intent.kind !== "produce" && intent.kind !== "research") {
+    if (intent.kind !== "produce" && intent.kind !== "research" && intent.kind !== "construct") {
       gaps.push("production_ai_operation_non_queue_unspent_missing");
       continue;
     }
@@ -97,7 +98,10 @@ export function reconcileRuntimeProductionUnspent(
       failures.push("production_ai_operation_unspent_selection_invalid");
       continue;
     }
-    const ownership = reconcileRuntimeUnspentEntry(capture, fact, entry, intent, prefix, cutoff, commands, payments);
+    const ownership =
+      intent.kind === "construct"
+        ? reconcileRuntimeConstructionUnspent(entry, prefix, capture.facts)
+        : reconcileRuntimeUnspentEntry(capture, fact, entry, intent, prefix, cutoff, commands, payments);
     failures.push(...ownership.failures);
     gaps.push(...ownership.gaps);
     if (entry.state === "selected" || entry.state === "admitted") {
@@ -148,6 +152,7 @@ export function reconcileRuntimeProductionUnspent(
       (intent) =>
         intent.kind !== "produce" &&
         intent.kind !== "research" &&
+        intent.kind !== "construct" &&
         intent.claims.some((claim) => claim.kind === "resource")
     )
   )

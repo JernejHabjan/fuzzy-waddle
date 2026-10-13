@@ -23,11 +23,12 @@ export class PawnAiController {
   private readonly agent: PlayerPawnAiControllerAgent;
   private readonly behaviourTree: BehaviourTree;
   /** Active simulation milliseconds accumulated since the last tree step; not persisted with the blackboard. */
-  private elapsedTime: number = 0;
+  private elapsedTime = 0;
   private nodeDebugger?: NodeDebugger;
   private aiDebuggingSubscription?: Subscription;
   private tickSubscription?: Subscription;
-  private defaultStepInterval: number = 100;
+  private disposed = false;
+  private defaultStepInterval = 100;
   private static readonly AI_ENABLED = true;
 
   constructor(
@@ -156,6 +157,8 @@ export class PawnAiController {
   }
 
   private onShutdown() {
+    if (this.disposed) return;
+    this.disposed = true;
     this.agent.reportInterruptedOrdersOnShutdown();
     this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.updateFrameNonDeterministicFallback, this);
     this.tickSubscription?.unsubscribe();

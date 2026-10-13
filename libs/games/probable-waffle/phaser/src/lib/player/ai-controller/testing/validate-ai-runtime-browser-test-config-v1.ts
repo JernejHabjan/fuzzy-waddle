@@ -1,3 +1,5 @@
+import { validAiRuntimeExistingBindings } from "./validate-ai-runtime-existing-bindings";
+import { validAiRuntimePresetControls, validAiRuntimePresetRallies } from "./validate-ai-runtime-preset-controls";
 import { ObjectNames, ResearchType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiRuntimeBrowserTestConfigV1 } from "./ai-runtime-browser-test-config-v1";
 
@@ -22,11 +24,14 @@ function validPresetWorld(value: unknown): boolean {
       "requireFactionRoster",
       "provenance",
       "actors",
+      "existingActorBindings",
       "resourceGrants",
       "resourceStarts",
       "queues",
       "researchQueues",
       "initialOrders",
+      "controls",
+      "productionRallies",
       "events"
     ])
   ) {
@@ -65,6 +70,8 @@ function validPresetWorld(value: unknown): boolean {
     if (!isRecord(position) || !hasOnlyKeys(position, ["x", "y", "z"])) return false;
     if (![position["x"], position["y"], position["z"]].every((coordinate) => Number.isFinite(coordinate))) return false;
   }
+  if (!validAiRuntimeExistingBindings(value["existingActorBindings"], fixtureActorIds, actorOwners, authoredNames))
+    return false;
   if (!Array.isArray(value["resourceGrants"]) || value["resourceGrants"].length > 16) return false;
   const validGrants = value["resourceGrants"].every((grant) => {
     if (!isRecord(grant) || !hasOnlyKeys(grant, ["playerNumber", "amounts"])) return false;
@@ -168,6 +175,8 @@ function validPresetWorld(value: unknown): boolean {
       actorNames.has(event["objectName"])
     );
   });
+  if (!validAiRuntimePresetControls(value["controls"], actorOwners)) return false;
+  if (!validAiRuntimePresetRallies(value["productionRallies"], actorOwners)) return false;
   const workCount =
     value["actors"].length +
     value["resourceGrants"].length +

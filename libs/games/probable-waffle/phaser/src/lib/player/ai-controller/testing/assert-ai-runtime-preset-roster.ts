@@ -43,7 +43,9 @@ export function assertAiRuntimePresetRoster(scene: GameProbableWaffleScene, pres
     }
   }
   for (const queue of preset.queues ?? []) {
-    const producer = preset.actors.find((actor) => actor.fixtureActorId === queue.producerFixtureActorId);
+    const producer = [...preset.actors, ...(preset.existingActorBindings ?? [])].find(
+      (actor) => actor.fixtureActorId === queue.producerFixtureActorId
+    );
     if (producer?.owner === undefined || producer.owner === null)
       throw new Error("runtime_preset_roster_queue_owner_missing");
     check(queue.actorName, producer.owner, queue.producerFixtureActorId);

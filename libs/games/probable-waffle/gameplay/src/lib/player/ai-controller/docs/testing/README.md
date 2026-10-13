@@ -39,6 +39,27 @@ runtime content. `pairedPositionRole` permits only a named PRO-06 actor's physic
 Fair target-specific weapon pairs, actual builder paths/work, exact unit spawn/rally arrival and covered survival
 replace general range/reachability guesses. Missing native authority never becomes a safe/reachable verdict.
 
+`production-authority-runtime.json` authors the eight PRO-03/06/07 branches for each faction. Preset `controls` use
+normal shared human commands, including delayed exact-handle cancellation and production probes before/after the
+actual refund. Request time never supplies refundable cash. `productionRallies` applies the same ordinary owned
+rally to each actual ready producer, including AI-built replacements. Both hooks exist only in opted-in developer
+worlds and detach on scene shutdown. They do not alter the AI's cancellation policy or create selected AI records.
+
+`existingActorBindings` names exactly one live indexed inherited actor by owner and canonical definition. Missing,
+ambiguous or reused actors abort setup. A binding does not create or move a main base. The paused actual setup remains
+the paired-world authority; authored schedules are deliberate later perturbations, not starting-state evidence.
+Finished preset initialization can precede deterministic ID registration. Its tick-zero, unindexed, inactive-scene,
+non-snapshot lifecycle belongs to initialization, never runtime construction payment or restored work.
+
+An asynchronous owned rally route needs continuous closed actor/tile/level and native navigation history through its
+request and terminal boundaries. Equal endpoints alone cannot establish continuity. The path must still join the
+actual order, movement arrival and retained product; absent history keeps usefulness unavailable.
+
+The focused `skirmish-ai-production-worlds.spec.ts` runs only with `AI_PRODUCTION_WORLD_HORIZON`. Use horizon 2000 for
+the complete local strategic gate and a fresh `AI_PRODUCTION_WORLD_OUTPUT` directory for every run. Shorter horizons
+are diagnostics. Per-world summaries and bounded pair inputs support triage; the retained native payload owns proof.
+These single runs do not establish repeated determinism, calibration, multiplayer parity or full release coverage.
+
 ## Stable commands
 
 ```bash

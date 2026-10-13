@@ -11,7 +11,7 @@ checks remain active. Diagnostic performance needs only a brief sanity check, sa
 Remove further dedicated profiling and strict performance certification from the active gate; revisit only a concrete
 slowdown. Keep correctness coverage. Commit/push and pause at each boundary; actual host model/effort unknown.
 Next recommendation GPT-6.1 Sol / high for remaining production recovery and release authority. The
-[end-of-gate machinery necessity review](#end-of-gate-machinery-necessity-review) remains not_started.
+[end-of-gate machinery necessity review](#end-of-gate-machinery-necessity-review) is in_progress; see the scoped verdicts below.
 
 **Execution efficiency (user, 2026-10-11):** use the skirmish skill's runtime-triage sequence: review affected
 arrival/cancellation/replacement, direct callers and cleanup before expensive matches; finish related controls/repairs
@@ -36,57 +36,73 @@ economy/production/combat scenarios with fresh evidence at the active final gate
 their original values; revised expectations must reflect an explained balance decision while preserving authority,
 fairness and useful-effect requirements.
 
-**Current step:** M12 production authority implementation is **stage_checked** for the supported capture/consumer
-paths; the consolidated ten-item batch remains **in_progress**. Source base 24a4993978c11cd223430e2e0cbdc03c2490859d,
-branch feature/759-skirmish-ai, worktree /home/jernej/.codex/worktrees/7977/fuzzy-waddle. Actual host model/effort unknown.
-The commit containing this ledger is the publication revision; do not substitute the base for its checked dirty source.
+**Current step (2026-10-13):** M12 Pass B: all sixteen physical branches are authored and registered; native owner
+and reader repairs are implemented. The ten-item batch is **in_progress**, not strategic-world certified. Base
+1c779772ac6bdcf7bd8383963e0f37da5a44a921, branch feature/759-skirmish-ai, worktree
+/home/jernej/.codex/worktrees/7977/fuzzy-waddle. Actual host model/effort unknown. The publication commit owns the
+checked source; the base alone does not attest dirty implementation. Nx migration 59f72e037 remains preserved.
 
-**What this batch implemented / why:**
+**What changed / why:**
 
-- V2 separates actual paused setup, consumed input, selected publication and applied-event clocks, so an old observation
-  or late callback cannot masquerade as current evidence.
-- One opt-in native clock hook records closed intervals and exact deadlines. Both finite faction worlds poll at 419
-  while retaining closedThroughTick=400 / capturedAtTick=401; browser overshoot no longer erases that deadline.
-- Producer-specific fair bindings preserve native weapon/elevation bands and invalidate on movement, visibility,
-  weapon/level change or removal. Losing the original producer does not invalidate an unchanged replacement. Actual
-  builder work/query and an exact owned rally arrival/actor survival replace general reachability guesses.
-- Actual indexed setup includes inherited actors, component state/cargo/orders/queues, players/tech, runtime content,
-  seed and topology. Canonical role comparison permits only a named physical position change; fixture labels/future
-  schedules do not establish equivalence. PRO-03 also checks a common first commitment.
-- Native construction cash claims survive placement and retire only at the exact successful payment, including multiple
-  builders. Operation-time producer definitions, setup payments, rejection/removal/refund boundaries and native death
-  identities retain their separate joins. Requests require identity/time, not fabricated cash frames. Setup initialization
-  is distinct from runtime construction, and explicit resource-start overwrites are not income.
+- Normal shared human rally/control commands now have exact requested/applied clocks. Delayed cancellation addresses
+  the actual paid setup handle; real insufficient-resource and funded probes straddle the actual refund. No selected AI
+  records or cancellation policy are invented. Actual inherited actor bindings support legal main-base setup work.
+- Cancellation now removes the addressed same-product item. Producer death stops queues immediately, with one failed
+  terminal per pending job. Pawn death/destruction cleanup is also idempotent, preventing duplicate interrupted orders.
+- Pending player-wide research excludes a second purchase at another producer. Capacity proposals prefer idle builders
+  over interrupting gather cycles. These repair demonstrated native behavior, not just report formatting.
+- Native cash attribution ignores unrelated human outcomes. A completed site reconciliation releases unused cash only
+  when it names a distinct earlier placement with the exact owner/site/product/position; it never invents a payment.
+- Readers distinguish paused finished initialization from runtime restore/work, preserve raw selected clocks, reconcile
+  construction claims, and retain controlled human refund/output lineage. Awaited rally paths require closed actor/tile/
+  level/navigation continuity, actual order/arrival and survival. Reordered weapon domain sets remain equivalent;
+  unfinished producers do not erase ready producer exposure. A named moved actor's local renderer visibility cache is
+  excluded from pair comparison; its vision rules and the actual AI fair inputs remain compared.
+- Each infantry producer additionally offers its faction's melee L2 upgrade: AnkGuard gains TivaraMacemanUpgradeLevel2;
+  InfantryInn gains SkaduweeWarriorUpgradeLevel2. Main-base availability, cost and duration stay as before. This modest
+  shared gameplay availability change permits meaningful training/research competition; it is not throughput tuning.
 
-The runner/report/pair/full evaluator use productionEvidenceV2. Legacy V1 remains diagnostic and in pure regression
-controls. Abandonment releases forecasts and follows already admitted work through a real terminal or retained native
-identity, instead of banning all earlier construction or retaining an immutable paid lease forever. Native callbacks,
-queue retirement and variant-start reporting were split to satisfy size limits; no baseline refresh. Prices, timings,
-faction balance and the AI's retain_committed_production cancellation policy are unchanged.
+**Ten-item acceptance map:**
 
-**Evidence / limits:** 163 Phaser suites / 867 tests, 221 selected browser checks (including one serial two-faction native
-check), six parser controls; native/browser types, owned lint/structure/format, catalog, uncached portal production build,
-doctor/context and whitespace checks pass. Six pre-existing non-null assertions remain warnings in the finite spec.
-The erased test-fixture cast repair additionally passes native types and two focused controls. Artifacts are ignored under
-`tmp/ai-plans/759-validation/authority-v2-*`; the 58 owned code files have composite SHA-256
-`fb13b76558d18887828acf4b6d583e8f30a77786134a3fd65eaa82a45d21911f` (sorted path NUL bytes NUL).
-Finite worlds capture 24 setup actors each, exact native completion=100 and pinned loss=240, with zero drops, funding
-errors or omitted cases. They are not the eight strategic branches or a full release proof.
+1. Normal rally controls: implemented; replacement producers use the same real shared input. Field is the current
+   destination because WorkMill triggered boarding rather than defensive arrival.
+2. Cancellation/refund inputs: implemented; the full prior two-faction run proves exact request=1/refund=4 and native
+   refund amounts/affordability, but useful arrival still requires the latest Field-destination run.
+3. Committed future production: authored/executed; fails capacity/force/useful-output deadlines. Do not mark passing.
+4. Abandoned future production: authored/executed; a native reconciled-site claim defect was repaired afterward.
+   Fresh affected evidence and a common first commitment remain required.
+5. Critical exposed recovery: authored/executed for Tivara; Skaduwee's full case timed out during loading. Current native
+   fair-binding repairs invalidate the former geometry result. Replacement timing/output remain unproven.
+6. Safe/low-value/no-demand: paired physical worlds authored/executed, but native fair-binding repairs and the renderer
+   cache comparison repair need fresh affected evidence. No branch label supplies exposure or demand.
+7. Training/research contention: authored/executed; Skaduwee lacks strategic useful contention, while Tivara's long
+   concurrent research crosses the 8192-fact budget. Keep overflow unavailable; do not simply raise every independent
+   journal/query limit or count partial capture as proof.
+8. Pending-refund affordability: actual paid tail, rejected pre-refund and applied post-refund purchase are proven in
+   both factions' prior full runs. The post-refund exact enqueue and useful arrival still gate acceptance.
+9. Both factions/real fixes: all sixteen selected once; fifteen returned native payloads, one infrastructure timeout.
+   The final grouped strategic gate was red, with zero cases certified; later source repairs need affected reruns.
+10. Correctness/necessity/publication: source checks and scoped necessity review pass; the strategic gate remains red. No full M12/M11 or release
+    closure is claimed. Preserve fail-closed oracles and source/fixture/seed framing.
 
-**Outstanding authority:** per-tick construction remains explicitly unavailable without a paid-work ledger. Stale/awaited
-route or incomplete fair bindings remain unavailable, not successful. The explicit controlled pending-refund experiment
-and its human/shared-command origin must be integrated when authoring that physical family; do not inject AI selections
-or invent an AI cancellation policy. No complete full-native V2 strategic success is claimed by this source gate.
+**Evidence:** the all-sixteen run is retained in ignored `tmp/ai-plans/759-validation/production-worlds-final-*`
+(see logs/directory sidecars). It ran 24.2 minutes: sixteen failures plus seven passing reader controls, fifteen complete
+2000-tick payloads and one loading timeout. Native execution itself returned no AI errors in the retained worlds;
+Tivara contention dropped 212 root facts. This is failure evidence, not acceptance or determinism. The latest source
+checks pass: 169 Phaser suites / 886 tests, 258 selected browser reader controls, nine Node fixture/parser controls,
+native/browser types, owned lint/structure (16 existing non-null warnings), catalog, formatting and uncached production
+build. The latest two-faction refund run retains request=1/refund=4, correct enqueue/refund/affordability, closedThrough=2000,
+zero drops and zero AI errors. Both fail only `production_v2_controlled_refund_useful_output_missing`: the real Field rally
+has a resolved path but its movement returns false immediately (Tivara tick220), not an observed arrival. Do not attribute
+that to a later AI override or manufacture successful movement. Logs are `production-worlds-refund-final.log` and
+`production-worlds-native-final.log`; unique output directories are recorded in ignored sidecars.
 
-**Next exact action / why:** continue the connected design's Pass B: author all eight PRO-03/06/07 branches for both
-factions using the actual captured setup/definitions and normal shared services. Bind pairedPositionRole and
-usefulRallyActorRole to declared actual actors; add the normal rally/control inputs needed by those worlds. Run short
-causal worlds first and repair the native owner or reader for each demonstrated missing/incorrect authority. Then run
-one grouped full correctness gate and the machinery necessity review. This turns the new measurements into demonstrated
-AI fixes. Recommend GPT-6.1 Sol / high for this first integrated world/controlled-origin pass; medium fits mechanical
-fixture assembly once those native paths are concrete. Keep this related work grouped and commit/push/pause at its
-boundary. Full M12/M11, socket/save/restart/hash/calibration and end-of-gate machinery review remain open.
-
+**Next exact batch / why:** use GPT-6.1 Sol / high for a single strategic design/repair pass covering feasible capacity
+lead/travel timing, immediate native rally movement failure, commitment abandonment when targets change, actual first fair recovery classification, meaningful
+same-lane research benefit and capture workload. Then group implementation and affected native worlds, and rerun the
+sixteen-case gate only after short causal controls settle. This turns observed misses into gameplay fixes while avoiding
+another broad run against known broken invariants. Medium remains suitable for settled mechanical edits; do not switch
+per file. Commit/push this source checkpoint and pause. Socket/save/restart/hash/calibration and full release remain open.
 
 ### Prior evidence and remaining roadmap
 
@@ -837,13 +853,13 @@ Unexecuted authoring remains unverified; runtime tuning and legacy retirement st
 | 1 / as needed        | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821)                                                                  | `partial`     | Split only owners blocking the selected batch                                                                            | Stay Sol medium; optional Luna high                             |
 | 2                    | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829)                                                                  | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof                                                        | GPT-6.1 Sol, medium                                             |
 | 3                    | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827)                                                                  | `in_progress` | Finish pressure/recovery policy; defer victory proof                                                                     | GPT-6.1 Sol, medium                                             |
-| 4 / next boundary    | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Food/partial returns, grouped capture and finished-build repair checked. Next movement/capacity and legal PRO authority | GPT-6.1 Sol / high                                              |
+| 4 / next boundary    | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Food/partial returns, grouped capture and finished-build repair checked. Next movement/capacity and legal PRO authority  | GPT-6.1 Sol / high                                              |
 | 5 / paired           | #815 / #816                                                                                                                      | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier                                      | Sol medium; optional Luna high for established cases            |
 | 6                    | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819)                                                                  | `in_progress` | Exact-once interruption, terminal and re-entry parity                                                                    | GPT-6.1 Sol, medium                                             |
 | 7                    | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823)                                                                  | `partial`     | Generation fencing, phase restore/replay and cleanup cases                                                               | GPT-6.1 Sol, medium                                             |
 | 8                    | #821                                                                                                                             | `partial`     | Remaining splits/renames and consumer updates                                                                            | Stay Sol medium; optional Luna high                             |
 | 9 / prepare          | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828), [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `partial`     | Prepare difficulty/opponent evidence; runtime optimization only for a concrete slowdown                                  | GPT-6.1 Sol, medium; Sol high for a measured performance defect |
-| Final gate           | Required issues above                                                                                                            | `in_progress` | Native 754/types/build checked. C8 complete; full PRO, lifecycle/calibration and baseline catalog failure pending               | GPT-6.1 Sol / high for remaining production authority           |
+| Final gate           | Required issues above                                                                                                            | `in_progress` | Native 754/types/build checked. C8 complete; full PRO, lifecycle/calibration and baseline catalog failure pending        | GPT-6.1 Sol / high for remaining production authority           |
 | After parity         | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820)                                                                  | `not_started` | Evidence-backed legacy retirement                                                                                        | GPT-6.1 Sol, medium decision; Luna high cleanup                 |
 | Before final closure | Existing machinery / completion map                                                                                              | `not_started` | Evaluate every system's demonstrated need and cost; keep, simplify or propose retirement while preserving required proof | GPT-6.1 Sol / high for combined review                          |
 
@@ -876,7 +892,7 @@ No automatic model switch, subagent or new chat is authorized by this policy. Ex
 | Consolidated design, scope/value, shared/per-owner contracts and acceptance (50)        | GPT-6.1 Sol / high                                                                       | Authored/source-reviewed                                                                                                  |
 | Settled implementation, compliance cleanup, wiring, fixtures and test authoring (51–54) | Luna / high                                                                              | Authored; scoped native/report controls now checked, wider integration remains                                            |
 | Combined implementation source review and unresolved contract conflicts (M10)           | GPT-6.1 Sol / high                                                                       | Source review/controls complete; E2E typing and 461 production/queue/resource/output controls pass, full gate in progress |
-| Final executable gate and repairs                                                       | GPT-6.1 Sol / high for command/authority repairs; Luna / high for settled implementation | C8 complete; food/partial returns/grouped output/finished-build checked; full PRO/lifecycle remain             |
+| Final executable gate and repairs                                                       | GPT-6.1 Sol / high for command/authority repairs; Luna / high for settled implementation | C8 complete; food/partial returns/grouped output/finished-build checked; full PRO/lifecycle remain                        |
 
 - The design must produce a finite list of substantial implementation passes and completion criteria. A pass may contain
   several related owners and coherent commits. Do not create a new design stage or model pause for each file, helper,
@@ -1015,29 +1031,24 @@ not block this gate.
 
 ## End-of-gate machinery necessity review
 
-User-requested final step (2026-10-09), not_started. Depends on required real-scenario/lifecycle evidence and the completed C8 sanity check
-above; it adds a review of existing machinery, not a new implementation system. Purpose: determine which diagnostic
-and attribution systems earn their complexity in actual debugging/testing and ordinary play.
+User-requested review, **in_progress** (scoped verdicts 2026-10-13). No new profiling suite is required. The earlier
+C8 sanity check remains the performance boundary; current trajectories establish no paired speedup/token claim.
 
-1. Inventory the existing capture hooks, journals, identity/lineage joins, attribution/reconciliation, adapters,
-   reporting/replay tools and supporting fixtures. Use the existing completion map and actual source consumers;
-   record required versus optional proof, concrete usage and defects caught. Passing a system's own tests alone
-   does not justify it. Keep unproven usefulness distinct from established diagnostic value.
-2. Compare each system with a simpler alternative using available scoped C8 sanity evidence and explicit
-   measurement gaps, marked
-   capture time/bytes, maintenance burden and diagnostic quality. Evaluate context efficiency on representative
-   passing and failing scenarios: raw versus selected summary/evidence bytes, follow-up reads/tool calls and wall
-   time; token/cache counts only when telemetry supplies them. Do not reintroduce strict diagnostic performance
-   certification or new profiling as a review prerequisite. Keep useful raw evidence locally and inspect bounded
-   causal slices. A compact summary is for triage, not proof that all authority checks passed; byte reduction is
-   not a measured reduction in total session tokens.
-3. Record an evidence-backed keep/simplify/retire verdict for every system, its required consumer, rationale and
-   unresolved tradeoffs in the same completion map. Preserve mandatory oracles, provenance, unavailable/null states
-   and required replay/debug capability. Propose any required scope reduction explicitly rather than silently
-   dropping acceptance. Implement justified compatible cleanup in grouped batches and rerun only invalidated checks.
-4. Close this review when every system has a verdict or explicit blocker, affected evidence is current and the
-   remaining machinery has a concrete use and acceptable measured cost. Publish the coherent result and pause;
-   final release closure still requires all other mandatory gates. This is not approval to claim unmeasured savings.
+| Machinery                                                           | Verdict / concrete consumer and value                                                                                                                                                                  | Limits / remaining action                                                                                                                            |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| One opt-in root capture, sequence and fact budget                   | **Keep.** Queue/route/cash evaluators join actual callbacks; the sixteen-world run exposed dead-queue progress, duplicate pawn terminals and a real overflow.                                          | Unmarked/production matches install no root or history. Tivara contention needs a justified workload/budget decision; overflow stays unavailable.    |
+| Selected input/cadence/exposure bindings                            | **Keep.** Recovery and production gates distinguish dated consumed input from publication; real domain-set ordering and unfinished-producer defects were found.                                        | Fresh affected worlds must establish first genuinely fair producer geometry. Never backfill hidden/stale profiles.                                   |
+| Exact queue/item/command and construction cash reconciliation       | **Keep.** Exact-tail cancellation, duplicate tech purchase and unused reconciled-site claims produced concrete repairs.                                                                                | Per-tick construction remains unsupported without its own paid-work ledger. Do not interpret dispatch, placement or promised refund as payment.      |
+| Closed tick/actor/tile/navigation histories                         | **Keep.** Exact deadline, awaited owned path and product survival consumers need continuous evidence; endpoint-only polling cannot replace it.                                                         | Coalesced bounded intervals; no timer/save/relay field. Further usefulness/recovery results remain unproven until native gates pass.                 |
+| Actual setup/catalog and paired-start normalization                 | **Keep.** Pair evaluator caught the moved producer's local renderer-cache difference; faction legality rejects invented worlds.                                                                        | Ignore only declared position and its local render cache. Costs, vision rules, orders, resources and actual AI observations remain authoritative.    |
+| Presets, inherited bindings, native rally/cancel controller         | **Keep as test-only inputs.** Controlled request=1/refund=4 and rejected/applied probes demonstrate real shared authority. WorkMill boarding was detected rather than miscounted as defensive arrival. | Opt-in bounded hooks detach on shutdown. Human origin remains explicit; no brain/selection injection.                                                |
+| Compact reports, pair inputs, raw artifact codec, provenance/replay | **Keep; simplify usage.** Read per-world failure summary first, then exact ID/tick slices; retained native payload supplies audit proof.                                                               | Ignore tmp artifacts in Git. A source base alone never certifies dirty changes. Bytes are a context proxy, not measured session token/cache savings. |
+| Legacy V1 diagnostics and synthetic controls                        | **Retain pending parity review.** Existing pure controls and M11/service consumers still use them.                                                                                                     | Full PRO runtime acceptance uses V2. Retiring V1 before those callers migrate would remove required coverage; do not delete blindly.                 |
+| Optional profiling probes and historical logs                       | **Defer/retire from active work.** Completed C8 sanity plus installation/cleanup checks satisfy the user's brief-impact request.                                                                       | Reopen only a concrete slowdown. No new dedicated profiling or strict performance gate.                                                              |
+
+This is a practical necessity review with real defects and consumer ownership, not a closure of the end-of-gate review.
+The final strategic/lifecycle gates, fresh affected evidence and legacy-consumer retirement decisions remain outstanding.
+No mandatory oracle was removed to reduce machinery. No total-token telemetry was available.
 
 ## Active evidence and boundaries
 

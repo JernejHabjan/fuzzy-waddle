@@ -6,7 +6,7 @@ import { unspentClaimFixture } from "./ai-runtime-unspent-claim-fixtures";
 import { pendingCommandOutcome } from "./ai-runtime-pending-command-fixtures";
 
 /** Invented construction scopes exercise ownership only; real placement/work/route evidence is a separate native gate. */
-function fixture() {
+function fixture(existingCommandId?: string) {
   const f = unspentClaimFixture();
   const intent = {
     ...f.intent,
@@ -35,7 +35,10 @@ function fixture() {
   ledger.observeDispatch({ ...f.request, command, acceptedIntent: intent });
   ledger.observeOutcome(pendingCommandOutcome("dispatched", "one", 102, intent.builderIds));
   ledger.observeOutcome(pendingCommandOutcome("applied", "one", 102, intent.builderIds));
-  ledger.observePlacement(command, "site-1");
+  ledger.observePlacement(
+    existingCommandId ? { ...command, execution: { ...command.execution, commandId: existingCommandId } } : command,
+    "site-1"
+  );
   const charge = {
     kind: "resource",
     operation: "start_charge",
@@ -81,6 +84,24 @@ it("keeps multi-builder construction cash after placement and retires it only on
   expect(ledger.snapshot(2).gaps).toEqual([]);
   expect(ledger.snapshot(2).resources?.food).toBe(0);
   expect(ledger.snapshot(2).entries[0]?.state).toBe("paid");
+});
+
+it("releases an unused claim only when native reconciliation names a distinct prior placement at the exact site", () => {
+  const { ledger } = fixture("prior-placement");
+  const outcome = {
+    ...pendingCommandOutcome("completed", "one", 102, ["builder-1", "builder-2"]),
+    detail: "site_reconciled",
+    worldLinkIds: ["site-1"]
+  };
+  ledger.observeOutcome(outcome);
+  expect(ledger.snapshot(2).resources?.food).toBe(0);
+  expect(ledger.snapshot(2).gaps).toEqual([]);
+  for (const id of [undefined, "prior-placement"]) {
+    const invalid = fixture(id);
+    invalid.ledger.observeOutcome({ ...outcome, worldLinkIds: id ? ["unknown-site"] : ["site-1"] });
+    expect(invalid.ledger.snapshot(2).resources).toBeNull();
+    expect(invalid.ledger.snapshot(2).gaps).toContain("unspent_construction_reconciled_site_missing");
+  }
 });
 
 it.each(["wrong_owner", "wrong_site", "duplicate", "nested", "wrong_cost", "per_tick"] as const)(

@@ -218,6 +218,8 @@ describe("PawnAiController simulation WAIT clock", () => {
     const f = fixture();
     f.advance(3);
     f.actor.emit(event);
+    f.actor.emit(HealthComponent.KilledEvent);
+    f.actor.emit(Phaser.GameObjects.Events.DESTROY);
     f.advance(20);
     expect(f.completed).not.toHaveBeenCalled();
     expect(f.interrupted).toHaveBeenCalledTimes(1);
