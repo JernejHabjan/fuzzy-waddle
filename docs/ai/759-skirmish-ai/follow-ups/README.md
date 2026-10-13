@@ -4,6 +4,11 @@ Each open subissue has one cold-start plan. The GitHub issue owns status and dis
 implementation route, source anchors, evidence, and completion boundary. Product behavior remains documented beside the
 AI controller.
 
+**Current execution inventory:** [remaining work](../REMAINING-WORK.md) groups the original scope into seven finite
+packages and lists every scenario's concrete outcome, registration gap and next action. Start there and in HANDOFF's
+quick resume. Existing estimates and authoring-only test deferrals in historical packets are not current policy.
+Use existing controls before writing replacements; no new diagnostic machinery/tooling prerequisite is scheduled.
+
 Read the handoff's current execution policy first: final-gate tests, simulations, lint, builds and doctor/context
 are active at coherent verification boundaries. Pair #815/#816 by behavior family
 using #816's compact batch table. Source contracts gate authoring; passing parity evidence gates legacy removal;

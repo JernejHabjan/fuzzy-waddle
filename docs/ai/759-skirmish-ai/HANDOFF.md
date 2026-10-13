@@ -6,6 +6,20 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
+**Finite remaining queue (user, 2026-10-13):** resume from [REMAINING-WORK.md](REMAINING-WORK.md),
+not historical stage narration. It inventories all 121 existing scenario setups/outcomes, current fixture registrations,
+known production failures and seven grouped work packages. Fresh catalog rendering finds 55 missing pure registrations
+and 97 missing supported runtime registrations; these are coverage gaps, not proof that all gameplay code is missing.
+Reuse/map existing tests first. Distinguish missing registration, registered/evidence pending, known failure, checked
+subset and validated. No new machinery stage, optional tooling prerequisite or M13 expansion is scheduled.
+Current package 1 is production delivery/prebuild/recovery/contention; packages 2–7 cover the original economy,
+combat/scouting, placement/recovery, authority/lifecycle, continuous difficulty and closure obligations.
+At each batch report selected IDs, outcomes closed, exact remaining gaps and next action. Do not count commits or
+helper files as project progress. Existing month/session estimates are historical; a new estimate needs actual
+remaining-package throughput. Inventory review and separate omission/closure audits preserve all manifest rows,
+four content deferrals, final correctness/parity/calibration and machinery review; no gameplay edits or matches in this
+documentation batch. Latest checked gameplay source remains `0d3864198`; actual host model/effort unknown.
+
 **Current policy (user, 2026-10-10):** consolidated design and coherent repair batches; correctness final-gate
 checks remain active. Diagnostic performance needs only a brief sanity check, satisfied by the completed warmed runs.
 Remove further dedicated profiling and strict performance certification from the active gate; revisit only a concrete
