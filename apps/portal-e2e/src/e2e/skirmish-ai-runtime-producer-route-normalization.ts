@@ -1,3 +1,7 @@
+import { RUNTIME_ROUTE_HISTORY_LIMIT } from "./skirmish-ai-runtime-route-history-budget";
+// prettier-ignore
+import { AI_RUNTIME_MAX_FACTS } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/append-ai-runtime-production-fact";
 import { projectRuntimeNativeNavigation } from "./skirmish-ai-runtime-native-navigation";
 import { validateRuntimeRouteOrders } from "./skirmish-ai-runtime-route-order-validation";
 import { projectRuntimeRouteOrder } from "./skirmish-ai-runtime-route-order-projection";
@@ -22,7 +26,7 @@ export function normalizeRuntimeProducerRoutes(
   const paths: RuntimeProducerRoutesV1["paths"][number][] = [];
   const failures: string[] = [];
   const gaps = new Set(["production_route_complete_query_history_missing", "production_route_useful_arrival_missing"]);
-  if (capture.facts.length > 8192 || capture.droppedFactCount) {
+  if (capture.facts.length > AI_RUNTIME_MAX_FACTS || capture.droppedFactCount) {
     return { routes: { outputs: [], paths: [] } satisfies RuntimeProducerRoutesV1,
       failures: ["production_route_capture_dropped"], gaps: [...gaps] };
   }
@@ -74,7 +78,7 @@ export function normalizeRuntimeProducerRoutes(
         failures.push("production_route_query_identity_duplicate");
       }
       requests.set(value.queryId, fact);
-      if (requests.size > 256) overflow = true;
+      if (requests.size > RUNTIME_ROUTE_HISTORY_LIMIT) overflow = true;
       continue;
     }
     const request = requests.get(value.queryId);
@@ -134,7 +138,8 @@ export function normalizeRuntimeProducerRoutes(
     const currentAtResolution = !fenced && request.tick === fact.tick && before.clockTick !== null &&
       value.clockTick !== null && before.sceneActive && value.sceneActive &&
       before.sourceInCaptureScene && value.sourceInCaptureScene &&
-      (!before.target || before.targetInCaptureScene === true && value.targetInCaptureScene === true) && ready(before.source) && ready(value.source) &&
+      (!before.target || before.targetInCaptureScene === true && value.targetInCaptureScene === true) &&
+      ready(before.source) && ready(value.source) &&
       (!before.target || !!value.target && ready(before.target) && ready(value.target)) &&
       sameTile(before.sourceTile, value.sourceTile) && sameTile(before.targetTile, value.targetTile);
     if (!currentAtResolution) entryGaps.push("production_route_stale_or_missing_actor_binding");

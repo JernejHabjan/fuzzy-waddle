@@ -9,6 +9,9 @@ import { HEIGHT_NAVIGATION_DIRECTIONS } from "./height-navigation-graph-builder"
 import { NavigationHeightGraph } from "./navigation-height-graph";
 import type { NavigationTileSelection } from "./navigation-tile-selection";
 import type { NavigationService } from "./navigation.service";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
+import { getSceneService } from "./scene-component-helpers";
+import { MovementOccupancyService } from "./movement-occupancy.service";
 
 /** Preserves target-footprint selection, native terrain routing and optional object-path debug output. */
 export class NavigationObjectRoutes {
@@ -20,7 +23,9 @@ export class NavigationObjectRoutes {
     private readonly heightGraph: NavigationHeightGraph,
     private readonly getUnitTerrainType: (actor: Phaser.GameObjects.GameObject) => MovementTerrainType,
     private readonly findPathForTerrain: (
-      from: Vector2Simple, to: Vector2Simple, terrain: MovementTerrainType
+      from: Vector2Simple,
+      to: Vector2Simple,
+      terrain: MovementTerrainType
     ) => Promise<Vector2Simple[] | null>,
     private readonly DEBUG_OBJECT_TARGET_PATHS: boolean
   ) {}
@@ -58,6 +63,17 @@ export class NavigationObjectRoutes {
         );
       }
     } else {
+      const actorId = getActorComponent(gameObject, IdComponent)?.id;
+      const occupancy = getSceneService(this.scene, MovementOccupancyService);
+      // Sample current footprints/steps once. Choosing an already occupied endpoint guarantees needless
+      // fallback for consecutive rallies even when another legal endpoint beside the same target is free.
+      const blocked = new Set(
+        actorId && occupancy
+          ? occupancy
+              .getDynamicBlockersForActor(actorId)
+              .map((entry) => `${entry.tile.x},${entry.tile.y},${entry.heightLayer}`)
+          : []
+      );
       // Range-limited object queries answer "which reachable tile gets me within
       // radius of this footprint?" even when the target structure itself is
       // navigable.
@@ -66,7 +82,15 @@ export class NavigationObjectRoutes {
         fromTile,
         targetTiles,
         radiusTiles,
-        terrainType
+        terrainType,
+        occupancy && actorId
+          ? (tile) => {
+              const height = this.heightGraph.getNavigationCell(tile)?.navigableHeight ?? 0;
+              return occupancy
+                .getActorFootprintAtTile(gameObject, tile)
+                .every((cell) => !blocked.has(`${cell.x},${cell.y},${height}`));
+            }
+          : undefined
       );
     }
 

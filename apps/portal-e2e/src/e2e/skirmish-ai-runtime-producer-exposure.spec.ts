@@ -60,6 +60,25 @@ test("stale and legacy inputs retain gaps without borrowing later live ranges", 
     .toContain("production_exposure_input_mismatch");
 });
 
+test("canonical weapon order preserves native tie choice and unfinished producers require no ready exposure pairs", () => {
+  const f = fixture();
+  const [producer, enemy] = f.input.observation.actors;
+  if (!producer || !enemy || enemy.combatProfile?.status !== "known") throw new Error("synthetic_pair_missing");
+  const attack = enemy.combatProfile.value.attacks[0];
+  if (!attack) throw new Error("synthetic_attack_missing");
+  const reordered = { ...f.input, observation: { ...f.input.observation, actors: [producer, { ...enemy,
+    combatProfile: { ...enemy.combatProfile, value: { ...enemy.combatProfile.value,
+      attacks: [{ ...attack, range: 8 }, attack] } } }] },
+    producerExposure: { ...f.exposure, pairs: [{ ...f.pair, attackIndex: 1, positioningRange: 9 }] } };
+  expect(normalizeRuntimeProducerExposure(reordered).failures).toEqual([]);
+  const unfinished = { ...producer, actorId: "unfinished",
+    constructionProgress: { status: "known" as const, value: 50, observedTick: 20 } };
+  const result = normalizeRuntimeProducerExposure({ ...f.input,
+    observation: { ...f.input.observation, actors: [producer, unfinished, enemy] } });
+  expect(result.failures).toEqual([]);
+  expect(result.gaps).not.toContain("production_exposure_pairs_incomplete");
+});
+
 test("contradictory target/weapon/clock authority suppresses every normalized causal group", () => {
   const f = fixture();
   for (const exposure of [

@@ -1,3 +1,6 @@
+// prettier-ignore
+import { AI_RUNTIME_MAX_FACTS } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/append-ai-runtime-production-fact";
 import { isDeepStrictEqual } from "node:util";
 import type { AiRuntimeProductionCaptureV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
@@ -7,7 +10,7 @@ import { runtimeRouteOrderFenced } from "./skirmish-ai-runtime-route-order-fence
 
 /** Inspect all supplied executions, including contradictory overflow tails, before exposing physical arrival. */
 export function normalizeRuntimeMovement(capture: AiRuntimeProductionCaptureV1) {
-  if (capture.facts.length > 8192 || capture.droppedFactCount) {
+  if (capture.facts.length > AI_RUNTIME_MAX_FACTS || capture.droppedFactCount) {
     return { movements: [], failures: ["production_movement_capture_dropped"], gaps: [] };
   }
   const groups = new Map<number, RuntimeMovementV1["observations"][number][]>();

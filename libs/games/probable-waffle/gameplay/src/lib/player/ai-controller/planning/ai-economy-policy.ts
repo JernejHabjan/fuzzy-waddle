@@ -62,7 +62,7 @@ function localEconomyThreats(observation: AiObservationV1): AiObservedActorV1[] 
     actor.logicalPosition.status === "known" &&
     ((actor.mainBuilding?.status === "known" && actor.mainBuilding.value) ||
       actor.resourceState.status === "known" ||
-      actor.capabilities.some((capability) => ["gather", "produce", "drop_off"].includes(capability.family)))
+      actor.capabilities.some((capability) => ["gather", "drop_off"].includes(capability.family)))
       ? [actor.logicalPosition.value]
       : []
   );

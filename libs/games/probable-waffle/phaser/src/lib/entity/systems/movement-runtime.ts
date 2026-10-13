@@ -11,16 +11,16 @@ import { AudioActorComponent } from "../components/actor-audio/audio-actor-compo
 import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 
 /**
- * Actor-local dependencies shared by movement owners. Components are sampled only at the original ready callback;
- * navigation and occupancy keep their original lazy scene lookup and caching. Nothing here is saved or observed.
+ * Actor-local movement dependencies. Readiness eagerly samples them; a first move also resolves them when a
+ * newly materialized actor starts an order before its scheduled ready callback. Nothing here is saved or observed.
  */
 export class MovementRuntime {
   /** Retry a missing service lazily; retain the first available native instance. */
   private _navigationService?: NavigationService;
   /** Ready-time translation component; tween duration also retains its original live component read. */
   actorTranslateComponent?: ActorTranslateComponent;
-  /** Set by the existing actor-ready callback before standard-step duration uses tile dimensions. */
-  tileMapComponent!: TilemapComponent;
+  /** Required before interpolation; missing scene wiring fails movement instead of inventing tile dimensions. */
+  tileMapComponent?: TilemapComponent;
   audioService: AudioService | undefined;
   audioActorComponent: AudioActorComponent | undefined;
   animationActorComponent?: AnimationActorComponent;
@@ -37,7 +37,14 @@ export class MovementRuntime {
     this.statusEffectComponent = getActorComponent(this.gameObject, StatusEffectComponent);
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
     this.audioActorComponent = getActorComponent(this.gameObject, AudioActorComponent);
-    this.tileMapComponent = getSceneComponent(this.gameObject.scene, TilemapComponent)!;
+    this.tileMapComponent = getSceneComponent(this.gameObject.scene, TilemapComponent);
+  }
+
+  /** Resolve ready-time dependencies once available, before any movement presentation or interpolation. */
+  ensureReady() {
+    if (!this.tileMapComponent || !this.actorTranslateComponent) this.init();
+    if (!this.tileMapComponent || !this.actorTranslateComponent) throw new Error("Movement dependencies unavailable");
+    return this.tileMapComponent;
   }
 
   get navigationService(): NavigationService | undefined {

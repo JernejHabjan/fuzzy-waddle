@@ -1,5 +1,8 @@
+import { RUNTIME_ROUTE_HISTORY_LIMIT } from "./skirmish-ai-runtime-route-history-budget";
 import { expect, test } from "@playwright/test";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+// prettier-ignore
+import type { AiRuntimeProductionFactV1 } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
 import type { AiRuntimeRouteCallerV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-route-caller-v1";
 import { routeOrderFixture } from "./skirmish-ai-runtime-route-order-fixture";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
@@ -303,7 +306,7 @@ test("nested unbound observations remain missing, while failed outer queries can
 
 test("invocation overflow drops the whole route group and still inspects the last contradictory stamp", () => {
   const f = callerFixture();
-  const tail = Array.from({ length: 256 }, (_, index) =>
+  const tail = Array.from({ length: RUNTIME_ROUTE_HISTORY_LIMIT }, (_, index) =>
     f.fact({ ...f.requested, queryId: index + 2, queryCaller: { ...f.caller, invocationId: index + 2 } })
   );
   const facts = [...f.capture.facts, ...tail].map((fact, index) => ({ ...fact, sequence: index + 1 }));
@@ -315,8 +318,8 @@ test("invocation overflow drops the whole route group and still inspects the las
   facts.push({
     ...f.fact({
       ...f.resolved,
-      queryId: 257,
-      queryCaller: { ...f.caller, invocationId: 257, order: { ...f.currentOrder, commandContext: null } }
+      queryId: RUNTIME_ROUTE_HISTORY_LIMIT + 1,
+      queryCaller: { ...f.caller, invocationId: RUNTIME_ROUTE_HISTORY_LIMIT + 1, order: { ...f.currentOrder, commandContext: null } }
     }),
     sequence: facts.length + 1
   });

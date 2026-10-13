@@ -4,8 +4,8 @@ import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 export function selectConstructionPosition(
   observation: AiObservationV1,
   builder: AiObservationV1["actors"][number],
-  decisionSequence: number,
-  ordinal: number,
+  _decisionSequence: number,
+  _ordinal: number,
   selectedTileKeys: Set<string>,
   footprintRadiusTiles = 0,
   /** Optional production policy filter; shared construction application remains the placement authority. */
@@ -46,7 +46,9 @@ export function selectConstructionPosition(
         left.tileKey.localeCompare(right.tileKey)
     );
   if (candidates.length === 0) return undefined;
-  const selected = candidates[(decisionSequence + ordinal) % candidates.length];
+  // Reservations already spread concurrent footprints. Rotating across all candidates discards the distance
+  // ordering and can send an idle builder across the map, invalidating the capacity schedule's travel allowance.
+  const selected = candidates[0];
   if (!selected) return undefined;
   for (const key of footprintKeys(selected.position.x, selected.position.y)) selectedTileKeys.add(key);
   return selected.position;

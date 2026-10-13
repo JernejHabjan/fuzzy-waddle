@@ -20,7 +20,10 @@ export function runtimeProductionUsefulOutputs(
       spawn?.kind !== "spawn" ||
       !spawn.tile ||
       !spawn.position ||
-      output.gaps.length ||
+      // Actual native rally identity and closed arrival below supply these two legacy missing-channel labels.
+      output.gaps.some((gap) => ![
+        "production_route_rally_command_identity_missing", "production_route_useful_arrival_missing"
+      ].includes(gap)) ||
       spawn.item.itemId !== completion.itemId ||
       boundary.product.actorId !== completion.createdActor.actorId
     )

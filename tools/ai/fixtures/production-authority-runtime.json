@@ -1,7 +1,11 @@
 {
   "schemaVersion": 1,
   "evidenceKind": "runtime",
-  "scenarioIds": ["PRO-03", "PRO-06", "PRO-07"],
+  "scenarioIds": [
+    "PRO-03",
+    "PRO-06",
+    "PRO-07"
+  ],
   "purpose": "Physical production authority branches; outcomes require native V2 evidence, never authored branch labels.",
   "driver": "runtime",
   "status": "ready_for_runtime_execution",
@@ -14,8 +18,15 @@
   "recipe": {
     "mapLabel": "AI Open Economy (test only)",
     "aiPlayerNumber": 2,
-    "simulationTimeScale": 100,
-    "checkpointTicks": [20, 200, 600, 1200, 1600, 2000],
+    "simulationTimeScale": 10,
+    "checkpointTicks": [
+      20,
+      200,
+      600,
+      1200,
+      1600,
+      2000
+    ],
     "variants": [
       {
         "id": "tivara-future-committed",
@@ -35,8 +46,8 @@
               "actorName": "AnkGuard",
               "owner": 2,
               "position": {
-                "x": 800,
-                "y": 848,
+                "x": 512,
+                "y": 1040,
                 "z": 0
               }
             },
@@ -146,7 +157,7 @@
               "owner": 2,
               "position": {
                 "x": 320,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -156,7 +167,7 @@
               "owner": 2,
               "position": {
                 "x": 368,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -166,7 +177,7 @@
               "owner": 2,
               "position": {
                 "x": 416,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -176,7 +187,7 @@
               "owner": 2,
               "position": {
                 "x": 464,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -185,8 +196,8 @@
               "actorName": "SkaduweeRangedFemale",
               "owner": 1,
               "position": {
-                "x": 672,
-                "y": 1040,
+                "x": 192,
+                "y": 1248,
                 "z": 0
               }
             },
@@ -195,8 +206,8 @@
               "actorName": "SkaduweeRangedFemale",
               "owner": 1,
               "position": {
-                "x": 720,
-                "y": 1040,
+                "x": 224,
+                "y": 1264,
                 "z": 0
               }
             },
@@ -205,8 +216,8 @@
               "actorName": "SkaduweeRangedFemale",
               "owner": 1,
               "position": {
-                "x": 768,
-                "y": 1040,
+                "x": 256,
+                "y": 1280,
                 "z": 0
               }
             },
@@ -215,8 +226,8 @@
               "actorName": "SkaduweeRangedFemale",
               "owner": 1,
               "position": {
-                "x": 672,
-                "y": 1088,
+                "x": 160,
+                "y": 1264,
                 "z": 0
               }
             },
@@ -225,8 +236,8 @@
               "actorName": "SkaduweeRangedFemale",
               "owner": 1,
               "position": {
-                "x": 720,
-                "y": 1088,
+                "x": 192,
+                "y": 1280,
                 "z": 0
               }
             },
@@ -235,8 +246,8 @@
               "actorName": "SkaduweeRangedFemale",
               "owner": 1,
               "position": {
-                "x": 768,
-                "y": 1088,
+                "x": 224,
+                "y": 1296,
                 "z": 0
               }
             },
@@ -245,8 +256,8 @@
               "actorName": "SkaduweeRangedFemale",
               "owner": 1,
               "position": {
-                "x": 672,
-                "y": 1136,
+                "x": 128,
+                "y": 1280,
                 "z": 0
               }
             },
@@ -255,8 +266,8 @@
               "actorName": "SkaduweeRangedFemale",
               "owner": 1,
               "position": {
-                "x": 720,
-                "y": 1136,
+                "x": 160,
+                "y": 1296,
                 "z": 0
               }
             },
@@ -265,8 +276,8 @@
               "actorName": "SkaduweeRangedFemale",
               "owner": 1,
               "position": {
-                "x": 768,
-                "y": 1136,
+                "x": 192,
+                "y": 1312,
                 "z": 0
               }
             }
@@ -292,7 +303,9 @@
             }
           ]
         },
-        "scenarioIds": ["PRO-03"],
+        "scenarioIds": [
+          "PRO-03"
+        ],
         "pairId": "tivara-future"
       },
       {
@@ -313,8 +326,8 @@
               "actorName": "AnkGuard",
               "owner": 2,
               "position": {
-                "x": 800,
-                "y": 848,
+                "x": 512,
+                "y": 1040,
                 "z": 0
               }
             },
@@ -424,7 +437,7 @@
               "owner": 2,
               "position": {
                 "x": 320,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -434,7 +447,7 @@
               "owner": 2,
               "position": {
                 "x": 368,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -444,7 +457,7 @@
               "owner": 2,
               "position": {
                 "x": 416,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -454,7 +467,7 @@
               "owner": 2,
               "position": {
                 "x": 464,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -463,8 +476,8 @@
               "actorName": "SkaduweeRangedFemale",
               "owner": 1,
               "position": {
-                "x": 672,
-                "y": 1040,
+                "x": 192,
+                "y": 1248,
                 "z": 0
               }
             },
@@ -473,8 +486,8 @@
               "actorName": "SkaduweeRangedFemale",
               "owner": 1,
               "position": {
-                "x": 720,
-                "y": 1040,
+                "x": 224,
+                "y": 1264,
                 "z": 0
               }
             },
@@ -483,8 +496,8 @@
               "actorName": "SkaduweeRangedFemale",
               "owner": 1,
               "position": {
-                "x": 768,
-                "y": 1040,
+                "x": 256,
+                "y": 1280,
                 "z": 0
               }
             },
@@ -493,8 +506,8 @@
               "actorName": "SkaduweeRangedFemale",
               "owner": 1,
               "position": {
-                "x": 672,
-                "y": 1088,
+                "x": 160,
+                "y": 1264,
                 "z": 0
               }
             },
@@ -503,8 +516,8 @@
               "actorName": "SkaduweeRangedFemale",
               "owner": 1,
               "position": {
-                "x": 720,
-                "y": 1088,
+                "x": 192,
+                "y": 1280,
                 "z": 0
               }
             },
@@ -513,8 +526,8 @@
               "actorName": "SkaduweeRangedFemale",
               "owner": 1,
               "position": {
-                "x": 768,
-                "y": 1088,
+                "x": 224,
+                "y": 1296,
                 "z": 0
               }
             },
@@ -523,8 +536,8 @@
               "actorName": "SkaduweeRangedFemale",
               "owner": 1,
               "position": {
-                "x": 672,
-                "y": 1136,
+                "x": 128,
+                "y": 1280,
                 "z": 0
               }
             },
@@ -533,8 +546,8 @@
               "actorName": "SkaduweeRangedFemale",
               "owner": 1,
               "position": {
-                "x": 720,
-                "y": 1136,
+                "x": 160,
+                "y": 1296,
                 "z": 0
               }
             },
@@ -543,8 +556,8 @@
               "actorName": "SkaduweeRangedFemale",
               "owner": 1,
               "position": {
-                "x": 768,
-                "y": 1136,
+                "x": 192,
+                "y": 1312,
                 "z": 0
               }
             }
@@ -644,7 +657,9 @@
             }
           ]
         },
-        "scenarioIds": ["PRO-03"],
+        "scenarioIds": [
+          "PRO-03"
+        ],
         "pairId": "tivara-future"
       },
       {
@@ -666,7 +681,7 @@
               "owner": 2,
               "position": {
                 "x": 800,
-                "y": 848,
+                "y": 976,
                 "z": 0
               }
             },
@@ -776,7 +791,7 @@
               "owner": 2,
               "position": {
                 "x": 320,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -786,7 +801,7 @@
               "owner": 2,
               "position": {
                 "x": 368,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -817,7 +832,7 @@
           "events": [
             {
               "id": "original-producer-loss",
-              "tick": 1200,
+              "tick": 800,
               "kind": "destroy_owned_actor",
               "owner": 2,
               "objectName": "AnkGuard",
@@ -839,7 +854,9 @@
             }
           ]
         },
-        "scenarioIds": ["PRO-06"],
+        "scenarioIds": [
+          "PRO-06"
+        ],
         "pairId": "tivara-recovery"
       },
       {
@@ -971,7 +988,7 @@
               "owner": 2,
               "position": {
                 "x": 320,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -981,7 +998,7 @@
               "owner": 2,
               "position": {
                 "x": 368,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -1017,7 +1034,9 @@
             }
           ]
         },
-        "scenarioIds": ["PRO-06"],
+        "scenarioIds": [
+          "PRO-06"
+        ],
         "pairId": "tivara-recovery"
       },
       {
@@ -1149,7 +1168,7 @@
               "owner": 2,
               "position": {
                 "x": 320,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -1159,7 +1178,7 @@
               "owner": 2,
               "position": {
                 "x": 368,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -1169,7 +1188,7 @@
               "owner": 2,
               "position": {
                 "x": 416,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -1179,7 +1198,7 @@
               "owner": 2,
               "position": {
                 "x": 464,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -1189,7 +1208,7 @@
               "owner": 2,
               "position": {
                 "x": 320,
-                "y": 864,
+                "y": 624,
                 "z": 0
               }
             },
@@ -1199,7 +1218,7 @@
               "owner": 2,
               "position": {
                 "x": 368,
-                "y": 864,
+                "y": 624,
                 "z": 0
               }
             },
@@ -1209,7 +1228,7 @@
               "owner": 2,
               "position": {
                 "x": 416,
-                "y": 864,
+                "y": 624,
                 "z": 0
               }
             },
@@ -1219,7 +1238,7 @@
               "owner": 2,
               "position": {
                 "x": 464,
-                "y": 864,
+                "y": 624,
                 "z": 0
               }
             },
@@ -1229,7 +1248,7 @@
               "owner": 2,
               "position": {
                 "x": 320,
-                "y": 928,
+                "y": 688,
                 "z": 0
               }
             },
@@ -1239,7 +1258,7 @@
               "owner": 2,
               "position": {
                 "x": 368,
-                "y": 928,
+                "y": 688,
                 "z": 0
               }
             },
@@ -1249,7 +1268,7 @@
               "owner": 2,
               "position": {
                 "x": 416,
-                "y": 928,
+                "y": 688,
                 "z": 0
               }
             },
@@ -1259,7 +1278,7 @@
               "owner": 2,
               "position": {
                 "x": 464,
-                "y": 928,
+                "y": 688,
                 "z": 0
               }
             },
@@ -1465,7 +1484,9 @@
             }
           ]
         },
-        "scenarioIds": ["PRO-06"],
+        "scenarioIds": [
+          "PRO-06"
+        ],
         "pairId": "tivara-demand"
       },
       {
@@ -1597,7 +1618,7 @@
               "owner": 2,
               "position": {
                 "x": 320,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -1607,7 +1628,7 @@
               "owner": 2,
               "position": {
                 "x": 368,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -1617,7 +1638,7 @@
               "owner": 2,
               "position": {
                 "x": 416,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -1627,7 +1648,7 @@
               "owner": 2,
               "position": {
                 "x": 464,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -1637,7 +1658,7 @@
               "owner": 2,
               "position": {
                 "x": 320,
-                "y": 864,
+                "y": 624,
                 "z": 0
               }
             },
@@ -1647,7 +1668,7 @@
               "owner": 2,
               "position": {
                 "x": 368,
-                "y": 864,
+                "y": 624,
                 "z": 0
               }
             },
@@ -1657,7 +1678,7 @@
               "owner": 2,
               "position": {
                 "x": 416,
-                "y": 864,
+                "y": 624,
                 "z": 0
               }
             },
@@ -1667,7 +1688,7 @@
               "owner": 2,
               "position": {
                 "x": 464,
-                "y": 864,
+                "y": 624,
                 "z": 0
               }
             },
@@ -1677,7 +1698,7 @@
               "owner": 2,
               "position": {
                 "x": 320,
-                "y": 928,
+                "y": 688,
                 "z": 0
               }
             },
@@ -1687,7 +1708,7 @@
               "owner": 2,
               "position": {
                 "x": 368,
-                "y": 928,
+                "y": 688,
                 "z": 0
               }
             },
@@ -1697,7 +1718,7 @@
               "owner": 2,
               "position": {
                 "x": 416,
-                "y": 928,
+                "y": 688,
                 "z": 0
               }
             },
@@ -1707,7 +1728,7 @@
               "owner": 2,
               "position": {
                 "x": 464,
-                "y": 928,
+                "y": 688,
                 "z": 0
               }
             },
@@ -1913,7 +1934,9 @@
             }
           ]
         },
-        "scenarioIds": ["PRO-06"],
+        "scenarioIds": [
+          "PRO-06"
+        ],
         "pairId": "tivara-demand"
       },
       {
@@ -2045,7 +2068,7 @@
               "owner": 2,
               "position": {
                 "x": 320,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -2055,7 +2078,7 @@
               "owner": 2,
               "position": {
                 "x": 368,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -2065,7 +2088,7 @@
               "owner": 2,
               "position": {
                 "x": 416,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -2075,7 +2098,7 @@
               "owner": 2,
               "position": {
                 "x": 464,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -2085,7 +2108,7 @@
               "owner": 2,
               "position": {
                 "x": 320,
-                "y": 864,
+                "y": 624,
                 "z": 0
               }
             },
@@ -2095,7 +2118,7 @@
               "owner": 2,
               "position": {
                 "x": 368,
-                "y": 864,
+                "y": 624,
                 "z": 0
               }
             },
@@ -2105,7 +2128,7 @@
               "owner": 2,
               "position": {
                 "x": 416,
-                "y": 864,
+                "y": 624,
                 "z": 0
               }
             },
@@ -2115,7 +2138,7 @@
               "owner": 2,
               "position": {
                 "x": 464,
-                "y": 864,
+                "y": 624,
                 "z": 0
               }
             }
@@ -2173,7 +2196,9 @@
             }
           ]
         },
-        "scenarioIds": ["PRO-07"]
+        "scenarioIds": [
+          "PRO-07"
+        ]
       },
       {
         "id": "tivara-cancel-pending-refund",
@@ -2358,7 +2383,9 @@
             }
           ]
         },
-        "scenarioIds": ["PRO-07"]
+        "scenarioIds": [
+          "PRO-07"
+        ]
       },
       {
         "id": "skaduwee-future-committed",
@@ -2378,8 +2405,8 @@
               "actorName": "InfantryInn",
               "owner": 2,
               "position": {
-                "x": 800,
-                "y": 848,
+                "x": 512,
+                "y": 1040,
                 "z": 0
               }
             },
@@ -2489,7 +2516,7 @@
               "owner": 2,
               "position": {
                 "x": 320,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -2499,7 +2526,7 @@
               "owner": 2,
               "position": {
                 "x": 368,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -2509,7 +2536,7 @@
               "owner": 2,
               "position": {
                 "x": 416,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -2519,7 +2546,7 @@
               "owner": 2,
               "position": {
                 "x": 464,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -2528,8 +2555,8 @@
               "actorName": "TivaraSlingshotFemale",
               "owner": 1,
               "position": {
-                "x": 672,
-                "y": 1040,
+                "x": 192,
+                "y": 1248,
                 "z": 0
               }
             },
@@ -2538,8 +2565,8 @@
               "actorName": "TivaraSlingshotFemale",
               "owner": 1,
               "position": {
-                "x": 720,
-                "y": 1040,
+                "x": 224,
+                "y": 1264,
                 "z": 0
               }
             },
@@ -2548,8 +2575,8 @@
               "actorName": "TivaraSlingshotFemale",
               "owner": 1,
               "position": {
-                "x": 768,
-                "y": 1040,
+                "x": 256,
+                "y": 1280,
                 "z": 0
               }
             },
@@ -2558,8 +2585,8 @@
               "actorName": "TivaraSlingshotFemale",
               "owner": 1,
               "position": {
-                "x": 672,
-                "y": 1088,
+                "x": 160,
+                "y": 1264,
                 "z": 0
               }
             },
@@ -2568,8 +2595,8 @@
               "actorName": "TivaraSlingshotFemale",
               "owner": 1,
               "position": {
-                "x": 720,
-                "y": 1088,
+                "x": 192,
+                "y": 1280,
                 "z": 0
               }
             },
@@ -2578,8 +2605,8 @@
               "actorName": "TivaraSlingshotFemale",
               "owner": 1,
               "position": {
-                "x": 768,
-                "y": 1088,
+                "x": 224,
+                "y": 1296,
                 "z": 0
               }
             },
@@ -2588,8 +2615,8 @@
               "actorName": "TivaraSlingshotFemale",
               "owner": 1,
               "position": {
-                "x": 672,
-                "y": 1136,
+                "x": 128,
+                "y": 1280,
                 "z": 0
               }
             },
@@ -2598,8 +2625,8 @@
               "actorName": "TivaraSlingshotFemale",
               "owner": 1,
               "position": {
-                "x": 720,
-                "y": 1136,
+                "x": 160,
+                "y": 1296,
                 "z": 0
               }
             },
@@ -2608,8 +2635,8 @@
               "actorName": "TivaraSlingshotFemale",
               "owner": 1,
               "position": {
-                "x": 768,
-                "y": 1136,
+                "x": 192,
+                "y": 1312,
                 "z": 0
               }
             }
@@ -2635,7 +2662,9 @@
             }
           ]
         },
-        "scenarioIds": ["PRO-03"],
+        "scenarioIds": [
+          "PRO-03"
+        ],
         "pairId": "skaduwee-future"
       },
       {
@@ -2656,8 +2685,8 @@
               "actorName": "InfantryInn",
               "owner": 2,
               "position": {
-                "x": 800,
-                "y": 848,
+                "x": 512,
+                "y": 1040,
                 "z": 0
               }
             },
@@ -2767,7 +2796,7 @@
               "owner": 2,
               "position": {
                 "x": 320,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -2777,7 +2806,7 @@
               "owner": 2,
               "position": {
                 "x": 368,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -2787,7 +2816,7 @@
               "owner": 2,
               "position": {
                 "x": 416,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -2797,7 +2826,7 @@
               "owner": 2,
               "position": {
                 "x": 464,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -2806,8 +2835,8 @@
               "actorName": "TivaraSlingshotFemale",
               "owner": 1,
               "position": {
-                "x": 672,
-                "y": 1040,
+                "x": 192,
+                "y": 1248,
                 "z": 0
               }
             },
@@ -2816,8 +2845,8 @@
               "actorName": "TivaraSlingshotFemale",
               "owner": 1,
               "position": {
-                "x": 720,
-                "y": 1040,
+                "x": 224,
+                "y": 1264,
                 "z": 0
               }
             },
@@ -2826,8 +2855,8 @@
               "actorName": "TivaraSlingshotFemale",
               "owner": 1,
               "position": {
-                "x": 768,
-                "y": 1040,
+                "x": 256,
+                "y": 1280,
                 "z": 0
               }
             },
@@ -2836,8 +2865,8 @@
               "actorName": "TivaraSlingshotFemale",
               "owner": 1,
               "position": {
-                "x": 672,
-                "y": 1088,
+                "x": 160,
+                "y": 1264,
                 "z": 0
               }
             },
@@ -2846,8 +2875,8 @@
               "actorName": "TivaraSlingshotFemale",
               "owner": 1,
               "position": {
-                "x": 720,
-                "y": 1088,
+                "x": 192,
+                "y": 1280,
                 "z": 0
               }
             },
@@ -2856,8 +2885,8 @@
               "actorName": "TivaraSlingshotFemale",
               "owner": 1,
               "position": {
-                "x": 768,
-                "y": 1088,
+                "x": 224,
+                "y": 1296,
                 "z": 0
               }
             },
@@ -2866,8 +2895,8 @@
               "actorName": "TivaraSlingshotFemale",
               "owner": 1,
               "position": {
-                "x": 672,
-                "y": 1136,
+                "x": 128,
+                "y": 1280,
                 "z": 0
               }
             },
@@ -2876,8 +2905,8 @@
               "actorName": "TivaraSlingshotFemale",
               "owner": 1,
               "position": {
-                "x": 720,
-                "y": 1136,
+                "x": 160,
+                "y": 1296,
                 "z": 0
               }
             },
@@ -2886,8 +2915,8 @@
               "actorName": "TivaraSlingshotFemale",
               "owner": 1,
               "position": {
-                "x": 768,
-                "y": 1136,
+                "x": 192,
+                "y": 1312,
                 "z": 0
               }
             }
@@ -2987,7 +3016,9 @@
             }
           ]
         },
-        "scenarioIds": ["PRO-03"],
+        "scenarioIds": [
+          "PRO-03"
+        ],
         "pairId": "skaduwee-future"
       },
       {
@@ -3009,7 +3040,7 @@
               "owner": 2,
               "position": {
                 "x": 800,
-                "y": 848,
+                "y": 976,
                 "z": 0
               }
             },
@@ -3119,7 +3150,7 @@
               "owner": 2,
               "position": {
                 "x": 320,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -3129,7 +3160,7 @@
               "owner": 2,
               "position": {
                 "x": 368,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -3160,7 +3191,7 @@
           "events": [
             {
               "id": "original-producer-loss",
-              "tick": 1200,
+              "tick": 800,
               "kind": "destroy_owned_actor",
               "owner": 2,
               "objectName": "InfantryInn",
@@ -3182,7 +3213,9 @@
             }
           ]
         },
-        "scenarioIds": ["PRO-06"],
+        "scenarioIds": [
+          "PRO-06"
+        ],
         "pairId": "skaduwee-recovery"
       },
       {
@@ -3314,7 +3347,7 @@
               "owner": 2,
               "position": {
                 "x": 320,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -3324,7 +3357,7 @@
               "owner": 2,
               "position": {
                 "x": 368,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -3360,7 +3393,9 @@
             }
           ]
         },
-        "scenarioIds": ["PRO-06"],
+        "scenarioIds": [
+          "PRO-06"
+        ],
         "pairId": "skaduwee-recovery"
       },
       {
@@ -3381,8 +3416,8 @@
               "actorName": "InfantryInn",
               "owner": 2,
               "position": {
-                "x": -544,
-                "y": 816,
+                "x": -512,
+                "y": 832,
                 "z": 0
               }
             },
@@ -3492,7 +3527,7 @@
               "owner": 2,
               "position": {
                 "x": 320,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -3502,7 +3537,7 @@
               "owner": 2,
               "position": {
                 "x": 368,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -3512,7 +3547,7 @@
               "owner": 2,
               "position": {
                 "x": 416,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -3522,7 +3557,7 @@
               "owner": 2,
               "position": {
                 "x": 464,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -3532,7 +3567,7 @@
               "owner": 2,
               "position": {
                 "x": 320,
-                "y": 864,
+                "y": 624,
                 "z": 0
               }
             },
@@ -3542,7 +3577,7 @@
               "owner": 2,
               "position": {
                 "x": 368,
-                "y": 864,
+                "y": 624,
                 "z": 0
               }
             },
@@ -3552,7 +3587,7 @@
               "owner": 2,
               "position": {
                 "x": 416,
-                "y": 864,
+                "y": 624,
                 "z": 0
               }
             },
@@ -3562,7 +3597,7 @@
               "owner": 2,
               "position": {
                 "x": 464,
-                "y": 864,
+                "y": 624,
                 "z": 0
               }
             },
@@ -3572,7 +3607,7 @@
               "owner": 2,
               "position": {
                 "x": 320,
-                "y": 928,
+                "y": 688,
                 "z": 0
               }
             },
@@ -3582,7 +3617,7 @@
               "owner": 2,
               "position": {
                 "x": 368,
-                "y": 928,
+                "y": 688,
                 "z": 0
               }
             },
@@ -3592,7 +3627,7 @@
               "owner": 2,
               "position": {
                 "x": 416,
-                "y": 928,
+                "y": 688,
                 "z": 0
               }
             },
@@ -3602,7 +3637,7 @@
               "owner": 2,
               "position": {
                 "x": 464,
-                "y": 928,
+                "y": 688,
                 "z": 0
               }
             },
@@ -3808,7 +3843,9 @@
             }
           ]
         },
-        "scenarioIds": ["PRO-06"],
+        "scenarioIds": [
+          "PRO-06"
+        ],
         "pairId": "skaduwee-demand"
       },
       {
@@ -3829,8 +3866,8 @@
               "actorName": "InfantryInn",
               "owner": 2,
               "position": {
-                "x": -160,
-                "y": 1008,
+                "x": -192,
+                "y": 992,
                 "z": 0
               }
             },
@@ -3940,7 +3977,7 @@
               "owner": 2,
               "position": {
                 "x": 320,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -3950,7 +3987,7 @@
               "owner": 2,
               "position": {
                 "x": 368,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -3960,7 +3997,7 @@
               "owner": 2,
               "position": {
                 "x": 416,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -3970,7 +4007,7 @@
               "owner": 2,
               "position": {
                 "x": 464,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -3980,7 +4017,7 @@
               "owner": 2,
               "position": {
                 "x": 320,
-                "y": 864,
+                "y": 624,
                 "z": 0
               }
             },
@@ -3990,7 +4027,7 @@
               "owner": 2,
               "position": {
                 "x": 368,
-                "y": 864,
+                "y": 624,
                 "z": 0
               }
             },
@@ -4000,7 +4037,7 @@
               "owner": 2,
               "position": {
                 "x": 416,
-                "y": 864,
+                "y": 624,
                 "z": 0
               }
             },
@@ -4010,7 +4047,7 @@
               "owner": 2,
               "position": {
                 "x": 464,
-                "y": 864,
+                "y": 624,
                 "z": 0
               }
             },
@@ -4020,7 +4057,7 @@
               "owner": 2,
               "position": {
                 "x": 320,
-                "y": 928,
+                "y": 688,
                 "z": 0
               }
             },
@@ -4030,7 +4067,7 @@
               "owner": 2,
               "position": {
                 "x": 368,
-                "y": 928,
+                "y": 688,
                 "z": 0
               }
             },
@@ -4040,7 +4077,7 @@
               "owner": 2,
               "position": {
                 "x": 416,
-                "y": 928,
+                "y": 688,
                 "z": 0
               }
             },
@@ -4050,7 +4087,7 @@
               "owner": 2,
               "position": {
                 "x": 464,
-                "y": 928,
+                "y": 688,
                 "z": 0
               }
             },
@@ -4256,7 +4293,9 @@
             }
           ]
         },
-        "scenarioIds": ["PRO-06"],
+        "scenarioIds": [
+          "PRO-06"
+        ],
         "pairId": "skaduwee-demand"
       },
       {
@@ -4388,7 +4427,7 @@
               "owner": 2,
               "position": {
                 "x": 320,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -4398,7 +4437,7 @@
               "owner": 2,
               "position": {
                 "x": 368,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -4408,7 +4447,7 @@
               "owner": 2,
               "position": {
                 "x": 416,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -4418,7 +4457,7 @@
               "owner": 2,
               "position": {
                 "x": 464,
-                "y": 800,
+                "y": 560,
                 "z": 0
               }
             },
@@ -4428,7 +4467,7 @@
               "owner": 2,
               "position": {
                 "x": 320,
-                "y": 864,
+                "y": 624,
                 "z": 0
               }
             },
@@ -4438,7 +4477,7 @@
               "owner": 2,
               "position": {
                 "x": 368,
-                "y": 864,
+                "y": 624,
                 "z": 0
               }
             },
@@ -4448,7 +4487,7 @@
               "owner": 2,
               "position": {
                 "x": 416,
-                "y": 864,
+                "y": 624,
                 "z": 0
               }
             },
@@ -4458,7 +4497,7 @@
               "owner": 2,
               "position": {
                 "x": 464,
-                "y": 864,
+                "y": 624,
                 "z": 0
               }
             }
@@ -4503,7 +4542,9 @@
             }
           ]
         },
-        "scenarioIds": ["PRO-07"]
+        "scenarioIds": [
+          "PRO-07"
+        ]
       },
       {
         "id": "skaduwee-cancel-pending-refund",
@@ -4688,7 +4729,9 @@
             }
           ]
         },
-        "scenarioIds": ["PRO-07"]
+        "scenarioIds": [
+          "PRO-07"
+        ]
       }
     ]
   },
@@ -4697,7 +4740,10 @@
       "maximumTick": 2000,
       "minimumDecisions": 10,
       "minimumAppliedCommands": 1,
-      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "requiredAiFactions": [
+        "Tivara",
+        "Skaduwee"
+      ],
       "requiredProductionContracts": {
         "tivara-future-committed": {
           "scenarioId": "PRO-03",
@@ -4745,7 +4791,10 @@
       "maximumTick": 2000,
       "minimumDecisions": 10,
       "minimumAppliedCommands": 1,
-      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "requiredAiFactions": [
+        "Tivara",
+        "Skaduwee"
+      ],
       "requiredProductionContracts": {
         "tivara-critical-exposed": {
           "scenarioId": "PRO-06",
@@ -4841,7 +4890,10 @@
       "maximumTick": 2000,
       "minimumDecisions": 10,
       "minimumAppliedCommands": 1,
-      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "requiredAiFactions": [
+        "Tivara",
+        "Skaduwee"
+      ],
       "requiredProductionContracts": {
         "tivara-shared-contention": {
           "scenarioId": "PRO-07",

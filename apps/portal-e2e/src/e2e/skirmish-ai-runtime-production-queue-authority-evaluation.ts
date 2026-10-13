@@ -69,11 +69,12 @@ export function evaluateRuntimeProductionQueueAuthority(
       unit.laneId !== research.laneId ||
       !useful.some((output) => output.completion.itemId === unit.itemId) ||
       !evidence.decisions.some((decision) =>
-        decision.result.acceptedIntents.some((intent) => intent.kind === "produce" && intent.effectId === unit.effectId)
+        decision.result.acceptedIntents.some((intent) => intent.kind === "produce" &&
+          intent.effectId.replace(/^effect:/, "") === unit.effectId)
       ) ||
       !evidence.decisions.some((decision) =>
         decision.result.acceptedIntents.some(
-          (intent) => intent.kind === "research" && intent.effectId === research.effectId
+          (intent) => intent.kind === "research" && intent.effectId.replace(/^effect:/, "") === research.effectId
         )
       )
     )

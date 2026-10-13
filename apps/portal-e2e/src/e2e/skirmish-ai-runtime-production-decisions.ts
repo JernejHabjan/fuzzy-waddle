@@ -1,4 +1,9 @@
-import type { AiRuntimeProductionCaptureV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+// prettier-ignore
+import { AI_RUNTIME_MAX_FACTS } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/append-ai-runtime-production-fact";
+// prettier-ignore
+import type { AiRuntimeProductionCaptureV1 } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
 import type { RuntimeProductionDecisionV1 } from "./skirmish-ai-runtime-production-decision";
 import { normalizeRuntimeProductionFairInput } from "./skirmish-ai-runtime-production-fair-input-normalization";
 import { validateRuntimeProductionFairGraph } from "./skirmish-ai-runtime-production-fair-graph";
@@ -10,7 +15,7 @@ export function normalizeRuntimeProductionDecisions(capture: AiRuntimeProduction
   const decisions: RuntimeProductionDecisionV1[] = [];
   let previous: RuntimeProductionDecisionV1 | undefined;
   const integer = (value: number) => Number.isSafeInteger(value) && value >= 0;
-  if (capture.facts.length > 8192 || capture.droppedFactCount) {
+  if (capture.facts.length > AI_RUNTIME_MAX_FACTS || capture.droppedFactCount) {
     return { decisions, failures: ["production_decision_capture_dropped"], gaps: [] };
   }
   const facts = capture.facts.filter((fact) => fact.kind === "decision_selected");

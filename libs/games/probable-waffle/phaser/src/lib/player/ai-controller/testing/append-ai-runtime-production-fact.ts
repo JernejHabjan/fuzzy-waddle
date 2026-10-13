@@ -1,7 +1,8 @@
 import type { AiRuntimeProductionFactV1 } from "./ai-runtime-production-fact-v1";
 import type { AiRuntimeProductionBoundaryState } from "./ai-runtime-production-boundary-state";
 
-export const AI_RUNTIME_MAX_FACTS = 8192;
+/** Bounded aggregate budget: concurrent queue clocks can exceed 8192 while each channel stays within its own cap. */
+export const AI_RUNTIME_MAX_FACTS = 12288;
 
 /** Single root budget for all channels. Loss precedes fallible diagnostics; sequence ownership remains with the capture. */
 export function appendAiRuntimeProductionFact(

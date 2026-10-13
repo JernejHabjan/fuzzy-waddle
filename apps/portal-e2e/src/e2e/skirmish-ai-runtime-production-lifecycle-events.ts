@@ -1,4 +1,7 @@
 // prettier-ignore
+import { AI_RUNTIME_MAX_FACTS } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/append-ai-runtime-production-fact";
+// prettier-ignore
 import type { AiRuntimeProductionCaptureV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
 import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
@@ -18,7 +21,7 @@ export function projectRuntimeProductionLifecycleEvents(
   const zero = { food: 0, wood: 0, stone: 0, minerals: 0 };
   if (
     capture.droppedFactCount ||
-    capture.facts.length > 8192 ||
+    capture.facts.length > AI_RUNTIME_MAX_FACTS ||
     [causal.enqueues ?? [], causal.operations, causal.queueMutations, causal.completions, causal.cancellations].some(
       (entries) => entries.length > 8192
     )

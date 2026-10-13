@@ -20,6 +20,7 @@ export function normalizeRuntimeProducerExposure(input: AiDecisionInputV1) {
     return { exposure: null, failures, gaps: [...gaps, "production_decision_building_exposure_missing"] };
   }
   const producers = observation.actors.filter((actor) => actor.relation === "self" && actor.visibility === "owned" &&
+    (actor.constructionProgress?.status !== "known" || actor.constructionProgress.value >= 100) &&
     (actor.queue.status === "known" || actor.capabilities.some((capability) => capability.family === "produce")));
   const threats = observation.actors.filter((actor) => actor.relation === "enemy" && actor.visibility === "visible");
   const current = input.cadence.clock === "simulation" && input.cadence.tick === observation.tick;
@@ -49,8 +50,7 @@ export function normalizeRuntimeProducerExposure(input: AiDecisionInputV1) {
     }
     const attack = pair.attackIndex === null ? undefined : attacks?.[pair.attackIndex];
     const maximumDamage = Math.max(...(attacks ?? []).map((value) => value.damage));
-    const firstBest = attacks?.findIndex((candidate) => candidate.damage === maximumDamage);
-    if (!attack || !Number.isSafeInteger(pair.attackIndex) || pair.attackIndex !== firstBest ||
+    if (!attack || !Number.isSafeInteger(pair.attackIndex) || attack.damage !== maximumDamage ||
       !attack.targetDomains.includes("ground") || producer.logicalPosition.status !== "known" ||
       threat.logicalPosition.status !== "known" ||
       ![pair.range, pair.positioningRange, pair.highGroundBonus, pair.attackerElevation, pair.targetElevation, pair.distanceTiles]

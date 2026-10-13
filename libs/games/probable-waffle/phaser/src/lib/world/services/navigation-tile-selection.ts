@@ -20,7 +20,9 @@ export class NavigationTileSelection {
     private readonly randomService: () => Pick<RandomService, "between">,
     private readonly actorIndex: () => Pick<ActorIndexSystem, "getAllIdActors">,
     private readonly findPathForTerrain: (
-      from: Vector2Simple, to: Vector2Simple, terrain: MovementTerrainType
+      from: Vector2Simple,
+      to: Vector2Simple,
+      terrain: MovementTerrainType
     ) => Promise<Vector2Simple[] | null>
   ) {}
 
@@ -97,7 +99,7 @@ export class NavigationTileSelection {
   private validTilesInRadiusOfCurrentTile(
     currentTile: Vector2Simple,
     radiusTiles: number,
-    navigable: boolean = false,
+    navigable = false,
     terrainType: MovementTerrainType = MovementTerrainType.Ground
   ): Vector2Simple[] {
     if (terrainType === MovementTerrainType.Water) {
@@ -129,8 +131,9 @@ export class NavigationTileSelection {
   getClosestNavigableTileAroundBlockedTilesInRadius(
     fromTile: Vector2Simple,
     blockedTiles: Vector2Simple[],
-    radiusTiles: number = 6, // Default radius if not specified
-    terrainType: MovementTerrainType = MovementTerrainType.Ground
+    radiusTiles = 6, // Default radius if not specified
+    terrainType: MovementTerrainType = MovementTerrainType.Ground,
+    acceptTile?: (tile: Vector2Simple) => boolean
   ): Vector2Simple | undefined {
     const navigableTiles: Set<string> = new Set(); // Use Set to avoid duplicates
 
@@ -146,6 +149,7 @@ export class NavigationTileSelection {
           if (
             this.navigation.isWithinGridBounds(neighbor, terrainType) &&
             this.navigation.isTileNavigable(neighbor, terrainType) &&
+            (acceptTile?.(neighbor) ?? true) &&
             Math.abs(dx) + Math.abs(dy) <= radiusTiles // Use Manhattan distance
           ) {
             // Use a string representation to store the tile in the Set
@@ -221,7 +225,7 @@ export class NavigationTileSelection {
    */
   public async getClosestUnoccupiedTile(
     targetTile: Vector2Simple,
-    maxRadius: number = 10,
+    maxRadius = 10,
     terrainType: MovementTerrainType = MovementTerrainType.Ground
   ): Promise<Vector2Simple | undefined> {
     const occupiedTiles = this.getOccupiedTilesByActors();
@@ -297,7 +301,7 @@ export class NavigationTileSelection {
    */
   public getSpawnPointAroundGameObject(
     gameObject: GameObjects.GameObject,
-    maxRange: number = 10,
+    maxRange = 10,
     targetTile?: Vector2Simple
   ): Vector2Simple | undefined {
     // Compute footprint bounds

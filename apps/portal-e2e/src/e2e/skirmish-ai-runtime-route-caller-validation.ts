@@ -1,3 +1,4 @@
+import { RUNTIME_ROUTE_HISTORY_LIMIT } from "./skirmish-ai-runtime-route-history-budget";
 import { isDeepStrictEqual } from "node:util";
 import type { AiRuntimeProductionCaptureV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
@@ -57,5 +58,5 @@ export function validateRuntimeRouteCallers(capture: AiRuntimeProductionCaptureV
     identities.set(caller.invocationId, { actorId: path.source.actorId, canonical: path.source.canonicalObjectName,
       caller, sequence: fact.sequence, fenced });
   }
-  return { overflow: identities.size > 256, failures: [...new Set(failures)] };
+  return { overflow: identities.size > RUNTIME_ROUTE_HISTORY_LIMIT, failures: [...new Set(failures)] };
 }

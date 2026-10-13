@@ -19,12 +19,12 @@ export function unresolvedReservedEffectIds(
   const terminalEffectIds = new Set(
     state.pendingOutcomes
       .filter((outcome) => ["completed", "rejected", "cancelled", "failed"].includes(outcome.kind))
-      .map((outcome) => outcome.identity.effectId)
+      .map((outcome) => outcome.identity.effectId.replace(/^effect:/, ""))
   );
   return state.reservations
     .map((reservation) => reservation.subjectKey)
     .filter((subjectKey): subjectKey is string => subjectKey?.startsWith(subjectPrefix) === true)
     .map((subjectKey) => subjectKey.slice("effect:".length) as AiIntentV1["effectId"])
-    .filter((effectId) => !terminalEffectIds.has(effectId))
+    .filter((effectId) => !terminalEffectIds.has(effectId.replace(/^effect:/, "")))
     .sort();
 }

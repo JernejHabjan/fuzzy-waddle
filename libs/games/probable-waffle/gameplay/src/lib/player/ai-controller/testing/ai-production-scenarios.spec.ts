@@ -58,8 +58,8 @@ const scenarios: readonly AiProductionPureScenarioV1[] = [
       expect(transition).toMatchObject({
         status: "committed",
         committedTick: 200,
-        beginsTick: 350,
-        forceDeadlineTick: 750,
+        beginsTick: 390,
+        forceDeadlineTick: 790,
         desiredForce: 12,
         desiredProducers: 2
       });

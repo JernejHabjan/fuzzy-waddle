@@ -1,3 +1,4 @@
+import { preservesAiFriendlyRally } from "./ai-friendly-rally";
 import { aiDeadline, type AiPlanId } from "../contracts/ai-core-types";
 import type { AiBrainStateV1, AiStrategyStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiCommandOutcomeV1 } from "../contracts/ai-command-contracts";
@@ -149,6 +150,18 @@ export function planAiDecisions(
       });
     }
   }
+  const proposals = sortedBatches
+    .flatMap((batch) => batch.intents)
+    .filter((intent) => {
+      if (!preservesAiFriendlyRally(observation, intent)) return true;
+      preDecisions.push({
+        outcome: "rejected",
+        intent,
+        reason: "precondition_failed",
+        detail: "friendly_rally_in_progress"
+      });
+      return false;
+    });
   return {
     state: {
       ...previous,
@@ -170,7 +183,7 @@ export function planAiDecisions(
       lanes,
       scheduler: { ...previous.scheduler, decisionSequence: previous.scheduler.decisionSequence + 1 }
     },
-    proposals: sortedBatches.flatMap((batch) => batch.intents),
+    proposals,
     preDecisions
   };
 }

@@ -1,4 +1,7 @@
 // prettier-ignore
+import type { AiRuntimePresetApplicationV1 } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application-v1";
+// prettier-ignore
 import type { AiRuntimePresetQueueApplicationV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-queue-application-v1";
 import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
@@ -11,6 +14,8 @@ import type { AiRuntimeProductionCaptureV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
 
 export interface RuntimeVariantResultV1 {
+  /** Exact paused native application permits re-projecting raw world artifacts without inferred setup. */
+  readonly productionPreset?: AiRuntimePresetApplicationV1;
   /** Absent until a real runtime adapter has retained ordered production/resource authority facts. */
   readonly productionEvidence?: RuntimeProductionEvidenceV1;
   /** Full authority channels keep setup, selected clocks and closed physical history separate from legacy diagnostics. */

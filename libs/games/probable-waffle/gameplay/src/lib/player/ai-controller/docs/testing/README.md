@@ -118,6 +118,29 @@ special diagnostic worlds with owned creatures remain possible. It proves roster
 history. Strict recipes name concrete actor variants; the browser verifies every created fixture ID, unique native ID,
 created-name multiplicity and owned starting copies. A preset declaration alone cannot satisfy these checks.
 
+`production-authority-runtime.json` groups sixteen physical branches on this map. Its 10× simulation rate keeps the
+asynchronous decision loop closer to queue progress; tick deadlines and authority/usefulness assertions stay active.
+Check the actual in-bounds world and inherited building footprints when relocating authored armies or objectives.
+Physical-world artifacts use `productionWorldStorage: 1`: raw capture, ordinary result metadata and the actual paused
+`productionPreset` are retained once. `decodeRuntimeProductionWorld` reconstructs pure joined views from that data;
+use the matching source and record the projection revision. Legacy inline views remain supported. Missing capture,
+missing required native setup or foreign storage versions fail closed. Expanded joined views are deliberately omitted
+from disk because duplicating their shared facts can exceed V8's single-string limit; no native evidence is discarded.
+An opt-in production capture has one 12,288-fact aggregate budget. Independent query/order/service identities and
+channel budgets retain their 8,192 limits. Root sequence readers use the aggregate cap, and any overflow still refuses
+certification. Increasing this test-only bound installs no observer or history in ordinary games.
+
+Consumed combat profiles canonicalize weapon arrays. Exposure capture matches the complete native/consumed weapon
+multiset and records the consumed index of the actual native selection, preserving equal-damage native tie choice.
+Unavailable visibility, current identity, position, selected weapon or closed binding remains unavailable.
+Destroyed target objects retain only their last actually indexed identity in a weak test-capture cache; their current
+active/alive/indexed flags are false. Unknown objects never receive invented identity or historical survival credit.
+
+Useful output joins actual purchase/completion, legal spawn, the exact unstamped native rally order, path execution,
+original-destination arrival and closed survival. That full join can supply the legacy output labels saying rally
+command identity or arrival was missing. Other gaps still refuse usefulness; an absent movement or contradictory spawn
+never receives success merely because the legacy labels are recognized.
+
 `production-economy-runtime.json` retains standalone, economically constrained worlds on the frozen economy map for
 funding/throughput diagnosis. Its full PRO-03/06/07 oracles remain active. These legal starts do not substitute for the
 required transition/abandonment, exposed/safe/low-value/no-demand or shared-queue/pending-refund causal branches.

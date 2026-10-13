@@ -13,6 +13,7 @@ import { NavigationService } from "../../../world/services/navigation.service";
 import { getSceneComponent, getSceneService } from "../../../world/services/scene-component-helpers";
 import { TilemapComponent } from "../../../world/tilemap/tilemap.component";
 import { knownValue, unknownValue } from "./ai-observation-values";
+import { observedConstructionOccupancy } from "./observed-construction-occupancy";
 
 type GameObject = Phaser.GameObjects.GameObject;
 
@@ -107,6 +108,7 @@ export function projectAiObservationMap(
   const anchors = [...mainAnchors.map((position) => ({ position, radius: 12 })), ...serviceAnchors];
   const included = new Set<string>();
   if (tilemap && navigation) {
+    const occupied = observedConstructionOccupancy(tilemap, actors, liveById);
     anchorCells: for (const anchor of anchors) {
       for (
         let y = Math.max(0, anchor.position.y - anchor.radius);
@@ -123,11 +125,13 @@ export function projectAiObservationMap(
           if (included.has(tileKey)) continue;
           included.add(tileKey);
           const observedNavigable = permittedTopology.navigableTileKeys.has(tileKey);
-          const observedBlocked = permittedTopology.blockedTileKeys.has(tileKey);
+          const terrainBlocked = permittedTopology.blockedTileKeys.has(tileKey);
+          // Placement rejects every current fair body; travel retains the native terrain passability.
+          const observedBlocked = terrainBlocked || occupied.has(tileKey);
           constructionCells.push({
             tileKey,
             position: { x, y, z: 0 },
-            groundPassable: !observedBlocked && navigation.isTileGridWithoutBlockingObjectsNavigable({ x, y }),
+            groundPassable: !terrainBlocked && navigation.isTileGridWithoutBlockingObjectsNavigable({ x, y }),
             waterPassable: navigation.isTileNavigable({ x, y }, MovementTerrainType.Water),
             elevation: observedNavigable ? (navigation.getNavigableHeightAtTile({ x, y }) ?? 0) : 0,
             observedBlocked

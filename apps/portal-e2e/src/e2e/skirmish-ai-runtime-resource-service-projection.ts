@@ -1,4 +1,9 @@
-import type { AiRuntimeProductionCaptureV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+// prettier-ignore
+import { AI_RUNTIME_MAX_FACTS } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/append-ai-runtime-production-fact";
+// prettier-ignore
+import type { AiRuntimeProductionCaptureV1 } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
 import type { RuntimeResourceCreditV1 } from "./skirmish-ai-runtime-resource-credit";
 import type { RuntimeResourceNeedV1 } from "./skirmish-ai-runtime-resource-need";
 import type { RuntimeResourceServiceIntervalV1 } from "./skirmish-ai-runtime-resource-service-interval";
@@ -51,7 +56,7 @@ export function projectRuntimeResourceServices(
       transfers.add(value.transferId);
     }
   }
-  if (capture.facts.length > 8192 || capture.snapshots.length > 256 || credits.length > 256) {
+  if (capture.facts.length > AI_RUNTIME_MAX_FACTS || capture.snapshots.length > 256 || credits.length > 256) {
     failures.push("production_resource_interval_capture_overflow");
   }
   for (const interval of [...declaration.declarations].sort(

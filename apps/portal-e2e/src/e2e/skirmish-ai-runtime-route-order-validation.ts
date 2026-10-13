@@ -1,3 +1,6 @@
+// prettier-ignore
+import { AI_RUNTIME_MAX_FACTS } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/append-ai-runtime-production-fact";
 import { isDeepStrictEqual } from "node:util";
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiRuntimeProductionCaptureV1 } from
@@ -27,7 +30,8 @@ export function validateRuntimeRouteOrders(capture: AiRuntimeProductionCaptureV1
       .includes(value.kind) ||
       !("source" in value)) continue;
     if (fact.playerNumber !== capture.playerNumber || !integer(fact.tick) || fact.tick < capture.startedTick ||
-      !id(fact.sequence) || value.clockTick !== null && value.clockTick !== fact.tick ||
+      !integer(fact.sequence) || fact.sequence < 1 || fact.sequence > AI_RUNTIME_MAX_FACTS ||
+      value.clockTick !== null && value.clockTick !== fact.tick ||
       typeof value.sceneActive !== "boolean" || typeof value.snapshotRestoreInProgress !== "boolean" ||
       !actor(value.source) || value.source.playerNumber !== capture.playerNumber) failures.push("production_route_order_boundary_invalid");
     if (value.kind === "route_rally_order") {

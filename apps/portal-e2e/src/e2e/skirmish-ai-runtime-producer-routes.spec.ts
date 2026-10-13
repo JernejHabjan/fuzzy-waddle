@@ -1,6 +1,9 @@
+import { RUNTIME_ROUTE_HISTORY_LIMIT } from "./skirmish-ai-runtime-route-history-budget";
 import { ConstructionStateEnum } from "@fuzzy-waddle/probable-waffle-protocol";
 import { expect, test } from "@playwright/test";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+// prettier-ignore
+import type { AiRuntimeProductionFactV1 } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
 import { productionSpatialFixture } from "./skirmish-ai-runtime-production-spatial-fixture";
 import { producerRouteFixture } from "./skirmish-ai-runtime-producer-route-fixture";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
@@ -195,7 +198,7 @@ test("whole-group overflow drops all route entries and still inspects the contra
   const base = f.capture.facts.filter(
     (fact) => fact.kind !== "spatial_authority" || fact.spatial.kind !== "producer_path"
   );
-  const more = Array.from({ length: 257 }, (_, index) => [
+  const more = Array.from({ length: RUNTIME_ROUTE_HISTORY_LIMIT + 1 }, (_, index) => [
     f.fact({ ...f.requested, queryId: index + 1 }),
     f.fact({ ...f.resolved, queryId: index + 1 })
   ]).flat();
@@ -204,7 +207,7 @@ test("whole-group overflow drops all route entries and still inspects the contra
   expect(result.failures).toEqual([]);
   expect(result.producerRoutes).toEqual({ outputs: [], paths: [] });
   expect(result.gaps).toContain("production_route_group_overflow");
-  const tail = f.fact({ ...f.resolved, queryId: 257, targetTile: { x: 99, y: 99 } });
+  const tail = f.fact({ ...f.resolved, queryId: RUNTIME_ROUTE_HISTORY_LIMIT + 1, targetTile: { x: 99, y: 99 } });
   const corrupt = { ...capture, facts: [...capture.facts.slice(0, -1), { ...tail, sequence: capture.facts.length }] };
   expect(normalizeRuntimeProductionCausality(corrupt).failures).toContain("production_route_query_interval_invalid");
 });

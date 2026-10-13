@@ -3,7 +3,11 @@ import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/platform-game-s
 import type { PathMoveConfig } from "@fuzzy-waddle/probable-waffle-gameplay/entity/systems/path-move-config";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { getActorComponent } from "../../data/actor-component";
-import { getGameObjectCurrentTile, isGameObjectActiveInActiveScene, isSceneActive } from "../../data/game-object-helper";
+import {
+  getGameObjectCurrentTile,
+  isGameObjectActiveInActiveScene,
+  isSceneActive
+} from "../../data/game-object-helper";
 import { ActorTranslateComponent } from "../components/movement/actor-translate-component";
 import { HealthComponent } from "../components/combat/components/health-component";
 import { RepresentableComponent } from "../components/representable-component";
@@ -25,7 +29,10 @@ export class MovementTween {
   // authoritative simulation tick to unlock the following step.
   private _cancelCurrentMovement?: () => void;
 
-  constructor(private readonly runtime: MovementRuntime, private readonly presentation: MovementPresentation) {}
+  constructor(
+    private readonly runtime: MovementRuntime,
+    private readonly presentation: MovementPresentation
+  ) {}
 
   /**
    * Common movement handler for moving an actor to a specific tile using tweens.
@@ -47,6 +54,8 @@ export class MovementTween {
     if (!isGameObjectActiveInActiveScene(this.runtime.gameObject)) {
       return Promise.reject("Scene is not active");
     }
+    // Resolve dependencies before reserving a step, so unavailable wiring cannot leave a reservation behind.
+    this.runtime.ensureReady();
     const tileWorldXY = this.runtime.navigationService?.getTileWorldCenter(tile);
     if (!tileWorldXY) return Promise.reject("No tile world xy to move to");
 
@@ -162,12 +171,14 @@ export class MovementTween {
     config: PathMoveConfig | Partial<PathMoveConfig> | undefined,
     onComplete?: (() => void) | (() => Promise<void>),
     onStop?: () => void,
-    tileDistanceMultiplier: number = 1
+    tileDistanceMultiplier = 1
   ): Promise<void> {
     const scene = this.runtime.gameObject.scene;
     if (!isGameObjectActiveInActiveScene(this.runtime.gameObject) || !scene) {
       return Promise.reject("Game object scene is unavailable");
     }
+
+    this.runtime.ensureReady();
 
     const actorTranslateComponent = getActorComponent(this.runtime.gameObject, ActorTranslateComponent);
     const throttledTweenUpdate = config?.onUpdateThrottled
@@ -212,11 +223,15 @@ export class MovementTween {
         logicalTransform.x = newLogicalTransform.x;
         logicalTransform.y = newLogicalTransform.y;
         logicalTransform.z = newLogicalTransform.z;
-        this.tweenUpdate(logicalTransform);
-        if (onComplete) {
-          await onComplete();
+        try {
+          this.tweenUpdate(logicalTransform);
+          if (onComplete) await onComplete();
+          resolve();
+        } catch (error) {
+          // Recursive path recovery may fail after this step ends. Settle the owning move instead of leaving
+          // its Promise pending and leaking an unhandled rejection from the scene's UPDATE callback.
+          reject(error);
         }
-        resolve();
       };
 
       const cancelMovement = () => {
@@ -263,8 +278,9 @@ export class MovementTween {
   }
 
   private getStandardStepDistance(): number {
-    const tileWidth = this.runtime.tileMapComponent.tilemap.tileWidth;
-    const tileHeight = this.runtime.tileMapComponent.tilemap.tileHeight;
+    const tilemap = this.runtime.ensureReady().tilemap;
+    const tileWidth = tilemap.tileWidth;
+    const tileHeight = tilemap.tileHeight;
     return tileWidth && tileHeight ? Math.sqrt(Math.pow(tileWidth / 2, 2) + Math.pow(tileHeight / 2, 2)) : 0;
   }
 
@@ -273,7 +289,7 @@ export class MovementTween {
     from: { x: number; y: number },
     to: { x: number; y: number },
     standardStepDistance: number,
-    tileDistanceMultiplier: number = 1
+    tileDistanceMultiplier = 1
   ): number {
     let duration: number;
     if (standardStepDistance > 0) {

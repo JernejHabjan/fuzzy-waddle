@@ -27,7 +27,7 @@ function fixture() {
   return { actor, target, state, callbacks, execution };
 }
 
-describe("native gatherer execution ownership (unrun until final gate)", () => {
+describe("native gatherer execution ownership", () => {
   it("initializes facade owners after constructor parameters and retains the native actor receiver", async () => {
     const actor = { once: jest.fn() } as unknown as Phaser.GameObjects.GameObject;
     const target = {} as Phaser.GameObjects.GameObject, extractResources = jest.fn(async () => 1);
@@ -64,6 +64,24 @@ describe("native gatherer execution ownership (unrun until final gate)", () => {
     f.state.carriedResourceAmount = 3;
     if (!resolve) throw new Error("return_not_started"); resolve(1);
     expect(await pending).toBe(1); expect(f.state.carriedResourceAmount).toBe(2);
+  });
+
+  it("does not credit and subtract one pile twice when another return starts during the drain wait", async () => {
+    const f = fixture(); let resolve: ((value: number) => void) | undefined;
+    const pending = new Promise<number>((settle) => { resolve = settle; });
+    const returnResources = jest.fn(() => pending);
+    jest.mocked(getActorComponent).mockReturnValue({ returnResources } as never);
+    const first = f.execution.returnResources(f.target);
+    const overlapping = f.execution.returnResources({} as Phaser.GameObjects.GameObject);
+    expect(returnResources).toHaveBeenCalledTimes(1);
+    expect(await overlapping).toBe(0);
+    if (!resolve) throw new Error("return_not_started"); resolve(1);
+    expect(await first).toBe(1); expect(f.state.carriedResourceAmount).toBe(0);
+    expect(f.callbacks.setCarriedResourceAmount).toHaveBeenCalledTimes(1);
+    f.state.carriedResourceType = ResourceType.Wood; f.state.carriedResourceAmount = 1;
+    returnResources.mockResolvedValue(1);
+    expect(await f.execution.returnResources(f.target)).toBe(1);
+    expect(returnResources).toHaveBeenCalledTimes(2);
   });
 
   it("preserves rejection without cargo callbacks and cooldown early return without extraction", async () => {

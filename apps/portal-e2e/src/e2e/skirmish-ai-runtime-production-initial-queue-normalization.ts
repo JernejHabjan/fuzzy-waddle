@@ -1,3 +1,6 @@
+// prettier-ignore
+import { AI_RUNTIME_MAX_FACTS } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/append-ai-runtime-production-fact";
 import { appendRuntimeInitialQueueApplication } from "./skirmish-ai-runtime-initial-queue-application";
 // prettier-ignore
 import type { AiRuntimeProductionCaptureV1 } from
@@ -16,7 +19,7 @@ export function normalizeRuntimeProductionInitialQueues(
   const failures: string[] = [];
   const gaps = new Set<string>();
   if (
-    capture.facts.length > 8192 ||
+    capture.facts.length > AI_RUNTIME_MAX_FACTS ||
     (setup && (setup.queueApplications.length > 2048 || setup.initialQueueItems.length > 2048))
   ) {
     return { items, failures: ["production_initial_queue_setup_overflow"], gaps: [] };

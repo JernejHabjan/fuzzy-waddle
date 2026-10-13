@@ -1,5 +1,6 @@
 import { createAiProductionPolicyFixture } from "../testing/ai-production-policy-fixture";
 import { proposeAiMilitaryCapacity } from "./ai-military-capacity-proposal";
+import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 it("prefers a genuinely idle builder over interrupting an active gather cycle for dated capacity", () => {
   const fixture = createAiProductionPolicyFixture();
@@ -11,7 +12,7 @@ it("prefers a genuinely idle builder over interrupting an active gather cycle fo
     activeOrder: {
       status: "known" as const,
       observedTick: fixture.observation.tick,
-      value: { orderType: "Gather", targetActorId: "deposit" }
+      value: { orderType: OrderType.Gather, targetActorId: "deposit" }
     }
   };
   const idle = {

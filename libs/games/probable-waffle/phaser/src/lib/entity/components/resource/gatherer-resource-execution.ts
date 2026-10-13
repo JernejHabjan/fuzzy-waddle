@@ -10,19 +10,30 @@ import type { GathererComponent } from "./gatherer-component";
 import type { ResourceCargoChange } from "./resource-cargo-change";
 import { ResourceServiceObservation } from "./resource-service-observation";
 import { observeResourceCredit } from "./observe-resource-credit";
-type GameObject = Phaser.GameObjects.GameObject;
 
 /** Runs native gathering/drop-off with the facade's state and original callback/await ordering. */
 export class GathererResourceExecution {
   private static readonly debug = false;
-  constructor(private readonly gameObject: GameObject, private readonly gatherer: GathererComponent,
-    private readonly gatherData: (source: GameObject) => GatherData | null,
-    private readonly callbacks: { setCarriedResourceAmount: (amount: number, change?: ResourceCargoChange) => void;
+  private returnInFlight = false;
+  constructor(
+    private readonly gameObject: Phaser.GameObjects.GameObject,
+    private readonly gatherer: GathererComponent,
+    private readonly gatherData: (source: Phaser.GameObjects.GameObject) => GatherData | null,
+    private readonly callbacks: {
+      setCarriedResourceAmount: (amount: number, change?: ResourceCargoChange) => void;
       playGatherSound: () => void;
-      playGatherAnimation: () => void; leaveCurrentResourceSource: () => void }) {}
-  async gatherResources(resourceSource: GameObject, execution?: object): Promise<number> {
-    ResourceServiceObservation.begin(this.gameObject, this.gatherer, resourceSource,
-      () => ({ amount: this.gatherer.carriedResourceAmount, resourceType: this.gatherer.carriedResourceType }), execution);
+      playGatherAnimation: () => void;
+      leaveCurrentResourceSource: () => void;
+    }
+  ) {}
+  async gatherResources(resourceSource: Phaser.GameObjects.GameObject, execution?: object): Promise<number> {
+    ResourceServiceObservation.begin(
+      this.gameObject,
+      this.gatherer,
+      resourceSource,
+      () => ({ amount: this.gatherer.carriedResourceAmount, resourceType: this.gatherer.carriedResourceType }),
+      execution
+    );
     if (this.gatherer.remainingCooldown > 0) return 0;
     if (!this.gatherer.carriedResourceType) {
       // Gatherer is not carrying any resources
@@ -54,11 +65,17 @@ export class GathererResourceExecution {
       // actor died while gathering
       return 0;
     }
-    this.callbacks.setCarriedResourceAmount(this.gatherer.carriedResourceAmount + gatheredAmount,
-      { reason: "added", execution, target: resourceSource, resourceType: gatherData.resourceType, delta: gatheredAmount });
+    this.callbacks.setCarriedResourceAmount(this.gatherer.carriedResourceAmount + gatheredAmount, {
+      reason: "added",
+      execution,
+      target: resourceSource,
+      resourceType: gatherData.resourceType,
+      delta: gatheredAmount
+    });
 
     this.callbacks.playGatherSound();
-    if (this.gatherer.actorTranslateComponent) this.gatherer.actorTranslateComponent.turnTowardsGameObject(resourceSource);
+    if (this.gatherer.actorTranslateComponent)
+      this.gatherer.actorTranslateComponent.turnTowardsGameObject(resourceSource);
     this.callbacks.playGatherAnimation();
 
     // start cooldown timer
@@ -82,7 +99,10 @@ export class GathererResourceExecution {
       }
     } else {
       // check if we're at capacity or the resource source is empty
-      if (this.gatherer.carriedResourceAmount >= gatherData.capacity || resourceSourceComponent.getCurrentResources() === 0) {
+      if (
+        this.gatherer.carriedResourceAmount >= gatherData.capacity ||
+        resourceSourceComponent.getCurrentResources() === 0
+      ) {
         // return immediately
         const owner = getActorComponent(resourceSource, OwnerComponent)?.getOwner();
         if (!owner) throw new Error("Owner not found");
@@ -92,14 +112,36 @@ export class GathererResourceExecution {
 
           const carriedAmount = this.gatherer.carriedResourceAmount;
           if (carriedAmount > 0) {
-            const context = ResourceServiceObservation.offer(this.gameObject, this.gatherer, resourceSource,
-              () => ({ amount: carriedAmount, resourceType: carriedResourceType }), execution);
+            const context = ResourceServiceObservation.offer(
+              this.gameObject,
+              this.gatherer,
+              resourceSource,
+              () => ({ amount: carriedAmount, resourceType: carriedResourceType }),
+              execution
+            );
             const amounts = { [carriedResourceType]: carriedAmount };
-            observeResourceCredit({ actor: this.gameObject, target: resourceSource, context, resourceType: carriedResourceType,
-              amount: carriedAmount, channel: "immediate", ownerArgument: owner }, this.gameObject.scene, amounts,
-              () => emitResource(this.gameObject.scene, "resource.added", amounts, owner));
-            this.callbacks.setCarriedResourceAmount(0, { reason: "removed", execution, transfer: context?.transfer,
-              target: resourceSource, resourceType: carriedResourceType, delta: carriedAmount });
+            observeResourceCredit(
+              {
+                actor: this.gameObject,
+                target: resourceSource,
+                context,
+                resourceType: carriedResourceType,
+                amount: carriedAmount,
+                channel: "immediate",
+                ownerArgument: owner
+              },
+              this.gameObject.scene,
+              amounts,
+              () => emitResource(this.gameObject.scene, "resource.added", amounts, owner)
+            );
+            this.callbacks.setCarriedResourceAmount(0, {
+              reason: "removed",
+              execution,
+              transfer: context?.transfer,
+              target: resourceSource,
+              resourceType: carriedResourceType,
+              delta: carriedAmount
+            });
 
             if (GathererResourceExecution.debug) {
               console.log(`Returned ${carriedAmount} ${carriedResourceType} to ${this.gameObject.name}`);
@@ -115,31 +157,68 @@ export class GathererResourceExecution {
     return gatheredAmount;
   }
 
-  async returnResources(resourceDrain: GameObject, execution?: object): Promise<number> {
-    ResourceServiceObservation.begin(this.gameObject, this.gatherer, resourceDrain,
-      () => ({ amount: this.gatherer.carriedResourceAmount, resourceType: this.gatherer.carriedResourceType }), execution);
-    if (!this.gatherer.carriedResourceType) {
-      // Gatherer is not carrying any resources
+  async returnResources(resourceDrain: Phaser.GameObjects.GameObject, execution?: object): Promise<number> {
+    // A cancelled/replaced pawn order can start another return while this drain still awaits its cooldown.
+    // Keep one transfer per carrier so the same offered pile cannot be credited and debited twice.
+    if (this.returnInFlight) {
+      ResourceServiceObservation.begin(
+        this.gameObject,
+        this.gatherer,
+        resourceDrain,
+        () => ({ amount: this.gatherer.carriedResourceAmount, resourceType: this.gatherer.carriedResourceType }),
+        execution
+      );
       return 0;
     }
-    // return resources
-    const resourceDrainComponent = getActorComponent(resourceDrain, ResourceDrainComponent);
-    if (!resourceDrainComponent) return 0;
-    const context = ResourceServiceObservation.offer(this.gameObject, this.gatherer, resourceDrain,
-      () => ({ amount: this.gatherer.carriedResourceAmount, resourceType: this.gatherer.carriedResourceType }), execution);
-    const returnedResources = await (context ? resourceDrainComponent.returnResources(this.gameObject,
-      this.gatherer.carriedResourceType, this.gatherer.carriedResourceAmount, context) :
-      resourceDrainComponent.returnResources(this.gameObject, this.gatherer.carriedResourceType, this.gatherer.carriedResourceAmount));
-    this.callbacks.setCarriedResourceAmount(this.gatherer.carriedResourceAmount - returnedResources,
-      { reason: "removed", execution, transfer: context?.transfer, target: resourceDrain,
-        resourceType: this.gatherer.carriedResourceType, delta: returnedResources });
+    this.returnInFlight = true;
+    try {
+      const resourceType = this.gatherer.carriedResourceType;
+      ResourceServiceObservation.begin(
+        this.gameObject,
+        this.gatherer,
+        resourceDrain,
+        () => ({ amount: this.gatherer.carriedResourceAmount, resourceType: resourceType }),
+        execution
+      );
+      if (!resourceType) {
+        // Gatherer is not carrying any resources
+        return 0;
+      }
+      // return resources
+      const resourceDrainComponent = getActorComponent(resourceDrain, ResourceDrainComponent);
+      if (!resourceDrainComponent) return 0;
+      const context = ResourceServiceObservation.offer(
+        this.gameObject,
+        this.gatherer,
+        resourceDrain,
+        () => ({ amount: this.gatherer.carriedResourceAmount, resourceType: resourceType }),
+        execution
+      );
+      const returnedResources = await (context
+        ? resourceDrainComponent.returnResources(
+            this.gameObject,
+            resourceType,
+            this.gatherer.carriedResourceAmount,
+            context
+          )
+        : resourceDrainComponent.returnResources(this.gameObject, resourceType, this.gatherer.carriedResourceAmount));
+      this.callbacks.setCarriedResourceAmount(this.gatherer.carriedResourceAmount - returnedResources, {
+        reason: "removed",
+        execution,
+        transfer: context?.transfer,
+        target: resourceDrain,
+        resourceType: resourceType,
+        delta: returnedResources
+      });
 
-    if (GathererResourceExecution.debug) {
-      console.log(`Returned ${returnedResources} ${this.gatherer.carriedResourceType} to ${resourceDrain.name}`);
+      if (GathererResourceExecution.debug) {
+        console.log(`Returned ${returnedResources} ${resourceType} to ${resourceDrain.name}`);
+      }
+      // notify listeners
+      this.gatherer.onResourcesReturned.next([this.gameObject, resourceType, returnedResources]);
+      return returnedResources;
+    } finally {
+      this.returnInFlight = false;
     }
-    // notify listeners
-    this.gatherer.onResourcesReturned.next([this.gameObject, this.gatherer.carriedResourceType, returnedResources]);
-    return returnedResources;
   }
-
 }

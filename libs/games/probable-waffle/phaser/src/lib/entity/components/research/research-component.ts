@@ -25,6 +25,7 @@ import {
 import Phaser from "phaser";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { upgradeActorToLevel } from "../../../data/actor-level-utils";
+import { ConstructionSiteComponent } from "../construction/construction-site-component";
 
 import type { ResearchDefinition } from "./research-definition";
 export type { ResearchDefinition } from "./research-definition";
@@ -94,6 +95,12 @@ export class ResearchComponent {
    * {@link startResearch} can safely reuse the same eligibility rule.
    */
   canStartResearch(type: ResearchType): { canStart: boolean; reason?: string } {
+    if (getActorComponent(this.gameObject, ConstructionSiteComponent)?.isFinished === false) {
+      return { canStart: false, reason: "Building not finished" };
+    }
+    if (!getActorComponent(this.gameObject, QueueComponent)?.findQueueForNewItem()) {
+      return { canStart: false, reason: "No available queue" };
+    }
     if (!this.availableResearch.includes(type)) {
       return { canStart: false, reason: "Research not available at this building" };
     }
@@ -166,6 +173,9 @@ export class ResearchComponent {
       return false;
     }
 
+    const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
+    if (!sharedQueue?.findQueueForNewItem()) return false;
+
     const unifiedItem: UnifiedQueueItem = {
       type: QueueItemType.Research,
       researchData: type,
@@ -184,12 +194,6 @@ export class ResearchComponent {
     });
 
     // Delegate to SharedQueueComponent
-    const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
-    if (!sharedQueue) {
-      console.error("SharedQueueComponent not found");
-      return false;
-    }
-
     sharedQueue.addItem(unifiedItem);
 
     this.researchStarted.emit(type);

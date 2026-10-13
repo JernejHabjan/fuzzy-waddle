@@ -1,3 +1,4 @@
+import { AI_RUNTIME_MAX_FACTS } from "./append-ai-runtime-production-fact";
 import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import { ResourceType, type GameCommandOutcome } from "@fuzzy-waddle/probable-waffle-protocol";
 import Phaser from "phaser";
@@ -187,9 +188,10 @@ describe("AiRuntimeProductionCapture decision boundaries", () => {
     fixture.changes.next({ property: "resource.added", data: { playerNumber: 2, playerStateData: { resources: {} } } });
     const cash = requireAiTestEntry(fixture.capture.capture(2).facts, 0);
     expect(cash.kind === "resources_applied" && cash.balanceMatches).toBe(false);
-    for (let index = 0; index < 8193; index += 1) fixture.outcomes.next(outcome("dispatched", `request:${index}`));
+    for (let index = 0; index < AI_RUNTIME_MAX_FACTS + 1; index += 1)
+      fixture.outcomes.next(outcome("dispatched", `request:${index}`));
     const bounded = fixture.capture.capture(2);
-    expect(bounded.facts).toHaveLength(8192);
+    expect(bounded.facts).toHaveLength(AI_RUNTIME_MAX_FACTS);
     expect(bounded.droppedFactCount).toBe(2);
     for (let index = 0; index < 256; index += 1) fixture.capture.capture(2);
     expect(fixture.capture.capture(2).droppedSnapshotCount).toBeGreaterThan(0);

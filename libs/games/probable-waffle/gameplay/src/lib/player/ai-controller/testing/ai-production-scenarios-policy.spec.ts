@@ -22,8 +22,8 @@ describe.each([FactionType.Tivara, FactionType.Skaduwee])("production policy %s"
       const first = brain.step(observation, state, []);
       const transition = first.nextState.economyProduction.transition;
       expect(state.economyProduction.transition).toBeUndefined();
-      expect(transition).toMatchObject({ status: "committed", committedTick: 200, beginsTick: 350,
-        forceDeadlineTick: 750, desiredForce: 12, desiredProducers: 2 });
+      expect(transition).toMatchObject({ status: "committed", committedTick: 200, beginsTick: 390,
+        forceDeadlineTick: 790, desiredForce: 12, desiredProducers: 2 });
       if (!transition) throw new Error("expected_transition");
       expect(first.acceptedIntents.filter((intent) => intent.kind === "construct")).toHaveLength(1);
       expect(first.acceptedIntents.some((intent) => intent.kind === "produce")).toBe(false);
@@ -34,8 +34,8 @@ describe.each([FactionType.Tivara, FactionType.Skaduwee])("production policy %s"
       const next = brain.step({ ...observation, tick: 220, actors: [...observation.actors, site] }, first.nextState, []);
       expect(next.nextState.economyProduction.transition).toEqual(transition);
       expect(next.acceptedIntents.some((intent) => intent.kind === "construct")).toBe(false);
-      const ready = { ...site, constructionProgress: { status: "known" as const, value: 100, observedTick: 350 } };
-      const start = brain.step({ ...observation, tick: 350, actors: [...observation.actors, ready] }, next.nextState, []);
+      const ready = { ...site, constructionProgress: { status: "known" as const, value: 100, observedTick: 390 } };
+      const start = brain.step({ ...observation, tick: 390, actors: [...observation.actors, ready] }, next.nextState, []);
       const units = start.acceptedIntents.filter((intent) => intent.kind === "produce");
       expect(units).toHaveLength(2);
       expect(units.every((intent) => intent.planId === transition?.planId &&
@@ -127,8 +127,8 @@ describe.each([FactionType.Tivara, FactionType.Skaduwee])("production policy %s"
     const manager = new AiMacroManager(() => catalog);
     const committed = projectAiManagerState(state, [manager.propose(observation, state)]);
     const late = manager.propose({ ...observation, tick: 800 }, committed);
-    expect(late.statePatch?.economyProduction?.transition).toMatchObject({ status: "expired", beginsTick: 350,
-      forceDeadlineTick: 750, reason: "force_deadline" });
+    expect(late.statePatch?.economyProduction?.transition).toMatchObject({ status: "expired", beginsTick: 390,
+      forceDeadlineTick: 790, reason: "force_deadline" });
     const later = manager.propose({ ...observation, tick: 1000 }, projectAiManagerState(committed, [late]));
     expect(later.statePatch?.economyProduction?.transition).toEqual(late.statePatch?.economyProduction?.transition);
     expect(later.intents.some((intent) => intent.kind === "construct" || intent.kind === "produce")).toBe(false);

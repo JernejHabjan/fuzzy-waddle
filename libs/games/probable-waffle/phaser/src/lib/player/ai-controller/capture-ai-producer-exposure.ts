@@ -59,27 +59,16 @@ export function captureAiProducerExposure(
     const component = current && attacker ? getActorComponent(attacker, AttackComponent) : undefined;
     const attacks = component?.getAttacks();
     const observed = threat.combatProfile?.status === "known" ? threat.combatProfile.value.attacks : null;
+    const matched = new Set<number>();
     const sameWeapons =
       attacks &&
       observed &&
       attacks.length === observed.length &&
-      attacks.every((weapon, i) => {
-        const value = observed[i];
-        return (
-          !!value &&
-          weapon.damage === value.damage &&
-          weapon.range === value.range &&
-          weapon.minRange === value.minRange &&
-          (weapon.highGroundRangeBonus ?? 0) === value.highGroundRangeBonus &&
-          millisecondsToSimulationTicks(weapon.cooldown) === value.cooldownTicks &&
-          millisecondsToSimulationTicks(weapon.delays.hit) === value.impactDelayTicks &&
-          (weapon.meleeAoe?.range ?? 0) === value.areaRadius &&
-          value.targetDomains.length === (weapon.canTargetAir ? 3 : 2) &&
-          new Set(value.targetDomains).size === value.targetDomains.length &&
-          (weapon.canTargetAir ? ["ground", "water", "air"] : ["ground", "water"]).every((domain) =>
-            value.targetDomains.some((observedDomain) => observedDomain === domain)
-          )
-        );
+      attacks.every((weapon) => {
+        const index = observed.findIndex((candidate, index) => !matched.has(index) && matchesWeapon(weapon, candidate));
+        if (index < 0) return false;
+        matched.add(index);
+        return true;
       });
     for (const producer of producers) {
       const row = {
@@ -126,7 +115,7 @@ export function captureAiProducerExposure(
         } else pairs.push({ ...row, status: "no_attack" });
         continue;
       }
-      const attackIndex = attacks.indexOf(selected);
+      const attackIndex = observed?.findIndex((value) => matchesWeapon(selected, value)) ?? -1;
       const bonus = getHighGroundRangeBonus(attacker, target, selected);
       const distance = DistanceHelper.getTileDistanceBetweenGameObjects(attacker, target);
       if (attackIndex < 0 || distance === null) {
@@ -174,4 +163,25 @@ function matchesConsumedActor(
   const world = getGameObjectLogicalTransform(live);
   const position = observed.logicalPosition.value;
   return !!tile && !!world && tile.x === position.x && tile.y === position.y && world.z === position.z;
+}
+
+/** Weapon arrays have set semantics at the consumed canonical boundary; the chosen profile retains its exact values. */
+function matchesWeapon(
+  weapon: ReturnType<AttackComponent["getAttacks"]>[number],
+  value: NonNullable<Extract<AiObservedActorV1["combatProfile"], { status: "known" }>>["value"]["attacks"][number]
+): boolean {
+  return (
+    weapon.damage === value.damage &&
+    weapon.range === value.range &&
+    weapon.minRange === value.minRange &&
+    (weapon.highGroundRangeBonus ?? 0) === value.highGroundRangeBonus &&
+    millisecondsToSimulationTicks(weapon.cooldown) === value.cooldownTicks &&
+    millisecondsToSimulationTicks(weapon.delays.hit) === value.impactDelayTicks &&
+    (weapon.meleeAoe?.range ?? 0) === value.areaRadius &&
+    value.targetDomains.length === (weapon.canTargetAir ? 3 : 2) &&
+    new Set(value.targetDomains).size === value.targetDomains.length &&
+    (weapon.canTargetAir ? ["ground", "water", "air"] : ["ground", "water"]).every((domain) =>
+      value.targetDomains.some((observedDomain) => observedDomain === domain)
+    )
+  );
 }

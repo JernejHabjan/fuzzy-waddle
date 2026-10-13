@@ -1,3 +1,6 @@
+// prettier-ignore
+import { AI_RUNTIME_MAX_FACTS } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/append-ai-runtime-production-fact";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 // prettier-ignore
 import type { AiRuntimeProductionCaptureV1 } from
@@ -16,7 +19,7 @@ export function projectRuntimeProductionEnqueues(
   const events: RuntimeProductionEvidenceV1["events"][number][] = [];
   const failures: string[] = [],
     gaps: string[] = [];
-  if (capture.droppedFactCount || capture.facts.length > 8192 || mutations.length > 8192 || operations.length > 8192) {
+  if (capture.droppedFactCount || capture.facts.length > AI_RUNTIME_MAX_FACTS || mutations.length > 8192 || operations.length > 8192) {
     return { events, failures: ["production_ai_enqueue_event_capture_dropped"], gaps };
   }
   const zero = { food: 0, wood: 0, stone: 0, minerals: 0 };

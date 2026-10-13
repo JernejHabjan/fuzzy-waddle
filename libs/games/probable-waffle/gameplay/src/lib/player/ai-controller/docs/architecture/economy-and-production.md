@@ -131,6 +131,24 @@ Additional capacity requires evidence such as:
 
 Existing, queued, under-construction and accepted-not-yet-observed capacity count toward the same demand once. When the target is fulfilled or abandoned, optional claims are released and excess construction/production stops.
 
+Construction chooses the nearest permitted footprint with a stable key tie-break; reservations separate concurrent
+sites. Current observed bodies block placement even when they do not block travel. The local builder flood follows
+`groundPassable`, while footprint admission also checks `observedBlocked`; mobile workers must not wall themselves in.
+Shared construction still rechecks actual collisions before accepting the site.
+
+A saved future-force commitment survives a temporary `route_pending` assessment for the same visible target while
+its force deficit remains. Its original dates stay fixed. Missing targets, actual retargeting, withdrawn demand and
+essential defense still abandon optional work; expiry never moves forward merely because work is late.
+Queued work and compatible secondary units cannot replace the committed product's actual ready count during that
+route pause. A positive unchanged demand remains committed until its exact product force fulfils or its deadline expires.
+
+The future schedule includes one slowest-default planning interval (40 ticks) for construction admission, followed
+by its existing unit-cycle travel allowance and catalog-priced builder work. This accounts for command admission
+between decisions; the eight-work force horizon remains fixed. Real construction must still finish before unit admission.
+Native outcomes may canonicalize a legacy effect ID with one leading `effect:` prefix. Reconciliation prefers the exact
+reservation and permits only a unique normalized match, then releases that reservation's original claim family.
+Completed training therefore frees its lane without waiting for an unrelated provisional lease to expire.
+
 Macro construction and opening production carry catalog-priced resource claims into shared intent arbitration. Several
 simultaneous proposed buildings may each be individually affordable, but only the combination that fits unreserved
 stockpile can be admitted. A rejected lower-priority proposal remains unmet demand rather than silently spending money.
@@ -152,6 +170,10 @@ new composition look tidier.
 
 Research competes with survival, supply, production and expansion. Its value depends on eligible existing and committed units, timing, queue occupancy and opportunity cost. Useful queued units are not cancelled merely to obtain a cosmetically cleaner composition.
 
+Research requires a finished producer and available shared queue before immediate payment. The fair candidate projector
+also excludes observed unfinished producers: having a research component during construction does not mean the actor
+has its final command listener or can accept research yet.
+
 ## Recovery expectations
 
 Native Gather delivers a full pack before tending or source acquisition. A partial pack from an exhausted or missing
@@ -168,6 +190,10 @@ construction before new-builder admission, queues the normal tendable/next-site 
 through the existing order cleanup. A completed building cannot accept another construction worker; that alone is
 not an application failure. Dead or unfinished unavailable targets retain their failure path. This terminal receipt
 does not prove that this worker created the building or supply independent useful-capacity attribution.
+
+Delayed resource returns have one in-flight transfer per carrier. A replacement order cannot offer the same pile to
+another drain until the first transfer settles. The debit still uses live cargo, and its notification retains the
+original offered resource type. Completion and rejection both release the guard for subsequent work.
 
 - Replace lost workers and critical productive capacity when economically feasible.
 - Restore sustainable food and compatible drop-off service after depletion or destruction.

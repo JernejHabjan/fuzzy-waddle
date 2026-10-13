@@ -133,7 +133,9 @@ describe("current producer target exposure", () => {
         ...threat.combatProfile,
         value: {
           ...observed,
-          attacks: observed.attacks.map((attack) => ({ ...attack, targetDomains: ["water", "ground"] as const }))
+          attacks: [...observed.attacks]
+            .reverse()
+            .map((attack) => ({ ...attack, targetDomains: ["water", "ground"] as const }))
         }
       }
     };
@@ -151,7 +153,7 @@ describe("current producer target exposure", () => {
     );
     expect(result.gaps).toEqual([]);
     expect(result.pairs).toHaveLength(1);
-    expect(result.pairs[0]?.status).toBe("known");
+    expect(result.pairs[0]).toMatchObject({ status: "known", attackIndex: 1, range: 4, positioningRange: 9 });
   });
   it("retains real equal-damage attack choice separately from positioning range and minimum-range band", () => {
     const f = fixture();

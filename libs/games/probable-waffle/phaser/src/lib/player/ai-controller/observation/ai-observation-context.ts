@@ -22,6 +22,7 @@ export function projectResearchCandidates(
 ): AiObservationV1["researchCandidates"] {
   const candidates: AiObservationV1["researchCandidates"][number][] = [];
   for (const observed of actors.filter((actor) => actor.relation === "self" && actor.visibility === "owned")) {
+    if (observed.constructionProgress?.status === "known" && observed.constructionProgress.value < 100) continue;
     const actor = liveById.get(observed.actorId);
     const research = actor ? getActorComponent(actor, ResearchComponent) : undefined;
     if (!research || research.isResearching) continue;

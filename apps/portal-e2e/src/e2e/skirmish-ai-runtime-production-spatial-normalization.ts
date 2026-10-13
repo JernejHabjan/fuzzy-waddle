@@ -1,3 +1,6 @@
+// prettier-ignore
+import { AI_RUNTIME_MAX_FACTS } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/append-ai-runtime-production-fact";
 import { projectRuntimeNativeNavigation } from "./skirmish-ai-runtime-native-navigation";
 import { runtimeNativeQueryFingerprint, validateRuntimeNativeQuery } from "./skirmish-ai-runtime-native-navigation-validation";
 import type { AiRuntimeProductionCaptureV1 } from
@@ -25,7 +28,7 @@ export function normalizeRuntimeProductionSpatial(capture: AiRuntimeProductionCa
     !!actor.canonicalObjectName && actor.playerNumber === capture.playerNumber &&
     [actor.active, actor.alive, actor.finished, actor.indexed].every((value) => typeof value === "boolean");
   const actorReady = (actor: AiRuntimeCreatedActorV1) => actor.active && actor.alive && actor.indexed;
-  if (capture.facts.length > 8192 || capture.droppedFactCount) {
+  if (capture.facts.length > AI_RUNTIME_MAX_FACTS || capture.droppedFactCount) {
     return { authority, failures: ["production_spatial_capture_dropped"], gaps: [] };
   }
   const facts = capture.facts.filter((fact) => fact.kind === "spatial_authority");

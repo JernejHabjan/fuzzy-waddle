@@ -1,4 +1,7 @@
 // prettier-ignore
+import { AI_RUNTIME_MAX_FACTS } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/append-ai-runtime-production-fact";
+// prettier-ignore
 import type { AiRuntimeProductionCaptureV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
 
@@ -8,7 +11,7 @@ export function runtimeProductionCaptureFailures(capture: AiRuntimeProductionCap
   if (
     capture.droppedFactCount ||
     capture.droppedSnapshotCount ||
-    capture.facts.length > 8192 ||
+    capture.facts.length > AI_RUNTIME_MAX_FACTS ||
     capture.snapshots.length > 256
   ) {
     failures.push("production_ai_capture_dropped");

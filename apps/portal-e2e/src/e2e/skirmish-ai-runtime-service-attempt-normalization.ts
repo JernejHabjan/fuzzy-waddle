@@ -1,3 +1,6 @@
+// prettier-ignore
+import { AI_RUNTIME_MAX_FACTS } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/append-ai-runtime-production-fact";
 import { isDeepStrictEqual } from "node:util";
 import type { AiRuntimeProductionCaptureV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
@@ -10,7 +13,7 @@ import { matchRuntimeRouteServiceLineage } from "./skirmish-ai-runtime-route-ser
 
 /** Scan every supplied attempt, including orphan/error/overflow tails, before assigning native caller ownership. */
 export function normalizeRuntimeServiceAttempts(capture: AiRuntimeProductionCaptureV1) {
-  if (capture.facts.length > 8192 || capture.droppedFactCount) {
+  if (capture.facts.length > AI_RUNTIME_MAX_FACTS || capture.droppedFactCount) {
     return { attempts: [], failures: ["production_service_attempt_capture_dropped"], gaps: [] };
   }
   const groups = new Map<number, RuntimeServiceAttemptV1["started"][]>();

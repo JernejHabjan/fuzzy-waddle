@@ -1,7 +1,14 @@
+// prettier-ignore
+import { AI_RUNTIME_MAX_FACTS } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/append-ai-runtime-production-fact";
 import { isDeepStrictEqual } from "node:util";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionCaptureV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+// prettier-ignore
+import type { AiRuntimeProductionCaptureV1 } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+// prettier-ignore
+import type { AiRuntimeProductionFactV1 } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
 
 /** Strict bounded all-beneficiary replay. Inspect every supplied tail; never add the older resources_applied observations. */
 export function normalizeRuntimeRecipientMutations(capture: AiRuntimeProductionCaptureV1) {
@@ -14,7 +21,7 @@ export function normalizeRuntimeRecipientMutations(capture: AiRuntimeProductionC
   }[] = [];
   if (!facts) return { operations, failures, gaps: ["production_recipient_journal_missing"] };
   if (capture.resourceCoverage?.lost) gaps.add("production_recipient_capture_lost");
-  if (facts.length > 8192 || capture.facts.length > 8192 || capture.droppedFactCount) {
+  if (facts.length > 8192 || capture.facts.length > AI_RUNTIME_MAX_FACTS || capture.droppedFactCount) {
     failures.push("production_recipient_journal_overflow");
   }
   const installed = new Map<number, Record<ResourceType, number> | null>();

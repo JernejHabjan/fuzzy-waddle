@@ -7,7 +7,7 @@ import { runVariant } from "./skirmish-ai-runtime-variant-runner";
 import { digestRuntimeValue } from "./skirmish-ai-runtime-digest";
 import { evaluateRuntimeVariant } from "./skirmish-ai-runtime-variant-evaluation";
 import { evaluateRuntimeProductionPairs } from "./skirmish-ai-runtime-production-pair-evaluation";
-import { encodeRuntimeArtifact } from "./skirmish-ai-runtime-artifact-codec.mjs";
+import { encodeRuntimeProductionWorld } from "./skirmish-ai-runtime-production-world-storage";
 import type { RuntimeProductionPairInput } from "./skirmish-ai-runtime-production-pair-input";
 
 const root = resolve(__dirname, "../../../..");
@@ -112,7 +112,7 @@ for (const authored of source.recipe.variants) {
       aiErrors: result.aiErrors,
       omittedCases: 0
     };
-    writeFileSync(resolve(outputDirectory, `${variant.id}.json`), JSON.stringify(encodeRuntimeArtifact({ result })));
+    writeFileSync(resolve(outputDirectory, `${variant.id}.json`), JSON.stringify(encodeRuntimeProductionWorld(result)));
     writeFileSync(resolve(outputDirectory, `${variant.id}-summary.json`), JSON.stringify(summary, null, 2));
     console.log(`AI_PRODUCTION_WORLD:${JSON.stringify(summary)}`);
     await testInfo.attach("physical-world-summary", { body: JSON.stringify(summary), contentType: "application/json" });

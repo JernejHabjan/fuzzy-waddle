@@ -24,7 +24,7 @@ export function isAiProducerPositionExposed(position: Vector3Simple, threats: re
   return threats.some((threat) => {
     if (threat.logicalPosition.status !== "known" || threat.combatProfile?.status !== "known") return false;
     const origin = threat.logicalPosition.value;
-    const distance = Math.hypot(origin.x - position.x, origin.y - position.y);
+    const distance = Math.floor(Math.hypot(origin.x - position.x, origin.y - position.y));
     return threat.combatProfile.value.attacks.some((attack) => {
       const bonus = origin.z >= position.z + HIGH_GROUND_THRESHOLD ? attack.highGroundRangeBonus : 0;
       return (
@@ -47,7 +47,7 @@ export function reachableAiConstructionTiles(
   const cells = new Map((observation.map?.constructionCells ?? []).map((cell) => [cell.tileKey, cell]));
   const start = `${Math.round(builder.logicalPosition.value.x)},${Math.round(builder.logicalPosition.value.y)}`;
   const origin = cells.get(start);
-  if (!origin || !origin.groundPassable || origin.observedBlocked) return reachable;
+  if (!origin || !origin.groundPassable) return reachable;
   const pending = [origin];
   reachable.add(start);
   for (let index = 0; index < pending.length; index += 1) {
@@ -60,13 +60,7 @@ export function reachableAiConstructionTiles(
       [1, 0]
     ] as const) {
       const next = cells.get(`${current.position.x + dx},${current.position.y + dy}`);
-      if (
-        !next ||
-        reachable.has(next.tileKey) ||
-        !next.groundPassable ||
-        next.observedBlocked ||
-        next.elevation !== current.elevation
-      )
+      if (!next || reachable.has(next.tileKey) || !next.groundPassable || next.elevation !== current.elevation)
         continue;
       reachable.add(next.tileKey);
       pending.push(next);

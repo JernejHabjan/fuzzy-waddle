@@ -28,6 +28,7 @@ export function projectRuntimeVariantStart(
       : null
   });
   return {
+    ...(initialBoundary.presetApplication ? { productionPreset: initialBoundary.presetApplication } : {}),
     variantId: variant.id,
     mapLabel: variant.mapLabel ?? mapLabel,
     seed: effectiveSeed,

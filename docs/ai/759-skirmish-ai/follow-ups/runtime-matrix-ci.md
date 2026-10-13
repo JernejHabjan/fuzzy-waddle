@@ -1,6 +1,51 @@
 # Playwright runtime matrix and CI — #816
 
-## Physical production batch checkpoint (2026-10-13)
+## Native movement/production repair checkpoint (2026-10-13)
+
+**State:** shared repairs are source-checked; the ten-scope M12 batch and sixteen-world strategic gate remain open.
+Base 8ad61c7e373513a8b675537600dbfd3b65467e24; the containing publication commit owns the checked source.
+See HANDOFF.md for the current acceptance map and exact next batch.
+
+Movement lazily resolves dependencies before interpolation, rejects failed recursive completion, and avoids occupied
+object endpoints. Routine squad/scout intake respects active friendly movement while defense remains available.
+Nearest construction footprints, fair placement occupancy distinct from terrain travel, fixed admission allowance,
+route-pending commitment retention, and native-prefix claim reconciliation repair demonstrated production stalls.
+Research requires finished producers/queue space before charging. Exposure matches canonical weapon multisets and
+native floored ranges; military-producer exposure no longer suppresses resilience as a global economy emergency.
+Destroyed diagnostics retain actual indexed identity with false current liveness. Root capture uses 12,288 records,
+two measured query/caller histories use 1,024, and unrelated limits/overflow refusal remain intact.
+
+A fresh carrier trace showed two concurrent returns offering one six-resource pile, crediting twice and producing -6
+cargo. Per-carrier pending-return ownership now refuses the second transfer, releases on completion/error, and keeps
+original resource type through the awaited debit/notification. Focused controls and the fresh Skaduwee refund world
+pass. This is a shared gameplay fix, not tolerance for negative cargo.
+
+Physical-world artifact storage now retains raw records and the actual paused setup; pure derived views are rebuilt
+by decodeRuntimeProductionWorld. Expanding duplicated views exceeded V8's string limit. An experimental generic graph
+codec also reached its node budget and is removed; no new native observer or broad serializer framework is kept.
+Use the matching source when reconstructing views and retain its source/fixture/seed framing.
+
+**Implementation Review:** traced queue payment/completion -> factory/index -> normal rally -> path/step reservation ->
+arrival/order replacement and closed retention. Traced delayed drain transfer -> actual credit -> cargo debit and
+re-entry. Reviewed observation fairness, callback cleanup, reservation families, history limits, and codec consumers.
+
+**Omission Audit:** all ten responsibilities remain listed with evidence or explicit blockers. Latest positive worlds
+are a subset, not all-sixteen certification. Fallback/original-arrival and awaited route binding remain strict.
+Recovery still needs consistent available force, single-lane demand, replacement readiness and post-loss demand;
+larger experimental forces legitimately required throughput capacity and are not retained as negative controls.
+No balance prices/times/yields/combat values, saved schema, network field or structure baseline were changed.
+
+**Final Closure Audit:** publish a checked source checkpoint, with native strategic acceptance explicitly incomplete.
+Final source checks: 174 native suites/895 tests, 70 gameplay suites/316 tests, 455 reader controls, types, owned
+lint/structure (zero errors/34 existing warnings), catalog and uncached production build pass. Both abandonment
+branches and both native refund branches pass in recorded subsets. The final Skaduwee queued-force run retains the
+schedule until expiry and passes force/retention, but still fails prebuild timing/useful output. Tivara useful force
+remains red despite seven exact arrivals. No subset closes the full sixteen-world gate.
+No full M12/M11, repeated determinism, restart/parity/calibration or release closure is inferred. Keep bounded opt-in
+identity/closed-history/summary owners; remove redundant persisted view expansion. No profiling suite was added.
+
+
+## Prior physical production batch checkpoint (2026-10-13)
 
 **State:** sixteen branches authored/registered, owner/reader repairs implemented, strategic acceptance **in_progress**.
 Base 1c779772ac6bdcf7bd8383963e0f37da5a44a921; the publication commit owns the actual checked source. The prior
