@@ -1,6 +1,6 @@
 # #759 remaining work inventory
 
-Snapshot: 2026-10-14, production evidence checkpoint based on `b951d5949eee69d4766ba9301059f7205b0d3ca7`. This is the execution inventory for the existing scope,
+Snapshot: 2026-10-14, production evidence checkpoint based on `0f653a9c5c727abce51fb6552f7e6acb7a938e53`. This is the execution inventory for the existing scope,
 not a new design or diagnostic project. [HANDOFF.md](HANDOFF.md) owns the current cursor;
 [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) retains the latest checked source/evidence details.
 The manifest and linked scenario requirements remain authoritative; the snapshot below must be refreshed when
@@ -91,28 +91,34 @@ system or rerun unchanged passing controls merely to populate the inventory. Unt
 explicitly report overall behavior percentage as unavailable alongside the numeric coverage measures. Never present
 the registration percentage as the percentage of AI implementation completed or of engineering time remaining.
 
-## Immediate production repair list
+## Immediate production certification batch
 
-1. **Current input/claim boundary:** implemented and controlled. Pure capture/selection share one tick; expired leases
-   are reconciled before proposals. Legacy fallback ordering remains covered. Preserve these owners while repairing routes.
-2. **Common future prefix:** both full-horizon faction pairs pass exact input/selection ticks, plan identity and dates.
-   Tivara's future outcomes and both Skaduwee future outcomes, including committed useful-force proof, pass.
-3. **Awaited useful output and contention:** both shared-contention worlds still lack strategic-contention proof despite
-   real production/research. Their shared Field rally depletes; WorkMill produces EnterContainer and producer-center
-   routing has no native path. Repair both factions together with a reachable, persistent, semantically valid target;
-   preserve native route/order/useful-arrival evidence.
-4. **Critical recovery/loss:** Tivara's fair threat death now retires only a witnessed, still-visible native identity;
-   hidden/unknown loss, profile changes and ID reuse remain invalid. Skaduwee's pinned original-loss event now occurs
-   at tick 640, before the InfantryInn's natural death at tick 656; its critical recovery world passes.
-5. **Grouped gate:** **14/16 outcomes pass (87.5%); two remain (12.5%), both failed PRO-07 shared-contention worlds; no setup is unavailable.**
-   PRO-03/06/07 pair gates pass. Seven affected worlds were rerun: five pass; the two contention failures were
-   confirmed again with the restored Field rally. Nine unaffected outcomes are retained from the prior cohort.
-   Current details and source limits are in [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md).
+The PRO-03/06/07 authority-world gate is now **16/16 passing (100%); 0/16 remaining (0%); no unavailable setup**.
+All three pair gates pass. Fourteen unaffected outcomes are retained; both shared-contention cases freshly pass at
+2000 ticks with current contact-range behavior and nearby permanent housing rallies. This closes the named native
+failures; it does not certify every production scenario. [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) owns provenance.
 
-Gameplay: 329 tests; core Phaser gate: 910 tests plus final focused exposure/cadence controls; readers: 320 controls;
-fixture: 3 controls; types, owned lint/formatting and build pass. These certify their controls, not every production row.
-PRO-01/02/04/05 need certification, H-17 needs registered coverage, and PRO-07 needs an explicit pure ID/spec mapping.
-Batch those remaining production coverage obligations after the current native failures close; then advance to package 2.
+Execute the remaining production coverage together, reusing existing controls before writing equivalent ones:
+
+1. **PRO-01/02 — capacity:** certify sufficient producers for a dated goal and refusal of needless producers when
+   capacity/economy already explains the bottleneck. Reuse `production-scenarios.json`, `ai-production-scenarios.spec.ts`
+   and `focused-production-capacity-runtime.json`; inspect retained ID-specific evidence before rerunning.
+2. **PRO-04 — repeated useful units:** certify repeated same-type output until demand is met and stopping excess
+   after commitments satisfy it. Reuse the production spec and `focused-production-composition-runtime.json`.
+3. **PRO-05 — exactly-once capacity/replacement:** certify requested capacity under late/duplicate/out-of-order
+   callbacks and one necessary replacement after loss. Reuse the production spec and `focused-production-replacement-runtime.json`.
+4. **H-17 — blocked spawn/vanished demand:** map existing pure/native controls or add the missing fixture/recipe and
+   independent outcome assertions. Prove the useful obligation clears, reassigns or cancels without endless empty producers.
+5. **PRO-07 — pure semantic mapping:** connect the existing queue/resource/refund controls to the required scenario ID;
+   the four native contention/refund worlds pass, but a fixture reference alone does not prove the pure requirement.
+
+Collect observed failures across these rows and repair each shared owner once. After all production predicates pass,
+advance to package 2. No new observer/profiler machinery is scheduled. Scenario registration remains pure 56/111 and
+supported runtime 19/116 until actual manifest edits change it; overall behavior completion remains unavailable.
+
+Current repair checks: 38 Phaser controls and 10 fixture/contract controls pass; portal application types and scoped lint
+pass (three baseline warnings). Standalone Phaser types have eight identical base diagnostics, documented in current evidence.
+Previous reader controls remain retained evidence, not new full-manifest certification.
 
 ## Other concrete gaps already established
 

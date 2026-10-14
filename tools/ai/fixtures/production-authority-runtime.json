@@ -2044,8 +2044,8 @@
               "actorName": "Olival",
               "owner": 2,
               "position": {
-                "x": 0,
-                "y": 360,
+                "x": 800,
+                "y": 1056,
                 "z": 0
               }
             },
@@ -2247,7 +2247,7 @@
             {
               "producerObjectName": "AnkGuard",
               "owner": 2,
-              "targetFixtureActorId": "field"
+              "targetFixtureActorId": "housing"
             }
           ],
           "existingActorBindings": [
@@ -4527,8 +4527,8 @@
               "actorName": "Emberstone",
               "owner": 2,
               "position": {
-                "x": 0,
-                "y": 360,
+                "x": 800,
+                "y": 1056,
                 "z": 0
               }
             },
@@ -4730,7 +4730,7 @@
             {
               "producerObjectName": "InfantryInn",
               "owner": 2,
-              "targetFixtureActorId": "field"
+              "targetFixtureActorId": "housing"
             }
           ],
           "events": [
@@ -5091,7 +5091,7 @@
           "producerObjectName": "AnkGuard",
           "productKey": "TivaraMacemanMale",
           "pairId": "tivara-shared-contention",
-          "usefulRallyActorRole": "field"
+          "usefulRallyActorRole": "housing"
         },
         "tivara-cancel-pending-refund": {
           "scenarioId": "PRO-07",
@@ -5111,7 +5111,7 @@
           "producerObjectName": "InfantryInn",
           "productKey": "SkaduweeWarriorMale",
           "pairId": "skaduwee-shared-contention",
-          "usefulRallyActorRole": "field"
+          "usefulRallyActorRole": "housing"
         },
         "skaduwee-cancel-pending-refund": {
           "scenarioId": "PRO-07",

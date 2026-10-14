@@ -19,7 +19,8 @@ test.skip(
   !requested,
   "Explicit physical-world integration run. Shortened runs are diagnostics, never full certification."
 );
-test.setTimeout(240_000);
+// Keep the fixed logical horizon; slow native execution and teardown may exceed four wall-clock minutes.
+test.setTimeout(360_000);
 const horizon = requested ? Number(requested) : 2000;
 const outputDirectory = resolve(
   root,

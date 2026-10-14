@@ -17,6 +17,8 @@ import { BuilderComponent } from "../../entity/components/construction/builder-c
 import { OrderData } from "../../ai/OrderData";
 import { HealingComponent } from "../../entity/components/combat/components/healing-component";
 import type { PathMoveConfig } from "@fuzzy-waddle/probable-waffle-gameplay/entity/systems/path-move-config";
+import { ColliderComponent } from "../../entity/components/movement/collider-component";
+import { NavigableComponent } from "../../entity/components/movement/navigable-component";
 
 /** Owns native range/reachability probes and movement actions. Each method keeps its own order reads across awaits.
  * Actor-local collaborators own no subscriptions, timers or saved state; the controller owns their lifetime.
@@ -99,7 +101,10 @@ export class PawnAgentMovement {
     if (targetGameObject) {
       switch (type) {
         case "move":
-          return 0;
+          // A solid non-navigable target can only be approached beside its footprint. Use the same contact
+          // radius for the range probe, reachability probe and executed movement; walkable targets stay exact.
+          return getActorComponent(targetGameObject, ColliderComponent)?.colliderDefinition?.enabled &&
+            !getActorComponent(targetGameObject, NavigableComponent) ? 1 : 0;
         case "attack":
           return getActorComponent(this.gameObject, AttackComponent)?.getAttackRange(targetGameObject);
         case "gather":

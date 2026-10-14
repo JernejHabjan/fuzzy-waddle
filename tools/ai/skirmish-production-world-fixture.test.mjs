@@ -52,3 +52,22 @@ test("refund worlds use a paid tail and a pre-opening delayed controller, with r
     assert.ok(probes[1].applicationTick > cancel.applicationTick && probes[1].applicationTick < 20);
   }
 });
+
+test("contention stages post-research units at nearby permanent housing while keeping the normal Field economy", () => {
+  for (const variant of fixture.recipe.variants.filter((entry) => entry.id.endsWith("shared-contention"))) {
+    const preset = variant.presetWorld;
+    const contract = fixture.assertions["PRO-07"].requiredProductionContracts[variant.id];
+    const target = preset.actors.find((actor) => actor.fixtureActorId === preset.productionRallies[0].targetFixtureActorId);
+    const producer = preset.actors.find((actor) => actor.fixtureActorId === "producer");
+    assert.equal(contract.usefulRallyActorRole, target.fixtureActorId);
+    assert.equal(target.owner, producer.owner);
+    assert.equal(target.actorName, variant.aiFaction === "Tivara" ? "Olival" : "Emberstone");
+    const field = preset.actors.find((actor) => actor.actorName === "Field");
+    assert.notEqual(field.fixtureActorId, target.fixtureActorId);
+    assert.equal(target.position.x, producer.position.x);
+    assert.equal(target.position.y - producer.position.y, producer.position.y - field.position.y);
+    assert.equal(preset.events[0].tick, 1500);
+    assert.equal(contract.latestTick, 2000);
+    assert.equal(contract.stableForTicks, 20);
+  }
+});

@@ -15,6 +15,8 @@ import { GathererComponent } from "../../entity/components/resource/gatherer-com
 import { ResourceSourceComponent } from "../../entity/components/resource/resource-source-component";
 import { ContainableComponent } from "../../entity/components/building/containable-component";
 import { ContainerComponent } from "../../entity/components/building/container-component";
+import { ColliderComponent } from "../../entity/components/movement/collider-component";
+import { NavigableComponent } from "../../entity/components/movement/navigable-component";
 
 jest.mock("../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 jest.mock("../../data/actor-system", () => ({ getActorSystem: jest.fn() }));
@@ -89,6 +91,41 @@ describe("pawn agent native order boundaries", () => {
     ]);
     expect(move).toHaveBeenCalledWith(f.target, expect.any(Object), requireAiTestEntry(contexts, 1));
     unsubscribe();
+  });
+
+  it.each(["solid", "walkable", "navigable"] as const)("Move uses consistent contact range for a %s target", async (kind) => {
+    const f = fixture();
+    f.blackboard.setCurrentOrder(new OrderData(OrderType.Move, { targetGameObject: f.target }));
+    jest.mocked(getActorComponent).mockImplementation((actor, token) => {
+      if (actor !== f.target) return undefined;
+      if (token === ColliderComponent) return { colliderDefinition: { enabled: kind !== "walkable" } } as never;
+      if (token === NavigableComponent && kind === "navigable") return {} as never;
+      return undefined;
+    });
+    const probe = jest.fn(async () => true), move = jest.fn(async () => true);
+    jest.mocked(getActorSystem).mockReturnValue({
+      canMoveTo: probe, moveToActorByAdjustingPathDynamically: move
+    } as never);
+    expect(await f.agent.MoveToTarget("move")).toBe(State.SUCCEEDED);
+    const range = kind === "solid" ? 1 : 0;
+    expect(probe).toHaveBeenCalledWith(f.target, range, undefined);
+    expect(move).toHaveBeenCalledWith(
+      f.target, expect.objectContaining({ radiusTilesAroundDestination: range }), undefined
+    );
+  });
+
+  it("Move reaches solid contact only at the selected adjacent tile, not while farther away", async () => {
+    const f = fixture();
+    f.blackboard.setCurrentOrder(new OrderData(OrderType.Move, { targetGameObject: f.target }));
+    jest.mocked(getActorComponent).mockImplementation((actor, token) =>
+      actor === f.target && token === ColliderComponent ? { colliderDefinition: { enabled: true } } as never : undefined
+    );
+    const path = jest.fn().mockResolvedValue([{ x: 0, y: 0 }, { x: 1, y: 0 }]);
+    jest.mocked(getActorSystem).mockReturnValue({ getPathToClosestNavigableTileBetweenGameObjectsInRadius: path } as never);
+    expect(await f.agent.InRange("move")).toBe(State.FAILED);
+    path.mockResolvedValue([{ x: 1, y: 0 }]);
+    expect(await f.agent.InRange("move")).toBe(State.SUCCEEDED);
+    expect(path).toHaveBeenLastCalledWith(f.target, 1, undefined);
   });
 
   it("does not move after a denied probe and preserves the caught probe-error result", async () => {
