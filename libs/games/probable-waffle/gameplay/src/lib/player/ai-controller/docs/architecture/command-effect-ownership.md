@@ -18,6 +18,12 @@ diagnostics do not settle aggregate actor progress, including during restore.
 
 Useful duplicates remain legal: production commands receive distinct default commitment identities, while construction suppresses only the same active `siteKey`. Separate useful producers, deposits, houses, towers, walls, resource sites, and repeated units therefore remain possible. Demand managers own counts and capacity decisions; shared application only prevents duplicate application of the same accepted intent.
 
+Opt-in production safety proof binds only the identities and weapon profiles admitted by a fair decision input.
+At each closed frontier it rechecks the native selected weapon band for each producer. Harmless visible movement can
+retain that exposure classification; the decision's numeric distances still belong to their original tick. A band,
+profile, level, identity or visibility change invalidates the binding until a fresh decision. These reads remain
+test-owned and never provide strategy input or dispatch commands.
+
 ## Effect routes
 
 | Effect family                      | Shared input and server boundary                                                                                | Authoritative runtime application                                                                                                                                                                                       | Terminal evidence and durable links                                                                                                                                                                                                                                                                                                                  |

@@ -32,12 +32,30 @@ export function evaluateRuntimeProductionAbandonedWork(
     (lease) =>
       lease.ownerPlanId === transition.planId && (lease.state.kind === "forecast" || lease.state.kind === "provisional")
   );
+  const paidConstructionClaims = new Set(
+    construction.flatMap((entry) =>
+      entry.placement &&
+      entry.placement.sequence < abandoned.selectedSequence &&
+      entry.placement.spatial.kind === "placement" &&
+      entry.placement.spatial.legal
+        ? (entry.commandScope?.acceptedIntent.claims.map((claim) => claim.claimId) ?? [])
+        : []
+    )
+  );
   if (
     !released.length ||
     evidence.decisions
       .filter((decision) => decision.selectedSequence >= abandoned.selectedSequence)
       .some((decision) =>
-        decision.result.reservations.some((lease) => released.some((prior) => prior.claimId === lease.claimId))
+        decision.result.reservations.some((lease) =>
+          released.some(
+            (prior) =>
+              prior.claimId === lease.claimId &&
+              (prior.state.kind === "forecast" ||
+                lease.state.kind !== "applied_spending" ||
+                !paidConstructionClaims.has(lease.claimId))
+          )
+        )
       )
   ) {
     failures.push("production_v2_forecast_not_released");

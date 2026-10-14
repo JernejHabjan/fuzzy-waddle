@@ -38,11 +38,23 @@ export class WorldStateSnapshotManager {
 
   async update(now: number): Promise<void> {
     if (now - this.lastOwnedRefreshAt < AI_CONFIG.ownedRefreshIntervalMs) return;
-    await this.refreshWorldState(now);
+    await this.refreshWorldState();
     this.lastOwnedRefreshAt = now;
   }
 
-  private async refreshWorldState(now: number) {
+  /** Pure planning needs current owned resources/supply, without waiting for legacy enemy routes. */
+  updateOwned(now: number): void {
+    if (now - this.lastOwnedRefreshAt < AI_CONFIG.ownedRefreshIntervalMs) return;
+    this.refreshOwnedState();
+    this.lastOwnedRefreshAt = now;
+  }
+
+  private async refreshWorldState() {
+    const state = this.refreshOwnedState();
+    if (state) await this.refreshEnemyState(state.owned, state.index);
+  }
+
+  private refreshOwnedState() {
     const index = getSceneService(this.scene, ActorIndexSystem);
     if (!index) return;
 
@@ -53,7 +65,7 @@ export class WorldStateSnapshotManager {
 
     this.refreshOwnedActors(owned);
     this.refreshEconomyAndSupply();
-    await this.refreshEnemyState(owned, index);
+    return { owned, index };
   }
 
   // ---------------------------------------------------------------------------

@@ -6,7 +6,7 @@ import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
 import { assertAiBrainStateV1, assertAiObservationV1 } from "../contracts/validate-ai-contracts-v1";
 import type { AiManagerProposalV1, AiProposalManagerV1 } from "../planning/ai-manager-proposal";
 import { projectAiDebugSnapshot } from "../debug/project-ai-debug-snapshot";
-import { planAiDecisions } from "../planning/ai-decision-planner";
+import { planAiDecisions, reconcileAiDecisionReservations } from "../planning/ai-decision-planner";
 import { AI_PROVISIONAL_LEASE_DURATION_TICKS } from "./create-ai-brain-state-v1";
 import { aiDeadline } from "../contracts/ai-core-types";
 import type { AiBrainV1 } from "./ai-brain-v1";
@@ -92,11 +92,15 @@ export class PureAiBrain implements AiBrainV1 {
       }
     }
 
+    const proposalState: AiBrainStateV1 = {
+      ...previousState,
+      reservations: reconcileAiDecisionReservations(previousState, orderedOutcomes, observation.tick)
+    };
     const proposalBatches: AiManagerProposalV1[] = [...this.managers]
       .sort((left, right) => left.managerId.localeCompare(right.managerId))
       .map((manager) => {
         try {
-          return manager.propose(observation, previousState);
+          return manager.propose(observation, proposalState);
         } catch (error) {
           return {
             managerId: manager.managerId,
@@ -107,7 +111,7 @@ export class PureAiBrain implements AiBrainV1 {
           } satisfies AiManagerProposalV1;
         }
       });
-    const planning = planAiDecisions(observation, previousState, orderedOutcomes, proposalBatches, this.profile);
+    const planning = planAiDecisions(observation, proposalState, orderedOutcomes, proposalBatches, this.profile);
     // A proposer may own a persisted projection (opening/demand state) but never
     // mutates the previous brain directly. Stable manager order makes competing
     // narrow projections deterministic; Stage 7 is currently the sole owner.
@@ -123,7 +127,12 @@ export class PureAiBrain implements AiBrainV1 {
     const intents = modeIsTerminal ? [] : planning.proposals;
     const spendingBudget = proposalBatches.find((batch) => batch.spendingBudget)?.spendingBudget;
     const { accepted, decisions } = arbitrateAiIntents(
-      observation, projectedState, intents, planning.preDecisions, this.profile, spendingBudget
+      observation,
+      projectedState,
+      intents,
+      planning.preDecisions,
+      this.profile,
+      spendingBudget
     );
 
     const acceptedReservations = accepted.flatMap((intent) =>

@@ -8,8 +8,11 @@ import { AttackComponent } from "../../../entity/components/combat/components/at
 import { LevelComponent } from "../../../entity/components/level/level-component";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
 import { AiObservationVisibilityPolicy } from "../observation/ai-observation-visibility-policy";
+import { DistanceHelper } from "../../../library/distance-helper";
+import { getActorElevation, getHighGroundRangeBonus } from "../../../entity/components/combat/high-ground.helper";
+import { RepresentableComponent } from "../../../entity/components/representable-component";
 
-/** Reads only already-fair identities. Invalidation is producer-specific and sticky until a fresh decision binds again. */
+/** Preserves only the measured exposure class of already-fair identities. Band/profile changes invalidate until a fresh decision. */
 export class AiRuntimeExposureBinding {
   private readonly expected = new Map<string, string>();
   private readonly invalid = new Set<string>();
@@ -76,6 +79,8 @@ export class AiRuntimeExposureBinding {
   private fingerprint(producerId: string): string | null {
     const index = getSceneService(this.scene, ActorIndexSystem);
     const visibility = new AiObservationVisibilityPolicy(this.scene, this.playerNumber);
+    const producer = index?.getActorById(producerId);
+    if (!producer) return null;
     const records = [producerId, ...this.threats].map((id) => {
       const actor = index?.getActorById(id);
       if (!actor || actor.scene !== this.scene) return null;
@@ -90,12 +95,25 @@ export class AiRuntimeExposureBinding {
         return null;
       const tile = getGameObjectCurrentTile(actor),
         position = getGameObjectLogicalTransform(actor);
-      if (!tile || !position) return null;
+      if (!tile || !position || !getActorComponent(actor, RepresentableComponent)) return null;
+      const component = getActorComponent(actor, AttackComponent);
+      const weapons = component?.getAttacks() ?? [];
+      const selected = id !== producerId && weapons.length ? component?.getAttack(producer) : null;
+      const distance = selected ? DistanceHelper.getTileDistanceBetweenGameObjects(actor, producer) : null;
+      if (id !== producerId && weapons.length && (!selected || distance === null)) return null;
+      const bonus = selected ? getHighGroundRangeBonus(actor, producer, selected) : 0;
       return {
         identity,
-        tile,
-        position,
-        weapons: getActorComponent(actor, AttackComponent)?.getAttacks() ?? [],
+        // Decision distances retain their original date. Continuity proves the same native band at every frontier,
+        // rather than rejecting harmless movement outside that band. Lost visibility/identity remains sticky.
+        ...(id === producerId ? { tile, position } : { elevation: getActorElevation(actor) }),
+        selected,
+        withinSelectedWeaponBand:
+          selected && distance !== null
+            ? selected.damage > 0 && distance >= selected.minRange && distance <= selected.range + bonus
+            : null,
+        highGroundBonus: bonus,
+        weapons,
         level: getActorComponent(actor, LevelComponent)?.currentLevel ?? 1
       };
     });

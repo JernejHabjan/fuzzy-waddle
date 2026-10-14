@@ -13,6 +13,8 @@ import { AiObservationVisibilityPolicy } from "../observation/ai-observation-vis
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
 import { unspentClaimFixture } from "./ai-runtime-unspent-claim-fixtures";
 import { AiRuntimeExposureBinding } from "./ai-runtime-exposure-binding";
+import { DistanceHelper } from "../../../library/distance-helper";
+import { RepresentableComponent } from "../../../entity/components/representable-component";
 
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 jest.mock("../../../data/game-object-helper", () => ({
@@ -23,19 +25,30 @@ jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneSe
 jest.mock("./capture-ai-runtime-created-actor", () => ({ captureAiRuntimeCreatedActor: jest.fn() }));
 
 /** Synthetic binding lifetimes only. Native weapon selection is independently exercised by the existing capture controls. */
-function fixture() {
+function fixture(armed = false) {
   const scene = {} as ProbableWaffleScene;
   const ids = ["original", "replacement", "enemy"];
   const actors = ids.map(() => ({ scene }) as unknown as Phaser.GameObjects.GameObject);
   const indexed = new Map(ids.map((id, index) => [id, actors[index]]));
   const position = { x: 4, y: 5, z: 0 };
+  const threatPosition = { ...position };
+  const distance = jest.spyOn(DistanceHelper, "getTileDistanceBetweenGameObjects").mockReturnValue(12);
   const visible = jest.spyOn(AiObservationVisibilityPolicy.prototype, "mayObserve").mockReturnValue(true);
   jest.mocked(getSceneService).mockReturnValue({ getActorById: (id: string) => indexed.get(id) } as never);
   jest.mocked(getGameObjectCurrentTile).mockReturnValue({ x: 4, y: 5 });
-  jest.mocked(getGameObjectLogicalTransform).mockReturnValue(position);
+  jest
+    .mocked(getGameObjectLogicalTransform)
+    .mockImplementation((actor) => (actor === actors[2] ? threatPosition : position));
+  const weapon = { damage: 10, range: 5, minRange: 0, highGroundRangeBonus: 0 };
   jest
     .mocked(getActorComponent)
-    .mockImplementation((_actor, type) => (type === AttackComponent ? ({ getAttacks: () => [] } as never) : undefined));
+    .mockImplementation((_actor, type) =>
+      type === RepresentableComponent
+        ? ({ logicalWorldTransform: position, getActualLogicalZ: () => position.z } as never)
+        : type === AttackComponent
+          ? ({ getAttacks: () => (armed ? [weapon] : []), getAttack: () => (armed ? weapon : null) } as never)
+          : undefined
+    );
   jest.mocked(captureAiRuntimeCreatedActor).mockImplementation((actor) => ({
     actorId: ids[actors.indexOf(actor)] ?? null,
     objectName: ObjectNames.AnkGuard,
@@ -81,15 +94,15 @@ function fixture() {
       pairs: owned.map((actor) => ({
         producerActorId: actor.actorId,
         threatActorId: "enemy",
-        status: "no_attack" as const,
-        attackIndex: null,
-        range: null,
-        positioningRange: null,
-        highGroundBonus: null,
-        attackerElevation: null,
-        targetElevation: null,
-        distanceTiles: null,
-        withinSelectedWeaponBand: null
+        status: armed ? ("known" as const) : ("no_attack" as const),
+        attackIndex: armed ? 0 : null,
+        range: armed ? 5 : null,
+        positioningRange: armed ? 5 : null,
+        highGroundBonus: armed ? 0 : null,
+        attackerElevation: armed ? 0 : null,
+        targetElevation: armed ? 0 : null,
+        distanceTiles: armed ? 12 : null,
+        withinSelectedWeaponBand: armed ? false : null
       }))
     }
   };
@@ -100,7 +113,7 @@ function fixture() {
     kind: "decision_selected",
     decision: { ...base, input }
   });
-  return { binding, indexed, visible };
+  return { binding, indexed, visible, distance, threatPosition, weapon };
 }
 
 afterEach(() => jest.restoreAllMocks());
@@ -119,4 +132,34 @@ it("a lost fair threat invalidates every target and cannot be repaired by visibi
   expect(binding.read().validProducerIds).toEqual([]);
   visible.mockReturnValue(true);
   expect(binding.read().validProducerIds).toEqual([]);
+});
+
+it("retains measured safety while a visible threat moves outside the selected weapon band", () => {
+  const f = fixture(true);
+  f.threatPosition.x += 10;
+  f.distance.mockReturnValue(7);
+  expect(f.binding.read().validProducerIds).toEqual(["original", "replacement"]);
+});
+
+it("invalidates a band crossing even if the threat later moves back out", () => {
+  const f = fixture(true);
+  f.distance.mockReturnValue(5);
+  expect(f.binding.read().validProducerIds).toEqual([]);
+  f.distance.mockReturnValue(12);
+  expect(f.binding.read().validProducerIds).toEqual([]);
+});
+
+it("rejects changed weapons and unavailable native geometry", () => {
+  const f = fixture(true);
+  f.weapon.range = 6;
+  expect(f.binding.read().validProducerIds).toEqual([]);
+  const g = fixture(true);
+  g.distance.mockReturnValue(null);
+  expect(g.binding.read().validProducerIds).toEqual([]);
+});
+
+it("rejects missing representation instead of accepting a zero-elevation fallback", () => {
+  const f = fixture();
+  jest.mocked(getActorComponent).mockReturnValue(undefined);
+  expect(f.binding.read().validProducerIds).toEqual([]);
 });

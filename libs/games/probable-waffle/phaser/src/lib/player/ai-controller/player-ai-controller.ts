@@ -21,13 +21,11 @@ import { AiCommandReconciliation } from "./ai-command-reconciliation";
 import type { AiAuthorityStateV1, AiBrainStateV1, AiCommandOutcomeV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { createAiBrainStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-brain-state-v1";
 import { migrateAiBrainState } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/migrate-ai-brain-state";
-import { canonicalizeAiBrainStateV1 } from
-  "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/canonical-ai-serialization";
+import { canonicalizeAiBrainStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/canonical-ai-serialization";
 import { createAiProfileConfigV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-profile-defaults";
 import { PureAiBrain } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain";
 import type { AiDebugSnapshotV1, AiProfileConfigV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
-import { selectAiOpeningArchetypeV1 } from
-  "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-opening-archetypes-v1";
+import { selectAiOpeningArchetypeV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-opening-archetypes-v1";
 import { AiMacroManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-macro-manager";
 import { AiResourceServiceManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-resource-service-manager";
 import { AiTransportManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-transport-manager";
@@ -38,8 +36,7 @@ import { AiRecoveryManager } from "@fuzzy-waddle/probable-waffle-gameplay/player
 import { AiTacticsManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-tactics-manager";
 import { AiAdaptationManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-adaptation-manager";
 import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
-import type { AiBrainStepResultV1 } from
-  "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain-step-result-v1";
+import type { AiBrainStepResultV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain-step-result-v1";
 import { dispatchAiIntents } from "./ai-intent-dispatcher";
 import { dispatchAiBrainResult } from "./dispatch-ai-brain-result";
 import { captureAiDecisionInput } from "./capture-ai-decision-input";
@@ -51,7 +48,7 @@ export class PlayerAiController {
   readonly playerAiControllerAgent: PlayerAiControllerAgent;
   public blackboard: PlayerAiBlackboard;
   private behaviourTree: BehaviourTree;
-  private elapsedTime: number = 0;
+  private elapsedTime = 0;
   private static readonly AI_ENABLED = true;
   private enabled = true;
   private authorityActive = true;
@@ -152,11 +149,17 @@ export class PlayerAiController {
         this.telemetry.nextFrame();
         const frameBeforeSnapshot = this.telemetry.snapshot().frame;
         try {
-          await this.telemetry.withSpanAsync(
-            "ai.preTick",
-            async () => await this.playerAiControllerAgent.preTick(getSimulationNow(this.scene))
-          );
-          if (!this.authorityActive) break;
+          if (this.pureBrain) {
+            this.telemetry.withSpan("ai.preTick", () =>
+              this.playerAiControllerAgent.preparePureDecision(getSimulationNow(this.scene))
+            );
+          } else {
+            await this.telemetry.withSpanAsync(
+              "ai.preTick",
+              async () => await this.playerAiControllerAgent.preTick(getSimulationNow(this.scene))
+            );
+          }
+          if (!this.authorityActive || !this.enabled) break;
           this.stepDecisionPlanner();
           if (this.telemetryFrameModulo && frameBeforeSnapshot % this.telemetryFrameModulo === 0) {
             this.blackboard.diagnostics.telemetry = this.telemetry.snapshot();
@@ -353,9 +356,15 @@ export class PlayerAiController {
     beginAiResourceDecision(this.scene, this.player.playerNumber, observation);
     const result = this.pureBrain.step(observation, this.brainState, bridge?.outcomes ?? []);
     this.dispatchAcceptedIntents(result.acceptedIntents, {
-      result, authority: bridge?.authority ?? result.nextState.authority,
-      input: captureAiDecisionInput(this.scene, observation,
-        this.playerAiControllerAgent.getCommittedCapabilityCatalog(), this.stepInterval, this.completedDecisionSequence)
+      result,
+      authority: bridge?.authority ?? result.nextState.authority,
+      input: captureAiDecisionInput(
+        this.scene,
+        observation,
+        this.playerAiControllerAgent.getCommittedCapabilityCatalog(),
+        this.stepInterval,
+        this.completedDecisionSequence
+      )
     });
     this.brainState = structuredClone(
       canonicalizeAiBrainStateV1({
@@ -388,7 +397,8 @@ export class PlayerAiController {
     }
   ): void {
     if (this.authorityActive === false || this.player.playerNumber === undefined) return;
-    if (decision) dispatchAiBrainResult(this.scene, this.player.playerNumber, decision.result, decision.authority, decision.input);
+    if (decision)
+      dispatchAiBrainResult(this.scene, this.player.playerNumber, decision.result, decision.authority, decision.input);
     else dispatchAiIntents(this.scene, this.player.playerNumber, intents);
   }
 

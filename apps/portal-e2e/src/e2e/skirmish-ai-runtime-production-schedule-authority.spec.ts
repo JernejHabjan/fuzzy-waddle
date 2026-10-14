@@ -157,4 +157,29 @@ test("abandonment releases forecasts while preserving already admitted work thro
       )
     })
   ).toContain("production_v2_forecast_not_released");
+  for (const originalKind of ["forecast", "provisional"] as const) {
+    const claims = selected.result.reservations.map((claim) => ({
+      ...claim,
+      state:
+        originalKind === "provisional"
+          ? {
+              kind: "provisional" as const,
+              expiresAt: { clock: "simulation", unit: "tick", dueTick: 100, persistence: "save" } as const
+            }
+          : { kind: "forecast" as const }
+    }));
+    const forged = evidence.decisions.map((entry, index) => ({
+      ...entry,
+      result: {
+        ...entry.result,
+        reservations:
+          index === 0
+            ? claims
+            : claims.map((claim) => ({ ...claim, state: { kind: "applied_spending" as const, appliedTick: 30 } }))
+      }
+    }));
+    expect(evaluateRuntimeProductionSchedule(contract, { ...evidence, decisions: forged })).toContain(
+      "production_v2_forecast_not_released"
+    );
+  }
 });

@@ -54,7 +54,12 @@ function isTerminal(outcome: AiCommandOutcomeV1): boolean {
   );
 }
 
-function reconcileReservations(state: AiBrainStateV1, outcomes: readonly AiCommandOutcomeV1[], tick: number) {
+/** Proposers and arbitration must see the same current leases and terminal command outcomes. */
+export function reconcileAiDecisionReservations(
+  state: AiBrainStateV1,
+  outcomes: readonly AiCommandOutcomeV1[],
+  tick: number
+) {
   const terminalCommands = new Set<string>(outcomes.filter(isTerminal).map((outcome) => outcome.identity.commandId));
   return reconcileAiProductionReservations(state.reservations, outcomes).filter((reservation) => {
     if (reservation.state.kind === "provisional") return reservation.state.expiresAt.dueTick > tick;
@@ -103,7 +108,7 @@ export function planAiDecisions(
       continuationCursor: ((existing?.continuationCursor ?? 0) + 1) % Math.max(1, profile.maxIntentProposalsPerStep)
     };
   });
-  const reservations = reconcileReservations(previous, outcomes, observation.tick);
+  const reservations = reconcileAiDecisionReservations(previous, outcomes, observation.tick);
   const overdue = previous.progress.filter((progress) => progress.milestoneDeadline.dueTick <= observation.tick);
   const blockers = [...previous.blockers];
   for (const progress of overdue) {

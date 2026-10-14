@@ -21,6 +21,13 @@ Neighboring `observation/` modules project actors/combat, the capability catalog
 remembered contacts, access products and mode context. Keep any new live-world projector behind the same owned-or-visible
 gate; a pure brain manager must never query Phaser directly.
 
+Pure preparation and selection run synchronously inside the same simulation-tick callback. The adapter refreshes
+owned resources/supply and delivered-income sampling, then calls `AiObservationPipeline.refreshNow`; a failed capture
+cannot dispatch using the retained older observation. Awaiting even a resolved promise here can let a render frame's
+remaining fixed ticks advance before selection, separating the consumed input from its native safety/authority facts.
+Bounded access products remain pending when unavailable. Legacy enemy-route and targeting waits belong only to the
+behavior-tree fallback's preparation path.
+
 `AiBrainStateV1` owns persistent goals, knowledge, demand, reservations, bases, squads, transports, fortifications, recovery, scheduling and deterministic identity state. Every persisted deadline uses simulation ticks. Canonical serialization sorts set-like data while preserving intentionally ordered data such as RNG state.
 
 Domain managers propose changes; they do not mutate the world. The brain merges each manager's owned state projection, resolves claims and budgets, and emits a deterministic intent order. A manager may replace only the state slice or keyed rows it owns.
@@ -28,6 +35,11 @@ Domain managers propose changes; they do not mutate the world. The brain merges 
 `ai-intent-arbiter.ts` owns this shared admission pass: stable intent ordering, observation preconditions, exclusive
 claims, real stockpile limits and posture-aware spending reservations. `ai-brain.ts` coordinates the pass and commits
 accepted claims/state; domain managers must not implement a competing admission path.
+
+Before collecting proposals, the brain reconciles reservations against the current tick and ordered outcomes using
+the planner's shared reconciliation function. Managers and arbitration therefore agree on expired leases and terminal
+commands. An expired gathering claim cannot hide a worker from required capacity for another decision; live claims
+still exclude the worker, and builder eligibility still preserves cargo delivery and existing construction.
 
 The Phaser bridge converts accepted intents to the same command path used by other controllers. Server/runtime validation remains authoritative for ownership, prerequisites, resources, queues, placement, paths and targets. Applied, rejected, duplicated, delayed and stale outcomes return through typed reconciliation.
 

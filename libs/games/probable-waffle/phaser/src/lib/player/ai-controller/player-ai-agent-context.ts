@@ -170,7 +170,20 @@ export abstract class PlayerAiAgentContext {
     await this.updateManagers(now);
   }
 
-  /** Returns the last atomically committed fair observation for the future pure-brain adapter. */
+  /** Captures a fresh input without yielding the simulation boundary; retained snapshots fail closed. */
+  preparePureDecision(now: number): void {
+    const tick = getSceneService(this.scene, SimulationTickService)?.currentTick ?? Math.max(0, Math.floor(now / 50));
+    const previous = this.observationPipeline.getObservation();
+    this.worldStateSnapshotManager.updateOwned(now);
+    this.economyManager.update(now);
+    this.scoutingManager.updateVisionSampling(now);
+    const observation = this.observationPipeline.refreshNow(tick);
+    if (!observation || observation === previous || observation.tick !== tick) {
+      throw new Error("ai_current_decision_observation_unavailable");
+    }
+  }
+
+  /** Returns the last atomically committed fair observation for pure decision selection. */
   getCommittedObservation() {
     return this.observationPipeline.getObservation();
   }
@@ -197,6 +210,10 @@ export abstract class PlayerAiAgentContext {
 
   protected async updateManagers(now: number): Promise<void> {
     const tick = getSceneService(this.scene, SimulationTickService)?.currentTick ?? Math.max(0, Math.floor(now / 50));
+    if (this.purePlannerOwnsCommands) {
+      this.preparePureDecision(now);
+      return;
+    }
     await this.observationPipeline.refresh(tick);
     await this.worldStateSnapshotManager.update(now);
     this.economyManager.update(now);

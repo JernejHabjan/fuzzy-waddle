@@ -52,8 +52,10 @@ import {
 import { knownValue, uniqueDomain, unknownValue } from "./ai-observation-values";
 import { projectAiProductionObligations } from "./ai-production-obligations";
 import { beginAiResourceInputRead } from "./ai-resource-input-observation";
-import { readAiResourceInputRead, rememberAiResourceInputRead } from
-  "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-resource-input-observation";
+import {
+  readAiResourceInputRead,
+  rememberAiResourceInputRead
+} from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-resource-input-observation";
 
 const MAX_ACCESS_PRODUCTS_PER_OBSERVATION = 4;
 const MAX_INVALIDATION_DEBT = 1024;
@@ -94,6 +96,11 @@ export class AiObservationPipeline {
 
   /** Captures and atomically publishes the newest generation, rejecting late work by generation. */
   async refresh(tick: number): Promise<AiObservationV1 | undefined> {
+    return this.refreshNow(tick);
+  }
+
+  /** Pure selection must capture and consume its input before the next simulation tick. */
+  refreshNow(tick: number): AiObservationV1 | undefined {
     if (this.player.playerNumber === undefined || !this.player.factionType || !isSceneActive(this.scene)) {
       return this.latestObservation;
     }
@@ -256,9 +263,11 @@ export class AiObservationPipeline {
       permittedTopology
     );
     const finishResourceRead = beginAiResourceInputRead(this.scene, this.player);
-    const obligations = projectAiProductionObligations(liveActors
-      .filter((actor) => getActorComponent(actor, OwnerComponent)?.getOwner() === playerNumber)
-      .flatMap((actor) => getActorComponent(actor, QueueComponent)?.allItems ?? []));
+    const obligations = projectAiProductionObligations(
+      liveActors
+        .filter((actor) => getActorComponent(actor, OwnerComponent)?.getOwner() === playerNumber)
+        .flatMap((actor) => getActorComponent(actor, QueueComponent)?.allItems ?? [])
+    );
     const resources = Object.values(ResourceType)
       .sort()
       .map((resourceType) => {

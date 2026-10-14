@@ -2,82 +2,80 @@
 
 [HANDOFF.md](HANDOFF.md) owns continuation. Read this file only for the selected production batch.
 
-## Current production checkpoint — 2026-10-14
+## Current checkpoint — 2026-10-14
 
-- Package 1; selected **PRO-03/06/07**. Combined delivery/prebuild/recovery/contention repair remains in progress.
-- Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`.
-  Base `1514acbe925dfd6617fe9b19ab4af4f3a0212426`; preserve unrelated Nx ancestor `59f72e037`.
-  The containing publication commit owns this update; verify HEAD/remote on resume.
-- Native browser inputs: ignored `tmp/ai-plans/759-validation/production-batch-stable-source.json`, digest
-  `f671cc5963f1024720b6f4a6612606b3f14ee7c37bc2092318c544138ac08c19` (26 owned inputs).
-  Final inputs: `production-batch-final-source.json`, digest
-  `618fd5a2520ac837c71c413743db6bb6399f5f6201b54bba2edc15813c3bb2eb` (30 owned inputs).
-  Movement-bound and finished-capacity reader repairs reuse retained raw captures. The final dated producer ordering
-  affects only future unit admission after its start date; all four future branches pass individually on final inputs.
-- Actual host model/effort is unavailable. Recommendation: **GPT-6.1 Sol / high** for unresolved coupled causal work.
+- Package 1 remains open; selected PRO-03/06/07. Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`,
+  branch `feature/759-skirmish-ai`. Published base `9187edfea`; structural checkpoint `489ecf410`.
+  Preserve unrelated Nx ancestor `59f72e037`. The containing publication commit owns the final ledger update.
+- Fresh cohort: **11/16 world outcomes pass = 68.75%; 5/16 remain = 31.25%**: four known failures and one unavailable
+  controlled setup. Fifteen captures close through 2000 with zero AI errors/dropped facts. Both strict PRO-03 future
+  pair gates now pass. This replaces the older 13/16 tally; changed cadence requires fresh evidence, not carried passes.
+- Native frame: ignored `recovery-boundary-source.json`, 46 inputs, digest
+  `15954d9f8b5459d4550636c74e532ff434e6db4d37ffb568850244e5611c8d39`.
+  Raw captures/summaries: `production-decision-boundary-worlds` (32.8 minutes). Latest bounded reduction:
+  `recovery-final-results.json`, under `tmp/ai-plans/759-validation`.
+  Final guard/reader frame: `recovery-closure-source.json`, 47 inputs, digest `dba133d3da405c4923c6d1e5ef3972c5ad32a5be39a307ce8441aca2cc1af0cc`.
+  Original summaries are unchanged. The final reader rechecks the retained Skaduwee abandonment capture; the final
+  representation guard has focused controls and a healthy 300-tick native smoke, not another full cohort.
+- Actual host model/effort is unknown. Recommended next: **GPT-6.1 Sol / high** for remaining coupled causal work.
 
-## Changed behavior / why
+## Authored / why
 
-- Owned pending rally orders are visible before activation, so routine squad/scout intake cannot erase delivery.
-  Essential defense can still interrupt. Owned queues expose exact shared effect IDs to avoid counting paid work twice.
-- Actor-target movement reserves actual endpoints, retries contested selections, uses the existing dynamic-blocker overlay
-  for known occupied corridors, and fences awaited work against its native pawn order. Range probes remain read-only.
-- Placement excludes its own builder's origin; shared construction rejects actual builder overlap before payment.
-  Capacity tries another eligible builder when the preferred worker has no known legal safe site.
-- After opening/housing, required capacity secures a cargo-safe eligible worker before optional gathering/food expansion.
-  Emergency workforce recovery still gates military work. Dated training maintains at most one compatible paid tail;
-  unknown/research/mixed queues, resource affordability and satisfied demand retain their refusal paths.
-- Pawn order settlement is idempotent across actor teardown and the later interrupted movement return. The strict
-  reader still rejects duplicate terminal receipts. Closed async builder-route proof now handles unfinished stationary
-  targets while retaining identity, position, navigation, level and loss checks.
-- A real 2000-tick world contained 266 movement executions. The existing reader bound is now 512 rather than 256;
-  exceeding it still drops the whole group and contradictory tails still fail. No new instrumentation is introduced.
-- Future unit admission prefers a compatible producer nearer the visible objective. The last Skaduwee unit had been
-  assigned to the distant producer by actor ID and arrived eleven ticks late. The idle-capacity premise now excludes
-  an unfinished same-tick prebuild; busy queues and a second actually ready producer still fail its controls.
+- The legacy agent is split into context, construction, economy and combat owners behind its existing facade. Existing
+  method bodies were preserved; this permits the timing repair without renewing a source-size baseline.
+- Pure preparation and selection run synchronously on one simulation tick. Owned resources/supply and income sampling
+  remain current; unused legacy enemy-route/target waits no longer delay pure input consumption. Failed capture cannot
+  dispatch a retained snapshot. Legacy preparation ordering remains covered.
+- Managers and arbitration share current reservation reconciliation. Expired leases no longer hide workers for another
+  decision. Live leases, cargo delivery and active construction retain their exclusion paths.
+- Skaduwee critical/safe producer and threat positions shift together by world `192,96`, separating the intended
+  producer-risk comparison from attacks on the inherited main base. Future granaries move from `0,1200` to `0,960`,
+  removing incidental economy-threat release from the commitment clock. No prices, durations, yields or combat values change.
+- Existing opt-in exposure proof checks the native selected weapon band at each frontier. Harmless visible movement
+  preserves classification; changed band/profile/level/visibility/identity or unavailable geometry still invalidates it.
+  Native representation is required; the zero-elevation fallback cannot repair missing authority.
+- Abandonment distinguishes released forecasts from paid construction claims. Retaining a formerly provisional claim
+  requires applied-spending state and an exact claim on a legal placement admitted before abandonment. Relabelled
+  forecasts and unproven applied claims still fail. Actual admitted construction may finish normally.
 
-## Controlled inputs / why
+## Checks / limits
 
-The critical/safe pairs now have four starting primary units and four visible ranged threats, differing only in producer
-position. Safe producer position is `800,752`; exposed position/loss at tick 800 remain unchanged. This retains a common
-unmet demand that a safe single lane can serve. Skaduwee future pairs start with six primary units rather than four,
-matching Tivara's actual remaining primary workload despite different inherited rosters. Neither prices, production
-or construction times, yields, combat values, committed deadlines nor acceptance predicates were changed.
+- Gameplay: 73 suites / 329 tests pass. Core Phaser gate: 178 suites / 910 tests pass; final exposure/cadence/owned-state
+  controls: 5 suites / 19 tests pass with the later band/representation checks. Reader controls: 318 pass, including
+  retained-unspent and forged-paid negatives.
+- Fixture controls: 3 pass. Portal-e2e/native/gameplay types and owned lint pass. Production build passes with the existing
+  initial-bundle warning. Final owner-specific counts and logs are retained as `recovery-closure-*`.
+- The short safe-world smoke reaches 300 with every captured input/selection tick equal. It checks the final guard's
+  healthy path; it is not 2000-tick certification.
+- Tivara future worlds pass and share input/selection tick 160, plan `plan:production-transition:2:7`, begins 700,
+  deadline 1500. Skaduwee pair shares tick 220, plan `plan:production-transition:2:10`, begins 760, deadline 1560;
+  its abandonment now passes the final reader. Do not normalize these dates or weaken usefulness.
 
-## Checks and native evidence
+## Exact remaining failures — group these owners
 
-- Gameplay: **72 suites / 327 tests** pass; Phaser: **175 suites / 901 tests** pass before the final pure-only ordering change.
-- Reader controls: **318** pass, including movement bounds and same-tick unfinished-capacity controls.
-- Fixture: **3** controls pass; portal-e2e/gameplay/native types pass. Uncached production build passes with the
-  existing initial-bundle warning. Owned formatting passes; lint has zero errors and six existing warnings.
-- Full cohort: `production-batch-stable-worlds` (36.5 minutes); final-source four future worlds:
-  `production-batch-final-future` (12.2 minutes). All artifacts are under ignored `tmp/ai-plans/759-validation`.
-  `production-batch-combined/results.json` rechecks the twelve unaffected branches plus four fresh futures with final
-  readers and per-world source frames. **13/16 outcomes = 81.25% pass / 3/16 = 18.75% remain; two pair gates fail.**
-  Every retained world closes through 2000, with zero AI errors/dropped facts. Original summaries/raw files are unchanged.
-- Final future prebuild, fulfilment, actual useful arrivals and abandonment pass for both factions. Shared contention,
-  actual cancellation/refund, low-value and no-demand controls pass for both factions; Tivara safe-served also passes.
-- Tivara critical replacement finishes at 697 before original loss at 800. Builder proof, retained actor and useful
-  post-loss output pass; exposure bindings unavailable at 774, 781 and 941 keep safe-replacement history open.
-- Skaduwee critical has no producer placement. At tick 100 native pairs report exposure, strategy requires seven,
-  and macro capacity remains `dated_military_throughput`, desired one. Trace the target/count/freshness gates before
-  changing inputs or policy; the precise veto is not yet established. Safe-served first eligible evidence is in
-  emergency posture with a scouting assessment. These controlled-input/demand premises still require coherent repair.
-- Both final future pairs fail `production_pair_common_commitment_missing`. Tivara committed/abandoned input ticks
-  are 168/180, selected at 170/180, begins 708/720, deadlines 1508/1520. Skaduwee inputs are 221/235, selected at
-  221/237, begins 761/775, deadlines 1561/1575. Plan/decision identities differ too. Preserve these exact clocks;
-  passing each world's own deadline does not prove common pre-control commitment or repeated determinism.
+1. **Awaited output-route freshness/usefulness:** Skaduwee future-committed lacks useful-force proof; both shared-contention
+   worlds lack strategic-contention proof. Produced units and research completions exist, but some required outputs
+   lack a current attributed rally route. Skaduwee outputs at 1059 have actual original-destination movement returns;
+   their route-current proof is missing. Tivara's upgraded output at 1719 lacks completed useful-arrival proof.
+   Inspect original rally queries against later formation/service queries; preserve actor/order, origin, level and
+   navigation ownership. Do not accept a stale query merely because later movement returns true.
+2. **Fair loss continuity:** Tivara replacement is ready at 693, retained through 2000 with builder work and useful
+   post-loss output. Bound exposure is safe at decisions; continuity is unavailable at 755–759 and 888–899 when fair
+   threats disappear. Distinguish an observed native death from hidden/unknown loss without allowing reuse or stale
+   profiles to revive a binding. Ordinary loss/visibility rejection stays mandatory.
+3. **Skaduwee pinned loss setup:** `runtime_preset_event_target_mismatch:original-producer-loss` prevents a complete
+   result. The controlled event must affect the pinned original, never a replacement selected by object name. Inspect
+   the original's actual pre-800 lifetime and reaction/build timing before changing setup or policy. This is unavailable
+   setup evidence, not a passing recovery world or a measured useful-output failure.
 
-## Closure and next action
+## Closure audit and next boundary
 
-Implementation review traces observation privacy, proposals/claims, shared application, native route ownership and
-reader joins. Omission Audit retains all sixteen branch/control obligations; authored controls are not native acceptance.
-The separate Final Closure Audit confirms a checked source checkpoint with the three world failures and two pair gates
-explicitly open. Publication verification is reported at delivery. Do not claim all production scenarios closed:
-PRO-01/02/04/05 recipes still need certification; H-17 still lacks a registered fixture/real-world recipe.
+Implementation review and Omission Audit cover the one-tick boundary, fair inputs, shared authority, current claims,
+legacy fallback and opt-in cleanup. Final Closure Audit leaves the five outcomes above explicitly open; the batch is a
+checked implementation checkpoint, not production acceptance. Finish these related owners together, rerun affected
+critical/future/contention cases, and reuse unaffected controls with per-source provenance. Do not restart all sixteen
+while the named causes remain unresolved. Managed server is stopped at publication.
 
-On resume, verify HEAD/remote, then repair the related native exposure continuity, Skaduwee critical/safe demand/admission
-and asynchronous future-prefix timing owners together. The owned server is stopped. Reuse these retained failures;
-do not rerun the entire gate while known premises are unresolved. No new skill/tool/profiler is added. Machinery review
-remains the last roadmap task. Registration stays pure 56/111 and supported runtime 19/116; this checkpoint does not
-advance global scenario registration or claim an overall AI-completion percentage.
+PRO-01/02/04/05 still need scenario-level certification, H-17 lacks registered coverage, and PRO-07 needs an explicit
+pure ID/spec mapping. Registration remains pure 56/111 and supported runtime 19/116; overall AI completion is unavailable.
+No new tool/skill/profiler is added. Machinery necessity review/removal remains the last roadmap task.

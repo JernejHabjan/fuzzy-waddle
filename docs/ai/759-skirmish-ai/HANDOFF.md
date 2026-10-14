@@ -6,23 +6,29 @@ Do not load the full plan directory or archive on startup.
 ## Current cursor
 
 - Worktree: `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`; branch: `feature/759-skirmish-ai`.
-- Checked production batch base: `1514acbe925`.
+- Checked production batch base: `9187edfea`; local structural checkpoint: `489ecf410`.
   The containing publication commit owns this update; verify actual HEAD/remote on resume.
 - **Package 1, production: in progress; selected PRO-03/06/07.** Checked source checkpoint:
-  **13/16 world outcomes = 81.25% passing / 3/16 = 18.75% remaining**; two future pair gates also remain open.
-  All four final-source future worlds and all four queue/refund worlds pass individually. Production acceptance is open.
-- First action: read the exact blockers in CURRENT-EVIDENCE, then trace them together before editing: Skaduwee
-  critical capacity stays at one despite native exposure; its safe control enters emergency posture; Tivara's replacement
-  loses continuous exposure bindings at 774, 781 and 941. Future pairs also commit at different inputs/selection ticks.
-  Repair the related observation/cadence/demand/setup owners together, retain strict predicates, then run affected
-  critical/safe/future controls. Do not restart all sixteen worlds while these named blockers are unresolved.
+  **11/16 world outcomes = 68.75% passing / 5/16 = 31.25% remaining**: four failures and one unavailable setup.
+  Both strict future pair gates pass. Fresh captures replace the older 13/16 tally; production acceptance remains open.
+- Authored repair: pure preparation/selection now share a synchronous tick; proposals see reconciled current leases.
+  Skaduwee admits critical capacity at 220; its paired safe setup avoids attacking the inherited main base. Future
+  granaries no longer sit beside the objective's enemies. Exposure continuity measures the same native weapon band,
+  retaining visibility/identity/profile refusal paths. Focused controls, types and build pass.
+- Completed sixteen-world attempt: ignored `production-decision-boundary-worlds`, source frame
+  `recovery-boundary-source.json` (46 inputs, digest `15954d9f8b5459d4550636c74e532ff434e6db4d37ffb568850244e5611c8d39`).
+  Latest reader reduction: `recovery-final-results.json`. Fifteen complete captures, zero AI errors/dropped facts.
+  Final representation guard has focused controls and a 300-tick healthy smoke. Managed server is stopped at publication.
+- First action: repair three related owners together: awaited rally-route freshness for Skaduwee future output and
+  both shared-contention worlds; fair loss continuity for Tivara's ready/retained replacement; Skaduwee's pinned-original
+  loss setup (`runtime_preset_event_target_mismatch`). Trace exact native receipts and actual lifetime first, retaining
+  actor/order/origin/level/navigation, hidden-loss and reuse guards. Rerun affected worlds together, not the whole cohort
+  while these causes remain unresolved. [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) has the bounded failure lookup.
 - Source anchors: `planning/ai-friendly-rally.ts`, `planning/ai-decision-planner.ts`,
   `planning/ai-production-transition.ts` under the gameplay AI controller; Phaser
   `world/services/navigation-object-routes.ts`; `tools/ai/fixtures/production-authority-runtime.json`.
-- Exact failures, retained passes and artifact names: selected sections of [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md).
-  Full cohort: `production-batch-stable-worlds`; four final-source futures: `production-batch-final-future`;
-  current-reader combined results: `production-batch-combined/results.json`, all under ignored `tmp/ai-plans/759-validation`.
-  Owned server is stopped. Do not claim the whole production package closed.
+- Artifact paths above are under ignored `tmp/ai-plans/759-validation`. No raw capture is committed.
+  Earlier cohorts remain history references; use the current reduction on startup.
 - Recommended next model: **GPT-6.1 Sol / high** for this coupled repair. Actual host settings are unknown.
 
 ## What “continue” means
