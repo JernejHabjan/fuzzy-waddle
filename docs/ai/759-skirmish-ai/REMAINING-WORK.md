@@ -69,14 +69,10 @@ then perform closure audits and publication; do not start another expansion cycl
 
 ## Required batch report and progress percentages
 
-Every implementation batch ends with these short sections, using a few bullets in each:
-
-- **Done / why:** two to four bullets naming changed behavior, its purpose and the evidence obtained. Say whether
-  something was authored, tested or fully validated; do not equate those states.
-- **Progress:** current package and selected IDs; percentage completed and remaining with the numerator/denominator,
-  source/evidence date and metric label. Include newly closed outcomes and still-failing/missing items.
-- **Next / why:** two to four bullets naming the next concrete repairs/outcomes and why they matter. State which
-  related work will be batched together, then the recommended model/effort and publication/pause status.
+Use the authoritative [batch report format](HANDOFF.md#batch-report-and-progress) for every implementation batch
+and every requested done/next summary. Explain changed behavior and its purpose in plain language, with evidence
+status, concrete grouped follow-up, publication status and model/effort recommendation. Progress includes the current
+package/selected IDs, exact counts and metric labels, source/evidence date, and newly closed or still-failing/missing items.
 
 Use separate percentages for fixture registration and validated behavior. Calculate from the existing manifest and
 retained complete evidence, not commit counts, elapsed sessions, helper counts or guesses. Four content-deferred runtime

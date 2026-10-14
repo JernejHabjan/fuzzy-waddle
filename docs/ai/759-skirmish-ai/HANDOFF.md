@@ -69,9 +69,20 @@ purpose and affected checks. Latest gameplay checkpoint changed no prices, times
 
 ## Batch report and progress
 
-- **Done / why:** a few bullets naming changed outcomes, purpose and authored/tested/validated evidence.
-- **Progress:** current package/IDs; completed and remaining percentages with counts and metric labels.
-- **Next / why:** a few concrete actions and purposes; grouped scope, model/effort and push/pause status.
+Use this format at every batch boundary and whenever the user asks what was done or what comes next:
+
+- **Done / why:** two to four short bullets explaining the actual behavior changed and why it helps gameplay or
+  trustworthy evaluation. Use plain language; name files or implementation details only when they help understanding.
+  Distinguish authored changes from tested or validated outcomes, and state any remaining failures plainly.
+- **Progress:** name the current package/selected outcomes, then give passing and remaining counts and percentages
+  with their exact denominator. Distinguish failed outcomes from unavailable setups; a subset pass is not package closure.
+- **Next / why:** two to four short bullets naming concrete next repairs and what each will enable or prevent.
+  Group related work into one batch and explain why it belongs together; avoid vague labels such as “continue validation”.
+- **Publication / recommendation:** briefly state commit/push and pause status, then the recommended next model/effort
+  and one reason. Do not imply that a recommendation changes the active settings.
+
+Keep the report self-contained and concise. A documentation-only update reports the instruction change and leaves
+gameplay progress unchanged. The execution plan links to this format rather than maintaining a second template.
 
 Registration baseline: pure **56/111 = 50.5% complete / 49.5% remaining**; supported runtime
 **19/116 = 16.4% / 83.6%**, excluding four deferred runtime rows. These are not overall AI completion.
