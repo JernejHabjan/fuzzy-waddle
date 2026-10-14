@@ -8,6 +8,7 @@ import { routeOrderFixture } from "./skirmish-ai-runtime-route-order-fixture";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
 import { validateRuntimeRouteOrders } from "./skirmish-ai-runtime-route-order-validation";
 import { projectRuntimeRouteOrder } from "./skirmish-ai-runtime-route-order-projection";
+import { validateRuntimeRouteCallers } from "./skirmish-ai-runtime-route-caller-validation";
 
 /** Synthetic contract evidence only; no fixture proves useful native movement. */
 function callerFixture(rally = false) {
@@ -67,6 +68,31 @@ test("exact rally caller retains unstamped origin without borrowing purchase dem
     selectedDemand: null,
     rally: { spatial: { outputId: 1 } }
   });
+});
+
+test("actor/boarding admission can avoid known dynamic blockers, while probes and empty overlays remain invalid", () => {
+  for (const caller of ["actor_movement", "boarding_adjacent", "range_probe", "reachability_probe"] as const) {
+    for (const dynamicBlockerCount of [0, 1]) {
+      const f = callerFixture();
+      const facts = f.capture.facts.map(
+        (fact): AiRuntimeProductionFactV1 =>
+          fact.kind === "spatial_authority" && fact.spatial.kind === "producer_path"
+            ? {
+                ...fact,
+                spatial: {
+                  ...fact.spatial,
+                  method: "tile_dynamic",
+                  dynamicBlockerCount,
+                  queryCaller: { ...f.caller, caller }
+                }
+              }
+            : fact
+      );
+      const result = validateRuntimeRouteCallers({ ...f.capture, facts });
+      const valid = dynamicBlockerCount > 0 && ["actor_movement", "boarding_adjacent"].includes(caller);
+      expect(result.failures.includes("production_route_query_caller_method_invalid")).toBe(!valid);
+    }
+  }
 });
 
 for (const caller of ["range_probe", "reachability_probe", "actor_movement", "boarding_adjacent"] as const) {
@@ -319,7 +345,11 @@ test("invocation overflow drops the whole route group and still inspects the las
     ...f.fact({
       ...f.resolved,
       queryId: RUNTIME_ROUTE_HISTORY_LIMIT + 1,
-      queryCaller: { ...f.caller, invocationId: RUNTIME_ROUTE_HISTORY_LIMIT + 1, order: { ...f.currentOrder, commandContext: null } }
+      queryCaller: {
+        ...f.caller,
+        invocationId: RUNTIME_ROUTE_HISTORY_LIMIT + 1,
+        order: { ...f.currentOrder, commandContext: null }
+      }
     }),
     sequence: facts.length + 1
   });

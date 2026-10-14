@@ -97,25 +97,26 @@ the registration percentage as the percentage of AI implementation completed or 
 
 ## Immediate production repair list
 
-1. **Army arrival:** prevent normal squad intake before a produced unit's queued rally becomes active; resolve
-   async endpoint contention/fallback and retain exact awaited-route continuity. Tivara's retained run has seven
-   qualified future arrivals, with two required outputs unqualified. Close when the demanded force reaches the
-   intended target before its fixed deadline through actual native orders/movement.
-2. **Capacity timing:** explain and repair Skaduwee's construction/admission lead time. Its final 2000-tick run passes
-   force and commitment retention, but fails prebuilt capacity and useful arrival. Close when capacity is actually ready
-   before its scheduled production need, with the paired unnecessary-capacity control still refusing extra construction.
-3. **Producer-loss recovery:** replace inconsistent critical/safe demand setup with the same fair unmet demand that
-   one safe lane can serve. Prove ready replacement and actual useful output after the original loss at tick 800.
-   Stronger experimental armies are not an accepted shortcut: they legitimately created throughput demand in the safe control.
-4. **Shared train/research lane:** retain ready-queue preflight and exact completion joins; demonstrate useful outputs
-   under real shared-lane contention, paid cancellation and pending-refund controls. A reader replay alone is insufficient.
-5. **Grouped production gate:** run all 16 worlds only after these known blockers are repaired. Retain earlier passing
-   abandonment/refund subsets as scoped evidence; rerun affected branches when shared source changes invalidate them.
+1. **Future delivery/prebuild:** individually validated for both factions on the final 2026-10-14 source. Pending rallies,
+   endpoints, capacity-builder priority, bounded training tails and nearer-producer final-unit admission are repaired.
+   Both abandonment controls pass. Do not revisit these repairs without new failures.
+2. **Common future prefix:** both committed/abandoned pairs still have different input/selection ticks, plan IDs and
+   dates before the control event. Trace asynchronous observation/cadence admission; retain strict common-commitment
+   and fixed-deadline assertions. Individual world passes do not close this paired gate.
+3. **Producer-loss recovery:** three outcomes remain. Tivara replacement is ready at 697, before loss at 800, and
+   produces useful output afterward, but safety bindings are unavailable at 774/781/941. Skaduwee critical has no
+   producer placement despite native exposure and required force seven; capacity remains desired one. Its safe control
+   enters emergency posture. Trace related freshness, count/target, admission and fair setup gates together.
+4. **Shared train/research lane:** all four two-faction native contention/cancellation/pending-refund worlds pass.
+   Preserve exact joins and actual-refund boundaries. PRO-07 still needs an explicit pure ID/spec mapping.
+5. **Grouped gate:** **13/16 world outcomes pass (81.25%); three remain (18.75%), plus two future pair gates.**
+   Repair the related critical/safe/future owners in one batch, then run their affected controls together; repeat the
+   entire gate only at a stable boundary when shared changes justify it. Retain unaffected low/no-demand and lane evidence.
 
-Already checked at `0d3864198`: 895 native tests, 316 gameplay tests, 455 reader controls, types, owned lint and build.
-These certify their controls, not every scenario in this inventory. Both abandonment branches and refund branches
-have passing retained subsets. Do not repeat unchanged broad source checks or investigate their repaired defects again
-without new evidence.
+Current source provenance, checks and precise failures are in [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md):
+327 gameplay tests, 901 native controls before the final pure ordering change, 318 reader controls, types, owned lint,
+formatting and build. These certify their controls, not every production scenario. PRO-01/02/04/05 and H-17 remain
+separate required outcomes; selected gate progress is not overall production or AI completion.
 
 ## Other concrete gaps already established
 

@@ -134,7 +134,14 @@ Existing, queued, under-construction and accepted-not-yet-observed capacity coun
 Construction chooses the nearest permitted footprint with a stable key tie-break; reservations separate concurrent
 sites. Current observed bodies block placement even when they do not block travel. The local builder flood follows
 `groundPassable`, while footprint admission also checks `observedBlocked`; mobile workers must not wall themselves in.
-Shared construction still rechecks actual collisions before accepting the site.
+Shared construction still rechecks actual collisions before accepting the site, including its assigned builders:
+placing a blocking footprint over a worker strands the worker before construction can start.
+
+Routine army/scout intake preserves both active and next queued native Moves to an owned actor; emergency defense
+can interrupt them. Actor movement reserves a currently free endpoint after its asynchronous route resolves and
+reselects a contested endpoint with bounded retries. A known occupied corridor uses the existing dynamic-blocker
+pathfinder at admission. Native pawn-order identity fences awaited movement even when diagnostic capture is off;
+capture context supplies evidence only. Completion/failure releases the destination reservation through normal cleanup.
 
 A saved future-force commitment survives a temporary `route_pending` assessment for the same visible target while
 its force deficit remains. Its original dates stay fixed. Missing targets, actual retargeting, withdrawn demand and
@@ -145,9 +152,20 @@ route pause. A positive unchanged demand remains committed until its exact produ
 The future schedule includes one slowest-default planning interval (40 ticks) for construction admission, followed
 by its existing unit-cycle travel allowance and catalog-priced builder work. This accounts for command admission
 between decisions; the eight-work force horizon remains fixed. Real construction must still finish before unit admission.
+After opening and housing proposals, required military capacity reserves its eligible builder before optional
+gathering and food expansion. The shared cargo/return checks and emergency workforce recovery still gate admission;
+the priority does not authorize an unavailable worker or change committed dates.
 Native outcomes may canonicalize a legacy effect ID with one leading `effect:` prefix. Reconciliation prefers the exact
 reservation and permits only a unique normalized match, then releases that reservation's original claim family.
 Completed training therefore frees its lane without waiting for an unrelated provisional lease to expire.
+Owned queued effects are excluded from accepted-but-unobserved work by their shared effect identity. Dated force
+production keeps at most one compatible paid tail behind an active unit, bounded by actual queue capacity, budget
+and outstanding demand. Admission leases use a free claim key rather than the queue's shifting item index. Unknown
+or mixed/research heads retain conservative admission; this does not turn a backlog slot into parallel throughput.
+Dated unit admission prefers compatible producers nearer the currently visible objective using known logical positions.
+This avoids assigning the final needed unit to a distant lane solely by actor ID. Producers with unknown positions
+follow known candidates; an unknown objective position retains the existing order. Native arrival still determines
+usefulness, and ordinary production keeps its existing order.
 
 Macro construction and opening production carry catalog-priced resource claims into shared intent arbitration. Several
 simultaneous proposed buildings may each be individually affordable, but only the combination that fits unreserved
@@ -194,6 +212,8 @@ does not prove that this worker created the building or supply independent usefu
 Delayed resource returns have one in-flight transfer per carrier. A replacement order cannot offer the same pile to
 another drain until the first transfer settles. The debit still uses live cargo, and its notification retains the
 original offered resource type. Completion and rejection both release the guard for subsequent work.
+Actor teardown settles each addressed pawn order once. A late movement failure after teardown cannot publish a
+second terminal outcome for that same order; new orders retain independent terminal reporting.
 
 - Replace lost workers and critical productive capacity when economically feasible.
 - Restore sustainable food and compatible drop-off service after depletion or destruction.

@@ -23,6 +23,8 @@ import { classifyPlayerPawnOrderTerminalOutcome } from "./player-pawn-order-term
  * Actor-local collaborators own no subscriptions, timers or saved state; the controller owns their lifetime.
  */
 export class PawnAgentOrders {
+  private readonly settledOrders = new WeakSet<OrderData>();
+
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
     private readonly blackboard: PawnAiBlackboard
@@ -79,18 +81,20 @@ export class PawnAgentOrders {
         case OrderType.Move:
           // movement cancelled below
           break;
-        case OrderType.Build:
+        case OrderType.Build: {
           const builderComponent = getActorComponent(this.gameObject, BuilderComponent);
           if (builderComponent) {
             builderComponent.leaveConstructionSite();
           }
           break;
-        case OrderType.Repair:
+        }
+        case OrderType.Repair: {
           const builderComponent2 = getActorComponent(this.gameObject, BuilderComponent);
           if (builderComponent2) {
             builderComponent2.leaveRepairSite();
           }
           break;
+        }
       }
 
       // cancel any ongoing attack (e.g., active projectile flight)
@@ -116,7 +120,8 @@ export class PawnAgentOrders {
 
   private reportOrderTerminalOutcome(order: OrderData | undefined, reason: string): void {
     const context = order?.data.commandContext;
-    if (!context) return;
+    if (!order || !context || this.settledOrders.has(order)) return;
+    this.settledOrders.add(order);
     const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
     const tick = getSceneService(this.gameObject.scene, SimulationTickService)?.currentTick ?? 0;
     const terminal = classifyPlayerPawnOrderTerminalOutcome(reason);
@@ -147,10 +152,13 @@ export class PawnAgentOrders {
     const commandIds = new Set<string>();
     for (const order of orders) {
       const commandId = order.data.commandContext?.execution.commandId;
-      if (!commandId || commandIds.has(commandId)) continue;
+      if (!commandId) continue;
+      if (commandIds.has(commandId)) {
+        this.settledOrders.add(order);
+        continue;
+      }
       commandIds.add(commandId);
       this.reportOrderTerminalOutcome(order, "actor destroyed before order completion");
     }
   }
-
 }

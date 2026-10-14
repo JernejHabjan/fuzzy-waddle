@@ -116,35 +116,58 @@ export class MovementSystem {
     queryContext?: MovementQueryContext
   ): Promise<boolean> {
     if (!isGameObjectActiveInActiveScene(this.gameObject)) {
-      MovementCompletionObservation.begin(queryContext?.actor === this.gameObject ? queryContext : undefined,
-        "path", tileVec3)?.returned(false);
+      MovementCompletionObservation.begin(
+        queryContext?.actor === this.gameObject ? queryContext : undefined,
+        "path",
+        tileVec3
+      )?.returned(false);
       return false;
     }
     const flyingComponent = getActorComponent(this.gameObject, FlyingComponent);
     const usePathfinding = !flyingComponent;
-    const completion = MovementCompletionObservation.begin(queryContext?.actor === this.gameObject ? queryContext : undefined,
-      usePathfinding ? "path" : "direct", tileVec3);
+    const completion = MovementCompletionObservation.begin(
+      queryContext?.actor === this.gameObject ? queryContext : undefined,
+      usePathfinding ? "path" : "direct",
+      tileVec3
+    );
     if (!usePathfinding) {
       completion?.destination(tileVec3);
-      return this.tween.moveDirectlyToLocationWithoutPathfinding(tileVec3, pathMoveConfig, completion)
-        .then(() => { completion?.returned(true); return true; })
-        .catch(() => { completion?.returned(false); return false; });
+      return this.tween
+        .moveDirectlyToLocationWithoutPathfinding(tileVec3, pathMoveConfig, completion)
+        .then(() => {
+          completion?.returned(true);
+          return true;
+        })
+        .catch(() => {
+          completion?.returned(false);
+          return false;
+        });
     }
 
-    if (!this.runtime.navigationService) { completion?.returned(false); return false; }
+    if (!this.runtime.navigationService) {
+      completion?.returned(false);
+      return false;
+    }
 
     let path: Vector2Simple[] | null;
     try {
-      path = await MovementQueryObservation.invoke(this.gameObject, queryContext, "initial",
-        () => this.runtime.navigationService!.findPathFromGameObjectToTile(this.gameObject, tileVec3));
-    } catch (error) { completion?.threw(); throw error; }
+      path = await MovementQueryObservation.invoke(this.gameObject, queryContext, "initial", () =>
+        this.runtime.navigationService!.findPathFromGameObjectToTile(this.gameObject, tileVec3)
+      );
+    } catch (error) {
+      completion?.threw();
+      throw error;
+    }
     // EasyStar returns [] when start equals destination. Confirm the live position after the async query;
     // missing/no-route results remain failures. A singleton uses normal arrival callbacks and reservation cleanup.
     if (path?.length === 0 && isGameObjectActiveInActiveScene(this.gameObject)) {
       const currentTile = getGameObjectCurrentTile(this.gameObject);
       if (currentTile?.x === tileVec3.x && currentTile.y === tileVec3.y) path = [{ ...currentTile }];
     }
-    if (!path || !path.length) { completion?.returned(false); return false; }
+    if (!path || !path.length) {
+      completion?.returned(false);
+      return false;
+    }
 
     if (this.DEBUG) console.log(`Moving to tile ${tileVec3.x}, ${tileVec3.y}`);
 
@@ -159,7 +182,12 @@ export class MovementSystem {
         // Remove the first tile, as it's the current tile
         path.shift();
         await this.pathExecution.moveAlongPathByFollowingPreCalculatedStaticPath(
-          path, pathMoveConfig, undefined, queryContext, completion);
+          path,
+          pathMoveConfig,
+          undefined,
+          queryContext,
+          completion
+        );
         success = true;
       }
     } catch (e) {
@@ -188,34 +216,113 @@ export class MovementSystem {
   ): Promise<boolean> {
     const flyingComponent = getActorComponent(this.gameObject, FlyingComponent);
     const usePathfinding = !flyingComponent;
-    const completion = MovementCompletionObservation.begin(queryContext?.actor === this.gameObject ? queryContext : undefined,
-      usePathfinding ? "path" : "direct");
+    const completion = MovementCompletionObservation.begin(
+      queryContext?.actor === this.gameObject ? queryContext : undefined,
+      usePathfinding ? "path" : "direct"
+    );
     if (!usePathfinding) {
       const vec3 = getGameObjectCurrentTile(destinationGameObject);
-      if (!vec3) { completion?.returned(false); return false; }
+      if (!vec3) {
+        completion?.returned(false);
+        return false;
+      }
       completion?.destination(vec3);
-      return this.tween.moveDirectlyToLocationWithoutPathfinding(
-        {
-          x: vec3.x,
-          y: vec3.y,
-          z: 0
-        } satisfies Vector3Simple,
-        pathMoveConfig as PathMoveConfig,
-        completion
-      )
-        .then(() => { completion?.returned(true); return true; })
-        .catch(() => { completion?.returned(false); return false; });
+      return this.tween
+        .moveDirectlyToLocationWithoutPathfinding(
+          {
+            x: vec3.x,
+            y: vec3.y,
+            z: 0
+          } satisfies Vector3Simple,
+          pathMoveConfig as PathMoveConfig,
+          completion
+        )
+        .then(() => {
+          completion?.returned(true);
+          return true;
+        })
+        .catch(() => {
+          completion?.returned(false);
+          return false;
+        });
     }
 
     // Actor-target movement snapshots a path to the nearest reachable tile by
     // the target object. The order stays deterministic until recovery chooses
     // to wait, sidestep, or repath after a blockage.
+    const board = getActorComponent(this.gameObject, PawnAiController)?.blackboard;
+    const owningOrder = board?.getCurrentOrder();
     let path: Vector2Simple[] | null;
     try {
-      path = await this.getPathToClosestNavigableTileBetweenGameObjectsInRadius(
-        destinationGameObject, pathMoveConfig?.radiusTilesAroundDestination, queryContext);
-    } catch (error) { completion?.threw(); throw error; }
-    if (!path || !path.length) { completion?.returned(false); return false; }
+      path = null;
+      // Object queries also serve range probes, so only the movement owner reserves an endpoint.
+      // Requery a contested async selection before beginning movement; retain bounded failure when no slot is free.
+      for (let attempt = 0; attempt < 3; attempt++) {
+        let candidate = await this.getPathToClosestNavigableTileBetweenGameObjectsInRadius(
+          destinationGameObject,
+          pathMoveConfig?.radiusTilesAroundDestination,
+          queryContext
+        );
+        if (
+          !isGameObjectActiveInActiveScene(this.gameObject) ||
+          !isGameObjectActiveInActiveScene(destinationGameObject) ||
+          (owningOrder && board?.getCurrentOrder() !== owningOrder)
+        )
+          break;
+        const endpoint = candidate?.at(-1);
+        if (!endpoint) break;
+        const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+        const occupancy = this.runtime.movementOccupancyService;
+        const navigation = this.runtime.navigationService;
+        const blockers =
+          actorId && occupancy
+            ? occupancy.getDynamicBlockersForActor(actorId, { includeDestinationReservations: false })
+            : [];
+        // Avoid a known occupied corridor on admission rather than spending the delivery budget on repeated recovery.
+        if (
+          candidate?.some((tile) =>
+            blockers.some(
+              (blocker) =>
+                blocker.tile.x === tile.x &&
+                blocker.tile.y === tile.y &&
+                blocker.heightLayer === (navigation?.getNavigableHeightAtTile(tile) ?? 0)
+            )
+          )
+        ) {
+          candidate = navigation
+            ? await MovementQueryObservation.invoke(this.gameObject, queryContext, "initial", () =>
+                navigation.findPathFromGameObjectToTileAvoidingDynamicBlockers(this.gameObject, endpoint, blockers)
+              )
+            : null;
+        }
+        if (
+          !candidate?.length ||
+          !isGameObjectActiveInActiveScene(this.gameObject) ||
+          !isGameObjectActiveInActiveScene(destinationGameObject) ||
+          (owningOrder && board?.getCurrentOrder() !== owningOrder)
+        )
+          break;
+        if (
+          actorId &&
+          occupancy &&
+          !occupancy.reserveDestination(
+            actorId,
+            occupancy.getActorFootprintAtTile(this.gameObject, endpoint),
+            this.runtime.navigationService?.getNavigableHeightAtTile(endpoint) ?? 0
+          )
+        )
+          continue;
+        path = candidate;
+        break;
+      }
+    } catch (error) {
+      completion?.threw();
+      throw error;
+    }
+    if (!path || !path.length) {
+      completion?.returned(false);
+      return false;
+    }
 
     this.cancelMovement();
 
@@ -224,7 +331,12 @@ export class MovementSystem {
       completion?.destination(path[path.length - 1]);
       path.shift();
       await this.pathExecution.moveAlongPathByFollowingPreCalculatedStaticPath(
-        path, pathMoveConfig as PathMoveConfig, undefined, queryContext, completion);
+        path,
+        pathMoveConfig as PathMoveConfig,
+        undefined,
+        queryContext,
+        completion
+      );
       success = true;
     } catch {
       // Preserve the native false result after destination cleanup; cleanup errors still reject.
@@ -243,9 +355,16 @@ export class MovementSystem {
     this.commandBusSubscription?.unsubscribe();
   }
 
-  async canMoveTo(targetGameObject: Phaser.GameObjects.GameObject, range?: number,
-    queryContext?: MovementQueryContext): Promise<boolean> {
-    const path = await this.getPathToClosestNavigableTileBetweenGameObjectsInRadius(targetGameObject, range, queryContext);
+  async canMoveTo(
+    targetGameObject: Phaser.GameObjects.GameObject,
+    range?: number,
+    queryContext?: MovementQueryContext
+  ): Promise<boolean> {
+    const path = await this.getPathToClosestNavigableTileBetweenGameObjectsInRadius(
+      targetGameObject,
+      range,
+      queryContext
+    );
     return !!path && path.length > 0;
   }
 
@@ -255,9 +374,13 @@ export class MovementSystem {
     queryContext?: MovementQueryContext
   ): Promise<Vector2Simple[] | null> {
     if (!this.runtime.navigationService) throw new Error("No navigationService");
-    return MovementQueryObservation.invoke(this.gameObject, queryContext, "initial",
-      () => this.runtime.navigationService!.findAndUseNavigablePathBetweenGameObjectsWithRadius(
-        this.gameObject, targetGameObject, range));
+    return MovementQueryObservation.invoke(this.gameObject, queryContext, "initial", () =>
+      this.runtime.navigationService!.findAndUseNavigablePathBetweenGameObjectsWithRadius(
+        this.gameObject,
+        targetGameObject,
+        range
+      )
+    );
   }
 
   /**
@@ -265,10 +388,7 @@ export class MovementSystem {
    * Unoccupied means no actor sits on the tile (regardless of collider).
    * Useful for preventing units from stacking on top of each other.
    */
-  async getClosestUnoccupiedTileVec3(
-    tileVec3: Vector3Simple,
-    maxRadius: number = 10
-  ): Promise<Vector3Simple | undefined> {
+  async getClosestUnoccupiedTileVec3(tileVec3: Vector3Simple, maxRadius = 10): Promise<Vector3Simple | undefined> {
     if (!this.runtime.navigationService) return undefined;
 
     const targetTile = { x: tileVec3.x, y: tileVec3.y };

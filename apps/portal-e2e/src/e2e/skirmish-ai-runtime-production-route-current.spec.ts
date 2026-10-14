@@ -86,6 +86,37 @@ test("an awaited owned route requires continuous closed actor and navigation aut
   expect(runtimeProductionRouteCurrent(evidence, path)).toBe(true);
 });
 
+test("awaited builder work proves a stationary unfinished site without requiring it to be finished before construction", () => {
+  const { path, evidence } = fixture();
+  const target = path.requested.spatial.kind === "producer_path" ? path.requested.spatial.target : null;
+  if (!target) throw new Error("builder_target_missing");
+  for (const interval of evidence.coverage.intervals) {
+    const site = interval.actors.find((actor) => actor.identity.actorId === target.actorId);
+    if (!site) throw new Error("builder_site_missing");
+    site.identity = { ...site.identity, finished: false };
+  }
+  const builderPath = {
+    currentAtResolution: false,
+    topologyObservation: path.topologyObservation,
+    nativeNavigation: path.nativeNavigation,
+    requested: {
+      ...path.requested,
+      spatial: { ...path.requested.spatial, kind: "builder_path" as const, target: { ...target, finished: false } }
+    },
+    resolved: {
+      ...path.terminal,
+      spatial: { ...path.terminal.spatial, kind: "builder_path" as const, target: { ...target, finished: false } }
+    },
+    constructionPlacement: null,
+    constructionCommand: null
+  };
+  expect(runtimeProductionRouteCurrent(evidence, builderPath)).toBe(true);
+  const site = evidence.coverage.intervals[1]?.actors[1];
+  if (!site) throw new Error("builder_site_missing");
+  site.identity = { ...site.identity, finished: true };
+  expect(runtimeProductionRouteCurrent(evidence, builderPath)).toBe(false);
+});
+
 test("movement, lifetime, navigation change, missing samples and skipped intervals refuse awaited credit", () => {
   for (const defect of ["movement", "navigation", "missing", "gap", "dead", "tile"] as const) {
     const { path, evidence } = fixture();

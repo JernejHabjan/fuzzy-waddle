@@ -3,7 +3,7 @@ import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v
 import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
-import { selectConstructionPosition } from "./ai-construction-site-selector";
+import { selectAiMilitaryCapacitySite } from "./ai-military-capacity-site";
 import { plannedAiProducerCount } from "./ai-force-capacity";
 import { nextIds, unresolvedReservedEffectIds } from "./ai-macro-effect-identity";
 import { claimedActorIds, isAvailableBuilder, isFinishedActor } from "./ai-macro-observation";
@@ -11,12 +11,7 @@ import { producerMilitaryProducts } from "./ai-military-catalog";
 import { createAiResourceCostClaims } from "./ai-resource-cost-claims";
 import type { AiProductionTransitionV1 } from "../contracts/brain-state/ai-production-transition-v1";
 import { canAffordAiEconomyCost } from "./ai-economy-policy";
-import {
-  isAiProducerPositionExposed,
-  needsAiProducerResilience,
-  observedAiProducerThreats,
-  reachableAiConstructionTiles
-} from "./ai-producer-safety";
+import { needsAiProducerResilience, observedAiProducerThreats } from "./ai-producer-safety";
 
 /** Proposes throughput only when a dated force deficit needs more producer capacity. */
 export function proposeAiMilitaryCapacity(args: {
@@ -126,7 +121,7 @@ export function proposeAiMilitaryCapacity(args: {
   )
     return { demand, intent: null, producers };
   const alreadyClaimed = claimedActorIds(priorIntents);
-  const builder = self
+  const builders = self
     .filter(isAvailableBuilder)
     .filter((actor) => !reservedActorIds.has(actor.actorId) && !alreadyClaimed.has(actor.actorId))
     .filter((actor) =>
@@ -139,25 +134,21 @@ export function proposeAiMilitaryCapacity(args: {
       const leftIdle = left.activeOrder?.status === "known" && left.activeOrder.value === null ? 1 : 0;
       const rightIdle = right.activeOrder?.status === "known" && right.activeOrder.value === null ? 1 : 0;
       return rightIdle - leftIdle || left.actorId.localeCompare(right.actorId);
-    })[0];
-  if (!builder) return { demand, intent: null, producers };
+    });
   const safePolicy = resilient || transition?.status === "committed";
   const threats = safePolicy ? observedAiProducerThreats(observation) : [];
-  const reachable = safePolicy ? reachableAiConstructionTiles(observation, builder) : null;
-  const position = selectConstructionPosition(
+  const selected = selectAiMilitaryCapacitySite({
     observation,
-    builder,
-    state.scheduler.decisionSequence,
+    builders,
+    decisionSequence: state.scheduler.decisionSequence,
     ordinal,
-    selectedConstructionTileKeys,
-    entry?.constructionProfile?.footprintRadiusTiles ?? 0,
-    safePolicy
-      ? (cell) =>
-          reachable?.has(cell.tileKey) === true &&
-          !isAiProducerPositionExposed({ ...cell.position, z: cell.elevation }, threats)
-      : undefined
-  );
-  if (!position) return { demand, intent: null, producers };
+    selectedTileKeys: selectedConstructionTileKeys,
+    footprintRadiusTiles: entry?.constructionProfile?.footprintRadiusTiles ?? 0,
+    safePolicy,
+    threats
+  });
+  if (!selected) return { demand, intent: null, producers };
+  const { builder, position } = selected;
   const next = nextIds(state, `capacity:${primaryObjectName}`, ordinal);
   const intent: AiIntentV1 = {
     ...next,

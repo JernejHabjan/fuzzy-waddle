@@ -30,6 +30,7 @@ export function selectConstructionPosition(
       return keys.every((key) => {
         const footprintCell = byKey.get(key);
         return (
+          key !== `${Math.round(origin.x)},${Math.round(origin.y)}` &&
           footprintCell !== undefined &&
           footprintCell.groundPassable &&
           !footprintCell.observedBlocked &&

@@ -95,6 +95,37 @@ function abandoned() {
   return result;
 }
 
+test("same-tick unfinished prebuild is not ready initial throughput; busy or duplicate ready capacity still fails", () => {
+  const evidence = abandoned();
+  const contract = productionContract("PRO-03", "future_abandoned");
+  const withSite = (finished: boolean, busy: boolean) => ({
+    ...evidence,
+    coverage: {
+      ...evidence.coverage,
+      intervals: evidence.coverage.intervals.map((interval) => {
+        const actor = interval.actors[0],
+          queue = interval.queues[0];
+        if (!actor || !queue) throw new Error("synthetic_producer_missing");
+        return {
+          ...interval,
+          actors: [...interval.actors, { ...actor, identity: { ...actor.identity, actorId: "new-site", finished } }],
+          queues: [
+            { ...queue, lanes: queue.lanes.map((lane) => ({ ...lane, itemIds: busy ? ["active-work"] : [] })) },
+            { ...queue, actorId: "new-site" }
+          ]
+        };
+      })
+    }
+  });
+  expect(evaluateRuntimeProductionSchedule(contract, withSite(false, false))).toEqual([]);
+  expect(evaluateRuntimeProductionSchedule(contract, withSite(true, false))).toContain(
+    "production_v2_transition_idle_capacity_missing"
+  );
+  expect(evaluateRuntimeProductionSchedule(contract, withSite(false, true))).toContain(
+    "production_v2_transition_idle_capacity_missing"
+  );
+});
+
 test("abandonment releases forecasts while preserving already admitted work through a native-shaped terminal", () => {
   const evidence = abandoned();
   const contract = productionContract("PRO-03", "future_abandoned");

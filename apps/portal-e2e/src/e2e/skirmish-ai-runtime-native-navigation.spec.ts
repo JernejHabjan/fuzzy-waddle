@@ -6,6 +6,7 @@ import { producerRouteFixture } from "./skirmish-ai-runtime-producer-route-fixtu
 import { normalizeRuntimeProductionSpatial } from "./skirmish-ai-runtime-production-spatial-normalization";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
 import { validateRuntimeNativeQuery } from "./skirmish-ai-runtime-native-navigation-validation";
+import { RUNTIME_ROUTE_HISTORY_LIMIT } from "./skirmish-ai-runtime-route-history-budget";
 
 const first = {
   completedRebuild: 1,
@@ -211,7 +212,7 @@ test("native loss, regressions and conflicting shared query identities are inspe
 
 test("a malformed native lookup after producer group overflow still suppresses every normalized group", () => {
   const f = producerRouteFixture();
-  const added = Array.from({ length: 257 }, (_, index) => {
+  const added = Array.from({ length: RUNTIME_ROUTE_HISTORY_LIMIT + 1 }, (_, index) => {
     const queryId = index + 2;
     const requested = { ...f.requested, queryId, navigation: observed(first) };
     const nativeQuery = {
@@ -219,7 +220,7 @@ test("a malformed native lookup after producer group overflow still suppresses e
       queryId: index + 3,
       from: f.requested.sourceTile,
       to: f.requested.targetTile,
-      requestTimeMs: index === 256 ? NaN : 100
+      requestTimeMs: index === RUNTIME_ROUTE_HISTORY_LIMIT ? NaN : 100
     };
     return [f.fact(requested), f.fact({ ...f.resolved, queryId, navigation: observed(first), nativeQuery })];
   }).flat();

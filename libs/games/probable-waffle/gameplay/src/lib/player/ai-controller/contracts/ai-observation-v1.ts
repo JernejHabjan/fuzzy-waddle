@@ -37,6 +37,8 @@ export interface AiObservedQueueV1 {
     readonly kind: "production" | "research";
     readonly objectName: ObjectNames | null;
     readonly researchType: ResearchType | null;
+    /** Shared applied effect identity, owned queues only; absent for legacy unstamped work. */
+    readonly effectId?: string;
   }[];
 }
 
@@ -144,6 +146,8 @@ export interface AiObservedActorV1 {
   readonly activeEffectIds: readonly string[];
   /** Optional only for compatibility with observations captured before Stage 15. */
   readonly activeOrder?: AiKnownValueV1<AiObservedOrderV1 | null>;
+  /** Next owned native order, including intake queued before the pawn starts executing it. */
+  readonly pendingOrder?: AiKnownValueV1<AiObservedOrderV1 | null>;
   /** Effective combat/support facts; remembered actors intentionally never retain live cooldown or health data. */
   readonly combatProfile?: AiKnownValueV1<AiObservedCombatProfileV1>;
   /** Runtime-definition metadata exposed for owned actors; base identity never infers this from position. */

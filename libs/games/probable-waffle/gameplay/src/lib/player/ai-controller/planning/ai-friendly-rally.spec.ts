@@ -47,4 +47,12 @@ it("defers routine squad intake until a friendly move ends while retaining essen
   expect(run({ ...observation, actors: [moving] }).proposals).toEqual([intent]);
   const idle = { ...moving, activeOrder: { ...moving.activeOrder, value: null } };
   expect(run({ ...observation, actors: [idle, target] }).proposals).toEqual([intent]);
+  const pending = { ...idle, pendingOrder: moving.activeOrder };
+  const queuedObservation = { ...observation, actors: [pending, target] };
+  expect(run(queuedObservation).proposals).toEqual([]);
+  expect(run(queuedObservation, { ...intent, planId: "plan:squad:defense:home" }).proposals).toHaveLength(1);
+  expect(run({ ...queuedObservation, actors: [pending] }).proposals).toEqual([intent]);
+  expect(run({ ...observation, actors: [{ ...pending, pendingOrder: idle.activeOrder }, target] }).proposals).toEqual([
+    intent
+  ]);
 });

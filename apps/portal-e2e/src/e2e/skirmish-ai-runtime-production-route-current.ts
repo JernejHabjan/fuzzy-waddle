@@ -1,6 +1,7 @@
 import { isDeepStrictEqual } from "node:util";
 import type { RuntimeProductionEvidenceV2 } from "./skirmish-ai-runtime-production-evidence-v2";
 import type { RuntimeProducerRoutesV1 } from "./skirmish-ai-runtime-producer-routes";
+import type { RuntimeProductionSpatialAuthorityV1 } from "./skirmish-ai-runtime-production-spatial-authority";
 
 /** Awaited owned routes require closed physical and native navigation continuity, never just equal endpoint samples. */
 export function runtimeProductionRouteCurrent(
@@ -8,21 +9,23 @@ export function runtimeProductionRouteCurrent(
     readonly coverage: RuntimeProductionEvidenceV2["coverage"];
     readonly lifecycle: Pick<RuntimeProductionEvidenceV2["lifecycle"], "losses">;
   },
-  path: RuntimeProducerRoutesV1["paths"][number]
+  path: RuntimeProducerRoutesV1["paths"][number] | RuntimeProductionSpatialAuthorityV1["paths"][number]
 ): boolean {
   if (path.currentAtResolution) return true;
   const start = path.requested.spatial,
-    end = path.terminal.spatial;
+    terminal = "terminal" in path ? path.terminal : path.resolved,
+    end = terminal.spatial;
   const history = evidence.coverage;
   if (
-    start.kind !== "producer_path" ||
-    end.kind !== "producer_path" ||
+    (start.kind !== "producer_path" && start.kind !== "builder_path") ||
+    (end.kind !== "producer_path" && end.kind !== "builder_path") ||
+    start.kind !== end.kind ||
     !history ||
     history.gaps.length ||
-    path.requested.tick >= path.terminal.tick ||
-    history.closedThroughTick < path.terminal.tick ||
+    path.requested.tick >= terminal.tick ||
+    history.closedThroughTick < terminal.tick ||
     start.clockTick !== path.requested.tick ||
-    end.clockTick !== path.terminal.tick ||
+    end.clockTick !== terminal.tick ||
     !isDeepStrictEqual(start.source, end.source) ||
     !isDeepStrictEqual(start.target, end.target) ||
     !start.source.actorId ||
@@ -31,10 +34,8 @@ export function runtimeProductionRouteCurrent(
     !start.targetTile ||
     !end.sourceTile ||
     !end.targetTile ||
-    !start.sourceInCaptureScene ||
-    !end.sourceInCaptureScene ||
-    !start.targetInCaptureScene ||
-    !end.targetInCaptureScene ||
+    (start.kind === "producer_path" && (!start.sourceInCaptureScene || !start.targetInCaptureScene)) ||
+    (end.kind === "producer_path" && (!end.sourceInCaptureScene || !end.targetInCaptureScene)) ||
     start.snapshotRestoreInProgress ||
     end.snapshotRestoreInProgress ||
     !start.sceneActive ||
@@ -42,6 +43,8 @@ export function runtimeProductionRouteCurrent(
     !isDeepStrictEqual(start.sourceTile, end.sourceTile) ||
     !isDeepStrictEqual(start.targetTile, end.targetTile) ||
     start.source.playerNumber !== start.target.playerNumber ||
+    !start.source.finished ||
+    (start.kind === "producer_path" && !start.target.finished) ||
     !start.navigation?.native ||
     !end.navigation?.native ||
     !isDeepStrictEqual(start.navigation.native, end.navigation.native)
@@ -49,12 +52,12 @@ export function runtimeProductionRouteCurrent(
     return false;
   const identities = [start.source, start.target];
   const intervals = history.intervals.filter(
-    (interval) => interval.closedFromTick <= path.terminal.tick && interval.closedThroughTick >= path.requested.tick
+    (interval) => interval.closedFromTick <= terminal.tick && interval.closedThroughTick >= path.requested.tick
   );
   if (
     !intervals.length ||
     (intervals[0]?.closedFromTick ?? Infinity) > path.requested.tick ||
-    (intervals.at(-1)?.closedThroughTick ?? -1) < path.terminal.tick ||
+    (intervals.at(-1)?.closedThroughTick ?? -1) < terminal.tick ||
     intervals.some(
       (interval, index) =>
         !interval.navigation ||
@@ -78,7 +81,7 @@ export function runtimeProductionRouteCurrent(
           !actor.identity.alive ||
           !actor.identity.active ||
           !actor.identity.indexed ||
-          !actor.identity.finished ||
+          actor.identity.finished !== identity.finished ||
           actor.identity.playerNumber !== identity.playerNumber ||
           actor.identity.canonicalObjectName !== identity.canonicalObjectName ||
           actor.level !== first.level ||
@@ -90,7 +93,7 @@ export function runtimeProductionRouteCurrent(
         (loss) =>
           loss.actorId === identity.actorId &&
           loss.sequence > path.requested.sequence &&
-          loss.sequence <= path.terminal.sequence
+          loss.sequence <= terminal.sequence
       )
     )
       return false;

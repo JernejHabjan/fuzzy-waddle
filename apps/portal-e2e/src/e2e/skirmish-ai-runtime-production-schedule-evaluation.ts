@@ -27,7 +27,11 @@ export function evaluateRuntimeProductionSchedule(
     return ["production_v2_transition_origin_or_deadline_invalid"];
   }
   const first = productionWorldAt(evidence, committed.selectedTick);
-  const initial = first?.queues.filter((queue) => queue.objectName === contract.producerObjectName);
+  const initial = first?.queues.filter(
+    (queue) =>
+      queue.objectName === contract.producerObjectName &&
+      first.actors.some((actor) => actor.identity.actorId === queue.actorId && actor.identity.finished)
+  );
   if (
     initial?.length !== 1 ||
     initial[0]?.lanes.some((lane) => lane.itemIds.length > 0) ||

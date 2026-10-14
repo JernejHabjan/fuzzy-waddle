@@ -1,8 +1,5 @@
 import Phaser from "phaser";
-import {
-  type ConstructCommand,
-  ConstructionStateEnum
-} from "@fuzzy-waddle/probable-waffle-protocol";
+import { type ConstructCommand, ConstructionStateEnum } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { Subscription } from "rxjs";
 import { emitConstructionPlacement } from "./emit-construction-placement";
 import { PRODUCTION_SPATIAL_AUTHORITY_EVENT } from "./production-spatial-authority-event";
@@ -30,7 +27,9 @@ import { getTileCoordsUnderObject } from "../../../library/tile-under-object";
 
 /** Applies the shared native construction checks and lifecycle; placement observation adds no route query. */
 export function applySharedConstructionCommand(
-  scene: ProbableWaffleScene, command: ConstructCommand, appliedSiteKeys: Map<string, string>,
+  scene: ProbableWaffleScene,
+  command: ConstructCommand,
+  appliedSiteKeys: Map<string, string>,
   siteCompletionSubscriptions: Subscription[]
 ): void {
   const commandBus = getSceneService(scene, CommandBusService)!;
@@ -70,11 +69,7 @@ export function applySharedConstructionCommand(
     commandBus.reportOutcome(command, "rejected", "insufficient_resources");
     return;
   }
-  const productionEligibility = ProductionValidator.validateObject(
-    scene,
-    command.playerNumber,
-    command.actorName
-  );
+  const productionEligibility = ProductionValidator.validateObject(scene, command.playerNumber, command.actorName);
   if (!productionEligibility.canQueue) {
     commandBus.reportOutcome(
       command,
@@ -125,13 +120,11 @@ export function applySharedConstructionCommand(
   const tilemap = getSceneComponent(scene, TilemapComponent)?.tilemap;
   const navigation = getSceneService(scene, NavigationService);
   const footprint = tilemap ? getTileCoordsUnderObject(tilemap, site) : [];
-  const builderSet = new Set(builders);
   const hasCollision = actorIndex
     ?.getAllIdActors()
     .some(
       (actor) =>
         actor !== site &&
-        !builderSet.has(actor) &&
         tilemap !== undefined &&
         getTileCoordsUnderObject(tilemap, actor).some((actorTile) =>
           footprint.some((siteTile) => actorTile.x === siteTile.x && actorTile.y === siteTile.y)

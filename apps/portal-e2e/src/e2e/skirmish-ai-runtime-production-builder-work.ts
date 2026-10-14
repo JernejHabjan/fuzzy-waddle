@@ -1,4 +1,5 @@
 import type { RuntimeProductionEvidenceV2 } from "./skirmish-ai-runtime-production-evidence-v2";
+import { runtimeProductionRouteCurrent } from "./skirmish-ai-runtime-production-route-current";
 
 /** Admission flood and legal placement are planner/command facts; actual path resolution and paid work certify use. */
 export function runtimeProductionBuilderWork(evidence: RuntimeProductionEvidenceV2, siteId: string) {
@@ -14,7 +15,7 @@ export function runtimeProductionBuilderWork(evidence: RuntimeProductionEvidence
     (path) =>
       path.constructionPlacement?.sequence === started.placement?.sequence &&
       path.constructionCommand?.command.execution?.commandId === commandId &&
-      path.currentAtResolution &&
+      runtimeProductionRouteCurrent(evidence, path) &&
       path.nativeNavigation.completedRebuildInterval === "same_completed" &&
       path.nativeNavigation.queryGenerationAtTerminal === "same_native_generation" &&
       path.resolved.spatial.kind === "builder_path" &&

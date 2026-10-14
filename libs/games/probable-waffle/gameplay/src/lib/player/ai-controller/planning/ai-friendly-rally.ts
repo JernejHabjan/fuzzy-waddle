@@ -2,7 +2,7 @@ import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 
-/** A current native Move to a live owned actor is already intake work; routine squads wait for its terminal state. */
+/** Active or queued native Moves to live owned actors are intake work; routine squads wait for their terminal state. */
 export function preservesAiFriendlyRally(observation: AiObservationV1, intent: AiIntentV1): boolean {
   if (
     !["army_threat", "scouting"].includes(intent.lane) ||
@@ -12,14 +12,15 @@ export function preservesAiFriendlyRally(observation: AiObservationV1, intent: A
     return false;
   return intent.actorIds.some((id) => {
     const actor = observation.actors.find((candidate) => candidate.actorId === id && candidate.relation === "self");
-    const order = actor?.activeOrder?.status === "known" ? actor.activeOrder.value : null;
-    return (
-      order?.orderType === OrderType.Move &&
-      order.targetActorId !== null &&
-      observation.actors.some(
-        (target) =>
-          target.actorId === order.targetActorId && target.relation === "self" && target.visibility === "owned"
-      )
+    return [actor?.activeOrder, actor?.pendingOrder].some(
+      (order) =>
+        order?.status === "known" &&
+        order.value?.orderType === OrderType.Move &&
+        order.value.targetActorId !== null &&
+        observation.actors.some(
+          (target) =>
+            target.actorId === order.value?.targetActorId && target.relation === "self" && target.visibility === "owned"
+        )
     );
   });
 }

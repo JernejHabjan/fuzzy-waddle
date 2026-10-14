@@ -70,7 +70,9 @@ function fixture() {
   });
   jest.mocked(getPlayer).mockReturnValue({ canPayAllResources: () => true } as never);
   jest.mocked(getCostForObjectName).mockReturnValue({ food: 7 });
-  jest.mocked(getTileCoordsUnderObject).mockReturnValue([{ x: 7, y: 9 }] as never);
+  jest
+    .mocked(getTileCoordsUnderObject)
+    .mockImplementation((_map, actor) => (actor === site ? [{ x: 7, y: 9 }] : [{ x: 6, y: 9 }]));
   jest.spyOn(ProductionValidator, "validateObject").mockReturnValue({ canQueue: true } as never);
   jest.spyOn(BuildingCursor, "spawnBuildingForPlayer").mockReturnValue(site);
   jest.spyOn(IsoHelper, "isometricTileToWorldXY").mockReturnValue({ x: 100, y: 200 });
@@ -88,11 +90,29 @@ function fixture() {
     events.push(event);
     order.push("placement");
   });
-  return { scene, site, command, events, order, changes, bus, execute, navigable };
+  return { scene, builder, site, command, events, order, changes, bus, execute, navigable };
 }
 
 describe("native construction placement seam", () => {
   afterEach(() => jest.restoreAllMocks());
+  it("rejects a site covering its assigned builder before payment or assignment can strand it", () => {
+    const f = fixture();
+    jest.mocked(getTileCoordsUnderObject).mockReturnValue([{ x: 7, y: 9 }]);
+    const sites = new Map<string, string>();
+    applySharedConstructionCommand(f.scene, f.command, sites, []);
+    expect(f.events[0]).toMatchObject({ kind: "placement", legal: false });
+    expect(f.bus.reportOutcome).toHaveBeenCalledWith(
+      f.command,
+      "rejected",
+      "illegal_site",
+      ["builder"],
+      [],
+      "invalid_footprint"
+    );
+    expect(f.execute).not.toHaveBeenCalled();
+    expect(f.site.destroy).toHaveBeenCalled();
+    expect(sites.size).toBe(0);
+  });
   it("emits one actual footprint verdict before assignment, retaining native completion and reconciled-site behavior", () => {
     const f = fixture();
     const sites = new Map<string, string>();

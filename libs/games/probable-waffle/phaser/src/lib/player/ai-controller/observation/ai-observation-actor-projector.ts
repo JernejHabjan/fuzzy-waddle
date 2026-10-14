@@ -36,6 +36,7 @@ export function projectAiObservedActor(
   accessGraphAdapter: AiAccessGraphAdapter
 ): AiObservedActorV1 {
   const level = getResearchedLevelForActor(actor) ?? 1;
+  const actorOwner = getActorComponent(actor, OwnerComponent)?.getOwner() ?? null;
   const definition = getPwActorDefinition(actor.name, level);
   const worldPosition = getGameObjectLogicalTransform(actor);
   const tilePosition = getGameObjectCurrentTile(actor);
@@ -63,6 +64,11 @@ export function projectAiObservedActor(
   const orderTargetId = orderTarget
     ? (getActorComponent(orderTarget, IdComponent)?.id ?? null)
     : (currentOrder?.data.targetGameObjectId ?? null);
+  const pendingOrder = owned ? pawnAi?.blackboard.peekNextPlayerOrder() : undefined;
+  const pendingTarget = pendingOrder?.data.targetGameObject;
+  const pendingTargetId = pendingTarget
+    ? (getActorComponent(pendingTarget, IdComponent)?.id ?? null)
+    : (pendingOrder?.data.targetGameObjectId ?? null);
   const containerOwner = containable?.getContainerOwner();
   const containerOwnerId =
     owned && containerOwner ? (getActorComponent(containerOwner, IdComponent)?.id ?? null) : null;
@@ -91,7 +97,7 @@ export function projectAiObservedActor(
   return {
     actorId,
     objectName: actor.name as ObjectNames,
-    owner: getActorComponent(actor, OwnerComponent)?.getOwner() ?? null,
+    owner: actorOwner,
     relation,
     visibility,
     evidenceId: `evidence:contact:${actorId}` as const,
@@ -110,6 +116,9 @@ export function projectAiObservedActor(
               items: queue.allItems
                 .map((item, index) => ({
                   itemId: aiObservationQueueItemId(actorId, item, index),
+                  ...(item.commandContext?.playerNumber === actorOwner && item.commandContext.execution.effectId
+                    ? { effectId: item.commandContext.execution.effectId }
+                    : {}),
                   kind: item.productionData ? ("production" as const) : ("research" as const),
                   objectName: item.productionData?.actorName ?? null,
                   researchType: item.researchData ?? null
@@ -198,6 +207,10 @@ export function projectAiObservedActor(
           )
         : unknownValue(owned ? "not_supported" : "not_observed"),
     combatProfile: projectAiCombatProfile(actor, definition, owned, visibility, tick),
+    pendingOrder:
+      owned && pawnAi
+        ? knownValue(pendingOrder ? { orderType: pendingOrder.orderType, targetActorId: pendingTargetId } : null, tick)
+        : unknownValue(owned ? "not_supported" : "not_observed"),
     ...(owned ? { mainBuilding: knownValue(definition?.meta?.isMainBuilding === true, tick) } : {}),
     containedInActorId: containerOwnerId,
     ...(containerState ? { containerState } : {})

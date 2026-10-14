@@ -814,6 +814,56 @@
                 "y": 1040,
                 "z": 0
               }
+            },
+            {
+              "fixtureActorId": "army-3",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 560,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-4",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 464,
+                "y": 560,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "threat-2",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 1,
+              "position": {
+                "x": 688,
+                "y": 1040,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "threat-3",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 1,
+              "position": {
+                "x": 672,
+                "y": 1056,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "threat-4",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 1,
+              "position": {
+                "x": 688,
+                "y": 1056,
+                "z": 0
+              }
             }
           ],
           "resourceGrants": [],
@@ -877,8 +927,8 @@
               "actorName": "AnkGuard",
               "owner": 2,
               "position": {
-                "x": -640,
-                "y": 848,
+                "x": 800,
+                "y": 752,
                 "z": 0
               }
             },
@@ -1009,6 +1059,56 @@
               "position": {
                 "x": 672,
                 "y": 1040,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-3",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 560,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-4",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 464,
+                "y": 560,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "threat-2",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 1,
+              "position": {
+                "x": 688,
+                "y": 1040,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "threat-3",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 1,
+              "position": {
+                "x": 672,
+                "y": 1056,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "threat-4",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 1,
+              "position": {
+                "x": 688,
+                "y": 1056,
                 "z": 0
               }
             }
@@ -2639,6 +2739,26 @@
                 "y": 1312,
                 "z": 0
               }
+            },
+            {
+              "fixtureActorId": "army-5",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 512,
+                "y": 560,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-6",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 560,
+                "y": 560,
+                "z": 0
+              }
             }
           ],
           "resourceGrants": [],
@@ -2919,6 +3039,26 @@
                 "y": 1312,
                 "z": 0
               }
+            },
+            {
+              "fixtureActorId": "army-5",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 512,
+                "y": 560,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-6",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 560,
+                "y": 560,
+                "z": 0
+              }
             }
           ],
           "resourceGrants": [],
@@ -3173,6 +3313,56 @@
                 "y": 1040,
                 "z": 0
               }
+            },
+            {
+              "fixtureActorId": "army-3",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 560,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-4",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 464,
+                "y": 560,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "threat-2",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 1,
+              "position": {
+                "x": 688,
+                "y": 1040,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "threat-3",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 1,
+              "position": {
+                "x": 672,
+                "y": 1056,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "threat-4",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 1,
+              "position": {
+                "x": 688,
+                "y": 1056,
+                "z": 0
+              }
             }
           ],
           "resourceGrants": [],
@@ -3236,8 +3426,8 @@
               "actorName": "InfantryInn",
               "owner": 2,
               "position": {
-                "x": -640,
-                "y": 848,
+                "x": 800,
+                "y": 752,
                 "z": 0
               }
             },
@@ -3368,6 +3558,56 @@
               "position": {
                 "x": 672,
                 "y": 1040,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-3",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 560,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-4",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 464,
+                "y": 560,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "threat-2",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 1,
+              "position": {
+                "x": 688,
+                "y": 1040,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "threat-3",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 1,
+              "position": {
+                "x": 672,
+                "y": 1056,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "threat-4",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 1,
+              "position": {
+                "x": 688,
+                "y": 1056,
                 "z": 0
               }
             }

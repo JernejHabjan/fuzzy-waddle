@@ -54,13 +54,6 @@ export class AiMacroManager implements AiProposalManagerV1 {
 
     const self = owned(observation);
     const budget = openingBudget(state.opening.archetypeId);
-    const gatheringIntent = proposeAiGeneralGathering(
-      observation, state, catalog, self, intents, reservedActorIds, ordinal
-    );
-    if (gatheringIntent) {
-      intents.push(gatheringIntent);
-      ordinal += 1;
-    }
     const openingComplete = activeCheckpointId === undefined;
     const workerCheckpoint = checkpointStatus.find((entry) => entry.checkpoint.id === "bootstrap-worker");
     const housing = proposeAiHousing(
@@ -99,48 +92,6 @@ export class AiMacroManager implements AiProposalManagerV1 {
       openingComplete,
       firstForce: budget.firstForce
     });
-    const foodEconomy = proposeAiFoodEconomy({
-      observation,
-      state,
-      catalog,
-      self,
-      pressureForecast,
-      openingComplete,
-      workerRequiredObject: workerCheckpoint?.fulfilled ? workerCheckpoint.checkpoint.requiredObject : undefined,
-      reservedActorIds,
-      selectedConstructionTileKeys,
-      demands,
-      intents,
-      ordinal
-    });
-    const economyPolicy = foodEconomy.policy;
-    ordinal = foodEconomy.ordinal;
-    const rawAcceptedMilitaryEffectIds = unresolvedReservedEffectIds(state, `effect:${compositionPrefix}:effect:`);
-    // The opening force is enough to survive and scout. A completed opening commits
-    // to a dated force target that grows with evidenced opposition; the strategic selector may launch a
-    // smaller credible force when a reachable objective has little visible defense.
-    // Queue observation and accepted leases can briefly describe the same command.
-    // Clamp accepted-not-observed identities to the genuinely unobserved remainder
-    // so the demand ledger stays disjoint and does not report false overproduction.
-    const acceptedMilitaryEffectIds = rawAcceptedMilitaryEffectIds.slice(
-      0,
-      Math.max(0, targetMilitary - military.length - queuedMilitary.length)
-    );
-    demands.push({
-      demandId: transition?.status === "committed"
-        ? transition.demandId : "demand:composition:first-squad" as AiDemandV1["demandId"],
-      purpose: openingComplete ? `dated_${pressureDomain}_pressure` : "opening_force",
-      capabilityOrRole: `${pressureDomain}_combat_composition`,
-      unit: "actor_count",
-      desired: capacityTargetMilitary,
-      satisfiedActorIds: military.map((actor) => actor.actorId).sort(),
-      queuedIds: queuedMilitary.map((item) => item.itemId),
-      constructingIds: [],
-      acceptedNotObservedEffectIds: acceptedMilitaryEffectIds,
-      preferredObjectNames: transition?.status === "committed" ? [transition.productObjectName] : [...militaryProducts].sort(),
-      resourceObligations: {}
-    });
-
     const capacity = proposeAiMilitaryCapacity({
       observation,
       state,
@@ -161,8 +112,81 @@ export class AiMacroManager implements AiProposalManagerV1 {
     if (capacity.demand) demands.push(capacity.demand);
     if (capacity.intent) {
       intents.push(capacity.intent);
+      if (capacity.intent.kind === "construct") {
+        capacity.intent.builderIds.forEach((actorId) => reservedActorIds.add(actorId));
+      }
       ordinal += 1;
     }
+    const gatheringIntent = proposeAiGeneralGathering(
+      observation,
+      state,
+      catalog,
+      self,
+      intents,
+      reservedActorIds,
+      ordinal
+    );
+    if (gatheringIntent) {
+      intents.push(gatheringIntent);
+      ordinal += 1;
+    }
+    const foodEconomy = proposeAiFoodEconomy({
+      observation,
+      state,
+      catalog,
+      self,
+      pressureForecast,
+      openingComplete,
+      workerRequiredObject: workerCheckpoint?.fulfilled ? workerCheckpoint.checkpoint.requiredObject : undefined,
+      reservedActorIds,
+      selectedConstructionTileKeys,
+      demands,
+      intents,
+      ordinal
+    });
+    const economyPolicy = foodEconomy.policy;
+    ordinal = foodEconomy.ordinal;
+    const observedQueueEffects = new Set(
+      self.flatMap((actor) =>
+        actor.queue.status === "known"
+          ? (actor.queue.value.items ?? []).flatMap((item) =>
+              item.effectId ? [item.effectId.replace(/^effect:/, "")] : []
+            )
+          : []
+      )
+    );
+    const rawAcceptedMilitaryEffectIds = unresolvedReservedEffectIds(
+      state,
+      `effect:${compositionPrefix}:effect:`
+    ).filter((effectId) => !observedQueueEffects.has(effectId.replace(/^effect:/, "")));
+    // The opening force is enough to survive and scout. A completed opening commits
+    // to a dated force target that grows with evidenced opposition; the strategic selector may launch a
+    // smaller credible force when a reachable objective has little visible defense.
+    // Queue observation and accepted leases can briefly describe the same command. Remove exact observed effects first.
+    // Clamp remaining accepted-not-observed identities to the genuinely unobserved remainder
+    // so the demand ledger stays disjoint and does not report false overproduction.
+    const acceptedMilitaryEffectIds = rawAcceptedMilitaryEffectIds.slice(
+      0,
+      Math.max(0, targetMilitary - military.length - queuedMilitary.length)
+    );
+    demands.push({
+      demandId:
+        transition?.status === "committed"
+          ? transition.demandId
+          : ("demand:composition:first-squad" as AiDemandV1["demandId"]),
+      purpose: openingComplete ? `dated_${pressureDomain}_pressure` : "opening_force",
+      capabilityOrRole: `${pressureDomain}_combat_composition`,
+      unit: "actor_count",
+      desired: capacityTargetMilitary,
+      satisfiedActorIds: military.map((actor) => actor.actorId).sort(),
+      queuedIds: queuedMilitary.map((item) => item.itemId),
+      constructingIds: [],
+      acceptedNotObservedEffectIds: acceptedMilitaryEffectIds,
+      preferredObjectNames:
+        transition?.status === "committed" ? [transition.productObjectName] : [...militaryProducts].sort(),
+      resourceObligations: {}
+    });
+
     intents.push(
       ...proposeAiMilitaryUnits({
         observation,

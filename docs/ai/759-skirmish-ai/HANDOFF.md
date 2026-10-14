@@ -6,17 +6,23 @@ Do not load the full plan directory or archive on startup.
 ## Current cursor
 
 - Worktree: `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`; branch: `feature/759-skirmish-ai`.
-- Latest checked gameplay: `0d3864198`; last published plan before reorganization: `168dc62c4`.
-  The containing commit owns this documentation update; verify actual HEAD/remote rather than treating older SHAs as HEAD.
-- **Package 1, production: in progress.** Next step: one combined delivery/prebuild/recovery/contention repair batch.
-- First action: inspect pending rally intake before `activeOrder` appears, async endpoint selection and capacity lead time;
-  collect related recovery/control and shared-queue gaps before editing. Repair related owners together, then run
-  affected controls and the complete 16-world gate when known blockers are resolved.
+- Checked production batch base: `1514acbe925`.
+  The containing publication commit owns this update; verify actual HEAD/remote on resume.
+- **Package 1, production: in progress; selected PRO-03/06/07.** Checked source checkpoint:
+  **13/16 world outcomes = 81.25% passing / 3/16 = 18.75% remaining**; two future pair gates also remain open.
+  All four final-source future worlds and all four queue/refund worlds pass individually. Production acceptance is open.
+- First action: read the exact blockers in CURRENT-EVIDENCE, then trace them together before editing: Skaduwee
+  critical capacity stays at one despite native exposure; its safe control enters emergency posture; Tivara's replacement
+  loses continuous exposure bindings at 774, 781 and 941. Future pairs also commit at different inputs/selection ticks.
+  Repair the related observation/cadence/demand/setup owners together, retain strict predicates, then run affected
+  critical/safe/future controls. Do not restart all sixteen worlds while these named blockers are unresolved.
 - Source anchors: `planning/ai-friendly-rally.ts`, `planning/ai-decision-planner.ts`,
   `planning/ai-production-transition.ts` under the gameplay AI controller; Phaser
   `world/services/navigation-object-routes.ts`; `tools/ai/fixtures/production-authority-runtime.json`.
 - Exact failures, retained passes and artifact names: selected sections of [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md).
-  Blockers: useful army arrival, Skaduwee prebuild timing, coherent critical/safe recovery demand, full contention proof.
+  Full cohort: `production-batch-stable-worlds`; four final-source futures: `production-batch-final-future`;
+  current-reader combined results: `production-batch-combined/results.json`, all under ignored `tmp/ai-plans/759-validation`.
+  Owned server is stopped. Do not claim the whole production package closed.
 - Recommended next model: **GPT-6.1 Sol / high** for this coupled repair. Actual host settings are unknown.
 
 ## What “continue” means
