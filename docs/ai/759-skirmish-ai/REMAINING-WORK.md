@@ -1,6 +1,6 @@
 # #759 remaining work inventory
 
-Snapshot: 2026-10-13, source checkpoint `0d3864198`. This is the execution inventory for the existing scope,
+Snapshot: 2026-10-14, production evidence checkpoint based on `b951d5949eee69d4766ba9301059f7205b0d3ca7`. This is the execution inventory for the existing scope,
 not a new design or diagnostic project. [HANDOFF.md](HANDOFF.md) owns the current cursor;
 [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) retains the latest checked source/evidence details.
 The manifest and linked scenario requirements remain authoritative; the snapshot below must be refreshed when
@@ -95,21 +95,21 @@ the registration percentage as the percentage of AI implementation completed or 
 
 1. **Current input/claim boundary:** implemented and controlled. Pure capture/selection share one tick; expired leases
    are reconciled before proposals. Legacy fallback ordering remains covered. Preserve these owners while repairing routes.
-2. **Common future prefix:** both full-horizon faction pairs now pass exact input/selection ticks, plan identity and
-   dates. Tivara's future outcomes and Skaduwee abandonment pass; Skaduwee committed useful-force proof remains open.
-3. **Awaited useful output and contention:** Skaduwee future output and both shared-contention worlds have missing
-   current rally-route/useful-arrival proof despite real production/research. Trace and repair native order/origin/level
-   and navigation ownership together; never accept stale paths or replace useful effects with dispatch counts.
-4. **Critical recovery/loss:** Tivara has timely ready capacity, retained builder work and useful post-loss output,
-   but fair threat loss leaves safety-history gaps. Skaduwee's pinned original-loss event mismatches its actual target,
-   preventing a complete result. Distinguish observed death from unsupported loss and inspect actual lifetime/build timing.
-   Keep visibility/reuse guards and pinned identity; do not let a by-name fallback destroy a replacement.
-5. **Grouped gate:** **11/16 outcomes pass (68.75%); five remain (31.25%): four failures and one unavailable setup.**
-   Both future pair gates pass. Repair the three shared owners above in one batch; run affected critical/future/contention
-   controls together and reuse unaffected captures with explicit provenance. Current details are in
-   [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md). The older 13/16 tally is superseded by fresh cadence evidence.
+2. **Common future prefix:** both full-horizon faction pairs pass exact input/selection ticks, plan identity and dates.
+   Tivara's future outcomes and both Skaduwee future outcomes, including committed useful-force proof, pass.
+3. **Awaited useful output and contention:** both shared-contention worlds still lack strategic-contention proof despite
+   real production/research. Their shared Field rally depletes; WorkMill produces EnterContainer and producer-center
+   routing has no native path. Repair both factions together with a reachable, persistent, semantically valid target;
+   preserve native route/order/useful-arrival evidence.
+4. **Critical recovery/loss:** Tivara's fair threat death now retires only a witnessed, still-visible native identity;
+   hidden/unknown loss, profile changes and ID reuse remain invalid. Skaduwee's pinned original-loss event now occurs
+   at tick 640, before the InfantryInn's natural death at tick 656; its critical recovery world passes.
+5. **Grouped gate:** **14/16 outcomes pass (87.5%); two remain (12.5%), both failed PRO-07 shared-contention worlds; no setup is unavailable.**
+   PRO-03/06/07 pair gates pass. Seven affected worlds were rerun: five pass; the two contention failures were
+   confirmed again with the restored Field rally. Nine unaffected outcomes are retained from the prior cohort.
+   Current details and source limits are in [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md).
 
-Gameplay: 329 tests; core Phaser gate: 910 tests plus final focused exposure/cadence controls; readers: 318 controls;
+Gameplay: 329 tests; core Phaser gate: 910 tests plus final focused exposure/cadence controls; readers: 320 controls;
 fixture: 3 controls; types, owned lint/formatting and build pass. These certify their controls, not every production row.
 PRO-01/02/04/05 need certification, H-17 needs registered coverage, and PRO-07 needs an explicit pure ID/spec mapping.
 Batch those remaining production coverage obligations after the current native failures close; then advance to package 2.

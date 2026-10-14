@@ -62,7 +62,10 @@ export function runtimeProductionRouteCurrent(
       (interval, index) =>
         !interval.navigation ||
         interval.navigation.rebuildInProgress ||
-        !isDeepStrictEqual(interval.navigation, start.navigation?.native) ||
+        // A closed terminal tick includes work after the query's resolution. Its immutable terminal native stamp
+        // already proves that monotonic generations did not change before resolution; later rebuilds are unrelated.
+        (interval.closedFromTick < terminal.tick &&
+          !isDeepStrictEqual(interval.navigation, start.navigation?.native)) ||
         (index > 0 && interval.closedFromTick !== (intervals[index - 1]?.closedThroughTick ?? -2) + 1)
     )
   )

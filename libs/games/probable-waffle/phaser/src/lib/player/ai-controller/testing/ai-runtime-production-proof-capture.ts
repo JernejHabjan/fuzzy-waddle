@@ -89,7 +89,8 @@ export class AiRuntimeProductionProofCapture {
   }
 
   observe(fact: AiRuntimeProductionFactV1): void {
-    if (fact.kind === "actor_unregistered") this.exposure.forEach((binding) => binding.invalidate(fact.actorId));
+    if (fact.kind === "actor_unregistered")
+      this.exposure.forEach((binding) => binding.invalidate(fact.actorId, fact.actor));
     if (fact.kind === "command_delivered" && fact.command.type === "SET_RALLY_POINT" && fact.command.targetObjectId) {
       this.pinOwned(fact.playerNumber, fact.command.targetObjectId);
     }

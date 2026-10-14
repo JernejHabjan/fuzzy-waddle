@@ -15,6 +15,7 @@ import { unspentClaimFixture } from "./ai-runtime-unspent-claim-fixtures";
 import { AiRuntimeExposureBinding } from "./ai-runtime-exposure-binding";
 import { DistanceHelper } from "../../../library/distance-helper";
 import { RepresentableComponent } from "../../../entity/components/representable-component";
+import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 jest.mock("../../../data/game-object-helper", () => ({
@@ -28,8 +29,9 @@ jest.mock("./capture-ai-runtime-created-actor", () => ({ captureAiRuntimeCreated
 function fixture(armed = false) {
   const scene = {} as ProbableWaffleScene;
   const ids = ["original", "replacement", "enemy"];
-  const actors = ids.map(() => ({ scene }) as unknown as Phaser.GameObjects.GameObject);
+  const actors = ids.map(() => ({ scene, active: true }) as unknown as Phaser.GameObjects.GameObject);
   const indexed = new Map(ids.map((id, index) => [id, actors[index]]));
+  const dead = new Set<Phaser.GameObjects.GameObject>();
   const position = { x: 4, y: 5, z: 0 };
   const threatPosition = { ...position };
   const distance = jest.spyOn(DistanceHelper, "getTileDistanceBetweenGameObjects").mockReturnValue(12);
@@ -43,11 +45,13 @@ function fixture(armed = false) {
   jest
     .mocked(getActorComponent)
     .mockImplementation((_actor, type) =>
-      type === RepresentableComponent
-        ? ({ logicalWorldTransform: position, getActualLogicalZ: () => position.z } as never)
-        : type === AttackComponent
-          ? ({ getAttacks: () => (armed ? [weapon] : []), getAttack: () => (armed ? weapon : null) } as never)
-          : undefined
+      type === HealthComponent
+        ? ({ killed: dead.has(_actor) } as never)
+        : type === RepresentableComponent
+          ? ({ logicalWorldTransform: position, getActualLogicalZ: () => position.z } as never)
+          : type === AttackComponent
+            ? ({ getAttacks: () => (armed ? [weapon] : []), getAttack: () => (armed ? weapon : null) } as never)
+            : undefined
     );
   jest.mocked(captureAiRuntimeCreatedActor).mockImplementation((actor) => ({
     actorId: ids[actors.indexOf(actor)] ?? null,
@@ -55,8 +59,8 @@ function fixture(armed = false) {
     canonicalObjectName: ObjectNames.AnkGuard,
     playerNumber: actor === actors[2] ? 3 : 2,
     active: true,
-    alive: true,
-    indexed: true,
+    alive: !dead.has(actor),
+    indexed: indexed.get(ids[actors.indexOf(actor)]) === actor,
     finished: true
   }));
   const base = unspentClaimFixture().decision;
@@ -113,7 +117,12 @@ function fixture(armed = false) {
     kind: "decision_selected",
     decision: { ...base, input }
   });
-  return { binding, indexed, visible, distance, threatPosition, weapon };
+  const killThreat = () => {
+    dead.add(actors[2]);
+    indexed.delete("enemy");
+    return captureAiRuntimeCreatedActor(actors[2]);
+  };
+  return { binding, indexed, visible, distance, threatPosition, weapon, killThreat, actors };
 }
 
 afterEach(() => jest.restoreAllMocks());
@@ -162,4 +171,34 @@ it("rejects missing representation instead of accepting a zero-elevation fallbac
   const f = fixture();
   jest.mocked(getActorComponent).mockReturnValue(undefined);
   expect(f.binding.read().validProducerIds).toEqual([]);
+});
+
+it("retains independently safe producers after a witnessed native threat death", () => {
+  const f = fixture(true);
+  f.binding.invalidate("enemy", f.killThreat());
+  expect(f.binding.read().validProducerIds).toEqual(["original", "replacement"]);
+});
+
+it("a hidden death, unknown removal or changed profile cannot preserve safety", () => {
+  for (const defect of ["hidden", "unknown", "profile"] as const) {
+    const f = fixture(true);
+    const removal = f.killThreat();
+    if (defect === "hidden") f.visible.mockReturnValue(false);
+    if (defect === "profile") f.weapon.range += 1;
+    f.binding.invalidate("enemy", defect === "unknown" ? undefined : removal);
+    expect(f.binding.read().validProducerIds).toEqual([]);
+  }
+});
+
+it("a witnessed death cannot repair previous visibility loss or permit identity reuse", () => {
+  const f = fixture(true);
+  f.visible.mockReturnValue(false);
+  expect(f.binding.read().validProducerIds).toEqual([]);
+  f.visible.mockReturnValue(true);
+  f.binding.invalidate("enemy", f.killThreat());
+  expect(f.binding.read().validProducerIds).toEqual([]);
+  const g = fixture(true);
+  g.binding.invalidate("enemy", g.killThreat());
+  g.indexed.set("enemy", g.actors[2]);
+  expect(g.binding.read().validProducerIds).toEqual([]);
 });

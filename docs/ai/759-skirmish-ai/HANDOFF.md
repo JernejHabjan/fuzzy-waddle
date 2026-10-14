@@ -5,31 +5,13 @@ Do not load the full plan directory or archive on startup.
 
 ## Current cursor
 
-- Worktree: `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`; branch: `feature/759-skirmish-ai`.
-- Checked production batch base: `9187edfea`; local structural checkpoint: `489ecf410`.
-  The containing publication commit owns this update; verify actual HEAD/remote on resume.
-- **Package 1, production: in progress; selected PRO-03/06/07.** Checked source checkpoint:
-  **11/16 world outcomes = 68.75% passing / 5/16 = 31.25% remaining**: four failures and one unavailable setup.
-  Both strict future pair gates pass. Fresh captures replace the older 13/16 tally; production acceptance remains open.
-- Authored repair: pure preparation/selection now share a synchronous tick; proposals see reconciled current leases.
-  Skaduwee admits critical capacity at 220; its paired safe setup avoids attacking the inherited main base. Future
-  granaries no longer sit beside the objective's enemies. Exposure continuity measures the same native weapon band,
-  retaining visibility/identity/profile refusal paths. Focused controls, types and build pass.
-- Completed sixteen-world attempt: ignored `production-decision-boundary-worlds`, source frame
-  `recovery-boundary-source.json` (46 inputs, digest `15954d9f8b5459d4550636c74e532ff434e6db4d37ffb568850244e5611c8d39`).
-  Latest reader reduction: `recovery-final-results.json`. Fifteen complete captures, zero AI errors/dropped facts.
-  Final representation guard has focused controls and a 300-tick healthy smoke. Managed server is stopped at publication.
-- First action: repair three related owners together: awaited rally-route freshness for Skaduwee future output and
-  both shared-contention worlds; fair loss continuity for Tivara's ready/retained replacement; Skaduwee's pinned-original
-  loss setup (`runtime_preset_event_target_mismatch`). Trace exact native receipts and actual lifetime first, retaining
-  actor/order/origin/level/navigation, hidden-loss and reuse guards. Rerun affected worlds together, not the whole cohort
-  while these causes remain unresolved. [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) has the bounded failure lookup.
-- Source anchors: `planning/ai-friendly-rally.ts`, `planning/ai-decision-planner.ts`,
-  `planning/ai-production-transition.ts` under the gameplay AI controller; Phaser
-  `world/services/navigation-object-routes.ts`; `tools/ai/fixtures/production-authority-runtime.json`.
-- Artifact paths above are under ignored `tmp/ai-plans/759-validation`. No raw capture is committed.
-  Earlier cohorts remain history references; use the current reduction on startup.
-- Recommended next model: **GPT-6.1 Sol / high** for this coupled repair. Actual host settings are unknown.
+- Worktree: `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`; branch: `feature/759-skirmish-ai`; checked base: `b951d5949eee69d4766ba9301059f7205b0d3ca7`. This batch is unpublished; commit/push are authorized at coherent stage boundaries.
+- **Package 1, production: in progress; selected PRO-03/06/07.** Current combined evidence is **14/16 outcomes pass (87.5%); 2/16 fail (12.5%); 0 unavailable**. Both failures are PRO-07 shared-contention worlds. All three strict pair gates pass. Production acceptance remains open.
+- Seven affected worlds were rerun at 2000 ticks against current proof code: five pass, two fail. Final retries confirm the two contention failures with the restored Field rally. The other nine outcomes are retained from the unaffected prior cohort. Reduction: ignored `tmp/ai-plans/759-validation/next-combined-results.json`; raw current retries: `production-contention-final-worlds` under the same ignored directory. All selected worlds close through tick 2000 with no dropped facts, AI errors or unavailable setup.
+- The route-current reader compares native navigation stamps only for closed intervals before terminal query tick; immutable query-boundary stamps cover same-tick post-query rebuilds. Exposure safety retires a pinned, still-visible native threat only after matching witnessed-death evidence; unknown/hidden loss, changed profile and identity reuse still invalidate. Skaduwee's pinned-original loss event moved from tick 800 to 640 because native evidence showed the original dies at 656.
+- Focused controls pass: 320 production readers; 25 Phaser binding/capture/preset-event tests; portal-e2e typecheck and production build. Fixture controls pass (3). The broader Phaser sweep was interrupted and is not counted as passing. The native run exits failed because both required contention predicates fail.
+- Next action: inspect how native produced squads can satisfy the existing strategic-contention contract after the shared Field rally depletes. WorkMill routes into a container; producer-center routing has no native path. Fix both factions together, preserve route/order/useful-arrival proof, then rerun both contention worlds and the PRO-07 pair gate. Do not weaken the predicate or count the failed experiments.
+- Recommended next model: **GPT-6.1 Sol / high** for the unresolved native route and strategic-contention cause. Actual host settings are unknown.
 
 ## What “continue” means
 

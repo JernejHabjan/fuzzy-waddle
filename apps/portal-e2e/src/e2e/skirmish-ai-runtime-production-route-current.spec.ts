@@ -25,7 +25,7 @@ function fixture() {
       ...source.requested,
       target: source.producer,
       targetInCaptureScene: true,
-      navigation: { ...source.requested.navigation, native: navigation }
+      navigation: { ...source.requested.navigation, native: { ...navigation } }
     }
   };
   const terminal = {
@@ -36,7 +36,7 @@ function fixture() {
       clockTick: 11,
       target: source.producer,
       targetInCaptureScene: true,
-      navigation: { ...source.resolved.navigation, native: navigation }
+      navigation: { ...source.resolved.navigation, native: { ...navigation } }
     }
   };
   const path = { ...original, requested: request, terminal, currentAtResolution: false };
@@ -86,6 +86,31 @@ test("an awaited owned route requires continuous closed actor and navigation aut
   expect(runtimeProductionRouteCurrent(evidence, path)).toBe(true);
 });
 
+test("a later rebuild in the terminal tick does not retroactively stale the completed native query", () => {
+  const { path, evidence } = fixture();
+  const interval = evidence.coverage.intervals[1];
+  if (!interval) throw new Error("closed_fixture_missing");
+  interval.navigation.completedRebuild += 1;
+  expect(runtimeProductionRouteCurrent(evidence, path)).toBe(true);
+});
+
+test("a rebuild before resolution or during a preceding closed tick still refuses the route", () => {
+  for (const boundary of ["terminal", "previous"] as const) {
+    const { path, evidence } = fixture();
+    if (boundary === "terminal") {
+      const native = path.terminal.spatial.navigation?.native;
+      if (!native) throw new Error("native_fixture_missing");
+      native.completedRebuild += 1;
+    }
+    else {
+      const interval = evidence.coverage.intervals[0];
+      if (!interval) throw new Error("closed_fixture_missing");
+      interval.navigation.completedRebuild += 1;
+    }
+    expect(runtimeProductionRouteCurrent(evidence, path)).toBe(false);
+  }
+});
+
 test("awaited builder work proves a stationary unfinished site without requiring it to be finished before construction", () => {
   const { path, evidence } = fixture();
   const target = path.requested.spatial.kind === "producer_path" ? path.requested.spatial.target : null;
@@ -124,7 +149,9 @@ test("movement, lifetime, navigation change, missing samples and skipped interva
     const actor = interval?.actors[0];
     if (!interval || !actor) throw new Error("closed_fixture_missing");
     if (defect === "movement") actor.position.x += 1;
-    if (defect === "navigation") interval.navigation.completedRebuild += 1;
+    const previous = evidence.coverage.intervals[0];
+    if (!previous) throw new Error("closed_fixture_missing");
+    if (defect === "navigation") previous.navigation.completedRebuild += 1;
     if (defect === "missing") interval.actors = [];
     if (defect === "gap") interval.closedFromTick = 12;
     if (defect === "dead") actor.identity = { ...actor.identity, alive: false };

@@ -3350,7 +3350,7 @@
           "events": [
             {
               "id": "original-producer-loss",
-              "tick": 800,
+              "tick": 640,
               "kind": "destroy_owned_actor",
               "owner": 2,
               "objectName": "InfantryInn",
