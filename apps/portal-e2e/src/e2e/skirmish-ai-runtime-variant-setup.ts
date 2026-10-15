@@ -65,8 +65,8 @@ export async function prepareRuntimeVariant(
       presetWorld: variant.presetWorld,
       revision: sourceRevision,
       digest: fixtureDigest,
-      captureProduction: (variant.scenarioIds ?? fixture.scenarioIds).some((id) =>
-        ["PRO-03", "PRO-06", "PRO-07", "H-17"].includes(id)
+      captureProduction: (variant.scenarioIds ?? fixture.scenarioIds).some(
+        (id) => ["PRO-03", "PRO-06", "PRO-07", "H-17"].includes(id) || id.startsWith("TECH-")
       )
     }
   );

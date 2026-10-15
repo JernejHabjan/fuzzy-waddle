@@ -58,11 +58,17 @@ export async function runVariant(
       (left, right) => left.tick - right.tick || left.id.localeCompare(right.id)
     );
     const applicableScenarioIds = requestedScenarioIds.filter(
-      (scenarioId) => variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId)
+      (scenarioId) =>
+        fixture.scenarioIds.includes(scenarioId) &&
+        (variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId))
     );
-    const captureProduction = applicableScenarioIds.some((id) => ["PRO-03", "PRO-06", "PRO-07", "H-17"].includes(id));
+    const captureProduction = applicableScenarioIds.some(
+      (id) => ["PRO-03", "PRO-06", "PRO-07", "H-17"].includes(id) || id.startsWith("TECH-")
+    );
     const productionHorizons = applicableScenarioIds.flatMap((id) => {
-      const contract = fixture.assertions[id]?.requiredProductionContracts?.[variant.id];
+      const contract =
+        fixture.assertions[id]?.requiredProductionContracts?.[variant.id] ??
+        fixture.assertions[id]?.requiredTechnologyContracts?.[variant.id];
       return contract ? [contract.latestTick] : [];
     });
     const productionHorizon = productionHorizons.length ? Math.max(...productionHorizons) : undefined;
@@ -90,7 +96,8 @@ export async function runVariant(
           page,
           fixture.recipe.aiPlayerNumber,
           "resume",
-          index === 0 ? 1 : fixture.recipe.simulationTimeScale
+          index === 0 ? 1 : fixture.recipe.simulationTimeScale,
+          perturbation.tick
         );
         await waitForSimulationTick(page, fixture.recipe.aiPlayerNumber, perturbation.tick);
         await setSimulationState(page, fixture.recipe.aiPlayerNumber, "pause", fixture.recipe.simulationTimeScale);
@@ -99,19 +106,18 @@ export async function runVariant(
         if (profiling) perturbationMs += performance.now() - perturbationStartedAt;
       }
       const advanceStartedAt = performance.now();
+      const stopAtTick =
+        closedProductionHorizon !== undefined && targetTick >= closedProductionHorizon
+          ? closedProductionHorizon + 1
+          : targetTick;
       await setSimulationState(
         page,
         fixture.recipe.aiPlayerNumber,
         "resume",
-        index === 0 ? 1 : fixture.recipe.simulationTimeScale
+        index === 0 ? 1 : fixture.recipe.simulationTimeScale,
+        stopAtTick
       );
-      await waitForSimulationTick(
-        page,
-        fixture.recipe.aiPlayerNumber,
-        closedProductionHorizon !== undefined && targetTick >= closedProductionHorizon
-          ? closedProductionHorizon + 1
-          : targetTick
-      );
+      await waitForSimulationTick(page, fixture.recipe.aiPlayerNumber, stopAtTick);
       const settleStartedAt = performance.now();
       await setSimulationState(page, fixture.recipe.aiPlayerNumber, "pause", fixture.recipe.simulationTimeScale);
       await waitForSettledDecision(page, fixture.recipe.aiPlayerNumber);
@@ -233,16 +239,27 @@ async function setSimulationState(
   page: Page,
   aiPlayerNumber: number,
   state: "pause" | "resume",
-  scale: number
+  scale: number,
+  stopAtTick?: number
 ): Promise<void> {
   await page.evaluate(
-    ({ playerNumber, nextState, timeScale }) => {
+    ({ playerNumber, nextState, timeScale, stopAtTick }) => {
       const parts = window.__fuzzyWaddleAiRuntimePartsV1?.(playerNumber);
       if (!parts) throw new Error("runtime_controller_unavailable");
       parts.tickService.setSimulationTimeScale(timeScale);
       if (nextState === "pause") parts.tickService.pauseTick("manual");
-      else parts.tickService.resumeTick("manual");
+      else {
+        if (stopAtTick !== undefined) {
+          if (parts.tickService.currentTick >= stopAtTick) return;
+          const subscription = parts.tickService.tick$.subscribe((tick) => {
+            if (tick < stopAtTick) return;
+            parts.tickService.pauseTick("manual");
+            subscription.unsubscribe();
+          });
+        }
+        parts.tickService.resumeTick("manual");
+      }
     },
-    { playerNumber: aiPlayerNumber, nextState: state, timeScale: scale }
+    { playerNumber: aiPlayerNumber, nextState: state, timeScale: scale, stopAtTick }
   );
 }

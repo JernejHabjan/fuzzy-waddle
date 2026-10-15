@@ -18,6 +18,13 @@ export function evaluateScenario(
   );
   const selectedVariants = variants.filter((variant) => applicableVariantIds.has(variant.variantId));
   if (selectedVariants.length === 0) return [`runtime_variants_missing:${scenarioId}`];
+  if (
+    assertion.requiredTechnologyContracts &&
+    Object.keys(assertion.requiredTechnologyContracts).some(
+      (id) => !selectedVariants.some((variant) => variant.variantId === id)
+    )
+  )
+    return [`required_technology_variant_missing:${scenarioId}`];
   const failures = evaluateRuntimeProductionPairs(scenarioId, assertion, selectedVariants);
   const actualFactions = [...new Set(selectedVariants.map((variant) => variant.aiFaction))].sort();
   const requiredFactions = [...assertion.requiredAiFactions].sort();
@@ -36,9 +43,12 @@ export function evaluateScenario(
   if (assertion.requirePressureResponse) {
     failures.push(...evaluateRuntimePressureResponse(selectedVariants));
   }
-  if (assertion.requiredResourceService && !["build", "served_control"].every((branch) =>
-    selectedVariants.some((variant) => variant.resourceServiceBranch === branch)
-  )) {
+  if (
+    assertion.requiredResourceService &&
+    !["build", "served_control"].every((branch) =>
+      selectedVariants.some((variant) => variant.resourceServiceBranch === branch)
+    )
+  ) {
     failures.push("required_resource_service_branches_missing");
   }
   if (assertion.requireHiddenStateParity) {

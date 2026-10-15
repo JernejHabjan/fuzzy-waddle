@@ -19,6 +19,8 @@ function enemyEvidence(observation: AiObservationV1): readonly {
       const kinds: { kind: EvidenceKind; facts: string[] }[] = [];
       if (actor.capabilities.some((capability) => capability.domains.includes("air"))) {
         kinds.push({ kind: "flyer", facts: ["visible_air_movement"] });
+      } else if (actor.capabilities.some((capability) => capability.family === "produce_air")) {
+        kinds.push({ kind: "flyer", facts: ["visible_air_production"] });
       }
       if (
         (actor.housingCost.status === "known" &&
@@ -102,8 +104,13 @@ export function adaptationRoleTargets(
       .map((entry) => entry.evidenceId)
       .sort();
   const offensiveObjective = ["pressure", "expand", "finish"].includes(state.strategy.stance);
+  const actualFlyers = confirmed.filter(
+    (entry) => entry.kind === "flyer" && entry.permittedFacts.includes("visible_air_movement")
+  ).length;
+  // A producer clue admits only one precaution. Distinct live flyers justify a bounded larger counterforce.
+  const antiAir = Math.min(6, Math.max(actualFlyers, byKind("flyer").length > 0 ? 1 : 0));
   const targets: { role: AiAdaptationRole; desired: number; evidenceIds: readonly AiEvidenceId[] }[] = [
-    { role: "anti_air", desired: Math.min(2, byKind("flyer").length), evidenceIds: byKind("flyer") },
+    { role: "anti_air", desired: antiAir, evidenceIds: byKind("flyer") },
     {
       role: "water_control",
       desired: Math.min(2, byKind("water_or_transport").length),

@@ -179,6 +179,14 @@ export class AiAdaptationManager implements AiProposalManagerV1 {
     let ordinal = 0;
 
     for (const target of targets) {
+      // Cooldown gates changing composition, not filling an already admitted counterforce.
+      const desired = canTransition
+        ? target.desired
+        : Math.min(
+            target.desired,
+            prior.activeRoleTargets.find((priorTarget) => priorTarget.role === target.role)?.desired ?? 0
+          );
+      if (desired === 0) continue;
       const currentActorIds = currentRoleActorIds(observation, catalog, target.role);
       const queuedIds = queuedAdaptationRoleItemIds(observation, catalog, target.role);
       const acceptedEffectIds = pendingRoleEffectIds(state, target.role);
@@ -189,7 +197,7 @@ export class AiAdaptationManager implements AiProposalManagerV1 {
         purpose: "evidence_backed_counter",
         capabilityOrRole: target.role,
         unit: "actor_count",
-        desired: target.desired,
+        desired,
         satisfiedActorIds: currentActorIds,
         queuedIds,
         constructingIds: [],
@@ -197,7 +205,7 @@ export class AiAdaptationManager implements AiProposalManagerV1 {
         preferredObjectNames: [],
         resourceObligations: {}
       });
-      if (!canTransition || current + queuedIds.length + committed >= target.desired) continue;
+      if (current + queuedIds.length + committed >= desired) continue;
       const producer = producerForRole(observation, catalog, target.role, remainingResources);
       if (!producer) continue;
       const next = ids(state, target.role, ordinal++);
@@ -230,8 +238,9 @@ export class AiAdaptationManager implements AiProposalManagerV1 {
             effectId: next.effectId
           }
         ],
-        reasonCode: `adapt:${target.role}:confirmed=${target.evidenceIds.join(",")}:` +
-          `current=${current}:queued=${queuedIds.length}:committed=${committed}/${target.desired}`,
+        reasonCode:
+          `adapt:${target.role}:confirmed=${target.evidenceIds.join(",")}:` +
+          `current=${current}:queued=${queuedIds.length}:committed=${committed}/${desired}`,
         producerId: producer.producerId,
         objectName: producer.objectName
       });

@@ -6,7 +6,7 @@ import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-prop
 import { proposeAiHousing } from "./ai-housing-proposal";
 import { proposeAiFoodEconomy } from "./ai-food-economy-proposal";
 import { proposeAiGeneralGathering } from "./ai-general-gathering-proposal";
-import { openingBudget } from "./ai-opening-catalog";
+import { openingBudget, OPENING_SUPPLY_BUFFER } from "./ai-opening-catalog";
 import { proposeAiOpening } from "./ai-opening-proposal";
 import { owned } from "./ai-macro-observation";
 import { unresolvedReservedEffectIds } from "./ai-macro-effect-identity";
@@ -62,10 +62,11 @@ export class AiMacroManager implements AiProposalManagerV1 {
       catalog,
       checkpoints,
       self,
-      openingComplete,
-      budget.supplyBuffer,
+      activeCheckpointId !== "supply-safety",
+      openingComplete ? budget.supplyBuffer : OPENING_SUPPLY_BUFFER,
       reservedActorIds,
       selectedConstructionTileKeys,
+      intents,
       ordinal
     );
     if (housing.demand) demands.push(housing.demand);
@@ -117,19 +118,6 @@ export class AiMacroManager implements AiProposalManagerV1 {
       }
       ordinal += 1;
     }
-    const gatheringIntent = proposeAiGeneralGathering(
-      observation,
-      state,
-      catalog,
-      self,
-      intents,
-      reservedActorIds,
-      ordinal
-    );
-    if (gatheringIntent) {
-      intents.push(gatheringIntent);
-      ordinal += 1;
-    }
     const foodEconomy = proposeAiFoodEconomy({
       observation,
       state,
@@ -146,6 +134,19 @@ export class AiMacroManager implements AiProposalManagerV1 {
     });
     const economyPolicy = foodEconomy.policy;
     ordinal = foodEconomy.ordinal;
+    const gatheringIntent = proposeAiGeneralGathering(
+      observation,
+      state,
+      catalog,
+      self,
+      intents,
+      reservedActorIds,
+      ordinal
+    );
+    if (gatheringIntent) {
+      intents.push(gatheringIntent);
+      ordinal += 1;
+    }
     const observedQueueEffects = new Set(
       self.flatMap((actor) =>
         actor.queue.status === "known"

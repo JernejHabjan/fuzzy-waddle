@@ -144,5 +144,18 @@ describe("adaptation queue commitments", () => {
         objectName: ObjectNames.TivaraSlingshotFemale
       })
     );
+    const admitted = oneQueued.statePatch?.adaptation;
+    if (!admitted) throw new Error("admitted_adaptation_missing");
+    const withinCooldown = manager.propose(world(160, 1), {
+      ...confirmedState,
+      economyProduction: { ...confirmedState.economyProduction, adaptation: admitted }
+    });
+    expect(withinCooldown.intents).toContainEqual(
+      expect.objectContaining({
+        kind: "produce",
+        objectName: ObjectNames.TivaraSlingshotFemale
+      })
+    );
+    expect(withinCooldown.statePatch?.adaptation?.lastTransitionTick).toBe(140);
   });
 });

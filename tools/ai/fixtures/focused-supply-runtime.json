@@ -6,13 +6,13 @@
   "driver": "runtime",
   "status": "ready_for_runtime_execution",
   "context": {
-    "mapId": "EmberEnclave",
+    "mapId": "AiOpenEconomy",
     "mapDigest": "resolved_from_candidate_assets",
     "side": 2,
     "rulesVersion": "probable-waffle-rules-v1"
   },
   "recipe": {
-    "mapLabel": "Ember Enclave",
+    "mapLabel": "AI Open Economy (test only)",
     "aiPlayerNumber": 2,
     "simulationTimeScale": 100,
     "checkpointTicks": [20, 300, 600, 1000, 1600, 2200, 3000],
@@ -34,16 +34,116 @@
         "presetWorld": {
           "fixtureId": "queued-supply-shortfall",
           "actors": [
-            { "fixtureActorId": "ai-producer", "actorName": "AnkGuard", "owner": 2, "position": { "x": 400, "y": 880, "z": 0 } },
-            { "fixtureActorId": "ai-worker-1", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 512, "y": 832, "z": 0 } },
-            { "fixtureActorId": "ai-worker-2", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 544, "y": 856, "z": 0 } },
-            { "fixtureActorId": "ai-worker-3", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 576, "y": 880, "z": 0 } },
-            { "fixtureActorId": "ai-worker-4", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 608, "y": 904, "z": 0 } }
+            {
+              "fixtureActorId": "ai-producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 512,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 544,
+                "y": 856,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 576,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 608,
+                "y": 904,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1200,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "field",
+              "actorName": "Field",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 640,
+                "z": 0
+              }
+            }
           ],
           "resourceGrants": [
-            { "playerNumber": 2, "amounts": { "food": 2000, "wood": 2000, "stone": 2000, "minerals": 2000 } }
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 2000,
+                "wood": 2000,
+                "stone": 2000,
+                "minerals": 2000
+              }
+            }
           ],
-          "queues": [{ "producerFixtureActorId": "ai-producer", "actorName": "TivaraMacemanMale", "count": 5 }]
+          "queues": [
+            {
+              "producerFixtureActorId": "ai-producer",
+              "actorName": "TivaraMacemanMale",
+              "count": 5
+            }
+          ],
+          "requireFactionRoster": true
         }
       },
       {
@@ -63,18 +163,136 @@
         "presetWorld": {
           "fixtureId": "ample-supply-control",
           "actors": [
-            { "fixtureActorId": "ai-producer", "actorName": "AnkGuard", "owner": 2, "position": { "x": 400, "y": 880, "z": 0 } },
-            { "fixtureActorId": "ai-worker-1", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 512, "y": 832, "z": 0 } },
-            { "fixtureActorId": "ai-worker-2", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 544, "y": 856, "z": 0 } },
-            { "fixtureActorId": "ai-worker-3", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 576, "y": 880, "z": 0 } },
-            { "fixtureActorId": "ai-worker-4", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 608, "y": 904, "z": 0 } },
-            { "fixtureActorId": "ai-house-1", "actorName": "Olival", "owner": 2, "position": { "x": 320, "y": 832, "z": 0 } },
-            { "fixtureActorId": "ai-house-2", "actorName": "Olival", "owner": 2, "position": { "x": 352, "y": 864, "z": 0 } }
+            {
+              "fixtureActorId": "ai-producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 512,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 544,
+                "y": 856,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 576,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 608,
+                "y": 904,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-house-1",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-house-2",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 352,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1200,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "field",
+              "actorName": "Field",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 640,
+                "z": 0
+              }
+            }
           ],
           "resourceGrants": [
-            { "playerNumber": 2, "amounts": { "food": 2000, "wood": 2000, "stone": 2000, "minerals": 2000 } }
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 2000,
+                "wood": 2000,
+                "stone": 2000,
+                "minerals": 2000
+              }
+            }
           ],
-          "queues": [{ "producerFixtureActorId": "ai-producer", "actorName": "TivaraMacemanMale", "count": 5 }]
+          "queues": [
+            {
+              "producerFixtureActorId": "ai-producer",
+              "actorName": "TivaraMacemanMale",
+              "count": 5
+            }
+          ],
+          "requireFactionRoster": true
         }
       }
     ]
@@ -85,7 +303,11 @@
       "minimumDecisions": 10,
       "minimumAppliedCommands": 1,
       "requiredAiFactions": ["Tivara"],
-      "requiredSupplyPrebuild": { "minimumBuffer": 3, "latestTick": 3000, "housingObjectName": "Olival" },
+      "requiredSupplyPrebuild": {
+        "minimumBuffer": 3,
+        "latestTick": 3000,
+        "housingObjectName": "Olival"
+      },
       "requireSupplyControl": true
     }
   },

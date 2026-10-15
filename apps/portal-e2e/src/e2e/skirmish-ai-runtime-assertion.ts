@@ -1,7 +1,9 @@
 import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
 import type { RuntimeProductionContractV1 } from "./skirmish-ai-runtime-production-contract";
+import type { RuntimeTechnologyContract } from "./skirmish-ai-runtime-technology-contract";
 
 export interface RuntimeAssertionV1 {
+  readonly requiredTechnologyContracts?: Readonly<Record<string, RuntimeTechnologyContract>>;
   /** Required per variant for causal PRO-03/06/07 proof; natural aggregate recipes remain insufficient. */
   readonly requiredProductionContracts?: Readonly<Record<string, RuntimeProductionContractV1>>;
   readonly maximumTick?: number;
@@ -10,6 +12,7 @@ export interface RuntimeAssertionV1 {
   readonly requiredOpeningSteps?: readonly string[];
   readonly requireNoInitialWorker?: boolean;
   readonly requireDeliveredIncome?: boolean;
+  readonly requireRenewableFoodIncome?: boolean;
   readonly requiredAiFactions: readonly RuntimeVariantV1["aiFaction"][];
   readonly minimumMilitaryCount?: number;
   readonly minimumMilitaryTypeCount?: number;

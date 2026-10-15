@@ -136,7 +136,7 @@
       "id": "TECH-01",
       "stages": [14],
       "group": "technology",
-      "fixture": null,
+      "fixture": "technology-runtime.json",
       "authoredFixture": "stage-14-adaptation.json",
       "drivers": ["pure", "runtime"]
     },
@@ -144,7 +144,7 @@
       "id": "TECH-02",
       "stages": [14],
       "group": "technology",
-      "fixture": null,
+      "fixture": "technology-runtime.json",
       "authoredFixture": "stage-14-adaptation.json",
       "drivers": ["pure", "runtime"]
     },
@@ -152,7 +152,7 @@
       "id": "TECH-03",
       "stages": [9, 14],
       "group": "technology",
-      "fixture": null,
+      "fixture": "technology-runtime.json",
       "authoredFixture": "stage-14-adaptation.json",
       "drivers": ["pure", "runtime"]
     },
@@ -160,7 +160,7 @@
       "id": "TECH-04",
       "stages": [14],
       "group": "technology",
-      "fixture": null,
+      "fixture": "technology-runtime.json",
       "authoredFixture": "stage-14-adaptation.json",
       "drivers": ["pure", "runtime"]
     },
@@ -168,7 +168,7 @@
       "id": "TECH-05",
       "stages": [14],
       "group": "technology",
-      "fixture": null,
+      "fixture": "technology-runtime.json",
       "authoredFixture": "stage-14-adaptation.json",
       "drivers": ["pure", "runtime"]
     },
@@ -176,7 +176,7 @@
       "id": "TECH-06",
       "stages": [13, 14],
       "group": "technology",
-      "fixture": null,
+      "fixture": "technology-runtime.json",
       "authoredFixture": "stage-14-adaptation.json",
       "drivers": ["pure", "runtime"]
     },
@@ -374,7 +374,14 @@
     { "id": "H-13", "stages": [6, 12], "group": "lanes", "fixture": null, "drivers": ["pure", "runtime"] },
     { "id": "H-14", "stages": [6, 12], "group": "lanes", "fixture": null, "drivers": ["pure", "runtime"] },
     { "id": "H-15", "stages": [6, 12], "group": "lanes", "fixture": null, "drivers": ["pure", "runtime"] },
-    { "id": "H-16", "stages": [7, 12], "group": "economy", "fixture": null, "drivers": ["pure", "runtime"] },
+    {
+      "id": "H-16",
+      "stages": [7, 12],
+      "group": "economy",
+      "fixture": null,
+      "authoredFixture": "economy-forecast-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
     {
       "id": "H-17",
       "stages": [7, 12],
@@ -383,7 +390,14 @@
       "authoredFixture": "production-scenarios.json",
       "drivers": ["pure", "runtime"]
     },
-    { "id": "H-18", "stages": [7, 12], "group": "economy", "fixture": null, "drivers": ["pure", "runtime"] },
+    {
+      "id": "H-18",
+      "stages": [7, 12],
+      "group": "economy",
+      "fixture": null,
+      "authoredFixture": "economy-supply-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
     { "id": "H-19", "stages": [4, 8], "group": "access", "fixture": null, "drivers": ["pure", "runtime"] },
     { "id": "H-20", "stages": [4, 8], "group": "access", "fixture": null, "drivers": ["pure", "runtime"] },
     { "id": "H-21", "stages": [8], "group": "access", "fixture": null, "drivers": ["pure", "runtime"] },

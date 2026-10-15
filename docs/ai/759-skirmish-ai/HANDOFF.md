@@ -5,13 +5,30 @@ Do not load the full plan directory or archive on startup.
 
 ## Current cursor
 
-- Worktree: `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`; branch: `feature/759-skirmish-ai`. Tested base: `ca0e3cac06915c8cde4659b9739820a3a511396e`; the containing publication commit owns this update. Verify actual HEAD/remote on resume. Commit/push at coherent boundaries is authorized; pause after publication.
-- **Package 1 production is validated: PRO-01–07 and H-17, 8/8 scenario outcomes (100%); 0/8 remaining (0%); no unavailable setup.** Evidence combines all eight ID-specific pure controls with 31 distinct native outcomes: 15 fresh capacity/composition/replacement runs and the 16 retained authority worlds. H-17 reuses four of those authority worlds; it does not add four matches. This is production-package completion, not overall AI completion.
-- Authored / why: 100-decision capacity controls cover one then three producers, delayed/duplicate/late callbacks and one necessary replacement. H-17 covers native blocked spawn, exactly one failed queue terminal and subsequent successful output, plus withdrawn-demand lease cleanup. PRO-07 now has explicit shared-lane, cash/obligation/refund and no-cancellation-loop pure assertions.
-- Corrected PRO-04's controlled setup: bind the normal map's starting soldier, replace one authored troop with that binding, and place both producers inside the established test area. The previous worlds began with 11/13 troops instead of 10/12 and repeatedly failed spawns. All eight corrected worlds pass the unchanged target 12, two useful copies, 600-tick horizon and 200-tick retention. No AI policy or balance changes were needed.
-- Evidence: `tmp/ai-plans/759-validation/production-certification` has passing PRO-01/02/05 predicates and the superseded PRO-04 failures; `production-composition-corrected` passes PRO-04. `production-certification-pure-final` passes all eight IDs; `certification-retained-worlds.json` passes H-17's four worlds and pair gates using existing captures. [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) owns exact commands/provenance/checks.
-- **Next action — Package 2, one grouped economy/technology batch:** reconcile ECO-01–08, H-16/H-18 and TECH-01–06 together. Reuse retained income/worker/supply/research controls, register the actual missing contracts, then repair shared resource/economy/adaptation owners once. Prove useful delivered income, affordable aggregate commitments and food/supply recovery before optional military/research spending. Read only this package in [REMAINING-WORK.md](REMAINING-WORK.md) and its selected [inventory rows](SCENARIO-INVENTORY.md).
-- Recommended next model: **GPT-6.1 Sol / high** for the remaining cross-owner economy/technology contracts and causal repairs. Actual host settings are unknown.
+- Worktree: `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`; branch: `feature/759-skirmish-ai`.
+  Tested base: `f3c5dd458ec72404c77b7ca050e86a1fceef3f5b` plus the containing checkpoint's changes.
+  Verify actual HEAD/remote on resume. Commit/push at coherent boundaries is authorized; pause after publication.
+- **Current: Package 2 economy/technology, 11/16 outcomes passed (68.75%); 5/16 remain (31.25%).**
+  ECO-01/02/03/04/07 and TECH-01–06 pass. ECO-08 fails the first-military-building deadline and repeated workforce
+  outcome digest. ECO-05/06 and H-16/H-18 lack native setups. Do not advance to Package 3.
+- Done / why: both openings secure Granary/Field income before military infrastructure; unaffordable construction
+  leaves workers gathering missing resources, and prior food/build claims prevent double assignment. Existing main
+  supply avoids an unnecessary opening house; later queued population can still trigger a distinct housing builder.
+  Public air-production clues admit one precaution; actual flyers scale counters and admitted deficits refill during
+  cooldown. No balance values changed.
+- Evidence: final `economy-supply-opening-final/1792082168359-failed.json` passes ECO-04 (3 worlds), ECO-07 (6),
+  PRO-04 (8). ECO-08's 5 worlds all prove renewable food; ordinary starts retain 4 workers, 20 food and 110 wood at
+  tick 3000 without the first producer. Growth repeats retain 8/9/8 workers but diverge after tick 900 despite exact
+  capture ticks. The clock overshoot defect is fixed; the remaining divergence is not explained by sampling overshoot.
+- Checks: all selected pure assertions pass (26 suites / 118 tests), affected gameplay 70 tests, Phaser clock/fixture
+  controls 15, E2E oracle controls 9. App/gameplay/E2E types and scoped lint pass. Standalone Phaser types retain eight
+  pre-existing errors. [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) owns exact artifacts/provenance and limitations.
+- **Next:** one grouped economy-recovery batch: diagnose slow opening wood/food delivery and post-900 growth
+  divergence; add ECO-05/H-16 aggregate-budget/low-delivery and ECO-06/H-18 depletion/supply-loss native branches.
+  Reuse current capture paths, preserve deadlines/determinism and the 200-resource start. Publish/pause after the
+  coherent batch; Package 1 remains 8/8 validated and its composition regression remains green.
+- Recommended next model: **GPT-6.1 Sol / high**, because the remaining failures need causal economy and timing
+  investigation. Actual host settings are unknown; no model switch is implied.
 
 ## What “continue” means
 
@@ -66,8 +83,8 @@ Use this format at every batch boundary and whenever the user asks what was done
 Keep the report self-contained and concise. A documentation-only update reports the instruction change and leaves
 gameplay progress unchanged. The execution plan links to this format rather than maintaining a second template.
 
-Registration baseline: pure **57/111 = 51.4% complete / 48.6% remaining**; supported runtime
-**20/116 = 17.2% / 82.8%**, excluding four deferred runtime rows. These are not overall AI completion.
+Registration coverage: pure **59/111 = 53.2% registered / 46.8% remaining**; supported runtime
+**26/116 = 22.4% registered / 77.6% remaining**, excluding four deferred runtime rows. These are not overall AI completion.
 Reconcile behavior evidence per selected package; do not invent a global completion percentage.
 
 ## End-of-gate machinery necessity review

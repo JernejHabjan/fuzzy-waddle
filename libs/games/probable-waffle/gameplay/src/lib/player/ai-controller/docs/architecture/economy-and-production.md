@@ -81,6 +81,16 @@ finished drop-off if its prior target disappears.
 
 Standard skirmishes give both human and AI players 200 food, wood, stone and minerals. The opening therefore secures a
 two-worker minimum before infrastructure instead of spending the entire food reserve on a serialized six-worker gate.
+Both factions secure the Granary before the first military producer. Outstanding opening costs also enter the workforce
+forecast, so the six-worker recovery floor does not suppress growth while infrastructure still needs income.
+With two workers and fewer than 600 forecast ticks of food runway, one renewable Field and its required drop-off
+may bootstrap before the military checkpoint finishes. This prevents military construction waiting for wood from
+also blocking the food income needed to recover workers. Ordinary affordability and distinct builder claims still apply.
+Food work claims its available worker before general gathering; loaded and returning workers keep their delivery cycle.
+An unaffordable new opening building keeps its demand but leaves workers available to gather its missing resources.
+The initial supply checkpoint accepts existing capacity when it covers current use, queued population and one spare
+slot; ordinary archetype buffers resume after the opening. Later housing uses a capable builder not already claimed by
+opening or food work, so a completed historical supply step cannot suppress necessary current housing recovery.
 Once renewable income is reachable, a separate current-workforce demand maintains six as a recovery floor and grows
 toward dated spending demand, useful resource-service capacity and an 18-worker safety ceiling. Owned, queued and
 accepted-but-unobserved replacements count once. Losses do not reopen historical opening steps.

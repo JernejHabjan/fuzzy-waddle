@@ -15,7 +15,9 @@ import {
   queuedObjectIds,
   queueFree
 } from "./ai-macro-observation";
-import { factionOpenings } from "./ai-opening-catalog";
+import { factionOpenings, OPENING_SUPPLY_BUFFER } from "./ai-opening-catalog";
+import { calculateAiHousingDemand } from "./ai-housing-demand";
+import { canAffordAiEconomyCost } from "./ai-economy-policy";
 
 /** Two workers unlock renewable food without exhausting the common 200-food start. */
 const MINIMUM_OPENING_WORKERS = 2;
@@ -23,8 +25,19 @@ const MINIMUM_OPENING_WORKERS = 2;
 function captureOpeningStatus(observation: AiObservationV1, state: AiBrainStateV1, catalog: AiCapabilityCatalogV1) {
   return factionOpenings[observation.faction].map((checkpoint) => {
     const matchingActors = checkpointActors(observation, checkpoint, catalog);
-    const desired = checkpoint.id === "bootstrap-worker" ? MINIMUM_OPENING_WORKERS : checkpoint.desired;
     const previousStep = state.opening.plan.steps.find((step) => step.stepId === `step:opening:${checkpoint.id}`);
+    const housing =
+      checkpoint.id === "supply-safety"
+        ? calculateAiHousingDemand(observation, catalog, checkpoint.requiredObject, OPENING_SUPPLY_BUFFER, [])
+        : undefined;
+    const supplySatisfied =
+      housing !== undefined && housing.freeSupply >= housing.queuedPopulation + OPENING_SUPPLY_BUFFER;
+    const desired =
+      checkpoint.id === "bootstrap-worker"
+        ? MINIMUM_OPENING_WORKERS
+        : checkpoint.id === "supply-safety" && (supplySatisfied || previousStep?.state === "completed")
+          ? 0
+          : checkpoint.desired;
     const satisfiedActors = matchingActors.filter(isFinishedActor);
     return {
       checkpoint,
@@ -128,8 +141,8 @@ function proposeOpeningCheckpointIntent(
         { claimId: ids.claimId, kind: "production_slot", producerId: producer.actorId, slot: 0 },
         ...createAiResourceCostClaims(
           ids.claimId,
-          catalog.entries.find((entry) => entry.sourceObjectName === checkpoint.requiredObject)
-            ?.constructionProfile?.resourceCost ?? {}
+          catalog.entries.find((entry) => entry.sourceObjectName === checkpoint.requiredObject)?.constructionProfile
+            ?.resourceCost ?? {}
         ),
         {
           claimId: `${ids.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
@@ -143,6 +156,10 @@ function proposeOpeningCheckpointIntent(
     };
   }
 
+  const constructionCost =
+    catalog.entries.find((entry) => entry.sourceObjectName === checkpoint.requiredObject)?.constructionProfile
+      ?.resourceCost ?? {};
+  if (!canAffordAiEconomyCost(observation, constructionCost)) return null;
   const builder = owned(observation)
     .filter(isAvailableBuilder)
     .filter((actor) => !reservedActorIds.has(actor.actorId))
@@ -183,8 +200,8 @@ function proposeOpeningCheckpointIntent(
       { claimId: ids.claimId, kind: "site", siteKey: `opening:${checkpoint.id}:${position.x}:${position.y}` },
       ...createAiResourceCostClaims(
         ids.claimId,
-        catalog.entries.find((entry) => entry.sourceObjectName === checkpoint.requiredObject)
-          ?.constructionProfile?.resourceCost ?? {}
+        catalog.entries.find((entry) => entry.sourceObjectName === checkpoint.requiredObject)?.constructionProfile
+          ?.resourceCost ?? {}
       ),
       {
         claimId: `${ids.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
@@ -240,7 +257,14 @@ export function proposeAiOpening(observation: AiObservationV1, state: AiBrainSta
       completedTick: fulfilled ? (completedTick ?? observation.tick) : null
     });
     const intent = proposeOpeningCheckpointIntent(
-      observation, state, catalog, status, activeCheckpointId, reservedActorIds, selectedConstructionTileKeys, ordinal
+      observation,
+      state,
+      catalog,
+      status,
+      activeCheckpointId,
+      reservedActorIds,
+      selectedConstructionTileKeys,
+      ordinal
     );
     if (intent) {
       intents.push(intent);

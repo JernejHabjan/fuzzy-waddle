@@ -7,7 +7,7 @@ import { selectConstructionPosition } from "./ai-construction-site-selector";
 import { canAffordAiEconomyCost } from "./ai-economy-policy";
 import { calculateAiHousingDemand } from "./ai-housing-demand";
 import { nextIds, unresolvedReservedEffectIds } from "./ai-macro-effect-identity";
-import { isAvailableBuilder } from "./ai-macro-observation";
+import { claimedActorIds, isAvailableBuilder } from "./ai-macro-observation";
 import type { OpeningCheckpoint } from "./ai-opening-catalog";
 import { createAiResourceCostClaims } from "./ai-resource-cost-claims";
 
@@ -18,10 +18,11 @@ export function proposeAiHousing(
   catalog: AiCapabilityCatalogV1,
   checkpoints: readonly OpeningCheckpoint[],
   self: readonly AiObservationV1["actors"][number][],
-  openingComplete: boolean,
+  canProposeHousing: boolean,
   supplyBuffer: number,
   reservedActorIds: ReadonlySet<string>,
   selectedConstructionTileKeys: Set<string>,
+  priorIntents: readonly AiIntentV1[],
   initialOrdinal: number
 ) {
   const housing = calculateAiHousingDemand(
@@ -34,7 +35,7 @@ export function proposeAiHousing(
   const freeSupply = housing.freeSupply;
   const intents: AiIntentV1[] = [];
   let ordinal = initialOrdinal;
-  if (!openingComplete || housing.neededBuildings <= 0 || !housing.housingEntry) {
+  if (!canProposeHousing || housing.neededBuildings <= 0 || !housing.housingEntry) {
     return { demand: null, intents, freeSupply, ordinal };
   }
   const housingObject = housing.housingEntry.sourceObjectName;
@@ -51,9 +52,11 @@ export function proposeAiHousing(
     preferredObjectNames: [housingObject],
     resourceObligations: housing.housingEntry.constructionProfile?.resourceCost ?? {}
   };
+  const alreadyClaimed = claimedActorIds(priorIntents);
   const builders = self
     .filter(isAvailableBuilder)
     .filter((actor) => !reservedActorIds.has(actor.actorId))
+    .filter((actor) => !alreadyClaimed.has(actor.actorId))
     .filter((actor) =>
       catalog.entries.some(
         (entry) => entry.sourceObjectName === actor.objectName && entry.constructs.includes(housingObject)
@@ -103,8 +106,7 @@ export function proposeAiHousing(
           effectId: ids.effectId
         }
       ],
-      reasonCode:
-        `supply_buffer:${state.opening.archetypeId}:deficit=${housing.queuedPopulation + supplyBuffer - freeSupply}`,
+      reasonCode: `supply_buffer:${state.opening.archetypeId}:deficit=${housing.queuedPopulation + supplyBuffer - freeSupply}`,
       builderIds: [builder.actorId],
       objectName: housingObject,
       logicalPosition: position,

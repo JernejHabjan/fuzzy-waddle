@@ -8,24 +8,33 @@ import { evaluateRuntimeSupplyControl, evaluateRuntimeSupplyPrebuild } from "./s
 import { evaluateRuntimeResourceService } from "./skirmish-ai-runtime-resource-service-evaluation";
 import { evaluateRuntimeSourceSaturation } from "./skirmish-ai-runtime-source-saturation-evaluation";
 import { evaluateRuntimeResourceLabor } from "./skirmish-ai-runtime-resource-labor-evaluation";
-import { evaluateRuntimeWorkerGrowth } from "./skirmish-ai-runtime-worker-growth-evaluation";
+import { evaluateRuntimeWorkerGrowth, hasRenewableFoodIncome } from "./skirmish-ai-runtime-worker-growth-evaluation";
 import { isAiVictory } from "./skirmish-ai-runtime-terminal";
 import { evaluateRuntimeProductionCapacity } from "./skirmish-ai-runtime-production-capacity-evaluation";
 import { evaluateRuntimeProductionComposition } from "./skirmish-ai-runtime-production-composition-evaluation";
 import { evaluateRuntimeProductionAuthority } from "./skirmish-ai-runtime-production-authority-evaluation";
 import { evaluateRuntimeProductionCounts } from "./skirmish-ai-runtime-production-count-evaluation";
 import { evaluateRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-evaluation";
+import { evaluateRuntimeTechnology } from "./skirmish-ai-runtime-technology-evaluation";
 
 export function evaluateRuntimeVariant(
   scenarioId: string,
   assertion: RuntimeAssertionV1,
   variant: RuntimeVariantResultV1
 ): string[] {
-  const failures = evaluateRuntimeProductionAuthority(
+  const technologyFailures = evaluateRuntimeTechnology(
     scenarioId,
-    assertion.requiredProductionContracts?.[variant.variantId],
-    variant.productionEvidenceV2
-  ).map((failure) => `${variant.variantId}:${failure}`);
+    assertion.requiredTechnologyContracts?.[variant.variantId],
+    variant
+  );
+  const failures = [
+    ...technologyFailures,
+    ...evaluateRuntimeProductionAuthority(
+      scenarioId,
+      assertion.requiredProductionContracts?.[variant.variantId],
+      variant.productionEvidenceV2
+    )
+  ].map((failure) => `${variant.variantId}:${failure}`);
   failures.push(
     ...(variant.productionEvidenceV2
       ? (variant.productionCausality?.failures ?? [])
@@ -43,6 +52,8 @@ export function evaluateRuntimeVariant(
     failures.push(`${variant.variantId}:minimum_applied_commands`);
   if (assertion.requireDeliveredIncome && !variant.checkpoints.some((checkpoint) => checkpoint.deliveredIncome > 0))
     failures.push(`${variant.variantId}:delivered_income`);
+  if (assertion.requireRenewableFoodIncome && !hasRenewableFoodIncome(variant.checkpoints))
+    failures.push(`${variant.variantId}:renewable_food_income`);
   if (final.workerCount < 1) failures.push(`${variant.variantId}:worker_bootstrap`);
   if (new Set(variant.checkpoints.map((checkpoint) => checkpoint.openingPlanId)).size !== 1)
     failures.push(`${variant.variantId}:opening_plan_restarted`);

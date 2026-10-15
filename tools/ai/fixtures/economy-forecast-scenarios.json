@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "scenarioIds": ["ECO-03", "ECO-04", "ECO-05"],
+  "scenarioIds": ["H-16", "ECO-03", "ECO-04", "ECO-05"],
   "purpose": "Deterministic source-saturation and dated-resource labor assignment with paired controls.",
   "driver": "pure",
   "seeds": [759401, 759402, 759403],
@@ -14,7 +14,19 @@
   },
   "assertionPolicy": {
     "repetitions": 3,
-    "requires": ["spare-source-capacity", "catalog-priced-ranged-demand", "aggregate-queued-upgrade-expansion-supply-demand", "wood-labor-assignment", "surplus-control", "canonical-digest"],
-    "forbids": ["saturated-source-assignment", "raw-stockpile-only-assignment", "hidden-income-assumption", "unrelated-resource-assignment"]
+    "requires": [
+      "spare-source-capacity",
+      "catalog-priced-ranged-demand",
+      "aggregate-queued-upgrade-expansion-supply-demand",
+      "wood-labor-assignment",
+      "surplus-control",
+      "canonical-digest"
+    ],
+    "forbids": [
+      "saturated-source-assignment",
+      "raw-stockpile-only-assignment",
+      "hidden-income-assumption",
+      "unrelated-resource-assignment"
+    ]
   }
 }

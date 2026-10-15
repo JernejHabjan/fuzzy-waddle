@@ -31,8 +31,17 @@ export function proposeAiFoodEconomy(args: {
   readonly ordinal: number;
 }): { readonly policy: ReturnType<typeof decideAiEconomyPolicy>; readonly ordinal: number } {
   const {
-    observation, state, catalog, self, pressureForecast, openingComplete, workerRequiredObject, reservedActorIds,
-    selectedConstructionTileKeys, demands, intents
+    observation,
+    state,
+    catalog,
+    self,
+    pressureForecast,
+    openingComplete,
+    workerRequiredObject,
+    reservedActorIds,
+    selectedConstructionTileKeys,
+    demands,
+    intents
   } = args;
   let ordinal = args.ordinal;
   // A granary is only a drop-off point. Sustained reinforcement needs actual
@@ -46,10 +55,19 @@ export function proposeAiFoodEconomy(args: {
     .filter((actor) => actor.objectName === ObjectNames.Field && !isFinishedActor(actor))
     .sort((left, right) => left.actorId.localeCompare(right.actorId));
   const acceptedFoodSourceEffectIds = unresolvedReservedEffectIds(state, "effect:food-capacity:Field:effect:");
+  const openingForecast = projectAiResourceForecasts(
+    observation,
+    demands.filter((demand) => demand.demandId.startsWith("demand:opening:")),
+    catalog
+  );
   const policy = decideAiEconomyPolicy(
     observation,
     catalog,
-    pressureForecast,
+    pressureForecast.map((entry) => ({
+      ...entry,
+      amount:
+        entry.amount + (openingForecast.find((opening) => opening.resourceType === entry.resourceType)?.amount ?? 0)
+    })),
     state.strategy.stance === "defend",
     state.economyProduction.posture,
     state.strategy.assessment?.choice === "finish" &&
@@ -57,7 +75,15 @@ export function proposeAiFoodEconomy(args: {
       state.strategy.assessment.expectedEffectTick !== null &&
       state.strategy.assessment.expectedEffectTick <= observation.tick + 600
   );
-  const desiredFoodSources = openingComplete && foodSourceEntry ? policy.desiredFoodSources : 0;
+  // The military checkpoint can wait on wood after workers exhaust starting food.
+  // Bootstrap one renewable source as soon as two workers can build and gather.
+  const desiredFoodSources = !foodSourceEntry
+    ? 0
+    : openingComplete
+      ? policy.desiredFoodSources
+      : policy.workers >= 2 && (readyFoodSources.length > 0 || policy.foodRunwayTicks < 600)
+        ? Math.min(1, policy.desiredFoodSources)
+        : 0;
   if (workerRequiredObject) {
     const recovery = proposeAiWorkerRecovery(
       observation,

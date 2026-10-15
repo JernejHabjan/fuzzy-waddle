@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "scenarioIds": ["ECO-07"],
+  "scenarioIds": ["H-18", "ECO-07"],
   "purpose": "Deterministic queued-population housing demand with a no-extra-house control.",
   "driver": "pure",
   "seeds": [759701, 759702, 759703],
@@ -14,7 +14,13 @@
   },
   "assertionPolicy": {
     "repetitions": 3,
-    "requires": ["queued-population", "legal-house-intent", "disjoint-commitments", "semantic-control", "canonical-digest"],
+    "requires": [
+      "queued-population",
+      "legal-house-intent",
+      "disjoint-commitments",
+      "semantic-control",
+      "canonical-digest"
+    ],
     "forbids": ["extra-house-with-ample-supply", "duplicate-accepted-capacity"]
   }
 }

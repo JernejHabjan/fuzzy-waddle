@@ -25,6 +25,28 @@ describe("SimulationTickService passive closed frontiers", () => {
     return { events, service: new SimulationTickService(scene) };
   }
 
+  it.each([SimulationPauseReason.Manual, SimulationPauseReason.Lockstep])(
+    "honours a %s pause inside a multi-tick frame without discarding pending time",
+    (reason) => {
+      const { service, events } = setup();
+      const ticks: number[] = [];
+      service.tick$.subscribe((tick) => {
+        if (tick === 2) service.pauseTick(reason);
+      });
+      service.tick$.subscribe((tick) => ticks.push(tick));
+      events.emit(Phaser.Scenes.Events.UPDATE, 0, 250);
+      expect(ticks).toEqual([1, 2]);
+      expect(service.currentTick).toBe(2);
+      service.pauseTick(SimulationPauseReason.Player);
+      service.resumeTick(reason);
+      events.emit(Phaser.Scenes.Events.UPDATE, 0, 50);
+      expect(service.currentTick).toBe(2);
+      service.resumeTick(SimulationPauseReason.Player);
+      events.emit(Phaser.Scenes.Events.UPDATE, 0, 0);
+      expect(ticks).toEqual([1, 2, 3, 4, 5]);
+    }
+  );
+
   it("runs after increment and before all next-tick subscribers, including multi-tick render frames", () => {
     const { service, events } = setup();
     const order: string[] = [];

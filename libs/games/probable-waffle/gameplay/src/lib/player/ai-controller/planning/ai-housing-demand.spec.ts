@@ -106,6 +106,51 @@ function queuedProducer(itemCount: number) {
 }
 
 describe("housing capacity demand", () => {
+  it("H-18: replaces lost capacity while queued population and a visible paid site are each counted once", () => {
+    const base = createAiTestObservation();
+    const workers = Array.from({ length: 7 }, (_, index) => createAiTestOwnedActor(`worker-${index}`));
+    const surviving = housing("survivor");
+    const queue = queuedProducer(4);
+    const lost = calculateAiHousingDemand(
+      { ...base, actors: [...workers, surviving, queue] },
+      catalog,
+      ObjectNames.Olival,
+      3,
+      []
+    );
+    expect(lost).toMatchObject({ readyCapacity: 8, used: 7, queuedPopulation: 4, neededBuildings: 1 });
+    const paidSite = { ...housing("replacement", 50), activeEffectIds: ["effect:supply:replacement"] };
+    const pending = calculateAiHousingDemand(
+      { ...base, actors: [...workers, surviving, queue, paidSite] },
+      catalog,
+      ObjectNames.Olival,
+      3,
+      ["effect:supply:replacement"]
+    );
+    expect(pending).toMatchObject({ queuedPopulation: 4, neededBuildings: 0, acceptedEffectIds: [] });
+    expect(pending.constructing.map((actor) => actor.actorId)).toEqual(["replacement"]);
+    const completed = calculateAiHousingDemand(
+      {
+        ...base,
+        actors: [
+          ...workers,
+          surviving,
+          queue,
+          { ...paidSite, constructionProgress: { status: "known", value: 100, observedTick: 40 } }
+        ]
+      },
+      catalog,
+      ObjectNames.Olival,
+      3,
+      ["effect:supply:replacement"]
+    );
+    expect(completed).toMatchObject({
+      readyCapacity: 16,
+      queuedPopulation: 4,
+      neededBuildings: 0,
+      acceptedEffectIds: []
+    });
+  });
   it("prebuilds a useful house for queued population even while current supply looks sufficient", () => {
     const workers = Array.from({ length: 4 }, (_, index) => createAiTestOwnedActor(`worker-${index}`));
     const observation = {

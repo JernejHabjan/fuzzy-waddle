@@ -112,7 +112,7 @@ export class SimulationTickService {
   private onUpdateFrameNonDeterministic(_time: number, delta: number): void {
     if (this.isPaused) return;
     this.accumulated += delta * this.simulationTimeScale;
-    while (this.accumulated >= SimulationTickService.TICK_INTERVAL_MS) {
+    while (!this.isPaused && this.accumulated >= SimulationTickService.TICK_INTERVAL_MS) {
       this.accumulated -= SimulationTickService.TICK_INTERVAL_MS;
       this.currentTick++;
       try {

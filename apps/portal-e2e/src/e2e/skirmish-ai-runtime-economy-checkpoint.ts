@@ -87,6 +87,14 @@ export async function captureRuntimeEconomyCheckpoint(
             (resource.deliveredIncomePerMinute.status === "known" ? resource.deliveredIncomePerMinute.value : 0),
           0
         ),
+        deliveredIncomeByResource: Object.fromEntries(
+          observation.resources
+            .filter((resource) => resource.deliveredIncomePerMinute.status === "known")
+            .map((resource) => [
+              resource.resourceType,
+              resource.deliveredIncomePerMinute.status === "known" ? resource.deliveredIncomePerMinute.value : 0
+            ])
+        ),
         appliedCommands: bridge.outcomes
           .filter((outcome) => outcome.kind === "applied")
           .map((outcome) => ({

@@ -110,7 +110,9 @@ function validateRuntimeFixture(fixture, scenarioId) {
         (variant.productionCapacityBranch !== undefined &&
           !["build", "already_sufficient"].includes(variant.productionCapacityBranch)) ||
         (variant.productionCompositionBranch !== undefined &&
-          !["fill_deficit", "satisfied_control", "seeded_queue_control"].includes(variant.productionCompositionBranch)) ||
+          !["fill_deficit", "satisfied_control", "seeded_queue_control"].includes(
+            variant.productionCompositionBranch
+          )) ||
         (variant.mapLabel !== undefined && typeof variant.mapLabel !== "string") ||
         (variant.perturbations !== undefined &&
           (!Array.isArray(variant.perturbations) ||
@@ -134,6 +136,7 @@ function validateRuntimeFixture(fixture, scenarioId) {
       (!Array.isArray(assertion.requiredOpeningSteps) || assertion.requiredOpeningSteps.length === 0)) ||
     (assertion.requireNoInitialWorker !== undefined && typeof assertion.requireNoInitialWorker !== "boolean") ||
     (assertion.requireDeliveredIncome !== undefined && typeof assertion.requireDeliveredIncome !== "boolean") ||
+    (assertion.requireRenewableFoodIncome !== undefined && typeof assertion.requireRenewableFoodIncome !== "boolean") ||
     (assertion.requiredGroundRouteVariantIds !== undefined &&
       (!Array.isArray(assertion.requiredGroundRouteVariantIds) ||
         assertion.requiredGroundRouteVariantIds.some((variantId) => typeof variantId !== "string"))) ||

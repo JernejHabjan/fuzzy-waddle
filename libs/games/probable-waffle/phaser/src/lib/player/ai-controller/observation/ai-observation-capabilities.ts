@@ -34,6 +34,12 @@ export function capabilityFamilies(definition: ReturnType<typeof getPwActorDefin
     components.gatherer ? "gather" : null,
     components.builder ? "build" : null,
     components.production ? "produce" : null,
+    // A visible building's declared product domains are public capability, never its private queue or tech state.
+    components.production?.availableProduceActors.some((name) =>
+      movementDomains(getPwActorDefinition(name, null)).includes("air")
+    )
+      ? "produce_air"
+      : null,
     components.resourceDrain ? "drop_off" : null,
     components.container ? "transport" : null
   ].filter((family): family is string => family !== null);

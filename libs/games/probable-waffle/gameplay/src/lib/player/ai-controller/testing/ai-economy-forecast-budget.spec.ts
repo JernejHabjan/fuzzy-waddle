@@ -4,8 +4,39 @@ import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v
 
 import { unknownAiValue } from "./ai-test-fixtures";
 import { catalog, demand, world, proposal } from "./ai-economy-forecast-test-fixtures";
+import { aiResourceForecastDeficit, projectAiResourceForecasts } from "../planning/ai-resource-forecast";
+import { canAffordAiEconomyCost } from "../planning/ai-economy-policy";
 
 describe("typed deterministic economy forecast scenarios", () => {
+  it("H-16: replaces an optimistic income estimate with delivered income without making it spendable", () => {
+    const base = world(0, 1000);
+    const observed = (income: number) => ({
+      ...base,
+      resources: base.resources.map((entry) =>
+        entry.resourceType === ResourceType.Wood
+          ? { ...entry, deliveredIncomePerMinute: { status: "known" as const, observedTick: 20, value: income } }
+          : entry
+      )
+    });
+    const optimistic = observed(2000);
+    const stalled = observed(0);
+    const forecast = projectAiResourceForecasts(stalled, [demand], catalog).find(
+      (entry) => entry.resourceType === ResourceType.Wood
+    );
+    if (!forecast) throw new Error("wood_forecast_missing");
+    expect(aiResourceForecastDeficit(optimistic, forecast)).toBeLessThanOrEqual(0);
+    expect(aiResourceForecastDeficit(stalled, forecast)).toBeGreaterThan(0);
+    expect(canAffordAiEconomyCost(optimistic, { [ResourceType.Wood]: 1 })).toBe(false);
+    expect(canAffordAiEconomyCost(stalled, { [ResourceType.Wood]: 1 })).toBe(false);
+    const restored = proposal(0, 1000, [demand], stalled);
+    expect(restored.intents).toContainEqual(
+      expect.objectContaining({
+        kind: "assign_gatherers",
+        resourceType: ResourceType.Wood,
+        sourceActorId: "wood-source"
+      })
+    );
+  });
   it("ECO-05: leaves returning and loaded workers alone and retains the final food gatherer", () => {
     const baseline = world(0, 1000);
     const workers = baseline.actors.map((actor) => {

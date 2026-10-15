@@ -3,9 +3,36 @@ import { ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waf
 import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "../testing/ai-test-fixtures";
 
 import { AiMacroManager } from "./ai-macro-manager";
+import { proposeAiFoodEconomy } from "./ai-food-economy-proposal";
+import { projectAiResourceForecasts } from "./ai-resource-forecast";
 import { catalog, completedOpeningState } from "./ai-macro-test-fixtures";
 
 describe("AI macro renewable food capacity", () => {
+  it.each([1, 2, 4])("ECO-08 bootstraps renewable food before military completion with %i workers", (count) => {
+    const observation = {
+      ...createAiTestObservation(),
+      actors: Array.from({ length: count }, (_, index) => createAiTestOwnedActor(`worker-${index}`)),
+      resources: createAiTestObservation().resources.map((resource) => ({ ...resource, stockpile: 0 }))
+    };
+    const demands: Parameters<typeof proposeAiFoodEconomy>[0]["demands"] = [];
+    proposeAiFoodEconomy({
+      observation,
+      state: completedOpeningState(),
+      catalog,
+      self: observation.actors,
+      pressureForecast: projectAiResourceForecasts(observation, [], catalog),
+      openingComplete: false,
+      workerRequiredObject: ObjectNames.TivaraWorker,
+      reservedActorIds: new Set(),
+      selectedConstructionTileKeys: new Set(),
+      demands,
+      intents: [],
+      ordinal: 0
+    });
+    expect(demands.find((demand) => demand.purpose === "renewable_food_capacity")?.desired ?? 0).toBe(
+      count >= 2 ? 1 : 0
+    );
+  });
   it("creates bounded renewable food capacity after the opening instead of treating the granary as food", () => {
     const state = completedOpeningState();
     const workers = Array.from({ length: 6 }, (_, index) => ({

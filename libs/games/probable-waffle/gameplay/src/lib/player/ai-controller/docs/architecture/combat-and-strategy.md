@@ -72,10 +72,14 @@ brain plans are never treated as shipping evidence.
 The adaptation manager alone owns counter-composition demand and optional technology rationale. It consumes only
 committed visible evidence and legal research candidates projected by the runtime adapter. A normal role transition
 requires repeated evidence plus the profile cooldown; remembered contacts cannot independently trigger it.
+A visible building's publicly declared air products justify one anti-air precaution. Distinct confirmed flying actors
+scale that target up to six; repeated sightings of the same actor and producer clues do not inflate fleet strength.
+This projection reads static product capabilities, never an enemy's private production queue or research state.
 
 Counter demand is limited to capabilities that exist in the current faction catalog. Ready actors and unresolved
 accepted effects count toward fulfillment, so duplicate units remain useful while a real deficit exists and production
 stops when the commitment is satisfied. Existing production is retained rather than cancelled speculatively.
+The composition cooldown gates admitting a new or larger target; it does not delay filling an already admitted deficit.
 
 Research scoring weighs current and likely beneficiaries against cost, queue delay, and survival needs. The shared
 research command remains the final authority. Adaptation evidence, targets, research rationale, and cancellation policy

@@ -6,13 +6,13 @@
   "driver": "runtime",
   "status": "ready_for_runtime_execution",
   "context": {
-    "mapId": "EmberEnclave+RiverCrossing",
+    "mapId": "AiOpenEconomy",
     "mapDigest": "resolved_from_candidate_assets",
     "side": 2,
     "rulesVersion": "probable-waffle-rules-v1"
   },
   "recipe": {
-    "mapLabel": "Ember Enclave",
+    "mapLabel": "AI Open Economy (test only)",
     "aiPlayerNumber": 2,
     "simulationTimeScale": 100,
     "checkpointTicks": [20, 400, 900, 1600, 3000],
@@ -24,7 +24,7 @@
         "setupRationale": "The zero-worker opening must start from the ordinary lobby world.",
         "deadlineRationale": "Worker creation and first delivered income can require the full opening window.",
         "seed": 759081,
-        "mapLabel": "Ember Enclave",
+        "mapLabel": "AI Open Economy (test only)",
         "aiFaction": "Tivara",
         "humanFaction": "Skaduwee",
         "difficulty": "Normal"
@@ -36,7 +36,7 @@
         "setupRationale": "The faction opening must start from the ordinary lobby world.",
         "deadlineRationale": "Worker creation and first delivered income can require the full opening window.",
         "seed": 759082,
-        "mapLabel": "River Crossing",
+        "mapLabel": "AI Open Economy (test only)",
         "aiFaction": "Skaduwee",
         "humanFaction": "Tivara",
         "difficulty": "Normal"
@@ -48,7 +48,7 @@
         "deadlineRationale": "A completed extra worker must persist beyond the initial recovery floor.",
         "scenarioIds": ["ECO-08"],
         "seed": 759083,
-        "mapLabel": "Ember Enclave",
+        "mapLabel": "AI Open Economy (test only)",
         "aiFaction": "Tivara",
         "humanFaction": "Skaduwee",
         "difficulty": "Normal",
@@ -57,20 +57,110 @@
         "presetWorld": {
           "fixtureId": "workforce-growth",
           "actors": [
-            { "fixtureActorId": "worker-1", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 640, "y": 800, "z": 0 } },
-            { "fixtureActorId": "worker-2", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 672, "y": 824, "z": 0 } },
-            { "fixtureActorId": "worker-3", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 704, "y": 848, "z": 0 } },
-            { "fixtureActorId": "worker-4", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 640, "y": 872, "z": 0 } },
-            { "fixtureActorId": "worker-5", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 672, "y": 896, "z": 0 } },
-            { "fixtureActorId": "worker-6", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 704, "y": 920, "z": 0 } },
-            { "fixtureActorId": "granary", "actorName": "Granary", "owner": 2, "position": { "x": 800, "y": 880, "z": 0 } },
-            { "fixtureActorId": "field-1", "actorName": "Field", "owner": 2, "position": { "x": 864, "y": 816, "z": 0 } },
-            { "fixtureActorId": "field-2", "actorName": "Field", "owner": 2, "position": { "x": 896, "y": 896, "z": 0 } }
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 672,
+                "y": 824,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 872,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 672,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 920,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "field-1",
+              "actorName": "Field",
+              "owner": 2,
+              "position": {
+                "x": 864,
+                "y": 816,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "field-2",
+              "actorName": "Field",
+              "owner": 2,
+              "position": {
+                "x": 896,
+                "y": 896,
+                "z": 0
+              }
+            }
           ],
           "resourceGrants": [],
           "resourceStarts": [
-            { "playerNumber": 2, "amounts": { "food": 200, "wood": 200, "stone": 200, "minerals": 200 } }
-          ]
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 200,
+                "wood": 200,
+                "stone": 200,
+                "minerals": 200
+              }
+            }
+          ],
+          "requireFactionRoster": true
         }
       }
     ]
@@ -87,6 +177,7 @@
       ],
       "requireNoInitialWorker": true,
       "requireDeliveredIncome": true,
+      "requireRenewableFoodIncome": true,
       "requiredAiFactions": ["Tivara", "Skaduwee"],
       "requiredWorkerGrowth": {
         "variantId": "tivara-workforce-growth",

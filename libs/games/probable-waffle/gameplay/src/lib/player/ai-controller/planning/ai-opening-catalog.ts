@@ -1,5 +1,8 @@
 import { FactionType, ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 
+/** One free slot covers the next opening worker; larger archetype reserves follow renewable income. */
+export const OPENING_SUPPLY_BUFFER = 1;
+
 /** One resolved opening checkpoint; the runtime catalog remains the authority for legality. */
 export interface OpeningCheckpoint {
   readonly id: string;
@@ -12,14 +15,14 @@ export const factionOpenings: Readonly<Record<FactionType, readonly OpeningCheck
   [FactionType.Tivara]: [
     { id: "bootstrap-worker", purpose: "bootstrap_worker", requiredObject: ObjectNames.TivaraWorker, desired: 1 },
     { id: "supply-safety", purpose: "supply_buffer", requiredObject: ObjectNames.Olival, desired: 1 },
-    { id: "first-producer", purpose: "first_military_producer", requiredObject: ObjectNames.AnkGuard, desired: 1 },
-    { id: "sustainable-food", purpose: "sustainable_food", requiredObject: ObjectNames.Granary, desired: 1 }
+    { id: "sustainable-food", purpose: "sustainable_food", requiredObject: ObjectNames.Granary, desired: 1 },
+    { id: "first-producer", purpose: "first_military_producer", requiredObject: ObjectNames.AnkGuard, desired: 1 }
   ],
   [FactionType.Skaduwee]: [
     { id: "bootstrap-worker", purpose: "bootstrap_worker", requiredObject: ObjectNames.SkaduweeWorker, desired: 1 },
     { id: "supply-safety", purpose: "supply_buffer", requiredObject: ObjectNames.Emberstone, desired: 1 },
-    { id: "first-producer", purpose: "first_military_producer", requiredObject: ObjectNames.InfantryInn, desired: 1 },
-    { id: "sustainable-food", purpose: "sustainable_food", requiredObject: ObjectNames.Granary, desired: 1 }
+    { id: "sustainable-food", purpose: "sustainable_food", requiredObject: ObjectNames.Granary, desired: 1 },
+    { id: "first-producer", purpose: "first_military_producer", requiredObject: ObjectNames.InfantryInn, desired: 1 }
   ]
 };
 

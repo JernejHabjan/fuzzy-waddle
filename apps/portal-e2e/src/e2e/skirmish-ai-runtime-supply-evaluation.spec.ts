@@ -26,13 +26,19 @@ test.describe("authoritative queued-supply runtime oracle", () => {
     ]);
     expect(
       evaluateRuntimeSupplyPrebuild(
-        [pressured, { ...pressured, tick: 400, readyHousingCapacity: 16, readyHousingActorNames: ["Olival", "Olival"] }],
+        [
+          pressured,
+          { ...pressured, tick: 400, readyHousingCapacity: 16, readyHousingActorNames: ["Olival", "Olival"] }
+        ],
         requirement
       )
     ).toEqual([]);
     expect(
       evaluateRuntimeSupplyPrebuild(
-        [pressured, { ...pressured, tick: 900, readyHousingCapacity: 16, readyHousingActorNames: ["Olival", "Olival"] }],
+        [
+          pressured,
+          { ...pressured, tick: 900, readyHousingCapacity: 16, readyHousingActorNames: ["Olival", "Olival"] }
+        ],
         requirement
       )
     ).toEqual(["supply_not_prebuilt_before_deadline"]);
@@ -46,7 +52,15 @@ test.describe("authoritative queued-supply runtime oracle", () => {
       queuedPopulation: 5,
       readyHousingActorNames: ["Olival", "Olival"]
     };
-    expect(evaluateRuntimeSupplyControl([ample, { ...ample, tick: 800 }], requirement)).toEqual([]);
+    expect(
+      evaluateRuntimeSupplyControl(
+        [
+          ample,
+          { ...ample, tick: 800, ownedConstruction: [{ actorId: "existing", objectName: "Olival", progress: 100 }] }
+        ],
+        requirement
+      )
+    ).toEqual([]);
     expect(
       evaluateRuntimeSupplyControl(
         [ample, { ...ample, tick: 800, ownedConstruction: [{ actorId: "extra", objectName: "Olival", progress: 20 }] }],

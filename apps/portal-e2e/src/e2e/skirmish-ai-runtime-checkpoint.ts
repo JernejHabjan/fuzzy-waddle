@@ -21,6 +21,7 @@ export interface RuntimeCheckpointV1 {
   readonly queuedPopulation?: number;
   readonly readyHousingActorNames?: readonly string[];
   readonly deliveredIncome: number;
+  readonly deliveredIncomeByResource?: Readonly<Record<string, number>>;
   readonly appliedCommands: readonly { readonly commandId: string; readonly effectId: string }[];
   readonly terminalFailureCount: number;
   readonly terminalFailureReasons: Readonly<Record<string, number>>;
