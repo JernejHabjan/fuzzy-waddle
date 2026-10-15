@@ -13,7 +13,7 @@ export function evaluateRuntimeProductionAuthority(
   contract: RuntimeProductionContractV1 | undefined,
   evidence: RuntimeProductionEvidenceV2 | undefined
 ): string[] {
-  if (!["PRO-03", "PRO-06", "PRO-07"].includes(scenarioId)) return [];
+  if (!["PRO-03", "PRO-06", "PRO-07", "H-17"].includes(scenarioId)) return [];
   if (!contract || contract.scenarioId !== scenarioId) return ["production_contract_missing"];
   if (!evidence || evidence.schemaVersion !== 2) return ["production_v2_evidence_missing"];
   const failures = [...evidence.failures, ...evidence.gaps.map((gap) => `production_v2_gap:${gap}`)];
@@ -99,7 +99,7 @@ export function evaluateRuntimeProductionAuthority(
   return [
     ...new Set([
       ...failures,
-      ...(scenarioId === "PRO-03"
+      ...(scenarioId === "PRO-03" || scenarioId === "H-17"
         ? evaluateRuntimeProductionSchedule(contract, evidence)
         : scenarioId === "PRO-06"
           ? evaluateRuntimeProductionRecovery(contract, evidence)

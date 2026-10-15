@@ -1,6 +1,6 @@
 /** Causal production proof requirements; counters and manager reason strings cannot satisfy these contracts. */
 export interface RuntimeProductionContractV1 {
-  readonly scenarioId: "PRO-03" | "PRO-06" | "PRO-07";
+  readonly scenarioId: "PRO-03" | "PRO-06" | "PRO-07" | "H-17";
   /** Controls and sustained post-effect assertions run through this tick. */
   readonly latestTick: number;
   readonly stableForTicks: number;

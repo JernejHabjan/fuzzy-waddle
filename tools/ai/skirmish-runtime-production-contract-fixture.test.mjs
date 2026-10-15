@@ -4,7 +4,7 @@ import { validProductionContracts } from "./skirmish-runtime-production-contract
 
 function fixture(scenarioId) {
   const branches =
-    scenarioId === "PRO-03"
+    scenarioId === "PRO-03" || scenarioId === "H-17"
       ? ["future_committed", "future_abandoned"]
       : scenarioId === "PRO-06"
         ? ["critical_exposed", "safe_served", "low_value", "no_demand"]
@@ -41,7 +41,7 @@ function fixture(scenarioId) {
   };
 }
 
-for (const id of ["PRO-03", "PRO-06", "PRO-07"]) {
+for (const id of ["PRO-03", "PRO-06", "PRO-07", "H-17"]) {
   test(`${id} accepts explicit per-faction contract shapes, without claiming definition/runtime proof`, () => {
     const { recipe, assertion } = fixture(id);
     assert.equal(validProductionContracts(recipe, assertion, id), true);

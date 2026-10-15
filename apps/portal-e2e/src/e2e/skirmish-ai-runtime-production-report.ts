@@ -25,7 +25,7 @@ import { normalizeRuntimeProductionSetup } from "./skirmish-ai-runtime-productio
 
 /** Verifies the bridge from one marked runtime capture into the retained normalized diagnostic report. */
 export function checkRuntimeProductionReportBridge(scenarioId: string, variant: RuntimeVariantResultV1): string[] {
-  if (!["PRO-03", "PRO-06", "PRO-07"].includes(scenarioId)) return [];
+  if (!["PRO-03", "PRO-06", "PRO-07", "H-17"].includes(scenarioId)) return [];
   const capture = variant.productionCapture;
   const report = variant.productionCausality;
   if (!capture || !report) return [`runtime_production_report_missing:${scenarioId}:${variant.variantId}`];

@@ -1,4 +1,5 @@
 const branches = {
+  "H-17": ["future_committed", "future_abandoned"],
   "PRO-03": ["future_committed", "future_abandoned"],
   "PRO-06": ["critical_exposed", "safe_served", "low_value", "no_demand"],
   "PRO-07": ["shared_contention", "cancel_pending_refund"]
@@ -92,7 +93,7 @@ export function validProductionContracts(recipe, assertion, scenarioId) {
       if (pair.length !== 2) return false;
       const [left, right] = pair.map((variant) => contracts[variant.id]);
       const expected =
-        scenarioId === "PRO-03"
+        scenarioId === "PRO-03" || scenarioId === "H-17"
           ? allowed
           : [left.branch, right.branch].includes("critical_exposed")
             ? ["critical_exposed", "safe_served"]

@@ -1,31 +1,78 @@
-# #759 current evidence and next production gate
+# #759 current evidence
 
-[HANDOFF.md](HANDOFF.md) owns continuation. Read only the selected production rows on resume.
+[HANDOFF.md](HANDOFF.md) owns continuation. Package 1 is validated; resume package 2 economy/technology.
 
-## Current checkpoint — 2026-10-14
+## Production checkpoint — 2026-10-15
 
-- Package 1 remains open. The PRO-03/06/07 authority-world gate is **16/16 passing (100%); 0/16 remaining (0%); no unavailable setup**. The combined pair evaluations for all three IDs have no failures. This certifies the selected world gate, not the entire production package or overall AI scope.
-- Fresh final shared-contention captures: Tivara and Skaduwee each close through tick 2000 with 100 decisions, zero dropped facts, zero AI errors and no predicate failures. The Playwright command passes both tests in 6.6 minutes. Fourteen unaffected outcomes are retained from the previous cohorts: their Field rallies and non-Move work use unchanged range semantics.
-- Tested base is `0f653a9c5c727abce51fb6552f7e6acb7a938e53`, with working-tree changes. The relevant five-file source/fixture diff hashes to `e00aafb77e4df99b1ddb61b13095e43abc49a2194a9577297c01ef0a362cd77c`. Final variant fixture digests: Tivara `fnv1a32:7fc61754`, Skaduwee `fnv1a32:667caa4d`. The containing publication commit owns the update; verify actual HEAD/remote on resume.
-- Ignored artifacts under `tmp/ai-plans/759-validation`: `production-staging-contention-worlds`, `staging-contention-native.log`, `staging-combined-results.json`. Raw capture is never committed. Earlier Field, WorkMill, producer and distant-housing attempts are superseded diagnostic records, not current acceptance inputs.
+**PRO-01–07 and H-17: 8/8 required scenario outcomes pass (100%); 0/8 remaining (0%); no unavailable setup.**
+This closes production, not the overall AI roadmap. Evidence combines 31 distinct native outcomes and all eight
+ID-specific pure assertion groups. H-17 shares four existing future-demand worlds; it adds no redundant native runs.
 
-## Authored / why
+Tested base: `ca0e3cac06915c8cde4659b9739820a3a511396e`, plus the containing commit's tests/readers/fixture changes.
+No AI production policy, queue/spawn authority, movement implementation or balance values changed in this batch.
+Final checked 26-file source/fixture/test diff SHA-256: `17d4e35246dd5b717e96e6b9344743a84588836bbd0c6c2b1153871f89161662`
+(excludes this plan directory and the generated catalog); exact paths are in `certification-source-provenance.json`.
+Native source/fixture identities remain those embedded in each raw artifact; final assertion guards/formatting do not
+change their simulated worlds.
 
-- Native `PawnAgentMovement` previously used radius zero for a Move to a solid building, searching only its blocked footprint and refusing the route. It now uses one-tile contact range for solid, non-navigable targets consistently across range, reachability and movement. Walkable/raised targets retain exact-target behavior; other action ranges stay unchanged. Controls cover solid versus walkable/raised targets, actual contact versus farther distance, failed movement and late order replacement.
-- Shared-contention fixtures used a harvestable Field as a long-lived troop rally. Its depletion removed that identity before upgraded output spawned. Both worlds now rally at their existing permanent faction housing—Olival/Emberstone—at `800,1056`, reflecting the original Field's distance around the producer at `800,848`. The Field economy remains unchanged. A distant-housing experiment gave a valid path after the contact fix, but Tivara's later upgraded unit was still five tiles short at tick 2000; the final nearby staging geometry passes the original deadline.
-- The queue/research demand event at 1500, 2000-tick deadline, useful original-destination arrival and 20-tick survival requirements remain. Native assertions still require production and research on the same lane, applied accepted intents, and a physically useful upgraded output. No balance values or acceptance predicates are weakened.
-- The physical-world test's wall-clock allowance increased from 240 to 360 seconds after the previous four-minute timeout. Logical gameplay deadlines remain fixed.
+All following artifacts are ignored under `tmp/ai-plans/759-validation/`; no raw captures/logs are committed.
 
-## Checks / limits
+| IDs | Outcome evidence | Status / exact limits |
+| --- | --- | --- |
+| PRO-01/02 | `production-certification/1792041441642-failed.json`: four shared capacity worlds, both factions | Both scenario predicates pass. That grouped command failed solely on the old PRO-04 setup; do not relabel its process result as passed. PRO-01's full dated-force delivery also reuses the retained PRO-03 future-committed worlds. |
+| PRO-04 | `production-composition-corrected/1792041648788-passed.json` | Fresh eight-world command passes; 246 decisions, 4984 ticks, 81 seconds. Target 12, two new useful copies, horizon 600 and stable retention 200 remain. Fixture digest `fnv1a32:aad05935`, runtime dirty digest `fnv1a32:4a2d6fcf`. |
+| PRO-05 | `production-certification/1792041441642-failed.json`: three native producer-loss repetitions | All three repetitions pass their native replacement predicates. Both-faction pure controls separately cover the one-to-three capacity transition, 100 decisions after fulfillment, duplicate/late callbacks and one necessary replacement. |
+| PRO-03/06/07 | `staging-combined-results.json`: 16 authority worlds and all three pair gates | Retained unaffected evidence. The last checkpoint's two contention runs use permanent housing rallies/contact-range movement; the other 14 worlds use unchanged semantics. Original provenance is in their raw setup and Git checkpoint `ca0e3cac0`. |
+| H-17 | `certification-retained-worlds.json` | Reprojection of four retained future-demand worlds through current H-17 predicates: four pass, both pair gates pass. Abandoned at 320; paid Tivara producer finishes at 553, Skaduwee at 629, with no obsolete producer/product admission. Both ground/water blocked-spawn, failed queue terminal/next-output and pure lease-cleanup controls also pass. |
 
-- `node --test tools/ai/skirmish-production-world-fixture.test.mjs tools/ai/skirmish-runtime-production-contract-fixture.test.mjs`: 10 pass (`contact-fixture-controls.log`).
-- Phaser Jest, selected `pawn-agent-order-boundaries.spec.ts`, `pawn-agent-movement-failure.spec.ts`, `movement-system-boundary.spec.ts`: 3 suites / 38 tests pass (`housing-contact-controls.log`).
-- Scoped ESLint over all changed code/tool files: zero errors, three pre-existing unused-variable warnings (`housing-contact-lint.log`). Portal application typecheck `tsc -p apps/portal/tsconfig.app.json --noEmit` passes (`contact-portal-types.log`).
-- Standalone `tsc -p libs/games/probable-waffle/phaser/tsconfig.json --noEmit` reports eight diagnostics in unchanged movement-test, exposure-test and map files. Recompiling with the changed Phaser files replaced in memory by HEAD contents yields exactly the same eight diagnostics (`contact-standalone-type-baseline.json`). This extra configuration is not a passing result; preserve the distinction from the passing real application route.
-- Final native command: `AI_PRODUCTION_WORLD_HORIZON=2000 AI_PRODUCTION_WORLD_OUTPUT=tmp/ai-plans/759-validation/production-staging-contention-worlds pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts apps/portal-e2e/src/e2e/skirmish-ai-production-worlds.spec.ts --grep 'tivara-shared-contention|skaduwee-shared-contention' --workers=1`: 2 pass. All three pair evaluations pass after merging retained unaffected pairs.
+Fresh grouped command:
+`node tools/ai/run-skirmish-matrix.mjs --scenarios PRO-01,PRO-02,PRO-04,PRO-05 --mode runtime --output tmp/ai-plans/759-validation/production-certification`.
+Affected rerun:
+`node tools/ai/run-skirmish-matrix.mjs --scenario PRO-04 --mode runtime --output tmp/ai-plans/759-validation/production-composition-corrected`.
+Summaries use `node tools/ai/summarize-skirmish-report.mjs --report <path> --failures-only --details`.
 
-## Next grouped production batch and closure
+## Changes and causal evidence
 
-Certify existing capacity (PRO-01/02), repeated-unit demand (PRO-04), and exactly-once capacity/replacement (PRO-05) cases; register H-17 blocked-spawn/vanished-demand coverage and the explicit PRO-07 pure ID/spec mapping. Reuse existing fixtures/specs and retained evidence, then execute only pending or affected assertions. Repair related failures by shared owner. Package 1 closes only when these obligations pass, before advancing to economy/technology.
+- The old composition setup added ten/twelve authored troops on top of the normal starting soldier. Checkpoint 20
+  already had eleven/thirteen; those were initial units, not newly trained output. A checked `starting-army` binding
+  now replaces one authored troop, and the outcome reader counts that real inherited identity. An undeclared extra
+  actor still fails. Strict faction/roster checks run before tick zero.
+- Old producers at `1000,480` and `1000,1150` repeatedly failed native spawns. They now occupy `800,848` and `800,1152`
+  in the established test area; all eight corrected runs deliver the required output or correctly retain their control.
+  Pure scenario targets, prices, matched balances, queue provenance and native oracle thresholds stay unchanged.
+- New capacity controls exercise both factions through actual macro/brain admission, with callback duplication,
+  delayed site visibility and late earlier-sequence callbacks; three deterministic repeats agree. H-17 fails an
+  actually admitted output, releases its lease and prevents obsolete work after demand withdrawal. Native tests also
+  require null spawn/no created actor, exactly one failed queue terminal, then a distinct successful next completion.
+- PRO-07 now maps to the existing independent slot/resource/refund admission controls and a 100-decision compatible
+  queued-counter control. These pure controls supplement, rather than replace, four retained native authority worlds.
+- A pre-existing capacity-priority fixture omitted required `growthReadyTick`. It now explicitly marks that value
+  unknown; its builder-priority semantics and both-faction assertions still pass.
 
-Omission Audit covers both factions, persistent owned rally identity, unchanged queue/refund authority and deadlines, exact movement/order attribution, contact arrival, negative range/order controls and server cleanup. Final Closure Audit closes the selected native failures while leaving the scenario certification/mapping obligations and baseline standalone-type limitation explicit. Managed server is stopped. Machinery review/removal remains the last roadmap task.
+## Checks and audits
+
+- All-production pure matrix `--scenarios PRO-01,PRO-02,PRO-03,PRO-04,PRO-05,PRO-06,PRO-07,H-17 --mode pure`:
+  **23 suites / 104 tests pass**, all eight IDs have executed assertions, no missing IDs.
+  Artifact: `production-certification-pure-final/1792041666690-passed.json`.
+- Final capacity/capacity-priority Jest: **2 suites / 8 tests pass** (`certification-capacity-final.log`). Native spawner
+  plus shared-queue controls: **2 suites / 16 tests pass** across the retained spawner and final queue results
+  (`certification-spawn-controls.log`, `certification-queue-final.log`).
+- Focused Playwright oracle controls: **14 pass** (`certification-reader-controls.log`); the final affected composition-reader rerun also passes all nine controls
+  (`certification-composition-reader-final.log`). Fixture/catalog/pure-evidence
+  Node controls: **23 pass** (`certification-tools-final.log`). These are synthetic/tool controls, not additional matches.
+- Portal application, gameplay and portal-E2E TypeScript configs pass (`certification-app-types.log`,
+  `certification-gameplay-types-final.log`, `certification-e2e-types-final.log`). Standalone Phaser types still report the same eight previously proven baseline diagnostics, with no new ones
+  (`certification-phaser-types.log`, `certification-phaser-type-baseline.json`); that extra config is not a pass.
+- Catalog generation/check, owned ESLint (zero errors, one pre-existing non-null warning), diff checks and exact staged review complete at publication. No production
+  build or full-manifest release/calibration run is claimed. The owned managed server is stopped.
+- Omission Audit: every selected ID is registered and connected to semantic assertions; native identity, full horizons,
+  both required factions, delayed/negative/recovery controls and retained-source equivalence are accounted for.
+  Final Closure Audit: only changed readers/fixtures/tests/docs publish; historical failed PRO-04 evidence is superseded,
+  unaffected predicates remain retained, and no unrelated gameplay/migration changes are staged.
+
+## Next batch
+
+Package 2: ECO-01–08, H-16/H-18 and TECH-01–06. Reconcile existing delivered-income/worker/supply/research evidence,
+map missing aggregate-budget/depletion/recovery/counter cases, then repair shared owners together. It must establish
+both factions' renewable income from the normal 200-resource start and useful optional spending after essential
+recovery. No diagnostic architecture expansion is planned; machinery necessity review remains the last roadmap task.

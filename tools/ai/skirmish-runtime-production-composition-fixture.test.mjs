@@ -6,7 +6,9 @@ import { validateManifest } from "./skirmish-matrix-fixtures.mjs";
 import { validateEvidenceStopAssertions } from "./skirmish-runtime-recipe-metadata.mjs";
 import { fileURLToPath } from "node:url";
 
-const fixture = JSON.parse(readFileSync(new URL("./fixtures/focused-production-composition-runtime.json", import.meta.url)));
+const fixture = JSON.parse(
+  readFileSync(new URL("./fixtures/focused-production-composition-runtime.json", import.meta.url))
+);
 const requirement = fixture.assertions["PRO-04"];
 
 test("ready and paid-queue production pairs validate independently for both factions", () => {
@@ -18,21 +20,54 @@ test("ready and paid-queue production pairs validate independently for both fact
 
 test("composition controls cannot change resources, unrelated actors, queues or the branch contract", () => {
   const mutations = [
-    (copy) => { copy.recipe.variants[1].presetWorld.resourceStarts[0].amounts.food += 1; },
-    (copy) => { copy.recipe.variants[1].presetWorld.actors[0].position.x += 1; },
-    (copy) => { copy.recipe.variants[1].presetWorld.actors.at(-1).actorName = "TivaraSlingshotFemale"; },
-    (copy) => { copy.recipe.variants[1].presetWorld.actors.at(-1).owner = 1; },
-    (copy) => { copy.recipe.variants[1].presetWorld.actors.pop(); },
-    (copy) => { copy.recipe.variants[1].presetWorld.actors.push(copy.recipe.variants[1].presetWorld.actors[0]); },
-    (copy) => { copy.recipe.variants[0].presetWorld.queues.push({ producerFixtureActorId: "producer-1",
-      actorName: "TivaraMacemanMale", count: 2 }); },
-    (copy) => { copy.recipe.variants[1].productionCompositionBranch = "fill_deficit"; },
-    (copy) => { copy.recipe.variants[1].presetWorld.researchQueues = [
-      { producerFixtureActorId: "producer-1", researchType: "tivaraMacemanUpgradeLevel2" }
-    ]; },
-    (copy) => { copy.recipe.variants[1].seed += 1; },
-    (copy) => { copy.recipe.variants[1].humanFaction = "Tivara"; },
-    (copy) => { copy.recipe.variants.pop(); }
+    (copy) => {
+      copy.recipe.variants[1].presetWorld.resourceStarts[0].amounts.food += 1;
+    },
+    (copy) => {
+      copy.recipe.variants[1].presetWorld.actors[0].position.x += 1;
+    },
+    (copy) => {
+      copy.recipe.variants[1].presetWorld.actors.at(-1).actorName = "TivaraSlingshotFemale";
+    },
+    (copy) => {
+      copy.recipe.variants[1].presetWorld.actors.at(-1).owner = 1;
+    },
+    (copy) => {
+      copy.recipe.variants[1].presetWorld.actors.pop();
+    },
+    (copy) => {
+      copy.recipe.variants[1].presetWorld.actors.push(copy.recipe.variants[1].presetWorld.actors[0]);
+    },
+    (copy) => {
+      copy.recipe.variants[0].presetWorld.queues.push({
+        producerFixtureActorId: "producer-1",
+        actorName: "TivaraMacemanMale",
+        count: 2
+      });
+    },
+    (copy) => {
+      copy.recipe.variants[1].productionCompositionBranch = "fill_deficit";
+    },
+    (copy) => {
+      copy.recipe.variants[1].presetWorld.researchQueues = [
+        { producerFixtureActorId: "producer-1", researchType: "tivaraMacemanUpgradeLevel2" }
+      ];
+    },
+    (copy) => {
+      copy.recipe.variants[1].seed += 1;
+    },
+    (copy) => {
+      copy.recipe.variants[1].presetWorld.existingActorBindings = [];
+    },
+    (copy) => {
+      copy.recipe.variants[0].presetWorld.requireFactionRoster = false;
+    },
+    (copy) => {
+      copy.recipe.variants[1].humanFaction = "Tivara";
+    },
+    (copy) => {
+      copy.recipe.variants.pop();
+    }
   ];
   for (const mutate of mutations) {
     const copy = structuredClone(fixture);
@@ -41,14 +76,42 @@ test("composition controls cannot change resources, unrelated actors, queues or 
   }
 });
 
+test("composition accounts for the normal starting soldier and keeps producers inside the established test area", () => {
+  for (const variant of fixture.recipe.variants) {
+    const preset = variant.presetWorld;
+    assert.equal(preset.existingActorBindings.length, 1);
+    assert.equal(preset.existingActorBindings[0].fixtureActorId, "starting-army");
+    assert.equal(
+      preset.actors.some((actor) => actor.fixtureActorId === "army-10"),
+      false
+    );
+    for (const role of ["producer-1", "producer-2"]) {
+      const actor = preset.actors.find((actor) => actor.fixtureActorId === role);
+      assert.deepEqual(actor.position, { x: 800, y: role === "producer-1" ? 848 : 1152, z: 0 });
+    }
+  }
+});
+
 test("queue provenance requires two distinct paid producers in its own seeded-control pair", () => {
   for (const mutate of [
-    (copy) => { copy.recipe.variants[5].presetWorld.queues.pop(); },
-    (copy) => { copy.recipe.variants[5].presetWorld.queues[1].producerFixtureActorId = "missing-producer"; },
-    (copy) => { copy.recipe.variants[5].presetWorld.queues[1].producerFixtureActorId = "housing"; },
-    (copy) => { copy.recipe.variants[5].presetWorld.queues[1].actorName = "TivaraSlingshotFemale"; },
-    (copy) => { copy.recipe.variants[5].seed += 1; },
-    (copy) => { copy.recipe.variants[5].pairId = copy.recipe.variants[1].pairId; }
+    (copy) => {
+      copy.recipe.variants[5].presetWorld.queues.pop();
+    },
+    (copy) => {
+      copy.recipe.variants[5].presetWorld.queues[1].producerFixtureActorId = "missing-producer";
+    },
+    (copy) => {
+      copy.recipe.variants[5].presetWorld.queues[1].producerFixtureActorId = "housing";
+    },
+    (copy) => {
+      copy.recipe.variants[5].presetWorld.queues[1].actorName = "TivaraSlingshotFemale";
+    },
+    (copy) => {
+      copy.recipe.variants[5].seed += 1;
+    },
+    (copy) => {
+      copy.recipe.variants[5].pairId = copy.recipe.variants[1].pairId;
+    }
   ]) {
     const copy = structuredClone(fixture);
     mutate(copy);
@@ -57,10 +120,22 @@ test("queue provenance requires two distinct paid producers in its own seeded-co
 });
 
 test("malformed deadlines, a missing faction product and early stop cannot shorten absence proof", () => {
-  for (const change of [{ latestTick: 601 }, { stableForTicks: 0 }, { stableForTicks: 600 },
-    { additionalUnitCount: 1 }, { targetMilitaryCount: 2 }, { unitObjectNameByFaction: { Tivara: "TivaraMacemanMale" } }]) {
-    assert.equal(validProductionCompositionPair(fixture.recipe,
-      { ...requirement, requiredProductionComposition: { ...requirement.requiredProductionComposition, ...change } }, "PRO-04"), false);
+  for (const change of [
+    { latestTick: 601 },
+    { stableForTicks: 0 },
+    { stableForTicks: 600 },
+    { additionalUnitCount: 1 },
+    { targetMilitaryCount: 2 },
+    { unitObjectNameByFaction: { Tivara: "TivaraMacemanMale" } }
+  ]) {
+    assert.equal(
+      validProductionCompositionPair(
+        fixture.recipe,
+        { ...requirement, requiredProductionComposition: { ...requirement.requiredProductionComposition, ...change } },
+        "PRO-04"
+      ),
+      false
+    );
   }
   const copy = structuredClone(fixture);
   copy.recipe.variants[0].evidenceStop = { earliestTick: 200, stableForTicks: 200 };

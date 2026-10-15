@@ -96,7 +96,8 @@ export function invokeHarness(input, context) {
     "actor-manager-ai-save"
   ];
   const authoredTestNames = [
-    "ai-(brain|production-scenarios|housing-demand|economy-forecast-scenarios|opening-bootstrap-scenarios|" +
+    "ai-(brain|production-scenarios(-capacity)?|production-resource-authority|housing-demand|" +
+      "economy-forecast-scenarios|opening-bootstrap-scenarios|" +
       "resource-forecast|resource-service-manager|pressure-strategy-scenarios|victory-route-scenarios|victory-pressure-scenarios)",
     "ai-(tactics-manager|adaptation-(manager|queue))",
     "validate-ai-runtime-browser-test-config-v1",

@@ -1,9 +1,7 @@
 {
   "schemaVersion": 1,
   "evidenceKind": "runtime",
-  "scenarioIds": [
-    "PRO-04"
-  ],
+  "scenarioIds": ["PRO-04"],
   "purpose": "Two useful frontline copies fill a ten-unit force; ready and paid-queue controls must satisfy the same twelve-unit target without excess.",
   "driver": "runtime",
   "status": "ready_for_runtime_execution",
@@ -17,14 +15,7 @@
     "mapLabel": "AI Open Economy (test only)",
     "aiPlayerNumber": 2,
     "simulationTimeScale": 100,
-    "checkpointTicks": [
-      20,
-      100,
-      200,
-      300,
-      400,
-      600
-    ],
+    "checkpointTicks": [20, 100, 200, 300, 400, 600],
     "variants": [
       {
         "id": "tivara-composition-subject",
@@ -44,8 +35,8 @@
               "actorName": "AnkGuard",
               "owner": 2,
               "position": {
-                "x": 1000,
-                "y": 480,
+                "x": 800,
+                "y": 848,
                 "z": 0
               }
             },
@@ -144,8 +135,8 @@
               "actorName": "AnkGuard",
               "owner": 2,
               "position": {
-                "x": 1000,
-                "y": 1150,
+                "x": 800,
+                "y": 1152,
                 "z": 0
               }
             },
@@ -258,16 +249,6 @@
                 "y": 848,
                 "z": 0
               }
-            },
-            {
-              "fixtureActorId": "army-10",
-              "actorName": "TivaraSlingshotFemale",
-              "owner": 2,
-              "position": {
-                "x": 880,
-                "y": 912,
-                "z": 0
-              }
             }
           ],
           "resourceGrants": [],
@@ -284,7 +265,15 @@
           ],
           "queues": [],
           "initialOrders": [],
-          "events": []
+          "events": [],
+          "requireFactionRoster": true,
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "starting-army",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2
+            }
+          ]
         }
       },
       {
@@ -305,8 +294,8 @@
               "actorName": "AnkGuard",
               "owner": 2,
               "position": {
-                "x": 1000,
-                "y": 480,
+                "x": 800,
+                "y": 848,
                 "z": 0
               }
             },
@@ -405,8 +394,8 @@
               "actorName": "AnkGuard",
               "owner": 2,
               "position": {
-                "x": 1000,
-                "y": 1150,
+                "x": 800,
+                "y": 1152,
                 "z": 0
               }
             },
@@ -521,16 +510,6 @@
               }
             },
             {
-              "fixtureActorId": "army-10",
-              "actorName": "TivaraSlingshotFemale",
-              "owner": 2,
-              "position": {
-                "x": 880,
-                "y": 912,
-                "z": 0
-              }
-            },
-            {
               "fixtureActorId": "army-11",
               "actorName": "TivaraMacemanMale",
               "owner": 2,
@@ -565,7 +544,15 @@
           ],
           "queues": [],
           "initialOrders": [],
-          "events": []
+          "events": [],
+          "requireFactionRoster": true,
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "starting-army",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2
+            }
+          ]
         }
       },
       {
@@ -586,8 +573,8 @@
               "actorName": "InfantryInn",
               "owner": 2,
               "position": {
-                "x": 1000,
-                "y": 480,
+                "x": 800,
+                "y": 848,
                 "z": 0
               }
             },
@@ -686,8 +673,8 @@
               "actorName": "InfantryInn",
               "owner": 2,
               "position": {
-                "x": 1000,
-                "y": 1150,
+                "x": 800,
+                "y": 1152,
                 "z": 0
               }
             },
@@ -800,16 +787,6 @@
                 "y": 848,
                 "z": 0
               }
-            },
-            {
-              "fixtureActorId": "army-10",
-              "actorName": "SkaduweeRangedFemale",
-              "owner": 2,
-              "position": {
-                "x": 880,
-                "y": 912,
-                "z": 0
-              }
             }
           ],
           "resourceGrants": [],
@@ -826,7 +803,15 @@
           ],
           "queues": [],
           "initialOrders": [],
-          "events": []
+          "events": [],
+          "requireFactionRoster": true,
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "starting-army",
+              "actorName": "SkaduweeMagicianFemale",
+              "owner": 2
+            }
+          ]
         }
       },
       {
@@ -847,8 +832,8 @@
               "actorName": "InfantryInn",
               "owner": 2,
               "position": {
-                "x": 1000,
-                "y": 480,
+                "x": 800,
+                "y": 848,
                 "z": 0
               }
             },
@@ -947,8 +932,8 @@
               "actorName": "InfantryInn",
               "owner": 2,
               "position": {
-                "x": 1000,
-                "y": 1150,
+                "x": 800,
+                "y": 1152,
                 "z": 0
               }
             },
@@ -1059,16 +1044,6 @@
               "position": {
                 "x": 1008,
                 "y": 848,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-10",
-              "actorName": "SkaduweeRangedFemale",
-              "owner": 2,
-              "position": {
-                "x": 880,
-                "y": 912,
                 "z": 0
               }
             },
@@ -1107,7 +1082,15 @@
           ],
           "queues": [],
           "initialOrders": [],
-          "events": []
+          "events": [],
+          "requireFactionRoster": true,
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "starting-army",
+              "actorName": "SkaduweeMagicianFemale",
+              "owner": 2
+            }
+          ]
         }
       },
       {
@@ -1128,8 +1111,8 @@
               "actorName": "AnkGuard",
               "owner": 2,
               "position": {
-                "x": 1000,
-                "y": 480,
+                "x": 800,
+                "y": 848,
                 "z": 0
               }
             },
@@ -1228,8 +1211,8 @@
               "actorName": "AnkGuard",
               "owner": 2,
               "position": {
-                "x": 1000,
-                "y": 1150,
+                "x": 800,
+                "y": 1152,
                 "z": 0
               }
             },
@@ -1342,16 +1325,6 @@
                 "y": 848,
                 "z": 0
               }
-            },
-            {
-              "fixtureActorId": "army-10",
-              "actorName": "TivaraSlingshotFemale",
-              "owner": 2,
-              "position": {
-                "x": 880,
-                "y": 912,
-                "z": 0
-              }
             }
           ],
           "resourceGrants": [],
@@ -1368,7 +1341,15 @@
           ],
           "queues": [],
           "initialOrders": [],
-          "events": []
+          "events": [],
+          "requireFactionRoster": true,
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "starting-army",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2
+            }
+          ]
         }
       },
       {
@@ -1389,8 +1370,8 @@
               "actorName": "AnkGuard",
               "owner": 2,
               "position": {
-                "x": 1000,
-                "y": 480,
+                "x": 800,
+                "y": 848,
                 "z": 0
               }
             },
@@ -1489,8 +1470,8 @@
               "actorName": "AnkGuard",
               "owner": 2,
               "position": {
-                "x": 1000,
-                "y": 1150,
+                "x": 800,
+                "y": 1152,
                 "z": 0
               }
             },
@@ -1603,16 +1584,6 @@
                 "y": 848,
                 "z": 0
               }
-            },
-            {
-              "fixtureActorId": "army-10",
-              "actorName": "TivaraSlingshotFemale",
-              "owner": 2,
-              "position": {
-                "x": 880,
-                "y": 912,
-                "z": 0
-              }
             }
           ],
           "resourceGrants": [],
@@ -1640,7 +1611,15 @@
             }
           ],
           "initialOrders": [],
-          "events": []
+          "events": [],
+          "requireFactionRoster": true,
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "starting-army",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2
+            }
+          ]
         }
       },
       {
@@ -1661,8 +1640,8 @@
               "actorName": "InfantryInn",
               "owner": 2,
               "position": {
-                "x": 1000,
-                "y": 480,
+                "x": 800,
+                "y": 848,
                 "z": 0
               }
             },
@@ -1761,8 +1740,8 @@
               "actorName": "InfantryInn",
               "owner": 2,
               "position": {
-                "x": 1000,
-                "y": 1150,
+                "x": 800,
+                "y": 1152,
                 "z": 0
               }
             },
@@ -1875,16 +1854,6 @@
                 "y": 848,
                 "z": 0
               }
-            },
-            {
-              "fixtureActorId": "army-10",
-              "actorName": "SkaduweeRangedFemale",
-              "owner": 2,
-              "position": {
-                "x": 880,
-                "y": 912,
-                "z": 0
-              }
             }
           ],
           "resourceGrants": [],
@@ -1901,7 +1870,15 @@
           ],
           "queues": [],
           "initialOrders": [],
-          "events": []
+          "events": [],
+          "requireFactionRoster": true,
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "starting-army",
+              "actorName": "SkaduweeMagicianFemale",
+              "owner": 2
+            }
+          ]
         }
       },
       {
@@ -1922,8 +1899,8 @@
               "actorName": "InfantryInn",
               "owner": 2,
               "position": {
-                "x": 1000,
-                "y": 480,
+                "x": 800,
+                "y": 848,
                 "z": 0
               }
             },
@@ -2022,8 +1999,8 @@
               "actorName": "InfantryInn",
               "owner": 2,
               "position": {
-                "x": 1000,
-                "y": 1150,
+                "x": 800,
+                "y": 1152,
                 "z": 0
               }
             },
@@ -2134,16 +2111,6 @@
               "position": {
                 "x": 1008,
                 "y": 848,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-10",
-              "actorName": "SkaduweeRangedFemale",
-              "owner": 2,
-              "position": {
-                "x": 880,
-                "y": 912,
                 "z": 0
               }
             }
@@ -2173,7 +2140,15 @@
             }
           ],
           "initialOrders": [],
-          "events": []
+          "events": [],
+          "requireFactionRoster": true,
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "starting-army",
+              "actorName": "SkaduweeMagicianFemale",
+              "owner": 2
+            }
+          ]
         }
       }
     ]
@@ -2183,10 +2158,7 @@
       "maximumTick": 600,
       "minimumDecisions": 5,
       "minimumAppliedCommands": 1,
-      "requiredAiFactions": [
-        "Tivara",
-        "Skaduwee"
-      ],
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
       "requiredOpeningSteps": [
         "step:opening:bootstrap-worker",
         "step:opening:supply-safety",

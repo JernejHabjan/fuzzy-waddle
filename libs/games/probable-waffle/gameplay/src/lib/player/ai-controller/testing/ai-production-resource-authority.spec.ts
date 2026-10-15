@@ -33,7 +33,7 @@ function admit(stockpile: number, reservedUnspent = 0, obligationsDue = 0, propo
 }
 
 describe("production resource authority admission layer", () => {
-  it("train and research contend for the same physical slot identity even with different claim IDs", () => {
+  it("PRO-07: train and research contend for the same physical slot identity even with different claim IDs", () => {
     const result = admit(100, 0, 0, [intent("produce"), intent("research")]);
     expect(result.accepted).toHaveLength(1);
     expect(result.decisions).toContainEqual(expect.objectContaining({ outcome: "rejected", reason: "claim_conflict",
@@ -42,14 +42,14 @@ describe("production resource authority admission layer", () => {
     expect(digestCanonicalAiValue(permuted)).toBe(digestCanonicalAiValue(result));
   });
 
-  it("shared stockpile subtracts unspent leases and pay-over-time obligations before another admission", () => {
+  it("PRO-07: shared stockpile subtracts unspent leases and pay-over-time obligations before another admission", () => {
     expect(admit(70).accepted).toHaveLength(2);
     expect(admit(69).accepted).toHaveLength(1);
     expect(admit(100, 31, 35).accepted).toHaveLength(0);
     expect(admit(100, 30, 35).accepted).toHaveLength(1);
   });
 
-  it("an expected refund is absent from spendable cash until the authority observes its addition", () => {
+  it("PRO-07: an expected refund is absent from spendable cash until the authority observes its addition", () => {
     const pending = admit(34, 0, 0, [intent("produce")]);
     const applied = admit(35, 0, 0, [intent("produce")]);
     expect(pending.accepted).toHaveLength(0);

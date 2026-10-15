@@ -113,6 +113,52 @@ function fixture(research = false) {
 }
 
 describe("shared physical queue mutation authority", () => {
+  it("H-17: blocked completion releases the queue once, reports failure and allows the next output", async () => {
+    const f = fixture();
+    const terminal = jest.fn();
+    const original = jest.mocked(getSceneService).getMockImplementation();
+    const context = f.item.commandContext;
+    if (!original || !context) throw new Error("blocked_spawn_fixture_missing");
+    jest
+      .mocked(getSceneService)
+      .mockImplementation((scene, service) =>
+        service === CommandBusService ? ({ reportPersistedOutcome: terminal } as never) : original(scene, service)
+      );
+    const spawn = jest.fn().mockResolvedValueOnce(null).mockResolvedValueOnce("next-unit");
+    f.queue.registerProductionComponent({
+      emitQueueChange: jest.fn(),
+      emitProductionProgress: jest.fn(),
+      handleProductionComplete: spawn
+    } as unknown as ProductionComponent);
+    const next = {
+      ...f.item,
+      remainingTime: 50,
+      commandContext: {
+        ...context,
+        execution: { ...context.execution, commandId: "command:next-output", sequence: 1 }
+      }
+    };
+    f.item.remainingTime = 50;
+    f.queue.addItem(f.item);
+    requireAiTestEntry(f.queue.queues, 0).queuedItems.push(next);
+    f.ticks.next(1);
+    await Promise.resolve();
+    expect(terminal).toHaveBeenCalledTimes(1);
+    expect(terminal).toHaveBeenLastCalledWith(
+      expect.objectContaining({ kind: "failed", detail: "no_legal_spawn_location", worldLinkIds: [] })
+    );
+    expect(f.queue.allItems).toEqual([next]);
+    f.ticks.next(2);
+    await Promise.resolve();
+    expect(terminal).toHaveBeenCalledTimes(2);
+    expect(terminal).toHaveBeenLastCalledWith(
+      expect.objectContaining({ kind: "completed", worldLinkIds: ["next-unit"] })
+    );
+    f.ticks.next(3);
+    expect(spawn).toHaveBeenCalledTimes(2);
+    expect(terminal).toHaveBeenCalledTimes(2);
+    expect(f.queue.allItems).toEqual([]);
+  });
   it("reports the actual push before UI callbacks, then production removal before terminal/refund", () => {
     const f = fixture();
     f.queue.addItem(f.item);

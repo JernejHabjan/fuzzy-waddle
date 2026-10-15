@@ -5,6 +5,7 @@ import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-resul
 import { compareRuntimeProductionSetups } from "./skirmish-ai-runtime-production-setup";
 
 const branches = {
+  "H-17": ["future_committed", "future_abandoned"],
   "PRO-03": ["future_committed", "future_abandoned"],
   "PRO-06": ["critical_exposed", "safe_served", "low_value", "no_demand"],
   "PRO-07": ["shared_contention", "cancel_pending_refund"]
@@ -27,7 +28,7 @@ export function evaluateRuntimeProductionPairs(
   assertion: RuntimeAssertionV1,
   variants: readonly RuntimeProductionPairInput[]
 ): string[] {
-  if (scenarioId !== "PRO-03" && scenarioId !== "PRO-06" && scenarioId !== "PRO-07") return [];
+  if (scenarioId !== "PRO-03" && scenarioId !== "PRO-06" && scenarioId !== "PRO-07" && scenarioId !== "H-17") return [];
   const failures: string[] = [];
   for (const faction of assertion.requiredAiFactions) {
     const selected = variants.filter((variant) => variant.aiFaction === faction);
@@ -52,7 +53,7 @@ export function evaluateRuntimeProductionPairs(
       const [leftContract, rightContract] = pairContracts;
       const [left, right] = pair;
       const required: readonly RuntimeProductionContractV1["branch"][] =
-        scenarioId === "PRO-03"
+        scenarioId === "PRO-03" || scenarioId === "H-17"
           ? branches["PRO-03"]
           : pairContracts.some((contract) => contract.branch === "critical_exposed")
             ? ["critical_exposed", "safe_served"]
@@ -91,7 +92,7 @@ export function evaluateRuntimeProductionPairs(
       } else {
         if (
           leftContract.pairedPositionRole !== rightContract.pairedPositionRole ||
-          (scenarioId === "PRO-03" && leftContract.pairedPositionRole) ||
+          ((scenarioId === "PRO-03" || scenarioId === "H-17") && leftContract.pairedPositionRole) ||
           (scenarioId === "PRO-06" && !leftContract.pairedPositionRole)
         ) {
           failures.push(`${faction}:${pairId}:production_pair_exclusion_invalid`);
@@ -103,7 +104,7 @@ export function evaluateRuntimeProductionPairs(
               leftContract.pairedPositionRole
             ).map((failure) => `${faction}:${pairId}:${failure}`)
           );
-        if (scenarioId === "PRO-03") {
+        if (scenarioId === "PRO-03" || scenarioId === "H-17") {
           const prefix = (variant: typeof left) => {
             const evidence = variant.productionEvidenceV2;
             const first = evidence?.decisions.find(

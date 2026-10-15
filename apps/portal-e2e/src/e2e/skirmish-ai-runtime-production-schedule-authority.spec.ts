@@ -183,3 +183,10 @@ test("abandonment releases forecasts while preserving already admitted work thro
     );
   }
 });
+
+test("H-17 cannot certify vanished demand without a completed retained producer", () => {
+  const evidence = abandoned();
+  expect(evaluateRuntimeProductionSchedule(productionContract("H-17", "future_abandoned"), evidence)).toContain(
+    "production_v2_abandoned_finished_producer_missing"
+  );
+});

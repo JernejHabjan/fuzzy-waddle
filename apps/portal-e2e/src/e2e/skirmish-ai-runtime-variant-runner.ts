@@ -60,7 +60,7 @@ export async function runVariant(
     const applicableScenarioIds = requestedScenarioIds.filter(
       (scenarioId) => variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId)
     );
-    const captureProduction = applicableScenarioIds.some((id) => ["PRO-03", "PRO-06", "PRO-07"].includes(id));
+    const captureProduction = applicableScenarioIds.some((id) => ["PRO-03", "PRO-06", "PRO-07", "H-17"].includes(id));
     const productionHorizons = applicableScenarioIds.flatMap((id) => {
       const contract = fixture.assertions[id]?.requiredProductionContracts?.[variant.id];
       return contract ? [contract.latestTick] : [];

@@ -5,14 +5,13 @@ Do not load the full plan directory or archive on startup.
 
 ## Current cursor
 
-- Worktree: `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`; branch: `feature/759-skirmish-ai`. Tested base: `0f653a9c5c727abce51fb6552f7e6acb7a938e53`; the containing publication commit owns this update. Verify actual HEAD/remote on resume. The user authorizes commit/push at coherent stage boundaries.
-- **Package 1, production: in progress. PRO-03/06/07 authority-world gate: 16/16 passing (100%); 0/16 remaining (0%); no unavailable setups.** All three pair gates pass. Fourteen unaffected outcomes are retained; both shared-contention worlds have fresh passing 2000-tick captures. This closes the selected world gate, not the whole production package or overall AI work.
-- Authored: native Move approaches solid, non-navigable actors at one-tile contact range, consistently across range/reachability/movement. Walkable and raised targets remain exact. The two shared-contention fixtures rally at existing permanent faction housing at `800,1056`, mirroring the former Field rally's distance about the producer at `800,848`. The normal Field, queue/research/event timing, 2000-tick deadline and 20-tick retention requirement remain. Wall-clock integration timeout is six minutes after the prior four-minute timeout.
-- Evidence: ignored `tmp/ai-plans/759-validation/production-staging-contention-worlds` and `staging-combined-results.json`. Both fresh cases close through 2000, each with 100 decisions, zero AI errors/dropped facts; the two-test command passes. Five changed source/fixture files hash to `e00aafb77e4df99b1ddb61b13095e43abc49a2194a9577297c01ef0a362cd77c` at capture time. Earlier distant-housing attempts are diagnostics only.
-- Focused checks: 38 Phaser controls, 10 fixture/contract controls, portal application typecheck and owned lint pass (three existing warnings). Standalone Phaser config has eight diagnostics identical to the base; its result is not a pass. Managed server is stopped at publication. [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) retains commands/provenance and that limitation.
-- **Next action — one grouped production certification batch:** reconcile/register exact controls for PRO-01/02 capacity, PRO-04 repeated-unit demand, PRO-05 exactly-once capacity/replacement, H-17 blocked spawn/vanished demand, and PRO-07 pure queue mapping. Reuse the existing specs, fixtures and retained results; run only pending/affected scenario predicates. Repair observed failures together by owner. Package 1 closes only when those obligations and the selected authority-world gate pass; then advance to economy/technology.
-- Source anchors: `pawn-agent-movement.ts` and `pawn-agent-order-boundaries.spec.ts` under Phaser `prefabs/ai-agents`; `tools/ai/fixtures/production-authority-runtime.json`; selected production rows in [SCENARIO-INVENTORY.md](SCENARIO-INVENTORY.md) and [REMAINING-WORK.md](REMAINING-WORK.md).
-- Recommended next model: **GPT-6.1 Sol / high** for the grouped scenario-contract reconciliation and any causal production repair. Actual host settings are unknown.
+- Worktree: `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`; branch: `feature/759-skirmish-ai`. Tested base: `ca0e3cac06915c8cde4659b9739820a3a511396e`; the containing publication commit owns this update. Verify actual HEAD/remote on resume. Commit/push at coherent boundaries is authorized; pause after publication.
+- **Package 1 production is validated: PRO-01–07 and H-17, 8/8 scenario outcomes (100%); 0/8 remaining (0%); no unavailable setup.** Evidence combines all eight ID-specific pure controls with 31 distinct native outcomes: 15 fresh capacity/composition/replacement runs and the 16 retained authority worlds. H-17 reuses four of those authority worlds; it does not add four matches. This is production-package completion, not overall AI completion.
+- Authored / why: 100-decision capacity controls cover one then three producers, delayed/duplicate/late callbacks and one necessary replacement. H-17 covers native blocked spawn, exactly one failed queue terminal and subsequent successful output, plus withdrawn-demand lease cleanup. PRO-07 now has explicit shared-lane, cash/obligation/refund and no-cancellation-loop pure assertions.
+- Corrected PRO-04's controlled setup: bind the normal map's starting soldier, replace one authored troop with that binding, and place both producers inside the established test area. The previous worlds began with 11/13 troops instead of 10/12 and repeatedly failed spawns. All eight corrected worlds pass the unchanged target 12, two useful copies, 600-tick horizon and 200-tick retention. No AI policy or balance changes were needed.
+- Evidence: `tmp/ai-plans/759-validation/production-certification` has passing PRO-01/02/05 predicates and the superseded PRO-04 failures; `production-composition-corrected` passes PRO-04. `production-certification-pure-final` passes all eight IDs; `certification-retained-worlds.json` passes H-17's four worlds and pair gates using existing captures. [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) owns exact commands/provenance/checks.
+- **Next action — Package 2, one grouped economy/technology batch:** reconcile ECO-01–08, H-16/H-18 and TECH-01–06 together. Reuse retained income/worker/supply/research controls, register the actual missing contracts, then repair shared resource/economy/adaptation owners once. Prove useful delivered income, affordable aggregate commitments and food/supply recovery before optional military/research spending. Read only this package in [REMAINING-WORK.md](REMAINING-WORK.md) and its selected [inventory rows](SCENARIO-INVENTORY.md).
+- Recommended next model: **GPT-6.1 Sol / high** for the remaining cross-owner economy/technology contracts and causal repairs. Actual host settings are unknown.
 
 ## What “continue” means
 
@@ -25,8 +24,8 @@ Documentation maintenance does not advance gameplay acceptance.
 
 ## Remaining execution order
 
-1. Production: useful delivery, early capacity, producer-loss recovery and queue contention.
-2. Economy/technology: delivered income, workers, food/supply, research and useful spending.
+1. **Validated:** Production: useful delivery, early capacity, producer-loss recovery and queue contention.
+2. **Current:** Economy/technology: delivered income, workers, food/supply, research and useful spending.
 3. Scouting/combat/access: fair information, targeting, attack/retreat and full-match victory.
 4. Placement/fortification/recovery: useful construction and bounded recovery from stalls/losses.
 5. Authority/multiplayer/lifecycle: exactly-once effects, synchronized peers, save/replay and clean next match.
@@ -67,8 +66,8 @@ Use this format at every batch boundary and whenever the user asks what was done
 Keep the report self-contained and concise. A documentation-only update reports the instruction change and leaves
 gameplay progress unchanged. The execution plan links to this format rather than maintaining a second template.
 
-Registration baseline: pure **56/111 = 50.5% complete / 49.5% remaining**; supported runtime
-**19/116 = 16.4% / 83.6%**, excluding four deferred runtime rows. These are not overall AI completion.
+Registration baseline: pure **57/111 = 51.4% complete / 48.6% remaining**; supported runtime
+**20/116 = 17.2% / 82.8%**, excluding four deferred runtime rows. These are not overall AI completion.
 Reconcile behavior evidence per selected package; do not invent a global completion percentage.
 
 ## End-of-gate machinery necessity review

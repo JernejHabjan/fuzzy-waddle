@@ -1,6 +1,6 @@
 # #759 remaining work inventory
 
-Snapshot: 2026-10-14, production evidence checkpoint based on `0f653a9c5c727abce51fb6552f7e6acb7a938e53`. This is the execution inventory for the existing scope,
+Snapshot: 2026-10-15, production certification based on `ca0e3cac06915c8cde4659b9739820a3a511396e`. This is the execution inventory for the existing scope,
 not a new design or diagnostic project. [HANDOFF.md](HANDOFF.md) owns the current cursor;
 [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) retains the latest checked source/evidence details.
 The manifest and linked scenario requirements remain authoritative; the snapshot below must be refreshed when
@@ -9,8 +9,8 @@ registrations change. Old session estimates in follow-up plans are historical, n
 ## What the inventory actually found
 
 The original concrete plan exists: 121 named scenarios with setup and required outcomes. Freshly rendering the existing
-catalog finds 56/111 pure fixture registrations and 19/120 runtime recipe registrations. Four runtime cases are
-deferred island content. Therefore **55 pure registrations and 97 supported runtime registrations are missing**.
+catalog finds 57/111 pure fixture registrations and 20/120 runtime recipe registrations. Four runtime cases are
+deferred island content. Therefore **54 pure registrations and 96 supported runtime registrations are missing**.
 These are scenario counts, not separate files, matches, commits or necessarily missing gameplay implementations.
 One shared fixture can cover several scenarios. Existing unmapped controls must be inspected and reused before
 authoring equivalent tests. Registration does not certify that the scenario's independent outcome assertions pass.
@@ -42,8 +42,8 @@ profiling suite or finer M13 journal is scheduled. A genuinely new requirement n
 
 | Order       | Package and existing IDs                                                                      | Concrete work                                                                                                                                                                          | Finish condition                                                                                                                                               |
 | ----------- | --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1 — current | Production: PRO-01–07, H-17                                                                   | Finish the delivery/prebuild/recovery/contention blockers below; map H-17's existing controls or add its missing coverage                                                              | All applicable production predicates pass, including the 16 paired authority worlds; no invented useful arrivals or weakened deadlines                         |
-| 2           | Economy and technology: ECO-01–08, H-16/H-18, TECH-01–06                                      | Close missing aggregate-budget/depleted-source controls; prove delivered income, worker allocation, food/supply recovery, research/counterproduction and stopping unnecessary spending | Registered pure/runtime cases pass their exact outcomes; both factions establish renewable income from the normal 200-resource start                           |
+| 1 — validated | Production: PRO-01–07, H-17                                                                   | Validated delivery/prebuild/recovery/contention and H-17 coverage; retained evidence below                                                              | All applicable production predicates pass, including the 16 paired authority worlds; no invented useful arrivals or weakened deadlines                         |
+| 2 — current | Economy and technology: ECO-01–08, H-16/H-18, TECH-01–06                                      | Close missing aggregate-budget/depleted-source controls; prove delivered income, worker allocation, food/supply recovery, research/counterproduction and stopping unnecessary spending | Registered pure/runtime cases pass their exact outcomes; both factions establish renewable income from the normal 200-resource start                           |
 | 3           | Scouting, attack and access: SCOUT, STRAT, DOMAIN, RAID, FIGHT, C families plus their H cases | Reuse existing strategy/tactical controls; register missing fair scouting, reachable-target, force-size, attack/retreat and counterforce cases; repair actual failures                 | Supported land cases pass and SEQ-01 reaches the authoritative victory result for both factions; another launched attack is not completion                     |
 | 4           | Placement, fortification and recovery: PLACE, EXP, WALL, H-01–05/H-27–28                      | Register legal placement/expansion/wall and stalled-progress recovery controls; repair owners only where a scenario exposes a defect                                                   | Legal useful construction and bounded recovery pass; healthy long work survives, impossible work releases actors/claims                                        |
 | 5           | Resource authority, multiplayer and lifecycle: H-06–15/H-30–32, M11, #819/#823                | Close exactly-once/resource-capacity gaps; run real two-client authority/reconnect/host-transfer controls; cover interrupted save/load/replay and second-match cleanup                 | No duplicate payment/effect, stale capacity or split authority; matching peer/replay state and clean next match across required boundaries                     |
@@ -81,8 +81,8 @@ an entire scenario. Invalidate only outcomes affected by later source/fixture ch
 
 | Measured coverage at this snapshot    | Completed                                   | Remaining          | What the number means                                                                                              |
 | ------------------------------------- | ------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------ |
-| Pure fixture registration             | 56/111 = **50.5%**                          | 55/111 = **49.5%** | Required pure scenarios with registered fixtures; not behavior completion                                          |
-| Supported runtime recipe registration | 19/116 = **16.4%**                          | 97/116 = **83.6%** | Runtime recipes connected; four island-content rows excluded; not behavior completion                              |
+| Pure fixture registration             | 57/111 = **51.4%**                          | 54/111 = **48.6%** | Required pure scenarios with registered fixtures; not behavior completion                                          |
+| Supported runtime recipe registration | 20/116 = **17.2%**                          | 96/116 = **82.8%** | Runtime recipes connected; four island-content rows excluded; not behavior completion                              |
 | Scenario behavior validation          | Not yet reconciled across the full manifest | Not yet measurable | Existing subset passes and failures are recorded, but no truthful overall completion percentage can yet be derived |
 
 During each selected package, reconcile its existing complete evidence into the row status and report its exact
@@ -91,34 +91,34 @@ system or rerun unchanged passing controls merely to populate the inventory. Unt
 explicitly report overall behavior percentage as unavailable alongside the numeric coverage measures. Never present
 the registration percentage as the percentage of AI implementation completed or of engineering time remaining.
 
-## Immediate production certification batch
+## Production closure and immediate economy/technology batch
 
-The PRO-03/06/07 authority-world gate is now **16/16 passing (100%); 0/16 remaining (0%); no unavailable setup**.
-All three pair gates pass. Fourteen unaffected outcomes are retained; both shared-contention cases freshly pass at
-2000 ticks with current contact-range behavior and nearby permanent housing rallies. This closes the named native
-failures; it does not certify every production scenario. [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) owns provenance.
+**Package 1 validated, 2026-10-15: 8/8 required scenario outcomes (100%), 0/8 remaining (0%); no unavailable setups.**
+All eight IDs have passing pure assertions. The 31 distinct native outcomes comprise four capacity worlds (PRO-01/02),
+eight composition worlds (PRO-04), three replacement repetitions (PRO-05), and the 16 retained PRO-03/06/07 authority
+worlds. H-17 reuses the four future-demand worlds with additional completed-producer/no-new-empty-capacity assertions;
+its blocked-spawn branch also has native queue/spawner and pure lease-reconciliation controls. The original grouped
+command failed on the old PRO-04 setup; its unaffected PRO-01/02/05 predicates pass. Only PRO-04's setup changed,
+and the corrected eight-world command passes. [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) records that evidence union.
 
-Execute the remaining production coverage together, reusing existing controls before writing equivalent ones:
+**Next: Package 2, ECO-01–08, H-16/H-18 and TECH-01–06 in one shared-owner batch.**
 
-1. **PRO-01/02 — capacity:** certify sufficient producers for a dated goal and refusal of needless producers when
-   capacity/economy already explains the bottleneck. Reuse `production-scenarios.json`, `ai-production-scenarios.spec.ts`
-   and `focused-production-capacity-runtime.json`; inspect retained ID-specific evidence before rerunning.
-2. **PRO-04 — repeated useful units:** certify repeated same-type output until demand is met and stopping excess
-   after commitments satisfy it. Reuse the production spec and `focused-production-composition-runtime.json`.
-3. **PRO-05 — exactly-once capacity/replacement:** certify requested capacity under late/duplicate/out-of-order
-   callbacks and one necessary replacement after loss. Reuse the production spec and `focused-production-replacement-runtime.json`.
-4. **H-17 — blocked spawn/vanished demand:** map existing pure/native controls or add the missing fixture/recipe and
-   independent outcome assertions. Prove the useful obligation clears, reassigns or cancels without endless empty producers.
-5. **PRO-07 — pure semantic mapping:** connect the existing queue/resource/refund controls to the required scenario ID;
-   the four native contention/refund worlds pass, but a fixture reference alone does not prove the pure requirement.
+1. Reconcile retained ECO income/deposit/worker/supply results before replaying them. Use the existing resource-service,
+   forecast, bootstrap and housing specs plus the manifest's focused recipes. Prove delivery and useful allocation,
+   not a forecast or a gather order. Keep both factions' normal 200-resource bootstrap requirement.
+2. Close missing ECO-05/06 runtime aggregate-budget/depleted-source coverage and H-16/H-18 pure/runtime mappings.
+   Inspect existing low-delivery, queue-reservation and supply-loss controls first; connect equivalent predicates or
+   author the missing branches. Prevent simultaneous consumers spending the same future income and preserve legal
+   essential recovery when supply/income collapses.
+3. Reconcile TECH-01–06 with the existing adaptation/research specs and production queue worlds. Register the six
+   missing native recipes or equivalent shared worlds; close TECH-06's explicit pure semantic mapping. Prove research
+   is justified by beneficiaries, emergency spending wins, and counters use observed capability/actual executable tech.
+4. Collect failures across those 16 IDs, repair each resource/economy/adaptation owner once, then execute affected pure
+   controls and grouped native cases. Keep missing setup distinct from failed gameplay. Publish/pause at the coherent
+   batch boundary; advance to scouting/combat only after this package's exact predicates pass.
 
-Collect observed failures across these rows and repair each shared owner once. After all production predicates pass,
-advance to package 2. No new observer/profiler machinery is scheduled. Scenario registration remains pure 56/111 and
-supported runtime 19/116 until actual manifest edits change it; overall behavior completion remains unavailable.
-
-Current repair checks: 38 Phaser controls and 10 fixture/contract controls pass; portal application types and scoped lint
-pass (three baseline warnings). Standalone Phaser types have eight identical base diagnostics, documented in current evidence.
-Previous reader controls remain retained evidence, not new full-manifest certification.
+No new observer/profiler expansion is scheduled. Pure registrations are 57/111 and supported runtime 20/116;
+these coverage counts are not overall gameplay completion. Six of seven packages remain; package sizes differ.
 
 ## Other concrete gaps already established
 

@@ -17,6 +17,7 @@ describe.each([FactionType.Tivara, FactionType.Skaduwee])("dated capacity builde
           resourceType: ResourceType.Wood,
           available: { status: "known" as const, value: 1000, observedTick: f.observation.tick },
           carried: { status: "unknown" as const, reason: "not_supported" as const },
+          growthReadyTick: { status: "unknown" as const, reason: "not_supported" as const },
           serviceCapacity: { status: "known" as const, value: 10, observedTick: f.observation.tick }
         }
       }

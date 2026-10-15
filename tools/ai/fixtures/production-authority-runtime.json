@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "evidenceKind": "runtime",
-  "scenarioIds": ["PRO-03", "PRO-06", "PRO-07"],
+  "scenarioIds": ["PRO-03", "PRO-06", "PRO-07", "H-17"],
   "purpose": "Physical production authority branches; outcomes require native V2 evidence, never authored branch labels.",
   "driver": "runtime",
   "status": "ready_for_runtime_execution",
@@ -292,7 +292,7 @@
             }
           ]
         },
-        "scenarioIds": ["PRO-03"],
+        "scenarioIds": ["PRO-03", "H-17"],
         "pairId": "tivara-future"
       },
       {
@@ -644,7 +644,7 @@
             }
           ]
         },
-        "scenarioIds": ["PRO-03"],
+        "scenarioIds": ["PRO-03", "H-17"],
         "pairId": "tivara-future"
       },
       {
@@ -2755,7 +2755,7 @@
             }
           ]
         },
-        "scenarioIds": ["PRO-03"],
+        "scenarioIds": ["PRO-03", "H-17"],
         "pairId": "skaduwee-future"
       },
       {
@@ -3127,7 +3127,7 @@
             }
           ]
         },
-        "scenarioIds": ["PRO-03"],
+        "scenarioIds": ["PRO-03", "H-17"],
         "pairId": "skaduwee-future"
       },
       {
@@ -5121,6 +5121,54 @@
           "producerObjectName": "InfantryInn",
           "productKey": "SkaduweeWarriorMale",
           "pairId": "skaduwee-cancel-pending-refund",
+          "usefulRallyActorRole": "field"
+        }
+      }
+    },
+    "H-17": {
+      "maximumTick": 2000,
+      "minimumDecisions": 10,
+      "minimumAppliedCommands": 1,
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "requiredProductionContracts": {
+        "tivara-future-committed": {
+          "scenarioId": "H-17",
+          "latestTick": 2000,
+          "stableForTicks": 20,
+          "branch": "future_committed",
+          "producerObjectName": "AnkGuard",
+          "productKey": "TivaraMacemanMale",
+          "pairId": "tivara-future",
+          "usefulRallyActorRole": "field"
+        },
+        "tivara-future-abandoned": {
+          "scenarioId": "H-17",
+          "latestTick": 2000,
+          "stableForTicks": 20,
+          "branch": "future_abandoned",
+          "producerObjectName": "AnkGuard",
+          "productKey": "TivaraMacemanMale",
+          "pairId": "tivara-future",
+          "usefulRallyActorRole": "field"
+        },
+        "skaduwee-future-committed": {
+          "scenarioId": "H-17",
+          "latestTick": 2000,
+          "stableForTicks": 20,
+          "branch": "future_committed",
+          "producerObjectName": "InfantryInn",
+          "productKey": "SkaduweeWarriorMale",
+          "pairId": "skaduwee-future",
+          "usefulRallyActorRole": "field"
+        },
+        "skaduwee-future-abandoned": {
+          "scenarioId": "H-17",
+          "latestTick": 2000,
+          "stableForTicks": 20,
+          "branch": "future_abandoned",
+          "producerObjectName": "InfantryInn",
+          "productKey": "SkaduweeWarriorMale",
+          "pairId": "skaduwee-future",
           "usefulRallyActorRole": "field"
         }
       }

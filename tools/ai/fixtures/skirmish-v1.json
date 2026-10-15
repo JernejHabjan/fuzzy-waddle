@@ -375,7 +375,14 @@
     { "id": "H-14", "stages": [6, 12], "group": "lanes", "fixture": null, "drivers": ["pure", "runtime"] },
     { "id": "H-15", "stages": [6, 12], "group": "lanes", "fixture": null, "drivers": ["pure", "runtime"] },
     { "id": "H-16", "stages": [7, 12], "group": "economy", "fixture": null, "drivers": ["pure", "runtime"] },
-    { "id": "H-17", "stages": [7, 12], "group": "production", "fixture": null, "drivers": ["pure", "runtime"] },
+    {
+      "id": "H-17",
+      "stages": [7, 12],
+      "group": "production",
+      "fixture": "production-authority-runtime.json",
+      "authoredFixture": "production-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
     { "id": "H-18", "stages": [7, 12], "group": "economy", "fixture": null, "drivers": ["pure", "runtime"] },
     { "id": "H-19", "stages": [4, 8], "group": "access", "fixture": null, "drivers": ["pure", "runtime"] },
     { "id": "H-20", "stages": [4, 8], "group": "access", "fixture": null, "drivers": ["pure", "runtime"] },

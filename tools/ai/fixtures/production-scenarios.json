@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "scenarioIds": ["PRO-01", "PRO-02", "PRO-03", "PRO-04", "PRO-05"],
+  "scenarioIds": ["PRO-01", "PRO-02", "PRO-03", "PRO-04", "PRO-05", "H-17"],
   "purpose": "Typed deterministic pure production-capacity scenarios. The Jest scenario suite owns setup and semantic assertions.",
   "driver": "pure",
   "seeds": [759301, 759302, 759303],

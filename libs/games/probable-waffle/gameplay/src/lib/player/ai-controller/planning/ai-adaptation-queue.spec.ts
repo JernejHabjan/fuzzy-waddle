@@ -110,7 +110,7 @@ function world(tick: number, queuedItemCount: number): AiObservationV1 {
 }
 
 describe("adaptation queue commitments", () => {
-  it("TECH-05: counts compatible queued counters without redundant production or queue cancellation", () => {
+  it("PRO-07 / TECH-05: counts queued counters without redundant production or cancellation loops", () => {
     const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
     const manager = new AiAdaptationManager(profile, () => catalog);
     const initial = createAiBrainStateV1({
@@ -133,6 +133,10 @@ describe("adaptation queue commitments", () => {
       })
     );
     expect(fullyQueued.intents.some((intent) => intent.kind === "produce" || intent.kind === "cancel")).toBe(false);
+    for (let decision = 0; decision < 100; decision++) {
+      const held = manager.propose(world(140 + decision, 2), confirmedState);
+      expect(held.intents.some((intent) => intent.kind === "produce" || intent.kind === "cancel")).toBe(false);
+    }
     const oneQueued = manager.propose(world(140, 1), confirmedState);
     expect(oneQueued.intents).toContainEqual(
       expect.objectContaining({

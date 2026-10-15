@@ -70,6 +70,39 @@ export function evaluateRuntimeProductionAbandonedWork(
       )
   )
     failures.push("production_v2_abandoned_new_dispatch");
+  if (contract.scenarioId === "H-17") {
+    const finished = construction.find(
+      (entry) =>
+        entry.boundary.tick > abandoned.selectedTick &&
+        entry.boundary.construction.kind === "lifecycle" &&
+        entry.boundary.construction.transition === "finished"
+    );
+    const id = finished?.boundary.construction.site.actorId;
+    if (
+      !id ||
+      !productionWorldAt(evidence, contract.latestTick)?.actors.some(
+        (actor) =>
+          actor.identity.actorId === id &&
+          actor.identity.alive &&
+          actor.identity.active &&
+          actor.identity.indexed &&
+          actor.identity.finished
+      )
+    )
+      failures.push("production_v2_abandoned_finished_producer_missing");
+    if (
+      evidence.decisions
+        .filter((decision) => decision.selectedSequence >= abandoned.selectedSequence)
+        .some((decision) =>
+          decision.result.acceptedIntents.some(
+            (intent) =>
+              (intent.kind === "construct" && intent.objectName === contract.producerObjectName) ||
+              (intent.kind === "produce" && intent.objectName === contract.productKey)
+          )
+        )
+    )
+      failures.push("production_v2_abandoned_empty_producer_loop");
+  }
   // Already admitted work may finish normally. Its paid native lineage must remain visible through a real terminal.
   for (const placement of placements) {
     if (placement.sequence >= abandoned.selectedSequence || placement.spatial.kind !== "placement") continue;
