@@ -153,6 +153,8 @@ export class AiResourceServiceManager implements AiProposalManagerV1 {
           const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value?.orderType : null;
           const cargo = actor.resourceState.status === "known" ? actor.resourceState.value.carried : null;
           return (
+            !actor.resourceTransferInFlight &&
+            (actor.carriedResourceAmount ?? 0) === 0 &&
             order !== OrderType.Build &&
             order !== OrderType.ReturnResources &&
             !(cargo?.status === "known" && cargo.value > 0)

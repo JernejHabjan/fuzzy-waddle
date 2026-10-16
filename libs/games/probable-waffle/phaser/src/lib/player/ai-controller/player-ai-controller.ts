@@ -231,6 +231,7 @@ export class PlayerAiController {
     if (state.blackboard) {
       this.blackboard.setData(state.blackboard, this.scene);
     }
+    this.playerAiControllerAgent.resetDeliveredIncome();
     if (state.commandReconciliation) {
       const tick = getSceneService(this.scene, SimulationTickService)?.currentTick ?? 0;
       this.commandReconciliation?.setState(state.commandReconciliation, tick);

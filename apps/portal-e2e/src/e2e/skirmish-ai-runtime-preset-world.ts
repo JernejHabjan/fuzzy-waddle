@@ -23,6 +23,7 @@ export interface RuntimePresetWorldV1 {
     readonly playerNumber: number;
     readonly amounts: Readonly<Record<string, number>>;
   }[];
+  readonly sourceStocks?: AiRuntimePresetWorldV1["sourceStocks"];
   /** Exact pre-tick balances applied through resource events after grants and queue charges. */
   readonly resourceStarts?: readonly {
     readonly playerNumber: number;

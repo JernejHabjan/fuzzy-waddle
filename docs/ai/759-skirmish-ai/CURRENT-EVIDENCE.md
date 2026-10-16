@@ -2,6 +2,75 @@
 
 [HANDOFF.md](HANDOFF.md) owns continuation. Package 2 economy/technology remains open.
 
+## Native delivered income and economy recovery — 2026-10-16
+
+Tested base: `34d58154f769cc07b7db2d5df624f808b4d9c3bb` plus this checkpoint's task-owned source.
+**Package2:15/16 passed (93.75%);1/16 remaining (6.25%): H-18 failed; no unavailable native setups.**
+Package1 remains8/8. Newly passed ECO-05/06 and H-16 join unchanged ECO-01–04/TECH-01–06 and rechecked ECO-07/08.
+All short artifact paths below are ignored under `tmp/ai-plans/759-validation/`; they are local evidence, not committed
+product assets. Prior sections are historical checkpoints and retain their original counts/failures.
+
+### Changed behavior and purpose
+
+- `creditGatheredResource` reports confirmed native harvest credits to the scene's economy manager. Grants/refunds,
+  starting cash and purchases cannot create or subtract delivered income. Sampling retains existing units/smoothing;
+  restore resets derived estimates and shutdown detaches the subscription. This does not close Package5's full native
+  exactly-once/save/replay obligations.
+- Native extraction/return exposes in-flight ownership; owned observations expose exact cargo even when its type clears.
+  Planner/recovery owners preserve busy or loaded workers and can move empty excess labor to useful/housing resources.
+  Surplus acceptance joins the transferred worker to an actual positive receipt, not just an issued order.
+- Immediate crop credit retains the source ownership component across extraction, because depletion can destroy the
+  source. Neutral crops credit the carrier; owned sources retain their live beneficiary. No costs, yields or times changed.
+- ECO-05/H-16 use four physical shared-budget/surplus/poor-delivery worlds. ECO-06 uses actual partial cargo2/capacity3,
+  pinned drop-off destruction at160, a surviving alternate drain, depleted source reacquisition and crop growth/credit.
+  Pre-tick `sourceStocks` sets native components; it does not inject cargo or future income. Initial Gather orders permit
+  neutral or same-owner sources, never enemy sources.
+- Existing opt-in decision input now retains its consumed four-resource vector. Economy readers use it for aggregate
+  cash admission, plus scoped native receipt facts. This is narrower than complete production/M11 authority; broader
+  alias/lifetime coverage remains partial. New economy worlds retain raw capture, avoiding duplicated full V2 payloads.
+
+### Native evidence and remaining failure
+
+- `delivery-economy-native-final/1792135048123-failed.json`:4 worlds,240 decisions/4800 ticks,214691ms;
+  dirty `fnv1a32:5900562f`, fixture `fnv1a32:97facfe0`. No AI errors. ECO-06/H-16/surplus pass directly.
+  The original budget reader incorrectly required an arbitration rejection, although housing preservation suppresses
+  competing optional Fields before arbitration. It stays failed; do not relabel this artifact.
+- `delivery-economy-native-rechecked.json` reruns all three ID-specific readers on those retained native facts and passes.
+  Budget proof requires competing positive priced demand, at least one admitted funded purchase, and every aggregate
+  selected claim within actual cash minus reservations/due obligations. No floor/deadline/cash ceiling was weakened.
+  Reader SHA256 `290714bae45eec1bf13fbb84df5f889d27d2006dd699775bc5645d212676570d`.
+- `delivery-opening-housing-final/1792135514118-failed.json`:13 worlds,1770 decisions/35402 ticks,344719ms;
+  dirty `fnv1a32:5697a4a3`, fixture `fnv1a32:b221ef1e`. ECO-07's6 and ECO-08's5 worlds pass, including both ordinary
+  openings and three workforce-growth repetitions. H-18's intact control and all five paid outputs pass.
+- H-18's subject now accumulates100wood and places `sim-c0e67d3f` at33,16 on860. Assigned worker `sim-23746d63`
+  remains at33,18, with no Build order at880–1040; replacement stays0% at1201. The command reports active
+  `construction_started` without subsequent native construction lifecycle progress. Preserve the1200 deadline.
+  The next repair must trace shared CONSTRUCT → ActionSystem Build → pawn cancellation/order handoff and existing-site
+  reassignment. Root cause is not yet established; do not assume another discount or a generic movement rewrite.
+- Earlier housing/ownership, malformed seeded queue, oversized full-proof serialization, crop-owner and obstructed
+  carrier runs remain failed diagnostic attempts. They do not count as gameplay passes. The corrected crop beneficiary,
+  legal starting positions and bounded raw capture are covered by the retained final worlds above.
+
+### Checks and audits
+
+- `delivery-package-pure/1792133655340-passed.json`:28 suites/133 tests, all16 selected IDs executed.
+  `delivery-final-phaser-controls.log`:9 suites/93 tests; `delivery-oracle-final-controls.log`:4 reader controls.
+  `delivery-native-recheck.log`:retained-world reevaluation passes. `delivery-tools-final.log`:8 tool controls pass.
+- App/gameplay/E2E types pass (`delivery-final-{app,gameplay,e2e}-types.log`); final reader types pass
+  (`delivery-oracle-final-types.log`). Scoped lint passes with existing warnings; standalone Phaser's eight known
+  baseline type errors remain outside this gate. Catalog, changed-source format and whitespace checks recorded at close.
+- Omission Audit: production credit callers, beneficiary/object identity, reset/shutdown, cargo/busy projection privacy,
+  all three manifest/recipe/assertion registrations, negative receipt/budget/history readers and raw/full capture routing
+  are connected. Package5 authority, multiplayer and arbitrary lifecycle correctness are explicitly not closed.
+- Final Closure Audit: three previously unavailable outcomes now pass; H-18 is an explicit failed acceptance criterion,
+  so Package2 remains open. No new observer/profiler architecture, balance change, deferred island expansion or unrelated
+  Nx work was added. Publish this checked partial checkpoint; resume the named builder-handoff repair before Package3.
+  Source SHA256 provenance is retained in `delivery-final-source-sha256.json`. Final E2E types/lint pass in
+  `delivery-close-e2e-{types,lint}.log`; changed-source formatting passes in `delivery-close-format.log`.
+  Managed server PID46372 was stopped through `agent:process`; no native run remains active. Commit/push the exact
+  task-owned checkpoint, verify remote equality and pause. Next resume verifies the containing commit rather than
+  relying on a self-referential SHA in this record.
+
 ## Fixed-frame opening and funded supply recovery — 2026-10-16
 
 Tested base: `d4ef507a2e858c4ef2b60b93dea0a9cea77f9faa`, plus this checkpoint's source, recipes and tests.

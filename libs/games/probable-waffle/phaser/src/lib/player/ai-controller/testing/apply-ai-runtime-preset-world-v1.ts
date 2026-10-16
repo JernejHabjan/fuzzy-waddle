@@ -1,4 +1,5 @@
 import { bindAiRuntimeExistingActors } from "./bind-ai-runtime-existing-actors";
+import { applyAiRuntimeSourceStocks } from "./ai-runtime-source-stocks";
 import { installAiRuntimeProductionRallies } from "./install-ai-runtime-production-rallies";
 import { installAiRuntimePresetControls } from "./install-ai-runtime-preset-controls";
 import { environment } from "@fuzzy-waddle/environments/environment";
@@ -89,6 +90,7 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
   for (const grant of preset.resourceGrants) {
     emitResource(scene, "resource.added", grant.amounts as Partial<PlayerStateResources>, grant.playerNumber);
   }
+  applyAiRuntimeSourceStocks(preset, createdActors);
   const completeSetup = () => {
     assertAiRuntimePresetRoster(scene, preset);
     const { queuedItemCount, initialQueueItems, queueApplications } = applyAiRuntimePresetQueues(

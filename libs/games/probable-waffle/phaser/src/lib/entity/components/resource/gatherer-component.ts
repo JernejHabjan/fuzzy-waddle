@@ -151,6 +151,7 @@ export class GathererComponent {
    */
   startGatheringResources(resourceSource: Phaser.GameObjects.GameObject): boolean {
     if (this.currentResourceSource === resourceSource) return true;
+    if (this.resourceTransferInFlight) return false;
 
     // Check again if we can gather from this resource source (including maxGatherers check)
     if (!this.canGatherFrom(resourceSource)) return false;
@@ -199,6 +200,10 @@ export class GathererComponent {
   /** Optional transient diagnostic execution is forwarded explicitly; never serialized or used by native policy. */
   gatherResources(source: Phaser.GameObjects.GameObject, execution?: object): Promise<number> {
     return this.execution.gatherResources(source, execution);
+  }
+  /** Current component execution only; never restored as a live Promise or inferred from cargo amount. */
+  get resourceTransferInFlight(): boolean {
+    return this.execution.inFlight;
   }
   returnResources(drain: Phaser.GameObjects.GameObject, execution?: object): Promise<number> {
     return this.execution.returnResources(drain, execution);

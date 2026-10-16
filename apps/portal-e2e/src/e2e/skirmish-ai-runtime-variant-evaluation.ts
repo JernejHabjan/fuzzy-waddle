@@ -20,6 +20,8 @@ import { evaluateRuntimeProductionAuthority } from "./skirmish-ai-runtime-produc
 import { evaluateRuntimeProductionCounts } from "./skirmish-ai-runtime-production-count-evaluation";
 import { evaluateRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-evaluation";
 import { evaluateRuntimeTechnology } from "./skirmish-ai-runtime-technology-evaluation";
+import { evaluateRuntimeEconomy } from "./skirmish-ai-runtime-economy-evaluation";
+import { evaluateRuntimeResourceRecovery } from "./skirmish-ai-runtime-resource-recovery-evaluation";
 
 export function evaluateRuntimeVariant(
   scenarioId: string,
@@ -32,6 +34,8 @@ export function evaluateRuntimeVariant(
     variant
   );
   const failures = [
+    ...evaluateRuntimeEconomy(assertion.requiredEconomyContracts?.[variant.variantId], variant),
+    ...evaluateRuntimeResourceRecovery(assertion.requiredResourceRecovery, variant),
     ...technologyFailures,
     ...evaluateRuntimeProductionAuthority(
       scenarioId,

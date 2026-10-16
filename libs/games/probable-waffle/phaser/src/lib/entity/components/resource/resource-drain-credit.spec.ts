@@ -113,6 +113,7 @@ describe("native drain credit policy", () => {
           return gameInstance.players;
         },
         baseGameData: { gameInstance },
+        events: new Phaser.Events.EventEmitter(),
         sys: { queueDepthSort: jest.fn() }
       } as unknown as ProbableWaffleScene;
       const actor = new Phaser.GameObjects.GameObject(scene, "gatherer-fixture");

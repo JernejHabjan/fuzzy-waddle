@@ -6,30 +6,30 @@ Do not load the full plan directory or archive on startup.
 ## Current cursor
 
 - Worktree: `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`; branch: `feature/759-skirmish-ai`.
-  Tested base: `d4ef507a2e858c4ef2b60b93dea0a9cea77f9faa` plus the containing checkpoint. Verify its HEAD/remote.
+  Tested base: `34d58154f769cc07b7db2d5df624f808b4d9c3bb` plus the containing checkpoint. Verify its HEAD/remote.
   Commit/push at coherent boundaries is authorized; pause after publication. Actual model/effort settings are unknown.
-- **Package 2: 12/16 outcomes passed (75%); 4/16 remain (25%): H-18 failed, ECO-05/06 and H-16 lack native setups.**
-  ECO-08 now passes both ordinary200-resource openings and three identical workforce-growth repeats. Do not advance
+- **Package 2: 15/16 outcomes passed (93.75%); 1/16 remains (6.25%): H-18 failed; no native setups missing.**
+  ECO-05/06 and H-16 now pass native delivery/budget/recovery assertions. ECO-07/08 affected controls pass. Do not advance
   to Package 3. Package1 remains8/8 validated; this is not an overall AI completion percentage.
-- Final grouped evidence: `recovery-savings-native-final/1792130020313-failed.json`,21 distinct worlds,
- 2010 decisions /40202 ticks,471093ms. ECO-07's6, ECO-08's5 and PRO-04's8 worlds pass. H-18's intact control and
-  all five paid outputs pass; its subject still misses physical housing recovery by unchanged1200. Retain this failure.
-- Authored/checked: opt-in complete50ms native headless frames yield between ticks, fixing accelerated-runner async
-  starvation without changing ordinary gameplay. Additional Fields/Granaries preserve catalog-priced unmet housing
-  cash, while first food access remains eligible. No balance values changed; the demonstrated cause was priority.
-- H-18's remaining cause: an extra60-wood Field spends cash before the unexpected loss at200. After loss the savings
-  guard works, but the bank grows from40 to only90wood by1201; no replacement completes. Group this with the next
-  income/gathering recovery repair rather than changing the deadline or assuming another housing discount fixes it.
-- **Next combined owner batch:** implement actual native delivered-income accounting with ECO-05/H-16 budget and
-  poor-delivery controls, plus ECO-06 depleted-source/drop-off/crop recovery and the existing H-18 failed case.
-  `ai-behavior/economy-manager.ts` measures net stockpile change, but `player-ai-agent-context.ts` advertises it as
-  delivered income: starting balances/grants inflate it and purchases reduce it. Preserve ownership/save/restore and
-  subscription cleanup. Prove useful jobs, real delivery, aggregate affordability and timely housing; rerun affected
-  controls once the shared owners are stable. No new observer/profiler architecture.
-- Checks:27 pure suites /127 tests across all16 IDs;5 focused suites /30 tests;8 E2E reader/frame controls;
+- Native economy evidence: `delivery-economy-native-final/1792135048123-failed.json` retains four physical worlds;
+  `delivery-economy-native-rechecked.json` passes all three IDs with the corrected outcome-based budget reader.
+  The original report stays failed. `delivery-opening-housing-final/1792135514118-failed.json` retains13 worlds:
+  ECO-07's6 and ECO-08's5 pass; H-18's intact control and five paid outputs pass, replacement still fails1200.
+- Authored/checked: income counts actual native credits, excluding grants and spending. Busy extraction/return and
+  loaded cargo retain ownership; empty/congested workers can fund housing. Neutral depleted crops retain their credit
+  beneficiary. No prices/yields/times changed: these defects concern accounting and job ownership.
+- H-18 now funds/places the100-wood replacement at860. Its selected builder `sim-23746d63` remains at33,18 with
+  no active Build order from880 through1040; the site `sim-c0e67d3f` at33,16 stays0% through1201. Dispatch reports
+  construction_started but no native construction lifecycle starts. This is a concrete builder-handoff failure,
+  not proof of a movement or pricing root cause. Preserve the unchanged1200 deadline and all paid-output predicates.
+- **Next combined owner batch:** trace native CONSTRUCT → ActionSystem Build → pawn order/cancellation ownership,
+  repair the lost builder handoff and cover existing-site reassignment/recovery together. Prove H-18's physical
+  completion with its intact control; rerun affected construction/production controls after the owner is stable.
+  Only then advance to Package3 fair scouting, reachable targets, attack/retreat and both-faction full victory.
+- Checks:28 pure suites /133 tests across all16 IDs;9 native-owner suites /93 tests;4 E2E economy reader controls;
   app/gameplay/E2E types and scoped lint pass. Full provenance, limits and audits: [current evidence](CURRENT-EVIDENCE.md).
 - Recommended next model: **GPT-6.1 Sol / high**, because delivery ownership and recovery need causal design.
-  This recommends settings; it does not switch them.
+  This recommends settings; it does not switch them. Native builder/order ownership needs causal investigation.
 
 ## What “continue” means
 
@@ -86,7 +86,7 @@ Keep the report self-contained and concise. A documentation-only update reports 
 gameplay progress unchanged. The execution plan links to this format rather than maintaining a second template.
 
 Registration coverage: pure **59/111 = 53.2% registered / 46.8% remaining**; supported runtime
-**27/116 = 23.3% registered / 76.7% remaining**, excluding four deferred runtime rows. These are not overall AI completion.
+**30/116 = 25.9% registered / 74.1% remaining**, excluding four deferred runtime rows. These are not overall AI completion.
 Reconcile behavior evidence per selected package; do not invent a global completion percentage.
 
 ## End-of-gate machinery necessity review

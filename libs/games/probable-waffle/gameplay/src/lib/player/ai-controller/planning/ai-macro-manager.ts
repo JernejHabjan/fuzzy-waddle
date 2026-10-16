@@ -141,7 +141,8 @@ export class AiMacroManager implements AiProposalManagerV1 {
       self,
       intents,
       reservedActorIds,
-      ordinal
+      ordinal,
+      demands
     );
     if (gatheringIntent) {
       intents.push(gatheringIntent);

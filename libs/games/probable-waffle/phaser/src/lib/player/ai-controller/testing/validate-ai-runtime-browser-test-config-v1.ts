@@ -1,4 +1,5 @@
 import { validAiRuntimeExistingBindings } from "./validate-ai-runtime-existing-bindings";
+import { validAiRuntimeSourceStocks } from "./ai-runtime-source-stocks";
 import { validAiRuntimePresetControls, validAiRuntimePresetRallies } from "./validate-ai-runtime-preset-controls";
 import { ObjectNames, ResearchType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiRuntimeBrowserTestConfigV1 } from "./ai-runtime-browser-test-config-v1";
@@ -26,6 +27,7 @@ function validPresetWorld(value: unknown): boolean {
       "actors",
       "existingActorBindings",
       "resourceGrants",
+      "sourceStocks",
       "resourceStarts",
       "queues",
       "researchQueues",
@@ -72,6 +74,7 @@ function validPresetWorld(value: unknown): boolean {
   }
   if (!validAiRuntimeExistingBindings(value["existingActorBindings"], fixtureActorIds, actorOwners, authoredNames))
     return false;
+  if (!validAiRuntimeSourceStocks(value["sourceStocks"], fixtureActorIds)) return false;
   if (!Array.isArray(value["resourceGrants"]) || value["resourceGrants"].length > 16) return false;
   const validGrants = value["resourceGrants"].every((grant) => {
     if (!isRecord(grant) || !hasOnlyKeys(grant, ["playerNumber", "amounts"])) return false;
@@ -145,7 +148,12 @@ function validPresetWorld(value: unknown): boolean {
     if (typeof workerId !== "string" || typeof sourceId !== "string" || order["kind"] !== "gather") return false;
     if (orderedWorkers.has(workerId)) return false;
     orderedWorkers.add(workerId);
-    return actorOwners.has(workerId) && actorOwners.get(workerId) !== null && actorOwners.get(sourceId) === null;
+    return (
+      actorOwners.has(workerId) &&
+      actorOwners.get(workerId) !== null &&
+      actorOwners.has(sourceId) &&
+      (actorOwners.get(sourceId) === null || actorOwners.get(sourceId) === actorOwners.get(workerId))
+    );
   });
   const events = value["events"] ?? [];
   if (!Array.isArray(events) || events.length > 16) return false;

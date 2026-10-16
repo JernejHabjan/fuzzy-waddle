@@ -121,4 +121,48 @@ describe("typed deterministic economy forecast scenarios", () => {
       )
     ).toBe(false);
   });
+  it("H-16: moves a confirmed empty worker beyond source capacity without inventing donor surplus", () => {
+    const base = world(0, 0);
+    const actors = base.actors.map((actor) =>
+      actor.actorId.startsWith("worker-")
+        ? {
+            ...actor,
+            carriedResourceAmount: 0,
+            resourceTransferInFlight: false,
+            activeOrder: {
+              status: "known" as const,
+              observedTick: 20,
+              value: { orderType: OrderType.Gather, targetActorId: "food-source" }
+            }
+          }
+        : actor.actorId === "food-source" && actor.resourceState.status === "known"
+          ? {
+              ...actor,
+              resourceState: {
+                ...actor.resourceState,
+                value: {
+                  ...actor.resourceState.value,
+                  serviceCapacity: { status: "known" as const, observedTick: 20, value: 2 }
+                }
+              }
+            }
+          : actor
+    );
+    const result = proposal(0, 0, [demand], { ...base, actors });
+    expect(result.intents).toContainEqual(
+      expect.objectContaining({
+        kind: "assign_gatherers",
+        resourceType: ResourceType.Wood,
+        sourceActorId: "wood-source",
+        actorIds: ["worker-0"]
+      })
+    );
+    const busy = proposal(0, 0, [demand], {
+      ...base,
+      actors: actors.map((actor) =>
+        actor.actorId.startsWith("worker-") ? { ...actor, resourceTransferInFlight: true } : actor
+      )
+    });
+    expect(busy.intents.some((intent) => intent.kind === "assign_gatherers")).toBe(false);
+  });
 });

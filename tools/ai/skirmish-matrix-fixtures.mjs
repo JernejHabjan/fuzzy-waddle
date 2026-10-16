@@ -4,6 +4,7 @@ import { validateEvidenceStopAssertions, validateRuntimeRecipeMetadata } from ".
 import { validProductionCapacityPair } from "./skirmish-runtime-production-capacity-fixture.mjs";
 import { validProductionCompositionPair } from "./skirmish-runtime-production-composition-fixture.mjs";
 import { validProductionContracts } from "./skirmish-runtime-production-contract-fixture.mjs";
+import { validEconomyContracts, validResourceRecoveryContract } from "./skirmish-runtime-economy-fixture.mjs";
 
 export function validateManifest(value, fixtureDirectory) {
   if (!value || value.schemaVersion !== 1 || value.manifestVersion !== "skirmish-v1" || !Array.isArray(value.rows))
@@ -139,6 +140,8 @@ function validateRuntimeFixture(fixture, scenarioId) {
     (assertion.requireNoInitialWorker !== undefined && typeof assertion.requireNoInitialWorker !== "boolean") ||
     (assertion.requireDeliveredIncome !== undefined && typeof assertion.requireDeliveredIncome !== "boolean") ||
     (assertion.requireRenewableFoodIncome !== undefined && typeof assertion.requireRenewableFoodIncome !== "boolean") ||
+    (["ECO-05", "H-16"].includes(scenarioId) && !validEconomyContracts(recipe, assertion, scenarioId)) ||
+    (scenarioId === "ECO-06" && !validResourceRecoveryContract(recipe, assertion)) ||
     (assertion.requiredSupplyRecovery !== undefined &&
       (!assertion.requiredSupplyRecovery ||
         !Number.isSafeInteger(assertion.requiredSupplyRecovery.latestTick) ||

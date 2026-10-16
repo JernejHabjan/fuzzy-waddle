@@ -96,7 +96,7 @@ export function invokeHarness(input, context) {
     "actor-manager-ai-save"
   ];
   const authoredTestNames = [
-    "ai-(brain|production-scenarios(-capacity)?|production-resource-authority|housing-demand|food-infrastructure|" +
+    "ai-(brain|production-scenarios(-capacity)?|production-resource-authority|housing-demand|housing-funding|food-infrastructure|" +
       "economy-forecast-(scenarios|budget)|opening-bootstrap-scenarios|" +
       "resource-forecast|resource-service-manager|pressure-strategy-scenarios|victory-route-scenarios|victory-pressure-scenarios)",
     "ai-(tactics-(manager|combat)|adaptation-(manager|queue|scenarios))",

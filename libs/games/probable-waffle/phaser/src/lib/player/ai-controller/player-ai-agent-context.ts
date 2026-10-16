@@ -123,7 +123,7 @@ export abstract class PlayerAiAgentContext {
     );
     this.logisticsManager = new LogisticsManager(this.blackboard, this.logDebugInfo.bind(this));
     this.techManager = new TechProgressManager(this.blackboard, player.playerNumber!, this.logDebugInfo.bind(this));
-    this.economyManager = new EconomyManager(this.blackboard);
+    this.economyManager = new EconomyManager(this.blackboard, this.scene, this.player.playerNumber);
     this.worldStateSnapshotManager = new WorldStateSnapshotManager(this.scene, this.player, this.blackboard);
     this.observationPipeline = new AiObservationPipeline(this.scene, this.player, (resourceType) =>
       Math.max(0, (this.blackboard.economy.incomeSmoothed[resourceType] ?? 0) * 60)
@@ -203,6 +203,11 @@ export abstract class PlayerAiAgentContext {
     this.observationPipeline.setState(state);
   }
 
+  /** Rebuild derived income from resumed receipts; restored stockpiles are not deliveries. */
+  resetDeliveredIncome(): void {
+    this.economyManager.reset();
+  }
+
   /** Supplies the debug panel with already committed observation metadata only. */
   getObservationDebugSnapshot() {
     return this.observationPipeline.getDebugSnapshot();
@@ -236,6 +241,7 @@ export abstract class PlayerAiAgentContext {
   }
 
   protected onShutdown() {
+    this.economyManager.destroy();
     this.aiDebuggingSubscription?.unsubscribe();
   }
   protected abstract processPrerequisiteQueue(): void;

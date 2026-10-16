@@ -9,6 +9,8 @@ import { rememberAiGatheringSelection } from "./ai-gathering-selection-observati
 import { selectAiSurplusLaborTransfer } from "./ai-surplus-labor-transfer";
 import { readAiResourceInputRead } from "./ai-resource-input-observation";
 import { claimedActorIds } from "./ai-macro-observation";
+import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
+import { housingFundingResourceTypes, selectAiHousingFundingWorker } from "./ai-housing-funding";
 
 /** Proposes a non-Field gathering assignment from aggregate forecasts or the native stockpile fallback. */
 export function proposeAiGeneralGathering(
@@ -18,7 +20,8 @@ export function proposeAiGeneralGathering(
   self: readonly AiObservationV1["actors"][number][],
   priorIntents: readonly AiIntentV1[],
   reservedActorIds: ReadonlySet<string>,
-  ordinal: number
+  ordinal: number,
+  currentDemands: readonly AiDemandV1[] = state.economyProduction.demands
 ): AiIntentV1 | null {
   const claimedWorkers = claimedActorIds(priorIntents);
   const idleWorkers = self
@@ -27,6 +30,7 @@ export function proposeAiGeneralGathering(
     )
     .filter((actor) => !claimedWorkers.has(actor.actorId))
     .filter((actor) => !reservedActorIds.has(actor.actorId))
+    .filter((actor) => !actor.resourceTransferInFlight && (actor.carriedResourceAmount ?? 0) === 0)
     .filter((actor) => actor.activeOrder?.status === "known" && actor.activeOrder.value === null)
     .sort((left, right) => left.actorId.localeCompare(right.actorId));
   const gatherSources = observation.actors
@@ -45,7 +49,14 @@ export function proposeAiGeneralGathering(
       actor.resourceState.status === "known" ? actor.resourceState.value.resourceType : ResourceType.Wood
     )
   );
-  const selectedForecast = selectAiForecastEntry(observation, state.economyProduction.forecasts, sourceResourceTypes);
+  const housingTypes = housingFundingResourceTypes(observation, catalog, currentDemands);
+  const housingForecast = selectAiForecastEntry(
+    observation,
+    state.economyProduction.forecasts,
+    new Set([...sourceResourceTypes].filter((type) => housingTypes.has(type)))
+  );
+  const selectedForecast =
+    housingForecast ?? selectAiForecastEntry(observation, state.economyProduction.forecasts, sourceResourceTypes);
   const constrainedResource =
     selectedForecast?.resourceType ??
     observation.resources
@@ -80,14 +91,22 @@ export function proposeAiGeneralGathering(
   );
   const transferable =
     compatibleIdleWorkers.length === 0
-      ? selectAiSurplusLaborTransfer(
+      ? ((housingForecast
+          ? selectAiHousingFundingWorker(
+              observation,
+              catalog,
+              self.filter((actor) => !claimedWorkers.has(actor.actorId) && !reservedActorIds.has(actor.actorId)),
+              constrainedResource
+            )
+          : undefined) ??
+        selectAiSurplusLaborTransfer(
           observation,
           catalog,
           state.economyProduction.forecasts,
           self.filter((actor) => !claimedWorkers.has(actor.actorId) && !reservedActorIds.has(actor.actorId)),
           gatherSources,
           constrainedResource
-        )
+        ))
       : undefined;
   const selectedWorkers =
     compatibleIdleWorkers.length > 0

@@ -63,9 +63,11 @@ export async function runVariant(
         fixture.scenarioIds.includes(scenarioId) &&
         (variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId))
     );
-    const captureProduction = applicableScenarioIds.some(
+    const fullProductionProof = applicableScenarioIds.some(
       (id) => ["PRO-03", "PRO-06", "PRO-07", "H-17", "H-18"].includes(id) || id.startsWith("TECH-")
     );
+    const captureProduction =
+      fullProductionProof || applicableScenarioIds.some((id) => ["ECO-05", "ECO-06", "H-16"].includes(id));
     const productionHorizons = applicableScenarioIds.flatMap((id) => {
       const contract =
         fixture.assertions[id]?.requiredProductionContracts?.[variant.id] ??
@@ -183,7 +185,9 @@ export async function runVariant(
       stopReason,
       outcomeDigest,
       ...(productionCapture
-        ? buildRuntimeProductionReport(productionCapture, initialBoundary.presetApplication ?? undefined)
+        ? fullProductionProof
+          ? buildRuntimeProductionReport(productionCapture, initialBoundary.presetApplication ?? undefined)
+          : { productionCapture }
         : {}),
       checkpoints,
       perturbations,

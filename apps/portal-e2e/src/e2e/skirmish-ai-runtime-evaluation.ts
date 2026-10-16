@@ -19,6 +19,13 @@ export function evaluateScenario(
   const selectedVariants = variants.filter((variant) => applicableVariantIds.has(variant.variantId));
   if (selectedVariants.length === 0) return [`runtime_variants_missing:${scenarioId}`];
   if (
+    assertion.requiredEconomyContracts &&
+    Object.keys(assertion.requiredEconomyContracts).some(
+      (id) => !selectedVariants.some((variant) => variant.variantId === id)
+    )
+  )
+    return [`required_economy_variant_missing:${scenarioId}`];
+  if (
     assertion.requiredTechnologyContracts &&
     Object.keys(assertion.requiredTechnologyContracts).some(
       (id) => !selectedVariants.some((variant) => variant.variantId === id)

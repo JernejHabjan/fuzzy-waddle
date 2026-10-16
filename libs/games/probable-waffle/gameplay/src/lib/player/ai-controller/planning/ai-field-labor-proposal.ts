@@ -57,6 +57,16 @@ export function proposeAiFieldLabor(
       )
     )
     .filter((actor) => !reservedActorIds.has(actor.actorId) && !alreadyClaimed.has(actor.actorId))
+    .filter(
+      (actor) =>
+        !actor.resourceTransferInFlight &&
+        (actor.carriedResourceAmount ?? 0) === 0 &&
+        !(
+          actor.resourceState.status === "known" &&
+          actor.resourceState.value.carried.status === "known" &&
+          actor.resourceState.value.carried.value > 0
+        )
+    )
     .filter((actor) => {
       const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
       // Returning food is part of the Field's durable labor assignment. Replacing

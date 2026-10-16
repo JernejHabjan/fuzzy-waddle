@@ -4,7 +4,8 @@ import { ResourceSourceComponent } from "./resource-source-component";
 import { ResourceDrainComponent } from "./resource-drain-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../owner-component";
-import { emitResource, getPlayer } from "../../../data/scene-data";
+import { getPlayer } from "../../../data/scene-data";
+import { creditGatheredResource } from "./credit-gathered-resource";
 import { HealthComponent } from "../combat/components/health-component";
 import type { GathererComponent } from "./gatherer-component";
 import type { ResourceCargoChange } from "./resource-cargo-change";
@@ -15,6 +16,12 @@ import { observeResourceCredit } from "./observe-resource-credit";
 export class GathererResourceExecution {
   private static readonly debug = false;
   private returnInFlight = false;
+  private gatherInFlight = false;
+
+  /** Zero cargo can still have a native extraction in progress; preserve that owner until it settles. */
+  get inFlight(): boolean {
+    return this.gatherInFlight || this.returnInFlight;
+  }
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
     private readonly gatherer: GathererComponent,
@@ -27,6 +34,16 @@ export class GathererResourceExecution {
     }
   ) {}
   async gatherResources(resourceSource: Phaser.GameObjects.GameObject, execution?: object): Promise<number> {
+    if (this.inFlight) return 0;
+    this.gatherInFlight = true;
+    try {
+      return await this.gatherOnce(resourceSource, execution);
+    } finally {
+      this.gatherInFlight = false;
+    }
+  }
+
+  private async gatherOnce(resourceSource: Phaser.GameObjects.GameObject, execution?: object): Promise<number> {
     ResourceServiceObservation.begin(
       this.gameObject,
       this.gatherer,
@@ -59,6 +76,9 @@ export class GathererResourceExecution {
       amountToGather = gatherData.capacity - this.gatherer.carriedResourceAmount;
     }
 
+    // A finite source can be destroyed by extraction; retain its ownership component across that native await.
+    const sourceOwner = getActorComponent(resourceSource, OwnerComponent);
+    const gathererOwner = getActorComponent(this.gameObject, OwnerComponent);
     // gather resources
     const gatheredAmount = await resourceSourceComponent.extractResources(this.gameObject, amountToGather);
     if (getActorComponent(this.gameObject, HealthComponent)?.killed) {
@@ -104,7 +124,7 @@ export class GathererResourceExecution {
         resourceSourceComponent.getCurrentResources() === 0
       ) {
         // return immediately
-        const owner = getActorComponent(resourceSource, OwnerComponent)?.getOwner();
+        const owner = sourceOwner?.getOwner() ?? gathererOwner?.getOwner();
         if (!owner) throw new Error("Owner not found");
         const player = getPlayer(this.gameObject.scene, owner);
         if (player) {
@@ -132,7 +152,7 @@ export class GathererResourceExecution {
               },
               this.gameObject.scene,
               amounts,
-              () => emitResource(this.gameObject.scene, "resource.added", amounts, owner)
+              () => creditGatheredResource(this.gameObject.scene, owner, carriedResourceType, amounts)
             );
             this.callbacks.setCarriedResourceAmount(0, {
               reason: "removed",
@@ -160,7 +180,7 @@ export class GathererResourceExecution {
   async returnResources(resourceDrain: Phaser.GameObjects.GameObject, execution?: object): Promise<number> {
     // A cancelled/replaced pawn order can start another return while this drain still awaits its cooldown.
     // Keep one transfer per carrier so the same offered pile cannot be credited and debited twice.
-    if (this.returnInFlight) {
+    if (this.inFlight) {
       ResourceServiceObservation.begin(
         this.gameObject,
         this.gatherer,

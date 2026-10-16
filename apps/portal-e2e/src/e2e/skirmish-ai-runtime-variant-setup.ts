@@ -66,7 +66,9 @@ export async function prepareRuntimeVariant(
       revision: sourceRevision,
       digest: fixtureDigest,
       captureProduction: (variant.scenarioIds ?? fixture.scenarioIds).some(
-        (id) => ["PRO-03", "PRO-06", "PRO-07", "H-17", "H-18"].includes(id) || id.startsWith("TECH-")
+        (id) =>
+          ["PRO-03", "PRO-06", "PRO-07", "H-17", "H-18", "ECO-05", "ECO-06", "H-16"].includes(id) ||
+          id.startsWith("TECH-")
       )
     }
   );

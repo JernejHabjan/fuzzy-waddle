@@ -1,34 +1,59 @@
-import { PlayerAiBlackboard } from "../player-ai-blackboard";
+import type Phaser from "phaser";
+import type { PlayerAiBlackboard } from "../player-ai-blackboard";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { GATHERED_RESOURCE_CREDITED } from "../../../entity/components/resource/credit-gathered-resource";
+import { getSimulationNow } from "../../../world/services/simulation-time";
 
+/** Estimates delivered units/second from confirmed native receipts, never grants or net stockpile changes. */
 export class EconomyManager {
-  constructor(private readonly blackboard: PlayerAiBlackboard) {}
+  private readonly pending = { food: 0, wood: 0, stone: 0, minerals: 0 };
+  private sampledAt: number;
 
-  update(now: number) {
-    this.updateIncome(now);
+  constructor(
+    private readonly blackboard: PlayerAiBlackboard,
+    private readonly scene: Phaser.Scene,
+    private readonly playerNumber: number
+  ) {
+    this.sampledAt = getSimulationNow(scene);
+    this.reset();
+    scene.events.on(GATHERED_RESOURCE_CREDITED, this.recordDelivery, this);
   }
 
-  private updateIncome(now: number) {
-    const economy = this.blackboard.economy;
-    const elapsedSeconds = (now - economy.lastIncomeSampleAt) / 1000;
-    if (elapsedSeconds < 5) return; // sample every 5 seconds
+  private recordDelivery(playerNumber: number, type: ResourceType, amount: number): void {
+    if (
+      playerNumber === this.playerNumber &&
+      Object.values(ResourceType).includes(type) &&
+      Number.isFinite(amount) &&
+      amount > 0
+    )
+      this.pending[type] += amount;
+  }
 
-    for (const key in economy.resources) {
-      const resourceType = key as ResourceType;
-      const currentAmount = economy.resources[resourceType];
-      const lastAmount = economy.lastIncomeSnapshot[resourceType] ?? 0;
-      const diff = currentAmount - lastAmount;
-
-      const instantaneousRate = diff / elapsedSeconds;
-      economy.incomeInstant[resourceType] = instantaneousRate;
-
-      // simple moving average for smoothed income
-      const oldSmoothed = economy.incomeSmoothed[resourceType] || 0;
-      const newSmoothed = oldSmoothed * 0.9 + instantaneousRate * 0.1;
-
-      economy.incomeSmoothed[resourceType] = newSmoothed;
-      economy.lastIncomeSnapshot[resourceType] = currentAmount;
+  update(now: number): void {
+    const elapsedSeconds = (now - this.sampledAt) / 1000;
+    if (elapsedSeconds < 5) return;
+    for (const type of Object.values(ResourceType)) {
+      const rate = this.pending[type] / elapsedSeconds;
+      this.blackboard.economy.incomeInstant[type] = rate;
+      this.blackboard.economy.incomeSmoothed[type] = this.blackboard.economy.incomeSmoothed[type] * 0.9 + rate * 0.1;
+      this.pending[type] = 0;
     }
-    economy.lastIncomeSampleAt = now;
+    this.sampledAt = now;
+  }
+
+  /** Derived sampling restarts after restore; saved net-income estimates cannot masquerade as new deliveries.
+   * Outstanding cargo counts only when its resumed native delivery actually credits cash.
+   */
+  reset(): void {
+    this.sampledAt = getSimulationNow(this.scene);
+    for (const type of Object.values(ResourceType)) {
+      this.pending[type] = 0;
+      this.blackboard.economy.incomeInstant[type] = 0;
+      this.blackboard.economy.incomeSmoothed[type] = 0;
+    }
+  }
+
+  destroy(): void {
+    this.scene.events.off(GATHERED_RESOURCE_CREDITED, this.recordDelivery, this);
   }
 }

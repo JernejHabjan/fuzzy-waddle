@@ -1,0 +1,886 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "runtime",
+  "scenarioIds": ["ECO-05", "H-16"],
+  "purpose": "Exercise aggregate native spending, surplus labor transfer, and grant-biased poor-delivery recovery with actual wood receipts.",
+  "driver": "runtime",
+  "status": "ready_for_runtime_execution",
+  "context": {
+    "mapId": "AiOpenEconomy",
+    "mapDigest": "resolved_from_candidate_assets",
+    "side": 2,
+    "rulesVersion": "probable-waffle-rules-v1"
+  },
+  "recipe": {
+    "mapLabel": "AI Open Economy (test only)",
+    "aiPlayerNumber": 2,
+    "simulationTimeScale": 1,
+    "fixedStepFrames": true,
+    "checkpointTicks": [20, 180, 400, 800, 1200],
+    "variants": [
+      {
+        "id": "economy-shared-budget",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759516,
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "deadlineRationale": "1200 complete native ticks cover initial contention, the first real wood receipts, and allocation after congestion without a full-match victory requirement.",
+        "presetWorld": {
+          "fixtureId": "economy-shared-budget",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 1056,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1200,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "field",
+              "actorName": "Field",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 640,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "wood-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 680,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 720,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 680,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 720,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 560,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-2",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 368,
+                "y": 560,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-3",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 560,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-4",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 464,
+                "y": 560,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-5",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 624,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-6",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 368,
+                "y": 624,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-7",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 624,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-8",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 464,
+                "y": 624,
+                "z": 0
+              }
+            }
+          ],
+          "resourceGrants": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 2000,
+                "wood": 2000,
+                "minerals": 2000,
+                "stone": 2000
+              }
+            }
+          ],
+          "resourceStarts": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 150,
+                "wood": 130,
+                "stone": 0,
+                "minerals": 0
+              }
+            }
+          ],
+          "controls": [],
+          "productionRallies": [
+            {
+              "producerObjectName": "AnkGuard",
+              "owner": 2,
+              "targetFixtureActorId": "housing"
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "main-producer",
+              "actorName": "Sandhold",
+              "owner": 2
+            }
+          ],
+          "researchQueues": [
+            {
+              "producerFixtureActorId": "main-producer",
+              "researchType": "tivaraSlingshotUpgradeLevel2"
+            }
+          ],
+          "events": [],
+          "queues": [
+            {
+              "producerFixtureActorId": "producer",
+              "actorName": "TivaraMacemanMale",
+              "count": 2
+            }
+          ]
+        },
+        "scenarioIds": ["ECO-05"],
+        "repetitions": 1
+      },
+      {
+        "id": "economy-surplus-labor",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759516,
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "deadlineRationale": "1200 complete native ticks cover initial contention, the first real wood receipts, and allocation after congestion without a full-match victory requirement.",
+        "presetWorld": {
+          "fixtureId": "economy-surplus-labor",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 1056,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1200,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "field",
+              "actorName": "Field",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 640,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 680,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 720,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 680,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 720,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 560,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-2",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 368,
+                "y": 560,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-3",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 560,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-4",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 464,
+                "y": 560,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-5",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 624,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-6",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 368,
+                "y": 624,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-7",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 624,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-8",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 464,
+                "y": 624,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "food-source-0",
+              "actorName": "CropsWheat",
+              "owner": null,
+              "position": {
+                "x": 896,
+                "y": 840,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "food-source-1",
+              "actorName": "CropsWheat",
+              "owner": null,
+              "position": {
+                "x": 960,
+                "y": 840,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "food-source-2",
+              "actorName": "CropsWheat",
+              "owner": null,
+              "position": {
+                "x": 1024,
+                "y": 840,
+                "z": 0
+              }
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 2000,
+                "wood": 0,
+                "stone": 1000,
+                "minerals": 1000
+              }
+            }
+          ],
+          "controls": [],
+          "productionRallies": [
+            {
+              "producerObjectName": "AnkGuard",
+              "owner": 2,
+              "targetFixtureActorId": "housing"
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "main-producer",
+              "actorName": "Sandhold",
+              "owner": 2
+            }
+          ],
+          "researchQueues": [],
+          "events": [],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "worker-1",
+              "sourceFixtureActorId": "food-source-0",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "worker-2",
+              "sourceFixtureActorId": "food-source-0",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "worker-3",
+              "sourceFixtureActorId": "food-source-1",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "worker-4",
+              "sourceFixtureActorId": "food-source-1",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "worker-5",
+              "sourceFixtureActorId": "food-source-2",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "worker-6",
+              "sourceFixtureActorId": "food-source-2",
+              "kind": "gather"
+            }
+          ]
+        },
+        "scenarioIds": ["ECO-05"],
+        "repetitions": 1
+      },
+      {
+        "id": "economy-poor-delivery",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759516,
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "deadlineRationale": "1200 complete native ticks cover initial contention, the first real wood receipts, and allocation after congestion without a full-match victory requirement.",
+        "presetWorld": {
+          "fixtureId": "economy-poor-delivery",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 1056,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1200,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "field",
+              "actorName": "Field",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 640,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "wood-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 680,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 720,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 680,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 720,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 560,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-2",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 368,
+                "y": 560,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-3",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 560,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-4",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 464,
+                "y": 560,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-5",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 624,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-6",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 368,
+                "y": 624,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-7",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 624,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-8",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 464,
+                "y": 624,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "congested-source",
+              "actorName": "Minerals",
+              "owner": null,
+              "position": {
+                "x": 896,
+                "y": 840,
+                "z": 0
+              }
+            }
+          ],
+          "resourceGrants": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "wood": 5000,
+                "food": 5000
+              }
+            }
+          ],
+          "resourceStarts": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 100,
+                "wood": 100,
+                "stone": 0,
+                "minerals": 0
+              }
+            }
+          ],
+          "controls": [],
+          "productionRallies": [
+            {
+              "producerObjectName": "AnkGuard",
+              "owner": 2,
+              "targetFixtureActorId": "housing"
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "main-producer",
+              "actorName": "Sandhold",
+              "owner": 2
+            }
+          ],
+          "researchQueues": [],
+          "events": [],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "worker-1",
+              "sourceFixtureActorId": "congested-source",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "worker-2",
+              "sourceFixtureActorId": "congested-source",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "worker-3",
+              "sourceFixtureActorId": "congested-source",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "worker-4",
+              "sourceFixtureActorId": "congested-source",
+              "kind": "gather"
+            }
+          ]
+        },
+        "scenarioIds": ["H-16"],
+        "repetitions": 1
+      }
+    ]
+  },
+  "assertions": {
+    "ECO-05": {
+      "minimumDecisions": 10,
+      "minimumAppliedCommands": 1,
+      "requiredAiFactions": ["Tivara"],
+      "requiredEconomyContracts": {
+        "economy-shared-budget": {
+          "latestTick": 1200,
+          "branch": "aggregate_budget",
+          "resourceType": "wood",
+          "minimumDelivered": 10,
+          "requireZeroIncomeBeforeReceipt": true
+        },
+        "economy-surplus-labor": {
+          "latestTick": 1200,
+          "branch": "surplus_transfer",
+          "resourceType": "wood",
+          "minimumDelivered": 10,
+          "requireZeroIncomeBeforeReceipt": true
+        }
+      }
+    },
+    "H-16": {
+      "minimumDecisions": 10,
+      "minimumAppliedCommands": 1,
+      "requiredAiFactions": ["Tivara"],
+      "requiredEconomyContracts": {
+        "economy-poor-delivery": {
+          "latestTick": 1200,
+          "branch": "poor_delivery",
+          "resourceType": "wood",
+          "minimumDelivered": 10,
+          "requireZeroIncomeBeforeReceipt": true
+        }
+      }
+    }
+  },
+  "deliberatelyBrokenOracle": "Treat grants or promised income as delivered cash, accept overlapping resource claims, or accept an order without actual receipt."
+}

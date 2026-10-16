@@ -204,8 +204,15 @@ export class AiRecoveryManager implements AiProposalManagerV1 {
     const workers = self.filter(
       (actor) =>
         isGatherer(actor, catalog) &&
+        !actor.resourceTransferInFlight &&
+        (actor.carriedResourceAmount ?? 0) === 0 &&
         (actor.containedInActorId === null || actor.containedInActorId === undefined) &&
-        (actor.activeOrder?.status !== "known" || actor.activeOrder.value?.orderType !== OrderType.Build)
+        (actor.activeOrder?.status !== "known" || actor.activeOrder.value === null) &&
+        !(
+          actor.resourceState.status === "known" &&
+          actor.resourceState.value.carried.status === "known" &&
+          actor.resourceState.value.carried.value > 0
+        )
     );
     if (lowIncome && source && workers.length > 0) {
       const key = `economy:source:${source.actorId}`;

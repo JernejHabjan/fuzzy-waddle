@@ -25,7 +25,8 @@ export function selectAiSurplusLaborTransfer(
   targetResource: ResourceType
 ): AiObservedActorV1 | undefined {
   const targetForecast = forecasts.find((entry) => entry.resourceType === targetResource);
-  if (!targetForecast || aiResourceForecastDeficit(observation, targetForecast) < MIN_TRANSFER_DEFICIT) return undefined;
+  if (!targetForecast || aiResourceForecastDeficit(observation, targetForecast) < MIN_TRANSFER_DEFICIT)
+    return undefined;
   const sourcesById = new Map(sources.map((source) => [source.actorId, source]));
   const gatherersBySource = new Map<string, number>();
   for (const worker of workers) {
@@ -36,6 +37,7 @@ export function selectAiSurplusLaborTransfer(
   return [...workers]
     .sort((left, right) => left.actorId.localeCompare(right.actorId))
     .find((worker) => {
+      if (worker.resourceTransferInFlight || (worker.carriedResourceAmount ?? 0) > 0) return false;
       const order = worker.activeOrder?.status === "known" ? worker.activeOrder.value : null;
       if (order?.orderType !== OrderType.Gather || !order.targetActorId) return false;
       const source = sourcesById.get(order.targetActorId);
@@ -44,13 +46,21 @@ export function selectAiSurplusLaborTransfer(
       if (donorResource === targetResource) return false;
       if ((gatherersBySource.get(source.actorId) ?? 0) <= 1) return false;
       const donorForecast = forecasts.find((entry) => entry.resourceType === donorResource)?.amount ?? 0;
-      if (spendable(observation, donorResource) - donorForecast < MIN_DONOR_SURPLUS) return false;
-      if (worker.resourceState.status === "known" &&
-        (worker.resourceState.value.carried.status !== "known" || worker.resourceState.value.carried.value > 0)) {
+      const capacity = source.resourceState.value.serviceCapacity;
+      const congested =
+        capacity.status === "known" &&
+        (gatherersBySource.get(source.actorId) ?? 0) > capacity.value &&
+        worker.carriedResourceAmount === 0;
+      // An empty worker beyond native source capacity contributes no delivery; moving it needs no surplus cash bank.
+      if (!congested && spendable(observation, donorResource) - donorForecast < MIN_DONOR_SURPLUS) return false;
+      if (
+        worker.resourceState.status === "known" &&
+        (worker.resourceState.value.carried.status !== "known" || worker.resourceState.value.carried.value > 0)
+      ) {
         return false;
       }
-      return catalog.entries.some((entry) =>
-        entry.sourceObjectName === worker.objectName && entry.gathers.includes(targetResource)
+      return catalog.entries.some(
+        (entry) => entry.sourceObjectName === worker.objectName && entry.gathers.includes(targetResource)
       );
     });
 }

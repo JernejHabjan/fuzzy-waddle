@@ -31,6 +31,18 @@ The paid-supply-loss recipe requires a pinned actual house loss, exactly one com
 native completion for every already-paid queue item. A replacement demand, refunded/cancelled item, different producer,
 or reused output identity cannot pass. The paired intact-supply control must avoid new housing attempts.
 
+`economy-delivery-runtime.json` covers shared cash admission, useful surplus-worker transfer and poor-delivery recovery.
+Its bounded existing decision input retains the exact consumed four-resource vector; assertions join native receipts
+to actual balance increases and transferred worker identity. This is not complete M11 alias/lifetime authority.
+These worlds retain raw capture without duplicating the full production V2 proof. Missing input, history, receipt or
+competing priced demand fails the economy reader; a deliberately rejected purchase is not required when the planner
+correctly suppresses optional spending before arbitration.
+
+`resource-recovery-runtime.json` starts a real partial pack, destroys its pinned drain, and requires the same worker's
+credit at another drain, later extraction from a surviving source, and grown crop credit. Preset `sourceStocks` applies
+bounded native source amounts before ticks/orders; it does not inject cargo, income or completion. Initial Gather
+orders can target neutral or same-owner sources. Enemy sources remain invalid.
+
 ## Native production authority
 
 Full PRO-03/06/07 runtime evaluation consumes `productionEvidenceV2`. Legacy V1 captures and pure oracle controls

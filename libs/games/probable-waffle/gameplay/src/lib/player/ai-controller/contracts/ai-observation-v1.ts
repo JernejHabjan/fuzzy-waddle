@@ -141,6 +141,10 @@ export interface AiObservedActorV1 {
   /** Owned/visible durability normalized to 0..1000; private opponents remain unknown. */
   readonly healthPermille?: AiKnownValueV1<number>;
   readonly resourceState: AiKnownValueV1<AiObservedResourceStateV1>;
+  /** Owned native extraction/drop-off is awaiting completion; even an empty pack is not available labor. */
+  readonly resourceTransferInFlight?: boolean;
+  /** Exact owned carrier amount, including a known empty pack whose resource type has already been cleared. */
+  readonly carriedResourceAmount?: number;
   /** Owned construction percentage; absent only for legacy observations. */
   readonly constructionProgress?: AiKnownValueV1<number>;
   readonly activeEffectIds: readonly string[];

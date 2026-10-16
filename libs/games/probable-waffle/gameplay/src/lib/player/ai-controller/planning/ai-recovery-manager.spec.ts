@@ -398,4 +398,30 @@ describe("AiRecoveryManager", () => {
       false
     );
   });
+  it("preserves healthy gather/return ownership and pending extraction during zero-income recovery", () => {
+    const base = observation();
+    for (const type of [OrderType.Gather, OrderType.ReturnResources]) {
+      const actors = base.actors.map((entry) =>
+        entry.actorId.startsWith("worker-")
+          ? {
+              ...entry,
+              activeOrder: {
+                status: "known" as const,
+                observedTick: 100,
+                value: { orderType: type, targetActorId: "source" }
+              }
+            }
+          : entry
+      );
+      expect(
+        manager.propose({ ...base, actors }, state()).intents.some((intent) => intent.kind === "assign_gatherers")
+      ).toBe(false);
+    }
+    const actors = base.actors.map((entry) =>
+      entry.actorId.startsWith("worker-") ? { ...entry, resourceTransferInFlight: true } : entry
+    );
+    expect(
+      manager.propose({ ...base, actors }, state()).intents.some((intent) => intent.kind === "assign_gatherers")
+    ).toBe(false);
+  });
 });

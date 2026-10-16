@@ -152,6 +152,12 @@ export function projectAiObservedActor(
             tick
           )
         : unknownValue(owned ? "not_supported" : "not_observed"),
+    ...(owned && gatherer
+      ? {
+          resourceTransferInFlight: gatherer.resourceTransferInFlight,
+          carriedResourceAmount: gatherer.carriedResourceAmount
+        }
+      : {}),
     resourceState: source
       ? knownValue(
           {

@@ -4,9 +4,13 @@ import type { AiDecisionProducerExposureV1 } from "./ai-decision-producer-exposu
 /** Test-only inputs actually consumed by a selected pure step, separate from later settled world snapshots. */
 export interface AiDecisionInputV1 {
   /** Null marks bounded capture loss; no actor/query subset may masquerade as a complete input. */
-  readonly observation: Pick<AiObservationV1,
-    "schemaVersion" | "generation" | "tick" | "playerNumber" | "faction" | "actors" | "accessProducts" | "threatSummary"> | null;
+  readonly observation: Pick<
+    AiObservationV1,
+    "schemaVersion" | "generation" | "tick" | "playerNumber" | "faction" | "actors" | "accessProducts" | "threatSummary"
+  > | null;
   readonly capabilityCatalog: AiCapabilityCatalogV1 | null;
+  /** Exact consumed four-resource ledger. This is an observation input, not complete native alias/lifetime authority. */
+  readonly resources?: AiObservationV1["resources"];
   /** The observation's permitted cached topology, with its own generation/status/age. */
   readonly accessGraph: AiAccessGraphV1 | null;
   /** Optional only for older publishers; current capture preserves explicit missing/binding gaps. */

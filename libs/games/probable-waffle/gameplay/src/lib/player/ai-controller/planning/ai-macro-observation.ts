@@ -68,6 +68,7 @@ export function queuedObjectIds(observation: AiObservationV1, objectName: Object
 }
 
 export function isAvailableBuilder(actor: AiObservationV1["actors"][number]): boolean {
+  if (actor.resourceTransferInFlight || (actor.carriedResourceAmount ?? 0) > 0) return false;
   // Construction replacement must not strand cargo from a gather/delivery cycle, including partial old-save packs.
   if (
     actor.resourceState.status === "known" &&

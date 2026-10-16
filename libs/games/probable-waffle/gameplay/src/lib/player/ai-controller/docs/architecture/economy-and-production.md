@@ -15,7 +15,23 @@ Resource-specific labor selection subtracts empirically delivered income expecte
 stockpile or permission to promise a purchase.
 When no idle worker is available, a clearly priced shortage may transfer one unloaded Gather worker from a different
 resource with at least 100 spendable surplus beyond its forecast. The donor source retains at least one worker;
-returning and cargo-bearing workers keep their orders. The transfer is suppressed without 100 units of target deficit.
+returning and cargo-bearing workers keep their orders. Ordinary surplus transfer requires 100 units of target deficit.
+A confirmed empty worker beyond a source's native capacity can move without a surplus cash bank, since that waiting
+job provides no delivery. Unmet catalog-priced housing receives funding priority over larger optional forecasts and
+may redirect one unloaded donor while preserving at least one gatherer per donor resource.
+
+The Phaser economy manager samples confirmed native harvest/drop-off credits every five simulation seconds and
+smooths delivered units per second; the observation converts that rate to units per minute. Starting balances, setup
+grants, purchases and refunds do not count as gathering income. The receipt notification is part of normal gameplay,
+independent of optional diagnostics, and is emitted only after the native player balance actually increases. Scene
+shutdown removes the listener. Restore clears this derived sample window and old net-stockpile estimates; it neither
+credits saved cargo nor changes cash. Resumed cargo counts when its actual native delivery completes.
+
+Owned observations expose both exact cargo amount (including zero after its type clears) and whether native resource
+work is awaiting completion. An empty pack during extraction is busy labor. Native extraction/return calls share one
+actor-local exclusion guard, released after settlement or failure. Macro builders, farm staffing, surplus transfer,
+service construction and zero-income recovery preserve that work. Zero-income recovery also leaves healthy active
+jobs alone rather than restarting them before their first receipt.
 
 Opening checkpoints record historical progression; they are not lifetime uniqueness locks. Current demands separately
 replace destroyed prerequisites and scale useful duplicate capacity. Construction prerequisites come from runtime

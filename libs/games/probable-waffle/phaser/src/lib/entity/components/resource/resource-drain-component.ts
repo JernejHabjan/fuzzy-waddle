@@ -7,7 +7,8 @@ import {
 import { ContainerComponent } from "../building/container-component";
 import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
-import { emitResource, getPlayer } from "../../../data/scene-data";
+import { getPlayer } from "../../../data/scene-data";
+import { creditGatheredResource } from "./credit-gathered-resource";
 import { onObjectReady } from "../../../data/game-object-helper";
 import { OwnerComponent } from "../owner-component";
 import type { ResourceDrainDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/resource/resource-drain-definition";
@@ -51,8 +52,12 @@ export class ResourceDrainComponent {
   /**
    * returns resources to player controller
    */
-  async returnResources(gatherer: GameObject, resourceType: ResourceType, amount: number,
-    context?: ResourceTransferContext): Promise<number> {
+  async returnResources(
+    gatherer: GameObject,
+    resourceType: ResourceType,
+    amount: number,
+    context?: ResourceTransferContext
+  ): Promise<number> {
     if (this.gathererMustEnter) {
       fenceSceneResourceHistory(this.gameObject.scene, "resource_drain_capacity_change");
       this.currentCapacity += 1;
@@ -71,14 +76,22 @@ export class ResourceDrainComponent {
     const owner = ownerComponent?.getOwner();
     const economy = getPlayer(this.gameObject.scene, owner)?.playerController.data.playerDefinition?.campaignEconomy;
     const amounts = { [resourceType]: amount } satisfies Partial<PlayerStateResources>;
-    observeResourceCredit({ actor: gatherer, target: this.gameObject, context, resourceType, amount,
-      channel: "drop_off", ownerArgument: owner ?? null }, this.gameObject.scene, amounts,
-      campaignEconomyAcceptsGatheredResources(economy) ? () => emitResource(
-        this.gameObject.scene,
-        "resource.added",
-        amounts,
-        owner
-      ) : undefined);
+    observeResourceCredit(
+      {
+        actor: gatherer,
+        target: this.gameObject,
+        context,
+        resourceType,
+        amount,
+        channel: "drop_off",
+        ownerArgument: owner ?? null
+      },
+      this.gameObject.scene,
+      amounts,
+      campaignEconomyAcceptsGatheredResources(economy)
+        ? () => creditGatheredResource(this.gameObject.scene, owner, resourceType, amounts)
+        : undefined
+    );
 
     // notify listeners
     this.onResourcesReturned.next([resourceType, amount, gatherer]);

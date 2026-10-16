@@ -27,6 +27,8 @@ export interface AiRuntimePresetWorldV1 {
     readonly playerNumber: number;
     readonly amounts: Partial<Record<ResourceType, number>>;
   }[];
+  /** Nearly depleted physical sources, applied before native work; independent of the player's cash bank. */
+  readonly sourceStocks?: readonly { readonly fixtureActorId: string; readonly amount: number }[];
   /** Exact pre-tick balances, applied after grants/queue charges and before any AI observation. */
   readonly resourceStarts?: readonly {
     readonly playerNumber: number;
