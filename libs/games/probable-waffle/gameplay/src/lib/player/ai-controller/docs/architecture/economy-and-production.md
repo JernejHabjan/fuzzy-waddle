@@ -186,6 +186,12 @@ current capacity; unfinished houses and accepted but unobserved effects count to
 ledger records a required building count, while the planner separately calculates population capacity, so a house is
 not mistaken for one population point and copied until a numeric population target is reached.
 
+Optional additional Fields and Granaries preserve the catalog-priced cash needed for unmet housing demand. This
+prevents repeated cheaper purchases from starving supply recovery while the bank is still below the housing price.
+The first usable Field and drop-off remain eligible under ordinary affordability rules to avoid blocking essential
+food recovery. Forecasts exclude already committed housing; existing unspent reservations and due obligations still
+reduce spendable cash once. This is proposal admission, not another persistent reservation or payment owner.
+
 ## Composition and technology
 
 Composition uses real runtime target domains, effective levels, attacks, armour, range, support and movement capabilities. It must never invent a familiar RTS counter that the faction cannot build. Sparse evidence justifies limited preparation and scouting; confirmed strength can justify a larger counter transition.

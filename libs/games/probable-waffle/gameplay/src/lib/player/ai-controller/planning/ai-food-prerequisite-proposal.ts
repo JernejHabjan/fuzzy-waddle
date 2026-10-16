@@ -8,6 +8,7 @@ import { canAffordAiEconomyCost } from "./ai-economy-policy";
 import { nextIds, unresolvedReservedEffectIds } from "./ai-macro-effect-identity";
 import { claimedActorIds, isAvailableBuilder, isFinishedActor } from "./ai-macro-observation";
 import { createAiResourceCostClaims } from "./ai-resource-cost-claims";
+import type { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 /** Keeps food drop-off throughput proportional to demanded Field capacity. */
 export function proposeAiFoodPrerequisite(
@@ -20,14 +21,13 @@ export function proposeAiFoodPrerequisite(
   reservedActorIds: ReadonlySet<string>,
   selectedConstructionTileKeys: Set<string>,
   priorIntents: readonly AiIntentV1[],
-  ordinal: number
+  ordinal: number,
+  resourceReserve: Readonly<Partial<Record<ResourceType, number>>> = {}
 ) {
   const objectName = foodSourceEntry?.constructionProfile?.requiredObjectNames?.[0];
   const entry = catalog.entries.find((candidate) => candidate.sourceObjectName === objectName);
   const desired = objectName && desiredFoodSources > 0 ? Math.max(1, Math.ceil(desiredFoodSources / 4)) : 0;
-  const ready = objectName
-    ? self.filter((actor) => actor.objectName === objectName && isFinishedActor(actor))
-    : [];
+  const ready = objectName ? self.filter((actor) => actor.objectName === objectName && isFinishedActor(actor)) : [];
   const constructing = objectName
     ? self.filter((actor) => actor.objectName === objectName && !isFinishedActor(actor))
     : [];
@@ -52,7 +52,14 @@ export function proposeAiFoodPrerequisite(
     preferredObjectNames: [objectName],
     resourceObligations: entry.constructionProfile?.resourceCost ?? {}
   };
-  if (committed >= desired || !canAffordAiEconomyCost(observation, entry.constructionProfile?.resourceCost ?? {})) {
+  if (
+    committed >= desired ||
+    !canAffordAiEconomyCost(
+      observation,
+      entry.constructionProfile?.resourceCost ?? {},
+      ready.length > 0 ? resourceReserve : undefined
+    )
+  ) {
     return { objectName, ready, demand, intent: null };
   }
   const alreadyClaimed = claimedActorIds(priorIntents);

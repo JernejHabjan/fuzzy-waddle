@@ -131,7 +131,65 @@ function observation(granaryCount: number, workerCount = 6) {
 }
 
 describe("AI food infrastructure", () => {
-  it("does not bypass ordered opening checkpoints to prebuild food prerequisites", () => {
+  it.each([60, 159, 160])("H-18: saves pending housing cash before expanding existing food at %i wood", (wood) => {
+    const fieldEntry = catalog.entries.find((entry) => entry.sourceObjectName === ObjectNames.Field);
+    if (!fieldEntry?.constructionProfile) throw new Error("field_price_missing");
+    const withHousing: AiCapabilityCatalogV1 = {
+      ...catalog,
+      entries: [
+        ...catalog.entries.map((entry) =>
+          entry.sourceObjectName === ObjectNames.TivaraWorker
+            ? { ...entry, constructs: [...entry.constructs, ObjectNames.Olival] }
+            : entry
+        ),
+        {
+          ...fieldEntry,
+          capabilityId: "housing",
+          sourceObjectName: ObjectNames.Olival,
+          housingCapacity: 8,
+          constructionProfile: { ...fieldEntry.constructionProfile, resourceCost: { [ResourceType.Wood]: 100 } }
+        }
+      ]
+    };
+    const base = observation(2, 8);
+    const world = {
+      ...base,
+      actors: [
+        ...base.actors,
+        {
+          ...createAiTestOwnedActor("home"),
+          objectName: ObjectNames.Sandhold,
+          housingCost: { status: "known" as const, value: 0, observedTick: 200 },
+          housingCapacity: { status: "known" as const, value: 8, observedTick: 200 }
+        },
+        { ...createAiTestOwnedActor("ready-field"), objectName: ObjectNames.Field }
+      ],
+      resources: base.resources.map((resource) =>
+        resource.resourceType === ResourceType.Wood
+          ? { ...resource, stockpile: wood, reservedUnspent: 0, obligationsDue: 0 }
+          : resource
+      )
+    };
+    const macro = new AiMacroManager(() => withHousing);
+    const expanded = macro.propose(world, state());
+    expect(expanded.statePatch?.economyProduction?.demands).toContainEqual(
+      expect.objectContaining({
+        purpose: "supply_buffer",
+        resourceObligations: { wood: 100 }
+      })
+    );
+    expect(
+      expanded.intents.some((intent) => intent.kind === "construct" && intent.objectName === ObjectNames.Field)
+    ).toBe(wood >= 160);
+    const bootstrap = macro.propose(
+      { ...world, actors: world.actors.filter((actor) => actor.objectName !== ObjectNames.Field) },
+      state()
+    );
+    expect(
+      bootstrap.intents.some((intent) => intent.kind === "construct" && intent.objectName === ObjectNames.Field)
+    ).toBe(true);
+  });
+  it("bootstraps a food prerequisite during an unfinished opening without completing its historical step", () => {
     const initial = createAiBrainStateV1({
       playerNumber: 1,
       faction: FactionType.Tivara,
@@ -145,7 +203,10 @@ describe("AI food infrastructure", () => {
       proposal.statePatch?.economyProduction?.demands.some(
         (candidate) => candidate.purpose === "food_drop_off_capacity"
       )
-    ).toBe(false);
+    ).toBe(true);
+    expect(
+      proposal.statePatch?.opening?.plan.steps.find((step) => step.stepId === "step:opening:sustainable-food")?.state
+    ).not.toBe("completed");
   });
 
   it("rebuilds a destroyed prerequisite without reopening completed opening history", () => {

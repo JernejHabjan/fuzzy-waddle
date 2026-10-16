@@ -4,7 +4,11 @@ import { evaluateRuntimeTransport } from "./skirmish-ai-runtime-transport-evalua
 import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
 import { last } from "./skirmish-ai-runtime-value";
 import { evaluateRuntimePresetWorld } from "./skirmish-ai-runtime-preset-evaluation";
-import { evaluateRuntimeSupplyControl, evaluateRuntimeSupplyPrebuild } from "./skirmish-ai-runtime-supply-evaluation";
+import {
+  evaluateRuntimeSupplyControl,
+  evaluateRuntimeSupplyPrebuild,
+  evaluateRuntimeSupplyRecovery
+} from "./skirmish-ai-runtime-supply-evaluation";
 import { evaluateRuntimeResourceService } from "./skirmish-ai-runtime-resource-service-evaluation";
 import { evaluateRuntimeSourceSaturation } from "./skirmish-ai-runtime-source-saturation-evaluation";
 import { evaluateRuntimeResourceLabor } from "./skirmish-ai-runtime-resource-labor-evaluation";
@@ -166,6 +170,13 @@ export function evaluateRuntimeVariant(
         ? evaluateRuntimeSupplyControl(variant.checkpoints, assertion.requiredSupplyPrebuild)
         : evaluateRuntimeSupplyPrebuild(variant.checkpoints, assertion.requiredSupplyPrebuild)
       ).map((failure) => `${variant.variantId}:${failure}`)
+    );
+  }
+  if (assertion.requiredSupplyRecovery) {
+    failures.push(
+      ...evaluateRuntimeSupplyRecovery(assertion.requiredSupplyRecovery, variant).map(
+        (failure) => `${variant.variantId}:${failure}`
+      )
     );
   }
   if (assertion.requiredResourceService) {

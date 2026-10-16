@@ -9,6 +9,7 @@ export interface RuntimeFixtureV1 {
     readonly mapLabel: string;
     readonly aiPlayerNumber: number;
     readonly simulationTimeScale: number;
+    readonly fixedStepFrames?: boolean;
     readonly checkpointTicks: readonly number[];
     readonly variants: readonly RuntimeVariantV1[];
   };

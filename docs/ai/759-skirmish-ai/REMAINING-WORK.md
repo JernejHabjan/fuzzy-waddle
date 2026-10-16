@@ -1,6 +1,6 @@
 # #759 remaining work inventory
 
-Snapshot: 2026-10-15, economy/technology work based on `f3c5dd458ec72404c77b7ca050e86a1fceef3f5b`. This is the execution inventory for the existing scope,
+Snapshot: 2026-10-16, economy/technology work based on `d4ef507a2e858c4ef2b60b93dea0a9cea77f9faa`. This is the execution inventory for the existing scope,
 not a new design or diagnostic project. [HANDOFF.md](HANDOFF.md) owns the current cursor;
 [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) retains the latest checked source/evidence details.
 The manifest and linked scenario requirements remain authoritative; the snapshot below must be refreshed when
@@ -9,8 +9,8 @@ registrations change. Old session estimates in follow-up plans are historical, n
 ## What the inventory actually found
 
 The original concrete plan exists: 121 named scenarios with setup and required outcomes. Freshly rendering the existing
-catalog finds 59/111 pure fixture registrations and 26/120 runtime recipe registrations. Four runtime cases are
-deferred island content. Therefore **52 pure registrations and 90 supported runtime registrations are missing**.
+catalog finds 59/111 pure fixture registrations and 27/120 runtime recipe registrations. Four runtime cases are
+deferred island content. Therefore **52 pure registrations and 89 supported runtime registrations are missing**.
 These are scenario counts, not separate files, matches, commits or necessarily missing gameplay implementations.
 One shared fixture can cover several scenarios. Existing unmapped controls must be inspected and reused before
 authoring equivalent tests. Registration does not certify that the scenario's independent outcome assertions pass.
@@ -82,7 +82,7 @@ an entire scenario. Invalidate only outcomes affected by later source/fixture ch
 | Measured coverage at this snapshot    | Completed                                   | Remaining          | What the number means                                                                                              |
 | ------------------------------------- | ------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------ |
 | Pure fixture registration             | 59/111 = **53.2%**                          | 52/111 = **46.8%** | Required pure scenarios with registered fixtures; not behavior completion                                          |
-| Supported runtime recipe registration | 26/116 = **22.4%**                          | 90/116 = **77.6%** | Runtime recipes connected; four island-content rows excluded; not behavior completion                              |
+| Supported runtime recipe registration | 27/116 = **23.3%**                          | 89/116 = **76.7%** | Runtime recipes connected; four island-content rows excluded; not behavior completion                              |
 | Scenario behavior validation          | Not yet reconciled across the full manifest | Not yet measurable | Existing subset passes and failures are recorded, but no truthful overall completion percentage can yet be derived |
 
 During each selected package, reconcile its existing complete evidence into the row status and report its exact
@@ -107,19 +107,19 @@ All 16 IDs now have executed pure assertions; all six technology IDs have native
 The current accepted native union and exact passed/remaining count live in [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md).
 This checkpoint does not advance to Package 3. Continue with the remaining economy owners in one combined batch:
 
-1. Finish ECO-08's ordinary 200-resource openings and repeatable workforce growth if its final native gate still fails.
-   Keep the military deadline, delivered renewable food, growth and determinism predicates unchanged. Repair the first
-   physical failure; another planner target or worker Gather order is insufficient.
-2. Author the missing ECO-05 aggregate-budget/surplus and H-16 low-delivery native branches together. Reuse the current
-   catalog/forecast/queue captures to prove that concurrent consumers cannot spend the same expected income and that
-   actual poor delivery restores useful jobs before optional spending.
-3. Author ECO-06 source/deposit/crop recovery and H-18 supply-loss/funded-recovery native branches together. Exercise
-   loaded workers, destroyed drop-offs and interrupted crops without losing cargo or repeatedly rebuilding; count
-   surviving queued commitments once while funding legal replacement housing.
-4. Repair shared owners once, run the affected pure controls and grouped native cases, then reconcile every selected
-   ID. Publish/pause at the agreed boundary. Advance only when all 16 exact outcomes pass, with no missing setups.
+1. Retain ECO-08 opening/growth acceptance. H-18 remains failed: optional food spending before an unexpected loss
+   leaves40wood, and subsequent delivery reaches only90 by1201 despite the new housing savings guard. Include this
+   exact failed recipe in the next income/gathering repair; preserve its1200 deadline and paid-output predicates.
+2. Implement actual delivered-income accounting with ECO-05 aggregate-budget/surplus and H-16 low-delivery native
+   branches. The current economy manager measures net stockpile change as income: grants inflate it and purchases
+   reduce it. Count actual native receipts, preserve ownership/save/restore and dispose subscriptions; prove concurrent
+   consumers cannot spend the same expected income and poor delivery restores useful jobs before optional spending.
+3. Group ECO-06 loaded-cargo, depleted-source, destroyed-drop-off and crop-growth native recovery with that owner work.
+   Preserve cargo and native credit; do not repeatedly rebuild a service that cannot improve delivery.
+4. Run affected controls and the grouped native gate, then reconcile all 16 exact outcomes. Publish/pause at the
+   agreed boundary; advance to Package 3 only when none remain failed or unavailable.
 
-No new observer/profiler expansion is scheduled. Pure registrations are 59/111 and supported runtime 26/116;
+No new observer/profiler expansion is scheduled. Pure registrations are 59/111 and supported runtime 27/116;
 these coverage counts are not overall gameplay completion. Six of seven packages remain; package sizes differ.
 
 ## Other concrete gaps already established

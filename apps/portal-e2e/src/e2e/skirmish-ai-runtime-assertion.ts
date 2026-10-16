@@ -56,6 +56,12 @@ export interface RuntimeAssertionV1 {
     readonly housingObjectName: string;
   };
   readonly requireSupplyControl?: boolean;
+  readonly requiredSupplyRecovery?: {
+    readonly lossEventId: string;
+    readonly housingObjectName: string;
+    readonly latestTick: number;
+    readonly paidQueueCount: number;
+  };
   readonly requirePressureResponse?: boolean;
   readonly requiredResourceService?: {
     readonly sourceObjectName: string;

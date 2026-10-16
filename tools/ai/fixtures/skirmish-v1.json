@@ -394,7 +394,7 @@
       "id": "H-18",
       "stages": [7, 12],
       "group": "economy",
-      "fixture": null,
+      "fixture": "supply-loss-runtime.json",
       "authoredFixture": "economy-supply-scenarios.json",
       "drivers": ["pure", "runtime"]
     },

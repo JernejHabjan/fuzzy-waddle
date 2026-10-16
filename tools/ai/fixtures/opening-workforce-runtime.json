@@ -14,7 +14,8 @@
   "recipe": {
     "mapLabel": "AI Open Economy (test only)",
     "aiPlayerNumber": 2,
-    "simulationTimeScale": 100,
+    "simulationTimeScale": 1,
+    "fixedStepFrames": true,
     "checkpointTicks": [20, 400, 900, 1600, 3000],
     "variants": [
       {

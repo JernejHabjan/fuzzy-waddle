@@ -20,6 +20,17 @@ example, ECO-04's zero-wood labor case requires a ready wood source and an AI-is
 fixture-authored starting orders or planner debug text do not satisfy it. ECO-08's separate pure case covers both
 factions' two-worker opening bootstrap; its runtime workforce-growth case remains a distinct Playwright obligation.
 
+Recipes with `fixedStepFrames: true` and `simulationTimeScale: 1` drive complete native Phaser headless frames of50ms,
+yielding an event-loop turn between frames. Scene timers, physics, pathfinding, pawn trees and shared commands still
+run normally. This avoids accelerated render frames consuming many simulation ticks before Promise-based native
+actions can settle. Exact final checkpoint ticks alone do not prevent that distortion. The driver sleeps the automatic
+game loop and the runner closes its browser context on success or failure; ordinary gameplay is unaffected. Fixed-frame
+repeatability does not establish multiplayer equivalence or correctness at arbitrary rendered frame rates.
+
+The paid-supply-loss recipe requires a pinned actual house loss, exactly one completed replacement, and one matched
+native completion for every already-paid queue item. A replacement demand, refunded/cancelled item, different producer,
+or reused output identity cannot pass. The paired intact-supply control must avoid new housing attempts.
+
 ## Native production authority
 
 Full PRO-03/06/07 runtime evaluation consumes `productionEvidenceV2`. Legacy V1 captures and pure oracle controls

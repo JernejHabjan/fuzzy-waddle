@@ -14,6 +14,7 @@ import { evaluateEvidenceStopAtCheckpoint } from "./skirmish-ai-runtime-evidence
 import { collectRuntimePresetEvents } from "./skirmish-ai-runtime-preset-event-results";
 import { captureRuntimeProductionAuthority } from "./skirmish-ai-runtime-production-capture";
 import { buildRuntimeProductionReport } from "./skirmish-ai-runtime-production-report";
+import { advanceRuntimeFrames } from "./skirmish-ai-runtime-frame-driver";
 
 export async function runVariant(
   browser: Browser,
@@ -63,12 +64,13 @@ export async function runVariant(
         (variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId))
     );
     const captureProduction = applicableScenarioIds.some(
-      (id) => ["PRO-03", "PRO-06", "PRO-07", "H-17"].includes(id) || id.startsWith("TECH-")
+      (id) => ["PRO-03", "PRO-06", "PRO-07", "H-17", "H-18"].includes(id) || id.startsWith("TECH-")
     );
     const productionHorizons = applicableScenarioIds.flatMap((id) => {
       const contract =
         fixture.assertions[id]?.requiredProductionContracts?.[variant.id] ??
-        fixture.assertions[id]?.requiredTechnologyContracts?.[variant.id];
+        fixture.assertions[id]?.requiredTechnologyContracts?.[variant.id] ??
+        fixture.assertions[id]?.requiredSupplyRecovery;
       return contract ? [contract.latestTick] : [];
     });
     const productionHorizon = productionHorizons.length ? Math.max(...productionHorizons) : undefined;
@@ -92,14 +94,7 @@ export async function runVariant(
         const perturbation = pendingPerturbations.shift();
         if (!perturbation) break;
         const perturbationStartedAt = performance.now();
-        await setSimulationState(
-          page,
-          fixture.recipe.aiPlayerNumber,
-          "resume",
-          index === 0 ? 1 : fixture.recipe.simulationTimeScale,
-          perturbation.tick
-        );
-        await waitForSimulationTick(page, fixture.recipe.aiPlayerNumber, perturbation.tick);
+        await advanceRuntimeToTick(page, fixture, perturbation.tick, index);
         await setSimulationState(page, fixture.recipe.aiPlayerNumber, "pause", fixture.recipe.simulationTimeScale);
         await waitForSettledDecision(page, fixture.recipe.aiPlayerNumber);
         perturbations.push(await applyRuntimePerturbation(page, perturbation, fixture.recipe.aiPlayerNumber));
@@ -110,14 +105,7 @@ export async function runVariant(
         closedProductionHorizon !== undefined && targetTick >= closedProductionHorizon
           ? closedProductionHorizon + 1
           : targetTick;
-      await setSimulationState(
-        page,
-        fixture.recipe.aiPlayerNumber,
-        "resume",
-        index === 0 ? 1 : fixture.recipe.simulationTimeScale,
-        stopAtTick
-      );
-      await waitForSimulationTick(page, fixture.recipe.aiPlayerNumber, stopAtTick);
+      await advanceRuntimeToTick(page, fixture, stopAtTick, index);
       const settleStartedAt = performance.now();
       await setSimulationState(page, fixture.recipe.aiPlayerNumber, "pause", fixture.recipe.simulationTimeScale);
       await waitForSettledDecision(page, fixture.recipe.aiPlayerNumber);
@@ -215,6 +203,23 @@ export async function runVariant(
   } finally {
     await context.close();
   }
+}
+
+async function advanceRuntimeToTick(
+  page: Page,
+  fixture: RuntimeFixtureV1,
+  targetTick: number,
+  checkpointIndex: number
+) {
+  if (fixture.recipe.fixedStepFrames) return advanceRuntimeFrames(page, fixture.recipe.aiPlayerNumber, targetTick);
+  await setSimulationState(
+    page,
+    fixture.recipe.aiPlayerNumber,
+    "resume",
+    checkpointIndex === 0 ? 1 : fixture.recipe.simulationTimeScale,
+    targetTick
+  );
+  await waitForSimulationTick(page, fixture.recipe.aiPlayerNumber, targetTick);
 }
 
 async function waitForSimulationTick(page: Page, aiPlayerNumber: number, targetTick: number): Promise<void> {

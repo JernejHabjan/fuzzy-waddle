@@ -6,29 +6,30 @@ Do not load the full plan directory or archive on startup.
 ## Current cursor
 
 - Worktree: `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`; branch: `feature/759-skirmish-ai`.
-  Tested base: `f3c5dd458ec72404c77b7ca050e86a1fceef3f5b` plus the containing checkpoint's changes.
-  Verify actual HEAD/remote on resume. Commit/push at coherent boundaries is authorized; pause after publication.
-- **Current: Package 2 economy/technology, 11/16 outcomes passed (68.75%); 5/16 remain (31.25%).**
-  ECO-01/02/03/04/07 and TECH-01–06 pass. ECO-08 fails the first-military-building deadline and repeated workforce
-  outcome digest. ECO-05/06 and H-16/H-18 lack native setups. Do not advance to Package 3.
-- Done / why: both openings secure Granary/Field income before military infrastructure; unaffordable construction
-  leaves workers gathering missing resources, and prior food/build claims prevent double assignment. Existing main
-  supply avoids an unnecessary opening house; later queued population can still trigger a distinct housing builder.
-  Public air-production clues admit one precaution; actual flyers scale counters and admitted deficits refill during
-  cooldown. No balance values changed.
-- Evidence: final `economy-supply-opening-final/1792082168359-failed.json` passes ECO-04 (3 worlds), ECO-07 (6),
-  PRO-04 (8). ECO-08's 5 worlds all prove renewable food; ordinary starts retain 4 workers, 20 food and 110 wood at
-  tick 3000 without the first producer. Growth repeats retain 8/9/8 workers but diverge after tick 900 despite exact
-  capture ticks. The clock overshoot defect is fixed; the remaining divergence is not explained by sampling overshoot.
-- Checks: all selected pure assertions pass (26 suites / 118 tests), affected gameplay 70 tests, Phaser clock/fixture
-  controls 15, E2E oracle controls 9. App/gameplay/E2E types and scoped lint pass. Standalone Phaser types retain eight
-  pre-existing errors. [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) owns exact artifacts/provenance and limitations.
-- **Next:** one grouped economy-recovery batch: diagnose slow opening wood/food delivery and post-900 growth
-  divergence; add ECO-05/H-16 aggregate-budget/low-delivery and ECO-06/H-18 depletion/supply-loss native branches.
-  Reuse current capture paths, preserve deadlines/determinism and the 200-resource start. Publish/pause after the
-  coherent batch; Package 1 remains 8/8 validated and its composition regression remains green.
-- Recommended next model: **GPT-6.1 Sol / high**, because the remaining failures need causal economy and timing
-  investigation. Actual host settings are unknown; no model switch is implied.
+  Tested base: `d4ef507a2e858c4ef2b60b93dea0a9cea77f9faa` plus the containing checkpoint. Verify its HEAD/remote.
+  Commit/push at coherent boundaries is authorized; pause after publication. Actual model/effort settings are unknown.
+- **Package 2: 12/16 outcomes passed (75%); 4/16 remain (25%): H-18 failed, ECO-05/06 and H-16 lack native setups.**
+  ECO-08 now passes both ordinary200-resource openings and three identical workforce-growth repeats. Do not advance
+  to Package 3. Package1 remains8/8 validated; this is not an overall AI completion percentage.
+- Final grouped evidence: `recovery-savings-native-final/1792130020313-failed.json`,21 distinct worlds,
+ 2010 decisions /40202 ticks,471093ms. ECO-07's6, ECO-08's5 and PRO-04's8 worlds pass. H-18's intact control and
+  all five paid outputs pass; its subject still misses physical housing recovery by unchanged1200. Retain this failure.
+- Authored/checked: opt-in complete50ms native headless frames yield between ticks, fixing accelerated-runner async
+  starvation without changing ordinary gameplay. Additional Fields/Granaries preserve catalog-priced unmet housing
+  cash, while first food access remains eligible. No balance values changed; the demonstrated cause was priority.
+- H-18's remaining cause: an extra60-wood Field spends cash before the unexpected loss at200. After loss the savings
+  guard works, but the bank grows from40 to only90wood by1201; no replacement completes. Group this with the next
+  income/gathering recovery repair rather than changing the deadline or assuming another housing discount fixes it.
+- **Next combined owner batch:** implement actual native delivered-income accounting with ECO-05/H-16 budget and
+  poor-delivery controls, plus ECO-06 depleted-source/drop-off/crop recovery and the existing H-18 failed case.
+  `ai-behavior/economy-manager.ts` measures net stockpile change, but `player-ai-agent-context.ts` advertises it as
+  delivered income: starting balances/grants inflate it and purchases reduce it. Preserve ownership/save/restore and
+  subscription cleanup. Prove useful jobs, real delivery, aggregate affordability and timely housing; rerun affected
+  controls once the shared owners are stable. No new observer/profiler architecture.
+- Checks:27 pure suites /127 tests across all16 IDs;5 focused suites /30 tests;8 E2E reader/frame controls;
+  app/gameplay/E2E types and scoped lint pass. Full provenance, limits and audits: [current evidence](CURRENT-EVIDENCE.md).
+- Recommended next model: **GPT-6.1 Sol / high**, because delivery ownership and recovery need causal design.
+  This recommends settings; it does not switch them.
 
 ## What “continue” means
 
@@ -63,7 +64,8 @@ the agreed coherent boundary. Do not merge, force-push or create a PR unless sep
 The correctness gate is **active**; old test-deferral instructions are historical. Use affected controls during repairs
 and grouped checks at stable boundaries. Repeat expensive runs only after relevant changes or to answer a named question.
 Never weaken deadlines, usefulness, fairness or authority assertions. Diagnostic performance sanity is complete;
-no further profiling gate is scheduled. Shared balance adjustments are authorized when justified: record old/new values,
+no further profiling gate is scheduled. Shared balance adjustments are authorized when justified, including building/worker costs and resource yields
+(user reaffirmed2026-10-16). Prefer a meaningful workload-backed rebalance when prices are the cause; record old/new values,
 purpose and affected checks. Latest gameplay checkpoint changed no prices, times, yields or combat values.
 
 ## Batch report and progress
@@ -84,7 +86,7 @@ Keep the report self-contained and concise. A documentation-only update reports 
 gameplay progress unchanged. The execution plan links to this format rather than maintaining a second template.
 
 Registration coverage: pure **59/111 = 53.2% registered / 46.8% remaining**; supported runtime
-**26/116 = 22.4% registered / 77.6% remaining**, excluding four deferred runtime rows. These are not overall AI completion.
+**27/116 = 23.3% registered / 76.7% remaining**, excluding four deferred runtime rows. These are not overall AI completion.
 Reconcile behavior evidence per selected package; do not invent a global completion percentage.
 
 ## End-of-gate machinery necessity review

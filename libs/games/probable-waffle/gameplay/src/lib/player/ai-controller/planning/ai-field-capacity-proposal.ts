@@ -1,4 +1,4 @@
-import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
+import { ObjectNames, type ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiIntentV1 } from "../contracts/ai-intent-v1";
@@ -27,11 +27,24 @@ export function proposeAiFieldCapacity(args: {
   readonly selectedConstructionTileKeys: Set<string>;
   readonly priorIntents: readonly AiIntentV1[];
   readonly ordinal: number;
+  readonly resourceReserve?: Readonly<Partial<Record<ResourceType, number>>>;
 }): { readonly demand: AiDemandV1 | null; readonly intent: AiIntentV1 | null } {
   const {
-    observation, state, catalog, self, foodSourceEntry, desiredFoodSources, readyFoodSources,
-    constructingFoodSources, acceptedFoodSourceEffectIds, foodPrerequisiteObject, readyFoodPrerequisites,
-    reservedActorIds, selectedConstructionTileKeys, priorIntents, ordinal
+    observation,
+    state,
+    catalog,
+    self,
+    foodSourceEntry,
+    desiredFoodSources,
+    readyFoodSources,
+    constructingFoodSources,
+    acceptedFoodSourceEffectIds,
+    foodPrerequisiteObject,
+    readyFoodPrerequisites,
+    reservedActorIds,
+    selectedConstructionTileKeys,
+    priorIntents,
+    ordinal
   } = args;
   if (desiredFoodSources <= 0 || !foodSourceEntry) return { demand: null, intent: null };
   const demandId = "demand:economy:sustainable-food" as AiDemandV1["demandId"];
@@ -49,11 +62,15 @@ export function proposeAiFieldCapacity(args: {
     resourceObligations: foodSourceEntry.constructionProfile?.resourceCost ?? {}
   };
   const committed = readyFoodSources.length + constructingFoodSources.length + acceptedFoodSourceEffectIds.length;
+  // A cheaper extra Field must not repeatedly consume the cash needed for current supply recovery.
+  // The first usable food source remains essential; ordinary arbitration still owns actual payment claims.
+  const cost = foodSourceEntry.constructionProfile?.resourceCost ?? {};
   if (
     committed >= desiredFoodSources ||
     (foodPrerequisiteObject && readyFoodPrerequisites.length === 0) ||
-    !canAffordAiEconomyCost(observation, foodSourceEntry.constructionProfile?.resourceCost ?? {})
-  ) return { demand, intent: null };
+    !canAffordAiEconomyCost(observation, cost, readyFoodSources.length > 0 ? args.resourceReserve : undefined)
+  )
+    return { demand, intent: null };
   const alreadyClaimed = claimedActorIds(priorIntents);
   const builder = self
     .filter(isAvailableBuilder)

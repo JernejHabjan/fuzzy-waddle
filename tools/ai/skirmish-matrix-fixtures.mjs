@@ -82,6 +82,8 @@ function validateRuntimeFixture(fixture, scenarioId) {
     recipe.aiPlayerNumber <= 0 ||
     !Number.isFinite(recipe.simulationTimeScale) ||
     recipe.simulationTimeScale <= 0 ||
+    (recipe.fixedStepFrames !== undefined && typeof recipe.fixedStepFrames !== "boolean") ||
+    (recipe.fixedStepFrames === true && recipe.simulationTimeScale !== 1) ||
     !Array.isArray(recipe.checkpointTicks) ||
     recipe.checkpointTicks.length < 2 ||
     recipe.checkpointTicks.some((tick) => !Number.isSafeInteger(tick) || tick < 0) ||
@@ -137,6 +139,16 @@ function validateRuntimeFixture(fixture, scenarioId) {
     (assertion.requireNoInitialWorker !== undefined && typeof assertion.requireNoInitialWorker !== "boolean") ||
     (assertion.requireDeliveredIncome !== undefined && typeof assertion.requireDeliveredIncome !== "boolean") ||
     (assertion.requireRenewableFoodIncome !== undefined && typeof assertion.requireRenewableFoodIncome !== "boolean") ||
+    (assertion.requiredSupplyRecovery !== undefined &&
+      (!assertion.requiredSupplyRecovery ||
+        !Number.isSafeInteger(assertion.requiredSupplyRecovery.latestTick) ||
+        assertion.requiredSupplyRecovery.latestTick <= 0 ||
+        !Number.isSafeInteger(assertion.requiredSupplyRecovery.paidQueueCount) ||
+        assertion.requiredSupplyRecovery.paidQueueCount <= 0 ||
+        typeof assertion.requiredSupplyRecovery.lossEventId !== "string" ||
+        !assertion.requiredSupplyRecovery.lossEventId ||
+        typeof assertion.requiredSupplyRecovery.housingObjectName !== "string" ||
+        !assertion.requiredSupplyRecovery.housingObjectName)) ||
     (assertion.requiredGroundRouteVariantIds !== undefined &&
       (!Array.isArray(assertion.requiredGroundRouteVariantIds) ||
         assertion.requiredGroundRouteVariantIds.some((variantId) => typeof variantId !== "string"))) ||

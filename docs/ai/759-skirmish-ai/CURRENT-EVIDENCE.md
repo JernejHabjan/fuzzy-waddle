@@ -2,7 +2,82 @@
 
 [HANDOFF.md](HANDOFF.md) owns continuation. Package 2 economy/technology remains open.
 
-## Economy/technology checkpoint — 2026-10-15
+## Fixed-frame opening and funded supply recovery — 2026-10-16
+
+Tested base: `d4ef507a2e858c4ef2b60b93dea0a9cea77f9faa`, plus this checkpoint's source, recipes and tests.
+**Package 2: 12/16 passed (75%); 4/16 remain (25%): H-18 failed, ECO-05/06 and H-16 lack native setups.**
+Passed IDs: ECO-01/02/03/04/07/08 and TECH-01–06, combining the unaffected earlier evidence below with this gate.
+All short artifact paths below are ignored under `tmp/ai-plans/759-validation/`.
+
+### Authored behavior and purpose
+
+- **Native pacing:**100x render frames emitted many simulation ticks before asynchronous movement/resource actions
+  could settle. Exact checkpoint pauses alone did not solve this distortion. Opted-in recipes now drive complete50ms
+  native Phaser headless frames and yield between them. Ordinary gameplay is untouched; existing scene timers,
+  pathfinding, physics and shared commands still run. This proves fixed-frame repeatability, not arbitrary rendered
+  cadence or multiplayer equivalence.
+- **Housing savings:** extra60-wood Fields repeatedly consumed cash before it reached the100-wood housing price.
+  Additional Fields/Granaries now preserve the catalog-priced unmet housing cost. First usable food access remains
+  eligible; already committed housing, unspent claims and due obligations count once. No new saved state, subscription
+  or payment owner. No prices, yields, times or combat values changed: evidence identified spending priority as the cause.
+- **H-18 physical proof:** the paired recipe starts with genuinely ample macro-buffer supply, five natively paid queue
+  items and100wood, then destroys one pinned house only in the subject. The reader checks closed history, setup cash
+  debit, item/producer/product/output identity, distinct physical completions, native cancellation records and exactly
+  one completed replacement. The intact control must avoid speculative housing. Seeded shared-controller items lack
+  AI-selected effects, so their completions join the existing native capture channel directly.
+
+### Retained causal runs and limits
+
+- ECO-08 before housing savings: `recovery-fixed-frame-complete/1792083018841-passed.json`, five worlds,
+ 750 decisions /15000 ticks,125803ms; dirty `fnv1a32:44ffc24d`, fixture `fnv1a32:e7bb305a`.
+  Both normal200-resource openings finish military infrastructure by unchanged3000 and retain6 workers; three growth
+  repeats all retain13 workers /4 military with identical digests. Earlier single rendered fixed-frame diagnostic:
+  `recovery-fixed-frame-opening/1792082822589-diagnostic_passed.json` (producer complete1760).
+- H-18 pre-repair: `recovery-paid-supply-ample/1792095634090-failed.json`,120 decisions /2402 ticks,114112ms;
+  dirty `fnv1a32:c03f241f`, fixture `fnv1a32:9eb3360d`,188405584bytes (below unchanged256MiB ceiling).
+  All paid outputs and the ample control pass; subject housing recovery fails because optional Fields consume savings.
+  The run stays failed. Earlier zero-grant configuration rejection supplied no runtime evidence; a force quit interrupted
+  the first corrected attempt without a retained result. Neither counts as a gameplay outcome. Another early run used
+  insufficient control supply and omitted controller-seeded completion joins; both setup/reader errors were corrected.
+- Final grouped native evidence: `recovery-savings-native-final/1792130020313-failed.json`,21 distinct worlds,
+ 2010 decisions /40202 ticks,471093ms; dirty `fnv1a32:ced95cf0`, fixture `fnv1a32:86ed3d20`.
+  ECO-07's6, ECO-08's5 and PRO-04's8 worlds pass. Both ordinary openings and all three identical growth repeats pass.
+  H-18's paid outputs and intact control pass; the subject still lacks a replacement by1200. One Field spends60wood
+  before loss at200; after loss, the savings guard prevents more optional Fields but cash reaches only90 at1201.
+  No deadline/price change masks this real remaining income/gathering recovery failure. Raw runtime185753365bytes
+  remains below the unchanged ceiling. The cancellation-aware final reader rechecks the same retained facts:
+  `recovery-final-h18-reader.json`; only the missing replacement fails. No expensive native repetition was needed
+  for that reader-only hardening. Production remains8/8; Package2 does not advance.
+- **Next causal owner:** `ai-behavior/economy-manager.ts` measures net stockpile change while
+  `player-ai-agent-context.ts` exposes it as delivered income. Grants inflate it and purchases reduce it. Group actual
+  native receipt accounting with ECO-05/H-16 controls, ownership/save/restore and cleanup. ECO-06 still needs loaded-cargo,
+  depleted-source, destroyed-drop-off and crop-growth native recovery. No unproven cases are closed.
+
+### Checks and closure status
+
+- Selected16-ID pure gate: `recovery-savings-pure/1792129506251-passed.json`,27 suites /127 tests, all16 IDs
+  executed. Final typed resource-authority fixture:4 tests pass (`recovery-authority-final.log`). Housing/food controls:
+ 5 suites /30 tests (`recovery-housing-savings-after.log`); a pre-repair control demonstrates extra-Field starvation.
+- E2E frame/supply readers:8 pass (`recovery-final-oracle-audit.log`), including native cancellation despite a completion,
+  wrong scene/producer, restore, missing history/payment, duplicate output and absent replacement. Actual supply recipe
+  validator:2 pass (`recovery-fixture-validation.log`), including zero-grant rejection.
+- App/gameplay/E2E types pass (`recovery-final-{app,gameplay,e2e}-types.log`); final reader E2E types pass
+  (`recovery-final-audit-types.log`). Scoped gameplay/Phaser/E2E lint passes; two pre-existing supply-reader non-null
+  warnings remain. Standalone Phaser retains the previously documented eight baseline errors; no new broad rerun claimed.
+- Matrix/catalog/metadata controls:8 pass (`recovery-final-tools.log`); catalog checked. Changed source/new JSON
+  formatting passes (`recovery-final-format.log`); unrelated compact manifest rows retain their layout.
+- Omission Audit: runner checkpoint/event paths use the same opt-in frame driver; H-18 registration, recipe validation,
+  payment/completion/cancellation joins and food-admission test mapping are connected. Loaded/returning workers retain
+  existing ownership. Page teardown closes test frame driving; savings adds no state/listeners requiring save/disposal.
+  The three missing native setups remain explicit; no observer/profiler or skill expansion was added.
+- Final Closure Audit: all batch obligations are implemented/checked or explicitly remaining. ECO-08 closes; H-18's
+  failed physical recovery and three missing native setups stay open. Payment joins, food exceptions, immediate callers,
+  ownership, registrations, immutable deadlines, byte cap and task-only scope reviewed. No unrelated Nx ancestry changed.
+  No machinery-removal gate was moved forward. Final checked23-file content SHA-256: `b80b5206e76461611450555ef3a0ce696eb8b34e1f2ffc5c5a3045d39a9bd8e2`;
+  exact paths/hashes in `recovery-source-provenance-final.json`, excluding this plan directory/generated catalog.
+  Publication is the containing checkpoint; verify its HEAD against the remote. Native server is stopped at publication.
+
+## Previous economy/technology checkpoint — 2026-10-15
 
 **Package 2: 11/16 outcomes passed (68.75%); 5/16 remain (31.25%): one failed outcome and four unavailable native setups.**
 Passed: ECO-01/02/03/04/07 and TECH-01–06. Failed: ECO-08. Missing native: ECO-05/06, H-16/H-18.

@@ -96,6 +96,13 @@ export function proposeAiFoodEconomy(args: {
     demands.push(recovery.demand);
     if (recovery.intent) intents.push(recovery.intent);
   }
+  const housingReserve = Object.fromEntries(
+    projectAiResourceForecasts(
+      observation,
+      demands.filter((demand) => demand.capabilityOrRole === "housing"),
+      catalog
+    ).map((forecast) => [forecast.resourceType, forecast.amount])
+  );
   const prerequisite = proposeAiFoodPrerequisite(
     observation,
     state,
@@ -106,7 +113,8 @@ export function proposeAiFoodEconomy(args: {
     reservedActorIds,
     selectedConstructionTileKeys,
     intents,
-    ordinal
+    ordinal,
+    housingReserve
   );
   if (prerequisite.demand) demands.push(prerequisite.demand);
   if (prerequisite.intent) {
@@ -128,6 +136,7 @@ export function proposeAiFoodEconomy(args: {
     reservedActorIds,
     selectedConstructionTileKeys,
     priorIntents: intents,
+    resourceReserve: housingReserve,
     ordinal
   });
   if (fieldCapacity.demand) demands.push(fieldCapacity.demand);

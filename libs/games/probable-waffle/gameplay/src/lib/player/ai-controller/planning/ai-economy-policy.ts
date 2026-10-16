@@ -20,12 +20,15 @@ function projectedIncome(observation: AiObservationV1, resourceType: ResourceTyp
   return income?.status === "known" ? income.value / 2 : 0;
 }
 
+/** Requires spendable cash for both this purchase and an unmet higher-priority purchase; neither is paid twice. */
 export function canAffordAiEconomyCost(
   observation: AiObservationV1,
-  cost: Readonly<Partial<Record<ResourceType, number>>>
+  cost: Readonly<Partial<Record<ResourceType, number>>>,
+  reserve: Readonly<Partial<Record<ResourceType, number>>> = {}
 ): boolean {
-  return Object.entries(cost).every(
-    ([resourceType, amount]) => availableStockpile(observation, resourceType as ResourceType) >= (amount ?? 0)
+  return Object.values(ResourceType).every(
+    (resourceType) =>
+      availableStockpile(observation, resourceType) >= (cost[resourceType] ?? 0) + (reserve[resourceType] ?? 0)
   );
 }
 
