@@ -22,6 +22,13 @@ Placement optimizes the intended service while preserving reserved footprints an
 
 Each defended base owns a bounded connected fortification graph. It may combine terrain, buildings, wall segments, stairs, towers and an intentional opening. Every construction prefix must preserve friendly worker and army access.
 
+Layout, budget, native-effect reconciliation and order proposals have separate owners under `ai-fortification-*`.
+Completion retains the node's attempt identity; a destroyed node advances it before requesting a replacement.
+Effect reservations match that current attempt, so an older completed identity cannot certify or suppress its rebuild.
+Abandoned plans remain terminal, and losing the protected base abandons its unfinished perimeter. Construction proposals
+skip newly blocked footprints and select distinct compatible workers without cargo, active transfers or other actor leases.
+Shared native placement and arbitration remain the final authority.
+
 Towers need measured coverage and reachable defensive posts. Wall-top defenders need usable stairs and a withdrawal route. A breach triggers bounded repair, alternate defense or abandonment of a no-longer-useful perimeter rather than rebuilding a duplicate wall graph.
 
 Until a functioning gate prefab exists, the planner preserves an opening; it cannot claim an enemy-only sealed gate. Walls do not stop air units, and a tower is not credited with anti-air unless its real weapon supports that target domain.

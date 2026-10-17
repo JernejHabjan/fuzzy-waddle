@@ -108,19 +108,21 @@ main-building footprint were corrected in both paired worlds. Construction cance
 post-opening unfinished-site reassignment have focused controls. Native ECO-06 proves alternate drop-off/source
 recovery; native no-drain controls prove stop/assignment release with cargo preservation.
 
-**Current publication: grouped combat/construction/resource repairs; broad gates deferred (user2026-10-17).**
+**Current publication: grouped placement/fortification/native-payment recovery; broad gates deferred (user2026-10-17).**
 
-1. The implementation batch combines independently reachable ground/air readiness, domain-correct target selection,
-   mission continuity through native job gaps, abandoned/impossible construction recovery and physical resource transfer
-   guards. Existing reserve/safety thresholds, deadlines, retreat and native vision rules remain required.
+1. The latest implementation repairs fortification rebuild identity, stale effect reservations, abandoned/lost-base
+   plans, newly blocked footprints and distinct available builder assignment. Native build/repair membership transfers
+   and death cleanup, once-only saved cancellation/refund and whole-vector payment admission have focused controls.
+   Previous combat/domain/continuity and physical-transfer repairs remain; no full native acceptance is inferred.
 2. Fields remain unchanged: retained food327.68/min,90 stock and empty queues do not establish food starvation.
    Native harvest/growth/cargo controls are focused evidence; no new full match was run to justify a balance change.
 3. Full-match victory and broad regression reruns are explicitly deferred. Historical production8/8, economy16/16,
    selected native7/8 and victory1/2 belong to their earlier source. Changed predicates need later affected native checks;
    focused passes do not promote those historical counts to the new source or close broader Packages3–5.
-4. Next implementation: inspect existing PLACE/EXP/WALL/H recovery coverage and resource-authority boundary controls
-   together. Reuse existing native/component scenarios; repair concrete owner gaps before adding registrations.
-   Arbitrary alias/net-zero mutation/restore history (M11), sockets, saves and calibration remain outstanding.
+4. Next implementation: group remaining PLACE/EXP/WALL/H fixtures/registrations with interrupted construction,
+   queue/research save-load continuation. Reuse existing controls to give the later native gate runnable setups and
+   prove continuation without duplicate effects. Latest focused checkpoint:148/148 controls pass; Packages4/5 remain open.
+   Arbitrary alias/net-zero mutation/restore history (M11), sockets, broad saves and calibration remain outstanding.
    Final machinery review stays last. HANDOFF owns the next cursor and user policy.
 
 Pure registrations remain59/111 and supported runtime30/116; these are coverage counts, not gameplay completion.
@@ -133,7 +135,7 @@ Pure registrations remain59/111 and supported runtime30/116; these are coverage 
 - **Raid recovery:** historical SEQ-02 passed both factions. Current shared-source acceptance needs a rerun; do not
   describe this as wholly unimplemented or carry forward an older failure as its latest result.
 - **Resource authority/M11:** complete usefulness is still unavailable for required arbitrary replacement, net-zero
-  mutation/undo and between-read changes. Enumerate the existing 32/36 authority predicates and their controls before
+  mutation/undo and between-read changes. Enumerate the existing Stage32/36 authority obligations and their controls before
   editing; map each to an existing observed boundary or record the specific missing boundary. Do not introduce finer
   dependency graphs, FIFO lot tracking or continuous journals by default.
 - **Multiplayer:** two-browser relay/hash/reconnect and host-promotion controls exist, but full interrupted-commitment

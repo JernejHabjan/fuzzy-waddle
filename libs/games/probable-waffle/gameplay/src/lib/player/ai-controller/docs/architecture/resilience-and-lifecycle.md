@@ -63,6 +63,13 @@ or carrier cannot deduct stock; a lost drain or recipient cannot credit/debit a 
 capacity is released even when entry, waiting or exit throws. A drain admits one pending return per carrier and
 respects its active unload capacity; outdoor drains need no container slot. Invalid transfer amounts are rejected.
 Construction's synchronous payment callback cannot reenter the same site's start and charge it a second time.
+Cancellation settles before refund callbacks, releases every original builder even when membership changes or a callback
+throws, and cannot replay its refund. Optional saved `cancellationSettled` preserves that terminal boundary; older saves
+without it retain ordinary construction. A payment-time cancellation waits for the payment to return and cannot restart
+the destroyed site. Builder transfers/death release construction and repair membership, while completion iterates a
+snapshot when consuming builders. Duplicate membership cannot increase construction work.
+Native player payments validate one complete cost vector before any debit, and reject unknown resources and negative or
+nonfinite amounts. An unaffordable later entry leaves earlier balances untouched; configured refund formulas remain intact.
 These local runtime guards do not establish mutation-complete resource history across arbitrary aliases or restore.
 
 ## Saves and controller lifecycle

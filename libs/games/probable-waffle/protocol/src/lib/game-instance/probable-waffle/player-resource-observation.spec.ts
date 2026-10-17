@@ -53,12 +53,12 @@ describe("native player resource observation", () => {
     expect(f.losses).toEqual([]);
     f.release();
   });
-  it("preserves partial native payment and its original thrown error rather than rolling back", () => {
+  it("records native rejection without any partial resource deduction", () => {
     const f = fixture();
     expect(() => f.player.payAllResources({ wood: 1, food: 201 })).toThrow("Not enough resources");
-    expect(f.player.getResources().wood).toBe(199);
+    expect(f.player.getResources().wood).toBe(200);
     expect(f.events).toHaveLength(2);
-    expect(f.events[1]).toMatchObject({ phase: "threw", after: { wood: 199, food: 200 } });
+    expect(f.events[1]).toMatchObject({ phase: "threw", after: { wood: 200, food: 200 } });
     expect(f.losses).toContain("recipient_mutation_incomplete");
     f.release();
   });

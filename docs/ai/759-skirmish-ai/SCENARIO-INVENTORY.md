@@ -4,6 +4,11 @@ Registration updated 2026-10-16 against the current manifest; current housing/co
 `50266799471a2804243bd147a759deca2873c150` plus task-owned source. Open only the selected family.
 [Execution plan](REMAINING-WORK.md) and [handoff](HANDOFF.md) own order and current status.
 
+2026-10-17 implementation checkpoint: fortification owner controls now cover distinct/cargo-safe builders, blocked
+footprints, lost/abandoned plans and replacement effect/claim admission. Native controls cover membership/cancellation
+and whole-vector payments. See [current evidence](CURRENT-EVIDENCE.md). These do not add manifest fixtures/recipes;
+registration counts below remain unchanged and PLACE/EXP/WALL/H native acceptance remains pending.
+
 ## Coverage gaps by family
 
 Registration snapshot only; no percentages of gameplay completion are inferred.

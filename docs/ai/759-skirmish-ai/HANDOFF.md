@@ -3,40 +3,35 @@
 Default resume page: read this first, then only the selected package in [REMAINING-WORK.md](REMAINING-WORK.md).
 Do not load the full plan directory or archive on startup.
 
-## Current cursor — grouped implementation, final gates deferred, 2026-10-17
+## Current cursor — placement/fortification and native payment recovery, 2026-10-17
 
 - Worktree /home/jernej/.codex/worktrees/7977/fuzzy-waddle; branch feature/759-skirmish-ai.
-  Starting checkpoint5478ae7cd0a773cf4c68f33d17113ce61f10a443; verify the containing publication commit on resume.
-  Actual model/effort unknown. No subagent, new chat, automation, PR or automatic model switch authorized.
-- User-selected batch: attack readiness/continuity, combat decisions, construction recovery, conditional food balance
-  and resource correctness together. **Full-match victory reruns and broad regression gate are deferred by the user.**
-  Focused owner controls, lint and source typing are allowed; do not launch SEQ-01 or a broad native matrix on continue
-  without reconciling that deferral. This is implementation evidence, not full scenario/package closure.
-- Authored: independent domain/origin route checks combine directly reachable ground/air forces; incompatible enemy
-  weapons do not inflate force requirements. Tactical target commitment/ranking rejects untargetable or known blocked
-  objectives while preserving shots already in range. Useful mission members cannot fall into home reserve during a job gap.
-- Construction: select a reachable compatible replacement; reclaim workers after a cancelled/finished site, release
-  known impossible Build jobs, preserve healthy work/cargo/transfer ownership. Native payment cannot reenter and charge twice.
-- Resources: drop-off validates surviving endpoints/recipient after its wait, locks duplicate carrier returns, rejects
-  invalid amounts, and admits outdoor drains without container capacity. Source/drain container slots release after errors;
-  extraction cannot deduct stock after source/carrier loss. Existing conversion/campaign recipient policy is retained.
-- Fields remain unchanged: last retained match had327.68food/min,90food and empty producer queues. Native food controls
-  still exercise actual harvest, growth, pack and delivery boundaries. No new match or speculative throughput rebalance.
-- Current focused evidence lives under ignored tmp/ai-plans/759-validation/continuity-resource-\*.log; see CURRENT-EVIDENCE
-  for exact counts, commands, red/green triggers and separate omission/closure audits. Raw proof never enters model context;
-  ordinary summaries remain capped8192 UTF-8 bytes. No diagnostic machinery was added.
-  Focused checks:10 gameplay suites82 tests and12 native suites91 tests pass (173/173 controls,100%,0 failing);
-  both project lints and actual app source typing pass. These counts do not certify full scenario/package completion.
-- Historical source5478ae7cd retains production8/8 and economy/technology16/16; changed combat/construction/resource inputs
-  need affected native rechecks at the later gate. Historical selected native7/8 and full victories1/2 (50%) are unchanged,
-  not revalidated on this candidate. Broader Packages3–5, M11 alias/restore authority and integration remain open.
-- **Next dependency-ready implementation batch:** continue placement/fortification/recovery and resource-authority
-  scenario gaps together (Packages4/5), reusing existing controls before adding setups; inspect SCENARIO-INVENTORY's
-  PLACE/EXP/WALL/H and resource rows. Do not restart combat probing merely to chase an unrun victory result.
-  Recommend Sol6.1/high for remaining authority/design questions; recommendations do not change the active settings.
-- Preserve unrelated .run/start_portal.run.xml and the ALL_VISIBLE fog edit. No managed server or native match was started.
-  Commit/push only owned paths, verify remote equality, report done/why and next/why, then pause.
-  Machinery necessity/removal review remains last overall.
+  Starting checkpoint4e10c89e7b65ee419a15993733eb4999a041d9a9; mechanical split319fd3153.
+  Verify the containing publication commit/remote on resume. Actual model/effort unknown; no delegation authorized.
+- Selected Packages4/5 implementation is focused-checked. Fortification layout/recovery/order owners are split within
+  source limits. Rebuilds advance effect/claim identities without resetting on completion; old reservations cannot
+  suppress a new effect. Shared arbiter admission is covered. Abandonment stays terminal, lost bases abandon unfinished
+  perimeter plans, blocked footprints are skipped, and concurrent sites receive distinct available/unleased workers.
+- Native builder transfer/death releases build/repair membership; vanished sites clear their reference, duplicate
+  membership cannot multiply work, and completion consumes every builder despite synchronous list mutation.
+- Cancellation settles once before refund callbacks, cleans all original builder orders even after failure, and has an
+  optional saved cancellationSettled marker. Reentrant cancellation/payment-time destruction cannot restart or repay a site.
+  Existing refund formulas remain. Native cost vectors preflight before any debit and reject invalid amounts/keys;
+  a denied later resource cannot consume an earlier one. No balance or field change was needed.
+- Focused evidence:5 gameplay suites43 tests,8 native suites92 tests,3 protocol suites13 tests: **148/148 (100%),0 failing**.
+  All three project lints and actual app source typing pass. Commands/provenance and separate omission/closure audits
+  are in CURRENT-EVIDENCE; ignored logs use tmp/ai-plans/759-validation/recovery-authority-\*. No machinery or browser run.
+- Full-match victories and broad regression remain user-deferred. Historical production8/8, economy16/16, selected
+  native7/8 and victory1/2 belong to earlier source, not current acceptance. Packages3–5 remain open. M11 Stage32/36
+  mutation-history obligations remain open: public alias write/undo/replacement and continuous access/safety between reads
+  cannot be certified by local payment guards. No new journal or API migration was introduced.
+- **Next grouped batch:** complete PLACE/EXP/WALL/H scenario fixture/registration gaps using existing placement,
+  expansion and fortification owners/controls, together with interrupted construction/queue/research save-load boundaries.
+  This gives the later native gate runnable setups and checks continuation without duplicate effects. Read only those
+  inventory rows/controls. Do not restart SEQ-01 or a broad matrix until the user resumes that gate.
+  Recommend Sol6.1/high for authority/restore questions; this does not change the active settings.
+- Preserve unrelated .run/start_portal.run.xml and the ALL_VISIBLE fog edit. Commit/push only owned paths, verify remote,
+  report done/why and next/why, then pause. Machinery necessity/removal review remains last overall.
 
 ## What “continue” means
 

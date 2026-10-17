@@ -34,6 +34,7 @@ function sumCost(
   return result;
 }
 
+/** Creates one justified layout and prices its actual definition-backed nodes against protected macro funds. */
 export function createFortificationPlan(
   profile: AiProfileConfigV1,
   gateObjectName: ObjectNames | null,

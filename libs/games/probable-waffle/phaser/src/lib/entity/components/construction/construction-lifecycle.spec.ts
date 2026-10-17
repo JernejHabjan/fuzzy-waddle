@@ -10,6 +10,7 @@ import { CONSTRUCTION_AUTHORITY_EVENT, type ConstructionAuthorityEvent } from ".
 // prettier-ignore
 import type { ConstructionSiteDefinition } from
   "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/construction-site-definition";
+import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
 import { HealthComponent } from "../combat/components/health-component";
 
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
@@ -32,7 +33,7 @@ jest.mock("./construction-payment", () => ({
 describe("construction lifecycle boundaries", () => {
   beforeEach(() => jest.clearAllMocks());
 
-  function fixture() {
+  function fixture(overrides: Partial<ConstructionSiteDefinition> = {}) {
     const actorEvents = new Phaser.Events.EventEmitter();
     const sceneEvents = new Phaser.Events.EventEmitter();
     const ticks = new Subject<number>();
@@ -61,7 +62,8 @@ describe("construction lifecycle boundaries", () => {
       repairFactor: 1,
       initialHealthPercentage: 0.1,
       refundFactor: 0.5,
-      canBeDragPlaced: false
+      canBeDragPlaced: false,
+      ...overrides
     } satisfies ConstructionSiteDefinition;
     const component = new ConstructionSiteComponent(site, policy);
     return { component, site, actorEvents, records, ticks, definition };
@@ -85,7 +87,8 @@ describe("construction lifecycle boundaries", () => {
       75
     );
     f.component.completeConstruction();
-    expect(f.records[2]).toMatchObject({ transition: "finished", state: 3, remainingWorkMs: 75 });
+    expect(f.records).toHaveLength(2);
+    expect(f.component.isFinished).toBe(false);
     f.component.cancelConstruction();
     expect(refundConstructionPayment).toHaveBeenCalledTimes(1);
   });
@@ -113,5 +116,116 @@ describe("construction lifecycle boundaries", () => {
     f.actorEvents.emit(Phaser.GameObjects.Events.DESTROY);
     expect(refundConstructionPayment).toHaveBeenCalledTimes(1);
     expect(f.ticks.observed).toBe(false);
+  });
+  it("settles cancellation once across direct calls, reentrancy and later death", () => {
+    const f = fixture();
+    f.component.startConstruction();
+    jest.mocked(refundConstructionPayment).mockImplementationOnce(() => f.component.cancelConstruction());
+    f.component.cancelConstruction();
+    f.component.cancelConstruction();
+    f.actorEvents.emit(HealthComponent.KilledEvent);
+    expect(refundConstructionPayment).toHaveBeenCalledTimes(1);
+    expect(f.component.startConstruction(true)).toBe(false);
+  });
+  it("saves cancelled-site settlement and cannot reopen its refund after restore", () => {
+    const original = fixture();
+    original.component.startConstruction();
+    original.component.cancelConstruction();
+    const saved = original.component.getData();
+    expect(saved.cancellationSettled).toBe(true);
+    const restored = fixture();
+    restored.component.setData(saved);
+    jest.mocked(refundConstructionPayment).mockClear();
+    restored.component.cancelConstruction();
+    restored.actorEvents.emit(HealthComponent.KilledEvent);
+    expect(refundConstructionPayment).not.toHaveBeenCalled();
+    expect(restored.component.canAssignBuilder()).toBe(false);
+  });
+  it("releases every builder even when resetting an earlier builder mutates site membership", () => {
+    const f = fixture();
+    const first = {} as Phaser.GameObjects.GameObject;
+    const second = {} as Phaser.GameObjects.GameObject;
+    const resets: Phaser.GameObjects.GameObject[] = [];
+    f.component.assignBuilder(first);
+    f.component.assignBuilder(second);
+    jest.mocked(getActorComponent).mockImplementation((actor, token) =>
+      token === PawnAiController
+        ? ({
+            blackboard: {
+              resetCurrentOrder: () => {
+                resets.push(actor);
+                f.component.unAssignBuilder(actor);
+              }
+            }
+          } as never)
+        : undefined
+    );
+    f.component.cancelConstruction();
+    expect(resets).toEqual([first, second]);
+  });
+  it("does not count duplicate builder assignments as extra construction work", () => {
+    const f = fixture();
+    const builder = {} as Phaser.GameObjects.GameObject;
+    f.component.assignBuilder(builder);
+    f.component.assignBuilder(builder);
+    jest.mocked(getActorComponent).mockReturnValue({ id: "builder" } as never);
+    expect(f.component.getData().assignedBuilders).toEqual(["builder"]);
+  });
+
+  it("cleans builder orders after a refund callback fails and does not replay the failed settlement", () => {
+    const f = fixture();
+    const builder = {} as Phaser.GameObjects.GameObject;
+    f.component.assignBuilder(builder);
+    f.component.startConstruction();
+    const reset = jest.fn();
+    jest
+      .mocked(getActorComponent)
+      .mockImplementation((_actor, token) =>
+        token === PawnAiController ? ({ blackboard: { resetCurrentOrder: reset } } as never) : undefined
+      );
+    const failure = new Error("refund failed");
+    jest.mocked(refundConstructionPayment).mockImplementationOnce(() => {
+      throw failure;
+    });
+    expect(() => f.component.cancelConstruction()).toThrow(failure);
+    f.component.cancelConstruction();
+    expect(reset).toHaveBeenCalledTimes(1);
+    expect(refundConstructionPayment).toHaveBeenCalledTimes(1);
+  });
+  it("does not resume a site destroyed synchronously during its payment callback", () => {
+    const f = fixture();
+    jest.mocked(startConstructionPayment).mockImplementationOnce(() => {
+      f.actorEvents.emit(HealthComponent.KilledEvent);
+    });
+    expect(f.component.startConstruction()).toBe(false);
+    expect(f.component.getData().cancellationSettled).toBe(true);
+    expect(refundConstructionPayment).toHaveBeenCalledTimes(1);
+    expect(f.ticks.observed).toBe(false);
+  });
+  it("consumes all assigned builders when native death callbacks shrink membership", () => {
+    const f = fixture({ consumesBuilders: true });
+    const builders = [0, 1].map(() => ({ destroy: jest.fn() }));
+    for (const builder of builders) {
+      const actor = builder as unknown as Phaser.GameObjects.GameObject;
+      builder.destroy.mockImplementation(() => f.component.unAssignBuilder(actor));
+      f.component.assignBuilder(actor);
+    }
+    f.component.completeConstruction();
+    for (const builder of builders) expect(builder.destroy).toHaveBeenCalledTimes(1);
+  });
+  it("retains original builder cleanup when the refund callback removes site membership", () => {
+    const f = fixture();
+    const builder = {} as Phaser.GameObjects.GameObject;
+    f.component.assignBuilder(builder);
+    f.component.startConstruction();
+    const reset = jest.fn();
+    jest
+      .mocked(getActorComponent)
+      .mockImplementation((_actor, token) =>
+        token === PawnAiController ? ({ blackboard: { resetCurrentOrder: reset } } as never) : undefined
+      );
+    jest.mocked(refundConstructionPayment).mockImplementationOnce(() => f.component.unAssignBuilder(builder));
+    f.component.cancelConstruction();
+    expect(reset).toHaveBeenCalledTimes(1);
   });
 });

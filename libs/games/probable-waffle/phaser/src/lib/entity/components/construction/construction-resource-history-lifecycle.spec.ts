@@ -218,7 +218,7 @@ describe("construction restore and cleanup resource history", () => {
     f.journal.dispose();
   });
 
-  it("unpaid teardown resets builder orders once without crediting a refund or adding a state fence", () => {
+  it("unpaid teardown fences terminal cancellation and resets builder orders once without a refund", () => {
     const f = constructionHistoryFixture(),
       order: string[] = [],
       reset = jest.fn(() => order.push("reset"));
@@ -238,7 +238,7 @@ describe("construction restore and cleanup resource history", () => {
     expect(refundConstructionPayment).not.toHaveBeenCalled();
     expect(f.ticks.observed).toBe(false);
     expect(f.component.getData().state).toBe(ConstructionStateEnum.NotStarted);
-    expect(f.coverage.read().lost).toBe(false);
+    expect(f.coverage.read().lost).toBe(true);
     f.journal.dispose();
   });
 
@@ -252,7 +252,7 @@ describe("construction restore and cleanup resource history", () => {
     const epoch = f.coverage.read().lossEpoch;
     expect(() => f.actor.emit(HealthComponent.KilledEvent)).toThrow(error);
     expect(f.ticks.observed).toBe(false);
-    expect(f.coverage.read().lossEpoch).toBe(epoch);
+    expect(f.coverage.read().lossEpoch).toBe(epoch + 1);
     f.journal.dispose();
   });
 

@@ -95,7 +95,7 @@ export class AiFortificationManager implements AiProposalManagerV1 {
     }
 
     const intents = [
-      ...createFortificationIntents(this.profile, plan, observation, catalog),
+      ...createFortificationIntents(this.profile, plan, observation, catalog, state),
       ...createFortificationBreachResponse(this.profile, plan, observation, state)
     ];
     const selectedPlan = plan;

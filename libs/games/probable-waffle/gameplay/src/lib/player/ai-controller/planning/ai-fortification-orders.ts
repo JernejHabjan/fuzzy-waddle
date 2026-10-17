@@ -1,4 +1,3 @@
-import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiBrainStateV1, AiFortificationStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 
@@ -7,17 +6,21 @@ import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
 
 import { constructionEntry, resourceEntries } from "./ai-fortification-support";
+import { isAvailableBuilder } from "./ai-macro-observation";
+/** Proposes independent connected-prefix jobs; each available worker belongs to at most one new site. */
 export function createFortificationIntents(
   profile: AiProfileConfigV1,
   plan: AiFortificationStateV1,
   observation: AiObservationV1,
-  catalog: AiCapabilityCatalogV1
+  catalog: AiCapabilityCatalogV1,
+  state: AiBrainStateV1
 ): AiIntentV1[] {
   if (!plan.graph || plan.lifecycle === "abandoned") return [];
   const graph = plan.graph;
   const finished = new Set(
     graph.nodes.filter((current) => current.lifecycle === "finished").map((current) => current.nodeId)
   );
+  const cells = new Map(observation.map?.constructionCells?.map((cell) => [cell.tileKey, cell]));
   const candidates = graph.nodes
     .filter((current) => current.objectName !== null)
     .filter(
@@ -26,27 +29,42 @@ export function createFortificationIntents(
         current.retryAfterTick <= observation.tick
     )
     .filter((current) => current.dependsOnNodeId === null || finished.has(current.dependsOnNodeId))
+    // Dynamic obstructions may invalidate a previously legal layout; shared placement still owns final admission.
+    .filter((current) =>
+      current.footprintTileKeys.every((key) => {
+        const cell = cells.get(key);
+        return !cell || (cell.groundPassable && !cell.observedBlocked);
+      })
+    )
     .sort(
       (left, right) =>
         graph.constructionSequenceNodeIds.indexOf(left.nodeId) -
           graph.constructionSequenceNodeIds.indexOf(right.nodeId) || left.nodeId.localeCompare(right.nodeId)
     )
     .slice(0, Math.min(2, profile.maxAcceptedCommandBatchesPerStep));
+  const claimed = new Set(
+    state.reservations.flatMap((reservation) =>
+      reservation.subjectKey?.startsWith("actor:") &&
+      (reservation.state.kind !== "provisional" || reservation.state.expiresAt.dueTick > observation.tick)
+        ? [reservation.subjectKey.slice("actor:".length)]
+        : []
+    )
+  );
   return candidates.flatMap((current, index): AiIntentV1[] => {
     const objectName = current.objectName;
     if (objectName === null) return [];
     const entry = constructionEntry(catalog, objectName);
     const builder = observation.actors
       .filter((actor) => actor.relation === "self" && actor.visibility === "owned")
-      .filter(
-        (actor) => actor.activeOrder?.status !== "known" || actor.activeOrder.value?.orderType !== OrderType.Build
-      )
+      .filter((actor) => isAvailableBuilder(actor) && !claimed.has(actor.actorId))
+      .sort((left, right) => left.actorId.localeCompare(right.actorId))
       .find((actor) =>
         catalog.entries.some(
           (candidate) => candidate.sourceObjectName === actor.objectName && candidate.constructs.includes(objectName)
         )
       );
     if (!builder) return [];
+    claimed.add(builder.actorId);
     const effectId =
       `effect:fortification:${plan.planId}:${current.nodeId}:${current.attempt}` as AiIntentV1["effectId"];
     const intentId =
@@ -54,7 +72,7 @@ export function createFortificationIntents(
     const resourceClaims = resourceEntries(entry?.constructionProfile?.resourceCost ?? {}).map(
       ([resourceType, amount], claimIndex) => ({
         claimId:
-          `claim:fortification:${current.nodeId}:resource:${claimIndex}` as AiIntentV1["claims"][number]["claimId"],
+          `claim:fortification:${current.nodeId}:${current.attempt}:resource:${claimIndex}` as AiIntentV1["claims"][number]["claimId"],
         kind: "resource" as const,
         resourceType,
         amount
@@ -82,17 +100,20 @@ export function createFortificationIntents(
         ],
         claims: [
           {
-            claimId: `claim:fortification:${current.nodeId}:builder` as AiIntentV1["claims"][number]["claimId"],
+            claimId:
+              `claim:fortification:${current.nodeId}:${current.attempt}:builder` as AiIntentV1["claims"][number]["claimId"],
             kind: "actor" as const,
             actorId: builder.actorId
           },
           {
-            claimId: `claim:fortification:${current.nodeId}:site` as AiIntentV1["claims"][number]["claimId"],
+            claimId:
+              `claim:fortification:${current.nodeId}:${current.attempt}:site` as AiIntentV1["claims"][number]["claimId"],
             kind: "site" as const,
             siteKey: `fortification:${current.nodeId}`
           },
           {
-            claimId: `claim:fortification:${current.nodeId}:effect` as AiIntentV1["claims"][number]["claimId"],
+            claimId:
+              `claim:fortification:${current.nodeId}:${current.attempt}:effect` as AiIntentV1["claims"][number]["claimId"],
             kind: "effect" as const,
             effectId
           },
@@ -111,6 +132,7 @@ export function createFortificationIntents(
   });
 }
 
+/** Moves surviving ground defenders behind the retained opening while the breached component recovers. */
 export function createFortificationBreachResponse(
   profile: AiProfileConfigV1,
   plan: AiFortificationStateV1,

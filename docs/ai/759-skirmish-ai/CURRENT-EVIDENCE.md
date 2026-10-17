@@ -2,7 +2,73 @@
 
 [HANDOFF.md](HANDOFF.md) owns continuation. Read this current batch; older sections retain historical evidence.
 
-## Grouped combat, construction and resource correctness — 2026-10-17
+## Grouped placement/fortification and native payment recovery — 2026-10-17
+
+Base4e10c89e7b65ee419a15993733eb4999a041d9a9; behavior-neutral split319fd3153, then repairs below.
+Actual model/effort unknown. Full-match/broad regression remain user-deferred; no browser/server run, new diagnostic
+machinery or balance change. Logs/manifests below are ignored under tmp/ai-plans/759-validation/.
+
+### Acceptance map and evidence
+
+1. **Fortification recovery:** ai-fortification-recovery retains completed attempt identities, advances destroyed nodes,
+   matches current effect reservations, preserves abandonment and abandons lost-base plans. ai-fortification-orders
+   uses attempt-specific claims, skips blocked footprints and selects distinct available/unleased workers without cargo
+   or transfers. Old-reservation replacement reaches actual shared arbiter admission. Existing opening, shore,
+   connectivity, budget-floor, partial-site dependency and stair-breach controls remain. Initial additions:5red/9green
+   (fortification-before.log). Source split retained all original9 controls, lint and app typing before its separate commit.
+2. **Native membership:** BuilderComponent transfers/removes build/repair membership, clears vanished-site and pending
+   restore references on leave, and cleans membership on death. Duplicate assignment cannot multiply work. Consuming
+   builders iterates a snapshot, so native death callbacks cannot skip later workers. Real component controls cover
+   transfer, denied transfer, vanished site, death, duplicate assignment and synchronous list mutation.
+3. **Exactly-once cancellation:** ConstructionSiteComponent settles before refund callbacks, with a transient guard
+   protecting its earlier resource-history fence. It snapshots builder cleanup, preserves the first failure and cannot
+   replay a refund attempt. Payment-time cancellation waits for returned payment and stays terminal. Optional saved
+   cancellationSettled prevents repayment/restart after restore; old saves omit it. Existing loss fence covers the new
+   terminal mutation. Initial lifecycle additions:4red (cancellation-before.log). Real reentrant emissions charge11 then
+   refund2 at the unchanged configured progress/factors, leaving91 food.
+4. **Resource payment:** ProbableWafflePlayer samples one cost vector and preflights it before any debit. Invalid keys,
+   negative/nonfinite amounts are denied; exact balances and zero amounts remain legal. Initial controls:5red/2green
+   (payment-before.log). Passive observation now records the rejected vector with unchanged balances, replacing its old
+   expectation of the partial-debit defect. No new resource ledger or mutation API.
+5. **Scope/delivery:** public manager exports and saved identity formats remain compatible. Construction adds only the
+   optional terminal marker. Preserve unrelated run/fog edits. Scenario registration, full native execution, sockets,
+   host transfer, replay, broad interrupted saves and M11 history are not closed by these focused controls.
+
+### Focused commands and provenance
+
+- Gameplay: `pnpm exec nx test probable-waffle-gameplay --runInBand --testPathPatterns='ai-fortification-manager.spec|ai-construction-recovery-proposal.spec|ai-macro-construction.spec|ai-builder-delivery.spec|ai-proposal-reservation-boundary.spec'`
+  —5 suites43 tests pass (recovery-authority-gameplay.log).
+- Native: `pnpm exec nx test probable-waffle-phaser --runInBand --testPathPatterns='construction-lifecycle.spec|construction-payment.spec|construction-resource-history-lifecycle.spec|construction-resource-history.spec|builder-membership.spec|pawn-construction-order-lifetime.spec|shared-queue-resource.spec|queue-resource-history.spec'`
+  —8 suites92 tests pass (recovery-authority-native.log).
+- Protocol: `pnpm exec nx test probable-waffle-protocol --runInBand --testPathPatterns='player-payment.spec|player-resource-observation.spec|player.spec'`
+  —3 suites13 tests pass (recovery-authority-protocol.log). Total16 suites148 controls,148/148(100%),0 failing.
+- All three project lints pass: recovery-authority-lint.log plus final affected gameplay rerun
+  recovery-authority-final-gameplay-lint.log and recovery-authority-final-native-lint.log.
+  The intermediate gameplay syntax/lint failure was repaired before those final reruns. Actual source typing passes:
+  `pnpm exec tsc -p apps/portal/tsconfig.app.json --noEmit` (recovery-authority-types.log).
+  Native lint retains eight unused-disable warnings in unchanged, task-unowned files; no lint errors remain.
+- recovery-authority-source.json records ordered path/NUL/bytes/NUL SHA256 and source base. The owned-path manifest
+  excludes unrelated run/fog edits. Formatting and staged diff checks pass; containing publication/remote SHA is verified
+  at delivery, not embedded self-referentially here.
+
+### Omission Audit
+
+All five selected items have wired owners and focused evidence. Shared placement/arbitration, native definitions,
+configured costs/refunds, cargo ownership, healthy partial work and old-save compatibility were reviewed. Component
+cancellation restore is covered; full replay/multiplayer remains open. Inventory registration counts stay unchanged;
+owner regressions are not runtime recipes. M11 Stage32/36 obligations require unrestricted aliases/replacements,
+net-zero undo and continuous access/safety history; missing observable boundaries remain explicit. No complete/useful
+metric channel is asserted. No skill/tool change was warranted.
+
+### Final Closure Audit — focused implementation checkpoint
+
+Rechecked current effect/claim consumers, cancellation reentry/failure/restore, membership mutations and native payment
+admission after repairs. Selected16 suites148 tests, scoped lint, actual source types and formatting pass. No required
+focused failure remains. Full-match/broad regression and package-level acceptance remain deferred. Next batch groups
+remaining placement/expansion/fortification scenario setups with interrupted construction/queue/research continuation.
+Machinery necessity/removal stays last. Publish only owned files, verify remote, report and pause.
+
+## Historical grouped combat, construction and resource correctness — 2026-10-17
 
 Base5478ae7cd0a773cf4c68f33d17113ce61f10a443. User defers full-match victory reruns and broad regression.
 No browser match/server was started; actual model/effort unknown. All logs below are ignored under

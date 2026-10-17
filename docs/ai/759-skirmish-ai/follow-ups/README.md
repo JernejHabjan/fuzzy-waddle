@@ -15,8 +15,8 @@ sessions. Batch reports use a few **Done / why** and **Next / why** bullets plus
 with exact counts, separating registration from validated outcomes. The combined machinery review/removal is the last
 implementation/review task after gameplay, integration, calibration, debug and legacy work; earlier verdicts are evidence.
 
-Read the handoff's current execution policy first: final-gate tests, simulations, lint, builds and doctor/context
-are active at coherent verification boundaries. Pair #815/#816 by behavior family
+Read the handoff's current execution policy first: user2026-10-17 defers full-match victory and broad regression.
+Focused owner controls, scoped lint, source typing and formatting remain active at coherent boundaries. Pair #815/#816 by behavior family
 using #816's compact batch table. Source contracts gate authoring; passing parity evidence gates legacy removal;
 formal issue closure follows final evidence on the delivered revision. Finish a coherent batch before switching models.
 The handoff's [model batches and pause contract](../HANDOFF.md#model-batches-and-pause-contract) owns current model

@@ -50,6 +50,11 @@ export class ConstructionSiteComponent {
   private teardownComplete = false;
   /** Resource callbacks are synchronous and may attempt to start the same unpaid site again. */
   private paymentInProgress = false;
+  /** Terminal settlement survives save/load; callbacks cannot refund the same site again. */
+  private cancellationSettled = false;
+  private cancellationPending = false;
+  /** Blocks reentry while the pre-mutation resource fence still exposes unsettled saved state. */
+  private cancellationInProgress = false;
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
     private readonly constructionSiteDefinition: ConstructionSiteDefinition
@@ -88,6 +93,7 @@ export class ConstructionSiteComponent {
   }
 
   update(): void {
+    if (this.cancellationSettled || this.teardownComplete || this.cancellationInProgress) return;
     this.tryResolveAssignedActorReferences();
 
     const deltaWithTimeScale = SimulationTickService.TICK_INTERVAL_MS;
@@ -177,7 +183,8 @@ export class ConstructionSiteComponent {
 
   /** Explicit starts retain denial errors; automatic retries wait without advancing work, health or construction state. */
   startConstruction(waitForFunds = false): boolean {
-    if (this.paymentInProgress || this.teardownComplete) return false;
+    if (this.paymentInProgress || this.teardownComplete || this.cancellationSettled || this.cancellationInProgress)
+      return false;
     if (this.state !== ConstructionStateEnum.NotStarted) {
       throw new Error("ConstructionSiteComponent can only be started once");
     }
@@ -201,6 +208,11 @@ export class ConstructionSiteComponent {
       // start building
       this.remainingConstructionTime = productionDefinition.productionTime;
       this.state = ConstructionStateEnum.Constructing;
+      if (this.cancellationPending || this.teardownComplete) {
+        this.paymentInProgress = false;
+        this.cancelConstruction();
+        return false;
+      }
       observeConstructionLifecycle(this.gameObject, this.state, this.remainingConstructionTime, "started");
       this.constructionStateChanged.next(this.state);
       return true;
@@ -225,26 +237,46 @@ export class ConstructionSiteComponent {
   }
 
   cancelConstruction() {
-    if (this.isFinished) return;
-    // A rejected/unstarted placement has never paid; its assigned builders still need normal order cleanup.
-    if (this.state !== ConstructionStateEnum.NotStarted) {
-      const productionDefinition = this.productionDefinition;
-      if (!productionDefinition) throw new Error("Production definition not found");
-      refundConstructionPayment(
-        this.gameObject,
-        productionDefinition,
-        this.constructionSiteDefinition.refundFactor,
-        () => this.getProgressFraction(),
-        this.state,
-        this.remainingConstructionTime
-      );
+    if (this.isFinished || this.cancellationSettled || this.cancellationInProgress) return;
+    if (this.paymentInProgress) {
+      this.cancellationPending = true;
+      return;
     }
-
-    // stop action on builders
-    this.assignedBuilders.forEach((builder) => {
-      const payerPawnAiController = getActorComponent(builder, PawnAiController);
-      payerPawnAiController?.blackboard.resetCurrentOrder();
-    });
+    this.cancellationInProgress = true;
+    const builders = [...this.assignedBuilders];
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_actor_construction_change");
+    this.cancellationSettled = true;
+    let failure: unknown;
+    let failed = false;
+    try {
+      // A rejected/unstarted placement has never paid; its assigned builders still need normal order cleanup.
+      if (this.state !== ConstructionStateEnum.NotStarted) {
+        const productionDefinition = this.productionDefinition;
+        if (!productionDefinition) throw new Error("Production definition not found");
+        refundConstructionPayment(
+          this.gameObject,
+          productionDefinition,
+          this.constructionSiteDefinition.refundFactor,
+          () => this.getProgressFraction(),
+          this.state,
+          this.remainingConstructionTime
+        );
+      }
+    } catch (error) {
+      failure = error;
+      failed = true;
+    }
+    // Resets may remove membership synchronously. Every original builder still needs cleanup.
+    for (const builder of builders) {
+      try {
+        const payerPawnAiController = getActorComponent(builder, PawnAiController);
+        payerPawnAiController?.blackboard.resetCurrentOrder();
+      } catch (error) {
+        if (!failed) failure = error;
+        failed = true;
+      }
+    }
+    if (failed) throw failure;
   }
 
   get isFinished() {
@@ -259,12 +291,22 @@ export class ConstructionSiteComponent {
   canAssignBuilder() {
     return (
       this.assignedBuilders.length < this.constructionSiteDefinition.maxAssignedBuilders &&
+      !this.cancellationSettled &&
+      !this.cancellationInProgress &&
+      !this.teardownComplete &&
       !this.isFinished &&
       (this.healthComponent === undefined || !this.healthComponent.killed)
     );
   }
 
   assignBuilder(gameObject: Phaser.GameObjects.GameObject) {
+    if (
+      this.cancellationSettled ||
+      this.teardownComplete ||
+      this.cancellationInProgress ||
+      this.assignedBuilders.includes(gameObject)
+    )
+      return;
     this.assignedBuilders.push(gameObject);
   }
 
@@ -276,6 +318,7 @@ export class ConstructionSiteComponent {
   }
 
   canAssignRepairer() {
+    if (this.cancellationSettled || this.teardownComplete || this.cancellationInProgress) return false;
     const healthComponent = getActorComponent(this.gameObject, HealthComponent);
     if (!healthComponent) return false;
     return (
@@ -284,6 +327,13 @@ export class ConstructionSiteComponent {
     );
   }
   assignRepairer(gameObject: Phaser.GameObjects.GameObject) {
+    if (
+      this.cancellationSettled ||
+      this.teardownComplete ||
+      this.cancellationInProgress ||
+      this.assignedRepairers.includes(gameObject)
+    )
+      return;
     this.assignedRepairers.push(gameObject);
   }
   unAssignRepairer(gameObject: Phaser.GameObjects.GameObject) {
@@ -331,7 +381,7 @@ export class ConstructionSiteComponent {
     this.presentation.playCompletionSound();
 
     if (this.constructionSiteDefinition.consumesBuilders) {
-      this.assignedBuilders.forEach((builder) => {
+      [...this.assignedBuilders].forEach((builder) => {
         builder.destroy();
       });
     }
@@ -341,7 +391,8 @@ export class ConstructionSiteComponent {
   }
 
   completeConstruction(): void {
-    if (!this.isFinished) this.finishConstruction();
+    if (!this.isFinished && !this.cancellationSettled && !this.teardownComplete && !this.cancellationInProgress)
+      this.finishConstruction();
   }
 
   private getProgressFraction() {
@@ -358,13 +409,15 @@ export class ConstructionSiteComponent {
       progressPercentage: this.progressPercentage,
       assignedBuilders: this.assignedBuilders.map((builder) => getActorComponent(builder, IdComponent)!.id),
       assignedRepairers: this.assignedRepairers.map((repairer) => getActorComponent(repairer, IdComponent)!.id),
-      playingBuildSound: this.playingBuildSound
+      playingBuildSound: this.playingBuildSound,
+      ...(this.cancellationSettled ? { cancellationSettled: true as const } : {})
     } satisfies ConstructionSiteComponentData;
   }
 
   setData(data: Partial<ConstructionSiteComponentData>) {
     // Even matching restores resolve references and emit native callbacks; they cannot reopen prior history.
     fenceSceneResourceHistory(this.gameObject.scene, "resource_actor_construction_change");
+    if (data.cancellationSettled) this.cancellationSettled = true;
     if (data.state !== undefined) this.state = data.state;
     if (data.remainingConstructionTime !== undefined) this.remainingConstructionTime = data.remainingConstructionTime;
     if (data.progressPercentage !== undefined) this.progressPercentage = data.progressPercentage;

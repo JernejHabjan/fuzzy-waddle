@@ -104,6 +104,61 @@ describe("construction payment authority", () => {
     expect(emitResource).toHaveBeenCalledTimes(1);
   });
 
+  it("credits the configured refund only once through real reentrant resource emissions", () => {
+    const f = fixture();
+    jest.mocked(getPwActorDefinition).mockReturnValue({ components: { productionCost: f.definition } } as never);
+    const component = new ConstructionSiteComponent(f.site, {
+      startImmediately: false,
+      consumesBuilders: false,
+      maxAssignedBuilders: 1,
+      maxAssignedRepairers: 1,
+      progressMadeAutomatically: 1,
+      progressMadePerBuilder: 1,
+      repairFactor: 1,
+      initialHealthPercentage: 0.1,
+      refundFactor: 0.5,
+      canBeDragPlaced: false
+    });
+    component.startConstruction();
+    component.setData({ remainingConstructionTime: 75 });
+    const native = jest.mocked(emitResource).getMockImplementation();
+    jest.mocked(emitResource).mockImplementation((...args) => {
+      component.cancelConstruction();
+      native?.(...args);
+    });
+    component.cancelConstruction();
+    component.cancelConstruction();
+    expect(f.money.food).toBe(91);
+    expect(emitResource).toHaveBeenCalledTimes(2);
+  });
+
+  it("does not replay cancellation from its pre-mutation history fence", () => {
+    const f = fixture();
+    jest.mocked(getPwActorDefinition).mockReturnValue({ components: { productionCost: f.definition } } as never);
+    const component = new ConstructionSiteComponent(f.site, {
+      startImmediately: false,
+      consumesBuilders: false,
+      maxAssignedBuilders: 1,
+      maxAssignedRepairers: 1,
+      progressMadeAutomatically: 1,
+      progressMadePerBuilder: 1,
+      repairFactor: 1,
+      initialHealthPercentage: 0.1,
+      refundFactor: 0.5,
+      canBeDragPlaced: false
+    });
+    component.startConstruction();
+    let calls = 0;
+    const release = subscribeSceneResourceLoss(f.site.scene, () => {
+      calls++;
+      component.cancelConstruction();
+    });
+    component.cancelConstruction();
+    expect(calls).toBe(1);
+    expect(emitResource).toHaveBeenCalledTimes(2);
+    release();
+  });
+
   it.each(["paid", "denied", "throw"] as const)(
     "preserves actual %s payment before the caller's construction fence",
     (route) => {

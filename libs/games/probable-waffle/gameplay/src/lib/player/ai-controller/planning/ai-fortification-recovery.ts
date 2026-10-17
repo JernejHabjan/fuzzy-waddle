@@ -24,7 +24,8 @@ function reconcileNode(
       actor.relation === "self" &&
       actor.objectName === current.objectName &&
       position !== null &&
-      tileKey(position) === tileKey(current.position)
+      tileKey(position) === tileKey(current.position) &&
+      position.z === current.position.z
     );
   });
   if (observed) {
@@ -33,7 +34,6 @@ function reconcileNode(
       ...current,
       lifecycle: finished ? "finished" : "requested",
       completedActorId: observed.actorId,
-      attempt: finished ? 0 : current.attempt,
       retryAfterTick: observation.tick + 40
     };
   }
@@ -43,6 +43,8 @@ function reconcileNode(
       lifecycle: "destroyed",
       completedActorId: null,
       effectId: null,
+      // Replacement is a new native effect; the destroyed node's completed identity stays terminal.
+      attempt: current.attempt + 1,
       retryAfterTick: observation.tick
     };
   }
@@ -61,7 +63,6 @@ function reconcileNode(
       ...current,
       lifecycle: "finished",
       completedActorId: outcome.resultingActorIds[0] ?? null,
-      attempt: 0,
       retryAfterTick: observation.tick + 40
     };
   }
@@ -78,17 +79,34 @@ function reconcileNode(
   return { ...current, lifecycle: "requested" };
 }
 
+/** Reconciles native sites and terminal effects without reopening abandoned plans or recycling replacement identities. */
 export function reconcileFortificationPlan(
   plan: AiFortificationStateV1,
   observation: AiObservationV1,
   state: AiBrainStateV1
 ): AiFortificationStateV1 {
-  if (!plan.graph) return plan;
+  if (!plan.graph || plan.lifecycle === "abandoned") return plan;
+  if (!state.bases.some((base) => base.baseId === plan.graph?.baseId && base.active && base.lifecycle !== "lost")) {
+    return {
+      ...plan,
+      lifecycle: "abandoned",
+      graph: {
+        ...plan.graph,
+        nodes: plan.graph.nodes.map((current) =>
+          current.lifecycle === "finished" ? current : { ...current, lifecycle: "abandoned" }
+        ),
+        breach: { ...plan.graph.breach, reason: "protected_base_lost" }
+      }
+    };
+  }
   const nodes = plan.graph.nodes.map((current) => {
     const effectClaimId = `claim:fortification:${current.nodeId}:effect`;
     const reserved = state.reservations.some(
       (reservation) =>
-        reservation.claimId === effectClaimId &&
+        (reservation.subjectKey === `effect:${current.effectId}` ||
+          (reservation.subjectKey === undefined &&
+            (reservation.claimId === effectClaimId ||
+              reservation.claimId === `claim:fortification:${current.nodeId}:${current.attempt}:effect`))) &&
         (reservation.state.kind !== "provisional" || reservation.state.expiresAt.dueTick > observation.tick)
     );
     return reconcileNode(current, observation, state.pendingOutcomes, reserved);
@@ -111,7 +129,7 @@ export function reconcileFortificationPlan(
   const recoveryAttempts = missing.length
     ? Math.max(
         plan.graph.breach.recoveryAttempts,
-        ...nodes.filter((current) => current.lifecycle === "destroyed").map((current) => current.attempt + 1)
+        ...nodes.filter((current) => current.lifecycle === "destroyed").map((current) => current.attempt)
       )
     : plan.graph.breach.recoveryAttempts;
   const abandoned = recoveryAttempts > MAX_BREACH_RECOVERY_ATTEMPTS;
