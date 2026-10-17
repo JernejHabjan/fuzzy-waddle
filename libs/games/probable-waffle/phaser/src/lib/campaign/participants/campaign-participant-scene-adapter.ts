@@ -9,6 +9,7 @@ import { ProbableWaffleAiDifficulty, ResourceType } from "@fuzzy-waddle/probable
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
+import { fenceSceneResourceHistory } from "../../data/scene-resource-observation";
 
 /** Defines the campaign participant scene adapter contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export class CampaignParticipantSceneAdapter {
@@ -63,6 +64,7 @@ export class CampaignParticipantSceneAdapter {
       allowances.configurePlayer(slot.playerNumber, [mission.progressionAllowance]);
       this.validateFullAiAllowance(scene, slot.playerNumber, slot.participant);
       if (!scene.baseGameData.gameInstance.gameInstanceMetadata.isStartupLoad()) {
+        fenceSceneResourceHistory(scene, "resource_campaign_setup");
         this.applyStartingResources(
           player.playerState.data.resources,
           slot.participant,

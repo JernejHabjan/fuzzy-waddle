@@ -1,0 +1,210 @@
+import type { AiIntentV1, AiObservationV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import { FactionType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { OrderType } from "../../ai/order-type";
+import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
+import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
+import { getSceneService } from "../../world/services/scene-component-helpers";
+import { PlayerAiController } from "./player-ai-controller";
+import type Phaser from "phaser";
+import { installAiResourceInputObserver } from "./observation/ai-resource-input-observation";
+import { rememberAiResourceInputRead } from
+  "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-resource-input-observation";
+
+jest.mock("../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+
+const baseIntent = {
+  intentId: "intent:test",
+  effectId: "effect:test",
+  planId: "plan:opening",
+  demandId: null,
+  lane: "essential_economy",
+  proposedTick: 20,
+  urgencyClass: 0,
+  utility: 900,
+  preconditions: [],
+  claims: [],
+  reasonCode: "test"
+} as const;
+
+describe("PlayerAiController pure planner integration", () => {
+  afterEach(() => jest.clearAllMocks());
+
+  it("binds the actual committed read before reconciliation even when the pure step throws", () => {
+    const controller = Object.create(PlayerAiController.prototype) as PlayerAiController;
+    const observation = { schemaVersion: 1, generation: 7, tick: 0, playerNumber: 1, faction: FactionType.Tivara,
+      actors: [], resources: [], accessProducts: [], effects: [], modeGoals: [], researchCandidates: [],
+      threatSummary: { observedTick: 0, visibleEnemyActorIds: [], rememberedEnemyActorIds: [], observedCapabilityFamilies: [] }
+    } satisfies AiObservationV1;
+    const read = { captureEpoch: 1, lossEpoch: 0, sequence: 2, playerNumber: 1, generation: 7 };
+    rememberAiResourceInputRead(observation, read);
+    const scene = {} as Phaser.Scene, order: string[] = [];
+    Reflect.set(controller, "scene", scene); Reflect.set(controller, "player", { playerNumber: 1 });
+    Reflect.set(controller, "playerAiControllerAgent", { getCommittedObservation: () => observation });
+    Reflect.set(controller, "getBrainCommandBridgeSnapshot", () => undefined);
+    Reflect.set(controller, "brainState", {});
+    Reflect.set(controller, "pureBrain", { step: (input: AiObservationV1) => {
+      order.push("reconcile"); expect(input).toBe(observation); throw new Error("pure_failed");
+    } });
+    const release = installAiResourceInputObserver(scene, { begin: () => undefined,
+      fence: (player, reason, incoming) => {
+        order.push("close_previous"); expect(player).toBe(1); expect(reason).toBe("controller_decision_started");
+        expect(incoming).toEqual(read);
+      } });
+    try {
+      expect(() => (controller as unknown as { stepPureBrain(): void }).stepPureBrain()).toThrow("pure_failed");
+      expect(order).toEqual(["close_previous", "reconcile"]);
+    } finally { release(); }
+  });
+
+  it("publishes disable/authority/replacement fences before changing controller policy or attempting migration", () => {
+    const controller = Object.create(PlayerAiController.prototype) as PlayerAiController;
+    const scene = {} as Phaser.Scene, policy = { campaignAiEnabled: true };
+    Reflect.set(controller, "scene", scene);
+    Reflect.set(controller, "player", { playerNumber: 1, playerController: { data: { playerDefinition: policy } } });
+    Reflect.set(controller, "authorityActive", true);
+    const reasons: string[] = [];
+    const before: unknown[] = [];
+    const release = installAiResourceInputObserver(scene, { begin: () => undefined, fence: (_player, reason) => {
+      reasons.push(reason);
+      if (reason === "controller_disabled") before.push(policy.campaignAiEnabled);
+      if (reason === "controller_authority_lost") before.push(Reflect.get(controller, "authorityActive"));
+    } });
+    controller.setEnabled(false); controller.setAuthorityActive(false);
+    Reflect.set(controller, "getBrainMigrationContext", () => undefined);
+    expect(() => controller.setBrainState({})).toThrow("ai_brain_identity_unavailable");
+    expect(reasons).toEqual(["controller_disabled", "controller_authority_lost", "controller_brain_replaced"]);
+    expect(before).toEqual([true, true]);
+    release();
+  });
+
+  it("runs only the pure planner when the skirmish brain is available", () => {
+    const controller = Object.create(PlayerAiController.prototype) as PlayerAiController;
+    const pureStep = jest.fn();
+    const legacyStep = jest.fn();
+    Reflect.set(controller, "pureBrain", {});
+    Reflect.set(controller, "stepPureBrain", pureStep);
+    Reflect.set(controller, "behaviourTree", { step: legacyStep });
+    Reflect.set(controller, "telemetry", { withSpan: (_name: string, action: () => void) => action() });
+
+    invokeDecisionPlanner(controller);
+
+    expect(pureStep).toHaveBeenCalledTimes(1);
+    expect(legacyStep).not.toHaveBeenCalled();
+  });
+
+  it("keeps the legacy behavior tree as a fallback when no profile can create a pure brain", () => {
+    const controller = Object.create(PlayerAiController.prototype) as PlayerAiController;
+    const pureStep = jest.fn();
+    const legacyStep = jest.fn();
+    Reflect.set(controller, "pureBrain", undefined);
+    Reflect.set(controller, "stepPureBrain", pureStep);
+    Reflect.set(controller, "behaviourTree", { step: legacyStep });
+    Reflect.set(controller, "telemetry", { withSpan: (_name: string, action: () => void) => action() });
+
+    invokeDecisionPlanner(controller);
+
+    expect(pureStep).not.toHaveBeenCalled();
+    expect(legacyStep).toHaveBeenCalledTimes(1);
+  });
+
+  it("fences a demoted host before planning or dispatch without changing the saved AI policy", () => {
+    const controller = Object.create(PlayerAiController.prototype) as PlayerAiController;
+    const pureStep = jest.fn();
+    const policy = { campaignAiEnabled: true };
+    Reflect.set(controller, "pureBrain", {});
+    Reflect.set(controller, "stepPureBrain", pureStep);
+    Reflect.set(controller, "telemetry", { withSpan: (_name: string, action: () => void) => action() });
+    Reflect.set(controller, "player", { playerNumber: 1, playerController: { data: { playerDefinition: policy } } });
+    Reflect.set(controller, "scene", { events: { listenerCount: () => 0 } });
+    Reflect.set(controller, "stepQueued", true);
+
+    controller.setAuthorityActive(false);
+    invokeDecisionPlanner(controller);
+    invokeDispatch(controller, [{ ...baseIntent, kind: "stop", actorIds: ["worker"] } as AiIntentV1]);
+    expect(pureStep).not.toHaveBeenCalled();
+    expect(getSceneService).not.toHaveBeenCalled();
+    expect(policy.campaignAiEnabled).toBe(true);
+    expect(Reflect.get(controller, "stepQueued")).toBe(false);
+
+    controller.setAuthorityActive(true);
+    invokeDecisionPlanner(controller);
+    expect(pureStep).toHaveBeenCalledTimes(1);
+  });
+
+  it("dispatches gather, tend and stop intents through shared command authority", () => {
+    const actors = new Map([
+      ["worker", {}],
+      ["source", {}],
+      ["field", {}]
+    ]);
+    const actorIndex = {
+      getActorById: (actorId: string) => actors.get(actorId),
+      getActorsByIds: (actorIds: readonly string[]) => actorIds.map((actorId) => actors.get(actorId)).filter(Boolean)
+    };
+    const dispatchAi = jest.fn();
+    jest.mocked(getSceneService).mockImplementation((_scene, service) => {
+      if (service === ActorIndexSystem) return actorIndex as never;
+      if (service === CommandBusService) return { dispatchAi } as never;
+      return undefined;
+    });
+    const controller = Object.create(PlayerAiController.prototype) as PlayerAiController;
+    Reflect.set(controller, "scene", { events: { listenerCount: () => 0 } });
+    Reflect.set(controller, "player", { playerNumber: 1 });
+
+    invokeDispatch(controller, [
+      {
+        ...baseIntent,
+        kind: "assign_gatherers",
+        actorIds: ["worker"],
+        resourceType: ResourceType.Wood,
+        sourceActorId: "source"
+      },
+      {
+        ...baseIntent,
+        intentId: "intent:tend",
+        effectId: "effect:tend",
+        kind: "tend",
+        actorIds: ["worker"],
+        targetActorId: "field"
+      },
+      {
+        ...baseIntent,
+        intentId: "intent:stop",
+        effectId: "effect:stop",
+        kind: "stop",
+        actorIds: ["worker"]
+      }
+    ] as AiIntentV1[]);
+
+    expect(dispatchAi).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({
+        type: "ACTOR_ACTION",
+        orderType: OrderType.Gather,
+        actorIds: ["worker"],
+        targetObjectIds: ["source"]
+      }),
+      expect.any(Object)
+    );
+    expect(dispatchAi).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({ orderType: OrderType.Gather, targetObjectIds: ["field"] }),
+      expect.any(Object)
+    );
+    expect(dispatchAi).toHaveBeenNthCalledWith(
+      3,
+      expect.objectContaining({ type: "STOP", actorIds: ["worker"] }),
+      expect.any(Object)
+    );
+  });
+});
+
+function invokeDecisionPlanner(controller: PlayerAiController): void {
+  (controller as unknown as { stepDecisionPlanner(): void }).stepDecisionPlanner();
+}
+
+function invokeDispatch(controller: PlayerAiController, intents: readonly AiIntentV1[]): void {
+  (controller as unknown as { dispatchAcceptedIntents(values: readonly AiIntentV1[]): void }).dispatchAcceptedIntents(
+    intents
+  );
+}

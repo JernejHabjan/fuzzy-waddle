@@ -6,6 +6,9 @@ import { onObjectReady } from "../../../data/game-object-helper";
 import type { TendableDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/tendable/tendable-definition";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
+import type { TendableComponentData } from "@fuzzy-waddle/probable-waffle-protocol";
+import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 type GameObject = Phaser.GameObjects.GameObject;
 
 /**
@@ -37,6 +40,7 @@ export class TendableComponent {
   private tenders = new Set<GameObject>();
   private resourceSourceComponent?: ResourceSourceComponent;
   private simulationTickSub?: Subscription;
+  private pendingTenderIds: string[] = [];
 
   constructor(
     private readonly gameObject: GameObject,
@@ -51,8 +55,9 @@ export class TendableComponent {
 
   private onObjectReady() {
     this.resourceSourceComponent = getActorComponent(this.gameObject, ResourceSourceComponent);
+    this.resolvePendingTenders();
     // Lock resources at start — TendableComponent unlocks them when fully grown
-    this.resourceSourceComponent?.lockResources();
+    if (this.growthPercent < 100) this.resourceSourceComponent?.lockResources();
     // Subscribe to depletion to restart the growth cycle
     this.resourceSourceComponent?.onDepleted.subscribe(() => {
       if (this.resourceSourceComponent?.resourceSourceDefinition.respawnOnDepletion) {
@@ -62,6 +67,7 @@ export class TendableComponent {
   }
 
   private update(): void {
+    this.resolvePendingTenders();
     if (this.growthPercent >= 100) return;
     if (!this.definition.autoStart && this.tenders.size === 0) return;
 
@@ -121,6 +127,44 @@ export class TendableComponent {
 
   isReadyForHarvest(): boolean {
     return this.growthPercent >= 100;
+  }
+
+  /** Restores growth and stable tender identities without serializing live actors. */
+  setData(data: Partial<TendableComponentData>): void {
+    if (data.growthPercent !== undefined && Number.isFinite(data.growthPercent)) {
+      this.growthPercent = Math.max(0, Math.min(100, data.growthPercent));
+      this._currentPhase = this.calculatePhase();
+    }
+    if (data.tenderIds) {
+      this.pendingTenderIds = [...new Set(data.tenderIds)]
+        .filter((id): id is string => typeof id === "string" && id.length > 0)
+        .sort()
+        .slice(0, Math.max(0, this.definition.maxTenders));
+    }
+    this.resolvePendingTenders();
+    if (this.resourceSourceComponent && this.growthPercent < 100) this.resourceSourceComponent.lockResources();
+  }
+
+  getData(): TendableComponentData {
+    const tenderIds = [
+      ...this.pendingTenderIds,
+      ...[...this.tenders]
+        .map((tender) => getActorComponent(tender, IdComponent)?.id)
+        .filter((id): id is string => id !== undefined)
+    ];
+    return { growthPercent: this.growthPercent, tenderIds: [...new Set(tenderIds)].sort() };
+  }
+
+  private resolvePendingTenders(): void {
+    if (this.pendingTenderIds.length === 0) return;
+    const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
+    if (!actorIndex) return;
+    const unresolved: string[] = [];
+    for (const tenderId of this.pendingTenderIds) {
+      const tender = actorIndex.getActorById(tenderId);
+      if (!tender || !this.assignTender(tender)) unresolved.push(tenderId);
+    }
+    this.pendingTenderIds = unresolved;
   }
 
   private destroy(): void {

@@ -6,7 +6,7 @@
     "allowJs": true,
     "types": ["@playwright/test", "node"],
     "ignoreDeprecations": "6.0",
-    "rootDir": "."
+    "rootDir": "../.."
   },
   "include": ["src/**/*.ts", "src/**/*.js", "playwright.config.ts"],
   "angularCompilerOptions": {

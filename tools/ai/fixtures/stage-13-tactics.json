@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "scenarioIds": [
+    "DOMAIN-06",
+    "RAID-01",
+    "RAID-02",
+    "WALL-03",
+    "FIGHT-01",
+    "FIGHT-02",
+    "FIGHT-04",
+    "H-23",
+    "H-24",
+    "H-25",
+    "H-29",
+    "H-30",
+    "C-06"
+  ],
+  "purpose": "Author the deterministic pure-driver tactical lifecycle and combat cases before Stage 15 supplies authoritative runtime counterparts.",
+  "driver": "pure",
+  "seeds": [759001, 759002, 759003],
+  "context": {
+    "mapId": "stage-13-bounded-tactics",
+    "mapDigest": "authored-stage-13-not-yet-executed",
+    "side": 1,
+    "faction": "Tivara",
+    "rulesVersion": "probable-waffle-rules-v1",
+    "contractVersions": {
+      "scenario": 1,
+      "brain": 1,
+      "observation": 1,
+      "command": 1,
+      "repro": 1,
+      "worldProjection": 1
+    }
+  },
+  "authoredCases": [
+    {
+      "case": "mission_lifecycle",
+      "assertions": [
+        "assemble",
+        "rally",
+        "advance",
+        "defend",
+        "regroup",
+        "recover",
+        "finite_assembly_deadline",
+        "finite_effect_deadline",
+        "large_squad_order_quota_continuation"
+      ]
+    },
+    {
+      "case": "domain_authority",
+      "assertions": ["air_naval_split", "one_primary_owner", "transport_owns_until_handoff", "landing_regroup"]
+    },
+    {
+      "case": "fortification_tactics",
+      "assertions": ["rampart_posts", "mobile_reserve", "breach_reinforcement", "topology_loss_withdrawal"]
+    },
+    {
+      "case": "combat_accounting",
+      "assertions": [
+        "useful_effect_tick",
+        "casualty_count",
+        "impact_reservation",
+        "overkill_prevention",
+        "target_hysteresis",
+        "oscillation_damping"
+      ]
+    },
+    {
+      "case": "mission_quality",
+      "assertions": [
+        "economy_raid",
+        "production_raid",
+        "support_heal",
+        "support_spell",
+        "autocast_ownership",
+        "deadline_forced_resolution"
+      ]
+    }
+  ],
+  "forbiddenAssertions": [
+    "actor_has_multiple_primary_squads",
+    "transport_passenger_ordered_before_handoff",
+    "mobile_reserve_assigned_to_rampart_post",
+    "lethal_damage_reserved_twice",
+    "autocast_spell_manually_cast",
+    "mission_waits_past_finite_deadline"
+  ],
+  "runtimeCounterpart": "required_in_stage_15",
+  "status": "authored_not_run"
+}

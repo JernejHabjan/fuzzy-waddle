@@ -13,6 +13,8 @@ import { SimulationTickService } from "../world/services/simulation-tick.service
 import { evaluateCampaignSaveEligibility } from "./campaign-save-eligibility";
 import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
 import { RandomService } from "../world/services/random.service";
+import { CommandBusService } from "../world/services/multiplayer/command-bus.service";
+import { SummonExpiryService } from "../entity/systems/summon-expiry.service";
 
 export class SaveGame {
   private saveGameSubscription: Subscription;
@@ -76,6 +78,7 @@ export class SaveGame {
       this.saveResearchState();
 
       this.saveRandomState();
+      this.saveCommandAuthority();
 
       const thumbnail = await this.takeScreenshot();
       this.scene.communicator.utilityEvents.emit({
@@ -174,6 +177,15 @@ export class SaveGame {
     const gameState = this.scene.baseGameData.gameInstance.gameState;
     const randomService = getSceneService(this.scene, RandomService);
     if (gameState && randomService) gameState.data.randomState = randomService.getState();
+  }
+
+  private saveCommandAuthority(): void {
+    const gameState = this.scene.baseGameData.gameInstance.gameState;
+    if (!gameState) return;
+    const commandBus = getSceneService(this.scene, CommandBusService);
+    const summonExpiries = getSceneService(this.scene, SummonExpiryService);
+    if (commandBus) gameState.data.commandAuthority = commandBus.getAuthorityState();
+    if (summonExpiries) gameState.data.summonExpiries = summonExpiries.getData();
   }
 
   private async takeScreenshot() {

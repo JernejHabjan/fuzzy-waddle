@@ -1,0 +1,4 @@
+interface:
+  display_name: "Fuzzy Waddle Stage Delivery"
+  short_description: "Audit, verify and hand off one authorized stage."
+  default_prompt: "Use $fuzzy-waddle-stage-delivery to close the selected stage with acceptance evidence, authorized publication and a cold-start handoff."

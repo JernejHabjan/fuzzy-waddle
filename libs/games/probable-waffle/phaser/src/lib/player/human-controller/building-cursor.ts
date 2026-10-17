@@ -7,7 +7,6 @@ import { ActorManager } from "../../data/actor-manager";
 import { getGameObjectBounds, getGameObjectLogicalTransform, onSceneInitialized } from "../../data/game-object-helper";
 import { DepthHelper } from "../../world/services/depth.helper";
 import { getPwActorDefinition } from "../../prefabs/definitions/actor-definitions";
-import { upgradeFromCoreToConstructingActorData } from "../../data/actor-data";
 import { getCurrentPlayerNumber, getPlayer } from "../../data/scene-data";
 import { GameEventEmitter as EventEmitter } from "@fuzzy-waddle/platform-game-host";
 import GameProbableWaffleScene from "../../world/scenes/GameProbableWaffleScene";
@@ -17,7 +16,7 @@ import { getActorComponent } from "../../data/actor-component";
 import { ConstructionGameObjectInterfaceComponent } from "../../entity/components/construction/construction-game-object-interface-component";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { getSceneComponent, getSceneService } from "../../world/services/scene-component-helpers";
-import { getTileCoordsUnderObject } from "../../library/tile-under-object";
+import { getCenterTileCoordUnderObject, getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { NavigationService } from "../../world/services/navigation.service";
 import { AudioService } from "../../world/services/audio.service";
 import { UiFeedbackBuildDeniedSound } from "../../hud/UiFeedbackSfx";
@@ -37,6 +36,7 @@ import {
   emitStructureTopologyChanged,
   emitStructureTopologyChangedAtTile
 } from "../../prefabs/buildings/tivara/navigation-topology.events";
+import { BuilderComponent } from "../../entity/components/construction/builder-component";
 const Vector2 = Phaser.Math.Vector2;
 type Vector2 = Phaser.Math.Vector2;
 
@@ -122,7 +122,7 @@ export class BuildingCursor {
    */
   private canActorBeAutoMoved(actor: GameObjects.GameObject): boolean {
     const currentPlayer = getCurrentPlayerNumber(this.scene);
-    if (!currentPlayer) return false;
+    if (currentPlayer === undefined) return false;
 
     // Check if actor is owned by current player
     const ownerComponent = getActorComponent(actor, OwnerComponent);
@@ -905,28 +905,25 @@ export class BuildingCursor {
 
   private spawnConstructionSite(gameObject: GameObjects.GameObject) {
     const currentPlayer = getCurrentPlayerNumber(this.scene);
-    const actorDefinition = {
-      ...(currentPlayer && {
-        owner: {
-          ownerId: currentPlayer
-        }
-      })
-    } satisfies ActorDefinition;
-
-    upgradeFromCoreToConstructingActorData(gameObject, actorDefinition);
-    // todo Save to game state
-
-    // Instruct selected builders to begin constructing the placed site
-    if (!currentPlayer) return;
-    const idComponent = getActorComponent(gameObject, IdComponent)!;
-    const selectedActorIds = getPlayer(this.scene)?.getSelection() ?? [];
+    const objectName = gameObject.name as ObjectNames;
+    const tile = this.tileMapComponent
+      ? getCenterTileCoordUnderObject(this.tileMapComponent.tilemap, gameObject)
+      : undefined;
+    gameObject.destroy();
+    if (currentPlayer === undefined || !tile) return;
+    const selectedActorIds = (getPlayer(this.scene)?.getSelection() ?? []).filter((actorId) => {
+      const builder = this.actorIndex.getActorById(actorId);
+      return !!builder && getActorComponent(builder, BuilderComponent)?.constructableBuildings.includes(objectName);
+    });
+    if (selectedActorIds.length === 0) return;
     const commandBus = getSceneService(this.scene, CommandBusService);
     commandBus?.dispatch({
-      type: "ACTOR_ACTION",
+      type: "CONSTRUCT",
       playerNumber: currentPlayer,
       actorIds: selectedActorIds,
-      targetObjectIds: [idComponent.id],
-      queue: false
+      actorName: objectName,
+      tileVec3: { x: tile.x, y: tile.y, z: 0 },
+      siteKey: `${currentPlayer}:${objectName}:${tile.x}:${tile.y}`
     });
   }
 

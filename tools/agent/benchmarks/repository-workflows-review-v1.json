@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "benchmark": {
+    "id": "repository-workflows",
+    "beforeDefinitionDigest": "8987bc044068c25c666dfd7e900f092379ad3270138d07893517f9035cd8c228",
+    "currentDefinitionDigest": "c9a02adfb2069cc10d0aebe1807225b1889a01d2cffc8e39234b92fc26478dae"
+  },
+  "reviewedOn": "2026-09-12",
+  "rankedBottlenecks": [
+    {
+      "rank": 1,
+      "owner": "generic process lifecycle contract",
+      "evidence": "The single Playwright runtime workflow used 101168.62 of 112689.73 measured command milliseconds (89.78 percent).",
+      "decision": "Defer optimization until generic lifecycle and adapter contracts exist; do not weaken or skip the real runtime scenario."
+    },
+    {
+      "rank": 2,
+      "owner": "repository source discovery",
+      "evidence": "The initial discovery provider was unavailable, so a cold agent could not complete this required workflow.",
+      "decision": "Selected and completed: use source-index-guided `rg --files` with a profile-name glob."
+    },
+    {
+      "rank": 3,
+      "owner": "generic context packet contract",
+      "evidence": "The representative cross-project and runtime workflows select 58181 and 104286 context bytes respectively.",
+      "decision": "Defer to `agent:context`; derive bounded routes from project ownership instead of copying another source index."
+    }
+  ],
+  "selectedImprovement": {
+    "owner": "repository source discovery",
+    "change": "Removed the unavailable external semantic-search dependency and replaced it with indexed, path-bounded native discovery.",
+    "qualityInvariants": ["same-required-evidence", "fail-closed", "preserve-provenance"],
+    "remeasurement": {
+      "outcome": "passed",
+      "contextBytes": 4566,
+      "commandWallMilliseconds": 11.86,
+      "outputBytes": 199,
+      "outputLines": 3,
+      "retainedLogBytes": 199
+    },
+    "result": "The required discovery workflow is available and bounded. The new 199-byte result is not compared with the unavailable provider as a speed win."
+  },
+  "nextBoundary": "Implement generic command/adapter/result contracts with deterministic output budgets; then build doctor/context over Git, Nx ownership, source indexes, structural lint, and adapter metadata."
+}

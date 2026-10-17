@@ -27,4 +27,6 @@ export type ConstructionSiteComponentData = {
   assignedBuilders: ActorId[];
   assignedRepairers: ActorId[];
   playingBuildSound: boolean;
+  /** Absent in old saves. Once settled, cancellation cannot repay or resume this site. */
+  cancellationSettled?: true;
 };

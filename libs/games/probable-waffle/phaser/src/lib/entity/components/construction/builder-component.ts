@@ -131,6 +131,8 @@ export class BuilderComponent {
       this.reportDeniedAction(HudVisualFeedbackMessageType.CannotAssignBuilder);
       return;
     }
+    // Release the former site's progress/capacity before transferring this worker to another site.
+    this.leaveConstructionSite();
     this.assignedConstructionSite = constructionSite;
     constructionSiteComponent.assignBuilder(this.gameObject);
     this.onAssignedToConstructionSite.next([this.gameObject, constructionSite]);
@@ -146,15 +148,16 @@ export class BuilderComponent {
   }
 
   leaveConstructionSite() {
+    this.pendingAssignedConstructionSiteId = undefined;
     if (!this.assignedConstructionSite) return;
 
     const constructionSite = this.assignedConstructionSite;
     const constructionSiteComponent = getActorComponent(constructionSite, ConstructionSiteComponent);
-    if (!constructionSiteComponent) return;
 
     // remove builder
     this.assignedConstructionSite = undefined;
-    constructionSiteComponent.unAssignBuilder(this.gameObject);
+    constructionSiteComponent?.unAssignBuilder(this.gameObject);
+    constructionSiteComponent?.unAssignRepairer(this.gameObject);
 
     // notify listeners
     this.onRemovedFromConstructionSite.next([this.gameObject, constructionSite]);
@@ -195,6 +198,7 @@ export class BuilderComponent {
       this.reportDeniedAction(HudVisualFeedbackMessageType.CannotAssignRepairer);
       return;
     }
+    this.leaveConstructionSite();
     this.assignedConstructionSite = target;
     constructionSiteComponent.assignRepairer(this.gameObject);
     this.onAssignedToConstructionSite.next([this.gameObject, target]);
@@ -224,33 +228,13 @@ export class BuilderComponent {
   }
 
   leaveRepairSite() {
-    if (!this.assignedConstructionSite) return;
-
-    const constructionSite = this.assignedConstructionSite;
-    const constructionSiteComponent = getActorComponent(constructionSite, ConstructionSiteComponent);
-    if (!constructionSiteComponent) return;
-
-    // remove repairer
-    this.assignedConstructionSite = undefined;
-    constructionSiteComponent.unAssignRepairer(this.gameObject);
-
-    // notify listeners
-    this.onRemovedFromConstructionSite.next([this.gameObject, constructionSite]);
-
-    console.log("builder left repair site");
-    if (this.builderComponentDefinition.enterConstructionSite) {
-      // leave repair site
-      const containerComponent = getActorComponent(constructionSite, ContainerComponent);
-      if (containerComponent) {
-        containerComponent.unloadGameObject(this.gameObject);
-        this.onConstructionSiteLeft.next([this.gameObject, constructionSite]);
-      }
-    }
+    this.leaveConstructionSite();
   }
 
   private destroy() {
     this.cooldownTickSub?.unsubscribe();
     this.simulationTickService = undefined;
+    this.leaveConstructionSite();
   }
 
   isIdle() {

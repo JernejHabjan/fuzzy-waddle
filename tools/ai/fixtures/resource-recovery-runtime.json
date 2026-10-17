@@ -1,0 +1,218 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "runtime",
+  "scenarioIds": ["ECO-06"],
+  "purpose": "Preserve a naturally harvested partial wood pack across depletion and native drop-off loss, then resume wood work and deliver a growing Field harvest.",
+  "driver": "runtime",
+  "status": "ready_for_runtime_execution",
+  "context": {
+    "mapId": "AiOpenEconomy",
+    "mapDigest": "resolved_from_candidate_assets",
+    "side": 2,
+    "rulesVersion": "probable-waffle-rules-v1"
+  },
+  "recipe": {
+    "mapLabel": "AI Open Economy (test only)",
+    "aiPlayerNumber": 2,
+    "simulationTimeScale": 1,
+    "fixedStepFrames": true,
+    "checkpointTicks": [20, 140, 180, 400, 800, 1200],
+    "variants": [
+      {
+        "id": "depleted-cargo-dropoff-recovery",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "scenarioIds": ["ECO-06"],
+        "seed": 759606,
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "repetitions": 1,
+        "presetWorld": {
+          "fixtureId": "depleted-cargo-dropoff-recovery",
+          "actors": [
+            {
+              "fixtureActorId": "ai-worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 784,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 672,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 576,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 608,
+                "y": 904,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "field",
+              "actorName": "Field",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 640,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 960,
+                "y": 1120,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "lost-dropoff",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 1056,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "near-empty-tree",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": 896,
+                "y": 840,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "spare-tree",
+              "actorName": "Tree9",
+              "owner": null,
+              "position": {
+                "x": 960,
+                "y": 840,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1200,
+                "z": 0
+              }
+            }
+          ],
+          "requireFactionRoster": true,
+          "resourceStarts": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 0,
+                "wood": 0,
+                "minerals": 0,
+                "stone": 0
+              }
+            }
+          ],
+          "events": [
+            {
+              "id": "dropoff-loss",
+              "tick": 160,
+              "kind": "destroy_owned_actor",
+              "owner": 2,
+              "objectName": "WorkMill",
+              "fixtureActorId": "lost-dropoff"
+            }
+          ],
+          "resourceGrants": [],
+          "sourceStocks": [
+            {
+              "fixtureActorId": "near-empty-tree",
+              "amount": 2
+            }
+          ],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "ai-worker-1",
+              "sourceFixtureActorId": "near-empty-tree",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "ai-worker-2",
+              "sourceFixtureActorId": "field",
+              "kind": "gather"
+            }
+          ]
+        },
+        "deadlineRationale": "The carrier starts outside building footprints; the nearby mill is lost at tick 160 while its partial two-unit pack must still reach a surviving drain, before resuming work and harvesting the growing Field by tick 1200."
+      }
+    ]
+  },
+  "assertions": {
+    "ECO-06": {
+      "minimumDecisions": 10,
+      "minimumAppliedCommands": 1,
+      "requiredAiFactions": ["Tivara"],
+      "requiredResourceRecovery": {
+        "latestTick": 1200,
+        "sourceFixtureActorId": "near-empty-tree",
+        "sourceStock": 2,
+        "workerFixtureActorId": "ai-worker-1",
+        "fieldFixtureActorId": "field",
+        "dropOffFixtureActorId": "lost-dropoff",
+        "lossEventId": "dropoff-loss"
+      }
+    }
+  },
+  "deliberatelyBrokenOracle": "Discard or relabel a loaded pack, keep using a destroyed drop-off, or count a growing field as already delivered food."
+}
