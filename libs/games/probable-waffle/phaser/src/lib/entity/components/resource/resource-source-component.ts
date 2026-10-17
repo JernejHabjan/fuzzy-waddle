@@ -8,11 +8,13 @@ import { getGameObjectRenderedTransform } from "../../../data/game-object-helper
 import type { ResourceSourceDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/resource/resource-source-definition";
 import { waitForSimulationDuration } from "../../../world/services/simulation-time";
 import { fenceSceneResourceHistory } from "../../../data/scene-resource-observation";
+import { HealthComponent } from "../combat/components/health-component";
 
 export class ResourceSourceComponent {
   private static readonly debug = false;
-  onResourcesChanged: Subject<[ResourceType, number, Phaser.GameObjects.GameObject]> =
-    new Subject<[ResourceType, number, Phaser.GameObjects.GameObject]>();
+  onResourcesChanged: Subject<[ResourceType, number, Phaser.GameObjects.GameObject]> = new Subject<
+    [ResourceType, number, Phaser.GameObjects.GameObject]
+  >();
   onDepleted: Subject<Phaser.GameObjects.GameObject> = new Subject<Phaser.GameObjects.GameObject>();
   onAssignedGatherersChanged: Subject<number> = new Subject<number>();
   private currentResources: number;
@@ -39,19 +41,33 @@ export class ResourceSourceComponent {
   }
 
   async extractResources(gatherer: Phaser.GameObjects.GameObject, amount: number): Promise<number> {
+    const scene = this.gameObject.scene;
+    if (!Number.isFinite(amount) || amount <= 0 || !this.isLiveExtraction(gatherer, scene)) return 0;
     if (this.gathererMustEnter) {
-      fenceSceneResourceHistory(this.gameObject.scene, "resource_source_capacity_change");
+      const capacity = this.containerComponent?.containerDefinition?.capacity;
+      if (capacity !== undefined && this.currentCapacity >= capacity) return 0;
+      fenceSceneResourceHistory(scene, "resource_source_capacity_change");
       this.currentCapacity += 1;
-      this.containerComponent?.loadGameObject(gatherer);
     }
-
-    await waitForSimulationDuration(this.gameObject.scene, this.resourceSourceDefinition.cooldown);
-
-    if (this.gathererMustEnter) {
-      fenceSceneResourceHistory(this.gameObject.scene, "resource_source_capacity_change");
-      this.containerComponent?.unloadGameObject(gatherer);
-      this.currentCapacity -= 1;
+    let loaded = false;
+    try {
+      if (this.gathererMustEnter) {
+        this.containerComponent?.loadGameObject(gatherer);
+        loaded = true;
+      }
+      await waitForSimulationDuration(scene, this.resourceSourceDefinition.cooldown);
+    } finally {
+      if (this.gathererMustEnter) {
+        fenceSceneResourceHistory(scene, "resource_source_capacity_change");
+        try {
+          if (loaded && this.gameObject.scene === scene && gatherer.scene === scene)
+            this.containerComponent?.unloadGameObject(gatherer);
+        } finally {
+          this.currentCapacity = Math.max(0, this.currentCapacity - 1);
+        }
+      }
     }
+    if (!this.isLiveExtraction(gatherer, scene)) return 0;
 
     const gatheredAmount = Math.min(amount * this.resourceSourceDefinition.gatheringFactor, this.currentResources);
 
@@ -89,6 +105,19 @@ export class ResourceSourceComponent {
       }
     }
     return gatheredAmount;
+  }
+
+  /** Stock is deducted only while the original source and receiving carrier still exist in their scene. */
+  private isLiveExtraction(gatherer: Phaser.GameObjects.GameObject, scene: Phaser.Scene): boolean {
+    return (
+      !!scene &&
+      this.gameObject.scene === scene &&
+      gatherer.scene === scene &&
+      this.gameObject.active !== false &&
+      gatherer.active !== false &&
+      getActorComponent(this.gameObject, HealthComponent)?.killed !== true &&
+      getActorComponent(gatherer, HealthComponent)?.killed !== true
+    );
   }
 
   /**

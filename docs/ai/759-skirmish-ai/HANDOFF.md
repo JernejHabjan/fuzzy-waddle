@@ -3,48 +3,40 @@
 Default resume page: read this first, then only the selected package in [REMAINING-WORK.md](REMAINING-WORK.md).
 Do not load the full plan directory or archive on startup.
 
-## Current cursor — checked checkpoint, victory unresolved, 2026-10-17
+## Current cursor — grouped implementation, final gates deferred, 2026-10-17
 
 - Worktree /home/jernej/.codex/worktrees/7977/fuzzy-waddle; branch feature/759-skirmish-ai.
-  Published base50266799471a2804243bd147a759deca2873c150; mechanical extraction4d75589aa plus owned behavior checkpoint.
-  Actual model/effort unknown. Pause for the user-requested stronger-reasoning boundary; recommend Sol6.1/high.
-  No subagent, new chat, automation, PR or automatic model switch is authorized.
-- Package1 retained8/8 and Package2 retained16/16 (100% each). Latest grouped native gate7/8 selected rows (87.5%):
-  PRO-04,ECO-05/06/07/08,H-18,SCOUT-05 pass; SEQ-01 still fails Skaduwee victory. Full-match gate1/2 factions (50%).
-  Broader Package3 remains open; no inferred overall AI completion percentage. This checkpoint does not close the batch.
-- Implemented: legal housing starts/paid replacement, abandoned-site builders, asynchronous order fences, dead drop-off
-  stopping/slot release/cargo preservation, completed resource-service indexing, fair scouting and bounded paired reports.
-  Combat repairs cover disjoint domain reinforcements, parent launch inheritance, native attack continuity, legal
-  attack-move approaches, independent distant reinforcement moves, combined strength and cooldown-stable retreat.
-  Visible reachable mission targets persist through live native jobs or useful progress within their existing deadline.
-- Shared prices: melee food100→60 both factions, Skaduwee archer100→70, Tivara slingshot120→80; ranged wood25 unchanged.
-  No worker/building price, combat stats, training times, field yield or worker-capacity edits. Composition's8 native worlds
-  pass. Increased field yield/capacity is explicitly authorized if delivery/queue evidence establishes food as the bottleneck.
-- Latest grouped report: live-objective-grouped-native/1792262521219-failed.json, dirtyb3fa0872, fixture5df422ef,
-  3130 decisions/62602ticks. Seven rows pass; Skaduwee victory fails. Retain these passes on their stated source.
-- Latest official pair: progress-objective-victory-native/1792264457766-failed.json, dirty79042edc, fixture0c6acf03,
-  900 decisions/18000ticks,211824ms. Tivara wins6000; Skaduwee at12000 has8 workers/8 ground army,35 produced,
-  327.68food/min,5059damage/13 enemy losses,90 food and empty producer queues. Only ai_victory_missing fails.
-  Field throughput alone is not established as the cause. Do not call launched/engaging squads a victory.
-- Checks: progress-objective-ai-controls82 suites415 tests; selected29 pure IDs (progress-objective-final-pure), gameplay
-  lint/app types pass. Retained graph/vision/navigation5 suites9, native lifecycle/navigation20 suites167, interface2 suites7,
-  reader9/report-budget9 and mechanical60 parity controls. Standalone Phaser's8 baseline type errors are not clean.
-- **Next grouped causal pass:** inspect early offensive force/route selection and continuing squad ownership together:
-  select-ai-offensive-opportunity.ts, ai-skirmish-offense.ts, ai-tactics-mission-{preparation,projection,orders}.ts,
-  project-ai-squad-membership.ts. Skaduwee first launch remains7040, surviving forces still miss the terminal finish.
-  Find the first interruption through assignment → shared native order → physical effect, add a red/green owner control,
-  then rerun SEQ-01 on a frozen candidate. Recheck other native rows only if their actual inputs/predicates change.
-- Local permitted capture live-objective-input-probe.json has6000/8000/10000/12000 inputs; bounded tactical/selection
-  replays pass. Its separately sampled late trajectory differs from the official match, so it is not reproducibility proof.
-  continuous-cadence-after.log proves coarse/fine agreement only through2000; earlier salted-ID/timer runs are historical.
-- All artifacts remain ignored under tmp/ai-plans/759-validation/. Never load raw reports into the model. Ordinary summaries
-  cap8192 UTF-8 bytes and disclose omissions; request only named bounded fields afterward. No new machinery expansion.
-- Source SHA256 e0c2202abf5660a0bd56399dc7dac989d32a9ca7f7261f50f4adda2a54e177f6 covers110 non-Markdown task paths
-  out of118 owned paths from the published base. Exclude .run/start_portal.run.xml and ALL_VISIBLE fog edit.
-  Omission/Final Closure audits distinguish checked repairs from the unresolved victory gate. No native run remains active;
-  stop managed server before publication. Verify the containing checkpoint commit/remote SHA when resuming.
-- Resume doctor passes; generic context selection reports issue_plan_count:759:5. This explicit HANDOFF remains the router.
-  Machinery necessity/removal review remains last overall, after all required gameplay/integration/calibration work.
+  Starting checkpoint5478ae7cd0a773cf4c68f33d17113ce61f10a443; verify the containing publication commit on resume.
+  Actual model/effort unknown. No subagent, new chat, automation, PR or automatic model switch authorized.
+- User-selected batch: attack readiness/continuity, combat decisions, construction recovery, conditional food balance
+  and resource correctness together. **Full-match victory reruns and broad regression gate are deferred by the user.**
+  Focused owner controls, lint and source typing are allowed; do not launch SEQ-01 or a broad native matrix on continue
+  without reconciling that deferral. This is implementation evidence, not full scenario/package closure.
+- Authored: independent domain/origin route checks combine directly reachable ground/air forces; incompatible enemy
+  weapons do not inflate force requirements. Tactical target commitment/ranking rejects untargetable or known blocked
+  objectives while preserving shots already in range. Useful mission members cannot fall into home reserve during a job gap.
+- Construction: select a reachable compatible replacement; reclaim workers after a cancelled/finished site, release
+  known impossible Build jobs, preserve healthy work/cargo/transfer ownership. Native payment cannot reenter and charge twice.
+- Resources: drop-off validates surviving endpoints/recipient after its wait, locks duplicate carrier returns, rejects
+  invalid amounts, and admits outdoor drains without container capacity. Source/drain container slots release after errors;
+  extraction cannot deduct stock after source/carrier loss. Existing conversion/campaign recipient policy is retained.
+- Fields remain unchanged: last retained match had327.68food/min,90food and empty producer queues. Native food controls
+  still exercise actual harvest, growth, pack and delivery boundaries. No new match or speculative throughput rebalance.
+- Current focused evidence lives under ignored tmp/ai-plans/759-validation/continuity-resource-\*.log; see CURRENT-EVIDENCE
+  for exact counts, commands, red/green triggers and separate omission/closure audits. Raw proof never enters model context;
+  ordinary summaries remain capped8192 UTF-8 bytes. No diagnostic machinery was added.
+  Focused checks:10 gameplay suites82 tests and12 native suites91 tests pass (173/173 controls,100%,0 failing);
+  both project lints and actual app source typing pass. These counts do not certify full scenario/package completion.
+- Historical source5478ae7cd retains production8/8 and economy/technology16/16; changed combat/construction/resource inputs
+  need affected native rechecks at the later gate. Historical selected native7/8 and full victories1/2 (50%) are unchanged,
+  not revalidated on this candidate. Broader Packages3–5, M11 alias/restore authority and integration remain open.
+- **Next dependency-ready implementation batch:** continue placement/fortification/recovery and resource-authority
+  scenario gaps together (Packages4/5), reusing existing controls before adding setups; inspect SCENARIO-INVENTORY's
+  PLACE/EXP/WALL/H and resource rows. Do not restart combat probing merely to chase an unrun victory result.
+  Recommend Sol6.1/high for remaining authority/design questions; recommendations do not change the active settings.
+- Preserve unrelated .run/start_portal.run.xml and the ALL_VISIBLE fog edit. No managed server or native match was started.
+  Commit/push only owned paths, verify remote equality, report done/why and next/why, then pause.
+  Machinery necessity/removal review remains last overall.
 
 ## What “continue” means
 
@@ -74,18 +66,15 @@ Use Sol for unresolved causal/design questions; economical models can implement 
 No per-file/scenario model-switch pauses. Commit/push task-owned changes, verify remote equality, report and pause at
 the agreed coherent boundary. Do not merge, force-push or create a PR unless separately authorized.
 
-## Final validation gate — not during the implementation sweep
+## Verification policy — focused controls now; broad final gate deferred
 
-The correctness gate is **active**; old test-deferral instructions are historical. Use affected controls during repairs
-and grouped checks at stable boundaries. Repeat expensive runs only after relevant changes or to answer a named question.
-Never weaken deadlines, usefulness, fairness or authority assertions. Diagnostic performance sanity is complete;
-no further profiling gate is scheduled. Shared balance adjustments are authorized when justified, including building/worker costs and resource yields
-(user reaffirmed2026-10-16). Prefer a meaningful workload-backed rebalance when prices are the cause; record old/new values,
-purpose and affected checks. Current candidate lowers four basic infantry food prices; see the active cursor.
-No combat stats, times or yields changed.
-User2026-10-17 explicitly suggests increased field yield or simultaneous worker capacity if food limits match speed.
-Current345.63food/min and36 produced units instead expose reinforcement-order starvation; repair that owner first,
-then reconsider field throughput only if fresh delivery/queue evidence identifies it as the bottleneck.
+User2026-10-17 defers both-faction full-match victory reruns and the broad regression gate until later.
+Use focused causal/negative/recovery controls during the selected grouped implementation batch, plus scoped formatting,
+lint and actual-source typing at publication. Do not interpret this deferral as permission to weaken outcomes or claim
+scenario completion without native proof. Later, rerun SEQ-01 and only affected native predicates on a frozen candidate.
+Diagnostic performance sanity is complete; no further profiling gate is scheduled. Shared balance adjustments remain
+authorized when justified (including costs, resource yields and worker capacity). Current field evidence does not
+establish food starvation; existing field values remain. Machinery review/removal stays last overall.
 
 ## Batch report and progress
 

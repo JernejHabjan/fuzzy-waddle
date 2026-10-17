@@ -37,6 +37,10 @@ Macro construction recovery also runs after the opening has completed. It assign
 to an observed unfinished site requiring builders, while preserving assigned, busy and loaded workers. The site
 keeps its existing payment and work; resumption neither places another building nor claims its resource price again.
 Automatic zero-worker sites are excluded using the definition-backed capability catalog.
+Recovery chooses a compatible worker with a usable observed approach, reclaims Build orders whose old site is gone
+or finished, and stops a known impossible construction job if no useful reassignment is available. Healthy assigned
+jobs and workers with cargo or an in-flight transfer keep their ownership; missing advisory topology alone is not
+proof that a native job is impossible.
 
 Housing recovery respects live construction prerequisites. If an ordinary house requires a lost core, demand
 selects a legal housing provider constructible by an owned builder and funds its actual catalog price. One recovery
@@ -53,6 +57,13 @@ Native resource indexes follow component installation as well as actor registrat
 their source/drop-off components only when upgraded to full actor data; the existing `ActorDataChangedEvent`
 refreshes those derived memberships without duplicating actor counts or registration events. Death and scene
 shutdown remove the component listener, so a late update cannot restore a dead building to the delivery index.
+
+Native source extraction and drop-off validate their original physical endpoints after the cooldown. A lost source
+or carrier cannot deduct stock; a lost drain or recipient cannot credit/debit a surviving carrier's cargo. Container
+capacity is released even when entry, waiting or exit throws. A drain admits one pending return per carrier and
+respects its active unload capacity; outdoor drains need no container slot. Invalid transfer amounts are rejected.
+Construction's synchronous payment callback cannot reenter the same site's start and charge it a second time.
+These local runtime guards do not establish mutation-complete resource history across arbitrary aliases or restore.
 
 ## Saves and controller lifecycle
 

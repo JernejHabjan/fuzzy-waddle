@@ -2,10 +2,73 @@
 
 [HANDOFF.md](HANDOFF.md) owns continuation. Read this current batch; older sections retain historical evidence.
 
-## Housing, worker recovery and combat batch — 2026-10-17
+## Grouped combat, construction and resource correctness — 2026-10-17
 
-Published base50266799471a2804243bd147a759deca2873c150; local mechanical tactical extraction4d75589aa is unpushed.
-Behavior changes remain uncommitted. Artifact paths below are ignored under tmp/ai-plans/759-validation/.
+Base5478ae7cd0a773cf4c68f33d17113ce61f10a443. User defers full-match victory reruns and broad regression.
+No browser match/server was started; actual model/effort unknown. All logs below are ignored under
+tmp/ai-plans/759-validation/. Publication follows focused evidence; no raw report or new machinery was needed.
+
+### Acceptance map and evidence
+
+1. **Readiness:** select-ai-offensive-force checks each origin/domain and combines independently direct cohorts.
+   Disconnected reinforcements do not inflate readiness; transport routes remain executable per cohort; ground
+   anti-air can target a flyer. Only compatible hostile weapons inflate counterforce. Published selector fails4/4
+   route controls (force-routing-published-before.log); final five pass. Developed-base control retains the eight-unit
+   requirement and three home reserves while launching eight mixed-domain members.
+2. **Continuity/combat:** useful progress protects mission members from quiet reserve during a native job gap until
+   the existing deadline. mission-reserve-before.log:1red/8green; final passes. Tactical ranking/commitment rejects
+   untargetable and known blocked/failed objectives, retaining shots already in range. Initial eligibility3red;
+   final five pass. Existing retreat, counterforce, reinforcement and domain-projection controls are included.
+3. **Construction:** recovery chooses a reachable compatible worker, reclaims cancelled/finished jobs and stops a
+   known impossible Build when reassignment is unavailable. Assigned/loaded/busy/automatic/finished negatives remain.
+   Initial cancelled-job regression fails; final ten recovery controls pass, including missing advisory regions.
+   Native construction payment rejects
+   synchronous reentry; source-payment-before.log reproduces the duplicate-charge risk. Affordability, callback-visible
+   pre-payment state, denial/retry and ordinary native cancellation controls remain intact.
+4. **Food:** unchanged. Retained match food327.68/min,90 stock and empty queues does not establish starvation.
+   Native field harvest/growth/cargo/return controls pass; yield, worker capacity, costs and stats stay unchanged.
+5. **Resource correctness:** drain validates surviving physical endpoints and recipient after waiting, locks repeated
+   carrier returns and respects unload capacity. Outdoor drains advertise service without a container. Source/drain
+   slots release after entry/wait/exit failures; invalid amounts are rejected; extraction cannot deduct stock after
+   endpoint loss. Lost drain/recipient returns zero, preserving surviving cargo. Initial drain11red; final13 pass.
+   Existing converted-owner/campaign policy is retained. M11 alias/net-zero/restore authority remains open.
+
+### Focused commands and provenance
+
+- `pnpm exec nx test probable-waffle-gameplay --runInBand --testPathPatterns=...`: ten selected specs cover offense
+  routing/recovery, construction recovery, target eligibility, tactical combat, squad projection, skirmish offense,
+  macro construction and builder delivery: **10 suites82 tests pass** (continuity-resource-gameplay.log).
+- `pnpm exec nx test probable-waffle-phaser --runInBand --testPathPatterns=...`: twelve selected specs cover drain
+  lifetime/credit/history, source history, construction payment/lifecycle, gatherer execution/source switching/food,
+  shared queue resources, pawn construction order lifetime and drain loss: **12 suites91 tests pass**
+  (continuity-resource-native.log). Both logs retain the exact copyable selectors.
+- Both project lints pass (continuity-resource-lint.log); final helper revision passes affected gameplay lint
+  (continuity-resource-final-gameplay-lint.log). Actual source typing passes:
+  `pnpm exec tsc -p apps/portal/tsconfig.app.json --noEmit` (continuity-resource-final-types.log).
+- SHA256 over17 ordered owned non-Markdown paths, each path + NUL + bytes + NUL:
+  `93e188f0482bfb776d179e091843ea7cab4df2d7b2bad69cc8a756fda2a29c55`.
+  continuity-resource-source.json excludes the unrelated run configuration and ALL_VISIBLE fog edits.
+
+### Omission Audit
+
+All five selected areas have implemented/focused-evidenced repairs or an evidence-based no-change decision (food).
+Actual macro/skirmish/tactical/shared native consumers are wired; no scaffolds, new scenario IDs, saved/wire fields
+or diagnostic expansion. Cargo, healthy work, retreat, firing range, reserves, affordability and campaign policies
+have controls. Arbitrary aliases, mutation-complete resource history, restores and integration remain explicit gaps.
+
+### Final Closure Audit — implementation checkpoint; release gate deferred
+
+**173/173 focused controls (100%),0 failing across22 suites.** Owned formatting/diff/staged scope checks precede
+commit/push/remote verification. This is not scenario/package/global AI completion. Historical production8/8,
+economy16/16, selected native7/8 and full victories1/2 belong to their earlier source; affected native rechecks and
+victory remain user-deferred. Next implementation combines placement/fortification/recovery and remaining resource
+boundary gaps, reusing existing coverage. Multiplayer/save/lifecycle/calibration and machinery review remain open;
+machinery review stays last. No skill/tool change justified. Publish only owned work and pause.
+
+## Historical housing, worker recovery and combat batch — 2026-10-17
+
+Published base50266799471a2804243bd147a759deca2873c150; mechanical4d75589aa and behavior5478ae7cd were published
+before the current batch. Artifact paths below are ignored under tmp/ai-plans/759-validation/.
 Raw native proof stays local; ordinary summaries cap8192 UTF-8 bytes and disclose omissions.
 
 ### Implemented behavior and purpose

@@ -12,6 +12,7 @@ import {
 } from "./ai-tactics-rules";
 
 import type { AiTacticsContext } from "./ai-tactics-context";
+import { canPursueAiTacticalObjective } from "./ai-tactics-objective-eligibility";
 /** Prepares current members and permitted combat facts. */
 export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquadStateV1) {
   const { actorById, catalog, claimedActors, observation, profile, state, transportOwned, updates, visibleEnemies } =
@@ -64,6 +65,7 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
   const sourceNodeId = members[0]?.accessNodeId.status === "known" ? members[0].accessNodeId.value : null;
   const alternatives = visibleEnemies
     .slice(0, MAX_STRATEGIC_CONTACTS)
+    .filter((enemy) => canPursueAiTacticalObjective(members, enemy, observation))
     .map((enemy) => {
       const targetNodeId = enemy.accessNodeId.status === "known" ? enemy.accessNodeId.value : null;
       const routeStatus =
@@ -87,10 +89,17 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
   const committedTarget =
     ["attack", "defense"].includes(squad.role) &&
     rememberedTarget?.relation === "enemy" &&
-    rememberedTarget.visibility === "visible"
+    rememberedTarget.visibility === "visible" &&
+    canPursueAiTacticalObjective(members, rememberedTarget, observation)
       ? rememberedTarget
       : undefined;
   const immediateThreat = (committedTarget ? localEnemies : [])
+    .filter(
+      (enemy) =>
+        canPursueAiTacticalObjective(members, enemy, observation) &&
+        enemy.combatProfile?.status === "known" &&
+        enemy.combatProfile.value.attacks.some((attack) => attack.damage > 0)
+    )
     .flatMap((enemy) => {
       const enemyPosition = knownPosition(enemy);
       if (!enemyPosition) return [];
@@ -108,6 +117,7 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
     )[0]?.enemy;
   const retainPrevious = Boolean(
     previousTarget &&
+      canPursueAiTacticalObjective(members, previousTarget, observation) &&
       previousTarget.visibility === "visible" &&
       squad.tactics &&
       bestTarget &&
@@ -118,7 +128,10 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
     committedTarget?.actorId ??
     (retainPrevious
       ? previousTarget?.actorId
-      : ((bestTarget?.objectiveId as ActorId | undefined) ?? rememberedTarget?.actorId));
+      : ((bestTarget?.objectiveId as ActorId | undefined) ??
+        (canPursueAiTacticalObjective(members, rememberedTarget, observation)
+          ? rememberedTarget?.actorId
+          : undefined)));
   const target = targetId ? actorById.get(targetId) : undefined;
   const visibleTarget = target?.visibility === "visible" ? target : undefined;
   const targetAwareMembers = visibleTarget

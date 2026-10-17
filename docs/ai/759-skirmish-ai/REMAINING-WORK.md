@@ -108,28 +108,28 @@ main-building footprint were corrected in both paired worlds. Construction cance
 post-opening unfinished-site reassignment have focused controls. Native ECO-06 proves alternate drop-off/source
 recovery; native no-drain controls prove stop/assignment release with cargo preservation.
 
-**Current: Package3 core scouting/combat, grouped with exposed-worker recovery.**
+**Current publication: grouped combat/construction/resource repairs; broad gates deferred (user2026-10-17).**
 
-1. Fair hidden-state pairs and housing pass; Tivara has authoritative full-match victory. Skaduwee remains1/2 full
-   victories missing (50%); do not equate that narrow denominator with Package3's whole scenario inventory.
-2. The latest failure is an active attack diverted from a damaged main building to another objective. Domain launch
-   permission and distant reinforcement movement have been repaired. Current commitment repair retains visible,
-   reachable native attack targets while tactical retreat/effect deadlines still handle unsafe or stalled work.
-   Run affected economy, composition, hidden-pair, construction and both-faction victory controls together.
-   Field yield or worker capacity may increase if fresh delivery evidence identifies a food bottleneck; current
-   food323–346/min and idle/diverted military prioritize order ownership before additional economy rebalance.
-3. Keep source/fixture provenance and bounded evidence. Ordinary summary output is capped at8192 bytes by default;
-   raw proof artifacts never enter model context. No new observer/profiler expansion is scheduled.
-4. Finish the user-requested continuous four-item batch before commit/push/pause. Keep the remaining Package3
-   registration/scenario gaps explicit; follow the dependency queue afterward. Final machinery review remains last.
+1. The implementation batch combines independently reachable ground/air readiness, domain-correct target selection,
+   mission continuity through native job gaps, abandoned/impossible construction recovery and physical resource transfer
+   guards. Existing reserve/safety thresholds, deadlines, retreat and native vision rules remain required.
+2. Fields remain unchanged: retained food327.68/min,90 stock and empty queues do not establish food starvation.
+   Native harvest/growth/cargo controls are focused evidence; no new full match was run to justify a balance change.
+3. Full-match victory and broad regression reruns are explicitly deferred. Historical production8/8, economy16/16,
+   selected native7/8 and victory1/2 belong to their earlier source. Changed predicates need later affected native checks;
+   focused passes do not promote those historical counts to the new source or close broader Packages3–5.
+4. Next implementation: inspect existing PLACE/EXP/WALL/H recovery coverage and resource-authority boundary controls
+   together. Reuse existing native/component scenarios; repair concrete owner gaps before adding registrations.
+   Arbitrary alias/net-zero mutation/restore history (M11), sockets, saves and calibration remain outstanding.
+   Final machinery review stays last. HANDOFF owns the next cursor and user policy.
 
 Pure registrations remain59/111 and supported runtime30/116; these are coverage counts, not gameplay completion.
 
 ## Other concrete gaps already established
 
-- **Full victory:** historical SEQ-01 runs did not reach a terminal result for either faction; Skaduwee also lost its
-  worker economy. Later production repairs have not established a new full-match result. Replay the actual legal-start
-  recipe after the relevant repairs and fix the earliest causal failure, not another unrelated diagnostic layer.
+- **Full victory:** latest published evidence has Tivara victory and an unresolved Skaduwee finish (1/2 factions).
+  Both-faction reruns are now user-deferred. At the later gate, use the unchanged legal-start recipe and fix the earliest
+  causal failure; no additional diagnostic architecture is scheduled.
 - **Raid recovery:** historical SEQ-02 passed both factions. Current shared-source acceptance needs a rerun; do not
   describe this as wholly unimplemented or carry forward an older failure as its latest result.
 - **Resource authority/M11:** complete usefulness is still unavailable for required arbitrary replacement, net-zero

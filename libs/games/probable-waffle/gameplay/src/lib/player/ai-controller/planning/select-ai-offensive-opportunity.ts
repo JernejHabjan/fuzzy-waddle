@@ -1,10 +1,10 @@
-import type { AiRouteRequestV1 } from "../contracts/ai-access-graph-v1";
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiStrategyAssessment } from "../contracts/ai-strategy-assessment";
 import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
 import { queryAiAccessRouteV1 } from "./ai-access-graph-v1";
 import type { AiSkirmishProposalContext } from "./ai-skirmish-proposal-context";
-import { canFight, canTarget, distance, domains, node, position, routeCapability } from "./ai-skirmish-support";
+import { canFight, canTarget, distance, domains, position } from "./ai-skirmish-support";
+import { selectAiOffensiveForce } from "./select-ai-offensive-force";
 
 export interface AiOffensiveOpportunity {
   readonly opponent: AiObservedActorV1 | undefined;
@@ -62,7 +62,11 @@ function targetValue(actor: AiObservedActorV1): number {
   return canFight(actor) ? 280 : 360;
 }
 
-function threatNear(context: AiSkirmishProposalContext, target: AiObservedActorV1): number {
+function threatNear(
+  context: AiSkirmishProposalContext,
+  target: AiObservedActorV1,
+  attackers: readonly AiObservedActorV1[]
+): number {
   const targetPosition = position(target);
   if (!targetPosition) return 0;
   return context.visibleEnemies.filter((enemy) => {
@@ -70,7 +74,11 @@ function threatNear(context: AiSkirmishProposalContext, target: AiObservedActorV
     return (
       enemyPosition !== undefined &&
       distance(targetPosition, enemyPosition) <= 18 &&
-      (canFight(enemy) || (enemy.combatProfile?.status === "known" && enemy.combatProfile.value.attacks.length > 0))
+      (enemy.combatProfile?.status === "known"
+        ? enemy.combatProfile.value.attacks.some((attack) =>
+            attackers.some((actor) => domains(actor).some((domain) => attack.targetDomains.includes(domain)))
+          )
+        : canFight(enemy) && attackers.some((actor) => canTarget(enemy, actor)))
     );
   }).length;
 }
@@ -94,41 +102,14 @@ export function selectAiOffensiveOpportunity(
   context: AiSkirmishProposalContext,
   attackers: readonly AiObservedActorV1[]
 ): AiOffensiveOpportunity {
-  const graph = context.observation.map?.accessGraph;
   const recentFailure = recentFailedMission(context);
   const contacts = [...context.visibleEnemies, ...context.rememberedEnemies].slice(0, MAX_CANDIDATES);
   const candidates = contacts
     .flatMap((opponent) => {
-      const objectiveDomain = domains(opponent)[0] ?? "ground";
-      const domainAttackers = attackers.filter(
-        (attacker) => canTarget(attacker, opponent) && domains(attacker).includes(objectiveDomain)
-      );
-      const airAttackers = attackers.filter(
-        (attacker) => canTarget(attacker, opponent) && domains(attacker).includes("air")
-      );
-      const targetNode = node(opponent);
-      if (!targetNode || !graph) return [];
-      const attempts = [domainAttackers, airAttackers]
-        .filter((group, index, all) => group.length > 0 && all.findIndex((other) => other[0] === group[0]) === index)
-        .flatMap((group) => {
-          const sourceNode = node(group[0]);
-          if (!sourceNode) return [];
-          const route = queryAiAccessRouteV1(graph, {
-            queryId: `query:strategy:${opponent.actorId}:${group[0]!.actorId}:${context.observation.generation}`,
-            kind: "firing_position",
-            fromNodeId: sourceNode,
-            toNodeId: targetNode,
-            capabilities: routeCapability(context.observation, group, context.catalog),
-            firingNodeIds: [targetNode]
-          } satisfies AiRouteRequestV1);
-          return [{ group, route }];
-        });
-      const viable =
-        attempts.find((attempt) => ["direct", "water_transport", "air_transport"].includes(attempt.route.kind)) ??
-        attempts.find((attempt) => attempt.route.kind === "pending");
+      const viable = selectAiOffensiveForce(context, opponent, attackers);
       if (!viable) return [];
       const { group: compatibleAttackers, route } = viable;
-      const threats = threatNear(context, opponent);
+      const threats = threatNear(context, opponent, compatibleAttackers);
       const producers = productionNear(context, opponent);
       const capable = compatibleAttackers.length;
       const failurePenalty =

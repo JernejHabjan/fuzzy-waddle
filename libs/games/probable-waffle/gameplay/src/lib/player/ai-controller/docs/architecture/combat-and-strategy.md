@@ -50,6 +50,8 @@ Offensive missions progress through assembly, rally, advance, engagement, regrou
 A temporary route rebuild does not remove a mission whose members still have native Attack jobs against its visible
 target. All domain children participate in this continuation check. Quiet-home reserve allocation excludes those busy
 attackers; actual home defense still takes precedence. New launches continue to require a confirmed route.
+Mission members with useful progress inside the existing effect deadline also stay out of quiet-home reserve during
+a native job gap. Actual defense can still recall them; no new mission timer or saved state is introduced.
 Player-visible targets outside the squad's individual vision launch an attack-move toward a known passable approach,
 keeping the same strategic objective. Direct target attacks require every commanded member's local vision; the shared
 native visibility validator remains authoritative. An occupied building center is not an approach destination.
@@ -82,6 +84,14 @@ consume the launch permission of the next mission, even when its stable squad ID
 selected choice, compatible/required force, confidence, effect/reconsideration ticks and bounded alternatives are saved
 in the strategy state and projected into the historical debug view. A completed opening with a collapsed workforce
 recovers that workforce before forming a fresh offensive squad, unless a credible finishing force is already ready.
+
+Readiness routes cohorts by their actual movement domains and origin regions. Independently direct ground and air
+cohorts count together; the first reachable actor cannot certify disconnected reinforcements. Transport-dependent
+cohorts keep a single executable passenger route. Visible counterforce counts only weapons able to affect a member
+of the proposed force, so ground-only defenders do not inflate the requirement for a purely airborne attack.
+Tactical objective ranking and commitment also require a targetable domain and exclude a known blocked/failed approach.
+Weapons already within their effective range may still fire across blocked movement terrain. Retreat estimates keep
+observed threats; excluding an impossible offensive objective does not erase incoming danger.
 
 Opportunity ranking retains an active mission's visible, reachable objective while a same-family member has a native
 attack against it. This prevents new opportunities from interrupting useful work. Target disappearance or an inactive

@@ -16,6 +16,7 @@ import { waitForSimulationDuration } from "../../../world/services/simulation-ti
 import type { ResourceTransferContext } from "./resource-transfer-context";
 import { observeResourceCredit } from "./observe-resource-credit";
 import { fenceSceneResourceHistory } from "../../../data/scene-resource-observation";
+import { HealthComponent } from "../combat/components/health-component";
 /**
  * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
  * storage boundaries do not drift into an unconstrained primitive.
@@ -29,6 +30,8 @@ export class ResourceDrainComponent {
   private gathererMustEnter = false;
   private maximumGathererCapacity = 0;
   private currentCapacity = 0;
+  /** Native transfer lock; repeated calls for the same carrier cannot credit the same cargo twice. */
+  private readonly returningGatherers = new Set<GameObject>();
 
   constructor(
     private readonly gameObject: GameObject,
@@ -45,8 +48,7 @@ export class ResourceDrainComponent {
   }
 
   canDropOffResources(): boolean {
-    const capacityReached = this.currentCapacity >= this.maximumGathererCapacity;
-    return !capacityReached;
+    return !this.gathererMustEnter || this.currentCapacity < this.maximumGathererCapacity;
   }
 
   /**
@@ -58,23 +60,73 @@ export class ResourceDrainComponent {
     amount: number,
     context?: ResourceTransferContext
   ): Promise<number> {
-    if (this.gathererMustEnter) {
-      fenceSceneResourceHistory(this.gameObject.scene, "resource_drain_capacity_change");
-      this.currentCapacity += 1;
-      this.containerComponent?.loadGameObject(gatherer);
+    const scene = this.gameObject.scene;
+    if (
+      !Number.isFinite(amount) ||
+      amount <= 0 ||
+      !this.getResourceTypes().includes(resourceType) ||
+      !this.isLiveTransfer(gatherer, scene) ||
+      !this.canDropOffResources() ||
+      this.returningGatherers.has(gatherer)
+    )
+      return 0;
+    this.returningGatherers.add(gatherer);
+    try {
+      if (this.gathererMustEnter) {
+        fenceSceneResourceHistory(scene, "resource_drain_capacity_change");
+        this.currentCapacity += 1;
+      }
+      let loaded = false;
+      try {
+        if (this.gathererMustEnter) {
+          this.containerComponent?.loadGameObject(gatherer);
+          loaded = true;
+        }
+        await waitForSimulationDuration(scene, this.resourceDrainDefinition.cooldown);
+      } finally {
+        if (this.gathererMustEnter) {
+          fenceSceneResourceHistory(scene, "resource_drain_capacity_change");
+          try {
+            if (loaded && this.gameObject.scene === scene && gatherer.scene === scene)
+              this.containerComponent?.unloadGameObject(gatherer);
+          } finally {
+            this.currentCapacity = Math.max(0, this.currentCapacity - 1);
+          }
+        }
+      }
+      // A destroyed drain or carrier cannot complete a transfer started by an earlier native order.
+      if (!this.isLiveTransfer(gatherer, scene)) return 0;
+      return this.creditResources(gatherer, resourceType, amount, context);
+    } finally {
+      this.returningGatherers.delete(gatherer);
     }
+  }
 
-    await waitForSimulationDuration(this.gameObject.scene, this.resourceDrainDefinition.cooldown);
+  /** Keep cargo with the carrier when either physical endpoint disappears during the wait. */
+  private isLiveTransfer(gatherer: GameObject, scene: Phaser.Scene): boolean {
+    return (
+      !!scene &&
+      this.gameObject.scene === scene &&
+      gatherer.scene === scene &&
+      this.gameObject.active !== false &&
+      gatherer.active !== false &&
+      getActorComponent(this.gameObject, HealthComponent)?.killed !== true &&
+      getActorComponent(gatherer, HealthComponent)?.killed !== true
+    );
+  }
 
-    if (this.gathererMustEnter) {
-      fenceSceneResourceHistory(this.gameObject.scene, "resource_drain_capacity_change");
-      this.containerComponent?.unloadGameObject(gatherer);
-      this.currentCapacity -= 1;
-    }
-
+  /** Preserve the existing recipient and campaign policy after physical transfer validation. */
+  private creditResources(
+    gatherer: GameObject,
+    resourceType: ResourceType,
+    amount: number,
+    context?: ResourceTransferContext
+  ): number {
     const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
     const owner = ownerComponent?.getOwner();
-    const economy = getPlayer(this.gameObject.scene, owner)?.playerController.data.playerDefinition?.campaignEconomy;
+    const player = getPlayer(this.gameObject.scene, owner);
+    if (!player) return 0;
+    const economy = player.playerController.data.playerDefinition?.campaignEconomy;
     const amounts = { [resourceType]: amount } satisfies Partial<PlayerStateResources>;
     observeResourceCredit(
       {

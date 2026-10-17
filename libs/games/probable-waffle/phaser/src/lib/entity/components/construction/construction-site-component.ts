@@ -48,6 +48,8 @@ export class ConstructionSiteComponent {
   private pendingAssignedRepairerIds?: string[];
   /** Killed and destroy callbacks can both address this component; refund and listener disposal happen once. */
   private teardownComplete = false;
+  /** Resource callbacks are synchronous and may attempt to start the same unpaid site again. */
+  private paymentInProgress = false;
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
     private readonly constructionSiteDefinition: ConstructionSiteDefinition
@@ -175,30 +177,36 @@ export class ConstructionSiteComponent {
 
   /** Explicit starts retain denial errors; automatic retries wait without advancing work, health or construction state. */
   startConstruction(waitForFunds = false): boolean {
+    if (this.paymentInProgress || this.teardownComplete) return false;
     if (this.state !== ConstructionStateEnum.NotStarted) {
       throw new Error("ConstructionSiteComponent can only be started once");
     }
     const productionDefinition = this.productionDefinition;
     if (!productionDefinition) throw new Error("Production definition not found");
-    if (
-      startConstructionPayment(
-        this.gameObject,
-        productionDefinition,
-        this.state,
-        this.remainingConstructionTime,
-        waitForFunds
-      ) === false
-    )
-      return false;
+    this.paymentInProgress = true;
+    try {
+      if (
+        startConstructionPayment(
+          this.gameObject,
+          productionDefinition,
+          this.state,
+          this.remainingConstructionTime,
+          waitForFunds
+        ) === false
+      )
+        return false;
 
-    // Payment callbacks retain pre-start state; only a returned payment reaches this boundary.
-    fenceSceneResourceHistory(this.gameObject.scene, "resource_actor_construction_change");
-    // start building
-    this.remainingConstructionTime = productionDefinition.productionTime;
-    this.state = ConstructionStateEnum.Constructing;
-    observeConstructionLifecycle(this.gameObject, this.state, this.remainingConstructionTime, "started");
-    this.constructionStateChanged.next(this.state);
-    return true;
+      // Payment callbacks retain pre-start state; only a returned payment reaches this boundary.
+      fenceSceneResourceHistory(this.gameObject.scene, "resource_actor_construction_change");
+      // start building
+      this.remainingConstructionTime = productionDefinition.productionTime;
+      this.state = ConstructionStateEnum.Constructing;
+      observeConstructionLifecycle(this.gameObject, this.state, this.remainingConstructionTime, "started");
+      this.constructionStateChanged.next(this.state);
+      return true;
+    } finally {
+      this.paymentInProgress = false;
+    }
   }
 
   private setInitialHealth() {

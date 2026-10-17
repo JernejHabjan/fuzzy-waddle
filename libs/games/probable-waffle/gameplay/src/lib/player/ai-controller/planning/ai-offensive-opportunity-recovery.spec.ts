@@ -7,6 +7,30 @@ import { guard, core, producer, world, brain, manager } from "./ai-offensive-opp
 import { squad } from "./ai-tactics-test-fixtures";
 
 describe("fastest credible offense", () => {
+  it("keeps progressing mission members through a native job gap instead of diverting them into home reserve", () => {
+    const guards = Array.from({ length: 8 }, (_, i) => ({
+      ...guard(`guard-${i}`, "self", 0),
+      activeOrder: { status: "known" as const, value: null, observedTick: 20 }
+    }));
+    const mission = {
+      ...squad(
+        "squad:attack",
+        "attack",
+        guards.map((actor) => actor.actorId)
+      ),
+      objectiveId: "enemy-core",
+      lifecycle: {
+        ...squad("squad:attack", "attack", []).lifecycle!,
+        lastUsefulEffectTick: 10,
+        effectDeadline: { ...squad("squad:attack", "attack", []).lifecycle!.effectDeadline, dueTick: 1200 }
+      }
+    };
+    const result = manager.propose(world([...guards, core("enemy-core")]), { ...brain(), squads: [mission] });
+    expect(
+      result.statePatch?.squads?.filter((entry) => entry.role === "reserve").flatMap((entry) => entry.actorIds)
+    ).toEqual([]);
+    expect(result.statePatch?.squads?.find((entry) => entry.role === "attack")?.actorIds).toHaveLength(8);
+  });
   it.each([
     { attacking: true, targetExists: true, progressing: false, expired: false, expected: "enemy-core" },
     { attacking: false, targetExists: true, progressing: false, expired: false, expected: "near-a" },

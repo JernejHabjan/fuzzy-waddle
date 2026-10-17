@@ -211,6 +211,9 @@ export function advanceAiSkirmishOffense(
       )
     : [];
   const missionMembers = new Set(missionSquads.flatMap((squad) => squad.actorIds));
+  const missionProgressing =
+    activeAttack?.lifecycle?.lastUsefulEffectTick != null &&
+    activeAttack.lifecycle.effectDeadline.dueTick > context.observation.tick;
   const committedAttackers = new Set(
     context.combat
       .filter((actor) => {
@@ -218,8 +221,9 @@ export function advanceAiSkirmishOffense(
         return (
           liveTarget &&
           missionMembers.has(actor.actorId) &&
-          order?.orderType === OrderType.Attack &&
-          (order.targetActorId === liveTarget.actorId || order.targetActorId === null)
+          (missionProgressing ||
+            (order?.orderType === OrderType.Attack &&
+              (order.targetActorId === liveTarget.actorId || order.targetActorId === null)))
         );
       })
       .map((actor) => actor.actorId)
