@@ -1,4 +1,5 @@
 import type { AiRouteRequestV1 } from "../contracts/ai-access-graph-v1";
+import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiStrategyAssessment } from "../contracts/ai-strategy-assessment";
 import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
 import { queryAiAccessRouteV1 } from "./ai-access-graph-v1";
@@ -30,9 +31,10 @@ function recentFailedMission(context: AiSkirmishProposalContext): AiStrategyAsse
     )
     .sort((left, right) => (right.lifecycle?.createdTick ?? 0) - (left.lifecycle?.createdTick ?? 0))[0];
   if (!completed?.lifecycle || remembered?.missionCreatedTick === completed.lifecycle.createdTick) return remembered;
-  const targetActorId = completed.objectiveId && !completed.objectiveId.startsWith("hypothesis:")
-    ? completed.objectiveId
-    : (previous?.targetActorId ?? null);
+  const targetActorId =
+    completed.objectiveId && !completed.objectiveId.startsWith("hypothesis:")
+      ? completed.objectiveId
+      : (previous?.targetActorId ?? null);
   const repeatedFailures =
     remembered?.targetActorId === targetActorId &&
     context.observation.tick - remembered.observedTick <= FAILURE_MEMORY_TICKS
@@ -154,14 +156,47 @@ export function selectAiOffensiveOpportunity(
   const readyActionable = actionable.filter((candidate) => candidate.capable >= candidate.required);
   const ranked = readyActionable.length > 0 ? readyActionable : actionable.length > 0 ? actionable : candidates;
   const focusedPlayer = context.activeAttack?.lifecycle?.targetPlayerNumber;
+  const mission = context.activeAttack;
+  const missionMembers = new Set(
+    context.state.squads
+      .filter(
+        (squad) =>
+          mission &&
+          squad.role === "attack" &&
+          squad.squadId.split(":domain:")[0] === mission.squadId.split(":domain:")[0] &&
+          squad.objectiveId === mission.objectiveId &&
+          !["completed", "cancelled"].includes(squad.state)
+      )
+      .flatMap((squad) => squad.actorIds)
+  );
+  // Ranking new opportunities must not pull a live native attack away from its still-reachable objective.
+  // Tactical retreat and the existing effect deadline remain responsible for unsafe or stalled work.
+  const usefulMission =
+    mission?.lifecycle?.lastUsefulEffectTick != null &&
+    mission.lifecycle.effectDeadline.dueTick > context.observation.tick;
+  const workingObjective = actionable.find(
+    (candidate) =>
+      candidate.opponent.actorId === mission?.objectiveId &&
+      candidate.opponent.visibility === "visible" &&
+      (usefulMission ||
+        attackers.some((actor) => {
+          const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
+          return (
+            missionMembers.has(actor.actorId) &&
+            order?.orderType === OrderType.Attack &&
+            order.targetActorId === candidate.opponent.actorId
+          );
+        }))
+  );
   const focused = ranked.find((candidate) => candidate.opponent.owner === focusedPlayer);
   const best = ranked[0];
   const selected =
-    focused &&
+    workingObjective ??
+    (focused &&
     best &&
     focused.score >= best.score - Math.max(50, Math.floor((Math.abs(best.score) * TARGET_HYSTERESIS_PERMILLE) / 1000))
       ? focused
-      : best;
+      : best);
   const workers = context.observation.actors.filter(
     (actor) => actor.relation === "self" && actor.capabilities.some((capability) => capability.family === "gather")
   ).length;
@@ -209,9 +244,10 @@ export function selectAiOffensiveOpportunity(
       visibleThreatCount: selected?.threats ?? 0,
       confidencePermille: selected?.opponent.visibility === "visible" ? 1000 : selected ? 550 : 0,
       expectedEffectTick: travelTicks === null || pendingRoute ? null : context.observation.tick + travelTicks,
-      reconsiderTick: rebuildingFailedMission && recentFailure
-        ? recentFailure.observedTick + Math.min(400, recentFailure.repeatedFailures * 100)
-        : context.observation.tick + (ready ? 40 : 100),
+      reconsiderTick:
+        rebuildingFailedMission && recentFailure
+          ? recentFailure.observedTick + Math.min(400, recentFailure.repeatedFailures * 100)
+          : context.observation.tick + (ready ? 40 : 100),
       ...(recentFailure ? { recentFailure } : {}),
       alternatives: candidates
         .filter((candidate) => candidate !== selected)

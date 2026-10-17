@@ -23,7 +23,10 @@ export class GroundNavigationPathfinder {
     private readonly DEBUG: boolean,
     private readonly drawPath: (path: Vector2Simple[]) => void,
     private readonly provenance = new NavigationProvenance()
-  ) {}
+  ) {
+    // calculate() already completes the search here; native Promise chains must not wait on browser timer turns.
+    this.easyStar.enableSync();
+  }
 
   clearCache(): void {
     this.pathCache.clear();
@@ -98,6 +101,7 @@ export class GroundNavigationPathfinder {
   ): Promise<Vector2Simple[] | null> {
     const query = this.provenance.query("ground_overlay", fromTileXY, toTileXY, "bypass", null);
     const easyStar = new EasyStar();
+    easyStar.enableSync();
     easyStar.setGrid(navigationGrid);
     easyStar.setAcceptableTiles([0]);
     easyStar.enableDiagonals();

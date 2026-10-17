@@ -1,10 +1,66 @@
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
+import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 import { createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 
-import { guard, core, world, brain, manager } from "./ai-offensive-opportunity-test-fixtures";
+import { guard, core, producer, world, brain, manager } from "./ai-offensive-opportunity-test-fixtures";
+import { squad } from "./ai-tactics-test-fixtures";
 
 describe("fastest credible offense", () => {
+  it.each([
+    { attacking: true, targetExists: true, progressing: false, expired: false, expected: "enemy-core" },
+    { attacking: false, targetExists: true, progressing: false, expired: false, expected: "near-a" },
+    { attacking: true, targetExists: false, progressing: false, expired: false, expected: "near-a" },
+    { attacking: false, targetExists: true, progressing: true, expired: false, expected: "enemy-core" },
+    { attacking: false, targetExists: true, progressing: true, expired: true, expected: "near-a" },
+    { attacking: false, targetExists: false, progressing: true, expired: false, expected: "near-a" }
+  ])("retains only a live attack objective: %j", ({ attacking, targetExists, progressing, expired, expected }) => {
+    const guards = ["a", "b", "c"].map((id) => ({
+      ...guard(id, "self", 0),
+      activeOrder: {
+        status: "known" as const,
+        observedTick: 20,
+        value: attacking ? { orderType: OrderType.Attack, targetActorId: "enemy-core" } : null
+      }
+    }));
+    const distant = {
+      ...producer("distant-producer"),
+      logicalPosition: { status: "known" as const, value: { x: 40, y: 0, z: 0 }, observedTick: 20 }
+    };
+    const state: AiBrainStateV1 = {
+      ...brain(),
+      squads: [
+        {
+          ...squad(
+            "squad:attack",
+            "attack",
+            guards.map((actor) => actor.actorId)
+          ),
+          objectiveId: "enemy-core",
+          lifecycle: {
+            ...squad("squad:attack", "attack", []).lifecycle!,
+            lastUsefulEffectTick: progressing ? 10 : null,
+            effectDeadline: {
+              ...squad("squad:attack", "attack", []).lifecycle!.effectDeadline,
+              dueTick: expired ? 20 : 1200
+            }
+          }
+        }
+      ]
+    };
+    const result = manager.propose(
+      world([
+        ...guards,
+        ...(targetExists ? [core("enemy-core")] : []),
+        producer("near-a"),
+        producer("near-b"),
+        distant
+      ]),
+      state
+    );
+    expect(result.statePatch?.strategy?.assessment?.targetActorId).toBe(expected);
+  });
+
   it("changes plan when the same force has lost its worker economy", () => {
     const initial = brain();
     const completedOpening: AiBrainStateV1 = {

@@ -15,6 +15,8 @@ import { proposeAiMilitaryUnits } from "./ai-military-unit-proposal";
 import { observeAiMilitaryForce } from "./ai-military-force-context";
 import { projectAiMacroEconomyState } from "./project-ai-macro-economy-state";
 import { productionTransitionClaims } from "./ai-production-transition-claims";
+import { proposeAiConstructionRecovery } from "./ai-construction-recovery-proposal";
+import { nextAiMilitarySpendingReserve } from "./ai-military-spending-reserve";
 
 /**
  * Macro proposal owner. It derives opening, supply and composition demand
@@ -53,6 +55,18 @@ export class AiMacroManager implements AiProposalManagerV1 {
     let ordinal = opening.ordinal;
 
     const self = owned(observation);
+    const constructionRecovery = proposeAiConstructionRecovery(
+      observation,
+      state,
+      catalog,
+      reservedActorIds,
+      intents,
+      ordinal
+    );
+    if (constructionRecovery) {
+      intents.push(constructionRecovery);
+      ordinal += 1;
+    }
     const budget = openingBudget(state.opening.archetypeId);
     const openingComplete = activeCheckpointId === undefined;
     const workerCheckpoint = checkpointStatus.find((entry) => entry.checkpoint.id === "bootstrap-worker");
@@ -126,6 +140,10 @@ export class AiMacroManager implements AiProposalManagerV1 {
       pressureForecast,
       openingComplete,
       workerRequiredObject: workerCheckpoint?.fulfilled ? workerCheckpoint.checkpoint.requiredObject : undefined,
+      militarySpendingReserve:
+        military.length + queuedMilitary.length < targetMilitary
+          ? nextAiMilitarySpendingReserve(capacity.producers, catalog, pressureDomain)
+          : {},
       reservedActorIds,
       selectedConstructionTileKeys,
       demands,

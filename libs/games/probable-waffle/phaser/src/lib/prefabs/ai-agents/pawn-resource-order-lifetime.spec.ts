@@ -115,7 +115,13 @@ describe("resource selection belongs to the requesting order lifetime", () => {
       const snapshot = { ...f.order.data },
         type = f.order.orderType;
       f.lookup.resolve(f.selected);
-      expect(await pending).toBe(State.FAILED);
+      const missingDrain =
+        boundary === "target" && (method === "AcquireNewResourceDrain" || method === "AssignDropOffResourcesOrder");
+      expect(await pending).toBe(missingDrain ? State.SUCCEEDED : State.FAILED);
+      if (missingDrain) {
+        expect(f.stop).toHaveBeenCalledWith(expect.stringContaining("No Resource Drains Exist"));
+        expect(f.board.getCurrentOrder()).toBeUndefined();
+      } else expect(f.stop).not.toHaveBeenCalled();
       expect(f.order.orderType).toBe(type);
       expect(f.order.data).toEqual(snapshot);
       expect(replacement.data.targetGameObject).toBe(f.actor);

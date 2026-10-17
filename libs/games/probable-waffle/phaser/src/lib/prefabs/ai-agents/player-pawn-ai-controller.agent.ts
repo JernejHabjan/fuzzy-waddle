@@ -158,6 +158,10 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     return this.resources.AcquireNewResourceSource();
   }
 
+  ValidateResourceDelivery(): State {
+    return this.resources.ValidateResourceDelivery();
+  }
+
   AcquireNewResourceDrain(): Promise<State> {
     return this.resources.AcquireNewResourceDrain();
   }

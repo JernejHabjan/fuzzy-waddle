@@ -6,13 +6,26 @@ import { decideAiEconomyPolicy, hasCredibleAiEconomyThreat } from "../planning/a
 import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "./ai-test-fixtures";
 
 const catalog: AiCapabilityCatalogV1 = {
-  schemaVersion: 1, generation: 1, unsupported: [],
-  entries: [{
-    capabilityId: "worker", family: "worker", sourceObjectName: ObjectNames.TivaraWorker,
-    effectiveLevel: 1, movementDomains: ["ground"], targetDomains: [],
-    produces: [], constructs: [], researches: [], gathers: [ResourceType.Food, ResourceType.Wood],
-    housingCapacity: null, housingCost: 1, cargoCapacity: null
-  }]
+  schemaVersion: 1,
+  generation: 1,
+  unsupported: [],
+  entries: [
+    {
+      capabilityId: "worker",
+      family: "worker",
+      sourceObjectName: ObjectNames.TivaraWorker,
+      effectiveLevel: 1,
+      movementDomains: ["ground"],
+      targetDomains: [],
+      produces: [],
+      constructs: [],
+      researches: [],
+      gathers: [ResourceType.Food, ResourceType.Wood],
+      housingCapacity: null,
+      housingCost: 1,
+      cargoCapacity: null
+    }
+  ]
 };
 const forecasts = [{ resourceType: ResourceType.Wood, amount: 600 }];
 
@@ -39,7 +52,17 @@ function economyWorld(contact: "none" | "local" | "remembered" | "remote"): AiOb
     objectName: ObjectNames.Banshee,
     owner: 2,
     relation: "enemy" as const,
-    visibility: contact === "remembered" ? "last_seen" as const : "visible" as const,
+    visibility: contact === "remembered" ? ("last_seen" as const) : ("visible" as const),
+    capabilities: [
+      {
+        id: "raider:attack",
+        family: "attack",
+        level: 1,
+        domains: ["air" as const],
+        targetDomains: ["ground" as const],
+        capacity: { status: "known" as const, value: 0, observedTick: 20 }
+      }
+    ],
     logicalPosition: {
       status: "known" as const,
       value: contact === "remote" ? { x: 100, y: 100, z: 0 } : { x: 8, y: 5, z: 0 },
@@ -52,7 +75,10 @@ function economyWorld(contact: "none" | "local" | "remembered" | "remote"): AiOb
     actors: [...workers, field, ...(contact === "none" ? [] : [enemy])],
     resources: [ResourceType.Food, ResourceType.Wood, ResourceType.Stone, ResourceType.Minerals].map(
       (resourceType) => ({
-        resourceType, stockpile: 200, reservedUnspent: 0, obligationsDue: 0,
+        resourceType,
+        stockpile: 200,
+        reservedUnspent: 0,
+        obligationsDue: 0,
         deliveredIncomePerMinute: { status: "known" as const, value: 0, observedTick: 20 }
       })
     ),
@@ -71,16 +97,23 @@ describe("STRAT-01 paired early-raid economy policy", () => {
       ...createAiTestOwnedActor("outbound-guard"),
       objectName: ObjectNames.TivaraMacemanMale,
       logicalPosition: { status: "known" as const, value: { x: 99, y: 100, z: 0 }, observedTick: 20 },
-      capabilities: [{
-        id: "outbound-guard:attack", family: "military", level: 1,
-        domains: ["ground" as const], targetDomains: ["ground" as const],
-        capacity: { status: "known" as const, value: 0, observedTick: 20 }
-      }]
+      capabilities: [
+        {
+          id: "outbound-guard:attack",
+          family: "military",
+          level: 1,
+          domains: ["ground" as const],
+          targetDomains: ["ground" as const],
+          capacity: { status: "known" as const, value: 0, observedTick: 20 }
+        }
+      ]
     };
     const outboundWorld = { ...remote, actors: [...remote.actors, soldier] };
     expect(hasCredibleAiEconomyThreat(outboundWorld)).toBe(false);
-    expect(decideAiEconomyPolicy(outboundWorld, catalog, forecasts).budget)
-      .toEqual({ economyPermille: 650, defensePermille: 350 });
+    expect(decideAiEconomyPolicy(outboundWorld, catalog, forecasts).budget).toEqual({
+      economyPermille: 650,
+      defensePermille: 350
+    });
     const core = {
       ...createAiTestOwnedActor("exposed-core"),
       logicalPosition: { status: "known" as const, value: { x: 99, y: 100, z: 0 }, observedTick: 20 },

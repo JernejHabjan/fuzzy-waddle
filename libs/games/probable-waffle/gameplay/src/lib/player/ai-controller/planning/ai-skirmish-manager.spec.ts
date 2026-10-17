@@ -3,8 +3,44 @@ import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
 
 import { AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS } from "./ai-skirmish-manager";
 import { homeNode, enemyNode, unit, observation, profile, manager } from "./ai-skirmish-test-fixtures";
+import { nextQuestion } from "./ai-skirmish-support";
 
 describe("AiSkirmishManager", () => {
+  it("releases a vanished defensive objective instead of freezing the next economy in defend", () => {
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const defended = { ...state, strategy: { ...state.strategy, stance: "defend" as const, objectiveId: "gone" } };
+    const proposal = manager.propose(observation(2000, [unit("guard", homeNode, 0)]), defended);
+    expect(proposal.statePatch?.strategy).toMatchObject({ stance: "stabilize", objectiveId: null, goalId: null });
+    expect(proposal.intents.some((intent) => intent.kind === "scout")).toBe(true);
+  });
+  it("SCOUT-02/H-22 does not send scouts back to an answered frontier after its units leave", () => {
+    const input = observation(2000, [unit("guard", homeNode, 0)], [enemyNode], []);
+    const knowledge = {
+      revision: 1,
+      evidence: [],
+      questions: [
+        {
+          questionId: `question:frontier:${enemyNode}` as const,
+          kind: `safe_route:${enemyNode}`,
+          createdTick: 20,
+          state: "answered" as const
+        }
+      ]
+    };
+    expect(nextQuestion(input, knowledge)).toBeUndefined();
+    const next = nextQuestion(
+      { ...input, map: { ...input.map!, frontierAccessNodeIds: [enemyNode, homeNode] } },
+      knowledge
+    );
+    expect(next?.kind).toBe(`safe_route:${homeNode}`);
+    expect(next?.state).toBe("open");
+  });
   it("asks a reachable question and sends a legal scout instead of treating coverage as success", () => {
     const state = createAiBrainStateV1({
       playerNumber: 1,

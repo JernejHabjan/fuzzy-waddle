@@ -32,8 +32,12 @@ export function isEconomicActor(actor: AiObservedActorV1, catalog: AiCapabilityC
   );
 }
 
-export function actorCombatStrength(actor: AiObservedActorV1, opponents: readonly AiObservedActorV1[]): number {
-  if (actor.combatProfile?.status !== "known" || actor.healthPermille?.status !== "known") return 0;
+/** Keeps damage and remaining durability separate until the whole fighting force is combined. */
+function actorCombatPower(
+  actor: AiObservedActorV1,
+  opponents: readonly AiObservedActorV1[]
+): { damage: number; durability: number } | null {
+  if (actor.combatProfile?.status !== "known" || actor.healthPermille?.status !== "known") return null;
   const profile = actor.combatProfile.value;
   const statusPenalty = profile.statuses.reduce(
     (penalty, status) =>
@@ -69,14 +73,8 @@ export function actorCombatStrength(actor: AiObservedActorV1, opponents: readonl
                 }).length
               );
         const dps = (attack.damage * areaTargets * 1000) / Math.max(1, attack.cooldownTicks);
-        const readinessPermille =
-          attack.remainingCooldownTicks == null
-            ? 850
-            : Math.max(
-                200,
-                1000 - Math.floor((attack.remainingCooldownTicks * 800) / Math.max(1, attack.cooldownTicks))
-              );
-        return Math.max(attackBest, (dps * rangePermille * readinessPermille) / 1_000_000);
+        // Sustained DPS already includes the firing interval; an ordinary shot must not cause immediate retreat.
+        return Math.max(attackBest, (dps * rangePermille) / 1000);
       }, 0);
     return Math.max(best, attackValue);
   }, 0);
@@ -85,8 +83,18 @@ export function actorCombatStrength(actor: AiObservedActorV1, opponents: readonl
   const support =
     profile.passiveRegenerationPerSecond +
     (profile.healing ? (profile.healing.amount * 1000) / Math.max(1, profile.healing.cooldownTicks) : 0);
-  if (bestDps <= 0 && support <= 0) return 0;
-  return Math.max(1, Math.floor(((bestDps + support) * effectiveDurability * statusPenalty) / 1_000_000));
+  if (bestDps <= 0 && support <= 0) return null;
+  return { damage: ((bestDps + support) * statusPenalty) / 1000, durability: effectiveDurability };
+}
+
+/** Force damage acts across the opponent's combined durability; summing individual duels undervalues groups. */
+function forceCombatStrength(actors: readonly AiObservedActorV1[], opponents: readonly AiObservedActorV1[]): number {
+  const power = actors.flatMap((actor) => actorCombatPower(actor, opponents) ?? []);
+  return (
+    (power.reduce((total, actor) => total + actor.damage, 0) *
+      power.reduce((total, actor) => total + actor.durability, 0)) /
+    1000
+  );
 }
 
 /** Bounded local estimate used for a tactical preference, never as self-proving outcome evidence. */
@@ -102,14 +110,8 @@ export function estimateAiEngagementV1(
 }> {
   const boundedFriendlies = friendly.slice(0, Math.max(1, pairQuota));
   const boundedHostiles = hostile.slice(0, Math.max(1, Math.floor(pairQuota / Math.max(1, boundedFriendlies.length))));
-  const friendlyStrength = boundedFriendlies.reduce(
-    (total, actor) => total + actorCombatStrength(actor, boundedHostiles),
-    0
-  );
-  const hostileStrength = boundedHostiles.reduce(
-    (total, actor) => total + actorCombatStrength(actor, boundedFriendlies),
-    0
-  );
+  const friendlyStrength = forceCombatStrength(boundedFriendlies, boundedHostiles);
+  const hostileStrength = forceCombatStrength(boundedHostiles, boundedFriendlies);
   const knownProfiles = [...boundedFriendlies, ...boundedHostiles].filter(
     (actor) => actor.combatProfile?.status === "known" && actor.healthPermille?.status === "known"
   ).length;

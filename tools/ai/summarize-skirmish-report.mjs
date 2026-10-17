@@ -9,8 +9,16 @@ const toolDirectory = dirname(fileURLToPath(import.meta.url));
 const workspaceRoot = resolve(toolDirectory, "../..");
 
 export function parseSummaryArguments(tokens) {
-  const options = { input: null, scenario: null, details: false, failuresOnly: false, repairList: false,
-    requireSupported: false, maxClusters: null, maxBytes: null };
+  const options = {
+    input: null,
+    scenario: null,
+    details: false,
+    failuresOnly: false,
+    repairList: false,
+    requireSupported: false,
+    maxClusters: null,
+    maxBytes: null
+  };
   for (let index = 0; index < tokens.length; index += 1) {
     const token = tokens[index];
     if (token === "--") continue;
@@ -23,8 +31,10 @@ export function parseSummaryArguments(tokens) {
     else if (token === "--scenario") options.scenario = requiredValue(tokens[++index], "scenario");
     else if (token === "--report") {
       const supplied = requiredValue(tokens[++index], "report");
-      options.input = options.input === null ? supplied : [...(Array.isArray(options.input) ? options.input :
-        [options.input]), supplied];
+      options.input =
+        options.input === null
+          ? supplied
+          : [...(Array.isArray(options.input) ? options.input : [options.input]), supplied];
     } else if (token === "--help") options.help = true;
     else if (token.startsWith("--")) throw new Error(`unknown_option:${token}`);
     else if (options.input === null) options.input = token;
@@ -48,15 +58,23 @@ export function resolveReportPath(input, root = workspaceRoot) {
 
 export function resolveRepairReportPaths(input, root = workspaceRoot) {
   if (Array.isArray(input)) {
-    const paths = input.map((supplied) => isAbsolute(supplied) ? resolve(supplied) : resolve(process.cwd(), supplied));
-    if (new Set(paths).size !== paths.length || paths.some((path) => !path.endsWith(".json") || !statSync(path).isFile()))
+    const paths = input.map((supplied) =>
+      isAbsolute(supplied) ? resolve(supplied) : resolve(process.cwd(), supplied)
+    );
+    if (
+      new Set(paths).size !== paths.length ||
+      paths.some((path) => !path.endsWith(".json") || !statSync(path).isFile())
+    )
       throw new Error("repair_report_explicit_paths_must_be_distinct_files");
     return paths.sort();
   }
   const supplied = input ?? join(root, "tmp/ai-skirmish-matrix");
   const target = isAbsolute(supplied) ? resolve(supplied) : resolve(process.cwd(), supplied);
   if (!statSync(target).isDirectory()) return [target];
-  const paths = readdirSync(target).filter((name) => name.endsWith(".json")).sort().map((name) => join(target, name));
+  const paths = readdirSync(target)
+    .filter((name) => name.endsWith(".json"))
+    .sort()
+    .map((name) => join(target, name));
   if (paths.length === 0) throw new Error(`report_directory_empty:${target}`);
   return paths;
 }
@@ -154,9 +172,9 @@ export function summarizeReport(report, options = {}) {
         const ticks = Math.max(1, final.tick ?? 0);
         lines.push(
           `    timing setupMs=${variant.timing.setupMs} playMs=${playMs} settleMs=${settleMs} ` +
-          `captureMs=${captureMs} perturbationMs=${variant.timing.perturbationMs ?? 0} ` +
-          `playMsPer1kTicks=${Math.round((playMs * 1000) / ticks)} ` +
-          `longTasks=${variant.timing.browserLongTasks?.count ?? "unsupported"}`
+            `captureMs=${captureMs} perturbationMs=${variant.timing.perturbationMs ?? 0} ` +
+            `playMsPer1kTicks=${Math.round((playMs * 1000) / ticks)} ` +
+            `longTasks=${variant.timing.browserLongTasks?.count ?? "unsupported"}`
         );
         if (options.details) {
           lines.push(
@@ -174,7 +192,21 @@ export function summarizeReport(report, options = {}) {
     const tail = report.process.stderr.trim().split("\n").slice(-12);
     if (tail.length > 0) lines.push("PROCESS STDERR", ...tail.map((line) => `  ${line}`));
   }
-  return lines.join("\n");
+  return boundSummaryOutput(lines, options.maxBytes ?? 8192);
+}
+
+/** Model-facing output has a byte budget independent of the locally retained proof size. */
+export function boundSummaryOutput(lines, maxBytes = 8192) {
+  if (!Number.isSafeInteger(maxBytes) || maxBytes < 256) throw new Error("summary_invalid_max_bytes");
+  const complete = lines.join("\n");
+  if (Buffer.byteLength(complete) + 1 <= maxBytes) return complete;
+  const kept = [];
+  for (const line of lines) {
+    const footer = `SUMMARY_TRUNCATED omittedLines=${lines.length - kept.length}; narrow with --scenario`;
+    if (Buffer.byteLength([...kept, line, footer].join("\n")) + 1 > maxBytes) break;
+    kept.push(line);
+  }
+  return [...kept, `SUMMARY_TRUNCATED omittedLines=${lines.length - kept.length}; narrow with --scenario`].join("\n");
 }
 
 function appendVariantDetails(lines, final) {
@@ -245,7 +277,7 @@ function helpText() {
     "  --repair-list       Parse all reports in a directory and emit bounded cross-shard JSON",
     "  --require-supported Require every supported runtime row in repair-list mode",
     "  --max-clusters N    Limit displayed failure clusters (default 16)",
-    "  --max-bytes N       Limit output JSON bytes (default 16384)",
+    "  --max-bytes N       Limit output bytes (summary default 8192; repair JSON default 16384)",
     "  --help              Show this help",
     "",
     "With no path, the newest JSON report in tmp/ai-skirmish-matrix is selected.",
@@ -269,8 +301,9 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
           path: relative(workspaceRoot, path) || path,
           report: decodeRuntimeArtifact(JSON.parse(readFileSync(path, "utf8")))
         }));
-        const expectedIds = manifest?.rows.filter((row) => row.drivers.includes("runtime") &&
-          row.runtimeSupport?.status !== "deferred_content").map((row) => row.id);
+        const expectedIds = manifest?.rows
+          .filter((row) => row.drivers.includes("runtime") && row.runtimeSupport?.status !== "deferred_content")
+          .map((row) => row.id);
         const repair = buildRepairReport(entries, {
           expectedIds,
           ...(options.maxClusters === null ? {} : { maxClusters: options.maxClusters }),
@@ -279,7 +312,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
         process.stdout.write(`${JSON.stringify(repair)}\n`);
         if (repair.status !== "passed") process.exitCode = 1;
       } else {
-        if (options.requireSupported || options.maxClusters !== null || options.maxBytes !== null)
+        if (options.requireSupported || options.maxClusters !== null)
           throw new Error("repair_options_need_repair_list");
         const path = resolveReportPath(options.input);
         const report = JSON.parse(readFileSync(path, "utf8"));

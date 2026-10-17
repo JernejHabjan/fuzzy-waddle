@@ -17,6 +17,8 @@ test("a terminal match may stop after all selected terminal assertions and event
   expect(canStopAfterTerminal(assertions, ["SEQ-01"], { tick: 600, gameResult: "win" }, [500])).toBe(true);
   expect(canStopAfterTerminal(assertions, ["SEQ-01"], { tick: 600, gameResult: "loss" }, [])).toBe(true);
   expect(canStopAfterTerminal(assertions, ["SEQ-01"], { tick: 600, gameResult: null }, [])).toBe(false);
+  expect(canStopAfterTerminal(assertions, ["SEQ-01"], { tick: 20, gameResult: "quit" }, [])).toBe(false);
+  expect(canStopAfterTerminal(assertions, ["SEQ-01"], { tick: 600, gameResult: "tie" }, [])).toBe(true);
   expect(canStopAfterTerminal(assertions, ["SEQ-01"], { tick: 600, gameResult: "win" }, [700])).toBe(false);
 });
 

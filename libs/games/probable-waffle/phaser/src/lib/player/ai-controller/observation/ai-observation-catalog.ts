@@ -122,6 +122,7 @@ export function projectCatalogDefinition(
         }
       : {}),
     constructionProfile: {
+      requiresAssignedBuilder: (definition.components?.constructable?.maxAssignedBuilders ?? 0) > 0,
       resourceCost: { ...(definition.components?.productionCost?.resources ?? {}) },
       requiredObjectNames: [...(definition.components?.requirements?.actors ?? [])].sort(),
       footprintRadiusTiles: Math.floor(

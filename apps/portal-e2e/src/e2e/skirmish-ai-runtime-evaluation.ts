@@ -79,6 +79,27 @@ export function evaluateScenario(
       if (JSON.stringify(leftFirst?.decisionFacts) !== JSON.stringify(rightFirst?.decisionFacts)) {
         failures.push("hidden_state_decision_leak");
       }
+      if (left.checkpoints.length !== right.checkpoints.length) failures.push("hidden_state_checkpoint_pair_missing");
+      for (let index = 0; index < left.checkpoints.length; index++) {
+        const a = left.checkpoints[index],
+          b = right.checkpoints[index];
+        if (!a || !b || a.targetTick !== b.targetTick) {
+          failures.push("hidden_state_checkpoint_pair_missing");
+          break;
+        }
+        // Once permitted contacts differ, different orders are legitimate. Hidden-world changes alone are not.
+        if (JSON.stringify(a.visibleEnemyFacts) !== JSON.stringify(b.visibleEnemyFacts)) break;
+        if (!a.permittedObservationDigest || !b.permittedObservationDigest)
+          failures.push("hidden_state_observation_digest_missing");
+        else if (a.permittedObservationDigest !== b.permittedObservationDigest) {
+          failures.push("hidden_state_permitted_observation_mismatch");
+          break;
+        }
+        if (!a.decisionIntents || !b.decisionIntents || a.decisionIntentsTruncated || b.decisionIntentsTruncated)
+          failures.push("hidden_state_exact_decisions_missing");
+        else if (JSON.stringify(a.decisionIntents) !== JSON.stringify(b.decisionIntents))
+          failures.push("hidden_state_decision_leak");
+      }
     }
   }
   const determinismGroups = new Map<string, RuntimeVariantResultV1[]>();

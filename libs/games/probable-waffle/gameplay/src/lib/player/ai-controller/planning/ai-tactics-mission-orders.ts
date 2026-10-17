@@ -1,4 +1,5 @@
 import type { AiPlanId } from "../contracts/ai-core-types";
+import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import { canTarget } from "./ai-tactics-combat";
 import { intentBase } from "./ai-tactics-orders";
@@ -23,6 +24,7 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
     recoveryPhase,
     retreat,
     support,
+    targetAwareMembers,
     updated,
     visibleTarget
   } = input;
@@ -51,6 +53,9 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
       const attacker = actorById.get(reservation.actorId);
       const reservedTarget = actorById.get(reservation.targetActorId);
       if (!attacker || !reservedTarget || !canTarget(attacker, reservedTarget)) continue;
+      const activeOrder = attacker.activeOrder?.status === "known" ? attacker.activeOrder.value : null;
+      // A damage forecast expires before a native attack job; replacing that job restarts its approach/windup.
+      if (activeOrder?.orderType === OrderType.Attack && activeOrder.targetActorId === reservedTarget.actorId) continue;
       const single = { ...updated, actorIds: [attacker.actorId] };
       intents.push({
         ...intentBase(observation, single, `focus:${visibleTarget.actorId}:${attacker.actorId}`, 820),
@@ -63,6 +68,23 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
         actorIds: [attacker.actorId],
         targetActorId: reservation.targetActorId,
         targetPosition: null
+      });
+    }
+    // Fighting members and distant reinforcements need independent orders in the same decision.
+    const awareIds = new Set(targetAwareMembers.map((actor) => actor.actorId));
+    for (const assignment of assignedPositions.filter(
+      (entry) => actorsNeedingOrder.includes(entry.actorId) && !awareIds.has(entry.actorId)
+    )) {
+      intents.push({
+        ...intentBase(
+          observation,
+          { ...updated, actorIds: [assignment.actorId] },
+          `position:${assignment.actorId}`,
+          updated.role === "defense" ? 860 : 720
+        ),
+        kind: "move",
+        actorIds: [assignment.actorId],
+        logicalPosition: assignment.position
       });
     }
   } else if (materiallyChanged && anchor && !["completed", "cancelled"].includes(updated.state)) {

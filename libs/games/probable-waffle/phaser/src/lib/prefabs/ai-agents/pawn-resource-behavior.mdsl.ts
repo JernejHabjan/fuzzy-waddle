@@ -6,6 +6,9 @@ export const PawnResourceBehaviorMdsl = `root [Gather] {
         succeed {
             selector { /* executes until first succeeds */
 
+                /* Release a stranded job before more extraction or tending; cargo remains on the worker. */
+                action [ValidateResourceDelivery]
+
                 /* Deliver a full pack before tending the next crop or replacing a depleted source. */
                 sequence {
                     condition [GatherCapacityFull]

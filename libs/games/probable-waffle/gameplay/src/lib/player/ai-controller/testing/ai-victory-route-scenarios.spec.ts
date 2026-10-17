@@ -163,6 +163,15 @@ function proposal(includeWorker: boolean) {
   return manager.propose(world(includeWorker), brain());
 }
 
+function expectKnownApproach(result: ReturnType<typeof manager.propose>, objectiveId: string, graph = access.graph) {
+  const advance = result.intents.find((intent) => intent.kind === "attack");
+  expect(advance).toMatchObject({ targetActorId: null, targetPosition: expect.any(Object) });
+  expect(graph.nodes.map((node) => node.representativePosition)).toContainEqual(
+    advance?.kind === "attack" ? advance.targetPosition : null
+  );
+  expect(result.statePatch?.squads?.find((entry) => entry.role === "attack")?.objectiveId).toBe(objectiveId);
+}
+
 describe("STRAT-07 credible-route priority", () => {
   it("chooses a reachable worker ahead of a higher-value core behind unknown topology", () => {
     const result = proposal(true);
@@ -176,9 +185,7 @@ describe("STRAT-07 credible-route priority", () => {
     expect(
       result.statePatch?.squads?.some((squad) => squad.role === "attack" && squad.objectiveId === "enemy-worker")
     ).toBe(true);
-    expect(result.intents.some((intent) => intent.kind === "attack" && intent.targetActorId === "enemy-worker")).toBe(
-      true
-    );
+    expectKnownApproach(result, "enemy-worker");
   });
 
   it("retains the unknown core as a scouting fallback without launching a blind attack", () => {
@@ -247,9 +254,7 @@ describe("STRAT-07 credible-route priority", () => {
       { ...openWorld, tick: 1300 },
       { ...initial, squads: openFirst.statePatch.squads, skirmish: openFirst.statePatch.skirmish }
     );
-    expect(
-      openLater.intents.some((intent) => intent.kind === "attack" && intent.targetActorId === "enemy-worker")
-    ).toBe(true);
+    expectKnownApproach(openLater, "enemy-worker");
   });
 });
 
@@ -317,8 +322,6 @@ describe("STRAT-08 reachable exposed-core finish", () => {
       })
     );
     expect(result.statePatch?.strategy?.stance).toBe("finish");
-    expect(result.intents.some((intent) => intent.kind === "attack" && intent.targetActorId === "enemy-core")).toBe(
-      true
-    );
+    expectKnownApproach(result, "enemy-core", known.graph);
   });
 });

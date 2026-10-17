@@ -32,6 +32,8 @@ describe("ActorIndexSystem ownership conversion", () => {
       active: true,
       name: ObjectNames.TivaraWorker,
       once: jest.fn(),
+      on: jest.fn(),
+      off: jest.fn(),
       getData: (key: string) => (key === ActorDataKey ? actorData : undefined)
     } as unknown as Phaser.GameObjects.GameObject;
     const ownershipChanged = jest.fn();

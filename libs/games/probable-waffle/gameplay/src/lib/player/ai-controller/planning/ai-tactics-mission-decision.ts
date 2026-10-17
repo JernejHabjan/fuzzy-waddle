@@ -5,7 +5,7 @@ import { AI_TACTICS_ATTACK_RATIO_PERMILLE, AI_TACTICS_RETREAT_RATIO_PERMILLE } f
 import type { prepareAiTacticalSquad } from "./ai-tactics-mission-preparation";
 /** Chooses bounded mission state and recovery. */
 export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepareAiTacticalSquad>>) {
-  const { estimate, localEnemies, members, observation, retreat, squad, state } = input;
+  const { estimate, localEnemies, members, observation, retreat, squad, state, visibleTarget } = input;
   const fortificationPlan =
     squad.role === "defense"
       ? (state.fortifications.find(
@@ -43,10 +43,11 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
     );
   const missionProgressed =
     usefulEffectTick !== null && usefulEffectTick > (squad.lifecycle?.lastUsefulEffectTick ?? -1);
+  // Strategy launches the mission once; domain children inherit that permission without launching again.
   const strategicLaunchRecorded = state.skirmish.timeline.some(
     (event) =>
       event.kind === "mission" &&
-      event.subjectId === squad.squadId &&
+      event.subjectId.split(":domain:")[0] === squad.squadId.split(":domain:")[0] &&
       event.detail.startsWith("launch:") &&
       event.tick >= (squad.lifecycle?.createdTick ?? observation.tick)
   );
@@ -84,7 +85,7 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
         ? "recover"
         : awaitingStrategicLaunch
           ? "assemble"
-          : (unfavorable || topologyLost) && retreat
+          : (unfavorable || topologyLost || (previousRetreat && visibleTarget && !favorable)) && retreat
             ? "retreat"
             : localEnemies.length > 0 && (favorable || forcedDecision)
               ? "engage"

@@ -11,11 +11,46 @@ export function calculateAiHousingDemand(
   acceptedEffectIds: readonly AiIntentV1["effectId"][]
 ) {
   const owned = observation.actors.filter((actor) => actor.relation === "self" && actor.visibility === "owned");
-  const housingEntry = catalog.entries.find(
+  const preferredEntry = catalog.entries.find(
     (entry) => entry.sourceObjectName === preferredObjectName && (entry.housingCapacity ?? 0) > 0
   );
+  const readyNames = new Set(
+    owned
+      .filter((actor) => actor.constructionProgress?.status !== "known" || actor.constructionProgress.value >= 100)
+      .map((actor) => actor.objectName)
+  );
+  const prerequisitesReady = (entry: AiCapabilityCatalogV1["entries"][number]) =>
+    (entry.constructionProfile?.requiredObjectNames ?? []).every((name) => readyNames.has(name));
+  // A lost core can lock ordinary houses. Fund a legal provider rather than repeatedly ordering a forbidden house.
+  const housingEntry = !preferredEntry
+    ? undefined
+    : prerequisitesReady(preferredEntry)
+      ? preferredEntry
+      : catalog.entries
+          .filter((entry) => (entry.housingCapacity ?? 0) > 0 && entry.constructionProfile && prerequisitesReady(entry))
+          .filter((entry) =>
+            owned.some((actor) =>
+              catalog.entries.some(
+                (builder) =>
+                  builder.sourceObjectName === actor.objectName && builder.constructs.includes(entry.sourceObjectName)
+              )
+            )
+          )
+          .sort(
+            (left, right) =>
+              Object.values(left.constructionProfile?.resourceCost ?? {}).reduce<number>(
+                (sum, cost) => sum + (cost ?? 0),
+                0
+              ) -
+                Object.values(right.constructionProfile?.resourceCost ?? {}).reduce<number>(
+                  (sum, cost) => sum + (cost ?? 0),
+                  0
+                ) || left.sourceObjectName.localeCompare(right.sourceObjectName)
+          )[0];
   const capacityPerBuilding = Math.max(1, housingEntry?.housingCapacity ?? 1);
-  const providers = owned.filter((actor) => actor.housingCapacity.status === "known" && actor.housingCapacity.value > 0);
+  const providers = owned.filter(
+    (actor) => actor.housingCapacity.status === "known" && actor.housingCapacity.value > 0
+  );
   const ready = providers.filter(
     (actor) => actor.constructionProgress?.status !== "known" || actor.constructionProgress.value >= 100
   );
@@ -25,7 +60,10 @@ export function calculateAiHousingDemand(
   const observedEffectIds = new Set(providers.flatMap((actor) => actor.activeEffectIds));
   const unobservedEffects = acceptedEffectIds.filter((effectId) => !observedEffectIds.has(effectId));
   const capacity = (actors: typeof providers) =>
-    actors.reduce((total, actor) => total + (actor.housingCapacity.status === "known" ? actor.housingCapacity.value : 0), 0);
+    actors.reduce(
+      (total, actor) => total + (actor.housingCapacity.status === "known" ? actor.housingCapacity.value : 0),
+      0
+    );
   const readyCapacity = capacity(ready);
   const committedCapacity = readyCapacity + capacity(constructing) + unobservedEffects.length * capacityPerBuilding;
   const used = owned.reduce(
@@ -39,12 +77,19 @@ export function calculateAiHousingDemand(
     for (const item of actor.queue.value.items ?? []) {
       if (item.kind !== "production" || !item.objectName || queuedItemIds.has(item.itemId)) continue;
       queuedItemIds.add(item.itemId);
-      queuedPopulation +=
-        catalog.entries.find((entry) => entry.sourceObjectName === item.objectName)?.housingCost ?? 0;
+      queuedPopulation += catalog.entries.find((entry) => entry.sourceObjectName === item.objectName)?.housingCost ?? 0;
     }
   }
   const targetCapacity = used + queuedPopulation + buffer;
-  const neededBuildings = Math.max(0, Math.ceil((targetCapacity - committedCapacity) / capacityPerBuilding));
+  const missingBuildings = Math.max(0, Math.ceil((targetCapacity - committedCapacity) / capacityPerBuilding));
+  const recoveringPrerequisite = housingEntry !== undefined && housingEntry !== preferredEntry;
+  const prerequisiteCommitted =
+    constructing.some((actor) => actor.objectName === housingEntry?.sourceObjectName) || unobservedEffects.length > 0;
+  const neededBuildings = recoveringPrerequisite
+    ? prerequisiteCommitted
+      ? 0
+      : Math.min(1, missingBuildings)
+    : missingBuildings;
   return {
     housingEntry,
     ready,

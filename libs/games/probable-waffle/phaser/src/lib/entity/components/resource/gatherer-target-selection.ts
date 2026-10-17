@@ -10,11 +10,24 @@ import { getSceneService } from "../../../world/services/scene-component-helpers
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { getGameObjectLogicalTransform } from "../../../data/game-object-helper";
 import type { GathererComponent } from "./gatherer-component";
+import { HealthComponent } from "../combat/components/health-component";
 type GameObject = Phaser.GameObjects.GameObject;
 
 /** Native indexed resource selection and deterministic ties; the facade owns cargo and source assignments. */
 export class GathererTargetSelection {
-  constructor(private readonly gameObject: GameObject, private readonly gatherer: GathererComponent) {}
+  constructor(
+    private readonly gameObject: GameObject,
+    private readonly gatherer: GathererComponent
+  ) {}
+
+  /** Cheap admission check for extraction; route selection still belongs to findClosestResourceDrain. */
+  hasReadyResourceDrain(type: ResourceType): boolean {
+    const owner = getActorComponent(this.gameObject, OwnerComponent);
+    const index = getSceneService(this.gameObject.scene, ActorIndexSystem);
+    return (index?.getResourceDrainsFiltered(undefined, type) ?? []).some(
+      (drain) => owner?.isSameTeamAsGameObject(drain) && GathererTargetSelection.isReadyToUse(drain)
+    );
+  }
   async findClosestResourceDrain(): Promise<GameObject | null> {
     if (this.gatherer.carriedResourceType === null) {
       // Gatherer is not carrying any resources
@@ -67,6 +80,9 @@ export class GathererTargetSelection {
    * Checks whether the specified actor is ready to use (e.g. finished building).
    */
   private static isReadyToUse(resourceDrain: GameObject): boolean {
+    if (!resourceDrain.active || !resourceDrain.scene?.sys.isActive()) return false;
+    const health = getActorComponent(resourceDrain, HealthComponent);
+    if (health && !health.alive) return false;
     const constructionSiteComponent = getActorComponent(resourceDrain, ConstructionSiteComponent);
     if (!constructionSiteComponent) return true;
     return constructionSiteComponent.isFinished;
@@ -132,11 +148,18 @@ export class GathererTargetSelection {
     }
     const leftTransform = getGameObjectLogicalTransform(left);
     const rightTransform = getGameObjectLogicalTransform(right);
-    const leftKey = [left.name, Math.round(leftTransform?.x ?? 0), Math.round(leftTransform?.y ?? 0),
-      Math.round(leftTransform?.z ?? 0)].join(":");
-    const rightKey = [right.name, Math.round(rightTransform?.x ?? 0), Math.round(rightTransform?.y ?? 0),
-      Math.round(rightTransform?.z ?? 0)].join(":");
+    const leftKey = [
+      left.name,
+      Math.round(leftTransform?.x ?? 0),
+      Math.round(leftTransform?.y ?? 0),
+      Math.round(leftTransform?.z ?? 0)
+    ].join(":");
+    const rightKey = [
+      right.name,
+      Math.round(rightTransform?.x ?? 0),
+      Math.round(rightTransform?.y ?? 0),
+      Math.round(rightTransform?.z ?? 0)
+    ].join(":");
     return leftKey.localeCompare(rightKey);
   }
-
 }

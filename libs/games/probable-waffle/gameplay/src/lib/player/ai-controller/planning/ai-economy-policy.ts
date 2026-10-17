@@ -52,7 +52,8 @@ function usefulSourceCapacity(observation: AiObservationV1): number {
     );
 }
 
-function localEconomyThreats(observation: AiObservationV1): AiObservedActorV1[] {
+/** Shared current threat set for workforce budgets and defense of workers outside the main base. */
+export function observedAiEconomyThreats(observation: AiObservationV1): AiObservedActorV1[] {
   const visibleIds = new Set(observation.threatSummary.visibleEnemyActorIds);
   if (visibleIds.size === 0) return [];
   const visibleEnemies = observation.actors.filter(
@@ -70,6 +71,17 @@ function localEconomyThreats(observation: AiObservationV1): AiObservedActorV1[] 
       : []
   );
   return visibleEnemies.filter((enemy) => {
+    // A visible producer/drop-off is strategic information, not an immediate weapon against nearby workers.
+    const armed = enemy.combatProfile?.status === "known" && enemy.combatProfile.value.attacks.length > 0;
+    const attackCapability = enemy.capabilities.some(
+      (capability) => capability.family === "attack" && capability.targetDomains.length > 0
+    );
+    if (
+      !armed &&
+      !attackCapability &&
+      !(enemy.activeOrder?.status === "known" && enemy.activeOrder.value?.orderType === OrderType.Attack)
+    )
+      return false;
     if (enemy.logicalPosition.status !== "known") return false;
     const enemyPosition = enemy.logicalPosition.value;
     return protectedPositions.some((position) => {
@@ -80,7 +92,7 @@ function localEconomyThreats(observation: AiObservationV1): AiObservedActorV1[] 
 }
 
 export function hasCredibleAiEconomyThreat(observation: AiObservationV1): boolean {
-  return localEconomyThreats(observation).length > 0;
+  return observedAiEconomyThreats(observation).length > 0;
 }
 
 /** Only defenders near the exposed economy with a weapon for the observed movement domain can cover the threat. */
@@ -156,7 +168,7 @@ export function decideAiEconomyPolicy(
   const observedCapacity = usefulSourceCapacity(observation);
   const capacity = Math.max(WORKER_FLOOR, observedCapacity + 4);
   const demandGrowth = Math.ceil(forecastDeficit / 150);
-  const localThreats = localEconomyThreats(observation);
+  const localThreats = observedAiEconomyThreats(observation);
   const credibleThreat = localThreats.length > 0;
   const defenders = compatibleLocalDefenders(self, localThreats, catalog);
   const requestedPosture = credibleThreat

@@ -13,7 +13,7 @@ import { canStopAfterTerminal } from "./skirmish-ai-runtime-terminal";
 import { evaluateEvidenceStopAtCheckpoint } from "./skirmish-ai-runtime-evidence-stop-evaluation";
 import { collectRuntimePresetEvents } from "./skirmish-ai-runtime-preset-event-results";
 import { captureRuntimeProductionAuthority } from "./skirmish-ai-runtime-production-capture";
-import { buildRuntimeProductionReport } from "./skirmish-ai-runtime-production-report";
+import { buildRuntimeProductionReport, compactRuntimeProductionReport } from "./skirmish-ai-runtime-production-report";
 import { advanceRuntimeFrames } from "./skirmish-ai-runtime-frame-driver";
 
 export async function runVariant(
@@ -112,7 +112,12 @@ export async function runVariant(
       await setSimulationState(page, fixture.recipe.aiPlayerNumber, "pause", fixture.recipe.simulationTimeScale);
       await waitForSettledDecision(page, fixture.recipe.aiPlayerNumber);
       const captureStartedAt = performance.now();
-      const checkpoint = await captureCheckpoint(page, fixture.recipe.aiPlayerNumber, targetTick);
+      const checkpoint = await captureCheckpoint(
+        page,
+        fixture.recipe.aiPlayerNumber,
+        targetTick,
+        applicableScenarioIds.some((id) => fixture.assertions[id]?.requireHiddenStateParity)
+      );
       checkpoints.push(checkpoint);
       if (captureProduction)
         productionCapture = await captureRuntimeProductionAuthority(page, fixture.recipe.aiPlayerNumber);
@@ -180,13 +185,19 @@ export async function runVariant(
             : null;
         })
       : null;
+    const productionReport =
+      productionCapture && fullProductionProof
+        ? buildRuntimeProductionReport(productionCapture, initialBoundary.presetApplication ?? undefined)
+        : undefined;
     return {
       ...projectRuntimeVariantStart(variant, initialBoundary, effectiveSeed, fixture.recipe.mapLabel),
       stopReason,
       outcomeDigest,
       ...(productionCapture
         ? fullProductionProof
-          ? buildRuntimeProductionReport(productionCapture, initialBoundary.presetApplication ?? undefined)
+          ? applicableScenarioIds.every((id) => id === "H-18") && productionReport
+            ? compactRuntimeProductionReport(productionReport)
+            : productionReport
           : { productionCapture }
         : {}),
       checkpoints,

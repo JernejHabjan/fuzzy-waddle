@@ -14,7 +14,7 @@
   "recipe": {
     "mapLabel": "Ember Enclave",
     "aiPlayerNumber": 2,
-    "simulationTimeScale": 100,
+    "simulationTimeScale": 1,
     "checkpointTicks": [20, 400],
     "variants": [
       {
@@ -30,8 +30,26 @@
         "presetWorld": {
           "fixtureId": "hidden-enemy-parity",
           "actors": [
-            { "fixtureActorId": "ai-worker", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 400, "y": 840, "z": 0 } },
-            { "fixtureActorId": "human-hidden", "actorName": "Banshee", "owner": 1, "position": { "x": -960, "y": 720, "z": 64 } }
+            {
+              "fixtureActorId": "ai-worker",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 400,
+                "y": 840,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "human-hidden",
+              "actorName": "Banshee",
+              "owner": 1,
+              "position": {
+                "x": -960,
+                "y": 720,
+                "z": 64
+              }
+            }
           ],
           "resourceGrants": []
         }
@@ -49,13 +67,32 @@
         "presetWorld": {
           "fixtureId": "hidden-enemy-parity",
           "actors": [
-            { "fixtureActorId": "ai-worker", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 400, "y": 840, "z": 0 } },
-            { "fixtureActorId": "human-hidden", "actorName": "Banshee", "owner": 1, "position": { "x": -768, "y": 720, "z": 64 } }
+            {
+              "fixtureActorId": "ai-worker",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 400,
+                "y": 840,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "human-hidden",
+              "actorName": "Banshee",
+              "owner": 1,
+              "position": {
+                "x": -768,
+                "y": 720,
+                "z": 64
+              }
+            }
           ],
           "resourceGrants": []
         }
       }
-    ]
+    ],
+    "fixedStepFrames": true
   },
   "assertions": {
     "SCOUT-05": {

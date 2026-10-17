@@ -25,6 +25,7 @@ import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import { getCanonicalActorNameCached } from "../../data/tech-tree/canonical-actor-name";
 import { ConstructionSiteComponent } from "../../entity/components/construction/construction-site-component";
 import { shouldConsiderActorUnlocked } from "../../data/tech-tree/actor-unlock-utils";
+import { ActorDataChangedEvent } from "../../data/actor-data";
 import { GameEventEmitter as EventEmitter } from "@fuzzy-waddle/platform-game-host";
 
 export class ActorIndexSystem {
@@ -83,19 +84,31 @@ export class ActorIndexSystem {
         }
       }
 
-      if (getActorComponent(obj, ResourceSourceComponent)) {
-        this.resourceSources.add(obj);
-      }
-      if (getActorComponent(obj, ResourceDrainComponent)) {
-        this.resourceDrains.add(obj);
-      }
+      this.refreshResourceServices(obj);
+      // Construction shells acquire their source/drain components only on completion.
+      obj.on(ActorDataChangedEvent, ActorIndexSystem.onActorComponentsChanged, obj);
 
       // Auto-unregister on destroy
       obj.once(HealthComponent.KilledEvent, () => this.unregisterActor(obj));
       obj.once(Phaser.GameObjects.Events.DESTROY, () => this.unregisterActor(obj));
       this.actorRegistered.emit(obj);
+    } else {
+      this.refreshResourceServices(obj);
     }
   };
+
+  /** Component installation updates derived service membership without registering/counting the actor again. */
+  private refreshResourceServices(obj: GameObject): void {
+    if (!this.idActors.has(obj)) return;
+    if (getActorComponent(obj, ResourceSourceComponent)) this.resourceSources.add(obj);
+    else this.resourceSources.delete(obj);
+    if (getActorComponent(obj, ResourceDrainComponent)) this.resourceDrains.add(obj);
+    else this.resourceDrains.delete(obj);
+  }
+
+  private static onActorComponentsChanged(this: GameObject): void {
+    getSceneService(this.scene, ActorIndexSystem)?.refreshResourceServices(this);
+  }
 
   private logLateRegistration(obj: GameObject): void {
     if (!hasMultiplayerCommandRelay(this.scene)) {
@@ -123,6 +136,7 @@ export class ActorIndexSystem {
     if (!obj) return;
 
     if (this.idActors.delete(obj)) {
+      obj.off(ActorDataChangedEvent, ActorIndexSystem.onActorComponentsChanged, obj);
       // Clean up construction subscription if exists
       const subscription = this.constructionSubscriptions.get(obj);
       if (subscription) {
@@ -376,6 +390,9 @@ export class ActorIndexSystem {
     });
     this.constructionSubscriptions.clear();
 
+    for (const actor of this.idActors) {
+      actor.off(ActorDataChangedEvent, ActorIndexSystem.onActorComponentsChanged, actor);
+    }
     this.idActors.clear();
     this.ownedActors.clear();
     this.resourceSources.clear();

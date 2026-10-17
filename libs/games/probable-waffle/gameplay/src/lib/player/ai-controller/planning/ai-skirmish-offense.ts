@@ -1,4 +1,5 @@
 import type { AiManagerProposalV1 } from "./ai-manager-proposal";
+import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
 import { aiDeadline, type AiPlanId, type AiSquadId } from "../contracts/ai-core-types";
 import type { AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
@@ -7,6 +8,8 @@ import type { AiSkirmishProposalContext } from "./ai-skirmish-proposal-context";
 import { createAiTransportPlanV1 } from "./ai-transport-manager";
 import { AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS } from "./ai-skirmish-defense";
 import { selectAiOffensiveOpportunity } from "./select-ai-offensive-opportunity";
+import { canSeeTarget } from "./ai-tactics-combat";
+import { selectAiAttackApproachPositions } from "./ai-tactics-approach-positions";
 import {
   canTarget,
   domains,
@@ -18,10 +21,17 @@ import {
   withTimeline
 } from "./ai-skirmish-support";
 
-function appendReserve(context: AiSkirmishProposalContext): void {
-  const reserveCount = context.combat.length >= 8 ? Math.ceil(context.combat.length * 0.25) : 0;
+function appendReserve(context: AiSkirmishProposalContext, committedAttackers: ReadonlySet<string>): void {
+  const assignedDefenders = new Set(
+    context.nextSquads.filter((squad) => squad.role === "defense").flatMap((squad) => squad.actorIds)
+  ).size;
+  // Existing defense already protects home; do not reserve the same protection budget twice.
+  const reserveCount = Math.max(
+    0,
+    (context.combat.length >= 8 ? Math.ceil(context.combat.length * 0.25) : 0) - assignedDefenders
+  );
   const reserveMembers = context.combat
-    .filter((actor) => !context.primaryOwnedActors.has(actor.actorId))
+    .filter((actor) => !context.primaryOwnedActors.has(actor.actorId) && !committedAttackers.has(actor.actorId))
     .sort(
       (left, right) =>
         Number(domains(left).includes("air")) - Number(domains(right).includes("air")) ||
@@ -189,13 +199,50 @@ export function advanceAiSkirmishOffense(
   context: AiSkirmishProposalContext,
   profile: AiProfileConfigV1
 ): AiManagerProposalV1 | undefined {
-  appendReserve(context);
+  const activeAttack = context.activeAttack;
+  const liveTarget = context.visibleEnemies.find((actor) => actor.actorId === activeAttack?.objectiveId);
+  const missionSquads = activeAttack
+    ? context.state.squads.filter(
+        (squad) =>
+          squad.role === "attack" &&
+          squad.squadId.split(":domain:")[0] === activeAttack.squadId.split(":domain:")[0] &&
+          squad.objectiveId === activeAttack.objectiveId &&
+          !["completed", "cancelled"].includes(squad.state)
+      )
+    : [];
+  const missionMembers = new Set(missionSquads.flatMap((squad) => squad.actorIds));
+  const committedAttackers = new Set(
+    context.combat
+      .filter((actor) => {
+        const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
+        return (
+          liveTarget &&
+          missionMembers.has(actor.actorId) &&
+          order?.orderType === OrderType.Attack &&
+          (order.targetActorId === liveTarget.actorId || order.targetActorId === null)
+        );
+      })
+      .map((actor) => actor.actorId)
+  );
+  appendReserve(context, committedAttackers);
   const attackers = context.combat.filter((actor) => !context.primaryOwnedActors.has(actor.actorId));
   const choice = selectAiOffensiveOpportunity(context, attackers);
   context.opponent = choice.opponent;
   context.assessment = choice.assessment;
   const attackId = context.activeAttack?.squadId ?? ("squad:attack:primary" as AiSquadId);
   context.attackPlanId = `plan:${attackId}` as AiPlanId;
+  if (choice.assessment.reason === "route_pending" && activeAttack && liveTarget && committedAttackers.size > 0) {
+    // A rebuilding advisory graph cannot invalidate a native attack still working on its observed target.
+    const available = new Set(attackers.map((actor) => actor.actorId));
+    context.nextSquads.push(
+      ...missionSquads
+        .map((squad) => ({ ...squad, actorIds: squad.actorIds.filter((actorId) => available.has(actorId)) }))
+        .filter((squad) => squad.actorIds.length > 0)
+    );
+    context.opponent = liveTarget;
+    context.assessment = { ...choice.assessment, targetActorId: liveTarget.actorId };
+    return undefined;
+  }
   if (!context.opponent || choice.attackers.length === 0) return undefined;
   const sourceNode = node(choice.attackers[0]);
   const targetNode = node(context.opponent);
@@ -208,7 +255,7 @@ export function advanceAiSkirmishOffense(
   const launchRecorded = context.state.skirmish.timeline.some(
     (event) =>
       event.kind === "mission" &&
-      event.subjectId === attackId &&
+      event.subjectId.split(":domain:")[0] === attackId.split(":domain:")[0] &&
       event.detail.startsWith("launch:") &&
       event.tick >= (attack.lifecycle?.createdTick ?? context.observation.tick)
   );
@@ -220,7 +267,15 @@ export function advanceAiSkirmishOffense(
       profile.voluntaryOffensiveMissionLimit + 1
   ) {
     const targetPosition = position(context.opponent);
-    if (context.opponent.visibility === "visible" && canTarget(choice.attackers[0]!, context.opponent))
+    if (context.opponent.visibility === "visible" && canTarget(choice.attackers[0]!, context.opponent)) {
+      const opponent = context.opponent;
+      const directAttack = choice.attackers.every((actor) => canSeeTarget(actor, opponent, context.catalog));
+      const approach = targetPosition
+        ? (selectAiAttackApproachPositions(choice.attackers, targetPosition, context.observation)[0]?.position ??
+          context.observation.map?.accessGraph?.nodes.find((region) => region.nodeId === targetNode)
+            ?.representativePosition)
+        : undefined;
+      if (!directAttack && !approach) return undefined;
       context.intents.push({
         ...intentBase(
           context.state,
@@ -232,10 +287,10 @@ export function advanceAiSkirmishOffense(
         ),
         kind: "attack",
         actorIds: attack.actorIds,
-        targetActorId: context.opponent.actorId,
-        targetPosition: null
+        targetActorId: directAttack ? context.opponent.actorId : null,
+        targetPosition: directAttack ? null : (approach ?? null)
       });
-    else if (targetPosition)
+    } else if (targetPosition)
       context.intents.push({
         ...intentBase(
           context.state,

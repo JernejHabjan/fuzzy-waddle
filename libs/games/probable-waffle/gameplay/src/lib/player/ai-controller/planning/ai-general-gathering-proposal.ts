@@ -11,6 +11,7 @@ import { readAiResourceInputRead } from "./ai-resource-input-observation";
 import { claimedActorIds } from "./ai-macro-observation";
 import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
 import { housingFundingResourceTypes, selectAiHousingFundingWorker } from "./ai-housing-funding";
+import { aiEconomySiteSafety } from "./ai-economy-site-safety";
 
 /** Proposes a non-Field gathering assignment from aggregate forecasts or the native stockpile fallback. */
 export function proposeAiGeneralGathering(
@@ -34,6 +35,7 @@ export function proposeAiGeneralGathering(
     .filter((actor) => actor.activeOrder?.status === "known" && actor.activeOrder.value === null)
     .sort((left, right) => left.actorId.localeCompare(right.actorId));
   const gatherSources = observation.actors
+    .filter(aiEconomySiteSafety(observation).actorSafe)
     .filter(
       (actor) =>
         actor.objectName !== ObjectNames.Field &&

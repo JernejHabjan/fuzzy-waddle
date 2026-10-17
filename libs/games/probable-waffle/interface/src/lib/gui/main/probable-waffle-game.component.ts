@@ -1,4 +1,11 @@
-import { ChangeDetectorRef, Component, inject, type OnDestroy, type OnInit, ChangeDetectionStrategy } from "@angular/core";
+import {
+  ChangeDetectorRef,
+  Component,
+  inject,
+  type OnDestroy,
+  type OnInit,
+  ChangeDetectionStrategy
+} from "@angular/core";
 import { ProbableWaffleGameInstance, ProbableWaffleUserInfo } from "@fuzzy-waddle/probable-waffle-protocol";
 import { type BaseGameData } from "@fuzzy-waddle/platform-game-host/phaser/game/base-game-data";
 import { ProbableWaffleCommunicatorService } from "../../communicators/probable-waffle-communicator.service";
@@ -74,10 +81,8 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
     const runtimeTestConfig = environment.production ? null : readAiRuntimeBrowserTestConfigV1();
     if (runtimeTestConfig) {
       gameInstance.gameInstanceMetadata.data.rndSeed = runtimeTestConfig.seed;
-      if (runtimeTestConfig.presetWorld) {
-        gameInstance.gameInstanceMetadata.data.gameInstanceId =
-          `runtime-fixture-${runtimeTestConfig.seed}-${runtimeTestConfig.presetWorld.fixtureId}`;
-      }
+      // Actor identity includes the session ID, so continuous seeded worlds need the same stable test salt as presets.
+      gameInstance.gameInstanceMetadata.data.gameInstanceId = `runtime-fixture-${runtimeTestConfig.seed}-${runtimeTestConfig.presetWorld?.fixtureId ?? "continuous"}`;
     }
 
     // Derive seed from rndSeed for deterministic lock-stepping

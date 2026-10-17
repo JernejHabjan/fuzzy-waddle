@@ -1,6 +1,108 @@
 # #759 current evidence
 
-[HANDOFF.md](HANDOFF.md) owns continuation. Package 2 economy/technology remains open.
+[HANDOFF.md](HANDOFF.md) owns continuation. Read this current batch; older sections retain historical evidence.
+
+## Housing, worker recovery and combat batch — 2026-10-17
+
+Published base50266799471a2804243bd147a759deca2873c150; local mechanical tactical extraction4d75589aa is unpushed.
+Behavior changes remain uncommitted. Artifact paths below are ignored under tmp/ai-plans/759-validation/.
+Raw native proof stays local; ordinary summaries cap8192 UTF-8 bytes and disclose omissions.
+
+### Implemented behavior and purpose
+
+- Housing fixture workers start on legal cells; replacement physically completes863 before unchanged1200 deadline.
+  The five paid outputs, exact one-house payment/count and intact control remain required. An available compatible
+  builder resumes abandoned worker-built sites without repayment; automatic construction needs no assigned builder.
+- Monotonic order revisions fence delayed construction/movement callbacks. Lost compatible drop-off stops gather/return,
+  releases source/container slots and preserves cargo. Immediate-credit sources remain valid. Completed construction
+  refreshes source/drain membership through the existing actor index, with listener cleanup and no duplicate counts.
+- Fair owned-vision scouting uses real information destinations. Hidden-pair evidence compares exact committed intents
+  and permitted inputs until legitimate reveal; H-18 omits only duplicate normalized payload, retaining raw/V2 authority.
+- Strategy and tactics retain current goals and disjoint reinforced domain membership. Defense uses actual weapon
+  threats; economy avoids exposed harvesting/placement and saves definition-priced reinforcements without abandoning
+  survival labor. Missing housing prerequisites fund one legal capacity provider at actual catalog cost.
+- Combat estimates combine force damage and durability; an ordinary firing cooldown no longer triggers withdrawal.
+  Nearby same-mission domains coordinate estimates. Defense counts toward home reserves. Live native attacks survive
+  advisory route rebuilds; distant launches use legal attack-move approaches and direct attacks retain native vision checks.
+- Domain children inherit their parent mission's launch permission. Fighting members and distant reinforcements now
+  receive independent attack/approach orders; a local damage reservation cannot strand other members. Native attacks
+  against visible reachable objectives retain mission commitment instead of being diverted by newly ranked opportunities.
+  Tactical retreat, effect deadlines, cancellation and target disappearance remain responsible for release/recovery.
+- Shared definition prices: melee food100→60 both factions, Skaduwee archer100→70, Tivara sling120→80; ranged wood25.
+  Before this adjustment delivered food168–262/min supported1.7–2.6 melee/min. No worker/building price, combat stat,
+  training time, yield or prerequisite changed. Field yield/worker-capacity changes are authorized if fresh evidence
+  identifies food as the bottleneck; current food323–346/min and idle/diverted forces prioritize order ownership first.
+
+### Current evidence and remaining outcome
+
+- Package1 retained8/8 and Package2 rechecked16/16 (100% each); affected native economy/composition/scouting pass.
+  Full-match gate retains1/2 factions passed (50%),1/2 remaining. Broader Package3 is open; no overall AI percentage.
+- Seeded continuous IDs and timer-independent paths agree through2000 coarse/fine checkpoints:
+  initial fnv1a32:7a156db3; opening SHA256 c1bb249ea07b21baa51e746de6fb1f6cc3c7954aaa0bc98ac142253e6975ce49.
+  continuous-cadence-after.log passes. Earlier salted-ID/timer-sensitive runs remain historical evidence only.
+- domain-launch-victory-resumed-native/1792250765990-failed.json: Tivara wins6000; Skaduwee8 workers/9 army,
+  36 produced,345.63food/min,4379damage/11 enemy losses; only victory missing. Dirty1f40b206, fixture0c6acf03,
+  900 decisions/18000 ticks,209975ms. Ground child engages, proving the former assemble deadlock is gone.
+- Bounded committed-input replay shows distant reinforcements idle while nearby members have damage reservations.
+  reinforcement-approach-before.log:1red/19green; repair plus active-front-attack negative gives20green.
+  reinforcement-approach-ai-controls.log:82 suites409 pass; lint/app types and selected29 pure IDs pass.
+- reinforcement-approach-victory-native/1792261075135-failed.json: Tivara wins6000; Skaduwee8 workers/11 army,
+  35 produced,323.02food/min,5907damage/17 enemy losses; only victory missing. Dirtyde29360a, fixture0c6acf03,
+  900 decisions/18000 ticks,292385ms. At12000 Sandhold342permille is abandoned for WatchTower while its native
+  damage orders are cancelled. Live-objective regression fails before repair; inactive/destroyed-target negatives pass.
+- live-objective-grouped-native/1792262521219-failed.json passes7/8 selected rows (87.5%): PRO-04 (eight worlds),
+  ECO-05/06/07/08,H-18,SCOUT-05. Only SEQ-01 fails. Work3130 decisions/62602ticks;1205426ms; dirtyb3fa0872,
+  fixture5df422ef. Tivara wins6000; Skaduwee8 workers/13 ground army,36 produced,355.88food/min,4852damage/12 losses.
+- Read-only live-objective-input-probe.json captures permitted inputs6000/8000/10000/12000; bounded tactical/selection
+  replays pass. Its separately sampled trajectory differs from the official match, so it is causal input, not evidence
+  that the full late match is deterministic. The original checkpoint cadence/seed/deadline assertions stay unchanged.
+- Progress-continuity extension retains useful effect through a job gap until the existing effect deadline.
+  progress-objective-before.log:1red/7green; progress-objective-ai-controls.log:82 suites415 pass. Lint/app types and
+  progress-objective-final-pure selected29 IDs pass. No new saved field or timer; missing/expired targets release.
+- progress-objective-victory-native/1792264457766-failed.json: Tivara wins6000; Skaduwee8 workers/8 ground military,
+  35 produced,327.68food/min,5059damage/13 enemy losses;90food and empty producer queues. Only victory missing.
+  Dirty79042edc, fixture0c6acf03,900 decisions/18000ticks,211824ms. This result does not close the batch.
+- Retained unaffected controls: native lifecycle/navigation20 suites167; graph/vision/navigation5 suites9;
+  interface2 suites7; reader9/report-budget9; mechanical extraction60 parity cases. Graph4096cell budget finishes
+  supported50×50 maps; larger-map continuation stays bounded. This has red/green controls and a brief native timing
+  sanity observation only; no performance suite is scheduled. Standalone Phaser's eight known type errors are not clean.
+
+### Omission Audit — final native closure pending
+
+1. Housing/payment/deadline: legal paired fixture and physical completion evidenced; H-18 fresh recheck passes.
+2. Cancellation/site recovery: macro recovery registered after opening; actual builder catalog and callback generation
+   owners covered, including busy/cargo/replacement/automatic-site negatives. No speculative movement fallback retained.
+3. Lost deposit: shared pawn behavior validates before walk/tend/extract, Stop releases membership once and retains cargo;
+   immediate credit, delayed replacement order, compatible alternate drain and index destruction controls pass.
+4. Economy/technology: rechecked16/16; changed shared prices/owners pass the grouped affected native gate.
+5. Fair scouting/commands: owned vision and exact paired readers covered; native target visibility unchanged.
+   SCOUT-05 fresh pair passes; no broader SCOUT-family completion claimed.
+6. Combat/access/victory: actual call sites, domain launch/merge/projection, force estimate, order continuity, mixed-cohort
+   advancement and live-target commitment have typed controls. Both-faction authoritative victory remains mandatory/open.
+7. Balance/report scope: shared four definition values apply to human/AI; PRO-04 eight composition worlds pass. Raw proof is ignored,
+   model-facing reads bounded. No new diagnostics architecture, profiling suite, subagent, chat, goal or automation.
+8. Delivery: exact task-owned scope only; exclude .run/start_portal.run.xml and ALL_VISIBLE fog edit. Managed server95532.
+   Final Closure Audit, final provenance/format review, stop, commit/push and remote equality remain pending.
+
+## Final Closure Audit — checkpoint publication, batch not complete
+
+- Implementation review followed the shared resource, construction, strategy, tactical and projection owners and their
+  callers. New production helpers are registered; typed positive/replacement/cancellation and ownership controls pass.
+  Separate Omission Audit above keeps every mandatory user requirement visible.
+- Housing/site recovery, dead-drop-off cleanup, report bounds, composition and fair hidden-pair work have focused
+  evidence and the retained grouped native passes. Package1 remains8/8; Package2 retained16/16; selected native rows7/8.
+- **Required failed gate:** SEQ-01 Skaduwee authoritative victory remains absent at12000. Tivara wins; full-match gate1/2.
+  Focused controls and greater damage do not satisfy victory. Broader Package3 and the authorized continuous batch remain open.
+- Source/fixture provenance is recorded above and in HANDOFF. Latest task-source SHA256
+  e0c2202abf5660a0bd56399dc7dac989d32a9ca7f7261f50f4adda2a54e177f6,110 non-Markdown paths/118 total owned paths.
+  The two unrelated portal-launch/fog edits are excluded. Raw reports remain ignored and outside model context.
+- Publication is an in-progress checkpoint under the requested commit/push policy, not a release-ready result.
+  Pause at the user's stronger-reasoning boundary; recommend Sol6.1/high for early force/route selection and native
+  mission continuation together. No further economy rebalance without a demonstrated delivery/queue bottleneck.
+- Before publication: scoped format, catalog, diff/staged-scope review and managed-server stop. Verify remote equality
+  after the normal push; no PR, force-push or merge. HANDOFF owns the next concrete causal pass.
+
+## Historical published economy checkpoint
 
 ## Native delivered income and economy recovery — 2026-10-16
 
@@ -98,7 +200,7 @@ All short artifact paths below are ignored under `tmp/ai-plans/759-validation/`.
 ### Retained causal runs and limits
 
 - ECO-08 before housing savings: `recovery-fixed-frame-complete/1792083018841-passed.json`, five worlds,
- 750 decisions /15000 ticks,125803ms; dirty `fnv1a32:44ffc24d`, fixture `fnv1a32:e7bb305a`.
+  750 decisions /15000 ticks,125803ms; dirty `fnv1a32:44ffc24d`, fixture `fnv1a32:e7bb305a`.
   Both normal200-resource openings finish military infrastructure by unchanged3000 and retain6 workers; three growth
   repeats all retain13 workers /4 military with identical digests. Earlier single rendered fixed-frame diagnostic:
   `recovery-fixed-frame-opening/1792082822589-diagnostic_passed.json` (producer complete1760).
@@ -109,7 +211,7 @@ All short artifact paths below are ignored under `tmp/ai-plans/759-validation/`.
   the first corrected attempt without a retained result. Neither counts as a gameplay outcome. Another early run used
   insufficient control supply and omitted controller-seeded completion joins; both setup/reader errors were corrected.
 - Final grouped native evidence: `recovery-savings-native-final/1792130020313-failed.json`,21 distinct worlds,
- 2010 decisions /40202 ticks,471093ms; dirty `fnv1a32:ced95cf0`, fixture `fnv1a32:86ed3d20`.
+  2010 decisions /40202 ticks,471093ms; dirty `fnv1a32:ced95cf0`, fixture `fnv1a32:86ed3d20`.
   ECO-07's6, ECO-08's5 and PRO-04's8 worlds pass. Both ordinary openings and all three identical growth repeats pass.
   H-18's paid outputs and intact control pass; the subject still lacks a replacement by1200. One Field spends60wood
   before loss at200; after loss, the savings guard prevents more optional Fields but cash reaches only90 at1201.
@@ -126,7 +228,7 @@ All short artifact paths below are ignored under `tmp/ai-plans/759-validation/`.
 
 - Selected16-ID pure gate: `recovery-savings-pure/1792129506251-passed.json`,27 suites /127 tests, all16 IDs
   executed. Final typed resource-authority fixture:4 tests pass (`recovery-authority-final.log`). Housing/food controls:
- 5 suites /30 tests (`recovery-housing-savings-after.log`); a pre-repair control demonstrates extra-Field starvation.
+  5 suites /30 tests (`recovery-housing-savings-after.log`); a pre-repair control demonstrates extra-Field starvation.
 - E2E frame/supply readers:8 pass (`recovery-final-oracle-audit.log`), including native cancellation despite a completion,
   wrong scene/producer, restore, missing history/payment, duplicate output and absent replacement. Actual supply recipe
   validator:2 pass (`recovery-fixture-validation.log`), including zero-grant rejection.

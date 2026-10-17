@@ -18,6 +18,7 @@ import { SimulationTickService } from "../../world/services/simulation-tick.serv
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { classifyPlayerPawnOrderTerminalOutcome } from "./player-pawn-order-terminal-outcome";
+import { GathererComponent } from "../../entity/components/resource/gatherer-component";
 
 /** Owns native queue selection, stop cleanup and terminal reporting. No state is copied from the shared blackboard.
  * Actor-local collaborators own no subscriptions, timers or saved state; the controller owns their lifetime.
@@ -78,6 +79,10 @@ export class PawnAgentOrders {
       }
 
       switch (currentOrder.orderType) {
+        case OrderType.Gather:
+        case OrderType.ReturnResources:
+          getActorComponent(this.gameObject, GathererComponent)?.leaveCurrentResourceSource();
+          break;
         case OrderType.Move:
           // movement cancelled below
           break;

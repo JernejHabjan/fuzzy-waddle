@@ -260,7 +260,8 @@ export class AiObservationPipeline {
       liveById,
       tick,
       accessGraph,
-      permittedTopology
+      permittedTopology,
+      this.accessGraphAdapter.getScoutSearchPoints()
     );
     const finishResourceRead = beginAiResourceInputRead(this.scene, this.player);
     const obligations = projectAiProductionObligations(

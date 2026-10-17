@@ -24,6 +24,36 @@ under the existing deadlines. An `active` outcome proves native work, not termin
 A refused Move reports terminal failure immediately so recovery can release its command instead of retrying a missing
 path until timeout. Late movement returns cannot settle a replacement order.
 
+Native construction seeking captures the pawn blackboard's runtime order revision. Replacement, cancellation,
+queue admission and restore invalidate the pending lookup before it can enqueue a Build order. The revision is not
+saved; native orders remain the durable state. Movement revalidates its requesting order after reachability and
+ignores callbacks belonging to a replaced order, so an old route cannot start or cancel a later job.
+
+Native ground, overlay and water EasyStar calculations deliver their results without a browser timer delay.
+Their public APIs remain Promises, so requesting-order fences still apply. Cache hits and misses both settle through
+Promise continuations before the next fixed frame; extra observation pauses must not change movement/combat.
+
+Macro construction recovery also runs after the opening has completed. It assigns one available compatible worker
+to an observed unfinished site requiring builders, while preserving assigned, busy and loaded workers. The site
+keeps its existing payment and work; resumption neither places another building nor claims its resource price again.
+Automatic zero-worker sites are excluded using the definition-backed capability catalog.
+
+Housing recovery respects live construction prerequisites. If an ordinary house requires a lost core, demand
+selects a legal housing provider constructible by an owned builder and funds its actual catalog price. One recovery
+provider is enough while its site or accepted effect is pending; after the core finishes, ordinary housing resumes.
+This prevents repeated forbidden house commands and exposes the rebuild's resource deficits to existing labor funding.
+
+Native gather admission requires a live, finished compatible team drop-off when the source needs delivery.
+Destroying the last drop-off stops the gathering job before further extraction/tending; missing return lookup
+also releases only its requesting order. Stop unassigns the source/container while retaining carried resources and
+the remembered source. A surviving compatible drop-off permits ordinary delivery/reacquisition, and sources that
+credit resources immediately need no building. Indexed death-animation actors cannot remain valid drains.
+
+Native resource indexes follow component installation as well as actor registration. Construction shells receive
+their source/drop-off components only when upgraded to full actor data; the existing `ActorDataChangedEvent`
+refreshes those derived memberships without duplicating actor counts or registration events. Death and scene
+shutdown remove the component listener, so a late update cannot restore a dead building to the delivery index.
+
 ## Saves and controller lifecycle
 
 Save/load preserves brain state, causal deadlines, debt, claims, accepted effects, difficulty, archetype, scheduler state and RNG. Equivalent logical continuation must produce the same decisions after canonical migration.

@@ -15,6 +15,12 @@ Fixture JSON and typed builders are inert data until a Jest or matrix/Playwright
 Their assertions are deterministic code and require no LLM evaluation or manual judgment. Unmapped fixture metadata is
 not automated coverage.
 
+Raw native authority artifacts stay local in ignored storage and are never model inputs. Start with the existing
+summary (`--max-bytes 8192`); if it lacks one causal field, project only that named field and
+bounded adjacent checkpoints/actors. Include omitted counts; do not print nested world snapshots or full captures.
+Large proof storage does not justify a large model context. H-18 packaging retains complete raw/V2 authority and all
+normalized failures while omitting the duplicate normalized diagnostic payload; missing failure declarations fail closed.
+
 Focused economy runtime assertions must verify applied preset balances and independently observed worker orders. For
 example, ECO-04's zero-wood labor case requires a ready wood source and an AI-issued Gather order by a finite tick;
 fixture-authored starting orders or planner debug text do not satisfy it. ECO-08's separate pure case covers both
@@ -30,6 +36,17 @@ repeatability does not establish multiplayer equivalence or correctness at arbit
 The paid-supply-loss recipe requires a pinned actual house loss, exactly one completed replacement, and one matched
 native completion for every already-paid queue item. A replacement demand, refunded/cancelled item, different producer,
 or reused output identity cannot pass. The paired intact-supply control must avoid new housing attempts.
+
+Preset workers must start on actual passable ground outside inherited static building footprints. A worker trapped
+inside a main building is an invalid recovery setup, not evidence that native navigation should ignore that building.
+Include a checkpoint after the physical completion allowance and before the deadline; a closed-history capture may
+advance to deadline+1, which strict checkpoint readers correctly exclude. Native lifecycle timestamps remain the
+completion authority. Neither fixing setup nor adding an intermediate sample extends the accepted deadline.
+
+Hidden-state pairs compare complete permitted-observation digests and exact committed intents at each paired
+checkpoint until legitimate contact differs. Missing/truncated input fails closed. These test-only checkpoint reads
+do not install another gameplay observer. Continuous victory recipes use fixed native frames; ScoreTracker's initial
+`quit` value is not an adjudicated terminal result. Only `win`, `loss` or `tie` can stop a terminal-only run early.
 
 `economy-delivery-runtime.json` covers shared cash admission, useful surplus-worker transfer and poor-delivery recovery.
 Its bounded existing decision input retains the exact consumed four-resource vector; assertions join native receipts
@@ -224,6 +241,11 @@ Normal lobby startup generates both seed and instance ID. Production ignores the
 no test game handle; unmarked development publishes no AI test host. Angular's development inspection API can read
 the ordinary game, but is absent from production. Live startup/root-absence checks establish this boundary, not
 equivalent workloads or absence of all journal/listener allocations.
+
+The explicit development runtime test config pins both values before creating the world. Presets use
+`runtime-fixture-SEED-FIXTURE`; continuous matches use `runtime-fixture-SEED-continuous`. Actor identities include
+the instance ID, so setting only the RNG seed leaves planner tie-breaks different in every fresh continuous match.
+Repeated native starts must agree on initial world/actor identities and opening decisions before comparing repairs.
 
 A native quicksave made at tick zero can provide a common capture-off setup. Use the real save serializer/codec,
 retain its exact encoded record, and load it through the ordinary Load UI in isolated browser storage. Loading keeps

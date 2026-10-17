@@ -1,9 +1,15 @@
 import type { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiIntentClaimV1, AiIntentDecisionV1, AiIntentPreconditionV1, AiIntentV1 } from "../contracts/ai-intent-v1";
+import type {
+  AiIntentClaimV1,
+  AiIntentDecisionV1,
+  AiIntentPreconditionV1,
+  AiIntentV1
+} from "../contracts/ai-intent-v1";
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
 import { aiSpendingBudgetConflict, type AiSpendingBudget } from "./ai-spending-budget";
+import { canRenewAiSquadActorClaim } from "./ai-squad-actor-claims";
 
 /** One deterministic admission pass across proposals from all managers. */
 export interface AiIntentArbitrationResult {
@@ -12,7 +18,11 @@ export interface AiIntentArbitrationResult {
 }
 
 function compareIntents(left: AiIntentV1, right: AiIntentV1): number {
-  return left.urgencyClass - right.urgencyClass || right.utility - left.utility || left.intentId.localeCompare(right.intentId);
+  return (
+    left.urgencyClass - right.urgencyClass ||
+    right.utility - left.utility ||
+    left.intentId.localeCompare(right.intentId)
+  );
 }
 
 function preconditionSatisfied(
@@ -25,8 +35,10 @@ function preconditionSatisfied(
       return observation.actors.some((actor) => actor.actorId === precondition.actorId);
     case "resource_at_least": {
       const resource = observation.resources.find((entry) => entry.resourceType === precondition.resourceType);
-      return resource !== undefined &&
-        resource.stockpile - resource.reservedUnspent - resource.obligationsDue >= precondition.amount;
+      return (
+        resource !== undefined &&
+        resource.stockpile - resource.reservedUnspent - resource.obligationsDue >= precondition.amount
+      );
     }
     case "supply_at_least": {
       let capacity = 0;
@@ -55,12 +67,15 @@ function preconditionSatisfied(
         state.transport.some(
           (plan) =>
             `plan:${plan.planId}` === precondition.planId &&
-            plan.phase !== "completed" && plan.phase !== "cancelled" && plan.phase !== "failed"
+            plan.phase !== "completed" &&
+            plan.phase !== "cancelled" &&
+            plan.phase !== "failed"
         ) ||
         state.squads.some(
           (squad) =>
             `plan:${squad.squadId}` === precondition.planId &&
-            squad.state !== "completed" && squad.state !== "cancelled"
+            squad.state !== "completed" &&
+            squad.state !== "cancelled"
         ) ||
         (precondition.planId === "plan:mode:concession" && state.skirmish.mode.state === "conceding")
       );
@@ -70,12 +85,18 @@ function preconditionSatisfied(
 /** Stable exclusive-claim identity shared by admission and provisional reservation. */
 export function aiClaimKey(claim: AiIntentClaimV1): string {
   switch (claim.kind) {
-    case "actor": return `actor:${claim.actorId}`;
-    case "resource": return `resource:${claim.resourceType}`;
-    case "production_slot": return `production:${claim.producerId}:${claim.slot}`;
-    case "site": return `site:${claim.siteKey}`;
-    case "cargo_seat": return `cargo:${claim.transportId}`;
-    case "effect": return `effect:${claim.effectId}`;
+    case "actor":
+      return `actor:${claim.actorId}`;
+    case "resource":
+      return `resource:${claim.resourceType}`;
+    case "production_slot":
+      return `production:${claim.producerId}:${claim.slot}`;
+    case "site":
+      return `site:${claim.siteKey}`;
+    case "cargo_seat":
+      return `cargo:${claim.transportId}`;
+    case "effect":
+      return `effect:${claim.effectId}`;
   }
 }
 
@@ -125,14 +146,16 @@ export function arbitrateAiIntents(
       continue;
     }
     if (
-      decisions.filter((decision) => decision.outcome === "accepted" || decision.reason !== "claim_conflict")
-        .length >= profile.maxIntentProposalsPerStep ||
+      decisions.filter((decision) => decision.outcome === "accepted" || decision.reason !== "claim_conflict").length >=
+        profile.maxIntentProposalsPerStep ||
       accepted.length >= profile.maxAcceptedCommandBatchesPerStep
     ) {
       decisions.push({ outcome: "rejected", intent, reason: "profile_limit", detail: "step_budget" });
       continue;
     }
-    const failed = intent.preconditions.find((precondition) => !preconditionSatisfied(precondition, observation, state));
+    const failed = intent.preconditions.find(
+      (precondition) => !preconditionSatisfied(precondition, observation, state)
+    );
     if (failed) {
       decisions.push({ outcome: "rejected", intent, reason: "precondition_failed", detail: failed.kind });
       continue;
@@ -140,25 +163,35 @@ export function arbitrateAiIntents(
     const exclusiveConflict = intent.claims.find(
       (claim) =>
         claim.kind !== "resource" &&
-        (claimedThisStep.has(aiClaimKey(claim)) || claimedThisStep.has(claim.claimId) ||
-          existingClaims.has(aiClaimKey(claim)) || existingClaims.has(claim.claimId))
+        (claimedThisStep.has(aiClaimKey(claim)) ||
+          claimedThisStep.has(claim.claimId) ||
+          ((existingClaims.has(aiClaimKey(claim)) || existingClaims.has(claim.claimId)) &&
+            !canRenewAiSquadActorClaim(intent, claim, state, observation)))
     );
     if (exclusiveConflict) {
       decisions.push({ outcome: "rejected", intent, reason: "claim_conflict", detail: aiClaimKey(exclusiveConflict) });
       continue;
     }
     const resourceConflict = intent.claims.find(
-      (claim) => claim.kind === "resource" &&
-        (resourceClaims.get(claim.resourceType) ?? 0) + claim.amount > availableResource(observation, claim.resourceType)
+      (claim) =>
+        claim.kind === "resource" &&
+        (resourceClaims.get(claim.resourceType) ?? 0) + claim.amount >
+          availableResource(observation, claim.resourceType)
     );
     if (resourceConflict?.kind === "resource") {
-      decisions.push({ outcome: "rejected", intent, reason: "resource_conflict", detail: resourceConflict.resourceType });
+      decisions.push({
+        outcome: "rejected",
+        intent,
+        reason: "resource_conflict",
+        detail: resourceConflict.resourceType
+      });
       continue;
     }
     const budgetConflict = aiSpendingBudgetConflict(
       intent,
       intents.filter(
-        (candidate) => pendingBudgetIntents.has(candidate.intentId) &&
+        (candidate) =>
+          pendingBudgetIntents.has(candidate.intentId) &&
           candidate.preconditions.every((condition) => preconditionSatisfied(condition, observation, state)) &&
           candidate.claims.every((claim) =>
             claim.kind === "resource"

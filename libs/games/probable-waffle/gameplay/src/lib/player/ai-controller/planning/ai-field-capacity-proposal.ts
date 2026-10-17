@@ -9,6 +9,7 @@ import { canAffordAiEconomyCost } from "./ai-economy-policy";
 import { nextIds } from "./ai-macro-effect-identity";
 import { claimedActorIds, isAvailableBuilder } from "./ai-macro-observation";
 import { createAiResourceCostClaims } from "./ai-resource-cost-claims";
+import { aiEconomySiteSafety } from "./ai-economy-site-safety";
 
 /** Commits only missing renewable Field capacity with a usable food drop-off. */
 export function proposeAiFieldCapacity(args: {
@@ -86,13 +87,15 @@ export function proposeAiFieldCapacity(args: {
       return leftIdle - rightIdle || left.actorId.localeCompare(right.actorId);
     })[0];
   if (!builder) return { demand, intent: null };
+  const safety = aiEconomySiteSafety(observation);
   const position = selectConstructionPosition(
     observation,
     builder,
     state.scheduler.decisionSequence,
     ordinal,
     selectedConstructionTileKeys,
-    foodSourceEntry.constructionProfile?.footprintRadiusTiles ?? 0
+    foodSourceEntry.constructionProfile?.footprintRadiusTiles ?? 0,
+    (cell) => safety.positionSafe(cell.position)
   );
   if (!position) return { demand, intent: null };
   const next = nextIds(state, `food-capacity:${ObjectNames.Field}`, ordinal);

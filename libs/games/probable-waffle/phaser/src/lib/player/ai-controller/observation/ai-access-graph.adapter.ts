@@ -10,6 +10,7 @@ import { MovementTerrainType } from "@fuzzy-waddle/probable-waffle-gameplay/enti
 import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { TilemapComponent } from "../../../world/tilemap/tilemap.component";
+import { buildAiScoutSearchPoints } from "./ai-scout-search-points";
 import { getSceneComponent, getSceneService } from "../../../world/services/scene-component-helpers";
 
 /**
@@ -17,12 +18,18 @@ import { getSceneComponent, getSceneService } from "../../../world/services/scen
  * runtime-local so observations contain stable regions rather than every map tile.
  */
 export class AiAccessGraphAdapter {
-  private static readonly CELL_BUDGET_PER_OBSERVATION = 512;
+  // Supported land maps finish before another observed topology change can restart the build; larger maps still yield.
+  private static readonly CELL_BUDGET_PER_OBSERVATION = 4096;
   private cachedRevision = -1;
   private cached?: BuiltAiAccessGraphV1;
   private pendingRevision = -1;
   private pendingCursor = 0;
   private pendingCells: Parameters<typeof buildAiAccessGraphV1>[0]["cells"][number][] = [];
+  private searchPoints: ReturnType<typeof buildAiScoutSearchPoints> = [];
+
+  getScoutSearchPoints() {
+    return this.searchPoints;
+  }
 
   constructor(private readonly scene: Phaser.Scene) {}
 
@@ -70,6 +77,7 @@ export class AiAccessGraphAdapter {
         cells: this.pendingCells
       });
       this.cachedRevision = revision;
+      this.searchPoints = buildAiScoutSearchPoints(this.pendingCells, this.cached.groundNodeByTileKey);
       this.pendingRevision = -1;
       this.pendingCursor = 0;
       this.pendingCells = [];

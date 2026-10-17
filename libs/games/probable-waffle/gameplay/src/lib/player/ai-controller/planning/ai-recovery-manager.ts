@@ -5,6 +5,7 @@ import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v
 import { aiDeadline } from "../contracts/ai-core-types";
 import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import { aiEconomySiteSafety } from "./ai-economy-site-safety";
 import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
 
 /** The H1 default is shared by every Stage-12 domain; it is a backoff floor, never a deadline reset. */
@@ -81,6 +82,7 @@ function isGatherer(actor: AiObservedActorV1, catalog: AiCapabilityCatalogV1): b
 
 function sourceActors(observation: AiObservationV1): AiObservedActorV1[] {
   return observation.actors
+    .filter(aiEconomySiteSafety(observation).actorSafe)
     .filter((actor) => actor.relation !== "enemy" && actor.visibility !== "last_seen")
     .filter(
       (actor) =>

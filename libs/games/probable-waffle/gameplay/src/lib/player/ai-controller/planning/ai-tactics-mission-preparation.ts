@@ -85,7 +85,9 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
   const bestTarget = alternatives[0];
   const rememberedTarget = squad.objectiveId ? actorById.get(squad.objectiveId as ActorId) : undefined;
   const committedTarget =
-    squad.role === "attack" && rememberedTarget?.relation === "enemy" && rememberedTarget.visibility === "visible"
+    ["attack", "defense"].includes(squad.role) &&
+    rememberedTarget?.relation === "enemy" &&
+    rememberedTarget.visibility === "visible"
       ? rememberedTarget
       : undefined;
   const immediateThreat = (committedTarget ? localEnemies : [])
@@ -122,7 +124,36 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
   const targetAwareMembers = visibleTarget
     ? members.filter((member) => canTarget(member, visibleTarget) && canSeeTarget(member, visibleTarget, catalog))
     : [];
-  const estimate = estimateAiEngagementV1(members, localEnemies, profile.maxLocalEngagementPairsPerStep);
+  const engagementEnemies = visibleTarget
+    ? [visibleTarget, ...localEnemies.filter((enemy) => enemy.actorId !== visibleTarget.actorId)]
+    : localEnemies;
+  const missionId = squad.squadId.split(":domain:")[0];
+  const coordinatedIds = new Set(
+    state.squads
+      .filter(
+        (other) =>
+          other.squadId.split(":domain:")[0] === missionId &&
+          other.objectiveId === squad.objectiveId &&
+          !["completed", "cancelled"].includes(other.state)
+      )
+      .flatMap((other) => other.actorIds)
+  );
+  const coordinatedMembers = [...new Set([...members.map((member) => member.actorId), ...coordinatedIds])]
+    .map((actorId) => actorById.get(actorId))
+    .filter(
+      (actor): actor is AiObservedActorV1 =>
+        actor !== undefined &&
+        actor.relation === "self" &&
+        actor.containedInActorId == null &&
+        !transportOwned.has(actor.actorId) &&
+        !isEconomicActor(actor, catalog) &&
+        (!origin || (knownPosition(actor) !== null && distance(origin, knownPosition(actor)!) <= 18))
+    );
+  const estimate = estimateAiEngagementV1(
+    coordinatedMembers,
+    engagementEnemies,
+    profile.maxLocalEngagementPairsPerStep
+  );
   const retreat = safeRetreatPosition(observation, state, members);
   return {
     ...context,

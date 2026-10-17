@@ -24,6 +24,8 @@ export interface RuntimeVariantResultV1 {
   readonly productionCapture?: AiRuntimeProductionCaptureV1;
   /** Checked AI intent/authority lineage with unresolved gaps; never substitutes for full productionEvidence. */
   readonly productionCausality?: RuntimeProductionCausalityV1;
+  /** Retained diagnostic failures when the duplicate normalized payload is omitted beside full raw/V2 authority. */
+  readonly productionCausalityFailures?: readonly string[];
   readonly variantId: string;
   readonly repetition?: number;
   readonly mapLabel: string;

@@ -1,6 +1,21 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { parseSummaryArguments, resolveRepairReportPaths, summarizeReport } from "./summarize-skirmish-report.mjs";
+import {
+  boundSummaryOutput,
+  parseSummaryArguments,
+  resolveRepairReportPaths,
+  summarizeReport
+} from "./summarize-skirmish-report.mjs";
+
+test("bounds ordinary summaries in UTF-8 bytes and declares omitted evidence", () => {
+  const lines = ["REPORT status=failed", ...Array.from({ length: 20 }, () => "worker α".repeat(40))];
+  const output = boundSummaryOutput(lines, 1024);
+  assert.ok(Buffer.byteLength(output) + 1 <= 1024);
+  assert.match(output, /^REPORT status=failed/);
+  assert.match(output, /SUMMARY_TRUNCATED omittedLines=\d+/);
+  assert.equal(boundSummaryOutput(["short"]), "short");
+  assert.throws(() => boundSummaryOutput(lines, NaN), /summary_invalid_max_bytes/);
+});
 
 test("parses compact triage flags", () => {
   assert.deepEqual(parseSummaryArguments(["--", "artifact.json", "--scenario", "SEQ-01", "--details"]), {
@@ -32,14 +47,21 @@ test("parses a cross-shard repair request", () => {
   assert.equal(parseSummaryArguments(["--report", "tmp/sweep", "--repair-list"]).repairList, true);
   assert.equal(parseSummaryArguments(["--repair-list", "--require-supported"]).requireSupported, true);
   assert.equal(parseSummaryArguments(["--repair-list", "--max-clusters", "4"]).maxClusters, 4);
-  assert.deepEqual(parseSummaryArguments(["--repair-list", "--report", "a.json", "--report", "b.json"]).input,
-    ["a.json", "b.json"]);
-  assert.throws(() => parseSummaryArguments(["--report", "a.json", "--report", "b.json"]),
-    /multiple_reports_need_repair_list/);
-  assert.deepEqual(resolveRepairReportPaths(["tools/ai/fixtures/skirmish-v1.json"]),
-    [`${process.cwd()}/tools/ai/fixtures/skirmish-v1.json`]);
-  assert.throws(() => resolveRepairReportPaths(["tools/ai/fixtures/skirmish-v1.json",
-    "tools/ai/fixtures/skirmish-v1.json"]), /repair_report_explicit_paths_must_be_distinct_files/);
+  assert.deepEqual(parseSummaryArguments(["--repair-list", "--report", "a.json", "--report", "b.json"]).input, [
+    "a.json",
+    "b.json"
+  ]);
+  assert.throws(
+    () => parseSummaryArguments(["--report", "a.json", "--report", "b.json"]),
+    /multiple_reports_need_repair_list/
+  );
+  assert.deepEqual(resolveRepairReportPaths(["tools/ai/fixtures/skirmish-v1.json"]), [
+    `${process.cwd()}/tools/ai/fixtures/skirmish-v1.json`
+  ]);
+  assert.throws(
+    () => resolveRepairReportPaths(["tools/ai/fixtures/skirmish-v1.json", "tools/ai/fixtures/skirmish-v1.json"]),
+    /repair_report_explicit_paths_must_be_distinct_files/
+  );
 });
 
 test("summarizes runtime failures and final variant evidence", () => {
@@ -149,7 +171,10 @@ test("surfaces missing per-scenario pure assertions without dumping Jest output"
     rows: ["ECO-01", "ECO-02"],
     workCounts: { scenarios: 2, testSuites: 2, tests: 10, decisions: 0, ticks: 0 },
     pureScenarioEvidence: {
-      executed: [{ scenarioId: "ECO-01", passedTestCount: 1 }, { scenarioId: "ECO-02", passedTestCount: 0 }],
+      executed: [
+        { scenarioId: "ECO-01", passedTestCount: 1 },
+        { scenarioId: "ECO-02", passedTestCount: 0 }
+      ],
       missingScenarioIds: ["ECO-02"]
     }
   });

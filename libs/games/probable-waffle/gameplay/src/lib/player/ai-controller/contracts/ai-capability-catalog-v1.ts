@@ -28,6 +28,8 @@ export interface AiCapabilityCatalogEntryV1 {
   }>;
   /** Definition-derived construction and elevated-navigation facts; absent for legacy catalogs. */
   readonly constructionProfile?: Readonly<{
+    /** True when native progress requires worker assignment; absent in older authored catalogs. */
+    readonly requiresAssignedBuilder?: boolean;
     readonly resourceCost: Readonly<Partial<Record<ResourceType, number>>>;
     readonly requiredObjectNames?: readonly ObjectNames[];
     /** Radius used by the runtime's square `getTileCoordsUnderObject` footprint rule. */

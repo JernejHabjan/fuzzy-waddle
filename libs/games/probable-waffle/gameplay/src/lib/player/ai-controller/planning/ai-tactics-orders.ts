@@ -29,9 +29,16 @@ export function splitDomainSquads(
       actorIds
     }));
   });
-  return split.filter(
-    (squad, index, all) => all.findIndex((candidate) => candidate.squadId === squad.squadId) === index
-  );
+  // A reinforced parent can generate a child ID that already owns surviving members.
+  const merged = new Map<AiSquadStateV1["squadId"], AiSquadStateV1>();
+  for (const squad of split) {
+    const existing = merged.get(squad.squadId);
+    merged.set(
+      squad.squadId,
+      existing ? { ...existing, actorIds: [...new Set([...existing.actorIds, ...squad.actorIds])].sort() } : squad
+    );
+  }
+  return [...merged.values()];
 }
 
 export function intentBase(

@@ -164,9 +164,16 @@ function appendFrontierScout(context: AiSkirmishProposalContext): void {
   const { currentQuestion, combat, observation } = context;
   const activeScout = context.activeScout?.squadId === "squad:scout:neutral" ? undefined : context.activeScout;
   if (context.opponent || !currentQuestion || !combat[0] || !observation.map?.accessGraph) return;
-  const target = observation.map.accessGraph.nodes.find(
-    (candidate) => candidate.nodeId === currentQuestion.kind.replace("safe_route:", "")
-  );
+  const searchPoint = currentQuestion.kind.startsWith("explore:")
+    ? observation.map.scoutSearchPoints?.find(
+        (point) => point.pointId === currentQuestion.kind.slice("explore:".length)
+      )
+    : undefined;
+  const target = searchPoint
+    ? { nodeId: searchPoint.accessNodeId, representativePosition: searchPoint.position }
+    : observation.map.accessGraph.nodes.find(
+        (candidate) => candidate.nodeId === currentQuestion.kind.replace("safe_route:", "")
+      );
   if (!target) return;
   const scoutPosition = target.representativePosition;
   const eligible = combat.filter((actor) => canScoutNode(context, actor, target.nodeId));

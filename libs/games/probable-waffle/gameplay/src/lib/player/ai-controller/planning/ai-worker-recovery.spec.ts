@@ -78,7 +78,13 @@ function producer(queueItemIds: readonly string[] = []): AiObservedActorV1 {
   };
 }
 
-function result(workerCount: number, food: number, queueItemIds: readonly string[] = []) {
+function result(
+  workerCount: number,
+  food: number,
+  queueItemIds: readonly string[] = [],
+  desired = 6,
+  reserve: Readonly<Partial<Record<ResourceType, number>>> = {}
+) {
   const initial = createAiTestObservation();
   const observation = {
     ...initial,
@@ -100,10 +106,16 @@ function result(workerCount: number, food: number, queueItemIds: readonly string
     tick: 0,
     archetypeId: "balanced"
   });
-  return proposeAiWorkerRecovery(observation, state, catalog, ObjectNames.TivaraWorker, 6);
+  return proposeAiWorkerRecovery(observation, state, catalog, ObjectNames.TivaraWorker, desired, undefined, reserve);
 }
 
 describe("worker economy replacement", () => {
+  it("saves one reinforcement cost before optional growth, while keeping the survival floor and funded growth", () => {
+    expect(result(8, 100, [], 10, { [ResourceType.Food]: 100 }).intent).toBeNull();
+    expect(result(6, 50, [], 10, { [ResourceType.Food]: 100 }).intent?.kind).toBe("produce");
+    expect(result(5, 50, [], 10, { [ResourceType.Food]: 100 }).intent?.kind).toBe("produce");
+    expect(result(8, 150, [], 10, { [ResourceType.Food]: 100 }).intent?.kind).toBe("produce");
+  });
   it("replaces a lost worker ahead of military spending while preserving the completed opening", () => {
     const proposal = result(5, 100);
     expect(proposal.demand).toEqual(expect.objectContaining({ desired: 6, satisfiedActorIds: expect.any(Array) }));

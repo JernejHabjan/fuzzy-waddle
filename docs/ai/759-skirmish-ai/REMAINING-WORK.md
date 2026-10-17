@@ -1,6 +1,6 @@
 # #759 remaining work inventory
 
-Snapshot: 2026-10-16, economy/technology work based on `34d58154f769cc07b7db2d5df624f808b4d9c3bb`. This is the execution inventory for the existing scope,
+Snapshot: 2026-10-16, current batch based on `50266799471a2804243bd147a759deca2873c150`. This is the execution inventory for the existing scope,
 not a new design or diagnostic project. [HANDOFF.md](HANDOFF.md) owns the current cursor;
 [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) retains the latest checked source/evidence details.
 The manifest and linked scenario requirements remain authoritative; the snapshot below must be refreshed when
@@ -43,8 +43,8 @@ profiling suite or finer M13 journal is scheduled. A genuinely new requirement n
 | Order         | Package and existing IDs                                                                      | Concrete work                                                                                                                                                                          | Finish condition                                                                                                                                               |
 | ------------- | --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1 — validated | Production: PRO-01–07, H-17                                                                   | Validated delivery/prebuild/recovery/contention and H-17 coverage; retained evidence below                                                                                             | All applicable production predicates pass, including the 16 paired authority worlds; no invented useful arrivals or weakened deadlines                         |
-| 2 — current   | Economy and technology: ECO-01–08, H-16/H-18, TECH-01–06                                      | Close missing aggregate-budget/depleted-source controls; prove delivered income, worker allocation, food/supply recovery, research/counterproduction and stopping unnecessary spending | Registered pure/runtime cases pass their exact outcomes; both factions establish renewable income from the normal 200-resource start                           |
-| 3             | Scouting, attack and access: SCOUT, STRAT, DOMAIN, RAID, FIGHT, C families plus their H cases | Reuse existing strategy/tactical controls; register missing fair scouting, reachable-target, force-size, attack/retreat and counterforce cases; repair actual failures                 | Supported land cases pass and SEQ-01 reaches the authoritative victory result for both factions; another launched attack is not completion                     |
+| 2 — validated | Economy and technology: ECO-01–08, H-16/H-18, TECH-01–06                                      | Close missing aggregate-budget/depleted-source controls; prove delivered income, worker allocation, food/supply recovery, research/counterproduction and stopping unnecessary spending | Registered pure/runtime cases pass their exact outcomes; both factions establish renewable income from the normal 200-resource start                           |
+| 3 — current   | Scouting, attack and access: SCOUT, STRAT, DOMAIN, RAID, FIGHT, C families plus their H cases | Reuse existing strategy/tactical controls; register missing fair scouting, reachable-target, force-size, attack/retreat and counterforce cases; repair actual failures                 | Supported land cases pass and SEQ-01 reaches the authoritative victory result for both factions; another launched attack is not completion                     |
 | 4             | Placement, fortification and recovery: PLACE, EXP, WALL, H-01–05/H-27–28                      | Register legal placement/expansion/wall and stalled-progress recovery controls; repair owners only where a scenario exposes a defect                                                   | Legal useful construction and bounded recovery pass; healthy long work survives, impossible work releases actors/claims                                        |
 | 5             | Resource authority, multiplayer and lifecycle: H-06–15/H-30–32, M11, #819/#823                | Close exactly-once/resource-capacity gaps; run real two-client authority/reconnect/host-transfer controls; cover interrupted save/load/replay and second-match cleanup                 | No duplicate payment/effect, stale capacity or split authority; matching peer/replay state and clean next match across required boundaries                     |
 | 6             | Continuous play and difficulty: supported SEQ and D families, #817                            | Recheck SEQ-02 after shared changes; implement missing legal-start match/difficulty cases and isolated baseline comparison; run required paired seeds and soaks                        | Required terminal/recovery outcomes, supported difficulty ordering and bounded long-play state pass; mere survival is not victory                              |
@@ -101,26 +101,29 @@ its blocked-spawn branch also has native queue/spawner and pure lease-reconcilia
 command failed on the old PRO-04 setup; its unaffected PRO-01/02/05 predicates pass. Only PRO-04's setup changed,
 and the corrected eight-world command passes. [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) records that evidence union.
 
-**Current: Package 2, ECO-01–08, H-16/H-18 and TECH-01–06.**
+**Package2 retained outcomes:16/16 (100%),0/16 remaining; latest affected-source recheck in progress.**
 
-All 16 IDs now have executed pure assertions; all six technology IDs have native recipes and passing outcome evidence.
-The current accepted native union and exact passed/remaining count live in [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md).
-This checkpoint does not advance to Package 3. **15/16 outcomes pass (93.75%); H-18 remains1/16 (6.25%).**
-ECO-05/06 and H-16 now have passing native recipes; no Package2 runtime setups remain missing.
+The paid-supply replacement now completes at863 before the unchanged1200 deadline. Invalid worker starts inside the
+main-building footprint were corrected in both paired worlds. Construction cancellation/late callback ownership and
+post-opening unfinished-site reassignment have focused controls. Native ECO-06 proves alternate drop-off/source
+recovery; native no-drain controls prove stop/assignment release with cargo preservation.
 
-1. Trace H-18's concrete builder handoff:100wood is funded and the replacement is placed at860, but its selected worker
-   has no active Build order from880 and the site stays0% through1201. Follow shared CONSTRUCT, ActionSystem Build and
-   pawn cancellation/order ownership; repair the actual loss rather than assuming a movement or balance cause.
-2. Group existing-site reassignment and stalled construction recovery with that owner repair. Preserve cargo/healthy
-   native actions, actual cash admission and exactly one completed replacement. Keep the1200 deadline and all five
-   already-paid outputs; the intact control must avoid speculative housing.
-3. Run affected construction/production controls and the paired H-18 native gate at the stable boundary. Reuse the
-   retained passing economy/opening evidence unless the shared repair invalidates it. Reconcile16/16 before Package3.
-4. Then group fair scouting, reachable targeting, attack/retreat and full authoritative victory for both factions in
-   Package3; do not start another diagnostic architecture cycle. Publish/pause at each agreed coherent boundary.
+**Current: Package3 core scouting/combat, grouped with exposed-worker recovery.**
 
-No new observer/profiler expansion is scheduled. Pure registrations are 59/111 and supported runtime 30/116;
-these coverage counts are not overall gameplay completion. Six of seven packages remain; package sizes differ.
+1. Fair hidden-state pairs and housing pass; Tivara has authoritative full-match victory. Skaduwee remains1/2 full
+   victories missing (50%); do not equate that narrow denominator with Package3's whole scenario inventory.
+2. The latest failure is an active attack diverted from a damaged main building to another objective. Domain launch
+   permission and distant reinforcement movement have been repaired. Current commitment repair retains visible,
+   reachable native attack targets while tactical retreat/effect deadlines still handle unsafe or stalled work.
+   Run affected economy, composition, hidden-pair, construction and both-faction victory controls together.
+   Field yield or worker capacity may increase if fresh delivery evidence identifies a food bottleneck; current
+   food323–346/min and idle/diverted military prioritize order ownership before additional economy rebalance.
+3. Keep source/fixture provenance and bounded evidence. Ordinary summary output is capped at8192 bytes by default;
+   raw proof artifacts never enter model context. No new observer/profiler expansion is scheduled.
+4. Finish the user-requested continuous four-item batch before commit/push/pause. Keep the remaining Package3
+   registration/scenario gaps explicit; follow the dependency queue afterward. Final machinery review remains last.
+
+Pure registrations remain59/111 and supported runtime30/116; these are coverage counts, not gameplay completion.
 
 ## Other concrete gaps already established
 

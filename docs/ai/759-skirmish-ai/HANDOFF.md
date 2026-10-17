@@ -3,33 +3,48 @@
 Default resume page: read this first, then only the selected package in [REMAINING-WORK.md](REMAINING-WORK.md).
 Do not load the full plan directory or archive on startup.
 
-## Current cursor
+## Current cursor — checked checkpoint, victory unresolved, 2026-10-17
 
-- Worktree: `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`; branch: `feature/759-skirmish-ai`.
-  Tested base: `34d58154f769cc07b7db2d5df624f808b4d9c3bb` plus the containing checkpoint. Verify its HEAD/remote.
-  Commit/push at coherent boundaries is authorized; pause after publication. Actual model/effort settings are unknown.
-- **Package 2: 15/16 outcomes passed (93.75%); 1/16 remains (6.25%): H-18 failed; no native setups missing.**
-  ECO-05/06 and H-16 now pass native delivery/budget/recovery assertions. ECO-07/08 affected controls pass. Do not advance
-  to Package 3. Package1 remains8/8 validated; this is not an overall AI completion percentage.
-- Native economy evidence: `delivery-economy-native-final/1792135048123-failed.json` retains four physical worlds;
-  `delivery-economy-native-rechecked.json` passes all three IDs with the corrected outcome-based budget reader.
-  The original report stays failed. `delivery-opening-housing-final/1792135514118-failed.json` retains13 worlds:
-  ECO-07's6 and ECO-08's5 pass; H-18's intact control and five paid outputs pass, replacement still fails1200.
-- Authored/checked: income counts actual native credits, excluding grants and spending. Busy extraction/return and
-  loaded cargo retain ownership; empty/congested workers can fund housing. Neutral depleted crops retain their credit
-  beneficiary. No prices/yields/times changed: these defects concern accounting and job ownership.
-- H-18 now funds/places the100-wood replacement at860. Its selected builder `sim-23746d63` remains at33,18 with
-  no active Build order from880 through1040; the site `sim-c0e67d3f` at33,16 stays0% through1201. Dispatch reports
-  construction_started but no native construction lifecycle starts. This is a concrete builder-handoff failure,
-  not proof of a movement or pricing root cause. Preserve the unchanged1200 deadline and all paid-output predicates.
-- **Next combined owner batch:** trace native CONSTRUCT → ActionSystem Build → pawn order/cancellation ownership,
-  repair the lost builder handoff and cover existing-site reassignment/recovery together. Prove H-18's physical
-  completion with its intact control; rerun affected construction/production controls after the owner is stable.
-  Only then advance to Package3 fair scouting, reachable targets, attack/retreat and both-faction full victory.
-- Checks:28 pure suites /133 tests across all16 IDs;9 native-owner suites /93 tests;4 E2E economy reader controls;
-  app/gameplay/E2E types and scoped lint pass. Full provenance, limits and audits: [current evidence](CURRENT-EVIDENCE.md).
-- Recommended next model: **GPT-6.1 Sol / high**, because delivery ownership and recovery need causal design.
-  This recommends settings; it does not switch them. Native builder/order ownership needs causal investigation.
+- Worktree /home/jernej/.codex/worktrees/7977/fuzzy-waddle; branch feature/759-skirmish-ai.
+  Published base50266799471a2804243bd147a759deca2873c150; mechanical extraction4d75589aa plus owned behavior checkpoint.
+  Actual model/effort unknown. Pause for the user-requested stronger-reasoning boundary; recommend Sol6.1/high.
+  No subagent, new chat, automation, PR or automatic model switch is authorized.
+- Package1 retained8/8 and Package2 retained16/16 (100% each). Latest grouped native gate7/8 selected rows (87.5%):
+  PRO-04,ECO-05/06/07/08,H-18,SCOUT-05 pass; SEQ-01 still fails Skaduwee victory. Full-match gate1/2 factions (50%).
+  Broader Package3 remains open; no inferred overall AI completion percentage. This checkpoint does not close the batch.
+- Implemented: legal housing starts/paid replacement, abandoned-site builders, asynchronous order fences, dead drop-off
+  stopping/slot release/cargo preservation, completed resource-service indexing, fair scouting and bounded paired reports.
+  Combat repairs cover disjoint domain reinforcements, parent launch inheritance, native attack continuity, legal
+  attack-move approaches, independent distant reinforcement moves, combined strength and cooldown-stable retreat.
+  Visible reachable mission targets persist through live native jobs or useful progress within their existing deadline.
+- Shared prices: melee food100→60 both factions, Skaduwee archer100→70, Tivara slingshot120→80; ranged wood25 unchanged.
+  No worker/building price, combat stats, training times, field yield or worker-capacity edits. Composition's8 native worlds
+  pass. Increased field yield/capacity is explicitly authorized if delivery/queue evidence establishes food as the bottleneck.
+- Latest grouped report: live-objective-grouped-native/1792262521219-failed.json, dirtyb3fa0872, fixture5df422ef,
+  3130 decisions/62602ticks. Seven rows pass; Skaduwee victory fails. Retain these passes on their stated source.
+- Latest official pair: progress-objective-victory-native/1792264457766-failed.json, dirty79042edc, fixture0c6acf03,
+  900 decisions/18000ticks,211824ms. Tivara wins6000; Skaduwee at12000 has8 workers/8 ground army,35 produced,
+  327.68food/min,5059damage/13 enemy losses,90 food and empty producer queues. Only ai_victory_missing fails.
+  Field throughput alone is not established as the cause. Do not call launched/engaging squads a victory.
+- Checks: progress-objective-ai-controls82 suites415 tests; selected29 pure IDs (progress-objective-final-pure), gameplay
+  lint/app types pass. Retained graph/vision/navigation5 suites9, native lifecycle/navigation20 suites167, interface2 suites7,
+  reader9/report-budget9 and mechanical60 parity controls. Standalone Phaser's8 baseline type errors are not clean.
+- **Next grouped causal pass:** inspect early offensive force/route selection and continuing squad ownership together:
+  select-ai-offensive-opportunity.ts, ai-skirmish-offense.ts, ai-tactics-mission-{preparation,projection,orders}.ts,
+  project-ai-squad-membership.ts. Skaduwee first launch remains7040, surviving forces still miss the terminal finish.
+  Find the first interruption through assignment → shared native order → physical effect, add a red/green owner control,
+  then rerun SEQ-01 on a frozen candidate. Recheck other native rows only if their actual inputs/predicates change.
+- Local permitted capture live-objective-input-probe.json has6000/8000/10000/12000 inputs; bounded tactical/selection
+  replays pass. Its separately sampled late trajectory differs from the official match, so it is not reproducibility proof.
+  continuous-cadence-after.log proves coarse/fine agreement only through2000; earlier salted-ID/timer runs are historical.
+- All artifacts remain ignored under tmp/ai-plans/759-validation/. Never load raw reports into the model. Ordinary summaries
+  cap8192 UTF-8 bytes and disclose omissions; request only named bounded fields afterward. No new machinery expansion.
+- Source SHA256 e0c2202abf5660a0bd56399dc7dac989d32a9ca7f7261f50f4adda2a54e177f6 covers110 non-Markdown task paths
+  out of118 owned paths from the published base. Exclude .run/start_portal.run.xml and ALL_VISIBLE fog edit.
+  Omission/Final Closure audits distinguish checked repairs from the unresolved victory gate. No native run remains active;
+  stop managed server before publication. Verify the containing checkpoint commit/remote SHA when resuming.
+- Resume doctor passes; generic context selection reports issue_plan_count:759:5. This explicit HANDOFF remains the router.
+  Machinery necessity/removal review remains last overall, after all required gameplay/integration/calibration work.
 
 ## What “continue” means
 
@@ -43,8 +58,8 @@ Documentation maintenance does not advance gameplay acceptance.
 ## Remaining execution order
 
 1. **Validated:** Production: useful delivery, early capacity, producer-loss recovery and queue contention.
-2. **Current:** Economy/technology: delivered income, workers, food/supply, research and useful spending.
-3. Scouting/combat/access: fair information, targeting, attack/retreat and full-match victory.
+2. **Validated (retained):** Economy/technology: delivered income, workers, food/supply, research and useful spending.
+3. **Current:** Scouting/combat/access: fair information, targeting, attack/retreat and full-match victory.
 4. Placement/fortification/recovery: useful construction and bounded recovery from stalls/losses.
 5. Authority/multiplayer/lifecycle: exactly-once effects, synchronized peers, save/replay and clean next match.
 6. Continuous play/difficulty: complete matches, paired calibration and required long-play checks.
@@ -66,7 +81,11 @@ and grouped checks at stable boundaries. Repeat expensive runs only after releva
 Never weaken deadlines, usefulness, fairness or authority assertions. Diagnostic performance sanity is complete;
 no further profiling gate is scheduled. Shared balance adjustments are authorized when justified, including building/worker costs and resource yields
 (user reaffirmed2026-10-16). Prefer a meaningful workload-backed rebalance when prices are the cause; record old/new values,
-purpose and affected checks. Latest gameplay checkpoint changed no prices, times, yields or combat values.
+purpose and affected checks. Current candidate lowers four basic infantry food prices; see the active cursor.
+No combat stats, times or yields changed.
+User2026-10-17 explicitly suggests increased field yield or simultaneous worker capacity if food limits match speed.
+Current345.63food/min and36 produced units instead expose reinforcement-order starvation; repair that owner first,
+then reconsider field throughput only if fresh delivery/queue evidence identifies it as the bottleneck.
 
 ## Batch report and progress
 

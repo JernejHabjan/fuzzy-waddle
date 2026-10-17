@@ -7,12 +7,18 @@ export class NavigationPathfinderDouble {
   readonly setAcceptableTiles = jest.fn();
   readonly setTileCost = jest.fn();
   readonly enableDiagonals = jest.fn();
+  readonly enableSync = jest.fn();
   readonly setDirectionalCondition = jest.fn();
   readonly calculate = jest.fn();
-  readonly findPath = jest.fn((
-    _fromX: number, _fromY: number, _toX: number, _toY: number,
-    _complete: (path: Vector2Simple[] | null) => void
-  ) => {});
+  readonly findPath = jest.fn(
+    (
+      _fromX: number,
+      _fromY: number,
+      _toX: number,
+      _toY: number,
+      _complete: (path: Vector2Simple[] | null) => void
+    ) => {}
+  );
 
   constructor() {
     NavigationPathfinderDouble.instances.push(this);

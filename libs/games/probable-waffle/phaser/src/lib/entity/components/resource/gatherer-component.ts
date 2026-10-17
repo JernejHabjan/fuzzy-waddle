@@ -191,6 +191,15 @@ export class GathererComponent {
   findClosestResourceDrain(): Promise<Phaser.GameObjects.GameObject | null> {
     return this.targets.findClosestResourceDrain();
   }
+  /** Immediate-credit sources need no building; carried resources still require a compatible live team drain. */
+  hasResourceDelivery(source: Phaser.GameObjects.GameObject | undefined): boolean {
+    const component = source && getActorComponent(source, ResourceSourceComponent);
+    const type = this.carriedResourceType ?? component?.getResourceType();
+    if (!type) return true;
+    const data = this.getGatherDataForResourceType(type);
+    const needsDrain = component?.resourceSourceDefinition.needsReturnToDrain ?? data?.needsReturnToDrain;
+    return !needsDrain || this.targets.hasReadyResourceDrain(type);
+  }
   getClosestResourceSource(
     type: ResourceType | null,
     maxDistance: number
@@ -279,10 +288,11 @@ export class GathererComponent {
     );
   }
 
-  private leaveCurrentResourceSource() {
+  /** Releases the service slot/container while retaining the pack and remembered source for a later order. */
+  leaveCurrentResourceSource() {
     if (!this.currentResourceSource) return;
     const containerComponent = getActorComponent(this.currentResourceSource, ContainerComponent);
-    if (containerComponent) {
+    if (containerComponent?.getContainedGameObjects().includes(this.gameObject)) {
       containerComponent.unloadGameObject(this.gameObject);
     }
 

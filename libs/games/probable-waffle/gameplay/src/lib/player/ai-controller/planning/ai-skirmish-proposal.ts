@@ -16,7 +16,7 @@ export function proposeAiSkirmish(
   catalog: AiCapabilityCatalogV1
 ): AiManagerProposalV1 {
   const context = createAiSkirmishProposalContext(observation, state, catalog);
-  advanceAiSkirmishDefense(context);
+  advanceAiSkirmishDefense(context, profile);
   const transportProposal = advanceAiSkirmishOffense(context, profile);
   if (transportProposal) return transportProposal;
   advanceAiSkirmishScouting(context);

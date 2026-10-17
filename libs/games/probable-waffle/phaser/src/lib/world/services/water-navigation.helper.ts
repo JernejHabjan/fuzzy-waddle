@@ -12,15 +12,22 @@ import { TerrainGridBuilder } from "./terrain-grid-builder";
 export class WaterNavigationHelper {
   private readonly easyStar: EasyStar;
   private waterGrid: number[][] = [];
-  private pathCache = new Map<string, {
-    path: Vector2Simple[] | null; timestamp: number; query: NavigationNativeQuery | null
-  }>();
+  private pathCache = new Map<
+    string,
+    {
+      path: Vector2Simple[] | null;
+      timestamp: number;
+      query: NavigationNativeQuery | null;
+    }
+  >();
   private readonly CACHE_TTL_MS = 1000;
   /** Cost multiplier applied to shore-adjacent tiles so ships prefer open water. */
   private static readonly SHORE_COST = 8;
 
   constructor(private readonly provenance = new NavigationProvenance()) {
     this.easyStar = new EasyStar();
+    // Match ground queries: callback delivery cannot depend on capture pauses or cache-hit timing.
+    this.easyStar.enableSync();
   }
 
   setup(tileData: Phaser.Tilemaps.Tile[][]): void {
@@ -40,7 +47,14 @@ export class WaterNavigationHelper {
     const now = performance.now();
     const cached = this.pathCache.get(key);
     const hit = !!cached && now - cached.timestamp < this.CACHE_TTL_MS;
-    const query = this.provenance.query("water_static", from, to, hit ? "hit" : "miss", now, hit ? cached?.query : null);
+    const query = this.provenance.query(
+      "water_static",
+      from,
+      to,
+      hit ? "hit" : "miss",
+      now,
+      hit ? cached?.query : null
+    );
     if (hit && cached) {
       this.provenance.completed(query);
       return Promise.resolve(cached.path);

@@ -7,6 +7,7 @@ import { getTileCoordsUnderObject } from "../../../library/tile-under-object";
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import { ColliderComponent } from "../../../entity/components/movement/collider-component";
 import { NavigableComponent } from "../../../entity/components/movement/navigable-component";
+import { projectAiScoutCoverage, observeAiScoutSearchPoints } from "./ai-scout-coverage";
 import { VisionComponent } from "../../../entity/components/vision-component";
 import { MovementTerrainType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/movement-terrain-type";
 import { NavigationService } from "../../../world/services/navigation.service";
@@ -29,15 +30,11 @@ export function projectAiObservationMap(
   permittedTopology: {
     readonly blockedTileKeys: ReadonlySet<string>;
     readonly navigableTileKeys: ReadonlySet<string>;
-  }
+  },
+  staticScoutSearchPoints?: NonNullable<NonNullable<AiObservationV1["map"]>["scoutSearchPoints"]>
 ): NonNullable<AiObservationV1["map"]> {
   const tilemap = getSceneComponent(scene, TilemapComponent)?.tilemap;
   const navigation = getSceneService(scene, NavigationService);
-  const ownedNodes = actors
-    .filter((actor) => actor.visibility === "owned" && actor.accessNodeId.status === "known")
-    .map((actor) => (actor.accessNodeId.status === "known" ? actor.accessNodeId.value : null))
-    .filter((node): node is `access:${string}` => node !== null)
-    .sort();
   const dynamicObstacleActorIds = actors
     .filter((actor) => actor.visibility !== "last_seen")
     .filter((actor) => {
@@ -46,18 +43,7 @@ export function projectAiObservationMap(
     })
     .map((actor) => actor.actorId)
     .sort();
-  const scoutCoverageAccessNodeIds = [
-    ...new Set(
-      actors
-        .filter((actor) => actor.visibility === "owned" && actor.accessNodeId.status === "known")
-        .filter((actor) => {
-          const liveActor = liveById.get(actor.actorId);
-          return liveActor ? getActorComponent(liveActor, VisionComponent) !== undefined : false;
-        })
-        .map((actor) => (actor.accessNodeId.status === "known" ? actor.accessNodeId.value : null))
-        .filter((node): node is `access:${string}` => node !== null)
-    )
-  ].sort();
+  const scoutCoverageAccessNodeIds = projectAiScoutCoverage(accessGraph, actors, liveById);
   const constructionCells: Array<NonNullable<NonNullable<AiObservationV1["map"]>["constructionCells"]>[number]> = [];
   const mainAnchors = actors
     .filter(
@@ -189,6 +175,17 @@ export function projectAiObservationMap(
     }
   }
   return {
+    ...(staticScoutSearchPoints
+      ? {
+          scoutSearchPoints: observeAiScoutSearchPoints(
+            staticScoutSearchPoints.filter(
+              (point) => !permittedTopology.blockedTileKeys.has(`${point.position.x},${point.position.y}`)
+            ),
+            actors,
+            liveById
+          )
+        }
+      : {}),
     bounds: tilemap
       ? knownValue({ width: tilemap.width, height: tilemap.height }, tick)
       : unknownValue("not_supported"),
@@ -198,7 +195,9 @@ export function projectAiObservationMap(
     // A frontier is an admitted static region outside currently covered vision, not
     // merely the AI's own node. Dynamic unknowns remain absent from this fair input.
     frontierAccessNodeIds: (accessGraph?.nodes ?? [])
-      .filter((candidate) => candidate.knowledge === "known_static" && !ownedNodes.includes(candidate.nodeId))
+      .filter(
+        (candidate) => candidate.knowledge === "known_static" && !scoutCoverageAccessNodeIds.includes(candidate.nodeId)
+      )
       .map((candidate) => candidate.nodeId)
       .sort(),
     scoutCoverageAccessNodeIds,

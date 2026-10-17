@@ -6,6 +6,14 @@ import { createAiBrainStateV1 } from "./create-ai-brain-state-v1";
 import { PureAiBrain } from "./ai-brain";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 import { findAiWhyNotExplanationV1 } from "../debug/project-ai-debug-snapshot";
+import { AiSkirmishManager } from "../planning/ai-skirmish-manager";
+import {
+  catalog as scoutCatalog,
+  homeNode,
+  enemyNode,
+  observation as scoutObservation,
+  unit as scoutUnit
+} from "../planning/ai-skirmish-test-fixtures";
 
 function stopIntent(id: string, utility: number, actorId: string, wood: number): AiIntentV1 {
   return {
@@ -126,6 +134,33 @@ class AdaptationLedgerManager implements AiProposalManagerV1 {
 }
 
 describe("PureAiBrain", () => {
+  it("SCOUT-05 commits identical exact intents from identical permitted inputs, then responds to a real sighting", () => {
+    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const input = scoutObservation(20, [scoutUnit("scout", homeNode, 0)]);
+    const brain = new PureAiBrain(profile, [new AiSkirmishManager(profile, () => scoutCatalog)]);
+    const first = brain.step(input, state, []);
+    const paired = brain.step(structuredClone(input), structuredClone(state), []);
+    expect(first.acceptedIntents.length).toBeGreaterThan(0);
+    expect(paired.acceptedIntents).toEqual(first.acceptedIntents);
+    expect(paired.nextState).toEqual(first.nextState);
+    const revealed = brain.step(
+      scoutObservation(20, [
+        scoutUnit("scout", homeNode, 0),
+        { ...scoutUnit("enemy", enemyNode, 22), owner: 2, relation: "enemy", visibility: "visible" }
+      ]),
+      state,
+      []
+    );
+    expect(revealed.acceptedIntents).not.toEqual(first.acceptedIntents);
+  });
+
   it("applies the emergency posture to competing affordable spending while preserving survival", () => {
     const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
     const state = createAiBrainStateV1({
@@ -165,15 +200,8 @@ describe("PureAiBrain", () => {
     });
     const observation = createAiTestObservation();
     const result = new PureAiBrain(profile, [
-      new DummyManager([
-        stopIntent("housing", 920, "worker-1", 50),
-        stopIntent("field", 880, "worker-2", 40)
-      ])
-    ]).step(
-      { ...observation, actors: [...observation.actors, createAiTestOwnedActor("worker-2")] },
-      state,
-      []
-    );
+      new DummyManager([stopIntent("housing", 920, "worker-1", 50), stopIntent("field", 880, "worker-2", 40)])
+    ]).step({ ...observation, actors: [...observation.actors, createAiTestOwnedActor("worker-2")] }, state, []);
 
     expect(result.acceptedIntents.map((intent) => intent.intentId)).toEqual(["intent:housing"]);
     expect(result.decisions).toContainEqual(

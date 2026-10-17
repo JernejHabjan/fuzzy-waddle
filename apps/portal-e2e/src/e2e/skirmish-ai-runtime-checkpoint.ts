@@ -1,4 +1,10 @@
+import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+
 export interface RuntimeCheckpointV1 {
+  /** Exact bounded committed intents, including actor/target/position/claims, for paired fairness checks. */
+  readonly decisionIntents?: readonly AiIntentV1[];
+  readonly decisionIntentsTruncated?: boolean;
+  readonly permittedObservationDigest?: string;
   readonly targetTick: number;
   readonly tick: number;
   readonly observationTick: number;

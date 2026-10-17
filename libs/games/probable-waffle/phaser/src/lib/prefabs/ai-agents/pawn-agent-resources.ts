@@ -29,6 +29,15 @@ export class PawnAgentResources {
     >
   ) {}
 
+  /** Stop before walking/extracting when the delivery service disappears; retain cargo for later recovery. */
+  ValidateResourceDelivery(): State {
+    const order = this.blackboard.getCurrentOrder();
+    const gatherer = getActorComponent(this.gameObject, GathererComponent);
+    if (!order || !gatherer) return State.FAILED;
+    if (gatherer.hasResourceDelivery(order.data.targetGameObject)) return State.FAILED;
+    return this.agent.Stop("Gather - No Resource Drains Exist");
+  }
+
   /** A lookup may retarget only the live order that requested it. */
   async AcquireNewResourceSource() {
     const currentOrder = this.blackboard.getCurrentOrder();
@@ -59,7 +68,8 @@ export class PawnAgentResources {
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) return State.FAILED;
     const resourceDrain = await gathererComponent.getPreferredResourceDrain();
-    if (!resourceDrain?.active || !this.isCurrentResourceOrder(currentOrder, orderType, target)) return State.FAILED;
+    if (!this.isCurrentResourceOrder(currentOrder, orderType, target)) return State.FAILED;
+    if (!resourceDrain?.active) return this.agent.Stop("ReturnResources - No Resource Drains Exist");
     currentOrder.data.targetGameObject = resourceDrain;
     return State.SUCCEEDED;
   }
@@ -211,8 +221,9 @@ export class PawnAgentResources {
     if (!gathererComponent) return State.FAILED;
 
     const preferredResourceDrain = await gathererComponent.getPreferredResourceDrain();
-    if (!preferredResourceDrain?.active || !this.isCurrentResourceOrder(currentOrder, orderType, target))
-      return State.FAILED;
+    if (!this.isCurrentResourceOrder(currentOrder, orderType, target)) return State.FAILED;
+    // Preserve the pack, but release the dead delivery job so a human or the macro planner can recover it.
+    if (!preferredResourceDrain?.active) return this.agent.Stop("Gather - No Resource Drains Exist");
 
     currentOrder.orderType = OrderType.ReturnResources;
     currentOrder.data.targetGameObject = preferredResourceDrain;

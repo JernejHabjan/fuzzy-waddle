@@ -1,4 +1,4 @@
-import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
+import { ObjectNames, type ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiIntentV1 } from "../contracts/ai-intent-v1";
@@ -29,6 +29,7 @@ export function proposeAiFoodEconomy(args: {
   readonly demands: AiDemandV1[];
   readonly intents: AiIntentV1[];
   readonly ordinal: number;
+  readonly militarySpendingReserve?: Readonly<Partial<Record<ResourceType, number>>>;
 }): { readonly policy: ReturnType<typeof decideAiEconomyPolicy>; readonly ordinal: number } {
   const {
     observation,
@@ -41,7 +42,8 @@ export function proposeAiFoodEconomy(args: {
     reservedActorIds,
     selectedConstructionTileKeys,
     demands,
-    intents
+    intents,
+    militarySpendingReserve = {}
   } = args;
   let ordinal = args.ordinal;
   // A granary is only a drop-off point. Sustained reinforcement needs actual
@@ -91,7 +93,8 @@ export function proposeAiFoodEconomy(args: {
       catalog,
       workerRequiredObject,
       Math.max(WORKER_RECOVERY_FLOOR, policy.desiredWorkers),
-      policy.posture !== "safe" ? { urgencyClass: 2, utility: 700 } : undefined
+      policy.posture !== "safe" ? { urgencyClass: 2, utility: 700 } : undefined,
+      militarySpendingReserve
     );
     demands.push(recovery.demand);
     if (recovery.intent) intents.push(recovery.intent);

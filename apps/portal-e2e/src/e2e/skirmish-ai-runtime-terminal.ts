@@ -13,7 +13,8 @@ export function canStopAfterTerminal(
   checkpoint: Pick<RuntimeCheckpointV1, "gameResult" | "tick">,
   pendingEventTicks: readonly number[]
 ): boolean {
-  if (!checkpoint.gameResult || scenarioIds.length === 0) return false;
+  // ScoreTracker initializes unfinished players to Quit. Only an adjudicated win/loss/tie ends this gate.
+  if (!["win", "loss", "tie"].includes(checkpoint.gameResult ?? "") || scenarioIds.length === 0) return false;
   if (scenarioIds.some((id) => assertions[id]?.requireAiVictory !== true)) return false;
   return pendingEventTicks.every((tick) => tick <= checkpoint.tick);
 }

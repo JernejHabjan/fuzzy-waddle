@@ -5,6 +5,9 @@ import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
 
+/** Two additional workers above survival can staff food/material resupply before reinforcing takes spending priority. */
+const REINFORCEMENT_SAVING_WORKFORCE = 8;
+
 /** Maintains the current workforce after an opening checkpoint has completed without reopening historical steps. */
 export function proposeAiWorkerRecovery(
   observation: AiObservationV1,
@@ -12,7 +15,8 @@ export function proposeAiWorkerRecovery(
   catalog: AiCapabilityCatalogV1,
   workerObjectName: ObjectNames,
   desired: number,
-  priority: { readonly urgencyClass: 0 | 2; readonly utility: number } = { urgencyClass: 0, utility: 990 }
+  priority: { readonly urgencyClass: 0 | 2; readonly utility: number } = { urgencyClass: 0, utility: 990 },
+  resourceReserve: Readonly<Partial<Record<ResourceType, number>>> = {}
 ): { readonly demand: AiDemandV1; readonly intent: AiIntentV1 | null } {
   const owned = observation.actors.filter((actor) => actor.relation === "self" && actor.visibility === "owned");
   const workers = owned.filter((actor) =>
@@ -69,7 +73,9 @@ export function proposeAiWorkerRecovery(
     Object.entries(resourceCost).some(([type, amount]) => {
       const resource = observation.resources.find((entry) => entry.resourceType === type);
       return (
-        (resource?.stockpile ?? 0) - (resource?.reservedUnspent ?? 0) - (resource?.obligationsDue ?? 0) < (amount ?? 0)
+        (resource?.stockpile ?? 0) - (resource?.reservedUnspent ?? 0) - (resource?.obligationsDue ?? 0) <
+        (amount ?? 0) +
+          (workers.length >= REINFORCEMENT_SAVING_WORKFORCE ? (resourceReserve[type as ResourceType] ?? 0) : 0)
       );
     })
   )

@@ -104,7 +104,9 @@ export class PawnAgentMovement {
           // A solid non-navigable target can only be approached beside its footprint. Use the same contact
           // radius for the range probe, reachability probe and executed movement; walkable targets stay exact.
           return getActorComponent(targetGameObject, ColliderComponent)?.colliderDefinition?.enabled &&
-            !getActorComponent(targetGameObject, NavigableComponent) ? 1 : 0;
+            !getActorComponent(targetGameObject, NavigableComponent)
+            ? 1
+            : 0;
         case "attack":
           return getActorComponent(this.gameObject, AttackComponent)?.getAttackRange(targetGameObject);
         case "gather":
@@ -151,6 +153,13 @@ export class PawnAgentMovement {
     }
     try {
       const canMoveToTarget = await this.CanMoveToTarget(range);
+      if (
+        this.blackboard.getCurrentOrder() !== currentOrder ||
+        !this.gameObject.active ||
+        !this.gameObject.scene?.sys.isActive() ||
+        currentOrder.data.targetGameObject !== target
+      )
+        return State.FAILED;
       if (!canMoveToTarget) {
         // console.log("[Build] MoveToTarget: Cannot move to target (unreachable), type=", type);
         this.stopFailedMove(currentOrder);
@@ -162,6 +171,7 @@ export class PawnAgentMovement {
         {
           radiusTilesAroundDestination: range,
           onUpdateThrottled: () => {
+            if (this.blackboard.getCurrentOrder() !== currentOrder) return;
             // if the target is not alive, stop moving
             const healthComponent = getActorComponent(target, HealthComponent);
             if (healthComponent && healthComponent.killed) {
@@ -213,6 +223,7 @@ export class PawnAgentMovement {
           location,
           {
             onUpdateThrottled: () => {
+              if (this.blackboard.getCurrentOrder() !== currentOrder) return;
               const enemy = this.closestAttackableEnemy();
               if (enemy) {
                 currentOrder.data.targetGameObject = enemy;

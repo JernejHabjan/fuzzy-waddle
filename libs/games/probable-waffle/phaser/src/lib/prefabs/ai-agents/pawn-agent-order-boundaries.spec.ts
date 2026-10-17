@@ -24,8 +24,8 @@ jest.mock("../../data/actor-system", () => ({ getActorSystem: jest.fn() }));
 /** Native boundary doubles supply no navigation, arrival or useful-effect evidence. */
 function fixture() {
   const scene = { sys: { isActive: () => true } } as unknown as Phaser.Scene;
-  const actor = { scene } as Phaser.GameObjects.GameObject;
-  const target = { scene } as Phaser.GameObjects.GameObject;
+  const actor = { scene, active: true } as Phaser.GameObjects.GameObject;
+  const target = { scene, active: true } as Phaser.GameObjects.GameObject;
   const blackboard = new PawnAiBlackboard();
   const agent = new PlayerPawnAiControllerAgent(actor, blackboard);
   return { actor, target, blackboard, agent };
@@ -54,7 +54,7 @@ describe("pawn agent native order boundaries", () => {
     expect(cancel).toHaveBeenCalledTimes(1);
   });
 
-  it("keeps the original movement target across a pending reachability probe", async () => {
+  it("discards pending reachability after order replacement instead of starting stale movement", async () => {
     const f = fixture();
     const order = new OrderData(OrderType.Move, { targetGameObject: f.target });
     f.blackboard.setCurrentOrder(order);
@@ -81,47 +81,60 @@ describe("pawn agent native order boundaries", () => {
     f.blackboard.setCurrentOrder(replacement);
     if (!release) throw new Error("pawn_test_probe_missing");
     release(true);
-    expect(await pending).toBe(State.SUCCEEDED);
-    expect(requireAiTestEntry(move.mock.calls, 0)?.[0]).toBe(f.target);
+    f.actor.active = true;
+    expect(await pending).toBe(State.FAILED);
+    expect(move).not.toHaveBeenCalled();
     expect(f.blackboard.getCurrentOrder()).toBe(replacement);
     expect(order.data.targetGameObject).toBe(f.target);
-    expect(contexts).toMatchObject([
-      { caller: "reachability_probe", order },
-      { caller: "actor_movement", order }
-    ]);
-    expect(move).toHaveBeenCalledWith(f.target, expect.any(Object), requireAiTestEntry(contexts, 1));
+    expect(contexts).toMatchObject([{ caller: "reachability_probe", order }]);
     unsubscribe();
   });
 
-  it.each(["solid", "walkable", "navigable"] as const)("Move uses consistent contact range for a %s target", async (kind) => {
-    const f = fixture();
-    f.blackboard.setCurrentOrder(new OrderData(OrderType.Move, { targetGameObject: f.target }));
-    jest.mocked(getActorComponent).mockImplementation((actor, token) => {
-      if (actor !== f.target) return undefined;
-      if (token === ColliderComponent) return { colliderDefinition: { enabled: kind !== "walkable" } } as never;
-      if (token === NavigableComponent && kind === "navigable") return {} as never;
-      return undefined;
-    });
-    const probe = jest.fn(async () => true), move = jest.fn(async () => true);
-    jest.mocked(getActorSystem).mockReturnValue({
-      canMoveTo: probe, moveToActorByAdjustingPathDynamically: move
-    } as never);
-    expect(await f.agent.MoveToTarget("move")).toBe(State.SUCCEEDED);
-    const range = kind === "solid" ? 1 : 0;
-    expect(probe).toHaveBeenCalledWith(f.target, range, undefined);
-    expect(move).toHaveBeenCalledWith(
-      f.target, expect.objectContaining({ radiusTilesAroundDestination: range }), undefined
-    );
-  });
+  it.each(["solid", "walkable", "navigable"] as const)(
+    "Move uses consistent contact range for a %s target",
+    async (kind) => {
+      const f = fixture();
+      f.blackboard.setCurrentOrder(new OrderData(OrderType.Move, { targetGameObject: f.target }));
+      jest.mocked(getActorComponent).mockImplementation((actor, token) => {
+        if (actor !== f.target) return undefined;
+        if (token === ColliderComponent) return { colliderDefinition: { enabled: kind !== "walkable" } } as never;
+        if (token === NavigableComponent && kind === "navigable") return {} as never;
+        return undefined;
+      });
+      const probe = jest.fn(async () => true),
+        move = jest.fn(async () => true);
+      jest.mocked(getActorSystem).mockReturnValue({
+        canMoveTo: probe,
+        moveToActorByAdjustingPathDynamically: move
+      } as never);
+      expect(await f.agent.MoveToTarget("move")).toBe(State.SUCCEEDED);
+      const range = kind === "solid" ? 1 : 0;
+      expect(probe).toHaveBeenCalledWith(f.target, range, undefined);
+      expect(move).toHaveBeenCalledWith(
+        f.target,
+        expect.objectContaining({ radiusTilesAroundDestination: range }),
+        undefined
+      );
+    }
+  );
 
   it("Move reaches solid contact only at the selected adjacent tile, not while farther away", async () => {
     const f = fixture();
     f.blackboard.setCurrentOrder(new OrderData(OrderType.Move, { targetGameObject: f.target }));
-    jest.mocked(getActorComponent).mockImplementation((actor, token) =>
-      actor === f.target && token === ColliderComponent ? { colliderDefinition: { enabled: true } } as never : undefined
-    );
-    const path = jest.fn().mockResolvedValue([{ x: 0, y: 0 }, { x: 1, y: 0 }]);
-    jest.mocked(getActorSystem).mockReturnValue({ getPathToClosestNavigableTileBetweenGameObjectsInRadius: path } as never);
+    jest
+      .mocked(getActorComponent)
+      .mockImplementation((actor, token) =>
+        actor === f.target && token === ColliderComponent
+          ? ({ colliderDefinition: { enabled: true } } as never)
+          : undefined
+      );
+    const path = jest.fn().mockResolvedValue([
+      { x: 0, y: 0 },
+      { x: 1, y: 0 }
+    ]);
+    jest
+      .mocked(getActorSystem)
+      .mockReturnValue({ getPathToClosestNavigableTileBetweenGameObjectsInRadius: path } as never);
     expect(await f.agent.InRange("move")).toBe(State.FAILED);
     path.mockResolvedValue([{ x: 1, y: 0 }]);
     expect(await f.agent.InRange("move")).toBe(State.SUCCEEDED);
@@ -133,10 +146,14 @@ describe("pawn agent native order boundaries", () => {
     f.blackboard.setCurrentOrder(new OrderData(OrderType.Move, { targetGameObject: f.target }));
     const canMoveTo = jest.fn(async () => false),
       move = jest.fn();
-    jest.mocked(getActorSystem).mockReturnValue({ canMoveTo, moveToActorByAdjustingPathDynamically: move } as never);
+    jest
+      .mocked(getActorSystem)
+      .mockReturnValue({ canMoveTo, moveToActorByAdjustingPathDynamically: move, cancelMovement: jest.fn() } as never);
     expect(await f.agent.MoveToTarget("move")).toBe(State.FAILED);
     expect(move).not.toHaveBeenCalled();
     const error = new Error("native probe rejected");
+    expect(f.blackboard.getCurrentOrder()).toBeUndefined();
+    f.blackboard.setCurrentOrder(new OrderData(OrderType.Move, { targetGameObject: f.target }));
     canMoveTo.mockRejectedValue(error);
     const log = jest.spyOn(console, "error").mockImplementation(() => undefined);
     expect(await f.agent.MoveToTarget("move")).toBe(State.FAILED);
@@ -257,6 +274,7 @@ describe("pawn order terminal cleanup", () => {
       token === GathererComponent
         ? ({
             getPreferredResourceSource: async () => undefined,
+            leaveCurrentResourceSource: jest.fn(),
             isCarryingResources: () => false
           } as never)
         : undefined

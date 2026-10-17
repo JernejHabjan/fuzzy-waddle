@@ -6,6 +6,7 @@ import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
 import { nextIds } from "./ai-macro-effect-identity";
 import { claimedActorIds } from "./ai-macro-observation";
+import { aiEconomySiteSafety } from "./ai-economy-site-safety";
 
 /** Assigns one free farmer without stealing cargo or a Field's returning worker. */
 export function proposeAiFieldLabor(
@@ -46,7 +47,9 @@ export function proposeAiFieldLabor(
   }).length;
   const unstaffedFoodSource =
     returningWorkerCount === 0
-      ? readyFoodSources.find((source) => !staffedFoodSourceIds.has(source.actorId))
+      ? readyFoodSources
+          .filter(aiEconomySiteSafety(observation).actorSafe)
+          .find((source) => !staffedFoodSourceIds.has(source.actorId))
       : undefined;
   if (!unstaffedFoodSource) return null;
   const alreadyClaimed = claimedActorIds(priorIntents);

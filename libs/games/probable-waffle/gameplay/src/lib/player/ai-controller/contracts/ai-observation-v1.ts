@@ -230,6 +230,13 @@ export interface AiObservedMapV1 {
   readonly bounds: AiKnownValueV1<{ readonly width: number; readonly height: number }>;
   readonly staticRevision: number;
   readonly frontierAccessNodeIds: readonly AiAccessNodeId[];
+  /** Bounded static-ground search samples. Information coverage is finer than route-connected regions. */
+  readonly scoutSearchPoints?: readonly {
+    readonly pointId: string;
+    readonly accessNodeId: AiAccessNodeId;
+    readonly position: Vector3Simple;
+    readonly observed: boolean;
+  }[];
   /** Centers of owned vision sources; evidence rather than hidden fog state. */
   readonly scoutCoverageAccessNodeIds: readonly AiAccessNodeId[];
   readonly dynamicObstacleActorIds: readonly ActorId[];

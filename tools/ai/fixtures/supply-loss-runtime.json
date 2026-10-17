@@ -16,7 +16,7 @@
     "aiPlayerNumber": 2,
     "simulationTimeScale": 1,
     "fixedStepFrames": true,
-    "checkpointTicks": [20, 180, 220, 400, 800, 1200],
+    "checkpointTicks": [20, 180, 220, 400, 800, 1000, 1200],
     "variants": [
       {
         "id": "paid-supply-loss",
@@ -49,8 +49,8 @@
               "actorName": "TivaraWorkerMale",
               "owner": 2,
               "position": {
-                "x": 512,
-                "y": 832,
+                "x": 576,
+                "y": 656,
                 "z": 0
               }
             },
@@ -59,8 +59,8 @@
               "actorName": "TivaraWorkerMale",
               "owner": 2,
               "position": {
-                "x": 544,
-                "y": 856,
+                "x": 608,
+                "y": 680,
                 "z": 0
               }
             },
@@ -69,8 +69,8 @@
               "actorName": "TivaraWorkerMale",
               "owner": 2,
               "position": {
-                "x": 576,
-                "y": 880,
+                "x": 640,
+                "y": 704,
                 "z": 0
               }
             },
@@ -79,8 +79,8 @@
               "actorName": "TivaraWorkerMale",
               "owner": 2,
               "position": {
-                "x": 608,
-                "y": 904,
+                "x": 672,
+                "y": 728,
                 "z": 0
               }
             },
@@ -215,8 +215,8 @@
               "actorName": "TivaraWorkerMale",
               "owner": 2,
               "position": {
-                "x": 512,
-                "y": 832,
+                "x": 576,
+                "y": 656,
                 "z": 0
               }
             },
@@ -225,8 +225,8 @@
               "actorName": "TivaraWorkerMale",
               "owner": 2,
               "position": {
-                "x": 544,
-                "y": 856,
+                "x": 608,
+                "y": 680,
                 "z": 0
               }
             },
@@ -235,8 +235,8 @@
               "actorName": "TivaraWorkerMale",
               "owner": 2,
               "position": {
-                "x": 576,
-                "y": 880,
+                "x": 640,
+                "y": 704,
                 "z": 0
               }
             },
@@ -245,8 +245,8 @@
               "actorName": "TivaraWorkerMale",
               "owner": 2,
               "position": {
-                "x": 608,
-                "y": 904,
+                "x": 672,
+                "y": 728,
                 "z": 0
               }
             },

@@ -51,7 +51,7 @@ function defendersFor(raiderCount: number): number {
     archetypeId: "balanced"
   });
   const context = createAiSkirmishProposalContext(observation, state, catalog);
-  advanceAiSkirmishDefense(context);
+  advanceAiSkirmishDefense(context, profile);
   return context.nextSquads.find((squad) => squad.role === "defense")?.actorIds.length ?? 0;
 }
 

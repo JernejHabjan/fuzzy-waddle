@@ -1,5 +1,6 @@
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiManagerProposalV1 } from "../planning/ai-manager-proposal";
+import { projectAiSquadMembership } from "./project-ai-squad-membership";
 
 /** Applies manager-owned state projections without allowing a later narrow update to resurrect an earlier removal. */
 export function projectAiManagerState(
@@ -7,18 +8,34 @@ export function projectAiManagerState(
   proposalBatches: readonly AiManagerProposalV1[]
 ): AiBrainStateV1 {
   const initialSquadIds = new Set(initialState.squads.map((squad) => squad.squadId));
+  let primaryProjectionSeen = false;
   return proposalBatches.reduce<AiBrainStateV1>((state, batch) => {
     const patch = batch.statePatch;
     if (!patch) return state;
     const {
-      transportAppend, squadUpdates, adaptation, adaptationDemands, openingArchetypeId,
-      forecastReservations, releasedOptionalPlanIds, ...replacePatch
+      transportAppend,
+      squadUpdates,
+      adaptation,
+      adaptationDemands,
+      openingArchetypeId,
+      forecastReservations,
+      releasedOptionalPlanIds,
+      ...replacePatch
     } = patch;
+    const preservePrimaryMembership = primaryProjectionSeen;
+    if (patch.squads !== undefined) primaryProjectionSeen = true;
     const currentSquadIds = new Set(state.squads.map((squad) => squad.squadId));
     const applicableSquadUpdates = squadUpdates?.filter((update) => {
       const parentSquadId = update.squadId.includes(":domain:")
         ? (update.squadId.slice(0, update.squadId.indexOf(":domain:")) as typeof update.squadId)
         : null;
+      if (
+        parentSquadId &&
+        initialSquadIds.has(parentSquadId) &&
+        !currentSquadIds.has(parentSquadId) &&
+        !currentSquadIds.has(update.squadId)
+      )
+        return false;
       return (
         currentSquadIds.has(update.squadId) ||
         !initialSquadIds.has(update.squadId) ||
@@ -29,11 +46,14 @@ export function projectAiManagerState(
       ...state,
       ...replacePatch,
       reservations: [
-        ...state.reservations.filter((reservation) =>
-          !releasedOptionalPlanIds?.includes(reservation.ownerPlanId) ||
-          !["forecast", "provisional"].includes(reservation.state.kind)),
-        ...(forecastReservations ?? []).filter((reservation) =>
-          !state.reservations.some((existing) => existing.claimId === reservation.claimId))
+        ...state.reservations.filter(
+          (reservation) =>
+            !releasedOptionalPlanIds?.includes(reservation.ownerPlanId) ||
+            !["forecast", "provisional"].includes(reservation.state.kind)
+        ),
+        ...(forecastReservations ?? []).filter(
+          (reservation) => !state.reservations.some((existing) => existing.claimId === reservation.claimId)
+        )
       ],
       ...(openingArchetypeId ? { opening: { ...state.opening, archetypeId: openingArchetypeId } } : {}),
       ...(adaptation || adaptationDemands
@@ -70,7 +90,11 @@ export function projectAiManagerState(
               ...state.squads.filter(
                 (squad) => !applicableSquadUpdates.some((update) => update.squadId === squad.squadId)
               ),
-              ...applicableSquadUpdates
+              ...applicableSquadUpdates.map((update) =>
+                preservePrimaryMembership && ["defense", "attack", "reserve", "scout"].includes(update.role)
+                  ? projectAiSquadMembership(state.squads, update, initialState.squads, applicableSquadUpdates)
+                  : update
+              )
             ].sort((left, right) => left.squadId.localeCompare(right.squadId))
           }
         : {})

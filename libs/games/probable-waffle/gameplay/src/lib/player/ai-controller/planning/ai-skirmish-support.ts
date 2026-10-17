@@ -204,9 +204,36 @@ export function nextQuestion(
   observation: AiObservationV1,
   knowledge: AiKnowledgeStateV1
 ): AiKnowledgeStateV1["questions"][number] | undefined {
+  if (observation.map?.scoutSearchPoints) {
+    const point = [...observation.map.scoutSearchPoints]
+      .sort((left, right) => left.pointId.localeCompare(right.pointId))
+      .find(
+        (point) =>
+          !point.observed &&
+          !knowledge.questions.some(
+            (question) => question.kind === `explore:${point.pointId}` && question.state === "answered"
+          )
+      );
+    if (!point) return undefined;
+    const questionId = `question:${point.pointId}` as AiKnowledgeStateV1["questions"][number]["questionId"];
+    return (
+      knowledge.questions.find((question) => question.questionId === questionId) ?? {
+        questionId,
+        kind: `explore:${point.pointId}`,
+        createdTick: observation.tick,
+        state: "open"
+      }
+    );
+  }
   const covered = new Set(observation.map?.scoutCoverageAccessNodeIds ?? []);
   const frontier = [...(observation.map?.frontierAccessNodeIds ?? [])]
-    .filter((candidate) => !covered.has(candidate))
+    .filter(
+      (candidate) =>
+        !covered.has(candidate) &&
+        !knowledge.questions.some(
+          (question) => question.kind === `safe_route:${candidate}` && question.state === "answered"
+        )
+    )
     .sort()[0];
   if (!frontier) return undefined;
   const questionId = `question:frontier:${frontier}` as AiKnowledgeStateV1["questions"][number]["questionId"];

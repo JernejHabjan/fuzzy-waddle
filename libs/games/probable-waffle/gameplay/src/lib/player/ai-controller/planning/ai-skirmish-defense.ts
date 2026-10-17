@@ -1,6 +1,10 @@
 import { aiDeadline, type AiPlanId, type AiSquadId } from "../contracts/ai-core-types";
 import type { AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
 import type { AiSkirmishProposalContext } from "./ai-skirmish-proposal-context";
+import { observedAiEconomyThreats } from "./ai-economy-policy";
+import { estimateAiEngagementV1 } from "./ai-tactics-combat";
+import { AI_TACTICS_ATTACK_RATIO_PERMILLE } from "./ai-tactics-rules";
 import {
   baseId,
   canTarget,
@@ -15,7 +19,7 @@ import {
 export const AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS = 1200;
 export const AI_PURSUIT_LEASH_TICKS = 200;
 
-export function advanceAiSkirmishDefense(context: AiSkirmishProposalContext): void {
+export function advanceAiSkirmishDefense(context: AiSkirmishProposalContext, profile: AiProfileConfigV1): void {
   const { localThreat, combat, activeDefense, state, observation, homeAccess } = context;
   if (!localThreat || combat.length === 0) return;
   const eligibleDefenders = combat.filter((actor) => canTarget(actor, localThreat));
@@ -33,10 +37,24 @@ export function advanceAiSkirmishDefense(context: AiSkirmishProposalContext): vo
       distance(context.home, enemyPosition) <= 12
     );
   }).length;
-  const defenseCount = Math.min(
+  let defenseCount = Math.min(
     eligibleDefenders.length,
-    Math.max(1, Math.ceil(eligibleDefenders.length * 0.25), nearbyAttackers * 2)
+    Math.max(
+      1,
+      Math.ceil(eligibleDefenders.length * 0.25),
+      Math.max(nearbyAttackers, observedAiEconomyThreats(observation).length) * 2
+    )
   );
+  // A head-count reserve can remain too weak forever even while an idle army could remove the threat.
+  while (defenseCount < Math.min(eligibleDefenders.length, profile.maxLocalEngagementPairsPerStep)) {
+    const estimate = estimateAiEngagementV1(
+      eligibleDefenders.slice(0, defenseCount),
+      [localThreat],
+      profile.maxLocalEngagementPairsPerStep
+    );
+    if (estimate.confidencePermille < 500 || estimate.ratioPermille >= AI_TACTICS_ATTACK_RATIO_PERMILLE) break;
+    defenseCount++;
+  }
   const defenders = eligibleDefenders.slice(0, defenseCount);
   defenders.forEach((actor) => context.primaryOwnedActors.add(actor.actorId));
   const targetPosition = position(localThreat);
@@ -50,6 +68,7 @@ export function advanceAiSkirmishDefense(context: AiSkirmishProposalContext): vo
     actorIds: defenders.map((actor) => actor.actorId),
     objectiveId: localThreat.actorId,
     state: targetPosition ? "engaged" : "searching",
+    ...(activeDefense?.tactics ? { tactics: activeDefense.tactics } : {}),
     lifecycle: {
       targetPlayerNumber: localThreat.owner,
       targetRegionId: regionId(localThreat),

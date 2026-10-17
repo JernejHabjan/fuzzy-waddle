@@ -88,7 +88,7 @@ export function finalizeAiSkirmishProposal(context: AiSkirmishProposalContext): 
               ? "defend"
               : context.assessment?.choice === "finish"
                 ? "finish"
-              : context.assessment?.choice === "recover"
+                : context.assessment?.choice === "recover"
                   ? "recover"
                   : context.assessment?.choice === "scout"
                     ? "stabilize"
@@ -98,7 +98,13 @@ export function finalizeAiSkirmishProposal(context: AiSkirmishProposalContext): 
             assessment: context.assessment
           }
         : context.assessment
-          ? { ...state.strategy, assessment: context.assessment }
+          ? {
+              ...state.strategy,
+              stance: context.localThreat ? "defend" : "stabilize",
+              goalId: null,
+              objectiveId: null,
+              assessment: context.assessment
+            }
           : state.strategy,
       skirmish: resultSkirmish
     }

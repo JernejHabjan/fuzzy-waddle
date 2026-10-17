@@ -7,6 +7,7 @@ import { assignDamage } from "./ai-tactics-combat";
 import { TACTICAL_RECONSIDERATION_TICKS, MISSION_EFFECT_EXTENSION_TICKS } from "./ai-tactics-rules";
 
 import type { decideAiTacticalSquad } from "./ai-tactics-mission-decision";
+import { aiTacticalScoutDestination } from "./ai-tactics-scout-destination";
 /** Projects formation, reservations and tactical state. */
 export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTacticalSquad>) {
   const {
@@ -50,7 +51,7 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
     ? (retreat ?? origin)
     : nextState === "regroup"
       ? origin
-      : (rampartPositions[0] ?? knownPosition(target) ?? origin);
+      : (rampartPositions[0] ?? knownPosition(target) ?? aiTacticalScoutDestination(observation, squad) ?? origin);
   const mobileReserveCount = reachableDefenderPosts.length > 0 ? Math.max(1, Math.ceil(members.length * 0.25)) : 0;
   const mobileReserveActorIds = members
     .slice(Math.max(0, members.length - mobileReserveCount))
@@ -99,8 +100,17 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
       : [];
   const actorsNeedingOrder = members
     .filter((actor) => {
-      if (!previouslyOrderedActorIds.includes(actor.actorId)) return true;
       const activeOrder = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
+      // Attack-move is the legal approach before this member sees the mission's player-visible target.
+      if (
+        visibleTarget &&
+        (finalState === "engage" || finalState === "advance") &&
+        activeOrder?.orderType === OrderType.Attack &&
+        activeOrder.targetActorId === null &&
+        !targetAwareMembers.some((member) => member.actorId === actor.actorId)
+      )
+        return false;
+      if (!previouslyOrderedActorIds.includes(actor.actorId)) return true;
       if (
         visibleTarget &&
         (finalState === "engage" || finalState === "advance") &&

@@ -31,6 +31,7 @@ export class PawnAgentConstruction {
   }
 
   async AssignNextBuildOrder(): Promise<State> {
+    const revision = this.blackboard.orderRevision;
     const builderComponent = getActorComponent(this.gameObject, BuilderComponent);
     if (!builderComponent) {
       // console.log("[Build] AssignNextBuildOrder: No builder component");
@@ -38,6 +39,14 @@ export class PawnAgentConstruction {
     }
     const range = builderComponent.getConstructionSeekRange();
     const target = await builderComponent.getClosestConstructionSite(range);
+    if (
+      this.blackboard.orderRevision !== revision ||
+      !this.gameObject.active ||
+      !this.gameObject.scene?.sys.isActive() ||
+      !this.agent.SelfIsAlive() ||
+      !target?.active
+    )
+      return State.FAILED;
     if (!target) {
       // console.log("[Build] AssignNextBuildOrder: No reachable construction site found");
       return State.FAILED;
@@ -157,5 +166,4 @@ export class PawnAgentConstruction {
     if (!constructionSiteComponent) return false;
     return constructionSiteComponent.canAssignRepairer();
   }
-
 }

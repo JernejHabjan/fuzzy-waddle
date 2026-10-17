@@ -45,10 +45,17 @@ export function evaluateRuntimeVariant(
   ].map((failure) => `${variant.variantId}:${failure}`);
   failures.push(
     ...(variant.productionEvidenceV2
-      ? (variant.productionCausality?.failures ?? [])
+      ? [...(variant.productionCausalityFailures ?? []), ...(variant.productionCausality?.failures ?? [])]
       : evaluateRuntimeProductionCausality(scenarioId, variant.productionCausality)
     ).map((failure) => `${variant.variantId}:${failure}`)
   );
+  if (
+    scenarioId === "H-18" &&
+    variant.productionEvidenceV2 &&
+    !variant.productionCausality &&
+    !Array.isArray(variant.productionCausalityFailures)
+  )
+    failures.push(`${variant.variantId}:supply_recovery_diagnostic_failures_missing`);
   const final = last(variant.checkpoints);
   const appliedCommands = new Map(
     variant.checkpoints

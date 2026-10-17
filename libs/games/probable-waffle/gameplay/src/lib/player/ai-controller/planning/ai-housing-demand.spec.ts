@@ -106,6 +106,53 @@ function queuedProducer(itemCount: number) {
 }
 
 describe("housing capacity demand", () => {
+  it("rebuilds a legal housing core when the preferred house loses its prerequisite", () => {
+    const house = catalog.entries[1]!;
+    const recoveryCatalog: AiCapabilityCatalogV1 = {
+      ...catalog,
+      entries: [
+        { ...catalog.entries[0]!, constructs: [ObjectNames.Olival, ObjectNames.Sandhold] },
+        {
+          ...house,
+          constructionProfile: { ...house.constructionProfile!, requiredObjectNames: [ObjectNames.Sandhold] }
+        },
+        {
+          ...house,
+          sourceObjectName: ObjectNames.Sandhold,
+          constructionProfile: {
+            ...house.constructionProfile!,
+            resourceCost: { [ResourceType.Wood]: 400, [ResourceType.Stone]: 400 }
+          }
+        }
+      ]
+    };
+    const worker = createAiTestOwnedActor("worker");
+    const base = createAiTestObservation();
+    const demand = (actors: typeof base.actors, options = recoveryCatalog) =>
+      calculateAiHousingDemand({ ...base, actors }, options, ObjectNames.Olival, 3, []);
+    expect(demand([worker]).housingEntry).toMatchObject({
+      sourceObjectName: ObjectNames.Sandhold,
+      constructionProfile: { resourceCost: { wood: 400, stone: 400 } }
+    });
+    const site = { ...housing("core", 50), objectName: ObjectNames.Sandhold };
+    expect(demand([worker, site])).toMatchObject({ neededBuildings: 0 });
+    const crowded = Array.from({ length: 20 }, (_, index) => createAiTestOwnedActor(`crowded-${index}`));
+    expect(demand(crowded).neededBuildings).toBe(1);
+    expect(demand([...crowded, site]).neededBuildings).toBe(0);
+    expect(
+      demand([worker, { ...site, constructionProgress: { status: "known", value: 100, observedTick: 20 } }])
+        .housingEntry?.sourceObjectName
+    ).toBe(ObjectNames.Olival);
+    expect(
+      demand([worker], {
+        ...recoveryCatalog,
+        entries: recoveryCatalog.entries.map((entry) =>
+          entry.sourceObjectName === worker.objectName ? { ...entry, constructs: [ObjectNames.Olival] } : entry
+        )
+      }).housingEntry
+    ).toBeUndefined();
+  });
+
   it("H-18: replaces lost capacity while queued population and a visible paid site are each counted once", () => {
     const base = createAiTestObservation();
     const workers = Array.from({ length: 7 }, (_, index) => createAiTestOwnedActor(`worker-${index}`));

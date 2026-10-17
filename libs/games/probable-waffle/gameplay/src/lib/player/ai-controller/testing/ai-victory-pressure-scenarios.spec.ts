@@ -156,9 +156,12 @@ describe("STRAT-05 visible counterforce interrupts an unsafe finish", () => {
     const clear = strategyProposal(4, 8, 0);
     const guarded = strategyProposal(4, 8, 4);
     expect(clear.statePatch?.strategy?.assessment?.choice).toBe("finish");
-    expect(clear.intents.some((intent) => intent.kind === "attack" && intent.targetActorId === "enemy-core")).toBe(
-      true
+    const advance = clear.intents.find((intent) => intent.kind === "attack");
+    expect(advance).toMatchObject({ targetActorId: null, targetPosition: expect.any(Object) });
+    expect(connected.graph.nodes.map((node) => node.representativePosition)).toContainEqual(
+      advance?.kind === "attack" ? advance.targetPosition : null
     );
+    expect(clear.statePatch?.squads?.find((entry) => entry.role === "attack")?.objectiveId).toBe("enemy-core");
     expect(guarded.statePatch?.strategy?.assessment).toEqual(
       expect.objectContaining({
         targetActorId: "enemy-core",

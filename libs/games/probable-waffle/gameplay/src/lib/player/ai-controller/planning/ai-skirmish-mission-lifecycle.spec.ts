@@ -6,6 +6,55 @@ import { AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS, AiSkirmishManager } from "./ai-skir
 import { homeNode, enemyNode, catalog, unit, observation, profile, manager } from "./ai-skirmish-test-fixtures";
 
 describe("AiSkirmishManager", () => {
+  it.each([3, 30])("launches legally toward a player-visible target at %s with unit-local attack visibility", (x) => {
+    const guards = Array.from({ length: 10 }, (_, index) => unit(`guard-${index}`, homeNode, 0));
+    const core = {
+      ...unit("enemy-core", enemyNode, x),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const,
+      housingCost: { status: "known" as const, value: 0, observedTick: 100 },
+      mainBuilding: { status: "known" as const, value: true, observedTick: 100 },
+      capabilities: []
+    };
+    const base = observation(100, [...guards, core]);
+    if (!base.map) throw new Error("missing_map");
+    const approach = { x: x - 1, y: 0, z: 0 };
+    const world = {
+      ...base,
+      map: {
+        ...base.map,
+        bounds: { status: "known" as const, value: { width: 32, height: 1 }, observedTick: 100 },
+        tacticalCells: [
+          {
+            tileKey: `${x - 1},0`,
+            position: approach,
+            groundPassable: true,
+            waterPassable: false,
+            elevation: 0,
+            observedBlocked: false
+          }
+        ]
+      }
+    };
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const result = manager.propose(world, state);
+    expect(result.intents).toContainEqual(
+      expect.objectContaining({
+        kind: "attack",
+        targetActorId: x <= 8 ? core.actorId : null,
+        targetPosition: x <= 8 ? null : approach
+      })
+    );
+    expect(result.statePatch?.squads?.find((entry) => entry.role === "attack")?.objectiveId).toBe(core.actorId);
+  });
+
   it("does not classify a nearby static enemy building as a home raid", () => {
     const state = createAiBrainStateV1({
       playerNumber: 1,
@@ -129,7 +178,12 @@ describe("AiSkirmishManager", () => {
     );
 
     expect(proposal.intents).toContainEqual(
-      expect.objectContaining({ kind: "attack", actorIds: ["guard-1"], targetActorId: "enemy-1" })
+      expect.objectContaining({
+        kind: "attack",
+        actorIds: ["guard-1"],
+        targetActorId: null,
+        targetPosition: { x: 1, y: 0, z: 0 }
+      })
     );
     const defended = manager.propose(
       observation(AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS, [
@@ -144,21 +198,30 @@ describe("AiSkirmishManager", () => {
     );
     expect(defended.intents.some((intent) => intent.kind === "attack")).toBe(false);
     expect(proposal.statePatch?.squads?.find((squad) => squad.role === "attack")?.state).toBe("moving");
+    expect(proposal.statePatch?.squads?.find((squad) => squad.role === "attack")?.objectiveId).toBe("enemy-1");
     expect(proposal.statePatch?.skirmish?.timeline).toContainEqual(
       expect.objectContaining({ subjectId: "squad:attack:primary", detail: "launch:direct" })
     );
 
-    const repeated = manager.propose(
-      observation(AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS + 20, [unit("guard-1", homeNode, 0), enemy]),
-      {
-        ...state,
-        skirmish: proposal.statePatch!.skirmish!,
-        squads: proposal.statePatch!.squads!
-      }
-    );
-    expect(repeated.intents.some((intent) => intent.kind === "attack")).toBe(false);
-    expect(repeated.statePatch?.skirmish?.timeline.filter((event) => event.detail.startsWith("launch:"))).toHaveLength(
-      1
-    );
+    const saved = proposal.statePatch;
+    if (!saved?.skirmish || !saved.squads) throw new Error("missing_launched_mission");
+    for (const domainSplit of [false, true]) {
+      const repeated = manager.propose(
+        observation(AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS + 20, [unit("guard-1", homeNode, 0), enemy]),
+        {
+          ...state,
+          skirmish: saved.skirmish,
+          squads: saved.squads.map((entry) => ({
+            ...entry,
+            squadId:
+              domainSplit && entry.role === "attack" ? ("squad:attack:primary:domain:ground" as const) : entry.squadId
+          }))
+        }
+      );
+      expect(repeated.intents.some((intent) => intent.kind === "attack")).toBe(false);
+      expect(
+        repeated.statePatch?.skirmish?.timeline.filter((event) => event.detail.startsWith("launch:"))
+      ).toHaveLength(1);
+    }
   });
 });

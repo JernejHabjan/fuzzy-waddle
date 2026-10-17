@@ -4,6 +4,7 @@ import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v
 import type { AiBrainStateV1, AiSkirmishStateV1, AiThreatIncidentV1 } from "../contracts/ai-brain-state-v1";
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import type { AiSkirmishProposalContext } from "./ai-skirmish-proposal-context";
+import { observedAiEconomyThreats } from "./ai-economy-policy";
 import {
   baseId,
   canFight,
@@ -71,7 +72,14 @@ export function createAiSkirmishProposalContext(
         const nodeId = question.kind.startsWith("safe_route:")
           ? (question.kind.slice("safe_route:".length) as AiAccessNodeId)
           : null;
-        return nodeId && coveredScoutNodes.has(nodeId) ? { ...question, state: "answered" as const } : question;
+        const pointObserved =
+          question.kind.startsWith("explore:") &&
+          observation.map?.scoutSearchPoints?.some(
+            (point) => point.pointId === question.kind.slice("explore:".length) && point.observed
+          );
+        return (nodeId && coveredScoutNodes.has(nodeId)) || pointObserved
+          ? { ...question, state: "answered" as const }
+          : question;
       }),
     ...(currentQuestion ? [currentQuestion] : [])
   ]
@@ -101,21 +109,23 @@ export function createAiSkirmishProposalContext(
       .flatMap((base) => [base.anchorActorId, ...base.memberActorIds])
       .filter((actorId): actorId is ActorId => actorId !== null)
   ]);
-  const localThreat = home
-    ? visibleEnemies.find((candidate) => {
-        const candidatePosition = position(candidate);
-        const targetsProtectedAsset =
-          candidate.activeOrder?.status === "known" &&
-          candidate.activeOrder.value?.targetActorId !== null &&
-          candidate.activeOrder.value?.targetActorId !== undefined &&
-          protectedActorIds.has(candidate.activeOrder.value.targetActorId);
-        const mobileThreat = candidate.housingCost.status === "known" && candidate.housingCost.value > 0;
-        return (
-          targetsProtectedAsset ||
-          (mobileThreat && candidatePosition !== undefined && distance(home, candidatePosition) <= 12)
-        );
-      })
-    : undefined;
+  const localThreat =
+    observedAiEconomyThreats(observation)[0] ??
+    (home
+      ? visibleEnemies.find((candidate) => {
+          const candidatePosition = position(candidate);
+          const targetsProtectedAsset =
+            candidate.activeOrder?.status === "known" &&
+            candidate.activeOrder.value?.targetActorId !== null &&
+            candidate.activeOrder.value?.targetActorId !== undefined &&
+            protectedActorIds.has(candidate.activeOrder.value.targetActorId);
+          const mobileThreat = candidate.housingCost.status === "known" && candidate.housingCost.value > 0;
+          return (
+            targetsProtectedAsset ||
+            (mobileThreat && candidatePosition !== undefined && distance(home, candidatePosition) <= 12)
+          );
+        })
+      : undefined);
   return {
     observation,
     state,

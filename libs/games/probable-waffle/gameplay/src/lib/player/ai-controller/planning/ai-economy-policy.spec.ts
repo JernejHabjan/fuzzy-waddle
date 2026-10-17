@@ -99,6 +99,23 @@ function visibleRaider(domain: "ground" | "air" = "ground") {
 }
 
 describe("decideAiEconomyPolicy", () => {
+  it("does not freeze the economy for an unarmed nearby enemy producer or drop-off", () => {
+    const base = createAiTestObservation();
+    const inert = { ...visibleRaider(), capabilities: [], objectName: ObjectNames.InfantryInn };
+    const input = {
+      ...base,
+      actors: [economyWorker("worker"), inert],
+      threatSummary: { ...base.threatSummary, visibleEnemyActorIds: [inert.actorId] }
+    };
+    expect(decideAiEconomyPolicy(input, catalog, []).posture).toBe("safe");
+    expect(
+      decideAiEconomyPolicy({ ...input, actors: [economyWorker("worker"), visibleRaider()] }, catalog, []).posture
+    ).toBe("emergency");
+    const tower = { ...visibleRaider(), housingCost: { status: "known" as const, value: 0, observedTick: 20 } };
+    expect(decideAiEconomyPolicy({ ...input, actors: [economyWorker("worker"), tower] }, catalog, []).posture).toBe(
+      "emergency"
+    );
+  });
   it("uses only unreserved stockpile when admitting economy construction", () => {
     const observation = {
       ...createAiTestObservation(),

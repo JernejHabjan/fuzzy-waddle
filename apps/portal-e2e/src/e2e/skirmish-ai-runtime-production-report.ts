@@ -20,6 +20,15 @@ export function buildRuntimeProductionReport(
   };
 }
 
+/** Retains every raw/V2 authority record and every failure; omits only the duplicate normalized diagnostic payload. */
+export function compactRuntimeProductionReport(report: ReturnType<typeof buildRuntimeProductionReport>) {
+  return {
+    productionCapture: report.productionCapture,
+    productionEvidenceV2: report.productionEvidenceV2,
+    productionCausalityFailures: report.productionCausality.failures
+  };
+}
+
 import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
 import { normalizeRuntimeProductionSetup } from "./skirmish-ai-runtime-production-setup";
 

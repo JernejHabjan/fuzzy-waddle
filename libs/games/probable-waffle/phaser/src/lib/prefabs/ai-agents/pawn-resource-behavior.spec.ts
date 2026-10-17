@@ -14,6 +14,7 @@ function fixture(full: boolean, ripe: boolean, tendable = true, initialOrder = "
     TargetExists: () => true,
     TargetIsAlive: () => true,
     HasHarvestComponent: () => true,
+    ValidateResourceDelivery: jest.fn(() => State.FAILED),
     GatherCapacityFull: () => full,
     HasCarriedResources: () => carrying,
     SelfIsAlive: () => true,
@@ -103,15 +104,31 @@ describe("native resource branch ordering", () => {
     expect(agent.DropOffResources).toHaveBeenCalledTimes(1);
   });
 
-  it.each([false, true])("retains cargo when drain lookup fails with full=%s", (full) => {
-    const { agent, tree } = fixture(full, false, false, "gather", true);
-    agent.AssignDropOffResourcesOrder.mockImplementation(() => State.FAILED);
+  it.each([false, true])(
+    "does not fall through to extraction after an invalidated delivery lookup with full=%s",
+    (full) => {
+      const { agent, tree } = fixture(full, false, false, "gather", true);
+      agent.AssignDropOffResourcesOrder.mockImplementation(() => State.FAILED);
+      tree.step();
+      expect(agent.AssignDropOffResourcesOrder).toHaveBeenCalledTimes(1);
+      expect(agent.AcquireNewResourceSource).not.toHaveBeenCalled();
+      expect(agent.Stop).not.toHaveBeenCalled();
+      tree.step();
+      expect(agent.AssignDropOffResourcesOrder).toHaveBeenCalledTimes(2);
+    }
+  );
+
+  it("stops at lost delivery admission before tending or extracting", () => {
+    const { agent, tree } = fixture(false, true);
+    agent.ValidateResourceDelivery.mockImplementation(() => {
+      agent.Stop();
+      return State.SUCCEEDED;
+    });
     tree.step();
-    expect(agent.AssignDropOffResourcesOrder).toHaveBeenCalledTimes(1);
+    expect(agent.Stop).toHaveBeenCalledTimes(1);
+    expect(agent.GatherResource).not.toHaveBeenCalled();
+    expect(agent.AssignSelfAsTender).not.toHaveBeenCalled();
     expect(agent.AcquireNewResourceSource).not.toHaveBeenCalled();
-    expect(agent.Stop).not.toHaveBeenCalled();
-    tree.step();
-    expect(agent.AssignDropOffResourcesOrder).toHaveBeenCalledTimes(2);
   });
 
   it("harvests a ripe Field while the pack has room", () => {

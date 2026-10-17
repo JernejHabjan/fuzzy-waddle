@@ -7,11 +7,12 @@ import { captureRuntimeTransportCheckpoint } from "./skirmish-ai-runtime-transpo
 export async function captureCheckpoint(
   page: Page,
   aiPlayerNumber: number,
-  targetTick: number
+  targetTick: number,
+  captureFairness = false
 ): Promise<RuntimeCheckpointV1> {
   const [economy, strategy, transport] = await Promise.all([
     captureRuntimeEconomyCheckpoint(page, aiPlayerNumber, targetTick),
-    captureRuntimeStrategyCheckpoint(page, aiPlayerNumber),
+    captureRuntimeStrategyCheckpoint(page, aiPlayerNumber, captureFairness),
     captureRuntimeTransportCheckpoint(page, aiPlayerNumber)
   ]);
   return { ...economy, ...strategy, ...transport } as RuntimeCheckpointV1;
