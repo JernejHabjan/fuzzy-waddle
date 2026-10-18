@@ -21,6 +21,7 @@ import {
 } from "@fuzzy-waddle/probable-waffle-campaign";
 import { RandomService } from "../random.service";
 import type { AuthoritativeStateProjectionV1 } from "./authoritative-state-projection";
+import { serializeActorQueueState } from "./serialize-actor-queue-state";
 import type { StableSerializable } from "./stable-hash-value";
 import type { HashOrder } from "./hash-order";
 
@@ -74,7 +75,7 @@ export class StateHashProjection {
         const lz = pos ? Math.round(pos.z) : 0;
         const owner = getActorComponent(go, OwnerComponent)?.getOwner() ?? -1;
         const actor = ActorManager.getActorDefinitionFromActor(go) ?? {};
-        const queueState = this.serializeActorQueueState(actor);
+        const queueState = serializeActorQueueState(actor);
         const economyState = this.serializeActorEconomyState(actor);
         const combatState = this.serializeActorCombatState(go);
         const orderState = this.serializeActorOrderState(go);
@@ -90,6 +91,7 @@ export class StateHashProjection {
           container: actor.container ?? null,
           production: actor.production ?? null,
           research: actor.research ?? null,
+          sharedQueue: actor.sharedQueue ?? null,
           spell: actor.spell ?? null,
           statusEffects: actor.statusEffects ?? null,
           tendable: actor.tendable ?? null,
@@ -181,25 +183,6 @@ export class StateHashProjection {
       return false;
     }
     return resourceSource.getCurrentResources() <= 0;
-  }
-
-  /** Documents the serialize actor queue state member and its declared contract at this boundary. */
-  private serializeActorQueueState(actor: Pick<ActorDefinition, "production" | "research">): string {
-    const productionQueue = actor.production?.queue ?? [];
-    const researchQueue = actor.research?.researches ?? [];
-    const serializedProduction = productionQueue
-      .map(
-        (item: { name?: string; remainingTime?: number }) =>
-          `${item.name ?? "?"}:${Math.round(item.remainingTime ?? 0)}`
-      )
-      .join(",");
-    const serializedResearch = researchQueue
-      .map(
-        (item: { type?: string; remainingTime?: number }) =>
-          `${item.type ?? "?"}:${Math.round(item.remainingTime ?? 0)}`
-      )
-      .join(",");
-    return `${serializedProduction};${serializedResearch}`;
   }
 
   /** Documents the serialize actor economy state member and its declared contract at this boundary. */

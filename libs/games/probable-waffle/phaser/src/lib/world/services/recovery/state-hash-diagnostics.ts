@@ -172,7 +172,7 @@ export class StateHashDiagnostics {
 
     const localParts = localDigest.split(":");
     const remoteParts = remoteDigest.split(":");
-    if (localParts.length < 13 || remoteParts.length < 13) {
+    if (localParts.length < 13 || remoteParts.length < 13 || localParts.length !== remoteParts.length) {
       return null;
     }
 

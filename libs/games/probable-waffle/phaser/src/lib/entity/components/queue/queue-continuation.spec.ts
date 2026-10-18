@@ -12,6 +12,7 @@ import { CommandBusService } from "../../../world/services/multiplayer/command-b
 import type { ProductionComponent } from "../production/production-component";
 import type { ResearchComponent } from "../research/research-component";
 import { QueueComponent } from "./queue-component";
+import { serializeActorQueueState } from "../../../world/services/recovery/serialize-actor-queue-state";
 
 jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: () => undefined }));
@@ -289,4 +290,35 @@ describe("queue completion boundaries", () => {
     expect(f.reportPersistedOutcome).not.toHaveBeenCalledWith(expect.objectContaining({ kind: "completed" }));
     f.actor.emit(Phaser.GameObjects.Events.DESTROY);
   });
+});
+
+describe("mixed-lane snapshot replay", () => {
+  it.each([0, 1, 3])("keeps mixed-lane hashes, effects and output counts equal after a safe restore at tick %s", (restoreTick) => {
+    const run = (restore: boolean) => {
+      const f = setup(3);
+      f.queue.queues[0]?.queuedItems.push(production("first", 75), {
+        ...research(150), researchCost: { resources: { minerals: 19 }, refundFactor: 0.25 }
+      });
+      f.queue.queues[2]?.queuedItems.push(production("ready", 0));
+      const states = [];
+      for (let tick = 0; tick <= 10; tick++) {
+        if (tick > 0) f.tick$.next(tick);
+        if (restore && tick === restoreTick) f.queue.setSnapshotData(f.queue.getSnapshotData());
+        states.push({
+          tick, hash: serializeActorQueueState({ sharedQueue: f.queue.getSnapshotData() }),
+          produced: f.output.mock.calls.length, researched: f.finishResearch.mock.calls.length,
+          outcomes: structuredClone(f.reportPersistedOutcome.mock.calls)
+        });
+      }
+      const finished = { states, produced: f.output.mock.calls.length, researched: f.finishResearch.mock.calls.length };
+      f.actor.emit(Phaser.GameObjects.Events.DESTROY);
+      return finished;
+    };
+    const uninterrupted = run(false);
+    const restored = run(true);
+    expect(restored).toEqual(uninterrupted);
+    expect(restored.produced).toBe(2);
+    expect(restored.researched).toBe(1);
+  });
+
 });

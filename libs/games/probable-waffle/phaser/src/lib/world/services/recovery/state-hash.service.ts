@@ -36,8 +36,9 @@ const INCLUDE_HASH_DIAGNOSTICS_IN_STEADY_STATE = true;
  * Computes a periodic deterministic hash of all actor states and exchanges it with
  * peers to detect simulation divergence. Only active in multiplayer — no-op in SP.
  *
- * Hash scope per actor: {id, health, tileX, tileY, owner}. Actors sorted by ID
- * so every client produces an identical string for the same simulation state.
+ * Actor scope includes identity, health/armour, logical position, owner, economy/combat/order state and
+ * authoritative mixed queues with paid policy and command lineage. Stable actor ordering lets matching
+ * clients produce the same digest; legacy queue-only saves retain their compatibility representation.
  * Campaign scenes also append their canonical mission-runtime snapshot.
  * The service hashes once per HASH_INTERVAL_TICKS instead of every simulation tick:
  * full actor serialization is intentionally diagnostic-heavy, and per-tick hashing
@@ -60,6 +61,7 @@ export class StateHashService {
   private tickSub?: Subscription;
   private hashReceivedSub?: Subscription;
   private scene?: ProbableWaffleScene;
+  private readonly onSceneShutdown = () => this.destroy();
   /** Documents the desync text member and its declared contract at this boundary. */
   private desyncText?: Phaser.GameObjects.Text;
   private readonly pendingCorrections = new Map<number, PendingCorrection>();
@@ -71,6 +73,7 @@ export class StateHashService {
 
   /** Documents the init member and its declared contract at this boundary. */
   init(scene: ProbableWaffleScene): void {
+    this.destroy();
     this.scene = scene;
     const communicator = getCommunicator(scene);
     if (!communicator.stateHashChanged) return; // SP: no-op
@@ -88,7 +91,7 @@ export class StateHashService {
     });
     scene.events.on(ProbableWaffleSceneEventName.ReconnectSnapshotApplied, this.onReconnectSnapshotApplied, this);
 
-    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
+    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.onSceneShutdown);
   }
 
   /** Documents the on tick member and its declared contract at this boundary. */
@@ -440,6 +443,9 @@ export class StateHashService {
   destroy(): void {
     this.tickSub?.unsubscribe();
     this.hashReceivedSub?.unsubscribe();
+    this.tickSub = undefined;
+    this.hashReceivedSub = undefined;
+    this.scene?.events.off(Phaser.Scenes.Events.SHUTDOWN, this.onSceneShutdown);
     this.scene?.events.off(
       ProbableWaffleSceneEventName.ReconnectSnapshotApplied,
       this.onReconnectSnapshotApplied,
@@ -450,5 +456,7 @@ export class StateHashService {
     this.pendingCorrections.clear();
     this.activeMismatches.clear();
     this.lastMismatchLogTickByPlayer.clear();
+    this.localHashes.clear();
+    this.missingLocalHashLogSignature = null;
   }
 }
