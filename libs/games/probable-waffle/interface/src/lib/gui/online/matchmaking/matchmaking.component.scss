@@ -1,0 +1,68 @@
+.matchmaking {
+  max-width: 540px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1rem;
+  border-radius: 1rem;
+  background-color: rgba(15, 18, 22, 0.5);
+}
+
+.matchmaking-tooltip {
+  font-size: 0.95rem;
+  text-align: left;
+  margin-bottom: 1rem;
+  color: #c8b89b;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  align-items: center;
+  gap: 10px;
+
+  @media (max-width: 480px) {
+    grid-template-columns: auto auto;
+  }
+}
+
+.navigating-text {
+  font-size: 1.5em;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 20px;
+  color: #f0c46b;
+}
+
+.general-title {
+  margin: 1rem 0 0.5rem;
+  font-weight: 700;
+  color: #f0c46b;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+
+  @media (max-width: 768px) {
+    text-align: center;
+  }
+}
+
+select.form-select {
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.w-100 {
+  @media (max-width: 480px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+
+    button {
+      margin-right: 0 !important;
+      width: 100%;
+      max-width: 200px;
+    }
+  }
+}

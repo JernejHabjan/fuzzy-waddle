@@ -1,0 +1,4 @@
+src/metadata
+src/**/*.spec.ts
+project.json
+tsconfig.json

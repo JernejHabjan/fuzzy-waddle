@@ -1,0 +1,41 @@
+{
+    "id": "f9ee22d0-fafd-48dd-8647-8c32c0d39916",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "1ddaac6f-7444-46d2-9155-8156f1329e2d",
+            "label": "desert_palm_0_png",
+            "hitArea.shape": "RECTANGLE",
+            "hitArea.y": 13,
+            "hitArea.width": 30.52976833420731,
+            "hitArea.height": 47.840642566460886,
+            "texture": {
+                "key": "environment_1",
+                "frame": "desert/palm/0.png"
+            },
+            "x": 32,
+            "y": 58.612756745087054,
+            "originY": 0.9158243241419852
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

@@ -1,0 +1,11 @@
+@if (isTauri() && !tauriService.windowIsFullscreen()) {
+  <fuzzy-waddle-tauri-titlebar />
+}
+
+<main class="h-100" [style.paddingTop]="titlebarPadding()">
+  <router-outlet />
+</main>
+
+<fuzzy-waddle-sw-refresh />
+<app-toast-container />
+<fuzzy-waddle-tauri-splash />

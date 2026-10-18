@@ -1,0 +1,42 @@
+{
+    "id": "5de2b475-773a-490a-bf4d-9322761640b6",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "1c7572f8-2cab-40ff-a307-12c5b7d48aa9",
+            "label": "undead_land_Ruin_shadow1_1_png",
+            "hitArea.shape": "RECTANGLE",
+            "hitArea.x": 24,
+            "hitArea.y": 19,
+            "hitArea.width": 75.83288905757516,
+            "hitArea.height": 92.23228125819757,
+            "texture": {
+                "key": "environment_1",
+                "frame": "undead_land/Ruin_shadow1_1.png"
+            },
+            "x": 32,
+            "y": 42.7129238818339,
+            "originY": 0.7086947178268274
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

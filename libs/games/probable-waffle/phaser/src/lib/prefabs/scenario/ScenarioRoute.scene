@@ -1,0 +1,41 @@
+{
+  "id": "d1000000-0000-4000-8000-000000000003",
+  "sceneType": "PREFAB",
+  "settings": {
+    "compilerInsertSpaces": true,
+    "compilerTabSize": 2,
+    "exportClass": true,
+    "autoImport": true,
+    "compilerOutputLanguage": "TYPE_SCRIPT",
+    "borderWidth": 64,
+    "borderHeight": 32
+  },
+  "displayList": [
+    {
+      "type": "Rectangle",
+      "id": "d1000000-0000-4000-8000-000000000013",
+      "label": "scenarioRoute",
+      "x": 32,
+      "y": 16,
+      "width": 64,
+      "height": 32,
+      "isFilled": true,
+      "fillColor": 16755200,
+      "fillAlpha": 0.2,
+      "isStroked": true
+    }
+  ],
+  "plainObjects": [],
+  "meta": {
+    "app": "Phaser Editor - Scene Editor",
+    "url": "https://phaser.io/editor",
+    "contentType": "phasereditor2d.core.scene.SceneContentType",
+    "version": 5
+  },
+  "prefabProperties": [
+    { "name": "scenarioId", "label": "Stable Scenario ID", "defValue": "", "type": { "id": "string" } },
+    { "name": "pointIds", "label": "Ordered Point IDs", "defValue": "", "type": { "id": "string" } },
+    { "name": "loop", "label": "Loop", "defValue": false, "type": { "id": "boolean" } },
+    { "name": "facingAngles", "label": "Facing Angles", "defValue": "", "type": { "id": "string" } }
+  ]
+}

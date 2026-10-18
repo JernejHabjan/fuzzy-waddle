@@ -10,38 +10,65 @@
 
 **Play now:** [fuzzy-waddle.onrender.com](https://fuzzy-waddle.onrender.com/)
 
+## Public Source and Reuse Policy
+
+This repository is public so anyone can view the code, learn from it, and contribute on GitHub.
+
+Reuse, redistribution, or commercial use outside of GitHub requires explicit written permission from the copyright holder, unless a specific file states otherwise.
+
 ---
 
 ## Games
 
-| Game | Genre | Status |
-| ---- | ----- | ------ |
-| Probable Waffle | Real-time strategy | Active |
-| Little Muncher | Platformer | Active |
-| Fly Squasher | Arcade | Active |
-| Dungeon Crawler | RPG | In development |
+| Game               | Genre              | Status         |
+| ------------------ | ------------------ | -------------- |
+| Probable Waffle    | Real-time strategy | Active         |
+| Little Muncher     | Platformer         | Active         |
+| Fly Squasher       | Arcade             | Active         |
+| Trump Defense 2016 | Tower defense      | Active         |
+| Dungeon Crawler    | RPG                | In development |
+
+### Trump Defense 2016
+
+Originally created in 2016 as a school project for the Computer Graphics class at the Faculty of Computer and Information Science, University of Ljubljana. The browser version is a rewrite built with Angular and Three.js.
+
+### Phaser Editor projects
+
+Open Phaser Editor in the project directory listed for the game. Do not open `libs/games` or the game’s parent directory as the editor project:
+
+| Game            | Phaser Editor project directory       |
+| --------------- | ------------------------------------- |
+| Probable Waffle | `libs/games/probable-waffle/phaser`   |
+| Little Muncher  | `libs/games/little-muncher/gameplay`  |
+| Fly Squasher    | `libs/games/fly-squasher/gameplay`    |
+| Dungeon Crawler | `libs/games/dungeon-crawler/gameplay` |
+
+Run `pnpm phaser-editor:check` after changing scenes, prefabs, atlases, or asset packs. The check verifies
+that each editor project can resolve its own asset URLs, atlas frames, and prefab IDs.
 
 ---
 
 ## Tech Stack
 
-| Layer | Technology |
-| ----- | ---------- |
-| Frontend | Angular 21, Phaser 4, Bootstrap 5 |
-| Backend | NestJS 11, Socket.IO |
-| Database / Auth | Supabase (PostgreSQL + OAuth) |
-| Monorepo | Nx 22 |
-| Package manager | pnpm |
+| Layer              | Technology                                  |
+| ------------------ | ------------------------------------------- |
+| Frontend (web)     | Angular 21, Phaser 4, Three.js, Bootstrap 5 |
+| Frontend (desktop) | Tauri 2 (wraps the Angular build)           |
+| Backend            | NestJS 11, Socket.IO                        |
+| Database / Auth    | Supabase (PostgreSQL + OAuth)               |
+| Monorepo           | Nx 23                                       |
+| Package manager    | pnpm                                        |
 
 ---
 
 ## Quick Start
 
 ```bash
+git lfs install
 git clone https://github.com/JernejHabjan/fuzzy-waddle.git
 cd fuzzy-waddle
 pnpm install
-cp .env.example .env.local   # fill in Supabase credentials
+cp .env.example .env         # fill in Supabase credentials
 pnpm start
 ```
 
@@ -53,13 +80,15 @@ For full setup instructions see the [Getting Started guide](wiki/getting-started
 
 ## Wiki
 
-| Page | Description |
-| ---- | ----------- |
-| [Getting Started](wiki/getting-started.md) | Prerequisites, install, common commands |
-| [Architecture](wiki/architecture.md) | Monorepo layout, game structure, real-time communication |
-| [Supabase Setup](wiki/supabase.md) | Auth, type generation, JDBC, local dev |
-| [Deployment](wiki/deployment.md) | Render and GitHub Pages deployment config |
-| [Troubleshooting](wiki/troubleshooting.md) | Common issues and fixes |
+| Page                                       | Description                                              |
+| ------------------------------------------ | -------------------------------------------------------- |
+| [Getting Started](wiki/getting-started.md) | Prerequisites, install, common commands                  |
+| [Architecture](wiki/architecture.md)       | Monorepo layout, game structure, real-time communication |
+| [Tauri Desktop](wiki/tauri-desktop.md)     | Desktop app prerequisites, dev workflow, build commands  |
+| [Supabase Setup](wiki/supabase.md)         | Auth, type generation, JDBC, local dev                   |
+| [Deployment](wiki/deployment.md)           | Render and GitHub Pages deployment config                |
+| [Releases](wiki/releases.md)               | Version bump rules and automated release flow            |
+| [Troubleshooting](wiki/troubleshooting.md) | Common issues and fixes                                  |
 
 ---
 
@@ -73,7 +102,7 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_
 ## Attribution
 
 Some artwork is publicly available on [Pixilart](https://www.pixilart.com/darkneess10).
-Full attribution list: [attributions.json](apps/client/src/assets/general/attributions.json) · [Attributions page](https://fuzzy-waddle.onrender.com/attributions)
+Full attribution list: [attributions.json](apps/portal/src/assets/general/attributions.json) · [Attributions page](https://fuzzy-waddle.onrender.com/attributions)
 
 ---
 
@@ -82,5 +111,5 @@ Full attribution list: [attributions.json](apps/client/src/assets/general/attrib
 © Jernej Habjan. All rights reserved.
 
 Forking and contributing via pull requests is **allowed**.
-Using or distributing this code outside of GitHub requires **explicit written permission**.
-See [LICENSE.md](LICENSE).
+Reuse, redistribution, or commercial use outside of GitHub requires **explicit written permission**.
+See [LICENSE](LICENSE).

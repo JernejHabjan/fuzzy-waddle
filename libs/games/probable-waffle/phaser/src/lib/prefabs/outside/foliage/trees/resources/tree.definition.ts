@@ -1,0 +1,40 @@
+import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { ActorsTreeSfxResourceDepletedSounds, ActorsTreeSfxSelectionSounds } from "./sfx-tree";
+import type { PrefabDefinition } from "../../../../definitions/prefab-definition";
+import { SoundType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-type";
+
+export const treeDefinitions = {
+  components: {
+    objectDescriptor: {
+      color: 0xbea55b
+    },
+    collider: {
+      enabled: true,
+      colliderFactorReduction: 0.5
+    },
+    selectable: {},
+    info: {
+      name: "Tree",
+      description: "A tree that can be chopped for wood",
+      tooltipDescription: ["Provides wood resource", "Send workers to harvest"],
+      smallImage: {
+        key: "outside",
+        frame: "foliage/trees/resources/tree1.png",
+        origin: { x: 0.5, y: 0.5 }
+      }
+    },
+    resourceSource: {
+      resourceType: ResourceType.Wood,
+      maximumResources: 120,
+      gatheringFactor: 10,
+      maxGatherers: 2,
+      cooldown: 2000
+    },
+    audio: {
+      sounds: {
+        [SoundType.Select]: ActorsTreeSfxSelectionSounds,
+        ["depleted"]: ActorsTreeSfxResourceDepletedSounds
+      }
+    }
+  }
+} satisfies PrefabDefinition;

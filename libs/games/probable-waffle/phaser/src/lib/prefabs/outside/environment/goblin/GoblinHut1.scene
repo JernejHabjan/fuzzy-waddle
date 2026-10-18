@@ -1,0 +1,122 @@
+{
+    "id": "75b04d61-39f7-4c54-b528-68089775bbe1",
+    "sceneType": "SCENE",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadPackFiles": [],
+        "createMethodName": "editorCreate",
+        "sceneKey": "GoblinHut1",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "530cb3ca-a45e-4a37-8b41-9008574a2e09",
+            "label": "container_1",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": -0.1475617469369297,
+            "hitArea.y": -21.694721825268388,
+            "hitArea.radius": 37.83005802649617,
+            "x": 31.64756093328292,
+            "y": 49.19472343094474,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "315f1486-7c9c-4bec-9b72-487b65bfa61f",
+                    "label": "goblin_hut_base_png",
+                    "texture": {
+                        "key": "environment_1",
+                        "frame": "goblin/hut_base.png"
+                    },
+                    "x": 2.3524390667170785,
+                    "y": -7.194723430944741,
+                    "flipX": true
+                },
+                {
+                    "type": "Image",
+                    "id": "5418d2e4-3915-458a-a100-055ae673975c",
+                    "label": "goblin_roof3_png",
+                    "texture": {
+                        "key": "environment_1",
+                        "frame": "goblin/roof3.png"
+                    },
+                    "x": 0.3524390667170785,
+                    "y": -24.19472343094474
+                },
+                {
+                    "type": "Image",
+                    "id": "7a66f270-8c98-41c9-bf71-3b324d698b53",
+                    "label": "goblin_hut_base_left_fence_png",
+                    "texture": {
+                        "key": "environment_1",
+                        "frame": "goblin/hut_base_left_fence.png"
+                    },
+                    "x": 7.3524390667170785,
+                    "y": -5.194723430944741,
+                    "flipX": true
+                },
+                {
+                    "type": "Image",
+                    "id": "46246015-af83-458d-836e-1f47b0076d61",
+                    "label": "goblin_spikes3_png",
+                    "texture": {
+                        "key": "environment_1",
+                        "frame": "goblin/spikes3.png"
+                    },
+                    "x": -25.64756093328292,
+                    "y": -6.194723430944741,
+                    "flipX": true
+                },
+                {
+                    "type": "Image",
+                    "id": "cc0902aa-7f37-425d-9d65-8a9322c5df15",
+                    "label": "goblin_roof2_png",
+                    "texture": {
+                        "key": "environment_1",
+                        "frame": "goblin/roof2.png"
+                    },
+                    "x": 1.3524390667170785,
+                    "y": -44.19472343094474
+                },
+                {
+                    "type": "Image",
+                    "id": "242ef675-9e82-4bd1-8f78-6148b0ddca4e",
+                    "label": "goblin_skull2_png",
+                    "texture": {
+                        "key": "environment_1",
+                        "frame": "goblin/skull2.png"
+                    },
+                    "x": -12.647560933282922,
+                    "y": -17.19472343094474,
+                    "scaleX": 0.3413776563569858,
+                    "scaleY": 0.3413776563569858
+                },
+                {
+                    "type": "Image",
+                    "id": "fdb4cdb0-7236-48bd-b703-cb1f47c71a17",
+                    "label": "goblin_skull2_png_1",
+                    "texture": {
+                        "key": "environment_1",
+                        "frame": "goblin/skull2.png"
+                    },
+                    "x": -26.64756093328292,
+                    "y": -21.19472343094474,
+                    "scaleX": 0.3413776563569858,
+                    "scaleY": 0.3413776563569858
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

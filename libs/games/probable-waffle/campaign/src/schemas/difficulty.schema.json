@@ -1,0 +1,173 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "difficulty.schema.json",
+  "title": "Probable Waffle mission difficulty",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "story",
+    "normal",
+    "hard"
+  ],
+  "properties": {
+    "story": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "startingResourceScale": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Numeric starting Resource Scale used when resolving this definition."
+        },
+        "waveSizeScale": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Numeric wave Size Scale used when resolving this definition."
+        },
+        "warningTicks": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Numeric warning Ticks used when resolving this definition."
+        },
+        "damageScale": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Numeric damage Scale used when resolving this definition."
+        },
+        "aiAggressionScale": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Numeric ai Aggression Scale used when resolving this definition."
+        }
+      },
+      "description": "Nested story configuration owned by this campaign definition."
+    },
+    "normal": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "startingResourceScale": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Numeric starting Resource Scale used when resolving this definition."
+        },
+        "waveSizeScale": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Numeric wave Size Scale used when resolving this definition."
+        },
+        "warningTicks": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Numeric warning Ticks used when resolving this definition."
+        },
+        "damageScale": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Numeric damage Scale used when resolving this definition."
+        },
+        "aiAggressionScale": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Numeric ai Aggression Scale used when resolving this definition."
+        }
+      },
+      "description": "Nested normal configuration owned by this campaign definition."
+    },
+    "hard": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "startingResourceScale": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Numeric starting Resource Scale used when resolving this definition."
+        },
+        "waveSizeScale": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Numeric wave Size Scale used when resolving this definition."
+        },
+        "warningTicks": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Numeric warning Ticks used when resolving this definition."
+        },
+        "damageScale": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Numeric damage Scale used when resolving this definition."
+        },
+        "aiAggressionScale": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Numeric ai Aggression Scale used when resolving this definition."
+        }
+      },
+      "description": "Nested hard configuration owned by this campaign definition."
+    },
+    "playerCountOverrides": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "playerCount"
+        ],
+        "properties": {
+          "playerCount": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Numeric player Count used when resolving this definition."
+          },
+          "story": {
+            "$ref": "#/$defs/overrides",
+            "description": "Story used by this player Count Overrides definition."
+          },
+          "normal": {
+            "$ref": "#/$defs/overrides",
+            "description": "Normal used by this player Count Overrides definition."
+          },
+          "hard": {
+            "$ref": "#/$defs/overrides",
+            "description": "Hard used by this player Count Overrides definition."
+          }
+        }
+      },
+      "description": "Ordered player Count Overrides declared by this campaign definition."
+    }
+  },
+  "$defs": {
+    "overrides": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "startingResourceScale": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Numeric starting Resource Scale used when resolving this definition."
+        },
+        "waveSizeScale": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Numeric wave Size Scale used when resolving this definition."
+        },
+        "warningTicks": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Numeric warning Ticks used when resolving this definition."
+        },
+        "damageScale": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Numeric damage Scale used when resolving this definition."
+        },
+        "aiAggressionScale": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Numeric ai Aggression Scale used when resolving this definition."
+        }
+      }
+    }
+  }
+}

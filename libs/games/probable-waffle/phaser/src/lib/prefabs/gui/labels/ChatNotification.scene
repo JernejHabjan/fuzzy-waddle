@@ -1,0 +1,82 @@
+{
+    "id": "b9194f0b-4f9f-45ca-a31a-881ffca5e16d",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 260,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "3d0ce759-c2af-411c-94e1-29dcd55c7e67",
+            "label": "container_1",
+            "list": [
+                {
+                    "type": "NineSlice",
+                    "id": "b42e6cd8-b3ce-4d24-ad1d-676ca3594ea0",
+                    "label": "background",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "cryos_mini_gui/surfaces/surface_dark.png"
+                    },
+                    "originX": 0,
+                    "originY": 1,
+                    "alpha": 0.9,
+                    "leftWidth": 3,
+                    "rightWidth": 3,
+                    "topHeight": 3,
+                    "bottomHeight": 3,
+                    "width": 250,
+                    "height": 50
+                },
+                {
+                    "type": "Text",
+                    "id": "7060ea82-aa65-402d-af17-8b48f2304cff",
+                    "label": "player_name",
+                    "scope": "CLASS",
+                    "x": 8,
+                    "y": -42,
+                    "originX": 0,
+                    "originY": 0,
+                    "text": "Player",
+                    "resolution": 10,
+                    "fontFamily": "disposabledroid",
+                    "fontSize": "14px",
+                    "fontStyle": "bold",
+                    "color": "#FFD700"
+                },
+                {
+                    "type": "Text",
+                    "id": "25a15cac-a0a2-4568-aa9c-45586d45254c",
+                    "label": "message_text",
+                    "scope": "CLASS",
+                    "x": 8,
+                    "y": -24,
+                    "originX": 0,
+                    "originY": 0,
+                    "text": "Message",
+                    "resolution": 10,
+                    "fontFamily": "disposabledroid",
+                    "fontSize": "14px",
+                    "color": "#FFFFFF"
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

@@ -1,0 +1,164 @@
+<main class="td-game">
+  <header class="td-header">
+    <button type="button" class="td-page-back" (click)="goBack()">← BACK</button>
+    <h1>Trump Defense 2016</h1>
+  </header>
+
+  @if (phase() === "selecting") {
+    <section class="td-level-select" aria-labelledby="td-level-title">
+      <button
+        type="button"
+        class="td-sound td-sound-select"
+        (click)="toggleSound()"
+        [attr.aria-label]="muted() ? 'Turn sound on' : 'Turn sound off'"
+        [attr.aria-pressed]="!muted()"
+      >
+        {{ muted() ? "♪" : "♫" }}
+      </button>
+      <h2 id="td-level-title">PICK YOUR BATTLEFIELD</h2>
+      <p>Three fronts. One wall. Freedom's on the line.</p>
+      <div class="td-level-list">
+        @for (level of levelChoices; track level.number) {
+          <button
+            type="button"
+            class="td-level-choice"
+            [disabled]="!unlockedLevels().includes(level.number)"
+            (click)="chooseLevel(level.number)"
+          >
+            <strong>Level {{ level.number }}</strong>
+            <span>{{ level.label }}</span>
+            @if (!unlockedLevels().includes(level.number)) {
+              <small>Locked</small>
+            }
+          </button>
+        }
+      </div>
+      <button
+        type="button"
+        class="td-info-button"
+        aria-label="About this school project"
+        aria-controls="td-project-info"
+        [attr.aria-expanded]="showProjectInfo()"
+        (click)="toggleProjectInfo()"
+      >
+        ⓘ
+      </button>
+      @if (showProjectInfo()) {
+        <aside id="td-project-info" class="td-project-info" role="note">
+          Trump Defense began as a 2016 school project for the Computer Graphics class at the Faculty of Computer and
+          Information Science, University of Ljubljana.
+        </aside>
+      }
+    </section>
+  } @else {
+    <section class="td-stage" aria-label="3D game map" (wheel)="onWheel($event)">
+      <div
+        #viewport
+        class="td-viewport"
+        (pointerdown)="onPointer($event)"
+        (webglcontextlost)="onContextLost($event)"
+      ></div>
+
+      @if (phase() === "tutorial") {
+        <td-level-tutorial
+          [level]="levelNumber()"
+          (showcaseChange)="setShowcase($event)"
+          (start)="start()"
+          (exit)="returnToSelection()"
+        />
+      }
+
+      @if (phase() !== "tutorial") {
+        <div class="td-hud" aria-label="Game status">
+          <span
+            >Cash <strong>${{ hud().money }}</strong></span
+          >
+          <span
+            >Lives <strong>{{ hud().lives }}</strong></span
+          >
+          <span
+            >Wall <strong>{{ hud().wall }} / {{ hud().goal }}</strong></span
+          >
+        </div>
+      }
+      <button
+        type="button"
+        class="td-sound"
+        (click)="toggleSound()"
+        [attr.aria-label]="muted() ? 'Turn sound on' : 'Turn sound off'"
+        [attr.aria-pressed]="!muted()"
+      >
+        {{ muted() ? "♪" : "♫" }}
+      </button>
+
+      @if (phase() === "playing") {
+        <div class="td-controls" aria-label="Game controls">
+          <button type="button" [disabled]="!hud().canPlaceSniper" (click)="buy('SniperTower')">
+            Sniper · ${{ hud().sniperCost }} <kbd>B</kbd>
+          </button>
+          <button type="button" [disabled]="!hud().canPlaceCannon" (click)="buy('Cannon')">
+            Cannon · ${{ hud().cannonCost }} <kbd>C</kbd>
+          </button>
+          <button type="button" [disabled]="!hud().canUpgrade" (click)="upgrade()">
+            Upgrade · ${{ hud().upgradeCost }} <kbd>U</kbd>
+          </button>
+          <button type="button" (click)="wall()">Raise wall · ${{ hud().wallCost }} <kbd>Space</kbd></button>
+          <button type="button" (click)="pause()">Pause <kbd>P</kbd></button>
+        </div>
+      }
+
+      @if (phase() !== "playing" && phase() !== "tutorial") {
+        <div class="td-overlay">
+          <div class="td-panel" role="status">
+            @switch (phase()) {
+              @case ("selecting") {
+                <h2>PICK YOUR BATTLEFIELD</h2>
+              }
+              @case ("loading") {
+                <h2>Loading level {{ levelNumber() }}</h2>
+              }
+              @case ("paused") {
+                <h2>TACTICAL PAUSE</h2>
+              }
+              @case ("won") {
+                <h2>{{ finalLevel() ? "Campaign complete" : "Level complete" }}</h2>
+              }
+              @case ("lost") {
+                <h2>DEFENSE OVERRUN</h2>
+              }
+              @case ("error") {
+                <h2>Unable to load the map</h2>
+              }
+            }
+            @if (phase() !== "paused") {
+              <p>{{ message() }}</p>
+            }
+            @switch (phase()) {
+              @case ("paused") {
+                <button type="button" (click)="pause()">Resume</button>
+                <button type="button" (click)="returnToSelection()">Level select</button>
+              }
+              @case ("won") {
+                @if (finalLevel()) {
+                  <button type="button" (click)="returnToSelection()">Restart campaign</button>
+                } @else {
+                  <button type="button" (click)="next()">Next level</button>
+                }
+              }
+              @case ("lost") {
+                <button type="button" (click)="retry()">Retry level</button>
+              }
+              @case ("error") {
+                <button type="button" (click)="retry()">Try again</button>
+              }
+            }
+            @if (phase() === "won" || phase() === "lost" || phase() === "error") {
+              <button type="button" (click)="returnToSelection()">Level select</button>
+            }
+          </div>
+        </div>
+      }
+    </section>
+  }
+  <p class="td-sr-only" aria-live="polite">{{ message() }}</p>
+</main>

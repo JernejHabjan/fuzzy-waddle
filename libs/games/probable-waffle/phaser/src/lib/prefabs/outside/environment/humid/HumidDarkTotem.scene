@@ -1,0 +1,39 @@
+{
+    "id": "79320a9a-7ad4-4121-ba1e-f2922ea89f3f",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "88fc80be-24e3-439d-be01-9e292ae6d6e1",
+            "label": "humid_Dark_totem_dark_shadow1_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "69.19959754386383 159.0451941050751 94.10719381859951 63.417815550286235 131.0238097257971 60.30436601594428 168.38520413790064 99.00009594276581 164.82697609865266 132.8032623156214 183.50767330470444 190.1796894484947 96.7758648480355 195.07225300246066",
+            "texture": {
+                "key": "environment_1",
+                "frame": "humid/Dark_totem_dark_shadow1.png"
+            },
+            "x": 32,
+            "y": 30.57116813066719,
+            "originY": 0.6819186255104187
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

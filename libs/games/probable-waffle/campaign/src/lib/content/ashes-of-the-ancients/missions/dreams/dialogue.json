@@ -1,0 +1,508 @@
+{
+  "$schema": "../../../../../schemas/dialogue.schema.json",
+  "schemaVersion": 1,
+  "missionId": "dreams",
+  "texts": [
+    {
+      "id": "narrator-name",
+      "text": "Narrator"
+    },
+    {
+      "id": "tivara-captain-name",
+      "text": "Tivara Captain"
+    },
+    {
+      "id": "skaduwee-captain-name",
+      "text": "Skaduwee Captain"
+    },
+    {
+      "id": "dream-intro-one-text",
+      "text": "In the same restless night, two homelands dreamed of fire."
+    },
+    {
+      "id": "dream-intro-two-text",
+      "text": "Their armies marched toward one ancient power beneath the volcano."
+    },
+    {
+      "id": "tivara-rally-text",
+      "text": "Tivara, rally. Direct the captain toward the battle."
+    },
+    {
+      "id": "tivara-reminder-text",
+      "text": "The dream waits. Select the Tivara captain and command the charge."
+    },
+    {
+      "id": "tivara-charge-text",
+      "text": "The first formation answers, and the mountain stirs."
+    },
+    {
+      "id": "faction-handoff-text",
+      "text": "The vision turns. Now see the march from the other homeland."
+    },
+    {
+      "id": "skaduwee-rally-text",
+      "text": "Skaduwee, advance. Bring your captain to the same battlefield."
+    },
+    {
+      "id": "skaduwee-reminder-text",
+      "text": "Command the Skaduwee captain toward the battle marker."
+    },
+    {
+      "id": "skaduwee-charge-text",
+      "text": "The second formation enters the ash."
+    },
+    {
+      "id": "battle-escalation-text",
+      "text": "Neither side hears the warning under its own battle cry."
+    },
+    {
+      "id": "volcano-overwhelms-text",
+      "text": "The volcano answers them both."
+    },
+    {
+      "id": "ashes-title-text",
+      "text": "Ashes of the Ancients"
+    },
+    {
+      "id": "direct-tivara-title",
+      "text": "Direct the Tivara army"
+    },
+    {
+      "id": "direct-tivara-description",
+      "text": "Select the Tivara captain and issue an attack or move command toward the central battle."
+    },
+    {
+      "id": "command-tivara-charge-text",
+      "text": "Command the Tivara captain into the battle region"
+    },
+    {
+      "id": "direct-skaduwee-title",
+      "text": "Direct the Skaduwee army"
+    },
+    {
+      "id": "direct-skaduwee-description",
+      "text": "After the handoff, command the Skaduwee captain toward the same battle."
+    },
+    {
+      "id": "command-skaduwee-charge-text",
+      "text": "Command the Skaduwee captain into the battle region"
+    },
+    {
+      "id": "witness-dream-title",
+      "text": "Witness the dream's outcome"
+    },
+    {
+      "id": "witness-dream-description",
+      "text": "Follow both armies until the volcano reveals what binds their homelands."
+    },
+    {
+      "id": "technical-failure-title",
+      "text": "The dream could not continue"
+    },
+    {
+      "id": "technical-failure-description",
+      "text": "A mission invariant failed. Retry the latest checkpoint or restart the prologue."
+    },
+    {
+      "id": "unlock-cyclops-title",
+      "text": "Cyclops & Sheep unlocked"
+    },
+    {
+      "id": "after-dream-intro-title",
+      "text": "Checkpoint: The shared dream"
+    },
+    {
+      "id": "after-dream-intro-resume",
+      "text": "The volcanic vision returns at the Tivara rally."
+    },
+    {
+      "id": "after-tivara-charge-title",
+      "text": "Checkpoint: Tivara charge"
+    },
+    {
+      "id": "after-tivara-charge-resume",
+      "text": "The dream turns toward Skaduwee."
+    },
+    {
+      "id": "after-faction-switch-title",
+      "text": "Checkpoint: Skaduwee rally"
+    },
+    {
+      "id": "after-faction-switch-resume",
+      "text": "Command the Skaduwee formation toward battle."
+    },
+    {
+      "id": "before-volcano-finale-title",
+      "text": "Checkpoint: The volcano answers"
+    },
+    {
+      "id": "before-volcano-finale-resume",
+      "text": "The final volcanic vision resumes."
+    }
+  ],
+  "speakers": [
+    {
+      "id": "mission-narrator",
+      "nameTextId": "narrator-name"
+    },
+    {
+      "id": "tivara-captain",
+      "nameTextId": "tivara-captain-name"
+    },
+    {
+      "id": "skaduwee-captain",
+      "nameTextId": "skaduwee-captain-name"
+    }
+  ],
+  "lines": [
+    {
+      "id": "dream-intro-one",
+      "speakerId": "mission-narrator",
+      "textId": "dream-intro-one-text",
+      "text": "In the same restless night, two homelands dreamed of fire.",
+      "delivery": "blocking"
+    },
+    {
+      "id": "dream-intro-two",
+      "speakerId": "mission-narrator",
+      "textId": "dream-intro-two-text",
+      "text": "Their armies marched toward one ancient power beneath the volcano.",
+      "delivery": "blocking"
+    },
+    {
+      "id": "tivara-rally-line",
+      "speakerId": "tivara-captain",
+      "textId": "tivara-rally-text",
+      "text": "Tivara, rally. Direct the captain toward the battle.",
+      "delivery": "tutorial"
+    },
+    {
+      "id": "tivara-reminder-line",
+      "speakerId": "mission-narrator",
+      "textId": "tivara-reminder-text",
+      "text": "The dream waits. Select the Tivara captain and command the charge.",
+      "delivery": "tutorial"
+    },
+    {
+      "id": "tivara-charge-line",
+      "speakerId": "tivara-captain",
+      "textId": "tivara-charge-text",
+      "text": "The first formation answers, and the mountain stirs.",
+      "delivery": "non-blocking"
+    },
+    {
+      "id": "faction-handoff-line",
+      "speakerId": "mission-narrator",
+      "textId": "faction-handoff-text",
+      "text": "The vision turns. Now see the march from the other homeland.",
+      "delivery": "blocking"
+    },
+    {
+      "id": "skaduwee-rally-line",
+      "speakerId": "skaduwee-captain",
+      "textId": "skaduwee-rally-text",
+      "text": "Skaduwee, advance. Bring your captain to the same battlefield.",
+      "delivery": "tutorial"
+    },
+    {
+      "id": "skaduwee-reminder-line",
+      "speakerId": "mission-narrator",
+      "textId": "skaduwee-reminder-text",
+      "text": "Command the Skaduwee captain toward the battle marker.",
+      "delivery": "tutorial"
+    },
+    {
+      "id": "skaduwee-charge-line",
+      "speakerId": "skaduwee-captain",
+      "textId": "skaduwee-charge-text",
+      "text": "The second formation enters the ash.",
+      "delivery": "non-blocking"
+    },
+    {
+      "id": "battle-escalation-line",
+      "speakerId": "mission-narrator",
+      "textId": "battle-escalation-text",
+      "text": "Neither side hears the warning under its own battle cry.",
+      "delivery": "non-blocking"
+    },
+    {
+      "id": "volcano-overwhelms-line",
+      "speakerId": "mission-narrator",
+      "textId": "volcano-overwhelms-text",
+      "text": "The volcano answers them both.",
+      "delivery": "blocking"
+    },
+    {
+      "id": "ashes-title-line",
+      "speakerId": "mission-narrator",
+      "textId": "ashes-title-text",
+      "text": "Ashes of the Ancients",
+      "delivery": "blocking"
+    }
+  ],
+  "cinematics": [
+    {
+      "id": "dream-intro-cinematic",
+      "mode": "paused",
+      "seenSkipPolicy": "tap",
+      "lockPlayerControl": true,
+      "lockCamera": true,
+      "resumeCueIndexes": [0, 3],
+      "fallbackTimeoutTicks": 900,
+      "timeline": [
+        {
+          "kind": "letterbox",
+          "visible": true
+        },
+        {
+          "kind": "camera-shot",
+          "shotId": "dream-intro-shot",
+          "fallbackPointId": "ash-fallback-point",
+          "durationTicks": 90
+        },
+        {
+          "kind": "dialogue",
+          "lineId": "dream-intro-one"
+        },
+        {
+          "kind": "camera-shot",
+          "shotId": "volcano-overwhelms-shot",
+          "fallbackPointId": "volcano-focus-point",
+          "durationTicks": 90
+        },
+        {
+          "kind": "dialogue",
+          "lineId": "dream-intro-two"
+        },
+        {
+          "kind": "letterbox",
+          "visible": false
+        }
+      ],
+      "gameplayPrelude": [
+        {
+          "id": "mark-dream-intro-started",
+          "kind": "set-fact",
+          "factId": "intro-complete",
+          "value": false
+        }
+      ],
+      "gameplayFinalize": [
+        {
+          "id": "control-tivara-after-intro",
+          "kind": "set-control-perspective",
+          "playerNumber": 1
+        },
+        {
+          "id": "mark-dream-intro-complete",
+          "kind": "set-fact",
+          "factId": "intro-complete",
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "faction-handoff-cinematic",
+      "mode": "directed",
+      "seenSkipPolicy": "tap",
+      "lockPlayerControl": true,
+      "lockCamera": true,
+      "resumeCueIndexes": [0, 2],
+      "fallbackTimeoutTicks": 600,
+      "timeline": [
+        {
+          "kind": "letterbox",
+          "visible": true
+        },
+        {
+          "kind": "camera-shot",
+          "shotId": "battle-focus-shot",
+          "fallbackPointId": "battle-focus-point",
+          "durationTicks": 60
+        },
+        {
+          "kind": "dialogue",
+          "lineId": "faction-handoff-line"
+        },
+        {
+          "kind": "camera-shot",
+          "shotId": "skaduwee-rally-shot",
+          "fallbackPointId": "skaduwee-rally-point",
+          "durationTicks": 90
+        },
+        {
+          "kind": "letterbox",
+          "visible": false
+        }
+      ],
+      "gameplayPrelude": [
+        {
+          "id": "mark-faction-handoff-started",
+          "kind": "set-fact",
+          "factId": "faction-switched",
+          "value": false
+        }
+      ],
+      "gameplayFinalize": [
+        {
+          "id": "control-skaduwee-after-handoff",
+          "kind": "set-control-perspective",
+          "playerNumber": 3
+        },
+        {
+          "id": "mark-faction-handoff-complete",
+          "kind": "set-fact",
+          "factId": "faction-switched",
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "volcano-overwhelms-cinematic",
+      "mode": "paused",
+      "seenSkipPolicy": "tap",
+      "lockPlayerControl": true,
+      "lockCamera": true,
+      "resumeCueIndexes": [0, 3],
+      "fallbackTimeoutTicks": 900,
+      "timeline": [
+        {
+          "kind": "letterbox",
+          "visible": true
+        },
+        {
+          "kind": "camera-shot",
+          "shotId": "volcano-overwhelms-shot",
+          "fallbackPointId": "volcano-focus-point",
+          "durationTicks": 90
+        },
+        {
+          "kind": "dialogue",
+          "lineId": "volcano-overwhelms-line"
+        },
+        {
+          "kind": "camera-shot",
+          "shotId": "battle-focus-shot",
+          "fallbackPointId": "battle-focus-point",
+          "durationTicks": 90
+        },
+        {
+          "kind": "wait",
+          "durationTicks": 45
+        },
+        {
+          "kind": "letterbox",
+          "visible": false
+        }
+      ],
+      "gameplayPrelude": [
+        {
+          "id": "mark-volcano-sequence-started",
+          "kind": "set-fact",
+          "factId": "volcano-complete",
+          "value": false
+        }
+      ],
+      "gameplayFinalize": [
+        {
+          "id": "overwhelm-tivara-captain",
+          "kind": "damage-actor",
+          "actorId": "tivara-dream-captain",
+          "amount": 99999,
+          "damageType": 2,
+          "missingReferencePolicy": "skip"
+        },
+        {
+          "id": "overwhelm-tivara-fighter",
+          "kind": "damage-actor",
+          "actorId": "tivara-dream-fighter",
+          "amount": 99999,
+          "damageType": 2,
+          "missingReferencePolicy": "skip"
+        },
+        {
+          "id": "overwhelm-skaduwee-captain",
+          "kind": "damage-actor",
+          "actorId": "skaduwee-dream-captain",
+          "amount": 99999,
+          "damageType": 2,
+          "missingReferencePolicy": "skip"
+        },
+        {
+          "id": "overwhelm-skaduwee-fighter",
+          "kind": "damage-actor",
+          "actorId": "skaduwee-dream-fighter",
+          "amount": 99999,
+          "damageType": 2,
+          "missingReferencePolicy": "skip"
+        },
+        {
+          "id": "mark-volcano-sequence-complete",
+          "kind": "set-fact",
+          "factId": "volcano-complete",
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "ashes-title-cinematic",
+      "mode": "directed",
+      "seenSkipPolicy": "tap",
+      "lockPlayerControl": true,
+      "lockCamera": true,
+      "resumeCueIndexes": [0, 2],
+      "fallbackTimeoutTicks": 600,
+      "timeline": [
+        {
+          "kind": "letterbox",
+          "visible": true
+        },
+        {
+          "kind": "camera-shot",
+          "shotId": "ashes-title-shot",
+          "fallbackPointId": "ash-fallback-point",
+          "durationTicks": 90
+        },
+        {
+          "kind": "title",
+          "textId": "ashes-title-text"
+        },
+        {
+          "kind": "dialogue",
+          "lineId": "ashes-title-line"
+        },
+        {
+          "kind": "letterbox",
+          "visible": false
+        }
+      ],
+      "gameplayPrelude": [
+        {
+          "id": "mark-title-sequence-started",
+          "kind": "set-fact",
+          "factId": "dream-witnessed",
+          "value": false
+        }
+      ],
+      "gameplayFinalize": [
+        {
+          "id": "discover-cyclops-unlock",
+          "kind": "discover-reward",
+          "rewardId": "unlock-cyclops-and-sheep"
+        },
+        {
+          "id": "mark-dream-witnessed",
+          "kind": "set-fact",
+          "factId": "dream-witnessed",
+          "value": true
+        },
+        {
+          "id": "mark-dream-mission-complete",
+          "kind": "set-fact",
+          "factId": "mission-complete",
+          "value": true
+        }
+      ]
+    }
+  ]
+}

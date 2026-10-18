@@ -1,0 +1,8 @@
+{
+  "name": "dungeon-crawler-gameplay",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/games/dungeon-crawler/gameplay/src",
+  "projectType": "library",
+  "targets": { "lint": { "executor": "@nx/eslint:lint" } },
+  "tags": ["scope:dungeon-crawler", "type:gameplay"]
+}

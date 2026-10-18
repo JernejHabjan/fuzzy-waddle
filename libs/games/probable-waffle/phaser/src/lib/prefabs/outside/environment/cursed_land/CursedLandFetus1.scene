@@ -1,0 +1,41 @@
+{
+    "id": "c6c3a646-9316-4624-8924-01c933cec9e6",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "e0af5197-1540-4fb5-93a2-59afea567c1e",
+            "label": "cursed_land_Fetus_shadow1_1_png",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 64,
+            "hitArea.y": 64,
+            "hitArea.radius": 35.770687571154,
+            "texture": {
+                "key": "environment_1",
+                "frame": "cursed_land/Fetus_shadow1_1.png"
+            },
+            "x": 32,
+            "y": 48,
+            "originY": 0.75
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

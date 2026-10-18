@@ -1,0 +1,41 @@
+{
+    "id": "c1dde11f-cf63-4d30-8624-0b77c09394bd",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "0c492666-0207-46b7-9ba8-3eb70c629be5",
+            "label": "goblin_chest_gold_png",
+            "hitArea.shape": "RECTANGLE",
+            "hitArea.y": 16,
+            "hitArea.width": 32,
+            "hitArea.height": 22.41342821831054,
+            "texture": {
+                "key": "environment_1",
+                "frame": "goblin/chest_gold.png"
+            },
+            "x": 32,
+            "y": 48,
+            "originY": 0.75
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

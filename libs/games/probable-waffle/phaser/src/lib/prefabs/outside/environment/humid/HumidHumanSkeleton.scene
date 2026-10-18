@@ -1,0 +1,41 @@
+{
+    "id": "fd98a73d-3891-4499-a24c-0fac01a3554b",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "70a9109a-e36e-4c3d-88bb-65caea31ec0a",
+            "label": "humid_Human_skeleton_dark_shadow_png",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 16,
+            "hitArea.y": 16,
+            "hitArea.radius": 11.637644141447517,
+            "texture": {
+                "key": "environment_1",
+                "frame": "humid/Human_skeleton_dark_shadow.png"
+            },
+            "x": 32,
+            "y": 42.30915087003564,
+            "originY": 0.5721609646886137
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

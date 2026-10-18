@@ -1,0 +1,42 @@
+{
+    "id": "f99090e3-b951-48a3-9668-10051042ecd9",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 128,
+        "borderHeight": 128
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "14d593a7-8ea2-486a-a677-d943415860a4",
+            "label": "common_viking_ship_ship9_png",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 32,
+            "hitArea.y": 32,
+            "hitArea.radius": 22.807436734177145,
+            "texture": {
+                "key": "units",
+                "frame": "common/viking-ship/ship9.png"
+            },
+            "x": 64,
+            "y": 64,
+            "scaleX": 2,
+            "scaleY": 2
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

@@ -1,0 +1,41 @@
+{
+    "id": "f7629f9d-2ecf-416b-ab7d-afc947d4dec7",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "b663fae9-c44e-4748-b8b9-1d7703b4cd04",
+            "label": "cursed_land_Rock_eyes_shadow1_1_png",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 64,
+            "hitArea.y": 64,
+            "hitArea.radius": 29.87409874405462,
+            "texture": {
+                "key": "environment_1",
+                "frame": "cursed_land/Rock_eyes_shadow1_1.png"
+            },
+            "x": 32,
+            "y": 48,
+            "originY": 0.75
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

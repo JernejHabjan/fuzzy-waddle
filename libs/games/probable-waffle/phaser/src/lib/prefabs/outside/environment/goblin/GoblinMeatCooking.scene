@@ -1,0 +1,40 @@
+{
+    "id": "b6617536-0e1a-459c-9eaa-290824d9a44d",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "786226d9-3432-4669-890a-37aeeb339ba5",
+            "label": "goblin_meat_cooking_png",
+            "hitArea.shape": "RECTANGLE",
+            "hitArea.width": 32,
+            "hitArea.height": 32,
+            "texture": {
+                "key": "environment_1",
+                "frame": "goblin/meat_cooking.png"
+            },
+            "x": 32,
+            "y": 48,
+            "originY": 0.75
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

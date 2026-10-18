@@ -1,0 +1,39 @@
+{
+    "id": "14f9579f-fa79-4889-a3c4-176fbe6e18ab",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "a7271fe8-ce56-4394-8152-199d2c6fbc20",
+            "label": "cursed_land_Veins_shadow1_1_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "63 162 140 60 217 22 156 191 39 227",
+            "texture": {
+                "key": "environment_1",
+                "frame": "cursed_land/Veins_shadow1_1.png"
+            },
+            "x": 32,
+            "y": 48,
+            "originY": 0.75
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

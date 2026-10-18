@@ -1,0 +1,42 @@
+{
+  "id": "d1000000-0000-4000-8000-000000000005",
+  "sceneType": "PREFAB",
+  "settings": {
+    "compilerInsertSpaces": true,
+    "compilerTabSize": 2,
+    "exportClass": true,
+    "autoImport": true,
+    "compilerOutputLanguage": "TYPE_SCRIPT",
+    "borderWidth": 160,
+    "borderHeight": 90
+  },
+  "displayList": [
+    {
+      "type": "Rectangle",
+      "id": "d1000000-0000-4000-8000-000000000015",
+      "label": "scenarioCameraShot",
+      "x": 80,
+      "y": 45,
+      "width": 160,
+      "height": 90,
+      "isFilled": true,
+      "fillColor": 35071,
+      "fillAlpha": 0.2,
+      "isStroked": true
+    }
+  ],
+  "plainObjects": [],
+  "meta": {
+    "app": "Phaser Editor - Scene Editor",
+    "url": "https://phaser.io/editor",
+    "contentType": "phasereditor2d.core.scene.SceneContentType",
+    "version": 5
+  },
+  "prefabProperties": [
+    { "name": "scenarioId", "label": "Stable Scenario ID", "defValue": "", "type": { "id": "string" } },
+    { "name": "z", "label": "Logical Elevation", "defValue": 0, "type": { "id": "number" } },
+    { "name": "zoom", "label": "Zoom", "defValue": 1, "type": { "id": "number" } },
+    { "name": "durationTicks", "label": "Duration Ticks", "defValue": 0, "type": { "id": "number" } },
+    { "name": "letterbox", "label": "Letterbox", "defValue": false, "type": { "id": "boolean" } }
+  ]
+}
