@@ -329,7 +329,7 @@
     { "id": "PLACE-02", "stages": [10], "group": "placement", "fixture": null, "runtimeRecipeDraft": "native-scenario-recipes.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
     { "id": "PLACE-03", "stages": [10], "group": "placement", "fixture": null, "runtimeRecipeDraft": "native-scenario-recipes.json", "drivers": ["pure", "runtime"], "authoredFixture": "placement-recovery-scenarios.json" },
     { "id": "EXP-01", "stages": [10], "group": "placement", "fixture": null, "runtimeRecipeDraft": "native-scenario-recipes.json", "drivers": ["pure", "runtime"], "authoredFixture": "placement-recovery-scenarios.json" },
-    { "id": "EXP-02", "stages": [10], "group": "placement", "fixture": null, "runtimeRecipeDraft": "native-scenario-recipes.json", "drivers": ["pure", "runtime"], "authoredFixture": "placement-recovery-scenarios.json" },
+    { "id": "EXP-02", "stages": [10], "group": "placement", "fixture": "expansion-pressure-runtime.json", "drivers": ["pure", "runtime"], "authoredFixture": "placement-recovery-scenarios.json" },
     { "id": "WALL-01", "stages": [11], "group": "fortification", "fixture": null, "runtimeRecipeDraft": "native-scenario-recipes.json", "drivers": ["pure", "runtime"], "authoredFixture": "placement-recovery-scenarios.json" },
     { "id": "WALL-02", "stages": [11], "group": "fortification", "fixture": null, "runtimeRecipeDraft": "native-scenario-recipes.json", "drivers": ["pure", "runtime"], "authoredFixture": "placement-recovery-scenarios.json" },
     {

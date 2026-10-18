@@ -11,8 +11,10 @@ import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import type { AiRuntimeProductionFactV1 } from "./ai-runtime-production-fact-v1";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
+import { HealthComponent } from "../../../entity/components/combat/components/health-component";
+import { ProbableWaffleSceneEventName } from "../../../world/services/recovery/probable-waffle-scene-events";
 
-/** Native registration/tech/balance listeners share the parent's single ordered fact budget and disposal boundary. */
+/** Native registration/tech/balance/damage listeners share the parent's single ordered fact budget and disposal boundary. */
 export class AiRuntimeProductionWorldCapture {
   private readonly subscriptions = new Subscription();
   private readonly lastBalances = new Map<number, Record<ResourceType, number>>();
@@ -24,7 +26,8 @@ export class AiRuntimeProductionWorldCapture {
       readonly append: (fact: AiRuntimeProductionFactV1) => void;
       readonly watchQueue: (actor: Phaser.GameObjects.GameObject) => void;
       readonly unwatchActor: (actor: Phaser.GameObjects.GameObject) => void;
-    }
+    },
+    captureCombat = false
   ) {
     const index = getSceneService(scene, ActorIndexSystem);
     const tech = getSceneService(scene, TechTreeService);
@@ -95,6 +98,10 @@ export class AiRuntimeProductionWorldCapture {
         this.callbacks.unwatchActor(actor);
       })
     );
+    if (captureCombat) {
+      scene.events.on(ProbableWaffleSceneEventName.ScoreDamage, this.observeDamage, this);
+      this.subscriptions.add(() => scene.events.off(ProbableWaffleSceneEventName.ScoreDamage, this.observeDamage, this));
+    }
   }
   dispose(): void {
     this.subscriptions.unsubscribe();
@@ -108,4 +115,23 @@ export class AiRuntimeProductionWorldCapture {
         this.lastBalances.set(player.playerNumber, this.callbacks.resources(player.playerNumber));
       }
   }
+
+  /** Victim ownership selects the existing ledger; cross-player initiators remain exact detached native identities. */
+  private readonly observeDamage = (
+    target: Phaser.GameObjects.GameObject, amount: number, initiator?: Phaser.GameObjects.GameObject
+  ): void => {
+    if (target.scene !== this.scene) return;
+    const playerNumber = getActorComponent(target, OwnerComponent)?.getOwner();
+    if (playerNumber === undefined) return;
+    const health = getActorComponent(target, HealthComponent);
+    this.callbacks.append({
+      ...this.callbacks.boundary(playerNumber), kind: "native_damage", damage: {
+        target: captureAiRuntimeCreatedActor(target), initiator: initiator ? captureAiRuntimeCreatedActor(initiator) : null,
+        targetInCaptureScene: true, initiatorInCaptureScene: initiator?.scene === this.scene,
+        amount, healthAfter: health?.healthComponentData.health ?? null, armourAfter: health?.healthComponentData.armour ?? null,
+        damageTick: health?.latestDamage?.simulationTick ?? null,
+        sceneActive: this.scene.sys?.isActive() ?? false, snapshotRestoreInProgress: isSnapshotApplyInProgress(this.scene)
+      }
+    });
+  };
 }

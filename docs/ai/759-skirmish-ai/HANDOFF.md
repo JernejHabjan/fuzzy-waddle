@@ -3,59 +3,45 @@
 Default resume page: read this first, then only the selected package in [REMAINING-WORK.md](REMAINING-WORK.md).
 Do not load the full plan directory or archive on startup.
 
-## Current cursor — land expansion and physical wall-access recipes, authored unrun, 2026-10-18
+## Current cursor — EXP-02 registered for native execution, authored unrun, 2026-10-18
 
 - Worktree /home/jernej/.codex/worktrees/7977/fuzzy-waddle; branch feature/759-skirmish-ai.
-  Batch base00a708a4ff85fe1bec6e612d6926db16252c01bb; verify the containing publication commit/remote on resume.
-  Actual model/effort unknown; no delegation. User requests continued recipe/binding implementation and necessary
-  support, with **no recipe execution, tests, lint, type checks, formatting or dedicated verification runs**.
-- This batch authors14 additional standalone native owner worlds, bringing the total to19: the previous3 construction
-  recovery and2 field worlds, plus8 land-expansion branches and6 wall-access branches. All19 remain unrun.
-  These are concrete ordinary-lobby/fixed-frame recipes with native outcome readers, not full scenario registrations.
-- Expansion: skirmish-ai-expansion-worlds.spec.ts, AI_EXPANSION_WORLD_E2E=1. Both factions get expand/served/home-pressure/
-  pressure-withdrawn branches. Exact inherited neutral resource bindings deplete the actual8 frozen-map deposits;
-  normal scouts reveal a120-stock source and360-stock alternative covered by a real enemy WatchTower. All worker,
-  producer, housing, source and weapon capabilities/prices remain definition-owned. No AI progress/knowledge is injected.
-  Required outcomes join selected AI expansion, original shared placement/application, available builder, native arrival,
-  actual charge/completion/retention and wood delivered by an identified economic worker into that exact new deposit.
-  A native WorkMill or faction main can supply useful service. Served controls
-  need native income into the original service, not just no construction. Pressure needs a real applied attack,
-  fair danger, damaged surviving original home and suppression; withdrawal/resume needs actual movement or native loss
-  before resumed productive expansion. Full pressure acceptance also needs its positive safe pair. Maximum3000 preserves EXP-02's ceiling.
-- Wall access: skirmish-ai-fortification-access-worlds.spec.ts, AI_FORTIFICATION_WORLD_E2E=1. Native human-owned prefab
-  controls on the frozen open map cover stairs present/missing, worker/army passage through an intentional opening,
-  a sealed ring and a pinned destroyed-wall breach. Stamped shared Move must physically reach its original endpoint;
-  receipts, fallback arrival and true return alone cannot pass. Elevated occupancy must match native wall height in
-  sealed history. Missing stairs/seals require an actual terminated blocked attempt and no target occupancy.
-- Support reuses the existing observer: captureHuman reads real human authority and optional closed history without
-  inventing AI input or adding another observer. Move/move_to_actor/attack are bounded normal shared commands.
-  A destroyed original controller records unavailable, with no command or success. Both public capture paths now
-  fence disposed handles before history can be rearmed. Initial deposits without queues/weapons are pinned before
-  first delivery. Movement binds the request and command identity, permitting synchronous native start.
-  The earlier strict roster bug rejecting construction-created
-  role IDs is repaired. Field and expansion delivery share one exact extraction/offer/deposit reader.
-- Evidence remains **authored unrun**:0/19 executed,0/19 validated; unrun is not failed. No tests, browser/server,
-  lint, types, formatter, doctor, catalog validator or broad gate ran. Raw records remain local single-copy artifacts;
-  model-facing summaries/assertion messages are bounded. Source/fixture digests stay attached. No balance/AI planner
-  behavior changed. Earlier source passes do not certify this source.
-- Full bindings remain open: actual AI construction prefixes and hostile passage, productive occupied defenses/firing,
-  shore/air geometry and cumulative spend; constrained/threatened field alternatives; exhaustive expansion benefit,
-  lease/concurrency and combat-driven pressure-removal controls. A native recipe can fail its premises/behavior;
-  never bypass them or inject a completed opening to force acceptance. AiBaseManager's aggregate local-resource/
-  income trigger may affect the new-main path; cheap useful service remains a valid alternative. This source caveat
-  is not a measured runtime failure.
-- **Next authoring action (same unfinished selected slice):** reuse these19 worlds and existing static prefix reader;
-  add actual AI wall-placement prefixes/occupied firing and useful-cost branches, constrained/threatened field pairs,
-  and remaining expansion utility/lease/combat controls. Complete ID-specific bindings before full registration.
-  Selected IDs remain PLACE-01–03/EXP-01/02/WALL-01–05/H-27/28; native save/replay/peer H-31/SEQ-08 follow them.
-  Existing mixed-queue hashing/codec support is already authored; do not redesign it.
-- Pure registration111/111 (100%). Supported full runtime registration30/116 (25.9%),86 unbound (74.1%), plus4 deferred
-  island rows. Definitions116/116 include86 specifications.19 partial owner worlds do not close a full row or supply
-  an overall AI completion percentage. M11, native peer/replay, calibration/debug and later victory gate remain open.
-  Machinery necessity/removal stays last overall.
-- Preserve unrelated .run/start_portal.run.xml and ALL_VISIBLE fog edits. Publish only owned paths, verify remote,
-  report done/why and next/why, then pause. Next recommendation remains Sol6.1/high for physical/authority integration;
-  recommendations do not change the active settings.
+  Batch base56f775897a40e7f6b32a93696e6418ed5fad016d; verify the containing publication commit/remote on resume.
+  Mechanical7b012d31e extracts unchanged workforce fixture predicates to keep the general validator bounded.
+  Actual model/effort unknown; no delegation. User requests continued scenario registration. The current override remains
+  **no recipes, tests, lint, type checks, formatting, browser/server or dedicated verification execution**.
+- EXP-02 now references tools/ai/fixtures/expansion-pressure-runtime.json in the matrix manifest. Eight worlds cover both
+  factions × safe/pressure/withdrawal/combat recovery. Six reuse existing world branches; two combat-recovery worlds
+  are new. Native definitions and balances are unchanged. This is executable registration, not passing gameplay.
+- Full acceptance requires four original human-owned melee attackers, normal shared attacks against the original home,
+  multiple fair danger decisions with at least two armed threats, at least10% native home damage and retained home.
+  Remote overextension is refused during fair danger. Every attacker must actually withdraw or receive AI-owned lethal
+  native damage and die. Recovery then requires native paid completed retained service and delivered wood.
+  The withdrawal branch also needs at least one surviving attacker to physically complete its retreat.
+- The safe counterpart must construct a genuinely productive deposit at a matching danger decision tick. A later unrelated
+  safe build, absent demand, command receipt, missing attacker or aggregate kill score cannot supply that comparison.
+  Fixture/source identities, actor roles, seed, horizon and shared setup are bound. Scripted kills, seeded construction,
+  changed stocks/budgets and withdrawal in the combat-only branch are refused. Diagnostic single-world runs remain partial.
+- Matrix execution reuses the existing lobby/frame runner and observer, retaining real human closed history only for the
+  bound case. captureCombat is separately explicit, requires captureProduction, and installs no damage listener in
+  ordinary games or unmarked captures. Native ScoreDamage supplies detached victim/initiator identity and applied
+  health/armour; teardown removes the listener. Same-tick recovery follows actual global callback order.
+- Owner-world total is21, all unrun: prior19 plus two combat branches.0/21 executed,0/21 validated; unrun is not failed.
+  Full runtime registration is31/116 (26.7%),85 unbound (73.3%), plus4 deferred island rows. Pure111/111 (100%).
+  Definitions remain116/116, now31 runnable fixture bindings plus85 specifications. No overall AI completion percentage.
+- Authored negative/drift controls remain unrun. Only fixture-data creation, catalog --write generation and source/diff
+  review occurred. No gameplay, balance or planner change is claimed. The actual danger/positive timing and native
+  combat premises must be measured at the later authorized gate; do not relax them to obtain a pass.
+- Raw native records stay local; model-facing failures/summaries stay bounded. Opponent capture omits the duplicate shared
+  recipient ledger, retained by the AI record. No second observer, report interpreter or always-on gameplay machinery.
+- **Next grouped authoring action:** finish actual AI wall-construction prefixes, occupied firing/useful cost, and
+  constrained/threatened field alternatives using the existing21 worlds and movement/damage/service readers. EXP-01
+  still needs full utility/lease/concurrency bindings. Selected authoring IDs remain PLACE-01–03/EXP-01/WALL-01–05/H-27/28.
+  EXP-02 awaits its later execution gate; do not relabel it validated. Native save/replay/real peers H-31/SEQ-08 follow;
+  existing mixed-queue hashes/codec are already authored. M11/calibration/debug/later victory remain open; machinery last.
+- Preserve unrelated .run/start_portal.run.xml and ALL_VISIBLE fog edits. Publish owned paths, verify remote, report
+  done/why, exact registration versus execution progress and next/why, then pause. Recorded next recommendation remains
+  Sol6.1/high for remaining physical/combat bindings; this does not change the active settings.
 
 ## What “continue” means
 
@@ -121,7 +107,7 @@ Keep the report self-contained and concise. A documentation-only update reports 
 gameplay progress unchanged. The execution plan links to this format rather than maintaining a second template.
 
 Registration coverage: pure **111/111 = 100% registered / 0% remaining**; supported runtime
-**30/116 = 25.9% registered / 74.1% remaining**, excluding four deferred runtime rows. These are not overall AI completion.
+**31/116 = 26.7% registered / 73.3% remaining**, excluding four deferred runtime rows. These are not overall AI completion.
 Reconcile behavior evidence per selected package; do not invent a global completion percentage.
 
 ## End-of-gate machinery necessity review

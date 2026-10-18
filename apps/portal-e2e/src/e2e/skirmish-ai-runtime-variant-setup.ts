@@ -46,7 +46,7 @@ export async function prepareRuntimeVariant(
     if (/\bAI\b|player-ai|brain/i.test(error.message)) aiErrors.push(error.message);
   });
   await page.addInitScript(
-    ({ seed, presetWorld, revision, digest, captureProduction }) => {
+    ({ seed, presetWorld, revision, digest, captureProduction, captureCombat }) => {
       window.sessionStorage.setItem(
         "fuzzy-waddle:ai-runtime-browser-test-v1",
         JSON.stringify({
@@ -55,6 +55,7 @@ export async function prepareRuntimeVariant(
           seed,
           startPaused: true,
           ...(captureProduction ? { captureProduction: true } : {}),
+          ...(captureCombat ? { captureCombat: true } : {}),
           ...(presetWorld
             ? { presetWorld: { ...presetWorld, provenance: { sourceRevision: revision, fixtureDigest: digest } } }
             : {})
@@ -66,6 +67,7 @@ export async function prepareRuntimeVariant(
       presetWorld: variant.presetWorld,
       revision: sourceRevision,
       digest: fixtureDigest,
+      captureCombat: variant.captureCombat === true,
       captureProduction: variant.captureConstruction === true || (variant.scenarioIds ?? fixture.scenarioIds).some(
         (id) =>
           ["PRO-03", "PRO-06", "PRO-07", "H-17", "H-18", "ECO-05", "ECO-06", "H-16"].includes(id) ||

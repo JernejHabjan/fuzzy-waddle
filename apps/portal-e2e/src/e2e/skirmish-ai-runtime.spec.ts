@@ -4,7 +4,7 @@ import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-resul
 import { evaluateScenario } from "./skirmish-ai-runtime-evaluation";
 import { evaluateRuntimeVariant } from "./skirmish-ai-runtime-variant-evaluation";
 import { parseRequest } from "./skirmish-ai-runtime-request-parser";
-import { runVariant } from "./skirmish-ai-runtime-variant-runner";
+import { runRegisteredRuntimeVariant } from "./skirmish-ai-runtime-registered-variant";
 import { last } from "./skirmish-ai-runtime-value";
 import { checkRuntimeProductionReportBridge } from "./skirmish-ai-runtime-production-report";
 import { publishRuntimeResult } from "./skirmish-ai-runtime-result-output";
@@ -39,15 +39,7 @@ test("executes selected AI scenarios in real lobby-started Phaser matches", asyn
         for (let repetition = 1; repetition <= (variant.repetitions ?? 1); repetition += 1) {
           if (request.diagnosticSelection && repetition !== request.diagnosticSelection.repetition) continue;
           executed.push({
-            ...(await runVariant(
-              browser,
-              fixture,
-              variant,
-              request.seed,
-              request.scenarioIds,
-              request.sourceRevision,
-              request.fixtureDigest
-            )),
+            ...(await runRegisteredRuntimeVariant(browser, fixture, variant, request)),
             repetition
           });
         }

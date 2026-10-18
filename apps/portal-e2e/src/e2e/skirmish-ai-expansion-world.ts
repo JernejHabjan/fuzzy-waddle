@@ -1,10 +1,11 @@
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
 import type { ExpansionBranch } from "./skirmish-ai-expansion-branch";
+import { EXPANSION_HOME_RAIDER_ROLES } from "./skirmish-ai-expansion-branch";
 
 /** Deplete actual inherited stocks, fairly reveal two remote choices and let the ordinary AI own all expansion work. */
 export function expansionWorld(faction: "Tivara" | "Skaduwee", branch: ExpansionBranch): RuntimeFixtureV1 {
-  const tivara = faction === "Tivara", pressure = branch.startsWith("home_") || branch.startsWith("pressure_");
+  const tivara = faction === "Tivara", pressure = !["expand", "served"].includes(branch);
   const inherited = [
     [ObjectNames.Tree6, -672, 640], [ObjectNames.Tree6, -960, 736], [ObjectNames.Tree6, 288, 752],
     [ObjectNames.Tree6, 608, 928], [ObjectNames.StonePile, -688, 784], [ObjectNames.StonePile, 272, 960],
@@ -19,7 +20,9 @@ export function expansionWorld(faction: "Tivara" | "Skaduwee", branch: Expansion
       mapLabel: "AI Open Economy (test only)", aiPlayerNumber: 2, simulationTimeScale: 1, fixedStepFrames: true,
       checkpointTicks: [20, 100, 199, 200, 400, 600, 1000, 1600, 2400, 3000], variants: [{
         id: `${faction.toLowerCase()}-expansion-${branch}`, executionKind: "focused_preset", role: "standalone", seed: 759933,
-        aiFaction: faction, humanFaction: tivara ? "Skaduwee" : "Tivara", difficulty: "Normal", captureConstruction: true,
+        deadlineRationale: "The original EXP-02 ceiling covers native home defense, recovery, paid service and first delivered wood.",
+        aiFaction: faction, humanFaction: tivara ? "Skaduwee" : "Tivara", difficulty: "Normal",
+        captureConstruction: true, captureCombat: true,
         presetWorld: {
           fixtureId: `${faction.toLowerCase()}-expansion-${branch.replaceAll("_", "-")}`, requireFactionRoster: true,
           existingActorBindings: [...inheritedBindings,
@@ -44,19 +47,24 @@ export function expansionWorld(faction: "Tivara" | "Skaduwee", branch: Expansion
             { fixtureActorId: "unsafe-defense", actorName: "WatchTower", owner: 1, position: { x: -800, y: 1088, z: 0 } },
             ...(branch === "served" ? [{ fixtureActorId: "existing-expansion", actorName: "WorkMill",
               owner: 2, position: { x: -64, y: 1264, z: 0 } }] : []),
-            ...(pressure ? [{ fixtureActorId: "home-raider", actorName: tivara ? "SkaduweeWarriorMale" : "TivaraMacemanMale",
-              owner: 1, position: { x: 640, y: 864, z: 0 } }] : [])
+            ...(pressure ? EXPANSION_HOME_RAIDER_ROLES.map((fixtureActorId, index) => ({ fixtureActorId,
+              actorName: tivara ? "SkaduweeWarriorMale" : "TivaraMacemanMale",
+              owner: 1, position: { x: 640 + index * 64, y: 1024, z: 0 } })) : [])
           ],
           resourceGrants: [], resourceStarts: [{ playerNumber: 2,
             amounts: { food: 1200, wood: 1600, stone: 800, minerals: 800 } }],
           sourceStocks: [...inheritedBindings.map((binding) => ({ fixtureActorId: binding.fixtureActorId, amount: 0 })),
             { fixtureActorId: "ready-field", amount: 0 }],
           controls: pressure ? [
-            { id: "attack-original-home", producerFixtureActorId: "home-raider", requestTick: 0, applicationTick: 0,
-              action: { kind: "attack", targetFixtureActorId: "original-home" } },
-            ...(branch === "pressure_withdrawn" ? [{ id: "withdraw-home-pressure", producerFixtureActorId: "home-raider",
+            ...EXPANSION_HOME_RAIDER_ROLES.map((producerFixtureActorId, index) => ({
+              id: index ? `attack-original-home-${index}` : "attack-original-home", producerFixtureActorId,
+              requestTick: 0, applicationTick: 0, action: { kind: "attack" as const, targetFixtureActorId: "original-home" }
+            })),
+            ...(branch === "pressure_withdrawn" ? EXPANSION_HOME_RAIDER_ROLES.map((producerFixtureActorId, index) => ({
+              id: index ? `withdraw-home-pressure-${index}` : "withdraw-home-pressure", producerFixtureActorId,
               requestTick: 200, applicationTick: 200,
-              action: { kind: "move" as const, worldPosition: { x: -448, y: 256, z: 0 } } }] : [])
+              action: { kind: "move" as const, worldPosition: { x: -448 + index * 64, y: 256, z: 0 } }
+            })) : [])
           ] : []
         }
       }]

@@ -22,6 +22,8 @@ export interface RuntimeVariantResultV1 {
   readonly productionEvidenceV2?: RuntimeProductionEvidenceV2;
   /** Raw authority diagnostics retain explicit gaps and cannot satisfy the independent evidence contract. */
   readonly productionCapture?: AiRuntimeProductionCaptureV1;
+  /** Only explicitly bound cases retain the opponent's closed native history; never supplied to the AI. */
+  readonly opponentCapture?: AiRuntimeProductionCaptureV1;
   /** Checked AI intent/authority lineage with unresolved gaps; never substitutes for full productionEvidence. */
   readonly productionCausality?: RuntimeProductionCausalityV1;
   /** Retained diagnostic failures when the duplicate normalized payload is omitted beside full raw/V2 authority. */

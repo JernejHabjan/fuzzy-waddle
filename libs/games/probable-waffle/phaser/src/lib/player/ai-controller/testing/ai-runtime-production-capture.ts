@@ -76,7 +76,8 @@ export class AiRuntimeProductionCapture {
   constructor(
     private readonly scene: ProbableWaffleScene,
     intervals: readonly AiRuntimeResourceServiceIntervalV1[] = [],
-    protectedRoutes: readonly AiRuntimeProtectedRouteV1[] = []
+    protectedRoutes: readonly AiRuntimeProtectedRouteV1[] = [],
+    captureCombat = false
   ) {
     const ticks = getSceneService(scene, SimulationTickService);
     const bus = getSceneService(scene, CommandBusService);
@@ -173,7 +174,7 @@ export class AiRuntimeProductionCapture {
           this.queueSubscriptions.delete(actor);
           this.spatialCapture.unwatchActor(actor);
         }
-      });
+      }, captureCombat);
       // Components can finish initialization after index registration. This test-only scan attaches missing listeners.
       this.subscriptions.add(
         ticks.tick$.subscribe(() => {

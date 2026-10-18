@@ -5,7 +5,7 @@ import { validAiRuntimePresetWorld } from "./validate-ai-runtime-preset-world-v1
 export function isAiRuntimeBrowserTestConfigV1(value: unknown): value is AiRuntimeBrowserTestConfigV1 {
   if (
     !isRecord(value) ||
-    !hasOnlyKeys(value, ["schemaVersion", "enabled", "seed", "startPaused", "presetWorld", "captureProduction"])
+    !hasOnlyKeys(value, ["schemaVersion", "enabled", "seed", "startPaused", "presetWorld", "captureProduction", "captureCombat"])
   ) {
     return false;
   }
@@ -18,6 +18,7 @@ export function isAiRuntimeBrowserTestConfigV1(value: unknown): value is AiRunti
     Number.isSafeInteger(value["seed"]) &&
     (value["seed"] as number) >= 0 &&
     (value["captureProduction"] === undefined || value["captureProduction"] === true) &&
+    (value["captureCombat"] === undefined || value["captureCombat"] === true && value["captureProduction"] === true) &&
     (value["presetWorld"] === undefined || validAiRuntimePresetWorld(value["presetWorld"]))
   );
 }

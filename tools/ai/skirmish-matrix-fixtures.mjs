@@ -6,6 +6,7 @@ import { validProductionCompositionPair } from "./skirmish-runtime-production-co
 import { validProductionContracts } from "./skirmish-runtime-production-contract-fixture.mjs";
 import { validEconomyContracts, validResourceRecoveryContract } from "./skirmish-runtime-economy-fixture.mjs";
 import { readNativeRecipeDraft } from "./native-recipe-drafts.mjs";
+import { validExpansionPressureRecipe } from "./skirmish-runtime-expansion-pressure-fixture.mjs";
 
 export function validateManifest(value, fixtureDirectory) {
   if (!value || value.schemaVersion !== 1 || value.manifestVersion !== "skirmish-v1" || !Array.isArray(value.rows))
@@ -88,6 +89,8 @@ export function runtimeFixtureReference(row) {
 function validateRuntimeFixture(fixture, scenarioId) {
   const recipe = fixture.recipe;
   const assertion = fixture.assertions?.[scenarioId];
+  if ((scenarioId === "EXP-02" || assertion?.requiredExpansionPressure !== undefined) &&
+      !validExpansionPressureRecipe(recipe, assertion, scenarioId)) throw new Error(`invalid_expansion_pressure_binding:${scenarioId}`);
   if (
     !recipe ||
     typeof recipe.mapLabel !== "string" ||
@@ -118,6 +121,7 @@ function validateRuntimeFixture(fixture, scenarioId) {
         !["Tivara", "Skaduwee"].includes(variant.aiFaction) ||
         !["Tivara", "Skaduwee"].includes(variant.humanFaction) ||
         !["Easy", "Normal", "Hard"].includes(variant.difficulty) ||
+        (variant.captureCombat !== undefined && (variant.captureCombat !== true || variant.captureConstruction !== true)) ||
         (variant.supplyBranch !== undefined && !["prebuild", "ample_control"].includes(variant.supplyBranch)) ||
         (variant.pressureBranch !== undefined && !["raid", "safe_control"].includes(variant.pressureBranch)) ||
         (variant.resourceServiceBranch !== undefined &&

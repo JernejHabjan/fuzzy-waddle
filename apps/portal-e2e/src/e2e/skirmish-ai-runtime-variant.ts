@@ -18,6 +18,8 @@ export interface RuntimeVariantV1 {
   readonly presetWorld?: RuntimePresetWorldV1;
   /** Explicit test-only native construction history; ordinary matches and unmarked recipes install none. */
   readonly captureConstruction?: true;
+  /** Adds native damage facts to that same opt-in capture; omitted recipes retain their previous fact stream. */
+  readonly captureCombat?: true;
   readonly checkpointTicks?: readonly number[];
   readonly determinismGroup?: string;
   readonly repetitions?: number;

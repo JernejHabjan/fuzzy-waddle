@@ -14,7 +14,7 @@ test.skip(process.env.AI_EXPANSION_WORLD_E2E !== "1", "Explicit native land owne
 test.setTimeout(600_000);
 
 for (const faction of ["Tivara", "Skaduwee"] as const) {
-  for (const branch of ["expand", "served", "home_pressure", "pressure_withdrawn"] as const) {
+  for (const branch of ["expand", "served", "home_pressure", "pressure_withdrawn", "combat_resolved"] as const) {
     test(`native expansion: ${faction} ${branch}`, async ({ browser }, testInfo) => {
       const fixture = expansionWorld(faction, branch), variant = fixture.recipe.variants[0];
       if (!variant) throw new Error("expansion_variant_missing");
@@ -31,7 +31,7 @@ for (const faction of ["Tivara", "Skaduwee"] as const) {
         body: Buffer.from(JSON.stringify({ faction, branch, source, failureCount: failures.length,
           failures: failures.slice(0, 12).map((failure) => failure.slice(0, 80)), omittedFailures: Math.max(0, failures.length - 12),
           shortenedFailureDetails: failures.slice(0, 12).filter((failure) => failure.length > 80).length,
-          limitations: ["Land owner branches; combat-based removal, exhaustive site utility and cross-lease controls remain open"]
+          limitations: ["Individual branch only; full EXP-02 also requires its matrix safe/pressure pair; EXP-01 utility/leases remain open"]
         })), contentType: "application/json"
       });
       await testInfo.attach(`expansion-${faction}-${branch}-raw.json`, {

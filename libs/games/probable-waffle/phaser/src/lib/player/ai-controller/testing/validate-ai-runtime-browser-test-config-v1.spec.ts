@@ -21,6 +21,13 @@ const config = {
 };
 
 describe("runtime preset neutral source validation", () => {
+  it("requires a separate strict combat marker inside the explicit authority capture", () => {
+    expect(isAiRuntimeBrowserTestConfigV1({ ...config, captureProduction: true, captureCombat: true })).toBe(true);
+    expect(isAiRuntimeBrowserTestConfigV1({ ...config, captureCombat: true })).toBe(false);
+    for (const captureCombat of [false, "true", 1, null]) {
+      expect(isAiRuntimeBrowserTestConfigV1({ ...config, captureProduction: true, captureCombat })).toBe(false);
+    }
+  });
   it("requires explicit capture for owned placement-route declarations", () => {
     const scoped = { ...config, captureProduction: true, presetWorld: { ...config.presetWorld,
       actors: [{ ...neutralSource, owner: 2 }], protectedRoutes: [{

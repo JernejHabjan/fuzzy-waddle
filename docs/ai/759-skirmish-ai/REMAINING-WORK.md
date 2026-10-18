@@ -87,8 +87,8 @@ an entire scenario. Invalidate only outcomes affected by later source/fixture ch
 | Measured coverage at this snapshot    | Completed                                   | Remaining          | What the number means                                                                                              |
 | ------------------------------------- | ------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------ |
 | Pure fixture registration             | 111/111 = **100%**                          | 0/111 = **0%** | Required pure scenarios with registered fixtures; not behavior completion                                          |
-| Supported native definitions           | 116/116 = **100%**                          | 0/116 = **0%** | 30 executable recipes plus86 authoring specifications; definitions only, not executable or validated coverage |
-| Supported runtime recipe registration | 30/116 = **25.9%**                          | 86/116 = **74.1%** | Runtime recipes connected; four island-content rows excluded; not behavior completion                              |
+| Supported native definitions           | 116/116 = **100%**                          | 0/116 = **0%** | 31 runnable scenario bindings plus85 specifications; definitions only, not validated gameplay |
+| Supported runtime recipe registration | 31/116 = **26.7%**                          | 85/116 = **73.3%** | Runtime recipes connected; four island-content rows excluded; not behavior completion                              |
 | Scenario behavior validation          | Not yet reconciled across the full manifest | Not yet measurable | Existing subset passes and failures are recorded, but no truthful overall completion percentage can yet be derived |
 
 During each selected package, reconcile its existing complete evidence into the row status and report its exact
@@ -114,36 +114,27 @@ main-building footprint were corrected in both paired worlds. Construction cance
 post-opening unfinished-site reassignment have focused controls. Native ECO-06 proves alternate drop-off/source
 recovery; native no-drain controls prove stop/assignment release with cargo preservation.
 
-**Current publication:14 additional native owner worlds,19 total authored unrun, 2026-10-18.**
+**Current publication: EXP-02 full native binding registered, authored unrun, 2026-10-18.**
 
-1. The previous construction/static-prefix/field and queue/hash support is retained. A strict roster consumer bug
-   rejecting construction-created role IDs is repaired; disposed native capture handles cannot rearm history.
-2. Eight land-expansion worlds pair expand/served/home-pressure/pressure-withdrawn for both factions. They bind/deplete
-   the actual8 inherited neutral sources, fairly reveal safe/richer defended choices and require native selected-builder
-   arrival, paid completed retained service and exact economic-worker wood delivery into that deposit. Native WorkMill
-   or faction main is eligible. Served/pressure controls need real effects and fair danger, not inactivity, resource grants
-   or injected AI state. Withdrawal needs actual movement or native loss before productive resumption. Explicit positive
-   safe pairing, combat-only removal and exhaustive utility/lease branches remain open.
-3. Six human-owned physical wall controls cover stairs present/missing, worker/army opening, sealed ring and pinned
-   native breach. The ordinary shared Move must physically reach its original endpoint; elevated occupancy must match
-   native wall height. Blocked branches need a terminated native attempt and no destination occupancy. These do not
-   certify AI construction prefixes, hostile passage, occupied firing/value, shore/air geometry or cumulative spending.
-4. Existing preset controls now dispatch bounded normal Move/move_to_actor/Attack. Neutral inherited bindings require
-   exact native positions/resource components. The existing capture supplies human authority without inventing AI
-   input or adding another observer. Unavailable original controllers emit no command/success. Source delivery is shared
-   between field and expansion readers with exact source/worker/deposit/resource/window/transfer ownership.
-5. User policy remains source review only: no recipes, tests, lint, types, formatting, browser/server or dedicated
-   verification execution.19 owner worlds are0/19 executed and0/19 validated; unrun is not failed. Full manifest
-   registration stays30/116 because required complete-case branches are still missing. Source caveat: aggregate local
-   resource/income gating may affect the new-main path; cheap useful native service is also eligible. No runtime failure
-   or planner/balance change is claimed.
-6. Next reuse these19 worlds to finish actual AI wall-placement prefixes/occupied firing/useful-cost controls,
-   constrained/threatened field pairs and remaining expansion utility/lease/combat branches for
-   PLACE-01–03/EXP-01/02/WALL-01–05/H-27/28. Then native save/replay/real peers H-31/SEQ-08 use existing queue hashes.
-   Packages3–5, M11, calibration/debug and later victory gate remain open. Machinery review remains last.
-
-Pure registrations are111/111 (100%),0remaining; supported runtime30/116 (25.9%),86remaining, plus4deferred content rows.
-No overall gameplay-completion percentage is inferred. See CURRENT-EVIDENCE for exact checks and per-case limits.
+1. EXP-02 now has an eight-world matrix fixture: safe, home pressure, withdrawal and ordinary-combat recovery for both
+   factions. Six branches reuse existing worlds and two combat branches are new;21 owner worlds are authored in total.
+2. Full native predicates bind actual shared attacks, sustained fair danger, serious native home damage, survival and
+   suppressed overextension. Every attacker must actually leave/die; native AI-owned lethal damage distinguishes combat
+   recovery from scripted destruction. Same-tick reconsideration uses global callback sequence, then requires productive service.
+3. A useful paid safe expansion must be committed at a corresponding actual danger decision tick. Strict shared-input
+   validation prevents budget/source/queue/world differences from masquerading as a causal pair. Missing branches,
+   no-op safe worlds, forged loss and withdrawal in the combat branch cannot pass.
+4. The normal matrix path now retains human native history for this explicit binding. Native damage reuses the existing
+   bounded observer with a separate captureCombat marker and owned cleanup; ordinary/unmarked captures gain no listener.
+   Opponent records omit the duplicate shared recipient ledger. No balance or AI planner behavior changed.
+5. Fixture/catalog data were generated and source reviewed; no recipes, tests, lint, types, formatting or dedicated
+   verification ran.21 worlds are0/21 executed and0/21 validated. Full registration is31/116 (26.7%),85 remaining (73.3%),
+   plus4 deferred island rows. Definitions116/116 now comprise31 runnable bindings and85 remaining specifications.
+   Pure registration111/111 (100%). These are registration metrics, not overall AI completion or passing gameplay.
+6. Next group actual AI wall prefixes/occupied firing/useful-cost controls with constrained/threatened field alternatives
+   for PLACE-01–03/WALL-01–05/H-27/28. EXP-01 utility/lease/concurrency remains open. EXP-02's native premises and all eight
+   outcomes await the later authorized execution gate. Then native save/replay/peers H-31/SEQ-08 use existing mixed-queue
+   hashes; M11/calibration/debug and later victory remain open. Machinery review is last.
 
 ## Other concrete gaps already established
 

@@ -107,7 +107,7 @@ export function evaluateExpansionWorld(
     failures.push(...serviceFailures);
     if (!serviceFailures.length) productive++;
   }
-  if ((branch === "expand" || branch === "pressure_withdrawn") && productive === 0) {
+  if ((branch === "expand" || branch === "pressure_withdrawn" || branch === "combat_resolved") && productive === 0) {
     failures.push("expansion_has_no_productive_new_safe_deposit");
   }
   if (branch === "served") {

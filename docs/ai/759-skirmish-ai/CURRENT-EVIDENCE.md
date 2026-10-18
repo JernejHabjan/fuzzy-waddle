@@ -2,6 +2,67 @@
 
 [HANDOFF.md](HANDOFF.md) owns continuation. Read this current batch; older sections retain historical evidence.
 
+## EXP-02 native scenario registration — authored unrun, 2026-10-18
+
+Base56f775897a40e7f6b32a93696e6418ed5fad016d; same branch/worktree as HANDOFF. Actual model/effort unknown,
+no delegation. Mechanical7b012d31e extracts unchanged workforce fixture predicates to keep the general validator bounded.
+User requests continued registration with the existing no-execution policy. No recipes, tests, lint,
+types, formatting, builds, browser/server, doctor/context or dedicated validators ran. Pure fixture-data generation,
+catalog --write authoring and source review are the only evidence of this checkpoint.
+
+### Acceptance map
+
+1. **Full EXP-02 binding authored:** expansion-pressure-runtime.json is now the manifest's runtime fixture. Eight
+   normal-lobby fixed-frame worlds cover safe/home-pressure/withdrawal/combat recovery for both factions. Six reuse
+   existing branches and two combat branches are new. The row's former prose specification was moved into the runnable
+   fixture's acceptance metadata and removed from the85 remaining draft cases. Catalog generation reflects registration.
+2. **Real pressure and useful recovery authored:** four original opposing melee actors issue stamped shared attacks.
+   The oracle requires multiple fair danger decisions with at least two armed visible threats, at least10% native home
+   damage and retained original home. It refuses accepted remote overextension during danger. Every attacker must leave
+   through real movement or die from exact AI-owned native damage. Productive paid construction and exact wood delivery
+   must follow actual resolution, using callback order for same-tick effects. No forced kill, progress, AI input or cash credit.
+   Withdrawal requires at least one actual surviving retreat; all attackers dying cannot masquerade as tested withdrawal.
+3. **Positive comparison authored:** each faction has a productive safe control and combat subject with identical shared
+   economic input. Pressure and withdrawal branches share that same economic world too. A safe service commitment must
+   occur at a corresponding observed danger decision tick and become natively productive. Absence of demand, a later
+   unrelated build or a successful command receipt cannot stand in for pressure-caused restraint. Missing/duplicate
+   variants, changed budgets/stocks/queues/map/seed and scripted combat resolution fail closed.
+4. **Native capture integration authored:** runRegisteredRuntimeVariant wraps the original lobby/frame runner and arms
+   the existing observer for the real human opponent only for this bound case. captureCombat is a separate strict marker
+   requiring captureProduction. AiRuntimeProductionWorldCapture subscribes to native ScoreDamage only under that marker;
+   scalar health/armour and detached victim/initiator identities retain native clock/restore/scene boundaries. Disposal
+   removes the listener. Ordinary games and previous unmarked captures gain no listener or changed fact stream.
+   Opponent browser reads omit the shared recipient ledger already retained by the AI record; no second buffer/observer.
+5. **Unrun controls authored:** fixture/manifest/branch drift; unknown or missing branches; different economic inputs;
+   scripted kills/withdrawal in combat; native damage ownership/clock/scene/restore; loss without lethal damage; a surviving
+   second attacker; opt-in forwarding and listener cleanup; standalone factory versus registered-data identity. No test ran.
+6. **Progress:** supported runtime registration31/116 (26.7%),85remaining (73.3%), plus4 deferred island rows. Pure111/111
+   (100%). Definitions116/116 now mean31 runnable bindings plus85 specifications. The owner-world union is21, all unrun;
+   EXP-02's eight matrix variants are0/8 executed,0/8 validated. Native premises and actual timing remain unmeasured.
+   There is no overall AI completion percentage, new gameplay pass, balance change or planner repair.
+
+### Omission Audit — source only
+
+- Traced manifest selection and strict fixture metadata through normal lobby setup, both native histories, per-variant
+  predicates, complete paired evaluation, diagnostics and local raw report output. A diagnostic single-world run cannot
+  close EXP-02. Existing negative or absent proof remains unavailable/failed rather than silently accepted.
+- Reused shared commands, native health event, existing observer/fact budget, frame runner, movement/closed-history and
+  paid-service readers. Only explicitly marked recipes capture damage. No new always-on gameplay system or balance edits.
+- Strict source/setup identity, native kill event ordering, original home/attacker lifetimes, unavailable withdrawal,
+  actor ownership, useful delivered service and bounded model-facing report paths were reviewed. Raw proof stays local.
+- Source review cannot establish that pressure is serious long enough or that the safe commitment aligns; the later gate
+  must report missing premises honestly. Do not weaken those checks or fabricate an opening to force a pass.
+- PLACE-01–03/EXP-01/WALL-01–05/H-27/28 remain authoring gaps. M11, native save/replay/peers, calibration/debug, later victory
+  and machinery-last review remain open. Unrelated run XML/ALL_VISIBLE fog changes are excluded; no skill/tool changes.
+
+### Final Closure Audit — registration authoring checkpoint
+
+All selected EXP-02 declarations have matrix/native reader/capture consumers and unrun negative coverage. The handoff,
+execution plan, scenario inventory, recipe hook limits, owning guide and generated catalog were updated. Publication
+certifies authored registration only; TypeScript, formatting/lint and native correctness remain unverified. Verify the
+containing commit and remote on resume. Next authoring: group wall-prefix/firing/useful-cost with constrained/threatened
+field controls, retaining EXP-01 utility/lease work. EXP-02 awaits authorized execution; machinery review stays last.
+
 ## Land expansion and physical wall-access bindings —14 additional worlds authored unrun, 2026-10-18
 
 Base00a708a4ff85fe1bec6e612d6926db16252c01bb; same branch/worktree as HANDOFF. Actual model/effort unknown.

@@ -69,6 +69,7 @@ describe("installAiRuntimeProductionCapture", () => {
     installAiRuntimeProductionCapture(scene);
     installAiRuntimeProductionCapture(scene);
     expect(AiRuntimeProductionCapture).toHaveBeenCalledTimes(1);
+    expect(AiRuntimeProductionCapture).toHaveBeenCalledWith(scene, [], undefined, false);
     window.__fuzzyWaddleAiRuntimeBrowserTestV1?.productionCapture?.capture(2);
     expect(capture).toHaveBeenCalledWith(2, undefined);
     window.__fuzzyWaddleAiRuntimeBrowserTestV1?.productionCapture?.capture(2, 400);
@@ -100,5 +101,17 @@ describe("installAiRuntimeProductionCapture", () => {
     window.__fuzzyWaddleAiRuntimeBrowserTestV1 = replacement;
     events.emit(Phaser.Scenes.Events.SHUTDOWN);
     expect(window.__fuzzyWaddleAiRuntimeBrowserTestV1).toBe(replacement);
+  });
+
+  it("forwards native combat opt-in only to the existing capture", () => {
+    const game = {} as Phaser.Game;
+    const scene = { game, events: new Phaser.Events.EventEmitter() } as unknown as ProbableWaffleScene;
+    const config = { schemaVersion: 1 as const, enabled: true as const, seed: 1, startPaused: true as const,
+      captureProduction: true as const, captureCombat: true as const };
+    window.__fuzzyWaddleAiRuntimeBrowserTestV1 = { schemaVersion: 1, config, game, initialStateByPlayer: {} };
+    jest.mocked(readAiRuntimeBrowserTestConfigV1).mockReturnValue(config);
+    jest.mocked(AiRuntimeProductionCapture).mockImplementation(() => ({ capture: jest.fn() }) as never);
+    installAiRuntimeProductionCapture(scene);
+    expect(AiRuntimeProductionCapture).toHaveBeenCalledWith(scene, [], undefined, true);
   });
 });

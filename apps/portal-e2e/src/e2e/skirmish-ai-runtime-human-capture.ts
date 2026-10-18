@@ -16,6 +16,8 @@ export async function captureRuntimeHumanAuthority(
       } };
     }).__fuzzyWaddleAiRuntimeBrowserTestV1?.productionCapture;
     if (!capture?.captureHuman) throw new Error("runtime_human_authority_unavailable");
-    return capture.captureHuman(player, horizon);
+    const record = capture.captureHuman(player, horizon);
+    // The AI record retains the shared recipient ledger; opponent movement/combat reads need only their own native facts.
+    return { ...record, recipientResourceFacts: undefined };
   }, { player: playerNumber, horizon: latestTick });
 }

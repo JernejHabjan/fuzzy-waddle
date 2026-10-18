@@ -1,18 +1,16 @@
 # #759 scenario inventory
 
-Registration updated 2026-10-18 against the current manifest; batch base
-`edff27f95c815e2e154a7f177c2a50d1aa586bfb` plus task-owned source. Open only the selected family.
-[Execution plan](REMAINING-WORK.md) and [handoff](HANDOFF.md) own order and current status.
+Registration updated2026-10-18 against the current manifest and generated catalog; batch base
+56f775897a40e7f6b32a93696e6418ed5fad016d plus task-owned source. Open only the selected family.
+[Execution plan](REMAINING-WORK.md) and [handoff](HANDOFF.md) own order/current status.
 
-All43 remaining pure IDs are registered with exact executable assertion bindings. Pure registration is
-**111/111 (100%),0 missing**. Supported runtime stays **30/116 (25.9%),86 missing** plus4deferred island-content rows.
-All86 missing executable native cases now have authored specifications in [native-scenario-recipes.json](../../../tools/ai/fixtures/native-scenario-recipes.json).
-Supported native definitions are116/116 (100%):30 existing executable recipes plus86 unbound specifications.
-No recipe/test/lint/type/format/validation gate ran in this authoring pass; authoring is not executable or passed coverage.
-The43 pure cases retain owner_contract status and explicit remaining semantic/native branches in their fixture.
-Three standalone native construction owner worlds and shared-queue hash/continuation controls are now authored, unrun.
-They do not register the full placement/fortification/replay scenarios or change the30/116 runtime count.
-Pure registration is complete; native and full scenario acceptance is not. See [current evidence](CURRENT-EVIDENCE.md).
+Pure registration is111/111 (100%),0missing. Supported runtime is31/116 (26.7%),85missing (73.3%),
+plus4deferred island rows. Definitions116/116 mean31 runnable bindings and85 remaining specifications.
+EXP-02 is newly registered with8 native worlds and full paired predicates, authored unrun. The total owner-world union
+is21, all unrun. Other partial owner controls do not supply full scenario registration or passing gameplay.
+Only fixture/catalog generation and source review occurred; no recipe/test/lint/type/format/validation gate ran.
+Pure fixture cases retain their explicit owner-contract/native limitations. Native/full scenario validation remains
+open; see [current evidence](CURRENT-EVIDENCE.md). Registration is not an overall AI completion percentage.
 
 ## Coverage gaps by family
 
@@ -27,7 +25,7 @@ Registration snapshot only; no percentages of gameplay completion are inferred.
 | strategy      | 13        | 0 | 12                                     | 0                |
 | access        | 9         | 0 | 6                                      | 2                |
 | combat        | 12        | 0 | 11                                     | 0                |
-| placement     | 5         | 0 | 5                                      | 0                |
+| placement     | 5         | 0 | 4                                      | 0                |
 | fortification | 7         | 0 | 7                                      | 0                |
 | recovery      | 5         | 0 | 5                                      | 0                |
 | authority     | 5         | 0 | 5                                      | 0                |
@@ -154,7 +152,7 @@ catalog renderer at the checkpoint above; refresh from that renderer and the man
 | [PLACE-02](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md) | Safe outer fields versus exposed perimeter with safer inner alternative                       | Outer placement only when sensible; avoid a rigid “always outer” policy                                                                                         | Registered [fixture](../../../tools/ai/fixtures/controller-contract-scenarios.json); [ai-placement-contract-scenarios.spec.ts](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/ai-placement-contract-scenarios.spec.ts) | Authored [native specification](../../../tools/ai/fixtures/native-scenario-recipes.json); not executable or run | Exact bound owner assertions pass; complete scenario/native evidence pending | Implement named setup/action/evidence/oracle bindings; execution deferred |
 | [PLACE-03](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md) | Several housing/drop-off/producer footprints and simultaneous proposals | Preserve production spawn, worker/resource, army/rally, retreat and future building access in whole and incremental layouts | Registered [fixture](../../../tools/ai/fixtures/placement-recovery-scenarios.json); [ai-placement-access-scenarios.spec.ts](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-placement-access-scenarios.spec.ts) | Authored [native specification](../../../tools/ai/fixtures/native-scenario-recipes.json); full fixture unbound | Earlier pure owner assertions pass; [native owner worlds](../../../apps/portal-e2e/src/e2e/skirmish-ai-construction-worlds.spec.ts) now require fresh static tile envelopes at every applied prefix, authored unrun | Add real per-prefix unit transit/spawn, future-site access and capture/destruction controls |
 | [EXP-01](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md)   | Local depletion/congestion, distant valuable deposits, several expansion options              | Select defensible high-benefit reachable site, including complete island establishment when needed                                                              | Registered [fixture](../../../tools/ai/fixtures/placement-recovery-scenarios.json); [ai-expansion-access-scenarios.spec.ts](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-expansion-access-scenarios.spec.ts) | Authored [native specification](../../../tools/ai/fixtures/native-scenario-recipes.json); full fixture unbound | [Both-faction expansion worlds](../../../apps/portal-e2e/src/e2e/skirmish-ai-expansion-worlds.spec.ts) authored unrun: fair choices, native paid deposit, original builder arrival and identified worker delivery and served control; full scenario pending | Complete utility/lease/concurrency branches; island content remains deferred; execution deferred |
-| [EXP-02](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md)   | Same expansion options while serious home pressure exists                                     | Delay/redirect expansion to survival; no aggressive overextension solely due to resource abundance                                                              | Registered [fixture](../../../tools/ai/fixtures/placement-recovery-scenarios.json); [ai-expansion-access-scenarios.spec.ts](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-expansion-access-scenarios.spec.ts) | Authored [native specification](../../../tools/ai/fixtures/native-scenario-recipes.json); full fixture unbound | [Native pressure worlds](../../../apps/portal-e2e/src/e2e/skirmish-ai-expansion-worlds.spec.ts) authored unrun: real attack/damage, suppression and withdrawal/native-loss resumption; full scenario pending | Complete combat-only threat removal and paired full-case semantics; execution deferred |
+| [EXP-02](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md)   | Same expansion options while serious home pressure exists                                     | Delay/redirect expansion to survival; no aggressive overextension solely due to resource abundance                                                              | Registered [fixture](../../../tools/ai/fixtures/placement-recovery-scenarios.json); [ai-expansion-access-scenarios.spec.ts](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-expansion-access-scenarios.spec.ts) | Registered [native recipe](../../../tools/ai/fixtures/expansion-pressure-runtime.json);8 worlds, both factions, authored unrun | Native attack/damage/survival/suppression/recovery and productive safe-pair bindings authored;0/8 executed,0/8 validated | Run full paired gate and affected controls only when authorized; native premises/timing remain unmeasured |
 
 ## Walls and fortifications
 

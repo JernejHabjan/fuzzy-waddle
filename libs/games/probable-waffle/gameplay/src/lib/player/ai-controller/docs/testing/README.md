@@ -73,15 +73,21 @@ room, threatened alternatives, full physical transit or any expansion/fortificat
 
 The [expansion worlds](../../../../../../../../../../apps/portal-e2e/src/e2e/skirmish-ai-expansion-worlds.spec.ts)
 use explicit `AI_EXPANSION_WORLD_E2E=1` opt-in when execution is authorized. Both factions get ordinary land expansion,
-already-served, home-pressure and pressure-removal branches. Inherited neutral resources require exact position
+already-served, home-pressure, pressure-withdrawal and native combat-recovery branches. Inherited neutral resources require exact position
 bindings and native resource components; stock setup changes their actual pre-tick values without claiming extraction.
 No completed opening, AI knowledge, construction progress, payment or income is injected. Native accepted expansion,
 available original builder, physical arrival, actual completed paid deposit and exact economic-worker wood delivery
 into that same deposit must agree. Native WorkMill or faction main service is eligible; another main is not compulsory.
 Served controls require delivered income, while pressure controls require real attack/damage/survival and suppression.
-Actual withdrawal or native attacker loss must precede resumed service. Explicit positive safe pairing and full
-combat-only removal/utility/lease acceptance remain separate. These owner branches do not register complete EXP
-scenarios merely because they execute.
+Actual withdrawal or native AI-owned lethal damage and original attacker loss must precede resumed service.
+The [EXP-02 matrix fixture](../../../../../../../../../../tools/ai/fixtures/expansion-pressure-runtime.json) now registers
+eight worlds: both factions × safe/home-pressure/withdrawal/combat recovery. It requires sustained fair danger,
+serious native damage to the surviving original home, suppressed remote spending and productive service after recovery.
+Withdrawal also requires at least one surviving attacker to finish its actual retreat.
+The safe counterpart must commit an actually productive deposit at a matching danger decision tick. Strict fixture
+checks preserve shared economic inputs and reject scripted destruction or withdrawal in the combat-only branch.
+Registration is authored unrun; a diagnostic individual world cannot supply full paired acceptance. Full EXP-01
+utility/lease/concurrency and content-gated island establishment remain separate obligations.
 
 The [fortification access worlds](../../../../../../../../../../apps/portal-e2e/src/e2e/skirmish-ai-fortification-access-worlds.spec.ts)
 use `AI_FORTIFICATION_WORLD_E2E=1`. Human-owned native prefab geometry on the frozen open map isolates stairs
@@ -100,6 +106,13 @@ AI input or installing a second observer. Optional closed history arms only at p
 shared frontier owner. Retained disposed handles cannot rearm it. Both native record sets stay local as single-copy
 raw artifacts; summaries/assertion messages retain bounded failures and omission counts. The source-delivery reader
 joins exact source owner, worker, deposit, resource, time window and successful offered transfer; fields reuse it.
+
+Bound recipes can separately request `captureCombat: true` alongside `captureProduction: true`. Native `ScoreDamage`
+then appends detached victim/initiator identities, applied health/armour and native clocks to the existing bounded
+ledger. Unmarked captures and ordinary games install no damage listener. The callback is post-application, and native
+death/unregistration can precede it synchronously in the same tick. Recovery uses the shared callback sequence as
+well as tick ordering. This record does not certify weapon legality or full projectile/impact continuity by itself.
+Opponent browser reads omit the duplicate shared recipient ledger already retained by the AI capture.
 
 StateHashService delegates native projection and pure diagnostics to focused owners. Its queue digest includes the
 authoritative shared lanes/items, exact remaining work, original paid/refund policy and command lineage, with stable

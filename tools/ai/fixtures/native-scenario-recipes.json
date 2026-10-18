@@ -79,7 +79,7 @@
     },
     "opponent_script": {
       "owner": "apps/portal-e2e/src/e2e/skirmish-ai-runtime-perturbation-runner.ts",
-      "missing": "Bounded normal shared Move/move_to_actor/Attack and original-controller unavailable outcomes are implemented, authored unrun. Expansion owner worlds require actual attack/damage/survival/suppression and withdrawal or native loss/resumption. Full combat-only removal, multi-opponent scripting and other case-specific opponent bindings remain open."
+      "missing": "Bounded shared Move/move_to_actor/Attack and original-controller unavailable outcomes are implemented. EXP-02 now has an authored-unrun eight-world registration with four attackers, productive safe pairs, actual withdrawal and native AI-combat recovery. Bind other cases separately, including multi-opponent and observation-milestone scripting."
     },
     "contact_history": {
       "owner": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-runtime-scenario-bridge.ts",
@@ -95,7 +95,7 @@
     },
     "native_combat": {
       "owner": "apps/portal-e2e/src/e2e/skirmish-ai-runtime-producer-exposure.ts",
-      "missing": "Existing weapon/exposure diagnostics and combat checkpoints are reusable inputs, not complete combat proof. Bind exact actor identities, approach/arrival, windup/impact, losses and objective value; aggregate damage alone is insufficient."
+      "missing": "Explicit captureCombat now retains exact native post-damage victim/initiator identities, health/armour and clocks in the existing ledger, authored unrun for EXP-02. Full weapon/windup/projectile/impact continuity, legal occupied firing and objective value still require case bindings; aggregate damage remains insufficient."
     },
     "transport_script": {
       "owner": "apps/portal-e2e/src/e2e/skirmish-ai-runtime-transport-evaluation.ts",
@@ -188,7 +188,6 @@
     "PLACE-02",
     "PLACE-03",
     "EXP-01",
-    "EXP-02",
     "WALL-01",
     "WALL-02",
     "WALL-03",
@@ -1602,65 +1601,6 @@
         2400,
         3000,
         4000
-      ],
-      "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
-    },
-    {
-      "scenarioId": "EXP-02",
-      "status": "authored_not_executed",
-      "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
-      "requiredOutcome": "Delay/redirect expansion to survival; no aggressive overextension solely due to resource abundance",
-      "world": "open",
-      "maximumTick": 3000,
-      "setup": [
-        "Use identical remote deposit choices and balances to EXP-01",
-        "Opponent can inflict a serious legitimately observed threat at the owned core"
-      ],
-      "actions": [
-        "Launch the actual home attack before expansion worker commitment",
-        "Remove the threat later through ordinary combat and permit reconsideration"
-      ],
-      "measurements": [
-        "Home survival, worker assignments, expansion spending and native threat interval",
-        "Compare with EXP-01 safe start"
-      ],
-      "required": [
-        "Survival delays or redirects overextension",
-        "Expansion can resume when independent home threat has ended"
-      ],
-      "forbidden": [
-        "Resource abundance alone overriding lethal home need",
-        "Permanent emergency after the threat disappears"
-      ],
-      "branches": [
-        "Safe paired control",
-        "Serious home pressure",
-        "Pressure resolved before the horizon"
-      ],
-      "executionBlockers": [
-        "native_case_binding",
-        "opponent_script",
-        "placement_history",
-        "native_combat"
-      ],
-      "reuse": [
-        "tools/ai/fixtures/placement-recovery-scenarios.json",
-        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/apply-ai-runtime-construction-orders.ts",
-        "apps/portal-e2e/src/e2e/skirmish-ai-placement-prefix-evaluation.ts",
-        "apps/portal-e2e/src/e2e/skirmish-ai-expansion-worlds.spec.ts",
-        "apps/portal-e2e/src/e2e/skirmish-ai-expansion-pressure-evaluation.ts"
-      ],
-      "checkpointTicks": [
-        0,
-        20,
-        200,
-        400,
-        800,
-        1200,
-        1600,
-        2000,
-        2400,
-        3000
       ],
       "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
     },

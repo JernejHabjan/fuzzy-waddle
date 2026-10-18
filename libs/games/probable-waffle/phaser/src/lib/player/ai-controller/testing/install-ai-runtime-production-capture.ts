@@ -11,7 +11,7 @@ export function installAiRuntimeProductionCapture(scene: ProbableWaffleScene): v
   if (!host || host.game !== scene.game || host.productionCapture) return;
   const config = readAiRuntimeBrowserTestConfigV1();
   if (!config?.captureProduction) return;
-  const capture = new AiRuntimeProductionCapture(scene, [], config.presetWorld?.protectedRoutes);
+  const capture = new AiRuntimeProductionCapture(scene, [], config.presetWorld?.protectedRoutes, config.captureCombat === true);
   const handle = {
     capture: (playerNumber: number, latestTick?: number) => capture.capture(playerNumber, latestTick),
     captureHuman: (playerNumber: number, latestTick?: number) => capture.captureHumanQueueBoundary(playerNumber, latestTick)
