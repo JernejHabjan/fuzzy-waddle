@@ -12,6 +12,8 @@ import type { ConstructionSiteDefinition } from
   "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/construction-site-definition";
 import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
 import { HealthComponent } from "../combat/components/health-component";
+import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 jest.mock("../../../data/scene-data", () => ({ isSnapshotApplyInProgress: () => false }));
@@ -29,45 +31,84 @@ jest.mock("./construction-payment", () => ({
   refundConstructionPayment: jest.fn()
 }));
 
+function fixture(overrides: Partial<ConstructionSiteDefinition> = {}) {
+  const actorEvents = new Phaser.Events.EventEmitter();
+  const sceneEvents = new Phaser.Events.EventEmitter();
+  const ticks = new Subject<number>();
+  const site = {
+    name: "site",
+    scene: { events: sceneEvents },
+    on: actorEvents.on.bind(actorEvents),
+    once: actorEvents.once.bind(actorEvents),
+    off: actorEvents.off.bind(actorEvents)
+  } as unknown as Phaser.GameObjects.GameObject;
+  const definition = {
+    components: { productionCost: { costType: 0, productionTime: 150, resources: { food: 11 }, refundFactor: 1 } }
+  };
+  jest.mocked(getPwActorDefinition).mockReturnValue(definition as never);
+  jest.mocked(getActorComponent).mockReturnValue(undefined);
+  jest.mocked(getSceneService).mockReturnValue({ tick$: ticks } as never);
+  const records: ConstructionAuthorityEvent[] = [];
+  sceneEvents.on(CONSTRUCTION_AUTHORITY_EVENT, (event: ConstructionAuthorityEvent) => records.push(event));
+  const policy = {
+    startImmediately: false,
+    consumesBuilders: false,
+    maxAssignedBuilders: 1,
+    maxAssignedRepairers: 1,
+    progressMadeAutomatically: 0,
+    progressMadePerBuilder: 1,
+    repairFactor: 1,
+    initialHealthPercentage: 0.1,
+    refundFactor: 0.5,
+    canBeDragPlaced: false,
+    ...overrides
+  } satisfies ConstructionSiteDefinition;
+  const component = new ConstructionSiteComponent(site, policy);
+  return { component, site, actorEvents, records, ticks, definition };
+}
+
 /** Real component state/restore/teardown order with isolated payment calls; no executed live-game proof. */
 describe("construction lifecycle boundaries", () => {
   beforeEach(() => jest.clearAllMocks());
 
-  function fixture(overrides: Partial<ConstructionSiteDefinition> = {}) {
-    const actorEvents = new Phaser.Events.EventEmitter();
-    const sceneEvents = new Phaser.Events.EventEmitter();
-    const ticks = new Subject<number>();
-    const site = {
-      name: "site",
-      scene: { events: sceneEvents },
-      on: actorEvents.on.bind(actorEvents),
-      once: actorEvents.once.bind(actorEvents),
-      off: actorEvents.off.bind(actorEvents)
-    } as unknown as Phaser.GameObjects.GameObject;
-    const definition = {
-      components: { productionCost: { costType: 0, productionTime: 150, resources: { food: 11 }, refundFactor: 1 } }
-    };
-    jest.mocked(getPwActorDefinition).mockReturnValue(definition as never);
-    jest.mocked(getActorComponent).mockReturnValue(undefined);
-    jest.mocked(getSceneService).mockReturnValue({ tick$: ticks } as never);
-    const records: ConstructionAuthorityEvent[] = [];
-    sceneEvents.on(CONSTRUCTION_AUTHORITY_EVENT, (event: ConstructionAuthorityEvent) => records.push(event));
-    const policy = {
-      startImmediately: false,
-      consumesBuilders: false,
-      maxAssignedBuilders: 1,
-      maxAssignedRepairers: 1,
-      progressMadeAutomatically: 0,
-      progressMadePerBuilder: 1,
-      repairFactor: 1,
-      initialHealthPercentage: 0.1,
-      refundFactor: 0.5,
-      canBeDragPlaced: false,
-      ...overrides
-    } satisfies ConstructionSiteDefinition;
-    const component = new ConstructionSiteComponent(site, policy);
-    return { component, site, actorEvents, records, ticks, definition };
-  }
+  it("retains unresolved saved worker IDs without granting phantom construction progress or a second payment", () => {
+    const f = fixture();
+    let worker: Phaser.GameObjects.GameObject | null = null;
+    jest
+      .mocked(getSceneService)
+      .mockImplementation((_scene, service) =>
+        service === ActorIndexSystem ? ({ getActorById: () => worker } as never) : undefined
+      );
+    f.component.setData({
+      state: ConstructionStateEnum.Constructing,
+      remainingConstructionTime: 100,
+      assignedBuilders: ["worker", "worker"],
+      assignedRepairers: []
+    });
+    f.ticks.next(1);
+    expect(f.component.getData().remainingConstructionTime).toBe(100);
+    expect(f.component.getData().assignedBuilders).toEqual(["worker"]);
+    worker = {} as Phaser.GameObjects.GameObject;
+    jest
+      .mocked(getActorComponent)
+      .mockImplementation((_actor, component) => (component === IdComponent ? ({ id: "worker" } as never) : undefined));
+    f.ticks.next(2);
+    expect(f.component.getData().remainingConstructionTime).toBe(50);
+    expect(f.component.getData().assignedBuilders).toEqual(["worker"]);
+    expect(startConstructionPayment).not.toHaveBeenCalled();
+    f.actorEvents.emit(Phaser.GameObjects.Events.DESTROY);
+  });
+
+  it("scene shutdown unsubscribes paid construction without refunding it during later actor destruction", () => {
+    const f = fixture();
+    f.component.setData({ state: ConstructionStateEnum.Constructing, remainingConstructionTime: 100 });
+    f.site.scene.events.emit(Phaser.Scenes.Events.SHUTDOWN);
+    f.actorEvents.emit(Phaser.GameObjects.Events.DESTROY);
+    f.component.cancelConstruction();
+    expect(refundConstructionPayment).not.toHaveBeenCalled();
+    expect(f.ticks.observed).toBe(false);
+    expect(f.site.scene.events.listenerCount(Phaser.Scenes.Events.SHUTDOWN)).toBe(0);
+  });
 
   it("captures real start/restore/finish transitions with actual remaining work and resamples current definitions", () => {
     const f = fixture();

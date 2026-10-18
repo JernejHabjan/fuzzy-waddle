@@ -1,6 +1,6 @@
 # #759 remaining work inventory
 
-Snapshot: 2026-10-16, current batch based on `50266799471a2804243bd147a759deca2873c150`. This is the execution inventory for the existing scope,
+Snapshot: 2026-10-18, current batch based on `25beec7fd4a01a4c132be2c137af9e81b3a5d3ba`. This is the execution inventory for the existing scope,
 not a new design or diagnostic project. [HANDOFF.md](HANDOFF.md) owns the current cursor;
 [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) retains the latest checked source/evidence details.
 The manifest and linked scenario requirements remain authoritative; the snapshot below must be refreshed when
@@ -9,8 +9,8 @@ registrations change. Old session estimates in follow-up plans are historical, n
 ## What the inventory actually found
 
 The original concrete plan exists: 121 named scenarios with setup and required outcomes. Freshly rendering the existing
-catalog finds 59/111 pure fixture registrations and 30/120 runtime recipe registrations. Four runtime cases are
-deferred island content. Therefore **52 pure registrations and 86 supported runtime registrations are missing**.
+catalog finds 68/111 pure fixture registrations and 30/120 runtime recipe registrations. Four runtime cases are
+deferred island content. Therefore **43 pure registrations and 86 supported runtime registrations are missing**.
 These are scenario counts, not separate files, matches, commits or necessarily missing gameplay implementations.
 One shared fixture can cover several scenarios. Existing unmapped controls must be inspected and reused before
 authoring equivalent tests. Registration does not certify that the scenario's independent outcome assertions pass.
@@ -81,7 +81,7 @@ an entire scenario. Invalidate only outcomes affected by later source/fixture ch
 
 | Measured coverage at this snapshot    | Completed                                   | Remaining          | What the number means                                                                                              |
 | ------------------------------------- | ------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------ |
-| Pure fixture registration             | 59/111 = **53.2%**                          | 52/111 = **46.8%** | Required pure scenarios with registered fixtures; not behavior completion                                          |
+| Pure fixture registration             | 68/111 = **61.3%**                          | 43/111 = **38.7%** | Required pure scenarios with registered fixtures; not behavior completion                                          |
 | Supported runtime recipe registration | 30/116 = **25.9%**                          | 86/116 = **74.1%** | Runtime recipes connected; four island-content rows excluded; not behavior completion                              |
 | Scenario behavior validation          | Not yet reconciled across the full manifest | Not yet measurable | Existing subset passes and failures are recorded, but no truthful overall completion percentage can yet be derived |
 
@@ -108,24 +108,24 @@ main-building footprint were corrected in both paired worlds. Construction cance
 post-opening unfinished-site reassignment have focused controls. Native ECO-06 proves alternate drop-off/source
 recovery; native no-drain controls prove stop/assignment release with cargo preservation.
 
-**Current publication: grouped placement/fortification/native-payment recovery; broad gates deferred (user2026-10-17).**
+**Current publication: approved ten-item placement/paid-work continuation batch, 2026-10-18.**
 
-1. The latest implementation repairs fortification rebuild identity, stale effect reservations, abandoned/lost-base
-   plans, newly blocked footprints and distinct available builder assignment. Native build/repair membership transfers
-   and death cleanup, once-only saved cancellation/refund and whole-vector payment admission have focused controls.
-   Previous combat/domain/continuity and physical-transfer repairs remain; no full native acceptance is inferred.
-2. Fields remain unchanged: retained food327.68/min,90 stock and empty queues do not establish food starvation.
-   Native harvest/growth/cargo controls are focused evidence; no new full match was run to justify a balance change.
-3. Full-match victory and broad regression reruns are explicitly deferred. Historical production8/8, economy16/16,
-   selected native7/8 and victory1/2 belong to their earlier source. Changed predicates need later affected native checks;
-   focused passes do not promote those historical counts to the new source or close broader Packages3–5.
-4. Next implementation: group remaining PLACE/EXP/WALL/H fixtures/registrations with interrupted construction,
-   queue/research save-load continuation. Reuse existing controls to give the later native gate runnable setups and
-   prove continuation without duplicate effects. Latest focused checkpoint:148/148 controls pass; Packages4/5 remain open.
-   Arbitrary alias/net-zero mutation/restore history (M11), sockets, broad saves and calibration remain outstanding.
-   Final machinery review stays last. HANDOFF owns the next cursor and user policy.
+1. Placement/expansion preserve known access, reject occupied/disconnected sites, select compatible unleased workers
+   and defer optional expansion during credible visible pressure. Fortification checks preserve the exact opening,
+   saved graph identity and cumulative commitments. Nine pure IDs are registered and executed with partial owner evidence.
+2. Construction saves retain unresolved worker intent without granting phantom work. Mixed production/research queues
+   restore exact lanes, paid policy, progress and command identity once. Synchronous completion, cancellation reentry
+   guards, old-generation fences and teardown protect local effects. Focused owner checks pass198/198; tooling3/3.
+3. Packages4/5 remain open: native PLACE/EXP/WALL recipes, broader interrupted saves/replay and real peer/host transfer
+   are not proved by component tests. SharedQueue metadata is not yet in StateHashService's whitelist; adopt it in the
+   next integration batch and assert matching continuation. PLACE-01/02 and H-01–05 gaps also remain.
+4. Group native placement/fortification recipes with interrupted construction/training/research snapshot controls next,
+   reusing existing worlds/runner and testing actual access and exactly-once continuation. No new diagnostic architecture.
+   Full-match victory/broad regression stay deferred. Prior production8/8, economy16/16 and victory1/2 remain historical.
+   M11 continuous/alias authority, calibration and final machinery review remain outstanding. Fields/costs unchanged.
 
-Pure registrations remain59/111 and supported runtime30/116; these are coverage counts, not gameplay completion.
+Pure registrations are68/111 (61.3%),43remaining; supported runtime30/116 (25.9%),86remaining.
+These measure registration, not gameplay completion. See CURRENT-EVIDENCE for commands and per-item limitations.
 
 ## Other concrete gaps already established
 

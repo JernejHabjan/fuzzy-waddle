@@ -44,6 +44,7 @@ import { StatusEffectUiComponent } from "../entity/components/status-effect/stat
 import { SpellComponent } from "../entity/components/combat/components/spell-component";
 import { SpellCastingSystem } from "../entity/systems/spell-casting.system";
 import { ResearchComponent } from "../entity/components/research/research-component";
+import { QueueComponent } from "../entity/components/queue/queue-component";
 import { LevelComponent } from "../entity/components/level/level-component";
 import { TendableComponent } from "../entity/components/tendable/tendable-component";
 import { QueueCommandSystem } from "../entity/systems/queue-command.system";
@@ -83,7 +84,10 @@ export function setActorData(
   actor.emit(ActorDataChangedEvent, actorData);
 }
 
-export function applyActorDefinitionToActor(actor: Phaser.GameObjects.GameObject, actorDefinition?: Partial<ActorDefinition>) {
+export function applyActorDefinitionToActor(
+  actor: Phaser.GameObjects.GameObject,
+  actorDefinition?: Partial<ActorDefinition>
+) {
   if (!actorDefinition) return;
   fenceSceneResourceHistory(actor.scene, "resource_actor_components_change");
   if (actorDefinition.id) getActorComponent(actor, IdComponent)?.setData(actorDefinition.id);
@@ -107,8 +111,17 @@ export function applyActorDefinitionToActor(actor: Phaser.GameObjects.GameObject
     getActorComponent(actor, ResourceDrainComponent)?.setData(actorDefinition.resourceDrain);
   if (actorDefinition.resourceSource)
     getActorComponent(actor, ResourceSourceComponent)?.setData(actorDefinition.resourceSource);
-  if (actorDefinition.production) getActorComponent(actor, ProductionComponent)?.setData(actorDefinition.production);
-  if (actorDefinition.research) getActorComponent(actor, ResearchComponent)?.setData(actorDefinition.research);
+  if (actorDefinition.production)
+    getActorComponent(actor, ProductionComponent)?.setData(
+      actorDefinition.production,
+      actorDefinition.sharedQueue === undefined
+    );
+  if (actorDefinition.research)
+    getActorComponent(actor, ResearchComponent)?.setData(
+      actorDefinition.research,
+      actorDefinition.sharedQueue === undefined
+    );
+  if (actorDefinition.sharedQueue) QueueComponent.createSharedQueue(actor).setSnapshotData(actorDefinition.sharedQueue);
   if (actorDefinition.representable)
     getActorComponent(actor, RepresentableComponent)?.setData(actorDefinition.representable);
   if (actorDefinition.blackboard) getActorComponent(actor, PawnAiController)?.setData(actorDefinition.blackboard);

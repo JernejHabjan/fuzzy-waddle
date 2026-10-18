@@ -318,11 +318,11 @@
     { "id": "RAID-03", "stages": [8, 9, 13], "group": "combat", "fixture": null, "drivers": ["pure", "runtime"] },
     { "id": "PLACE-01", "stages": [10], "group": "placement", "fixture": null, "drivers": ["pure", "runtime"] },
     { "id": "PLACE-02", "stages": [10], "group": "placement", "fixture": null, "drivers": ["pure", "runtime"] },
-    { "id": "PLACE-03", "stages": [10], "group": "placement", "fixture": null, "drivers": ["pure", "runtime"] },
-    { "id": "EXP-01", "stages": [10], "group": "placement", "fixture": null, "drivers": ["pure", "runtime"] },
-    { "id": "EXP-02", "stages": [10], "group": "placement", "fixture": null, "drivers": ["pure", "runtime"] },
-    { "id": "WALL-01", "stages": [11], "group": "fortification", "fixture": null, "drivers": ["pure", "runtime"] },
-    { "id": "WALL-02", "stages": [11], "group": "fortification", "fixture": null, "drivers": ["pure", "runtime"] },
+    { "id": "PLACE-03", "stages": [10], "group": "placement", "fixture": null, "drivers": ["pure", "runtime"], "authoredFixture": "placement-recovery-scenarios.json" },
+    { "id": "EXP-01", "stages": [10], "group": "placement", "fixture": null, "drivers": ["pure", "runtime"], "authoredFixture": "placement-recovery-scenarios.json" },
+    { "id": "EXP-02", "stages": [10], "group": "placement", "fixture": null, "drivers": ["pure", "runtime"], "authoredFixture": "placement-recovery-scenarios.json" },
+    { "id": "WALL-01", "stages": [11], "group": "fortification", "fixture": null, "drivers": ["pure", "runtime"], "authoredFixture": "placement-recovery-scenarios.json" },
+    { "id": "WALL-02", "stages": [11], "group": "fortification", "fixture": null, "drivers": ["pure", "runtime"], "authoredFixture": "placement-recovery-scenarios.json" },
     {
       "id": "WALL-03",
       "stages": [11, 13],
@@ -331,8 +331,8 @@
       "authoredFixture": "stage-13-tactics.json",
       "drivers": ["pure", "runtime"]
     },
-    { "id": "WALL-04", "stages": [11, 12], "group": "fortification", "fixture": null, "drivers": ["pure", "runtime"] },
-    { "id": "WALL-05", "stages": [11], "group": "fortification", "fixture": null, "drivers": ["pure", "runtime"] },
+    { "id": "WALL-04", "stages": [11, 12], "group": "fortification", "fixture": null, "drivers": ["pure", "runtime"], "authoredFixture": "placement-recovery-scenarios.json" },
+    { "id": "WALL-05", "stages": [11], "group": "fortification", "fixture": null, "drivers": ["pure", "runtime"], "authoredFixture": "placement-recovery-scenarios.json" },
     {
       "id": "FIGHT-01",
       "stages": [13],
@@ -427,8 +427,8 @@
       "drivers": ["pure", "runtime"]
     },
     { "id": "H-26", "stages": [9, 13], "group": "combat", "fixture": null, "drivers": ["pure", "runtime"] },
-    { "id": "H-27", "stages": [11], "group": "fortification", "fixture": null, "drivers": ["pure", "runtime"] },
-    { "id": "H-28", "stages": [11, 12], "group": "fortification", "fixture": null, "drivers": ["pure", "runtime"] },
+    { "id": "H-27", "stages": [11], "group": "fortification", "fixture": null, "drivers": ["pure", "runtime"], "authoredFixture": "placement-recovery-scenarios.json" },
+    { "id": "H-28", "stages": [11, 12], "group": "fortification", "fixture": null, "drivers": ["pure", "runtime"], "authoredFixture": "placement-recovery-scenarios.json" },
     {
       "id": "H-29",
       "stages": [8, 12, 13],

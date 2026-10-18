@@ -197,7 +197,8 @@ export function createFortificationLayout(
     return null;
   const occupiedFootprints = new Set<string>();
   for (const candidate of routedNodes) {
-    if (candidate.footprintTileKeys.some((key) => !byKey.get(key)?.groundPassable)) return null;
+    if (candidate.footprintTileKeys.some((key) => !byKey.get(key)?.groundPassable || byKey.get(key)?.observedBlocked))
+      return null;
     if (candidate.footprintTileKeys.some((key) => occupiedFootprints.has(key))) return null;
     candidate.footprintTileKeys.forEach((key) => occupiedFootprints.add(key));
   }

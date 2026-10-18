@@ -95,6 +95,11 @@ export function invokeHarness(input, context) {
     "authoritative-state-projection",
     "actor-manager-ai-save"
   ];
+  if (input.rows.some((row) => row.authoredFixture === "placement-recovery-scenarios.json")) {
+    baseTestNames.push(
+      "ai-(placement-access-scenarios|expansion-access-scenarios|fortification-(manager|recovery|continuation))"
+    );
+  }
   const authoredTestNames = [
     "ai-(brain|production-scenarios(-capacity)?|production-resource-authority|housing-demand|housing-funding|food-infrastructure|" +
       "economy-forecast-(scenarios|budget)|opening-bootstrap-scenarios|" +

@@ -26,6 +26,7 @@ describe("construction lifecycle resource history (authored; final gate pending)
   it.each([true, false])("automatic=%s waits unchanged on denial, then starts only once after funding", (automatic) => {
     const f = constructionHistoryFixture({ startImmediately: automatic }, false);
     if (!automatic) f.component.setData({ assignedBuilders: ["pending-builder"] });
+    if (!automatic) f.index.getActorById.mockReturnValue(f.object as never);
     const epoch = f.coverage.read().lossEpoch;
     jest.mocked(startConstructionPayment).mockReturnValue(false);
     expect(() => {
@@ -208,7 +209,8 @@ describe("construction restore and cleanup resource history", () => {
       state: ConstructionStateEnum.Constructing,
       remainingConstructionTime: 500,
       progressPercentage: 50,
-      playingBuildSound: true
+      playingBuildSound: true,
+      assignedBuilders: ["builder"]
     });
     expect(notifications).toEqual(["progress", "state", "progress", "state", "progress", "state"]);
     f.index.getActorById.mockReturnValue(f.object as never);

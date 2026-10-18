@@ -18,8 +18,7 @@ import type { ConstructionSiteDefinition } from
 // prettier-ignore
 import type { ProductionCostDefinition } from
   "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-cost-definition";
-import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
-import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
+import { ConstructionWorkerMembership } from "./construction-worker-membership";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { ProbableWaffleSceneEventName } from "../../../world/services/recovery/probable-waffle-scene-events";
 import { buildsWithoutAssignedWorkers, constructionVitalityIncrement } from "./construction-progress";
@@ -37,17 +36,16 @@ export class ConstructionSiteComponent {
   private remainingConstructionTime = 0;
   private state: ConstructionStateEnum = ConstructionStateEnum.NotStarted;
   public constructionStateChanged: Subject<ConstructionStateEnum> = new Subject<ConstructionStateEnum>();
-  private assignedBuilders: Phaser.GameObjects.GameObject[] = [];
-  private assignedRepairers: Phaser.GameObjects.GameObject[] = [];
+  private readonly builders: ConstructionWorkerMembership;
+  private readonly repairers: ConstructionWorkerMembership;
   constructionProgressUiComponent: ConstructionProgressUiComponent;
   private readonly presentation: ConstructionPresentation;
   private healthComponent?: HealthComponent;
   private simulationTickSub?: Subscription;
   private playingBuildSound = false;
-  private pendingAssignedBuilderIds?: string[];
-  private pendingAssignedRepairerIds?: string[];
   /** Killed and destroy callbacks can both address this component; refund and listener disposal happen once. */
   private teardownComplete = false;
+  private sceneDisposed = false;
   /** Resource callbacks are synchronous and may attempt to start the same unpaid site again. */
   private paymentInProgress = false;
   /** Terminal settlement survives save/load; callbacks cannot refund the same site again. */
@@ -59,6 +57,8 @@ export class ConstructionSiteComponent {
     private readonly gameObject: Phaser.GameObjects.GameObject,
     private readonly constructionSiteDefinition: ConstructionSiteDefinition
   ) {
+    this.builders = new ConstructionWorkerMembership(gameObject.scene);
+    this.repairers = new ConstructionWorkerMembership(gameObject.scene);
     this.constructionProgressUiComponent = new ConstructionProgressUiComponent(this.gameObject);
     this.presentation = new ConstructionPresentation(
       this.gameObject,
@@ -73,6 +73,7 @@ export class ConstructionSiteComponent {
     );
     gameObject.on(Phaser.GameObjects.Events.DESTROY, this.onDestroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.onDestroy, this);
+    gameObject.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.onSceneShutdown, this);
   }
 
   private init() {
@@ -117,7 +118,7 @@ export class ConstructionSiteComponent {
       this.setInitialHealth();
     }
 
-    if (this.state === ConstructionStateEnum.NotStarted && this.getAssignedBuilderCountForProgress() > 0) {
+    if (this.state === ConstructionStateEnum.NotStarted && this.builders.actors.length > 0) {
       if (!this.startConstruction(true)) return;
     }
 
@@ -126,12 +127,12 @@ export class ConstructionSiteComponent {
     if (this.healthComponent?.killed) return;
 
     const speedBoost = 1.0;
-    // Fixes build-progress drift during partial restore by using pending assignment counts until references resolve.
+    // Unresolved saved workers cannot perform construction until their live references resolve.
     const constructionProgress =
       deltaWithTimeScale * this.constructionSiteDefinition.progressMadeAutomatically * speedBoost +
       deltaWithTimeScale *
         this.constructionSiteDefinition.progressMadePerBuilder *
-        this.getAssignedBuilderCountForProgress() *
+        this.builders.actors.length *
         speedBoost;
 
     const productionDefinition = this.productionDefinition;
@@ -237,13 +238,13 @@ export class ConstructionSiteComponent {
   }
 
   cancelConstruction() {
-    if (this.isFinished || this.cancellationSettled || this.cancellationInProgress) return;
+    if (this.sceneDisposed || this.isFinished || this.cancellationSettled || this.cancellationInProgress) return;
     if (this.paymentInProgress) {
       this.cancellationPending = true;
       return;
     }
     this.cancellationInProgress = true;
-    const builders = [...this.assignedBuilders];
+    const builders = [...this.builders.actors];
     fenceSceneResourceHistory(this.gameObject.scene, "resource_actor_construction_change");
     this.cancellationSettled = true;
     let failure: unknown;
@@ -290,7 +291,7 @@ export class ConstructionSiteComponent {
 
   canAssignBuilder() {
     return (
-      this.assignedBuilders.length < this.constructionSiteDefinition.maxAssignedBuilders &&
+      this.builders.actors.length < this.constructionSiteDefinition.maxAssignedBuilders &&
       !this.cancellationSettled &&
       !this.cancellationInProgress &&
       !this.teardownComplete &&
@@ -304,17 +305,14 @@ export class ConstructionSiteComponent {
       this.cancellationSettled ||
       this.teardownComplete ||
       this.cancellationInProgress ||
-      this.assignedBuilders.includes(gameObject)
+      this.builders.actors.includes(gameObject)
     )
       return;
-    this.assignedBuilders.push(gameObject);
+    this.builders.add(gameObject);
   }
 
   unAssignBuilder(gameObject: Phaser.GameObjects.GameObject) {
-    const index = this.assignedBuilders.indexOf(gameObject);
-    if (index >= 0) {
-      this.assignedBuilders.splice(index, 1);
-    }
+    this.builders.remove(gameObject);
   }
 
   canAssignRepairer() {
@@ -322,7 +320,7 @@ export class ConstructionSiteComponent {
     const healthComponent = getActorComponent(this.gameObject, HealthComponent);
     if (!healthComponent) return false;
     return (
-      this.assignedRepairers.length < this.constructionSiteDefinition.maxAssignedRepairers &&
+      this.repairers.actors.length < this.constructionSiteDefinition.maxAssignedRepairers &&
       healthComponent.healthComponentData.health < healthComponent.healthDefinition.maxHealth
     );
   }
@@ -331,28 +329,25 @@ export class ConstructionSiteComponent {
       this.cancellationSettled ||
       this.teardownComplete ||
       this.cancellationInProgress ||
-      this.assignedRepairers.includes(gameObject)
+      this.repairers.actors.includes(gameObject)
     )
       return;
-    this.assignedRepairers.push(gameObject);
+    this.repairers.add(gameObject);
   }
   unAssignRepairer(gameObject: Phaser.GameObjects.GameObject) {
-    const index = this.assignedRepairers.indexOf(gameObject);
-    if (index >= 0) {
-      this.assignedRepairers.splice(index, 1);
-    }
+    this.repairers.remove(gameObject);
   }
 
   private tryRepair(deltaWithTimeScale: number) {
     const healthComponent = getActorComponent(this.gameObject, HealthComponent);
     if (!healthComponent) return;
 
-    if (this.getAssignedRepairerCountForProgress() === 0) return;
+    if (this.repairers.actors.length === 0) return;
     if (healthComponent.healthComponentData.health >= healthComponent.healthDefinition.maxHealth) return;
 
     // Fixes repair-rate drift from transiently missing repairer references during restore.
     const repairAmount =
-      deltaWithTimeScale * this.constructionSiteDefinition.repairFactor * this.getAssignedRepairerCountForProgress();
+      deltaWithTimeScale * this.constructionSiteDefinition.repairFactor * this.repairers.actors.length;
     fenceSceneResourceHistory(this.gameObject.scene, "resource_actor_health_change");
     healthComponent.healthComponentData.health += repairAmount;
     healthComponent.healthComponentData.health = Math.min(
@@ -363,7 +358,7 @@ export class ConstructionSiteComponent {
     this.presentation.playBuildSound();
 
     if (healthComponent.healthComponentData.health >= healthComponent.healthDefinition.maxHealth) {
-      this.assignedRepairers.forEach((repairer) => {
+      [...this.repairers.actors].forEach((repairer) => {
         const builderComponent = getActorComponent(repairer, BuilderComponent);
         if (builderComponent) {
           builderComponent.leaveRepairSite();
@@ -381,7 +376,7 @@ export class ConstructionSiteComponent {
     this.presentation.playCompletionSound();
 
     if (this.constructionSiteDefinition.consumesBuilders) {
-      [...this.assignedBuilders].forEach((builder) => {
+      [...this.builders.actors].forEach((builder) => {
         builder.destroy();
       });
     }
@@ -407,14 +402,15 @@ export class ConstructionSiteComponent {
       state: this.state,
       remainingConstructionTime: this.remainingConstructionTime,
       progressPercentage: this.progressPercentage,
-      assignedBuilders: this.assignedBuilders.map((builder) => getActorComponent(builder, IdComponent)!.id),
-      assignedRepairers: this.assignedRepairers.map((repairer) => getActorComponent(repairer, IdComponent)!.id),
+      assignedBuilders: this.builders.savedIds,
+      assignedRepairers: this.repairers.savedIds,
       playingBuildSound: this.playingBuildSound,
       ...(this.cancellationSettled ? { cancellationSettled: true as const } : {})
     } satisfies ConstructionSiteComponentData;
   }
 
   setData(data: Partial<ConstructionSiteComponentData>) {
+    if (this.teardownComplete) return;
     // Even matching restores resolve references and emit native callbacks; they cannot reopen prior history.
     fenceSceneResourceHistory(this.gameObject.scene, "resource_actor_construction_change");
     if (data.cancellationSettled) this.cancellationSettled = true;
@@ -423,8 +419,8 @@ export class ConstructionSiteComponent {
     if (data.progressPercentage !== undefined) this.progressPercentage = data.progressPercentage;
     if (data.playingBuildSound !== undefined) this.playingBuildSound = data.playingBuildSound;
     // assigned builders and repairers are set after all objects are loaded.
-    this.pendingAssignedBuilderIds = data.assignedBuilders ? [...data.assignedBuilders] : undefined;
-    this.pendingAssignedRepairerIds = data.assignedRepairers ? [...data.assignedRepairers] : undefined;
+    this.builders.restore(data.assignedBuilders);
+    this.repairers.restore(data.assignedRepairers);
     this.tryResolveAssignedActorReferences();
 
     observeConstructionLifecycle(this.gameObject, this.state, this.remainingConstructionTime, "restored");
@@ -442,49 +438,22 @@ export class ConstructionSiteComponent {
       this.simulationTickSub?.unsubscribe();
       this.gameObject.off(Phaser.GameObjects.Events.DESTROY, this.onDestroy, this);
       this.gameObject.off(HealthComponent.KilledEvent, this.onDestroy, this);
+      this.gameObject.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.onSceneShutdown, this);
     }
+  }
+
+  /** Scene disposal is not a paid cancellation. Actor teardown after shutdown must not mint refunds. */
+  private onSceneShutdown(): void {
+    this.sceneDisposed = true;
+    this.teardownComplete = true;
+    this.simulationTickSub?.unsubscribe();
+    this.gameObject.off(Phaser.GameObjects.Events.DESTROY, this.onDestroy, this);
+    this.gameObject.off(HealthComponent.KilledEvent, this.onDestroy, this);
+    this.gameObject.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.onSceneShutdown, this);
   }
 
   private tryResolveAssignedActorReferences(): void {
-    const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
-    if (!actorIndex) {
-      return;
-    }
-
-    if (this.pendingAssignedBuilderIds) {
-      const resolvedBuilders = this.pendingAssignedBuilderIds
-        .map((id) => actorIndex.getActorById(id))
-        .filter((obj): obj is Phaser.GameObjects.GameObject => obj !== null);
-      if (resolvedBuilders.length === this.pendingAssignedBuilderIds.length) {
-        // Fixes partial assignment state by applying builder references only after complete resolution.
-        this.assignedBuilders = resolvedBuilders;
-        this.pendingAssignedBuilderIds = undefined;
-      }
-    }
-
-    if (this.pendingAssignedRepairerIds) {
-      const resolvedRepairers = this.pendingAssignedRepairerIds
-        .map((id) => actorIndex.getActorById(id))
-        .filter((obj): obj is Phaser.GameObjects.GameObject => obj !== null);
-      if (resolvedRepairers.length === this.pendingAssignedRepairerIds.length) {
-        // Fixes partial assignment state by applying repairer references only after complete resolution.
-        this.assignedRepairers = resolvedRepairers;
-        this.pendingAssignedRepairerIds = undefined;
-      }
-    }
-  }
-
-  private getAssignedBuilderCountForProgress(): number {
-    if (this.pendingAssignedBuilderIds) {
-      return this.pendingAssignedBuilderIds.length;
-    }
-    return this.assignedBuilders.length;
-  }
-
-  private getAssignedRepairerCountForProgress(): number {
-    if (this.pendingAssignedRepairerIds) {
-      return this.pendingAssignedRepairerIds.length;
-    }
-    return this.assignedRepairers.length;
+    this.builders.resolve();
+    this.repairers.resolve();
   }
 }

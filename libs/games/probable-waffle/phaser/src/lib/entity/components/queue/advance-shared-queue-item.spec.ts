@@ -45,7 +45,7 @@ function fixture(remainingTime = 100) {
     handlePayOverTimePayment: pay,
     emitQueueChange: jest.fn(),
     emitProductionProgress: () => log.push(`ui:${item.remainingTime}`),
-    handleProductionComplete: jest.fn(async () => null)
+    handleProductionComplete: jest.fn(() => null)
   } as unknown as ProductionComponent);
   const events: { phase: QueueProgressEvent["phase"]; remaining: number; present: boolean }[] = [];
   scene.events.on(QUEUE_PROGRESS_EVENT, (event: QueueProgressEvent) => {

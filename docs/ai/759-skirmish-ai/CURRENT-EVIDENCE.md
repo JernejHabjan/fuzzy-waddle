@@ -2,6 +2,97 @@
 
 [HANDOFF.md](HANDOFF.md) owns continuation. Read this current batch; older sections retain historical evidence.
 
+## Ten-item placement and paid-work continuation batch — 2026-10-18
+
+Base25beec7fd4a01a4c132be2c137af9e81b3a5d3ba; mechanical registry/protocol split2b25935bd precedes behavior changes.
+Actual model/effort unknown. User approved this grouped implementation and focused publication checks; full matches
+and broad regression stay deferred. No browser/server, new diagnostic architecture, delegation or balance change.
+
+### Acceptance map — focused implementation checked; package acceptance open
+
+1. **Placement:** `ai-construction-access` is wired through `ai-construction-site-selector`. Flood the bounded
+   observed ground component, combine each footprint with earlier reservations, reject disconnected sites and shore
+   occupation, and preserve remaining reachable approaches. Placement-access controls cover corridor alternatives,
+   disconnected ground, simultaneous nonoverlapping prefixes and occupancy versus travel. Native topology remains pending.
+2. **Expansion:** `ai-expansion-site` reuses construction-recovery reachability and economy-site safety in
+   `ai-base-manager`. Occupied/blocked candidates permit alternatives; cargo, transfer, delivery, construction and live
+   actor leases exclude a worker. Credible visible home pressure postpones optional expansion; memory alone does not.
+   Eight expansion controls pass. Complete island establishment and native safe-access outcomes are not certified.
+3. **Walls/openings:** layout rejects occupied cells; connectivity requires the exact intentional opening rather than
+   substituting a neighboring cell. Existing shore/domain/choke controls and new continuation controls pass. Actual
+   friendly army/worker passage through a native constructed prefix still requires the runtime recipe.
+4. **Construction recovery:** `ConstructionWorkerMembership` retains unique unresolved saved IDs but counts only live
+   resolved workers. New assignment supersedes unresolved old intent; removed IDs cannot reappear. Existing compatible
+   unfinished-site recovery, lost/dead builder release and impossible-job controls remain passing. Healthy work is retained.
+5. **Fortification recovery:** retained owner controls cover attempt-specific rebuild effects, abandonment, lost base,
+   blocked footprints and distinct available builders. New saved-graph continuation and cumulative other-base budget
+   controls pass without creating another graph. Tests were split by responsibility; original controls were retained.
+6. **Construction save/cancel:** partial restore preserves absent membership fields, explicit empty lists clear them,
+   and missing saved workers cannot advance construction/repair. Saved cancellation and unchanged payment/refund controls
+   pass. Shutdown unsubscribes without cancellation/refund; late restore/destruction cannot repay a disposed site.
+7. **Training save/load:** versioned optional protocol `sharedQueue` carries exact mixed lanes, empty lanes, remaining
+   work, original policy and command context via ActorManager/actor-data into QueueComponent. Validate replacement before
+   mutation; explicit snapshot supersedes legacy component lists. Ready work completes once without another installment.
+   Production creation and its terminal outcome now settle synchronously before the tick returns to a save capture.
+8. **Research save/load:** retain the original research cost/refund policy; legacy restore replaces rather than appends
+   research while preserving production. Tech-tree/completion reentry guards prevent repeated upgrades/notifications.
+   Remove cancellation handles before refunds; nested and failed callbacks cannot cancel/refund the next paid handle.
+9. **Obsolete callbacks:** queue generations and exact-head checks reject old completion/purchase continuations after
+   restore or disposal; progress callbacks cannot cancel one unit and complete its neighbor. Research completion also
+   rechecks generation after native callbacks. Builder async seeking checks disposal/current ownership after awaiting.
+10. **Cleanup/restart:** builder, site, production, queue and command listeners/subscriptions release on shutdown.
+    Disposed owners reject new work/restore; a fresh queue starts independently. Component lifecycle controls pass;
+    an actual second lobby match and host transfer are separate integration evidence.
+
+### Checks and bounded evidence
+
+Ignored artifacts use `tmp/ai-plans/759-validation/placement-restore-*`; do not feed raw large runtime reports to an LLM.
+
+- Gameplay: `pnpm exec nx test probable-waffle-gameplay --runInBand --testPathPatterns='ai-placement-access-scenarios.spec|ai-expansion-access-scenarios.spec|ai-construction-site-selector.spec|ai-expansion-cost.spec|ai-base-manager.spec|ai-fortification-(manager|recovery|continuation).spec|ai-construction-recovery-proposal.spec|ai-macro-construction.spec'`
+  —10 suites62 tests pass; gameplay-final.log.
+- Native: `pnpm exec nx test probable-waffle-phaser --runInBand --testPathPatterns='queue-continuation.spec|shared-queue-resource.spec|queue-resource-history.spec|research-(preflight|continuation).spec|actor-manager-ai-save.spec|construction-(lifecycle|worker-membership|payment).spec|construction-resource-history|builder-membership.spec|production-spatial-spawn.spec|snapshot.service.spec|advance-shared-queue-item.spec|mutate-shared-queue-item.spec'`
+  —16 suites136 tests pass; native-final.log. Combined owner checks **198/198 (100%),0 failing**.
+- Tooling: `node --test tools/ai/generate-skirmish-test-catalog.test.mjs tools/ai/pure-scenario-evidence.test.mjs`
+  —3/3 pass; tools-final.log. Catalog `node tools/ai/generate-skirmish-test-catalog.mjs --check` passes.
+- Registration: `node tools/ai/run-skirmish-matrix.mjs --scenarios PLACE-03,EXP-01,EXP-02,WALL-01,WALL-02,WALL-04,WALL-05,H-27,H-28 --mode pure`
+  passes; `tmp/ai-skirmish-matrix/1792301313618-passed.json`,9 IDs,10 suites51 tests (overlaps owner checks; do not add
+  to198). Per-ID passing assertions3/2/1/2/1/3/1/1/2; missing IDs[]. Fixture explicitly limits evidence to selected owners.
+- `pnpm exec nx run-many -t lint -p probable-waffle-gameplay probable-waffle-phaser probable-waffle-protocol` passes;
+  lint-final.log. Actual app source typing `pnpm exec tsc -p apps/portal/tsconfig.app.json --noEmit` passes; types-final.log.
+  Flat ESLint config does not currently enable source-structure limits, so explicit owned-source
+  `pnpm exec eslint --rule fuzzy-waddle/source-structure-limits:error <owned TypeScript paths>` also passes:
+  structure-final.log,0 errors/91 warnings. No baseline/config relaxation. Selected source formatting/diff checks pass.
+- `placement-restore-source.json` records base, ordered owned paths and path/NUL/bytes/NUL SHA256, including the
+  mechanical prerequisite. Owned path manifest excludes unrelated run/fog edits. Containing commit/remote equality
+  is checked on publication; no self-referential commit SHA is embedded in this ledger.
+
+### Omission Audit
+
+All ten requested implementation items have wired owners, causal/recovery controls and explicit evidence limits above.
+Save contracts retain old-save fallback and explicit empty replacements. New snapshot validation rejects malformed
+progress/payment/cost before replacing paid work. Caller cancellation outcomes now reflect actual admission rather
+than reporting a successful cancellation on rejected reentry. Definitions/cost formulas and final native admission
+remain authoritative. Durable placement and lifecycle docs explain the new invariants; no temporary plan is imported.
+
+Manifest-derived registration is **68/111 pure (61.3%),43remaining (38.7%)**; supported runtime remains
+**30/116 (25.9%),86remaining (74.1%)**, plus4 content-deferred rows. Nine inventory rows/catalog links updated.
+No new runtime recipe or full-scenario certification is claimed. PLACE-01/02, H-01–05 and unexercised semantic branches
+remain open, along with full-match/broad gates, M11 history, sockets/host transfer, calibration and final machinery review.
+
+### Final Closure Audit — focused checkpoint only
+
+After repairs, all selected owner/tooling checks pass. Rechecked production spawn callers, research tech-tree/refund
+ownership, exact mixed-lane restore wiring, worker pending/live membership, shutdown listeners and unchanged legacy
+fallback. Scope excludes unrelated run/fog edits and baseline changes. This is self-review, not independent review.
+
+**Concrete next integration gap:** ActorManager saves carry `sharedQueue`, but
+`phaser/src/lib/world/services/recovery/state-hash.service.ts` still whitelists legacy production/research data;
+new lane/command metadata is not hashed. Next group adopts that field with matching-state tests, creates native
+placement/fortification recipes for the nine IDs, and exercises interrupted construction/training/research through
+snapshot/replay. Native passage, full interrupted world/peer behavior and second-match acceptance remain open.
+Packages4/5 are not closed. The agreed publication boundary is task-owned commit/push, remote verification and pause;
+recommend Sol6.1/high for these restore/hash authority questions. No automatic model change or next-stage execution.
+
 ## Grouped placement/fortification and native payment recovery — 2026-10-17
 
 Base4e10c89e7b65ee419a15993733eb4999a041d9a9; behavior-neutral split319fd3153, then repairs below.

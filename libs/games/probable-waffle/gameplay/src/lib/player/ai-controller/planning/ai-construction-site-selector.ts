@@ -1,4 +1,5 @@
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
+import { constructionAccessPolicy } from "./ai-construction-access";
 
 /** Selects an observed buildable footprint and reserves its tiles for this decision. */
 export function selectConstructionPosition(
@@ -15,6 +16,7 @@ export function selectConstructionPosition(
   const origin = builder.logicalPosition.value;
   const cells = observation.map?.constructionCells ?? [];
   const byKey = new Map(cells.map((cell) => [cell.tileKey, cell]));
+  const preservesAccess = constructionAccessPolicy(observation, builder, selectedTileKeys);
   const footprintKeys = (x: number, y: number) => {
     const keys: string[] = [];
     for (let offsetY = -footprintRadiusTiles; offsetY <= footprintRadiusTiles; offsetY += 1) {
@@ -49,7 +51,7 @@ export function selectConstructionPosition(
   if (candidates.length === 0) return undefined;
   // Reservations already spread concurrent footprints. Rotating across all candidates discards the distance
   // ordering and can send an idle builder across the map, invalidating the capacity schedule's travel allowance.
-  const selected = candidates[0];
+  const selected = candidates.find((cell) => preservesAccess(footprintKeys(cell.position.x, cell.position.y)));
   if (!selected) return undefined;
   for (const key of footprintKeys(selected.position.x, selected.position.y)) selectedTileKeys.add(key);
   return selected.position;

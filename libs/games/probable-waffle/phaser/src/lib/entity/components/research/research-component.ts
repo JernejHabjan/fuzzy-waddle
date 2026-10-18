@@ -43,6 +43,8 @@ export class ResearchComponent {
 
   private ownerComponent?: OwnerComponent;
   private techTreeService?: TechTreeService;
+  private readonly completing = new Set<ResearchType>();
+  private starting = false;
 
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
@@ -158,48 +160,57 @@ export class ResearchComponent {
     type: ResearchType,
     commandContext?: { execution: GameCommandExecution; playerNumber: PlayerNumber; actorIds: readonly ActorId[] }
   ): boolean {
-    const { canStart } = this.canStartResearch(type);
-    if (!canStart) {
-      return false;
+    if (this.starting) return false;
+    this.starting = true;
+    try {
+      const { canStart } = this.canStartResearch(type);
+      if (!canStart) {
+        return false;
+      }
+
+      const researchData = researchDefinitions[type];
+      if (!researchData) {
+        return false;
+      }
+
+      const owner = this.ownerComponent?.getOwner();
+      if (owner === undefined) {
+        return false;
+      }
+
+      const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
+      if (!sharedQueue?.findQueueForNewItem()) return false;
+      const generation = sharedQueue.workGeneration;
+
+      const unifiedItem: UnifiedQueueItem = {
+        type: QueueItemType.Research,
+        researchData: type,
+        researchCost: { resources: structuredClone(researchData.cost), refundFactor: researchData.refundFactor },
+        totalTime: researchData.researchTime,
+        remainingTime: researchData.researchTime,
+        commandContext
+      };
+
+      // Pay resources immediately
+      emitQueueItemResource({
+        producer: this.gameObject,
+        item: unifiedItem,
+        playerNumber: owner,
+        operation: "immediate_charge",
+        amounts: researchData.cost
+      });
+
+      // Delegate to SharedQueueComponent
+      if (generation !== sharedQueue.workGeneration || !sharedQueue.findQueueForNewItem()) return false;
+      sharedQueue.addItem(unifiedItem, generation);
+
+      this.researchStarted.emit(type);
+      this.gameObject.emit(ResearchComponent.ResearchStartedEvent, type);
+
+      return true;
+    } finally {
+      this.starting = false;
     }
-
-    const researchData = researchDefinitions[type];
-    if (!researchData) {
-      return false;
-    }
-
-    const owner = this.ownerComponent?.getOwner();
-    if (owner === undefined) {
-      return false;
-    }
-
-    const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
-    if (!sharedQueue?.findQueueForNewItem()) return false;
-
-    const unifiedItem: UnifiedQueueItem = {
-      type: QueueItemType.Research,
-      researchData: type,
-      totalTime: researchData.researchTime,
-      remainingTime: researchData.researchTime,
-      commandContext
-    };
-
-    // Pay resources immediately
-    emitQueueItemResource({
-      producer: this.gameObject,
-      item: unifiedItem,
-      playerNumber: owner,
-      operation: "immediate_charge",
-      amounts: researchData.cost
-    });
-
-    // Delegate to SharedQueueComponent
-    sharedQueue.addItem(unifiedItem);
-
-    this.researchStarted.emit(type);
-    this.gameObject.emit(ResearchComponent.ResearchStartedEvent, type);
-
-    return true;
   }
 
   /**
@@ -209,24 +220,29 @@ export class ResearchComponent {
    */
   handleResearchComplete(type: ResearchType, queueItem?: UnifiedQueueItem): void {
     const owner = this.ownerComponent?.getOwner();
-    if (owner !== undefined) {
+    // A restored or repeated completion cannot apply unit upgrades or notifications a second time.
+    if (owner === undefined || this.completing.has(type) || this.techTreeService?.isResearched(owner, type)) return;
+    this.completing.add(type);
+    try {
       const register = () => {
         this.techTreeService?.registerResearchComplete(owner, type);
         return undefined;
       };
       if (queueItem) observeQueueCompletionAuthority({ producer: this.gameObject, item: queueItem }, register);
       else register();
-    }
 
-    // Handle unit upgrades if this research upgrades units
-    const researchData = researchDefinitions[type];
-    if (researchData?.upgradesUnit) {
-      const { unitType, targetLevel } = researchData.upgradesUnit;
-      this.upgradeAllUnitsOfType(unitType, targetLevel, owner);
-    }
+      // Handle unit upgrades if this research upgrades units
+      const researchData = researchDefinitions[type];
+      if (researchData?.upgradesUnit) {
+        const { unitType, targetLevel } = researchData.upgradesUnit;
+        this.upgradeAllUnitsOfType(unitType, targetLevel, owner);
+      }
 
-    this.researchCompleted.emit(type);
-    this.gameObject.emit(ResearchComponent.ResearchCompletedEvent, type);
+      this.researchCompleted.emit(type);
+      this.gameObject.emit(ResearchComponent.ResearchCompletedEvent, type);
+    } finally {
+      this.completing.delete(type);
+    }
   }
 
   /**
@@ -255,7 +271,7 @@ export class ResearchComponent {
 
   /**
    * Public method for SharedQueueComponent to handle research refunds.
-   * Called before item removal; the applied cancellation is carried separately from the purchase execution.
+   * Called after item removal; the applied cancellation is carried separately from the purchase execution.
    */
   public handleResearchRefund(
     type: ResearchType,
@@ -271,11 +287,12 @@ export class ResearchComponent {
     if (!researchData) return;
 
     // Calculate refund based on progress
-    const progress = (totalTime - remainingTime) / totalTime;
-    const refundFactor = researchData.refundFactor * (1 - progress);
+    const progress = totalTime > 0 ? Math.min(1, Math.max(0, (totalTime - remainingTime) / totalTime)) : 1;
+    const policy = item.researchCost ?? { resources: researchData.cost, refundFactor: researchData.refundFactor };
+    const refundFactor = policy.refundFactor * (1 - progress);
 
     const refundedResources: Partial<Record<string, number>> = {};
-    for (const [resourceType, amount] of Object.entries(researchData.cost)) {
+    for (const [resourceType, amount] of Object.entries(policy.resources)) {
       if (amount !== undefined) {
         refundedResources[resourceType] = Math.floor(amount * refundFactor);
       }
@@ -356,9 +373,10 @@ export class ResearchComponent {
     };
   }
 
-  setData(data: Partial<ResearchComponentData>): void {
+  setData(data: Partial<ResearchComponentData>, restoreLegacyQueue = true): void {
+    if (!restoreLegacyQueue) return;
     // Restore research state from save data
-    if (data.researches && data.researches.length > 0) {
+    if (data.researches !== undefined) {
       this.createSharedQueue();
       const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
       if (!sharedQueue) return;
@@ -386,10 +404,7 @@ export class ResearchComponent {
         items.push(unifiedItem);
       });
 
-      // Add all research items to the queue
-      items.forEach((item) => {
-        sharedQueue.addItem(item);
-      });
+      sharedQueue.replaceLegacyItems(QueueItemType.Research, items);
     }
   }
 }

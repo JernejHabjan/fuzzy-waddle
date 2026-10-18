@@ -10,6 +10,9 @@ import {
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
+// prettier-ignore
+import { AssignProductionErrorCode } from
+  "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/assign-production-error-code";
 import { researchDefinitions } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/research/research-definitions";
 import { getActorComponent } from "../../data/actor-component";
 import { emitResource, getCommunicator, getPlayer, isSnapshotApplyInProgress } from "../../data/scene-data";
@@ -251,7 +254,7 @@ describe("shared queue resource callers", () => {
     fixture.actor.emit(Phaser.GameObjects.Events.DESTROY);
   });
 
-  it("uses definition-priced research, retaining the item until the refund and forwarding its actual cancellation", () => {
+  it("uses definition-priced research, removing the item before refund and forwarding its actual cancellation", () => {
     const fixture = setup();
     const definition = researchDefinitions[ResearchType.SnowstormSpell];
     fixture.commands.next({
@@ -278,7 +281,7 @@ describe("shared queue resource callers", () => {
     const refunds = fixture.observations.slice(3);
     expect(
       refunds.every(
-        ({ event, queued }) => event.scope.item === item && queued && event.scope.cancellationCommand === cancellation
+        ({ event, queued }) => event.scope.item === item && !queued && event.scope.cancellationCommand === cancellation
       )
     ).toBe(true);
     expect(requireAiTestEntry(refunds, 2).event).toMatchObject({
@@ -340,5 +343,76 @@ describe("shared queue resource callers", () => {
     expect(isSnapshotApplyInProgress).not.toHaveBeenCalled();
     expect(requireAiTestEntry(fixture.queue.allItems, 0).remainingTime).toBe(100);
     fixture.actor.emit(Phaser.GameObjects.Events.DESTROY);
+  });
+});
+
+describe("paid queue callback and shutdown fences", () => {
+  it("cancels zero-duration over-time work without creating a nonfinite refund", () => {
+    const f = setup(false);
+    f.commands.next(purchase());
+    const item = requireAiTestEntry(f.queue.allItems, 0);
+    if (!item.productionData) throw new Error("production_data_missing");
+    item.productionData.costData.costType = PaymentType.PayOverTime;
+    item.productionData.costData.productionTime = 0;
+    item.totalTime = item.remainingTime = 0;
+    f.commands.next(cancel());
+    expect(emitResource).toHaveBeenLastCalledWith(f.scene, "resource.added", { food: 0 }, 2);
+    expect(f.money.food).toBe(60);
+    f.actor.emit(Phaser.GameObjects.Events.DESTROY);
+  });
+
+  it("admits one production purchase when the payment callback synchronously retries", () => {
+    const f = setup(false);
+    const original = jest.mocked(emitResource).getMockImplementation();
+    let retried = false;
+    jest.mocked(emitResource).mockImplementation((...args) => {
+      if (!retried) {
+        retried = true;
+        f.commands.next({ ...purchase(), execution: execution("nested", 2) });
+      }
+      original?.(...args);
+    });
+    f.commands.next(purchase());
+    expect(f.money.food).toBe(60);
+    expect(f.queue.length).toBe(1);
+    expect(emitResource).toHaveBeenCalledTimes(1);
+    f.actor.emit(Phaser.GameObjects.Events.DESTROY);
+  });
+
+  it("does not insert an old purchase after its payment callback replaces the queue", () => {
+    const f = setup(false);
+    const original = jest.mocked(emitResource).getMockImplementation();
+    jest.mocked(emitResource).mockImplementation((...args) => {
+      original?.(...args);
+      f.queue.setSnapshotData({ schemaVersion: 1, queues: [[]] });
+    });
+    expect(
+      f.production.startProduction({
+        actorName: ObjectNames.TivaraWorker,
+        costData: {
+          costType: PaymentType.PayImmediately,
+          productionTime: 150,
+          refundFactor: 0.5,
+          resources: { food: 40 }
+        }
+      })
+    ).toBe(AssignProductionErrorCode.QueueFull);
+    expect(f.queue.length).toBe(0);
+    expect(emitResource).toHaveBeenCalledTimes(1);
+    f.actor.emit(Phaser.GameObjects.Events.DESTROY);
+  });
+
+  it("removes queue, production and command subscriptions at scene shutdown before actor destruction", () => {
+    const f = setup(false);
+    f.commands.next(purchase());
+    f.scene.events.emit(Phaser.Scenes.Events.SHUTDOWN);
+    expect(f.commands.observed).toBe(false);
+    expect(f.tick$.observed).toBe(false);
+    expect(f.queue.length).toBe(0);
+    f.commands.next(purchase());
+    f.tick$.next(1);
+    expect(emitResource).toHaveBeenCalledTimes(1);
+    f.actor.emit(Phaser.GameObjects.Events.DESTROY);
+    expect(f.scene.events.listenerCount(Phaser.Scenes.Events.SHUTDOWN)).toBe(0);
   });
 });

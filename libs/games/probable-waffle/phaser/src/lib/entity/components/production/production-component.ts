@@ -30,12 +30,12 @@ import type {
 } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-events";
 import type { ProductionQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/game-object";
 import type { ProductionDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-definition";
-import {
-  AssignProductionErrorCode
-} from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/assign-production-error-code";
-import type {
-  ProductionCostDefinition
-} from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-cost-definition";
+// prettier-ignore
+import { AssignProductionErrorCode } from
+  "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/assign-production-error-code";
+// prettier-ignore
+import type { ProductionCostDefinition } from
+  "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-cost-definition";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
@@ -52,6 +52,8 @@ export class ProductionComponent {
   private playerChangedSubscription?: Subscription;
   private productionProgressSubject = new Subject<ProductionProgressEvent>();
   private queueChangeSubject = new Subject<ProductionQueueChangeEvent>();
+  private disposed = false;
+  private starting = false;
 
   constructor(
     private readonly gameObject: GameObject,
@@ -63,9 +65,11 @@ export class ProductionComponent {
     gameObject.on(OwnerComponent.OwnerChangedEvent, this.handleOwnerChanged, this);
     gameObject.on(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
+    gameObject.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
   }
 
   initOnObjectReady() {
+    if (this.disposed) return;
     this.ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
     this.navigationService = getSceneService(this.gameObject.scene, NavigationService)!;
     this.rallyPoint.init(this.gameObject);
@@ -206,31 +210,38 @@ export class ProductionComponent {
     queueItem: ProductionQueueItem,
     commandContext?: { execution: GameCommandExecution; playerNumber: PlayerNumber; actorIds: readonly ActorId[] }
   ): AssignProductionErrorCode | null {
-    if (!this.isFinished) return AssignProductionErrorCode.NotFinished;
+    if (this.disposed || this.starting) return AssignProductionErrorCode.QueueFull;
+    this.starting = true;
+    try {
+      if (!this.isFinished) return AssignProductionErrorCode.NotFinished;
 
-    const productionState = this.canAssignProduction(queueItem);
-    if (productionState) {
-      return productionState;
+      const productionState = this.canAssignProduction(queueItem);
+      if (productionState) {
+        return productionState;
+      }
+
+      const unifiedItem: UnifiedQueueItem = {
+        type: QueueItemType.Production,
+        productionData: queueItem,
+        totalTime: queueItem.costData.productionTime,
+        remainingTime: queueItem.costData.productionTime,
+        commandContext
+      };
+
+      const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
+      if (!sharedQueue) {
+        throw new Error("SharedQueueComponent not found");
+      }
+
+      const generation = sharedQueue.workGeneration;
+      this.handleImmediatePayment(queueItem, unifiedItem);
+      if (generation !== sharedQueue.workGeneration || !sharedQueue.findQueueForNewItem())
+        return AssignProductionErrorCode.QueueFull;
+      sharedQueue.addItem(unifiedItem, generation);
+      return null;
+    } finally {
+      this.starting = false;
     }
-
-    const unifiedItem: UnifiedQueueItem = {
-      type: QueueItemType.Production,
-      productionData: queueItem,
-      totalTime: queueItem.costData.productionTime,
-      remainingTime: queueItem.costData.productionTime,
-      commandContext
-    };
-
-    this.handleImmediatePayment(queueItem, unifiedItem);
-
-    // Delegate to SharedQueueComponent
-    const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
-    if (!sharedQueue) {
-      throw new Error("SharedQueueComponent not found");
-    }
-
-    sharedQueue.addItem(unifiedItem);
-    return null;
   }
 
   private handleImmediatePayment(queueItem: ProductionQueueItem, item: UnifiedQueueItem): void {
@@ -242,8 +253,13 @@ export class ProductionComponent {
       if (!player) return;
 
       // Fully pay for the production item
-      emitQueueItemResource({ producer: this.gameObject, item, playerNumber: owner,
-        operation: "immediate_charge", amounts: queueItem.costData.resources });
+      emitQueueItemResource({
+        producer: this.gameObject,
+        item,
+        playerNumber: owner,
+        operation: "immediate_charge",
+        amounts: queueItem.costData.resources
+      });
     }
   }
 
@@ -265,12 +281,22 @@ export class ProductionComponent {
 
     let productionCostPaid = false;
     if (canPayAllResources) {
-      emitQueueItemResource({ producer: this.gameObject, item, playerNumber: owner,
-        operation: "tick_charge", amounts: resources });
+      emitQueueItemResource({
+        producer: this.gameObject,
+        item,
+        playerNumber: owner,
+        operation: "tick_charge",
+        amounts: resources
+      });
       productionCostPaid = true;
     } else {
-      recordQueueItemPaymentDenied({ producer: this.gameObject, item, playerNumber: owner,
-        operation: "tick_charge", amounts: resources });
+      recordQueueItemPaymentDenied({
+        producer: this.gameObject,
+        item,
+        playerNumber: owner,
+        operation: "tick_charge",
+        amounts: resources
+      });
     }
 
     return productionCostPaid;
@@ -281,9 +307,14 @@ export class ProductionComponent {
    * Handles spawning logic only - queue manipulation is handled by SharedQueue.
    * The optional removed handle scopes local creation diagnostics; other callers retain their existing behavior.
    */
-  async handleProductionComplete(item: ProductionQueueItem, queueItem?: UnifiedQueueItem): Promise<string | null> {
+  handleProductionComplete(item: ProductionQueueItem, queueItem?: UnifiedQueueItem): string | null {
     return spawnProductionActor(
-      this.gameObject, item, this.rallyPoint, this.navigationService, this.ownerComponent, queueItem
+      this.gameObject,
+      item,
+      this.rallyPoint,
+      this.navigationService,
+      this.ownerComponent,
+      queueItem
     );
   }
 
@@ -305,7 +336,9 @@ export class ProductionComponent {
    * Refund the actual removed item using its stored policy. Cancellation lineage is separate from purchase context.
    */
   public handleProductionRefund(
-    costData: ProductionCostDefinition, item: UnifiedQueueItem, cancellationCommand?: CancelProductionCommand
+    costData: ProductionCostDefinition,
+    item: UnifiedQueueItem,
+    cancellationCommand?: CancelProductionCommand
   ): void {
     const owner = this.ownerComponent?.getOwner();
     if (!owner) return;
@@ -313,28 +346,26 @@ export class ProductionComponent {
     if (!player) return;
 
     const refundedResources: Partial<Record<ResourceType, number>> = {};
-    switch (costData.costType) {
-      case PaymentType.PayOverTime: // For pay over time, calculate partial refund based on progress
-        const totalProductionTime = costData.productionTime;
-        const remainingTime = item.remainingTime;
-        const elapsedTime = totalProductionTime - remainingTime;
-        const progressPercentage = elapsedTime / totalProductionTime;
-
-        Object.entries(costData.resources).forEach(([type, amount]) => {
-          // Refund based on remaining progress and refund factor
-          refundedResources[type as ResourceType] = Math.floor(
-            (amount || 0) * (1 - progressPercentage) * costData.refundFactor
-          );
-        });
-        break;
-      case PaymentType.PayImmediately: // For immediate payment, use full refund factor
-        Object.entries(costData.resources).forEach(([type, amount]) => {
-          refundedResources[type as ResourceType] = Math.floor((amount || 0) * costData.refundFactor);
-        });
-        break;
-    }
-    emitQueueItemResource({ producer: this.gameObject, item, playerNumber: owner,
-      operation: "cancellation_refund", amounts: refundedResources, cancellationCommand });
+    // Immediate purchases retain the full configured factor; over-time refunds also use remaining progress.
+    const progressPercentage =
+      costData.costType === PaymentType.PayOverTime
+        ? costData.productionTime > 0
+          ? Math.min(1, Math.max(0, (costData.productionTime - item.remainingTime) / costData.productionTime))
+          : 1
+        : 0;
+    Object.entries(costData.resources).forEach(([type, amount]) => {
+      refundedResources[type as ResourceType] = Math.floor(
+        (amount || 0) * (1 - progressPercentage) * costData.refundFactor
+      );
+    });
+    emitQueueItemResource({
+      producer: this.gameObject,
+      item,
+      playerNumber: owner,
+      operation: "cancellation_refund",
+      amounts: refundedResources,
+      cancellationCommand
+    });
   }
 
   private canAssignProduction(item: ProductionQueueItem): AssignProductionErrorCode | null {
@@ -370,21 +401,28 @@ export class ProductionComponent {
   }
 
   private destroy() {
+    if (this.disposed) return;
+    this.disposed = true;
     this.playerChangedSubscription?.unsubscribe();
     this.gameObject.off(OwnerComponent.OwnerChangedEvent, this.handleOwnerChanged, this);
     this.rallyPoint.destroy();
+    this.gameObject.off(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
+    this.gameObject.off(HealthComponent.KilledEvent, this.destroy, this);
+    this.gameObject.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+    this.productionProgressSubject.complete();
+    this.queueChangeSubject.complete();
   }
 
   /**
    * Cancel production - delegates to SharedQueueComponent
    */
-  cancelProduction(item: ProductionQueueItem, cancellationCommand?: CancelProductionCommand) {
-    if (!this.isFinished) return;
+  cancelProduction(item: ProductionQueueItem, cancellationCommand?: CancelProductionCommand): boolean {
+    if (!this.isFinished) return false;
 
     const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
-    if (!sharedQueue) return;
+    if (!sharedQueue) return false;
 
-    sharedQueue.cancelProductionItem(item, cancellationCommand);
+    return sharedQueue.cancelProductionItem(item, cancellationCommand);
   }
 
   getData(): ProductionComponentData {
@@ -405,9 +443,9 @@ export class ProductionComponent {
     } satisfies ProductionComponentData;
   }
 
-  setData(data: Partial<ProductionComponentData>) {
+  setData(data: Partial<ProductionComponentData>, restoreLegacyQueue = true) {
     // Fixes stale local queue state when snapshot intentionally contains an empty queue.
-    if (data.queue !== undefined) {
+    if (restoreLegacyQueue && data.queue !== undefined) {
       this.createSharedQueue();
       const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
       if (!sharedQueue) return;
@@ -440,7 +478,7 @@ export class ProductionComponent {
       });
 
       // Delegate to SharedQueue
-      sharedQueue.setData(items);
+      sharedQueue.replaceLegacyItems(QueueItemType.Production, items);
     }
 
     if (data.rallyPoint) this.rallyPoint.setRallyData(data.rallyPoint);

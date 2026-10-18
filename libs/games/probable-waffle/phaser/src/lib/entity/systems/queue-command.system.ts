@@ -19,7 +19,9 @@ import { SharedQueueItemType } from "@fuzzy-waddle/probable-waffle-gameplay/enti
 import { ResearchComponent } from "../components/research/research-component";
 import { ProbableWaffleGameCommandTypes } from "@fuzzy-waddle/probable-waffle-protocol";
 import { OwnerComponent } from "../components/owner-component";
-import { AssignProductionErrorCode } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/assign-production-error-code";
+// prettier-ignore
+import { AssignProductionErrorCode } from
+  "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/assign-production-error-code";
 
 export class QueueCommandSystem {
   private commandBusSubscription?: Subscription;
@@ -28,6 +30,7 @@ export class QueueCommandSystem {
     this.listenToCommandBusEvents();
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
+    gameObject.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
   }
 
   private listenToCommandBusEvents() {
@@ -115,8 +118,8 @@ export class QueueCommandSystem {
       return;
     }
 
-    productionComponent.cancelProduction(queueItem.productionData, cmd);
-    commandBus.reportOutcome(cmd, "cancelled", "cancelled");
+    const cancelled = productionComponent.cancelProduction(queueItem.productionData, cmd);
+    commandBus.reportOutcome(cmd, cancelled ? "cancelled" : "rejected", cancelled ? "cancelled" : "invalid_target");
   }
 
   private handleResearchCommand(cmd: ResearchCommand) {
@@ -153,11 +156,14 @@ export class QueueCommandSystem {
       commandBus.reportOutcome(cmd, "rejected", "invalid_target");
       return;
     }
-    researchComponent.cancelResearch(cmd);
-    commandBus.reportOutcome(cmd, "cancelled", "cancelled");
+    const cancelled = researchComponent.cancelResearch(cmd);
+    commandBus.reportOutcome(cmd, cancelled ? "cancelled" : "rejected", cancelled ? "cancelled" : "invalid_target");
   }
 
   private destroy() {
     this.commandBusSubscription?.unsubscribe();
+    this.gameObject.off(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
+    this.gameObject.off(HealthComponent.KilledEvent, this.destroy, this);
+    this.gameObject.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
   }
 }

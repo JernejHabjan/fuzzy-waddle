@@ -12,6 +12,8 @@ export * from "./lib/game-instance/probable-waffle/game-result-status";
 export * from "./lib/game-instance/probable-waffle/player-scores.dto";
 export * from "./lib/game-instance/probable-waffle/game-command";
 export * from "./lib/game-instance/probable-waffle/game-state";
+export type { SharedQueueSnapshotData } from "./lib/game-instance/probable-waffle/shared-queue-snapshot-data";
+export type { QueueItemSnapshotData } from "./lib/game-instance/probable-waffle/queue-item-snapshot-data";
 export * from "./lib/game-instance/probable-waffle/player";
 export * from "./lib/game-instance/probable-waffle/player-resource-mutation";
 export * from "./lib/game-instance/probable-waffle/player-resource-observation";

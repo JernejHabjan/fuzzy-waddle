@@ -18,6 +18,15 @@ Base identity comes from owned definition-backed main structures. Candidate site
 
 Placement optimizes the intended service while preserving reserved footprints and movement corridors. Expansions need economic, strategic or recovery value and must not be used as a substitute for an overdue attack.
 
+The construction selector checks each footprint together with earlier reservations from the same decision against
+the builder's bounded observed ground component. Remaining known approaches must stay connected; a known shore
+transfer cell cannot become a building footprint. Current actor occupancy forbids placement without becoming a
+permanent travel barrier in this advisory check. Missing advisory origin cells defer to native validation.
+Expansion candidates reuse construction-recovery reachability and current economy-site safety. They require an
+available compatible worker without cargo, a transfer, another construction/delivery job or an active actor lease.
+A rejected candidate permits an alternative. Credible visible home pressure postpones optional expansion;
+remembered contacts alone do not freeze it. These checks do not certify island establishment or native topology.
+
 ## Walls, towers and future gates
 
 Each defended base owns a bounded connected fortification graph. It may combine terrain, buildings, wall segments, stairs, towers and an intentional opening. Every construction prefix must preserve friendly worker and army access.
@@ -28,6 +37,10 @@ Effect reservations match that current attempt, so an older completed identity c
 Abandoned plans remain terminal, and losing the protected base abandons its unfinished perimeter. Construction proposals
 skip newly blocked footprints and select distinct compatible workers without cargo, active transfers or other actor leases.
 Shared native placement and arbitration remain the final authority.
+
+Fresh layouts reject occupied footprints. Connectivity checks require the actual intentional opening to remain
+passable and unoccupied; a nearby tile cannot stand in for a sealed opening. Saved fortification graphs retain
+their node identities and commitments, including cumulative commitments from other bases.
 
 Towers need measured coverage and reachable defensive posts. Wall-top defenders need usable stairs and a withdrawal route. A breach triggers bounded repair, alternate defense or abandonment of a no-longer-useful perimeter rather than rebuilding a duplicate wall graph.
 

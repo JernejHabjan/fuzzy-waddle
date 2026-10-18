@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "scenarioIds": ["PLACE-03", "EXP-01", "EXP-02", "WALL-01", "WALL-02", "WALL-04", "WALL-05", "H-27", "H-28"],
+  "driver": "pure",
+  "purpose": "Exercise bounded observed placement, safe expansion, persistent fortification and cumulative commitment owners. These controls are partial scenario evidence, not native match or island-establishment acceptance.",
+  "seeds": [759041],
+  "context": {
+    "mapId": "observed-placement-and-choke-grids",
+    "mapDigest": "typed-placement-expansion-fortification-controls",
+    "side": 1,
+    "faction": "Tivara",
+    "rulesVersion": "probable-waffle-rules-v1",
+    "contractVersions": { "scenario": 1, "brain": 1, "observation": 1, "command": 1 }
+  },
+  "assertionPolicy": {
+    "requires": [
+      "connected-construction-prefix",
+      "nonoverlapping-footprints",
+      "unoccupied-opening",
+      "compatible-available-builder",
+      "home-pressure-deferral",
+      "retained-fortification-identities",
+      "cumulative-other-base-budget"
+    ],
+    "forbids": [
+      "sealed-friendly-corridor",
+      "known-disconnected-construction",
+      "cargo-worker-theft",
+      "memory-only-pressure",
+      "duplicate-rebuilt-graph",
+      "unsupported-air-defense-credit",
+      "shore-egress-occupation"
+    ]
+  }
+}

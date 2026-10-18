@@ -108,7 +108,7 @@ describe("construction silent health/work resource history", () => {
       });
       f.component.update();
       expect(requireAiTestEntry(states, 0)).toEqual({ health: initial, data: before });
-      const work = route === "pending" ? delta * 2 : route === "zero" ? 0 : delta;
+      const work = route === "pending" || route === "zero" ? 0 : delta;
       expect(f.component.getData().remainingConstructionTime).toBe(1000 - work);
       if (route === "instant" || route === "capped") expect(f.health.getData()).toEqual({ health: 100, armour: 20 });
       else if (route !== "no-health")
@@ -164,9 +164,13 @@ describe("construction silent health/work resource history", () => {
     expect(f.coverage.read().lossEpoch).toBe(epoch);
     f.journal.dispose();
   });
+});
+
+describe("construction repair resource history", () => {
+  beforeEach(() => jest.clearAllMocks());
 
   it.each(["missing", "full", "none", "pending", "zero-factor", "clamp"] as const)(
-    "preserves %s repair guards, pending counts and silent health-only writes",
+    "preserves %s repair guards and silent health-only writes without crediting unresolved repairers",
     (route) => {
       const f = constructionHistoryFixture({ repairFactor: route === "zero-factor" ? 0 : 1 });
       f.component.setData({
@@ -198,13 +202,11 @@ describe("construction silent health/work resource history", () => {
         expect(f.health.getData().health).toBe(100);
       });
       f.component.update();
-      const guarded = ["missing", "full", "none"].includes(route);
+      const guarded = ["missing", "full", "none", "pending"].includes(route);
       expect(old).toEqual(guarded ? [] : [before]);
       expect(f.coverage.read().lossEpoch).toBe(epoch + (guarded ? 0 : 1));
       expect(f.health.getData().health).toBe(
-        guarded || route === "zero-factor"
-          ? before.health
-          : Math.min(100, before.health + delta * (route === "pending" ? 2 : 1))
+        guarded || route === "zero-factor" ? before.health : Math.min(100, before.health + delta)
       );
       expect(f.health.getData().armour).toBe(before.armour);
       expect(leave).toHaveBeenCalledTimes(route === "clamp" ? 1 : 0);

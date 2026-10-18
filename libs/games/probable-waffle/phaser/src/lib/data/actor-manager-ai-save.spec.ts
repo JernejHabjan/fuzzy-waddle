@@ -1,12 +1,44 @@
 import Phaser from "phaser";
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { ObjectNames, ResearchType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { ActorData, ActorDataKey, applyActorDefinitionToActor } from "./actor-data";
 import { ActorManager } from "./actor-manager";
 import { GathererComponent } from "../entity/components/resource/gatherer-component";
 import { TendableComponent } from "../entity/components/tendable/tendable-component";
 import { ConvertibleComponent } from "../entity/components/convertible-component";
+import { QueueComponent } from "../entity/components/queue/queue-component";
+import { ProductionComponent } from "../entity/components/production/production-component";
+import { ResearchComponent } from "../entity/components/research/research-component";
+import type { SharedQueueSnapshotData } from "@fuzzy-waddle/probable-waffle-protocol";
 
 describe("Stage 5 AI-relevant actor continuation", () => {
+  it("saves one authoritative mixed queue and restores it once instead of replaying legacy lists", () => {
+    const snapshot: SharedQueueSnapshotData = { schemaVersion: 1, queues: [[]] };
+    const saved = ActorManager.getActorDefinitionFromActor(
+      fakeActor(new Map([[QueueComponent, { getSnapshotData: () => snapshot }]]))
+    );
+    expect(saved?.sharedQueue).toEqual(snapshot);
+    const queue = { setSnapshotData: jest.fn() };
+    const production = { setData: jest.fn() },
+      research = { setData: jest.fn() };
+    applyActorDefinitionToActor(
+      fakeActor(
+        new Map<unknown, unknown>([
+          [QueueComponent, queue],
+          [ProductionComponent, production],
+          [ResearchComponent, research]
+        ])
+      ),
+      {
+        ...saved,
+        production: { queue: [{ name: ObjectNames.TivaraWorker, remainingTime: 10 }] },
+        research: { researches: [{ type: ResearchType.SnowstormSpell, remainingTime: 10 }] }
+      }
+    );
+    expect(queue.setSnapshotData).toHaveBeenCalledTimes(1);
+    expect(queue.setSnapshotData).toHaveBeenCalledWith(snapshot);
+    expect(production.setData).toHaveBeenCalledWith(expect.any(Object), false);
+    expect(research.setData).toHaveBeenCalledWith(expect.any(Object), false);
+  });
   it("round-trips gathering assignments, crop tenders and conversion cadence by stable identity", () => {
     const gathering = {
       carriedResourceAmount: 3,

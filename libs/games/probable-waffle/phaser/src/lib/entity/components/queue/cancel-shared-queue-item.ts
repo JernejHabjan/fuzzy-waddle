@@ -96,18 +96,7 @@ export class SharedQueueCancellation {
       if (firstItem && firstItem.type === QueueItemType.Research && firstItem.researchData) {
         const type = firstItem.researchData;
 
-        // Delegate refund to ResearchComponent
-        if (this.researchComponent) {
-          this.researchComponent.handleResearchRefund(
-            type,
-            firstItem.remainingTime,
-            firstItem.totalTime,
-            firstItem,
-            cancellationCommand
-          );
-        }
-
-        // Remove from queue
+        // Settle ownership before refund callbacks, matching production cancellation. A failed refund is not replayable.
         mutateSharedQueueItem(
           {
             producer: this.gameObject,
@@ -122,6 +111,16 @@ export class SharedQueueCancellation {
           }
         );
         this.reportTerminalOutcome(firstItem, "cancelled", [], "research_cancelled");
+
+        if (this.researchComponent) {
+          this.researchComponent.handleResearchRefund(
+            type,
+            firstItem.remainingTime,
+            firstItem.totalTime,
+            firstItem,
+            cancellationCommand
+          );
+        }
 
         // Emit cancellation
         if (this.researchComponent) {

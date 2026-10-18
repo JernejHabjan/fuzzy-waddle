@@ -74,6 +74,27 @@ These local runtime guards do not establish mutation-complete resource history a
 
 ## Saves and controller lifecycle
 
+Native actor saves carry an optional versioned `sharedQueue` snapshot owned by `QueueComponent`. It preserves
+mixed lane ordering, empty lanes, remaining work, purchase command identity and the original production/research
+cost and refund policy. Validate the complete replacement before mutating live queues. An explicit snapshot,
+including an empty one, supersedes the legacy per-component queue lists; old saves still replace each work kind
+without appending duplicate research or clearing the other kind. Restoring paid work does not charge it again.
+Queue generations reject callbacks and purchases belonging to replaced work. Completion rechecks the live head
+after progress callbacks; reentrant cancellation cannot finish or refund the next item. Native unit creation and
+its terminal outcome settle synchronously before the simulation tick returns, so a tick-boundary capture cannot
+fall between them. Research completion checks the tech tree and guards synchronous reentry before applying upgrades.
+Cancellation removes its handle before refund callbacks. Failed refund callbacks cannot replay that handle.
+
+Construction saves retain unique unresolved worker IDs, but only resolved live workers contribute progress or
+repair. Partial component updates preserve absent membership fields; explicit empty lists clear them. New native
+assignment supersedes unresolved old intent, and removal clears that worker's pending identity. Scene shutdown
+disposes construction, builder, queue, production and command subscriptions; teardown does not cancel/refund a saved
+construction site. Disposed owners cannot accept later assignments or restore callbacks.
+
+These component controls are local evidence. The shared queue snapshot is carried by actor save/load, but its lane
+and command metadata still needs adoption in the multiplayer state-hash projection and interrupted peer/replay
+integration coverage. Local generations do not establish authority across a host change or mutation-complete history.
+
 Save/load preserves brain state, causal deadlines, debt, claims, accepted effects, difficulty, archetype, scheduler state and RNG. Equivalent logical continuation must produce the same decisions after canonical migration.
 
 Host transfer fences old callbacks and establishes one current authority. Scene disposal removes listeners, timers, overlays, captures and controller references. Starting a second match in the same app creates exactly one controller per AI player with no state leakage from the first match.

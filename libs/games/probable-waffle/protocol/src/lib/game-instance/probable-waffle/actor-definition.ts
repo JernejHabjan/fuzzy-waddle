@@ -3,6 +3,7 @@ import type {
   HealthComponentData
 } from "../../communicators/probable-waffle/communicator-game-events";
 import type { ObjectNames } from "./object-names";
+import type { SharedQueueSnapshotData } from "./shared-queue-snapshot-data";
 import type {
   ActorTranslateComponentData,
   AttackComponentData,
@@ -37,6 +38,8 @@ import type {
  */
 export interface ActorDefinition {
   [key: string]: unknown;
+  /** Supersedes legacy production/research lists when present, including an explicitly empty queue. */
+  sharedQueue?: SharedQueueSnapshotData;
   /**
    * Optional human-facing name for {@link ActorDefinition}. It supports UI, narration, or diagnostics and must
    * not be used as the stable identity of the record.

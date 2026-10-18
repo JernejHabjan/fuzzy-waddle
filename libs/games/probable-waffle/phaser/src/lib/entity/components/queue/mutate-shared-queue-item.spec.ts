@@ -40,6 +40,7 @@ function fixture(research = false) {
   const actor = {
     scene,
     once: jest.fn(),
+    off: jest.fn(),
     emit: jest.fn(),
     getData: jest.fn()
   } as unknown as Phaser.GameObjects.GameObject;
@@ -78,7 +79,7 @@ function fixture(research = false) {
     emitQueueChange: jest.fn(),
     emitProductionProgress: jest.fn(),
     handleProductionRefund: () => log.push("refund"),
-    handleProductionComplete: async () => {
+    handleProductionComplete: () => {
       log.push("spawn");
       return "created";
     }
@@ -124,7 +125,7 @@ describe("shared physical queue mutation authority", () => {
       .mockImplementation((scene, service) =>
         service === CommandBusService ? ({ reportPersistedOutcome: terminal } as never) : original(scene, service)
       );
-    const spawn = jest.fn().mockResolvedValueOnce(null).mockResolvedValueOnce("next-unit");
+    const spawn = jest.fn().mockReturnValueOnce(null).mockReturnValueOnce("next-unit");
     f.queue.registerProductionComponent({
       emitQueueChange: jest.fn(),
       emitProductionProgress: jest.fn(),
@@ -210,7 +211,7 @@ describe("shared physical queue mutation authority", () => {
     expect(f.ticks.observed).toBe(false);
   });
 
-  it("research refunds before its actual splice and terminal callback", () => {
+  it("research settles its splice and terminal callback before attempting its refund", () => {
     const f = fixture(true);
     f.queue.addItem(f.item);
     f.log.length = 0;
@@ -221,19 +222,17 @@ describe("shared physical queue mutation authority", () => {
       actorIds: ["producer"]
     };
     expect(f.queue.cancelResearchItem(cancellation)).toBe(true);
-    expect(f.log).toEqual(["refund", "cancel_remove:before", "cancel_remove:after", "terminal", "ui"]);
+    expect(f.log).toEqual(["cancel_remove:before", "cancel_remove:after", "terminal", "refund", "ui"]);
     expect(f.events.slice(-2).map((event) => event.present)).toEqual([true, false]);
   });
 
-  it("completion samples the consumed head before spawning/tech registration, preserving async outcome ordering", async () => {
+  it("completion samples the consumed head and settles spawning/tech registration before the tick returns", () => {
     const f = fixture();
     f.queue.addItem(f.item);
     f.item.remainingTime = 50;
     f.log.length = 0;
     f.ticks.next(1);
     expect(f.item.remainingTime).toBe(0);
-    expect(f.log).toEqual(["complete_remove:before", "complete_remove:after", "spawn"]);
-    await Promise.resolve();
     expect(f.log).toEqual(["complete_remove:before", "complete_remove:after", "spawn", "terminal", "ui"]);
     const r = fixture(true);
     r.queue.addItem(r.item);

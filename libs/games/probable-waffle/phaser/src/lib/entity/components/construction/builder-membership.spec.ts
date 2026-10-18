@@ -9,7 +9,12 @@ jest.mock("../../../data/game-object-helper", () => ({ onObjectReady: jest.fn() 
 
 function fixture() {
   const events = new Phaser.Events.EventEmitter();
-  const worker = { once: events.once.bind(events) } as unknown as Phaser.GameObjects.GameObject;
+  const sceneEvents = new Phaser.Events.EventEmitter();
+  const worker = {
+    once: events.once.bind(events),
+    off: events.off.bind(events),
+    scene: { events: sceneEvents }
+  } as unknown as Phaser.GameObjects.GameObject;
   const oldSite = {} as Phaser.GameObjects.GameObject;
   const newSite = {} as Phaser.GameObjects.GameObject;
   const old = {
@@ -37,6 +42,7 @@ function fixture() {
   });
   return {
     events,
+    sceneEvents,
     builder,
     worker,
     oldSite,
@@ -51,6 +57,17 @@ function fixture() {
 
 describe("construction worker membership", () => {
   beforeEach(() => jest.clearAllMocks());
+  it("releases construction membership at scene shutdown and rejects later assignment or restore callbacks", () => {
+    const f = fixture();
+    f.builder.assignToConstructionSite(f.oldSite);
+    f.sceneEvents.emit(Phaser.Scenes.Events.SHUTDOWN);
+    f.builder.assignToConstructionSite(f.newSite);
+    f.builder.setData({ assignedConstructionSiteId: "late-site" });
+    expect(f.old.unAssignBuilder).toHaveBeenCalledTimes(1);
+    expect(f.next.assignBuilder).not.toHaveBeenCalled();
+    expect(f.builder.isIdle()).toBe(true);
+    expect(f.sceneEvents.listenerCount(Phaser.Scenes.Events.SHUTDOWN)).toBe(0);
+  });
   it("transfers progress membership to the new site and releases the old slot exactly once", () => {
     const f = fixture();
     f.builder.assignToConstructionSite(f.oldSite);

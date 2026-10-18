@@ -59,6 +59,9 @@ export function fortificationPreservesConnectivityV1(input: {
 }): boolean {
   const cells = new Map(input.cells.map((cell) => [cell.tileKey, cell]));
   const blocked = new Set(input.blockedTileKeys);
+  const exactOpeningKey = `${Math.round(input.openingPosition.x)},${Math.round(input.openingPosition.y)}`;
+  // An intentional opening cannot be substituted by a nearby tile when that entrance is actually sealed.
+  if (!cells.get(exactOpeningKey)?.groundPassable || blocked.has(exactOpeningKey)) return false;
   const openingKey = nearestPassableKey(cells, blocked, input.openingPosition);
   const protectedKey = nearestPassableKey(cells, blocked, input.protectedPosition);
   const exteriorKey = nearestPassableKey(cells, blocked, input.exteriorPosition);

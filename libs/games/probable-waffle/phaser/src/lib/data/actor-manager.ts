@@ -31,12 +31,12 @@ import { ScenarioActorReferenceComponent } from "../campaign/scenario/scenario-a
 import { TendableComponent } from "../entity/components/tendable/tendable-component";
 import { ConvertibleComponent } from "../entity/components/convertible-component";
 import { actorPrefabs } from "./actor-prefabs";
-type GameObject = Phaser.GameObjects.GameObject;
+import { QueueComponent } from "../entity/components/queue/queue-component";
 
 export class ActorManager {
   public static actorMap = actorPrefabs;
 
-  static getActorDefinitionFromActor(actor: GameObject): ActorDefinition | undefined {
+  static getActorDefinitionFromActor(actor: Phaser.GameObjects.GameObject): ActorDefinition | undefined {
     const actorName = actor.name as ObjectNames;
     if (!this.actorMap[actorName]) {
       // console.error(`Actor ${actorName} not found`);
@@ -62,6 +62,7 @@ export class ActorManager {
       resourceSource: getActorComponent(actor, ResourceSourceComponent)?.getData(),
       production: getActorComponent(actor, ProductionComponent)?.getData(),
       research: getActorComponent(actor, ResearchComponent)?.getData(),
+      sharedQueue: getActorComponent(actor, QueueComponent)?.getSnapshotData(),
       representable: getActorComponent(actor, RepresentableComponent)?.getData(),
       blackboard: getActorComponent(actor, PawnAiController)?.getData(),
       spell: getActorComponent(actor, SpellComponent)?.getData(),
@@ -74,7 +75,11 @@ export class ActorManager {
     return actorDefinition;
   }
 
-  static createActorFully(scene: Phaser.Scene, name: ObjectNames, actorDefinition: ActorDefinition): GameObject {
+  static createActorFully(
+    scene: Phaser.Scene,
+    name: ObjectNames,
+    actorDefinition: ActorDefinition
+  ): Phaser.GameObjects.GameObject {
     const definition = getPwActorDefinition(name, null);
     if (!definition) {
       throw new Error(`Actor definition for ${name} not found.`);
@@ -86,7 +91,7 @@ export class ActorManager {
       name = randomService.pick(definition.meta.randomOfType) as ObjectNames;
     }
 
-    let actor: GameObject | undefined = undefined;
+    let actor: Phaser.GameObjects.GameObject | undefined = undefined;
     const actorConstructor = this.actorMap[name];
     if (!actorConstructor) {
       console.error(`Actor ${name} not found`);
@@ -106,8 +111,8 @@ export class ActorManager {
     scene: Phaser.Scene,
     name: ObjectNames,
     actorDefinition: Partial<ActorDefinition>
-  ): GameObject {
-    let actor: GameObject | undefined = undefined;
+  ): Phaser.GameObjects.GameObject {
+    let actor: Phaser.GameObjects.GameObject | undefined = undefined;
     const actorConstructor = this.actorMap[name];
     if (!actorConstructor) {
       console.error(`Actor ${name} not found`);
@@ -131,8 +136,8 @@ export class ActorManager {
     scene: Phaser.Scene,
     name: ObjectNames,
     actorDefinition: Partial<ActorDefinition>
-  ): GameObject {
-    let actor: GameObject | undefined = undefined;
+  ): Phaser.GameObjects.GameObject {
+    let actor: Phaser.GameObjects.GameObject | undefined = undefined;
     const actorConstructor = this.actorMap[name];
     if (!actorConstructor) {
       console.error(`Actor ${name} not found`);

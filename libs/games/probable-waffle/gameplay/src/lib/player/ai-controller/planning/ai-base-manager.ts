@@ -1,5 +1,4 @@
 import type { ActorId, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
-import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiBaseStateV1, AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
@@ -8,6 +7,8 @@ import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observa
 import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
 import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
 import { createAiResourceCostClaims } from "./ai-resource-cost-claims";
+import { findAiExpansionBuilder } from "./ai-expansion-site";
+import { hasCredibleAiEconomyThreat } from "./ai-economy-policy";
 
 /** Sustained saturated local service before an expansion becomes a candidate. */
 export const AI_EXPANSION_SATURATION_TICKS = 600;
@@ -169,6 +170,16 @@ export class AiBaseManager implements AiProposalManagerV1 {
     const nearbyResources = resourceActors(observation).filter(
       (resource) => distance(primary.anchorPosition!, position(resource)!) <= BASE_MEMBER_RADIUS
     );
+    if (hasCredibleAiEconomyThreat(observation)) {
+      return {
+        managerId: this.managerId,
+        lane: "essential_economy",
+        evaluated: true,
+        intents: [],
+        reasons: ["expansion_deferred_home_pressure"],
+        statePatch: { bases }
+      };
+    }
     const localResourceValue = nearbyResources.reduce(
       (total, resource) =>
         total +
@@ -190,13 +201,13 @@ export class AiBaseManager implements AiProposalManagerV1 {
         : deliveredIncome === 0 && observation.tick >= AI_EXPANSION_SATURATION_TICKS
           ? "worker_capacity"
           : null;
-    const distantResource = resourceActors(observation)
+    const distantResources = resourceActors(observation)
       .filter((resource) => distance(primary.anchorPosition!, position(resource)!) > BASE_MEMBER_RADIUS)
       .sort(
         (left, right) =>
           distance(primary.anchorPosition!, position(left)!) - distance(primary.anchorPosition!, position(right)!) ||
           left.actorId.localeCompare(right.actorId)
-      )[0];
+      );
     const intents: AiIntentV1[] = [];
     const existingExpansion = bases.find(
       (base) =>
@@ -206,12 +217,29 @@ export class AiBaseManager implements AiProposalManagerV1 {
     const rejectedSiteKeys = new Set(
       bases.flatMap((base) => base.rejectedSiteKeys?.map((entry) => entry.siteKey) ?? [])
     );
-    if (expansionTrigger && distantResource && !existingExpansion) {
-      const resourcePosition = position(distantResource)!;
-      const candidate = siteCandidates(resourcePosition, this.profile).find(
-        (entry) => !rejectedSiteKeys.has(stableSiteKey(primary, entry))
-      );
-      if (candidate) {
+    if (expansionTrigger && !existingExpansion) {
+      const mainObject = anchors[0]?.objectName;
+      const choice = distantResources.flatMap((resource) => {
+        const accessNodeId = resource.accessNodeId.status === "known" ? resource.accessNodeId.value : null;
+        return siteCandidates(position(resource)!, this.profile)
+          .filter((entry) => !rejectedSiteKeys.has(stableSiteKey(primary, entry)))
+          .filter(
+            (entry) =>
+              mainObject &&
+              findAiExpansionBuilder({
+                observation,
+                state,
+                catalog,
+                objectName: mainObject,
+                position: entry,
+                accessNodeId
+              })
+          )
+          .map((candidate) => ({ resource, candidate }));
+      })[0];
+      const distantResource = choice?.resource;
+      const candidate = choice?.candidate;
+      if (distantResource && candidate) {
         const siteKey = stableSiteKey(primary, candidate);
         bases.push({
           baseId: `base:expansion:${siteKey}`,
@@ -271,17 +299,17 @@ export class AiBaseManager implements AiProposalManagerV1 {
               distance(position(actor)!, expansion.anchorPosition!) <= 3
           )
         : false;
-    const builder = mainObject
-      ? owned
-          .filter(
-            (actor) => actor.activeOrder?.status !== "known" || actor.activeOrder.value?.orderType !== OrderType.Build
-          )
-          .find((actor) =>
-            catalog.entries.some(
-              (entry) => entry.sourceObjectName === actor.objectName && entry.constructs.includes(mainObject)
-            )
-          )
-      : undefined;
+    const builder =
+      mainObject && expansion?.anchorPosition
+        ? findAiExpansionBuilder({
+            observation,
+            state,
+            catalog,
+            objectName: mainObject,
+            position: expansion.anchorPosition,
+            accessNodeId: expansion.accessNodeId ?? null
+          })
+        : undefined;
     if (expansion && builder && expansion.anchorPosition && !observedExpansionSite) {
       // Main-building construction capability is definition-derived. If the faction has no legal
       // expansion structure exposed, the saved proposal remains explicit rather than guessing one.

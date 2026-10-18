@@ -20,21 +20,23 @@ import { ProbableWaffleSceneEventName } from "../../../world/services/recovery/p
 import { OrderType } from "../../../ai/order-type";
 import { getActorSystem } from "../../../data/actor-system";
 import { ActionSystem } from "../../systems/action.system";
-import { PRODUCTION_SPATIAL_AUTHORITY_EVENT, type ProductionSpatialAuthorityEvent } from
-  "../../../world/services/multiplayer/production-spatial-authority-event";
+import {
+  PRODUCTION_SPATIAL_AUTHORITY_EVENT,
+  type ProductionSpatialAuthorityEvent
+} from "../../../world/services/multiplayer/production-spatial-authority-event";
 
 /**
  * Resolve a legal spawn and apply the existing rally action; the caller remains the queue owner.
- * A supplied removed handle scopes the actual synchronous creator call, without changing async terminal timing.
+ * The creator and returned identity are synchronous so queue removal, output and terminal outcome share one tick boundary.
  */
-export async function spawnProductionActor(
+export function spawnProductionActor(
   gameObject: Phaser.GameObjects.GameObject,
   item: ProductionQueueItem,
   rallyPoint: RallyPoint,
   navigationService: NavigationService,
   ownerComponent: OwnerComponent | undefined,
   queueItem?: UnifiedQueueItem
-): Promise<string | null> {
+): string | null {
   const { actorName } = item;
 
   const logicalTransform = getGameObjectLogicalTransform(gameObject);
@@ -73,11 +75,7 @@ export async function spawnProductionActor(
   }
 
   if (spawnTile) {
-    const unoccupiedWorldPosition = IsoHelper.isometricTileToWorldXY(
-      gameObject.scene,
-      spawnTile.x,
-      spawnTile.y
-    )!;
+    const unoccupiedWorldPosition = IsoHelper.isometricTileToWorldXY(gameObject.scene, spawnTile.x, spawnTile.y)!;
     finalSpawnPosition = {
       x: unoccupiedWorldPosition.x,
       y: unoccupiedWorldPosition.y,
@@ -89,8 +87,12 @@ export async function spawnProductionActor(
   // A missing legal spawn is reported as a failed completion by the queue owner.
   if (queueItem && gameObject.scene.events.listenerCount(PRODUCTION_SPATIAL_AUTHORITY_EVENT)) {
     gameObject.scene.events.emit(PRODUCTION_SPATIAL_AUTHORITY_EVENT, {
-      kind: "spawn", producer: gameObject, item: queueItem, waterUnit: isWaterUnit,
-      tile: spawnTile ?? null, position: validSpawnLocationFound ? finalSpawnPosition : null
+      kind: "spawn",
+      producer: gameObject,
+      item: queueItem,
+      waterUnit: isWaterUnit,
+      tile: spawnTile ?? null,
+      position: validSpawnLocationFound ? finalSpawnPosition : null
     } satisfies ProductionSpatialAuthorityEvent);
   }
   if (!validSpawnLocationFound) {
@@ -104,7 +106,9 @@ export async function spawnProductionActor(
   if (!sceneActorCreator) throw new Error("SceneActorCreator not found");
 
   const create = () => sceneActorCreator.createFinishedActor(actorName, finalSpawnPosition, originalOwner);
-  const newGameObject = queueItem ? observeQueueCompletionAuthority({ producer: gameObject, item: queueItem }, create) : create();
+  const newGameObject = queueItem
+    ? observeQueueCompletionAuthority({ producer: gameObject, item: queueItem }, create)
+    : create();
   if (newGameObject) {
     if (originalOwner !== undefined) {
       gameObject.scene.events.emit(ProbableWaffleSceneEventName.ScoreUnitProduced, originalOwner);
@@ -120,8 +124,10 @@ export async function spawnProductionActor(
 
 /** Emit only values already selected by the native branch, before that caller can start a navigation query. */
 function executeSpawnRallyAction(
-  newGameObject: Phaser.GameObjects.GameObject, rallyPoint: RallyPoint,
-  producer: Phaser.GameObjects.GameObject, queueItem?: UnifiedQueueItem
+  newGameObject: Phaser.GameObjects.GameObject,
+  rallyPoint: RallyPoint,
+  producer: Phaser.GameObjects.GameObject,
+  queueItem?: UnifiedQueueItem
 ) {
   const actionSystem = getActorSystem<ActionSystem>(newGameObject, ActionSystem);
   if (!actionSystem) {
@@ -134,16 +140,18 @@ function executeSpawnRallyAction(
   const targetGameObject = rallyPoint.getTargetGameObject();
   if (targetGameObject?.active) {
     observeProductionOutput(producer, queueItem, newGameObject, "actor_action", targetGameObject);
-    observeProductionRallyAction(producer, queueItem, newGameObject,
-      () => actionSystem.executeAction(undefined, targetGameObject));
+    observeProductionRallyAction(producer, queueItem, newGameObject, () =>
+      actionSystem.executeAction(undefined, targetGameObject)
+    );
     return;
   }
 
   const targetTile = rallyPoint.getTargetTileVec3();
   if (targetTile) {
     observeProductionOutput(producer, queueItem, newGameObject, "tile_action", null, targetTile);
-    observeProductionRallyAction(producer, queueItem, newGameObject,
-      () => actionSystem.executeAction(OrderType.Move, undefined, targetTile));
+    observeProductionRallyAction(producer, queueItem, newGameObject, () =>
+      actionSystem.executeAction(OrderType.Move, undefined, targetTile)
+    );
   } else {
     observeProductionOutput(producer, queueItem, newGameObject, "no_target");
   }

@@ -26,7 +26,11 @@ export function proposeAiConstructionRecovery(
       .filter((actor) => {
         const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
         const target = self.find((site) => site.actorId === order?.targetActorId);
-        return order?.orderType === OrderType.Build && target && !canReachSite(observation, catalog, actor, target);
+        return (
+          order?.orderType === OrderType.Build &&
+          target &&
+          !canReachAiConstructionSite(observation, catalog, actor, target)
+        );
       })
       .map((actor) => actor.actorId)
   );
@@ -76,7 +80,7 @@ export function proposeAiConstructionRecovery(
           (entry) => entry.sourceObjectName === actor.objectName && entry.constructs.includes(site.objectName)
         )
       )
-      .filter((actor) => canReachSite(observation, catalog, actor, site))
+      .filter((actor) => canReachAiConstructionSite(observation, catalog, actor, site))
       .sort(
         (left, right) => distance(left, site) - distance(right, site) || left.actorId.localeCompare(right.actorId)
       )[0];
@@ -129,7 +133,7 @@ export function proposeAiConstructionRecovery(
 }
 
 /** Reject known impossible routes, while leaving missing advisory topology to shared native validation. */
-function canReachSite(
+export function canReachAiConstructionSite(
   observation: AiObservationV1,
   catalog: AiCapabilityCatalogV1,
   builder: AiObservationV1["actors"][number],
