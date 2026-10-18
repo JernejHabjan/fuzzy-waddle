@@ -1,0 +1,4094 @@
+{
+    "anims": [
+        {
+            "key": "mobs_Slime1/Attack/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/e/30.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/e/31.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/e/32.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/e/33.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/e/34.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/e/35.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/e/36.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/e/37.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/e/38.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/e/39.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime1/Attack/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/n/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/n/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/n/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/n/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/n/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/n/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/n/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/n/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/n/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/n/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime1/Attack/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/s/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/s/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/s/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/s/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime1/Attack/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/w/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/w/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/w/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/w/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/w/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/w/25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/w/26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/w/27.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/w/28.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Attack/w/29.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime1/Death/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/e/30.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/e/31.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/e/32.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/e/33.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/e/34.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/e/35.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/e/36.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/e/37.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/e/38.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/e/39.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime1/Death/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/n/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/n/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/n/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/n/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/n/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/n/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/n/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/n/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/n/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/n/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime1/Death/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/s/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/s/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/s/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/s/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime1/Death/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/w/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/w/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/w/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/w/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/w/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/w/25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/w/26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/w/27.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/w/28.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Death/w/29.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime1/Hurt/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Hurt/e/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Hurt/e/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Hurt/e/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Hurt/e/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Hurt/e/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime1/Hurt/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Hurt/n/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Hurt/n/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Hurt/n/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Hurt/n/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Hurt/n/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime1/Hurt/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Hurt/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Hurt/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Hurt/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Hurt/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Hurt/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime1/Hurt/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Hurt/w/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Hurt/w/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Hurt/w/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Hurt/w/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Hurt/w/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime1/Idle/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Idle/e/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Idle/e/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Idle/e/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Idle/e/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Idle/e/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Idle/e/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime1/Idle/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Idle/n/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Idle/n/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Idle/n/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Idle/n/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Idle/n/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Idle/n/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime1/Idle/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Idle/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Idle/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Idle/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Idle/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Idle/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Idle/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime1/Idle/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Idle/w/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Idle/w/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Idle/w/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Idle/w/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Idle/w/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Idle/w/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime1/Run/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/e/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/e/25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/e/26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/e/27.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/e/28.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/e/29.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/e/30.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/e/31.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime1/Run/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/n/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/n/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/n/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/n/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/n/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/n/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/n/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/n/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime1/Run/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/s/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/s/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime1/Run/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/w/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/w/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/w/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/w/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/w/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/w/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/w/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Run/w/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime1/Walk/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/e/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/e/25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/e/26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/e/27.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/e/28.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/e/29.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/e/30.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/e/31.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime1/Walk/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/n/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/n/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/n/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/n/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/n/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/n/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/n/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/n/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime1/Walk/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/s/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/s/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime1/Walk/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/w/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/w/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/w/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/w/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/w/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/w/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/w/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime1/Walk/w/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime2/Attack/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/e/33.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/e/34.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/e/35.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/e/36.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/e/37.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/e/38.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/e/39.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/e/40.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/e/41.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/e/42.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/e/43.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime2/Attack/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/n/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/n/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/n/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/n/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/n/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/n/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/n/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/n/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/n/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/n/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/n/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime2/Attack/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/s/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/s/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/s/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/s/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/s/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime2/Attack/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/w/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/w/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/w/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/w/25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/w/26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/w/27.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/w/28.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/w/29.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/w/30.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/w/31.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Attack/w/32.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime2/Death/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/e/30.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/e/31.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/e/32.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/e/33.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/e/34.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/e/35.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/e/36.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/e/37.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/e/38.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/e/39.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime2/Death/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/n/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/n/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/n/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/n/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/n/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/n/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/n/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/n/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/n/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/n/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime2/Death/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/s/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/s/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/s/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/s/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime2/Death/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/w/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/w/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/w/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/w/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/w/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/w/25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/w/26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/w/27.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/w/28.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Death/w/29.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime2/Hurt/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Hurt/e/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Hurt/e/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Hurt/e/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Hurt/e/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Hurt/e/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime2/Hurt/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Hurt/n/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Hurt/n/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Hurt/n/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Hurt/n/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Hurt/n/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime2/Hurt/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Hurt/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Hurt/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Hurt/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Hurt/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Hurt/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime2/Hurt/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Hurt/w/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Hurt/w/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Hurt/w/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Hurt/w/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Hurt/w/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime2/Idle/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Idle/e/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Idle/e/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Idle/e/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Idle/e/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Idle/e/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Idle/e/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime2/Idle/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Idle/n/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Idle/n/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Idle/n/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Idle/n/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Idle/n/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Idle/n/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime2/Idle/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Idle/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Idle/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Idle/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Idle/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Idle/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Idle/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime2/Idle/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Idle/w/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Idle/w/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Idle/w/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Idle/w/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Idle/w/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Idle/w/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime2/Run/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/e/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/e/25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/e/26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/e/27.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/e/28.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/e/29.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/e/30.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/e/31.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime2/Run/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/n/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/n/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/n/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/n/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/n/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/n/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/n/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/n/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime2/Run/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/s/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/s/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime2/Run/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/w/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/w/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/w/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/w/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/w/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/w/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/w/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Run/w/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime2/Walk/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/e/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/e/25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/e/26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/e/27.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/e/28.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/e/29.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/e/30.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/e/31.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime2/Walk/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/n/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/n/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/n/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/n/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/n/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/n/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/n/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/n/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime2/Walk/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/s/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/s/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime2/Walk/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/w/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/w/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/w/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/w/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/w/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/w/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/w/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime2/Walk/w/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime3/Attack/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/e/27.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/e/28.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/e/29.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/e/30.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/e/31.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/e/32.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/e/33.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/e/34.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/e/35.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime3/Attack/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/n/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/n/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/n/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/n/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/n/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/n/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/n/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/n/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/n/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime3/Attack/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/s/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/s/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/s/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime3/Attack/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/w/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/w/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/w/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/w/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/w/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/w/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/w/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/w/25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Attack/w/26.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime3/Death/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/e/30.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/e/31.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/e/32.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/e/33.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/e/34.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/e/35.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/e/36.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/e/37.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/e/38.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/e/39.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime3/Death/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/n/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/n/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/n/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/n/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/n/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/n/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/n/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/n/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/n/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/n/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime3/Death/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/s/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/s/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/s/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/s/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime3/Death/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/w/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/w/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/w/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/w/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/w/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/w/25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/w/26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/w/27.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/w/28.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Death/w/29.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime3/Hurt/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Hurt/e/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Hurt/e/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Hurt/e/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Hurt/e/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Hurt/e/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime3/Hurt/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Hurt/n/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Hurt/n/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Hurt/n/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Hurt/n/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Hurt/n/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime3/Hurt/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Hurt/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Hurt/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Hurt/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Hurt/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Hurt/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime3/Hurt/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Hurt/w/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Hurt/w/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Hurt/w/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Hurt/w/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Hurt/w/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime3/Idle/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Idle/e/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Idle/e/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Idle/e/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Idle/e/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Idle/e/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Idle/e/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime3/Idle/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Idle/n/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Idle/n/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Idle/n/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Idle/n/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Idle/n/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Idle/n/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime3/Idle/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Idle/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Idle/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Idle/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Idle/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Idle/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Idle/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime3/Idle/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Idle/w/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Idle/w/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Idle/w/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Idle/w/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Idle/w/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Idle/w/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime3/Run/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/e/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/e/25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/e/26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/e/27.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/e/28.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/e/29.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/e/30.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/e/31.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime3/Run/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/n/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/n/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/n/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/n/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/n/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/n/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/n/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/n/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime3/Run/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/s/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/s/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime3/Run/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/w/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/w/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/w/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/w/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/w/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/w/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/w/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Run/w/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime3/Walk/e",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/e/24.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/e/25.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/e/26.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/e/27.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/e/28.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/e/29.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/e/30.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/e/31.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime3/Walk/n",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/n/10.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/n/11.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/n/12.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/n/13.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/n/14.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/n/15.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/n/8.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/n/9.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime3/Walk/s",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/s/0.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/s/1.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/s/2.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/s/3.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/s/4.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/s/5.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/s/6.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/s/7.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        },
+        {
+            "key": "mobs_Slime3/Walk/w",
+            "type": "frame",
+            "frames": [
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/w/16.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/w/17.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/w/18.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/w/19.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/w/20.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/w/21.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/w/22.png",
+                    "duration": 0,
+                    "keyframe": false
+                },
+                {
+                    "key": "mobs_slimes",
+                    "frame": "Slime3/Walk/w/23.png",
+                    "duration": 0,
+                    "keyframe": false
+                }
+            ],
+            "frameRate": 8,
+            "skipMissedFrames": true,
+            "repeat": -1,
+            "randomFrame": false
+        }
+    ],
+    "globalTimeScale": 1,
+    "meta": {
+        "app": "Phaser Editor 2D v3",
+        "contentType": "Phaser v3 Animations"
+    },
+    "settings": {
+        "sourceLang": "TYPE_SCRIPT",
+        "esModule": false,
+        "generateCode": true
+    }
+}

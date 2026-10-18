@@ -1,0 +1,538 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "dialogue.schema.json",
+  "title": "Probable Waffle mission dialogue",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "missionId",
+    "speakers",
+    "lines",
+    "cinematics"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1,
+      "description": "Version of this document contract used to select compatible validation and migration rules."
+    },
+    "$schema": {
+      "const": "../../../../../schemas/dialogue.schema.json",
+      "description": "$schema used by this campaign definition."
+    },
+    "missionId": {
+      "enum": [
+        "dreams",
+        "cyclops-and-sheep",
+        "snow-wendigo-and-fire",
+        "slingshooters-and-wolves",
+        "owl-and-skaduwee-crystal",
+        "sand-dunes-and-tivara-crystal",
+        "we-had-enough",
+        "sailing-towards-the-new-future",
+        "the-first-and-last-dinner",
+        "the-siege",
+        "time-rush",
+        "joining-crystal",
+        "mobster-or-friend",
+        "the-volcano-is-getting-angry",
+        "cult-wars",
+        "the-volcano",
+        "the-betrayal",
+        "undead-and-cursed-lands",
+        "end-game",
+        "resolution"
+      ],
+      "description": "Stable mission Id that links this definition to another authored campaign record."
+    },
+    "texts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "text"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Stable authored identifier used by references, validation, saves, and replay; it must not be derived from display text."
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Player-facing text; localization-aware consumers resolve or present it without using it as identity."
+          }
+        }
+      },
+      "description": "Ordered texts declared by this campaign definition."
+    },
+    "portraits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "textureKey"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Stable authored identifier used by references, validation, saves, and replay; it must not be derived from display text."
+          },
+          "textureKey": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Texture Key used by this portraits definition."
+          },
+          "frame": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "description": "Frame used by this portraits definition."
+          },
+          "speakingAnimationKey": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Speaking Animation Key used by this portraits definition."
+          }
+        }
+      },
+      "description": "Ordered portraits declared by this campaign definition."
+    },
+    "speakers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "nameTextId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Stable authored identifier used by references, validation, saves, and replay; it must not be derived from display text."
+          },
+          "nameTextId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Stable name Text Id that links this definition to another authored campaign record."
+          },
+          "portraitId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Stable portrait Id that links this definition to another authored campaign record."
+          }
+        }
+      },
+      "description": "Ordered speakers declared by this campaign definition."
+    },
+    "lines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "speakerId",
+          "textId",
+          "text",
+          "delivery"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Stable authored identifier used by references, validation, saves, and replay; it must not be derived from display text."
+          },
+          "speakerId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Stable speaker Id that links this definition to another authored campaign record."
+          },
+          "textId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Stable text Id that links this definition to another authored campaign record."
+          },
+          "text": {
+            "type": "string",
+            "description": "Player-facing text; localization-aware consumers resolve or present it without using it as identity."
+          },
+          "audioAssetKey": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Audio Asset Key used by this lines definition."
+          },
+          "portraitId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Stable portrait Id that links this definition to another authored campaign record."
+          },
+          "delivery": {
+            "enum": [
+              "blocking",
+              "non-blocking",
+              "ambient",
+              "tutorial"
+            ],
+            "description": "Selects the supported delivery variant for this definition."
+          },
+          "minimumTicks": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Numeric minimum Ticks used when resolving this definition."
+          }
+        }
+      },
+      "description": "Ordered lines declared by this campaign definition."
+    },
+    "cinematics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "mode",
+          "seenSkipPolicy",
+          "timeline"
+        ],
+        "anyOf": [
+          {
+            "required": [
+              "gameplayFinalize"
+            ],
+            "properties": {
+              "gameplayFinalize": {
+                "description": "Gameplay Finalize is required by this cinematics variant when its discriminator selects the matching branch."
+              }
+            }
+          },
+          {
+            "required": [
+              "gameplayFinalizeActionIds"
+            ],
+            "properties": {
+              "gameplayFinalizeActionIds": {
+                "description": "Gameplay Finalize Action Ids is required by this cinematics variant when its discriminator selects the matching branch."
+              }
+            }
+          }
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Stable authored identifier used by references, validation, saves, and replay; it must not be derived from display text."
+          },
+          "mode": {
+            "enum": [
+              "gameplay",
+              "directed",
+              "paused"
+            ],
+            "description": "Selects the supported mode variant for this definition."
+          },
+          "seenSkipPolicy": {
+            "enum": [
+              "hold",
+              "tap"
+            ],
+            "description": "Selects the supported seen Skip Policy variant for this definition."
+          },
+          "timeline": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "kind",
+                    "lineId"
+                  ],
+                  "properties": {
+                    "kind": {
+                      "const": "dialogue",
+                      "description": "Discriminator selecting the exact contract variant and its valid companion fields."
+                    },
+                    "lineId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+                      "description": "Stable line Id that links this definition to another authored campaign record."
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "kind",
+                    "durationTicks"
+                  ],
+                  "properties": {
+                    "kind": {
+                      "const": "wait",
+                      "description": "Discriminator selecting the exact contract variant and its valid companion fields."
+                    },
+                    "durationTicks": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "description": "Numeric duration Ticks used when resolving this definition."
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "kind",
+                    "visible"
+                  ],
+                  "properties": {
+                    "kind": {
+                      "const": "letterbox",
+                      "description": "Discriminator selecting the exact contract variant and its valid companion fields."
+                    },
+                    "visible": {
+                      "type": "boolean",
+                      "description": "Whether visible applies when resolving this definition."
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "kind",
+                    "textId"
+                  ],
+                  "properties": {
+                    "kind": {
+                      "const": "title",
+                      "description": "Discriminator selecting the exact contract variant and its valid companion fields."
+                    },
+                    "textId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+                      "description": "Stable text Id that links this definition to another authored campaign record."
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "kind",
+                    "shotId"
+                  ],
+                  "properties": {
+                    "kind": {
+                      "const": "camera-shot",
+                      "description": "Discriminator selecting the exact contract variant and its valid companion fields."
+                    },
+                    "shotId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+                      "description": "Stable shot Id that links this definition to another authored campaign record."
+                    },
+                    "fallbackPointId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+                      "description": "Stable fallback Point Id that links this definition to another authored campaign record."
+                    },
+                    "durationTicks": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "description": "Numeric duration Ticks used when resolving this definition."
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "kind",
+                    "actorId"
+                  ],
+                  "properties": {
+                    "kind": {
+                      "const": "camera-actor",
+                      "description": "Discriminator selecting the exact contract variant and its valid companion fields."
+                    },
+                    "actorId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+                      "description": "Stable actor Id that links this definition to another authored campaign record."
+                    },
+                    "fallbackPointId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+                      "description": "Stable fallback Point Id that links this definition to another authored campaign record."
+                    },
+                    "durationTicks": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "description": "Numeric duration Ticks used when resolving this definition."
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "kind",
+                    "assetKey"
+                  ],
+                  "properties": {
+                    "kind": {
+                      "const": "audio",
+                      "description": "Discriminator selecting the exact contract variant and its valid companion fields."
+                    },
+                    "assetKey": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "Asset Key used by this timeline definition."
+                    },
+                    "waitForCompletion": {
+                      "type": "boolean",
+                      "description": "Whether wait For Completion applies when resolving this definition."
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "kind",
+                    "suppressed"
+                  ],
+                  "properties": {
+                    "kind": {
+                      "const": "ui-suppression",
+                      "description": "Discriminator selecting the exact contract variant and its valid companion fields."
+                    },
+                    "suppressed": {
+                      "type": "boolean",
+                      "description": "Whether suppressed applies when resolving this definition."
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "kind",
+                    "actorId",
+                    "animationKey"
+                  ],
+                  "properties": {
+                    "kind": {
+                      "const": "actor-animation",
+                      "description": "Discriminator selecting the exact contract variant and its valid companion fields."
+                    },
+                    "actorId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+                      "description": "Stable actor Id that links this definition to another authored campaign record."
+                    },
+                    "animationKey": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "Animation Key used by this timeline definition."
+                    }
+                  }
+                }
+              ]
+            },
+            "description": "Ordered timeline declared by this cinematics definition."
+          },
+          "lockPlayerControl": {
+            "type": "boolean",
+            "description": "Whether lock Player Control applies when resolving this definition."
+          },
+          "lockCamera": {
+            "type": "boolean",
+            "description": "Whether lock Camera applies when resolving this definition."
+          },
+          "resumeCueIndexes": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "description": "Ordered resume Cue Indexes declared by this cinematics definition."
+          },
+          "fallbackTimeoutTicks": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Numeric fallback Timeout Ticks used when resolving this definition."
+          },
+          "gameplayPrelude": {
+            "type": "array",
+            "items": {
+              "$ref": "mission.schema.json#/$defs/action"
+            },
+            "description": "Ordered gameplay Prelude declared by this cinematics definition."
+          },
+          "gameplayFinalize": {
+            "type": "array",
+            "items": {
+              "$ref": "mission.schema.json#/$defs/action"
+            },
+            "description": "Ordered gameplay Finalize declared by this cinematics definition."
+          },
+          "gameplayPreludeActionIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "description": "Stable gameplay Prelude Action Ids that link this definition to authored campaign records."
+          },
+          "gameplayFinalizeActionIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "description": "Stable gameplay Finalize Action Ids that link this definition to authored campaign records."
+          }
+        }
+      },
+      "description": "Ordered cinematics declared by this campaign definition."
+    }
+  }
+}

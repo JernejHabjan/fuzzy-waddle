@@ -1,0 +1,63 @@
+{
+  "$schema": "../../../../../schemas/dialogue.schema.json",
+  "schemaVersion": 1,
+  "missionId": "the-first-and-last-dinner",
+  "texts": [
+    {
+      "id": "narrator-name",
+      "text": "Narrator"
+    },
+    {
+      "id": "opening-briefing-text",
+      "text": "A tense meal is the last chance for peace."
+    },
+    {
+      "id": "primary-title",
+      "text": "Attend the summit"
+    },
+    {
+      "id": "primary-description",
+      "text": "Attend the summit; Escape the ambush"
+    },
+    {
+      "id": "optional-title",
+      "text": "Discover an optional opportunity"
+    },
+    {
+      "id": "optional-description",
+      "text": "Explore the mission space for an optional story or tactical discovery."
+    },
+    {
+      "id": "failure-title",
+      "text": "Mission force lost"
+    },
+    {
+      "id": "failure-description",
+      "text": "Keep every mission-critical participant and structure operational."
+    },
+    {
+      "id": "feast-prepared-title",
+      "text": "Checkpoint: both delegations finish their preparations"
+    },
+    {
+      "id": "feast-prepared-resume",
+      "text": "Resume after both delegations finish their preparations."
+    }
+  ],
+  "speakers": [
+    {
+      "id": "mission-narrator",
+      "nameTextId": "narrator-name"
+    }
+  ],
+  "lines": [
+    {
+      "id": "opening-briefing",
+      "speakerId": "mission-narrator",
+      "textId": "opening-briefing-text",
+      "text": "A tense meal is the last chance for peace.",
+      "delivery": "non-blocking"
+    }
+  ],
+  "cinematics": []
+}

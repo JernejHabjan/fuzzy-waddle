@@ -1,0 +1,8 @@
+{
+  "plugins": [],
+  "skip": ["src/metadata"],
+  "playUrl": "http://localhost:4200/little-muncher",
+  "settings": {
+    "phasereditor2d.scene.enablePixelArt": true
+  }
+}

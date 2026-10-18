@@ -1,0 +1,63 @@
+{
+  "$schema": "../../../../../schemas/dialogue.schema.json",
+  "schemaVersion": 1,
+  "missionId": "sailing-towards-the-new-future",
+  "texts": [
+    {
+      "id": "narrator-name",
+      "text": "Narrator"
+    },
+    {
+      "id": "opening-briefing-text",
+      "text": "Both factions sail toward a future neither fully trusts."
+    },
+    {
+      "id": "primary-title",
+      "text": "Reach the coast"
+    },
+    {
+      "id": "primary-description",
+      "text": "Reach the coast; Defend the fleet"
+    },
+    {
+      "id": "optional-title",
+      "text": "Discover an optional opportunity"
+    },
+    {
+      "id": "optional-description",
+      "text": "Explore the mission space for an optional story or tactical discovery."
+    },
+    {
+      "id": "failure-title",
+      "text": "Mission force lost"
+    },
+    {
+      "id": "failure-description",
+      "text": "Keep every mission-critical participant and structure operational."
+    },
+    {
+      "id": "pirates-cleared-title",
+      "text": "Checkpoint: the pirate blockade is defeated"
+    },
+    {
+      "id": "pirates-cleared-resume",
+      "text": "Resume after the pirate blockade is defeated."
+    }
+  ],
+  "speakers": [
+    {
+      "id": "mission-narrator",
+      "nameTextId": "narrator-name"
+    }
+  ],
+  "lines": [
+    {
+      "id": "opening-briefing",
+      "speakerId": "mission-narrator",
+      "textId": "opening-briefing-text",
+      "text": "Both factions sail toward a future neither fully trusts.",
+      "delivery": "non-blocking"
+    }
+  ],
+  "cinematics": []
+}

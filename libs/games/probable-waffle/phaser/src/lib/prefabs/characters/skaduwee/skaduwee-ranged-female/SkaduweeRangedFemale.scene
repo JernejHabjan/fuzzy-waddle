@@ -1,0 +1,47 @@
+{
+    "id": "5d25d138-1fca-431c-b1f9-45f8ba5c96a0",
+    "sceneType": "PREFAB",
+    "settings": {
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 1280,
+        "borderHeight": 720
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "e76c1fc5-9b94-46d4-bb7e-f2bc03ec42b6",
+            "label": "container_1",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.y": -25.354877574887297,
+            "hitArea.radius": 32,
+            "x": 32,
+            "y": 57.077002702152576,
+            "list": [
+                {
+                    "type": "Sprite",
+                    "id": "228ba5a7-5586-458f-a95d-73cac236c30e",
+                    "label": "skaduwee_ranged_female_idle_down",
+                    "texture": {
+                        "key": "ranged_female_lvl1_long_range_idle",
+                        "frame": 4
+                    },
+                    "y": -25.077002702152576,
+                    "animationPlayMethod": 1,
+                    "animationKey": "ranged_female_lvl1_long_range_idle_2"
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

@@ -1,0 +1,41 @@
+{
+    "id": "dce5200d-b558-49fa-9df1-a412ce24adfc",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "24d2509b-4670-4814-bdb5-31140d360f4b",
+            "label": "undead_land_Pile_sculls_shadow1_png",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 64,
+            "hitArea.y": 64,
+            "hitArea.radius": 24.78101603876938,
+            "texture": {
+                "key": "environment_1",
+                "frame": "undead_land/Pile_sculls_shadow1.png"
+            },
+            "x": 32,
+            "y": 26.887603032201255,
+            "originY": 0.5850593986890723
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

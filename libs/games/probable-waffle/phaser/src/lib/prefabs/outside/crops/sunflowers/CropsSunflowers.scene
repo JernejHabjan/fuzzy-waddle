@@ -1,0 +1,43 @@
+{
+    "id": "3aaf8457-9fcb-4ab1-acdb-08bf37de6d15",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "b1c0295e-e075-4bfc-8e36-2e498590d61c",
+            "label": "crops_sunflowers_16_png",
+            "hitArea.shape": "RECTANGLE",
+            "hitArea.x": 8,
+            "hitArea.y": 7,
+            "hitArea.width": 15.820104173832735,
+            "hitArea.height": 42.83658177534231,
+            "texture": {
+                "key": "crops",
+                "frame": "crops/sunflowers/16.png"
+            },
+            "x": 32.43021011352539,
+            "y": 57.059486153612895,
+            "originX": 0.513444065221452,
+            "originY": 0.9177682357527348
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

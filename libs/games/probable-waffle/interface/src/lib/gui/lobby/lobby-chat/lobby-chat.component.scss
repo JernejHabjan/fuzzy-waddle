@@ -1,0 +1,58 @@
+:host {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+:host ::ng-deep fuzzy-waddle-chat {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+:host ::ng-deep fuzzy-waddle-chat .chat-container {
+  background-color: transparent;
+}
+
+:host ::ng-deep fuzzy-waddle-chat .chat-messages {
+  background-color: rgba(15, 18, 22, 0.38);
+}
+
+:host ::ng-deep fuzzy-waddle-chat .chat-footer {
+  border-top: 1px solid rgba(111, 85, 52, 0.42);
+  background-color: rgba(19, 23, 28, 0.96);
+}
+
+:host ::ng-deep fuzzy-waddle-chat .chat-footer .chat-report-status {
+  color: #c8b89b;
+}
+
+:host ::ng-deep fuzzy-waddle-chat .chat-footer .chat-form .chat-input {
+  border: 1px solid rgba(111, 85, 52, 0.52);
+  background-color: #101317;
+  color: #f5ecd9;
+}
+
+:host ::ng-deep fuzzy-waddle-chat .chat-footer .chat-form .chat-input::placeholder {
+  color: rgba(200, 184, 155, 0.72);
+}
+
+:host ::ng-deep fuzzy-waddle-chat .chat-footer .chat-form .chat-input:focus {
+  border-color: rgba(240, 196, 107, 0.72);
+  box-shadow: 0 0 0 0.2rem rgba(240, 196, 107, 0.12);
+}
+
+:host ::ng-deep fuzzy-waddle-chat .chat-footer .chat-form .chat-button {
+  border: 1px solid rgba(240, 196, 107, 0.46);
+  background-color: rgba(240, 196, 107, 0.12);
+  color: #f5ecd9;
+}
+
+:host ::ng-deep fuzzy-waddle-chat .chat-footer .chat-form .chat-button:not([disabled]):hover {
+  background-color: #d6a656;
+  color: #1a1510;
+}
+
+:host ::ng-deep fuzzy-waddle-chat .chat-footer .chat-form .chat-button[disabled] {
+  opacity: 0.45;
+}

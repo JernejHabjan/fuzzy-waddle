@@ -1,0 +1,18 @@
+import { inject, Injectable } from "@angular/core";
+import { type CanActivate, Router } from "@angular/router";
+import { AuthService } from "./auth.service";
+
+@Injectable()
+export class AuthGuard implements CanActivate {
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+
+  async canActivate(): Promise<boolean> {
+    await this.authService.ensureAuthReady();
+    const isAuthenticated = this.authService.isAuthenticated;
+    if (!isAuthenticated) {
+      await this.router.navigate(["/"]);
+    }
+    return isAuthenticated;
+  }
+}

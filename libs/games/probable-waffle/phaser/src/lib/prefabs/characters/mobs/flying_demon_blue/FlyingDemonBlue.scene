@@ -1,0 +1,45 @@
+{
+    "id": "579c629d-1200-40e0-87b8-a743851497cc",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 120,
+        "borderHeight": 120
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "f5b7e5c6-726f-4090-a394-eac781f48d8c",
+            "label": "flying_demon_blue_idle_se",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 40,
+            "hitArea.y": 40,
+            "hitArea.radius": 26.89258162369986,
+            "texture": {
+                "key": "mobs_flying_demon_blue",
+                "frame": "fly/s/0.png"
+            },
+            "x": 60,
+            "y": 93,
+            "scaleX": 1.5,
+            "scaleY": 1.5,
+            "originY": 0.773612963520417,
+            "animationPlayMethod": 1,
+            "animationKey": "mobs_flying_demon_blue_fly/w"
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

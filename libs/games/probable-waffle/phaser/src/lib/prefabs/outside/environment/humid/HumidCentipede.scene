@@ -1,0 +1,40 @@
+{
+    "id": "5e5cae07-8b39-4842-a742-d38b872fd17f",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "7ed28242-ab16-4384-b4eb-69f94c224e78",
+            "label": "humid_centipede_dark_shadow2_png",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "42.01663236196268 99.40911230686615 105.02701737404433 68.3961884337322 179.8518495758913 104.8240672688419 219.23334020844234 92.02508281326283 205.94208711995637 132.88337934453452 142.9317021078747 144.20555790139295 72.53728760218976 180.63343673650266 43.98570689359022 156.02000509115825",
+            "texture": {
+                "key": "environment_1",
+                "frame": "humid/centipede_dark_shadow2.png"
+            },
+            "x": 22.64689561644886,
+            "y": -8.11862630130679,
+            "originX": 0.46346443600175335,
+            "originY": 0.5307866160105204
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

@@ -1,0 +1,15 @@
+import baseConfig from "../../eslint.config.mjs";
+
+export default [
+  ...baseConfig,
+  {
+    files: ["**/*.ts"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-unused-vars": "off",
+      "no-case-declarations": "off",
+      "@typescript-eslint/no-empty-function": "off",
+      "@typescript-eslint/no-inferrable-types": "off"
+    }
+  }
+];

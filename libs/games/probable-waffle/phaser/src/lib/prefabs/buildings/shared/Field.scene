@@ -1,0 +1,64 @@
+{
+    "id": "a3f7b2c1-d4e5-4f6a-8b9c-0d1e2f3a4b5c",
+    "sceneType": "PREFAB",
+    "settings": {
+        "snapEnabled": true,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 192,
+        "borderHeight": 160
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "b4c5d6e7-f8a9-4b0c-1d2e-3f4a5b6c7d8e",
+            "label": "container_1",
+            "hitArea.shape": "POLYGON",
+            "hitArea.points": "-35.340558107590454 -12.362662959051235 -1.4848432736131016 -30.371021913294513 57.22240691721999 -1.5576475865052686 5.358333128999341 33.01840160564183 -56.95058885268239 7.806699069701239",
+            "x": 64,
+            "y": 144,
+            "scaleX": 1.2,
+            "scaleY": 1.2,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "c5d6e7f8-a9b0-4c1d-2e3f-4a5b6c7d8e9f",
+                    "label": "fieldCursor",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/misc/ruins-flat/ruins-flat-1.png"
+                    },
+                    "x": -0.24104731556548842,
+                    "y": -29.384973477389252,
+                    "scaleX": 1.2,
+                    "scaleY": 1.2,
+                    "visible": false
+                },
+                {
+                    "type": "Image",
+                    "id": "d6e7f8a9-b0c1-4d2e-3f4a-5b6c7d8e9f0a",
+                    "label": "fieldLevel1",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "factions",
+                        "frame": "buildings/misc/ruins-flat/ruins-flat-1.png"
+                    },
+                    "x": -0.24104731556548842,
+                    "y": -29.384973477389252
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

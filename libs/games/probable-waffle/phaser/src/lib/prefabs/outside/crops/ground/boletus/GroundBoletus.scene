@@ -1,0 +1,42 @@
+{
+    "id": "bf40fd87-f272-4f8e-9786-6b657fa9a6a9",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "c83b26dc-3481-4b1d-a812-e1230b443ec2",
+            "label": "ground_boletus_3_png",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 8,
+            "hitArea.y": 20,
+            "hitArea.radius": 8.158093792084095,
+            "texture": {
+                "key": "crops",
+                "frame": "ground/boletus/3.png"
+            },
+            "x": 32.0797986253965,
+            "y": 48.87778487936151,
+            "originX": 0.5049874140872812,
+            "originY": 0.7774307774800473
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

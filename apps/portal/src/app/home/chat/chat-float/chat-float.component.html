@@ -1,0 +1,15 @@
+<div [class.chat-container-minimized]="!maximized" class="chat-container app-floating-panel">
+  <div class="chat">
+    <div class="chat-header">
+      <div class="chat-title">Chat</div>
+      <!-- minimize button -->
+      <div (click)="toggleChatVisibility()" class="chat-minimize">
+        <fa-icon [icon]="maximized ? faWindowMinimize : faWindowMaximize" />
+      </div>
+    </div>
+
+    @if (maximized) {
+      <fuzzy-waddle-chat [messageListener]="messageListener" (newMessage)="chatService.sendMessage($event)" />
+    }
+  </div>
+</div>

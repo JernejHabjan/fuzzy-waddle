@@ -1,0 +1,113 @@
+{
+    "id": "f6f59ad2-861b-4f66-87b1-f1f4b85fbcaa",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 80,
+        "borderHeight": 48
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "7eed5197-68eb-45dd-a80b-d0eb680a996f",
+            "label": "container_1",
+            "list": [
+                {
+                    "type": "NineSlice",
+                    "id": "90d9c2e1-7425-4d51-a9d6-072d58f4a05a",
+                    "label": "button_bg",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "cryos_mini_gui/buttons/button_small.png"
+                    },
+                    "x": 21,
+                    "y": 15,
+                    "scaleX": 2.0762647352357817,
+                    "scaleY": 1.5492262688240692,
+                    "leftWidth": 3,
+                    "rightWidth": 3,
+                    "topHeight": 3,
+                    "bottomHeight": 3,
+                    "width": 20,
+                    "height": 20
+                },
+                {
+                    "type": "Text",
+                    "id": "3bf0e9c2-b96b-4cae-ad37-6885fa38012e",
+                    "label": "button_text",
+                    "x": 21,
+                    "y": 14,
+                    "originX": 0.5,
+                    "originY": 0.5,
+                    "text": "Chat",
+                    "resolution": 10,
+                    "fontFamily": "disposabledroid",
+                    "fontSize": "16px",
+                    "color": "#000000ff"
+                },
+                {
+                    "type": "Ellipse",
+                    "id": "894b3347-a2d7-490f-ba11-fdc6e5c496d0",
+                    "label": "unread_badge",
+                    "scope": "CLASS",
+                    "x": 38,
+                    "y": 4,
+                    "isFilled": true,
+                    "fillColor": "#ff0000",
+                    "isStroked": true,
+                    "strokeColor": "#ffffff",
+                    "lineWidth": 1,
+                    "width": 12,
+                    "height": 12,
+                    "visible": false
+                },
+                {
+                    "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f955",
+                    "id": "5600f463-9df4-4429-884e-fc75a5749274",
+                    "label": "onPointerUpScript",
+                    "displayName": "Pointer up",
+                    "list": [
+                        {
+                            "prefabId": "757fdd95-b5cc-4c5b-adef-a26b5965d851",
+                            "id": "7b3f53c4-d74f-4b8c-b701-c931bd8ca6f6",
+                            "unlock": [
+                                "eventName"
+                            ],
+                            "label": "emitAction",
+                            "displayName": "Emit \"action\"",
+                            "eventName": "action"
+                        }
+                    ]
+                },
+                {
+                    "prefabId": "a06ed60b-79f1-4444-bf35-89046f71f954",
+                    "id": "bb1739aa-266b-4489-98eb-830769467aa2",
+                    "label": "onPointerDownScript",
+                    "displayName": "Pointer down",
+                    "list": [
+                        {
+                            "prefabId": "0e39177a-6e19-4b56-a7c2-2360a2e41505",
+                            "id": "756d0642-c77b-4d52-9248-c098c79ba7e2",
+                            "label": "action_click",
+                            "displayName": "Push action"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

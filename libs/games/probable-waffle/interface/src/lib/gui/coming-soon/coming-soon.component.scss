@@ -1,0 +1,33 @@
+.coming-soon-shell {
+  min-height: calc(100vh - 120px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.coming-soon-card {
+  max-width: 40rem;
+  width: 100%;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  border-radius: 1.2rem;
+  background-color: rgba(29, 35, 42, 0.96);
+  border: 1px solid rgba(111, 85, 52, 0.72);
+  box-shadow: 0 20px 36px rgba(0, 0, 0, 0.34);
+}
+
+.coming-soon-title {
+  font-family: "Cinzel", serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #f0c46b;
+}
+
+.coming-soon-copy {
+  color: #c8b89b;
+  font-size: 1.05rem;
+  max-width: 28rem;
+  margin: 1rem auto 0;
+}

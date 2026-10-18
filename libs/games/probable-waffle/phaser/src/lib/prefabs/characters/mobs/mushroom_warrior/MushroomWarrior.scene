@@ -1,0 +1,43 @@
+{
+    "id": "2b029a68-119c-4dde-a522-b1037401604a",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 64,
+        "borderHeight": 64
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "06e76df5-0135-4875-aad1-874a17bcb421",
+            "label": "mushroom_warrior_idle_se",
+            "hitArea.shape": "CIRCLE",
+            "hitArea.x": 32,
+            "hitArea.y": 32,
+            "hitArea.radius": 21.040848113656644,
+            "texture": {
+                "key": "mobs_mushroom_warrior",
+                "frame": "idle/s/0.png"
+            },
+            "x": 32,
+            "y": 49,
+            "originY": 0.773612963520417,
+            "animationPlayMethod": 1,
+            "animationKey": "mobs_mushroom_warrior_idle/s"
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}
