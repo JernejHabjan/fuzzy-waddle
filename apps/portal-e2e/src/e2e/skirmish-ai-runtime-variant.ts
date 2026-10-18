@@ -16,6 +16,8 @@ export interface RuntimeVariantV1 {
   readonly humanFaction: "Tivara" | "Skaduwee";
   readonly difficulty: "Easy" | "Normal" | "Hard";
   readonly presetWorld?: RuntimePresetWorldV1;
+  /** Explicit test-only native construction history; ordinary matches and unmarked recipes install none. */
+  readonly captureConstruction?: true;
   readonly checkpointTicks?: readonly number[];
   readonly determinismGroup?: string;
   readonly repetitions?: number;

@@ -1,6 +1,8 @@
 import type { ObjectNames, ResearchType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 import type { AiRuntimePresetControlV1 } from "./ai-runtime-preset-control-v1";
+import type { AiRuntimeConstructionOrderV1 } from "./ai-runtime-construction-order-v1";
+import type { AiRuntimeProtectedRouteV1 } from "./ai-runtime-protected-route-v1";
 
 /** Test-authored world inputs applied through real scene actor and resource services before tick zero. */
 export interface AiRuntimePresetWorldV1 {
@@ -29,6 +31,10 @@ export interface AiRuntimePresetWorldV1 {
   }[];
   /** Nearly depleted physical sources, applied before native work; independent of the player's cash bank. */
   readonly sourceStocks?: readonly { readonly fixtureActorId: string; readonly amount: number }[];
+  /** Normal pre-tick shared build commands; roles bind actual unfinished sites for later loss/recovery controls. */
+  readonly constructionOrders?: readonly AiRuntimeConstructionOrderV1[];
+  /** Test-owned static clearance probes, captured at setup and every native placement; never planner input. */
+  readonly protectedRoutes?: readonly AiRuntimeProtectedRouteV1[];
   /** Exact pre-tick balances, applied after grants/queue charges and before any AI observation. */
   readonly resourceStarts?: readonly {
     readonly playerNumber: number;
@@ -60,7 +66,8 @@ export interface AiRuntimePresetWorldV1 {
   readonly events?: readonly {
     readonly id: string;
     readonly tick: number;
-    readonly kind: "destroy_owned_actor";
+    /** Cancellation uses native unfinished-site teardown/refund; it is not a relayed multiplayer cancel command. */
+    readonly kind: "destroy_owned_actor" | "cancel_unfinished_site";
     readonly owner: number;
     readonly objectName: ObjectNames;
     /** Pin a scheduled loss to its original authored actor, rather than a later same-type replacement. */

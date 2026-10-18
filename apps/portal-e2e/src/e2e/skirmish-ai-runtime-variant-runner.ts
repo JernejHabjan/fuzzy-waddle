@@ -67,7 +67,8 @@ export async function runVariant(
       (id) => ["PRO-03", "PRO-06", "PRO-07", "H-17", "H-18"].includes(id) || id.startsWith("TECH-")
     );
     const captureProduction =
-      fullProductionProof || applicableScenarioIds.some((id) => ["ECO-05", "ECO-06", "H-16"].includes(id));
+      fullProductionProof || variant.captureConstruction === true ||
+      applicableScenarioIds.some((id) => ["ECO-05", "ECO-06", "H-16"].includes(id));
     const productionHorizons = applicableScenarioIds.flatMap((id) => {
       const contract =
         fixture.assertions[id]?.requiredProductionContracts?.[variant.id] ??
@@ -75,7 +76,8 @@ export async function runVariant(
         fixture.assertions[id]?.requiredSupplyRecovery;
       return contract ? [contract.latestTick] : [];
     });
-    const productionHorizon = productionHorizons.length ? Math.max(...productionHorizons) : undefined;
+    const productionHorizon = productionHorizons.length ? Math.max(...productionHorizons) :
+      variant.captureConstruction === true ? (variant.checkpointTicks ?? fixture.recipe.checkpointTicks).at(-1) : undefined;
     let productionCapture = captureProduction
       ? await captureRuntimeProductionAuthority(page, fixture.recipe.aiPlayerNumber, productionHorizon)
       : undefined;

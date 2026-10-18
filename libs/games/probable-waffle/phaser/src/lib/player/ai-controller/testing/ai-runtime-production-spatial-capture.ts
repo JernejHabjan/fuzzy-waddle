@@ -18,6 +18,8 @@ import { captureAiRuntimeConstructionCatalog } from "./capture-ai-runtime-constr
 import { AiRuntimeProducerRouteCapture } from "./ai-runtime-producer-route-capture";
 import { AiRuntimeNavigationObservation } from "./ai-runtime-navigation-observation";
 import type { AiRuntimeResourceCoverageCapture } from "./ai-runtime-resource-coverage-capture";
+import type { AiRuntimeProtectedRouteV1 } from "./ai-runtime-protected-route-v1";
+import { captureAiRuntimePlacementClearance } from "./capture-ai-runtime-placement-clearance";
 
 /** Test-owned service observation. Queries run once, return their original Promise and never feed an AI planner. */
 export class AiRuntimeProductionSpatialCapture {
@@ -26,12 +28,14 @@ export class AiRuntimeProductionSpatialCapture {
   private restoreNavigation?: () => void;
   private producerRoutes?: AiRuntimeProducerRouteCapture;
   private navigationObservation?: AiRuntimeNavigationObservation;
+  private clearanceReads = 0;
 
   constructor(
     private readonly scene: Phaser.Scene,
     private readonly identify: (actorId: string, item: UnifiedQueueItem) => string,
     private readonly append: (playerNumber: number, spatial: AiRuntimeProductionSpatialV1) => void,
-    coverage?: AiRuntimeResourceCoverageCapture
+    coverage?: AiRuntimeResourceCoverageCapture,
+    private readonly protectedRoutes: readonly AiRuntimeProtectedRouteV1[] = []
   ) {
     scene.events.on(PRODUCTION_SPATIAL_AUTHORITY_EVENT, this.observeNative, this);
     const navigation = getSceneService(scene, NavigationService);
@@ -68,9 +72,14 @@ export class AiRuntimeProductionSpatialCapture {
       if (event.site.scene !== this.scene) return;
       const footprint = event.footprint.length <= 128 ? event.footprint : null;
       const pricing = captureAiRuntimeConstructionCatalog(event);
+      const routes = this.protectedRoutes.filter((route) => route.playerNumber === event.command.playerNumber);
+      const clearance = routes.length ? (++this.clearanceReads <= 256
+        ? captureAiRuntimePlacementClearance(this.scene, routes)
+        : { ...this.boundary(), gaps: ["placement_clearance_prefix_overflow"], routes: [] }) : undefined;
       this.append(event.command.playerNumber, { ...this.boundary(), kind: "placement", command: event.command,
         site: captureAiRuntimeCreatedActor(event.site), footprint, legal: event.legal,
-        catalog: pricing.catalog, gaps: [...pricing.gaps, ...(footprint ? [] : ["production_spatial_footprint_overflow"])] });
+        catalog: pricing.catalog, clearance,
+        gaps: [...pricing.gaps, ...(footprint ? [] : ["production_spatial_footprint_overflow"])] });
     } else if (event.kind === "output") {
       this.producerRoutes?.observeOutput(event);
     } else {

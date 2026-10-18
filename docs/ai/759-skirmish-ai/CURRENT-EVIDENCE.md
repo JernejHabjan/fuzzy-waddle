@@ -2,6 +2,111 @@
 
 [HANDOFF.md](HANDOFF.md) owns continuation. Read this current batch; older sections retain historical evidence.
 
+## Native construction/static-prefix bindings and five owner worlds — authored unrun, 2026-10-18
+
+Batch baseedff27f95c815e2e154a7f177c2a50d1aa586bfb; mechanical extraction87d2b0216,
+queue hash/lifecycle behavior982a3aaf5; verify the containing fixture publication commit/remote on resume.
+Same branch/worktree as HANDOFF; actual model/effort unknown, no delegation. User authorizes binding implementation,
+missing support and limits, while retaining no recipe/test/lint/type/format/build or dedicated verification execution.
+
+### Acceptance map and current limits
+
+1. **Mixed queue hash support implemented, unverified:** StateHashService delegates its native projection to
+   StateHashProjection; serializeActorQueueState includes all saved lanes/items, exact remaining work, original
+   prices/refund policy, empty lanes and stamped command identity in peer digest and AI state. Object keys have
+   deterministic order, lane/item order is preserved, explicit empty shared state supersedes legacy work, and old
+   legacy-only serialization remains. Non-finite queue values fail. Versioned queue/save shapes are unchanged.
+2. **Lifecycle support implemented, unverified:** repeated init replaces listeners and clears old hash/correction
+   state. Destroy detaches its exact shutdown/snapshot handlers and clears cached hashes. Old scene shutdown cannot
+   detach a new scene's owner. Position-only mismatch tolerance now rejects unequal state-tail lengths. These are
+   narrow source-found prerequisite repairs, not validated reconnect/host-transfer acceptance.
+3. **Native unfinished-site setup implemented, unverified:** constructionOrders uses ordinary shared Construct at
+   paused tick zero. Native eligibility, payment admission, builder assignment, footprint/collision and actual indexed
+   site identity remain the shared owners' responsibility. The browser compares declared builder/site roles with actual
+   stamped application. No construction progress, finished prefab, paid flag, AI decision or success label is injected.
+   Bounds:8 orders,8 builders/order, finite world positions, unique roles, same-owner groups and one initial primary
+   job per worker; simultaneous construction/gathering and duplicate site/worker roles are rejected.
+4. **Native interruption implemented, unverified:** pinned cancel_unfinished_site uses actual unfinished-site
+   teardown/refund; finished/missing/dead/replacement targets cannot substitute. Pinned losses still use native damage.
+   Cancellation is a developer native owner control, not a new relayed multiplayer cancel command. Tick/shutdown
+   subscription lifetime remains bounded by the existing event installer.
+5. **Three executable standalone worlds authored, unrun:** skirmish-ai-construction-worlds.spec.ts, explicit
+   AI_CONSTRUCTION_WORLD_E2E=1. Ordinary lobby/fixed frames plus existing opt-in capture cover builder loss, intact
+   work and cancellation. Independent oracle joins original site/application/worker, actual paid start and native
+   completion/retention or exactly-once refund/removal. It refuses dropped/unclosed/missing/reordered intervals and
+   requires real replacement-builder duty or the cancelled worker's later native income/build effect. Another site,
+   generic commands, fixture labels and closed-tick counters cannot substitute for missing native effects.
+   Summary failure details are bounded with omission counts; existing single-copy storage retains raw proof locally.
+   Native interruption is tick80, below the earliest20s/four-builder/50ms completion; the oracle also requires an actual
+   earlier started lifecycle, so an unstarted site is not accepted as an interruption. Initial queues cannot name sites
+   that are created later in setup, and a construction-created role cannot masquerade as an initial builder.
+6. **Static prefix and field branches implemented, unrun:** protectedRoutes is strictly owned and requires explicit
+   captureProduction. Baseline and every placement use current native terrain/object/height builders without altering
+   navigation/caches. Bounds:8 declarations, tile margin0–2,16384 cells/search,512 path tiles,256 prefix reads.
+   The reader joins every applied shared Construct to its exact earlier same-tick footprint; unavailable/overflow,
+   dropped/reordered history, wrong width/identity and intermediate seals fail. This proves only static tile envelopes,
+   not unit transit/collider clearance, spawn or continuous moving occupancy. Tests cover narrow/wide passages,
+   corner squeezing, native exact-height stair/wall ports, an early sealed/later open layout and capture loss.
+   skirmish-ai-field-placement-worlds.spec.ts (AI_PLACEMENT_WORLD_E2E=1) adds both-faction safe-room owner branches:
+   actual ordinary workers/buildings and native demand, no initial Field or injected food/crop state. At least two new
+   paid completed retained fields, an aligned pair, no overlap with reserved baseline lanes, and delivered food from
+   every new field are required. Food attribution joins actual extraction to next offered cargo and exact successful
+   deposit; another field/reset/transfer, grant or generic cash increase cannot substitute. Summaries and assertion
+   messages are bounded; raw evidence remains local single-copy storage. No balance values changed.
+7. **Full selected bindings remain in progress:** five owner worlds do not close full PLACE-01/03
+   acceptance or all12 PLACE/EXP/WALL/H-27/28 fixtures. Actual per-prefix unit transit/spawn, constrained/threatened
+   field alternatives, useful expansion service/home-pressure pairs, real wall/stair/shore geometry, occupied defense
+   value and cumulative native fortification spend still need concrete bindings/oracles. Actual native UI save/replay,
+   interrupted construction and real peer/host continuation for H-31/SEQ-08 are also open. Hash equality alone does
+   not close them; no fake map or placeholder full-scenario fixture was registered.
+8. **Unrun controls authored:** queue codec/hash sensitivity to mixed order, exact progress, paid/refund policy and
+   command metadata; uninterrupted versus restored queue trajectories at before/during/after-output boundaries;
+   hash owner lifecycle and mismatch exception; construction schema/role conflict/pinned cancellation controls;
+   native oracle missing-history and missing-effect controls. Tests were written and source-reviewed, never executed.
+   No automatic verification/formatting command, browser/server, inspector profile or broad matrix was run.
+9. **Progress/ownership:** pure111/111 unchanged; supported executable matrix registration30/116 (25.9%),86 unbound
+   (74.1%) plus4 deferred island rows. Native definitions116/116 include the86 unchanged full-scope specifications.
+   Standalone owner worlds:5 authored,0/5 executed and0/5 validated; unrun is not failed. No newly validated scenario
+   or truthful overall gameplay percentage. Preserve unrelated run XML/ALL_VISIBLE fog edits. Existing historical
+   production/economy/victory evidence belongs to older source; new queue/hash/fixture behavior has no current pass.
+
+### Omission Audit — implementation/source review only
+
+- Traced Construct request through shared validation, actual indexed world-link role, setup publication/wait,
+  existing loss/cancellation installer, native capture, owner oracle and bounded report. Rejections do not become
+  fixture success. Native capture remains opt-in; no new always-on observer or second scenario interpreter.
+- Traced actual ActorManager sharedQueue snapshot into both peer digest and AI projection. Empty/mixed lanes, zero
+  remaining work and command/paid policy enter serialization; authored real-codec paired controls require matching
+  trajectories/effect counts. Real save UI, full replay, peer promotion and old-host callback fencing remain separate.
+- Reviewed the large hash owner's extraction/public forwarding API and strict preset parser split. Each extracted
+  responsibility/type has its owning file; no lint baseline/config relaxation. Source review repaired enum literals,
+  unchecked array access, world-role narrowing, lost validation locals and invalid direct Window assumptions.
+- Traced protected-route declarations through strict capture opt-in, actual pre-build baseline, fresh native builders,
+  same-boundary placement fact, exact applied command/identity and independent prefix reader. Ordinary scenes gain
+  no geometry observer; probes have explicit limits and never certify actual unit movement or hostile safety.
+- Traced both-faction worker/producer/housing names to definitions and field demand to the existing policy. Food
+  starts at zero, fields are not seeded, and native growth/harvest/deposit must produce the effect. Field walkability
+  cannot hide reserved-space occupation. Source review repaired wrong faction prefab names and replaced an entry
+  cargo sample with the actual positive extraction mutation; source-mixed cargo cannot satisfy two fields.
+- Explicitly retained full12-world gaps instead of counting five owner worlds as scenario completion. Native recipe
+  blocker/reuse metadata names implemented support and still-unproved physical/authority boundaries. Four island rows,
+  original121 requirements and fixture references are unchanged; M11 and machinery-last policy stay intact.
+- No Angular service/component, balance, resource yield or gameplay planner behavior changed. Temporary authoring
+  scripts remain ignored. New metadata/Phaser/Playwright tests are meaningful controls, but no passing claim exists.
+
+### Final Closure Audit — support slice only
+
+After repairs, reviewed immediate schema/type/caller consumers, callback cleanup, proof ownership and authored test
+negative paths. HANDOFF, remaining inventory and owning testing guide distinguish implemented support, standalone
+owner controls, full fixture registration and validated behavior. The larger binding batch remains in progress.
+Publication owns only the named source/test/docs paths; unrelated run/fog files are excluded. No release gate passed.
+
+Next authoring action: real per-prefix unit transit/spawn, constrained/threatened field alternatives and useful
+expansion/home-pressure pairs for PLACE-01–03/EXP-01/02; verified fortified geometry/oracles for WALL-01–05/H-27/28,
+reusing constructionOrders, static prefix readers and these five worlds. Native
+save/replay/real-peer continuation then uses the complete queue projection. Keep execution deferred until authorized.
+Recommend Sol6.1/high for physical/authority integration; no automatic switch or new task.
+
 ## Native recipe authoring only —86 specifications, 2026-10-18
 
 Base709e5e3c87a9162c5b1df9f629aecee13adf8293; same branch/worktree as HANDOFF. Actual model/effort unknown.

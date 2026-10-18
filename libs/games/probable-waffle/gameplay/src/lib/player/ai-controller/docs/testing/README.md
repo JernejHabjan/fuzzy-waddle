@@ -32,6 +32,50 @@ remain explicitly deferred rather than receiving fake land recipes.
 Source review and catalog generation establish neither executable nor behavioral correctness. Keep source-specific
 execution evidence separate, and never carry an earlier passing tool/native count onto changed source automatically.
 
+### Native construction and continuation bindings
+
+Preset `constructionOrders` issue ordinary shared Construct commands while the scene is paused at tick zero.
+Each declaration names a unique site role, compatible owned builder roles and a logical world position. The normal
+isometric conversion and shared construction owner enforce eligibility, cost, footprint, collision and assignment.
+Setup then binds the actual applied command/world-link/site identity; a receipt without an indexed native site fails.
+No finished prefab, paid state or construction progress is substituted. Limits are eight sites and eight builders
+per site; a worker cannot start two construction duties or both construction and gathering.
+Initial queue seeds cannot address a construction-created site because native queue seeding precedes these commands.
+
+`cancel_unfinished_site` pins an original role and uses native unfinished-site teardown/refund. It refuses a finished,
+missing, dead or replacement site. This developer test action is not a newly supported relayed multiplayer cancel
+command. Scheduled combat losses still use native damage and retain their original pinned identities.
+
+The standalone [construction worlds](../../../../../../../../../../apps/portal-e2e/src/e2e/skirmish-ai-construction-worlds.spec.ts)
+are explicitly opt-in with `AI_CONSTRUCTION_WORLD_E2E=1`: builder loss, intact work and cancellation. They use the
+ordinary lobby/frame driver and the existing native capture behind `captureConstruction: true`. Their oracle joins
+the same site to actual start/payment/completion, sealed intervals, loss/removal and surviving worker orders; cancellation
+also needs one native refund and a useful subsequent effect for that worker. Missing/dropped/unclosed history fails.
+The summary has bounded failure details and explicit omission counts; raw proof uses existing single-copy storage.
+These are Tivara owner controls, not full PLACE-03 corridor, all-faction, fortification or multiplayer acceptance.
+
+Preset `protectedRoutes` declares fixed world endpoints, an owner and a conservative static tile margin0–2. It requires
+explicit `captureProduction`. The pre-build baseline and each placement reconstruct current geometry with the native
+terrain/object/height builders; the live navigation graph/cache is unchanged. The independent prefix reader requires
+each actual applied Construct to have its exact earlier same-tick placement/command identity and every declared
+route. Bounds:8 routes,16384 cells/search,512 returned path tiles and256 prefix reads; loss/unavailable data fails.
+These are static tile envelopes, not actual unit/collider transit, spawn, occupied-defense value or full route history.
+
+The [field placement worlds](../../../../../../../../../../apps/portal-e2e/src/e2e/skirmish-ai-field-placement-worlds.spec.ts)
+are opt-in with `AI_PLACEMENT_WORLD_E2E=1`, one safe-room branch per faction. Ordinary workers and zero initial food
+must create multiple new paid completed fields, an aligned pair and food delivered from each, without using reserved
+baseline lanes. Fields are walkable, so reserved-space exclusion is separate from route reachability. Attribution
+requires positive native extraction, the next offered cargo and exact successful transfer to a usable owned deposit;
+source changes/restores cannot borrow a later credit. These authored unrun worlds do not close PLACE-01 constrained
+room, threatened alternatives, full physical transit or any expansion/fortification branch.
+
+StateHashService delegates native projection and pure diagnostics to focused owners. Its queue digest includes the
+authoritative shared lanes/items, exact remaining work, original paid/refund policy and command lineage, with stable
+key order. An explicit empty shared snapshot supersedes legacy lists. Legacy-only records keep their earlier
+representation. The queue codec/trajectory controls compare uninterrupted and safely restored work before, during
+and after output. Those controls do not certify native UI saves, replay or host transfer. The service also replaces
+old subscriptions/hash caches on init and detaches its exact shutdown listener on disposal.
+
 Pure fixtures may declare `pureCases` with exact repository-relative Jest file and assertion-title bindings. The
 existing runner selects those files and requires every declared assertion to execute and pass exactly once in its
 named file; an incidental ID mention cannot substitute for a missing, skipped or failed binding. Older fixtures retain

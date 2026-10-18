@@ -1,6 +1,6 @@
 # #759 remaining work inventory
 
-Snapshot: 2026-10-18, current batch based on `709e5e3c87a9162c5b1df9f629aecee13adf8293`. This is the execution inventory for the existing scope,
+Snapshot: 2026-10-18, current batch based on `edff27f95c815e2e154a7f177c2a50d1aa586bfb`. This is the execution inventory for the existing scope,
 not a new design or diagnostic project. [HANDOFF.md](HANDOFF.md) owns the current cursor;
 [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) retains the latest checked source/evidence details.
 The manifest and linked scenario requirements remain authoritative; the snapshot below must be refreshed when
@@ -114,19 +114,29 @@ main-building footprint were corrected in both paired worlds. Construction cance
 post-opening unfinished-site reassignment have focused controls. Native ECO-06 proves alternate drop-off/source
 recovery; native no-drain controls prove stop/assignment release with cargo preservation.
 
-**Current publication:86 native recipe specifications in one authoring-only batch, 2026-10-18.**
+**Current publication: native construction/static-prefix support and5 executable owner worlds, unrun, 2026-10-18.**
 
-1. Every supported missing native ID has concrete authoring requirements in native-scenario-recipes.json. This records
+1. Every supported missing native ID retains concrete authoring requirements in native-scenario-recipes.json. This records
    setup/actions, physical evidence, finite ceiling/checkpoints, required/forbidden outcomes, controls and exact missing
    harness bindings. It does not implement those bindings, register executable fixtures or prove any gameplay outcome.
-2. Manifest/catalog/inventory expose authored-but-unbound status separately. Existing30 executable recipes,111 pure
-   registrations and4 island deferrals are preserved. No gameplay/balance change, browser launch or diagnostic observer.
-3. Current user policy is source review only: no recipes, tests, lint, types, formatting or dedicated validation runs.
+2. Shared-queue lane/work/payment/command metadata now reaches peer and AI hashes. Safe queue-codec continuation
+   comparisons and hash listener/cache replacement controls are authored unrun. Native save/replay/transfer remains open.
+3. New bounded constructionOrders creates actual unfinished sites through shared commands and binds their applied
+   native identities. Pinned native cancellation rejects completed/replacement sites. Three standalone native worlds
+   cover builder loss, intact work and cancellation, including real lifecycle/payment/refund/effect assertions.
+   They are Tivara owner controls, not complete full-scenario fixtures;30 registered runtime rows stay unchanged.
+   Three fixed routes now require fresh static native clearance at every applied prefix. Two additional faction field
+   worlds require new paid completed fields, an aligned pair, exclusion from reserved lanes and exact delivered-food
+   effects from each new field. Native crop cargo cannot be attributed across another field/reset/transfer.
+4. Current user policy is source review only: no recipes, tests, lint, types, formatting or dedicated validation runs.
    Metadata safety/coverage tests are authored but unrun; earlier passing tool counts do not certify changed tooling.
-4. Next bind PLACE-01–03, EXP-01/02, WALL-01–05 and H-27/28 while sharing interrupted construction/training/research
-   continuation with H-31/SEQ-08 and sharedQueue hashing. Frozen fortified geometry and actual host/peer boundaries
-   remain explicit prerequisites. All other specified cases retain their concrete blockers, not another design loop.
-5. Packages3–5, M11 authority/history, calibration/debug integration and full native acceptance remain open. User defers
+5. Next complete the same unfinished PLACE-01–03/EXP-01/02/WALL-01–05/H-27/28 binding slice: actual per-prefix
+   unit transit/spawn beyond static envelopes, constrained/threatened field alternatives, productive expansion
+   service/home-pressure controls and verified fortified geometry/defense
+   value. Then actual save/replay and real peer boundaries for H-31/SEQ-08 reuse the new sharedQueue hash support.
+   These obligations remain implementation work; the5 owner worlds do not remove them from acceptance.
+   New standalone worlds are0/5 executed and0/5 validated; unrun is not failed.
+6. Packages3–5, M11 authority/history, calibration/debug integration and full native acceptance remain open. User defers
    full-match/broad gates; machinery review stays last. Historical production8/8, economy16/16 and victory1/2 remain
    earlier-source evidence, not results for this authoring source.
 

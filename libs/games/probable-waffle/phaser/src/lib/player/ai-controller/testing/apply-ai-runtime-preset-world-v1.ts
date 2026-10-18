@@ -1,4 +1,6 @@
 import { bindAiRuntimeExistingActors } from "./bind-ai-runtime-existing-actors";
+import { applyAiRuntimeConstructionOrders } from "./apply-ai-runtime-construction-orders";
+import { captureAiRuntimePlacementClearance } from "./capture-ai-runtime-placement-clearance";
 import { applyAiRuntimeSourceStocks } from "./ai-runtime-source-stocks";
 import { installAiRuntimeProductionRallies } from "./install-ai-runtime-production-rallies";
 import { installAiRuntimePresetControls } from "./install-ai-runtime-preset-controls";
@@ -93,10 +95,14 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
   applyAiRuntimeSourceStocks(preset, createdActors);
   const completeSetup = () => {
     assertAiRuntimePresetRoster(scene, preset);
+    const placementBaseline = preset.protectedRoutes ? captureAiRuntimePlacementClearance(scene, preset.protectedRoutes) : undefined;
     const { queuedItemCount, initialQueueItems, queueApplications } = applyAiRuntimePresetQueues(
       scene,
       preset,
       createdActors
+    );
+    const constructionApplications = applyAiRuntimeConstructionOrders(
+      scene, preset.fixtureId, preset.constructionOrders ?? [], createdActors, createdActorIds
     );
     for (const start of preset.resourceStarts ?? []) {
       const player = getPlayer(scene, start.playerNumber);
@@ -138,6 +144,8 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
       initialQueueItems,
       queueApplications,
       initialOrderCount: preset.initialOrders?.length ?? 0,
+      constructionApplications,
+      placementBaseline,
       eventResults: []
     });
     installAiRuntimePresetEvents(scene, preset, createdActors);
@@ -146,6 +154,7 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
   };
   if (
     (preset.queues?.length ?? 0) +
+      (preset.constructionOrders?.length ?? 0) +
       (preset.researchQueues?.length ?? 0) +
       (preset.controls?.length ?? 0) +
       (preset.productionRallies?.length ?? 0) >

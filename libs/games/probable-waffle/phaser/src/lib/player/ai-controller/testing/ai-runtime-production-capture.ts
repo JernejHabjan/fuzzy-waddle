@@ -44,6 +44,7 @@ import {
 import { AiRuntimeProductionProofCapture } from "./ai-runtime-production-proof-capture";
 
 import { AiRuntimeProductionQueueCapture } from "./ai-runtime-production-queue-capture";
+import type { AiRuntimeProtectedRouteV1 } from "./ai-runtime-protected-route-v1";
 
 const MAX_SNAPSHOTS = 256;
 
@@ -74,7 +75,8 @@ export class AiRuntimeProductionCapture {
 
   constructor(
     private readonly scene: ProbableWaffleScene,
-    intervals: readonly AiRuntimeResourceServiceIntervalV1[] = []
+    intervals: readonly AiRuntimeResourceServiceIntervalV1[] = [],
+    protectedRoutes: readonly AiRuntimeProtectedRouteV1[] = []
   ) {
     const ticks = getSceneService(scene, SimulationTickService);
     const bus = getSceneService(scene, CommandBusService);
@@ -122,7 +124,8 @@ export class AiRuntimeProductionCapture {
           }
           this.append({ ...this.boundary(playerNumber), kind: "spatial_authority", spatial });
         },
-        this.resourceCoverage
+        this.resourceCoverage,
+        protectedRoutes
       );
       this.queueAuthority = new AiRuntimeProductionQueueCapture(
         scene,

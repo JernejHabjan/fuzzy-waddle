@@ -21,6 +21,47 @@ const config = {
 };
 
 describe("runtime preset neutral source validation", () => {
+  it("requires explicit capture for owned placement-route declarations", () => {
+    const scoped = { ...config, captureProduction: true, presetWorld: { ...config.presetWorld,
+      actors: [{ ...neutralSource, owner: 2 }], protectedRoutes: [{
+        id: "worker-service", playerNumber: 2, from: { x: 100, y: 200 }, to: { x: 200, y: 400 }, tileMargin: 1
+      }]
+    } };
+    expect(isAiRuntimeBrowserTestConfigV1(scoped)).toBe(true);
+    expect(isAiRuntimeBrowserTestConfigV1({ ...scoped, captureProduction: undefined })).toBe(false);
+    expect(isAiRuntimeBrowserTestConfigV1({ ...scoped, presetWorld: { ...scoped.presetWorld,
+      protectedRoutes: scoped.presetWorld.protectedRoutes.map((route) => ({ ...route, playerNumber: 1 }))
+    } })).toBe(false);
+  });
+
+  it("accepts shared construction roles for pinned cancellation and rejects conflicting starting duties", () => {
+    const worker = {
+      fixtureActorId: "owned-builder", actorName: "TivaraWorkerMale", owner: 2,
+      position: { x: 704, y: 720, z: 0 }
+    };
+    const construction = {
+      fixtureActorId: "unfinished-site", actorName: "AnkGuard", builderFixtureActorIds: ["owned-builder"],
+      position: { x: 800, y: 848, z: 0 }
+    };
+    const event = {
+      id: "site-cancel", tick: 100, kind: "cancel_unfinished_site", owner: 2,
+      objectName: "AnkGuard", fixtureActorId: "unfinished-site"
+    };
+    const valid = { ...config, presetWorld: {
+      ...config.presetWorld, actors: [neutralSource, worker], constructionOrders: [construction], events: [event]
+    } };
+    expect(isAiRuntimeBrowserTestConfigV1(valid)).toBe(true);
+    expect(isAiRuntimeBrowserTestConfigV1({ ...valid, presetWorld: {
+      ...valid.presetWorld,
+      initialOrders: [{ workerFixtureActorId: "owned-builder", sourceFixtureActorId: "neutral-forest", kind: "gather" }]
+    } })).toBe(false);
+    expect(isAiRuntimeBrowserTestConfigV1({ ...valid, presetWorld: {
+      ...valid.presetWorld, events: [{ ...event, fixtureActorId: undefined }]
+    } })).toBe(false);
+    expect(isAiRuntimeBrowserTestConfigV1({ ...valid, presetWorld: {
+      ...valid.presetWorld, events: [{ ...event, owner: 1 }]
+    } })).toBe(false);
+  });
   it("pins a loss only to an authored actor with the same owner and concrete name", () => {
     const actor = { ...neutralSource, fixtureActorId: "producer", actorName: "AnkGuard", owner: 2 };
     const event = {

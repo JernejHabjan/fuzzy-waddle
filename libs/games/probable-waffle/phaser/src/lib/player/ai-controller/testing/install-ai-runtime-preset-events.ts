@@ -4,6 +4,7 @@ import { DamageType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
+import { ConstructionSiteComponent } from "../../../entity/components/construction/construction-site-component";
 import type GameProbableWaffleScene from "../../../world/scenes/GameProbableWaffleScene";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
@@ -21,6 +22,9 @@ export function installAiRuntimePresetEvents(
     (left, right) => left.tick - right.tick || left.id.localeCompare(right.id)
   );
   if (pendingEvents.length === 0) return;
+  if (pendingEvents.some((event) => event.kind === "cancel_unfinished_site" && !event.fixtureActorId)) {
+    throw new Error("runtime_preset_cancellation_requires_original_role");
+  }
   const tickService = getSceneService(scene, SimulationTickService);
   const actorIndex = getSceneService(scene, ActorIndexSystem);
   if (!tickService || !actorIndex) throw new Error("runtime_preset_event_services_unavailable");
@@ -47,8 +51,11 @@ export function installAiRuntimePresetEvents(
           })[0];
         const health = target ? getActorComponent(target, HealthComponent) : undefined;
         const actorId = target ? (getActorComponent(target, IdComponent)?.id ?? null) : null;
-        const applied = !!health && !!actorId && health.healthComponentData.health > 0;
-        if (applied) health.takeDamage(Number.MAX_SAFE_INTEGER, DamageType.Physical);
+        const construction = target && getActorComponent(target, ConstructionSiteComponent);
+        const applied = !!health && !!actorId && health.healthComponentData.health > 0 &&
+          (event.kind !== "cancel_unfinished_site" || !!construction && !construction.isFinished);
+        if (applied && event.kind === "cancel_unfinished_site") target?.destroy();
+        else if (applied) health?.takeDamage(Number.MAX_SAFE_INTEGER, DamageType.Physical);
         recordAiRuntimePresetEventV1({
           id: event.id,
           tick: tickService.currentTick,

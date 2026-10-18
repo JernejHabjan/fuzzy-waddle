@@ -24,6 +24,8 @@ export interface RuntimePresetWorldV1 {
     readonly amounts: Readonly<Record<string, number>>;
   }[];
   readonly sourceStocks?: AiRuntimePresetWorldV1["sourceStocks"];
+  readonly constructionOrders?: AiRuntimePresetWorldV1["constructionOrders"];
+  readonly protectedRoutes?: AiRuntimePresetWorldV1["protectedRoutes"];
   /** Exact pre-tick balances applied through resource events after grants and queue charges. */
   readonly resourceStarts?: readonly {
     readonly playerNumber: number;
@@ -49,7 +51,7 @@ export interface RuntimePresetWorldV1 {
   readonly events?: readonly {
     readonly id: string;
     readonly tick: number;
-    readonly kind: "destroy_owned_actor";
+    readonly kind: "destroy_owned_actor" | "cancel_unfinished_site";
     readonly owner: number;
     readonly objectName: string;
     readonly fixtureActorId?: string;

@@ -3,34 +3,59 @@
 Default resume page: read this first, then only the selected package in [REMAINING-WORK.md](REMAINING-WORK.md).
 Do not load the full plan directory or archive on startup.
 
-## Current cursor — native recipe authoring, 2026-10-18
+## Current cursor — native construction/placement bindings, authored unrun, 2026-10-18
 
 - Worktree /home/jernej/.codex/worktrees/7977/fuzzy-waddle; branch feature/759-skirmish-ai.
-  Base709e5e3c87a9162c5b1df9f629aecee13adf8293. Verify containing publication commit/remote on resume.
-  Actual model/effort unknown; no delegation. User requested recipe creation in one batch, source review/repairs,
+  Batch baseedff27f95c815e2e154a7f177c2a50d1aa586bfb; mechanical hash extraction87d2b0216,
+  queue hash/lifecycle behavior982a3aaf5.
+  Verify containing publication commit/remote on resume.
+  Actual model/effort unknown; no delegation. User requested concrete native bindings plus necessary support/limits,
   and explicitly **no recipe execution, tests, lint, type checks, formatting or similar verification runs**.
-- All86 missing supported runtime IDs now have native-scenario-recipes.json authoring contracts: legal setup,
-  real opponent/fault actions, finite ceiling/sampling ticks, independent physical measurements, required/forbidden
-  outcomes, controls, reusable sources and named execution blockers. Manifest runtimeRecipeDraft links them;
-  fixture stays null. These are **specifications, not executable tests**: concrete actor/tile/action/oracle bindings
-  still require implementation. Do not call them registered, validated or complete gameplay acceptance.
+- Shared mixed-queue hashing is now implemented in StateHashProjection/serializeActorQueueState and delegated by
+  StateHashService: lane/item order, empty lanes, exact work, paid/refund policy and command identity reach both peer
+  digest and AI projection. Legacy-only serialization is retained. The large service was mechanically split before
+  the behavior commit; no baseline/config exemption changed. Init now replaces old listeners/hash caches and disposal
+  removes its exact shutdown handler; transient movement cannot hide an extended differing state tail.
+- constructionOrders now creates real unfinished sites through ordinary shared commands at paused tick zero, binds
+  actual applied native identities and aborts missing/ambiguous/reused/cross-owner setup. Bounds:8 sites,8 builders
+  each, no simultaneous initial construction/gathering or two construction jobs per worker. Native pinned cancellation
+  uses unfinished-site teardown/refund, not a new relayed multiplayer cancel command. Setup waits for actual binding.
+- Five standalone executable owner worlds are authored: builder loss, intact work, cancellation and both-faction
+  safe-room field placement. The first three use apps/portal-e2e/src/e2e/skirmish-ai-construction-worlds.spec.ts,
+  with explicit AI_CONSTRUCTION_WORLD_E2E=1 opt-in.
+  They reuse lobby/native frames and existing opt-in capture. Assertions require actual original-site payment/work,
+  sealed complete intervals, exact completion/retention or refund/removal and useful worker reassignment. Bounded
+  summaries retain omission counts; raw native proof uses existing single-copy storage. Interruption is tick80,
+  earlier than the native20s/four-builder/50ms fastest completion; actual pre-interruption start is still required.
+- protectedRoutes records a pre-build baseline and fresh static tile-envelope paths at every placement, using the
+  native terrain/object/height builders without changing live caches. Limits:8 routes, margin0–2,16384 cells/search,
+  512 path tiles,256 prefix reads; overflow/unavailable evidence fails. Independent reader joins every actual applied
+  Construct to its earlier same-tick placement and exact identity. This is static geometry, **not actual unit transit,
+  producer spawn or continuous occupancy proof**. These remain full PLACE-03/WALL obligations.
+- skirmish-ai-field-placement-worlds.spec.ts (AI_PLACEMENT_WORLD_E2E=1) adds two safe-room owner branches of PLACE-01.
+  Normal faction workers/buildings and native food demand must produce at least two new paid completed fields,
+  an aligned pair, reserved-lane exclusion and food delivered from each. Extraction must join the next offered cargo
+  and exact transfer; another field/reset, grant, fixture presence or generic food increase cannot substitute.
+  Constrained-room, threatened-site, verified alternative placement and actual per-prefix transit branches remain open.
 - Authored native definitions: **116/116 supported (100%),0 missing definitions** including30 existing executable
   recipes and86 new specifications. Executable runtime registration remains **30/116 (25.9%),86 unbound (74.1%)**,
-  plus4 content-deferred island rows. Pure registration stays111/111. No new passing scenario or overall behavior
+  plus4 content-deferred island rows. Pure registration stays111/111. The5 standalone worlds are not counted as full
+  manifest registrations:0/5 executed,0/5 validated (unrun, not failed). No new passing scenario or overall behavior
   percentage is claimed. Catalog/inventory distinguish these states; raw artifacts remain outside model input.
-- Static source review repaired scope assumptions: existing navigation/exposure diagnostics lack complete native
-  route/combat proof; preserve those gaps. Frozen fortified/multi-opponent map bindings are unavailable; no fake map
-  labels were introduced. D-06 preserves its existing paired seed/holdout/map/opponent matrix and separates the three
-  72000-tick soaks from short-match ceilings. sharedQueue StateHashService adoption is still missing.
+- Existing86 specifications remain linked by runtimeRecipeDraft and explicitly unbound for their complete native
+  outcomes; reuse pointers/blocker text now identify implemented construction support and shared-queue hashing.
+  Native navigation/exposure diagnostics still lack complete per-prefix physical proof. Frozen fortified/multi-opponent
+  map bindings remain unavailable. H-31/SEQ-08/D-02 reuse new queue/hash controls but native interruption/peer proof is open.
 - No verification gate was run. New/changed metadata tests are authored **unrun**, including safe draft identity,
-  checkpoint ordering, explicit blockers and exclusion from executable coverage. Catalog regeneration is authoring,
-  not behavior evidence. Earlier194/16 passes belong to the previous source and do not certify changed tools.
-- **Next implementation:** bind the existing placement/recovery specifications (PLACE-01–03, EXP-01/02,
-  WALL-01–05, H-27/28) to real native setups/actions/oracles, sharing construction/queue continuation work with
-  H-31/SEQ-08. Adopt sharedQueue lane/command metadata in StateHashService before matching continuation claims.
-  Resolve fortified geometry honestly before registering its cases. Reuse existing command, build, navigation,
-  snapshot and real-peer harnesses; do not create a second scenario engine. Real host transfer remains a separate
-  native proof boundary. See each case's executionBlockers and the original requiredOutcome.
+  exact role/control rejection, queue round-trip/trajectory/hash changes and hash listener lifecycle. Everything is
+  **authored unrun**, including TypeScript, formatting and lint. Prior194/16 passes do not certify this changed source.
+- **Next implementation (same unfinished binding batch):** add real unit transit/spawn after each placement prefix,
+  constrained/safe-versus-threatened field alternatives and useful remote deposit service/home-pressure controls for
+  PLACE-01–03/EXP-01/02. Reuse the fresh static prefix checks and five owner worlds; do not rebuild them.
+  Author/bind verified wall/stair/shore geometry and native occupied-defense/useful-cost
+  oracles for WALL-01–05/H-27/28. Reuse the new construction commands, cancellation/loss and owner-world controls.
+  Then bind actual safe-boundary native save/replay and real peer/host continuation for H-31/SEQ-08 using the now
+  complete queue projection. No second scenario engine, invented map or generic command-count substitute.
 - Historical production8/8, economy16/16 and victory1/2 remain earlier-source evidence. M11, real peer/replay,
   calibration and debug integration stay open. Machinery review/removal remains last. No gameplay/balance changes.
 - Preserve unrelated .run/start_portal.run.xml and ALL_VISIBLE fog edits. Publish only owned paths, verify remote,

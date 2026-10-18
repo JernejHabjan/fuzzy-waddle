@@ -9,6 +9,7 @@ import type { AiRuntimeNavigationBoundaryV1 } from "./ai-runtime-navigation-boun
 import type { AiRuntimeMovementV1 } from "./ai-runtime-movement-v1";
 import type { AiRuntimeServiceAttemptV1 } from "./ai-runtime-service-attempt-v1";
 import type { AiRuntimeResourceServiceV1 } from "./ai-runtime-resource-service-v1";
+import type { AiRuntimePlacementClearanceV1 } from "./ai-runtime-placement-clearance-v1";
 
 /** Detached native spatial observations. No verdict supplies a general producer-reachable or safe-site boolean. */
 export type AiRuntimeProductionSpatialV1 = {
@@ -24,7 +25,9 @@ export type AiRuntimeProductionSpatialV1 = {
   | { readonly kind: "placement"; readonly command: ConstructCommand; readonly site: AiRuntimeCreatedActorV1;
     readonly footprint: readonly Vector2Simple[] | null; readonly legal: boolean;
     /** Legacy captures omit pricing; omission cannot be filled from a later definition or checkpoint. */
-    readonly catalog?: AiRuntimeConstructionCatalogV1 }
+    readonly catalog?: AiRuntimeConstructionCatalogV1;
+    /** Optional fresh static geometry at this exact footprint boundary; no transit/spawn/usefulness claim. */
+    readonly clearance?: AiRuntimePlacementClearanceV1 }
   | { readonly kind: "spawn"; readonly producer: AiRuntimeCreatedActorV1;
     readonly item: AiRuntimeProductionQueueV1["lanes"][number]["items"][number]; readonly waterUnit: boolean;
     readonly tile: Vector2Simple | null; readonly position: Vector3Simple | null }

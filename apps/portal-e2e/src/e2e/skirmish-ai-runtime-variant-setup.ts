@@ -6,6 +6,7 @@ import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
 import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
 import { installRuntimeAccessor } from "./skirmish-ai-runtime-browser-accessor";
 import { assertRuntimePresetRoster } from "./skirmish-ai-runtime-preset-roster";
+import { assertRuntimeConstructionSetup } from "./skirmish-ai-runtime-construction-setup";
 
 /** Installs bounded browser probes, launches the ordinary lobby, and verifies authored pre-tick state. */
 export async function prepareRuntimeVariant(
@@ -65,7 +66,7 @@ export async function prepareRuntimeVariant(
       presetWorld: variant.presetWorld,
       revision: sourceRevision,
       digest: fixtureDigest,
-      captureProduction: (variant.scenarioIds ?? fixture.scenarioIds).some(
+      captureProduction: variant.captureConstruction === true || (variant.scenarioIds ?? fixture.scenarioIds).some(
         (id) =>
           ["PRO-03", "PRO-06", "PRO-07", "H-17", "H-18", "ECO-05", "ECO-06", "H-16"].includes(id) ||
           id.startsWith("TECH-")
@@ -80,6 +81,16 @@ export async function prepareRuntimeVariant(
     { timeout: 120_000 }
   );
   await debugProbe?.(page, -1);
+  if (variant.presetWorld?.constructionOrders?.length) {
+    await page.waitForFunction((count) => {
+      const host = (window as unknown as {
+        __fuzzyWaddleAiRuntimeBrowserTestV1?: { presetApplication?: AiRuntimePresetApplicationV1 };
+      }).__fuzzyWaddleAiRuntimeBrowserTestV1;
+      return host?.presetApplication?.constructionApplications?.length === count;
+    },
+      variant.presetWorld.constructionOrders.length, { timeout: 30_000 }
+    );
+  }
   if (variant.presetWorld?.queues?.length || variant.presetWorld?.researchQueues?.length) {
     const expected =
       (variant.presetWorld.queues ?? []).reduce((count, queue) => count + queue.count, 0) +
@@ -131,6 +142,7 @@ export async function prepareRuntimeVariant(
     if (application.fixtureId !== variant.presetWorld.fixtureId) throw new Error("runtime_preset_fixture_mismatch");
     if (application.sourceRevision !== sourceRevision) throw new Error("runtime_preset_source_mismatch");
     if (application.fixtureDigest !== fixtureDigest) throw new Error("runtime_preset_digest_mismatch");
+    assertRuntimeConstructionSetup(variant.presetWorld, application);
     assertRuntimePresetRoster(variant.presetWorld, application, fixture.recipe.aiPlayerNumber, initialBoundary.state);
     if (application.resourceStartCount !== (variant.presetWorld.resourceStarts?.length ?? 0)) {
       throw new Error("runtime_preset_resource_start_mismatch");

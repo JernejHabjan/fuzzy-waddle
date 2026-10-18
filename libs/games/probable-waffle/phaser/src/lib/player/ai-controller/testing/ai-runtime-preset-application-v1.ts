@@ -1,4 +1,6 @@
 import type { AiRuntimePresetQueueApplicationV1 } from "./ai-runtime-preset-queue-application-v1";
+import type { AiRuntimeConstructionApplicationV1 } from "./ai-runtime-construction-application-v1";
+import type { AiRuntimePlacementClearanceV1 } from "./ai-runtime-placement-clearance-v1";
 
 /** Independently recorded result of applying a validated preset through authoritative scene services. */
 export interface AiRuntimePresetApplicationV1 {
@@ -23,6 +25,10 @@ export interface AiRuntimePresetApplicationV1 {
   /** Real admitted commands, queue identities and scoped balances before later explicit resource-start resets. */
   readonly queueApplications: readonly AiRuntimePresetQueueApplicationV1[];
   readonly initialOrderCount: number;
+  /** Missing on legacy presets; each new entry binds its exact ordinary shared construction application. */
+  readonly constructionApplications?: readonly AiRuntimeConstructionApplicationV1[];
+  /** Actual pre-construction geometry, including preset/map actors; absence cannot certify route premises. */
+  readonly placementBaseline?: AiRuntimePlacementClearanceV1;
   readonly eventResults: readonly {
     readonly id: string;
     readonly tick: number;

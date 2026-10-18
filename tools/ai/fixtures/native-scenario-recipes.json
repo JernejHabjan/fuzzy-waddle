@@ -103,11 +103,11 @@
     },
     "placement_history": {
       "owner": "libs/games/probable-waffle/phaser/src/lib/world/services/multiplayer/shared-command-application.service.ts",
-      "missing": "Recipe bridge lacks independent per-case placement/corridor/rampart/field-efficiency oracles. Join actual accepted footprints and native clearance/service after every applied prefix."
+      "missing": "Fresh static tile-envelope paths and per-applied-prefix identity joins are implemented, authored unrun in capture-ai-runtime-placement-clearance.ts and skirmish-ai-placement-prefix-evaluation.ts. Both-faction safe-room field worlds require native completion, reserved-space exclusion and exact delivered-food effects. Full constrained/threatened alternatives, actual unit transit/spawn, rampart value and full-case bindings remain open; static paths cannot replace physical traversal."
     },
     "construction_history": {
       "owner": "apps/portal-e2e/src/e2e/skirmish-ai-runtime-construction-authority.ts",
-      "missing": "Reuse native build/queue/payment/loss lineage, exact fixture bindings and earned-resource readers. Bind this case's interruption, useful service and completion predicates without broad raw capture scans."
+      "missing": "Pre-tick constructionOrders now create real unfinished sites through ordinary shared commands and bind actual application identities. Pinned builder-loss/native cancellation plus three standalone owner worlds are authored, unrun. Bind each full scenario's remaining per-prefix clearance, useful field/service, fortification and interruption oracles; existing raw native build/queue/payment/loss lineage remains the evidence source."
     },
     "fortified_geometry": {
       "owner": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/test-map-contract.md",
@@ -130,8 +130,8 @@
       "missing": "Existing real relay/reconnect/host-transfer specs are reusable. Bind this case to two real clients, authoritative promotion and identical full-state checkpoints; the single-browser matrix cannot certify it."
     },
     "snapshot_boundary": {
-      "owner": "libs/games/probable-waffle/phaser/src/lib/world/services/recovery/state-hash.service.ts",
-      "missing": "Use actual save/load/replay UI and codec at safe before/during/after-apply boundaries. StateHashService still omits sharedQueue lane/command metadata; adopt that projection before claiming matching continuation."
+      "owner": "libs/games/probable-waffle/phaser/src/lib/world/services/recovery/state-hash-projection.ts",
+      "missing": "SharedQueue lane order, exact remaining work, paid policy and command lineage are now included in the authored peer/AI projection. Queue codec/continuation and lifecycle controls are authored but unrun. Real save/load/replay at safe before/during/after-apply boundaries and full peer/host continuation still need native bindings and evidence."
     },
     "input_fault": {
       "owner": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/player-ai-controller.ts",
@@ -1412,7 +1412,10 @@
         "construction_history"
       ],
       "reuse": [
-        "tools/ai/fixtures/controller-contract-scenarios.json"
+        "tools/ai/fixtures/controller-contract-scenarios.json",
+        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/apply-ai-runtime-construction-orders.ts",
+        "apps/portal-e2e/src/e2e/skirmish-ai-placement-prefix-evaluation.ts",
+        "apps/portal-e2e/src/e2e/skirmish-ai-field-placement-worlds.spec.ts"
       ],
       "checkpointTicks": [
         0,
@@ -1466,7 +1469,9 @@
         "native_combat"
       ],
       "reuse": [
-        "tools/ai/fixtures/controller-contract-scenarios.json"
+        "tools/ai/fixtures/controller-contract-scenarios.json",
+        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/apply-ai-runtime-construction-orders.ts",
+        "apps/portal-e2e/src/e2e/skirmish-ai-placement-prefix-evaluation.ts"
       ],
       "checkpointTicks": [
         0,
@@ -1521,7 +1526,10 @@
         "route_history"
       ],
       "reuse": [
-        "tools/ai/fixtures/placement-recovery-scenarios.json"
+        "tools/ai/fixtures/placement-recovery-scenarios.json",
+        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/apply-ai-runtime-construction-orders.ts",
+        "apps/portal-e2e/src/e2e/skirmish-ai-construction-worlds.spec.ts",
+        "apps/portal-e2e/src/e2e/skirmish-ai-placement-prefix-evaluation.ts"
       ],
       "checkpointTicks": [
         0,
@@ -1576,7 +1584,9 @@
         "route_history"
       ],
       "reuse": [
-        "tools/ai/fixtures/placement-recovery-scenarios.json"
+        "tools/ai/fixtures/placement-recovery-scenarios.json",
+        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/apply-ai-runtime-construction-orders.ts",
+        "apps/portal-e2e/src/e2e/skirmish-ai-placement-prefix-evaluation.ts"
       ],
       "checkpointTicks": [
         0,
@@ -1632,7 +1642,9 @@
         "native_combat"
       ],
       "reuse": [
-        "tools/ai/fixtures/placement-recovery-scenarios.json"
+        "tools/ai/fixtures/placement-recovery-scenarios.json",
+        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/apply-ai-runtime-construction-orders.ts",
+        "apps/portal-e2e/src/e2e/skirmish-ai-placement-prefix-evaluation.ts"
       ],
       "checkpointTicks": [
         0,
@@ -1686,7 +1698,9 @@
         "native_combat"
       ],
       "reuse": [
-        "tools/ai/fixtures/placement-recovery-scenarios.json"
+        "tools/ai/fixtures/placement-recovery-scenarios.json",
+        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/apply-ai-runtime-construction-orders.ts",
+        "apps/portal-e2e/src/e2e/skirmish-ai-placement-prefix-evaluation.ts"
       ],
       "checkpointTicks": [
         0,
@@ -1742,7 +1756,9 @@
         "route_history"
       ],
       "reuse": [
-        "tools/ai/fixtures/placement-recovery-scenarios.json"
+        "tools/ai/fixtures/placement-recovery-scenarios.json",
+        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/apply-ai-runtime-construction-orders.ts",
+        "apps/portal-e2e/src/e2e/skirmish-ai-placement-prefix-evaluation.ts"
       ],
       "checkpointTicks": [
         0,
@@ -1798,7 +1814,9 @@
         "native_combat"
       ],
       "reuse": [
-        "tools/ai/fixtures/stage-13-tactics.json"
+        "tools/ai/fixtures/stage-13-tactics.json",
+        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/apply-ai-runtime-construction-orders.ts",
+        "apps/portal-e2e/src/e2e/skirmish-ai-placement-prefix-evaluation.ts"
       ],
       "checkpointTicks": [
         0,
@@ -1854,7 +1872,9 @@
         "native_combat"
       ],
       "reuse": [
-        "tools/ai/fixtures/placement-recovery-scenarios.json"
+        "tools/ai/fixtures/placement-recovery-scenarios.json",
+        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/apply-ai-runtime-construction-orders.ts",
+        "apps/portal-e2e/src/e2e/skirmish-ai-placement-prefix-evaluation.ts"
       ],
       "checkpointTicks": [
         0,
@@ -1911,7 +1931,9 @@
         "native_combat"
       ],
       "reuse": [
-        "tools/ai/fixtures/placement-recovery-scenarios.json"
+        "tools/ai/fixtures/placement-recovery-scenarios.json",
+        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/apply-ai-runtime-construction-orders.ts",
+        "apps/portal-e2e/src/e2e/skirmish-ai-placement-prefix-evaluation.ts"
       ],
       "checkpointTicks": [
         0,
@@ -2232,7 +2254,8 @@
         "route_fault"
       ],
       "reuse": [
-        "tools/ai/fixtures/controller-contract-scenarios.json"
+        "tools/ai/fixtures/controller-contract-scenarios.json",
+        "apps/portal-e2e/src/e2e/skirmish-ai-construction-worlds.spec.ts"
       ],
       "checkpointTicks": [
         0,
@@ -2343,7 +2366,8 @@
         "route_history"
       ],
       "reuse": [
-        "tools/ai/fixtures/controller-contract-scenarios.json"
+        "tools/ai/fixtures/controller-contract-scenarios.json",
+        "apps/portal-e2e/src/e2e/skirmish-ai-construction-worlds.spec.ts"
       ],
       "checkpointTicks": [
         0,
@@ -2453,7 +2477,8 @@
         "construction_history"
       ],
       "reuse": [
-        "tools/ai/fixtures/controller-contract-scenarios.json"
+        "tools/ai/fixtures/controller-contract-scenarios.json",
+        "apps/portal-e2e/src/e2e/skirmish-ai-construction-worlds.spec.ts"
       ],
       "checkpointTicks": [
         0,
@@ -3485,7 +3510,9 @@
         "placement_history"
       ],
       "reuse": [
-        "tools/ai/fixtures/placement-recovery-scenarios.json"
+        "tools/ai/fixtures/placement-recovery-scenarios.json",
+        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/apply-ai-runtime-construction-orders.ts",
+        "apps/portal-e2e/src/e2e/skirmish-ai-placement-prefix-evaluation.ts"
       ],
       "checkpointTicks": [
         0,
@@ -3541,7 +3568,9 @@
         "construction_history"
       ],
       "reuse": [
-        "tools/ai/fixtures/placement-recovery-scenarios.json"
+        "tools/ai/fixtures/placement-recovery-scenarios.json",
+        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/apply-ai-runtime-construction-orders.ts",
+        "apps/portal-e2e/src/e2e/skirmish-ai-placement-prefix-evaluation.ts"
       ],
       "checkpointTicks": [
         0,
@@ -3653,7 +3682,9 @@
         "multiplayer_boundary"
       ],
       "reuse": [
-        "tools/ai/fixtures/stage-14-adaptation.json"
+        "tools/ai/fixtures/stage-14-adaptation.json",
+        "libs/games/probable-waffle/phaser/src/lib/world/services/recovery/serialize-actor-queue-state.spec.ts",
+        "libs/games/probable-waffle/phaser/src/lib/entity/components/queue/queue-continuation.spec.ts"
       ],
       "checkpointTicks": [
         0,
@@ -4010,7 +4041,9 @@
         "terminal_history"
       ],
       "reuse": [
-        "tools/ai/fixtures/undefined"
+        "tools/ai/fixtures/undefined",
+        "libs/games/probable-waffle/phaser/src/lib/world/services/recovery/serialize-actor-queue-state.spec.ts",
+        "libs/games/probable-waffle/phaser/src/lib/entity/components/queue/queue-continuation.spec.ts"
       ],
       "checkpointTicks": [
         0,
@@ -4457,7 +4490,9 @@
         "multiplayer_boundary"
       ],
       "reuse": [
-        "tools/ai/fixtures/stage-14-adaptation.json"
+        "tools/ai/fixtures/stage-14-adaptation.json",
+        "libs/games/probable-waffle/phaser/src/lib/world/services/recovery/serialize-actor-queue-state.spec.ts",
+        "libs/games/probable-waffle/phaser/src/lib/entity/components/queue/queue-continuation.spec.ts"
       ],
       "checkpointTicks": [
         0,
