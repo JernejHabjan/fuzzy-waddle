@@ -4,7 +4,7 @@
 			"image": "gui.png",
 			"format": "RGBA8888",
 			"size": {
-				"w": 64,
+				"w": 160,
 				"h": 359
 			},
 			"scale": 1,
@@ -596,13 +596,558 @@
 						"w": 12,
 						"h": 12
 					}
+				},
+				{
+					"filename": "actor_info_icons/training_time.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 2,
+						"w": 17,
+						"h": 28
+					},
+					"frame": {
+						"x": 65,
+						"y": 1,
+						"w": 17,
+						"h": 28
+					}
+				},
+				{
+					"filename": "actor_info_icons/growth.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 3,
+						"w": 28,
+						"h": 25
+					},
+					"frame": {
+						"x": 97,
+						"y": 1,
+						"w": 28,
+						"h": 25
+					}
+				},
+				{
+					"filename": "actor_info_icons/resources.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 4,
+						"w": 28,
+						"h": 23
+					},
+					"frame": {
+						"x": 129,
+						"y": 1,
+						"w": 28,
+						"h": 23
+					}
+				},
+				{
+					"filename": "actor_info_icons/gatherers.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 4,
+						"w": 28,
+						"h": 24
+					},
+					"frame": {
+						"x": 65,
+						"y": 33,
+						"w": 28,
+						"h": 24
+					}
+				},
+				{
+					"filename": "actor_info_icons/cargo.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 2,
+						"w": 28,
+						"h": 27
+					},
+					"frame": {
+						"x": 97,
+						"y": 33,
+						"w": 28,
+						"h": 27
+					}
+				},
+				{
+					"filename": "actor_info_icons/high-ground.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 2,
+						"w": 28,
+						"h": 27
+					},
+					"frame": {
+						"x": 129,
+						"y": 33,
+						"w": 28,
+						"h": 27
+					}
+				},
+				{
+					"filename": "achievements/first_steps.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 2,
+						"w": 24,
+						"h": 28
+					},
+					"frame": {
+						"x": 65,
+						"y": 65,
+						"w": 24,
+						"h": 28
+					}
+				},
+				{
+					"filename": "achievements/campaigner.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 4,
+						"w": 28,
+						"h": 24
+					},
+					"frame": {
+						"x": 97,
+						"y": 65,
+						"w": 28,
+						"h": 24
+					}
+				},
+				{
+					"filename": "achievements/war_hero.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 2,
+						"w": 19,
+						"h": 28
+					},
+					"frame": {
+						"x": 129,
+						"y": 65,
+						"w": 19,
+						"h": 28
+					}
+				},
+				{
+					"filename": "achievements/first_victory.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 4,
+						"w": 28,
+						"h": 24
+					},
+					"frame": {
+						"x": 65,
+						"y": 97,
+						"w": 28,
+						"h": 24
+					}
+				},
+				{
+					"filename": "achievements/the_architect.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 2,
+						"w": 28,
+						"h": 28
+					},
+					"frame": {
+						"x": 97,
+						"y": 97,
+						"w": 28,
+						"h": 28
+					}
+				},
+				{
+					"filename": "achievements/unit_collector.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 2,
+						"w": 28,
+						"h": 27
+					},
+					"frame": {
+						"x": 129,
+						"y": 97,
+						"w": 28,
+						"h": 27
+					}
+				},
+				{
+					"filename": "achievements/hundred_wins.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 3,
+						"w": 28,
+						"h": 25
+					},
+					"frame": {
+						"x": 65,
+						"y": 129,
+						"w": 28,
+						"h": 25
+					}
+				},
+				{
+					"filename": "achievements/resourceful.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 2,
+						"w": 25,
+						"h": 28
+					},
+					"frame": {
+						"x": 97,
+						"y": 129,
+						"w": 25,
+						"h": 28
+					}
+				},
+				{
+					"filename": "achievements/master_economist.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 2,
+						"w": 28,
+						"h": 28
+					},
+					"frame": {
+						"x": 129,
+						"y": 129,
+						"w": 28,
+						"h": 28
+					}
+				},
+				{
+					"filename": "achievements/economic_powerhouse.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 2,
+						"w": 28,
+						"h": 28
+					},
+					"frame": {
+						"x": 65,
+						"y": 161,
+						"w": 28,
+						"h": 28
+					}
+				},
+				{
+					"filename": "achievements/annihilator.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 2,
+						"w": 24,
+						"h": 28
+					},
+					"frame": {
+						"x": 97,
+						"y": 161,
+						"w": 24,
+						"h": 28
+					}
+				},
+				{
+					"filename": "achievements/unstoppable_force.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 7,
+						"y": 3,
+						"w": 18,
+						"h": 27
+					},
+					"frame": {
+						"x": 129,
+						"y": 161,
+						"w": 18,
+						"h": 27
+					}
+				},
+				{
+					"filename": "achievements/swift_victory.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 5,
+						"y": 2,
+						"w": 21,
+						"h": 28
+					},
+					"frame": {
+						"x": 65,
+						"y": 193,
+						"w": 21,
+						"h": 28
+					}
+				},
+				{
+					"filename": "achievements/comeback_king.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 3,
+						"w": 28,
+						"h": 26
+					},
+					"frame": {
+						"x": 97,
+						"y": 193,
+						"w": 28,
+						"h": 26
+					}
+				},
+				{
+					"filename": "achievements/scouts_honor.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 4,
+						"w": 28,
+						"h": 23
+					},
+					"frame": {
+						"x": 129,
+						"y": 193,
+						"w": 28,
+						"h": 23
+					}
+				},
+				{
+					"filename": "achievements/no_fly_zone.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 6,
+						"w": 28,
+						"h": 20
+					},
+					"frame": {
+						"x": 65,
+						"y": 225,
+						"w": 28,
+						"h": 20
+					}
+				},
+				{
+					"filename": "achievements/death_from_above.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 3,
+						"w": 28,
+						"h": 24
+					},
+					"frame": {
+						"x": 97,
+						"y": 225,
+						"w": 28,
+						"h": 24
+					}
+				},
+				{
+					"filename": "achievements/turtle_power.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 4,
+						"w": 28,
+						"h": 23
+					},
+					"frame": {
+						"x": 129,
+						"y": 225,
+						"w": 28,
+						"h": 23
+					}
+				},
+				{
+					"filename": "achievements/master_tactician.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 2,
+						"w": 24,
+						"h": 28
+					},
+					"frame": {
+						"x": 65,
+						"y": 257,
+						"w": 24,
+						"h": 28
+					}
+				},
+				{
+					"filename": "achievements/click_happy.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 6,
+						"y": 2,
+						"w": 19,
+						"h": 28
+					},
+					"frame": {
+						"x": 97,
+						"y": 257,
+						"w": 19,
+						"h": 28
+					}
 				}
 			]
 		}
 	],
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
-		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:64f7f1aa4a2e9a60725bc2323f6f9062:3393fd2f29260593227f032afdeb8e22:788b34ed4e778d63c84b2c3df4d44949$"
+		"version": "3.0"
 	}
 }
