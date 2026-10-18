@@ -262,6 +262,11 @@ export class ConstructionSiteComponent {
     );
   }
 
+  /** Returns remaining simultaneous-builder capacity for deterministic order reservation. */
+  getAvailableBuilderSlots(): number {
+    return Math.max(0, this.constructionSiteDefinition.maxAssignedBuilders - this.assignedBuilders.length);
+  }
+
   assignBuilder(gameObject: GameObject) {
     this.assignedBuilders.push(gameObject);
   }

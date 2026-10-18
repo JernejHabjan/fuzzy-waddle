@@ -600,8 +600,29 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
       return State.FAILED;
     }
     // console.log("[Build] AssignNextBuildOrder: Found target", target);
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (currentOrder?.orderType === OrderType.Build && currentOrder.data.targetGameObject === target) {
+      return State.SUCCEEDED;
+    }
     this.blackboard.addOrder(new OrderData(OrderType.Build, { targetGameObject: target }));
 
+    return State.SUCCEEDED;
+  }
+
+  /**
+   * Replaces an invalid active build target with a freshly revalidated target. Unlike normal
+   * continuation, this must discard the stale order so the behavior tree cannot revisit it.
+   */
+  async RecoverNextBuildOrder(): Promise<State> {
+    const builderComponent = getActorComponent(this.gameObject, BuilderComponent);
+    if (!builderComponent) return State.FAILED;
+
+    const target = await builderComponent.getClosestConstructionSite(builderComponent.getConstructionSeekRange());
+    if (!target) {
+      this.blackboard.resetCurrentOrder();
+      return State.FAILED;
+    }
+    this.blackboard.overrideOrderQueueAndActiveOrder(new OrderData(OrderType.Build, { targetGameObject: target }));
     return State.SUCCEEDED;
   }
 

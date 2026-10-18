@@ -33,6 +33,7 @@ import { OrderType } from "../../ai/order-type";
 import { getCostForObjectName } from "../../entity/components/production/cost-utils";
 import { IsoHelper } from "../../world/tilemap/iso-helper";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
+import { BuilderComponent } from "../../entity/components/construction/builder-component";
 import {
   emitStructureTopologyChanged,
   emitStructureTopologyChangedAtTile
@@ -885,16 +886,19 @@ export class BuildingCursor {
     // Move actors out of the way before placing buildings, wait for them to complete
     await this.moveActorsOutOfTheWay(buildingsBeingPlaced);
 
+    const constructionSites: GameObjects.GameObject[] = [];
     if (this.isDragging && objectsToPlace.length) {
       buildingToPlace?.destroy();
       for (const gameObject of objectsToPlace) {
-        this.spawnConstructionSite(gameObject);
+        constructionSites.push(this.spawnConstructionSite(gameObject));
       }
     } else if (buildingToPlace) {
-      this.spawnConstructionSite(buildingToPlace);
+      constructionSites.push(this.spawnConstructionSite(buildingToPlace));
     } else {
       throw new Error("No building to place");
     }
+
+    await this.orderSelectedBuildersForConstructionSites(constructionSites);
 
     this.pointerLocation = undefined;
     this.downPointerLocation = undefined;
@@ -903,7 +907,7 @@ export class BuildingCursor {
     this.isDragging = false;
   }
 
-  private spawnConstructionSite(gameObject: GameObjects.GameObject) {
+  private spawnConstructionSite(gameObject: GameObjects.GameObject): GameObjects.GameObject {
     const currentPlayer = getCurrentPlayerNumber(this.scene);
     const actorDefinition = {
       ...(currentPlayer && {
@@ -915,19 +919,36 @@ export class BuildingCursor {
 
     upgradeFromCoreToConstructingActorData(gameObject, actorDefinition);
     // todo Save to game state
+    return gameObject;
+  }
 
-    // Instruct selected builders to begin constructing the placed site
-    if (!currentPlayer) return;
-    const idComponent = getActorComponent(gameObject, IdComponent)!;
-    const selectedActorIds = getPlayer(this.scene)?.getSelection() ?? [];
+  /**
+   * Sends one command per selected builder after every placement is committed. Reservations only
+   * model this command batch; construction assignment remains owned by {@link CommandBusService}.
+   */
+  private async orderSelectedBuildersForConstructionSites(constructionSites: readonly GameObjects.GameObject[]): Promise<void> {
+    const currentPlayer = getCurrentPlayerNumber(this.scene);
     const commandBus = getSceneService(this.scene, CommandBusService);
-    commandBus?.dispatch({
-      type: "ACTOR_ACTION",
-      playerNumber: currentPlayer,
-      actorIds: selectedActorIds,
-      targetObjectIds: [idComponent.id],
-      queue: false
-    });
+    if (!currentPlayer || !commandBus || constructionSites.length === 0) return;
+
+    const selectedActorIds = getPlayer(this.scene)?.getSelection() ?? [];
+    const reservations = new Map<GameObjects.GameObject, number>();
+    for (const builderActor of this.actorIndex.getActorsByIds(selectedActorIds)) {
+      const builder = getActorComponent(builderActor, BuilderComponent);
+      const builderId = getActorComponent(builderActor, IdComponent)?.id;
+      if (!builder || !builderId) continue;
+      const target = await builder.getClosestConstructionSite(builder.getConstructionSeekRange(), constructionSites, reservations);
+      const targetId = target ? getActorComponent(target, IdComponent)?.id : undefined;
+      if (!target || !targetId) continue;
+      reservations.set(target, (reservations.get(target) ?? 0) + 1);
+      commandBus.dispatch({
+        type: "ACTOR_ACTION",
+        playerNumber: currentPlayer,
+        actorIds: [builderId],
+        targetObjectIds: [targetId],
+        queue: false
+      });
+    }
   }
 
   static spawnBuildingForPlayer(

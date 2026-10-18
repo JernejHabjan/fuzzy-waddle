@@ -251,6 +251,14 @@ export class ActorIndexSystem {
     return set ? Array.from(set) : [];
   }
 
+  /**
+   * Returns the owner's construction sites from the actor index. This keeps construction scheduling
+   * independent of Phaser display-list order, which is neither a gameplay nor a multiplayer contract.
+   */
+  getOwnedConstructionSites(ownerNumber?: PlayerNumber): GameObject[] {
+    return this.getOwnedActors(ownerNumber).filter((actor) => !!getActorComponent(actor, ConstructionSiteComponent));
+  }
+
   getOwnedActorsByPlayers(): Map<PlayerNumber, Set<GameObject>> {
     return this.ownedActors;
   }

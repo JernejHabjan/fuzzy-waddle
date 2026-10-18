@@ -71,6 +71,7 @@ export interface IPlayerPawnControllerAgent {
   HasBuilderComponent(): boolean;
   LeaveConstructionSiteOrCurrentContainer(): State;
   AssignNextBuildOrder(): Promise<State>;
+  RecoverNextBuildOrder(): Promise<State>;
 
   // Repair
   ConstructionSiteFinished(): boolean;
