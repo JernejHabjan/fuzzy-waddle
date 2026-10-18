@@ -2,6 +2,8 @@ import type Phaser from "phaser";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { getActorComponent } from "../../../data/actor-component";
+import { getGameObjectLogicalTransform } from "../../../data/game-object-helper";
+import { ResourceSourceComponent } from "../../../entity/components/resource/resource-source-component";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
@@ -11,6 +13,7 @@ import { bindAiRuntimeExistingActors } from "./bind-ai-runtime-existing-actors";
 
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../data/game-object-helper", () => ({ getGameObjectLogicalTransform: jest.fn() }));
 jest.mock("../../../data/tech-tree/canonical-actor-name", () => ({
   getCanonicalActorNameCached: (name: string) => name
 }));
@@ -50,5 +53,34 @@ it("binds exactly one live inherited actor without changing or creating the acto
   expect(() => bindAiRuntimeExistingActors(scene, preset, new Map(), {})).toThrow("binding_ambiguous");
   actor.active = false;
   candidates = [actor];
+  expect(() => bindAiRuntimeExistingActors(scene, preset, new Map(), {})).toThrow("binding_ambiguous");
+});
+
+it("pins one actual neutral source by exact position, refusing ambiguous, moved or non-resource substitutes", () => {
+  const scene = {} as ProbableWaffleScene;
+  const first = { scene, active: true, name: ObjectNames.Tree6 } as unknown as Phaser.GameObjects.GameObject;
+  const second = { scene, active: true, name: ObjectNames.Tree6 } as unknown as Phaser.GameObjects.GameObject;
+  const position = { x: 608, y: 928, z: 0 };
+  const preset: AiRuntimePresetWorldV1 = { fixtureId: "neutral-inherited", actors: [], resourceGrants: [],
+    provenance: { sourceRevision: "a".repeat(40), fixtureDigest: "fnv1a32:12345678" },
+    existingActorBindings: [{ fixtureActorId: "local-tree", actorName: ObjectNames.Tree6, owner: null, position }] };
+  jest.mocked(getSceneService).mockReturnValue({ getAllIdActors: () => [first, second] } as never);
+  let isResource = true;
+  jest.mocked(getActorComponent).mockImplementation((actor, component) => {
+    if (component === IdComponent) return { id: actor === first ? "tree-one" : "tree-two" } as never;
+    if (component === ResourceSourceComponent && isResource) return {} as never;
+    return undefined;
+  });
+  jest.mocked(getGameObjectLogicalTransform).mockImplementation((actor) => actor === first ? position : { ...position, x: -672 });
+  const roles = new Map<string, Phaser.GameObjects.GameObject>(), ids: Record<string, string> = {};
+  bindAiRuntimeExistingActors(scene, preset, roles, ids);
+  expect(roles.get("local-tree")).toBe(first);
+  expect(ids["local-tree"]).toBe("tree-one");
+  jest.mocked(getGameObjectLogicalTransform).mockReturnValue(position);
+  expect(() => bindAiRuntimeExistingActors(scene, preset, new Map(), {})).toThrow("binding_ambiguous");
+  jest.mocked(getGameObjectLogicalTransform).mockReturnValue({ ...position, y: 900 });
+  expect(() => bindAiRuntimeExistingActors(scene, preset, new Map(), {})).toThrow("binding_ambiguous");
+  isResource = false;
+  jest.mocked(getGameObjectLogicalTransform).mockReturnValue(position);
   expect(() => bindAiRuntimeExistingActors(scene, preset, new Map(), {})).toThrow("binding_ambiguous");
 });

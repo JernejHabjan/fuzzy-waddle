@@ -19,11 +19,12 @@ export interface AiRuntimePresetWorldV1 {
     readonly owner: number | null;
     readonly position: { readonly x: number; readonly y: number; readonly z: number };
   }[];
-  /** Bind a unique actual inherited owned actor; this never creates, moves or rewrites it. */
+  /** Bind a unique inherited actor without creating/moving it. Neutral resources require an exact logical-world position. */
   readonly existingActorBindings?: readonly {
     readonly fixtureActorId: string;
     readonly actorName: ObjectNames;
-    readonly owner: number;
+    readonly owner: number | null;
+    readonly position?: { readonly x: number; readonly y: number; readonly z: number };
   }[];
   readonly resourceGrants: readonly {
     readonly playerNumber: number;

@@ -69,6 +69,38 @@ requires positive native extraction, the next offered cargo and exact successful
 source changes/restores cannot borrow a later credit. These authored unrun worlds do not close PLACE-01 constrained
 room, threatened alternatives, full physical transit or any expansion/fortification branch.
 
+### Native expansion and physical fortification controls
+
+The [expansion worlds](../../../../../../../../../../apps/portal-e2e/src/e2e/skirmish-ai-expansion-worlds.spec.ts)
+use explicit `AI_EXPANSION_WORLD_E2E=1` opt-in when execution is authorized. Both factions get ordinary land expansion,
+already-served, home-pressure and pressure-removal branches. Inherited neutral resources require exact position
+bindings and native resource components; stock setup changes their actual pre-tick values without claiming extraction.
+No completed opening, AI knowledge, construction progress, payment or income is injected. Native accepted expansion,
+available original builder, physical arrival, actual completed paid deposit and exact economic-worker wood delivery
+into that same deposit must agree. Native WorkMill or faction main service is eligible; another main is not compulsory.
+Served controls require delivered income, while pressure controls require real attack/damage/survival and suppression.
+Actual withdrawal or native attacker loss must precede resumed service. Explicit positive safe pairing and full
+combat-only removal/utility/lease acceptance remain separate. These owner branches do not register complete EXP
+scenarios merely because they execute.
+
+The [fortification access worlds](../../../../../../../../../../apps/portal-e2e/src/e2e/skirmish-ai-fortification-access-worlds.spec.ts)
+use `AI_FORTIFICATION_WORLD_E2E=1`. Human-owned native prefab geometry on the frozen open map isolates stairs
+present/missing, worker/army passage, a sealed ring and a pinned real wall breach. Shared movement must physically
+reach its original native tile; elevated occupancy must match actual wall height in closed history. A receipt,
+native true return, fallback endpoint or planner graph alone cannot pass. AI construction prefixes, independent
+hostile passage, occupied firing/coverage/value, shore/air and cumulative spending remain separate requirements.
+
+Preset controls add bounded normal `move`, `move_to_actor` and `attack` actions. Owned targets use their actual native
+tile; the fixture never sets a moving actor's height or position. Attacks target opposing original owned roles.
+An original actor lost before a scheduled action records `unavailable` and emits no command. Controller `applied`
+records dispatch; native outcomes still own actual application and independent movement/service effects.
+
+The existing opt-in capture's `captureHuman` handle reads an actual human player's native authority without inventing
+AI input or installing a second observer. Optional closed history arms only at paused tick zero and uses the existing
+shared frontier owner. Retained disposed handles cannot rearm it. Both native record sets stay local as single-copy
+raw artifacts; summaries/assertion messages retain bounded failures and omission counts. The source-delivery reader
+joins exact source owner, worker, deposit, resource, time window and successful offered transfer; fields reuse it.
+
 StateHashService delegates native projection and pure diagnostics to focused owners. Its queue digest includes the
 authoritative shared lanes/items, exact remaining work, original paid/refund policy and command lineage, with stable
 key order. An explicit empty shared snapshot supersedes legacy lists. Legacy-only records keep their earlier

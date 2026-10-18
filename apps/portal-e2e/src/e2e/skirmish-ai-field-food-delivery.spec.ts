@@ -3,6 +3,7 @@ import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiRuntimeProductionFactV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
 import { hasNativeFieldFoodDelivery } from "./skirmish-ai-field-food-delivery";
+import { hasNativeSourceDelivery } from "./skirmish-ai-source-delivery";
 
 /** Synthetic causality controls, never native recipe evidence. */
 function stream(): AiRuntimeProductionFactV1[] {
@@ -33,6 +34,19 @@ function stream(): AiRuntimeProductionFactV1[] {
 }
 
 test.describe("new-field delivered-food attribution", () => {
+  test("the shared source reader enforces exact worker, deposit and source-owner bindings", () => {
+    const contract = { sourceActorId: "field", sourceOwner: 2, playerNumber: 2,
+      resourceType: ResourceType.Food, fromTick: 10, throughTick: 30, workerActorId: "worker", depositActorId: "granary" };
+    expect(hasNativeSourceDelivery(stream(), contract)).toBe(true);
+    for (const changed of [
+      { workerActorId: "other-worker" }, { depositActorId: "other-deposit" }, { sourceOwner: null },
+      { resourceType: ResourceType.Wood }, { throughTick: 19 }
+    ]) expect(hasNativeSourceDelivery(stream(), { ...contract, ...changed })).toBe(false);
+    const neutral = stream().map((fact) => fact.kind !== "spatial_authority" || fact.spatial.kind !== "resource_service" ||
+      fact.spatial.phase !== "cargo_changed" || !fact.spatial.target ? fact : { ...fact,
+        spatial: { ...fact.spatial, target: { ...fact.spatial.target, playerNumber: null } } });
+    expect(hasNativeSourceDelivery(neutral, { ...contract, sourceOwner: null })).toBe(true);
+  });
   test("requires actual extraction after completion and its exact successful offered transfer", () => {
     const facts = stream();
     expect(hasNativeFieldFoodDelivery(facts, "field", 10, 2)).toBe(true);
@@ -64,6 +78,16 @@ test.describe("new-field delivered-food attribution", () => {
       } };
       const mixed = [first, between, ...facts.slice(1).map((fact) => ({ ...fact, sequence: fact.sequence + 1 }))];
       expect(hasNativeFieldFoodDelivery(mixed, "field", 10, 2)).toBe(false);
+    }
+  });
+
+  test("refuses delivery credited to a destroyed or unindexed deposit", () => {
+    for (const changed of [{ alive: false }, { active: false }, { indexed: false }, { finished: false }]) {
+      const facts = stream().map((fact) => fact.kind !== "spatial_authority" || fact.spatial.kind !== "resource_service" ||
+        fact.spatial.phase !== "resource_credit" || !fact.spatial.target ? fact : {
+          ...fact, spatial: { ...fact.spatial, target: { ...fact.spatial.target, ...changed } }
+        });
+      expect(hasNativeFieldFoodDelivery(facts, "field", 10, 2)).toBe(false);
     }
   });
 });

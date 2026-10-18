@@ -13,6 +13,16 @@ it("registers a declared inherited role for queue and owner validation", () => {
   expect(names.get(binding.fixtureActorId)).toBe(ObjectNames.Sandhold);
 });
 
+it("admits exactly positioned inherited neutral sources while retaining neutral ownership", () => {
+  const source = { ...binding, actorName: ObjectNames.Tree6, owner: null, position: { x: 608, y: 928, z: 0 } };
+  const owners = new Map<string, number | null>();
+  expect(validAiRuntimeExistingBindings([source], new Set(), owners, new Map())).toBe(true);
+  expect(owners.get(source.fixtureActorId)).toBeNull();
+  for (const position of [undefined, { x: 608, y: 928 }, { x: NaN, y: 928, z: 0 }, { x: 608, y: 928, z: 0, radius: 5 }]) {
+    expect(validAiRuntimeExistingBindings([{ ...source, position }], new Set(), new Map(), new Map())).toBe(false);
+  }
+});
+
 it("rejects collisions, unknown fields, invalid owners and unknown actor names", () => {
   for (const values of [
     [binding, binding],

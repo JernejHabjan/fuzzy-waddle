@@ -3,64 +3,59 @@
 Default resume page: read this first, then only the selected package in [REMAINING-WORK.md](REMAINING-WORK.md).
 Do not load the full plan directory or archive on startup.
 
-## Current cursor — native construction/placement bindings, authored unrun, 2026-10-18
+## Current cursor — land expansion and physical wall-access recipes, authored unrun, 2026-10-18
 
 - Worktree /home/jernej/.codex/worktrees/7977/fuzzy-waddle; branch feature/759-skirmish-ai.
-  Batch baseedff27f95c815e2e154a7f177c2a50d1aa586bfb; mechanical hash extraction87d2b0216,
-  queue hash/lifecycle behavior982a3aaf5.
-  Verify containing publication commit/remote on resume.
-  Actual model/effort unknown; no delegation. User requested concrete native bindings plus necessary support/limits,
-  and explicitly **no recipe execution, tests, lint, type checks, formatting or similar verification runs**.
-- Shared mixed-queue hashing is now implemented in StateHashProjection/serializeActorQueueState and delegated by
-  StateHashService: lane/item order, empty lanes, exact work, paid/refund policy and command identity reach both peer
-  digest and AI projection. Legacy-only serialization is retained. The large service was mechanically split before
-  the behavior commit; no baseline/config exemption changed. Init now replaces old listeners/hash caches and disposal
-  removes its exact shutdown handler; transient movement cannot hide an extended differing state tail.
-- constructionOrders now creates real unfinished sites through ordinary shared commands at paused tick zero, binds
-  actual applied native identities and aborts missing/ambiguous/reused/cross-owner setup. Bounds:8 sites,8 builders
-  each, no simultaneous initial construction/gathering or two construction jobs per worker. Native pinned cancellation
-  uses unfinished-site teardown/refund, not a new relayed multiplayer cancel command. Setup waits for actual binding.
-- Five standalone executable owner worlds are authored: builder loss, intact work, cancellation and both-faction
-  safe-room field placement. The first three use apps/portal-e2e/src/e2e/skirmish-ai-construction-worlds.spec.ts,
-  with explicit AI_CONSTRUCTION_WORLD_E2E=1 opt-in.
-  They reuse lobby/native frames and existing opt-in capture. Assertions require actual original-site payment/work,
-  sealed complete intervals, exact completion/retention or refund/removal and useful worker reassignment. Bounded
-  summaries retain omission counts; raw native proof uses existing single-copy storage. Interruption is tick80,
-  earlier than the native20s/four-builder/50ms fastest completion; actual pre-interruption start is still required.
-- protectedRoutes records a pre-build baseline and fresh static tile-envelope paths at every placement, using the
-  native terrain/object/height builders without changing live caches. Limits:8 routes, margin0–2,16384 cells/search,
-  512 path tiles,256 prefix reads; overflow/unavailable evidence fails. Independent reader joins every actual applied
-  Construct to its earlier same-tick placement and exact identity. This is static geometry, **not actual unit transit,
-  producer spawn or continuous occupancy proof**. These remain full PLACE-03/WALL obligations.
-- skirmish-ai-field-placement-worlds.spec.ts (AI_PLACEMENT_WORLD_E2E=1) adds two safe-room owner branches of PLACE-01.
-  Normal faction workers/buildings and native food demand must produce at least two new paid completed fields,
-  an aligned pair, reserved-lane exclusion and food delivered from each. Extraction must join the next offered cargo
-  and exact transfer; another field/reset, grant, fixture presence or generic food increase cannot substitute.
-  Constrained-room, threatened-site, verified alternative placement and actual per-prefix transit branches remain open.
-- Authored native definitions: **116/116 supported (100%),0 missing definitions** including30 existing executable
-  recipes and86 new specifications. Executable runtime registration remains **30/116 (25.9%),86 unbound (74.1%)**,
-  plus4 content-deferred island rows. Pure registration stays111/111. The5 standalone worlds are not counted as full
-  manifest registrations:0/5 executed,0/5 validated (unrun, not failed). No new passing scenario or overall behavior
-  percentage is claimed. Catalog/inventory distinguish these states; raw artifacts remain outside model input.
-- Existing86 specifications remain linked by runtimeRecipeDraft and explicitly unbound for their complete native
-  outcomes; reuse pointers/blocker text now identify implemented construction support and shared-queue hashing.
-  Native navigation/exposure diagnostics still lack complete per-prefix physical proof. Frozen fortified/multi-opponent
-  map bindings remain unavailable. H-31/SEQ-08/D-02 reuse new queue/hash controls but native interruption/peer proof is open.
-- No verification gate was run. New/changed metadata tests are authored **unrun**, including safe draft identity,
-  exact role/control rejection, queue round-trip/trajectory/hash changes and hash listener lifecycle. Everything is
-  **authored unrun**, including TypeScript, formatting and lint. Prior194/16 passes do not certify this changed source.
-- **Next implementation (same unfinished binding batch):** add real unit transit/spawn after each placement prefix,
-  constrained/safe-versus-threatened field alternatives and useful remote deposit service/home-pressure controls for
-  PLACE-01–03/EXP-01/02. Reuse the fresh static prefix checks and five owner worlds; do not rebuild them.
-  Author/bind verified wall/stair/shore geometry and native occupied-defense/useful-cost
-  oracles for WALL-01–05/H-27/28. Reuse the new construction commands, cancellation/loss and owner-world controls.
-  Then bind actual safe-boundary native save/replay and real peer/host continuation for H-31/SEQ-08 using the now
-  complete queue projection. No second scenario engine, invented map or generic command-count substitute.
-- Historical production8/8, economy16/16 and victory1/2 remain earlier-source evidence. M11, real peer/replay,
-  calibration and debug integration stay open. Machinery review/removal remains last. No gameplay/balance changes.
+  Batch base00a708a4ff85fe1bec6e612d6926db16252c01bb; verify the containing publication commit/remote on resume.
+  Actual model/effort unknown; no delegation. User requests continued recipe/binding implementation and necessary
+  support, with **no recipe execution, tests, lint, type checks, formatting or dedicated verification runs**.
+- This batch authors14 additional standalone native owner worlds, bringing the total to19: the previous3 construction
+  recovery and2 field worlds, plus8 land-expansion branches and6 wall-access branches. All19 remain unrun.
+  These are concrete ordinary-lobby/fixed-frame recipes with native outcome readers, not full scenario registrations.
+- Expansion: skirmish-ai-expansion-worlds.spec.ts, AI_EXPANSION_WORLD_E2E=1. Both factions get expand/served/home-pressure/
+  pressure-withdrawn branches. Exact inherited neutral resource bindings deplete the actual8 frozen-map deposits;
+  normal scouts reveal a120-stock source and360-stock alternative covered by a real enemy WatchTower. All worker,
+  producer, housing, source and weapon capabilities/prices remain definition-owned. No AI progress/knowledge is injected.
+  Required outcomes join selected AI expansion, original shared placement/application, available builder, native arrival,
+  actual charge/completion/retention and wood delivered by an identified economic worker into that exact new deposit.
+  A native WorkMill or faction main can supply useful service. Served controls
+  need native income into the original service, not just no construction. Pressure needs a real applied attack,
+  fair danger, damaged surviving original home and suppression; withdrawal/resume needs actual movement or native loss
+  before resumed productive expansion. Full pressure acceptance also needs its positive safe pair. Maximum3000 preserves EXP-02's ceiling.
+- Wall access: skirmish-ai-fortification-access-worlds.spec.ts, AI_FORTIFICATION_WORLD_E2E=1. Native human-owned prefab
+  controls on the frozen open map cover stairs present/missing, worker/army passage through an intentional opening,
+  a sealed ring and a pinned destroyed-wall breach. Stamped shared Move must physically reach its original endpoint;
+  receipts, fallback arrival and true return alone cannot pass. Elevated occupancy must match native wall height in
+  sealed history. Missing stairs/seals require an actual terminated blocked attempt and no target occupancy.
+- Support reuses the existing observer: captureHuman reads real human authority and optional closed history without
+  inventing AI input or adding another observer. Move/move_to_actor/attack are bounded normal shared commands.
+  A destroyed original controller records unavailable, with no command or success. Both public capture paths now
+  fence disposed handles before history can be rearmed. Initial deposits without queues/weapons are pinned before
+  first delivery. Movement binds the request and command identity, permitting synchronous native start.
+  The earlier strict roster bug rejecting construction-created
+  role IDs is repaired. Field and expansion delivery share one exact extraction/offer/deposit reader.
+- Evidence remains **authored unrun**:0/19 executed,0/19 validated; unrun is not failed. No tests, browser/server,
+  lint, types, formatter, doctor, catalog validator or broad gate ran. Raw records remain local single-copy artifacts;
+  model-facing summaries/assertion messages are bounded. Source/fixture digests stay attached. No balance/AI planner
+  behavior changed. Earlier source passes do not certify this source.
+- Full bindings remain open: actual AI construction prefixes and hostile passage, productive occupied defenses/firing,
+  shore/air geometry and cumulative spend; constrained/threatened field alternatives; exhaustive expansion benefit,
+  lease/concurrency and combat-driven pressure-removal controls. A native recipe can fail its premises/behavior;
+  never bypass them or inject a completed opening to force acceptance. AiBaseManager's aggregate local-resource/
+  income trigger may affect the new-main path; cheap useful service remains a valid alternative. This source caveat
+  is not a measured runtime failure.
+- **Next authoring action (same unfinished selected slice):** reuse these19 worlds and existing static prefix reader;
+  add actual AI wall-placement prefixes/occupied firing and useful-cost branches, constrained/threatened field pairs,
+  and remaining expansion utility/lease/combat controls. Complete ID-specific bindings before full registration.
+  Selected IDs remain PLACE-01–03/EXP-01/02/WALL-01–05/H-27/28; native save/replay/peer H-31/SEQ-08 follow them.
+  Existing mixed-queue hashing/codec support is already authored; do not redesign it.
+- Pure registration111/111 (100%). Supported full runtime registration30/116 (25.9%),86 unbound (74.1%), plus4 deferred
+  island rows. Definitions116/116 include86 specifications.19 partial owner worlds do not close a full row or supply
+  an overall AI completion percentage. M11, native peer/replay, calibration/debug and later victory gate remain open.
+  Machinery necessity/removal stays last overall.
 - Preserve unrelated .run/start_portal.run.xml and ALL_VISIBLE fog edits. Publish only owned paths, verify remote,
-  report done/why and next/why, then pause. Recommend Sol6.1/high for native binding/restore authority;
-  this recommendation does not change active settings.
+  report done/why and next/why, then pause. Next recommendation remains Sol6.1/high for physical/authority integration;
+  recommendations do not change the active settings.
 
 ## What “continue” means
 

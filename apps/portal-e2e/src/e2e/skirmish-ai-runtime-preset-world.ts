@@ -13,11 +13,12 @@ export interface RuntimePresetWorldV1 {
     readonly owner: number | null;
     readonly position: { readonly x: number; readonly y: number; readonly z: number };
   }[];
-  /** Bind a unique actual inherited owned actor; this never creates, moves or rewrites it. */
+  /** Neutral inherited sources require an exact logical-world position; binding never creates or moves an actor. */
   readonly existingActorBindings?: readonly {
     readonly fixtureActorId: string;
     readonly actorName: string;
-    readonly owner: number;
+    readonly owner: number | null;
+    readonly position?: { readonly x: number; readonly y: number; readonly z: number };
   }[];
   readonly resourceGrants: readonly {
     readonly playerNumber: number;

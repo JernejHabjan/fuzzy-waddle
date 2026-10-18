@@ -2,6 +2,92 @@
 
 [HANDOFF.md](HANDOFF.md) owns continuation. Read this current batch; older sections retain historical evidence.
 
+## Land expansion and physical wall-access bindings —14 additional worlds authored unrun, 2026-10-18
+
+Base00a708a4ff85fe1bec6e612d6926db16252c01bb; same branch/worktree as HANDOFF. Actual model/effort unknown.
+No delegation. User retains source-only authoring: no recipes, tests, lint, types, formatter, build, browser/server,
+doctor/context or dedicated verification execution. Reading source/diffs and authoring files are the only review evidence.
+
+### Acceptance map
+
+1. **Ordinary movement/opponent actions implemented, unverified:** existing bounded preset controls now accept Move,
+   movement to an actual owned role's native tile, and Attack against an actual opposing role. Commands keep human
+   controller provenance and ordinary shared validation. World positions are finite/bounded; enemy movement targets,
+   allied attacks and neutral attack roles are rejected. A dead original actor settles as unavailable with no command;
+   no replacement or successful dispatch is manufactured. Actual native outcomes remain distinct from controller phase.
+2. **Inherited source setup implemented, unverified:** optional exact logical positions disambiguate inherited actors.
+   Neutral bindings require exact position and an actual native ResourceSourceComponent. Ambiguous, moved, dead,
+   reused, cross-owner and non-resource matches abort. Existing owned bindings remain compatible. Expansion inputs
+   bind all8 frozen-map deposits and set their real initial component stocks to zero instead of adding synthetic
+   depleted sources beside an accidentally rich inherited map. This is setup, not a claimed native extraction event.
+3. **Human authority reuses the existing capture, unverified:** opt-in host captureHuman forwards the original human
+   boundary reader and can arm the existing closed history at paused0. It supplies no AI decision/knowledge and adds
+   no second observer or buffer. Retained disposed AI/human handles now throw before rearming history. Native proof,
+   actor watches and scene cleanup retain their existing ownership. Existing deposits without queues/weapons are pinned
+   before first delivery. Counter-only, dropped or reordered history fails.
+4. **Six physical fortification controls authored, unrun:** stairs present/missing, worker/army opening, sealed ring,
+   native destroyed-wall breach. The actual prefab topology is assembled on the frozen open map, not a fictitious
+   fortified map label. Normal shared Move witnesses must be attributed to exact native execution/order lifetimes and
+   original endpoint arrival; stopped, fallback or receipt-only evidence cannot substitute. Closed physical position
+   must show the actor at native wall height. A blocked branch needs a terminated native attempt and no destination
+   occupancy. Breach requires pinned original loss/unregistration and later actual passage. These are human-owned
+   physical controls, not AI wall construction, hostile passage, tower firing/value, shore/air or budget acceptance.
+5. **Eight expansion controls authored, unrun:** expand/served/home-pressure/pressure-withdrawn for both factions.
+   Real scouts, actual120/360-stock source definitions and enemy WatchTower supply fair choices/risk. No completed
+   opening is injected. The native oracle joins accepted service identity to actual placement, one original available
+   builder, physical arrival, one charge/completion, retention and an identified economic worker's wood delivered into
+   that exact new deposit. A native WorkMill or faction main is eligible; a nearer deposit must improve service distance.
+   Already-served branches
+   require actual delivery to their original service and refuse redundant nearby expansion. Pressure requires actual
+   scripted shared Attack, fairly observed danger, damaged surviving original home, and suppressed
+   overextension. Withdrawal requires actual native movement or independently captured native raider loss, then a
+   resumed productive expansion after that actual resolution. Horizon3000 does not extend EXP-02. Explicit positive-safe
+   pairing, exhaustive utility/lease and combat-removal
+   branches remain open; neither family receives a full manifest registration from these owner controls.
+6. **Shared source-delivery reader implemented, unverified:** field delivery delegates to the same extraction/next
+   offered-cargo/exact successful-deposit join as expansion. Source owner, worker, deposit, resource and time window
+   are explicit. Another source/reset/transfer, resource grants and later generic cash cannot satisfy the contract.
+7. **Source-found repairs:** prior strict browser roster logic omitted construction-created role IDs and would reject
+   all three construction owner worlds. Its identity/count check now includes these roles without pretending they
+   were seeded finished actors. New API consumers/nullable owners were traced; unsafe property narrowing was repaired.
+   Source caveat: AiBaseManager's aggregate local-resource/income trigger may hold the new-main path while renewable
+   food remains healthy; cheaper useful native service is also eligible. No runtime failure is claimed and no planner
+   behavior was altered to make a fixture pass. Physical controls bind the request before synchronous native dispatch,
+   not an incorrectly assumed ordering after the receipt.
+8. **Progress:**14 additional owner worlds;19 total with the prior5.0/19 executed,0/19 validated. Unrun is not failed.
+   Pure111/111, supported full runtime30/116 (25.9%),86 unbound (74.1%) and4 deferred island rows are unchanged.
+   Definitions remain116/116, including86 full-scope specifications. No new scenario pass or global completion claim.
+   Raw records remain local single-copy artifacts; bounded summaries/assertions expose at most12 failure details.
+
+### Omission Audit — source review only
+
+- Traced declarations, strict parser, exact native actor/owner/position bindings, shared Move/Attack dispatch,
+  original control outcomes, observer lifetime, physical movement/closed history, completed service and resource credit.
+  Controller phases, branch names, copied coordinates and fake paid/opening state cannot stand in for outcomes.
+- Reused the existing runtime lobby/frame driver, movement normalizer, production capture/frontiers and resource
+  join. No new scenario interpreter, map label, always-on gameplay observer, balance value or AI planner change.
+- New/updated unrun controls cover neutral ambiguity/position/owner, roster construction-role regression, bounded
+  moves/attack ownership/unavailable actors/shutdown, disposed capture handles, forwarding human history, initially pinned
+  deposits, exact source/worker/deposit ownership and live usable deposits, missing native proof and closed counters
+  without intervals. Source and tests were authored
+  and reviewed; they were not compiled or executed. These controls do not certify the unrun worlds.
+- Full AI placement prefixes/hostile passage, occupied firing/marginal value/shore/spend, constrained/threatened fields,
+  full expansion utility/lease/combat controls, actual save/replay/peers and M11 remain open. No metadata-only row was
+  upgraded to full executable registration. Catalog rendered counts are unchanged; no catalog checker was run.
+- Unrelated run XML/ALL_VISIBLE fog changes remain excluded. Existing roadmap order, user execution deferral,
+  four island-content deferrals and machinery-last policy are retained. No skill/tool expansion was made.
+
+### Final Closure Audit — authoring checkpoint, not full selected-scenario closure
+
+Reviewed immediate contracts/callers and native owner boundaries after source repairs, including normal-game opt-out,
+retained handles, null-owned sources, mixed human/AI capture and bounded failure/raw artifact routing. Updated HANDOFF,
+inventory, recipe reuse/limitations and owning testing guide. This checkpoint publishes authored code only; TypeScript,
+format/lint and runtime correctness remain unverified. Verify containing publication commit/remote on resume.
+
+Next: reuse these19 worlds for actual AI wall prefixes/occupied firing/useful cost, constrained/threatened fields and
+remaining expansion utility/lease/combat controls. Complete full ID-specific bindings before changing30/116 full runtime
+coverage. Native save/replay/peer H-31/SEQ-08 follow; machinery review is last. Recommend Sol6.1/high; no automatic switch.
+
 ## Native construction/static-prefix bindings and five owner worlds — authored unrun, 2026-10-18
 
 Batch baseedff27f95c815e2e154a7f177c2a50d1aa586bfb; mechanical extraction87d2b0216,

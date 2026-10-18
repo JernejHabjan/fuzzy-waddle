@@ -32,7 +32,20 @@ export function validAiRuntimePresetControls(value: unknown, owners: ReadonlyMap
     )
       return false;
     ids.add(id);
-    if (action["kind"] === "rally") {
+    if (action["kind"] === "move") {
+      const point = action["worldPosition"];
+      return only(action, ["kind", "worldPosition"]) && record(point) && only(point, ["x", "y", "z"]) &&
+        [point["x"], point["y"], point["z"]].every((coordinate) => typeof coordinate === "number" && Number.isFinite(coordinate)) &&
+        typeof point["x"] === "number" && Math.abs(point["x"]) <= 65536 &&
+        typeof point["y"] === "number" && point["y"] >= 0 && point["y"] <= 65536 &&
+        typeof point["z"] === "number" && Math.abs(point["z"]) <= 4096;
+    }
+    if (action["kind"] === "attack") {
+      const target = action["targetFixtureActorId"];
+      return only(action, ["kind", "targetFixtureActorId"]) && typeof target === "string" && owners.has(target) &&
+        owners.get(target) !== null && owners.get(target) !== owners.get(producerFixtureActorId);
+    }
+    if (action["kind"] === "rally" || action["kind"] === "move_to_actor") {
       const target = action["targetFixtureActorId"];
       return (
         only(action, ["kind", "targetFixtureActorId"]) &&

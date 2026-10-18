@@ -202,6 +202,7 @@ export class AiRuntimeProductionCapture {
 
   /** Appends one detached snapshot at a settled decision boundary; tick zero permits no committed AI input yet. */
   capture(playerNumber: number, latestTick?: number): AiRuntimeProductionCaptureV1 {
+    if (this.disposed) throw new Error("production_capture_disposed");
     if (latestTick !== undefined) {
       const clock = getSceneService(this.scene, SimulationTickService);
       if (clock?.currentTick === 0 && clock.isPaused) this.worldAuthority?.syncSetupBalances();
@@ -210,11 +211,17 @@ export class AiRuntimeProductionCapture {
     return this.captureBoundary(playerNumber, true);
   }
 
-  /** Human queue authority has no AI decision input. Test-owned callbacks choose and name these exact boundaries. */
-  captureHumanQueueBoundary(playerNumber: number): AiRuntimeProductionCaptureV1 {
+  /** Human fixture authority has no AI input. Optional history arms only at paused tick zero, like the AI path. */
+  captureHumanQueueBoundary(playerNumber: number, latestTick?: number): AiRuntimeProductionCaptureV1 {
+    if (this.disposed) throw new Error("production_capture_disposed");
     const player = getPlayer(this.scene, playerNumber);
     if (player?.playerController.data.playerDefinition?.playerType !== ProbableWafflePlayerType.Human) {
       throw new Error("production_capture_human_boundary_required");
+    }
+    if (latestTick !== undefined) {
+      const clock = getSceneService(this.scene, SimulationTickService);
+      if (clock?.currentTick === 0 && clock.isPaused) this.worldAuthority?.syncSetupBalances();
+      this.proof.arm(playerNumber, latestTick);
     }
     return this.captureBoundary(playerNumber, false);
   }

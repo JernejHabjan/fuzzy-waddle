@@ -75,6 +75,8 @@ describe("AiRuntimeProductionCapture queue lifecycle", () => {
     } as never);
     expect(() => fixture.capture.captureHumanQueueBoundary(2)).toThrow("production_capture_human_boundary_required");
     fixture.capture.dispose();
+    expect(() => fixture.capture.captureHumanQueueBoundary(2, 20)).toThrow("production_capture_disposed");
+    expect(() => fixture.capture.capture(2, 20)).toThrow("production_capture_disposed");
   });
 
   it("captures exact item handles before insertion/after removal, preserving scoped cash and both command lineages", () => {

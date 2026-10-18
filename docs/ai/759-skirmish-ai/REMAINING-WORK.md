@@ -1,6 +1,6 @@
 # #759 remaining work inventory
 
-Snapshot: 2026-10-18, current batch based on `edff27f95c815e2e154a7f177c2a50d1aa586bfb`. This is the execution inventory for the existing scope,
+Snapshot: 2026-10-18, current batch based on `00a708a4ff85fe1bec6e612d6926db16252c01bb`. This is the execution inventory for the existing scope,
 not a new design or diagnostic project. [HANDOFF.md](HANDOFF.md) owns the current cursor;
 [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) retains the latest checked source/evidence details.
 The manifest and linked scenario requirements remain authoritative; the snapshot below must be refreshed when
@@ -114,31 +114,33 @@ main-building footprint were corrected in both paired worlds. Construction cance
 post-opening unfinished-site reassignment have focused controls. Native ECO-06 proves alternate drop-off/source
 recovery; native no-drain controls prove stop/assignment release with cargo preservation.
 
-**Current publication: native construction/static-prefix support and5 executable owner worlds, unrun, 2026-10-18.**
+**Current publication:14 additional native owner worlds,19 total authored unrun, 2026-10-18.**
 
-1. Every supported missing native ID retains concrete authoring requirements in native-scenario-recipes.json. This records
-   setup/actions, physical evidence, finite ceiling/checkpoints, required/forbidden outcomes, controls and exact missing
-   harness bindings. It does not implement those bindings, register executable fixtures or prove any gameplay outcome.
-2. Shared-queue lane/work/payment/command metadata now reaches peer and AI hashes. Safe queue-codec continuation
-   comparisons and hash listener/cache replacement controls are authored unrun. Native save/replay/transfer remains open.
-3. New bounded constructionOrders creates actual unfinished sites through shared commands and binds their applied
-   native identities. Pinned native cancellation rejects completed/replacement sites. Three standalone native worlds
-   cover builder loss, intact work and cancellation, including real lifecycle/payment/refund/effect assertions.
-   They are Tivara owner controls, not complete full-scenario fixtures;30 registered runtime rows stay unchanged.
-   Three fixed routes now require fresh static native clearance at every applied prefix. Two additional faction field
-   worlds require new paid completed fields, an aligned pair, exclusion from reserved lanes and exact delivered-food
-   effects from each new field. Native crop cargo cannot be attributed across another field/reset/transfer.
-4. Current user policy is source review only: no recipes, tests, lint, types, formatting or dedicated validation runs.
-   Metadata safety/coverage tests are authored but unrun; earlier passing tool counts do not certify changed tooling.
-5. Next complete the same unfinished PLACE-01–03/EXP-01/02/WALL-01–05/H-27/28 binding slice: actual per-prefix
-   unit transit/spawn beyond static envelopes, constrained/threatened field alternatives, productive expansion
-   service/home-pressure controls and verified fortified geometry/defense
-   value. Then actual save/replay and real peer boundaries for H-31/SEQ-08 reuse the new sharedQueue hash support.
-   These obligations remain implementation work; the5 owner worlds do not remove them from acceptance.
-   New standalone worlds are0/5 executed and0/5 validated; unrun is not failed.
-6. Packages3–5, M11 authority/history, calibration/debug integration and full native acceptance remain open. User defers
-   full-match/broad gates; machinery review stays last. Historical production8/8, economy16/16 and victory1/2 remain
-   earlier-source evidence, not results for this authoring source.
+1. The previous construction/static-prefix/field and queue/hash support is retained. A strict roster consumer bug
+   rejecting construction-created role IDs is repaired; disposed native capture handles cannot rearm history.
+2. Eight land-expansion worlds pair expand/served/home-pressure/pressure-withdrawn for both factions. They bind/deplete
+   the actual8 inherited neutral sources, fairly reveal safe/richer defended choices and require native selected-builder
+   arrival, paid completed retained service and exact economic-worker wood delivery into that deposit. Native WorkMill
+   or faction main is eligible. Served/pressure controls need real effects and fair danger, not inactivity, resource grants
+   or injected AI state. Withdrawal needs actual movement or native loss before productive resumption. Explicit positive
+   safe pairing, combat-only removal and exhaustive utility/lease branches remain open.
+3. Six human-owned physical wall controls cover stairs present/missing, worker/army opening, sealed ring and pinned
+   native breach. The ordinary shared Move must physically reach its original endpoint; elevated occupancy must match
+   native wall height. Blocked branches need a terminated native attempt and no destination occupancy. These do not
+   certify AI construction prefixes, hostile passage, occupied firing/value, shore/air geometry or cumulative spending.
+4. Existing preset controls now dispatch bounded normal Move/move_to_actor/Attack. Neutral inherited bindings require
+   exact native positions/resource components. The existing capture supplies human authority without inventing AI
+   input or adding another observer. Unavailable original controllers emit no command/success. Source delivery is shared
+   between field and expansion readers with exact source/worker/deposit/resource/window/transfer ownership.
+5. User policy remains source review only: no recipes, tests, lint, types, formatting, browser/server or dedicated
+   verification execution.19 owner worlds are0/19 executed and0/19 validated; unrun is not failed. Full manifest
+   registration stays30/116 because required complete-case branches are still missing. Source caveat: aggregate local
+   resource/income gating may affect the new-main path; cheap useful native service is also eligible. No runtime failure
+   or planner/balance change is claimed.
+6. Next reuse these19 worlds to finish actual AI wall-placement prefixes/occupied firing/useful-cost controls,
+   constrained/threatened field pairs and remaining expansion utility/lease/combat branches for
+   PLACE-01–03/EXP-01/02/WALL-01–05/H-27/28. Then native save/replay/real peers H-31/SEQ-08 use existing queue hashes.
+   Packages3–5, M11, calibration/debug and later victory gate remain open. Machinery review remains last.
 
 Pure registrations are111/111 (100%),0remaining; supported runtime30/116 (25.9%),86remaining, plus4deferred content rows.
 No overall gameplay-completion percentage is inferred. See CURRENT-EVIDENCE for exact checks and per-case limits.

@@ -12,7 +12,10 @@ export function installAiRuntimeProductionCapture(scene: ProbableWaffleScene): v
   const config = readAiRuntimeBrowserTestConfigV1();
   if (!config?.captureProduction) return;
   const capture = new AiRuntimeProductionCapture(scene, [], config.presetWorld?.protectedRoutes);
-  const handle = { capture: (playerNumber: number, latestTick?: number) => capture.capture(playerNumber, latestTick) };
+  const handle = {
+    capture: (playerNumber: number, latestTick?: number) => capture.capture(playerNumber, latestTick),
+    captureHuman: (playerNumber: number, latestTick?: number) => capture.captureHumanQueueBoundary(playerNumber, latestTick)
+  };
   window.__fuzzyWaddleAiRuntimeBrowserTestV1 = { ...host, productionCapture: handle };
   const detach = () => {
     const current = window.__fuzzyWaddleAiRuntimeBrowserTestV1;

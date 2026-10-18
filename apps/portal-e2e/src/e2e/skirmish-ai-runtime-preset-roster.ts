@@ -14,13 +14,18 @@ export function assertRuntimePresetRoster(
   const sameNames = (left: readonly string[], right: readonly string[]) =>
     JSON.stringify([...left].sort()) === JSON.stringify([...right].sort());
   const ids = Object.values(application.createdActorIds);
+  const roles = [
+    ...preset.actors,
+    ...(preset.existingActorBindings ?? []),
+    ...(preset.constructionOrders ?? []).map((order) => ({ fixtureActorId: order.fixtureActorId }))
+  ];
   if (
     !sameNames(
-      [...preset.actors, ...(preset.existingActorBindings ?? [])].map((actor) => actor.fixtureActorId),
+      roles.map((actor) => actor.fixtureActorId),
       Object.keys(application.createdActorIds)
     ) ||
     ids.some((id) => !id) ||
-    new Set(ids).size !== preset.actors.length + (preset.existingActorBindings?.length ?? 0) ||
+    new Set(ids).size !== roles.length ||
     !sameNames(
       preset.actors.map((actor) => actor.actorName),
       application.createdActorNames

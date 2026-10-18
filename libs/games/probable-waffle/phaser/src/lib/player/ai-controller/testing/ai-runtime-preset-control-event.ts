@@ -7,7 +7,8 @@ export interface AiRuntimePresetControlEvent {
   readonly id: string;
   readonly playerNumber: number;
   readonly actorId: string;
-  readonly phase: "requested" | "applied";
+  /** Applied is the controller dispatch boundary; native outcomes still decide success. Unavailable emits no command. */
+  readonly phase: "requested" | "applied" | "unavailable";
   readonly requestedTick: number;
   readonly scheduledTick: number;
   readonly setupItemId: string | null;

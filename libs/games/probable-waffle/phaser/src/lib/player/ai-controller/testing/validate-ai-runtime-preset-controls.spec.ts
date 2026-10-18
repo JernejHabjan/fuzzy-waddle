@@ -25,6 +25,22 @@ it("accepts bounded same-owner rally and delayed cancellation inputs", () => {
   expect(validAiRuntimePresetControls([rally, cancel], owners)).toBe(true);
 });
 
+it("bounds movement and distinguishes an owned destination from a live opposing attack role", () => {
+  const withAction = (action: unknown) => [{ ...rally, action }];
+  expect(validAiRuntimePresetControls(withAction({ kind: "move", worldPosition: { x: 320, y: 400, z: 0 } }), owners)).toBe(true);
+  expect(validAiRuntimePresetControls(withAction({ kind: "move_to_actor", targetFixtureActorId: "rally" }), owners)).toBe(true);
+  expect(validAiRuntimePresetControls(withAction({ kind: "attack", targetFixtureActorId: "enemy" }), owners)).toBe(true);
+  for (const action of [
+    { kind: "move", worldPosition: { x: Infinity, y: 400, z: 0 } },
+    { kind: "move", worldPosition: { x: 320, y: -1, z: 0 } },
+    { kind: "move", worldPosition: { x: 320, y: 400, z: 5000 } },
+    { kind: "move", worldPosition: { x: 320, y: 400, z: 0 }, forcedArrival: true },
+    { kind: "move_to_actor", targetFixtureActorId: "enemy" },
+    { kind: "attack", targetFixtureActorId: "rally" },
+    { kind: "attack", targetFixtureActorId: "resource" }
+  ]) expect(validAiRuntimePresetControls(withAction(action), owners)).toBe(false);
+});
+
 it.each(["enemy", "resource", "missing", "producer"])("rejects invalid rally target %s", (targetFixtureActorId) => {
   expect(validAiRuntimePresetControls([{ ...rally, action: { ...rally.action, targetFixtureActorId } }], owners)).toBe(
     false

@@ -12,5 +12,8 @@ export interface AiRuntimeBrowserTestHostV1 {
   readonly initialStateByPlayer: Readonly<Record<number, AiRuntimeBrowserInitialStateV1>>;
   readonly presetApplication?: AiRuntimePresetApplicationV1;
   /** Read-only host-local authority capture, available only under the explicit production diagnostic opt-in. */
-  readonly productionCapture?: { capture(playerNumber: number, latestTick?: number): AiRuntimeProductionCaptureV1 };
+  readonly productionCapture?: {
+    capture(playerNumber: number, latestTick?: number): AiRuntimeProductionCaptureV1;
+    captureHuman?(playerNumber: number, latestTick?: number): AiRuntimeProductionCaptureV1;
+  };
 }

@@ -79,7 +79,7 @@
     },
     "opponent_script": {
       "owner": "apps/portal-e2e/src/e2e/skirmish-ai-runtime-perturbation-runner.ts",
-      "missing": "Current perturbation supports a home-attack request, not arbitrary timed move/reinforcement/withdrawal, target-specific combat or observation-milestone scheduling. Bind through normal opponent commands."
+      "missing": "Bounded normal shared Move/move_to_actor/Attack and original-controller unavailable outcomes are implemented, authored unrun. Expansion owner worlds require actual attack/damage/survival/suppression and withdrawal or native loss/resumption. Full combat-only removal, multi-opponent scripting and other case-specific opponent bindings remain open."
     },
     "contact_history": {
       "owner": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-runtime-scenario-bridge.ts",
@@ -87,7 +87,7 @@
     },
     "route_history": {
       "owner": "apps/portal-e2e/src/e2e/skirmish-ai-runtime-native-navigation.ts",
-      "missing": "Existing native navigation diagnostics explicitly lack full route/arrival continuity. Reuse their generation/query identities, then bind exact unit footprint, physical traversal, service room and per-prefix history. Matching endpoints or regions cannot certify it."
+      "missing": "Existing native movement/closed-history readers now support exact human-owned physical controls, including stairs/no-stairs, opening/seal and native breach, authored unrun. Full AI applied-prefix traversal, collider/continuous occupancy, hostile passage, useful service room and complete case bindings remain open; static/region/receipt evidence cannot replace them."
     },
     "route_fault": {
       "owner": "libs/games/probable-waffle/phaser/src/lib/world/services/navigation.service.ts",
@@ -111,7 +111,7 @@
     },
     "fortified_geometry": {
       "owner": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/test-map-contract.md",
-      "missing": "Frozen fortified approach map is specified but not authored. Bind verified actual cliff/shore/wall/stair/height topology before selecting concrete positions; never invent valid elevated cells on the flat economy map."
+      "missing": "Six native prefab-owner controls on the frozen open map bind actual stairs/wall topology, openings/seals and native breach, authored unrun. They do not provide complete AI choke/shore geometry, construction-prefix history, occupied firing/marginal tower value, hostile passage or cumulative spend; the full fortified-case bindings remain open."
     },
     "decision_history": {
       "owner": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-runtime-scenario-bridge.ts",
@@ -1558,7 +1558,7 @@
       ],
       "actions": [
         "Let AI choose a reachable high-benefit site, send a compatible available worker and construct needed service",
-        "Observe that worker's actual delivered income from the new site"
+        "Observe an identified economic worker's actual delivered income into that exact new service; native drop-off or main is eligible"
       ],
       "measurements": [
         "Worker lease/cargo compatibility, native ground route, paid site completion and delivered resource credit",
@@ -1586,7 +1586,9 @@
       "reuse": [
         "tools/ai/fixtures/placement-recovery-scenarios.json",
         "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/apply-ai-runtime-construction-orders.ts",
-        "apps/portal-e2e/src/e2e/skirmish-ai-placement-prefix-evaluation.ts"
+        "apps/portal-e2e/src/e2e/skirmish-ai-placement-prefix-evaluation.ts",
+        "apps/portal-e2e/src/e2e/skirmish-ai-expansion-worlds.spec.ts",
+        "apps/portal-e2e/src/e2e/skirmish-ai-expansion-world-evaluation.ts"
       ],
       "checkpointTicks": [
         0,
@@ -1644,7 +1646,9 @@
       "reuse": [
         "tools/ai/fixtures/placement-recovery-scenarios.json",
         "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/apply-ai-runtime-construction-orders.ts",
-        "apps/portal-e2e/src/e2e/skirmish-ai-placement-prefix-evaluation.ts"
+        "apps/portal-e2e/src/e2e/skirmish-ai-placement-prefix-evaluation.ts",
+        "apps/portal-e2e/src/e2e/skirmish-ai-expansion-worlds.spec.ts",
+        "apps/portal-e2e/src/e2e/skirmish-ai-expansion-pressure-evaluation.ts"
       ],
       "checkpointTicks": [
         0,
@@ -1758,7 +1762,8 @@
       "reuse": [
         "tools/ai/fixtures/placement-recovery-scenarios.json",
         "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/apply-ai-runtime-construction-orders.ts",
-        "apps/portal-e2e/src/e2e/skirmish-ai-placement-prefix-evaluation.ts"
+        "apps/portal-e2e/src/e2e/skirmish-ai-placement-prefix-evaluation.ts",
+        "apps/portal-e2e/src/e2e/skirmish-ai-fortification-access-worlds.spec.ts"
       ],
       "checkpointTicks": [
         0,
@@ -1816,7 +1821,8 @@
       "reuse": [
         "tools/ai/fixtures/stage-13-tactics.json",
         "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/apply-ai-runtime-construction-orders.ts",
-        "apps/portal-e2e/src/e2e/skirmish-ai-placement-prefix-evaluation.ts"
+        "apps/portal-e2e/src/e2e/skirmish-ai-placement-prefix-evaluation.ts",
+        "apps/portal-e2e/src/e2e/skirmish-ai-fortification-access-worlds.spec.ts"
       ],
       "checkpointTicks": [
         0,
@@ -1874,7 +1880,8 @@
       "reuse": [
         "tools/ai/fixtures/placement-recovery-scenarios.json",
         "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/apply-ai-runtime-construction-orders.ts",
-        "apps/portal-e2e/src/e2e/skirmish-ai-placement-prefix-evaluation.ts"
+        "apps/portal-e2e/src/e2e/skirmish-ai-placement-prefix-evaluation.ts",
+        "apps/portal-e2e/src/e2e/skirmish-ai-fortification-access-worlds.spec.ts"
       ],
       "checkpointTicks": [
         0,
@@ -3512,7 +3519,8 @@
       "reuse": [
         "tools/ai/fixtures/placement-recovery-scenarios.json",
         "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/apply-ai-runtime-construction-orders.ts",
-        "apps/portal-e2e/src/e2e/skirmish-ai-placement-prefix-evaluation.ts"
+        "apps/portal-e2e/src/e2e/skirmish-ai-placement-prefix-evaluation.ts",
+        "apps/portal-e2e/src/e2e/skirmish-ai-fortification-access-worlds.spec.ts"
       ],
       "checkpointTicks": [
         0,
