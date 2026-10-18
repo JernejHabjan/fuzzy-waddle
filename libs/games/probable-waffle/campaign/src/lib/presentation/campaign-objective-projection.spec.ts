@@ -31,12 +31,37 @@ describe("campaign objective projection", () => {
       inputPrompts: createDefaultCampaignInputPromptRegistry()
     });
 
-    expect(projection.questLog.hidden).toEqual([]);
+    expect(projection.questLog).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: "optional",
+          entries: expect.arrayContaining([expect.objectContaining({ type: "undiscovered", title: "Undiscovered quest" })])
+        })
+      ])
+    );
     expect(projection.history).toEqual([]);
     expect(projection.tracker.map((item) => [item.id, item.statusText])).toEqual([
       ["bonus", "Completed"],
       ["expired", "Expired"]
     ]);
+  });
+
+  it("keeps authored order while placing revealed failures in Main and redacting hidden identifiers", () => {
+    const primary = objective("primary", "primary");
+    const hiddenFailure = objective("secret-failure", "failure");
+    const optional = objective("optional", "optional");
+    const state = createCampaignMissionRuntimeState("ashes-of-the-ancients", mission([primary, hiddenFailure, optional]));
+    state.objectives.primary!.status = "active";
+    state.objectives.optional!.status = "active";
+    const projection = buildCampaignObjectiveProjection([primary, hiddenFailure, optional], dialogue(), state, {
+      inputMode: "keyboard-mouse", inputPrompts: createDefaultCampaignInputPromptRegistry()
+    });
+
+    const main = projection.questLog.find((section) => section.id === "main")!;
+    expect(main.entries.map((entry) => entry.type === "objective" ? entry.objective.id : entry.title)).toEqual([
+      "primary", "Undiscovered quest"
+    ]);
+    expect(JSON.stringify(main.entries)).not.toContain("secret-failure");
   });
 
   it.each([

@@ -161,12 +161,43 @@ export interface CampaignObjectiveProjection {
    * collection value on {@link CampaignObjectiveProjection}. Its element type defines the records that may cross
    * this boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
    */
-  readonly questLog: Readonly<Record<CampaignObjectiveKind, readonly CampaignObjectiveProjectionItem[]>>;
+  /**
+   * Ordered, privacy-safe quest-log sections. Unlike the tracker, this includes a redacted placeholder for
+   * each unrevealed objective, so the UI can preserve authored structure without receiving hidden content.
+   */
+  readonly questLog: readonly CampaignQuestLogSection[];
   /**
    * collection value on {@link CampaignObjectiveProjection}. Its element type defines the records that may cross
    * this boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
    */
   readonly history: readonly CampaignMissionHistoryProjectionItem[];
+}
+
+/** A stable local identity for a quest-log row; it is never an authored hidden-objective identifier. */
+export type CampaignQuestLogPresentationKey = `objective:${string}` | `undiscovered:${CampaignQuestLogSectionId}:${number}`;
+
+/** The three visual columns/subsections approved for the campaign quest log. */
+export type CampaignQuestLogSectionId = "main" | "optional" | "guidance";
+
+/** A discovered objective that may be selected and rendered in the detail panel. */
+export interface CampaignQuestLogObjectiveEntry {
+  readonly type: "objective";
+  readonly presentationKey: CampaignQuestLogPresentationKey;
+  readonly objective: CampaignObjectiveProjectionItem;
+}
+
+/** A deliberately inert row which reveals only that an authored objective exists in this section. */
+export interface CampaignQuestLogUndiscoveredEntry {
+  readonly type: "undiscovered";
+  readonly presentationKey: CampaignQuestLogPresentationKey;
+  readonly title: "Undiscovered quest";
+}
+
+/** A section with authored-order rows. Guidance is compact but uses the same safe contract. */
+export interface CampaignQuestLogSection {
+  readonly id: CampaignQuestLogSectionId;
+  readonly heading: "Main quests" | "Optional quests" | "Guidance";
+  readonly entries: readonly (CampaignQuestLogObjectiveEntry | CampaignQuestLogUndiscoveredEntry)[];
 }
 
 /**
@@ -245,15 +276,25 @@ export function buildCampaignObjectiveProjection(
       } satisfies CampaignObjectiveProjectionItem
     ];
   });
-  const questLog: Record<CampaignObjectiveKind, CampaignObjectiveProjectionItem[]> = {
-    primary: [],
-    secondary: [],
-    optional: [],
-    hidden: [],
-    tutorial: [],
-    failure: []
+  const visibleById = new Map(visible.map((objective) => [objective.id, objective]));
+  const sectionEntries: Record<CampaignQuestLogSectionId, (CampaignQuestLogObjectiveEntry | CampaignQuestLogUndiscoveredEntry)[]> = {
+    main: [], optional: [], guidance: []
   };
-  for (const objective of visible) questLog[objective.kind].push(objective);
+  const hiddenCounts: Record<CampaignQuestLogSectionId, number> = { main: 0, optional: 0, guidance: 0 };
+  for (const definition of definitions) {
+    const section = questLogSection(definition.kind);
+    const objective = visibleById.get(definition.id);
+    if (objective) {
+      sectionEntries[section].push({ type: "objective", presentationKey: `objective:${objective.id}`, objective });
+    } else if (state.objectives[definition.id]?.status === "hidden") {
+      const placeholderIndex = hiddenCounts[section]++;
+      sectionEntries[section].push({
+        type: "undiscovered",
+        presentationKey: `undiscovered:${section}:${placeholderIndex}`,
+        title: "Undiscovered quest"
+      });
+    }
+  }
   return {
     tracker: visible.filter((objective) => {
       const definition = definitions.find((candidate) => candidate.id === objective.id)!;
@@ -264,11 +305,21 @@ export function buildCampaignObjectiveProjection(
             (objective.status === "completed" || objective.status === "failed" || objective.status === "impossible")))
       );
     }),
-    questLog,
+    questLog: [
+      { id: "main", heading: "Main quests", entries: sectionEntries.main },
+      { id: "optional", heading: "Optional quests", entries: sectionEntries.optional },
+      { id: "guidance", heading: "Guidance", entries: sectionEntries.guidance }
+    ],
     history: state.missionMessageHistory
       .filter((entry) => !hiddenObjectiveIds.has(entry.sourceId))
       .map((entry) => ({ ...entry, text: text(entry.textId as MissionTextId) }))
   };
+}
+
+function questLogSection(kind: CampaignObjectiveKind): CampaignQuestLogSectionId {
+  if (kind === "tutorial") return "guidance";
+  if (kind === "optional" || kind === "hidden") return "optional";
+  return "main";
 }
 
 export function createMissionTextResolver(dialogue: MissionDialogueBundle): (id: MissionTextId) => string {
