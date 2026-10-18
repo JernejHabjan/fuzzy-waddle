@@ -208,7 +208,53 @@ function validateRuntimeFixture(fixture, scenarioId) {
               (variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId))
           )
         ))) ||
-    (assertion.requiredSaturatedSource !== undefined &&
+    invalidWorkforceBindings(recipe, assertion, scenarioId) ||
+    [
+      "maximumTick",
+      "minimumMilitaryCount",
+      "minimumMilitaryTypeCount",
+      "minimumRepeatedMilitaryTypeCount",
+      "minimumMilitaryProducerCount",
+      "maximumMilitaryProducerCount",
+      "maximumQueueOccupancyPerProducer",
+      "firstOffensiveLaunchByTick",
+      "minimumOffensiveLaunchCount",
+      "minimumDamageDealt",
+      "minimumEnemyLosses"
+    ].some(
+      (field) => assertion[field] !== undefined && (!Number.isSafeInteger(assertion[field]) || assertion[field] < 0)
+    ) ||
+    [
+      "requireCompositionDemand",
+      "requireCapacityDemand",
+      "requireProductionStopsAtTarget",
+      "requireMissionContinuation",
+      "requireAiVictory",
+      "requireRaidDefenseRecovery",
+      "requireSupplyControl"
+    ].some((field) => assertion[field] !== undefined && typeof assertion[field] !== "boolean")
+  ) {
+    throw new Error(`malformed_runtime_fixture:${scenarioId}`);
+  }
+  validateRuntimeRecipeMetadata(recipe);
+  validateEvidenceStopAssertions(fixture);
+}
+
+export function safeReference(value) {
+  return (
+    typeof value === "string" &&
+    value.length > 0 &&
+    value.length <= 512 &&
+    !value.startsWith("/") &&
+    !value.includes("..") &&
+    !value.includes("\\") &&
+    !value.includes(":")
+  );
+}
+
+/** Legacy source-capacity, labor and growth bindings remain separate from the general recipe shape. */
+function invalidWorkforceBindings(recipe, assertion, scenarioId) {
+  return (assertion.requiredSaturatedSource !== undefined &&
       (!assertion.requiredSaturatedSource ||
         typeof assertion.requiredSaturatedSource.saturatedFixtureActorId !== "string" ||
         typeof assertion.requiredSaturatedSource.spareFixtureActorId !== "string" ||
@@ -264,46 +310,5 @@ function validateRuntimeFixture(fixture, scenarioId) {
         !Number.isSafeInteger(assertion.requiredWorkerGrowth.minimumFinalWorkerCount) ||
         assertion.requiredWorkerGrowth.minimumFinalWorkerCount <= assertion.requiredWorkerGrowth.initialWorkerCount ||
         !Number.isSafeInteger(assertion.requiredWorkerGrowth.latestTick) ||
-        assertion.requiredWorkerGrowth.latestTick < 1)) ||
-    [
-      "maximumTick",
-      "minimumMilitaryCount",
-      "minimumMilitaryTypeCount",
-      "minimumRepeatedMilitaryTypeCount",
-      "minimumMilitaryProducerCount",
-      "maximumMilitaryProducerCount",
-      "maximumQueueOccupancyPerProducer",
-      "firstOffensiveLaunchByTick",
-      "minimumOffensiveLaunchCount",
-      "minimumDamageDealt",
-      "minimumEnemyLosses"
-    ].some(
-      (field) => assertion[field] !== undefined && (!Number.isSafeInteger(assertion[field]) || assertion[field] < 0)
-    ) ||
-    [
-      "requireCompositionDemand",
-      "requireCapacityDemand",
-      "requireProductionStopsAtTarget",
-      "requireMissionContinuation",
-      "requireAiVictory",
-      "requireRaidDefenseRecovery",
-      "requireSupplyControl"
-    ].some((field) => assertion[field] !== undefined && typeof assertion[field] !== "boolean")
-  ) {
-    throw new Error(`malformed_runtime_fixture:${scenarioId}`);
-  }
-  validateRuntimeRecipeMetadata(recipe);
-  validateEvidenceStopAssertions(fixture);
-}
-
-export function safeReference(value) {
-  return (
-    typeof value === "string" &&
-    value.length > 0 &&
-    value.length <= 512 &&
-    !value.startsWith("/") &&
-    !value.includes("..") &&
-    !value.includes("\\") &&
-    !value.includes(":")
-  );
+        assertion.requiredWorkerGrowth.latestTick < 1));
 }
