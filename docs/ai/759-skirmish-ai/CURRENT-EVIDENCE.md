@@ -2,6 +2,74 @@
 
 [HANDOFF.md](HANDOFF.md) owns continuation. Read this current batch; older sections retain historical evidence.
 
+## Native recipe authoring only —86 specifications, 2026-10-18
+
+Base709e5e3c87a9162c5b1df9f629aecee13adf8293; same branch/worktree as HANDOFF. Actual model/effort unknown.
+User requested creation and source review in one pass, explicitly without executing recipes, tests, lint or similar
+checks. No subagents, browser/server, gameplay/balance change, new scenario IDs or diagnostic runtime engine.
+
+### Acceptance and limits
+
+1. **Authoring coverage implemented:** native-scenario-recipes.json contains86 case-specific specifications matching
+   the86 supported runtime-null rows. Each retains its original requirement/source, legal-world prerequisites,
+   actual opponent/fault actions, native measurements, required/forbidden outcomes, control branches, finite outer
+   ceiling and planned checkpoints. Existing pure owners are linked for reuse; no counter is substituted for an effect.
+   Original121 requirements,111 pure registrations,30 executable runtime rows and4 island deferrals remain intact.
+2. **Executable tests not implemented by these records:** every case retains native_case_binding plus its explicit
+   owner-specific executionBlockers. Concrete paused actor/tile bindings, action scheduling and native oracles still
+   need implementation. Wall/height geometry and multi-opponent roster setup are specifically unavailable. Do not
+   mistake these contracts for runnable tests or claim all116 native scenarios are registered/passing.
+3. **Source review/repairs:** inspected actual preset/control/variant/checkpoint/assertion contracts, runtime
+   evaluation/runner, perturbation implementation, native navigation/exposure diagnostics, actual map registry,
+   topology fixture, calibration fixture and StateHashService whitelist. Corrected navigation/combat proof wording
+   because existing diagnostics explicitly leave continuity unavailable. Preserved D-06's existing maps/seeds/holdout/
+   opponents rather than silently applying the open-economy default; three separate72000-tick soaks retain their
+   60-minute scope and cannot count early terminal samples as full soaks. Corrected paired-world policy: controls may
+   deliberately change observed risk/workforce; only hidden-state fairness pairs require identical permitted input.
+   sharedQueue hashing remains an explicit prerequisite, not falsely reported as fixed. ALL_VISIBLE fog is unrelated
+   dirty work and preserved; fair-scout execution must use a candidate with the declared ordinary visibility rules.
+4. **Discoverability without false registration:** runtimeRecipeDraft links every specification in the manifest.
+   Existing manifest reader validates its authoring shape/reference; the matrix's runtimeFixtureReference still
+   returns only fixture. The catalog links authored/unbound status and the inventory counts drafts separately without
+   reducing missing executable cases. A small authoring reader rejects malformed identities, unknown hook references,
+   missing outcomes/branches, invalid checkpoint ordering and execution-evidence labels. It does not execute recipes.
+5. **No execution evidence:** no recipes, Jest/Node/Playwright tests, lint, type checks, formatters, doctor/context,
+   catalog --check, git diff --check or other dedicated validators ran. Only source/diff inspection, file authoring
+   and catalog --write generation. New metadata controls are authored **unrun**. Prior194 gameplay/16 tooling passes
+   certify the previous source only; changed tooling is not claimed checked. Static generation is not behavioral proof.
+6. **Progress/delivery:** native definitions116/116 (100%):30 existing executable plus86 new specifications.
+   Executable native registration30/116 (25.9%),86 unbound (74.1%);4 island rows deferred separately. Pure111/111
+   unchanged. No new scenario behavior pass and no overall AI completion percentage. Preserve unrelated run XML/fog
+   edits, commit/push only task-owned paths and verify remote equality at publication; the containing commit records
+   its own exact source without embedding a self-referential SHA here.
+
+### Omission Audit — source inspection, not an execution gate
+
+- All86 original supported runtime gaps have distinct authoring records; none of the4 island cases was relabeled as
+  supported land acceptance. Existing fixture and pure registration values remain unchanged.
+- Assertions include negative/recovery controls, actual applied outcomes, causal identity and deadline preservation,
+  legitimate fog/contact, per-unit clearance, exactly-once payment/effects, real peer boundaries and ordinary victory.
+- Missing concrete bindings are not empty passing adapters, skipped assertions or generic minimum-decision recipes.
+  They remain named implementation work; executable runtime coverage therefore stays30/116.
+- Native metadata readers and their immediate manifest/catalog/inventory consumers are connected. New tests cover
+  identity/count mapping, unknown/inherited hook rejection, authoring-versus-runtime labels, checkpoint limits and
+  exclusion from executable coverage. These test functions were reviewed, not invoked.
+- No gameplay service, map, paid cost, balance, queue, state hash or existing pass oracle was modified. No framework
+  service/component change requires additional Angular coverage. No plan files or runtime observer were added.
+
+### Final Closure Audit — authoring boundary only
+
+After source repairs, reviewed the authoring-to-manifest-to-catalog/inventory path and runner exclusion. The current
+handoff, remaining-work inventory and86 scenario rows distinguish authored, executable, executed and validated states.
+Only the agreed authoring work is ready for publication; executable binding and behavioral correctness remain open.
+Publication scope excludes the two unrelated dirty files and ignored one-off authoring script. No release gate passed.
+
+Next: implement concrete native placement/recovery bindings, sharing interrupted construction/training/research
+continuation and sharedQueue StateHashService adoption. Resolve actual fortified geometry before registering its
+cases. Existing peers/replay, M11, combat/scout native integration, calibration and debug obligations remain concrete
+in the specifications; do not repeat the design just to create another batch. No-execution policy remains current.
+Recommend Sol6.1/high for unresolved native/restore authority work; no automatic model switch.
+
 ## Remaining43 pure fixture registrations — one batch, 2026-10-18
 
 Base18503d9a5b519186838a5de7083c6533d236fb7d; same worktree/branch as HANDOFF. Actual model/effort unknown;

@@ -24,6 +24,7 @@ test("runtime inventory counts shared variants once and exposes focused migratio
   assert.equal(inventory.required, 4);
   assert.equal(inventory.missing, 1);
   assert.equal(inventory.deferred, 1);
+  assert.equal(inventory.authoredDrafts, 0);
   assert.deepEqual(inventory.recipes[0], {
     path: "mixed.json",
     ids: ["PRO-01", "SEQ-01"],
@@ -34,4 +35,18 @@ test("runtime inventory counts shared variants once and exposes focused migratio
     flags: ["mixed_focused_continuous", "focused_without_preset", "focused_over_2000", "repeated"]
   });
   assert.match(renderRuntimeInventory(inventory), /2\/4 registered, 1 supported missing, 1 deferred/);
+});
+
+test("native authoring specifications do not reduce missing executable coverage", () => {
+  const inventory = collectRuntimeInventory(
+    { rows: [{ id: "SCOUT-01", drivers: ["runtime"], fixture: null, runtimeRecipeDraft: "draft.json" }] },
+    () => {
+      throw new Error("authoring must not load an executable fixture");
+    }
+  );
+  assert.equal(inventory.missing, 1);
+  assert.equal(inventory.authoredDrafts, 1);
+  assert.deepEqual(inventory.recipes, []);
+  assert.match(renderRuntimeInventory(inventory), /0\/1 registered, 1 supported missing/);
+  assert.match(renderRuntimeInventory(inventory), /1 authored, not executable or executed/);
 });

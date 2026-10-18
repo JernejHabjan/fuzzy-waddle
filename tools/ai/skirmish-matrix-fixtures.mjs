@@ -5,6 +5,7 @@ import { validProductionCapacityPair } from "./skirmish-runtime-production-capac
 import { validProductionCompositionPair } from "./skirmish-runtime-production-composition-fixture.mjs";
 import { validProductionContracts } from "./skirmish-runtime-production-contract-fixture.mjs";
 import { validEconomyContracts, validResourceRecoveryContract } from "./skirmish-runtime-economy-fixture.mjs";
+import { readNativeRecipeDraft } from "./native-recipe-drafts.mjs";
 
 export function validateManifest(value, fixtureDirectory) {
   if (!value || value.schemaVersion !== 1 || value.manifestVersion !== "skirmish-v1" || !Array.isArray(value.rows))
@@ -53,6 +54,17 @@ export function validateManifest(value, fixtureDirectory) {
       if (!Array.isArray(fixture.scenarioIds) || !fixture.scenarioIds.includes(row.id)) {
         throw new Error(`authored_fixture_identity_mismatch:${row.id}`);
       }
+    }
+    if (row.runtimeRecipeDraft !== undefined) {
+      if (
+        !safeReference(row.runtimeRecipeDraft) ||
+        !row.drivers.includes("runtime") ||
+        row.fixture !== null ||
+        row.runtimeSupport !== undefined
+      ) {
+        throw new Error(`invalid_native_recipe_draft_reference:${row.id}`);
+      }
+      readNativeRecipeDraft(readJson(join(fixtureDirectory, row.runtimeRecipeDraft), 1024 * 1024), row.id);
     }
     ids.add(row.id);
   }

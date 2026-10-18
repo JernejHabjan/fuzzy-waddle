@@ -15,6 +15,23 @@ Fixture JSON and typed builders are inert data until a Jest or matrix/Playwright
 Their assertions are deterministic code and require no LLM evaluation or manual judgment. Unmapped fixture metadata is
 not automated coverage.
 
+Native recipe specifications can be authored before their execution bindings exist. The manifest's
+`runtimeRecipeDraft` links a case in `tools/ai/fixtures/native-scenario-recipes.json`: legal-world requirements,
+opponent/fault actions, sampling ticks and finite ceiling, independent native measurements, required and forbidden
+outcomes, control branches, reusable owners and specific missing harness bindings. These are authoring contracts,
+not interpreted test programs. Every case is `authored_not_executed`; the ordinary matrix continues to report its
+runtime fixture as missing. The catalog/inventory show authored specifications separately from executable recipes.
+
+To promote a specification, implement its concrete paused-world bindings and native action/evidence/oracle path in
+the existing driver or real multiplayer/replay harness. Resolve each named `executionBlocker`, preserve every required
+and forbidden branch, then register an actual runtime fixture and remove that row's draft reference. Registration
+still does not imply execution or passing. Do not turn unmet hooks into skipped assertions or generic command-count
+checks. A missing map/capability, history gap or exhausted deadline cannot pass. The four #822 island-content rows
+remain explicitly deferred rather than receiving fake land recipes.
+
+Source review and catalog generation establish neither executable nor behavioral correctness. Keep source-specific
+execution evidence separate, and never carry an earlier passing tool/native count onto changed source automatically.
+
 Pure fixtures may declare `pureCases` with exact repository-relative Jest file and assertion-title bindings. The
 existing runner selects those files and requires every declared assertion to execute and pass exactly once in its
 named file; an incidental ID mention cannot substitute for a missing, skipped or failed binding. Older fixtures retain

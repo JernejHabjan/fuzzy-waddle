@@ -3,37 +3,39 @@
 Default resume page: read this first, then only the selected package in [REMAINING-WORK.md](REMAINING-WORK.md).
 Do not load the full plan directory or archive on startup.
 
-## Current cursor — remaining pure fixture registrations, 2026-10-18
+## Current cursor — native recipe authoring, 2026-10-18
 
 - Worktree /home/jernej/.codex/worktrees/7977/fuzzy-waddle; branch feature/759-skirmish-ai.
-  Base18503d9a5b519186838a5de7083c6533d236fb7d. Verify the containing publication commit/remote on resume.
-  Actual model/effort unknown; no delegation authorized. User requested all43 registrations in one pass/boundary.
-- All43 previously missing pure IDs now register through controller-contract-scenarios.json: scouting, strategy,
-  combat, access, placement/recovery, authority/resources/priorities, classic RTS, difficulty and debug.
-  The fixture binds73 exact file/title assertions, records each setup/expectation and lists remaining semantic/native
-  branches. Existing controls are reused;11 new controls cover causal age, long work, unrelated child progress, cycle
-  release, profile/debug behavior, escape cells, separate fronts, Easy retreat and economic placement.
-- The existing runner selects the bound files and requires every bound test to pass exactly once. Wrong-file,
-  missing, skipped, failed and ambiguous tests fail; an incidental ID-named test cannot bypass a missing binding.
-  Existing ID-named fixtures remain compatible. No gameplay behavior, balance or diagnostic capture architecture changed.
-- Focused combined evidence:43/43 IDs (100%),73/73 bindings (100%),36 suites194 tests pass; tooling16/16,
-  scoped lint/structure/formatting, actual app source typing and new-test source typing pass. See CURRENT-EVIDENCE
-  for exact commands, frozen source provenance, omitted branches and separate omission/closure audits.
-- Pure fixture registration is **111/111 (100%),0remaining**. Supported runtime registration stays **30/116 (25.9%),
-  86remaining (74.1%)**, plus four deferred island-content rows. This is registration/owner evidence, not100% gameplay
-  acceptance. All43 new cases explicitly retain owner_contract status; Packages3–5 and broader obligations remain open.
-- **Next grouped batch:** resume native placement/fortification recipes for PLACE-03, EXP-01/02, WALL-01/02/04/05,
-  H-27/28 together with interrupted construction/training/research snapshot/replay controls. Adopt sharedQueue lane and
-  command metadata in StateHashService (its current whitelist still projects legacy queues) and assert matching
-  continuation. Reuse the same placement fixtures for new PLACE-01/02 branches where feasible. This proves applied
-  world access and detects divergent or duplicated paid work. Real peer/host transfer remains a separate integration gate.
-  Consult each pure case's remaining field before claiming its full semantic outcome; registration is finished.
-- Historical production8/8, economy16/16 and victory1/2 belong to earlier source. Full-match/broad regression remain
-  user-deferred. M11 alias/net-zero/continuous-history authority, calibration and debug/runtime integration remain open.
-  Machinery review/removal stays last overall. Do not reopen pure registration merely to increase counters.
-- Preserve unrelated .run/start_portal.run.xml and ALL_VISIBLE fog edits. Commit/push owned paths, verify remote,
-  report done/why and next/why, then pause. Recommend Sol6.1/high for the next restore/hash authority work;
-  this does not change active settings.
+  Base709e5e3c87a9162c5b1df9f629aecee13adf8293. Verify containing publication commit/remote on resume.
+  Actual model/effort unknown; no delegation. User requested recipe creation in one batch, source review/repairs,
+  and explicitly **no recipe execution, tests, lint, type checks, formatting or similar verification runs**.
+- All86 missing supported runtime IDs now have native-scenario-recipes.json authoring contracts: legal setup,
+  real opponent/fault actions, finite ceiling/sampling ticks, independent physical measurements, required/forbidden
+  outcomes, controls, reusable sources and named execution blockers. Manifest runtimeRecipeDraft links them;
+  fixture stays null. These are **specifications, not executable tests**: concrete actor/tile/action/oracle bindings
+  still require implementation. Do not call them registered, validated or complete gameplay acceptance.
+- Authored native definitions: **116/116 supported (100%),0 missing definitions** including30 existing executable
+  recipes and86 new specifications. Executable runtime registration remains **30/116 (25.9%),86 unbound (74.1%)**,
+  plus4 content-deferred island rows. Pure registration stays111/111. No new passing scenario or overall behavior
+  percentage is claimed. Catalog/inventory distinguish these states; raw artifacts remain outside model input.
+- Static source review repaired scope assumptions: existing navigation/exposure diagnostics lack complete native
+  route/combat proof; preserve those gaps. Frozen fortified/multi-opponent map bindings are unavailable; no fake map
+  labels were introduced. D-06 preserves its existing paired seed/holdout/map/opponent matrix and separates the three
+  72000-tick soaks from short-match ceilings. sharedQueue StateHashService adoption is still missing.
+- No verification gate was run. New/changed metadata tests are authored **unrun**, including safe draft identity,
+  checkpoint ordering, explicit blockers and exclusion from executable coverage. Catalog regeneration is authoring,
+  not behavior evidence. Earlier194/16 passes belong to the previous source and do not certify changed tools.
+- **Next implementation:** bind the existing placement/recovery specifications (PLACE-01–03, EXP-01/02,
+  WALL-01–05, H-27/28) to real native setups/actions/oracles, sharing construction/queue continuation work with
+  H-31/SEQ-08. Adopt sharedQueue lane/command metadata in StateHashService before matching continuation claims.
+  Resolve fortified geometry honestly before registering its cases. Reuse existing command, build, navigation,
+  snapshot and real-peer harnesses; do not create a second scenario engine. Real host transfer remains a separate
+  native proof boundary. See each case's executionBlockers and the original requiredOutcome.
+- Historical production8/8, economy16/16 and victory1/2 remain earlier-source evidence. M11, real peer/replay,
+  calibration and debug integration stay open. Machinery review/removal remains last. No gameplay/balance changes.
+- Preserve unrelated .run/start_portal.run.xml and ALL_VISIBLE fog edits. Publish only owned paths, verify remote,
+  report done/why and next/why, then pause. Recommend Sol6.1/high for native binding/restore authority;
+  this recommendation does not change active settings.
 
 ## What “continue” means
 
@@ -63,7 +65,15 @@ Use Sol for unresolved causal/design questions; economical models can implement 
 No per-file/scenario model-switch pauses. Commit/push task-owned changes, verify remote equality, report and pause at
 the agreed coherent boundary. Do not merge, force-push or create a PR unless separately authorized.
 
-## Verification policy — focused controls now; broad final gate deferred
+## Verification policy — current no-execution authoring override
+
+User2026-10-18 requests source review/repairs but **no recipes, tests, lint or similar verification execution**.
+This overrides the earlier focused-check policy below for this authoring batch and remains the resume default until
+the user authorizes execution. Reading source/diffs, writing files and regenerating the catalog are authoring work.
+Keep authored specifications, executable registration, executed checks and passing behavior separate. Publication
+does not certify unrun code. Do not run doctor/context/validators merely because a skill lists them.
+
+Earlier policy (retained for a later explicitly authorized gate):
 
 User2026-10-17 defers both-faction full-match victory reruns and the broad regression gate until later.
 Use focused causal/negative/recovery controls during the selected grouped implementation batch, plus scoped formatting,

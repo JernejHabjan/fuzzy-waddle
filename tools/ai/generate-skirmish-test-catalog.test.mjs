@@ -39,4 +39,7 @@ test("catalog includes all scenario identities and distinguishes wiring from pas
   assert.match(catalog, /Registered runtime variants/);
   assert.match(catalog, /focused_preset \/ control \(hidden-position\)/);
   assert.match(catalog, /Deferred: \[#822\]/);
+  assert.match(catalog, /86 additional native recipe specifications authored, not executable or executed/);
+  assert.match(catalog, /recipe specification/);
+  assert.match(catalog, /not executable or run/);
 });

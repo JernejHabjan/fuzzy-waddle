@@ -1,6 +1,6 @@
 # #759 remaining work inventory
 
-Snapshot: 2026-10-18, current batch based on `18503d9a5b519186838a5de7083c6533d236fb7d`. This is the execution inventory for the existing scope,
+Snapshot: 2026-10-18, current batch based on `709e5e3c87a9162c5b1df9f629aecee13adf8293`. This is the execution inventory for the existing scope,
 not a new design or diagnostic project. [HANDOFF.md](HANDOFF.md) owns the current cursor;
 [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) retains the latest checked source/evidence details.
 The manifest and linked scenario requirements remain authoritative; the snapshot below must be refreshed when
@@ -10,7 +10,10 @@ registrations change. Old session estimates in follow-up plans are historical, n
 
 The original concrete plan exists: 121 named scenarios with setup and required outcomes. Freshly rendering the existing
 catalog finds 111/111 pure fixture registrations and 30/120 runtime recipe registrations. Four runtime cases are
-deferred island content. Therefore **0 pure registrations and 86 supported runtime registrations are missing**.
+deferred island content. Therefore **0 pure registrations and 86 supported executable runtime registrations are missing**.
+All86 now have authored native recipe specifications linked by runtimeRecipeDraft; including30 existing executable
+recipes, supported native definitions are116/116 (100%). These86 specifications still need their concrete setup,
+action/evidence and oracle bindings implemented. They are not runnable tests or passed scenarios.
 These are scenario counts, not separate files, matches, commits or necessarily missing gameplay implementations.
 One shared fixture can cover several scenarios. Existing unmapped controls must be inspected and reused before
 authoring equivalent tests. Registration does not certify that the scenario's independent outcome assertions pass.
@@ -19,6 +22,8 @@ Earlier descriptions such as “full acceptance open” concealed three differen
 
 - **Missing registration:** no required fixture/recipe is connected in the manifest. Inspect existing controls;
   register equivalent coverage or author the missing setup and semantic assertions.
+- **Authored specification:** runtimeRecipeDraft defines setup, actions, physical assertions, branches and explicit
+  binding blockers; fixture remains null. No execution/passing claim. Implement the named bindings before registration.
 - **Registered, evidence pending:** the setup exists; run its ID-specific assertions and record source/fixture provenance.
   A reference to an ID or an unrelated passing suite is insufficient.
 - **Known failure:** retained execution identifies a failing outcome. Fix its causal owner and rerun affected cases.
@@ -82,6 +87,7 @@ an entire scenario. Invalidate only outcomes affected by later source/fixture ch
 | Measured coverage at this snapshot    | Completed                                   | Remaining          | What the number means                                                                                              |
 | ------------------------------------- | ------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------ |
 | Pure fixture registration             | 111/111 = **100%**                          | 0/111 = **0%** | Required pure scenarios with registered fixtures; not behavior completion                                          |
+| Supported native definitions           | 116/116 = **100%**                          | 0/116 = **0%** | 30 executable recipes plus86 authoring specifications; definitions only, not executable or validated coverage |
 | Supported runtime recipe registration | 30/116 = **25.9%**                          | 86/116 = **74.1%** | Runtime recipes connected; four island-content rows excluded; not behavior completion                              |
 | Scenario behavior validation          | Not yet reconciled across the full manifest | Not yet measurable | Existing subset passes and failures are recorded, but no truthful overall completion percentage can yet be derived |
 
@@ -108,20 +114,21 @@ main-building footprint were corrected in both paired worlds. Construction cance
 post-opening unfinished-site reassignment have focused controls. Native ECO-06 proves alternate drop-off/source
 recovery; native no-drain controls prove stop/assignment release with cargo preservation.
 
-**Current publication: all43 remaining pure fixture registrations in one batch, 2026-10-18.**
+**Current publication:86 native recipe specifications in one authoring-only batch, 2026-10-18.**
 
-1. Every required pure ID now has a fixture. The new fixture connects43 IDs to73 exact existing/new assertions;
-   each case lists concrete remaining semantic/native branches.11 new controls supplement reused owner tests.
-   Combined matrix:43/43 IDs,73/73 bindings,36 suites194 tests pass. This completes registration, not scenario validation.
-2. The existing runner supports exact file/title bindings and fails if any required assertion is missing, skipped,
-   failed, ambiguous or from another file. Existing ID-named fixtures remain supported. No gameplay/balance change.
-3. Next resume native placement/fortification recipes for the previous nine IDs, grouping interrupted construction,
-   training/research snapshot/replay controls and sharedQueue StateHashService adoption. Reuse field placement controls
-   for PLACE-01/02 where feasible. This proves actual world access and matching paid-work continuation.
-4. Packages3–5 stay open. The fixture's remaining fields identify unproved complete branches, including real landed
-   raids, scout risk, full scarcity chains, native priority service and Easy complete behavior. M11 authority/history,
-   real peers/host transfer and calibration still require evidence. Full-match/broad gates remain deferred; machinery
-   review stays last. Historical production8/8, economy16/16 and victory1/2 remain earlier-source evidence.
+1. Every supported missing native ID has concrete authoring requirements in native-scenario-recipes.json. This records
+   setup/actions, physical evidence, finite ceiling/checkpoints, required/forbidden outcomes, controls and exact missing
+   harness bindings. It does not implement those bindings, register executable fixtures or prove any gameplay outcome.
+2. Manifest/catalog/inventory expose authored-but-unbound status separately. Existing30 executable recipes,111 pure
+   registrations and4 island deferrals are preserved. No gameplay/balance change, browser launch or diagnostic observer.
+3. Current user policy is source review only: no recipes, tests, lint, types, formatting or dedicated validation runs.
+   Metadata safety/coverage tests are authored but unrun; earlier passing tool counts do not certify changed tooling.
+4. Next bind PLACE-01–03, EXP-01/02, WALL-01–05 and H-27/28 while sharing interrupted construction/training/research
+   continuation with H-31/SEQ-08 and sharedQueue hashing. Frozen fortified geometry and actual host/peer boundaries
+   remain explicit prerequisites. All other specified cases retain their concrete blockers, not another design loop.
+5. Packages3–5, M11 authority/history, calibration/debug integration and full native acceptance remain open. User defers
+   full-match/broad gates; machinery review stays last. Historical production8/8, economy16/16 and victory1/2 remain
+   earlier-source evidence, not results for this authoring source.
 
 Pure registrations are111/111 (100%),0remaining; supported runtime30/116 (25.9%),86remaining, plus4deferred content rows.
 No overall gameplay-completion percentage is inferred. See CURRENT-EVIDENCE for exact checks and per-case limits.

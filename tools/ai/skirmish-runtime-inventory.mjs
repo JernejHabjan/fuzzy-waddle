@@ -40,7 +40,13 @@ export function collectRuntimeInventory(manifest, readFixture) {
       flags
     };
   });
-  return { required: runtimeRows.length, deferred: deferred.length, missing: supported.length - registered.length, recipes };
+  return {
+    required: runtimeRows.length,
+    deferred: deferred.length,
+    missing: supported.length - registered.length,
+    authoredDrafts: supported.filter((row) => !row.fixture && row.runtimeRecipeDraft).length,
+    recipes
+  };
 }
 
 /** Print a bounded, one-line-per-recipe migration view for scenario authoring. */
@@ -49,6 +55,7 @@ export function renderRuntimeInventory(inventory) {
   const lines = [
     `runtime: ${registered}/${inventory.required} registered, ${inventory.missing} supported missing, ` +
       `${inventory.deferred} deferred, ${inventory.recipes.length} recipe files`,
+    `native specifications: ${inventory.authoredDrafts ?? 0} authored, not executable or executed; excluded from registered counts`,
     "recipe | ids | variants/runs | preset variants | max tick | audit flags"
   ];
   for (const recipe of inventory.recipes) {
