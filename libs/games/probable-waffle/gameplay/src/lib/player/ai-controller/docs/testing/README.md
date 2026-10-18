@@ -15,6 +15,18 @@ Fixture JSON and typed builders are inert data until a Jest or matrix/Playwright
 Their assertions are deterministic code and require no LLM evaluation or manual judgment. Unmapped fixture metadata is
 not automated coverage.
 
+Pure fixtures may declare `pureCases` with exact repository-relative Jest file and assertion-title bindings. The
+existing runner selects those files and requires every declared assertion to execute and pass exactly once in its
+named file; an incidental ID mention cannot substitute for a missing, skipped or failed binding. Older fixtures retain
+their ID-named assertion route. This permits existing semantic controls to serve a scenario without copying or renaming
+the tests. The catalog links both ID-named controls and exact bindings.
+Each bound case records its authored setup/expectation, `coverage` and `remaining` branches. `owner_contract` means
+selected owner evidence and requires explicit remaining work; it does not certify every scenario variant, applied
+native world, two-client authority or complete match. Fixture registration and passing bound assertions are separate
+from full scenario acceptance. Reports preserve these limits beside the executed bindings.
+The bounded summary prints owner-versus-scenario scope counts; `--scenario <id>` projects that case's remaining
+branches without loading the raw Jest output into model context.
+
 Raw native authority artifacts stay local in ignored storage and are never model inputs. Start with the existing
 summary (`--max-bytes 8192`); if it lacks one causal field, project only that named field and
 bounded adjacent checkpoints/actors. Include omitted counts; do not print nested world snapshots or full captures.
@@ -322,16 +334,17 @@ observation -> demand/mission -> intent/claim -> command application -> outcome 
 
 The [generated scenario catalog](scenario-catalog.md) joins every manifest ID to its requirement, registered pure fixture,
 ID-referencing specs, and real-game recipe/map/checkpoint data. It reports wiring, not passing evidence. Edit the
-linked requirement and fixture sources, then regenerate with `pnpm ai:skirmish:catalog -- --write`; the non-draft PR
+linked requirement and fixture sources, then regenerate with `node tools/ai/generate-skirmish-test-catalog.mjs --write`; the non-draft PR
 and `develop` CI jobs check that the catalog stays synchronized. Existing browser recipes still use changing product
 maps; [frozen test maps](test-map-contract.md) and their migration remain implementation work under #816. Until that
 migration is done, do not describe a changing-map run as a stable reference-map regression.
 
-For bounded authoring triage, `pnpm ai:skirmish:catalog -- --inventory` prints one line per registered runtime recipe:
+For bounded authoring triage, `node tools/ai/generate-skirmish-test-catalog.mjs --inventory` prints one line per registered runtime recipe:
 IDs, variant/run counts, preset coverage, maximum tick and migration flags. It reads the manifest/fixtures without
 launching the game. Flags are an inventory, not proof of a failing test or an excuse to drop a required row.
 
-The current catalog contains 121 named cases before variants. Most still require fixture/runtime implementation; see [the handoff](../../../../../../../../../../docs/ai/759-skirmish-ai/HANDOFF.md).
+The current catalog contains 121 named cases before variants. Registered pure fixtures still require complete semantic
+and native acceptance where declared; see [the handoff](../../../../../../../../../../docs/ai/759-skirmish-ai/HANDOFF.md).
 
 Detailed requirements are split by concern:
 

@@ -94,7 +94,11 @@ function pureCell(row, specs) {
   const references = specs
     .filter((spec) => spec.text.includes(row.id))
     .map((spec) => link(spec.path, basename(spec.path)));
-  return `Registered ${fixture}${references.length ? `; ${references.join(", ")}` : "; no ID-linked spec"}`;
+  const bound = JSON.parse(readFileSync(join(fixtureDirectory, row.authoredFixture), "utf8")).pureCases?.find(
+    (entry) => entry.scenarioId === row.id
+  );
+  for (const test of bound?.tests ?? []) references.push(link(join(workspaceRoot, test.file), basename(test.file)));
+  return `Registered ${fixture}${references.length ? `; ${[...new Set(references)].join(", ")}` : "; no ID-linked spec"}`;
 }
 
 function runtimeCell(row) {
@@ -190,7 +194,7 @@ export function renderCatalog() {
     "- For each scenario, its linked requirement defines the setup/trigger and expected outcome. The linked JSON " +
       "defines current variants, seeds, maps, checkpoints, and predicates. A missing setup or recipe is work to author, " +
       "not permission to infer a pass.",
-    "- Update the requirement row and manifest/fixture, then regenerate with `pnpm ai:skirmish:catalog -- --write`. " +
+    "- Update the requirement row and manifest/fixture, then regenerate with `node tools/ai/generate-skirmish-test-catalog.mjs --write`. " +
       "CI checks that this file matches its sources; do not edit generated rows by hand.",
     ""
   ];

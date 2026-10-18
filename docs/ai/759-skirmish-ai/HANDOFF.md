@@ -3,38 +3,37 @@
 Default resume page: read this first, then only the selected package in [REMAINING-WORK.md](REMAINING-WORK.md).
 Do not load the full plan directory or archive on startup.
 
-## Current cursor — placement and paid-work continuation, 2026-10-18
+## Current cursor — remaining pure fixture registrations, 2026-10-18
 
 - Worktree /home/jernej/.codex/worktrees/7977/fuzzy-waddle; branch feature/759-skirmish-ai.
-  Base25beec7fd4a01a4c132be2c137af9e81b3a5d3ba; mechanical contract/registry split2b25935bd.
-  Verify the containing publication commit/remote on resume. Actual model/effort unknown; no delegation authorized.
-- The approved ten-item batch is implemented and focused-checked: observed placement preserves connected approaches;
-  expansion selects legal reachable alternatives with available workers and defers during visible home pressure;
-  fortifications preserve the actual opening and saved graph identities/budgets.
-- Construction preserves unique unresolved saved worker IDs without phantom progress, permits new workers to replace
-  obsolete intent, and releases membership/listeners on teardown. Shutdown cannot replay cancellation/refund.
-- Actor saves now preserve mixed production/research queue lanes, empty lanes, remaining time, original paid policy and
-  command identity. Atomic restore supersedes legacy lists without recharging. Zero-time work finishes once; unit output
-  and its terminal result settle before the tick returns. Reentry/generation fences reject replaced work and duplicate
-  cancellations/research effects. Queue, production, builder and command subscriptions shut down cleanly.
-- Focused checks:10 gameplay suites62 tests plus16 native suites136 tests, **198/198 (100%),0 failing**;
-  tooling3/3; three project lints, explicit owned-source structure checks and actual app typing pass.
-  Nine new pure registrations execute ID-specific assertions through the existing runner. See CURRENT-EVIDENCE for
-  the ten-item map, exact commands, source provenance and separate omission/closure audits.
-- Pure registration is68/111 (61.3%),43remaining (38.7%); supported runtime registration stays30/116 (25.9%),
-  86remaining (74.1%), plus four deferred island-content rows. Registration/owner controls are not native scenario
-  acceptance. Packages3–5 remain open. Historical production8/8, economy16/16 and victory1/2 are earlier-source evidence.
-- **Next grouped batch:** create native placement/fortification recipes for the nine newly registered IDs and close
-  interrupted construction/queue/research save boundaries through the existing snapshot/replay path. Include adoption
-  of sharedQueue lane/command metadata in StateHashService (its current whitelist still projects legacy queues), then
-  focused matching-state/continuation controls. This proves actual world access and catches divergent paid work instead
-  of relying on component mocks. Full two-client host-transfer acceptance remains a separate integration obligation.
-  PLACE-01/02 and H-01–05 registration/semantic gaps remain in the inventory; reuse the same fixtures where applicable.
-- Full-match victory and broad regression stay user-deferred; no new browser/server, machinery or balance change.
-  M11 Stage32/36 alias/net-zero/continuous-history authority remains open. Machinery review/removal stays last overall.
-- Preserve unrelated .run/start_portal.run.xml and ALL_VISIBLE fog edits. Commit/push only owned paths, verify remote,
-  report done/why and next/why, then pause. Recommend Sol6.1/high for the next restore/hash authority batch;
-  this recommendation does not change the active settings.
+  Base18503d9a5b519186838a5de7083c6533d236fb7d. Verify the containing publication commit/remote on resume.
+  Actual model/effort unknown; no delegation authorized. User requested all43 registrations in one pass/boundary.
+- All43 previously missing pure IDs now register through controller-contract-scenarios.json: scouting, strategy,
+  combat, access, placement/recovery, authority/resources/priorities, classic RTS, difficulty and debug.
+  The fixture binds73 exact file/title assertions, records each setup/expectation and lists remaining semantic/native
+  branches. Existing controls are reused;11 new controls cover causal age, long work, unrelated child progress, cycle
+  release, profile/debug behavior, escape cells, separate fronts, Easy retreat and economic placement.
+- The existing runner selects the bound files and requires every bound test to pass exactly once. Wrong-file,
+  missing, skipped, failed and ambiguous tests fail; an incidental ID-named test cannot bypass a missing binding.
+  Existing ID-named fixtures remain compatible. No gameplay behavior, balance or diagnostic capture architecture changed.
+- Focused combined evidence:43/43 IDs (100%),73/73 bindings (100%),36 suites194 tests pass; tooling16/16,
+  scoped lint/structure/formatting, actual app source typing and new-test source typing pass. See CURRENT-EVIDENCE
+  for exact commands, frozen source provenance, omitted branches and separate omission/closure audits.
+- Pure fixture registration is **111/111 (100%),0remaining**. Supported runtime registration stays **30/116 (25.9%),
+  86remaining (74.1%)**, plus four deferred island-content rows. This is registration/owner evidence, not100% gameplay
+  acceptance. All43 new cases explicitly retain owner_contract status; Packages3–5 and broader obligations remain open.
+- **Next grouped batch:** resume native placement/fortification recipes for PLACE-03, EXP-01/02, WALL-01/02/04/05,
+  H-27/28 together with interrupted construction/training/research snapshot/replay controls. Adopt sharedQueue lane and
+  command metadata in StateHashService (its current whitelist still projects legacy queues) and assert matching
+  continuation. Reuse the same placement fixtures for new PLACE-01/02 branches where feasible. This proves applied
+  world access and detects divergent or duplicated paid work. Real peer/host transfer remains a separate integration gate.
+  Consult each pure case's remaining field before claiming its full semantic outcome; registration is finished.
+- Historical production8/8, economy16/16 and victory1/2 belong to earlier source. Full-match/broad regression remain
+  user-deferred. M11 alias/net-zero/continuous-history authority, calibration and debug/runtime integration remain open.
+  Machinery review/removal stays last overall. Do not reopen pure registration merely to increase counters.
+- Preserve unrelated .run/start_portal.run.xml and ALL_VISIBLE fog edits. Commit/push owned paths, verify remote,
+  report done/why and next/why, then pause. Recommend Sol6.1/high for the next restore/hash authority work;
+  this does not change active settings.
 
 ## What “continue” means
 
@@ -91,7 +90,7 @@ Use this format at every batch boundary and whenever the user asks what was done
 Keep the report self-contained and concise. A documentation-only update reports the instruction change and leaves
 gameplay progress unchanged. The execution plan links to this format rather than maintaining a second template.
 
-Registration coverage: pure **68/111 = 61.3% registered / 38.7% remaining**; supported runtime
+Registration coverage: pure **111/111 = 100% registered / 0% remaining**; supported runtime
 **30/116 = 25.9% registered / 74.1% remaining**, excluding four deferred runtime rows. These are not overall AI completion.
 Reconcile behavior evidence per selected package; do not invent a global completion percentage.
 

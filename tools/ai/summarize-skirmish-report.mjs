@@ -117,6 +117,18 @@ export function summarizeReport(report, options = {}) {
     const missing = pureEvidence.missingScenarioIds ?? [];
     lines.push(`PURE_COVERAGE executed=${pureEvidence.executed?.length ?? 0} missing=${missing.length}`);
     if (missing.length > 0) lines.push(`PURE_MISSING ${missing.join(",")}`);
+    const bound = (pureEvidence.executed ?? []).filter((entry) => entry.coverage);
+    if (bound.length > 0) {
+      const partial = bound.filter((entry) => entry.coverage === "owner_contract").length;
+      lines.push(
+        `PURE_SCOPE ownerContracts=${partial} scenarioContracts=${bound.length - partial} nativeAcceptance=not_asserted`
+      );
+      if (options.scenario) {
+        const selectedCase = bound.find((entry) => entry.scenarioId === options.scenario);
+        if (selectedCase)
+          lines.push(`PURE_REMAINING ${selectedCase.scenarioId} ${selectedCase.remaining.join("; ") || "none"}`);
+      }
+    }
   }
 
   const scenarios = runtime?.scenarios ?? [];
@@ -127,7 +139,13 @@ export function summarizeReport(report, options = {}) {
     (work?.ticks ?? 0) === 0;
   if (!runtime && noExecutedWork) lines.push("INFRASTRUCTURE no_runtime_payload");
   const selected = scenarios.filter((scenario) => !options.scenario || scenario.scenarioId === options.scenario);
-  if (options.scenario && selected.length === 0) lines.push(`SCENARIO ${options.scenario} missing`);
+  if (
+    options.scenario &&
+    selected.length === 0 &&
+    !pureEvidence?.executed?.some((entry) => entry.scenarioId === options.scenario)
+  ) {
+    lines.push(`SCENARIO ${options.scenario} missing`);
+  }
   for (const scenario of selected) {
     if (options.failuresOnly && scenario.passed) continue;
     const failures = scenario.failures ?? [];

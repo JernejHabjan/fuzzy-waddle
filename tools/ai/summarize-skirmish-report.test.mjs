@@ -181,3 +181,25 @@ test("surfaces missing per-scenario pure assertions without dumping Jest output"
   assert.match(text, /PURE_COVERAGE executed=2 missing=1/);
   assert.match(text, /PURE_MISSING ECO-02/);
 });
+
+test("keeps partial owner coverage explicit and projects only the requested pure scenario's remaining branch", () => {
+  const report = {
+    status: "passed",
+    workCounts: { scenarios: 2, testSuites: 1, tests: 2 },
+    pureScenarioEvidence: {
+      executed: [
+        { scenarioId: "H-12", coverage: "owner_contract", passedTestCount: 1, remaining: ["native cycle recovery"] },
+        { scenarioId: "SCOUT-03", coverage: "owner_contract", passedTestCount: 1, remaining: ["scout risk decision"] }
+      ],
+      missingScenarioIds: []
+    }
+  };
+  assert.match(
+    summarizeReport(report),
+    /PURE_SCOPE ownerContracts=2 scenarioContracts=0 nativeAcceptance=not_asserted/
+  );
+  assert.doesNotMatch(summarizeReport(report), /native cycle recovery/);
+  const selected = summarizeReport(report, { scenario: "H-12" });
+  assert.match(selected, /PURE_REMAINING H-12 native cycle recovery/);
+  assert.doesNotMatch(selected, /scout risk decision|SCENARIO H-12 missing/);
+});

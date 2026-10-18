@@ -1,6 +1,6 @@
 # #759 remaining work inventory
 
-Snapshot: 2026-10-18, current batch based on `25beec7fd4a01a4c132be2c137af9e81b3a5d3ba`. This is the execution inventory for the existing scope,
+Snapshot: 2026-10-18, current batch based on `18503d9a5b519186838a5de7083c6533d236fb7d`. This is the execution inventory for the existing scope,
 not a new design or diagnostic project. [HANDOFF.md](HANDOFF.md) owns the current cursor;
 [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) retains the latest checked source/evidence details.
 The manifest and linked scenario requirements remain authoritative; the snapshot below must be refreshed when
@@ -9,8 +9,8 @@ registrations change. Old session estimates in follow-up plans are historical, n
 ## What the inventory actually found
 
 The original concrete plan exists: 121 named scenarios with setup and required outcomes. Freshly rendering the existing
-catalog finds 68/111 pure fixture registrations and 30/120 runtime recipe registrations. Four runtime cases are
-deferred island content. Therefore **43 pure registrations and 86 supported runtime registrations are missing**.
+catalog finds 111/111 pure fixture registrations and 30/120 runtime recipe registrations. Four runtime cases are
+deferred island content. Therefore **0 pure registrations and 86 supported runtime registrations are missing**.
 These are scenario counts, not separate files, matches, commits or necessarily missing gameplay implementations.
 One shared fixture can cover several scenarios. Existing unmapped controls must be inspected and reused before
 authoring equivalent tests. Registration does not certify that the scenario's independent outcome assertions pass.
@@ -44,11 +44,11 @@ profiling suite or finer M13 journal is scheduled. A genuinely new requirement n
 | ------------- | --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1 — validated | Production: PRO-01–07, H-17                                                                   | Validated delivery/prebuild/recovery/contention and H-17 coverage; retained evidence below                                                                                             | All applicable production predicates pass, including the 16 paired authority worlds; no invented useful arrivals or weakened deadlines                         |
 | 2 — validated | Economy and technology: ECO-01–08, H-16/H-18, TECH-01–06                                      | Close missing aggregate-budget/depleted-source controls; prove delivered income, worker allocation, food/supply recovery, research/counterproduction and stopping unnecessary spending | Registered pure/runtime cases pass their exact outcomes; both factions establish renewable income from the normal 200-resource start                           |
-| 3 — current   | Scouting, attack and access: SCOUT, STRAT, DOMAIN, RAID, FIGHT, C families plus their H cases | Reuse existing strategy/tactical controls; register missing fair scouting, reachable-target, force-size, attack/retreat and counterforce cases; repair actual failures                 | Supported land cases pass and SEQ-01 reaches the authoritative victory result for both factions; another launched attack is not completion                     |
-| 4             | Placement, fortification and recovery: PLACE, EXP, WALL, H-01–05/H-27–28                      | Register legal placement/expansion/wall and stalled-progress recovery controls; repair owners only where a scenario exposes a defect                                                   | Legal useful construction and bounded recovery pass; healthy long work survives, impossible work releases actors/claims                                        |
+| 3 — current   | Scouting, attack and access: SCOUT, STRAT, DOMAIN, RAID, FIGHT, C families plus their H cases | Complete registered pure cases and missing native recipes for fair scouting, reachable targets, force size, attack/retreat and counters; repair actual failures                 | Supported land cases pass and SEQ-01 reaches the authoritative victory result for both factions; another launched attack is not completion                     |
+| 4             | Placement, fortification and recovery: PLACE, EXP, WALL, H-01–05/H-27–28                      | Complete remaining semantic branches and native placement/expansion/wall/recovery recipes; repair owners only where a scenario exposes a defect                                                   | Legal useful construction and bounded recovery pass; healthy long work survives, impossible work releases actors/claims                                        |
 | 5             | Resource authority, multiplayer and lifecycle: H-06–15/H-30–32, M11, #819/#823                | Close exactly-once/resource-capacity gaps; run real two-client authority/reconnect/host-transfer controls; cover interrupted save/load/replay and second-match cleanup                 | No duplicate payment/effect, stale capacity or split authority; matching peer/replay state and clean next match across required boundaries                     |
 | 6             | Continuous play and difficulty: supported SEQ and D families, #817                            | Recheck SEQ-02 after shared changes; implement missing legal-start match/difficulty cases and isolated baseline comparison; run required paired seeds and soaks                        | Required terminal/recovery outcomes, supported difficulty ordering and bounded long-play state pass; mere survival is not victory                              |
-| 7             | Debug coverage and closure: DBG, #820/#821, machinery review                                  | Register remaining debug requirements; finish necessary cleanup, audit legacy callers/parity, remove proven obsolete code and unnecessary diagnostics                                  | Supported manifest rows have complete evidence on the resulting inputs, invalid startup cannot dispatch, legacy consumers are resolved, review/audits complete |
+| 7             | Debug coverage and closure: DBG, #820/#821, machinery review                                  | Complete remaining debug semantic branches and native registrations; finish necessary cleanup, audit legacy callers/parity, remove proven obsolete code and unnecessary diagnostics                                  | Supported manifest rows have complete evidence on the resulting inputs, invalid startup cannot dispatch, legacy consumers are resolved, review/audits complete |
 
 Packages 2–4 can share implementation/context with package 1 where the same owner is already being repaired.
 Local lifecycle preparation need not wait for combat; real socket cases depend on the multiplayer harness.
@@ -81,7 +81,7 @@ an entire scenario. Invalidate only outcomes affected by later source/fixture ch
 
 | Measured coverage at this snapshot    | Completed                                   | Remaining          | What the number means                                                                                              |
 | ------------------------------------- | ------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------ |
-| Pure fixture registration             | 68/111 = **61.3%**                          | 43/111 = **38.7%** | Required pure scenarios with registered fixtures; not behavior completion                                          |
+| Pure fixture registration             | 111/111 = **100%**                          | 0/111 = **0%** | Required pure scenarios with registered fixtures; not behavior completion                                          |
 | Supported runtime recipe registration | 30/116 = **25.9%**                          | 86/116 = **74.1%** | Runtime recipes connected; four island-content rows excluded; not behavior completion                              |
 | Scenario behavior validation          | Not yet reconciled across the full manifest | Not yet measurable | Existing subset passes and failures are recorded, but no truthful overall completion percentage can yet be derived |
 
@@ -108,24 +108,23 @@ main-building footprint were corrected in both paired worlds. Construction cance
 post-opening unfinished-site reassignment have focused controls. Native ECO-06 proves alternate drop-off/source
 recovery; native no-drain controls prove stop/assignment release with cargo preservation.
 
-**Current publication: approved ten-item placement/paid-work continuation batch, 2026-10-18.**
+**Current publication: all43 remaining pure fixture registrations in one batch, 2026-10-18.**
 
-1. Placement/expansion preserve known access, reject occupied/disconnected sites, select compatible unleased workers
-   and defer optional expansion during credible visible pressure. Fortification checks preserve the exact opening,
-   saved graph identity and cumulative commitments. Nine pure IDs are registered and executed with partial owner evidence.
-2. Construction saves retain unresolved worker intent without granting phantom work. Mixed production/research queues
-   restore exact lanes, paid policy, progress and command identity once. Synchronous completion, cancellation reentry
-   guards, old-generation fences and teardown protect local effects. Focused owner checks pass198/198; tooling3/3.
-3. Packages4/5 remain open: native PLACE/EXP/WALL recipes, broader interrupted saves/replay and real peer/host transfer
-   are not proved by component tests. SharedQueue metadata is not yet in StateHashService's whitelist; adopt it in the
-   next integration batch and assert matching continuation. PLACE-01/02 and H-01–05 gaps also remain.
-4. Group native placement/fortification recipes with interrupted construction/training/research snapshot controls next,
-   reusing existing worlds/runner and testing actual access and exactly-once continuation. No new diagnostic architecture.
-   Full-match victory/broad regression stay deferred. Prior production8/8, economy16/16 and victory1/2 remain historical.
-   M11 continuous/alias authority, calibration and final machinery review remain outstanding. Fields/costs unchanged.
+1. Every required pure ID now has a fixture. The new fixture connects43 IDs to73 exact existing/new assertions;
+   each case lists concrete remaining semantic/native branches.11 new controls supplement reused owner tests.
+   Combined matrix:43/43 IDs,73/73 bindings,36 suites194 tests pass. This completes registration, not scenario validation.
+2. The existing runner supports exact file/title bindings and fails if any required assertion is missing, skipped,
+   failed, ambiguous or from another file. Existing ID-named fixtures remain supported. No gameplay/balance change.
+3. Next resume native placement/fortification recipes for the previous nine IDs, grouping interrupted construction,
+   training/research snapshot/replay controls and sharedQueue StateHashService adoption. Reuse field placement controls
+   for PLACE-01/02 where feasible. This proves actual world access and matching paid-work continuation.
+4. Packages3–5 stay open. The fixture's remaining fields identify unproved complete branches, including real landed
+   raids, scout risk, full scarcity chains, native priority service and Easy complete behavior. M11 authority/history,
+   real peers/host transfer and calibration still require evidence. Full-match/broad gates remain deferred; machinery
+   review stays last. Historical production8/8, economy16/16 and victory1/2 remain earlier-source evidence.
 
-Pure registrations are68/111 (61.3%),43remaining; supported runtime30/116 (25.9%),86remaining.
-These measure registration, not gameplay completion. See CURRENT-EVIDENCE for commands and per-item limitations.
+Pure registrations are111/111 (100%),0remaining; supported runtime30/116 (25.9%),86remaining, plus4deferred content rows.
+No overall gameplay-completion percentage is inferred. See CURRENT-EVIDENCE for exact checks and per-case limits.
 
 ## Other concrete gaps already established
 

@@ -2,6 +2,92 @@
 
 [HANDOFF.md](HANDOFF.md) owns continuation. Read this current batch; older sections retain historical evidence.
 
+## Remaining43 pure fixture registrations — one batch, 2026-10-18
+
+Base18503d9a5b519186838a5de7083c6533d236fb7d; same worktree/branch as HANDOFF. Actual model/effort unknown;
+no delegation. User explicitly requested all43 in one pass, with one publication boundary. No gameplay production
+behavior, balance, native recipes or diagnostic capture architecture changed. Full-match/broad regression stay deferred.
+
+### Acceptance map
+
+1. **All requested registrations:** controller-contract-scenarios.json registers SCOUT-01–04/H-22;
+   STRAT-02–04/10–13; DOMAIN-03/04/H-19–21; RAID-03/FIGHT-03/05/H-26; PLACE-01/02/H-01–15;
+   C-03/05, D-01/04 and DBG-02. The manifest has111/111 pure fixtures,0missing, up from68/111.
+   All43 new cases have setup/expected text, exact executable selectors and explicit remaining branches.
+2. **Meaningful reuse:**73 scenario-to-test bindings select existing semantic owner assertions plus11 new controls.
+   Shared controls may serve several IDs;73 is not the count of distinct tests. New controller tests cover stable causal
+   age despite renewed decision/retry identities, long-work milestone preservation, unrelated child versus parent
+   progress, deterministic wait-cycle release preserving paid work, exact difficulty profiles and nonmutating why-not
+   lookup. New combat tests cover legal/blocked escape, independent fronts and Easy retreat with retained deadline.
+   New economic-placement tests cover distinct aligned eligible sites with central reservations and paired safe/exposed
+   alternatives. The initial exposure fixture lacked current threat identity/timestamps; corrected the authored input,
+   preserving fair visibility checks rather than changing production safety rules.
+3. **Real execution required:** optional pureCases bind exact repository-relative file and assertion title.
+   The existing runner selects those files and requires every binding to pass exactly once. Missing/skipped/failed,
+   wrong-file and duplicate ambiguous matches fail. An incidental passing ID-named test cannot satisfy a bound case.
+   Parser rejects unsafe paths, empty/duplicate/missing cases, unscoped evidence and invalid coverage declarations.
+   Existing ID-named fixture evidence remains compatible and is covered by tooling tests.
+4. **Honest compact reports:** bound evidence carries coverage, remaining and bindingsComplete. All43 current cases
+   are owner_contract evidence, not complete scenario certification. Existing summary output reports owner/scenario
+   scope counts and projects a selected ID's remaining branch without raw Jest output. Selecting a pure case no longer
+   falsely reports a missing runtime scenario. The same UTF-8 output bound remains in force.
+5. **Documentation/cold start:** generator links bound specs even when the old tests do not mention an ID. Generated
+   catalog,43 inventory rows, family missing counts and handoff are reconciled. Owning testing README explains bindings,
+   coverage limits and bounded summaries. Catalog command guidance now uses the working direct node command rather
+   than the extra pnpm separator that caused the previous observed usage error.
+6. **Ownership/delivery:** preserve unrelated run XML and ALL_VISIBLE fog changes. No broad matrix/browser/server,
+   new journal, model switch, extra task or PR. Task-owned commit/push with remote verification, then pause.
+
+### Focused checks and source provenance
+
+Ignored artifacts use tmp/ai-plans/759-validation/pure-registration-*. Only bounded projections are model inputs.
+
+- Combined selection: `node tools/ai/run-skirmish-matrix.mjs --scenarios <controller-contract-scenarios.json scenarioIds joined by commas> --mode pure`
+  — **43/43 IDs,73/73 declared bindings,36 suites194 tests pass**,0missing bindings. Exact list is fixture.scenarioIds;
+  pure-registration-matrix-final.log points to `tmp/ai-skirmish-matrix/1792302617582-passed.json`.
+  Resume without reconstructing a list: read fixture.scenarioIds and pass it to the existing CLI's --scenarios argument.
+- Tooling: `node --test tools/ai/pure-scenario-evidence.test.mjs tools/ai/generate-skirmish-test-catalog.test.mjs tools/ai/summarize-skirmish-report.test.mjs`
+  — **16/16 pass**, tools-final.log. `node tools/ai/generate-skirmish-test-catalog.mjs --check` passes.
+- `pnpm exec nx lint probable-waffle-gameplay` passes; lint.log. Explicit source-structure ESLint over every owned
+  TS/MJS file passes with0errors; structure.log. No baseline or config changes. Selected source formatting/diff pass.
+- Actual source typing: `pnpm exec tsc -p apps/portal/tsconfig.app.json --noEmit` passes; types.log.
+  Additional new-test typing uses ignored pure-registration-tsconfig.json extending gameplay/tsconfig.spec.json with
+  exactly the three new test files; test-types.log passes. The initial helper inferred only known-position actors;
+  its input now uses the existing AiObservationV1 contract instead of narrowing away legal unknown observations.
+- `node tools/ai/summarize-skirmish-report.mjs tmp/ai-skirmish-matrix/1792302617582-passed.json --max-bytes 2048`
+  retains43executed/0missing and ownerContracts43/scenarioContracts0/nativeAcceptance not asserted; summary.txt.
+  Missing raw lines are explicitly counted. No large native report or raw Jest payload was scanned.
+- pure-registration-source.json records base, exact owned paths and ordered path/NUL/bytes/NUL SHA256.
+  Owned-path manifest excludes run/fog edits. Publication/remote equality is checked at delivery; the containing
+  commit is deliberately not self-referentially embedded here.
+
+### Omission Audit
+
+Manifest comparison accounts for every one of the43 originally missing IDs exactly once. Every declared selector
+executes in the combined run; no scenario passes solely because a file mentions its ID. Legacy evidence remains
+supported. Parser, matrix selection, summaries and catalog consumers are wired and checked. All new tests use
+existing real owner functions with authored expectations; no duplicated planner/oracle computes its own expected result.
+No pure transport/landing setup is presented as native execution or absent island content as a passed world.
+
+Pure registration is **111/111 (100%),0remaining (0%)**. Supported runtime is unchanged **30/116 (25.9%),
+86remaining (74.1%)**, plus4 content-deferred cases. These counters do not close Packages3–5 or overall gameplay.
+The43 per-case remaining fields are the concrete semantic follow-up inventory: e.g. scout risk/knowledge integration,
+actual landed raids, scarcity-chain recovery, actual priority dispatch, native fronts/access and complete Easy behavior.
+The previous sharedQueue hash/snapshot/replay gap, real peers/host transfer, M11 history, calibration and final machinery
+review also remain open. Full-match victory and broad regression remain explicitly deferred.
+
+### Final Closure Audit — registration batch
+
+After fixture/type repairs,43/43 selections and all73bindings pass;11 new controls are included in194 executed tests,
+and16 tooling controls pass. Rechecked exact file/title ambiguity handling, preserved legacy semantics, fixture/schema
+coverage labels, bounded summary output, generated catalog and local links. This is self-review, not independent review.
+No gameplay fix is claimed from registering existing coverage. No supported native recipe was added or removed.
+
+Next resume native placement/fortification recipes for the previous nine IDs together with interrupted construction,
+training/research snapshot/replay and sharedQueue StateHashService adoption. Reuse new field-placement controls where
+feasible. This proves actual access and matching paid-work continuation; do not add another pure-registration phase.
+Recommend Sol6.1/high for that restore/authority integration; recommendation changes no active setting.
+
 ## Ten-item placement and paid-work continuation batch — 2026-10-18
 
 Base25beec7fd4a01a4c132be2c137af9e81b3a5d3ba; mechanical registry/protocol split2b25935bd precedes behavior changes.

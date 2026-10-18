@@ -2,6 +2,7 @@ import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
 import { runPureJestWithScenarioEvidence } from "./pure-scenario-evidence.mjs";
+import { readPureFixtureCase } from "./pure-fixture-cases.mjs";
 import { pureFixtureReference, runtimeFixtureReference } from "./skirmish-matrix-fixtures.mjs";
 import { digestString, readHead, readJson, readWorkingTreeSource } from "./skirmish-matrix-io.mjs";
 import { createRuntimeResultPath, readRuntimeResult } from "./skirmish-runtime-result.mjs";
@@ -95,6 +96,16 @@ export function invokeHarness(input, context) {
     "authoritative-state-projection",
     "actor-manager-ai-save"
   ];
+  const cases = input.rows.flatMap((row) => {
+    const reference = pureFixtureReference(row, fixtureDirectory);
+    const selected = reference
+      ? readPureFixtureCase(readJson(join(fixtureDirectory, reference), 1024 * 1024), row.id)
+      : null;
+    return selected ? [selected] : [];
+  });
+  for (const file of new Set(cases.flatMap((entry) => entry.tests.map((test) => test.file)))) {
+    baseTestNames.push(file.slice(0, -8).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  }
   if (input.rows.some((row) => row.authoredFixture === "placement-recovery-scenarios.json")) {
     baseTestNames.push(
       "ai-(placement-access-scenarios|expansion-access-scenarios|fortification-(manager|recovery|continuation))"
@@ -124,7 +135,8 @@ export function invokeHarness(input, context) {
     workspaceRoot,
     environment,
     testPathPattern,
-    scenarioIds: input.rows.map((row) => row.id)
+    scenarioIds: input.rows.map((row) => row.id),
+    cases
   });
   const report = {
     schemaVersion: 1,

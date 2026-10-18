@@ -1,6 +1,6 @@
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 
 function namesScenario(fullName, scenarioId) {
@@ -8,9 +8,29 @@ function namesScenario(fullName, scenarioId) {
   return new RegExp(`(?:^|[^A-Z0-9])${escaped}(?:$|[^A-Z0-9])`).test(fullName);
 }
 
-export function summarizePureScenarioEvidence(jestReport, scenarioIds) {
-  const assertions = (jestReport?.testResults ?? []).flatMap((suite) => suite.assertionResults ?? []);
+export function summarizePureScenarioEvidence(jestReport, scenarioIds, cases = [], workspaceRoot = process.cwd()) {
+  const assertions = (jestReport?.testResults ?? []).flatMap((suite) =>
+    (suite.assertionResults ?? []).map((assertion) => ({ ...assertion, file: suite.name }))
+  );
   const executed = scenarioIds.map((scenarioId) => {
+    const bound = cases.find((entry) => entry.scenarioId === scenarioId);
+    if (bound) {
+      const bindings = bound.tests.map((test) => {
+        const matches = assertions.filter(
+          (assertion) => assertion.file === resolve(workspaceRoot, test.file) && assertion.title === test.title
+        );
+        return { ...test, passed: matches.length === 1 && matches[0].status === "passed" };
+      });
+      return {
+        scenarioId,
+        passedTestCount: bindings.filter((binding) => binding.passed).length,
+        firstTest: bindings.find((binding) => binding.passed)?.title ?? null,
+        coverage: bound.coverage,
+        remaining: bound.remaining,
+        bindings,
+        bindingsComplete: bindings.every((binding) => binding.passed)
+      };
+    }
     const passing = assertions.filter(
       (assertion) => assertion.status === "passed" && namesScenario(assertion.fullName ?? "", scenarioId)
     );
@@ -18,11 +38,19 @@ export function summarizePureScenarioEvidence(jestReport, scenarioIds) {
   });
   return {
     executed,
-    missingScenarioIds: executed.filter((item) => item.passedTestCount === 0).map((item) => item.scenarioId)
+    missingScenarioIds: executed
+      .filter((item) => item.bindingsComplete === false || item.passedTestCount === 0)
+      .map((item) => item.scenarioId)
   };
 }
 
-export function runPureJestWithScenarioEvidence({ workspaceRoot, environment, testPathPattern, scenarioIds }) {
+export function runPureJestWithScenarioEvidence({
+  workspaceRoot,
+  environment,
+  testPathPattern,
+  scenarioIds,
+  cases = []
+}) {
   const temporaryDirectory = mkdtempSync(join(tmpdir(), "fuzzy-waddle-ai-pure-"));
   try {
     const commands = [];
@@ -33,8 +61,13 @@ export function runPureJestWithScenarioEvidence({ workspaceRoot, environment, te
       const command = spawnSync(
         "pnpm",
         [
-          "exec", "jest", `--config=${configPath}`, "--runInBand",
-          `--testPathPatterns=${testPathPattern}`, "--json", `--outputFile=${resultPath}`
+          "exec",
+          "jest",
+          `--config=${configPath}`,
+          "--runInBand",
+          `--testPathPatterns=${testPathPattern}`,
+          "--json",
+          `--outputFile=${resultPath}`
         ],
         { cwd: workspaceRoot, env: environment, encoding: "utf8", maxBuffer: 16 * 1024 * 1024 }
       );
@@ -55,7 +88,7 @@ export function runPureJestWithScenarioEvidence({ workspaceRoot, environment, te
     };
     return {
       command,
-      evidence: summarizePureScenarioEvidence({ testResults }, scenarioIds),
+      evidence: summarizePureScenarioEvidence({ testResults }, scenarioIds, cases, workspaceRoot),
       counts: {
         testSuites: testResults.filter((suite) => suite.status === "passed").length,
         tests: reports.reduce((sum, report) => sum + (report?.numPassedTests ?? 0), 0)
