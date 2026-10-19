@@ -32,6 +32,10 @@ import { CancelableSimDelay } from "../../../../world/services/simulation-time";
 import { SimulationTickService } from "../../../../world/services/simulation-tick.service";
 import { PhaserProjectileFactory } from "../../../../combat/phaser-projectile-factory";
 import { applyCampaignProgressionModifiers } from "../../../../campaign/campaign-progression-modifier";
+import {
+  ProjectileFiredSceneEvent,
+  type ProjectileFiredSceneEventPayload
+} from "../projectile-fired.scene-event";
 /**
  * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
  * storage boundaries do not drift into an unconstrained primitive.
@@ -370,13 +374,14 @@ export class AttackComponent {
       const salvoCount = projectile.salvo?.count ?? 1;
       const spreadPx = projectile.salvo?.spreadPx ?? 0;
 
+      let projectileFiredNotified = false;
       for (let i = 0; i < salvoCount; i++) {
         // Distribute origins evenly across the hull width
         const t = salvoCount > 1 ? i / (salvoCount - 1) : 0.5;
         const offsetX = spreadPx > 0 ? (t - 0.5) * spreadPx : 0;
         // Small stagger in Y to give a depth effect along the isometric hull
         const offsetY = offsetX * 0.3;
-        this.spawnSingleProjectile(
+        const projectileSprite = this.spawnSingleProjectile(
           projectile,
           attack,
           enemy,
@@ -386,6 +391,16 @@ export class AttackComponent {
           targetY,
           i === 0 // only the first arrow is tracked for cancellation
         );
+        if (projectileSprite && !projectileFiredNotified) {
+          projectileFiredNotified = true;
+          this.gameObject.scene.events.emit(
+            ProjectileFiredSceneEvent,
+            {
+              attacker: this.gameObject,
+              target: enemy
+            } satisfies ProjectileFiredSceneEventPayload
+          );
+        }
       }
     });
   }
@@ -400,7 +415,7 @@ export class AttackComponent {
     targetX: number,
     targetY: number,
     track: boolean
-  ) {
+  ): Phaser.GameObjects.Image | undefined {
     const projectileSprite = PhaserProjectileFactory.create(this.gameObject.scene, projectile.type);
     if (!projectileSprite) {
       console.error("Unknown projectile type", projectile.type);
@@ -493,6 +508,7 @@ export class AttackComponent {
     }
 
     if (track) this.projectileTween = tween;
+    return projectileSprite;
   }
 
   /**
