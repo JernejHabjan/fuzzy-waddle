@@ -2,9 +2,10 @@ import Phaser, { GameObjects, Geom, Input } from "phaser";
 import { isFullscreenTopEdgeExit } from "./fullscreen-edge-guard";
 import HudProbableWaffle from "../../world/scenes/hud-scenes/HudProbableWaffle";
 import { type ProbableWaffleSelectionData } from "@fuzzy-waddle/probable-waffle-protocol";
-import { getSceneComponent } from "../../world/services/scene-component-helpers";
+import { getSceneComponent, getSceneService } from "../../world/services/scene-component-helpers";
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { BuildingCursor } from "./building-cursor";
+import { MinimapSignalController } from "./minimap-signal-controller";
 
 export const MULTI_SELECTING = "multiSelecting";
 
@@ -74,6 +75,7 @@ export class MultiSelectionHandler {
 
   private handlePointerDown(pointer: Input.Pointer) {
     if (!pointer.leftButtonDown()) return;
+    if (pointer.event.altKey || getSceneService(this.probableWaffleScene, MinimapSignalController)?.isArmed()) return;
 
     const buildingCursor = getSceneComponent(this.probableWaffleScene, BuildingCursor);
     if (buildingCursor && buildingCursor.placingBuilding) return;

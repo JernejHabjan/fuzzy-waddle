@@ -25,6 +25,7 @@ import { OrderType } from "../../ai/order-type";
 import { getCurrentPlayerNumber } from "../../data/scene-data";
 import { getBuildingCountsByPlayer, isLastEnemyBuilding } from "../../library/building-helpers";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
+import { MinimapSignalController } from "../../player/human-controller/minimap-signal-controller";
 /* END-USER-IMPORTS */
 
 export default class Minimap extends Phaser.GameObjects.Container {
@@ -98,6 +99,7 @@ export default class Minimap extends Phaser.GameObjects.Container {
   private readonly fallbackColor = new Phaser.Display.Color(128, 128, 128);
   // Store tile coordinates for each diamond to avoid recreating listeners
   private diamondTileCoords: Map<Phaser.GameObjects.Polygon, { i: number; j: number }> = new Map();
+  private readonly activeSignalGraphics = new Set<Phaser.GameObjects.Graphics>();
 
   initializeWithParentScene(probableWaffleScene: ProbableWaffleScene, hudProbableWaffle: HudProbableWaffle) {
     this.probableWaffleScene = probableWaffleScene;
@@ -260,6 +262,8 @@ export default class Minimap extends Phaser.GameObjects.Container {
           // pointer down is needed for single minimap click to move camera or assign action
           diamond.on(Phaser.Input.Events.POINTER_DOWN, (pointer: Phaser.Input.Pointer) => {
             if (multiSelectionHandler?.multiSelecting) return;
+            const minimapSignalController = getSceneService(this.probableWaffleScene!, MinimapSignalController);
+            if (minimapSignalController?.trySignalMinimapTile({ x: j, y: i }, pointer)) return;
             const isHandlingPlayerAction = this.playerActionsHandler?.isHandlingActions() === true;
             if (pointer.rightButtonDown() || isHandlingPlayerAction) {
               const tileVec3 = { x: j, y: i, z: 0 };
@@ -345,6 +349,39 @@ export default class Minimap extends Phaser.GameObjects.Container {
 
     const { isoX, isoY } = isoCoords;
     this.probableWaffleScene.cameras.main.pan(isoX, isoY, 50, Phaser.Math.Easing.Quadratic.InOut);
+  }
+
+  displaySignal(tile: Vector2Simple, color: number): void {
+    if (!this.probableWaffleScene || !this.hudProbableWaffle) return;
+    const tilemap = getSceneComponent(this.probableWaffleScene, TilemapComponent)?.tilemap;
+    if (!tilemap) return;
+    const widthInPixels = this.hudProbableWaffle.scale.width > this.minimapSmallScreenBreakpoint ? this.minimapWidth : this.smallMinimapWidth;
+    const pixelWidth = widthInPixels / tilemap.width;
+    const pixelHeight = widthInPixels / 2 / tilemap.height;
+    const centerX = widthInPixels / 2 - pixelWidth / 2;
+    const x = this.minimapMargin + centerX + (tile.x - tile.y) * (pixelWidth / 2) + pixelWidth / 2;
+    const y = this.hudProbableWaffle.scale.height - widthInPixels / 2 - this.minimapMargin + (tile.x + tile.y) * (pixelHeight / 2) + pixelHeight / 2;
+    const graphics = this.hudProbableWaffle.add.graphics().setDepth(10_000);
+    this.activeSignalGraphics.add(graphics);
+    this.hudProbableWaffle.tweens.addCounter({
+      from: 4,
+      to: 26,
+      duration: 1_500,
+      onUpdate: (tween) => {
+        const progress = tween.getValue() / 26;
+        graphics.clear();
+        for (const delay of [0, 0.22, 0.44]) {
+          const ringProgress = Math.max(0, (progress - delay) / (1 - delay));
+          if (ringProgress === 0) continue;
+          graphics.lineStyle(2, color, 1 - ringProgress);
+          graphics.strokeCircle(x, y, 4 + ringProgress * 22);
+        }
+      },
+      onComplete: () => {
+        this.activeSignalGraphics.delete(graphics);
+        graphics.destroy();
+      }
+    });
   }
 
   private assignActorActionToTileCoordinates(tileVec3: Vector3Simple, orderType: OrderType) {

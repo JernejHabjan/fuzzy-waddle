@@ -1107,6 +1107,10 @@
     "url": "https://paperhatlizard.itch.io/cryos-mini-gui",
     "name": "Cryo's Mini GUI",
     "author": "https://paperhatlizard.itch.io/",
+    "license": {
+      "name": "CC BY 4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
     "reason": "GUI assets for Ashes of the Ancients"
   },
   {

@@ -3,6 +3,7 @@ import { type GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
 import {
   type AllScenesEventData,
   type ProbableWaffleCommunicatorMessageEvent,
+  type ProbableWaffleMinimapSignalEvent,
   type ProbableWaffleCommunicatorType,
   type ProbableWaffleDesyncAlertEvent,
   type ProbableWaffleGameCommandEvent,
@@ -124,6 +125,8 @@ export interface ProbableWaffleCommunicatorServiceInterface {
    * inferred shape.
    */
   message?: TwoWayCommunicator<ProbableWaffleCommunicatorMessageEvent, ProbableWaffleCommunicatorType>;
+  /** Optional multiplayer transport for transient teammate-only minimap signals. */
+  minimapSignal?: TwoWayCommunicator<ProbableWaffleMinimapSignalEvent, ProbableWaffleCommunicatorType>;
   /** Documents the game command changed member and its declared contract at this boundary. */
   gameCommandChanged?: TwoWayCommunicator<ProbableWaffleGameCommandEvent, ProbableWaffleCommunicatorType>;
   /** Documents the state hash changed member and its declared contract at this boundary. */
