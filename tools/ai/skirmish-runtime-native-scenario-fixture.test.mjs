@@ -4,9 +4,9 @@ import { test } from "node:test";
 import { nativeScenarioBindings, nativeScenarioFixture } from "./native-scenario-registration.mjs";
 import { validNativeScenarioFixture } from "./skirmish-runtime-native-scenario-fixture.mjs";
 
-test("all forty-four native bindings retain their full branches and original acceptance obligations", () => {
+test("all fifty-two native bindings retain their full branches and original acceptance obligations", () => {
   const ids = Object.keys(nativeScenarioBindings.cases);
-  assert.equal(ids.length, 44);
+  assert.equal(ids.length, 52);
   const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish-v1.json", import.meta.url)));
   for (const id of ids) {
     const row = manifest.rows.find((row) => row.id === id);
@@ -88,4 +88,34 @@ test("unsupported naval and diplomacy content is explicit rather than silently i
   assert.deepEqual(naval.recipe.variants.filter((v) => v.aiFaction === "Skaduwee").map((v) =>
     naval.assertions["DOMAIN-02"].requiredNativeScenario.branchByVariant[v.id]), ["unsupported"]);
   assert.ok(nativeScenarioFixture("C-06").capabilityLimits.some((limit) => limit.includes("unsupported")));
+});
+
+test("recovery bindings preserve actual obstruction, healthy work and finite pending/error inputs", () => {
+  for (const [id, branch, mutate] of [
+    ["H-01", "persistent", (world) => world.events = []],
+    ["H-02", "circling_worker", (world) => world.controls = []],
+    ["H-03", "training", (world) => world.queues = []],
+    ["H-03", "crop", (world) => world.initialOrders = []],
+    ["H-04", "income_parent", (world) => world.actors = world.actors.filter((a) => a.fixtureActorId !== "blocked-source")],
+    ["H-19", "pending", (world) => world.routeOutages[0].mode = "null"],
+    ["H-19", "error", (world) => world.routeOutages[0].mode = "pending"],
+    ["H-24", "unsafe", (world) => world.actors = world.actors.filter((a) => !a.fixtureActorId.startsWith("known-danger-"))],
+    ["H-25", "alternative", (world) => world.controls = []],
+    ["H-26", "threat_clears", (world) => world.events = []]
+  ]) {
+    const fixture = nativeScenarioFixture(id), contract = fixture.assertions[id].requiredNativeScenario;
+    const variant = fixture.recipe.variants.find((value) => contract.branchByVariant[value.id] === branch);
+    assert.ok(variant);
+    mutate(variant.presetWorld);
+    assert.equal(validNativeScenarioFixture(fixture, id), false, `${id}:${branch}`);
+  }
+});
+
+test("unimplemented receipt, disposal, clearance and indispensable-cargo premises are not promoted", () => {
+  const drafts = JSON.parse(readFileSync(new URL("./fixtures/native-scenario-recipes.json", import.meta.url)));
+  for (const id of ["H-05", "H-20", "H-21", "H-23"]) {
+    assert.equal(Object.hasOwn(nativeScenarioBindings.cases, id), false);
+    const entry = drafts.cases.find((value) => value.scenarioId === id);
+    assert.ok(entry.executionBlockers.some((key) => key.startsWith("recovery_binding_")));
+  }
 });

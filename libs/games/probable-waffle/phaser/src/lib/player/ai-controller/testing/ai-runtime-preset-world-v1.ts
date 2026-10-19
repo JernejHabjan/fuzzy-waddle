@@ -16,7 +16,9 @@ export interface AiRuntimePresetWorldV1 {
   readonly terrainPreserveFootprints?: true;
   /** Test-only finite query outage for original actors; never changes ownership, terrain or strategic defeat state. */
   readonly routeOutages?: readonly { readonly id: string; readonly fromTick: number; readonly throughTick: number;
-    readonly fixtureActorIds: readonly string[] }[];
+    readonly fixtureActorIds: readonly string[];
+    /** Omitted preserves legacy null failures; pending retains at most 32 calls until the fixed end or shutdown. */
+    readonly mode?: "null" | "pending" | "error" }[];
   readonly provenance: {
     readonly sourceRevision: string;
     readonly fixtureDigest: string;

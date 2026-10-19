@@ -3,6 +3,7 @@ import { nativeScenarioWorld } from "./native-scenario-worlds.mjs";
 import { nativeDomainWorld } from "./native-domain-worlds.mjs";
 import { nativeStrategicWorld } from "./native-strategic-worlds.mjs";
 import { nativeClassicWorld } from "./native-classic-worlds.mjs";
+import { nativeRecoveryWorld } from "./native-recovery-worlds.mjs";
 
 export const nativeScenarioBindings = JSON.parse(readFileSync(new URL("./native-scenario-bindings.json", import.meta.url), "utf8"));
 const expansion = JSON.parse(readFileSync(new URL("./fixtures/expansion-pressure-runtime.json", import.meta.url), "utf8"));
@@ -25,7 +26,9 @@ export function nativeScenarioFixture(id) {
     .filter((tick) => tick <= binding.latestTick);
   const branches = {};
   const variants = ["Tivara", "Skaduwee"].flatMap((faction) => nativeScenarioBranches(id, faction).map((branch) => {
-    const world = id === "EXP-01" ? expansionWorld(faction, branch) : id.startsWith("DOMAIN-") ?
+    const recovery = ["H-01", "H-02", "H-03", "H-04", "H-19", "H-24", "H-25", "H-26"].includes(id);
+    const world = recovery ? nativeRecoveryWorld(id, faction, branch) :
+      id === "EXP-01" ? expansionWorld(faction, branch) : id.startsWith("DOMAIN-") ?
       nativeDomainWorld(id, faction, branch) : id.startsWith("C-") ? nativeClassicWorld(id, faction, branch) :
       ["STRAT-02", "STRAT-03", "STRAT-08", "STRAT-09", "RAID-03"].includes(id) ?
         nativeStrategicWorld(id, faction, branch) : nativeScenarioWorld(id, faction, branch);

@@ -6,6 +6,7 @@ export function captureAiSelectedMissionState(state: AiBrainStateV1): AiDecision
   if (state.squads.length > 64 || state.knowledge.evidence.length > 512 || state.knowledge.questions.length > 256 ||
       state.bases.length > 32 || state.fortifications.length > 64 || state.support.length > 256 ||
       state.progress.length > 256 || state.recoveryEpisodes.length > 256 || state.skirmish.incidents.length > 256 ||
+      state.recovery.records.length > 64 || state.blockers.length > 256 || state.transport.length > 64 ||
       state.skirmish.timeline.length > 512 ||
       state.squads.some((squad) => squad.actorIds.length > 256 ||
         (squad.tactics?.damageReservations.length ?? 0) > 256 || (squad.tactics?.assignedPositions.length ?? 0) > 256) ||
@@ -13,6 +14,6 @@ export function captureAiSelectedMissionState(state: AiBrainStateV1): AiDecision
   return {
     squads: state.squads, knowledge: state.knowledge, skirmish: state.skirmish, bases: state.bases,
     fortifications: state.fortifications, support: state.support, progress: state.progress,
-    recoveryEpisodes: state.recoveryEpisodes
+    recoveryEpisodes: state.recoveryEpisodes, recovery: state.recovery, blockers: state.blockers, transport: state.transport
   };
 }

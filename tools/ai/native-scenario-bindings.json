@@ -1962,6 +1962,418 @@
       "capabilityLimits": [
         "Current relation authority uses player-definition teams; there is no in-match diplomacy command. Initial allied-team control is bound; dynamic diplomacy transition remains unsupported, not passed. Native defeat/retargeting uses the real three-spawn AI Multiplayer map."
       ]
+    },
+    "H-01": {
+      "latestTick": 4000,
+      "branches": [
+        "persistent",
+        "clears_early",
+        "alternative_duty"
+      ],
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000,
+        4000
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "Cumulative episode deadline still escalates and restores useful duty; no infinite explained inactivity",
+        "setup": [
+          "Start an actual useful construction or military duty with a recoverable persistent obstruction",
+          "Preserve alternative useful work and record the independently due milestone"
+        ],
+        "actions": [
+          "Keep the obstruction while allowing ordinary retry/next-check updates",
+          "Remove it only after the original episode deadline has forced recovery"
+        ],
+        "measurements": [
+          "Original causal entry/due/deadline, retry history, native progress and worker/squad assignment"
+        ],
+        "required": [
+          "Cumulative deadline escalates despite renewed next-check ticks",
+          "Actors resume useful duty or bounded explicit recovery without global concession"
+        ],
+        "forbidden": [
+          "Fresh retry tick treated as progress",
+          "Explained inactivity accepted forever"
+        ],
+        "branches": [
+          "Persistent blocker",
+          "Blocker clears before deadline",
+          "Another useful duty available"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      }
+    },
+    "H-02": {
+      "latestTick": 4000,
+      "branches": [
+        "circling_worker",
+        "assembly_oscillation",
+        "renamed_purpose"
+      ],
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000,
+        4000
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "Best-progress/cause tracker detects false progress; renamed plans cannot clear failure age",
+        "setup": [
+          "One actor can legally move around a loop without approaching its actual service/mission destination",
+          "Preserve causal purpose while alternate actor/site/plan identities can be chosen normally"
+        ],
+        "actions": [
+          "Keep the real objective blocked while permitting harmless motion and ordinary replanning",
+          "Advance beyond the original due milestone and cumulative deadline"
+        ],
+        "measurements": [
+          "Best validated route/service/objective progress, causal family, plan identity and cumulative blocked age"
+        ],
+        "required": [
+          "False progress and renamed plans do not erase causal age",
+          "Bounded recovery restores a useful job or terminates the infeasible optional purpose"
+        ],
+        "forbidden": [
+          "Distance travelled alone accepted as route progress",
+          "New parent ID resets failure history"
+        ],
+        "branches": [
+          "Circling worker",
+          "Assembly oscillation",
+          "Alternate site/plan with the same failed purpose"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      }
+    },
+    "H-03": {
+      "latestTick": 4000,
+      "branches": [
+        "training",
+        "crop",
+        "travel",
+        "stalled"
+      ],
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000,
+        4000
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "Healthy work is retained with observed progress/expected milestone; watchdog does not repeatedly cancel it",
+        "setup": [
+          "Admit normally paid long training, growing crop or a physically long useful journey exceeding 200 ticks",
+          "Freeze independent remaining-work and expected milestone bounds before candidate decisions"
+        ],
+        "actions": [
+          "Allow native work to advance without artificial delay or resource injection",
+          "Continue beyond 200 ticks and through actual completion/arrival/harvest"
+        ],
+        "measurements": [
+          "Native queue remaining time, crop growth or route advancement",
+          "Original obligation identity, cancellation receipts and useful completed effect"
+        ],
+        "required": [
+          "Healthy long work survives the watchdog and produces its original useful effect",
+          "Expected milestone follows actual legitimate work"
+        ],
+        "forbidden": [
+          "Cancelling merely because work exceeds 200 ticks",
+          "Extending fixture deadline from every new planner estimate"
+        ],
+        "branches": [
+          "Long training",
+          "Crop growth",
+          "Long travel",
+          "Truly stalled matched control must still recover"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      }
+    },
+    "H-04": {
+      "latestTick": 4000,
+      "branches": [
+        "income_parent",
+        "attack_parent",
+        "relevant_child"
+      ],
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000,
+        4000
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "Parent deadline still fires; unrelated chores cannot keep it alive",
+        "setup": [
+          "Parent income or attack purpose is genuinely stalled",
+          "A separate child can complete unrelated safe gathering or movement repeatedly"
+        ],
+        "actions": [
+          "Let the unrelated child make real progress while retaining the parent obstruction",
+          "Advance through the original parent deadline"
+        ],
+        "measurements": [
+          "Parent objective-linked native effects and child effect identities separately",
+          "Parent cumulative age and eventual reassignment"
+        ],
+        "required": [
+          "Unrelated child progress cannot keep the parent purpose alive",
+          "Parent recovers or closes by its independent deadline"
+        ],
+        "forbidden": [
+          "Any child completion refreshes all ancestors",
+          "Aggregated total income used as proof for a blocked different resource objective"
+        ],
+        "branches": [
+          "Income parent with unrelated resource child",
+          "Attack parent with economy child",
+          "Relevant child progress control"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      }
+    },
+    "H-19": {
+      "latestTick": 2400,
+      "branches": [
+        "pending",
+        "late",
+        "error"
+      ],
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "Local permitted defense still executes; query failure cannot freeze the whole brain",
+        "setup": [
+          "One optional long-distance route query remains unresolved at the actual query service seam",
+          "Nearby visible enemy can be handled by a permitted local defense route"
+        ],
+        "actions": [
+          "Hold only the optional query completion and start the real local attack",
+          "Later reject or complete that original query without changing its generation identity"
+        ],
+        "measurements": [
+          "Pending route identity, complete committed observation generation and native local defense command/effect"
+        ],
+        "required": [
+          "Local permitted defense executes while optional query is pending",
+          "Query failure stays a bounded technical/recovery case rather than global strategic infeasibility"
+        ],
+        "forbidden": [
+          "Whole brain waiting for every path Promise",
+          "Hidden state mixed from partial generations"
+        ],
+        "branches": [
+          "Never completes during defense window",
+          "Late completion",
+          "Explicit service error"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      }
+    },
+    "H-24": {
+      "latestTick": 3000,
+      "branches": [
+        "information",
+        "raid",
+        "denial",
+        "unsafe"
+      ],
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "Bounded useful probe/mission, not permanent assembly or forced suicide",
+        "setup": [
+          "Enemy army strength is uncertain under real fog",
+          "Independently feasible low-risk scouting, raid or denial opportunity exists without a favorable full-army comparison"
+        ],
+        "actions": [
+          "Reveal the limited opportunity through permitted contact",
+          "Let AI launch a bounded suitable probe and measure actual effect or gained information"
+        ],
+        "measurements": [
+          "Consumed uncertainty, mission-specific readiness, native arrival and useful information/damage/denial"
+        ],
+        "required": [
+          "Useful limited action proceeds by the original opportunity bound",
+          "Genuine losing survival branch avoids forced suicide"
+        ],
+        "forbidden": [
+          "Global preferred advantage threshold blocks every movement forever",
+          "Hidden enemy strength used to justify departure"
+        ],
+        "branches": [
+          "Safe information probe",
+          "Exposed small raid",
+          "Denial",
+          "No safe useful opportunity control"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      }
+    },
+    "H-25": {
+      "latestTick": 4000,
+      "branches": [
+        "alternative",
+        "changed_force",
+        "no_alternative"
+      ],
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000,
+        4000
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "Detect oscillation, alter objective/force/route and achieve recovery/progress",
+        "setup": [
+          "One choke supports a recurring observed unfavorable engagement and a distinct useful alternative",
+          "Bind the original squad/purpose and its cumulative failure deadline"
+        ],
+        "actions": [
+          "Opponent repeats the same legal pressure causing retreat/relaunch at that choke",
+          "Continue beyond the recovery escalation threshold without resetting scenario time"
+        ],
+        "measurements": [
+          "Native route/effect history, retreat and relaunch positions, causal family and actual alternate progress"
+        ],
+        "required": [
+          "AI changes force, route or objective and obtains useful recovery/progress by the fixed deadline"
+        ],
+        "forbidden": [
+          "Each retreat or renamed mission credited as progress",
+          "Infinite locally legal oscillation"
+        ],
+        "branches": [
+          "Alternative objective",
+          "Viable changed force",
+          "No alternative requires bounded optional mission closure"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      }
+    },
+    "H-26": {
+      "latestTick": 3000,
+      "branches": [
+        "grouping",
+        "safe_alternate",
+        "no_safe_route",
+        "threat_clears"
+      ],
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "Reachable grouping/alternate route or stop feeding; preserve useful main-front decision",
+        "setup": [
+          "Main useful front survives but the direct reinforcement route is independently lethal for isolated units",
+          "Provide reachable grouping point or a safer longer route"
+        ],
+        "actions": [
+          "Complete reinforcements through normally paid queues",
+          "Opponent covers direct route using actual weapons while AI assigns new units"
+        ],
+        "measurements": [
+          "Output identities, route traversal, reinforcement losses and main-front useful effects",
+          "Actual grouping/alternate arrival"
+        ],
+        "required": [
+          "Reinforcements group, take safe route or stop feeding",
+          "Main-front decision remains useful and independently owned"
+        ],
+        "forbidden": [
+          "Repeated one-unit suicide stream",
+          "Safe route inferred without native clearance"
+        ],
+        "branches": [
+          "Grouping point",
+          "Safe alternate",
+          "No safe route",
+          "Threat clears"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      }
     }
   }
 }

@@ -3,36 +3,38 @@
 Default resume page: read this first, then only the selected package in [REMAINING-WORK.md](REMAINING-WORK.md).
 Do not load the full plan directory or archive on startup.
 
-## Current cursor — 14-ID mission/domain/classic batch authored, 2026-10-19
+## Current cursor — recovery/liveness authoring partly bound, 2026-10-19
 
 - Worktree /home/jernej/.codex/worktrees/7977/fuzzy-waddle; branch feature/759-skirmish-ai.
-  Publication base47aedcb062097a54af85ea94022c8435bc4c0e2b; verify the containing commit and remote on resume.
+  Publication base f1c14ffd8fcffbf5da239de5b3f9372f5cbc4b29; verify the containing commit and remote on resume.
   Actual model/effort unknown; no delegation/model switch. Preserve unrelated run XML and ALL_VISIBLE fog edits.
-- STRAT-02/03/08/09, DOMAIN-01/02/05, RAID-03, C-01–06 now have14 native registrations/84 faction-control variants,
-  authored unrun. They cover physical raids/proportional recall, finishing/comeback, naval/air utility, retained paid work,
-  attack windows, useful army growth, information deduplication, pursuit and real three-player retargeting.
-- Supported runtime registration75/116 (64.7%);41 unbound (35.3%), plus4 deferred island rows. Pure111/111 (100%).
-  Definitions116/116 comprise75 bindings and41 specifications. No overall AI completion percentage or new gameplay pass.
-  These84 variants, the prior194 variants and21 partial owner worlds remain unrun; they are not unique physical maps.
-- Existing shared controls now support actual boarding/unload. Bounded native transport/team/defeat samples and real
-  third-player capture share the existing opt-in ledger. Opponent reads omit duplicate shared recipient data; raw proof
-  stays local and model-facing summaries remain capped at8192 bytes. No new observer/report system or balance edit.
-- Content limits are explicit: only Tivara offers ships. Boat raids require a Tivara human; naval interception uses a real
-  third Tivara opponent. Skaduwee gets an actual missing-capability control. No in-match diplomacy command exists:
-  C-06 covers native defeat/retargeting and initial allied teams; dynamic diplomacy is unsupported, not passed.
-- A finite original-actor route-service outage is test-only, fixed in tick range, records actual interception and restores
-  owned hooks. It does not corrupt terrain or authorize surrender. STRAT-08 accepts only an authoritative win with a
-  sealed native prefix after normal damage; default full-horizon requirements remain for other cases.
+- Selected12 IDs: H-01–05/H-19–21/H-23–26. Eight now have native registrations: H-01–04/H-19/H-24–26,
+  54 faction/control variants, authored unrun. This selected batch is8/12 bound (66.7%),4/12 unbound (33.3%);
+  it is NOT a completed12-ID batch or validated recovery behavior.
+- H-05/H-20/H-21/H-23 remain specifications with exact missing-premise owners in native-scenario-recipes.json.
+  H-05 needs an original AI receipt hold/release independently joined to shared application; a human scheduled command
+  cannot establish uncertain AI ownership. H-20 needs finite topology churn, bounded work/cursor samples and an external
+  post-shutdown boundary. H-21 needs real small/large-unit or formation clearance evidence, not tileMargin envelopes.
+  H-23 needs an AI-owned indispensable cargo mission/departure deadline; scripted passenger membership is insufficient.
+  These are implementation gaps, not unavailable test execution or proof that the intended gameplay is unsupported.
+- Supported runtime registration83/116 (71.6%);33 unbound (28.4%), plus4 deferred island rows. Pure111/111 (100%).
+  Definitions116/116 comprise83 bindings and33 specifications. No overall AI completion percentage or new gameplay pass.
+  Native factory52 bindings/332 variants and21 partial owner worlds remain unrun; variants are not unique maps.
+- Native recovery worlds/readers now cover fixed obstruction release, real but irrelevant motion/income, original paid
+  queues/crops/long travel, defense during finite pending/error queries, uncertainty, choke recovery and reinforcements.
+  Selected mission capture includes bounded recovery/blocker/transport ownership. Pending fault calls cap at32, retain
+  original destinations, release FIFO at fixed simulation ticks and settle null without native calls on shutdown.
+  No planner/balance changes, new observer or raw-report expansion; model summaries remain capped at8192 bytes.
 - **No execution:** no recipes/tests/lint/types/formatter/build/browser/server/doctor/context/dedicated validators.
-  Only source review and fixture/catalog --write authoring occurred. Geometry, timings, strength, actual adapter behavior
-  and oracle correctness remain unmeasured. Missing premises must fail at the later gate; never relax them to get a pass.
-- **Next grouped authoring:** H-01–05, H-19–21, H-23–26 (12 IDs): episode deadlines, false versus healthy progress,
-  safe release, failed/slow routes, builder service, launch readiness, uncertain fights and oscillation/grouping recovery.
-  Reuse current route/mission/native readers; no new diagnostic architecture. H resource authority, lifecycle/peers,
-  supported SEQ, difficulty/debug and later victory remain. Machinery necessity review is last.
-- Report done/why and next/why in short bullets; distinguish registrations from validated outcomes. Commit/push exact
-  owned paths, verify remote equality and pause. Recorded next recommendation: Sol6.1/high for causal recovery/authority
-  work; a recommendation does not change active settings.
+  Only source review and fixture/catalog --write authoring occurred. Setup geometry, timings, fault interception,
+  applicability and oracle correctness remain unmeasured; fail on missing premises instead of weakening outcomes.
+- **Next:** finish the four unbound IDs above together at their existing receipt/navigation/runner/transport owners.
+  Reuse native-recovery-worlds.mjs and the native recovery readers. Do not skip them for another registration family.
+  Then remaining authority/resources/lifecycle/peers, supported SEQ, difficulty/debug and later victory.
+  Machinery necessity review remains last overall.
+- Report done/why and next/why in short bullets; distinguish bindings from validated outcomes. Commit/push exact owned
+  paths, verify remote equality and pause. Next recommendation: Sol6.1/high for unresolved causal seam design.
+  The recommendation does not change active settings.
 
 ## What “continue” means
 
@@ -98,7 +100,7 @@ Keep the report self-contained and concise. A documentation-only update reports 
 gameplay progress unchanged. The execution plan links to this format rather than maintaining a second template.
 
 Registration coverage: pure **111/111 = 100% registered / 0% remaining**; supported runtime
-**75/116 = 64.7% registered / 35.3% remaining**, excluding four deferred runtime rows. These are not overall AI completion.
+**83/116 = 71.6% registered / 28.4% remaining**, excluding four deferred runtime rows. These are not overall AI completion.
 Reconcile behavior evidence per selected package; do not invent a global completion percentage.
 
 ## End-of-gate machinery necessity review

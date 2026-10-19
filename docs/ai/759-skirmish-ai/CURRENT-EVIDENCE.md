@@ -2,6 +2,58 @@
 
 [HANDOFF.md](HANDOFF.md) owns continuation. Read this current batch; older sections retain historical evidence.
 
+## Recovery/liveness authoring — eight bound, four incomplete, 2026-10-19
+
+Publication base f1c14ffd8fcffbf5da239de5b3f9372f5cbc4b29; same branch/worktree. Actual model/effort unknown.
+No delegation/model switch. Verify containing commit and remote. No recipes, tests, lint, types, formatter, builds,
+browser/server, doctor/context or dedicated validators ran. Catalog --write and fixture construction are authoring only.
+
+### Acceptance map — source review, not gameplay evidence
+
+| Selected obligation | Implementation / immediate consumers | State / deferred evidence |
+| --- | --- | --- |
+| H-01 cumulative deadline | native-recovery-worlds.mjs: original enclosed actor, fixed early/late native door loss and alternate duty; native-recovery-evidence.ts freezes first obligation and causal record | Registered unrun; establish actual initial obligation, fault interception, escalation before release and original-actor native effect |
+| H-02 false motion / renamed purpose | Native loop moves remain distinct from causal due/entry fields; native-recovery-evaluation.ts compares same-objective age across replacement squad names | Registered unrun; real movement must occur; deadline/age cannot renew from motion or naming |
+| H-03 healthy long work | Original four paid queue items, native growing Field/harvest and long original travel versus fixed failed-route control; exact native queue identity/progress/completion and source-delivery readers | Registered unrun; actual >200-tick work/growth/travel and retained useful completion must be established |
+| H-04 unrelated child progress | Native wood obstruction plus separate worker food harvest; selected original recovery ownership/deadline separated from delivered food; attack-parent income control | Registered unrun; original parent ownership, unrelated native delivery, bounded escalation and original worker duty remain required |
+| H-19 optional route failure | Existing route outage gains explicit finite pending/error modes; real nearby attacker/shared attack; native defense hit before fault release and original route continuation | Registered unrun; missing interception or defense during the actual window fails |
+| H-24 uncertain force | Real hidden16-unit reserve, exposed information/raid/denial and visible losing control; native fog fairness, physical scout/damage and survival reader | Registered unrun; hidden premise, opportunity and bounded effect still need native proof |
+| H-25 choke recovery | Actual water choke, native armed guards and finite recurring opponent moves; alternate objective, paid changed force and bounded optional closure | Registered unrun; early effective avoidance can pass; cosmetic state changes/renaming alone cannot |
+| H-26 reinforcement safety | Four original normally paid outputs, native guard coverage, actual grouping/alternate transit/stop-feeding/guard-loss control and continuing original-front effect | Registered unrun; actual paid identities, physical route and native loss budgets are required |
+| H-05 uncertain receipt / atomic release | Existing AiCommandReconciliation plus independent shared application; exact missing receipt hold/release obligation recorded in native-scenario-recipes.json | **Unbound**; scheduling a human command does not prove unknown AI application ownership |
+| H-20 topology storm / shutdown | Existing navigation adapter/runner; exact finite churn, work/cursor capture and outside-scene shutdown boundary obligation recorded in draft | **Unbound**; pending fault cleanup source/tests do not prove native scene-disposal/query fencing |
+| H-21 physical clearance | Existing navigation native movement and static placement probes; exact small versus larger-unit/formation transit obligation recorded in draft | **Unbound**; tileMargin and graph clearance cannot substitute for physical body/service transit |
+| H-23 indispensable cargo | Existing native transport membership and mission ownership; exact original AI transport-worker/departure control obligation recorded in draft | **Unbound**; human-scripted cargo cannot establish an AI-owned indispensable prerequisite |
+
+### Shared source review and Omission Audit
+
+- All12 selected IDs have a disposition above; only eight move from draft to manifest-backed executable registration.
+  Bindings preserve the original required/forbidden outcomes, checkpoint ceiling and both factions. The strict source
+  factory includes every authored input; mutation tests cover erased obstruction, healthy work and pending/error modes.
+  Four incomplete IDs retain fixture:null and explicit named missing seams; no full12-ID closure is asserted.
+- Existing listener-gated mission capture now includes complete bounded recovery, blocker and transport slices.
+  Overflow loses the entire selected boundary instead of truncating convincing ownership. No save/wire/planner input changes.
+- Pending route faults hold at most32 calls; native destinations/callers are retained, release occurs FIFO at fixed
+  simulation ticks, overload is explicit and shutdown resolves held calls null without invoking native navigation.
+  Retained wrappers return null after shutdown and owned hooks/subscriptions restore without clobbering later hooks.
+  Old null-response fixtures remain compatible. Mode parser rejects non-string and unknown modes.
+- New guard, reader-negative, selected-capture and fault lifecycle specs are authored **unrun**. Source review does not
+  establish geometry, timings, native applicability, TypeScript correctness, eventual route progress or absence of leaks.
+  No additional observer, raw-report channel, balance/planner edit or skill change was introduced.
+
+### Final Closure Audit — authoring publication only, selected batch incomplete
+
+- Eight native recipes/54 faction-control variants, independent readers, strict factory/dispatch and catalog are wired.
+  Four selected requirements remain named implementation gaps, not silent skips or unavailable test execution.
+  Selected authoring8/12 (66.7%),4/12 (33.3%) unbound; gameplay passing count is not newly measured.
+- Supported registration83/116 (71.6%),33 unbound (28.4%), excluding4 deferred island rows. Definitions116/116 consist
+  of83 bindings plus33 specifications. Native factory52 IDs/332 variants and21 partial owner worlds remain unrun.
+- Publication must include only owned source/fixtures/docs/tests. Preserve unrelated run XML and fog changes. Commit,
+  push, verify exact remote SHA and pause. No recipe/test/lint/type/build execution, PR, merge or force push is authorized.
+- Next finish H-05/H-20/H-21/H-23 together before selecting another family. Source anchors and missing premises are
+  in the remaining draft records. Sol6.1/high is recommended for that unresolved causal design; active settings unknown.
+  Both-faction victory and broader gate stay later; machinery necessity review remains last overall.
+
 ## Fourteen mission/domain/classic registrations — authored unrun, 2026-10-19
 
 Publication base47aedcb062097a54af85ea94022c8435bc4c0e2b; same branch/worktree as HANDOFF. Actual model/effort unknown,

@@ -160,13 +160,25 @@
     "debug_surface": {
       "owner": "libs/games/probable-waffle/phaser/src/lib/prefabs/gui/debug/ai-controller/AiControllerDebugPanel.ts",
       "missing": "Drive actual developer debug/import/read-only surfaces and compare independent native state. Existing pure projection controls do not establish UI, live multiplayer or export behavior."
+    },
+    "recovery_binding_h_05": {
+      "owner": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/ai-command-reconciliation.ts",
+      "missing": "Actual AI-reconciliation receipt hold/release pinned to an original native effect, with independent shared-application capture. A human preset scheduled command cannot establish uncertain AI ownership."
+    },
+    "recovery_binding_h_20": {
+      "owner": "apps/portal-e2e/src/e2e/skirmish-ai-runtime-variant-runner.ts",
+      "missing": "Native finite topology-churn schedule and bounded query/cursor samples, plus a scene-disposal boundary captured outside the disposed scene. The current paused checkpoint reader cannot certify old callback fencing after shutdown."
+    },
+    "recovery_binding_h_21": {
+      "owner": "libs/games/probable-waffle/phaser/src/lib/world/services/navigation.service.ts",
+      "missing": "Pair a real small-unit traversal with a definition-backed larger-unit/formation clearance failure or alternate transit. Static protected-route tileMargin envelopes and compact graph clearance cannot alone certify physical unit clearance."
+    },
+    "recovery_binding_h_23": {
+      "owner": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-runtime-preset-world-v1.ts",
+      "missing": "Native AI-owned indispensable transport-worker duty and original departure deadline, contrasted with optional late/lost support. Human-scripted board/unload membership is available but cannot establish AI mission ownership; Skaduwee has no ship producer."
     }
   },
   "scenarioIds": [
-    "H-01",
-    "H-02",
-    "H-03",
-    "H-04",
     "H-05",
     "H-06",
     "H-07",
@@ -178,13 +190,9 @@
     "H-13",
     "H-14",
     "H-15",
-    "H-19",
     "H-20",
     "H-21",
     "H-23",
-    "H-24",
-    "H-25",
-    "H-26",
     "H-30",
     "H-31",
     "H-32",
@@ -206,229 +214,6 @@
     "DBG-06"
   ],
   "cases": [
-    {
-      "scenarioId": "H-01",
-      "status": "authored_not_executed",
-      "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
-      "requiredOutcome": "Cumulative episode deadline still escalates and restores useful duty; no infinite explained inactivity",
-      "world": "open",
-      "maximumTick": 4000,
-      "setup": [
-        "Start an actual useful construction or military duty with a recoverable persistent obstruction",
-        "Preserve alternative useful work and record the independently due milestone"
-      ],
-      "actions": [
-        "Keep the obstruction while allowing ordinary retry/next-check updates",
-        "Remove it only after the original episode deadline has forced recovery"
-      ],
-      "measurements": [
-        "Original causal entry/due/deadline, retry history, native progress and worker/squad assignment"
-      ],
-      "required": [
-        "Cumulative deadline escalates despite renewed next-check ticks",
-        "Actors resume useful duty or bounded explicit recovery without global concession"
-      ],
-      "forbidden": [
-        "Fresh retry tick treated as progress",
-        "Explained inactivity accepted forever"
-      ],
-      "branches": [
-        "Persistent blocker",
-        "Blocker clears before deadline",
-        "Another useful duty available"
-      ],
-      "executionBlockers": [
-        "native_case_binding",
-        "decision_history",
-        "construction_history",
-        "route_fault"
-      ],
-      "reuse": [
-        "tools/ai/fixtures/controller-contract-scenarios.json",
-        "apps/portal-e2e/src/e2e/skirmish-ai-construction-worlds.spec.ts"
-      ],
-      "checkpointTicks": [
-        0,
-        20,
-        200,
-        400,
-        800,
-        1200,
-        1600,
-        2000,
-        2400,
-        3000,
-        4000
-      ],
-      "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
-    },
-    {
-      "scenarioId": "H-02",
-      "status": "authored_not_executed",
-      "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
-      "requiredOutcome": "Best-progress/cause tracker detects false progress; renamed plans cannot clear failure age",
-      "world": "open",
-      "maximumTick": 4000,
-      "setup": [
-        "One actor can legally move around a loop without approaching its actual service/mission destination",
-        "Preserve causal purpose while alternate actor/site/plan identities can be chosen normally"
-      ],
-      "actions": [
-        "Keep the real objective blocked while permitting harmless motion and ordinary replanning",
-        "Advance beyond the original due milestone and cumulative deadline"
-      ],
-      "measurements": [
-        "Best validated route/service/objective progress, causal family, plan identity and cumulative blocked age"
-      ],
-      "required": [
-        "False progress and renamed plans do not erase causal age",
-        "Bounded recovery restores a useful job or terminates the infeasible optional purpose"
-      ],
-      "forbidden": [
-        "Distance travelled alone accepted as route progress",
-        "New parent ID resets failure history"
-      ],
-      "branches": [
-        "Circling worker",
-        "Assembly oscillation",
-        "Alternate site/plan with the same failed purpose"
-      ],
-      "executionBlockers": [
-        "native_case_binding",
-        "decision_history",
-        "route_fault"
-      ],
-      "reuse": [
-        "tools/ai/fixtures/controller-contract-scenarios.json"
-      ],
-      "checkpointTicks": [
-        0,
-        20,
-        200,
-        400,
-        800,
-        1200,
-        1600,
-        2000,
-        2400,
-        3000,
-        4000
-      ],
-      "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
-    },
-    {
-      "scenarioId": "H-03",
-      "status": "authored_not_executed",
-      "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
-      "requiredOutcome": "Healthy work is retained with observed progress/expected milestone; watchdog does not repeatedly cancel it",
-      "world": "open",
-      "maximumTick": 4000,
-      "setup": [
-        "Admit normally paid long training, growing crop or a physically long useful journey exceeding 200 ticks",
-        "Freeze independent remaining-work and expected milestone bounds before candidate decisions"
-      ],
-      "actions": [
-        "Allow native work to advance without artificial delay or resource injection",
-        "Continue beyond 200 ticks and through actual completion/arrival/harvest"
-      ],
-      "measurements": [
-        "Native queue remaining time, crop growth or route advancement",
-        "Original obligation identity, cancellation receipts and useful completed effect"
-      ],
-      "required": [
-        "Healthy long work survives the watchdog and produces its original useful effect",
-        "Expected milestone follows actual legitimate work"
-      ],
-      "forbidden": [
-        "Cancelling merely because work exceeds 200 ticks",
-        "Extending fixture deadline from every new planner estimate"
-      ],
-      "branches": [
-        "Long training",
-        "Crop growth",
-        "Long travel",
-        "Truly stalled matched control must still recover"
-      ],
-      "executionBlockers": [
-        "native_case_binding",
-        "decision_history",
-        "construction_history",
-        "route_history"
-      ],
-      "reuse": [
-        "tools/ai/fixtures/controller-contract-scenarios.json",
-        "apps/portal-e2e/src/e2e/skirmish-ai-construction-worlds.spec.ts"
-      ],
-      "checkpointTicks": [
-        0,
-        20,
-        200,
-        400,
-        800,
-        1200,
-        1600,
-        2000,
-        2400,
-        3000,
-        4000
-      ],
-      "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
-    },
-    {
-      "scenarioId": "H-04",
-      "status": "authored_not_executed",
-      "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
-      "requiredOutcome": "Parent deadline still fires; unrelated chores cannot keep it alive",
-      "world": "open",
-      "maximumTick": 4000,
-      "setup": [
-        "Parent income or attack purpose is genuinely stalled",
-        "A separate child can complete unrelated safe gathering or movement repeatedly"
-      ],
-      "actions": [
-        "Let the unrelated child make real progress while retaining the parent obstruction",
-        "Advance through the original parent deadline"
-      ],
-      "measurements": [
-        "Parent objective-linked native effects and child effect identities separately",
-        "Parent cumulative age and eventual reassignment"
-      ],
-      "required": [
-        "Unrelated child progress cannot keep the parent purpose alive",
-        "Parent recovers or closes by its independent deadline"
-      ],
-      "forbidden": [
-        "Any child completion refreshes all ancestors",
-        "Aggregated total income used as proof for a blocked different resource objective"
-      ],
-      "branches": [
-        "Income parent with unrelated resource child",
-        "Attack parent with economy child",
-        "Relevant child progress control"
-      ],
-      "executionBlockers": [
-        "native_case_binding",
-        "decision_history",
-        "route_fault"
-      ],
-      "reuse": [
-        "tools/ai/fixtures/controller-contract-scenarios.json"
-      ],
-      "checkpointTicks": [
-        0,
-        20,
-        200,
-        400,
-        800,
-        1200,
-        1600,
-        2000,
-        2400,
-        3000,
-        4000
-      ],
-      "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
-    },
     {
       "scenarioId": "H-05",
       "status": "authored_not_executed",
@@ -464,11 +249,14 @@
         "native_case_binding",
         "decision_history",
         "receipt_fault",
-        "construction_history"
+        "construction_history",
+        "recovery_binding_h_05"
       ],
       "reuse": [
         "tools/ai/fixtures/controller-contract-scenarios.json",
-        "apps/portal-e2e/src/e2e/skirmish-ai-construction-worlds.spec.ts"
+        "apps/portal-e2e/src/e2e/skirmish-ai-construction-worlds.spec.ts",
+        "tools/ai/native-recovery-worlds.mjs",
+        "apps/portal-e2e/src/e2e/skirmish-ai-native-recovery-evaluation.ts"
       ],
       "checkpointTicks": [
         0,
@@ -1025,58 +813,6 @@
       "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
     },
     {
-      "scenarioId": "H-19",
-      "status": "authored_not_executed",
-      "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
-      "requiredOutcome": "Local permitted defense still executes; query failure cannot freeze the whole brain",
-      "world": "bridge",
-      "maximumTick": 2400,
-      "setup": [
-        "One optional long-distance route query remains unresolved at the actual query service seam",
-        "Nearby visible enemy can be handled by a permitted local defense route"
-      ],
-      "actions": [
-        "Hold only the optional query completion and start the real local attack",
-        "Later reject or complete that original query without changing its generation identity"
-      ],
-      "measurements": [
-        "Pending route identity, complete committed observation generation and native local defense command/effect"
-      ],
-      "required": [
-        "Local permitted defense executes while optional query is pending",
-        "Query failure stays a bounded technical/recovery case rather than global strategic infeasibility"
-      ],
-      "forbidden": [
-        "Whole brain waiting for every path Promise",
-        "Hidden state mixed from partial generations"
-      ],
-      "branches": [
-        "Never completes during defense window",
-        "Late completion",
-        "Explicit service error"
-      ],
-      "executionBlockers": [
-        "native_case_binding",
-        "route_fault",
-        "native_combat"
-      ],
-      "reuse": [
-        "tools/ai/fixtures/controller-contract-scenarios.json"
-      ],
-      "checkpointTicks": [
-        0,
-        20,
-        200,
-        400,
-        800,
-        1200,
-        1600,
-        2000,
-        2400
-      ],
-      "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
-    },
-    {
       "scenarioId": "H-20",
       "status": "authored_not_executed",
       "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
@@ -1114,10 +850,13 @@
         "native_case_binding",
         "route_fault",
         "route_history",
-        "construction_history"
+        "construction_history",
+        "recovery_binding_h_20"
       ],
       "reuse": [
-        "tools/ai/fixtures/controller-contract-scenarios.json"
+        "tools/ai/fixtures/controller-contract-scenarios.json",
+        "tools/ai/native-recovery-worlds.mjs",
+        "apps/portal-e2e/src/e2e/skirmish-ai-native-recovery-evaluation.ts"
       ],
       "checkpointTicks": [
         0,
@@ -1169,10 +908,13 @@
       "executionBlockers": [
         "native_case_binding",
         "route_history",
-        "placement_history"
+        "placement_history",
+        "recovery_binding_h_21"
       ],
       "reuse": [
-        "tools/ai/fixtures/controller-contract-scenarios.json"
+        "tools/ai/fixtures/controller-contract-scenarios.json",
+        "tools/ai/native-recovery-worlds.mjs",
+        "apps/portal-e2e/src/e2e/skirmish-ai-native-recovery-evaluation.ts"
       ],
       "checkpointTicks": [
         0,
@@ -1223,176 +965,13 @@
         "native_case_binding",
         "decision_history",
         "native_combat",
-        "transport_script"
+        "transport_script",
+        "recovery_binding_h_23"
       ],
       "reuse": [
-        "tools/ai/fixtures/stage-13-tactics.json"
-      ],
-      "checkpointTicks": [
-        0,
-        20,
-        200,
-        400,
-        800,
-        1200,
-        1600,
-        2000,
-        2400,
-        3000
-      ],
-      "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
-    },
-    {
-      "scenarioId": "H-24",
-      "status": "authored_not_executed",
-      "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
-      "requiredOutcome": "Bounded useful probe/mission, not permanent assembly or forced suicide",
-      "world": "open",
-      "maximumTick": 3000,
-      "setup": [
-        "Enemy army strength is uncertain under real fog",
-        "Independently feasible low-risk scouting, raid or denial opportunity exists without a favorable full-army comparison"
-      ],
-      "actions": [
-        "Reveal the limited opportunity through permitted contact",
-        "Let AI launch a bounded suitable probe and measure actual effect or gained information"
-      ],
-      "measurements": [
-        "Consumed uncertainty, mission-specific readiness, native arrival and useful information/damage/denial"
-      ],
-      "required": [
-        "Useful limited action proceeds by the original opportunity bound",
-        "Genuine losing survival branch avoids forced suicide"
-      ],
-      "forbidden": [
-        "Global preferred advantage threshold blocks every movement forever",
-        "Hidden enemy strength used to justify departure"
-      ],
-      "branches": [
-        "Safe information probe",
-        "Exposed small raid",
-        "Denial",
-        "No safe useful opportunity control"
-      ],
-      "executionBlockers": [
-        "native_case_binding",
-        "opponent_script",
-        "contact_history",
-        "native_combat"
-      ],
-      "reuse": [
-        "tools/ai/fixtures/stage-13-tactics.json"
-      ],
-      "checkpointTicks": [
-        0,
-        20,
-        200,
-        400,
-        800,
-        1200,
-        1600,
-        2000,
-        2400,
-        3000
-      ],
-      "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
-    },
-    {
-      "scenarioId": "H-25",
-      "status": "authored_not_executed",
-      "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
-      "requiredOutcome": "Detect oscillation, alter objective/force/route and achieve recovery/progress",
-      "world": "bridge",
-      "maximumTick": 4000,
-      "setup": [
-        "One choke supports a recurring observed unfavorable engagement and a distinct useful alternative",
-        "Bind the original squad/purpose and its cumulative failure deadline"
-      ],
-      "actions": [
-        "Opponent repeats the same legal pressure causing retreat/relaunch at that choke",
-        "Continue beyond the recovery escalation threshold without resetting scenario time"
-      ],
-      "measurements": [
-        "Native route/effect history, retreat and relaunch positions, causal family and actual alternate progress"
-      ],
-      "required": [
-        "AI changes force, route or objective and obtains useful recovery/progress by the fixed deadline"
-      ],
-      "forbidden": [
-        "Each retreat or renamed mission credited as progress",
-        "Infinite locally legal oscillation"
-      ],
-      "branches": [
-        "Alternative objective",
-        "Viable changed force",
-        "No alternative requires bounded optional mission closure"
-      ],
-      "executionBlockers": [
-        "native_case_binding",
-        "opponent_script",
-        "decision_history",
-        "native_combat",
-        "route_history"
-      ],
-      "reuse": [
-        "tools/ai/fixtures/stage-13-tactics.json"
-      ],
-      "checkpointTicks": [
-        0,
-        20,
-        200,
-        400,
-        800,
-        1200,
-        1600,
-        2000,
-        2400,
-        3000,
-        4000
-      ],
-      "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
-    },
-    {
-      "scenarioId": "H-26",
-      "status": "authored_not_executed",
-      "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
-      "requiredOutcome": "Reachable grouping/alternate route or stop feeding; preserve useful main-front decision",
-      "world": "bridge",
-      "maximumTick": 3000,
-      "setup": [
-        "Main useful front survives but the direct reinforcement route is independently lethal for isolated units",
-        "Provide reachable grouping point or a safer longer route"
-      ],
-      "actions": [
-        "Complete reinforcements through normally paid queues",
-        "Opponent covers direct route using actual weapons while AI assigns new units"
-      ],
-      "measurements": [
-        "Output identities, route traversal, reinforcement losses and main-front useful effects",
-        "Actual grouping/alternate arrival"
-      ],
-      "required": [
-        "Reinforcements group, take safe route or stop feeding",
-        "Main-front decision remains useful and independently owned"
-      ],
-      "forbidden": [
-        "Repeated one-unit suicide stream",
-        "Safe route inferred without native clearance"
-      ],
-      "branches": [
-        "Grouping point",
-        "Safe alternate",
-        "No safe route",
-        "Threat clears"
-      ],
-      "executionBlockers": [
-        "native_case_binding",
-        "opponent_script",
-        "native_combat",
-        "route_history"
-      ],
-      "reuse": [
-        "tools/ai/fixtures/controller-contract-scenarios.json"
+        "tools/ai/fixtures/stage-13-tactics.json",
+        "tools/ai/native-recovery-worlds.mjs",
+        "apps/portal-e2e/src/e2e/skirmish-ai-native-recovery-evaluation.ts"
       ],
       "checkpointTicks": [
         0,

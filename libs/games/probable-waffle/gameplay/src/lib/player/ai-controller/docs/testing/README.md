@@ -34,7 +34,7 @@ execution evidence separate, and never carry an earlier passing tool/native coun
 
 ### Native scenario bindings and bounded lookup
 
-The44 native bindings use tools/ai/native-scenario-bindings.json for original obligations/branches/ceilings and
+The52 native bindings use tools/ai/native-scenario-bindings.json for original obligations/branches/ceilings and
 native-scenario-registration.mjs to author ordinary matrix fixtures. Existing world layout/world factories own
 construction/scouting/combat inputs; native-strategic-worlds.mjs, native-domain-worlds.mjs and native-classic-worlds.mjs
 own the remaining mission/domain/classic inputs. skirmish-runtime-native-scenario-fixture.mjs refuses source-controlled
@@ -44,7 +44,7 @@ The normal evaluation dispatches through apps/portal-e2e/src/e2e/skirmish-ai-nat
 family reader. Full-case branch/faction comparisons live in skirmish-ai-native-scenario-pairs.ts. Physical hits,
 applied effects, paid output, exact service and original-destination arrivals are distinct from selected claims or
 receipts. Missing/truncated history and ambiguous spell/weapon attribution fail; no complete projectile trace is claimed.
-These44 bindings/278 faction-control variants are authored unrun. Native setup, timing and outcome correctness remain
+These52 bindings/332 faction-control variants are authored unrun. Native setup, timing and outcome correctness remain
 unmeasured until an authorized gate. New recipes must keep unavailable premises separate from AI behavior failures.
 
 Only Tivara offers current ships; real boat landing/escort uses that faction. Native hostile ship cases use the existing
@@ -491,3 +491,10 @@ Detailed requirements are split by concern:
 - [Adversarial and continuous scenarios](adversarial-scenarios.md)
 - [Classic RTS and difficulty scenarios](classic-rts-and-difficulty-scenarios.md)
 - [Debugging scenarios](debugging-scenarios.md)
+
+Recovery bindings H-01–04/H-19/H-24–26 use native-recovery-worlds.mjs and the native recovery/mission readers.
+They require original causal ownership and physical useful effects. Pending/error route faults are finite and
+actor-scoped; pending calls cap at32 and release in original request order or settle null on scene shutdown.
+H-05/H-20/H-21/H-23 remain unbound until original AI receipt uncertainty, post-disposal capture, physical
+unit/formation clearance and indispensable AI cargo ownership have native premises. Static geometry, a human
+scheduled command or scripted passenger membership cannot replace those obligations. All new sources remain unrun.
