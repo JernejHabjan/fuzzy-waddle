@@ -14,6 +14,8 @@ export interface AiRuntimePresetControlV1 {
     | { readonly kind: "move"; readonly worldPosition: Vector3Simple }
     | { readonly kind: "move_to_actor"; readonly targetFixtureActorId: string }
     | { readonly kind: "attack"; readonly targetFixtureActorId: string }
+    | { readonly kind: "board"; readonly targetFixtureActorId: string }
+    | { readonly kind: "unload"; readonly worldPosition: Vector3Simple }
     | { readonly kind: "cast"; readonly spellType: SpellType; readonly targetFixtureActorId: string }
     | { readonly kind: "construct"; readonly actorName: ObjectNames; readonly worldPosition: Vector3Simple }
     | { readonly kind: "cancel_production"; readonly setupQueueIndex: number };

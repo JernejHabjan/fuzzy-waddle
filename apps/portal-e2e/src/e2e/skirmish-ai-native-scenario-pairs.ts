@@ -12,7 +12,9 @@ export function evaluateNativeScenarioPairs(id: string, fixture: RuntimeFixtureV
   if (!contract || contract.scenarioId !== id || contract.latestTick !== definition.latestTick)
     return ["native_case_binding_missing"];
   const failures: string[] = [];
-  const branchesFor = (faction: string) => definition.branches.filter((branch) =>
+  const branchesFor = (faction: string) => ("branchesByFaction" in definition ?
+    Object.entries(definition.branchesByFaction).find(([name]) => name === faction)?.[1] : undefined) ??
+    definition.branches.filter((branch) =>
     !(id === "FIGHT-04" && (branch === "zone" && faction !== "Tivara" || branch === "support_expiry" && faction !== "Skaduwee")) &&
     !(id === "FIGHT-05" && (branch === "stun" && faction !== "Tivara" || branch === "slow" && faction !== "Skaduwee")));
   if (Object.keys(contract.branchByVariant).length !== fixture.recipe.variants.length ||

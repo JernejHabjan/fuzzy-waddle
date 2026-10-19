@@ -1178,6 +1178,790 @@
         "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
         "executionStatus": "authored_not_executed"
       }
+    },
+    "STRAT-02": {
+      "latestTick": 2400,
+      "branches": [
+        "quiet",
+        "air_raid",
+        "boat_raid"
+      ],
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
+        "requiredOutcome": "Allocate limited compatible defense, protect economy and retain main objective; no whole-army recall or ignoring raid",
+        "setup": [
+          "Create a definition-compatible main force of 30 and four home raiders with a real air or supported transport approach",
+          "A smaller compatible home defense is independently sufficient; main target is reachable"
+        ],
+        "actions": [
+          "Let the main force launch and physically engage an expansion",
+          "Bring four raiders into home vision through normal movement or transport and attack workers"
+        ],
+        "measurements": [
+          "Squad membership and main-objective identity before/after contact",
+          "Home losses, defense arrival and continuing main-front useful damage joined to native orders"
+        ],
+        "required": [
+          "A limited compatible force protects the economy",
+          "Main offensive squad retains useful objective progress"
+        ],
+        "forbidden": [
+          "All 30 recalled for a locally manageable raid",
+          "Ignoring actual home losses or crediting a synthetic raid flag"
+        ],
+        "branches": [
+          "No-raid control",
+          "Four air raiders",
+          "Real landing where current content supports it"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      },
+      "branchesByFaction": {
+        "Tivara": [
+          "quiet",
+          "air_raid"
+        ],
+        "Skaduwee": [
+          "quiet",
+          "air_raid",
+          "boat_raid"
+        ]
+      },
+      "capabilityLimits": [
+        "Boat landing is bound only when the human faction is Tivara, whose Sandhold offers CommonBoat. Both factions retain actual armed air-raider branches."
+      ]
+    },
+    "STRAT-03": {
+      "latestTick": 3000,
+      "branches": [
+        "minor",
+        "reinforced",
+        "withdrawn"
+      ],
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
+        "requiredOutcome": "Increase defense, partially/fully recall when needed; old offense commitment cannot lock out survival",
+        "setup": [
+          "Use the STRAT-02 start, same force and initial raid",
+          "Bind native home asset survival and increase raiders enough to overwhelm the independent local defense"
+        ],
+        "actions": [
+          "Launch the main offensive and then reinforce the home raid through legal opponent commands",
+          "Continue through recall or strategic abandonment boundary"
+        ],
+        "measurements": [
+          "Local force suitability, home losses, recall orders and main mission state",
+          "Native movement into defense and reduced hostile damage after intervention"
+        ],
+        "required": [
+          "Defense commitment scales with the serious threat, including recall when necessary",
+          "Obsolete offense ownership releases the required actors"
+        ],
+        "forbidden": [
+          "Fixed four-unit response despite independently lethal threat",
+          "Cosmetic mission state change without arriving defenders"
+        ],
+        "branches": [
+          "Minor raid control reuses STRAT-02",
+          "Reinforced lethal raid",
+          "Threat removed before recall completes"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      }
+    },
+    "STRAT-08": {
+      "latestTick": 18000,
+      "branches": [
+        "exposed",
+        "defended"
+      ],
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000,
+        4000,
+        6000,
+        12000,
+        18000
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
+        "requiredOutcome": "Choose finishing objective and complete ordinary victory/score path; unnecessary farms/upgrades cannot indefinitely delay the win",
+        "setup": [
+          "Normal game mode with a legal reachable opponent core and independently overwhelming compatible force",
+          "Keep the real victory checker and score tracker enabled"
+        ],
+        "actions": [
+          "Reveal the exposed core through legitimate vision",
+          "Let AI choose and execute the finishing mission without forced damage or victory injection"
+        ],
+        "measurements": [
+          "Ordinary attack effects, actual opponent defeat and authoritative win/loss/tie transition"
+        ],
+        "required": [
+          "AI reaches the authoritative win result before the authored horizon",
+          "Optional farms and upgrades do not indefinitely delay finishing"
+        ],
+        "forbidden": [
+          "Treating initial quit score as terminal",
+          "Concession injected by the fixture or victory inferred from unit count"
+        ],
+        "branches": [
+          "Both factions",
+          "Exposed finishing opportunity",
+          "Core temporarily defended before another legal finishing route opens"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      }
+    },
+    "STRAT-09": {
+      "latestTick": 4000,
+      "branches": [
+        "raid",
+        "denial",
+        "unrecoverable",
+        "path_outage"
+      ],
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000,
+        4000
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
+        "requiredOutcome": "Choose an evidenced higher-risk feasible comeback instead of normal booming; do not fabricate hidden knowledge or concede a recoverable match",
+        "setup": [
+          "Behind AI retains one legal raid, denial or all-in recovery route",
+          "Paired mode-correct control has independently confirmed no remaining strategic recovery path"
+        ],
+        "actions": [
+          "Reveal only the evidence needed for the viable risky objective",
+          "In control remove the final recovery capability through normal loss events"
+        ],
+        "measurements": [
+          "Permitted evidence, actual mission feasibility and application",
+          "Technical adapter health separately from strategic mode state"
+        ],
+        "required": [
+          "Recoverable branch attempts evidenced higher-risk useful play",
+          "Only independently unrecoverable mode state permits strategic defeat handling"
+        ],
+        "forbidden": [
+          "Concession caused by route-service failure",
+          "Hidden expansion knowledge or ordinary booming forever despite a finite comeback window"
+        ],
+        "branches": [
+          "Viable raid",
+          "Viable denial/all-in",
+          "Truly unrecoverable mode state",
+          "Technical path outage is not strategic defeat"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      }
+    },
+    "DOMAIN-01": {
+      "latestTick": 2000,
+      "branches": [
+        "irrelevant",
+        "useful_water"
+      ],
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
+        "requiredOutcome": "No naval demand solely from water existence",
+        "setup": [
+          "Water is physically present but no valuable coast, transport need, hostile ship or useful water route exists",
+          "Land economy and opponent remain feasible"
+        ],
+        "actions": [
+          "Advance ordinary land decisions without adding a water objective"
+        ],
+        "measurements": [
+          "Consumed catalog, actual water topology, selected naval demands and native queue/construction spend"
+        ],
+        "required": [
+          "No naval purchase is caused solely by water existence",
+          "Useful land work continues"
+        ],
+        "forbidden": [
+          "Naval demand hidden by a missing observation adapter",
+          "Passing because no decisions ran"
+        ],
+        "branches": [
+          "No water utility",
+          "Positive useful-water control uses DOMAIN-02",
+          "Both supported faction catalogs"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      },
+      "branchesByFaction": {
+        "Tivara": [
+          "irrelevant",
+          "useful_water"
+        ],
+        "Skaduwee": [
+          "irrelevant"
+        ]
+      }
+    },
+    "DOMAIN-02": {
+      "latestTick": 3000,
+      "branches": [
+        "coast",
+        "intercept",
+        "escort",
+        "unreachable",
+        "unsupported"
+      ],
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
+        "requiredOutcome": "Select mission-specific useful fleet; reject unreachable/irrelevant water regions. Water-based economy variant only when an actual or explicitly synthetic fixture supplies that mechanic",
+        "setup": [
+          "Select only actual current-content producers, ships and weapons capable of the required water mission",
+          "Provide a verified connected water route and valuable coast/hostile ship; retain land bases"
+        ],
+        "actions": [
+          "Legally reveal the water objective",
+          "Let AI invest and physically execute escort, interception or coastal attack through shared commands"
+        ],
+        "measurements": [
+          "Native connected water path, actual producer charge, ship creation and target-compatible damage or protected transit"
+        ],
+        "required": [
+          "Fleet investment delivers the selected mission value",
+          "Unreachable water regions do not justify purchases"
+        ],
+        "forbidden": [
+          "Invented fishing mechanic or carrier capability",
+          "Ship count without useful arrival/effect"
+        ],
+        "branches": [
+          "Coastal attack",
+          "Hostile ship interception",
+          "Escort if supported",
+          "Unreachable or irrelevant water control"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      },
+      "branchesByFaction": {
+        "Tivara": [
+          "coast",
+          "intercept",
+          "escort",
+          "unreachable"
+        ],
+        "Skaduwee": [
+          "unsupported"
+        ]
+      },
+      "capabilityLimits": [
+        "Only Sandhold offers CommonBoat/VikingBoat; FrostForge has no ship output. Skaduwee must explicitly expose and respect this missing capability. No fishing or island economy is claimed."
+      ]
+    },
+    "DOMAIN-05": {
+      "latestTick": 3000,
+      "branches": [
+        "backline",
+        "anti_air",
+        "no_value"
+      ],
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
+        "requiredOutcome": "Choose air when travel/target value makes it useful; paired strong anti-air/no useful objective rejects excessive investment",
+        "setup": [
+          "Resolve legal air capability and actual anti-air weapons from each faction catalog",
+          "Exposed valuable backline has a reachable air route; control adds observed compatible anti-air"
+        ],
+        "actions": [
+          "Reveal objective and defense through fair contact",
+          "Let normal production and mission selection respond"
+        ],
+        "measurements": [
+          "Target-specific weapon domains, actual paid air output, flight route and addressed useful damage",
+          "Compare excess investment against anti-air/no-value controls"
+        ],
+        "required": [
+          "Useful air mission is selected when travel and objective value justify it",
+          "Strong anti-air or no valuable target prevents excessive investment"
+        ],
+        "forbidden": [
+          "Ranged weapon assumed anti-air without capability",
+          "Ground walls credited as stopping flight"
+        ],
+        "branches": [
+          "Useful backline",
+          "Strong observed anti-air",
+          "No valuable air objective",
+          "Unsupported faction branch is explicit capability failure"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      }
+    },
+    "RAID-03": {
+      "latestTick": 3000,
+      "branches": [
+        "air_raid",
+        "boat_raid",
+        "reinforced",
+        "quiet"
+      ],
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
+        "requiredOutcome": "Exercise STRAT-02/03 through real landing/visibility/combat, not only an injected threat flag",
+        "setup": [
+          "Use STRAT-02/03 offense and measured local defense setup",
+          "Bind enemy air raiders or actual carrier and passenger identities outside home vision"
+        ],
+        "actions": [
+          "Move air raiders or board, sail and unload actual passengers through normal commands",
+          "Require actual landing/visibility before scoring defense; reinforce into serious threat branch"
+        ],
+        "measurements": [
+          "Carrier/passenger native lifecycle or air traversal, first legal contact, combat and home income",
+          "Main-front continuity and scaling recall"
+        ],
+        "required": [
+          "Minor raid gets limited defense and serious raid gets sufficient recall",
+          "Landing branch proves physical unload before threat response"
+        ],
+        "forbidden": [
+          "Preset actors appearing at home at the raid tick",
+          "Injected threat boolean standing in for travel or landing"
+        ],
+        "branches": [
+          "Air-delivered minor raid",
+          "Supported boat landing",
+          "Reinforced lethal raid",
+          "No-raid control"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      },
+      "branchesByFaction": {
+        "Tivara": [
+          "air_raid",
+          "reinforced",
+          "quiet"
+        ],
+        "Skaduwee": [
+          "air_raid",
+          "boat_raid",
+          "reinforced",
+          "quiet"
+        ]
+      },
+      "capabilityLimits": [
+        "Boat landing is bound only when the human faction is Tivara, whose Sandhold offers CommonBoat. Both factions retain actual armed air-raider branches."
+      ]
+    },
+    "C-01": {
+      "latestTick": 4000,
+      "branches": [
+        "retain",
+        "obsolete"
+      ],
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000,
+        4000
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/classic-rts-and-difficulty-scenarios.md",
+        "requiredOutcome": "Both faction branches preserve completed assets/commitments during evidence-backed transition; no opening restart spam",
+        "setup": [
+          "Each faction has completed opening assets and useful paid/in-flight commitments",
+          "An actual observed threat/technology change justifies an archetype or phase transition"
+        ],
+        "actions": [
+          "Reveal the new evidence normally and let strategic transition occur",
+          "Continue through completion or lawful cancellation of old commitments"
+        ],
+        "measurements": [
+          "Opening plan and completed asset identities, transition reason, original queue/site linkage and useful effects"
+        ],
+        "required": [
+          "Both factions retain useful existing assets/commitments during evidence-backed transition",
+          "Opening does not restart to purchase duplicate essentials"
+        ],
+        "forbidden": [
+          "New phase ID interpreted as a fresh economy start",
+          "Artificially ignoring sunk paid work"
+        ],
+        "branches": [
+          "Both factions",
+          "Useful old work survives",
+          "Truly obsolete optional work cancels through real authority"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      }
+    },
+    "C-02": {
+      "latestTick": 4000,
+      "branches": [
+        "upgrade_ready",
+        "window_closed",
+        "optional_delayed"
+      ],
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000,
+        4000
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/classic-rts-and-difficulty-scenarios.md",
+        "requiredOutcome": "Upgrade/batch timing launches within the viable window, or explicitly changes plan when it closes; no perfect-roster wait",
+        "setup": [
+          "A viable attack window has a fixed close tick and actual priced upgrade/batch work near completion",
+          "Force readiness distinguishes indispensable capability from optional ideal roster"
+        ],
+        "actions": [
+          "Let native upgrade/production complete or deliberately let the opponent close the window through ordinary reinforcements",
+          "Continue through launch or explicit changed mission"
+        ],
+        "measurements": [
+          "Original opportunity interval, real research/output completion and native departure/engagement",
+          "Paid-work retention/cancellation costs"
+        ],
+        "required": [
+          "Launch uses the viable timing window when readiness permits",
+          "Closed window triggers a new feasible plan rather than indefinite perfect-roster assembly"
+        ],
+        "forbidden": [
+          "Window extended from current planner estimate",
+          "Upgrade queued label treated as completed combat benefit"
+        ],
+        "branches": [
+          "Upgrade completes in time",
+          "Window closes first",
+          "Optional unit delayed"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      }
+    },
+    "C-03": {
+      "latestTick": 4000,
+      "branches": [
+        "deficit",
+        "fulfilled",
+        "paid_queue",
+        "need_removed"
+      ],
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000,
+        4000
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/classic-rts-and-difficulty-scenarios.md",
+        "requiredOutcome": "Army total grows with useful affordable mission demand, respects worker/supply obligations and stops at fulfilled demand",
+        "setup": [
+          "Actual dated mission demand requires repeated copies beyond an initial useful force",
+          "Enough delivered resources exist after independently priced worker and supply obligations"
+        ],
+        "actions": [
+          "Let normal production fill the demand and physically rally useful units",
+          "Remove or fulfill the mission need, then observe a full no-excess window"
+        ],
+        "measurements": [
+          "Native charges/output identities, worker/supply recovery obligations and final queue/site occupancy",
+          "Useful mission effect of additional copies"
+        ],
+        "required": [
+          "Army grows by useful affordable demand rather than per-type uniqueness",
+          "Fulfilled demand stops unnecessary new spending without starving essentials"
+        ],
+        "forbidden": [
+          "Military count cap invented to prevent legal duplicates",
+          "Empty producer copies",
+          "New demand ID bypasses fulfilled accounting"
+        ],
+        "branches": [
+          "Both factions",
+          "Deficit",
+          "Already fulfilled control",
+          "Seeded paid queue control",
+          "Demand disappears"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      }
+    },
+    "C-04": {
+      "latestTick": 3000,
+      "branches": [
+        "answered",
+        "repeated",
+        "distinct",
+        "irrelevant"
+      ],
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/classic-rts-and-difficulty-scenarios.md",
+        "requiredOutcome": "Question-driven scouting changes a real decision; repeated reading of the same contact does not inflate enemy mass/confidence",
+        "setup": [
+          "One explicit uncertainty affects a real target/counter/access decision",
+          "Same enemy contact remains visible for many decisions without additional actual enemy actors"
+        ],
+        "actions": [
+          "Let normal scout answer the question with a new native observation",
+          "Continue repeated reads of the unchanged contact and then make a second distinct contact"
+        ],
+        "measurements": [
+          "Scout question/source evidence, exact observed identities and confidence",
+          "Subsequent changed native order and stable enemy mass under duplicate reads"
+        ],
+        "required": [
+          "Information answers a relevant question and changes a real decision",
+          "Repeated reading cannot multiply enemy count or increase freshness/confidence without new evidence"
+        ],
+        "forbidden": [
+          "Counting observation rows as new units",
+          "Scouting label with no decision consequence"
+        ],
+        "branches": [
+          "Useful question answered",
+          "Repeated same contact",
+          "Distinct new enemy",
+          "No relevant information control"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      }
+    },
+    "C-05": {
+      "latestTick": 3000,
+      "branches": [
+        "bait",
+        "valuable",
+        "won_battle",
+        "unsafe"
+      ],
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/classic-rts-and-difficulty-scenarios.md",
+        "requiredOutcome": "Bait retreat cannot pull asset defenders into a bad pursuit; won battle creates useful follow-up pressure",
+        "setup": [
+          "Home defenders protect a valuable active economic asset",
+          "A low-value enemy bait can retreat beyond a dangerous leash while a useful post-battle objective remains reachable"
+        ],
+        "actions": [
+          "Run real bait contact and retreat through ordinary commands",
+          "Separately let defenders win a favorable battle and observe the following mission"
+        ],
+        "measurements": [
+          "Protected asset service/survival, pursuit route/leash and native losses",
+          "Winning engagement followed by actual useful pressure"
+        ],
+        "required": [
+          "Bait does not pull essential defenders into a bad pursuit",
+          "Won battle creates suitable useful follow-up while preserving home need"
+        ],
+        "forbidden": [
+          "Stopping all army activity counted as bait safety",
+          "Follow-up trace without travel/effect"
+        ],
+        "branches": [
+          "Bait retreat",
+          "Genuine valuable retreating target",
+          "Won battle with useful follow-up",
+          "No safe follow-up control"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      }
+    },
+    "C-06": {
+      "latestTick": 4000,
+      "branches": [
+        "defeated",
+        "allied_control",
+        "local_threat"
+      ],
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000,
+        4000
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/classic-rts-and-difficulty-scenarios.md",
+        "requiredOutcome": "Multiple opponents retain coherent mission focus; diplomacy/defeat cleanly retargets without ignoring local threats",
+        "setup": [
+          "Three or more ordinary supported players have real diplomacy and defeat state",
+          "AI has a coherent offensive focus and a distinct local defensive threat"
+        ],
+        "actions": [
+          "Defeat or change relation of the focused opponent through the authoritative game path",
+          "Keep another legal opponent and local threat present"
+        ],
+        "measurements": [
+          "Player relations, actual defeat result, target ownership and squad/objective continuity",
+          "Native retarget and local defense effects"
+        ],
+        "required": [
+          "Invalid former enemy focus releases cleanly and remaining opponents receive coherent useful focus",
+          "Local threats remain serviced"
+        ],
+        "forbidden": [
+          "Attacking allied/defeated owner",
+          "Switching whole army between every opponent each tick"
+        ],
+        "branches": [
+          "Focused opponent defeated",
+          "Supported diplomacy transition",
+          "Remaining opponent presents local threat"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      },
+      "capabilityLimits": [
+        "Current relation authority uses player-definition teams; there is no in-match diplomacy command. Initial allied-team control is bound; dynamic diplomacy transition remains unsupported, not passed. Native defeat/retargeting uses the real three-spawn AI Multiplayer map."
+      ]
     }
   }
 }

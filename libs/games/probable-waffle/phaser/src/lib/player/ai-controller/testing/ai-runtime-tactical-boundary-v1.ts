@@ -9,6 +9,8 @@ export interface AiRuntimeTacticalBoundaryV1 {
   readonly informationPolicy: string;
   readonly snapshotRestoreInProgress: boolean;
   readonly gaps: readonly string[];
+  /** Actual public team/defeat state; used only to audit mission retargeting. */
+  readonly players?: readonly { readonly playerNumber: number; readonly team: number; readonly defeated: boolean }[];
   readonly actors: readonly {
     readonly identity: AiRuntimeCreatedActorV1;
     readonly tile: Vector2Simple | null;
@@ -16,6 +18,9 @@ export interface AiRuntimeTacticalBoundaryV1 {
     readonly health: number | null;
     readonly armour: number | null;
     readonly combat: AiObservedActorV1["combatProfile"];
+    /** Exact native transport membership at this decision boundary; missing legacy data cannot prove a landing. */
+    readonly containerId?: string | null;
+    readonly passengerIds?: readonly string[];
   }[];
   readonly searchPoints: readonly { readonly pointId: string; readonly tile: Vector2Simple; readonly visible: boolean }[];
   readonly rememberedCoverage: readonly {

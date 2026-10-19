@@ -8,5 +8,6 @@ export function validNativeScenarioFixture(fixture, scenarioId) {
   const expected = nativeScenarioFixture(scenarioId);
   return fixture.schemaVersion === 1 && fixture.driver === "runtime" && fixture.evidenceKind === "runtime" &&
     isDeepStrictEqual(fixture.scenarioIds, [scenarioId]) && isDeepStrictEqual(fixture.recipe, expected.recipe) &&
-    isDeepStrictEqual(fixture.assertions, expected.assertions) && isDeepStrictEqual(fixture.acceptance, expected.acceptance);
+    isDeepStrictEqual(fixture.assertions, expected.assertions) && isDeepStrictEqual(fixture.acceptance, expected.acceptance) &&
+    isDeepStrictEqual(fixture.capabilityLimits, expected.capabilityLimits);
 }

@@ -34,23 +34,35 @@ execution evidence separate, and never carry an earlier passing tool/native coun
 
 ### Native scenario bindings and bounded lookup
 
-The30 additional registrations use tools/ai/native-scenario-bindings.json for original obligations/branch ceilings,
-native-scenario-world-layout.mjs and native-scenario-worlds.mjs for native setup/controls, and
-native-scenario-registration.mjs to author ordinary matrix fixtures. skirmish-runtime-native-scenario-fixture.mjs refuses
-source-controlled recipe/assertion drift. The normal runtime evaluation dispatches through
-apps/portal-e2e/src/e2e/skirmish-ai-native-scenario-evaluation.ts to the selected family's native reader; full-case pairs
-live in skirmish-ai-native-scenario-pairs.ts. Read the selected ID and reader instead of all fixture JSON or raw records.
+The44 native bindings use tools/ai/native-scenario-bindings.json for original obligations/branches/ceilings and
+native-scenario-registration.mjs to author ordinary matrix fixtures. Existing world layout/world factories own
+construction/scouting/combat inputs; native-strategic-worlds.mjs, native-domain-worlds.mjs and native-classic-worlds.mjs
+own the remaining mission/domain/classic inputs. skirmish-runtime-native-scenario-fixture.mjs refuses source-controlled
+recipe/assertion drift. Read only the selected ID and its factory, not every generated fixture.
 
-These bindings are authored, unrun. The30 IDs contain194 faction/control variants; branches need native premise and
-outcome evidence at the later authorized gate. Concrete coordinates and fixed ceilings are not measured successes.
-Missing geometry, stale/overflowed history, unsupported capability or ambiguous impact cannot pass. Spell-specific
-branches explicitly select factions with the actual capability; island content is not covered by land controls.
+The normal evaluation dispatches through apps/portal-e2e/src/e2e/skirmish-ai-native-scenario-evaluation.ts to the selected
+family reader. Full-case branch/faction comparisons live in skirmish-ai-native-scenario-pairs.ts. Physical hits,
+applied effects, paid output, exact service and original-destination arrivals are distinct from selected claims or
+receipts. Missing/truncated history and ambiguous spell/weapon attribution fail; no complete projectile trace is claimed.
+These44 bindings/278 faction-control variants are authored unrun. Native setup, timing and outcome correctness remain
+unmeasured until an authorized gate. New recipes must keep unavailable premises separate from AI behavior failures.
 
-Existing captureCombat separately opts into bounded native operation/sight samples. They are oracle-only and share
-existing capture lifetime/fact limits. Physical hits, applied heals/status and original-destination arrivals are distinct
-from selected claims or command receipts. Weapon attribution refuses ambiguous spell/weapon joins; no complete native
-projectile identity trace is claimed. Initial health/terrain/source fixtures are setup, not earned gameplay effects.
-Raw proof stays local; use the existing maximum8192-byte model-facing summary, then narrow projections only as needed.
+Only Tivara offers current ships; real boat landing/escort uses that faction. Native hostile ship cases use the existing
+three-spawn map and a third Tivara opponent through the ordinary lobby, never a foreign prefab or synthesized player.
+Initial team and actual defeat support retargeting; no in-match diplomacy command exists. Recipes retain that explicit
+unsupported limit instead of claiming a dynamic diplomacy transition. Island content remains outside these land controls.
+
+Board/unload controls use normal shared commands. Optional routeOutages are finite original-actor query faults, applied
+only after navigation readiness; an actual interception result is required. Expiry/shutdown restores owned methods and
+fences retained wrappers without overwriting later hooks. Faults neither corrupt geometry nor establish strategic defeat.
+Early finishing accepts only an authoritative score win with its actual tick sealed in both native histories; generic
+history checks retain the full declared horizon. Paid output and physical arrival may not borrow post-horizon events.
+
+Explicit captureCombat retains bounded oracle-only sight, transport/team state and native operations in the existing
+observer. Initial houses/unarmed carriers join lifetime proof only under that explicit combat capture.
+Ordinary gameplay receives no fault hook or combat listener. Additional opponent reads omit the shared recipient
+ledger retained once by the AI record. Raw proof stays local; use the existing maximum8192-byte model-facing summary,
+then narrow projections only when needed. No LLM evaluates raw reports or decides whether an assertion passes.
 
 ### Native construction and continuation bindings
 

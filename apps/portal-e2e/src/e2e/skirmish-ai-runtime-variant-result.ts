@@ -24,6 +24,8 @@ export interface RuntimeVariantResultV1 {
   readonly productionCapture?: AiRuntimeProductionCaptureV1;
   /** Only explicitly bound cases retain the opponent's closed native history; never supplied to the AI. */
   readonly opponentCapture?: AiRuntimeProductionCaptureV1;
+  /** Extra real lobby opponents share the same observer, clock and fact budget. */
+  readonly otherOpponentCaptures?: readonly AiRuntimeProductionCaptureV1[];
   /** Checked AI intent/authority lineage with unresolved gaps; never substitutes for full productionEvidence. */
   readonly productionCausality?: RuntimeProductionCausalityV1;
   /** Retained diagnostic failures when the duplicate normalized payload is omitted beside full raw/V2 authority. */

@@ -1,0 +1,6065 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "runtime",
+  "driver": "runtime",
+  "scenarioIds": [
+    "STRAT-03"
+  ],
+  "status": "authored_not_executed",
+  "purpose": "Increase defense, partially/fully recall when needed; old offense commitment cannot lock out survival",
+  "acceptance": {
+    "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
+    "requiredOutcome": "Increase defense, partially/fully recall when needed; old offense commitment cannot lock out survival",
+    "setup": [
+      "Use the STRAT-02 start, same force and initial raid",
+      "Bind native home asset survival and increase raiders enough to overwhelm the independent local defense"
+    ],
+    "actions": [
+      "Launch the main offensive and then reinforce the home raid through legal opponent commands",
+      "Continue through recall or strategic abandonment boundary"
+    ],
+    "measurements": [
+      "Local force suitability, home losses, recall orders and main mission state",
+      "Native movement into defense and reduced hostile damage after intervention"
+    ],
+    "required": [
+      "Defense commitment scales with the serious threat, including recall when necessary",
+      "Obsolete offense ownership releases the required actors"
+    ],
+    "forbidden": [
+      "Fixed four-unit response despite independently lethal threat",
+      "Cosmetic mission state change without arriving defenders"
+    ],
+    "branches": [
+      "Minor raid control reuses STRAT-02",
+      "Reinforced lethal raid",
+      "Threat removed before recall completes"
+    ],
+    "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+    "executionStatus": "authored_not_executed"
+  },
+  "recipe": {
+    "mapLabel": "AI Open Economy (test only)",
+    "aiPlayerNumber": 2,
+    "simulationTimeScale": 1,
+    "fixedStepFrames": true,
+    "checkpointTicks": [
+      20,
+      200,
+      400,
+      800,
+      1200,
+      1600,
+      2000,
+      2400,
+      3000
+    ],
+    "variants": [
+      {
+        "id": "strat-03-tivara-minor",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "STRAT-03"
+        ],
+        "presetWorld": {
+          "fixtureId": "strat-03-tivara-minor",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "worker-0",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 352,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-7",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-house",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 1008,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -32,
+                "y": 1072,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 1088,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "scout-probe",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -224,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ranged-probe",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "support-probe",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-producer",
+              "actorName": "InfantryInn",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 496,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-deposit",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -320,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -544,
+                "y": 816,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-worker",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": -448,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-0",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -32,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-2",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-3",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 32,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-4",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -96,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-5",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-6",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -32,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-7",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-8",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -128,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-9",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -96,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-10",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-11",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -32,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-12",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -160,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-13",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -128,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-14",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -96,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-15",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-16",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -192,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-17",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -160,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-18",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -128,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-19",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -96,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-20",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -224,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-21",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -192,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-22",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -160,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-23",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -128,
+                "y": 992,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-24",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-25",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-26",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 512,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-27",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-28",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-29",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "reserve-house-0",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 1168,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "reserve-house-1",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 288,
+                "y": 1232,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "reserve-house-2",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 160,
+                "y": 1296,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "reserve-house-3",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 32,
+                "y": 1360,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "main-target",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -416,
+                "y": 752,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-bait",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": 288,
+                "y": 400,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raider-0",
+              "actorName": "SkaduweeOwl",
+              "owner": 1,
+              "position": {
+                "x": 0,
+                "y": 160,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raider-1",
+              "actorName": "SkaduweeOwl",
+              "owner": 1,
+              "position": {
+                "x": 32,
+                "y": 176,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raider-2",
+              "actorName": "SkaduweeOwl",
+              "owner": 1,
+              "position": {
+                "x": 64,
+                "y": 192,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raider-3",
+              "actorName": "SkaduweeOwl",
+              "owner": 1,
+              "position": {
+                "x": 96,
+                "y": 208,
+                "z": 0
+              }
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "original-home",
+              "actorName": "Sandhold",
+              "owner": 2
+            },
+            {
+              "fixtureActorId": "enemy-home",
+              "actorName": "FrostForge",
+              "owner": 1
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            {
+              "playerNumber": 1,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            },
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            }
+          ],
+          "controls": [
+            {
+              "id": "raid-arrive-0",
+              "producerFixtureActorId": "raider-0",
+              "requestTick": 400,
+              "applicationTick": 400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 416,
+                  "y": 816,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-attack-0",
+              "producerFixtureActorId": "raider-0",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "worker-0"
+              }
+            },
+            {
+              "id": "raid-arrive-1",
+              "producerFixtureActorId": "raider-1",
+              "requestTick": 400,
+              "applicationTick": 400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 416,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-attack-1",
+              "producerFixtureActorId": "raider-1",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "worker-1"
+              }
+            },
+            {
+              "id": "raid-arrive-2",
+              "producerFixtureActorId": "raider-2",
+              "requestTick": 400,
+              "applicationTick": 400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 352,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-attack-2",
+              "producerFixtureActorId": "raider-2",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "worker-2"
+              }
+            },
+            {
+              "id": "raid-arrive-3",
+              "producerFixtureActorId": "raider-3",
+              "requestTick": 400,
+              "applicationTick": 400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 448,
+                  "y": 832,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-attack-3",
+              "producerFixtureActorId": "raider-3",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "worker-3"
+              }
+            }
+          ],
+          "events": [],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "enemy-worker",
+              "sourceFixtureActorId": "enemy-source",
+              "kind": "gather"
+            }
+          ],
+          "protectedRoutes": [],
+          "terrainPatches": []
+        }
+      },
+      {
+        "id": "strat-03-tivara-reinforced",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "STRAT-03"
+        ],
+        "presetWorld": {
+          "fixtureId": "strat-03-tivara-reinforced",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "worker-0",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 352,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-7",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-house",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 1008,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -32,
+                "y": 1072,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 1088,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "scout-probe",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -224,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ranged-probe",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "support-probe",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-producer",
+              "actorName": "InfantryInn",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 496,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-deposit",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -320,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -544,
+                "y": 816,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-worker",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": -448,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-0",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -32,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-2",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-3",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 32,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-4",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -96,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-5",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-6",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -32,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-7",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-8",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -128,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-9",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -96,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-10",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-11",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -32,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-12",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -160,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-13",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -128,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-14",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -96,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-15",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-16",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -192,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-17",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -160,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-18",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -128,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-19",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -96,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-20",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -224,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-21",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -192,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-22",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -160,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-23",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -128,
+                "y": 992,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-24",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-25",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-26",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 512,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-27",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-28",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-29",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "reserve-house-0",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 1168,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "reserve-house-1",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 288,
+                "y": 1232,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "reserve-house-2",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 160,
+                "y": 1296,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "reserve-house-3",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 32,
+                "y": 1360,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "main-target",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -416,
+                "y": 752,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-bait",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": 288,
+                "y": 400,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raider-0",
+              "actorName": "SkaduweeOwl",
+              "owner": 1,
+              "position": {
+                "x": 0,
+                "y": 160,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raider-1",
+              "actorName": "SkaduweeOwl",
+              "owner": 1,
+              "position": {
+                "x": 32,
+                "y": 176,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raider-2",
+              "actorName": "SkaduweeOwl",
+              "owner": 1,
+              "position": {
+                "x": 64,
+                "y": 192,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raider-3",
+              "actorName": "SkaduweeOwl",
+              "owner": 1,
+              "position": {
+                "x": 96,
+                "y": 208,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-0",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -128,
+                "y": 256,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-1",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -96,
+                "y": 272,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-2",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -64,
+                "y": 288,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-3",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -32,
+                "y": 304,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-4",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 272,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-5",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -128,
+                "y": 288,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-6",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -96,
+                "y": 304,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-7",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -64,
+                "y": 320,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-8",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -192,
+                "y": 288,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-9",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 304,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-10",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -128,
+                "y": 320,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-11",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -96,
+                "y": 336,
+                "z": 0
+              }
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "original-home",
+              "actorName": "Sandhold",
+              "owner": 2
+            },
+            {
+              "fixtureActorId": "enemy-home",
+              "actorName": "FrostForge",
+              "owner": 1
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            {
+              "playerNumber": 1,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            },
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            }
+          ],
+          "controls": [
+            {
+              "id": "raid-arrive-0",
+              "producerFixtureActorId": "raider-0",
+              "requestTick": 400,
+              "applicationTick": 400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 416,
+                  "y": 816,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-attack-0",
+              "producerFixtureActorId": "raider-0",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "worker-0"
+              }
+            },
+            {
+              "id": "raid-arrive-1",
+              "producerFixtureActorId": "raider-1",
+              "requestTick": 400,
+              "applicationTick": 400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 416,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-attack-1",
+              "producerFixtureActorId": "raider-1",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "worker-1"
+              }
+            },
+            {
+              "id": "raid-arrive-2",
+              "producerFixtureActorId": "raider-2",
+              "requestTick": 400,
+              "applicationTick": 400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 352,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-attack-2",
+              "producerFixtureActorId": "raider-2",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "worker-2"
+              }
+            },
+            {
+              "id": "raid-arrive-3",
+              "producerFixtureActorId": "raider-3",
+              "requestTick": 400,
+              "applicationTick": 400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 448,
+                  "y": 832,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-attack-3",
+              "producerFixtureActorId": "raider-3",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "worker-3"
+              }
+            },
+            {
+              "id": "raid-reinforce-0",
+              "producerFixtureActorId": "raid-reinforcement-0",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-1",
+              "producerFixtureActorId": "raid-reinforcement-1",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-2",
+              "producerFixtureActorId": "raid-reinforcement-2",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-3",
+              "producerFixtureActorId": "raid-reinforcement-3",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-4",
+              "producerFixtureActorId": "raid-reinforcement-4",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-5",
+              "producerFixtureActorId": "raid-reinforcement-5",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-6",
+              "producerFixtureActorId": "raid-reinforcement-6",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-7",
+              "producerFixtureActorId": "raid-reinforcement-7",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-8",
+              "producerFixtureActorId": "raid-reinforcement-8",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-9",
+              "producerFixtureActorId": "raid-reinforcement-9",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-10",
+              "producerFixtureActorId": "raid-reinforcement-10",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-11",
+              "producerFixtureActorId": "raid-reinforcement-11",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            }
+          ],
+          "events": [],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "enemy-worker",
+              "sourceFixtureActorId": "enemy-source",
+              "kind": "gather"
+            }
+          ],
+          "protectedRoutes": [],
+          "terrainPatches": []
+        }
+      },
+      {
+        "id": "strat-03-tivara-withdrawn",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "STRAT-03"
+        ],
+        "presetWorld": {
+          "fixtureId": "strat-03-tivara-withdrawn",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "worker-0",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 352,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-7",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-house",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 1008,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -32,
+                "y": 1072,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 1088,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "scout-probe",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -224,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ranged-probe",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "support-probe",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-producer",
+              "actorName": "InfantryInn",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 496,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-deposit",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -320,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -544,
+                "y": 816,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-worker",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": -448,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-0",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -32,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-2",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-3",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 32,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-4",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -96,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-5",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-6",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -32,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-7",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-8",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -128,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-9",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -96,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-10",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-11",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -32,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-12",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -160,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-13",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -128,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-14",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -96,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-15",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-16",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -192,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-17",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -160,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-18",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -128,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-19",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -96,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-20",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -224,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-21",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -192,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-22",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -160,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-23",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": -128,
+                "y": 992,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-24",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-25",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-26",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 512,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-27",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-28",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-29",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "reserve-house-0",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 1168,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "reserve-house-1",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 288,
+                "y": 1232,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "reserve-house-2",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 160,
+                "y": 1296,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "reserve-house-3",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 32,
+                "y": 1360,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "main-target",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -416,
+                "y": 752,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-bait",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": 288,
+                "y": 400,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raider-0",
+              "actorName": "SkaduweeOwl",
+              "owner": 1,
+              "position": {
+                "x": 0,
+                "y": 160,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raider-1",
+              "actorName": "SkaduweeOwl",
+              "owner": 1,
+              "position": {
+                "x": 32,
+                "y": 176,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raider-2",
+              "actorName": "SkaduweeOwl",
+              "owner": 1,
+              "position": {
+                "x": 64,
+                "y": 192,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raider-3",
+              "actorName": "SkaduweeOwl",
+              "owner": 1,
+              "position": {
+                "x": 96,
+                "y": 208,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-0",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -128,
+                "y": 256,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-1",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -96,
+                "y": 272,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-2",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -64,
+                "y": 288,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-3",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -32,
+                "y": 304,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-4",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 272,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-5",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -128,
+                "y": 288,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-6",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -96,
+                "y": 304,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-7",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -64,
+                "y": 320,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-8",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -192,
+                "y": 288,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-9",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 304,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-10",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -128,
+                "y": 320,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-11",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -96,
+                "y": 336,
+                "z": 0
+              }
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "original-home",
+              "actorName": "Sandhold",
+              "owner": 2
+            },
+            {
+              "fixtureActorId": "enemy-home",
+              "actorName": "FrostForge",
+              "owner": 1
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            {
+              "playerNumber": 1,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            },
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            }
+          ],
+          "controls": [
+            {
+              "id": "raid-arrive-0",
+              "producerFixtureActorId": "raider-0",
+              "requestTick": 400,
+              "applicationTick": 400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 416,
+                  "y": 816,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-attack-0",
+              "producerFixtureActorId": "raider-0",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "worker-0"
+              }
+            },
+            {
+              "id": "raid-arrive-1",
+              "producerFixtureActorId": "raider-1",
+              "requestTick": 400,
+              "applicationTick": 400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 416,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-attack-1",
+              "producerFixtureActorId": "raider-1",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "worker-1"
+              }
+            },
+            {
+              "id": "raid-arrive-2",
+              "producerFixtureActorId": "raider-2",
+              "requestTick": 400,
+              "applicationTick": 400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 352,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-attack-2",
+              "producerFixtureActorId": "raider-2",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "worker-2"
+              }
+            },
+            {
+              "id": "raid-arrive-3",
+              "producerFixtureActorId": "raider-3",
+              "requestTick": 400,
+              "applicationTick": 400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 448,
+                  "y": 832,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-attack-3",
+              "producerFixtureActorId": "raider-3",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "worker-3"
+              }
+            },
+            {
+              "id": "raid-reinforce-0",
+              "producerFixtureActorId": "raid-reinforcement-0",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-1",
+              "producerFixtureActorId": "raid-reinforcement-1",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-2",
+              "producerFixtureActorId": "raid-reinforcement-2",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-3",
+              "producerFixtureActorId": "raid-reinforcement-3",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-4",
+              "producerFixtureActorId": "raid-reinforcement-4",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-5",
+              "producerFixtureActorId": "raid-reinforcement-5",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-6",
+              "producerFixtureActorId": "raid-reinforcement-6",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-7",
+              "producerFixtureActorId": "raid-reinforcement-7",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-8",
+              "producerFixtureActorId": "raid-reinforcement-8",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-9",
+              "producerFixtureActorId": "raid-reinforcement-9",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-10",
+              "producerFixtureActorId": "raid-reinforcement-10",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-11",
+              "producerFixtureActorId": "raid-reinforcement-11",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-leave-0",
+              "producerFixtureActorId": "raider-0",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 176,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-leave-1",
+              "producerFixtureActorId": "raider-1",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 64,
+                  "y": 192,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-leave-2",
+              "producerFixtureActorId": "raider-2",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 208,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-leave-3",
+              "producerFixtureActorId": "raider-3",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 128,
+                  "y": 224,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "reinforcement-leave-0",
+              "producerFixtureActorId": "raid-reinforcement-0",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -128,
+                  "y": 256,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "reinforcement-leave-1",
+              "producerFixtureActorId": "raid-reinforcement-1",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -96,
+                  "y": 272,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "reinforcement-leave-2",
+              "producerFixtureActorId": "raid-reinforcement-2",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 288,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "reinforcement-leave-3",
+              "producerFixtureActorId": "raid-reinforcement-3",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -32,
+                  "y": 304,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "reinforcement-leave-4",
+              "producerFixtureActorId": "raid-reinforcement-4",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -160,
+                  "y": 272,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "reinforcement-leave-5",
+              "producerFixtureActorId": "raid-reinforcement-5",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -128,
+                  "y": 288,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "reinforcement-leave-6",
+              "producerFixtureActorId": "raid-reinforcement-6",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -96,
+                  "y": 304,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "reinforcement-leave-7",
+              "producerFixtureActorId": "raid-reinforcement-7",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 320,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "reinforcement-leave-8",
+              "producerFixtureActorId": "raid-reinforcement-8",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -192,
+                  "y": 288,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "reinforcement-leave-9",
+              "producerFixtureActorId": "raid-reinforcement-9",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -160,
+                  "y": 304,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "reinforcement-leave-10",
+              "producerFixtureActorId": "raid-reinforcement-10",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -128,
+                  "y": 320,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "reinforcement-leave-11",
+              "producerFixtureActorId": "raid-reinforcement-11",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -96,
+                  "y": 336,
+                  "z": 0
+                }
+              }
+            }
+          ],
+          "events": [],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "enemy-worker",
+              "sourceFixtureActorId": "enemy-source",
+              "kind": "gather"
+            }
+          ],
+          "protectedRoutes": [],
+          "terrainPatches": []
+        }
+      },
+      {
+        "id": "strat-03-skaduwee-minor",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Skaduwee",
+        "humanFaction": "Tivara",
+        "difficulty": "Normal",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "STRAT-03"
+        ],
+        "presetWorld": {
+          "fixtureId": "strat-03-skaduwee-minor",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "worker-0",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 352,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-7",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-producer",
+              "actorName": "InfantryInn",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-house",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 1008,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -32,
+                "y": 1072,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 1088,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "scout-probe",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -224,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ranged-probe",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "support-probe",
+              "actorName": "SkaduweeMagicianFemale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-producer",
+              "actorName": "AnkGuard",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 496,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-deposit",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -320,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -544,
+                "y": 816,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-worker",
+              "actorName": "TivaraWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": -448,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-0",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -32,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-2",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-3",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 32,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-4",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -96,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-5",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-6",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -32,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-7",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-8",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -128,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-9",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -96,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-10",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-11",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -32,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-12",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -160,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-13",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -128,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-14",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -96,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-15",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-16",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -192,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-17",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -160,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-18",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -128,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-19",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -96,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-20",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -224,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-21",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -192,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-22",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -160,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-23",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -128,
+                "y": 992,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-24",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-25",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-26",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 512,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-27",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-28",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-29",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "reserve-house-0",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 1168,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "reserve-house-1",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 288,
+                "y": 1232,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "reserve-house-2",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 160,
+                "y": 1296,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "reserve-house-3",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 32,
+                "y": 1360,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "main-target",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -416,
+                "y": 752,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-bait",
+              "actorName": "TivaraWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": 288,
+                "y": 400,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raider-0",
+              "actorName": "TivaraAlchemist",
+              "owner": 1,
+              "position": {
+                "x": 0,
+                "y": 160,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raider-1",
+              "actorName": "TivaraAlchemist",
+              "owner": 1,
+              "position": {
+                "x": 32,
+                "y": 176,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raider-2",
+              "actorName": "TivaraAlchemist",
+              "owner": 1,
+              "position": {
+                "x": 64,
+                "y": 192,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raider-3",
+              "actorName": "TivaraAlchemist",
+              "owner": 1,
+              "position": {
+                "x": 96,
+                "y": 208,
+                "z": 0
+              }
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "original-home",
+              "actorName": "FrostForge",
+              "owner": 2
+            },
+            {
+              "fixtureActorId": "enemy-home",
+              "actorName": "Sandhold",
+              "owner": 1
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            {
+              "playerNumber": 1,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            },
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            }
+          ],
+          "controls": [
+            {
+              "id": "raid-arrive-0",
+              "producerFixtureActorId": "raider-0",
+              "requestTick": 400,
+              "applicationTick": 400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 416,
+                  "y": 816,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-attack-0",
+              "producerFixtureActorId": "raider-0",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "worker-0"
+              }
+            },
+            {
+              "id": "raid-arrive-1",
+              "producerFixtureActorId": "raider-1",
+              "requestTick": 400,
+              "applicationTick": 400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 416,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-attack-1",
+              "producerFixtureActorId": "raider-1",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "worker-1"
+              }
+            },
+            {
+              "id": "raid-arrive-2",
+              "producerFixtureActorId": "raider-2",
+              "requestTick": 400,
+              "applicationTick": 400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 352,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-attack-2",
+              "producerFixtureActorId": "raider-2",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "worker-2"
+              }
+            },
+            {
+              "id": "raid-arrive-3",
+              "producerFixtureActorId": "raider-3",
+              "requestTick": 400,
+              "applicationTick": 400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 448,
+                  "y": 832,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-attack-3",
+              "producerFixtureActorId": "raider-3",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "worker-3"
+              }
+            }
+          ],
+          "events": [],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "enemy-worker",
+              "sourceFixtureActorId": "enemy-source",
+              "kind": "gather"
+            }
+          ],
+          "protectedRoutes": [],
+          "terrainPatches": []
+        }
+      },
+      {
+        "id": "strat-03-skaduwee-reinforced",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Skaduwee",
+        "humanFaction": "Tivara",
+        "difficulty": "Normal",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "STRAT-03"
+        ],
+        "presetWorld": {
+          "fixtureId": "strat-03-skaduwee-reinforced",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "worker-0",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 352,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-7",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-producer",
+              "actorName": "InfantryInn",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-house",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 1008,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -32,
+                "y": 1072,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 1088,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "scout-probe",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -224,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ranged-probe",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "support-probe",
+              "actorName": "SkaduweeMagicianFemale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-producer",
+              "actorName": "AnkGuard",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 496,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-deposit",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -320,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -544,
+                "y": 816,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-worker",
+              "actorName": "TivaraWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": -448,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-0",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -32,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-2",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-3",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 32,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-4",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -96,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-5",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-6",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -32,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-7",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-8",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -128,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-9",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -96,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-10",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-11",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -32,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-12",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -160,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-13",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -128,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-14",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -96,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-15",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-16",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -192,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-17",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -160,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-18",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -128,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-19",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -96,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-20",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -224,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-21",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -192,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-22",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -160,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-23",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -128,
+                "y": 992,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-24",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-25",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-26",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 512,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-27",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-28",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-29",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "reserve-house-0",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 1168,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "reserve-house-1",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 288,
+                "y": 1232,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "reserve-house-2",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 160,
+                "y": 1296,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "reserve-house-3",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 32,
+                "y": 1360,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "main-target",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -416,
+                "y": 752,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-bait",
+              "actorName": "TivaraWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": 288,
+                "y": 400,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raider-0",
+              "actorName": "TivaraAlchemist",
+              "owner": 1,
+              "position": {
+                "x": 0,
+                "y": 160,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raider-1",
+              "actorName": "TivaraAlchemist",
+              "owner": 1,
+              "position": {
+                "x": 32,
+                "y": 176,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raider-2",
+              "actorName": "TivaraAlchemist",
+              "owner": 1,
+              "position": {
+                "x": 64,
+                "y": 192,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raider-3",
+              "actorName": "TivaraAlchemist",
+              "owner": 1,
+              "position": {
+                "x": 96,
+                "y": 208,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-0",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -128,
+                "y": 256,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-1",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -96,
+                "y": 272,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-2",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -64,
+                "y": 288,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-3",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -32,
+                "y": 304,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-4",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 272,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-5",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -128,
+                "y": 288,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-6",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -96,
+                "y": 304,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-7",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -64,
+                "y": 320,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-8",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -192,
+                "y": 288,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-9",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 304,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-10",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -128,
+                "y": 320,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-11",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -96,
+                "y": 336,
+                "z": 0
+              }
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "original-home",
+              "actorName": "FrostForge",
+              "owner": 2
+            },
+            {
+              "fixtureActorId": "enemy-home",
+              "actorName": "Sandhold",
+              "owner": 1
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            {
+              "playerNumber": 1,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            },
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            }
+          ],
+          "controls": [
+            {
+              "id": "raid-arrive-0",
+              "producerFixtureActorId": "raider-0",
+              "requestTick": 400,
+              "applicationTick": 400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 416,
+                  "y": 816,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-attack-0",
+              "producerFixtureActorId": "raider-0",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "worker-0"
+              }
+            },
+            {
+              "id": "raid-arrive-1",
+              "producerFixtureActorId": "raider-1",
+              "requestTick": 400,
+              "applicationTick": 400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 416,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-attack-1",
+              "producerFixtureActorId": "raider-1",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "worker-1"
+              }
+            },
+            {
+              "id": "raid-arrive-2",
+              "producerFixtureActorId": "raider-2",
+              "requestTick": 400,
+              "applicationTick": 400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 352,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-attack-2",
+              "producerFixtureActorId": "raider-2",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "worker-2"
+              }
+            },
+            {
+              "id": "raid-arrive-3",
+              "producerFixtureActorId": "raider-3",
+              "requestTick": 400,
+              "applicationTick": 400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 448,
+                  "y": 832,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-attack-3",
+              "producerFixtureActorId": "raider-3",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "worker-3"
+              }
+            },
+            {
+              "id": "raid-reinforce-0",
+              "producerFixtureActorId": "raid-reinforcement-0",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-1",
+              "producerFixtureActorId": "raid-reinforcement-1",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-2",
+              "producerFixtureActorId": "raid-reinforcement-2",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-3",
+              "producerFixtureActorId": "raid-reinforcement-3",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-4",
+              "producerFixtureActorId": "raid-reinforcement-4",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-5",
+              "producerFixtureActorId": "raid-reinforcement-5",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-6",
+              "producerFixtureActorId": "raid-reinforcement-6",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-7",
+              "producerFixtureActorId": "raid-reinforcement-7",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-8",
+              "producerFixtureActorId": "raid-reinforcement-8",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-9",
+              "producerFixtureActorId": "raid-reinforcement-9",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-10",
+              "producerFixtureActorId": "raid-reinforcement-10",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-11",
+              "producerFixtureActorId": "raid-reinforcement-11",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            }
+          ],
+          "events": [],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "enemy-worker",
+              "sourceFixtureActorId": "enemy-source",
+              "kind": "gather"
+            }
+          ],
+          "protectedRoutes": [],
+          "terrainPatches": []
+        }
+      },
+      {
+        "id": "strat-03-skaduwee-withdrawn",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Skaduwee",
+        "humanFaction": "Tivara",
+        "difficulty": "Normal",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "STRAT-03"
+        ],
+        "presetWorld": {
+          "fixtureId": "strat-03-skaduwee-withdrawn",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "worker-0",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 352,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-7",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-producer",
+              "actorName": "InfantryInn",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-house",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 1008,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -32,
+                "y": 1072,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 1088,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "scout-probe",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -224,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ranged-probe",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "support-probe",
+              "actorName": "SkaduweeMagicianFemale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-producer",
+              "actorName": "AnkGuard",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 496,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-deposit",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -320,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -544,
+                "y": 816,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-worker",
+              "actorName": "TivaraWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": -448,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-0",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -32,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-2",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-3",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 32,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-4",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -96,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-5",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-6",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -32,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-7",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-8",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -128,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-9",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -96,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-10",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-11",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -32,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-12",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -160,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-13",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -128,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-14",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -96,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-15",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-16",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -192,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-17",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -160,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-18",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -128,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-19",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -96,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-20",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -224,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-21",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -192,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-22",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -160,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-23",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": -128,
+                "y": 992,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-24",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-25",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-26",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 512,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-27",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-28",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-29",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "reserve-house-0",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 1168,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "reserve-house-1",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 288,
+                "y": 1232,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "reserve-house-2",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 160,
+                "y": 1296,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "reserve-house-3",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 32,
+                "y": 1360,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "main-target",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -416,
+                "y": 752,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-bait",
+              "actorName": "TivaraWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": 288,
+                "y": 400,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raider-0",
+              "actorName": "TivaraAlchemist",
+              "owner": 1,
+              "position": {
+                "x": 0,
+                "y": 160,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raider-1",
+              "actorName": "TivaraAlchemist",
+              "owner": 1,
+              "position": {
+                "x": 32,
+                "y": 176,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raider-2",
+              "actorName": "TivaraAlchemist",
+              "owner": 1,
+              "position": {
+                "x": 64,
+                "y": 192,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raider-3",
+              "actorName": "TivaraAlchemist",
+              "owner": 1,
+              "position": {
+                "x": 96,
+                "y": 208,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-0",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -128,
+                "y": 256,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-1",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -96,
+                "y": 272,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-2",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -64,
+                "y": 288,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-3",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -32,
+                "y": 304,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-4",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 272,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-5",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -128,
+                "y": 288,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-6",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -96,
+                "y": 304,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-7",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -64,
+                "y": 320,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-8",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -192,
+                "y": 288,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-9",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 304,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-10",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -128,
+                "y": 320,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "raid-reinforcement-11",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -96,
+                "y": 336,
+                "z": 0
+              }
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "original-home",
+              "actorName": "FrostForge",
+              "owner": 2
+            },
+            {
+              "fixtureActorId": "enemy-home",
+              "actorName": "Sandhold",
+              "owner": 1
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            {
+              "playerNumber": 1,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            },
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            }
+          ],
+          "controls": [
+            {
+              "id": "raid-arrive-0",
+              "producerFixtureActorId": "raider-0",
+              "requestTick": 400,
+              "applicationTick": 400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 416,
+                  "y": 816,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-attack-0",
+              "producerFixtureActorId": "raider-0",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "worker-0"
+              }
+            },
+            {
+              "id": "raid-arrive-1",
+              "producerFixtureActorId": "raider-1",
+              "requestTick": 400,
+              "applicationTick": 400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 416,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-attack-1",
+              "producerFixtureActorId": "raider-1",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "worker-1"
+              }
+            },
+            {
+              "id": "raid-arrive-2",
+              "producerFixtureActorId": "raider-2",
+              "requestTick": 400,
+              "applicationTick": 400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 352,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-attack-2",
+              "producerFixtureActorId": "raider-2",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "worker-2"
+              }
+            },
+            {
+              "id": "raid-arrive-3",
+              "producerFixtureActorId": "raider-3",
+              "requestTick": 400,
+              "applicationTick": 400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 448,
+                  "y": 832,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-attack-3",
+              "producerFixtureActorId": "raider-3",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "worker-3"
+              }
+            },
+            {
+              "id": "raid-reinforce-0",
+              "producerFixtureActorId": "raid-reinforcement-0",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-1",
+              "producerFixtureActorId": "raid-reinforcement-1",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-2",
+              "producerFixtureActorId": "raid-reinforcement-2",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-3",
+              "producerFixtureActorId": "raid-reinforcement-3",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-4",
+              "producerFixtureActorId": "raid-reinforcement-4",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-5",
+              "producerFixtureActorId": "raid-reinforcement-5",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-6",
+              "producerFixtureActorId": "raid-reinforcement-6",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-7",
+              "producerFixtureActorId": "raid-reinforcement-7",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-8",
+              "producerFixtureActorId": "raid-reinforcement-8",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-9",
+              "producerFixtureActorId": "raid-reinforcement-9",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-10",
+              "producerFixtureActorId": "raid-reinforcement-10",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-reinforce-11",
+              "producerFixtureActorId": "raid-reinforcement-11",
+              "requestTick": 800,
+              "applicationTick": 800,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "raid-leave-0",
+              "producerFixtureActorId": "raider-0",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 176,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-leave-1",
+              "producerFixtureActorId": "raider-1",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 64,
+                  "y": 192,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-leave-2",
+              "producerFixtureActorId": "raider-2",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 208,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-leave-3",
+              "producerFixtureActorId": "raider-3",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 128,
+                  "y": 224,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "reinforcement-leave-0",
+              "producerFixtureActorId": "raid-reinforcement-0",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -128,
+                  "y": 256,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "reinforcement-leave-1",
+              "producerFixtureActorId": "raid-reinforcement-1",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -96,
+                  "y": 272,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "reinforcement-leave-2",
+              "producerFixtureActorId": "raid-reinforcement-2",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 288,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "reinforcement-leave-3",
+              "producerFixtureActorId": "raid-reinforcement-3",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -32,
+                  "y": 304,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "reinforcement-leave-4",
+              "producerFixtureActorId": "raid-reinforcement-4",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -160,
+                  "y": 272,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "reinforcement-leave-5",
+              "producerFixtureActorId": "raid-reinforcement-5",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -128,
+                  "y": 288,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "reinforcement-leave-6",
+              "producerFixtureActorId": "raid-reinforcement-6",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -96,
+                  "y": 304,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "reinforcement-leave-7",
+              "producerFixtureActorId": "raid-reinforcement-7",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 320,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "reinforcement-leave-8",
+              "producerFixtureActorId": "raid-reinforcement-8",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -192,
+                  "y": 288,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "reinforcement-leave-9",
+              "producerFixtureActorId": "raid-reinforcement-9",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -160,
+                  "y": 304,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "reinforcement-leave-10",
+              "producerFixtureActorId": "raid-reinforcement-10",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -128,
+                  "y": 320,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "reinforcement-leave-11",
+              "producerFixtureActorId": "raid-reinforcement-11",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -96,
+                  "y": 336,
+                  "z": 0
+                }
+              }
+            }
+          ],
+          "events": [],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "enemy-worker",
+              "sourceFixtureActorId": "enemy-source",
+              "kind": "gather"
+            }
+          ],
+          "protectedRoutes": [],
+          "terrainPatches": []
+        }
+      }
+    ]
+  },
+  "assertions": {
+    "STRAT-03": {
+      "maximumTick": 3000,
+      "minimumDecisions": 1,
+      "minimumAppliedCommands": 1,
+      "requiredAiFactions": [
+        "Tivara",
+        "Skaduwee"
+      ],
+      "requiredNativeScenario": {
+        "schemaVersion": 1,
+        "scenarioId": "STRAT-03",
+        "latestTick": 3000,
+        "humanPlayerNumber": 1,
+        "branchByVariant": {
+          "strat-03-tivara-minor": "minor",
+          "strat-03-tivara-reinforced": "reinforced",
+          "strat-03-tivara-withdrawn": "withdrawn",
+          "strat-03-skaduwee-minor": "minor",
+          "strat-03-skaduwee-reinforced": "reinforced",
+          "strat-03-skaduwee-withdrawn": "withdrawn"
+        }
+      }
+    }
+  }
+}

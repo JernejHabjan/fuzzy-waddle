@@ -2,10 +2,14 @@ import type { AiRuntimeProductionCaptureV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
 
 /** Require native sealed history, not horizon counters alone. This supplies no service, geometry or combat verdict. */
-export function runtimeClosedHistoryFailures(capture: AiRuntimeProductionCaptureV1 | undefined, latestTick: number): string[] {
+export function runtimeClosedHistoryFailures(
+  capture: AiRuntimeProductionCaptureV1 | undefined, latestTick: number, terminalHorizon?: number
+): string[] {
   const history = capture?.frontiers;
   if (!capture || capture.startedTick !== 0 || capture.droppedFactCount || capture.droppedSnapshotCount || !history ||
-      history.latestTick !== latestTick || history.closedThroughTick !== latestTick || history.gaps.length) {
+      history.latestTick !== (terminalHorizon ?? latestTick) || history.closedThroughTick !== latestTick ||
+      (terminalHorizon !== undefined && (terminalHorizon < latestTick || terminalHorizon <= 0)) ||
+      history.gaps.some((gap) => terminalHorizon === undefined || gap !== "production_frontier_not_closed")) {
     return ["native_closed_history_incomplete"];
   }
   let nextTick = 0;

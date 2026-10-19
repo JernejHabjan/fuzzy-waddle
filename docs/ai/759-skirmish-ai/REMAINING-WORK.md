@@ -1,15 +1,15 @@
 # #759 remaining work inventory
 
-Snapshot:2026-10-19; publication base c07d24b5177bdfe260710bff955c496911554194 plus task-owned source.
+Snapshot:2026-10-19; publication base 47aedcb062097a54af85ea94022c8435bc4c0e2b plus task-owned source.
 [HANDOFF.md](HANDOFF.md) owns the next action; [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) distinguishes authored and
 validated evidence. This is the existing execution inventory, not another design project. Read only the selected package.
 
 ## What the inventory establishes
 
 The original concrete plan contains121 named scenarios. Pure registration is111/111. Supported runtime registration
-is61/116 (52.6%);55 (47.4%) still have specifications without native bindings. Four island runtime rows are deferred.
-Definitions are116/116:61 registrations plus55 remaining specifications. The30 new registrations contain194 faction/control
-variants, all unrun. Counts describe registration, not passed gameplay, unique physical maps, work sessions or time remaining.
+is75/116 (64.7%);41 (35.3%) still have specifications without native bindings. Four island runtime rows are deferred.
+Definitions are116/116:75 registrations plus41 remaining specifications. The latest14 registrations contain84 faction/control
+variants, all unrun; the previous30/194 variants remain unrun. Counts describe registration, not passed gameplay, unique physical maps, work sessions or time remaining.
 Each row needs complete source-specific native outcome evidence before validation; an authored reader is not that evidence.
 
 Earlier descriptions such as “full acceptance open” concealed three different kinds of work. Use these states:
@@ -81,8 +81,8 @@ an entire scenario. Invalidate only outcomes affected by later source/fixture ch
 | Measured coverage at this snapshot    | Completed                                   | Remaining          | What the number means                                                                                              |
 | ------------------------------------- | ------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------ |
 | Pure fixture registration             | 111/111 = **100%**                          | 0/111 = **0%** | Required pure scenarios with registered fixtures; not behavior completion                                          |
-| Supported native definitions           | 116/116 = **100%**                          | 0/116 = **0%** | 61 scenario bindings plus55 specifications; definitions only, not validated gameplay |
-| Supported runtime recipe registration | 61/116 = **52.6%**                          | 55/116 = **47.4%** | Runtime recipes connected; four island-content rows excluded; not behavior completion                              |
+| Supported native definitions           | 116/116 = **100%**                          | 0/116 = **0%** | 75 scenario bindings plus41 specifications; definitions only, not validated gameplay |
+| Supported runtime recipe registration | 75/116 = **64.7%**                          | 41/116 = **35.3%** | Runtime recipes connected; four island-content rows excluded; not behavior completion                              |
 | Scenario behavior validation          | Not yet reconciled across the full manifest | Not yet measurable | Existing subset passes and failures are recorded, but no truthful overall completion percentage can yet be derived |
 
 During each selected package, reconcile its existing complete evidence into the row status and report its exact
@@ -108,18 +108,19 @@ main-building footprint were corrected in both paired worlds. Construction cance
 post-opening unfinished-site reassignment have focused controls. Native ECO-06 proves alternate drop-off/source
 recovery; native no-drain controls prove stop/assignment release with cargo preservation.
 
-**Current publication:30 additional native registrations authored unrun, 2026-10-19.**
+**Current publication:14 mission/domain/classic registrations authored unrun, 2026-10-19.**
 
-- PLACE/EXP/WALL, scouting/stale-contact, strategy, raid and combat cases now have concrete ordinary-lobby inputs,
-  native controls and deterministic per-ID assertions; missing native premises fail rather than count as success.
-- Listener-gated mission/input and explicitly opted-in combat capture reuse the existing bounded ledger and cleanup.
-  Real weapon/healing/status boundaries support physical outcomes; they do not become privileged planner inputs.
-- Tivara spell research now requires the producer that actually offers it. Field balance and research costs are unchanged.
-- No execution gate ran. The30 IDs/194 variants and prior21 owner worlds remain unrun. Original EXP-02 evidence remains
-  authored, not validated. See the current evidence entry for source paths, limitations and source-only audits.
-- Next group STRAT-02/03/08/09, DOMAIN-01/02/05, RAID-03 and C-01–06 to cover defense/recall, finishing/comeback,
-  supported domain choices, raid continuity and counters using the existing authority. Remaining H/lifecycle/SEQ/D/DBG
-  work follows; native save/replay/peers and later both-faction victory remain open. Machinery review is last.
+- STRAT-02/03/08/09, DOMAIN-01/02/05, RAID-03 and C-01–06 add84 faction/control variants using normal native inputs,
+  controls, original obligations and per-ID outcome readers. No gameplay, typing or test execution is certified.
+- Real boat boarding/unload, third-player lobby/capture and a finite scoped route outage reuse current authority.
+  Early finishing requires an ordinary score win and sealed native prefix; command receipts alone cannot pass.
+- Tivara-only ship production/boat landing and unsupported in-match diplomacy are explicit limits. C-06 uses real
+  defeat/retargeting and initial teams, not an invented team-change command. Island branches remain deferred.
+- Next author H-01–05/H-19–21/H-23–26 together: deadlines, meaningful progress, release/reassignment, route failure,
+  builder service, readiness and tactical recovery. This12-ID group reuses current mission/route/capture owners.
+- Registration75/116 (64.7%),41 remaining (35.3%), plus4 island rows. Native definitions116/116:75 bindings +41 specs.
+  Latest84 variants and prior194/21 owner worlds are unrun. Later native execution must establish actual premises and
+  outcomes; M11/authority, real lifecycle/peers, SEQ, difficulty/debug and victory remain. Machinery review is last.
 
 ## Other concrete gaps already established
 

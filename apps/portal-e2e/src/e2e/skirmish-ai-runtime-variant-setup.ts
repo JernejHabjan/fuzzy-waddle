@@ -227,6 +227,13 @@ async function configureLobby(page: Page, fixture: RuntimeFixtureV1, variant: Ru
   await page.getByText(variant.mapLabel ?? fixture.recipe.mapLabel, { exact: true }).click();
   const dismissHint = page.getByRole("button", { name: "Got it" });
   if (await dismissHint.isVisible()) await dismissHint.click();
+  for (const player of variant.additionalAiPlayers ?? []) {
+    await page.getByRole("button", { name: /Add A\.I\. player/ }).click();
+    await page.locator(`#faction-${player.playerNumber}`).selectOption({ label: player.faction });
+    await page.locator(`#difficulty-${player.playerNumber}`).selectOption({ label: player.difficulty });
+  }
+  for (const player of variant.lobbyTeams ?? [])
+    await page.locator(`#team-${player.playerNumber}`).selectOption({ label: String(player.team) });
   await page.locator("#faction-1").selectOption({ label: variant.humanFaction });
   await page.locator(`#faction-${fixture.recipe.aiPlayerNumber}`).selectOption({ label: variant.aiFaction });
   await page.locator(`#difficulty-${fixture.recipe.aiPlayerNumber}`).selectOption({ label: variant.difficulty });

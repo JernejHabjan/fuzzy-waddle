@@ -17,6 +17,7 @@ import type { AiRuntimeProductionSetupV1 } from "./ai-runtime-production-setup-v
 import { AiRuntimeExposureBinding } from "./ai-runtime-exposure-binding";
 import { AttackComponent } from "../../../entity/components/combat/components/attack-component";
 import { ResourceDrainComponent } from "../../../entity/components/resource/resource-drain-component";
+import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 
 /** Opt-in authority history owned by the existing capture; no timer, saved field, planner input or separate fact buffer. */
 export class AiRuntimeProductionProofCapture {
@@ -30,7 +31,9 @@ export class AiRuntimeProductionProofCapture {
   constructor(
     private readonly scene: ProbableWaffleScene,
     private readonly identify: (actorId: string, item: UnifiedQueueItem) => string,
-    private readonly afterSequence: () => number
+    private readonly afterSequence: () => number,
+    /** Explicit combat fixtures also need initial passive assets and unarmed carriers in lifetime proof. */
+    private readonly captureCombat = false
   ) {}
 
   arm(playerNumber: number, latestTick: number): void {
@@ -81,7 +84,8 @@ export class AiRuntimeProductionProofCapture {
     }
     const ids = this.tracked.get(playerNumber) ?? new Set<string>();
     for (const actor of getSceneService(this.scene, ActorIndexSystem)?.getOwnedActors(playerNumber) ?? []) {
-      if (getActorComponent(actor, QueueComponent) || getActorComponent(actor, AttackComponent) ||
+      if (this.captureCombat && getActorComponent(actor, HealthComponent) ||
+          getActorComponent(actor, QueueComponent) || getActorComponent(actor, AttackComponent) ||
           getActorComponent(actor, ResourceDrainComponent)) {
         const id = getActorComponent(actor, IdComponent)?.id;
         if (id) ids.add(id);

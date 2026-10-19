@@ -7,10 +7,11 @@ import type { AiRuntimeProductionCaptureV1 } from
 export async function captureRuntimeProductionAuthority(
   page: Page,
   playerNumber: number,
-  latestTick?: number
+  latestTick?: number,
+  omitSharedLedger = false
 ): Promise<AiRuntimeProductionCaptureV1> {
   return page.evaluate(
-    ({ owner, horizon }) => {
+    ({ owner, horizon, omitLedger }) => {
       const host = window as unknown as {
         __fuzzyWaddleAiRuntimeBrowserTestV1?: {
           productionCapture?: { capture(player: number, horizon?: number): AiRuntimeProductionCaptureV1 };
@@ -18,8 +19,9 @@ export async function captureRuntimeProductionAuthority(
       };
       const capture = host.__fuzzyWaddleAiRuntimeBrowserTestV1?.productionCapture;
       if (!capture) throw new Error("runtime_production_capture_unavailable");
-      return capture.capture(owner, horizon);
+      const record = capture.capture(owner, horizon);
+      return omitLedger ? { ...record, recipientResourceFacts: undefined } : record;
     },
-    { owner: playerNumber, horizon: latestTick }
+    { owner: playerNumber, horizon: latestTick, omitLedger: omitSharedLedger }
   );
 }

@@ -24,7 +24,7 @@ export async function runVariant(
   requestedScenarioIds: readonly string[],
   sourceRevision: string,
   fixtureDigest: string,
-  debugProbe?: (page: Page, checkpointIndex: number) => Promise<void>
+  debugProbe?: (page: Page, checkpointIndex: number, checkpoint?: RuntimeCheckpointV1) => Promise<void>
 ): Promise<RuntimeVariantResultV1> {
   const profiling = process.env.AI_SKIRMISH_PROFILE === "1";
   const variantStartedAt = performance.now();
@@ -121,9 +121,14 @@ export async function runVariant(
         applicableScenarioIds.some((id) => fixture.assertions[id]?.requireHiddenStateParity)
       );
       checkpoints.push(checkpoint);
+      // A terminal score does not seal its own native tick. Close that tick before reading early-terminal proof.
+      if (captureProduction && checkpoint.gameResult === "win" &&
+          applicableScenarioIds.some((id) => fixture.assertions[id]?.requireAiVictory) &&
+          (productionCapture?.frontiers?.closedThroughTick ?? -1) < checkpoint.tick)
+        await advanceRuntimeToTick(page, fixture, checkpoint.tick + 1, index);
       if (captureProduction)
         productionCapture = await captureRuntimeProductionAuthority(page, fixture.recipe.aiPlayerNumber);
-      await debugProbe?.(page, index);
+      await debugProbe?.(page, index, checkpoint);
       if (profiling) {
         checkpointPhases.push({
           targetTick,
@@ -171,22 +176,7 @@ export async function runVariant(
       perturbations,
       aiErrors
     });
-    const browserLongTasks = profiling
-      ? await page.evaluate(() => {
-          const metrics = (
-            window as unknown as {
-              __skirmishPerf?: { count: number; totalMs: number; maximumMs: number };
-            }
-          ).__skirmishPerf;
-          return metrics
-            ? {
-                count: metrics.count,
-                totalMs: Math.round(metrics.totalMs),
-                maximumMs: Math.round(metrics.maximumMs)
-              }
-            : null;
-        })
-      : null;
+    const browserLongTasks = await readRuntimeLongTasks(page, profiling);
     const productionReport =
       productionCapture && fullProductionProof
         ? buildRuntimeProductionReport(productionCapture, initialBoundary.presetApplication ?? undefined)
@@ -284,4 +274,15 @@ async function setSimulationState(
     },
     { playerNumber: aiPlayerNumber, nextState: state, timeScale: scale, stopAtTick }
   );
+}
+
+/** Read the existing optional browser performance sample without expanding ordinary match work. */
+async function readRuntimeLongTasks(page: Page, profiling: boolean) {
+  if (!profiling) return null;
+  return page.evaluate(() => {
+    const metrics = (window as unknown as {
+      __skirmishPerf?: { count: number; totalMs: number; maximumMs: number };
+    }).__skirmishPerf;
+    return metrics ? { count: metrics.count, totalMs: Math.round(metrics.totalMs), maximumMs: Math.round(metrics.maximumMs) } : null;
+  });
 }

@@ -2,6 +2,7 @@ import type Phaser from "phaser";
 import { getActorComponent } from "../../../data/actor-component";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { ResourceDrainComponent } from "../../../entity/components/resource/resource-drain-component";
+import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
@@ -45,4 +46,33 @@ it("pins an existing deposit without a queue or weapon before its first delivery
   );
   proof.dispose();
   expect(detach).toHaveBeenCalledTimes(1);
+});
+
+it.each([false, true])("tracks initial passive assets only for explicit combat capture=%s", (captureCombat) => {
+  jest.clearAllMocks();
+  const scene = { players: [{ playerNumber: 2 }] } as unknown as ProbableWaffleScene;
+  const house = { name: "Olival", scene } as Phaser.GameObjects.GameObject;
+  const carrier = { name: "CommonBoat", scene } as Phaser.GameObjects.GameObject;
+  let close: ((tick: number) => void) | undefined;
+  const clock = { currentTick: 0, observeClosedFrontiers: (callback: (tick: number) => void) => {
+    close = callback;
+    return jest.fn();
+  } };
+  jest.mocked(getSceneService).mockImplementation((_scene, service) =>
+    (service === SimulationTickService ? clock : service === ActorIndexSystem ? {
+      getOwnedActors: () => [house, carrier]
+    } : undefined) as never);
+  jest.mocked(getActorComponent).mockImplementation((actor, component) => {
+    if (component === IdComponent) return { id: actor === house ? "original-house" : "original-carrier" } as never;
+    return (component === HealthComponent ? {} : undefined) as never;
+  });
+  jest.mocked(captureAiRuntimeProductionFrontier).mockReturnValue({
+    afterSequence: 0, actors: [], queues: [], completedResearch: [], navigation: null
+  });
+  const proof = new AiRuntimeProductionProofCapture(scene, () => "unused-item", () => 0, captureCombat);
+  proof.arm(2, 1);
+  close?.(1);
+  expect(captureAiRuntimeProductionFrontier).toHaveBeenCalledWith(scene, 2,
+    new Set(captureCombat ? ["original-house", "original-carrier"] : []), expect.any(Function), 0);
+  proof.dispose();
 });

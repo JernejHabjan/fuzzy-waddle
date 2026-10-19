@@ -5,6 +5,8 @@ export interface RuntimeFixtureV1 {
   readonly schemaVersion: 1;
   readonly evidenceKind: "runtime";
   readonly scenarioIds: readonly string[];
+  /** Explicit unsupported content subcases; these limits never become passing native outcomes. */
+  readonly capabilityLimits?: readonly string[];
   readonly recipe: {
     readonly mapLabel: string;
     readonly aiPlayerNumber: number;

@@ -66,3 +66,18 @@ test("fixture IDs and branch labels cannot supply missing expansion or fortifica
   expect(evaluateExpansionWorld("expand", { aiFaction: "Tivara", presetCreatedActorIds: {} }, undefined))
     .toContain("native_closed_history_incomplete");
 });
+
+test("an explicitly authorized terminal prefix still requires a complete sealed native interval", () => {
+  const capture = { ...receiptOnly(), frontiers: { latestTick: 18000, closedThroughTick: 800,
+    requiredTicks: [18000], gaps: ["production_frontier_not_closed"], intervals: [{
+      capturedAtTick: 801, closedFromTick: 0, closedThroughTick: 800, afterSequence: 2,
+      actors: [], queues: [], completedResearch: []
+    }] } };
+  expect(runtimeClosedHistoryFailures(capture, 800)).toContain("native_closed_history_incomplete");
+  expect(runtimeClosedHistoryFailures(capture, 800, 18000)).toEqual([]);
+  expect(runtimeClosedHistoryFailures({ ...capture, frontiers: { ...capture.frontiers, intervals: [] } }, 800, 18000))
+    .toContain("native_closed_history_reordered_or_missing");
+  expect(runtimeClosedHistoryFailures({ ...capture, frontiers: { ...capture.frontiers,
+    gaps: [...capture.frontiers.gaps, "production_frontier_clock_gap"] } }, 800, 18000))
+    .toContain("native_closed_history_incomplete");
+});

@@ -22,7 +22,21 @@ export function createAiRuntimePresetCommand(
 ): GameCommandInput {
   const action = control.action;
   let command: GameCommandInput;
-  if (action.kind === "construct") {
+  if (action.kind === "unload") {
+    command = {
+      type: ProbableWaffleGameCommandTypes.Unload, playerNumber: owner, actorIds: [actorId],
+      tileVec3: { ...IsoHelper.isometricWorldToTileXY(scene, action.worldPosition.x, action.worldPosition.y),
+        z: action.worldPosition.z }
+    };
+  } else if (action.kind === "board") {
+    const target = actors.get(action.targetFixtureActorId);
+    const id = target && getActorComponent(target, IdComponent)?.id;
+    if (!target?.active || target.scene !== scene || !id ||
+        getActorComponent(target, OwnerComponent)?.getOwner() !== owner)
+      throw new Error(`runtime_preset_control_board_target_missing:${control.id}`);
+    command = { type: ProbableWaffleGameCommandTypes.ActorAction, playerNumber: owner, actorIds: [actorId],
+      targetObjectIds: [id], orderType: OrderType.EnterContainer, queue: false };
+  } else if (action.kind === "construct") {
     command = {
       type: ProbableWaffleGameCommandTypes.Construct, playerNumber: owner, actorIds: [actorId],
       actorName: action.actorName, siteKey: `runtime:${fixtureId}:control:${control.id}`,

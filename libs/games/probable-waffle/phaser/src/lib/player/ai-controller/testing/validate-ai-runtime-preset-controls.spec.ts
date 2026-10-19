@@ -55,10 +55,19 @@ it("rejects duplicate controls, unknown fields/actions, invalid dates and indice
     [{ ...cancel, injectedAssessment: {} }],
     [{ ...cancel, action: { kind: "cancel_production", setupQueueIndex: -1 } }],
     [{ ...cancel, action: { kind: "brain_state" } }],
-    Array.from({ length: 33 }, () => cancel)
+    Array.from({ length: 65 }, (_, index) => ({ ...cancel, id: `bounded-control-${index}` }))
   ]) {
     expect(validAiRuntimePresetControls(input, owners)).toBe(false);
   }
+});
+
+it("bounds real boarding/unload inputs and permits the finite reinforced-raid schedule", () => {
+  expect(validAiRuntimePresetControls([{ ...rally, action: { kind: "board", targetFixtureActorId: "rally" } },
+    { ...cancel, action: { kind: "unload", worldPosition: { x: 320, y: 400, z: 0 } } }], owners)).toBe(true);
+  expect(validAiRuntimePresetControls([{ ...rally, action: { kind: "board", targetFixtureActorId: "enemy" } }], owners))
+    .toBe(false);
+  expect(validAiRuntimePresetControls(Array.from({ length: 64 }, (_, index) =>
+    ({ ...cancel, id: `bounded-control-${index}` })), owners)).toBe(true);
 });
 
 it("rejects cross-owner, undeclared or duplicate production rally policies", () => {

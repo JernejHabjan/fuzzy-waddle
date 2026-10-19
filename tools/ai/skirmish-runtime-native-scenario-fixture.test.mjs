@@ -4,9 +4,9 @@ import { test } from "node:test";
 import { nativeScenarioBindings, nativeScenarioFixture } from "./native-scenario-registration.mjs";
 import { validNativeScenarioFixture } from "./skirmish-runtime-native-scenario-fixture.mjs";
 
-test("all thirty native bindings retain their full branches and original acceptance obligations", () => {
+test("all forty-four native bindings retain their full branches and original acceptance obligations", () => {
   const ids = Object.keys(nativeScenarioBindings.cases);
-  assert.equal(ids.length, 30);
+  assert.equal(ids.length, 44);
   const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish-v1.json", import.meta.url)));
   for (const id of ids) {
     const row = manifest.rows.find((row) => row.id === id);
@@ -63,4 +63,29 @@ test("capability-specific spell branches never invent the other faction's caster
     if (branch === "stun") assert.equal(variant.humanFaction, "Skaduwee");
     if (branch === "slow") assert.equal(variant.humanFaction, "Tivara");
   }
+});
+
+test("mission bindings cannot erase native transport, outages, team controls or the terminal horizon", () => {
+  for (const [id, branch, mutate] of [
+    ["RAID-03", "boat_raid", (v) => v.presetWorld.controls = []],
+    ["STRAT-09", "path_outage", (v) => delete v.presetWorld.routeOutages],
+    ["C-06", "defeated", (v) => delete v.additionalAiPlayers],
+    ["C-06", "allied_control", (v) => v.lobbyTeams = []],
+    ["DOMAIN-02", "intercept", (v) => v.presetWorld.actors.find((a) => a.fixtureActorId === "contact-group").owner = 1],
+    ["STRAT-08", "exposed", (v) => v.checkpointTicks = [20, 4000]]
+  ]) {
+    const fixture = nativeScenarioFixture(id), contract = fixture.assertions[id].requiredNativeScenario;
+    const variant = fixture.recipe.variants.find((v) => contract.branchByVariant[v.id] === branch);
+    assert.ok(variant);
+    mutate(variant);
+    assert.equal(validNativeScenarioFixture(fixture, id), false, id);
+  }
+});
+
+test("unsupported naval and diplomacy content is explicit rather than silently invented", () => {
+  const naval = nativeScenarioFixture("DOMAIN-02");
+  assert.ok(naval.capabilityLimits.length);
+  assert.deepEqual(naval.recipe.variants.filter((v) => v.aiFaction === "Skaduwee").map((v) =>
+    naval.assertions["DOMAIN-02"].requiredNativeScenario.branchByVariant[v.id]), ["unsupported"]);
+  assert.ok(nativeScenarioFixture("C-06").capabilityLimits.some((limit) => limit.includes("unsupported")));
 });

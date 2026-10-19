@@ -9,6 +9,7 @@ export interface RuntimePresetWorldV1 {
   readonly requireFactionRoster?: true;
   readonly terrainPatches?: AiRuntimePresetWorldV1["terrainPatches"];
   readonly terrainPreserveFootprints?: true;
+  readonly routeOutages?: AiRuntimePresetWorldV1["routeOutages"];
   readonly actors: readonly {
     readonly fixtureActorId: string;
     readonly actorName: string;

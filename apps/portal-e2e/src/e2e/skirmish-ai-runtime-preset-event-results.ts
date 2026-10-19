@@ -10,13 +10,25 @@ export function assertRuntimePresetEvents(
   application: Pick<AiRuntimePresetApplicationV1, "eventResults" | "createdActorIds">
 ): void {
   const expected = variant.presetWorld?.events ?? [];
+  const outages = variant.presetWorld?.routeOutages ?? [];
+  const count = expected.length + outages.length;
   if (
-    application.eventResults.length !== expected.length ||
-    new Set(application.eventResults.map((event) => event.id)).size !== expected.length
+    application.eventResults.length !== count ||
+    new Set(application.eventResults.map((event) => event.id)).size !== count
   ) {
     throw new Error("runtime_preset_events_incomplete");
   }
   for (const result of application.eventResults) {
+    const outage = outages.find((outage) => outage.id === result.id);
+    if (outage) {
+      const target = [...(variant.presetWorld?.actors ?? []), ...(variant.presetWorld?.existingActorBindings ?? [])]
+        .find((actor) => outage.fixtureActorIds.includes(actor.fixtureActorId) &&
+          application.createdActorIds[actor.fixtureActorId] === result.affectedActorId);
+      if (!target || result.subjectName !== target.actorName || result.affectedActors !== 1 ||
+          result.tick < outage.fromTick || result.tick > outage.throughTick)
+        throw new Error(`runtime_route_outage_target_mismatch:${result.id}`);
+      continue;
+    }
     const event = expected.find((event) => event.id === result.id);
     if (
       !event ||
@@ -37,7 +49,7 @@ export async function collectRuntimePresetEvents(
   page: Page,
   variant: RuntimeVariantV1
 ): Promise<RuntimeVariantResultV1["perturbations"]> {
-  if (!variant.presetWorld?.events?.length) return [];
+  if (!variant.presetWorld?.events?.length && !variant.presetWorld?.routeOutages?.length) return [];
   const application = await page.evaluate(() => {
     const host = (
       window as unknown as {

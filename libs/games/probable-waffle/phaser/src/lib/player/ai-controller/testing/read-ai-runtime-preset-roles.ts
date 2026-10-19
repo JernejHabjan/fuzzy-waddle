@@ -4,6 +4,7 @@ import { validAiRuntimeConstructionOrders } from "./validate-ai-runtime-construc
 import { validAiRuntimeSourceStocks } from "./ai-runtime-source-stocks";
 import { validAiRuntimeHealthStarts } from "./ai-runtime-health-starts";
 import { validAiRuntimeTerrainPatches } from "./ai-runtime-terrain-patches";
+import { validAiRuntimeRouteOutages } from "./ai-runtime-route-outages";
 import { isRecord, hasOnlyKeys } from "./ai-runtime-fixture-values";
 
 const actorNames = new Set<string>(Object.values(ObjectNames));
@@ -17,6 +18,7 @@ export function readAiRuntimePresetRoles(value: unknown) {
       "requireFactionRoster",
       "terrainPatches",
       "terrainPreserveFootprints",
+      "routeOutages",
       "provenance",
       "actors",
       "existingActorBindings",
@@ -76,6 +78,10 @@ export function readAiRuntimePresetRoles(value: unknown) {
     return null;
   if (!validAiRuntimeSourceStocks(value["sourceStocks"], fixtureActorIds)) return null;
   if (!validAiRuntimeHealthStarts(value["healthStarts"], fixtureActorIds)) return null;
+  if (!validAiRuntimeRouteOutages(value["routeOutages"], fixtureActorIds)) return null;
+  const outages = value["routeOutages"], events = value["events"];
+  if (Array.isArray(outages) && Array.isArray(events) && outages.some((outage) => isRecord(outage) &&
+      events.some((event) => isRecord(event) && event["id"] === outage["id"]))) return null;
   if (!validAiRuntimeConstructionOrders(value["constructionOrders"], fixtureActorIds, actorOwners, authoredNames)) return null;
   return { fixtureActorIds, actorOwners, authoredNames };
 }

@@ -6,11 +6,16 @@ import { normalizeRuntimeMovement } from "./skirmish-ai-runtime-movement-normali
 import { nativeDamageMatches } from "./skirmish-ai-native-damage";
 
 /** One projection of existing raw authority, shared by the ID-specific assertions. No additional match/report interpreter. */
-export function nativeScenarioContext(result: RuntimeVariantResultV1, latestTick: number) {
+export function nativeScenarioContext(result: RuntimeVariantResultV1, latestTick: number, terminalHorizon?: number) {
   const capture = result.productionCapture, opponent = result.opponentCapture;
   const failures = [
-    ...runtimeClosedHistoryFailures(capture, latestTick),
-    ...runtimeClosedHistoryFailures(opponent, latestTick).map((failure) => `opponent:${failure}`)
+    ...runtimeClosedHistoryFailures(capture, latestTick, terminalHorizon),
+    ...runtimeClosedHistoryFailures(opponent, latestTick, terminalHorizon).map((failure) => `opponent:${failure}`),
+    ...(result.otherOpponentCaptures ?? []).flatMap((other) => [
+      ...runtimeClosedHistoryFailures(other, latestTick, terminalHorizon),
+      ...(JSON.stringify(other.setup) !== JSON.stringify(capture?.setup) || other.playerNumber < 3 ||
+        other.resourceCoverage?.lost ? ["native_other_opponent_capture_invalid"] : [])
+    ])
   ];
   if (capture?.resourceCoverage?.lost || opponent?.resourceCoverage?.lost) failures.push("native_capture_channel_lost");
   const frames = (capture?.facts ?? []).filter(
@@ -30,11 +35,13 @@ export function nativeScenarioContext(result: RuntimeVariantResultV1, latestTick
   const movements = capture ? normalizeRuntimeMovement(capture) : { failures: ["native_movement_missing"], movements: [] };
   failures.push(...movements.failures);
   const roles = result.presetCreatedActorIds;
-  const facts = [...(capture?.facts ?? []), ...(opponent?.facts ?? [])].filter((fact) => fact.tick <= latestTick)
+  const facts = [...(capture?.facts ?? []), ...(opponent?.facts ?? []),
+    ...(result.otherOpponentCaptures ?? []).flatMap((other) => other.facts)].filter((fact) => fact.tick <= latestTick)
     .sort((a, b) => a.sequence - b.sequence);
   const arrived = (actorId?: string, afterTick = 0) => movements.movements.filter((movement) =>
     movement.callerAttributed && !movement.gaps.length && movement.returned === "true" &&
     movement.arrival === "original_destination" && movement.started.tick >= afterTick &&
+    movement.started.tick <= latestTick && movement.observations.every((entry) => entry.tick <= latestTick) &&
     movement.observations[0]?.spatial.source.actorId === actorId &&
     movement.observations[0]?.spatial.caller?.order?.commandContext?.execution.source === "ai"
   );

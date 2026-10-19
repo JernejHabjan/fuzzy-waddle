@@ -87,7 +87,7 @@ export class AiRuntimeProductionCapture {
     const playerChanged = scene.communicator.playerChanged;
     if (!ticks || !bus || !index || !tech || !playerChanged) throw new Error("production_capture_authority_missing");
     this.startedTick = ticks.currentTick;
-    this.proof = new AiRuntimeProductionProofCapture(scene, this.identify, () => this.nextSequence - 1);
+    this.proof = new AiRuntimeProductionProofCapture(scene, this.identify, () => this.nextSequence - 1, captureCombat);
     this.resourceIntervalDeclaration = structuredClone({
       boundary: { tick: this.startedTick, captureSequence: 0 },
       overflow: intervals.length > 256,

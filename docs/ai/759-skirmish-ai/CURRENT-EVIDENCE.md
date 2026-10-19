@@ -2,6 +2,79 @@
 
 [HANDOFF.md](HANDOFF.md) owns continuation. Read this current batch; older sections retain historical evidence.
 
+## Fourteen mission/domain/classic registrations — authored unrun, 2026-10-19
+
+Publication base47aedcb062097a54af85ea94022c8435bc4c0e2b; same branch/worktree as HANDOFF. Actual model/effort unknown,
+no delegation or model switch. Verify the containing commit and remote on resume. No recipes, tests, lint, typing,
+formatter, builds, browser/server, doctor/context or dedicated validators ran. Fixture/catalog --write is authoring only.
+
+### Acceptance map and source ownership
+
+1. **Fourteen registrations authored:** STRAT-02/03/08/09, DOMAIN-01/02/05, RAID-03 and C-01–06 retain original
+   obligations in native-scenario-bindings.json. native-strategic-worlds.mjs, native-domain-worlds.mjs and
+   native-classic-worlds.mjs declare real actors, terrain, paid queue/research inputs and shared opponent commands.
+   native-scenario-registration.mjs authors84 faction/control variants and their strict matrix bindings.41 drafts remain.
+2. **Defense and strategic outcomes authored:** native-raid-strategy-evaluation.ts joins hidden physical raid arrival,
+   real home damage, limited useful defense versus escalated recall, main-front pressure and delivered home income.
+   Finishing needs AI-owned native core damage and the ordinary score win. Comeback needs fairly seen superior enemy
+   force and an applied shared AI attack producing useful damage; actual elimination supplies the losing control.
+   The elimination control need not dispatch a token command to satisfy a generic command count.
+3. **Domain outcomes authored:** native-domain-evaluation.ts requires consumed water/air capability, paid native output,
+   actual compatible addressed hits and useful transit. Irrelevant/unreachable controls cannot justify water purchases;
+   observed anti-air and low-value contacts constrain air investment. DOMAIN-02 uses the real third Tivara opponent
+   for hostile ship interception; no foreign Skaduwee ship is invented.
+4. **Classic outcomes authored:** native-classic-evaluation.ts checks original paid work/completed-asset retention,
+   normal cancellation/refund, dated upgrade/window changes, repeated affordable useful output and settled demand,
+   dated contact deduplication/question service, bait/leash/follow-up and coherent three-player retargeting.
+   native-mission-evidence.ts reuses real queue charge/completion/spawn, native hit and original landing/transit readers.
+5. **Bindings use existing authority:** board/unload commands translate through the shared bus. Native transport membership
+   and public team/defeat state extend the existing explicitly opted-in bounded tactical sample. Initial passive health-bearing
+   assets/carriers are included in that opt-in lifetime proof; ordinary capture keeps its previous actor selection. Three-player variants use
+   the existing AI Multiplayer map and ordinary Add A.I. lobby route; extra opponents arm/read the same observer. Their
+   duplicate shared recipient ledger is omitted before browser transfer. No second observer, report interpreter or raw
+   report scan is added. Existing8192-byte model-facing summaries and local raw-proof policy remain.
+6. **Finite infrastructure/terminal support authored:** routeOutages targets original actor handles only over a fixed
+   interval, records its first actual null-response interception and restores owned query hooks at expiry/shutdown.
+   It is test infrastructure, not changed terrain or proof of strategic defeat. Normal event collection now validates
+   actual outage identities/timing instead of discarding the event. Setup waits for navigation readiness. STRAT-08 seals
+   an authoritative win tick before reading both native histories; only its explicitly checked win allows a shorter sealed
+   prefix. Other history gaps and all default full-horizon requirements still fail. Readers refuse post-horizon arrivals/output.
+7. **Explicit current-content limits:** ships are offered only by Sandhold. Boat raids require a Tivara human; Skaduwee's
+   missing ship capability is tested from its actual catalog. Both factions retain real armed air-raider branches. No
+   in-match diplomacy command exists, so C-06 tests ordinary defeat/retargeting and initial allied-team control; dynamic
+   diplomacy remains unsupported, not a passed transition. No fishing or island-establishment coverage is invented.
+8. **Unrun controls authored:** strict recipe/source/faction/branch drift, missing boat/outage/extra-player/team/terminal
+   metadata, original query identity, fixed bounds, retained-wrapper/later-hook cleanup, bounded boarding/unload parser,
+   incomplete or foreign/late outage results, missing sealed intervals and nonterminal/gapped histories. Prior controls
+   remain authored/unrun. No new gameplay planner or balance repair is claimed.
+9. **Progress:**75/116 supported runtime registrations (64.7%),41 remaining (35.3%), plus4 deferred island rows;
+   pure111/111 (100%). Definitions116/116 comprise75 bindings and41 specifications. Latest84 variants are0/84 executed,
+   0/84 validated. Prior194 variants and21 partial owner worlds remain unrun. No overall AI completion percentage.
+
+### Omission Audit — source only
+
+- Traced original14-ID obligations through source factories, faction-specific branches, strict fixture guard, manifest,
+  ordinary lobby/frame runner, additional native opponent histories, per-ID assertions and full-case coverage.
+- Reviewed board/unload ownership, actual container membership, player/team/defeat premises, paid original queue lineage,
+  failed-route query scope, missing/late event collection and terminal prefix sealing. Repaired deferred navigation setup,
+  missing outage result collection, a generic-command requirement that incorrectly penalized actual elimination controls,
+  post-horizon native arrival/output borrowing, and missing initial passive-asset/carrier lifetime tracking. Added unrun regression/drift controls.
+- Source review cannot establish legal footprints, actual boarding/landing visibility, response-force adequacy, timing,
+  actual window closure, native fleet spawning or semantic reader correctness. Those remain gate premises. Missing proof
+  must remain unavailable/failed; do not extend deadlines, invent capability or weaken outcomes for a pass.
+- Three-player local focus is not real socket-peer or host-migration evidence. Explicit unsupported dynamic diplomacy is
+  not counted as validated behavior. Raw proof remains local; ordinary play installs no preset route fault or combat capture.
+
+### Final Closure Audit — authoring publication only
+
+All14 selected IDs have concrete supported-branch factories, strict registrations and native reader consumers; current
+content limits remain visible rather than dropped. Fixture/catalog data and HANDOFF/REMAINING-WORK/SCENARIO-INVENTORY
+plus owning testing guidance are refreshed. No additional intended source-authoring gap was identified; execution,
+typing/style and native correctness remain unverified. This closes this authoring batch, not gameplay acceptance.
+Unrelated run XML/fog edits are excluded. Next group H-01–05/H-19–21/H-23–26 (12 IDs) for deadline/progress, safe release,
+route/builder service and tactical liveness recovery; authority/lifecycle/peers, SEQ, difficulty/debug and later victory
+remain. Machinery necessity review stays last. Commit/push exact owned paths, verify remote and pause.
+
 ## Thirty native registrations — authored unrun, 2026-10-19
 
 Publication base c07d24b5177bdfe260710bff955c496911554194; same branch/worktree as HANDOFF. Actual model/effort unknown,

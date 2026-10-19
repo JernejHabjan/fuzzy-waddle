@@ -15,6 +15,11 @@ export interface RuntimeVariantV1 {
   readonly aiFaction: "Tivara" | "Skaduwee";
   readonly humanFaction: "Tivara" | "Skaduwee";
   readonly difficulty: "Easy" | "Normal" | "Hard";
+  /** Native lobby slots only; actors may not invent players in a two-spawn scene. */
+  readonly additionalAiPlayers?: readonly { readonly playerNumber: number; readonly faction: "Tivara" | "Skaduwee";
+    readonly difficulty: "Easy" | "Normal" | "Hard" }[];
+  /** Initial supported team relations; not an in-match diplomacy command. */
+  readonly lobbyTeams?: readonly { readonly playerNumber: number; readonly team: number }[];
   readonly presetWorld?: RuntimePresetWorldV1;
   /** Explicit test-only native construction history; ordinary matches and unmarked recipes install none. */
   readonly captureConstruction?: true;

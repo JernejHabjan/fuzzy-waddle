@@ -3,34 +3,36 @@
 Default resume page: read this first, then only the selected package in [REMAINING-WORK.md](REMAINING-WORK.md).
 Do not load the full plan directory or archive on startup.
 
-## Current cursor — 30-ID native registration batch authored, 2026-10-19
+## Current cursor — 14-ID mission/domain/classic batch authored, 2026-10-19
 
 - Worktree /home/jernej/.codex/worktrees/7977/fuzzy-waddle; branch feature/759-skirmish-ai.
-  Publication base c07d24b5177bdfe260710bff955c496911554194; verify the containing publication commit and remote on resume.
-  Actual model/effort unknown; no delegation or model switch. Preserve unrelated run XML and ALL_VISIBLE fog edits.
-- Authored PLACE-01–03/EXP-01/WALL-01–05/H-27/28, SCOUT-01–04/H-22, STRAT-04–07/10–13,
-  RAID-01/FIGHT-01–05:30 registered IDs,194 faction/control variants, all unrun. Concrete inputs, native controls,
-  original acceptance metadata and ID-specific native assertions replace their drafts in the normal matrix.
-- Supported runtime registration61/116 (52.6%),55 unbound (47.4%), plus4 deferred island rows. Pure111/111 (100%).
-  Definitions116/116 comprise61 registrations and55 specifications. No overall AI completion percentage or new pass.
-  The previous21 partial owner worlds remain unrun; variants are not a count of unique physical maps.
-- Existing opt-in capture now supplies bounded native sight, selected missions, weapon/heal/status boundaries and real
-  footprints. No new observer/report architecture; ordinary games have no combat hooks. Raw proof stays local;
-  model-facing reports remain capped at8192 bytes with explicit omissions and narrow follow-up projections.
-- Corrected Firestorm/FrostNova/HealingRain research prerequisites to AnkGuard, their existing Tivara research menu.
-  Costs, durations and field balance are unchanged. Added unrun drift/lifecycle/content controls.
-- **Execution remains forbidden:** no recipes, tests, lint, type checks, formatter, builds, browser/server,
-  doctor/context or dedicated validation. Only source review and fixture/catalog --write authoring occurred.
-  Source review cannot prove timing, constrained-site count, terrain/weapon matchups or semantic oracle correctness.
-  Missing premises must fail at the later authorized gate; never relax an assertion to manufacture a pass.
-- **Next grouped authoring action:** remaining land strategy/domain/raid/counterattack cases together:
-  STRAT-02/03/08/09, DOMAIN-01/02/05, RAID-03, C-01–06 (14 IDs). Reuse capture and command authority;
-  bind real current-content transport only where supported. These cover local defense versus recall, finishing/comeback,
-  useful domain choices, raid continuity and classic RTS counters. Do not add new diagnostic architecture.
-  H recovery/authority, real save/replay/peers, SEQ, difficulty/debug and later victory remain open; machinery review last.
-- Report done/why and next/why in short bullets, distinguish authored from validated, commit/push owned paths,
-  verify remote equality and pause at the agreed boundary. Next recommendation remains Sol6.1/high for native
-  authority/causal oracle work; this recommendation does not change the running settings.
+  Publication base47aedcb062097a54af85ea94022c8435bc4c0e2b; verify the containing commit and remote on resume.
+  Actual model/effort unknown; no delegation/model switch. Preserve unrelated run XML and ALL_VISIBLE fog edits.
+- STRAT-02/03/08/09, DOMAIN-01/02/05, RAID-03, C-01–06 now have14 native registrations/84 faction-control variants,
+  authored unrun. They cover physical raids/proportional recall, finishing/comeback, naval/air utility, retained paid work,
+  attack windows, useful army growth, information deduplication, pursuit and real three-player retargeting.
+- Supported runtime registration75/116 (64.7%);41 unbound (35.3%), plus4 deferred island rows. Pure111/111 (100%).
+  Definitions116/116 comprise75 bindings and41 specifications. No overall AI completion percentage or new gameplay pass.
+  These84 variants, the prior194 variants and21 partial owner worlds remain unrun; they are not unique physical maps.
+- Existing shared controls now support actual boarding/unload. Bounded native transport/team/defeat samples and real
+  third-player capture share the existing opt-in ledger. Opponent reads omit duplicate shared recipient data; raw proof
+  stays local and model-facing summaries remain capped at8192 bytes. No new observer/report system or balance edit.
+- Content limits are explicit: only Tivara offers ships. Boat raids require a Tivara human; naval interception uses a real
+  third Tivara opponent. Skaduwee gets an actual missing-capability control. No in-match diplomacy command exists:
+  C-06 covers native defeat/retargeting and initial allied teams; dynamic diplomacy is unsupported, not passed.
+- A finite original-actor route-service outage is test-only, fixed in tick range, records actual interception and restores
+  owned hooks. It does not corrupt terrain or authorize surrender. STRAT-08 accepts only an authoritative win with a
+  sealed native prefix after normal damage; default full-horizon requirements remain for other cases.
+- **No execution:** no recipes/tests/lint/types/formatter/build/browser/server/doctor/context/dedicated validators.
+  Only source review and fixture/catalog --write authoring occurred. Geometry, timings, strength, actual adapter behavior
+  and oracle correctness remain unmeasured. Missing premises must fail at the later gate; never relax them to get a pass.
+- **Next grouped authoring:** H-01–05, H-19–21, H-23–26 (12 IDs): episode deadlines, false versus healthy progress,
+  safe release, failed/slow routes, builder service, launch readiness, uncertain fights and oscillation/grouping recovery.
+  Reuse current route/mission/native readers; no new diagnostic architecture. H resource authority, lifecycle/peers,
+  supported SEQ, difficulty/debug and later victory remain. Machinery necessity review is last.
+- Report done/why and next/why in short bullets; distinguish registrations from validated outcomes. Commit/push exact
+  owned paths, verify remote equality and pause. Recorded next recommendation: Sol6.1/high for causal recovery/authority
+  work; a recommendation does not change active settings.
 
 ## What “continue” means
 
@@ -96,7 +98,7 @@ Keep the report self-contained and concise. A documentation-only update reports 
 gameplay progress unchanged. The execution plan links to this format rather than maintaining a second template.
 
 Registration coverage: pure **111/111 = 100% registered / 0% remaining**; supported runtime
-**61/116 = 52.6% registered / 47.4% remaining**, excluding four deferred runtime rows. These are not overall AI completion.
+**75/116 = 64.7% registered / 35.3% remaining**, excluding four deferred runtime rows. These are not overall AI completion.
 Reconcile behavior evidence per selected package; do not invent a global completion percentage.
 
 ## End-of-gate machinery necessity review

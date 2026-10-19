@@ -4,6 +4,7 @@ import { captureAiRuntimePlacementClearance } from "./capture-ai-runtime-placeme
 import { applyAiRuntimeSourceStocks } from "./ai-runtime-source-stocks";
 import { applyAiRuntimeHealthStarts } from "./ai-runtime-health-starts";
 import { applyAiRuntimeTerrainPatches } from "./ai-runtime-terrain-patches";
+import { installAiRuntimeRouteOutages } from "./ai-runtime-route-outages";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { installAiRuntimeProductionRallies } from "./install-ai-runtime-production-rallies";
@@ -157,12 +158,14 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
     });
     installAiRuntimePresetEvents(scene, preset, createdActors);
     installAiRuntimePresetControls(scene, preset, createdActors);
+    installAiRuntimeRouteOutages(scene, preset, createdActors);
     installAiRuntimeProductionRallies(scene, preset, createdActors);
   };
   if (
     (preset.queues?.length ?? 0) +
       (preset.constructionOrders?.length ?? 0) +
       (preset.researchQueues?.length ?? 0) +
+      (preset.routeOutages?.length ?? 0) +
       (preset.controls?.length ?? 0) +
       (preset.productionRallies?.length ?? 0) >
     0

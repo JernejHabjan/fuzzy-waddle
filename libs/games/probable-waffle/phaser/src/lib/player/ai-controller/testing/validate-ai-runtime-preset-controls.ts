@@ -4,7 +4,7 @@ import { SpellType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/compone
 /** Strict bounded controller input parser. Rejects undeclared actors, cross-owner rally targets and invented actions. */
 export function validAiRuntimePresetControls(value: unknown, owners: ReadonlyMap<string, number | null>): boolean {
   if (value === undefined) return true;
-  if (!Array.isArray(value) || value.length > 32) return false;
+  if (!Array.isArray(value) || value.length > 64) return false;
   const ids = new Set<string>();
   const names = new Set<string>(Object.values(ObjectNames));
   const spells = new Set<string>(Object.values(SpellType));
@@ -39,7 +39,7 @@ export function validAiRuntimePresetControls(value: unknown, owners: ReadonlyMap
       return only(action, ["kind", "spellType", "targetFixtureActorId"]) && typeof target === "string" &&
         owners.has(target) && typeof action["spellType"] === "string" && spells.has(action["spellType"]);
     }
-    if (action["kind"] === "move" || action["kind"] === "construct") {
+    if (action["kind"] === "move" || action["kind"] === "construct" || action["kind"] === "unload") {
       const point = action["worldPosition"];
       if (action["kind"] === "construct" && (typeof action["actorName"] !== "string" || !names.has(action["actorName"])))
         return false;
@@ -55,7 +55,7 @@ export function validAiRuntimePresetControls(value: unknown, owners: ReadonlyMap
       return only(action, ["kind", "targetFixtureActorId"]) && typeof target === "string" && owners.has(target) &&
         owners.get(target) !== null && owners.get(target) !== owners.get(producerFixtureActorId);
     }
-    if (action["kind"] === "rally" || action["kind"] === "move_to_actor") {
+    if (action["kind"] === "rally" || action["kind"] === "move_to_actor" || action["kind"] === "board") {
       const target = action["targetFixtureActorId"];
       return (
         only(action, ["kind", "targetFixtureActorId"]) &&

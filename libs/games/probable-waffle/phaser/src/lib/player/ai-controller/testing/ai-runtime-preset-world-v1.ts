@@ -14,6 +14,9 @@ export interface AiRuntimePresetWorldV1 {
     readonly blocked: boolean }[];
   /** Keep real initial actor/body footprints legal when masking a constrained world; no later terrain edits. */
   readonly terrainPreserveFootprints?: true;
+  /** Test-only finite query outage for original actors; never changes ownership, terrain or strategic defeat state. */
+  readonly routeOutages?: readonly { readonly id: string; readonly fromTick: number; readonly throughTick: number;
+    readonly fixtureActorIds: readonly string[] }[];
   readonly provenance: {
     readonly sourceRevision: string;
     readonly fixtureDigest: string;

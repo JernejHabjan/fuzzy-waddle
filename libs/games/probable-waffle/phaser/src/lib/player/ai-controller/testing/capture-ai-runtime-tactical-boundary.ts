@@ -3,6 +3,9 @@ import { getActorComponent } from "../../../data/actor-component";
 import { getGameObjectCurrentTile } from "../../../data/game-object-helper";
 import { isSnapshotApplyInProgress } from "../../../data/scene-data";
 import { LevelComponent } from "../../../entity/components/level/level-component";
+import { ContainerComponent } from "../../../entity/components/building/container-component";
+import { ContainableComponent } from "../../../entity/components/building/containable-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
@@ -32,16 +35,31 @@ export function captureAiRuntimeTacticalBoundary(
     ...(points.length > 512 ? ["tactical_search_overflow"] : []),
     ...(remembered.length > 32 ? ["tactical_remembered_coverage_overflow"] : [])
   ];
+  if (scene.players.length > 16 || scene.players.some((player) => player.playerNumber === undefined))
+    gaps.push("tactical_player_roster_invalid");
   return {
     tick, playerNumber, informationPolicy: policy.informationPolicy,
     snapshotRestoreInProgress: isSnapshotApplyInProgress(scene), gaps,
+    players: gaps.length ? [] : scene.players.flatMap((player) => player.playerNumber === undefined ? [] : [{
+      playerNumber: player.playerNumber, team: player.playerController.data.playerDefinition?.team ?? player.playerNumber,
+      defeated: player.playerController.data.leftOrKilled === true
+    }]),
     actors: gaps.length ? [] : actors.map((actor) => {
       const health = getActorComponent(actor, HealthComponent);
       const level = getActorComponent(actor, LevelComponent)?.currentLevel ?? 1;
+      const parent = getActorComponent(actor, ContainableComponent)?.getContainerOwner();
+      const passengers = getActorComponent(actor, ContainerComponent)?.getContainedGameObjects() ?? [];
+      if (passengers.length > 64) gaps.push("tactical_transport_membership_overflow");
       return {
         identity: captureAiRuntimeCreatedActor(actor), tile: getGameObjectCurrentTile(actor) ?? null,
         visible: policy.mayObserve(actor), health: health?.healthComponentData.health ?? null,
         armour: health?.healthComponentData.armour ?? null,
+        containerId: parent ? getActorComponent(parent, IdComponent)?.id ?? null : null,
+        passengerIds: passengers.length > 64 ? [] : passengers.map((passenger) => {
+          const id = getActorComponent(passenger, IdComponent)?.id;
+          if (!id) gaps.push("tactical_passenger_identity_missing");
+          return id ?? "";
+        }),
         combat: projectAiCombatProfile(actor, getPwActorDefinition(actor.name, level), true, "owned", tick ?? 0)
       };
     }),
