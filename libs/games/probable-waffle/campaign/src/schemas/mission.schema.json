@@ -203,6 +203,43 @@
       "$ref": "#/$defs/implementationBrief",
       "description": "Implementation used by this campaign definition."
     },
+    "scenarioPresentation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resourceHud"
+      ],
+      "properties": {
+        "resourceHud": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "visibleResources",
+            "showHousing"
+          ],
+          "properties": {
+            "visibleResources": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "food",
+                  "wood",
+                  "stone",
+                  "minerals"
+                ]
+              },
+              "description": "Ordered economy counters shown by the scenario HUD."
+            },
+            "showHousing": {
+              "type": "boolean",
+              "description": "Whether the scenario HUD shows current and maximum housing."
+            }
+          }
+        }
+      },
+      "description": "Reusable scenario presentation copied into authoritative game-mode data at launch."
+    },
     "participants": {
       "type": "array",
       "items": {

@@ -5,6 +5,12 @@ import Phaser from "phaser";
 
 import Resource from "./Resource";
 /* START-USER-IMPORTS */
+import type { ScenarioPresentationPolicy } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  createScenarioResourceHudLayout,
+  resolveScenarioResourceHudEntries,
+  type ScenarioResourceHudEntry
+} from "./scenario-resource-hud-projection";
 /* END-USER-IMPORTS */
 
 export default class Resources extends Phaser.GameObjects.Container {
@@ -96,32 +102,45 @@ export default class Resources extends Phaser.GameObjects.Container {
 
   /* START-USER-CODE */
 
-  private readonly resourceTypes = ["food", "wood", "stone", "minerals", "housing"] as const;
+  private visibleEntries = resolveScenarioResourceHudEntries();
+  private isMobileLayout = false;
 
-  setMobileLayout(isMobile: boolean) {
+  /**
+   * Applies scenario-authored visibility while leaving player economy state untouched.
+   * Missing policy data deliberately restores the legacy complete HUD.
+   */
+  setScenarioPresentationPolicy(policy?: ScenarioPresentationPolicy): void {
+    this.visibleEntries = resolveScenarioResourceHudEntries(policy);
+    const visibleTypes = new Set<ScenarioResourceHudEntry>(this.visibleEntries);
+    for (const child of this.resources_container.list) {
+      if (child instanceof Resource) child.setVisible(child.type !== "" && visibleTypes.has(child.type));
+    }
+    this.setVisible(this.visibleEntries.length > 0);
+    this.setMobileLayout(this.isMobileLayout);
+  }
+
+  setMobileLayout(isMobile: boolean): void {
+    this.isMobileLayout = isMobile;
+    const layout = createScenarioResourceHudLayout(this.visibleEntries, isMobile);
     const background = this.resources_container.list.find(
       (child): child is Phaser.GameObjects.NineSlice => child instanceof Phaser.GameObjects.NineSlice
     );
-    const resources = this.resourceTypes
-      .map((type) =>
-        this.resources_container.list.find(
-          (child): child is Resource => child instanceof Resource && child.type === type
-        )
-      )
-      .filter((resource): resource is Resource => !!resource);
-
-    this.resources_container.setScale(isMobile ? 1 : 2);
+    this.resources_container.setScale(layout.containerScale);
 
     if (background) {
-      background.setSize(isMobile ? 92 : 50, isMobile ? 214 : 10);
-      background.scaleX = isMobile ? 0.7 : 4.62;
-      background.scaleY = isMobile ? 0.5 : 2.8023638778148445;
+      background.setSize(layout.background.width, layout.background.height);
+      background.scaleX = layout.background.scaleX;
+      background.scaleY = layout.background.scaleY;
     }
 
-    resources.forEach((resource, index) => {
-      resource.x = isMobile ? 42 : 42 + index * 42;
-      resource.y = isMobile ? 21 + index * 21: 21;
-    });
+    for (const position of layout.entries) {
+      const resource = this.resources_container.list.find(
+        (child): child is Resource => child instanceof Resource && child.type === position.type
+      );
+      if (!resource) continue;
+      resource.x = position.x;
+      resource.y = position.y;
+    }
   }
 
   /* END-USER-CODE */
