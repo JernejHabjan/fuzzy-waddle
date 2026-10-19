@@ -48,6 +48,7 @@ import {
 } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/constructable-category";
 import { SelectionTabHandler } from "../../../player/human-controller/selection-tab-handler";
 import type { ActorActionSetup } from "./actor-action-setup";
+import { getSpellActionAvailability } from "./spell-action-availability";
 import { SpellComponent } from "../../../entity/components/combat/components/spell-component";
 import { spellDefinitions } from "../../../entity/components/combat/spell-definitions";
 import { SpellCursor } from "../../../player/human-controller/spell-cursor";
@@ -759,11 +760,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
       const isResearched = spellComponent.isSpellResearched(spellType);
 
-      // Hide spells that require research but haven't been researched yet
-      if (!isResearched && spellData.requiresResearch) {
-        return;
-      }
-
+      // Keep research-gated spells in their normal slot so players can discover the prerequisite.
       const action = this.actor_actions[index];
       if (!action) {
         console.error("Action button not found at index", index);
@@ -773,6 +770,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       const cooldownProgress = spellComponent.getCooldownProgress(spellType);
       const cooldownRemaining = spellComponent.getCooldownRemaining(spellType);
       const autocastEnabled = spellComponent.isAutocastEnabled(spellType);
+      const availability = getSpellActionAvailability(isResearched, cooldownRemaining);
 
       // Use validation state similar to production
       const { disabled, unmetRequirements } = this.getSpellValidationState(spellType, spellComponent);
@@ -785,9 +783,10 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         },
         visible: true,
         disabled,
-        cooldownProgress: cooldownProgress < 100 ? cooldownProgress : undefined,
-        cooldownRemaining: cooldownRemaining > 0 ? cooldownRemaining : undefined,
-        autocastEnabled: isResearched && autocastEnabled,
+        availability,
+        cooldownProgress: availability === "cooldown" && cooldownProgress < 100 ? cooldownProgress : undefined,
+        cooldownRemaining: availability === "cooldown" ? cooldownRemaining : undefined,
+        autocastEnabled: availability !== "locked" && autocastEnabled,
         action: () => {
           if (disabled) return;
           // Activate spell cursor for ground-target spells
@@ -796,6 +795,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
           }
         },
         onRightClick: () => {
+          if (availability === "locked") return;
           // Toggle autocast on right-click
           spellComponent.toggleAutocast(spellType);
           // Update autocast indicator immediately

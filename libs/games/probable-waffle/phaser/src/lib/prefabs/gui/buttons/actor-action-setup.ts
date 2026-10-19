@@ -1,4 +1,5 @@
 import type { TooltipInfo } from "../labels/tooltip-info";
+import type { SpellActionAvailability } from "./spell-action-availability";
 
 export type ActorActionSetup = {
   icon?: {
@@ -22,4 +23,6 @@ export type ActorActionSetup = {
   cooldownRemaining?: number;
   // Autocast indicator (for spells)
   autocastEnabled?: boolean;
+  /** Explicit spell state; locked takes precedence over cooldown rendering. */
+  availability?: SpellActionAvailability;
 };

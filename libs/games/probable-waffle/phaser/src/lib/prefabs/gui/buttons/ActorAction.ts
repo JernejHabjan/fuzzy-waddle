@@ -13,6 +13,7 @@ import { getGameObjectBounds } from "../../../data/game-object-helper";
 import { IconHelper } from "../labels/IconHelper";
 import type { ActorActionSetup } from "./actor-action-setup";
 import type { TooltipInfo } from "../labels/tooltip-info";
+import type { SpellActionAvailability } from "./spell-action-availability";
 /* END-USER-IMPORTS */
 
 export default class ActorAction extends Phaser.GameObjects.Container {
@@ -99,6 +100,14 @@ export default class ActorAction extends Phaser.GameObjects.Container {
   // Autocast indicator
   private autocastIndicator?: Phaser.GameObjects.Image;
 
+  /** Overlay owned by this prefab while a research-gated spell is unavailable. */
+  private lockIndicator?: Phaser.GameObjects.Text;
+  private availability: SpellActionAvailability = "ready";
+
+  /**
+   * Applies the current action state without recreating this HUD control, so
+   * research and cooldown updates can preserve the prefab's input lifecycle.
+   */
   setup(setup: ActorActionSetup) {
     if (setup.icon) {
       this.setIcon(setup.icon.key, setup.icon.frame, setup.icon.origin);
@@ -109,6 +118,7 @@ export default class ActorAction extends Phaser.GameObjects.Container {
     this.action = setup.action;
     this.onRightClickAction = setup.onRightClick;
     this.setShortcutLabel(setup.shortcut);
+    this.setAvailability(setup.availability ?? "ready");
     this.setCooldownProgress(setup.cooldownProgress, setup.cooldownRemaining);
     this.setAutocastIndicator(setup.autocastEnabled ?? false);
   }
@@ -167,7 +177,42 @@ export default class ActorAction extends Phaser.GameObjects.Container {
     this.shortcutText?.setAlpha(this.disabled ? 0.5 : 1);
   }
 
+  /**
+   * Keeps unavailable research discoverable without conflating it with a cast
+   * cooldown. The simple text overlay is code-owned so the paired editor scene
+   * remains structurally unchanged.
+   */
+  private setAvailability(availability: SpellActionAvailability) {
+    this.availability = availability;
+
+    if (availability !== "locked") {
+      this.lockIndicator?.setVisible(false);
+      return;
+    }
+
+    if (!this.lockIndicator) {
+      this.lockIndicator = this.scene.add.text(0, 0, "LOCK", {
+        fontSize: "7px",
+        fontFamily: "disposabledroid",
+        color: "#ffffff",
+        backgroundColor: "#1c2638",
+        resolution: 10
+      });
+      this.lockIndicator.setOrigin(0.5);
+      this.lockIndicator.setDepth(10);
+      this.add(this.lockIndicator);
+    }
+
+    this.lockIndicator.setVisible(true);
+  }
+
   private setCooldownProgress(progress?: number, remainingMs?: number) {
+    if (this.availability === "locked") {
+      this.cooldownMask?.setVisible(false);
+      this.cooldownText?.setVisible(false);
+      return;
+    }
+
     if (progress === undefined || progress >= 100) {
       // No cooldown, hide overlay
       this.cooldownMask?.setVisible(false);
@@ -290,7 +335,7 @@ export default class ActorAction extends Phaser.GameObjects.Container {
 
   private onPointerDown = (pointer: Phaser.Input.Pointer) => {
     // Right-click (button 2) triggers the right-click action
-    if (pointer.rightButtonDown() && this.onRightClickAction) {
+    if (this.availability !== "locked" && pointer.rightButtonDown() && this.onRightClickAction) {
       this.onRightClickAction();
       // Prevent default action
       pointer.event?.preventDefault();
