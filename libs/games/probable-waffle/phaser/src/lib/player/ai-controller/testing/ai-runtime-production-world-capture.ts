@@ -128,7 +128,8 @@ export class AiRuntimeProductionWorldCapture {
       ...this.callbacks.boundary(playerNumber), kind: "native_damage", damage: {
         target: captureAiRuntimeCreatedActor(target), initiator: initiator ? captureAiRuntimeCreatedActor(initiator) : null,
         targetInCaptureScene: true, initiatorInCaptureScene: initiator?.scene === this.scene,
-        amount, healthAfter: health?.healthComponentData.health ?? null, armourAfter: health?.healthComponentData.armour ?? null,
+        amount, damageType: health?.latestDamage?.damageType ?? null,
+        healthAfter: health?.healthComponentData.health ?? null, armourAfter: health?.healthComponentData.armour ?? null,
         damageTick: health?.latestDamage?.simulationTick ?? null,
         sceneActive: this.scene.sys?.isActive() ?? false, snapshotRestoreInProgress: isSnapshotApplyInProgress(this.scene)
       }

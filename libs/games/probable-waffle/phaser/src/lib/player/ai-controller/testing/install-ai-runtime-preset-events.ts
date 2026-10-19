@@ -11,6 +11,8 @@ import { SimulationTickService } from "../../../world/services/simulation-tick.s
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import type { AiRuntimePresetWorldV1 } from "./ai-runtime-preset-world-v1";
 import { recordAiRuntimePresetEventV1 } from "./ai-runtime-browser-test-config";
+import { PRODUCTION_SPATIAL_AUTHORITY_EVENT, type ProductionSpatialAuthorityEvent } from
+  "../../../world/services/multiplayer/production-spatial-authority-event";
 
 /** Test-owned scheduled losses use native damage and retain the exact original identity when explicitly pinned. */
 export function installAiRuntimePresetEvents(
@@ -29,12 +31,23 @@ export function installAiRuntimePresetEvents(
   const actorIndex = getSceneService(scene, ActorIndexSystem);
   if (!tickService || !actorIndex) throw new Error("runtime_preset_event_services_unavailable");
   const cleanup = new Subscription();
+  const firstSites = new Map<string, Phaser.GameObjects.GameObject>();
+  if (pendingEvents.some((event) => event.kind === "destroy_ai_site")) {
+    const observe = (placement: ProductionSpatialAuthorityEvent) => {
+      if (placement.kind !== "placement" || !placement.legal || placement.command.execution?.source !== "ai") return;
+      const key = `${placement.command.playerNumber}:${placement.command.actorName}`;
+      if (!firstSites.has(key)) firstSites.set(key, placement.site);
+    };
+    scene.events.on(PRODUCTION_SPATIAL_AUTHORITY_EVENT, observe);
+    cleanup.add(() => { scene.events.off(PRODUCTION_SPATIAL_AUTHORITY_EVENT, observe); firstSites.clear(); });
+  }
   cleanup.add(
     tickService.tick$.subscribe(() => {
       while (pendingEvents[0] && pendingEvents[0].tick <= tickService.currentTick) {
         const event = pendingEvents.shift();
         if (!event) break;
-        const pinned = event.fixtureActorId ? createdActors.get(event.fixtureActorId) : undefined;
+        const pinned = event.kind === "destroy_ai_site" ? firstSites.get(`${event.owner}:${event.objectName}`) :
+          event.fixtureActorId ? createdActors.get(event.fixtureActorId) : undefined;
         const target = actorIndex
           .getOwnedActors(event.owner)
           .filter(
@@ -42,7 +55,7 @@ export function installAiRuntimePresetEvents(
               actor.scene === scene &&
               actor.active &&
               actor.name === event.objectName &&
-              (event.fixtureActorId === undefined || actor === pinned)
+              (event.fixtureActorId === undefined && event.kind !== "destroy_ai_site" || actor === pinned)
           )
           .sort((left, right) => {
             const leftId = getActorComponent(left, IdComponent)?.id ?? "";
@@ -52,10 +65,21 @@ export function installAiRuntimePresetEvents(
         const health = target ? getActorComponent(target, HealthComponent) : undefined;
         const actorId = target ? (getActorComponent(target, IdComponent)?.id ?? null) : null;
         const construction = target && getActorComponent(target, ConstructionSiteComponent);
+        if (event.kind === "damage_owned_actor" && health &&
+            (event.damage === undefined || event.damage >= (health.healthComponentData.armour > 0
+              ? health.healthComponentData.armour : health.healthComponentData.health))) {
+          throw new Error(`runtime_preset_damage_must_be_nonlethal:${event.id}`);
+        }
         const applied = !!health && !!actorId && health.healthComponentData.health > 0 &&
           (event.kind !== "cancel_unfinished_site" || !!construction && !construction.isFinished);
         if (applied && event.kind === "cancel_unfinished_site") target?.destroy();
-        else if (applied) health?.takeDamage(Number.MAX_SAFE_INTEGER, DamageType.Physical);
+        else if (applied && health) {
+          // Native damage consumes armour without carrying excess into health; a scheduled loss must cross both layers.
+          if (event.kind !== "damage_owned_actor" && health.healthComponentData.armour > 0)
+            health.takeDamage(health.healthComponentData.armour, DamageType.Physical);
+          health.takeDamage(event.kind === "damage_owned_actor" ? event.damage ?? 0 : Number.MAX_SAFE_INTEGER,
+            DamageType.Physical);
+        }
         recordAiRuntimePresetEventV1({
           id: event.id,
           tick: tickService.currentTick,

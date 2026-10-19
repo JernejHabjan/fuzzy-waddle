@@ -11,7 +11,8 @@ import { captureRuntimeHumanAuthority } from "./skirmish-ai-runtime-human-captur
 export async function runRegisteredRuntimeVariant(
   browser: Browser, fixture: RuntimeFixtureV1, variant: RuntimeVariantV1, request: RuntimeRequestV1
 ) {
-  const contract = request.scenarioIds.includes("EXP-02") ? fixture.assertions["EXP-02"]?.requiredExpansionPressure : undefined;
+  const contract = (request.scenarioIds.includes("EXP-02") ? fixture.assertions["EXP-02"]?.requiredExpansionPressure : undefined) ??
+    request.scenarioIds.map((id) => fixture.assertions[id]?.requiredNativeScenario).find((binding) => binding !== undefined);
   let opponentCapture: AiRuntimeProductionCaptureV1 | undefined;
   const result = await runVariant(browser, fixture, variant, request.seed, request.scenarioIds,
     request.sourceRevision, request.fixtureDigest, contract ? async (page, index) => {

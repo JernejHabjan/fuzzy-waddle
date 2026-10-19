@@ -23,6 +23,8 @@ import type { AiObservationV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import type { AiRuntimeUnspentClaimsV1 } from "./ai-runtime-unspent-claims-v1";
 import type { AiRuntimeQueueCatalogEntryV1 } from "./ai-runtime-queue-catalog-entry-v1";
 import type { AiRuntimeDamageV1 } from "./ai-runtime-damage-v1";
+import type { AiRuntimeTacticalBoundaryV1 } from "./ai-runtime-tactical-boundary-v1";
+import type { AiRuntimeCombatOperationV1 } from "./ai-runtime-combat-operation-v1";
 
 /** Raw authority callbacks in observer order. No resource event is labelled a payment/refund without item provenance. */
 export type AiRuntimeProductionFactV1 = {
@@ -47,6 +49,7 @@ export type AiRuntimeProductionFactV1 = {
     }
   | { readonly kind: "preset_control"; readonly control: AiRuntimePresetControlEvent }
   | { readonly kind: "native_damage"; readonly damage: AiRuntimeDamageV1 }
+  | { readonly kind: "native_combat"; readonly operation: AiRuntimeCombatOperationV1 }
   | { readonly kind: "recipient_resources_installed"; readonly resources: Record<ResourceType, number> | null }
   | { readonly kind: "recipient_resource_mutation"; readonly mutation: AiRuntimeRecipientMutationV1 }
   | {
@@ -60,6 +63,8 @@ export type AiRuntimeProductionFactV1 = {
   | {
       readonly kind: "decision_selected";
       readonly decision: AiDecisionDispatchEvent;
+      /** Explicit combat capture only. Privileged diagnostics cannot become consumed AI input. */
+      readonly tacticalBoundary?: AiRuntimeTacticalBoundaryV1;
       /** Detached ownership before this selection adds/retires claims; boundaryState carries the accepting frame. */
       readonly unspentClaimsBeforeSelection?: AiRuntimeUnspentClaimsV1;
     }

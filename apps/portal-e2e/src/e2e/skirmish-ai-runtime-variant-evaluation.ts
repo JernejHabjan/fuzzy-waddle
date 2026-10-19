@@ -22,12 +22,14 @@ import { evaluateRuntimeProductionCausality } from "./skirmish-ai-runtime-produc
 import { evaluateRuntimeTechnology } from "./skirmish-ai-runtime-technology-evaluation";
 import { evaluateRuntimeEconomy } from "./skirmish-ai-runtime-economy-evaluation";
 import { evaluateRuntimeResourceRecovery } from "./skirmish-ai-runtime-resource-recovery-evaluation";
-import { evaluateExpansionWorld } from "./skirmish-ai-expansion-world-evaluation";
+import { evaluateRuntimeNativeContracts } from "./skirmish-ai-runtime-native-contracts";
+import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
 
 export function evaluateRuntimeVariant(
   scenarioId: string,
   assertion: RuntimeAssertionV1,
-  variant: RuntimeVariantResultV1
+  variant: RuntimeVariantResultV1,
+  fixture?: RuntimeFixtureV1
 ): string[] {
   const technologyFailures = evaluateRuntimeTechnology(
     scenarioId,
@@ -44,13 +46,8 @@ export function evaluateRuntimeVariant(
       variant.productionEvidenceV2
     )
   ].map((failure) => `${variant.variantId}:${failure}`);
-  if (scenarioId === "EXP-02") {
-    const contract = assertion.requiredExpansionPressure, branch = contract?.branchByVariant[variant.variantId];
-    failures.push(...(contract?.latestTick === 3000 && contract.humanPlayerNumber === 1 && branch &&
-      ["expand", "home_pressure", "pressure_withdrawn", "combat_resolved"].includes(branch)
-      ? evaluateExpansionWorld(branch, variant, variant.opponentCapture)
-      : ["expansion_pressure_variant_binding_missing"]).map((failure) => `${variant.variantId}:${failure}`));
-  }
+  failures.push(...evaluateRuntimeNativeContracts(scenarioId, assertion, variant, fixture)
+    .map((failure) => `${variant.variantId}:${failure}`));
   failures.push(
     ...(variant.productionEvidenceV2
       ? [...(variant.productionCausalityFailures ?? []), ...(variant.productionCausality?.failures ?? [])]

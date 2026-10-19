@@ -8,11 +8,11 @@ import { normalizeRuntimeMovement } from "./skirmish-ai-runtime-movement-normali
  */
 export function expansionServiceFailures(
   result: Pick<RuntimeVariantResultV1, "productionCapture" | "presetCreatedActorIds">,
-  siteId: string, commandId: string, builderId: string
+  siteId: string, commandId: string, builderId: string, latestTick = 3000
 ): string[] {
   const capture = result.productionCapture, sourceId = result.presetCreatedActorIds["safe-source"];
   if (!capture || !sourceId) return ["expansion_native_service_capture_missing"];
-  const facts = capture.facts.filter((fact) => fact.tick <= 3000), failures: string[] = [];
+  const facts = capture.facts.filter((fact) => fact.tick <= latestTick), failures: string[] = [];
   const completions = facts.filter((fact) => fact.kind === "construction_authority" &&
     fact.construction.site.actorId === siteId && fact.construction.kind === "lifecycle" && fact.construction.transition === "finished"
   );
@@ -44,7 +44,7 @@ export function expansionServiceFailures(
     identity.active && identity.alive && identity.finished && identity.indexed
   ))) failures.push("expansion_completed_deposit_not_retained");
   if (!hasNativeSourceDelivery(facts, { sourceActorId: sourceId, sourceOwner: null, playerNumber: 2,
-    resourceType: ResourceType.Wood, fromTick: completion.tick, throughTick: 3000, depositActorId: siteId
+    resourceType: ResourceType.Wood, fromTick: completion.tick, throughTick: latestTick, depositActorId: siteId
   })) failures.push("expansion_has_no_native_worker_delivery_to_new_deposit");
   return failures;
 }

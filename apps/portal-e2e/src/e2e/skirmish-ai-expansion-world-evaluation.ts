@@ -12,10 +12,11 @@ import { expansionPressureFailures } from "./skirmish-ai-expansion-pressure-eval
 export function evaluateExpansionWorld(
   branch: ExpansionBranch,
   result: Pick<RuntimeVariantResultV1, "productionCapture" | "presetCreatedActorIds" | "aiFaction">,
-  human: AiRuntimeProductionCaptureV1 | undefined
+  human: AiRuntimeProductionCaptureV1 | undefined,
+  latestTick = 3000
 ): string[] {
   const capture = result.productionCapture;
-  const failures = [...runtimeClosedHistoryFailures(capture, 3000), ...runtimeClosedHistoryFailures(human, 3000)];
+  const failures = [...runtimeClosedHistoryFailures(capture, latestTick), ...runtimeClosedHistoryFailures(human, latestTick)];
   if (!capture || !human || failures.length) return failures;
   const setup = capture.setup, roles = result.presetCreatedActorIds;
   if (capture.playerNumber !== 2 || human.playerNumber !== 1 || setup?.tick !== 0) return ["expansion_native_setup_missing"];
@@ -34,7 +35,7 @@ export function evaluateExpansionWorld(
       (unsafe.definition.resourceSource?.currentResources ?? 0) <= (safe.definition.resourceSource?.currentResources ?? Infinity)) {
     failures.push("expansion_depletion_or_richer_alternative_premise_missing");
   }
-  const decisions = capture.facts.flatMap((fact) => fact.kind === "decision_selected" && fact.tick <= 3000 ? [fact] : []);
+  const decisions = capture.facts.flatMap((fact) => fact.kind === "decision_selected" && fact.tick <= latestTick ? [fact] : []);
   const fair = decisions.find((fact) => {
     const input = fact.decision.input;
     return input?.observation?.tick === fact.tick && !input.snapshotRestoreInProgress && !input.gaps.length &&
@@ -61,7 +62,7 @@ export function evaluateExpansionWorld(
     intent.kind === "construct" && serviceNames.has(intent.objectName) ? [{ fact, intent }] : []
   ));
   const placements = capture.facts.flatMap((fact) => fact.kind === "spatial_authority" && fact.spatial.kind === "placement" &&
-    fact.tick <= 3000 && serviceNames.has(fact.spatial.site.canonicalObjectName ?? "") ? [{ fact, value: fact.spatial }] : []
+    fact.tick <= latestTick && serviceNames.has(fact.spatial.site.canonicalObjectName ?? "") ? [{ fact, value: fact.spatial }] : []
   );
   let productive = 0;
   for (const { fact, value } of placements) {
@@ -103,7 +104,7 @@ export function evaluateExpansionWorld(
       failures.push("expansion_builder_busy_or_native_selection_unavailable");
       continue;
     }
-    const serviceFailures = expansionServiceFailures(result, id, execution.commandId, builderId);
+    const serviceFailures = expansionServiceFailures(result, id, execution.commandId, builderId, latestTick);
     failures.push(...serviceFailures);
     if (!serviceFailures.length) productive++;
   }
@@ -118,7 +119,7 @@ export function evaluateExpansionWorld(
     if (!existingId || !setup.actors.some((actor) => actor.actorId === existingId &&
       actor.definition.name !== undefined && serviceNames.has(actor.definition.name)) ||
         !sourceId || !hasNativeSourceDelivery(capture.facts, { sourceActorId: sourceId, sourceOwner: null, playerNumber: 2,
-          resourceType: ResourceType.Wood, fromTick: 0, throughTick: 3000, depositActorId: existingId })) {
+          resourceType: ResourceType.Wood, fromTick: 0, throughTick: latestTick, depositActorId: existingId })) {
       failures.push("expansion_served_control_has_no_native_existing_deposit_delivery");
     }
   }

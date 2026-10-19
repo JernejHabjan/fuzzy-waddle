@@ -32,6 +32,26 @@ remain explicitly deferred rather than receiving fake land recipes.
 Source review and catalog generation establish neither executable nor behavioral correctness. Keep source-specific
 execution evidence separate, and never carry an earlier passing tool/native count onto changed source automatically.
 
+### Native scenario bindings and bounded lookup
+
+The30 additional registrations use tools/ai/native-scenario-bindings.json for original obligations/branch ceilings,
+native-scenario-world-layout.mjs and native-scenario-worlds.mjs for native setup/controls, and
+native-scenario-registration.mjs to author ordinary matrix fixtures. skirmish-runtime-native-scenario-fixture.mjs refuses
+source-controlled recipe/assertion drift. The normal runtime evaluation dispatches through
+apps/portal-e2e/src/e2e/skirmish-ai-native-scenario-evaluation.ts to the selected family's native reader; full-case pairs
+live in skirmish-ai-native-scenario-pairs.ts. Read the selected ID and reader instead of all fixture JSON or raw records.
+
+These bindings are authored, unrun. The30 IDs contain194 faction/control variants; branches need native premise and
+outcome evidence at the later authorized gate. Concrete coordinates and fixed ceilings are not measured successes.
+Missing geometry, stale/overflowed history, unsupported capability or ambiguous impact cannot pass. Spell-specific
+branches explicitly select factions with the actual capability; island content is not covered by land controls.
+
+Existing captureCombat separately opts into bounded native operation/sight samples. They are oracle-only and share
+existing capture lifetime/fact limits. Physical hits, applied heals/status and original-destination arrivals are distinct
+from selected claims or command receipts. Weapon attribution refuses ambiguous spell/weapon joins; no complete native
+projectile identity trace is claimed. Initial health/terrain/source fixtures are setup, not earned gameplay effects.
+Raw proof stays local; use the existing maximum8192-byte model-facing summary, then narrow projections only as needed.
+
 ### Native construction and continuation bindings
 
 Preset `constructionOrders` issue ordinary shared Construct commands while the scene is paused at tick zero.

@@ -24,4 +24,7 @@ export interface AiDecisionDispatchEvent {
   readonly strategy?: AiBrainStateV1["strategy"];
   /** Selected opening checkpoints distinguish genuine post-opening controls from temporary startup suppression. */
   readonly opening?: AiBrainStateV1["opening"];
+  /** Selected ownership and knowledge, not proof of physical travel, firing or protection. Null means bounded loss. */
+  readonly missionState?: Pick<AiBrainStateV1, "squads" | "knowledge" | "skirmish" | "bases" |
+    "fortifications" | "support" | "progress" | "recoveryEpisodes"> | null;
 }

@@ -1,22 +1,16 @@
 # #759 remaining work inventory
 
-Snapshot: 2026-10-18, current batch based on `00a708a4ff85fe1bec6e612d6926db16252c01bb`. This is the execution inventory for the existing scope,
-not a new design or diagnostic project. [HANDOFF.md](HANDOFF.md) owns the current cursor;
-[CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) retains the latest checked source/evidence details.
-The manifest and linked scenario requirements remain authoritative; the snapshot below must be refreshed when
-registrations change. Old session estimates in follow-up plans are historical, not current delivery estimates.
+Snapshot:2026-10-19; publication base c07d24b5177bdfe260710bff955c496911554194 plus task-owned source.
+[HANDOFF.md](HANDOFF.md) owns the next action; [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) distinguishes authored and
+validated evidence. This is the existing execution inventory, not another design project. Read only the selected package.
 
-## What the inventory actually found
+## What the inventory establishes
 
-The original concrete plan exists: 121 named scenarios with setup and required outcomes. Freshly rendering the existing
-catalog finds 111/111 pure fixture registrations and 30/120 runtime recipe registrations. Four runtime cases are
-deferred island content. Therefore **0 pure registrations and 86 supported executable runtime registrations are missing**.
-All86 now have authored native recipe specifications linked by runtimeRecipeDraft; including30 existing executable
-recipes, supported native definitions are116/116 (100%). These86 specifications still need their concrete setup,
-action/evidence and oracle bindings implemented. They are not runnable tests or passed scenarios.
-These are scenario counts, not separate files, matches, commits or necessarily missing gameplay implementations.
-One shared fixture can cover several scenarios. Existing unmapped controls must be inspected and reused before
-authoring equivalent tests. Registration does not certify that the scenario's independent outcome assertions pass.
+The original concrete plan contains121 named scenarios. Pure registration is111/111. Supported runtime registration
+is61/116 (52.6%);55 (47.4%) still have specifications without native bindings. Four island runtime rows are deferred.
+Definitions are116/116:61 registrations plus55 remaining specifications. The30 new registrations contain194 faction/control
+variants, all unrun. Counts describe registration, not passed gameplay, unique physical maps, work sessions or time remaining.
+Each row needs complete source-specific native outcome evidence before validation; an authored reader is not that evidence.
 
 Earlier descriptions such as “full acceptance open” concealed three different kinds of work. Use these states:
 
@@ -87,8 +81,8 @@ an entire scenario. Invalidate only outcomes affected by later source/fixture ch
 | Measured coverage at this snapshot    | Completed                                   | Remaining          | What the number means                                                                                              |
 | ------------------------------------- | ------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------ |
 | Pure fixture registration             | 111/111 = **100%**                          | 0/111 = **0%** | Required pure scenarios with registered fixtures; not behavior completion                                          |
-| Supported native definitions           | 116/116 = **100%**                          | 0/116 = **0%** | 31 runnable scenario bindings plus85 specifications; definitions only, not validated gameplay |
-| Supported runtime recipe registration | 31/116 = **26.7%**                          | 85/116 = **73.3%** | Runtime recipes connected; four island-content rows excluded; not behavior completion                              |
+| Supported native definitions           | 116/116 = **100%**                          | 0/116 = **0%** | 61 scenario bindings plus55 specifications; definitions only, not validated gameplay |
+| Supported runtime recipe registration | 61/116 = **52.6%**                          | 55/116 = **47.4%** | Runtime recipes connected; four island-content rows excluded; not behavior completion                              |
 | Scenario behavior validation          | Not yet reconciled across the full manifest | Not yet measurable | Existing subset passes and failures are recorded, but no truthful overall completion percentage can yet be derived |
 
 During each selected package, reconcile its existing complete evidence into the row status and report its exact
@@ -114,27 +108,18 @@ main-building footprint were corrected in both paired worlds. Construction cance
 post-opening unfinished-site reassignment have focused controls. Native ECO-06 proves alternate drop-off/source
 recovery; native no-drain controls prove stop/assignment release with cargo preservation.
 
-**Current publication: EXP-02 full native binding registered, authored unrun, 2026-10-18.**
+**Current publication:30 additional native registrations authored unrun, 2026-10-19.**
 
-1. EXP-02 now has an eight-world matrix fixture: safe, home pressure, withdrawal and ordinary-combat recovery for both
-   factions. Six branches reuse existing worlds and two combat branches are new;21 owner worlds are authored in total.
-2. Full native predicates bind actual shared attacks, sustained fair danger, serious native home damage, survival and
-   suppressed overextension. Every attacker must actually leave/die; native AI-owned lethal damage distinguishes combat
-   recovery from scripted destruction. Same-tick reconsideration uses global callback sequence, then requires productive service.
-3. A useful paid safe expansion must be committed at a corresponding actual danger decision tick. Strict shared-input
-   validation prevents budget/source/queue/world differences from masquerading as a causal pair. Missing branches,
-   no-op safe worlds, forged loss and withdrawal in the combat branch cannot pass.
-4. The normal matrix path now retains human native history for this explicit binding. Native damage reuses the existing
-   bounded observer with a separate captureCombat marker and owned cleanup; ordinary/unmarked captures gain no listener.
-   Opponent records omit the duplicate shared recipient ledger. No balance or AI planner behavior changed.
-5. Fixture/catalog data were generated and source reviewed; no recipes, tests, lint, types, formatting or dedicated
-   verification ran.21 worlds are0/21 executed and0/21 validated. Full registration is31/116 (26.7%),85 remaining (73.3%),
-   plus4 deferred island rows. Definitions116/116 now comprise31 runnable bindings and85 remaining specifications.
-   Pure registration111/111 (100%). These are registration metrics, not overall AI completion or passing gameplay.
-6. Next group actual AI wall prefixes/occupied firing/useful-cost controls with constrained/threatened field alternatives
-   for PLACE-01–03/WALL-01–05/H-27/28. EXP-01 utility/lease/concurrency remains open. EXP-02's native premises and all eight
-   outcomes await the later authorized execution gate. Then native save/replay/peers H-31/SEQ-08 use existing mixed-queue
-   hashes; M11/calibration/debug and later victory remain open. Machinery review is last.
+- PLACE/EXP/WALL, scouting/stale-contact, strategy, raid and combat cases now have concrete ordinary-lobby inputs,
+  native controls and deterministic per-ID assertions; missing native premises fail rather than count as success.
+- Listener-gated mission/input and explicitly opted-in combat capture reuse the existing bounded ledger and cleanup.
+  Real weapon/healing/status boundaries support physical outcomes; they do not become privileged planner inputs.
+- Tivara spell research now requires the producer that actually offers it. Field balance and research costs are unchanged.
+- No execution gate ran. The30 IDs/194 variants and prior21 owner worlds remain unrun. Original EXP-02 evidence remains
+  authored, not validated. See the current evidence entry for source paths, limitations and source-only audits.
+- Next group STRAT-02/03/08/09, DOMAIN-01/02/05, RAID-03 and C-01–06 to cover defense/recall, finishing/comeback,
+  supported domain choices, raid continuity and counters using the existing authority. Remaining H/lifecycle/SEQ/D/DBG
+  work follows; native save/replay/peers and later both-faction victory remain open. Machinery review is last.
 
 ## Other concrete gaps already established
 

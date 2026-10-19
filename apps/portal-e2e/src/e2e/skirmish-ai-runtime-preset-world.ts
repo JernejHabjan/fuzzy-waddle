@@ -7,6 +7,8 @@ import type { AiRuntimePresetControlV1 } from
 export interface RuntimePresetWorldV1 {
   readonly fixtureId: string;
   readonly requireFactionRoster?: true;
+  readonly terrainPatches?: AiRuntimePresetWorldV1["terrainPatches"];
+  readonly terrainPreserveFootprints?: true;
   readonly actors: readonly {
     readonly fixtureActorId: string;
     readonly actorName: string;
@@ -25,6 +27,7 @@ export interface RuntimePresetWorldV1 {
     readonly amounts: Readonly<Record<string, number>>;
   }[];
   readonly sourceStocks?: AiRuntimePresetWorldV1["sourceStocks"];
+  readonly healthStarts?: AiRuntimePresetWorldV1["healthStarts"];
   readonly constructionOrders?: AiRuntimePresetWorldV1["constructionOrders"];
   readonly protectedRoutes?: AiRuntimePresetWorldV1["protectedRoutes"];
   /** Exact pre-tick balances applied through resource events after grants and queue charges. */
@@ -52,7 +55,8 @@ export interface RuntimePresetWorldV1 {
   readonly events?: readonly {
     readonly id: string;
     readonly tick: number;
-    readonly kind: "destroy_owned_actor" | "cancel_unfinished_site";
+    readonly kind: "destroy_owned_actor" | "cancel_unfinished_site" | "damage_owned_actor" | "destroy_ai_site";
+    readonly damage?: number;
     readonly owner: number;
     readonly objectName: string;
     readonly fixtureActorId?: string;

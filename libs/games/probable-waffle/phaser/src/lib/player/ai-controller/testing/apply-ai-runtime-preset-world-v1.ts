@@ -2,6 +2,10 @@ import { bindAiRuntimeExistingActors } from "./bind-ai-runtime-existing-actors";
 import { applyAiRuntimeConstructionOrders } from "./apply-ai-runtime-construction-orders";
 import { captureAiRuntimePlacementClearance } from "./capture-ai-runtime-placement-clearance";
 import { applyAiRuntimeSourceStocks } from "./ai-runtime-source-stocks";
+import { applyAiRuntimeHealthStarts } from "./ai-runtime-health-starts";
+import { applyAiRuntimeTerrainPatches } from "./ai-runtime-terrain-patches";
+import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
+import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { installAiRuntimeProductionRallies } from "./install-ai-runtime-production-rallies";
 import { installAiRuntimePresetControls } from "./install-ai-runtime-preset-controls";
 import { environment } from "@fuzzy-waddle/environments/environment";
@@ -89,10 +93,13 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
     createdActors.set(actor.fixtureActorId, created);
     createdActorIds[actor.fixtureActorId] = actorId;
   }
+  if (preset.terrainPatches)
+    applyAiRuntimeTerrainPatches(scene.tilemap, preset, getSceneService(scene, ActorIndexSystem)?.getAllIdActors());
   for (const grant of preset.resourceGrants) {
     emitResource(scene, "resource.added", grant.amounts as Partial<PlayerStateResources>, grant.playerNumber);
   }
   applyAiRuntimeSourceStocks(preset, createdActors);
+  applyAiRuntimeHealthStarts(preset, createdActors);
   const completeSetup = () => {
     assertAiRuntimePresetRoster(scene, preset);
     const placementBaseline = preset.protectedRoutes ? captureAiRuntimePlacementClearance(scene, preset.protectedRoutes) : undefined;

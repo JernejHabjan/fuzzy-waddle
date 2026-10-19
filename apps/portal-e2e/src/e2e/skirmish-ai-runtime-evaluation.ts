@@ -4,6 +4,7 @@ import { evaluateRuntimeVariant } from "./skirmish-ai-runtime-variant-evaluation
 import { evaluateRuntimePressureResponse } from "./skirmish-ai-runtime-pressure-evaluation";
 import { evaluateRuntimeProductionPairs } from "./skirmish-ai-runtime-production-pair-evaluation";
 import { evaluateExpansionPressurePairs } from "./skirmish-ai-expansion-pressure-pairs";
+import { evaluateNativeScenarioPairs } from "./skirmish-ai-native-scenario-pairs";
 
 export function evaluateScenario(
   scenarioId: string,
@@ -34,6 +35,7 @@ export function evaluateScenario(
   )
     return [`required_technology_variant_missing:${scenarioId}`];
   const failures = evaluateRuntimeProductionPairs(scenarioId, assertion, selectedVariants);
+  failures.push(...evaluateNativeScenarioPairs(scenarioId, fixture, selectedVariants));
   if (scenarioId === "EXP-02") failures.push(...evaluateExpansionPressurePairs(fixture, selectedVariants));
   const actualFactions = [...new Set(selectedVariants.map((variant) => variant.aiFaction))].sort();
   const requiredFactions = [...assertion.requiredAiFactions].sort();
@@ -119,7 +121,7 @@ export function evaluateScenario(
     }
     const outcomeSignatures = repetitions.map((variant) =>
       JSON.stringify(
-        evaluateRuntimeVariant(scenarioId, assertion, variant)
+        evaluateRuntimeVariant(scenarioId, assertion, variant, fixture)
           .map((failure) => failure.slice(failure.indexOf(":") + 1))
           .sort()
       )
@@ -132,7 +134,7 @@ export function evaluateScenario(
     }
   }
   for (const variant of selectedVariants) {
-    failures.push(...evaluateRuntimeVariant(scenarioId, assertion, variant));
+    failures.push(...evaluateRuntimeVariant(scenarioId, assertion, variant, fixture));
   }
   return failures;
 }

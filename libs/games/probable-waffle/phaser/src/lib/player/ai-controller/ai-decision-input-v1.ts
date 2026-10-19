@@ -11,6 +11,11 @@ export interface AiDecisionInputV1 {
   readonly capabilityCatalog: AiCapabilityCatalogV1 | null;
   /** Exact consumed four-resource ledger. This is an observation input, not complete native alias/lifetime authority. */
   readonly resources?: AiObservationV1["resources"];
+  /** Exact permitted scouting/effect inputs; null is capture loss, never an empty explored world. */
+  readonly map?: Pick<NonNullable<AiObservationV1["map"]>, "bounds" | "staticRevision" | "frontierAccessNodeIds" |
+    "scoutSearchPoints" | "scoutCoverageAccessNodeIds" | "dynamicObstacleActorIds" | "regionGeneration"> | null;
+  readonly effects?: AiObservationV1["effects"] | null;
+  readonly modeGoals?: AiObservationV1["modeGoals"] | null;
   /** The observation's permitted cached topology, with its own generation/status/age. */
   readonly accessGraph: AiAccessGraphV1 | null;
   /** Optional only for older publishers; current capture preserves explicit missing/binding gaps. */

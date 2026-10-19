@@ -37,7 +37,10 @@ function setup(pinned = true, cancellation = false, finished = false) {
     const target = {
       scene, active: true, name: ObjectNames.AnkGuard, destroy: jest.fn()
     } as unknown as Phaser.GameObjects.GameObject;
-    const health = { healthComponentData: { health: 100 }, takeDamage: jest.fn() };
+    const health = { healthComponentData: { health: 100, armour: 0 }, takeDamage: jest.fn((amount: number) => {
+      if (health.healthComponentData.armour > 0) health.healthComponentData.armour = 0;
+      else health.healthComponentData.health = Math.max(0, health.healthComponentData.health - amount);
+    }) };
     return { target, health, id };
   };
   const original = actor("z-original"),
@@ -142,6 +145,15 @@ it("the public preset caller wires pinned loss to the actor it actually created"
   applyAiRuntimePresetWorldV1(f.scene, creator);
   f.advance(100);
   expect(f.original.health.takeDamage).toHaveBeenCalledTimes(1);
+  expect(f.replacement.health.takeDamage).not.toHaveBeenCalled();
+});
+
+it("a pinned loss consumes native armour before health without touching a replacement", () => {
+  const f = setup();
+  f.original.health.healthComponentData.armour = 50;
+  f.advance(100);
+  expect(f.original.health.takeDamage).toHaveBeenCalledTimes(2);
+  expect(f.original.health.healthComponentData).toEqual({ health: 0, armour: 0 });
   expect(f.replacement.health.takeDamage).not.toHaveBeenCalled();
 });
 

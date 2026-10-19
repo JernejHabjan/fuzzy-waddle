@@ -9,6 +9,11 @@ export interface AiRuntimePresetWorldV1 {
   readonly fixtureId: string;
   /** Production recipes require the authored faction graph, including the ordinary map's indexed actors. */
   readonly requireFactionRoster?: true;
+  /** Real base-layer terrain before navigation initialization; only explicit diagnostic presets can apply these. */
+  readonly terrainPatches?: readonly { readonly x: number; readonly y: number; readonly terrain: "grass" | "water";
+    readonly blocked: boolean }[];
+  /** Keep real initial actor/body footprints legal when masking a constrained world; no later terrain edits. */
+  readonly terrainPreserveFootprints?: true;
   readonly provenance: {
     readonly sourceRevision: string;
     readonly fixtureDigest: string;
@@ -32,6 +37,9 @@ export interface AiRuntimePresetWorldV1 {
   }[];
   /** Nearly depleted physical sources, applied before native work; independent of the player's cash bank. */
   readonly sourceStocks?: readonly { readonly fixtureActorId: string; readonly amount: number }[];
+  /** Native saved-component initial durability; not a scored attack or evidence of damage inflicted by the AI. */
+  readonly healthStarts?: readonly { readonly fixtureActorId: string; readonly healthPermille: number;
+    readonly armourPermille: number }[];
   /** Normal pre-tick shared build commands; roles bind actual unfinished sites for later loss/recovery controls. */
   readonly constructionOrders?: readonly AiRuntimeConstructionOrderV1[];
   /** Test-owned static clearance probes, captured at setup and every native placement; never planner input. */
@@ -68,7 +76,9 @@ export interface AiRuntimePresetWorldV1 {
     readonly id: string;
     readonly tick: number;
     /** Cancellation uses native unfinished-site teardown/refund; it is not a relayed multiplayer cancel command. */
-    readonly kind: "destroy_owned_actor" | "cancel_unfinished_site";
+    readonly kind: "destroy_owned_actor" | "cancel_unfinished_site" | "damage_owned_actor" | "destroy_ai_site";
+    /** Nonlethal native perturbation for hidden-durability controls, never credited as AI damage. */
+    readonly damage?: number;
     readonly owner: number;
     readonly objectName: ObjectNames;
     /** Pin a scheduled loss to its original authored actor, rather than a later same-type replacement. */

@@ -2,6 +2,8 @@ import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { validAiRuntimeExistingBindings } from "./validate-ai-runtime-existing-bindings";
 import { validAiRuntimeConstructionOrders } from "./validate-ai-runtime-construction-orders";
 import { validAiRuntimeSourceStocks } from "./ai-runtime-source-stocks";
+import { validAiRuntimeHealthStarts } from "./ai-runtime-health-starts";
+import { validAiRuntimeTerrainPatches } from "./ai-runtime-terrain-patches";
 import { isRecord, hasOnlyKeys } from "./ai-runtime-fixture-values";
 
 const actorNames = new Set<string>(Object.values(ObjectNames));
@@ -13,11 +15,14 @@ export function readAiRuntimePresetRoles(value: unknown) {
     !hasOnlyKeys(value, [
       "fixtureId",
       "requireFactionRoster",
+      "terrainPatches",
+      "terrainPreserveFootprints",
       "provenance",
       "actors",
       "existingActorBindings",
       "resourceGrants",
       "sourceStocks",
+      "healthStarts",
       "constructionOrders",
       "protectedRoutes",
       "resourceStarts",
@@ -33,6 +38,9 @@ export function readAiRuntimePresetRoles(value: unknown) {
   }
   if (typeof value["fixtureId"] !== "string" || !/^[a-z0-9][a-z0-9-]{2,63}$/.test(value["fixtureId"])) return null;
   if (value["requireFactionRoster"] !== undefined && value["requireFactionRoster"] !== true) return null;
+  if (!validAiRuntimeTerrainPatches(value["terrainPatches"])) return null;
+  if (value["terrainPreserveFootprints"] !== undefined &&
+      (value["terrainPreserveFootprints"] !== true || !Array.isArray(value["terrainPatches"]))) return null;
   const provenance = value["provenance"];
   if (
     !isRecord(provenance) ||
@@ -67,6 +75,7 @@ export function readAiRuntimePresetRoles(value: unknown) {
   if (!validAiRuntimeExistingBindings(value["existingActorBindings"], fixtureActorIds, actorOwners, authoredNames))
     return null;
   if (!validAiRuntimeSourceStocks(value["sourceStocks"], fixtureActorIds)) return null;
+  if (!validAiRuntimeHealthStarts(value["healthStarts"], fixtureActorIds)) return null;
   if (!validAiRuntimeConstructionOrders(value["constructionOrders"], fixtureActorIds, actorOwners, authoredNames)) return null;
   return { fixtureActorIds, actorOwners, authoredNames };
 }

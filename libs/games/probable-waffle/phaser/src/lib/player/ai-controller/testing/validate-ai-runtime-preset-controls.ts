@@ -1,4 +1,5 @@
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
+import { SpellType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/spell-type";
 
 /** Strict bounded controller input parser. Rejects undeclared actors, cross-owner rally targets and invented actions. */
 export function validAiRuntimePresetControls(value: unknown, owners: ReadonlyMap<string, number | null>): boolean {
@@ -6,6 +7,7 @@ export function validAiRuntimePresetControls(value: unknown, owners: ReadonlyMap
   if (!Array.isArray(value) || value.length > 32) return false;
   const ids = new Set<string>();
   const names = new Set<string>(Object.values(ObjectNames));
+  const spells = new Set<string>(Object.values(SpellType));
   const record = (entry: unknown): entry is Record<string, unknown> =>
     !!entry && typeof entry === "object" && !Array.isArray(entry);
   const only = (entry: Record<string, unknown>, keys: string[]) =>
@@ -32,9 +34,17 @@ export function validAiRuntimePresetControls(value: unknown, owners: ReadonlyMap
     )
       return false;
     ids.add(id);
-    if (action["kind"] === "move") {
+    if (action["kind"] === "cast") {
+      const target = action["targetFixtureActorId"];
+      return only(action, ["kind", "spellType", "targetFixtureActorId"]) && typeof target === "string" &&
+        owners.has(target) && typeof action["spellType"] === "string" && spells.has(action["spellType"]);
+    }
+    if (action["kind"] === "move" || action["kind"] === "construct") {
       const point = action["worldPosition"];
-      return only(action, ["kind", "worldPosition"]) && record(point) && only(point, ["x", "y", "z"]) &&
+      if (action["kind"] === "construct" && (typeof action["actorName"] !== "string" || !names.has(action["actorName"])))
+        return false;
+      return only(action, action["kind"] === "construct" ? ["kind", "actorName", "worldPosition"] : ["kind", "worldPosition"]) &&
+        record(point) && only(point, ["x", "y", "z"]) &&
         [point["x"], point["y"], point["z"]].every((coordinate) => typeof coordinate === "number" && Number.isFinite(coordinate)) &&
         typeof point["x"] === "number" && Math.abs(point["x"]) <= 65536 &&
         typeof point["y"] === "number" && point["y"] >= 0 && point["y"] <= 65536 &&

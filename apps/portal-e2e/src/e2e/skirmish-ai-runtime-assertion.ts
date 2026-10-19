@@ -4,8 +4,10 @@ import type { RuntimeTechnologyContract } from "./skirmish-ai-runtime-technology
 import type { RuntimeEconomyContract } from "./skirmish-ai-runtime-economy-contract";
 import type { RuntimeResourceRecoveryContract } from "./skirmish-ai-runtime-resource-recovery-contract";
 import type { RuntimeExpansionPressureContract } from "./skirmish-ai-expansion-pressure-contract";
+import type { RuntimeNativeScenarioContract } from "./skirmish-ai-native-scenario-contract";
 
 export interface RuntimeAssertionV1 {
+  readonly requiredNativeScenario?: RuntimeNativeScenarioContract;
   /** Complete EXP-02 native survival/recovery predicates; individual diagnostic variants remain partial evidence. */
   readonly requiredExpansionPressure?: RuntimeExpansionPressureContract;
   readonly requiredEconomyContracts?: Readonly<Record<string, RuntimeEconomyContract>>;

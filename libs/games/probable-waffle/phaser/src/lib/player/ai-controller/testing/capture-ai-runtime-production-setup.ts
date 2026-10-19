@@ -12,6 +12,7 @@ import { TilemapComponent } from "../../../world/tilemap/tilemap.component";
 import { getSceneComponent, getSceneService } from "../../../world/services/scene-component-helpers";
 import type { AiRuntimeProductionSetupV1 } from "./ai-runtime-production-setup-v1";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
+import { getTileCoordsUnderObject } from "../../../library/tile-under-object";
 
 /** One bounded native read at the first paused tick-zero poll, after preset applications and before any decision. */
 export function captureAiRuntimeProductionSetup(scene: ProbableWaffleScene): AiRuntimeProductionSetupV1 {
@@ -50,7 +51,9 @@ export function captureAiRuntimeProductionSetup(scene: ProbableWaffleScene): AiR
     const definition = ActorManager.getActorDefinitionFromActor(actor);
     if (actor.scene !== scene || !actorId || !position || !definition)
       throw new Error("production_setup_actor_missing");
-    return { actorId, position, definition };
+    const footprint = getTileCoordsUnderObject(tilemap, actor);
+    if (footprint.length > 128) throw new Error("production_setup_footprint_overflow");
+    return { actorId, position, definition, footprint };
   });
   const players = scene.players.map((player) => {
     const playerNumber = player.playerNumber;

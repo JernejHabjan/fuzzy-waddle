@@ -5,7 +5,8 @@ import type { AiRuntimeProductionFactV1 } from
 
 /** Safe-room owner outcome: native new fields, reserved-space exclusion and actual crop-to-food delivery. */
 export function evaluateFieldPlacementWorld(
-  result: Pick<RuntimeVariantResultV1, "productionPreset" | "productionCapture" | "presetCreatedActorIds">
+  result: Pick<RuntimeVariantResultV1, "productionPreset" | "productionCapture" | "presetCreatedActorIds">,
+  minimumFields = 2
 ): string[] {
   const capture = result.productionCapture, baseline = result.productionPreset?.placementBaseline;
   if (!capture || !baseline || capture.startedTick !== 0 || capture.droppedFactCount || capture.droppedSnapshotCount ||
@@ -68,7 +69,7 @@ export function evaluateFieldPlacementWorld(
       identity.active && identity.alive && identity.indexed && identity.finished
     ))) failures.push(`new_field_not_retained_after_completion:${id}`);
   }
-  if (fields.length < 2) failures.push("multiple_new_completed_fields_missing");
+  if (fields.length < minimumFields) failures.push("multiple_new_completed_fields_missing");
   if (fields.length >= 2 && !fields.some((left, index) => fields.some((right, other) => index !== other &&
     ((left.x === right.x && left.y !== right.y) || (left.y === right.y && left.x !== right.x))
   ))) failures.push("new_fields_have_no_aligned_row_or_column");

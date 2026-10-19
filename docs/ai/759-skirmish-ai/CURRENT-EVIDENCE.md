@@ -2,6 +2,69 @@
 
 [HANDOFF.md](HANDOFF.md) owns continuation. Read this current batch; older sections retain historical evidence.
 
+## Thirty native registrations — authored unrun, 2026-10-19
+
+Publication base c07d24b5177bdfe260710bff955c496911554194; same branch/worktree as HANDOFF. Actual model/effort unknown,
+no delegation. Verify the containing commit and remote on resume. No recipes, tests, lint, types, formatting, builds,
+browser/server, doctor/context or dedicated validators ran. Fixture JSON creation and catalog --write are authoring.
+
+### Acceptance map and source ownership
+
+1. **Thirty concrete case bindings authored:** PLACE-01–03/EXP-01/WALL-01–05/H-27/28; SCOUT-01–04/H-22;
+   STRAT-04–07/10–13; RAID-01/FIGHT-01–05. tools/ai/native-scenario-bindings.json retains the original required/forbidden
+   obligations. native-scenario-world-layout.mjs and native-scenario-worlds.mjs supply concrete native actor/terrain inputs
+   and ordinary shared controls. native-scenario-registration.mjs authors30 fixtures/194 faction-control variants.
+   Manifest rows now point to those fixtures;55 remaining specifications retain explicit missing bindings.
+2. **Normal execution path wired, unrun:** skirmish-runtime-native-scenario-fixture.mjs refuses missing branches,
+   input drift, generic-count downgrades and capture omissions. Existing matrix/registered-variant/variant-evaluation
+   owners dispatch to skirmish-ai-native-scenario-evaluation.ts and full-case pairs. Individual diagnostic or partial
+   owner worlds cannot certify a complete case. EXP-01 reuses the existing expansion geometry and paid-service reader.
+3. **Native outcomes authored:** separate scouting, strategy, combat, placement and fortification readers require real
+   fair sight/knowledge decay, physical useful travel/firing, independent squad ownership, useful opportunity/recovery,
+   actual paid completed productive construction, friendly/hostile passage, occupied compatible fire and cumulative cost.
+   SCOUT-02 hidden script pairs may share an initial world; equal permitted inputs/intents remain required until fair
+   information differs. STRAT-07 breach destroys a pinned real wall; H-28 depletes initial sources to hold its budget fixed.
+4. **Existing capture extended, not a new authority:** selected mission/input slices remain listener-gated and bounded.
+   Explicit captureCombat adds native weapon request/commit, heal return, status apply/remove and spell-cooldown boundaries
+   to the existing fact budget. Passive tactical truth is oracle-only; no privileged information enters planner inputs.
+   Actor removal/root disposal fence retained call-through wrappers and preserve later owners' hooks. Missing/overflowed
+   capture fails. Native initial footprints, source stocks, terrain and damaged durability are actual test setup inputs.
+5. **Content and source-review repairs:** Firestorm/FrostNova/HealingRain now require AnkGuard, which already offers them,
+   instead of InfantryInn. Prices/durations are unchanged; no new research menu or field rebalance. Native scheduled losses
+   now consume armour before health because one native hit does not carry excess armour damage into HP. Test-only loss
+   perturbations have no AI damage credit. Shared preset command translation was extracted without another runner.
+6. **Unrun negative controls:** fixture/branch/source/control/terrain/research drift, bounded invalid inputs, native tile
+   mutation ordering, damaged setup, call-through returns/throws, append failure, cleanup/later-hook retention, unwatch
+   fencing, armour-first original loss and faction spell availability are authored in adjacent specs/tool tests.
+7. **Registration progress only:**61/116 supported runtime IDs (52.6%),55 remaining (47.4%), plus4 deferred island rows;
+   pure111/111 (100%). New batch0/194 variants executed or validated. Prior21 partial owner worlds remain unrun.
+   No aggregate gameplay completion percentage, new victory, measured throughput or native scenario pass is claimed.
+
+### Omission Audit — source only
+
+- Traced descriptor → generated fixture → manifest/strict guard → normal runner → real opponent capture → per-variant
+  native readers/full-case pairs. Original acceptance metadata is retained; fixed outer deadlines are not extended.
+- Reviewed parser keys, event/control ownership, native setup, shared dispatch and actor/listener cleanup. Corrected stale
+  hidden-pair assumptions, actual breach setup, fixed-budget source income, retained-wrapper fencing, research faction
+  prerequisites and armour-first scheduled loss. Added unrun regression controls with their owning changes.
+- Concrete geometry, safe versus threatened positions, exact one-site constrained premise, opportunity/pursuit durations,
+  research/cast timing, status expiry, weapon compatibility and semantic oracle correctness remain unmeasured. They must
+  be established at the authorized gate. Registration authoring is not proof that native preconditions can all occur.
+- Weapon/damage matching is conservative and rejects ambiguity after a spell cast; it is not native projectile-identity
+  tracing. Missing proof remains a failure/unavailable premise, never a generic damage-count pass.
+- Raw reports remain local. Model-facing summaries retain the existing8192-byte bound and omission counts; no whole-report
+  scan, second report interpreter or additional always-on game diagnostic system was added.
+
+### Final Closure Audit — authoring publication only
+
+Selected30 IDs have concrete factory inputs, fixed branches, native reader consumers and strict registration contracts.
+Regenerated fixtures/catalog and updated HANDOFF/REMAINING-WORK/SCENARIO-INVENTORY plus owning test guidance and remaining
+hook limitations. Source inspection identified no further intended authoring omission; execution/typing/style/native
+correctness are explicitly unverified. This checkpoint closes authoring, not validation or the broader AI feature.
+Unrelated run XML/fog edits remain excluded. No new index, skill/tool system, observer or model switch was introduced.
+Next grouped authoring selection is the14 land strategy/domain/raid/classic-counter IDs in HANDOFF; H recovery/authority,
+real save/replay/peers, continuous play, calibration/debug and later victory remain. Machinery review stays last.
+
 ## EXP-02 native scenario registration — authored unrun, 2026-10-18
 
 Base56f775897a40e7f6b32a93696e6418ed5fad016d; same branch/worktree as HANDOFF. Actual model/effort unknown,

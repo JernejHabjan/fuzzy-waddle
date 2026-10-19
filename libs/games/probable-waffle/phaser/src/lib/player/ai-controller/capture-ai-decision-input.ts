@@ -38,6 +38,13 @@ export function captureAiDecisionInput(
   if (graph && !boundedGraph) gaps.push("production_decision_graph_overflow");
   const boundedCatalog = catalog && catalog.entries.length <= 512 && catalog.unsupported.length <= 512;
   if (catalog && !boundedCatalog) gaps.push("production_decision_catalog_overflow");
+  const map = observation.map;
+  const boundedMap = !map || ((map.scoutSearchPoints?.length ?? 0) <= 512 &&
+    map.scoutCoverageAccessNodeIds.length <= 512 && map.frontierAccessNodeIds.length <= 512 &&
+    map.dynamicObstacleActorIds.length <= 512);
+  if (!boundedMap) gaps.push("decision_map_overflow");
+  if (observation.effects.length > 256) gaps.push("decision_effects_overflow");
+  if (observation.modeGoals.length > 64) gaps.push("decision_mode_goals_overflow");
   return {
     observation: bounded
       ? {
@@ -53,6 +60,13 @@ export function captureAiDecisionInput(
       : null,
     capabilityCatalog: boundedCatalog ? catalog : null,
     accessGraph: boundedGraph ? graph : null,
+    map: boundedMap ? (map ? {
+      bounds: map.bounds, staticRevision: map.staticRevision, frontierAccessNodeIds: map.frontierAccessNodeIds,
+      scoutSearchPoints: map.scoutSearchPoints, scoutCoverageAccessNodeIds: map.scoutCoverageAccessNodeIds,
+      dynamicObstacleActorIds: map.dynamicObstacleActorIds, regionGeneration: map.regionGeneration
+    } : undefined) : null,
+    effects: observation.effects.length <= 256 ? observation.effects : null,
+    modeGoals: observation.modeGoals.length <= 64 ? observation.modeGoals : null,
     ...(observation.resources.length <= 4 ? { resources: observation.resources } : {}),
     producerExposure: bounded
       ? captureAiProducerExposure(scene, observation, ticks?.currentTick ?? null, restoring)

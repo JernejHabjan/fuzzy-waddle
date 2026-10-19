@@ -62,7 +62,7 @@ test("executes selected AI scenarios in real lobby-started Phaser matches", asyn
     const failures = request.diagnosticSelection
       ? scenarioVariants.length === 1 && diagnosticVariant
         ? assertion
-          ? evaluateRuntimeVariant(scenarioId, assertion, diagnosticVariant)
+          ? evaluateRuntimeVariant(scenarioId, assertion, diagnosticVariant, fixture)
           : [`runtime_assertions_missing:${scenarioId}`]
         : ["diagnostic_variant_missing_or_ambiguous"]
       : evaluateScenario(scenarioId, fixture, scenarioVariants);

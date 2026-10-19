@@ -1,5 +1,6 @@
-import { AI_RUNTIME_PRESET_CONTROL_EVENT, type AiRuntimePresetControlEvent } from "./ai-runtime-preset-control-event";
+import { installAiRuntimeDecisionCapture } from "./install-ai-runtime-decision-capture";
 import { AiRuntimeProductionWorldCapture } from "./ai-runtime-production-world-capture";
+import { AiRuntimeCombatCapture } from "./ai-runtime-combat-capture";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
 import Phaser from "phaser";
 import { Subscription } from "rxjs";
@@ -24,7 +25,6 @@ import {
 } from "../ai-intent-command-dispatch-event";
 import { AiRuntimePendingCommands } from "./ai-runtime-pending-commands";
 
-import { AI_DECISION_DISPATCH_EVENT, type AiDecisionDispatchEvent } from "../ai-decision-dispatch-event";
 import { AiRuntimeUnspentClaims } from "./ai-runtime-unspent-claims";
 import { projectAiRuntimeProductionBoundaryState } from "./project-ai-runtime-production-boundary-state";
 import { captureAiRuntimeProductionSnapshot } from "./capture-ai-runtime-production-snapshot";
@@ -72,6 +72,7 @@ export class AiRuntimeProductionCapture {
   private readonly proof: AiRuntimeProductionProofCapture;
   private queueAuthority?: AiRuntimeProductionQueueCapture;
   private worldAuthority?: AiRuntimeProductionWorldCapture;
+  private combatAuthority?: AiRuntimeCombatCapture;
 
   constructor(
     private readonly scene: ProbableWaffleScene,
@@ -115,6 +116,8 @@ export class AiRuntimeProductionCapture {
         (fact) => this.append(fact),
         (playerNumber) => this.unspentClaims.snapshot(playerNumber)
       );
+      if (captureCombat) this.combatAuthority = new AiRuntimeCombatCapture(scene, (player, operation) =>
+        this.append({ ...this.boundary(player), kind: "native_combat", operation }), this.resourceCoverage.lose);
       this.initialConstruction = captureAiRuntimeInitialConstruction(scene, initialActors, this.startedTick);
       this.spatialCapture = new AiRuntimeProductionSpatialCapture(
         scene,
@@ -135,8 +138,8 @@ export class AiRuntimeProductionCapture {
         (player) => this.boundary(player),
         (fact, item) => this.append(fact, item)
       );
-      scene.events.on(AI_RUNTIME_PRESET_CONTROL_EVENT, this.observeControl, this);
-      scene.events.on(AI_DECISION_DISPATCH_EVENT, this.observeDecision, this);
+      this.subscriptions.add(installAiRuntimeDecisionCapture(scene, this.unspentClaims,
+        (player) => this.boundary(player), (fact) => this.append(fact), this.resourceCoverage.lose, captureCombat));
       scene.events.on(AI_INTENT_COMMAND_DISPATCH_EVENT, this.observeDispatch, this);
       scene.events.on(CONSTRUCTION_AUTHORITY_EVENT, this.observeConstruction, this);
       this.subscriptions.add(
@@ -170,6 +173,7 @@ export class AiRuntimeProductionCapture {
         append: (fact) => this.append(fact),
         watchQueue: (actor) => this.watchQueue(actor),
         unwatchActor: (actor) => {
+          this.combatAuthority?.unwatch(actor);
           this.queueSubscriptions.get(actor)?.unsubscribe();
           this.queueSubscriptions.delete(actor);
           this.spatialCapture.unwatchActor(actor);
@@ -301,6 +305,7 @@ export class AiRuntimeProductionCapture {
     this.proof.dispose();
     this.queueAuthority?.dispose();
     this.worldAuthority?.dispose();
+    this.combatAuthority?.dispose();
     this.recipientResources?.dispose();
     this.resourceInputs?.dispose();
     this.spatialCapture?.dispose();
@@ -312,8 +317,6 @@ export class AiRuntimeProductionCapture {
     this.facts.length = 0;
     this.pendingCommands.dispose();
     this.unspentClaims.dispose();
-    this.scene.events.off(AI_RUNTIME_PRESET_CONTROL_EVENT, this.observeControl, this);
-    this.scene.events.off(AI_DECISION_DISPATCH_EVENT, this.observeDecision, this);
     this.scene.events.off(AI_INTENT_COMMAND_DISPATCH_EVENT, this.observeDispatch, this);
     this.scene.events.off(CONSTRUCTION_AUTHORITY_EVENT, this.observeConstruction, this);
     this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.dispose, this);
@@ -333,6 +336,7 @@ export class AiRuntimeProductionCapture {
   };
 
   private watchQueue(actor: Phaser.GameObjects.GameObject): void {
+    this.combatAuthority?.watch(actor);
     this.spatialCapture.watchActor(actor);
     if (this.disposed || actor.scene !== this.scene || this.queueSubscriptions.has(actor)) return;
     const queue = getActorComponent(actor, QueueComponent);
@@ -355,24 +359,6 @@ export class AiRuntimeProductionCapture {
     if (!resources) throw new Error("production_capture_player_missing");
     return { ...resources };
   }
-
-  /** Explicit test-controller provenance enters the same bounded sequence as native callbacks. */
-  private readonly observeControl = (control: AiRuntimePresetControlEvent): void => {
-    this.append({ ...this.boundary(control.playerNumber), kind: "preset_control", control });
-  };
-
-  /** The selected result precedes dispatch, even when the saved brain/debug view still names the prior decision. */
-  private readonly observeDecision = (decision: AiDecisionDispatchEvent): void => {
-    if (this.disposed) return;
-    const unspentClaimsBeforeSelection = this.unspentClaims.snapshot(decision.identity.playerNumber);
-    this.unspentClaims.observeDecision(decision);
-    this.append({
-      ...this.boundary(decision.identity.playerNumber),
-      kind: "decision_selected",
-      decision,
-      unspentClaimsBeforeSelection
-    });
-  };
 
   private sampleBoundaryState(playerNumber: number, exhaustedProgressItem?: UnifiedQueueItem) {
     return projectAiRuntimeProductionBoundaryState(

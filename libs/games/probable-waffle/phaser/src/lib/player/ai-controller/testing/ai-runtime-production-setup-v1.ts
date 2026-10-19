@@ -5,7 +5,7 @@ import type {
   ResearchType,
   GameCommandAuthorityState
 } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
+import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 
 /** Actual paused setup, including inherited map actors. Authored future events/fixture labels are deliberately absent. */
 export interface AiRuntimeProductionSetupV1 {
@@ -24,6 +24,8 @@ export interface AiRuntimeProductionSetupV1 {
     readonly actorId: string;
     readonly position: Vector3Simple;
     readonly definition: ActorDefinition;
+    /** Native paused footprint, including inherited objects. Legacy absence cannot certify constrained placement. */
+    readonly footprint?: readonly Vector2Simple[];
   }[];
   readonly players: readonly {
     readonly playerNumber: number;
