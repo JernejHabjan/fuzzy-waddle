@@ -20,8 +20,11 @@ import { getPlayersFromScene } from "@fuzzy-waddle/platform-game-host/phaser/sce
 
 import { CommandRelayDiagnostics } from "./command-relay-diagnostics";
 import { sendCommandBatch } from "./send-command-batch";
+import { restoreSavedCommandInput } from "./restore-saved-command-input";
+import { resetCommandLockstep } from "./reset-command-lockstep";
 /** Owns relay buffering, echo-gated application and snapshot heartbeat recovery. */
 export class CommandLockstep {
+  private destroyed = false;
   readonly diagnostics = new CommandRelayDiagnostics(this);
   /** The bus supplies application, replay recording and authority restore; this owner controls relay timing only. */
   constructor(
@@ -70,6 +73,7 @@ export class CommandLockstep {
   lastSentTickByLocalPlayer: number | null = null;
 
   tryInitMultiplayer(): void {
+    if (this.destroyed || this.isMultiplayer) return;
     // Activate the multiplayer relay path when a socket is present
     const humanPlayerCount = this.scene.baseGameData.gameInstance.players.filter(
       (player) => player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human
@@ -85,6 +89,7 @@ export class CommandLockstep {
    * Safe to call only in sessions where multiplayer command relay is available.
    */
   initMultiplayer(): void {
+    if (this.destroyed || this.isMultiplayer) return;
     const scene = this.scene;
     this.isMultiplayer = true;
     this.localPlayerNumber = resolveLocalPlayerNumber(scene);
@@ -220,6 +225,7 @@ export class CommandLockstep {
       this.subscriptions.push(this.tickService.tick$.subscribe((tick) => this.onTick(tick)));
     }
 
+    restoreSavedCommandInput(this, CommandLockstep.INPUT_DELAY_TICKS);
     this.seedInitialTicks();
     this.tryUnblockTick();
   }
@@ -376,7 +382,8 @@ export class CommandLockstep {
       return;
     }
 
-    for (let tick = 1; tick <= CommandLockstep.INPUT_DELAY_TICKS; tick++) {
+    const baseline = this.tickService?.currentTick ?? 0;
+    for (let tick = baseline + 1; tick <= baseline + CommandLockstep.INPUT_DELAY_TICKS; tick++) {
       // Directly commit empty batches for the initial grace ticks so the local
       // player's lockstep slots are filled before the server can echo back.
       // The server will echo these back too (and re-commit them), which is harmless
@@ -400,95 +407,8 @@ export class CommandLockstep {
     commandTail: readonly ProbableWaffleReplayCommandBatch[] = [],
     authorityState?: GameCommandAuthorityState
   ): void {
-    const preResetLastSentExecutionTick = this.lastSentExecutionTick;
-    const commandTailLookup = new Set(commandTail.map((batch) => `${batch.tick}:${batch.playerNumber}`));
-    this.buffer.clear();
-    this.pendingOutbound.clear();
-    this.sentTransportSequenceByTick.clear();
-    this.sentCommandsByTick.clear();
-    this.diagnostics.clearPendingStallLog();
-    this.diagnostics.stallSignature = null;
-    this.diagnostics.lastLoggedStallTick = null;
-    if (authorityState) this.restoreAuthority(authorityState);
-    // Snapshot tick can lag behind the server's already-accepted local batches.
-    // If we blindly restart from snapshotTick+1 we can spam stale ticks after correction.
-    // Use the highest known accepted local tick as the post-reset baseline.
-    const acceptedLocalTick =
-      this.localPlayerNumber !== null
-        ? (this.lastReceivedTickByPlayer.get(this.localPlayerNumber) ?? snapshotTick)
-        : snapshotTick;
-    const localTailTick =
-      this.localPlayerNumber !== null
-        ? commandTail
-            .filter((batch) => batch.playerNumber === this.localPlayerNumber)
-            .reduce((maxTick, batch) => Math.max(maxTick, batch.tick), snapshotTick)
-        : snapshotTick;
-    // Snapshot correction can land after the steady-state sender already emitted
-    // one or more future heartbeats. Keep that pre-reset frontier in the baseline
-    // so recovery does not re-seed ticks the live sender already claimed.
-    const resetBaselineTick = Math.max(snapshotTick, acceptedLocalTick, localTailTick, preResetLastSentExecutionTick);
-    if (preResetLastSentExecutionTick > Math.max(snapshotTick, acceptedLocalTick, localTailTick)) {
-      this.diagnostics.logger.warn(
-        "[CommandBus][SNAPSHOT-RESET-CLAMP] " +
-          this.diagnostics.getMultiplayerLogContext() +
-          " snapshotTick=" +
-          snapshotTick +
-          " acceptedLocalTick=" +
-          acceptedLocalTick +
-          " localTailTick=" +
-          localTailTick +
-          " preResetLastSentTick=" +
-          preResetLastSentExecutionTick +
-          " resetBaselineTick=" +
-          resetBaselineTick
-      );
-    }
-    this.lastSentExecutionTick = resetBaselineTick;
-
-    const restoredAcceptedSlots: string[] = [];
-    for (const playerNumber of this.humanPlayerNumbers) {
-      const acceptedTick = this.lastReceivedTickByPlayer.get(playerNumber) ?? snapshotTick;
-      for (let tick = snapshotTick + 1; tick <= acceptedTick; tick++) {
-        if (commandTailLookup.has(`${tick}:${playerNumber}`)) {
-          continue;
-        }
-        // Snapshot replay tails can omit empty heartbeats even though lockstep had
-        // already accepted them before the reset. Re-materialize those accepted
-        // empty slots here so recovery cannot strand an old tick behind a sparse tail.
-        this.buffer.commit(tick, playerNumber, []);
-        if (playerNumber === this.localPlayerNumber) {
-          this.diagnostics.recordLocalTickStage(tick, "snapshot-ack-backfill");
-        }
-        restoredAcceptedSlots.push(`${playerNumber}:${tick}`);
-      }
-    }
-    if (restoredAcceptedSlots.length > 0) {
-      this.diagnostics.logger.warn(
-        "[CommandBus][SNAPSHOT-ACK-BACKFILL] " +
-          this.diagnostics.getMultiplayerLogContext() +
-          " snapshotTick=" +
-          snapshotTick +
-          " restored=" +
-          restoredAcceptedSlots.join(",")
-      );
-    }
-
-    if (this.localPlayerNumber !== null) {
-      for (let tick = resetBaselineTick + 1; tick <= resetBaselineTick + CommandLockstep.INPUT_DELAY_TICKS; tick++) {
-        // Same as seedInitialTicks: directly commit here so the barrier doesn't
-        // stall before the server echo arrives.  Re-commit on echo is harmless.
-        this.buffer.commit(tick, this.localPlayerNumber, []);
-        this.diagnostics.recordLocalTickStage(tick, "snapshot-local-commit");
-        this.lastSentExecutionTick = Math.max(this.lastSentExecutionTick, tick);
-        sendCommandBatch(this, tick, [], "snapshot-reset");
-      }
-    }
-
-    for (const batch of [...commandTail].sort((a, b) => a.tick - b.tick || a.playerNumber - b.playerNumber)) {
-      this.buffer.commit(batch.tick, batch.playerNumber, batch.commands);
-    }
-
-    this.tryUnblockTick();
+    if (this.destroyed) return;
+    resetCommandLockstep(this, snapshotTick, commandTail, authorityState);
   }
 
   /**
@@ -520,8 +440,16 @@ export class CommandLockstep {
     return getSceneService(this.scene, SimulationTickService)!;
   }
   destroy(): void {
+    if (this.destroyed) return;
+    this.destroyed = true;
     this.diagnostics.clearPendingStallLog();
+    this.pendingOutbound.clear();
+    this.buffer.clear();
+    this.sentTransportSequenceByTick.clear();
     this.sentCommandsByTick.clear();
+    this.lastReceivedTickByPlayer.clear();
     this.subscriptions.forEach((s) => s.unsubscribe());
+    this.subscriptions.length = 0;
+    this.isMultiplayer = false;
   }
 }

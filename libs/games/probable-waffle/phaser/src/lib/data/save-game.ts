@@ -19,6 +19,7 @@ import { SummonExpiryService } from "../entity/systems/summon-expiry.service";
 export class SaveGame {
   private saveGameSubscription: Subscription;
   private saveInProgress = false;
+  private disposed = false;
 
   constructor(private scene: GameProbableWaffleScene) {
     this.saveGameSubscription = scene.communicator.allScenes
@@ -43,7 +44,7 @@ export class SaveGame {
    */
   private async onSaveGame(request: Pick<SaveGamePayload, "kind" | "checkpointId"> = { kind: "manual" }) {
     const kind = request.kind ?? "manual";
-    if (this.saveInProgress) return;
+    if (this.disposed || this.saveInProgress) return;
     if (kind === "autosave" && !request.checkpointId && !this.canAutosave()) return;
     const tickService = getSceneService(this.scene, SimulationTickService);
     const eligibility = evaluateCampaignSaveEligibility({
@@ -85,6 +86,7 @@ export class SaveGame {
       // Thumbnail capture and the save-name dialog may span many ticks. Never combine old actors with later live banks/AI.
       const gameInstanceData = structuredClone(this.scene.baseGameData.gameInstance.data);
       const thumbnail = await this.takeScreenshot();
+      if (this.disposed) return;
       this.scene.communicator.utilityEvents.emit({
         name: "save-game",
         data: {
@@ -189,7 +191,10 @@ export class SaveGame {
     if (!gameState) return;
     const commandBus = getSceneService(this.scene, CommandBusService);
     const summonExpiries = getSceneService(this.scene, SummonExpiryService);
-    if (commandBus) gameState.data.commandAuthority = commandBus.getAuthorityState();
+    if (commandBus) {
+      gameState.data.commandAuthority = commandBus.getAuthorityState();
+      gameState.data.pendingCommandBatches = commandBus.getPendingCommandBatches();
+    }
     if (summonExpiries) gameState.data.summonExpiries = summonExpiries.getData();
   }
 
@@ -209,6 +214,7 @@ export class SaveGame {
   }
 
   private destroy() {
+    this.disposed = true;
     this.saveGameSubscription.unsubscribe();
     this.scene.input.keyboard?.off("keydown", this.handleQuickSaveShortcut, this);
   }

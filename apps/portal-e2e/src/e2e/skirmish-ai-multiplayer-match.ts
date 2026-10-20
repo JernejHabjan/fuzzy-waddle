@@ -25,7 +25,8 @@ async function waitForMultiplayerGame(page: Page): Promise<void> {
 
 /** Creates an ordinary public custom lobby with two real humans and one host-owned AI. */
 export async function startMultiplayerTestMatch(
-  browser: Browser, options: { readonly queueWorld?: true; readonly sharedQueueWorld?: "shared_contention" | "cancel_research" } = {}
+  browser: Browser, options: { readonly queueWorld?: true; readonly sharedQueueWorld?: "shared_contention" | "cancel_research";
+    readonly authorityProbe?: true } = {}
 ): Promise<MultiplayerTestMatch> {
   if (options.queueWorld && options.sharedQueueWorld) throw new Error("multiplayer_queue_world_opt_ins_conflict");
   const provisioned = await createMultiplayerTestIdentities();
@@ -38,6 +39,12 @@ export async function startMultiplayerTestMatch(
   try {
     await installMultiplayerIdentity(hostContext, provisioned.identities[0]);
     await installMultiplayerIdentity(peerContext, provisioned.identities[1]);
+    if (options.authorityProbe) for (const context of [hostContext, peerContext]) {
+      await context.addInitScript(() => {
+        if (window.location.origin === "http://127.0.0.1:4200")
+          window.sessionStorage.setItem("fuzzy-waddle:ai-multiplayer-authority-probe-v1", "1");
+      });
+    }
     if (options.queueWorld) {
       for (const context of [hostContext, peerContext]) {
         await context.addInitScript(() => {

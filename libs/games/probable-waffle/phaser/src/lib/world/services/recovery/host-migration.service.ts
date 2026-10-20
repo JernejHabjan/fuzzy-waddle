@@ -11,11 +11,14 @@ import { CommandBusService } from "../multiplayer/command-bus.service";
 
 /** Handles ownership handoff so a newly promoted host immediately starts serving snapshots. */
 export class HostMigrationService {
+  private disposed = false;
+  private currentHostUserId?: ProbableWaffleHostMigratedEvent["currentHostUserId"];
   private hostMigrationSub?: Subscription;
   private snapshotService?: SnapshotService;
   private readonly logger = createMultiplayerClientLogger("HostMigration");
 
   init(scene: ProbableWaffleScene, snapshotService: SnapshotService): void {
+    if (this.disposed || this.hostMigrationSub) return;
     this.snapshotService = snapshotService;
     const communicator = getCommunicator(scene);
     if (!communicator.hostMigrated || scene.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) {
@@ -23,6 +26,10 @@ export class HostMigrationService {
     }
 
     this.hostMigrationSub = communicator.hostMigrated.on.subscribe((event: ProbableWaffleHostMigratedEvent) => {
+      if (this.disposed || event.currentHostUserId === this.currentHostUserId) return;
+      // Replayed/out-of-order transitions cannot move authority back to a previous host.
+      if (this.currentHostUserId !== undefined && event.previousHostUserId !== this.currentHostUserId) return;
+      this.currentHostUserId = event.currentHostUserId;
       const commandBus = getSceneService(scene, CommandBusService);
       const authorityEpoch = commandBus?.getAuthorityState().authorityEpoch ?? 0;
       commandBus?.advanceAuthorityEpoch(authorityEpoch + 1);
@@ -45,7 +52,10 @@ export class HostMigrationService {
 
   /** Releases socket listeners and nested snapshot service state. */
   destroy(): void {
+    if (this.disposed) return;
+    this.disposed = true;
     this.hostMigrationSub?.unsubscribe();
+    this.hostMigrationSub = undefined;
     this.snapshotService?.destroy();
   }
 }

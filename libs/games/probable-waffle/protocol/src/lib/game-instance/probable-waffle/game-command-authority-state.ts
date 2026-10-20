@@ -1,6 +1,7 @@
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
 
 import type { GameCommandOutcome } from "./game-command-outcome";
+import type { GameCommandExecution } from "./game-command-execution";
 /** Persisted deduplication frontier used by save, reconnect and host migration. */
 export interface GameCommandAuthorityState {
   readonly schemaVersion: 1;
@@ -13,7 +14,12 @@ export interface GameCommandAuthorityState {
   /** Player-local opaque commitment key to active command ID, preserving equal keys from different players. */
   readonly activeCommitmentsByPlayer?: Readonly<Record<number, Readonly<Record<string, string>>>>;
   readonly activeCommandProgress?: Readonly<
-    Record<string, { readonly expectedActorIds: readonly ActorId[]; readonly terminalActorIds: readonly ActorId[] }>
+    Record<string, {
+      readonly expectedActorIds: readonly ActorId[];
+      readonly terminalActorIds: readonly ActorId[];
+      /** Exact original admission identity; retained past bounded outcome-history eviction and host migration. */
+      readonly execution?: GameCommandExecution;
+    }>
   >;
   readonly outcomes: readonly GameCommandOutcome[];
 }

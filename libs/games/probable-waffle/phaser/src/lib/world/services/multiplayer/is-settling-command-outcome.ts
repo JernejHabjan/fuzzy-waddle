@@ -5,6 +5,7 @@ export function isSettlingCommandOutcome(outcome: GameCommandOutcome): boolean {
   return (
     ["completed", "rejected", "cancelled", "failed"].includes(outcome.kind) &&
     outcome.reason !== "duplicate_command" &&
+    outcome.reason !== "stale_authority_epoch" &&
     outcome.reason !== "lost_outcome" &&
     outcome.reason !== "outcome_backlog_overflow"
   );

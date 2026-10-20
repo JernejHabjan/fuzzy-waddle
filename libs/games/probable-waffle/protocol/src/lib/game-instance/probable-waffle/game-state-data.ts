@@ -9,6 +9,7 @@ import type {
 } from "../../probable-waffle/campaign-runtime";
 import type { DeterministicRandomState } from "../../probable-waffle/deterministic-random";
 import type { GameCommandAuthorityState } from "./game-command";
+import type { ProbableWaffleReplayCommandBatch } from "./game-instance-medatada";
 
 /**
  * Defines the structured probable waffle game state data contract for this module. Its declared surface makes
@@ -16,6 +17,10 @@ import type { GameCommandAuthorityState } from "./game-command";
  * than an ad-hoc object so adapters, persistence, and callers remain compatible.
  */
 export interface ProbableWaffleGameStateData extends BaseData {
+  /** Local unsent relay input, detached at the save tick. Original execution identities must survive reload.
+   * Server-accepted input belongs to the reconnect response tail and is not inferred from this client-local field.
+   */
+  pendingCommandBatches?: ProbableWaffleReplayCommandBatch[];
   /**
    * collection value on {@link ProbableWaffleGameStateData}. Its element type defines the records that may cross
    * this boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.

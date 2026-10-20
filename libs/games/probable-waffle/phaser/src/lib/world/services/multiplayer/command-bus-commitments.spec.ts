@@ -77,7 +77,10 @@ describe("player-scoped command commitments", () => {
     restored.bus.advanceAuthorityEpoch(1);
     issue(restored.bus, 2);
     issue(restored.bus, 3);
-    expect(restored.applied.map((command) => command.playerNumber)).toEqual([2, 2, 3]);
+    expect(restored.applied.map((command) => command.playerNumber)).toEqual([2]);
+    restored.bus.reportOutcome(other, "completed", "applied");
+    issue(restored.bus, 3);
+    expect(restored.applied.map((command) => command.playerNumber)).toEqual([2, 3]);
     restored.bus.destroy();
     bus.destroy();
   });

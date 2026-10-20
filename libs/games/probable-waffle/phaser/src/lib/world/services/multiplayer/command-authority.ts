@@ -49,6 +49,7 @@ export class CommandAuthority {
   readonly expectedActorIdsByCommand = new Map<string, readonly string[]>();
 
   readonly terminalActorIdsByCommand = new Map<string, Set<string>>();
+  private readonly executionByCommand = new Map<string, GameCommandExecution>();
 
   readonly recentOutcomes: GameCommandOutcome[] = [];
 
@@ -88,6 +89,18 @@ export class CommandAuthority {
 
   /** Publishes a completion whose originating command is represented by saved effect metadata. */
   reportPersistedOutcome(outcome: GameCommandOutcome): void {
+    // A delayed old application may finish, but an obsolete dispatch/rejection cannot cancel paid work in the new epoch.
+    if (outcome.authorityEpoch > this.authorityEpoch) return;
+    if (outcome.authorityEpoch < this.authorityEpoch &&
+        (this.activeCommitments.get(outcome.playerNumber, outcome.commitmentKey) !== outcome.commandId ||
+          !["applied", "active", "completed", "cancelled", "failed"].includes(outcome.kind))) {
+      this.onOutcome(outcome);
+      return;
+    }
+    const original = this.executionByCommand.get(outcome.commandId);
+    if (original && (original.authorityEpoch !== outcome.authorityEpoch || original.sequence !== outcome.sequence ||
+        original.commitmentKey !== outcome.commitmentKey || original.intentId !== outcome.intentId ||
+        original.effectId !== outcome.effectId)) return;
     if (isSettlingCommandOutcome(outcome)) {
       if (this.activeCommitments.get(outcome.playerNumber, outcome.commitmentKey) === outcome.commandId) {
         const terminalActorIds = this.terminalActorIdsByCommand.get(outcome.commandId) ?? new Set<string>();
@@ -100,6 +113,7 @@ export class CommandAuthority {
           this.activeCommitments.delete(outcome.playerNumber, outcome.commitmentKey);
           this.expectedActorIdsByCommand.delete(outcome.commandId);
           this.terminalActorIdsByCommand.delete(outcome.commandId);
+          this.executionByCommand.delete(outcome.commandId);
         }
       }
     }
@@ -138,7 +152,9 @@ export class CommandAuthority {
             commandId,
             {
               expectedActorIds: [...expectedActorIds].sort(),
-              terminalActorIds: [...(this.terminalActorIdsByCommand.get(commandId) ?? [])].sort()
+              terminalActorIds: [...(this.terminalActorIdsByCommand.get(commandId) ?? [])].sort(),
+              ...(this.executionByCommand.has(commandId)
+                ? { execution: structuredClone(this.executionByCommand.get(commandId)) } : {})
             }
           ])
       ),
@@ -152,13 +168,13 @@ export class CommandAuthority {
    */
   advanceAuthorityEpoch(nextEpoch: number): void {
     if (!Number.isSafeInteger(nextEpoch) || nextEpoch <= this.authorityEpoch) return;
+    // Retire definitely-unsent requests under their original identity before installing the next fence.
+    this.onEpochAdvance();
     this.authorityEpoch = nextEpoch;
     this.processedCommandIds.clear();
     this.processedSequenceWatermarkByPlayer.clear();
-    this.activeCommitments.clear();
-    this.expectedActorIdsByCommand.clear();
-    this.terminalActorIdsByCommand.clear();
-    this.onEpochAdvance();
+    // The host fence invalidates unsent authority, not work already admitted to the world. Its original completion
+    // still owns the opaque commitment until every addressed actor settles, including across a saved host transfer.
   }
 
   stampCommand(command: GameCommandInput, tick: number, sourceOverride?: GameCommandExecution["source"]): GameCommand {
@@ -274,6 +290,7 @@ export class CommandAuthority {
     );
     this.activeCommitments.set(upgraded.playerNumber, execution.commitmentKey, execution.commandId);
     this.expectedActorIdsByCommand.set(execution.commandId, [...upgraded.actorIds].sort());
+    this.executionByCommand.set(execution.commandId, structuredClone(execution));
     while (this.processedCommandIds.size > CommandAuthority.PROCESSED_COMMAND_LIMIT) {
       const oldest = this.processedCommandIds.keys().next().value as string | undefined;
       if (!oldest) break;
@@ -331,9 +348,11 @@ export class CommandAuthority {
     );
     this.expectedActorIdsByCommand.clear();
     this.terminalActorIdsByCommand.clear();
+    this.executionByCommand.clear();
     for (const [commandId, progress] of Object.entries(state.activeCommandProgress ?? {})) {
       this.expectedActorIdsByCommand.set(commandId, [...progress.expectedActorIds].sort());
       this.terminalActorIdsByCommand.set(commandId, new Set(progress.terminalActorIds));
+      if (progress.execution) this.executionByCommand.set(commandId, structuredClone(progress.execution));
     }
     for (const outcome of this.recentOutcomes) {
       if (this.activeCommitments.get(outcome.playerNumber, outcome.commitmentKey) !== outcome.commandId) continue;

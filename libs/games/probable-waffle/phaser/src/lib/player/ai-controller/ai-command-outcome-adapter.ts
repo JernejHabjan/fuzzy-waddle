@@ -1,6 +1,7 @@
 import type { AiAuthorityStateV1, AiCommandOutcomeV1, AiDeadlineV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import type { GameCommandOutcome } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
+import { isSettlingCommandOutcome } from "../../world/services/multiplayer/is-settling-command-outcome";
 
 /** Maps the runtime command envelope into the pure brain's fenced identity. */
 export function adaptGameCommandOutcomeToBrain(
@@ -45,6 +46,8 @@ export function adaptGameCommandOutcomesToBrain(
   matchId: GameInstanceId
 ): AiCommandOutcomeV1[] {
   return [...outcomes]
+    // Delivery diagnostics are not a terminal verdict on the original effect. Keep them out of pure claim release.
+    .filter((outcome) => !["rejected", "cancelled", "failed"].includes(outcome.kind) || isSettlingCommandOutcome(outcome))
     .sort(
       (left, right) =>
         left.authorityEpoch - right.authorityEpoch ||

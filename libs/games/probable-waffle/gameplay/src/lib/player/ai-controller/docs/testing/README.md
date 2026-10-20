@@ -513,3 +513,21 @@ H-30 uses finite optional/debug/mandatory faults with saved retry debt and origi
 H-08/H-09/H-31/H-32 stay unbound with exact missing seams in native-scenario-recipes.json. H-31's detached save,
 live state and restored clock repairs are prerequisites, not native paired-continuation certification.
 No recipe, test, lint, type check, formatter, build or other validation ran. Model summaries remain at most8192 UTF-8 bytes.
+
+### Authority/save/lifecycle source update — 2026-10-20
+
+Admitted commands retain original execution/progress across host epochs and history eviction. Duplicate delivery is
+not terminal failure of the original paid effect; a distinct rejected new request cannot release its original purpose.
+Only actual unsent transport input is cancelled at a host fence. Saves carry detached local pendingCommandBatches;
+strict restore and nonzero relay startup preserve identities behind the ordinary server echo gate. Those local batches
+are not an acknowledged authoritative response tail or a peer-independent hash projection.
+
+Disposed bus/transport/save callbacks and delayed Angular communicator transitions are fenced. The single root client
+facade delegates through shared context, event and lobby inheritance layers; the previous oversized-file issue was
+addressed by splitting source, without updating the lint baseline. Dependency-injection/type/lint checks remain unrun.
+
+The localhost authority-probe opt-in retains only genuine admitted AI envelopes (16 candidates,32 selected outcomes,
+explicit overflow failure). skirmish-ai-multiplayer-authority-continuation.spec.ts authors ONE real host-promotion and
+original replay/application branch. Full H-08/H-09/H-31/H-32 registrations remain absent until their actual native
+cancellation/compaction/paired reload/same-realm UI drivers exist. Headless bus/codec tests cannot certify those rows.
+No recipes, tests, lint, types, formatter, browser or other verification ran in this source batch.

@@ -7,6 +7,7 @@ import { CommandBusService } from "../../../world/services/multiplayer/command-b
 import { AiMultiplayerQueueWorld, multiplayerQueueWorldRequested } from "./ai-multiplayer-queue-world";
 
 import { AiMultiplayerSharedQueueWorld, multiplayerSharedQueueWorldRequested } from "./ai-multiplayer-shared-queue-world";
+import { AiMultiplayerAuthorityProbe, multiplayerAuthorityProbeRequested } from "./ai-multiplayer-authority-probe";
 
 const marker = "fuzzy-waddle:ai-multiplayer-browser-test-v1";
 
@@ -29,6 +30,7 @@ export class AiMultiplayerDiagnostics {
   private readonly humanPlayerNumbers: number[];
   private readonly queueWorld: AiMultiplayerQueueWorld | null;
   private readonly sharedQueueWorld: AiMultiplayerSharedQueueWorld | null;
+  private readonly authorityProbe: AiMultiplayerAuthorityProbe | null;
 
   constructor(private readonly scene: ProbableWaffleScene, private readonly commandBus: CommandBusService) {
     const sharedBranch = multiplayerSharedQueueWorldRequested();
@@ -36,6 +38,7 @@ export class AiMultiplayerDiagnostics {
     if (sharedBranch && queueRequested) throw new Error("multiplayer_queue_world_opt_ins_conflict");
     this.queueWorld = queueRequested ? new AiMultiplayerQueueWorld(scene, commandBus) : null;
     this.sharedQueueWorld = sharedBranch ? new AiMultiplayerSharedQueueWorld(scene, commandBus, sharedBranch) : null;
+    this.authorityProbe = multiplayerAuthorityProbeRequested() ? new AiMultiplayerAuthorityProbe(commandBus) : null;
     this.humanPlayerNumbers = scene.baseGameData.gameInstance.players
       .filter((player) => player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human)
       .map((player) => player.playerNumber)
@@ -79,11 +82,13 @@ export class AiMultiplayerDiagnostics {
         .filter((id) => id.startsWith(`${aiPlayerNumber}:`)).slice(-16),
       hashes: [...this.localHashes].map(([tick, hash]) => ({ tick, hash })),
       queueWorld: this.queueWorld?.getSnapshot() ?? null,
-      sharedQueueWorld: this.sharedQueueWorld?.getSnapshot() ?? null
+      sharedQueueWorld: this.sharedQueueWorld?.getSnapshot() ?? null,
+      authorityProbe: this.authorityProbe?.snapshot() ?? null
     };
   }
 
   destroy(): void {
+    this.authorityProbe?.destroy();
     this.queueWorld?.destroy();
     this.sharedQueueWorld?.destroy();
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
@@ -91,6 +96,16 @@ export class AiMultiplayerDiagnostics {
     this.observedHumanBatches.clear();
     this.lastReceivedRelaySequenceByPlayer.clear();
     this.localHashes.clear();
+  }
+
+  /** Only the explicitly opted-in native experiment can retain/redeliver its own observed original command. */
+  pinAuthorityProbe(): void { this.requireAuthorityProbe().pin(); }
+  redeliverAuthorityProbe(): void { this.requireAuthorityProbe().redeliver(); }
+  retainAuthorityReplay(): () => boolean { return this.requireAuthorityProbe().retainReplayCallback(); }
+
+  private requireAuthorityProbe(): AiMultiplayerAuthorityProbe {
+    if (!this.authorityProbe) throw new Error("multiplayer_authority_probe_not_enabled");
+    return this.authorityProbe;
   }
 
   startSharedQueueWorld(): void {

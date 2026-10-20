@@ -2,7 +2,91 @@
 
 [HANDOFF.md](HANDOFF.md) owns continuation. Read this current batch; older sections retain historical evidence.
 
-## Recovery/fault/save authoring — three registered, save integration incomplete, 2026-10-20
+## Grouped authority/save/lifecycle source repairs — native integration still unfinished, 2026-10-20
+
+Publication base7c9654ca4dcac1f7640c71d4fc4d5d9c43cb006d; worktree/branch in HANDOFF. Actual model/effort unknown.
+No delegation/model switch. No recipes/tests/lint/types/formatters/builds/browser/server/doctor/context/validators ran.
+Source/diff review and catalog --write are authoring only. Existing scenario registrations and retained behavior counts
+are unchanged: runtime92/116 (79.3%),24 unbound (20.7%); pure111/111. Current four IDs remain0/4 fully registered.
+
+### Numbered acceptance map and Omission Audit — authored source, not passing evidence
+
+1. **Original admitted ownership across epochs:** CommandAuthority retains admitted commitments and per-actor progress
+   when the host fence advances. Late original completion can settle that original; stale dispatch/rejection cannot cancel
+   paid work. AiCommandReconciliation keeps only admitted old pending identities with original age, while a former epoch's
+   completion cannot raise the new terminal cursor. Full AI state transfer onto a previously passive peer remains open.
+2. **Duplicate delivery versus actual failure:** runtime reconciliation uses shared non-settling rules. Duplicate/stale/
+   lost/backpressure diagnostics do not release the original effect or reach pure claim release as terminal rejection.
+   A positively identified different never-applied request rejected by the original commitment may close only itself.
+   Tests cover original replay, conflicting new request and original completion separately.
+3. **Identity through retention pressure:** active progress persists the original execution envelope beyond the512 outcome
+   history and2048 detailed-ID limits. Matching command ID with wrong epoch/sequence/intent/effect cannot settle it.
+   Real bus admission/JSON restore control crosses the configured ID limit. It uses Concede envelopes and is explicitly
+   not acknowledged native peer compaction, rendered gameplay, payment proof or H-09 certification.
+4. **Actual unsent cancellation on host fence:** the bus captures and removes its own pendingOutbound input before epoch
+   advancement, records original cancellations and preserves those terminal records for pure claim release. It does not
+   manufacture cancellation from timeout, disappearance or an absent receipt. Server-accepted/unacknowledged input is
+   outside that definitely-unsent set and still needs the authoritative tail at the native integration boundary.
+5. **Snapshot correction retains unsent input:** resetCommandLockstep filters actual unsent input against saved epoch,
+   detailed IDs/watermark and exact authoritative tail identities, then re-times delivery above the seed frontier without
+   restamping identity. The existing echo gate still controls application. Helper extraction keeps the transport owner
+   bounded; source review repaired a leftover bare-this receiver in the extraction. No validator/test executed.
+6. **Before-apply save input:** SaveGame captures detached pendingCommandBatches with authority/clock. Strict whole-tail
+   restore validates original ownership/identity/capacity before publishing; rejects malformed tails without partial
+   enqueue; excludes already-admitted work. Relay startup seeds above the restored tick instead of restarting at1/2.
+   Codec, saved-clock/input and echo controls are authored. These are not a real paired codec/scene reload driver.
+   Client-local unsent batches are deliberately excluded from the peer-independent simulation digest.
+7. **Old scene work cannot revive transport:** disposed CommandBus entry points reject dispatch and ignore replay,
+   outcome, epoch and reset mutations. CommandLockstep clears owned buffers/subscriptions, cannot reinitialize and
+   avoids duplicate initialization. SaveGame cannot emit after a delayed screenshot returns to a disposed scene.
+   HostMigrationService rejects duplicate/out-of-order transitions and cannot reinitialize after disposal.
+8. **Cross-match Angular lifetime:** generation fences prevent late socket creation/teardown from replacing/destroying
+   a newer communication owner. Local listeners detach before awaits. Event bindings retain their original instance ID
+   and stop old autosave/checkpoint state. Late cleanup/Stopped completion cannot clear a replacement instance.
+   A restored-world navigation checks its original instance; save dialogs use captured campaign scope and event bus.
+9. **Bounded client split:** the existing root service/API now inherits one shared context, subscription lifetime and lobby
+   layer, leaving save/replay/exit orchestration on the root facade. No second root instance/provider was added.
+   Moved method bodies preserve existing contracts except the named lifetime fixes. The old hash-baselined oversized
+   client file is split rather than refreshing its baseline. Angular DI/inherited API checks remain deferred, not passed.
+10. **Native H-08 host branch:** explicit localhost/session opt-in retains at most16 genuine admitted AI envelopes,
+    pins one actual applied world link and records at most32 outcomes with explicit overflow failure. The authored
+    Playwright control uses the existing two-human/AI relay lobby and real server host promotion, then replays the
+    original through the native application fence. It requires unchanged application count, original stale rejection
+    and continued AI commands. It does not send that old packet over the network or prove all H-08 requirements.
+    A retained replay callback seam exists for H-32, but no same-realm UI second-match driver was authored here.
+
+### Scenario disposition and immediate next work
+
+| ID | Implemented source/control | Still required before full native registration |
+| --- | --- | --- |
+| H-08 | Admitted/unsent epoch ownership, original identity fences, native host branch authored unrun | Actual timeout/cancellation ordering, original delayed callbacks and canonical peers/network redelivery |
+| H-09 | Original active metadata after real bus retention pressure/JSON restore, authored unrun | Acknowledged native peer compaction, real codec/scene restore, original paid effects and unresolved replay |
+| H-31 | Original unsent-input persistence/restore, saved-clock relay startup and previous detached/live save fixes | Actual paired codec/scene reload versus uninterrupted play at before/during/after apply; chronic blocker/lease, full queue/debt/RNG and authoritative accepted tail |
+| H-32 | Disposed bus/transport/save, host event and asynchronous client ownership fences; retained callback seam | Ordinary UI second match in same realm, distinct seed/identity, pending path/receipt callbacks, host replacement and controller/effect counts |
+
+These four remain specifications, not complete native bindings. Cumulative selected13 stays9/13 registered (69.2%),
+4/13 unbound (30.8%); factory61 bindings/394 variants plus21 partial owner worlds remain unrun. Do not create another
+preparation-only package or count this as four completed scenarios. Continue by finishing the actual native drivers.
+Prior H-05/H-20/H-21/H-23 gaps and supported gameplay/multiplayer/calibration requirements remain on the same roadmap.
+
+### Final Closure Audit — separate source/publication review
+
+- Reviewed authority -> callback -> pure reservation release, actual unsent save/reset -> echo/application, protocol codec
+  fields, scene shutdown and Angular root/communicator consumers. Controls distinguish original replay from a different
+  rejected request and definite unsent cancellation from missing evidence. No manual authority edits or fake native
+  strategic input were introduced. Headless Concede controls and the native host branch retain explicit limits.
+- Source review repaired receiver extraction, malformed-tail atomic publication, duplicate-request settlement, callback
+  cloning cost (cheap epoch read avoids full history cloning per ordinary callback), asynchronous instance replacement
+  and test snapshot typing. All test/typing/lint/runtime outcomes remain unverified under the user's deferral.
+- Model summaries stay capped8192 UTF-8 bytes. No generated fixture/raw report scan, new performance suite, baseline
+  refresh, balance change, dependency or global diagnostic capture was added. The probe is finite, explicitly opted in,
+  observes actual envelopes and detaches with scene diagnostics. No skill/tool expansion was made.
+- Next grouped work is the four native integration drivers above, not another resource/planner refactor. Recommendation:
+  Sol6.1/high for peer/save/UI causality. Machinery necessity review remains last overall.
+- Publish only this worktree's owned source/tests/docs with hooks disabled, push normally, verify remote equality and
+  pause. Verify the containing commit on resume; publication is not acceptance or a self-referential source SHA.
+
+## Historical recovery/fault/save authoring — three registered, save integration incomplete, 2026-10-20
 
 Publication base80ded317d129e57fb0a42aa6cb1a60404efc0cba; new managed worktree and branch in HANDOFF.
 Actual model/effort unknown; no delegation/model switch. Source/diff review and fixture/catalog --write authoring only.

@@ -3,39 +3,38 @@
 Default resume page: read this first, then only the selected package in [REMAINING-WORK.md](REMAINING-WORK.md).
 Do not load the full plan directory or archive on startup.
 
-## Current cursor — recovery/fault authoring, save integration still open, 2026-10-20
+## Current cursor — authority/save/lifecycle repairs authored; native integration unfinished, 2026-10-20
 
 - Worktree /home/jernej/.codex/worktrees/skirmish-authority-recovery/fuzzy-waddle;
-  branch feature/759-skirmish-ai. Publication base 80ded317d129e57fb0a42aa6cb1a60404efc0cba; verify containing commit and remote on resume.
-  Main checkout has unrelated issue-template edits; leave those untouched. Actual model/effort unknown;
-  no delegation or model switch occurred.
-- Selected H-11/H-12/H-30/H-31: three native registrations/24 faction-control variants authored, unrun;
-  3/4 registered (75%), H-31 remains1/4 unbound (25%). Cumulative selected13:9/13 registered (69.2%),
-  4/13 unbound (30.8%): H-08/H-09/H-31/H-32. These are coverage counts, not gameplay passes.
-- H-11 reserves the missing definition-priced renewable-food chain before extra workers and allows one worker
-  to start it. Native setups independently price the chain, exhaust every source and cover legal bootstrap/infeasibility.
-- H-12 scope explicitly approved by user: prove native whole-bundle admission prevents partial-hold deadlock,
-  plus pure deterministic recovery of persisted cycles. Original admission priority selects only a fully provisional
-  victim; paid/dispatched/lifecycle evidence protects the whole plan. Real proposal reversal and paid/foreign controls authored.
-- H-30 quarantines malformed/throwing optional batches with saved retry backoff; debug failure preserves accepted work.
-  Mandatory failures stay explicit. Finite opt-in native faults, original receipt reconciliation and recovery readers authored.
-- H-31 source repairs freeze a detached save before thumbnail/dialog/storage awaits, restore simulation time before
-  actor/controller creation and capture live AI/research/authority continuations. Admission reads live authority before
-  the decision and stores its post-dispatch frontier. Codec/clock/live-state controls authored, not native continuation proof.
-- Supported runtime92/116 (79.3%) registered;24/116 (20.7%) unbound, plus4 deferred island rows.
-  Pure111/111 registered. Native factory61 bindings/394 variants and21 partial owner worlds remain unrun.
-  Overall AI completion percentage unavailable. Prior H-05/H-20/H-21/H-23 recovery gaps remain open.
+  branch feature/759-skirmish-ai. Publication base 7c9654ca4dcac1f7640c71d4fc4d5d9c43cb006d; verify containing commit and remote on resume.
+  Preserve unrelated main-checkout issue-template edits. Actual model/effort unknown; no delegation/model switch.
+- Current H-08/H-09/H-31/H-32 batch: grouped production repairs and one native H-08 host branch authored, unrun.
+  Full scenario registrations remain0/4 (0%),4/4 missing (100%); this is implementation progress, not scenario closure.
+  Cumulative selected13 remains9/13 registered (69.2%),4/13 unbound (30.8%).
+- Changes preserve original admitted work/age across epochs; duplicate delivery cannot release paid ownership.
+  Original execution identity survives bounded history eviction. Only actual unsent transport input receives explicit
+  epoch cancellation. Saved unsent batches retain identities and reload above saved time, behind real server echo.
+- Disposed buses/lockstep/screenshot callbacks cannot mutate old/new matches. Repeated/out-of-order host transitions
+  do not advance the fence again. Delayed Angular connection/cleanup cannot overwrite or tear down the next instance.
+  Root client split into context/event/lobby layers plus save facade; no lint baseline refresh or new root service.
+- Native control uses actual AI-issued applied work, real server host promotion and original replay/application fencing.
+  It does not prove old-packet network redelivery, complete payment evidence or another full scenario.
+- **Next authoring action:** finish the native drivers for these SAME four IDs, reusing the new source/probe controls.
+  H-08: timeout/cancellation plus delayed original callbacks and peer consistency. H-09: acknowledged peer compaction
+  and real codec/scene restore of original/unresolved work. H-31: ordinary paired scene reload versus uninterrupted
+  continuation before/during/after apply, with chronic blocker/lease and full queue/debt/RNG premises. H-32: ordinary UI
+  second match in the SAME browser realm, distinct seed/identity, retained path/receipt callbacks and host replacement.
+  Do not substitute headless bus/codec tests for these native branches or open another preparatory architecture batch.
+- Server-accepted/unacknowledged input still needs its actual authoritative response tail. Saved local unsent batches
+  are not that tail. Full AI continuation onto a promoted peer and complete native save/reload remain unproven.
+- Supported runtime92/116 (79.3%) registered,24/116 (20.7%) unbound, plus4 deferred island rows; pure111/111.
+  Native factory61 bindings/394 variants plus21 partial owner worlds remain unrun. Overall AI completion unavailable.
+  Prior H-05/H-20/H-21/H-23 gaps remain; H-12 retains the user-approved native prevention/pure recovery scope.
 - **No execution:** no recipes/tests/lint/types/formatters/builds/browser/server/doctor/context/dedicated validators.
   Source/diff review and fixture/catalog --write authoring only. Model summaries capped8192 UTF-8 bytes;
-  do not load generated fixtures/raw reports wholesale. Machinery necessity review stays last overall.
-- **Next:** bind H-08/H-09/H-31 together at real peer/epoch/outbound-tail/save boundaries, so original pending AI work
-  survives before/during/after-apply saves and compaction without duplicate charges/effects. Single-player synchronous
-  apply and codec round trips cannot stand in for this integration. Then H-32 same-realm next-match/host replacement.
-  No fake AI snapshots, manual authority edits or human-only command receipts may substitute.
-- Source-structure gate remains deferred: the changed large game-instance client service has a hash-baselined
-  legacy size violation. No baseline was refreshed; resolve that owner explicitly before claiming a clean lint gate.
-- Report done/why, exact registration percentages, unrun limitations and next/why. Commit/push owned paths,
-  verify remote equality and pause. Recommendation: Sol6.1/high for the unresolved peer/save integration design.
+  never load generated fixtures/raw reports wholesale. Machinery review remains last overall.
+- Report done/why, exact coverage and unfinished branches, next/why. Commit/push owned paths, verify remote equality,
+  then pause. Recommend Sol6.1/high for the remaining peer/save/UI driver design; this does not change settings.
 
 ## What “continue” means
 

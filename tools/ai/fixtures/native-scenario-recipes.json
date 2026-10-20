@@ -179,19 +179,19 @@
     },
     "authority_binding_h_08": {
       "owner": "apps/portal-e2e/src/e2e/skirmish-ai-native-scenario-evaluation.ts",
-      "missing": "epoch and cancellation races: The consumer receipt hook exists. Still bind normal cancellation and real host promotion, deliver the original old command/callback across that boundary, and compare actual peer outcomes."
+      "missing": "Host-fence source repairs preserve admitted commitments and retire definitely-unsent requests. One real-relay host-promotion/original-AI replay control is authored in skirmish-ai-multiplayer-authority-continuation.spec.ts, unrun. Still bind timeout/cancellation orderings, original delayed callbacks and canonical peer comparisons; the local replay/application probe is not network redelivery or full H-08."
     },
     "authority_binding_h_09": {
       "owner": "apps/portal-e2e/src/e2e/skirmish-ai-native-scenario-evaluation.ts",
-      "missing": "dedup compaction and restore: Drive actual acknowledged retention pressure and the safe watermark, restore via real save/load, then redeliver original and unresolved command identities on real clients. No direct authority-state mutation."
+      "missing": "Original active execution metadata now survives bounded history eviction and JSON restore; a real bus retention-limit control is authored, unrun. Still drive acknowledged native peer compaction, physical original paid work, real codec/scene restore and exact old/unresolved redelivery. Headless Concede controls do not certify native H-09."
     },
     "authority_binding_h_31": {
       "owner": "apps/portal-e2e/src/e2e/skirmish-ai-native-scenario-evaluation.ts",
-      "missing": "Save primitives repaired: persist/restore absolute clock before controllers, freeze one detached world before thumbnail/naming/storage awaits, capture live AI/research in peer snapshots and live continuations in AI hashes. Real codec preservation regressions authored. Still requires ordinary completed-boundary save/reload and uninterrupted native continuation, with real pre-apply multiplayer outbound-tail/epoch handling and full queue/debt/RNG comparison. Single-player dispatch applies synchronously, so it cannot certify the before-apply branch; do not register codec tests as full native H-31."
+      "missing": "Detached save/clock/live-authority primitives plus unsent pendingCommandBatches persistence, strict restore and nonzero relay startup are authored. Still bind ordinary completed-boundary codec/scene reload against uninterrupted native continuation, real server-accepted outbound tails, chronic blocker/lease premises and complete queues/debt/RNG. Client-local unsent input is not an acknowledged server tail; no native H-31 registration."
     },
     "authority_binding_h_32": {
       "owner": "apps/portal-e2e/src/e2e/skirmish-ai-native-scenario-evaluation.ts",
-      "missing": "same-realm scene restart: Disposed controller and retained receipt callbacks are fenced in source. Still retain one browser realm through ordinary scene restart and real host replacement, deliver old work afterwards, and count actual current controllers/native second-match effects. Fresh contexts cannot certify cleanup."
+      "missing": "Disposed bus/lockstep/save callbacks, duplicate host transitions and delayed Angular communicator setup/teardown are fenced in source. A retained original replay callback seam is authored under explicit localhost opt-in. Still drive ordinary UI second-match startup in the SAME browser realm with distinct identity/seed, old pending path/receipt callbacks and real host replacement; count actual current controllers and useful second-match effects."
     }
   },
   "scenarioIds": [
@@ -319,7 +319,9 @@
       "reuse": [
         "tools/ai/fixtures/controller-contract-scenarios.json",
         "tools/ai/native-authority-worlds.mjs",
-        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/install-ai-runtime-receipt-fault.ts"
+        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/install-ai-runtime-receipt-fault.ts",
+        "apps/portal-e2e/src/e2e/skirmish-ai-multiplayer-authority-continuation.spec.ts",
+        "libs/games/probable-waffle/phaser/src/lib/world/services/multiplayer/command-authority-continuation.spec.ts"
       ],
       "checkpointTicks": [
         0,
@@ -375,7 +377,8 @@
       "reuse": [
         "tools/ai/fixtures/controller-contract-scenarios.json",
         "tools/ai/native-authority-worlds.mjs",
-        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/install-ai-runtime-receipt-fault.ts"
+        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/install-ai-runtime-receipt-fault.ts",
+        "libs/games/probable-waffle/phaser/src/lib/world/services/multiplayer/command-authority-continuation.spec.ts"
       ],
       "checkpointTicks": [
         0,
@@ -610,7 +613,9 @@
         "libs/games/probable-waffle/phaser/src/lib/world/services/recovery/serialize-actor-queue-state.spec.ts",
         "libs/games/probable-waffle/phaser/src/lib/entity/components/queue/queue-continuation.spec.ts",
         "tools/ai/native-authority-worlds.mjs",
-        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/install-ai-runtime-receipt-fault.ts"
+        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/install-ai-runtime-receipt-fault.ts",
+        "libs/games/probable-waffle/phaser/src/lib/world/services/multiplayer/restore-saved-command-input.spec.ts",
+        "libs/games/probable-waffle/interface/src/lib/services/game-save/game-save-codec.service.spec.ts"
       ],
       "checkpointTicks": [
         0,
@@ -669,7 +674,9 @@
       "reuse": [
         "tools/ai/fixtures/stage-14-adaptation.json",
         "tools/ai/native-authority-worlds.mjs",
-        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/install-ai-runtime-receipt-fault.ts"
+        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/install-ai-runtime-receipt-fault.ts",
+        "libs/games/probable-waffle/phaser/src/lib/data/save-game-lifecycle.spec.ts",
+        "libs/games/probable-waffle/interface/src/lib/communicators/scene-communicator-client.service.spec.ts"
       ],
       "checkpointTicks": [
         0,

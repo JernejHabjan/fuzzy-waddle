@@ -36,10 +36,17 @@ describe("HostMigrationService AI and snapshot handoff", () => {
     expect(setHostAuthorityActive).toHaveBeenLastCalledWith(false);
     expect(snapshot.destroy).toHaveBeenCalledTimes(1);
     expect(snapshot.init).not.toHaveBeenCalled();
+    events.next({ previousHostUserId: "old-host", currentHostUserId: "new-host" } as ProbableWaffleHostMigratedEvent);
+    events.next({ previousHostUserId: "old-host", currentHostUserId: "unrelated" } as ProbableWaffleHostMigratedEvent);
+    expect(advanceAuthorityEpoch).toHaveBeenCalledTimes(1);
 
     events.next({ previousHostUserId: "new-host", currentHostUserId: "old-host" } as ProbableWaffleHostMigratedEvent);
     expect(setHostAuthorityActive).toHaveBeenLastCalledWith(true);
     expect(snapshot.init).toHaveBeenCalledWith(scene, true);
     migration.destroy();
+    migration.init(scene, snapshot);
+    events.next({ previousHostUserId: "old-host", currentHostUserId: "new-host" } as ProbableWaffleHostMigratedEvent);
+    expect(advanceAuthorityEpoch).toHaveBeenCalledTimes(2);
+    expect(events.observers).toHaveLength(0);
   });
 });

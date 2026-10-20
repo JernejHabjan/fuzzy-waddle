@@ -75,3 +75,33 @@ describe("command relay ownership after extraction", () => {
     expect(f.transport.diagnostics.stallLogTimer).toBeNull();
   });
 });
+
+it("preserves an unsent original identity after snapshot correction without bypassing server echo", () => {
+  const f = setup();
+  const command: GameCommand = { type: "CONCEDE", playerNumber: 2, actorIds: [], reason: "unsent", tick: 3,
+    execution: { schemaVersion: 1, commandId: "2:0:4:authority-test", commitmentKey: "pending", source: "ai",
+      authorityEpoch: 0, sequence: 4, effectId: "effect:pending", intentId: "intent:pending" } };
+  f.transport.pendingOutbound.set(3, [command]);
+  f.transport.resetAfterSnapshot(2);
+  const retained = [...f.transport.pendingOutbound.values()].flat();
+  expect(retained).toHaveLength(1);
+  expect(retained[0].execution).toEqual(command.execution);
+  const targetTick = retained[0].tick;
+  expect(f.transport.buffer.hasPlayerCommit(targetTick, 2)).toBe(false);
+  f.clock.currentTick = targetTick - 2;
+  f.clock.tick$.next(targetTick - 2);
+  expect(f.apply).not.toHaveBeenCalled();
+  const sent = f.sent.find((event) => event.tick === targetTick);
+  if (!sent) throw new Error("Missing re-timed original batch");
+  expect(sent.commands[0].execution).toEqual(command.execution);
+  f.incoming.next(sent);
+  f.incoming.next({ ...sent, playerNumber: 3, commands: [] });
+  f.clock.currentTick = targetTick;
+  f.clock.tick$.next(targetTick);
+  expect(f.apply).toHaveBeenCalledTimes(1);
+  f.transport.destroy();
+  expect(f.transport.pendingOutbound.size).toBe(0);
+  f.transport.tryInitMultiplayer();
+  expect(f.incoming.observers).toHaveLength(0);
+  f.scene.events.emit("shutdown");
+});

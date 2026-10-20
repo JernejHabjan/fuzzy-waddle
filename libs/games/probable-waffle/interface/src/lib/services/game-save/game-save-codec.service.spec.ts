@@ -58,7 +58,11 @@ describe("GameSaveCodecService", () => {
       researchCost: { resources: { minerals: 13 }, refundFactor: 0.25 } }], []] } satisfies SharedQueueSnapshotData;
     const game = new ProbableWaffleGameInstance();
     game.gameState = new ProbableWaffleGameState({ actors: [{ name: ObjectNames.Sandhold, sharedQueue }],
-      pause: false, score: 0, simulationTick: 1999 });
+      pause: false, score: 0, simulationTick: 1999,
+      pendingCommandBatches: [{ tick: 2001, playerNumber: 1, commands: [{ type: "CONCEDE", playerNumber: 2,
+        actorIds: [], reason: "codec-envelope-control", tick: 2001, execution: { schemaVersion: 1, source: "ai",
+          commandId: "unsent-original", commitmentKey: "unsent", authorityEpoch: 4, sequence: 18,
+          effectId: "effect:unsent", intentId: "intent:unsent" } }] }] });
     const player = new ProbableWafflePlayer(new ProbableWafflePlayerState(), new ProbableWafflePlayerController());
     player.playerState.data.aiBehaviorTreeState = { brainState: brain, controllerCadence: { schemaVersion: 1,
       elapsedMilliseconds: 50, queuedAfterBoundary: true, completedDecisionSequence: 17 } };
@@ -68,6 +72,7 @@ describe("GameSaveCodecService", () => {
     const restored = new ProbableWaffleGameInstance(await codec.decode(encoded));
     expect(restored.gameState?.data.simulationTick).toBe(1999);
     expect(restored.gameState?.data.actors[0].sharedQueue).toEqual(sharedQueue);
+    expect(restored.gameState?.data.pendingCommandBatches).toEqual(game.gameState.data.pendingCommandBatches);
     expect(restored.players[0].playerState.data.aiBehaviorTreeState).toEqual(player.playerState.data.aiBehaviorTreeState);
   });
 });

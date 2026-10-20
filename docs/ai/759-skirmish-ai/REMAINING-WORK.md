@@ -1,6 +1,6 @@
 # #759 remaining work inventory
 
-Snapshot:2026-10-20; publication base 80ded317d129e57fb0a42aa6cb1a60404efc0cba plus task-owned source.
+Snapshot:2026-10-20; publication base 7c9654ca4dcac1f7640c71d4fc4d5d9c43cb006d plus task-owned source.
 [HANDOFF.md](HANDOFF.md) owns the next action; [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) distinguishes authored and
 validated evidence. This is the existing execution inventory, not another design project. Read only the selected package.
 
@@ -10,7 +10,8 @@ The original concrete plan contains121 named scenarios. Pure registration is111/
 is92/116 (79.3%);24 (20.7%) still have specifications without native bindings. Four island runtime rows are deferred.
 Definitions are116/116:92 registrations plus24 specifications. Latest3 registrations contain24 faction/control variants;
 native factory61 bindings/394 variants and21 partial owner worlds are unrun. Selected13-ID batch is9/13 registered,
-4/13 unbound. Latest four-ID batch is3/4 registered (75%); H-31 remains unbound (25%). Counts describe registration, not passing gameplay, unique physical maps, sessions or time remaining.
+4/13 unbound. Current H-08/H-09/H-31/H-32 source batch remains0/4 fully registered; its native drivers are unfinished.
+Counts describe registration, not passing gameplay, unique physical maps, sessions or time remaining.
 Each row needs complete source-specific native outcome evidence before validation; an authored reader is not that evidence.
 
 Earlier descriptions such as “full acceptance open” concealed three different kinds of work. Use these states:
@@ -109,17 +110,19 @@ main-building footprint were corrected in both paired worlds. Construction cance
 post-opening unfinished-site reassignment have focused controls. Native ECO-06 proves alternate drop-off/source
 recovery; native no-drain controls prove stop/assignment release with cargo preservation.
 
-**Current publication: H-11/H-12/H-30 authored; H-31 integration remains open, 2026-10-20.**
+**Current publication: grouped H-08/H-09/H-31/H-32 source repairs; native integration unfinished, 2026-10-20.**
 
-- Three native bindings/24 variants added: scarce complete food recovery, atomic admission prevention and optional/debug
-  fault isolation. H-12's prevention plus pure recovery scope was explicitly approved by the user.
-- Save primitives now preserve one detached boundary and simulation time; admission/capture read live authority.
-  H-31 stays unbound until ordinary codec/reload and real peer/outbound-tail continuation are driven together.
-- Next group H-08/H-09/H-31: original identities across epoch/cancellation, acknowledged compaction and before/during/
-  after-apply save boundaries. Then H-32 actual same-realm restart/host replacement. Prior recovery gaps remain open.
-- Runtime92/116 (79.3%),24 remaining (20.7%); pure111/111. No tests/scenarios/verification ran.
-  Source-only audits and the legacy source-structure gate constraint are in CURRENT-EVIDENCE.
-  Machinery review remains last; containing commit/remote must be verified on resume.
+- Preserve admitted ownership/original execution identity across host transfer and retention pressure; distinguish
+  duplicate diagnostics from terminal application, explicitly retire actual unsent epoch input and restore saved unsent
+  batches above the saved clock without bypassing server echo. These changes prevent duplicate/lost work.
+- Fence disposed bus/transport/save callbacks and delayed communicator setup/cleanup across matches. Client context,
+  event subscriptions and lobby work are split from the save facade, resolving the previous oversized-file source issue.
+- One real-relay H-08 host-promotion/original-AI application control is authored, unrun. Full four-ID native registrations
+  remain0/4; selected13 stays9/13 (69.2%). Source/codec/headless controls do not replace missing native premises.
+- Next: complete timeout/cancellation and acknowledged compaction drivers alongside actual paired codec/scene reload;
+  then same-realm UI next-match and host replacement. Reuse current source/probes, rather than another preparation pass.
+- Runtime92/116 (79.3%),24 remaining (20.7%); pure111/111. No verification ran; CURRENT-EVIDENCE records separate audits.
+  Machinery review remains last; verify containing commit and remote on resume.
 
 ## Other concrete gaps already established
 

@@ -50,6 +50,7 @@ export class CommandBusService {
     return CommandLockstep.INPUT_DELAY_TICKS;
   }
   private readonly authority: CommandAuthority;
+  private destroyed = false;
   private readonly transport: CommandLockstep;
   constructor(private readonly scene: ProbableWaffleScene) {
     this.transport = new CommandLockstep(
@@ -63,7 +64,7 @@ export class CommandBusService {
       scene,
       (command) => this._command$.next(command),
       (outcome) => this._commandOutcome$.next(outcome),
-      () => this.transport.pendingOutbound.clear()
+      () => this.cancelUnsentEpochInput()
     );
     // Scene shutdown owns teardown in single-player and partially initialized multiplayer sessions.
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
@@ -84,6 +85,7 @@ export class CommandBusService {
   readonly commandOutcome$ = this._commandOutcome$.asObservable();
 
   dispatch(command: GameCommandInput): GameCommandDispatchReceipt {
+    if (this.destroyed) return { status: "rejected", reason: "application_failed" };
     if (this.scene?.isSpectator || this.scene?.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) {
       return { status: "rejected", reason: "application_failed" };
     }
@@ -150,6 +152,7 @@ export class CommandBusService {
 
   /** Admits an AI intent through the normal bus while preserving exact command/outcome correlation. */
   dispatchAi(command: GameCommandInput, correlation: AiGameCommandCorrelation): GameCommandDispatchReceipt {
+    if (this.destroyed) return { status: "rejected", reason: "application_failed" };
     const sequence = this.authority.allocateSequence(command.playerNumber);
     const authorityEpoch = this.authority.authorityEpoch;
     const commandId = `${command.playerNumber}:${authorityEpoch}:${sequence}:${this.scene.gameInstanceId}`;
@@ -170,6 +173,7 @@ export class CommandBusService {
 
   /** Immediate shared application for deterministic owners. An explicit source identifies a controller independently of player type. */
   dispatchDeterministic(command: GameCommandInput, source?: GameCommandSource): GameCommandDispatchReceipt {
+    if (this.destroyed) return { status: "rejected", reason: "application_failed" };
     const tick = this.tickService?.currentTick ?? 0;
     const inputError = getInputAddressError(this.scene, this.transport, command);
     if (inputError) {
@@ -186,12 +190,14 @@ export class CommandBusService {
   }
 
   playReplayBatch(batch: ProbableWaffleReplayCommandBatch): void {
+    if (this.destroyed) return;
     for (const [index, command] of batch.commands.entries()) {
       this.authority.emitForApplication(this.authority.upgradeLegacyCommand(command, batch.playerNumber, index));
     }
   }
 
   emitRecordedBatch(batch: ProbableWaffleReplayCommandBatch): void {
+    if (this.destroyed) return;
     this._commandBatch$.next({
       tick: batch.tick,
       playerNumber: batch.playerNumber,
@@ -203,6 +209,7 @@ export class CommandBusService {
     return getSceneService(this.scene, SimulationTickService)!;
   }
   tryInitMultiplayer(): void {
+    if (this.destroyed) return;
     this.transport.tryInitMultiplayer();
   }
   reportOutcome(
@@ -213,15 +220,38 @@ export class CommandBusService {
     worldLinkIds: readonly string[] = [],
     detail?: string
   ): void {
+    if (this.destroyed) return;
     this.authority.reportOutcome(command, kind, reason, actorIds, worldLinkIds, detail);
   }
   reportPersistedOutcome(outcome: GameCommandOutcome): void {
+    if (this.destroyed) return;
     this.authority.reportPersistedOutcome(outcome);
   }
   getAuthorityState(): GameCommandAuthorityState {
     return this.authority.getAuthorityState();
   }
+  /** Lightweight fence read for each callback; does not clone the bounded outcome/history snapshot. */
+  getAuthorityEpoch(): number {
+    return this.authority.authorityEpoch;
+  }
+  /** Only this transport-owned unsent set proves that no payment/application occurred. A timeout cannot do this. */
+  private cancelUnsentEpochInput(): void {
+    const unsent = [...this.transport.pendingOutbound.values()].flat();
+    this.transport.pendingOutbound.clear();
+    for (const command of unsent)
+      this.authority.reportOutcome(command, "cancelled", "cancelled", command.actorIds, [], "authority_epoch_discarded_unsent");
+  }
+  /** Detached unsent input for the local save owner; never part of a peer-independent simulation digest. */
+  getPendingCommandBatches(): ProbableWaffleReplayCommandBatch[] {
+    const owner = this.transport.localPlayerNumber;
+    if (this.destroyed || owner === null) return [];
+    if ([...this.transport.pendingOutbound.values()].reduce((sum, commands) => sum + commands.length, 0) > 2048)
+      throw new Error("save_pending_command_capacity_exceeded");
+    return [...this.transport.pendingOutbound].sort(([left], [right]) => left - right)
+      .map(([tick, commands]) => ({ tick, playerNumber: owner, commands: structuredClone(commands) }));
+  }
   advanceAuthorityEpoch(nextEpoch: number): void {
+    if (this.destroyed) return;
     this.authority.advanceAuthorityEpoch(nextEpoch);
   }
   resetAfterSnapshot(
@@ -229,12 +259,17 @@ export class CommandBusService {
     commandTail: readonly ProbableWaffleReplayCommandBatch[] = [],
     authorityState?: GameCommandAuthorityState
   ): void {
+    if (this.destroyed) return;
     this.transport.resetAfterSnapshot(snapshotTick, commandTail, authorityState);
   }
   removePlayerFromLockstep(playerNumber: PlayerNumber): void {
+    if (this.destroyed) return;
     this.transport.removePlayerFromLockstep(playerNumber);
   }
   destroy(): void {
+    if (this.destroyed) return;
+    this.destroyed = true;
+    this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     this.transport.destroy();
     this._commandBatch$.complete();
     this._commandOutcome$.complete();
