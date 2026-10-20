@@ -44,7 +44,7 @@ The normal evaluation dispatches through apps/portal-e2e/src/e2e/skirmish-ai-nat
 family reader. Full-case branch/faction comparisons live in skirmish-ai-native-scenario-pairs.ts. Physical hits,
 applied effects, paid output, exact service and original-destination arrivals are distinct from selected claims or
 receipts. Missing/truncated history and ambiguous spell/weapon attribution fail; no complete projectile trace is claimed.
-These61 bindings/394 faction-control variants are authored unrun. Native setup, timing and outcome correctness remain
+These62 bindings/400 faction-control variants are authored unrun. Native setup, timing and outcome correctness remain
 unmeasured until an authorized gate. New recipes must keep unavailable premises separate from AI behavior failures.
 
 Only Tivara offers current ships; real boat landing/escort uses that faction. Native hostile ship cases use the existing
@@ -531,3 +531,12 @@ explicit overflow failure). skirmish-ai-multiplayer-authority-continuation.spec.
 original replay/application branch. Full H-08/H-09/H-31/H-32 registrations remain absent until their actual native
 cancellation/compaction/paired reload/same-realm UI drivers exist. Headless bus/codec tests cannot certify those rows.
 No recipes, tests, lint, types, formatter, browser or other verification ran in this source batch.
+
+### Difficulty policy registration (D-01)
+
+Six native worlds select Easy/Normal/Hard in the ordinary lobby for both factions on the same legal setup/seed.
+The existing listener-gated consumed-input projection includes the actual controller/brain profile. The D-01 reader
+pins every policy field independently of the production factory and requires every selected tick/sequence through2000,
+persisted difficulty, accepted proposal/command quota consistency and a real applied AI action. No checks have run.
+Invalid configuration is covered at the actual controller/factory boundary: there is no invalid lobby option to select.
+This is registration, not difficulty calibration, quota saturation or D-03 hidden-state fairness certification.

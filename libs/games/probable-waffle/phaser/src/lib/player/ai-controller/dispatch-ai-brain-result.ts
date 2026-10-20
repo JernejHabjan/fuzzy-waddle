@@ -39,6 +39,7 @@ export function dispatchAiBrainResult(
     structuredClone({
       identity,
       ...(input ? { input } : {}),
+      persistedProfile: { profileVersion: result.nextState.profileVersion, profileDifficulty: result.nextState.profileDifficulty },
       acceptedIntents: result.acceptedIntents,
       decisions: result.decisions,
       reservations: result.nextState.reservations,

@@ -1,0 +1,1586 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "runtime",
+  "driver": "runtime",
+  "scenarioIds": [
+    "D-01"
+  ],
+  "status": "authored_not_executed",
+  "purpose": "Every lobby difficulty selects the exact versioned profile and expected cadence/quotas with no fallback to identical defaults",
+  "acceptance": {
+    "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/classic-rts-and-difficulty-scenarios.md",
+    "requiredOutcome": "Every lobby difficulty selects the exact versioned profile and expected cadence/quotas with no fallback to identical defaults",
+    "setup": [
+      "Start fresh ordinary lobby matches for Easy, Normal and Hard with identical legal roster/map/seed",
+      "Resolve expected versioned profile cadence and quotas from the selected runtime registry before launch"
+    ],
+    "actions": [
+      "Select each lobby difficulty and advance the same logical tick interval",
+      "Capture actual controller scheduling and profile on committed boundaries"
+    ],
+    "measurements": [
+      "Lobby selection, saved difficulty, versioned profile identity, decision cadence and consumed quota counters"
+    ],
+    "required": [
+      "Every lobby difficulty selects its exact configured profile, cadence and quotas",
+      "Invalid profile/difficulty fails explicitly without fallback dispatch"
+    ],
+    "forbidden": [
+      "Only profile name checked while identical defaults schedule all levels",
+      "Hidden resource/stat bonuses"
+    ],
+    "branches": [
+      "Easy",
+      "Normal",
+      "Hard",
+      "Invalid difficulty at configuration boundary"
+    ],
+    "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+    "executionStatus": "authored_not_executed"
+  },
+  "capabilityLimits": [
+    "Every valid lobby choice uses native matches in both factions. Invalid difficulty is rejected at the real configuration boundary; the existing profile factory and authored controller-boundary controls cover that negative branch. There is no invalid option in the lobby. Runtime profiles and selected command quotas are checked; saturation/calibration and defense-lane performance belong to D-05/D-06, which remain unbound."
+  ],
+  "recipe": {
+    "mapLabel": "AI Open Economy (test only)",
+    "aiPlayerNumber": 2,
+    "simulationTimeScale": 1,
+    "fixedStepFrames": true,
+    "checkpointTicks": [
+      40,
+      200,
+      400,
+      800,
+      1200,
+      1600,
+      2000
+    ],
+    "variants": [
+      {
+        "id": "d-01-tivara-easy",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Easy",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "D-01"
+        ],
+        "presetWorld": {
+          "fixtureId": "d-01-tivara-easy",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "worker-0",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 352,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-7",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-house",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 1008,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -32,
+                "y": 1072,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 1088,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "scout-probe",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-producer",
+              "actorName": "InfantryInn",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 496,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-deposit",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -320,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -448,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-worker",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": -352,
+                "y": 784,
+                "z": 0
+              }
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "original-home",
+              "actorName": "Sandhold",
+              "owner": 2
+            },
+            {
+              "fixtureActorId": "enemy-home",
+              "actorName": "FrostForge",
+              "owner": 1
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            {
+              "playerNumber": 1,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            },
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            }
+          ],
+          "controls": [],
+          "events": [],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "enemy-worker",
+              "sourceFixtureActorId": "enemy-source",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "worker-0",
+              "sourceFixtureActorId": "own-source",
+              "kind": "gather"
+            }
+          ],
+          "protectedRoutes": [],
+          "terrainPatches": []
+        }
+      },
+      {
+        "id": "d-01-tivara-normal",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "D-01"
+        ],
+        "presetWorld": {
+          "fixtureId": "d-01-tivara-normal",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "worker-0",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 352,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-7",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-house",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 1008,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -32,
+                "y": 1072,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 1088,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "scout-probe",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-producer",
+              "actorName": "InfantryInn",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 496,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-deposit",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -320,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -448,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-worker",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": -352,
+                "y": 784,
+                "z": 0
+              }
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "original-home",
+              "actorName": "Sandhold",
+              "owner": 2
+            },
+            {
+              "fixtureActorId": "enemy-home",
+              "actorName": "FrostForge",
+              "owner": 1
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            {
+              "playerNumber": 1,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            },
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            }
+          ],
+          "controls": [],
+          "events": [],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "enemy-worker",
+              "sourceFixtureActorId": "enemy-source",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "worker-0",
+              "sourceFixtureActorId": "own-source",
+              "kind": "gather"
+            }
+          ],
+          "protectedRoutes": [],
+          "terrainPatches": []
+        }
+      },
+      {
+        "id": "d-01-tivara-hard",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Hard",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "D-01"
+        ],
+        "presetWorld": {
+          "fixtureId": "d-01-tivara-hard",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "worker-0",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 352,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-7",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-house",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 1008,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -32,
+                "y": 1072,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 1088,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "scout-probe",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-producer",
+              "actorName": "InfantryInn",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 496,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-deposit",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -320,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -448,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-worker",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": -352,
+                "y": 784,
+                "z": 0
+              }
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "original-home",
+              "actorName": "Sandhold",
+              "owner": 2
+            },
+            {
+              "fixtureActorId": "enemy-home",
+              "actorName": "FrostForge",
+              "owner": 1
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            {
+              "playerNumber": 1,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            },
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            }
+          ],
+          "controls": [],
+          "events": [],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "enemy-worker",
+              "sourceFixtureActorId": "enemy-source",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "worker-0",
+              "sourceFixtureActorId": "own-source",
+              "kind": "gather"
+            }
+          ],
+          "protectedRoutes": [],
+          "terrainPatches": []
+        }
+      },
+      {
+        "id": "d-01-skaduwee-easy",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Skaduwee",
+        "humanFaction": "Tivara",
+        "difficulty": "Easy",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "D-01"
+        ],
+        "presetWorld": {
+          "fixtureId": "d-01-skaduwee-easy",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "worker-0",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 352,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-7",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-producer",
+              "actorName": "InfantryInn",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-house",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 1008,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -32,
+                "y": 1072,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 1088,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "scout-probe",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-producer",
+              "actorName": "AnkGuard",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 496,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-deposit",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -320,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -448,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-worker",
+              "actorName": "TivaraWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": -352,
+                "y": 784,
+                "z": 0
+              }
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "original-home",
+              "actorName": "FrostForge",
+              "owner": 2
+            },
+            {
+              "fixtureActorId": "enemy-home",
+              "actorName": "Sandhold",
+              "owner": 1
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            {
+              "playerNumber": 1,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            },
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            }
+          ],
+          "controls": [],
+          "events": [],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "enemy-worker",
+              "sourceFixtureActorId": "enemy-source",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "worker-0",
+              "sourceFixtureActorId": "own-source",
+              "kind": "gather"
+            }
+          ],
+          "protectedRoutes": [],
+          "terrainPatches": []
+        }
+      },
+      {
+        "id": "d-01-skaduwee-normal",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Skaduwee",
+        "humanFaction": "Tivara",
+        "difficulty": "Normal",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "D-01"
+        ],
+        "presetWorld": {
+          "fixtureId": "d-01-skaduwee-normal",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "worker-0",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 352,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-7",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-producer",
+              "actorName": "InfantryInn",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-house",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 1008,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -32,
+                "y": 1072,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 1088,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "scout-probe",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-producer",
+              "actorName": "AnkGuard",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 496,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-deposit",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -320,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -448,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-worker",
+              "actorName": "TivaraWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": -352,
+                "y": 784,
+                "z": 0
+              }
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "original-home",
+              "actorName": "FrostForge",
+              "owner": 2
+            },
+            {
+              "fixtureActorId": "enemy-home",
+              "actorName": "Sandhold",
+              "owner": 1
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            {
+              "playerNumber": 1,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            },
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            }
+          ],
+          "controls": [],
+          "events": [],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "enemy-worker",
+              "sourceFixtureActorId": "enemy-source",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "worker-0",
+              "sourceFixtureActorId": "own-source",
+              "kind": "gather"
+            }
+          ],
+          "protectedRoutes": [],
+          "terrainPatches": []
+        }
+      },
+      {
+        "id": "d-01-skaduwee-hard",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Skaduwee",
+        "humanFaction": "Tivara",
+        "difficulty": "Hard",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "D-01"
+        ],
+        "presetWorld": {
+          "fixtureId": "d-01-skaduwee-hard",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "worker-0",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 352,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-7",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-producer",
+              "actorName": "InfantryInn",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-house",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 1008,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -32,
+                "y": 1072,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 1088,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "scout-probe",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-producer",
+              "actorName": "AnkGuard",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 496,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-deposit",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -320,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -448,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-worker",
+              "actorName": "TivaraWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": -352,
+                "y": 784,
+                "z": 0
+              }
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "original-home",
+              "actorName": "FrostForge",
+              "owner": 2
+            },
+            {
+              "fixtureActorId": "enemy-home",
+              "actorName": "Sandhold",
+              "owner": 1
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            {
+              "playerNumber": 1,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            },
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            }
+          ],
+          "controls": [],
+          "events": [],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "enemy-worker",
+              "sourceFixtureActorId": "enemy-source",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "worker-0",
+              "sourceFixtureActorId": "own-source",
+              "kind": "gather"
+            }
+          ],
+          "protectedRoutes": [],
+          "terrainPatches": []
+        }
+      }
+    ]
+  },
+  "assertions": {
+    "D-01": {
+      "maximumTick": 2000,
+      "minimumDecisions": 1,
+      "minimumAppliedCommands": 1,
+      "requiredAiFactions": [
+        "Tivara",
+        "Skaduwee"
+      ],
+      "requiredNativeScenario": {
+        "schemaVersion": 1,
+        "scenarioId": "D-01",
+        "latestTick": 2000,
+        "humanPlayerNumber": 1,
+        "branchByVariant": {
+          "d-01-tivara-easy": "easy",
+          "d-01-tivara-normal": "normal",
+          "d-01-tivara-hard": "hard",
+          "d-01-skaduwee-easy": "easy",
+          "d-01-skaduwee-normal": "normal",
+          "d-01-skaduwee-hard": "hard"
+        }
+      }
+    }
+  }
+}

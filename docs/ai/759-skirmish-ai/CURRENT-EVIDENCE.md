@@ -1,5 +1,53 @@
 # #759 current evidence
 
+## D-01 registration batch — authored, not executed (2026-10-20)
+
+Publication base63297db700c51dde27ca013407560a4f34b066fa on feature/759-skirmish-ai in
+/home/jernej/.codex/worktrees/skirmish-authority-recovery/fuzzy-waddle. Actual model/effort unknown.
+User redirects work to registrations. No subagent, new plan, gameplay rebalance or runtime execution.
+
+Numbered acceptance map / Omission Audit:
+
+1. **Native lobby bindings — authored:** native-difficulty-worlds.mjs and native-scenario-registration.mjs generate
+   d-01-native-runtime.json with six genuine lobby choices: Easy/Normal/Hard × both factions. Same legal roster,
+   resources, map and seed; no fixture grants or strategic state injection. First sample40 avoids polling Easy
+   before its first committed decision. All native selected boundaries are captured from tick0 through2000.
+2. **Actual consumed policy — authored:** capture-ai-decision-input.ts receives the controller's own profile,
+   shared with its pure brain, and copies it only with an installed listener. Optional legacy omission fails D-01.
+   Selected dispatch also carries nextState policy version/difficulty so stale saved state cannot hide behind
+   correct controller configuration. No saved/wire protocol change, always-on observer or new report channel.
+   Both projections are fixed-size primitive data.
+3. **Semantic reader — authored:** skirmish-ai-native-difficulty-evaluation.ts is connected to the mandatory native
+   scenario reader. Independently pinned full profile, actual lobby source difficulty, every scheduled tick and
+   completed-before sequence, accepted proposal/command quota lineage, selected save-owned policy version/difficulty
+   and checkpoint difficulty plus real AI application
+   are mandatory. Sparse/duplicate selections, relabelled Normal defaults and absent profiles fail closed.
+   This does not claim quota saturation, every quota's behavioral effect, fairness comparisons or challenge ordering:
+   those remain D-03/D-05/D-06. No broader difficulty scenario was promoted.
+4. **Invalid configuration / negative controls — authored:** actual controller resolveProfile boundary rejects99
+   before scheduling; existing factory rejection and new controller control are linked in D-01's pure binding.
+   There is no invalid lobby option. Predicate controls erase/corrupt cadence/profile/quota evidence; factory controls
+   require all six exact difficulty/faction variants and reject fallback drift. These are tests, not execution evidence.
+5. **Registrations and tracking — authored:** manifest, native bindings, draft removal, factory/pure control links,
+   generated catalog, testing guide, inventory and handoff agree. Supported runtime93/116 (80.2%) registered,
+   23/116 (19.8%) unbound; pure111/111 unchanged. Factory62 bindings/400 variants;21 partial owner worlds retained.
+   Difficulty1/6 registered (16.7%),5/6 unbound (83.3%). H-08/H-09/H-31/H-32 remain0/4 fully registered.
+6. **Verification — deliberately deferred:** no recipes/tests/lint/types/formatters/builds/browser/server/doctor/
+   context/dedicated validator ran. Only source/diff review, fixture authoring and catalog --write generation.
+   Runtime behavior, timing premises, typing and test correctness remain unverified. No passing status asserted.
+
+Separate Final Closure Audit: traced lobby selection → actual controller profile → selected-input capture → native
+reader → manifest/factory/catalog. Reviewed diagnostic gating/detachment, six branch identities, same roster/seed,
+first Easy sample and original ceiling, invalid-input owner coverage, fail-closed evidence and exact owned Git scope.
+No unresolved implementation item was silently promoted from the four peer/save/lifecycle IDs. Publication is checked
+against local/remote HEAD after commit; no PR/merge/force-push. Machinery review stays last overall.
+
+**Next authoring:** D-03 paired native hidden position/HP/queue controls under all three difficulties and both factions,
+plus a legitimate-contact control. Require real premise changes, allowed-input invariance and ordinary resource/stat
+rules; reuse existing sight/resource/content authority. Keep native execution deferred. Recommend Sol6.1/high for
+causal comparison design; this is task judgment, not an automatic model change.
+
+
 [HANDOFF.md](HANDOFF.md) owns continuation. Read this current batch; older sections retain historical evidence.
 
 ## Grouped authority/save/lifecycle source repairs — native integration still unfinished, 2026-10-20

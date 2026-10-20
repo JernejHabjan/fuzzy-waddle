@@ -1,16 +1,17 @@
 # #759 remaining work inventory
 
-Snapshot:2026-10-20; publication base 7c9654ca4dcac1f7640c71d4fc4d5d9c43cb006d plus task-owned source.
+Snapshot:2026-10-20; publication base 63297db700c51dde27ca013407560a4f34b066fa plus task-owned source.
 [HANDOFF.md](HANDOFF.md) owns the next action; [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) distinguishes authored and
 validated evidence. This is the existing execution inventory, not another design project. Read only the selected package.
 
 ## What the inventory establishes
 
 The original concrete plan contains121 named scenarios. Pure registration is111/111. Supported runtime registration
-is92/116 (79.3%);24 (20.7%) still have specifications without native bindings. Four island runtime rows are deferred.
-Definitions are116/116:92 registrations plus24 specifications. Latest3 registrations contain24 faction/control variants;
-native factory61 bindings/394 variants and21 partial owner worlds are unrun. Selected13-ID batch is9/13 registered,
+is93/116 (80.2%);23 (19.8%) still have specifications without native bindings. Four island runtime rows are deferred.
+Definitions are116/116:93 registrations plus23 specifications. Latest D-01 registration adds6 faction/policy variants;
+native factory62 bindings/400 variants and21 partial owner worlds are unrun. Selected13-ID batch is9/13 registered,
 4/13 unbound. Current H-08/H-09/H-31/H-32 source batch remains0/4 fully registered; its native drivers are unfinished.
+Current registration request selects D-01: six worlds authored unrun; next D-03 paired fairness bindings.
 Counts describe registration, not passing gameplay, unique physical maps, sessions or time remaining.
 Each row needs complete source-specific native outcome evidence before validation; an authored reader is not that evidence.
 
@@ -83,8 +84,8 @@ an entire scenario. Invalidate only outcomes affected by later source/fixture ch
 | Measured coverage at this snapshot    | Completed                                   | Remaining          | What the number means                                                                                              |
 | ------------------------------------- | ------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------ |
 | Pure fixture registration             | 111/111 = **100%**                          | 0/111 = **0%** | Required pure scenarios with registered fixtures; not behavior completion                                          |
-| Supported native definitions           | 116/116 = **100%**                          | 0/116 = **0%** | 92 scenario bindings plus24 specifications; definitions only, not validated gameplay |
-| Supported runtime recipe registration | 92/116 = **79.3%**                          | 24/116 = **20.7%** | Runtime recipes connected; four island-content rows excluded; not behavior completion                              |
+| Supported native definitions           | 116/116 = **100%**                          | 0/116 = **0%** | 93 scenario bindings plus23 specifications; definitions only, not validated gameplay |
+| Supported runtime recipe registration | 93/116 = **80.2%**                          | 23/116 = **19.8%** | Runtime recipes connected; four island-content rows excluded; not behavior completion                              |
 | Scenario behavior validation          | Not yet reconciled across the full manifest | Not yet measurable | Existing subset passes and failures are recorded, but no truthful overall completion percentage can yet be derived |
 
 During each selected package, reconcile its existing complete evidence into the row status and report its exact
@@ -121,7 +122,7 @@ recovery; native no-drain controls prove stop/assignment release with cargo pres
   remain0/4; selected13 stays9/13 (69.2%). Source/codec/headless controls do not replace missing native premises.
 - Next: complete timeout/cancellation and acknowledged compaction drivers alongside actual paired codec/scene reload;
   then same-realm UI next-match and host replacement. Reuse current source/probes, rather than another preparation pass.
-- Runtime92/116 (79.3%),24 remaining (20.7%); pure111/111. No verification ran; CURRENT-EVIDENCE records separate audits.
+- Runtime93/116 (80.2%),23 remaining (19.8%); pure111/111. No verification ran; CURRENT-EVIDENCE records separate audits.
   Machinery review remains last; verify containing commit and remote on resume.
 
 ## Other concrete gaps already established

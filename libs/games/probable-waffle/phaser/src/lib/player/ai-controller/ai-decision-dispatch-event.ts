@@ -14,6 +14,8 @@ export interface AiDecisionDispatchEvent {
   readonly identity: AiDecisionIdentity;
   /** Absent only on older/synthetic publishers; exact consumed input is never borrowed from a later checkpoint. */
   readonly input?: AiDecisionInputV1;
+  /** Selected save-owned policy identity, independently compared with the controller's consumed configuration. */
+  readonly persistedProfile?: Pick<AiBrainStateV1, "profileVersion" | "profileDifficulty">;
   /** Actual consumed proposal inputs, only for accepted original intents; legacy omission is unavailable. */
   readonly gatheringSelections?: readonly AiGatheringSelection[];
   readonly acceptedIntents: readonly AiIntentV1[];

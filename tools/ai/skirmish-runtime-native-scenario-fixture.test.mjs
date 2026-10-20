@@ -4,9 +4,9 @@ import { test } from "node:test";
 import { nativeScenarioBindings, nativeScenarioFixture } from "./native-scenario-registration.mjs";
 import { validNativeScenarioFixture } from "./skirmish-runtime-native-scenario-fixture.mjs";
 
-test("all sixty-one native bindings retain their full branches and original acceptance obligations", () => {
+test("all sixty-two native bindings retain their full branches and original acceptance obligations", () => {
   const ids = Object.keys(nativeScenarioBindings.cases);
-  assert.equal(ids.length, 61);
+  assert.equal(ids.length, 62);
   const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish-v1.json", import.meta.url)));
   for (const id of ids) {
     const row = manifest.rows.find((row) => row.id === id);
@@ -44,6 +44,21 @@ test("authority and priority bindings reject erased consumer faults and altered 
     mutate(variant.presetWorld);
     assert.equal(validNativeScenarioFixture(fixture, id), false, `${id}:${branch}`);
   }
+});
+
+test("D-01 binds each actual lobby policy in both factions and rejects a relabelled Normal fallback", () => {
+  const fixture = nativeScenarioFixture("D-01"), contract = fixture.assertions["D-01"].requiredNativeScenario;
+  assert.equal(fixture.recipe.variants.length, 6);
+  for (const faction of ["Tivara", "Skaduwee"]) for (const [branch, difficulty] of
+    [["easy", "Easy"], ["normal", "Normal"], ["hard", "Hard"]]) {
+    const variant = fixture.recipe.variants.find((value) => value.aiFaction === faction &&
+      contract.branchByVariant[value.id] === branch);
+    assert.ok(variant);
+    assert.equal(variant.difficulty, difficulty);
+    assert.equal(variant.presetWorld.resourceGrants.length, 0);
+  }
+  fixture.recipe.variants[0].difficulty = "Normal";
+  assert.equal(validNativeScenarioFixture(fixture, "D-01"), false);
 });
 
 test("missing real peer, save, chain, proposal-order and retained-scene premises remain explicit", () => {

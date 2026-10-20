@@ -1,8 +1,12 @@
-import type { AiAccessGraphV1, AiCapabilityCatalogV1, AiObservationV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type {
+  AiAccessGraphV1, AiCapabilityCatalogV1, AiObservationV1, AiProfileConfigV1
+} from "@fuzzy-waddle/probable-waffle-gameplay";
 import type { AiDecisionProducerExposureV1 } from "./ai-decision-producer-exposure-v1";
 
 /** Test-only inputs actually consumed by a selected pure step, separate from later settled world snapshots. */
 export interface AiDecisionInputV1 {
+  /** Actual controller/brain policy at selection. Missing legacy evidence cannot certify difficulty or quotas. */
+  readonly profile?: AiProfileConfigV1;
   /** Null marks bounded capture loss; no actor/query subset may masquerade as a complete input. */
   readonly observation: Pick<
     AiObservationV1,

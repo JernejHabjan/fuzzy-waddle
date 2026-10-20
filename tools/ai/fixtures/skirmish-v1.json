@@ -519,7 +519,7 @@
       "authoredFixture": "stage-13-tactics.json",
       "drivers": ["pure", "runtime"]
     },
-    { "id": "D-01", "stages": [6], "group": "difficulty", "fixture": null, "runtimeRecipeDraft": "native-scenario-recipes.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
+    { "id": "D-01", "stages": [6], "group": "difficulty", "fixture": "d-01-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
     {
       "id": "D-02",
       "stages": [6, 14],

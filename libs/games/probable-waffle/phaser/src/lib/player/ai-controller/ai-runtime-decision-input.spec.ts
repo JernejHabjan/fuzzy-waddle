@@ -114,6 +114,7 @@ describe("consumed AI decision inputs", () => {
     expect(step).toHaveBeenCalledWith(f.observation, state, []);
     expect(dispatchAiIntents).toHaveBeenCalledTimes(1);
     expect(requireAiTestEntry(records, 0).input).toMatchObject({
+      profile,
       observation: { tick: 99, generation: 7 },
       capabilityCatalog: { generation: 7 },
       cadence: { clock: "simulation", tick: 101, configuredIntervalTicks: 5, completedBefore: 8 }
@@ -122,6 +123,7 @@ describe("consumed AI decision inputs", () => {
     f.catalog.generation = 9;
     expect(requireAiTestEntry(records, 0).input?.observation?.tick).toBe(99);
     expect(requireAiTestEntry(records, 0).input?.capabilityCatalog?.generation).toBe(7);
+    expect(requireAiTestEntry(records, 0).input?.profile).not.toBe(profile);
   });
 
   it("marks oversized observations as missing rather than returning a truncated fair world", () => {

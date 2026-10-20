@@ -715,11 +715,19 @@
       "coverage": "owner_contract",
       "setup": "All lobby difficulties plus invalid difficulty",
       "expected": "Match exact versioned cadence and quotas and reject unsupported input",
-      "remaining": ["Native lobby wiring remains part of the runtime gate"],
+      "remaining": ["Six native lobby/profile worlds are registered but unrun; runtime certification remains deferred"],
       "tests": [
         {
           "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/ai-controller-contract-scenarios.spec.ts",
           "title": "D-01 maps every lobby profile to distinct exact cadence and quotas without fallback"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/profiles/ai-profile-defaults.spec.ts",
+          "title": "rejects an unknown lobby difficulty"
+        },
+        {
+          "file": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/player-ai-profile-boundary.spec.ts",
+          "title": "fails before scheduling or dispatch when the configuration is invalid"
         }
       ]
     },

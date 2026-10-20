@@ -2867,6 +2867,57 @@
       "capabilityLimits": [
         "User explicitly revised H-12 on 2026-10-20: prove native atomic prevention and pure cycle recovery. The production arbiter admits whole bundles, so no native partial holds or fabricated resource waitEdges are introduced. Native setup and outcomes remain unrun."
       ]
+    },
+    "D-01": {
+      "latestTick": 2000,
+      "checkpointTicks": [
+        40,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000
+      ],
+      "branches": [
+        "easy",
+        "normal",
+        "hard"
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/classic-rts-and-difficulty-scenarios.md",
+        "requiredOutcome": "Every lobby difficulty selects the exact versioned profile and expected cadence/quotas with no fallback to identical defaults",
+        "setup": [
+          "Start fresh ordinary lobby matches for Easy, Normal and Hard with identical legal roster/map/seed",
+          "Resolve expected versioned profile cadence and quotas from the selected runtime registry before launch"
+        ],
+        "actions": [
+          "Select each lobby difficulty and advance the same logical tick interval",
+          "Capture actual controller scheduling and profile on committed boundaries"
+        ],
+        "measurements": [
+          "Lobby selection, saved difficulty, versioned profile identity, decision cadence and consumed quota counters"
+        ],
+        "required": [
+          "Every lobby difficulty selects its exact configured profile, cadence and quotas",
+          "Invalid profile/difficulty fails explicitly without fallback dispatch"
+        ],
+        "forbidden": [
+          "Only profile name checked while identical defaults schedule all levels",
+          "Hidden resource/stat bonuses"
+        ],
+        "branches": [
+          "Easy",
+          "Normal",
+          "Hard",
+          "Invalid difficulty at configuration boundary"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      },
+      "capabilityLimits": [
+        "Every valid lobby choice uses native matches in both factions. Invalid difficulty is rejected at the real configuration boundary; the existing profile factory and authored controller-boundary controls cover that negative branch. There is no invalid option in the lobby. Runtime profiles and selected command quotas are checked; saturation/calibration and defense-lane performance belong to D-05/D-06, which remain unbound."
+      ]
     }
   }
 }

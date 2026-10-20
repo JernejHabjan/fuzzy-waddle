@@ -1,4 +1,4 @@
-import type { AiCapabilityCatalogV1, AiObservationV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiCapabilityCatalogV1, AiObservationV1, AiProfileConfigV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { isSnapshotApplyInProgress } from "../../data/scene-data";
 import { getSceneService } from "../../world/services/scene-component-helpers";
@@ -13,7 +13,8 @@ export function captureAiDecisionInput(
   observation: AiObservationV1,
   catalog: AiCapabilityCatalogV1 | undefined,
   intervalMs: number,
-  completedBefore: number
+  completedBefore: number,
+  profile?: AiProfileConfigV1
 ): AiDecisionInputV1 | undefined {
   if (!scene.events.listenerCount(AI_DECISION_DISPATCH_EVENT)) return undefined;
   const gaps: string[] = [];
@@ -46,6 +47,7 @@ export function captureAiDecisionInput(
   if (observation.effects.length > 256) gaps.push("decision_effects_overflow");
   if (observation.modeGoals.length > 64) gaps.push("decision_mode_goals_overflow");
   return {
+    ...(profile ? { profile: { ...profile } } : {}),
     observation: bounded
       ? {
           schemaVersion: observation.schemaVersion,

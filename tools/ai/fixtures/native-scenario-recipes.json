@@ -208,7 +208,6 @@
     "SEQ-06",
     "SEQ-07",
     "SEQ-08",
-    "D-01",
     "D-02",
     "D-03",
     "D-04",
@@ -996,57 +995,6 @@
         6000,
         12000,
         18000
-      ],
-      "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
-    },
-    {
-      "scenarioId": "D-01",
-      "status": "authored_not_executed",
-      "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/classic-rts-and-difficulty-scenarios.md",
-      "requiredOutcome": "Every lobby difficulty selects the exact versioned profile and expected cadence/quotas with no fallback to identical defaults",
-      "world": "open",
-      "maximumTick": 2000,
-      "setup": [
-        "Start fresh ordinary lobby matches for Easy, Normal and Hard with identical legal roster/map/seed",
-        "Resolve expected versioned profile cadence and quotas from the selected runtime registry before launch"
-      ],
-      "actions": [
-        "Select each lobby difficulty and advance the same logical tick interval",
-        "Capture actual controller scheduling and profile on committed boundaries"
-      ],
-      "measurements": [
-        "Lobby selection, saved difficulty, versioned profile identity, decision cadence and consumed quota counters"
-      ],
-      "required": [
-        "Every lobby difficulty selects its exact configured profile, cadence and quotas",
-        "Invalid profile/difficulty fails explicitly without fallback dispatch"
-      ],
-      "forbidden": [
-        "Only profile name checked while identical defaults schedule all levels",
-        "Hidden resource/stat bonuses"
-      ],
-      "branches": [
-        "Easy",
-        "Normal",
-        "Hard",
-        "Invalid difficulty at configuration boundary"
-      ],
-      "executionBlockers": [
-        "native_case_binding",
-        "profile_history"
-      ],
-      "reuse": [
-        "tools/ai/fixtures/controller-contract-scenarios.json"
-      ],
-      "checkpointTicks": [
-        0,
-        20,
-        200,
-        400,
-        800,
-        1200,
-        1600,
-        2000
       ],
       "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
     },

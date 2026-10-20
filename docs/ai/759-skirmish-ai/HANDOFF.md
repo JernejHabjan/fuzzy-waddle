@@ -3,38 +3,33 @@
 Default resume page: read this first, then only the selected package in [REMAINING-WORK.md](REMAINING-WORK.md).
 Do not load the full plan directory or archive on startup.
 
-## Current cursor — authority/save/lifecycle repairs authored; native integration unfinished, 2026-10-20
+## Current cursor — D-01 difficulty registration authored, 2026-10-20
 
 - Worktree /home/jernej/.codex/worktrees/skirmish-authority-recovery/fuzzy-waddle;
-  branch feature/759-skirmish-ai. Publication base 7c9654ca4dcac1f7640c71d4fc4d5d9c43cb006d; verify containing commit and remote on resume.
-  Preserve unrelated main-checkout issue-template edits. Actual model/effort unknown; no delegation/model switch.
-- Current H-08/H-09/H-31/H-32 batch: grouped production repairs and one native H-08 host branch authored, unrun.
-  Full scenario registrations remain0/4 (0%),4/4 missing (100%); this is implementation progress, not scenario closure.
-  Cumulative selected13 remains9/13 registered (69.2%),4/13 unbound (30.8%).
-- Changes preserve original admitted work/age across epochs; duplicate delivery cannot release paid ownership.
-  Original execution identity survives bounded history eviction. Only actual unsent transport input receives explicit
-  epoch cancellation. Saved unsent batches retain identities and reload above saved time, behind real server echo.
-- Disposed buses/lockstep/screenshot callbacks cannot mutate old/new matches. Repeated/out-of-order host transitions
-  do not advance the fence again. Delayed Angular connection/cleanup cannot overwrite or tear down the next instance.
-  Root client split into context/event/lobby layers plus save facade; no lint baseline refresh or new root service.
-- Native control uses actual AI-issued applied work, real server host promotion and original replay/application fencing.
-  It does not prove old-packet network redelivery, complete payment evidence or another full scenario.
-- **Next authoring action:** finish the native drivers for these SAME four IDs, reusing the new source/probe controls.
-  H-08: timeout/cancellation plus delayed original callbacks and peer consistency. H-09: acknowledged peer compaction
-  and real codec/scene restore of original/unresolved work. H-31: ordinary paired scene reload versus uninterrupted
-  continuation before/during/after apply, with chronic blocker/lease and full queue/debt/RNG premises. H-32: ordinary UI
-  second match in the SAME browser realm, distinct seed/identity, retained path/receipt callbacks and host replacement.
-  Do not substitute headless bus/codec tests for these native branches or open another preparatory architecture batch.
-- Server-accepted/unacknowledged input still needs its actual authoritative response tail. Saved local unsent batches
-  are not that tail. Full AI continuation onto a promoted peer and complete native save/reload remain unproven.
-- Supported runtime92/116 (79.3%) registered,24/116 (20.7%) unbound, plus4 deferred island rows; pure111/111.
-  Native factory61 bindings/394 variants plus21 partial owner worlds remain unrun. Overall AI completion unavailable.
-  Prior H-05/H-20/H-21/H-23 gaps remain; H-12 retains the user-approved native prevention/pure recovery scope.
+  branch feature/759-skirmish-ai. Publication base63297db700c51dde27ca013407560a4f34b066fa;
+  verify containing commit/remote on resume. Preserve unrelated main-checkout issue-template edits.
+  Actual model/effort unknown; no delegation/model switch. Latest user explicitly requests registration work.
+- D-01 now registers6 native worlds: Easy/Normal/Hard × Tivara/Skaduwee, authored unrun.
+  The ordinary lobby selects each policy. Exact controller profile is captured only with existing diagnostic listeners.
+  Pinned independent version/quotas, every actual decision tick/sequence, saved difficulty and real AI application are required.
+  Invalid difficulty uses the actual controller/factory boundary controls, not a nonexistent invalid lobby option.
+  Saturation, fair hidden-state comparisons and challenge calibration remain D-03/D-05/D-06 obligations.
+- Supported runtime93/116 (80.2%) registered,23/116 (19.8%) unbound, plus4 deferred island rows; pure111/111.
+  Native factory62 bindings/400 variants plus21 partial owner worlds remain unrun. Difficulty1/6 registered,5/6 unbound.
+  These counts describe registration, never passing gameplay or overall AI completion.
+- **Next registration action:** D-03, all three difficulties/both factions with paired hidden position/HP/queue changes
+  and legitimate new-contact controls. Reuse existing native sight, resource/definition authority and exact profile inputs;
+  require real hidden-premise mutation and allowed-input invariance before binding. Keep D-05 eligible-lane pressure,
+  D-04 Easy gameplay and D-06 measured calibration separate until their full required branches exist.
+- H-08/H-09/H-31/H-32 remain0/4 fully registered. Their authority/save/lifecycle source repairs and partial H-08
+  host-promotion control are retained in CURRENT-EVIDENCE, not replaced by difficulty coverage.
+  Original/unacknowledged peer tails, full save/scene continuation and same-realm next-match drivers remain unfinished.
+  Prior H-05/H-20/H-21/H-23 gaps remain. H-12 keeps user-approved native prevention/pure recovery scope.
 - **No execution:** no recipes/tests/lint/types/formatters/builds/browser/server/doctor/context/dedicated validators.
   Source/diff review and fixture/catalog --write authoring only. Model summaries capped8192 UTF-8 bytes;
   never load generated fixtures/raw reports wholesale. Machinery review remains last overall.
-- Report done/why, exact coverage and unfinished branches, next/why. Commit/push owned paths, verify remote equality,
-  then pause. Recommend Sol6.1/high for the remaining peer/save/UI driver design; this does not change settings.
+- Report done/why, coverage, next/why. Commit/push owned paths, verify remote equality, then pause.
+  Recommend Sol6.1/high for the paired fairness/hidden-state driver design; recommendation does not change settings.
 
 ## What “continue” means
 
@@ -100,7 +95,7 @@ Keep the report self-contained and concise. A documentation-only update reports 
 gameplay progress unchanged. The execution plan links to this format rather than maintaining a second template.
 
 Registration coverage: pure **111/111 = 100% registered / 0% remaining**; supported runtime
-**92/116 = 79.3% registered / 20.7% remaining**, excluding four deferred runtime rows. These are not overall AI completion.
+**93/116 = 80.2% registered / 19.8% remaining**, excluding four deferred runtime rows. These are not overall AI completion.
 Reconcile behavior evidence per selected package; do not invent a global completion percentage.
 
 ## End-of-gate machinery necessity review

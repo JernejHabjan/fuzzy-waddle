@@ -383,7 +383,8 @@ export class PlayerAiController {
         observation,
         this.playerAiControllerAgent.getCommittedCapabilityCatalog(),
         this.stepInterval,
-        this.completedDecisionSequence
+        this.completedDecisionSequence,
+        this.profile
       )
     });
     this.brainState = structuredClone(
