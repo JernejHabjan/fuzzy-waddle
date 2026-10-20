@@ -1,3 +1,4 @@
+import { isExpectedNativeMandatoryError } from "./skirmish-ai-native-fault-evaluation";
 import type { RuntimeAssertionV1 } from "./skirmish-ai-runtime-assertion";
 import { evaluateRuntimeRaidRecovery } from "./skirmish-ai-runtime-raid-evaluation";
 import { evaluateRuntimeTransport } from "./skirmish-ai-runtime-transport-evaluation";
@@ -224,6 +225,9 @@ export function evaluateRuntimeVariant(
     );
   }
   failures.push(...evaluateRuntimeTransport(assertion, variant));
-  failures.push(...variant.aiErrors.map((error) => `${variant.variantId}:ai_error:${error}`));
+  const mandatoryFault = scenarioId === "H-30" && assertion.requiredNativeScenario?.branchByVariant[variant.variantId] === "mandatory" &&
+    fixture?.recipe.variants.find((item) => item.id === variant.variantId)?.presetWorld?.brainFault?.kind === "mandatory";
+  failures.push(...variant.aiErrors.filter((error) => !mandatoryFault || !isExpectedNativeMandatoryError(error, variant))
+    .map((error) => `${variant.variantId}:ai_error:${error}`));
   return failures;
 }

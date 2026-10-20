@@ -1,3 +1,4 @@
+import type { AiRuntimeBrainFault } from "./ai-runtime-brain-fault";
 import type { ObjectNames, ResearchType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 import type { AiRuntimePresetControlV1 } from "./ai-runtime-preset-control-v1";
@@ -8,8 +9,14 @@ import type { AiRuntimeReceiptFault } from "./ai-runtime-receipt-fault";
 /** Test-authored world inputs applied through real scene actor and resource services before tick zero. */
 export interface AiRuntimePresetWorldV1 {
   readonly fixtureId: string;
+  /** Permutes real emitted proposer batches before arbitration; never supplies fixture intents. */
+  readonly proposalOrder?: "forward" | "reverse";
+  /** Definition-priced scarce recovery, applied only at pre-tick setup. */
+  readonly recoveryStart?: "one_worker" | "bootstrap" | "infeasible";
   /** Consumer-local receipt/checkpoint delay; shared native application/capture is never withheld. */
   readonly receiptFault?: AiRuntimeReceiptFault;
+  /** Explicit finite failure at a real proposer/debug/mandatory boundary. */
+  readonly brainFault?: AiRuntimeBrainFault;
   /** Production recipes require the authored faction graph, including the ordinary map's indexed actors. */
   readonly requireFactionRoster?: true;
   /** Real base-layer terrain before navigation initialization; only explicit diagnostic presets can apply these. */

@@ -1,16 +1,16 @@
 # #759 remaining work inventory
 
-Snapshot:2026-10-20; publication base c681f7c94d489e1e2788039aaf73b5684a4ac53b plus task-owned source.
+Snapshot:2026-10-20; publication base 80ded317d129e57fb0a42aa6cb1a60404efc0cba plus task-owned source.
 [HANDOFF.md](HANDOFF.md) owns the next action; [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) distinguishes authored and
 validated evidence. This is the existing execution inventory, not another design project. Read only the selected package.
 
 ## What the inventory establishes
 
 The original concrete plan contains121 named scenarios. Pure registration is111/111. Supported runtime registration
-is89/116 (76.7%);27 (23.3%) still have specifications without native bindings. Four island runtime rows are deferred.
-Definitions are116/116:89 registrations plus27 specifications. Latest6 registrations contain38 faction/control variants;
-native factory58 bindings/370 variants and21 partial owner worlds are unrun. Selected13-ID batch is6/13 registered,
-7/13 unbound. Counts describe registration, not passing gameplay, unique physical maps, sessions or time remaining.
+is92/116 (79.3%);24 (20.7%) still have specifications without native bindings. Four island runtime rows are deferred.
+Definitions are116/116:92 registrations plus24 specifications. Latest3 registrations contain24 faction/control variants;
+native factory61 bindings/394 variants and21 partial owner worlds are unrun. Selected13-ID batch is9/13 registered,
+4/13 unbound. Latest four-ID batch is3/4 registered (75%); H-31 remains unbound (25%). Counts describe registration, not passing gameplay, unique physical maps, sessions or time remaining.
 Each row needs complete source-specific native outcome evidence before validation; an authored reader is not that evidence.
 
 Earlier descriptions such as “full acceptance open” concealed three different kinds of work. Use these states:
@@ -82,8 +82,8 @@ an entire scenario. Invalidate only outcomes affected by later source/fixture ch
 | Measured coverage at this snapshot    | Completed                                   | Remaining          | What the number means                                                                                              |
 | ------------------------------------- | ------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------ |
 | Pure fixture registration             | 111/111 = **100%**                          | 0/111 = **0%** | Required pure scenarios with registered fixtures; not behavior completion                                          |
-| Supported native definitions           | 116/116 = **100%**                          | 0/116 = **0%** | 89 scenario bindings plus27 specifications; definitions only, not validated gameplay |
-| Supported runtime recipe registration | 89/116 = **76.7%**                          | 27/116 = **23.3%** | Runtime recipes connected; four island-content rows excluded; not behavior completion                              |
+| Supported native definitions           | 116/116 = **100%**                          | 0/116 = **0%** | 92 scenario bindings plus24 specifications; definitions only, not validated gameplay |
+| Supported runtime recipe registration | 92/116 = **79.3%**                          | 24/116 = **20.7%** | Runtime recipes connected; four island-content rows excluded; not behavior completion                              |
 | Scenario behavior validation          | Not yet reconciled across the full manifest | Not yet measurable | Existing subset passes and failures are recorded, but no truthful overall completion percentage can yet be derived |
 
 During each selected package, reconcile its existing complete evidence into the row status and report its exact
@@ -109,15 +109,16 @@ main-building footprint were corrected in both paired worlds. Construction cance
 post-opening unfinished-site reassignment have focused controls. Native ECO-06 proves alternate drop-off/source
 recovery; native no-drain controls prove stop/assignment release with cargo preservation.
 
-**Current publication: command/resource authoring partly bound, 2026-10-20.**
+**Current publication: H-11/H-12/H-30 authored; H-31 integration remains open, 2026-10-20.**
 
-- H-06/H-07/H-10/H-13/H-14/H-15: six native bindings,38 faction/control variants, authored unrun.
-  Source repairs preserve uncertain paid ownership, admission capacity, history-based reconciliation, accurate lane service,
-  multi-edge cycles and disposed-controller fencing. See CURRENT-EVIDENCE for the13-ID disposition and source-only audits.
-- H-08/H-09/H-11/H-12/H-30/H-31/H-32 remain unbound. Finish real scarce recovery chains and proposal-order controls
-  together next; then optional-fault/scene controls and the real peer/save integration batch. No fake snapshots or human
-  command receipts may substitute for the required AI-owned boundaries. Earlier four recovery gaps remain open.
-- Runtime89/116 (76.7%),27 remaining (23.3%); pure111/111. No tests, scenarios or other validation ran.
+- Three native bindings/24 variants added: scarce complete food recovery, atomic admission prevention and optional/debug
+  fault isolation. H-12's prevention plus pure recovery scope was explicitly approved by the user.
+- Save primitives now preserve one detached boundary and simulation time; admission/capture read live authority.
+  H-31 stays unbound until ordinary codec/reload and real peer/outbound-tail continuation are driven together.
+- Next group H-08/H-09/H-31: original identities across epoch/cancellation, acknowledged compaction and before/during/
+  after-apply save boundaries. Then H-32 actual same-realm restart/host replacement. Prior recovery gaps remain open.
+- Runtime92/116 (79.3%),24 remaining (20.7%); pure111/111. No tests/scenarios/verification ran.
+  Source-only audits and the legacy source-structure gate constraint are in CURRENT-EVIDENCE.
   Machinery review remains last; containing commit/remote must be verified on resume.
 
 ## Other concrete gaps already established

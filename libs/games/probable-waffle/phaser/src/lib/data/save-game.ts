@@ -79,12 +79,17 @@ export class SaveGame {
 
       this.saveRandomState();
       this.saveCommandAuthority();
+      const gameState = this.scene.baseGameData.gameInstance.gameState;
+      if (gameState && tickService) gameState.data.simulationTick = tickService.currentTick;
 
+      // Thumbnail capture and the save-name dialog may span many ticks. Never combine old actors with later live banks/AI.
+      const gameInstanceData = structuredClone(this.scene.baseGameData.gameInstance.data);
       const thumbnail = await this.takeScreenshot();
       this.scene.communicator.utilityEvents.emit({
         name: "save-game",
         data: {
           thumbnail,
+          gameInstanceData,
           kind,
           ...(request.checkpointId ? { checkpointId: request.checkpointId } : {})
         } satisfies SaveGamePayload

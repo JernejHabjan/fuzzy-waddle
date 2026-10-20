@@ -46,7 +46,7 @@ Each row gets independent semantic predicates, forbidden outcomes, resolved nume
 | H-09 | Duplicate command arrives after detailed dedup entry eviction/save restore        | Safe watermark rejects stale reapplication; unresolved records were not evicted                                            |
 | H-10 | Outcome backlog reaches configured capacity                                       | Backpressure preserves required records and unrelated safe progress; explicit bounded technical recovery if needed         |
 | H-11 | Food/worker/Granary/Field prerequisite cycle under scarcity                       | Cheapest legal feasible recovery chain or independently confirmed strategic infeasibility; no circular reservation wait    |
-| H-12 | Two projects each hold one resource needed by the other                           | Cycle detected, reversible reservation chosen deterministically, feasible work proceeds                                    |
+| H-12 | Useful projects compete for complete wood/stone bundles; pure controls model historical wait cycles | Native atomic admission prevents deadlock and useful work proceeds; pure recovery deterministically releases the original lowest-priority reversible bundle |
 | H-13 | Many bases start optional projects and evade per-base caps                        | Player-wide exposure remains bounded; legitimate committed military/essential economy retains funding                      |
 | H-14 | Repeated minor scouts or supply forecasts monopolize priorities                   | Emergency decays; feasible scouting/production/army lanes receive bounded service                                          |
 | H-15 | Genuine lethal attack competes with normal lane service                           | Survival preempts appropriate actors/resources while observation/reconciliation continue; no artificial “fairness” suicide |
@@ -99,3 +99,8 @@ For core SEQ-01/02/03/04/07 start with 20–30 simulated-minute bounds, derive m
 - Human blind A/B feedback remains explicitly pending if unavailable; automated gates must stand on their own evidence. Never claim human validation happened when only a scripted match ran.
 
 Record the exact command and source/config/fixture versions in the report. Every H/SEQ ID needs responsible symbols, debug evidence, pure/runtime status and retained reproduction. Missing required runtime support is a blocker, not an empty green test.
+
+H-12 scope decision (user, 2026-10-20): preserve whole-bundle native admission. Do not introduce partial resource holds
+solely to manufacture a cycle. Native controls require real proposer-order reversal, paid-site/foreign-bank preservation,
+complete prices and useful completed work; pure controls cover original-priority cycle recovery, paid/uncertain fences
+and acyclic/unknown graphs. Registration and authored tests remain distinct from executed evidence.

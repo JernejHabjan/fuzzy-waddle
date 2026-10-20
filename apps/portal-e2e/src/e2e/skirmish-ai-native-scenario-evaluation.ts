@@ -1,3 +1,6 @@
+import { evaluateNativeBundles } from "./skirmish-ai-native-bundle-evaluation";
+import { evaluateNativeScarceRecovery } from "./skirmish-ai-native-scarce-recovery-evaluation";
+import { evaluateNativeFault } from "./skirmish-ai-native-fault-evaluation";
 import bindings from "../../../../tools/ai/native-scenario-bindings.json";
 import type { RuntimeAssertionV1 } from "./skirmish-ai-runtime-assertion";
 import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
@@ -44,7 +47,10 @@ export function evaluateNativeScenarioVariant(
   if (context.failures.length) return context.failures;
   if (id.startsWith("SCOUT-") || id === "H-22") return evaluateNativeScouting(id, branch, context);
   const failures = nativeScoutingFairness(context);
-  if (["H-06", "H-07", "H-10"].includes(id)) failures.push(...evaluateNativeAuthority(id, branch, context));
+  if (id === "H-11") failures.push(...evaluateNativeScarceRecovery(branch, context));
+  else if (id === "H-12") failures.push(...evaluateNativeBundles(branch, context));
+  else if (id === "H-30") failures.push(...evaluateNativeFault(branch, context));
+  else if (["H-06", "H-07", "H-10"].includes(id)) failures.push(...evaluateNativeAuthority(id, branch, context));
   else if (["H-13", "H-14", "H-15"].includes(id)) failures.push(...evaluateNativeResourcePriority(id, branch, context));
   else if (["H-01", "H-02", "H-03", "H-04", "H-19", "H-24", "H-25", "H-26"].includes(id))
     failures.push(...evaluateNativeRecovery(id, branch, context));

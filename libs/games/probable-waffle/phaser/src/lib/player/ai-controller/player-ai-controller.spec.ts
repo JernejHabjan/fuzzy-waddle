@@ -9,6 +9,10 @@ import type Phaser from "phaser";
 import { installAiResourceInputObserver } from "./observation/ai-resource-input-observation";
 import { rememberAiResourceInputRead } from
   "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-resource-input-observation";
+import { createAiProductionPolicyFixture } from
+  "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-production-policy-fixture";
+import { PureAiBrain } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain";
+import type { AiAuthorityStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 
 jest.mock("../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
@@ -28,6 +32,27 @@ const baseIntent = {
 
 describe("PlayerAiController pure planner integration", () => {
   afterEach(() => jest.clearAllMocks());
+
+  it("uses current authority for admission and saves the frontier after synchronous dispatch callbacks", () => {
+    const f = createAiProductionPolicyFixture(), controller = Object.create(PlayerAiController.prototype) as PlayerAiController;
+    let live: AiAuthorityStateV1 = { ...f.state.authority, pendingCommandIds: ["command:before"] };
+    const brain = new PureAiBrain(f.profile, []), step = jest.fn(brain.step.bind(brain));
+    Reflect.set(controller, "scene", { events: { listenerCount: () => 0 } });
+    Reflect.set(controller, "player", { playerNumber: 1 });
+    Reflect.set(controller, "profile", f.profile);
+    Reflect.set(controller, "brainState", f.state);
+    Reflect.set(controller, "brainDebugHistory", []);
+    Reflect.set(controller, "pureBrain", { step });
+    Reflect.set(controller, "playerAiControllerAgent", { getCommittedObservation: () => f.observation,
+      getCommittedCapabilityCatalog: () => f.catalog });
+    Reflect.set(controller, "getBrainCommandBridgeSnapshot", () => ({ authority: live, outcomes: [] }));
+    Reflect.set(controller, "dispatchAcceptedIntents", () => {
+      live = { ...live, pendingCommandIds: ["command:before", "command:during"] };
+    });
+    (controller as unknown as { stepPureBrain(): void }).stepPureBrain();
+    expect(step.mock.calls[0][1].authority.pendingCommandIds).toEqual(["command:before"]);
+    expect(controller.getBrainState()?.authority.pendingCommandIds).toEqual(["command:before", "command:during"]);
+  });
 
   it("cannot reactivate a disposed controller through late host toggles, restore or queued steps", async () => {
     const controller = Object.create(PlayerAiController.prototype) as PlayerAiController;

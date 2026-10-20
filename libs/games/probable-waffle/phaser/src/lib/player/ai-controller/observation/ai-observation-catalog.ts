@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { type ObjectNames, type ProbableWafflePlayer, type ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { ObjectNames, type ProbableWafflePlayer, type ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiCapabilityCatalogEntryV1, AiObservedActorV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { getActorComponent } from "../../../data/actor-component";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
@@ -55,7 +55,7 @@ export function projectCatalogEntry(
   );
 }
 
-/** Adds legal current-tech options from the runtime graph without copying balance data into AI code. */
+/** Adds permitted current-tech options plus the renewable-food definition needed to plan its missing prerequisite. */
 export function projectAvailableCatalogEntries(
   scene: Phaser.Scene,
   player: ProbableWafflePlayer,
@@ -67,7 +67,10 @@ export function projectAvailableCatalogEntries(
   // Never enumerate the global graph here: that would expose another faction's
   // roster even when no opponent actor has been observed.
   for (const objectName of techTree.getFactionActorIds(player.factionType!)) {
-    if (!techTree.isAvailable(playerNumber, objectName)) continue;
+    // Hiding a locked Field also hides its Granary price/dependency, creating a circular food/worker wait.
+    // Food planning checks the ready prerequisite; shared construction still owns final eligibility and payment.
+    if (!techTree.isAvailable(playerNumber, objectName) &&
+        (objectName !== ObjectNames.Field || !techTree.isContentAllowed(playerNumber, "actor", objectName))) continue;
     const level = techTree.getResearchedLevelForUnit(playerNumber, objectName);
     const definition = getPwActorDefinition(objectName, level);
     if (!definition) continue;

@@ -2,7 +2,73 @@
 
 [HANDOFF.md](HANDOFF.md) owns continuation. Read this current batch; older sections retain historical evidence.
 
-## Command/resource authoring — six bound, seven incomplete, 2026-10-20
+## Recovery/fault/save authoring — three registered, save integration incomplete, 2026-10-20
+
+Publication base80ded317d129e57fb0a42aa6cb1a60404efc0cba; new managed worktree and branch in HANDOFF.
+Actual model/effort unknown; no delegation/model switch. Source/diff review and fixture/catalog --write authoring only.
+No recipe/test/lint/type/format/build/browser/server/doctor/context or dedicated validator ran. Publication is not readiness.
+
+### Numbered acceptance map and Omission Audit — source review only
+
+1. **H-11 — registered unrun,6 variants:** renewableFoodReserve prices the missing definition closure;
+   proposeAiWorkerRecovery preserves it before extra workers; proposeAiFoodEconomy permits one-worker bootstrap.
+   Observation catalog includes the content-permitted Field definition before its Granary prerequisite, while ordinary
+   authority still checks eligibility. applyAiRuntimeRecoveryStart independently prices native definitions at tick0,
+   inventories/exhausts all existing sources and sets only the exact chain budget. Native reader checks independent
+   closure, paid Granary/Field completion, delivered food, renewed worker output and genuine infeasibility.
+2. **H-12 — registered unrun,8 variants:** user explicitly chose native prevention plus pure recovery because shared
+   admission already accepts whole bundles atomically. The adversarial contract, manifest, binding and pure selectors
+   now agree on that scope; no partial native holds were invented. Reservations persist original admission priority.
+   selectAiCycleVictim traverses known cycles, excludes feeders, ranks original priority and protects the entire plan if
+   any sibling is dispatched/paid/refundable or original lifecycle evidence proves dispatch. Missing legacy rank retains
+   ownership. Pure controls cover reverse enumeration, original priority, paid neighbors and lagging provisional labels.
+   Native reader requires actual individually affordable but jointly scarce projects, complete-price admission/payment,
+   later physical completion and field income, actual reversed proposer output, paid neighbor and foreign bank controls.
+3. **H-30 — registered unrun,10 variants:** collectAiProposals quarantines invalid/throwing optional batches and patches
+   before arbitration; saved bounded failures retry at1/2/4/8 intervals. projectAiDebugSafely preserves valid accepted work
+   on debug failure and emits an honest unavailable projection. Mandatory state/observation/authority failures stay thrown
+   and sticky technical health is surfaced by the controller. Test-only hooks require dev preset/player2, finite ticks,
+   real emitted proposals and shutdown ownership. Metadata is bounded and does not trigger heavy world samples.
+   Native reader joins original raw terminal receipts/epoch/sequence, useful native income, preserved orders and recovery;
+   only the explicit injected mandatory error marker is exempted from the ordinary runtime error gate.
+4. **H-31 — partial, unbound:** SaveGame freezes detached state before screenshot; game-instance client and save storage
+   preserve that boundary across name/repository awaits. SimulationTickService restores clock before actors/controllers.
+   SnapshotService and AI-only hash continuations capture live AI/research/authority, not stale last-save state.
+   PlayerAiController consumes live authority before admission and stores the post-dispatch frontier. Authored controls
+   cover real AES-GCM/protocol codec reconstruction, mixed queues/original identity, clock and live projection.
+   **Missing:** real ordinary scene reload paired with uninterrupted continuation before/during/after apply, including
+   multiplayer outbound tail/epoch. Single-player apply is synchronous; codec/JSON round trips do not certify this.
+5. **Registrations and immediate consumers:** all three factory recipes, finite DTO parsers, pre-tick setup/capture,
+   shutdown cleanup, native reader dispatch, manifest, removed draft rows, mutation/negative specifications and generated
+   catalog are wired. Native factory61 bindings/394 variants plus21 partial owner worlds are authored unrun.
+   Latest3 IDs/24 variants; cumulative selected13:9/13 registered (69.2%),4/13 unbound (30.8%).
+   Current four-ID scope3/4 registered (75%), H-31 unbound1/4 (25%). Runtime92/116 (79.3%),24/116 unbound (20.7%).
+   Pure111/111 registered. No new gameplay validation or overall completion percentage is claimed.
+6. **Unresolved/deferred obligations:** H-08/H-09/H-31/H-32 stay specification-only; prior H-05/H-20/H-21/H-23 gaps
+   remain. Shared gameplay/save changes need affected-source evidence at the authorized final gate. Existing large
+   game-instance-client.service.ts is source-structure hash-baselined; changing its save boundary invalidates that legacy
+   exemption. No baseline was refreshed. A bounded owner decomposition or explicitly reviewed cleanup exception remains
+   necessary before a clean lint claim. This is an explicit gate constraint, not a passed check.
+
+### Final Closure Audit — separate source/publication review
+
+- Reviewed input-to-owner-to-capture-to-predicate wiring and public save consumers, prior pending ownership, optional
+  quarantine/retry persistence, strict preset parsing and absence of fixture state injection. All four selected obligations
+  have a disposition; H-31 stays open rather than being registered with a fake native boundary. Native geometry/timing,
+  imported APIs/type checking and run outcomes remain unverified under the user's no-execution instruction.
+- Authoring repairs: corrected an early writer syntax error before it executed; moved a branch-dependent command minimum
+  out of the global factory header; H-11's infeasible branch has no arbitrary minimum-command requirement while feasible
+  readers independently require real paid work/income. Catalog --write completed after the final H-12 contract updates.
+  These are source-authoring events, not test execution or passing evidence.
+- Model summaries remain capped8192 UTF-8 bytes; generated fixtures/raw reports were not loaded wholesale. Existing root
+  fact budgets remain unchanged. No skills/tool/baseline expansion, game-balance change or performance suite was added.
+- Next grouped batch: H-08/H-09/H-31 real peer/epoch/compaction/save integration so pending AI work retains exactly-once
+  ownership through actual interruption. Then H-32 same-realm second-match/host replacement. Machinery review stays last.
+  Recommended Sol6.1/high for unresolved causal integration design; current settings were not changed.
+- Publication: commit only this worktree's owned changes with hooks disabled, push feature/759-skirmish-ai normally,
+  verify remote equality and pause. The next agent verifies the containing commit; no self-referential SHA is invented.
+
+## Historical command/resource authoring — six bound, seven incomplete, 2026-10-20
 
 Publication base c681f7c94d489e1e2788039aaf73b5684a4ac53b; same worktree/branch as HANDOFF. No delegation/model change.
 Source/diff review and fixture/catalog authoring only. No recipe/test/lint/type/format/build/browser/server/doctor/context

@@ -28,7 +28,7 @@ export function nativeScenarioFixture(id) {
   const branches = {};
   const variants = ["Tivara", "Skaduwee"].flatMap((faction) => nativeScenarioBranches(id, faction).map((branch) => {
     const recovery = ["H-01", "H-02", "H-03", "H-04", "H-19", "H-24", "H-25", "H-26"].includes(id);
-    const authority = ["H-06", "H-07", "H-10", "H-13", "H-14", "H-15"].includes(id);
+    const authority = ["H-06", "H-07", "H-10", "H-13", "H-14", "H-15", "H-11", "H-12", "H-30"].includes(id);
     const world = authority ? nativeAuthorityWorld(id, faction, branch) : recovery ? nativeRecoveryWorld(id, faction, branch) :
       id === "EXP-01" ? expansionWorld(faction, branch) : id.startsWith("DOMAIN-") ?
       nativeDomainWorld(id, faction, branch) : id.startsWith("C-") ? nativeClassicWorld(id, faction, branch) :
@@ -75,7 +75,8 @@ export function nativeScenarioFixture(id) {
       aiPlayerNumber: 2, simulationTimeScale: 1,
       fixedStepFrames: true, checkpointTicks: ticks, variants },
     assertions: { [id]: { maximumTick: binding.latestTick, minimumDecisions: 1,
-      minimumAppliedCommands: id === "STRAT-09" ? 0 : 1,
+      // Infeasible controls need no arbitrary command. Feasible branches separately require native paid work and delivery.
+      minimumAppliedCommands: ["STRAT-09", "H-11"].includes(id) ? 0 : 1,
       ...(id === "STRAT-08" ? { requireAiVictory: true } : {}),
       requiredAiFactions: ["Tivara", "Skaduwee"], requiredNativeScenario: {
         schemaVersion: 1, scenarioId: id, latestTick: binding.latestTick, humanPlayerNumber: 1, branchByVariant: branches

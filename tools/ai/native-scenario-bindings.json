@@ -2697,6 +2697,176 @@
       "capabilityLimits": [
         "Consumer receipt delay is local to the AI; raw shared command application remains independently captured. This does not certify two-client relay or host transfer."
       ]
+    },
+    "H-30": {
+      "latestTick": 2400,
+      "branches": [
+        "throw",
+        "nan",
+        "cost",
+        "debug",
+        "mandatory"
+      ],
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "Boundary guards isolate faulty output, preserve valid orders and surface incident; no best-score corruption",
+        "setup": [
+          "Valid native economy/army orders are already active",
+          "Select one optional proposer or debug projection as the fault boundary, leaving mandatory authority intact"
+        ],
+        "actions": [
+          "Inject one controlled throw, NaN utility or malformed cost through the test adapter before publication",
+          "Remove the fault after the documented cooldown or state-change boundary"
+        ],
+        "measurements": [
+          "Published finite intents/claims, native existing order continuity, bounded incident record and retry generation"
+        ],
+        "required": [
+          "Faulty optional output is isolated and diagnosed",
+          "Valid native work and mandatory reconciliation continue, with bounded retry"
+        ],
+        "forbidden": [
+          "NaN winning ranking",
+          "Swallowed mandatory authority corruption",
+          "Debug error stopping simulation"
+        ],
+        "branches": [
+          "Proposer throw",
+          "NaN utility",
+          "Invalid capability/cost",
+          "Debug-only throw",
+          "Mandatory fault remains explicit technical failure"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      },
+      "capabilityLimits": [
+        "Fault wrapper corrupts actual macro output or debug projection only; empty output cannot satisfy the injected-output premise. Mandatory control remains an explicit technical failure."
+      ]
+    },
+    "H-11": {
+      "latestTick": 4000,
+      "branches": [
+        "one_worker",
+        "bootstrap",
+        "infeasible"
+      ],
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000,
+        4000
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "Cheapest legal feasible recovery chain or independently confirmed strategic infeasibility; no circular reservation wait",
+        "setup": [
+          "Use actual worker, food, crop/deposit costs and prerequisites for each faction",
+          "Scarce balances permit exactly one independently enumerated cheapest recovery chain; control is genuinely infeasible"
+        ],
+        "actions": [
+          "Let normal AI reserve and schedule prerequisites without injected income",
+          "Follow actual build, harvest, delivery and worker creation"
+        ],
+        "measurements": [
+          "Definition-derived feasible chain, per-resource balances/claims, worker duties and native delivered income"
+        ],
+        "required": [
+          "Feasible scarce start takes a legal recovery chain and resumes income",
+          "True infeasibility is distinguished from unknown access or technical failure"
+        ],
+        "forbidden": [
+          "Circular worker-food-field reservation wait",
+          "Simultaneous impossible worker minima",
+          "Free fixture food credited as recovery"
+        ],
+        "branches": [
+          "One worker",
+          "Legal zero-worker bootstrap where supported",
+          "Genuinely infeasible resource chain"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      },
+      "capabilityLimits": [
+        "Current content has one renewable-food building, Field with its Granary prerequisite. Existing sources must all be independently native-exhausted; extra workers, renewable sources, missing definitions or unexhausted fogged sources reject setup. Exact bank is derived from definitions before tick zero; no later income is injected."
+      ]
+    },
+    "H-12": {
+      "latestTick": 3000,
+      "branches": [
+        "scarce",
+        "paid_neighbor",
+        "permuted",
+        "acyclic"
+      ],
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "Native atomic bundles prevent resource deadlock; pure cycle recovery releases the original lowest-priority reversible bundle deterministically",
+        "setup": [
+          "Use actual useful producer and food projects competing for wood/stone; each full bundle is affordable but their sum is not",
+          "Include a normally paid unfinished site and a separate human resource bank; an ample-bank control has no contention"
+        ],
+        "actions": [
+          "Let normal AI propose and arbitrate its own useful work without partial-hold injection",
+          "Repeat with actual emitted proposer intent arrays reversed before arbitration; preserve all original identities"
+        ],
+        "measurements": [
+          "Definition-priced complete resource claims, native full charges/completions and delivered food",
+          "Actual proposer enumeration, original paid-site continuity and independent foreign balances; pure original-rank/paid/unknown/acyclic controls"
+        ],
+        "required": [
+          "Native admission accepts a complete price bundle or none, and no partial-resource wait cycle is introduced",
+          "Newly feasible construction physically completes and delivers food while already-paid and foreign work remains intact",
+          "Pure cycle-recovery controls select the original lowest-priority fully reversible bundle independently of enumeration"
+        ],
+        "forbidden": [
+          "Creating partial holds solely to manufacture a native cycle",
+          "Releasing spent or uncertain work, partially admitting a price, or changing foreign money",
+          "A cycle label or fixture permutation without native useful work and actual proposer-order evidence"
+        ],
+        "branches": [
+          "Scarce wood/stone atomic contention",
+          "Already-paid site neighbor",
+          "Reversed actual proposer enumeration",
+          "Ample-bank acyclic control"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      },
+      "capabilityLimits": [
+        "User explicitly revised H-12 on 2026-10-20: prove native atomic prevention and pure cycle recovery. The production arbiter admits whole bundles, so no native partial holds or fabricated resource waitEdges are introduced. Native setup and outcomes remain unrun."
+      ]
     }
   }
 }

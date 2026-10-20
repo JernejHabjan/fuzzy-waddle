@@ -1,3 +1,6 @@
+import type { AiRuntimeProposalOrder } from "./ai-runtime-proposal-order";
+import type { AiRuntimeRecoverySetup } from "./ai-runtime-recovery-setup";
+import type { AiRuntimeBrainFaultEvent } from "./create-ai-runtime-brain-hooks";
 import type { AiRuntimePresetControlEvent } from "./ai-runtime-preset-control-event";
 import type { AiRuntimeQueueCompletionV1 } from "./ai-runtime-queue-completion-v1";
 import type { AiRuntimeCreatedActorV1 } from "./ai-runtime-created-actor-v1";
@@ -49,6 +52,9 @@ export type AiRuntimeProductionFactV1 = {
       readonly incomingRead?: AiResourceInputRead;
     }
   | { readonly kind: "preset_control"; readonly control: AiRuntimePresetControlEvent }
+  | { readonly kind: "proposal_order"; readonly order: AiRuntimeProposalOrder }
+  | { readonly kind: "recovery_setup"; readonly recovery: AiRuntimeRecoverySetup }
+  | { readonly kind: "brain_fault"; readonly fault: AiRuntimeBrainFaultEvent }
   | { readonly kind: "authority_delivery"; readonly delivery: AiRuntimeAuthorityDeliveryV1 }
   | { readonly kind: "native_damage"; readonly damage: AiRuntimeDamageV1 }
   | { readonly kind: "native_combat"; readonly operation: AiRuntimeCombatOperationV1 }

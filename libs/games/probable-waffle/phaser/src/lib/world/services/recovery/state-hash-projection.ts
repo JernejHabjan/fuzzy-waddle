@@ -1,6 +1,11 @@
 import Phaser from "phaser";
 import type { ActorDefinition } from "@fuzzy-waddle/probable-waffle-protocol";
-import { getSceneService } from "../scene-component-helpers";
+import { getSceneService, getSceneSystem } from "../scene-component-helpers";
+import { AiPlayerHandler } from "../../../player/ai-controller/ai-player-handler";
+import { CommandBusService } from "../multiplayer/command-bus.service";
+import { SimulationTickService } from "../simulation-tick.service";
+import { SummonExpiryService } from "../../../entity/systems/summon-expiry.service";
+import { AoeZoneManager } from "../../../entity/systems/aoe-zone-manager";
 import { ActorIndexSystem } from "../ActorIndexSystem";
 import { getActorComponent } from "../../../data/actor-component";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
@@ -119,15 +124,22 @@ export class StateHashProjection {
   /** Additional save-owned continuations used by AI harness reports without changing the multiplayer hash contract. */
   private serializeHarnessSystemState(scene: Phaser.Scene): Readonly<Record<string, string>> {
     const gameState = (scene as ProbableWaffleScene).baseGameData.gameInstance.gameState?.data;
+    const handler = getSceneSystem(scene, AiPlayerHandler);
     const aiControllers = (scene as ProbableWaffleScene).players
-      .map((player) => [String(player.playerNumber ?? -1), player.playerState.data.aiBehaviorTreeState] as const)
+      .map((player) => [String(player.playerNumber ?? -1), player.playerNumber === undefined
+        ? player.playerState.data.aiBehaviorTreeState
+        : handler?.getAiPlayerController(player.playerNumber)?.getSaveState() ?? player.playerState.data.aiBehaviorTreeState] as const)
       .filter((entry) => entry[1] !== undefined)
       .sort(([left], [right]) => left.localeCompare(right));
     return {
       aiControllers: this.stableSerialize(this.toStableSerializable(Object.fromEntries(aiControllers))),
-      aoeZones: this.stableSerialize(this.toStableSerializable(gameState?.aoeZones ?? [])),
-      commandAuthority: this.stableSerialize(this.toStableSerializable(gameState?.commandAuthority ?? null)),
-      summonExpiries: this.stableSerialize(this.toStableSerializable(gameState?.summonExpiries ?? []))
+      simulationTick: String(getSceneService(scene, SimulationTickService)?.currentTick ?? gameState?.simulationTick ?? 0),
+      aoeZones: this.stableSerialize(this.toStableSerializable(getSceneService(scene, AoeZoneManager)?.getData() ??
+        gameState?.aoeZones ?? [])),
+      commandAuthority: this.stableSerialize(this.toStableSerializable(getSceneService(scene, CommandBusService)?.getAuthorityState() ??
+        gameState?.commandAuthority ?? null)),
+      summonExpiries: this.stableSerialize(this.toStableSerializable(getSceneService(scene, SummonExpiryService)?.getData() ??
+        gameState?.summonExpiries ?? []))
     };
   }
 

@@ -2,6 +2,26 @@ import Phaser from "phaser";
 import { SimulationPauseReason, SimulationTickService } from "./simulation-tick.service";
 
 describe("SimulationTickService campaign cinematic pause ownership", () => {
+  it("restores the saved logical tick before subscriptions and preserves it through pause/speed changes", () => {
+    const events = new Phaser.Events.EventEmitter();
+    const scene = { events } as unknown as Phaser.Scene;
+    const service = new SimulationTickService(scene, 1999);
+    const observed: number[] = [];
+    service.tick$.subscribe((tick) => observed.push(tick));
+    service.pauseTick(SimulationPauseReason.Manual);
+    service.setSimulationTimeScale(2);
+    events.emit(Phaser.Scenes.Events.UPDATE, 0, 1000);
+    expect(service.currentTick).toBe(1999);
+    service.resumeTick(SimulationPauseReason.Manual);
+    events.emit(Phaser.Scenes.Events.UPDATE, 0, 25);
+    expect(observed).toEqual([2000]);
+  });
+
+  it.each([-1, NaN, Infinity, 1.5])("rejects invalid restored tick %s before subscribing", (tick) => {
+    const events = { on: jest.fn(), once: jest.fn() };
+    expect(() => new SimulationTickService({ events } as unknown as Phaser.Scene, tick)).toThrow("invalid_initial_simulation_tick");
+    expect(events.on).not.toHaveBeenCalled();
+  });
   it("removes only the cinematic pause reason when presentation completes", () => {
     const scene = {
       events: { on: jest.fn(), once: jest.fn() }

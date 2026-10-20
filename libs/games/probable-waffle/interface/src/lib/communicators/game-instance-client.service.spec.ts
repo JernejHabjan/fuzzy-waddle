@@ -37,6 +37,18 @@ describe("GameInstanceClientService", () => {
     expect(service).toBeTruthy();
   });
 
+  it("uses the captured world rather than later live state after thumbnail and naming delays", async () => {
+    const instance = { data: { gameStateData: { actors: [], pause: false, score: 0, simulationTick: 900 } } };
+    service.gameInstance = instance as ProbableWaffleGameInstance;
+    const captured = structuredClone(instance.data);
+    captured.gameStateData.simulationTick = 200;
+    await service.saveGameInstance({ kind: "manual", name: "Captured boundary", thumbnail: "image", gameInstanceData: captured });
+    captured.gameStateData.simulationTick = 1000;
+    expect(gameSaveService.save).toHaveBeenCalledWith(expect.objectContaining({
+      gameInstanceData: expect.objectContaining({ gameStateData: expect.objectContaining({ simulationTick: 200 }) })
+    }));
+  });
+
   it("persists instant-game saves through the shared game-save service", async () => {
     service.gameInstance = {
       data: {

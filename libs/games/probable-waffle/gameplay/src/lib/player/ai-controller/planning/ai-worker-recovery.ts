@@ -16,7 +16,8 @@ export function proposeAiWorkerRecovery(
   workerObjectName: ObjectNames,
   desired: number,
   priority: { readonly urgencyClass: 0 | 2; readonly utility: number } = { urgencyClass: 0, utility: 990 },
-  resourceReserve: Readonly<Partial<Record<ResourceType, number>>> = {}
+  resourceReserve: Readonly<Partial<Record<ResourceType, number>>> = {},
+  bootstrapReserve: Readonly<Partial<Record<ResourceType, number>>> | null = {}
 ): { readonly demand: AiDemandV1; readonly intent: AiIntentV1 | null } {
   const owned = observation.actors.filter((actor) => actor.relation === "self" && actor.visibility === "owned");
   const workers = owned.filter((actor) =>
@@ -66,6 +67,8 @@ export function proposeAiWorkerRecovery(
       )
     );
   if (!producer) return { demand, intent: null };
+  // The first worker is itself a prerequisite. Further workers must not consume the last complete food-chain budget.
+  if (workers.length > 0 && bootstrapReserve === null) return { demand, intent: null };
   const resourceCost =
     catalog.entries.find((entry) => entry.sourceObjectName === workerObjectName)?.constructionProfile?.resourceCost ??
     {};
@@ -75,7 +78,10 @@ export function proposeAiWorkerRecovery(
       return (
         (resource?.stockpile ?? 0) - (resource?.reservedUnspent ?? 0) - (resource?.obligationsDue ?? 0) <
         (amount ?? 0) +
-          (workers.length >= REINFORCEMENT_SAVING_WORKFORCE ? (resourceReserve[type as ResourceType] ?? 0) : 0)
+          Math.max(
+            workers.length > 0 ? (bootstrapReserve?.[type as ResourceType] ?? 0) : 0,
+            workers.length >= REINFORCEMENT_SAVING_WORKFORCE ? (resourceReserve[type as ResourceType] ?? 0) : 0
+          )
       );
     })
   )

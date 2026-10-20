@@ -1,3 +1,4 @@
+import { applyAiRuntimeRecoveryStart } from "./apply-ai-runtime-recovery-start";
 import { bindAiRuntimeExistingActors } from "./bind-ai-runtime-existing-actors";
 import { applyAiRuntimeConstructionOrders } from "./apply-ai-runtime-construction-orders";
 import { captureAiRuntimePlacementClearance } from "./capture-ai-runtime-placement-clearance";
@@ -126,6 +127,7 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
           emitResource(scene, "resource.removed", { [resourceType]: current - target }, start.playerNumber);
       }
     }
+    if (preset.recoveryStart) applyAiRuntimeRecoveryStart(scene, preset.recoveryStart);
     for (const initialOrder of preset.initialOrders ?? []) {
       const worker = createdActors.get(initialOrder.workerFixtureActorId);
       const source = createdActors.get(initialOrder.sourceFixtureActorId);
@@ -169,6 +171,7 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
       (preset.researchQueues?.length ?? 0) +
       (preset.routeOutages?.length ?? 0) +
       (preset.receiptFault ? 1 : 0) +
+      (preset.recoveryStart ? 1 : 0) +
       (preset.controls?.length ?? 0) +
       (preset.productionRallies?.length ?? 0) >
     0

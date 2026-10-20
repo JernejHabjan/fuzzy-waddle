@@ -790,11 +790,11 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   }
 
   /**
-   * Builds and persists a game-save request from the currently synchronized instance.
-   * It keeps campaign metadata searchable while leaving the canonical mission snapshot in game state, then updates local save state only after the remote operation succeeds.
+   * Persists the scene's detached boundary, copied before awaiting the name dialog or storage.
+   * Campaign metadata and searchable save context derive from that same world, never later live state.
    */
   async saveGameInstance(data: SaveGamePayload): Promise<void> {
-    const gameInstanceData = this.gameInstance!.data;
+    const gameInstanceData = structuredClone(data.gameInstanceData ?? this.gameInstance!.data);
     const requestedSave =
       data.kind === "autosave" || data.kind === "quicksave"
         ? undefined

@@ -12,6 +12,7 @@ import { unresolvedReservedEffectIds } from "./ai-macro-effect-identity";
 import { isFinishedActor } from "./ai-macro-observation";
 import { projectAiResourceForecasts } from "./ai-resource-forecast";
 import { proposeAiWorkerRecovery } from "./ai-worker-recovery";
+import { renewableFoodReserve } from "./ai-renewable-food-reserve";
 
 export const WORKER_RECOVERY_FLOOR = 6;
 
@@ -78,12 +79,12 @@ export function proposeAiFoodEconomy(args: {
       state.strategy.assessment.expectedEffectTick <= observation.tick + 600
   );
   // The military checkpoint can wait on wood after workers exhaust starting food.
-  // Bootstrap one renewable source as soon as two workers can build and gather.
+  // One worker can build and then tend. Requiring a second worker can deadlock a food-starved economy.
   const desiredFoodSources = !foodSourceEntry
     ? 0
     : openingComplete
       ? policy.desiredFoodSources
-      : policy.workers >= 2 && (readyFoodSources.length > 0 || policy.foodRunwayTicks < 600)
+      : policy.workers >= 1 && (readyFoodSources.length > 0 || policy.foodRunwayTicks < 600)
         ? Math.min(1, policy.desiredFoodSources)
         : 0;
   if (workerRequiredObject) {
@@ -94,7 +95,8 @@ export function proposeAiFoodEconomy(args: {
       workerRequiredObject,
       Math.max(WORKER_RECOVERY_FLOOR, policy.desiredWorkers),
       policy.posture !== "safe" ? { urgencyClass: 2, utility: 700 } : undefined,
-      militarySpendingReserve
+      militarySpendingReserve,
+      readyFoodSources.length === 0 && foodSourceEntry ? renewableFoodReserve(self, catalog) : {}
     );
     demands.push(recovery.demand);
     if (recovery.intent) intents.push(recovery.intent);

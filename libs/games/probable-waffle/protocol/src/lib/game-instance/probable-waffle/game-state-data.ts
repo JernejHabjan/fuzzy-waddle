@@ -54,6 +54,8 @@ export interface ProbableWaffleGameStateData extends BaseData {
   randomState?: DeterministicRandomState;
   /** Command deduplication/authority frontier used across save and host recovery. */
   commandAuthority?: GameCommandAuthorityState;
+  /** Completed logical tick of a local save; restores absolute AI leases/deadlines before actors/controllers initialize. */
+  simulationTick?: number;
   /** Spell-created actor expiries evaluated against simulation ticks. */
   summonExpiries?: SummonExpiryData[];
 }

@@ -524,13 +524,23 @@
     {
       "scenarioId": "H-12",
       "coverage": "owner_contract",
-      "setup": "Two mutually waiting plans with reversible leases and paid work",
-      "expected": "Release a deterministic reversible side while preserving paid work",
-      "remaining": ["Execute newly feasible project after cycle release"],
+      "setup": "Known synthetic wait cycles with original admission priorities, paid/uncertain neighbors and acyclic/unknown controls",
+      "expected": "Select the original lowest-priority wholly reversible bundle; native atomic prevention is registered separately",
+      "remaining": [
+        "Execute registered native atomic prevention, paid/foreign preservation and real proposal-order controls"
+      ],
       "tests": [
         {
           "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/ai-controller-contract-scenarios.spec.ts",
           "title": "H-12 releases the deterministic reversible side of a wait cycle while preserving paid work"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-decision-cycle.spec.ts",
+          "title": "releases the original lowest-priority bundle independently of plan name, edge and claim enumeration"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-decision-cycle.spec.ts",
+          "title": "protects a provisional label when current original outcomes already prove dispatch/application"
         }
       ]
     },

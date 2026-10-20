@@ -244,6 +244,8 @@ export function canonicalizeAiBrainStateV1(state: AiBrainStateV1): AiBrainStateV
     queries: [...state.queries].sort((left, right) => left.queryId.localeCompare(right.queryId)),
     scheduler: {
       ...state.scheduler,
+      ...(state.scheduler.boundaryFaults ? { boundaryFaults: [...state.scheduler.boundaryFaults]
+        .sort((left, right) => left.owner.localeCompare(right.owner)) } : {}),
       continuationCursors: [...state.scheduler.continuationCursors].sort((left, right) =>
         left.owner.localeCompare(right.owner)
       )

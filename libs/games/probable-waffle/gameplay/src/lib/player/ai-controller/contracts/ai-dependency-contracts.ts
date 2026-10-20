@@ -37,4 +37,6 @@ export interface AiReservationV1 {
   readonly state: AiReservationStateV1;
   readonly prerequisites: readonly AiPrerequisiteEdgeV1[];
   readonly createdTick: AiSimulationTick;
+  /** Original admission rank, retained through saves. Absent legacy ranks cannot safely select a cycle victim. */
+  readonly priority?: Readonly<{ readonly urgencyClass: number; readonly utility: number }>;
 }

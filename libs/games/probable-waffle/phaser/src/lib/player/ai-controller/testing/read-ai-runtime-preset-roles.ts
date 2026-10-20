@@ -1,3 +1,4 @@
+import { validAiRuntimeBrainFault } from "./ai-runtime-brain-fault";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { validAiRuntimeExistingBindings } from "./validate-ai-runtime-existing-bindings";
 import { validAiRuntimeConstructionOrders } from "./validate-ai-runtime-construction-orders";
@@ -21,6 +22,9 @@ export function readAiRuntimePresetRoles(value: unknown) {
       "terrainPreserveFootprints",
       "routeOutages",
       "receiptFault",
+      "brainFault",
+      "proposalOrder",
+      "recoveryStart",
       "provenance",
       "actors",
       "existingActorBindings",
@@ -81,7 +85,12 @@ export function readAiRuntimePresetRoles(value: unknown) {
   if (!validAiRuntimeSourceStocks(value["sourceStocks"], fixtureActorIds)) return null;
   if (!validAiRuntimeHealthStarts(value["healthStarts"], fixtureActorIds)) return null;
   if (!validAiRuntimeRouteOutages(value["routeOutages"], fixtureActorIds)) return null;
-  if (!validAiRuntimeReceiptFault(value["receiptFault"])) return null;
+  if (!validAiRuntimeReceiptFault(value["receiptFault"]) || !validAiRuntimeBrainFault(value["brainFault"])) return null;
+  if (value["recoveryStart"] !== undefined && (typeof value["recoveryStart"] !== "string" ||
+      !["one_worker", "bootstrap", "infeasible"].includes(value["recoveryStart"])))
+    return null;
+  if (value["proposalOrder"] !== undefined && value["proposalOrder"] !== "forward" && value["proposalOrder"] !== "reverse")
+    return null;
   const outages = value["routeOutages"], events = value["events"];
   if (Array.isArray(outages) && Array.isArray(events) && outages.some((outage) => isRecord(outage) &&
       events.some((event) => isRecord(event) && event["id"] === outage["id"]))) return null;

@@ -44,6 +44,24 @@ export function assertAiBrainStateV1(value: unknown): asserts value is AiBrainSt
   assertAiNonNegativeInteger(value.lastCommittedTick, "lastCommittedTick");
   assertAiNonNegativeInteger(value.scheduler.decisionSequence, "scheduler.decisionSequence");
   assertAiNonNegativeInteger(value.scheduler.accumulatorTicks, "scheduler.accumulatorTicks");
+  const faults = value.scheduler.boundaryFaults;
+  if (faults !== undefined) {
+    if (!Array.isArray(faults) || faults.length > 32) throw new Error("invalid_ai_boundary_faults");
+    assertUnique(faults.map((fault) => fault.owner), "scheduler.boundaryFaults.owner");
+    for (const fault of faults) {
+      if (typeof fault.owner !== "string" || !fault.owner.length || typeof fault.reason !== "string" ||
+          fault.reason.length > 128) throw new Error("invalid_ai_boundary_fault");
+      assertAiNonNegativeInteger(fault.failures, "boundaryFault.failures");
+      if (fault.failures < 1 || fault.failures > 16) throw new Error("invalid_ai_boundary_failures");
+      assertAiNonNegativeInteger(fault.lastFailureTick, "boundaryFault.lastFailureTick");
+      assertAiNonNegativeInteger(fault.retryAtTick, "boundaryFault.retryAtTick");
+      if (fault.retryAtTick <= fault.lastFailureTick) throw new Error("invalid_ai_boundary_retry");
+      if (fault.recoveredTick !== null) {
+        assertAiNonNegativeInteger(fault.recoveredTick, "boundaryFault.recoveredTick");
+        if (fault.recoveredTick < fault.lastFailureTick) throw new Error("invalid_ai_boundary_recovery");
+      }
+    }
+  }
   assertAiNonNegativeInteger(value.authority.authorityEpoch, "authority.authorityEpoch");
   if (
     !Number.isSafeInteger(value.authority.processedSequenceWatermark) ||
@@ -56,6 +74,11 @@ export function assertAiBrainStateV1(value: unknown): asserts value is AiBrainSt
     assertDeadline(value.authority.reconciliationDeadline, "authority.reconciliationDeadline");
   }
   for (const reservation of value.reservations) {
+    if (reservation.priority !== undefined) {
+      assertAiNonNegativeInteger(reservation.priority.urgencyClass, "reservation.priority.urgencyClass");
+      assertAiNonNegativeInteger(reservation.priority.utility, "reservation.priority.utility");
+      if (reservation.priority.utility > 1000) throw new Error("invalid_ai_reservation_priority");
+    }
     if (reservation.state.kind === "provisional") {
       assertDeadline(reservation.state.expiresAt, `reservations.${reservation.claimId}.expiresAt`);
     }

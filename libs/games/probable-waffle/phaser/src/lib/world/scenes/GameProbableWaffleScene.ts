@@ -113,7 +113,9 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     const snapshotService = new SnapshotService();
     const stateHashService = new StateHashService();
     const commandBusService = new CommandBusService(this);
-    const simTickService = new SimulationTickService(this);
+    const savedTick = this.baseGameData.gameInstance.gameInstanceMetadata.isStartupLoad()
+      ? this.baseGameData.gameInstance.gameState?.data.simulationTick ?? 0 : 0;
+    const simTickService = new SimulationTickService(this, savedTick);
     const scenarioReferenceRegistry = new IndexedScenarioReferenceRegistry();
     const campaignContentAllowances = new CampaignContentAllowanceService();
 

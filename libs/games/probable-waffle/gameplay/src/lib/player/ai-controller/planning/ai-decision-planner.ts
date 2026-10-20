@@ -1,5 +1,6 @@
+import { selectAiCycleVictim } from "./ai-cycle-victim";
 import { preservesAiFriendlyRally } from "./ai-friendly-rally";
-import { aiDeadline, type AiPlanId } from "../contracts/ai-core-types";
+import { aiDeadline } from "../contracts/ai-core-types";
 import type { AiBrainStateV1, AiStrategyStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiCommandOutcomeV1 } from "../contracts/ai-command-contracts";
 import type { AiIntentDecisionV1, AiIntentV1 } from "../contracts/ai-intent-v1";
@@ -68,26 +69,6 @@ export function reconcileAiDecisionReservations(
   });
 }
 
-function hasCycle(state: AiBrainStateV1, planId: AiPlanId): boolean {
-  const next = new Map<AiPlanId, AiPlanId[]>();
-  for (const edge of state.waitEdges) {
-    if (edge.toPlanId === null) continue;
-    const targets = next.get(edge.fromPlanId) ?? [];
-    targets.push(edge.toPlanId);
-    next.set(edge.fromPlanId, targets);
-  }
-  const pending = [...(next.get(planId) ?? [])];
-  const seen = new Set<AiPlanId>();
-  while (pending.length) {
-    const cursor = pending.pop()!;
-    if (cursor === planId) return true;
-    if (seen.has(cursor)) continue;
-    seen.add(cursor);
-    pending.push(...(next.get(cursor) ?? []));
-  }
-  return false;
-}
-
 /**
  * Applies the Stage 6 fair-lane, stance, reservation and progress-supervision invariants before arbitration.
  * It deliberately does not invent domain actions: Stage 7+ managers supply those proposals through this boundary.
@@ -131,9 +112,7 @@ export function planAiDecisions(
       status: "recovering"
     });
   }
-  const cyclicPlan = [...new Set(previous.waitEdges.map((edge) => edge.fromPlanId))]
-    .sort()
-    .find((planId) => hasCycle(previous, planId));
+  const cyclicPlan = selectAiCycleVictim({ ...previous, reservations, pendingOutcomes: [...previous.pendingOutcomes, ...outcomes] });
   const preDecisions: AiIntentDecisionV1[] = [];
   if (cyclicPlan) {
     const reversible = reservations

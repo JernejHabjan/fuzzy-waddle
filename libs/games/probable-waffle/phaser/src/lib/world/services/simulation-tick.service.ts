@@ -51,7 +51,10 @@ export class SimulationTickService {
     }
   }
 
-  constructor(private readonly scene: Phaser.Scene) {
+  constructor(private readonly scene: Phaser.Scene, initialTick = 0) {
+    if (!Number.isSafeInteger(initialTick) || initialTick < 0) throw new Error("invalid_initial_simulation_tick");
+    // Restore before registering update consumers; absolute deadlines must never see a fresh opening clock.
+    this.currentTick = initialTick;
     scene.events.on(Phaser.Scenes.Events.UPDATE, this.onUpdateFrameNonDeterministic, this);
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
   }

@@ -270,7 +270,9 @@ describe("PureAiBrain", () => {
     });
     const invalid = stopIntent("invalid", Number.NaN, "worker-1", 1);
     const result = new PureAiBrain(profile, [new DummyManager([invalid])]).step(createAiTestObservation(), state, []);
-    expect(result.decisions[0]).toMatchObject({ outcome: "rejected", reason: "invalid_numeric_input" });
+    expect(result.decisions).toEqual([]);
+    expect(result.acceptedIntents).toEqual([]);
+    expect(result.nextState.scheduler.boundaryFaults).toEqual([expect.objectContaining({ owner: "dummy", failures: 1 })]);
   });
 
   it("does not reacquire a live physical claim from the same plan on the next decision", () => {

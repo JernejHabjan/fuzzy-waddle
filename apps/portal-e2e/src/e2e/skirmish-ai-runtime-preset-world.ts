@@ -6,11 +6,16 @@ import type { AiRuntimePresetControlV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-control-v1";
 export interface RuntimePresetWorldV1 {
   readonly fixtureId: string;
+  /** Permutes real emitted proposer batches before arbitration; never supplies fixture intents. */
+  readonly proposalOrder?: "forward" | "reverse";
+  /** Definition-priced scarce recovery, applied only at pre-tick setup. */
+  readonly recoveryStart?: "one_worker" | "bootstrap" | "infeasible";
   readonly requireFactionRoster?: true;
   readonly terrainPatches?: AiRuntimePresetWorldV1["terrainPatches"];
   readonly terrainPreserveFootprints?: true;
   readonly routeOutages?: AiRuntimePresetWorldV1["routeOutages"];
   readonly receiptFault?: AiRuntimePresetWorldV1["receiptFault"];
+  readonly brainFault?: AiRuntimePresetWorldV1["brainFault"];
   readonly actors: readonly {
     readonly fixtureActorId: string;
     readonly actorName: string;

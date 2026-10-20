@@ -109,6 +109,11 @@ export class AiCommandReconciliation {
     };
   }
 
+  /** A mandatory planner/publication failure is visible across saves; it cannot release uncertain command ownership. */
+  markTechnicalFault(): void {
+    if (!this.destroyed) this.health = "technical_fault";
+  }
+
   /** Supplies the Stage 2 pure brain with canonical, runtime-free command outcomes. */
   getBrainOutcomes(matchId: GameInstanceId): AiCommandOutcomeV1[] {
     return adaptGameCommandOutcomesToBrain(

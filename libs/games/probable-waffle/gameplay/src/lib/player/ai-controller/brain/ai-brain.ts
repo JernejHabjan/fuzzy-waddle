@@ -4,8 +4,10 @@ import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
 import { assertAiBrainStateV1, assertAiObservationV1 } from "../contracts/validate-ai-contracts-v1";
-import type { AiManagerProposalV1, AiProposalManagerV1 } from "../planning/ai-manager-proposal";
-import { projectAiDebugSnapshot } from "../debug/project-ai-debug-snapshot";
+import type { AiProposalManagerV1 } from "../planning/ai-manager-proposal";
+import { projectAiDebugSafely } from "../debug/project-ai-debug-safely";
+import { collectAiProposals } from "./ai-optional-boundaries";
+import type { AiBrainBoundaryHooks } from "./ai-brain-boundary-hooks";
 import { planAiDecisions, reconcileAiDecisionReservations } from "../planning/ai-decision-planner";
 import { AI_PROVISIONAL_LEASE_DURATION_TICKS } from "./create-ai-brain-state-v1";
 import { aiDeadline } from "../contracts/ai-core-types";
@@ -64,7 +66,8 @@ function normalizePrimarySquadOwnership(squads: AiBrainStateV1["squads"]): AiBra
 export class PureAiBrain implements AiBrainV1 {
   constructor(
     private readonly profile: AiProfileConfigV1,
-    private readonly managers: readonly AiProposalManagerV1[]
+    private readonly managers: readonly AiProposalManagerV1[],
+    private readonly boundaryHooks?: AiBrainBoundaryHooks
   ) {}
 
   step(
@@ -72,6 +75,7 @@ export class PureAiBrain implements AiBrainV1 {
     previousState: AiBrainStateV1,
     orderedOutcomes: readonly AiCommandOutcomeV1[]
   ): AiBrainStepResultV1 {
+    this.boundaryHooks?.assertAuthority?.(observation);
     assertAiObservationV1(observation);
     assertAiBrainStateV1(previousState);
     if (observation.playerNumber !== previousState.playerNumber || observation.faction !== previousState.faction) {
@@ -96,22 +100,12 @@ export class PureAiBrain implements AiBrainV1 {
       ...previousState,
       reservations: reconcileAiDecisionReservations(previousState, orderedOutcomes, observation.tick)
     };
-    const proposalBatches: AiManagerProposalV1[] = [...this.managers]
-      .sort((left, right) => left.managerId.localeCompare(right.managerId))
-      .map((manager) => {
-        try {
-          return manager.propose(observation, proposalState);
-        } catch (error) {
-          return {
-            managerId: manager.managerId,
-            lane: "optional_infrastructure_tech",
-            evaluated: false,
-            intents: [],
-            reasons: [`technical_fault:${error instanceof Error ? error.name : "unknown"}`]
-          } satisfies AiManagerProposalV1;
-        }
-      });
-    const planning = planAiDecisions(observation, proposalState, orderedOutcomes, proposalBatches, this.profile);
+    const collected = collectAiProposals(this.managers, observation, proposalState,
+      this.profile.decisionIntervalTicks, this.profile.maxIntentProposalsPerStep, this.boundaryHooks);
+    const proposalBatches = collected.batches;
+    const planning = planAiDecisions(observation,
+      { ...proposalState, scheduler: { ...proposalState.scheduler, boundaryFaults: collected.faults } },
+      orderedOutcomes, proposalBatches, this.profile);
     // A proposer may own a persisted projection (opening/demand state) but never
     // mutates the previous brain directly. Stable manager order makes competing
     // narrow projections deterministic; Stage 7 is currently the sole owner.
@@ -145,7 +139,8 @@ export class PureAiBrain implements AiBrainV1 {
           expiresAt: aiDeadline(observation.tick + AI_PROVISIONAL_LEASE_DURATION_TICKS)
         },
         prerequisites: [],
-        createdTick: observation.tick
+        createdTick: observation.tick,
+        priority: { urgencyClass: intent.urgencyClass, utility: intent.utility }
       }))
     );
     const releasedRecoveryClaims = new Set(
@@ -217,7 +212,8 @@ export class PureAiBrain implements AiBrainV1 {
         ...acceptedReservations
       ].sort((left, right) => left.claimId.localeCompare(right.claimId))
     };
-    const debugSnapshot = projectAiDebugSnapshot(observation, nextState, decisions, proposalBatches);
-    return { nextState, acceptedIntents: accepted, decisions, trace: decisions, debugSnapshot };
+    const debug = projectAiDebugSafely(observation, nextState, decisions, proposalBatches,
+      this.profile.decisionIntervalTicks, this.boundaryHooks?.projectDebug);
+    return { nextState: debug.state, acceptedIntents: accepted, decisions, trace: decisions, debugSnapshot: debug.snapshot };
   }
 }

@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { nativeScenarioWorld, tile, melee, producer } from "./native-scenario-worlds.mjs";
 import { control } from "./native-domain-worlds.mjs";
 
@@ -71,6 +72,32 @@ export function nativeAuthorityWorld(id, faction, branch) {
         { kind: "move", worldPosition: tile(5 + i % 4, 5 + Math.floor(i / 4)) }));
     }
     if (branch === "far") world.actors.push(actor("distant-threat-observer", melee(faction), 2, 12, 8));
+  }
+  if (id === "H-11") {
+    world.recoveryStart = branch;
+    world.initialOrders = [];
+    world.actors = world.actors.filter((actor) => actor.fixtureActorId !== "ready-granary" &&
+      !actor.fixtureActorId.startsWith("army-") && actor.fixtureActorId !== "scout-probe" &&
+      (!actor.fixtureActorId.startsWith("worker-") || branch !== "bootstrap" && actor.fixtureActorId === "worker-1"));
+    const expansion = JSON.parse(readFileSync(new URL("./fixtures/expansion-pressure-runtime.json", import.meta.url), "utf8"));
+    world.existingActorBindings.push(...structuredClone(expansion.recipe.variants[0].presetWorld.existingActorBindings
+      .filter((actor) => actor.owner === null)));
+    world.sourceStocks = [...world.existingActorBindings, ...world.actors].filter((actor) => actor.owner === null)
+      .map((actor) => ({ fixtureActorId: actor.fixtureActorId, amount: 0 }));
+    world.resourceStarts = world.resourceStarts.filter((start) => start.playerNumber !== 2);
+  }
+  if (id === "H-12") {
+    world.proposalOrder = branch === "permuted" ? "reverse" : "forward";
+    world.actors = world.actors.filter((actor) => actor.fixtureActorId !== "ready-producer");
+    world.resourceStarts.find((start) => start.playerNumber === 2).amounts =
+      { food: 0, wood: branch === "acyclic" ? 1000 : 240, stone: branch === "acyclic" ? 400 : 50, minerals: 0 };
+    if (branch === "paid_neighbor") world.constructionOrders = [{ fixtureActorId: "paid-neighbor-site",
+      actorName: faction === "Tivara" ? "Olival" : "Emberstone", builderFixtureActorIds: ["worker-7"], position: tile(44, 10) }];
+  }
+  if (id === "H-30") {
+    world.brainFault = { kind: branch, playerNumber: 2, fromTick: 200, throughTick: 800 };
+    world.receiptFault = { id: "fault-reconciliation-control", playerNumber: 2, fromTick: 1, throughTick: 600,
+      maximumCommands: 1, commandKind: "production", holdHistory: true };
   }
   return world;
 }

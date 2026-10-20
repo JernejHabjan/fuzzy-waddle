@@ -1,3 +1,4 @@
+import { evaluateNativeBundles } from "./skirmish-ai-native-bundle-evaluation";
 import { expect, test } from "@playwright/test";
 import type { AiRuntimeProductionCaptureV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
@@ -7,6 +8,8 @@ import { evaluateFortificationAccessWorld } from "./skirmish-ai-fortification-ac
 import { evaluateExpansionWorld } from "./skirmish-ai-expansion-world-evaluation";
 import { evaluateNativeAuthority } from "./skirmish-ai-native-authority-evaluation";
 import { evaluateNativeResourcePriority } from "./skirmish-ai-native-resource-priority-evaluation";
+import { evaluateNativeFault } from "./skirmish-ai-native-fault-evaluation";
+import { evaluateNativeScarceRecovery } from "./skirmish-ai-native-scarce-recovery-evaluation";
 import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
 
 test("transport annotations and empty decision history cannot certify native authority or resource progress", () => {
@@ -20,6 +23,9 @@ test("transport annotations and empty decision history cannot certify native aut
   expect(evaluateNativeResourcePriority("H-14", "harmless", context)).toContain("priorities_native_harmless_scout_role_missing");
   expect(evaluateNativeResourcePriority("H-15", "lethal", context))
     .toContain("priorities_native_lethal_attack_and_effective_survival_missing");
+  expect(evaluateNativeBundles("scarce", context)).toContain("bundles_real_competing_wood_stone_projects_missing");
+  expect(evaluateNativeScarceRecovery("infeasible", context)).toContain("scarce_native_definition_setup_missing");
+  expect(evaluateNativeFault("debug", context)).toContain("fault_real_boundary_injection_missing");
 });
 
 /** Synthetic negative inputs test evidence readers; no native scenario execution is implied. */

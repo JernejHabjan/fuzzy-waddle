@@ -119,6 +119,7 @@ describe("controller progress and admission scenario contracts", () => {
           ownerPlanId: "plan:a",
           createdTick: 0,
           prerequisites: [],
+          priority: { urgencyClass: 1, utility: 900 },
           state: { kind: "provisional", expiresAt: aiDeadline(500) }
         },
         {
@@ -126,6 +127,7 @@ describe("controller progress and admission scenario contracts", () => {
           ownerPlanId: "plan:b",
           createdTick: 0,
           prerequisites: [],
+          priority: { urgencyClass: 1, utility: 900 },
           state: { kind: "provisional", expiresAt: aiDeadline(500) }
         },
         {
@@ -133,6 +135,7 @@ describe("controller progress and admission scenario contracts", () => {
           ownerPlanId: "plan:a",
           createdTick: 0,
           prerequisites: [],
+          priority: { urgencyClass: 1, utility: 900 },
           state: { kind: "applied_spending", appliedTick: 1 }
         }
       ]
@@ -150,10 +153,10 @@ describe("controller progress and admission scenario contracts", () => {
       f.profile
     );
     expect(planned.preDecisions).toContainEqual(
-      expect.objectContaining({ detail: "dependency_cycle_released:claim:a" })
+      expect.objectContaining({ detail: "dependency_cycle_released:claim:b" })
     );
     expect(planned.state.reservations.map((reservation) => reservation.claimId).sort()).toEqual([
-      "claim:b",
+      "claim:a",
       "claim:paid"
     ]);
     expect(permuted.preDecisions).toEqual(planned.preDecisions);

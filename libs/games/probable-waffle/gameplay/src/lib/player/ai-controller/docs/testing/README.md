@@ -44,7 +44,7 @@ The normal evaluation dispatches through apps/portal-e2e/src/e2e/skirmish-ai-nat
 family reader. Full-case branch/faction comparisons live in skirmish-ai-native-scenario-pairs.ts. Physical hits,
 applied effects, paid output, exact service and original-destination arrivals are distinct from selected claims or
 receipts. Missing/truncated history and ambiguous spell/weapon attribution fail; no complete projectile trace is claimed.
-These58 bindings/370 faction-control variants are authored unrun. Native setup, timing and outcome correctness remain
+These61 bindings/394 faction-control variants are authored unrun. Native setup, timing and outcome correctness remain
 unmeasured until an authorized gate. New recipes must keep unavailable premises separate from AI behavior failures.
 
 Only Tivara offers current ships; real boat landing/escort uses that faction. Native hostile ship cases use the existing
@@ -506,6 +506,10 @@ selects original AI requests, retains bounded callbacks, releases them FIFO at f
 Ordinary gameplay has no installed fault policy. Existing root capture records narrow delivery metadata within its budget;
 it does not duplicate heavy world samples for those events. Selected authority/lanes/wait ownership has explicit loss bounds.
 H-06/H-07/H-10 readers join raw native charges/output/history; H-13–15 require player-wide resource exposure,
-actual applied service and relevant native defense. These six bindings/38 variants are authored unrun.
-H-08/H-09/H-11/H-12/H-30/H-31/H-32 stay unbound with exact missing seams in native-scenario-recipes.json.
+actual applied service and relevant native defense. Cumulative nine bindings/62 variants are authored unrun.
+H-11 independently prices/exhausts the complete scarce food chain. H-12 proves native atomic admission prevention
+plus pure cycle recovery under the explicitly approved scope; it reverses real proposal enumeration.
+H-30 uses finite optional/debug/mandatory faults with saved retry debt and original native reconciliation.
+H-08/H-09/H-31/H-32 stay unbound with exact missing seams in native-scenario-recipes.json. H-31's detached save,
+live state and restored clock repairs are prerequisites, not native paired-continuation certification.
 No recipe, test, lint, type check, formatter, build or other validation ran. Model summaries remain at most8192 UTF-8 bytes.

@@ -1,7 +1,8 @@
 import Phaser from "phaser";
 import type { Subscription } from "rxjs";
 import { filter } from "rxjs";
-import { getSceneService } from "../scene-component-helpers";
+import { getSceneService, getSceneSystem } from "../scene-component-helpers";
+import { AiPlayerHandler } from "../../../player/ai-controller/ai-player-handler";
 import { SimulationTickService } from "../simulation-tick.service";
 import { ActorIndexSystem } from "../ActorIndexSystem";
 import { ActorManager } from "../../../data/actor-manager";
@@ -19,6 +20,7 @@ import { RandomService } from "../random.service";
 import { CommandBusService } from "../multiplayer/command-bus.service";
 import { SummonExpiryService } from "../../../entity/systems/summon-expiry.service";
 import { AoeZoneManager } from "../../../entity/systems/aoe-zone-manager";
+import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 
 /** Documents the following declaration and its compatibility contract. */
 const SNAPSHOT_REFRESH_INTERVAL_MS = 60_000;
@@ -135,13 +137,17 @@ export class SnapshotService {
       const num = player.playerNumber;
       if (num !== undefined) {
         playerStates[num] = structuredClone(player.playerState.data);
+        const ai = getSceneSystem(scene, AiPlayerHandler)?.getAiPlayerController(num);
+        if (ai) playerStates[num].aiBehaviorTreeState = structuredClone(ai.getSaveState());
         playerSelectionGroups[num] = structuredClone(player.playerController.data.selectionGroups ?? []);
       }
     }
 
     // --- Research ---
     const rawResearch = scene.baseGameData.gameInstance.gameState?.data.playerResearch;
-    const playerResearch = rawResearch ? structuredClone(rawResearch) : undefined;
+    const liveResearch = getSceneService(scene, TechTreeService)?.getResearchData();
+    const playerResearch = liveResearch ? Object.fromEntries([...liveResearch].map(([owner, types]) => [owner, [...types]]))
+      : rawResearch ? structuredClone(rawResearch) : undefined;
     const rawCampaignMission = scene.baseGameData.gameInstance.gameState?.data.campaignMission;
     const campaignMission = rawCampaignMission ? structuredClone(rawCampaignMission) : undefined;
     const randomState = getSceneService(scene, RandomService)?.getState();

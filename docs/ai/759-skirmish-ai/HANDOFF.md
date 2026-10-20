@@ -3,39 +3,39 @@
 Default resume page: read this first, then only the selected package in [REMAINING-WORK.md](REMAINING-WORK.md).
 Do not load the full plan directory or archive on startup.
 
-## Current cursor — command/resource authoring partly bound, 2026-10-20
+## Current cursor — recovery/fault authoring, save integration still open, 2026-10-20
 
-- Worktree /home/jernej/.codex/worktrees/7977/fuzzy-waddle; branch feature/759-skirmish-ai.
-  Publication base c681f7c94d489e1e2788039aaf73b5684a4ac53b; verify containing commit and remote on resume.
-  Preserve unrelated run XML and ALL_VISIBLE fog edits. No delegation or model switch occurred.
-- User selected13 cases: H-06–15/H-30–32. Six now register38 faction/control variants:
-  H-06/H-07/H-10/H-13/H-14/H-15. Selected registration6/13 (46.2%);7/13 unbound (53.8%).
-  This is a partial authoring batch, not thirteen completed scenarios or passing gameplay.
-- Source repairs: missing receipts no longer fabricate terminal failure/free uncertain work; full pending capacity
-  backpressures new admission instead of evicting obligations. Reconciliation consults actual shared history after
-  two decision intervals, including outputs already destroyed. Recent history now retains512 outcomes so a128-command
-  drain fits. Lane consideration and accepted service differ; dependency cycles follow every outgoing edge and exclude
-  acyclic feeders. Disposed controllers reject restore/reactivation and retained receipt callbacks cannot mutate them.
-- Consumer-only receipt controls leave raw shared application untouched, release FIFO at fixed simulation ticks,
-  bound retained callbacks/evidence and detach on shutdown. Native readers require original identities, paid effects,
-  delivered income, actual backlog boundaries and relevant defense. Missing premises fail; no fake receipts/AI state.
-- Supported runtime89/116 (76.7%) registered;27/116 (23.3%) unbound, plus4 deferred island rows.
-  Pure111/111 registered. Native factory58 bindings/370 variants and21 partial owner worlds remain unrun.
-  No overall AI completion percentage. Shared repairs invalidate affected retained acceptance until the later gate.
-- **Unbound:** H-08/H-09 need real peer/epoch/compaction boundaries; H-11 needs a definition-derived complete scarce
-  recovery chain and independently exhausted-source control; H-12 needs native competing claims, original victim priority
-  and reversed real proposal enumeration; H-30 needs optional/debug fault cooldown controls; H-31 needs real save/reload;
-  H-32 needs same-browser next-match/host replacement. Exact owners/blockers remain in native-scenario-recipes.json.
-  Prior H-05/H-20/H-21/H-23 recovery gaps also remain open; this batch does not erase them.
+- Worktree /home/jernej/.codex/worktrees/skirmish-authority-recovery/fuzzy-waddle;
+  branch feature/759-skirmish-ai. Publication base 80ded317d129e57fb0a42aa6cb1a60404efc0cba; verify containing commit and remote on resume.
+  Main checkout has unrelated issue-template edits; leave those untouched. Actual model/effort unknown;
+  no delegation or model switch occurred.
+- Selected H-11/H-12/H-30/H-31: three native registrations/24 faction-control variants authored, unrun;
+  3/4 registered (75%), H-31 remains1/4 unbound (25%). Cumulative selected13:9/13 registered (69.2%),
+  4/13 unbound (30.8%): H-08/H-09/H-31/H-32. These are coverage counts, not gameplay passes.
+- H-11 reserves the missing definition-priced renewable-food chain before extra workers and allows one worker
+  to start it. Native setups independently price the chain, exhaust every source and cover legal bootstrap/infeasibility.
+- H-12 scope explicitly approved by user: prove native whole-bundle admission prevents partial-hold deadlock,
+  plus pure deterministic recovery of persisted cycles. Original admission priority selects only a fully provisional
+  victim; paid/dispatched/lifecycle evidence protects the whole plan. Real proposal reversal and paid/foreign controls authored.
+- H-30 quarantines malformed/throwing optional batches with saved retry backoff; debug failure preserves accepted work.
+  Mandatory failures stay explicit. Finite opt-in native faults, original receipt reconciliation and recovery readers authored.
+- H-31 source repairs freeze a detached save before thumbnail/dialog/storage awaits, restore simulation time before
+  actor/controller creation and capture live AI/research/authority continuations. Admission reads live authority before
+  the decision and stores its post-dispatch frontier. Codec/clock/live-state controls authored, not native continuation proof.
+- Supported runtime92/116 (79.3%) registered;24/116 (20.7%) unbound, plus4 deferred island rows.
+  Pure111/111 registered. Native factory61 bindings/394 variants and21 partial owner worlds remain unrun.
+  Overall AI completion percentage unavailable. Prior H-05/H-20/H-21/H-23 recovery gaps remain open.
 - **No execution:** no recipes/tests/lint/types/formatters/builds/browser/server/doctor/context/dedicated validators.
-  Only source/diff review and fixture/catalog --write authoring. Model summaries remain capped at8192 UTF-8 bytes;
-  generated fixtures/raw reports must not be loaded wholesale. Machinery necessity review remains last overall.
-- **Next:** finish H-11/H-12 together at the real resource/proposal owners, using definition-priced chains and native
-  useful work to avoid circular recovery and deterministic victim errors. Then bind H-30 optional/debug faults together
-  with retained-scene H-32 controls; connect H-08/H-09/H-31 to real peer/save boundaries as one integration batch.
-  Reuse the receipt seam for prior H-05; keep topology/clearance/cargo requirements explicit. Execution stays deferred.
-- Report done/why, registration percentages, unrun limitations and next/why in short bullets. Commit/push only owned paths,
-  verify remote equality and pause. Recommendation: Sol6.1/high for the unresolved causal/integration design.
+  Source/diff review and fixture/catalog --write authoring only. Model summaries capped8192 UTF-8 bytes;
+  do not load generated fixtures/raw reports wholesale. Machinery necessity review stays last overall.
+- **Next:** bind H-08/H-09/H-31 together at real peer/epoch/outbound-tail/save boundaries, so original pending AI work
+  survives before/during/after-apply saves and compaction without duplicate charges/effects. Single-player synchronous
+  apply and codec round trips cannot stand in for this integration. Then H-32 same-realm next-match/host replacement.
+  No fake AI snapshots, manual authority edits or human-only command receipts may substitute.
+- Source-structure gate remains deferred: the changed large game-instance client service has a hash-baselined
+  legacy size violation. No baseline was refreshed; resolve that owner explicitly before claiming a clean lint gate.
+- Report done/why, exact registration percentages, unrun limitations and next/why. Commit/push owned paths,
+  verify remote equality and pause. Recommendation: Sol6.1/high for the unresolved peer/save integration design.
 
 ## What “continue” means
 
@@ -101,7 +101,7 @@ Keep the report self-contained and concise. A documentation-only update reports 
 gameplay progress unchanged. The execution plan links to this format rather than maintaining a second template.
 
 Registration coverage: pure **111/111 = 100% registered / 0% remaining**; supported runtime
-**89/116 = 76.7% registered / 23.3% remaining**, excluding four deferred runtime rows. These are not overall AI completion.
+**92/116 = 79.3% registered / 20.7% remaining**, excluding four deferred runtime rows. These are not overall AI completion.
 Reconcile behavior evidence per selected package; do not invent a global completion percentage.
 
 ## End-of-gate machinery necessity review

@@ -4,9 +4,9 @@ import { test } from "node:test";
 import { nativeScenarioBindings, nativeScenarioFixture } from "./native-scenario-registration.mjs";
 import { validNativeScenarioFixture } from "./skirmish-runtime-native-scenario-fixture.mjs";
 
-test("all fifty-eight native bindings retain their full branches and original acceptance obligations", () => {
+test("all sixty-one native bindings retain their full branches and original acceptance obligations", () => {
   const ids = Object.keys(nativeScenarioBindings.cases);
-  assert.equal(ids.length, 58);
+  assert.equal(ids.length, 61);
   const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish-v1.json", import.meta.url)));
   for (const id of ids) {
     const row = manifest.rows.find((row) => row.id === id);
@@ -22,6 +22,12 @@ test("all fifty-eight native bindings retain their full branches and original ac
 
 test("authority and priority bindings reject erased consumer faults and altered native premises", () => {
   for (const [id, branch, mutate] of [
+    ["H-12", "permuted", (world) => world.proposalOrder = "forward"],
+    ["H-12", "paid_neighbor", (world) => world.constructionOrders = []],
+    ["H-11", "infeasible", (world) => world.sourceStocks = []],
+    ["H-11", "bootstrap", (world) => delete world.recoveryStart],
+    ["H-30", "debug", (world) => delete world.brainFault],
+    ["H-30", "mandatory", (world) => world.brainFault.kind = "throw"],
     ["H-06", "rejected", (world) => delete world.receiptFault.contendQueue],
     ["H-07", "destroyed", (world) => delete world.receiptFault.destroyOutput],
     ["H-10", "below_capacity", (world) => world.receiptFault.maximumCommands++],
@@ -42,7 +48,7 @@ test("authority and priority bindings reject erased consumer faults and altered 
 
 test("missing real peer, save, chain, proposal-order and retained-scene premises remain explicit", () => {
   const drafts = JSON.parse(readFileSync(new URL("./fixtures/native-scenario-recipes.json", import.meta.url)));
-  for (const id of ["H-08", "H-09", "H-11", "H-12", "H-30", "H-31", "H-32"]) {
+  for (const id of ["H-08", "H-09", "H-31", "H-32"]) {
     assert.equal(Object.hasOwn(nativeScenarioBindings.cases, id), false);
     const entry = drafts.cases.find((value) => value.scenarioId === id);
     assert.ok(entry.executionBlockers.some((key) => key.startsWith("authority_binding_")));

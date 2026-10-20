@@ -1,3 +1,4 @@
+import { createAiRuntimeBrainHooks } from "./testing/create-ai-runtime-brain-hooks";
 import {
   type AiCommandReconciliationStateData,
   type AIBehaviorTreeStateData,
@@ -86,7 +87,7 @@ export class PlayerAiController {
           new AiRecoveryManager(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
           new AiTacticsManager(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
           new AiAdaptationManager(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog())
-        ])
+        ], createAiRuntimeBrainHooks(scene, player.playerNumber))
       : undefined;
     this.blackboard = new PlayerAiBlackboard(scene);
     const commandBus = getSceneService(scene, CommandBusService);
@@ -364,7 +365,16 @@ export class PlayerAiController {
     const bridge = this.getBrainCommandBridgeSnapshot();
     if (!observation || !this.brainState || !this.pureBrain) return;
     beginAiResourceDecision(this.scene, this.player.playerNumber, observation);
-    const result = this.pureBrain.step(observation, this.brainState, bridge?.outcomes ?? []);
+    // Outcomes can arrive between decisions or synchronously during dispatch. Admission must consume the live frontier.
+    const previous = { ...this.brainState, authority: bridge?.authority ?? this.brainState.authority };
+    let result: AiBrainStepResultV1;
+    try {
+      result = this.pureBrain.step(observation, previous, bridge?.outcomes ?? []);
+    } catch (error) {
+      this.commandReconciliation?.markTechnicalFault();
+      this.brainState = { ...this.brainState, authority: { ...this.brainState.authority, health: "technical_fault" } };
+      throw error;
+    }
     this.dispatchAcceptedIntents(result.acceptedIntents, {
       result,
       authority: bridge?.authority ?? result.nextState.authority,
@@ -379,7 +389,7 @@ export class PlayerAiController {
     this.brainState = structuredClone(
       canonicalizeAiBrainStateV1({
         ...result.nextState,
-        authority: bridge?.authority ?? result.nextState.authority
+        authority: this.getBrainCommandBridgeSnapshot()?.authority ?? result.nextState.authority
       })
     );
     this.latestBrainDebug = structuredClone(result.debugSnapshot);
