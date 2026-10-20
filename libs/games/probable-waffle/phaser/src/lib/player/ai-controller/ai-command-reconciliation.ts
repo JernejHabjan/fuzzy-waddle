@@ -4,6 +4,7 @@ import type { GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
 import type { Subscription } from "rxjs";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { adaptCommandAuthorityToBrain, adaptGameCommandOutcomesToBrain } from "./ai-command-outcome-adapter";
+import { deliverAiCommandOutcome, readAiCommandOutcomeHistory } from "./ai-command-outcome-delivery";
 
 type PendingOutcome = {
   dispatched: GameCommandOutcome;
@@ -19,7 +20,7 @@ type PendingOutcome = {
  */
 export class AiCommandReconciliation {
   private static readonly MAX_PENDING = 128;
-  private static readonly MAX_RECENT_OUTCOMES = 96;
+  private static readonly MAX_RECENT_OUTCOMES = 512;
   private static readonly LOST_OUTCOME_TICKS = 900;
   private static readonly LOST_ACTIVE_OUTCOME_TICKS = 7200;
   private readonly pending = new Map<string, PendingOutcome>();
@@ -28,22 +29,42 @@ export class AiCommandReconciliation {
   private processedSequenceWatermark = -1;
   private health: AiCommandReconciliationStateData["health"] = "healthy";
   private outcomeSubscription?: Subscription;
+  private destroyed = false;
 
   constructor(
     private readonly playerNumber: number,
-    private readonly commandBus: CommandBusService
+    private readonly commandBus: CommandBusService,
+    private readonly decisionIntervalTicks = 20
   ) {
+    if (!Number.isSafeInteger(decisionIntervalTicks) || decisionIntervalTicks < 1)
+      throw new Error("ai_reconciliation_invalid_cadence");
     this.authorityEpoch = commandBus.getAuthorityState().authorityEpoch;
-    this.outcomeSubscription = commandBus.commandOutcome$.subscribe((outcome) => this.observeOutcome(outcome));
+    this.outcomeSubscription = commandBus.commandOutcome$.subscribe((outcome) => {
+      if (outcome.playerNumber === this.playerNumber)
+        deliverAiCommandOutcome(commandBus, outcome, (value) => this.observeOutcome(value));
+    });
   }
 
   observeTick(tick: number): void {
-    const currentAuthorityEpoch = this.commandBus.getAuthorityState().authorityEpoch;
+    if (this.destroyed) return;
+    const authority = this.commandBus.getAuthorityState();
+    const currentAuthorityEpoch = authority.authorityEpoch;
     if (currentAuthorityEpoch > this.authorityEpoch) {
       this.authorityEpoch = currentAuthorityEpoch;
       this.pending.clear();
       this.processedSequenceWatermark = -1;
       this.health = "reconciling";
+    }
+    // Query the existing authoritative lifecycle checkpoint, not the present output actor. A completed output may be gone.
+    if (tick % this.decisionIntervalTicks === 0 && [...this.pending.values()].some((entry) =>
+      tick - entry.dispatched.tick >= 2 * this.decisionIntervalTicks)) {
+      const history = readAiCommandOutcomeHistory(this.commandBus, this.playerNumber, authority.outcomes);
+      for (const outcome of history ?? []) {
+        const pending = this.pending.get(outcome.commandId);
+        if (pending && outcome.playerNumber === this.playerNumber && outcome.authorityEpoch === this.authorityEpoch &&
+            outcome.sequence === pending.dispatched.sequence && outcome.commitmentKey === pending.dispatched.commitmentKey &&
+            outcome.kind !== "dispatched") this.observeOutcome(outcome);
+      }
     }
     const expired = [...this.pending.values()]
       .filter((entry) => {
@@ -57,15 +78,9 @@ export class AiCommandReconciliation {
           left.dispatched.sequence - right.dispatched.sequence ||
           left.dispatched.commandId.localeCompare(right.dispatched.commandId)
       );
-    for (const entry of expired) {
+    if (expired.length) {
       this.health = "technical_fault";
-      this.commandBus.reportPersistedOutcome({
-        ...entry.dispatched,
-        kind: "failed",
-        reason: "lost_outcome",
-        tick,
-        detail: "terminal_outcome_timeout"
-      });
+      // A timeout diagnoses uncertainty. It cannot manufacture a terminal outcome or release an unknown paid effect.
     }
     if (this.pending.size > 0 && this.health === "healthy") this.health = "reconciling";
     if (this.pending.size === 0 && this.health === "reconciling") this.health = "healthy";
@@ -127,6 +142,7 @@ export class AiCommandReconciliation {
   }
 
   setState(state: AiCommandReconciliationStateData, currentTick: number): void {
+    if (this.destroyed) throw new Error("ai_reconciliation_disposed");
     const currentAuthorityEpoch = this.commandBus.getAuthorityState().authorityEpoch;
     if (state.authorityEpoch < currentAuthorityEpoch) {
       this.authorityEpoch = currentAuthorityEpoch;
@@ -173,10 +189,12 @@ export class AiCommandReconciliation {
   }
 
   destroy(): void {
+    this.destroyed = true;
     this.outcomeSubscription?.unsubscribe();
   }
 
   private observeOutcome(outcome: GameCommandOutcome): void {
+    if (this.destroyed) return;
     if (outcome.playerNumber !== this.playerNumber) return;
     if (outcome.authorityEpoch < this.authorityEpoch) return;
     if (outcome.authorityEpoch > this.authorityEpoch) {
@@ -185,6 +203,13 @@ export class AiCommandReconciliation {
       this.processedSequenceWatermark = -1;
       this.health = "reconciling";
     }
+    if (outcome.kind === "dispatched" && !this.pending.has(outcome.commandId) &&
+        outcome.sequence <= this.processedSequenceWatermark) return;
+    if (this.recentOutcomes.some((entry) => entry.commandId === outcome.commandId && entry.kind === outcome.kind &&
+      entry.tick === outcome.tick && entry.authorityEpoch === outcome.authorityEpoch &&
+      entry.sequence === outcome.sequence && entry.reason === outcome.reason &&
+      JSON.stringify(entry.actorIds) === JSON.stringify(outcome.actorIds) &&
+      JSON.stringify(entry.worldLinkIds) === JSON.stringify(outcome.worldLinkIds))) return;
     this.recentOutcomes.push(structuredClone(outcome));
     if (this.recentOutcomes.length > AiCommandReconciliation.MAX_RECENT_OUTCOMES) {
       this.recentOutcomes.splice(0, this.recentOutcomes.length - AiCommandReconciliation.MAX_RECENT_OUTCOMES);
@@ -197,7 +222,7 @@ export class AiCommandReconciliation {
         terminalActorIds: new Set()
       });
       if (this.health !== "technical_fault") this.health = "reconciling";
-      this.enforcePendingBound(outcome.tick);
+      this.enforcePendingBound();
       return;
     }
     if (outcome.kind === "applied" || outcome.kind === "active") {
@@ -233,21 +258,9 @@ export class AiCommandReconciliation {
     );
   }
 
-  private enforcePendingBound(tick: number): void {
+  private enforcePendingBound(): void {
     if (this.pending.size <= AiCommandReconciliation.MAX_PENDING) return;
-    const overflow = [...this.pending.values()].sort(
-      (left, right) =>
-        left.dispatched.sequence - right.dispatched.sequence ||
-        left.dispatched.commandId.localeCompare(right.dispatched.commandId)
-    )[0];
-    if (!overflow) return;
+    // Admission backpressures new work. Already dispatched obligations survive even an unexpected over-capacity callback.
     this.health = "technical_fault";
-    this.commandBus.reportPersistedOutcome({
-      ...overflow.dispatched,
-      kind: "failed",
-      reason: "outcome_backlog_overflow",
-      tick,
-      detail: `pending_limit_${AiCommandReconciliation.MAX_PENDING}`
-    });
   }
 }

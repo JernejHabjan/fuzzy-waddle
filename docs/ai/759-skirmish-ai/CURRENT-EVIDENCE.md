@@ -2,6 +2,66 @@
 
 [HANDOFF.md](HANDOFF.md) owns continuation. Read this current batch; older sections retain historical evidence.
 
+## Command/resource authoring — six bound, seven incomplete, 2026-10-20
+
+Publication base c681f7c94d489e1e2788039aaf73b5684a4ac53b; same worktree/branch as HANDOFF. No delegation/model change.
+Source/diff review and fixture/catalog authoring only. No recipe/test/lint/type/format/build/browser/server/doctor/context
+or dedicated validator ran. The catalog --write authoring initially found incorrect manifest references introduced by
+an over-broad text edit; those references were corrected within their original rows and catalog authoring then completed.
+This does not constitute executed gameplay or test evidence.
+
+### Thirteen selected obligations — source-only disposition
+
+| Obligation | Authored change / purpose | Registration and missing evidence |
+| --- | --- | --- |
+| H-06 delayed/rejected/late receipt | Consumer-only hold/release; real queue contention via ordinary shared production; actual checkpoint reconciliation after two decision intervals | Registered unrun,6 variants; original shared charge/completion, identity retention and no optimistic retry required |
+| H-07 output already absent | Destroy original completed actor through native damage at next simulation tick; postpone checkpoint while loss is pending, retain original history | Registered unrun,4 variants; original death-before-reconciliation and living control required. Legal consumption conditional on actual product support, not invented |
+| H-08 epoch/cancellation race | Existing epoch fence and disposed-consumer guard retained; reusable original-receipt seam authored | Unbound; real cancellation/host-promotion race and canonical peer outcomes missing |
+| H-09 dedup retention/restore | No arbitrary authority-state edits or fake save | Unbound; acknowledged compaction pressure, native save/restore and old/unresolved redelivery driver missing |
+| H-10 backlog capacity | Arbiter admission backpressure, no eviction/synthetic terminal failure,512 recent outcomes for128-command drain; unavailable history control and timed FIFO release | Registered unrun,8 variants; actual127/128 pending identities, attempted over-admission and native drain/income required. Resume branch restores at1201 versus1801 |
+| H-11 scarce recovery | Missing complete-chain and independent source-exhaustion requirements recorded rather than promoting a zero-bank approximation | Unbound; definition-priced complete cheapest chain, legal bootstrap and physically infeasible control missing |
+| H-12 dependency bundles | Follow all outgoing dependencies, detect actual membership rather than a feeder into another plan's cycle; reversed graph and acyclic controls authored | Unbound; real competing claims, original lowest-priority victim, paid/foreign neighbors and reversed proposer enumeration missing |
+| H-13 optional budgets | Four real bases, paid ordinary fifth-base construction, scarce/executable/essential branches; per-resource denominator reconstructed from original selected claim tick/owner | Registered unrun,8 variants; optional proposals must exist, waiting exposure stay bounded and real useful paid work complete |
+| H-14 lane fairness | Consideration no longer implies service; accepted commands update service tick; actual applied outcome within eligible window required | Registered unrun,6 variants; native harmless sightings, scouting/income, scarcity blocker and emergency decay required |
+| H-15 genuine emergency | Native lethal/withdrawn/distant force; delayed receipt and unavailable checkpoint during attack; relevant native hits rather than arbitrary combat | Registered unrun,6 variants; fresh observation and actual original receipt reconciliation while survival remains effective |
+| H-30 optional faults | Exact remaining proposer/debug fault and retry/cooldown requirements recorded | Unbound; scoped real throw/NaN/invalid-cost/debug controls and mandatory-authority negative control missing |
+| H-31 save continuation | Existing save-owned cadence/queue identities preserved; no counterfeit JSON restore | Unbound; ordinary codec/reload, unchanged input continuation and full sharedQueue/RNG/debt paired comparison missing |
+| H-32 clean next match | Shutdown fences policy/queued work before cleanup; restore after disposal throws; retained old receipt callback cannot mutate disposed reconciliation | Unbound; same-realm UI restart, native second-match controller count and real host-replacement controls missing |
+
+### Omission Audit — source review only
+
+1. All13 IDs have a disposition; six actual manifest bindings retain original outcomes, forbidden predicates,
+   branches/ceilings and both factions. Seven keep fixture:null and explicit named missing-owner requirements.
+   Previous H-05/H-20/H-21/H-23 gaps remain; a reusable receipt seam is not H-05 atomic-release proof.
+2. Shared application is untouched by consumer faults. Raw native bus/charge/completion/death remain independent;
+   only matching original AI effect receipts are held. Other players do not enter that consumer policy.
+   Raw late receipts retain original epoch/sequence/identity; new effect IDs for uncertain original demand fail.
+3. Installer caps128 selected commands,512 callbacks and1024 narrow metadata events, releases at fixed simulation ticks,
+   unregisters hooks/listeners on expiry/shutdown and drops shutdown-held callbacks. No fault policy is installed in ordinary play.
+   Existing root fact limits are unchanged; transport metadata does not trigger full world samples.
+4. Selected mission capture adds complete bounded authority/pending/wait/lane/scheduler/query slices. Loss returns null;
+   no convincing truncation. Model summaries remain capped8192 UTF-8 bytes. No raw fixture/report scan is model input.
+5. Construction evidence now joins stripped runtime effect identity to prefixed selected intent identity, matching the real
+   dispatch adapter. This repairs a source-only mismatch; it does not validate earlier construction scenarios.
+6. Authored unrun controls cover preserved uncertainty, checkpoint availability, late callback disposal, player isolation,
+  128-terminal drain, admission slots, lane consideration/service, branching cycles and acyclic convergence,
+   strict receipt options, installer expiry/shutdown, fixture mutations and reader negatives. No baseline is refreshed.
+
+### Final Closure Audit — separate source/publication review
+
+- Current selected registration6/13 (46.2%),7/13 (53.8%) remain unbound. This is explicitly partial implementation;
+  full thirteen-case acceptance is not closed. Runtime total89/116 (76.7%),27 unbound (23.3%); pure111/111 registered.
+  Native factory58 bindings/370 faction-control variants plus21 partial owner worlds remain unrun.
+- Contracts, parser, setup timing, native owners, capture cleanup, reader dispatch, manifest/drafts/factory and documentation
+  were reviewed together. Missing physical premises must fail at the later gate; geometry/timing/capacity is unmeasured.
+  Shared repairs require affected-source acceptance; historical production/economy passes are historical evidence only.
+- Source-only publication boundary: stage exact owned paths, exclude unrelated run XML/ALL_VISIBLE edits, commit/push
+  with hooks disabled to honor execution deferral, verify exact remote SHA and pause. Publication is not test success.
+- Next grouped authoring: H-11/H-12 real recovery chains and proposal-order/priority ownership. Then H-30/H-32 native
+  fault/restart and H-08/H-09/H-31 real peer/save integration; reuse receipt control for H-05 without skipping its claims.
+  Keep existing topology/clearance/cargo and remaining supported families on the roadmap. Machinery review stays last.
+  Recommended next model/effort: Sol6.1/high for unresolved causal integration design; no settings changed.
+
 ## Recovery/liveness authoring — eight bound, four incomplete, 2026-10-19
 
 Publication base f1c14ffd8fcffbf5da239de5b3f9372f5cbc4b29; same branch/worktree. Actual model/effort unknown.

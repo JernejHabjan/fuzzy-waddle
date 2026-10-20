@@ -115,15 +115,15 @@
     },
     "decision_history": {
       "owner": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-runtime-scenario-bridge.ts",
-      "missing": "Bounded selected squads, strategy, knowledge, support and fortification slices are authored and joined to native effects in the30 registrations. Remaining recovery/lifecycle cases still need original cause/deadline/claim continuation assertions; summary labels alone cannot prove them."
+      "missing": "Bounded selected mission/recovery/authority/lane slices exist. Remaining cases must bind original cause/deadline/claim continuation, real snapshot/restart boundaries and independent native effects; summary labels alone cannot prove them."
     },
     "lane_history": {
       "owner": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-runtime-scenario-bridge.ts",
-      "missing": "Capture per-lane consideration/service, budget conflict and per-resource reservation denominator at exact decisions; connect service to real application rather than asserting every lane dispatches under scarcity."
+      "missing": "Complete bounded consideration, accepted-service, wait-edge and authority slices now exist at selected decisions. Remaining resource/recovery cases must establish their original per-resource ownership and native useful effects; consideration or accepted service alone is not applied work."
     },
     "receipt_fault": {
-      "owner": "libs/games/probable-waffle/phaser/src/lib/world/services/multiplayer/command-bus.service.ts",
-      "missing": "The recipe DSL has no addressed delay/duplicate/reorder/receipt-loss or dedup-pressure hook. Use the existing shared transport/application seam, preserve original effect/epoch/sequence and dispose every interception."
+      "owner": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/install-ai-runtime-receipt-fault.ts",
+      "missing": "Consumer-only original-AI receipt hold/release and history unavailability now exist. Remaining cases must bind their actual cancellation/epoch/peer/save boundaries and native claim lifecycle; no general old-command transport reorder or dedup-pressure driver is supplied."
     },
     "multiplayer_boundary": {
       "owner": "apps/portal-e2e/src/e2e/skirmish-ai-multiplayer-host-transfer.spec.ts",
@@ -163,7 +163,7 @@
     },
     "recovery_binding_h_05": {
       "owner": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/ai-command-reconciliation.ts",
-      "missing": "Actual AI-reconciliation receipt hold/release pinned to an original native effect, with independent shared-application capture. A human preset scheduled command cannot establish uncertain AI ownership."
+      "missing": "Reuse the authored consumer-only original AI receipt hold/release and independent raw shared application. Still bind disappearing optional purpose, safe atomic claim release, already-paid/uncertain ownership and native actor reassignment in all original H-05 branches; a human scheduled command is insufficient."
     },
     "recovery_binding_h_20": {
       "owner": "apps/portal-e2e/src/e2e/skirmish-ai-runtime-variant-runner.ts",
@@ -176,20 +176,42 @@
     "recovery_binding_h_23": {
       "owner": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-runtime-preset-world-v1.ts",
       "missing": "Native AI-owned indispensable transport-worker duty and original departure deadline, contrasted with optional late/lost support. Human-scripted board/unload membership is available but cannot establish AI mission ownership; Skaduwee has no ship producer."
+    },
+    "authority_binding_h_08": {
+      "owner": "apps/portal-e2e/src/e2e/skirmish-ai-native-scenario-evaluation.ts",
+      "missing": "epoch and cancellation races: The consumer receipt hook exists. Still bind normal cancellation and real host promotion, deliver the original old command/callback across that boundary, and compare actual peer outcomes."
+    },
+    "authority_binding_h_09": {
+      "owner": "apps/portal-e2e/src/e2e/skirmish-ai-native-scenario-evaluation.ts",
+      "missing": "dedup compaction and restore: Drive actual acknowledged retention pressure and the safe watermark, restore via real save/load, then redeliver original and unresolved command identities on real clients. No direct authority-state mutation."
+    },
+    "authority_binding_h_11": {
+      "owner": "tools/ai/native-authority-worlds.mjs",
+      "missing": "scarce recovery-chain premises: Bind definition-derived cheapest complete worker/food/field chains, zero-worker legal bootstrap and independent native exhaustion of every reachable source for the infeasible control. A zero initial bank alone cannot prove infeasibility."
+    },
+    "authority_binding_h_12": {
+      "owner": "tools/ai/native-authority-worlds.mjs",
+      "missing": "deterministic reversible victim: The multi-edge cycle traversal is repaired. Still bind actual competing wood/stone claims and reverse proposal enumeration at the real proposer boundary, including native paid/foreign neighbors and original victim priority evidence. Reversing actor placement is insufficient."
+    },
+    "authority_binding_h_30": {
+      "owner": "apps/portal-e2e/src/e2e/skirmish-ai-native-scenario-evaluation.ts",
+      "missing": "optional fault isolation: Bind scoped real proposer throw/NaN/malformed capability and debug projection failures with bounded retry/cooldown and a mandatory-authority negative control; retain native order continuity."
+    },
+    "authority_binding_h_31": {
+      "owner": "apps/portal-e2e/src/e2e/skirmish-ai-native-scenario-evaluation.ts",
+      "missing": "real snapshot continuation: Connect the ordinary save codec and reload driver at completed decision boundaries, with unchanged RNG/debt/claims/queue execution metadata and an uninterrupted paired native control. Copying JSON is not restore."
+    },
+    "authority_binding_h_32": {
+      "owner": "apps/portal-e2e/src/e2e/skirmish-ai-native-scenario-evaluation.ts",
+      "missing": "same-realm scene restart: Disposed controller and retained receipt callbacks are fenced in source. Still retain one browser realm through ordinary scene restart and real host replacement, deliver old work afterwards, and count actual current controllers/native second-match effects. Fresh contexts cannot certify cleanup."
     }
   },
   "scenarioIds": [
     "H-05",
-    "H-06",
-    "H-07",
     "H-08",
     "H-09",
-    "H-10",
     "H-11",
     "H-12",
-    "H-13",
-    "H-14",
-    "H-15",
     "H-20",
     "H-21",
     "H-23",
@@ -273,112 +295,6 @@
       "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
     },
     {
-      "scenarioId": "H-06",
-      "status": "authored_not_executed",
-      "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
-      "requiredOutcome": "Same effect identity reconciles to actual state exactly once; no duplicate/refund assumption",
-      "world": "multiplayer",
-      "maximumTick": 2000,
-      "setup": [
-        "Admit a normally priced build/train effect with a stable command/effect identity",
-        "Retain authoritative application and deliberately withhold only its outcome delivery to the AI"
-      ],
-      "actions": [
-        "Let the native effect apply once",
-        "Delay the receipt for two decision intervals, permit authoritative reconciliation, then release the original receipt"
-      ],
-      "measurements": [
-        "Real command application/charge/site or queue identity and processed-sequence history",
-        "Pending effect identity and reconciliation requests"
-      ],
-      "required": [
-        "Same effect reconciles to authoritative application exactly once",
-        "Original later receipt does not create another charge or output"
-      ],
-      "forbidden": [
-        "Invented refund/nonapplication from absent receipt",
-        "New effect ID used for optimistic retry"
-      ],
-      "branches": [
-        "Applied receipt withheld",
-        "Authoritatively rejected control",
-        "Receipt arrives after reconciliation"
-      ],
-      "executionBlockers": [
-        "native_case_binding",
-        "receipt_fault",
-        "multiplayer_boundary"
-      ],
-      "reuse": [
-        "tools/ai/fixtures/controller-contract-scenarios.json"
-      ],
-      "checkpointTicks": [
-        0,
-        20,
-        200,
-        400,
-        800,
-        1200,
-        1600,
-        2000
-      ],
-      "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
-    },
-    {
-      "scenarioId": "H-07",
-      "status": "authored_not_executed",
-      "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
-      "requiredOutcome": "Authoritative history proves application; absence of actor cannot cause second purchase",
-      "world": "multiplayer",
-      "maximumTick": 2400,
-      "setup": [
-        "One normally paid command completes a real output actor",
-        "Withhold its completion receipt while retaining processed command and native completion history"
-      ],
-      "actions": [
-        "Destroy or legally consume the exact completed actor before reconciliation",
-        "Deliver delayed history/receipt after the actor is absent"
-      ],
-      "measurements": [
-        "Original charge, queue/site completion, output identity and subsequent destruction/consumption",
-        "Reconciled demand and later purchases"
-      ],
-      "required": [
-        "History proves original application/completion despite missing output",
-        "Any replacement is a new evidenced demand rather than a duplicate original purchase"
-      ],
-      "forbidden": [
-        "Missing actor accepted as proof command never applied",
-        "Same original effect charged again"
-      ],
-      "branches": [
-        "Destroyed output",
-        "Legally consumed output if supported",
-        "Output remains alive control"
-      ],
-      "executionBlockers": [
-        "native_case_binding",
-        "receipt_fault",
-        "multiplayer_boundary",
-        "native_combat"
-      ],
-      "reuse": [
-        "tools/ai/fixtures/controller-contract-scenarios.json"
-      ],
-      "checkpointTicks": [
-        0,
-        20,
-        200,
-        400,
-        800,
-        1200,
-        1600,
-        2000,
-        2400
-      ],
-      "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
-    },
-    {
       "scenarioId": "H-08",
       "status": "authored_not_executed",
       "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
@@ -412,10 +328,13 @@
       "executionBlockers": [
         "native_case_binding",
         "receipt_fault",
-        "multiplayer_boundary"
+        "multiplayer_boundary",
+        "authority_binding_h_08"
       ],
       "reuse": [
-        "tools/ai/fixtures/controller-contract-scenarios.json"
+        "tools/ai/fixtures/controller-contract-scenarios.json",
+        "tools/ai/native-authority-worlds.mjs",
+        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/install-ai-runtime-receipt-fault.ts"
       ],
       "checkpointTicks": [
         0,
@@ -465,10 +384,13 @@
         "native_case_binding",
         "receipt_fault",
         "snapshot_boundary",
-        "multiplayer_boundary"
+        "multiplayer_boundary",
+        "authority_binding_h_09"
       ],
       "reuse": [
-        "tools/ai/fixtures/controller-contract-scenarios.json"
+        "tools/ai/fixtures/controller-contract-scenarios.json",
+        "tools/ai/native-authority-worlds.mjs",
+        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/install-ai-runtime-receipt-fault.ts"
       ],
       "checkpointTicks": [
         0,
@@ -480,61 +402,6 @@
         1600,
         2000,
         2400
-      ],
-      "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
-    },
-    {
-      "scenarioId": "H-10",
-      "status": "authored_not_executed",
-      "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
-      "requiredOutcome": "Backpressure preserves required records and unrelated safe progress; explicit bounded technical recovery if needed",
-      "world": "multiplayer",
-      "maximumTick": 3000,
-      "setup": [
-        "Use configured real pending-outcome capacity and enough normally priced commands to reach it",
-        "Provide an unrelated safe existing economy job"
-      ],
-      "actions": [
-        "Delay actual receipts at the transport boundary until backpressure activates",
-        "Restore transport and let retained outcomes reconcile"
-      ],
-      "measurements": [
-        "Backlog size/identity, dispatch admission, native charges/effects and unrelated delivered income",
-        "Technical recovery state and eventual backlog drain"
-      ],
-      "required": [
-        "Required unresolved records are never evicted to meet a UI quota",
-        "New work backpressures while safe existing work continues and recovery is bounded"
-      ],
-      "forbidden": [
-        "Dropping mandatory outcomes",
-        "Releasing uncertain paid resources as free money"
-      ],
-      "branches": [
-        "Capacity minus one",
-        "Exact capacity",
-        "Over-capacity attempted admission",
-        "Receipts resume"
-      ],
-      "executionBlockers": [
-        "native_case_binding",
-        "receipt_fault",
-        "multiplayer_boundary"
-      ],
-      "reuse": [
-        "tools/ai/fixtures/controller-contract-scenarios.json"
-      ],
-      "checkpointTicks": [
-        0,
-        20,
-        200,
-        400,
-        800,
-        1200,
-        1600,
-        2000,
-        2400,
-        3000
       ],
       "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
     },
@@ -574,10 +441,13 @@
         "native_case_binding",
         "decision_history",
         "lane_history",
-        "construction_history"
+        "construction_history",
+        "authority_binding_h_11"
       ],
       "reuse": [
-        "tools/ai/fixtures/controller-contract-scenarios.json"
+        "tools/ai/fixtures/controller-contract-scenarios.json",
+        "tools/ai/native-authority-worlds.mjs",
+        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/install-ai-runtime-receipt-fault.ts"
       ],
       "checkpointTicks": [
         0,
@@ -630,174 +500,13 @@
       "executionBlockers": [
         "native_case_binding",
         "decision_history",
-        "lane_history"
-      ],
-      "reuse": [
-        "tools/ai/fixtures/controller-contract-scenarios.json"
-      ],
-      "checkpointTicks": [
-        0,
-        20,
-        200,
-        400,
-        800,
-        1200,
-        1600,
-        2000,
-        2400,
-        3000
-      ],
-      "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
-    },
-    {
-      "scenarioId": "H-13",
-      "status": "authored_not_executed",
-      "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
-      "requiredOutcome": "Player-wide exposure remains bounded; legitimate committed military/essential economy retains funding",
-      "world": "open",
-      "maximumTick": 3000,
-      "setup": [
-        "Several real owned bases have optional non-dispatchable projects plus dated essential economy and military demand",
-        "Freeze each actual resource budget after essentials and before optional waiting claims"
-      ],
-      "actions": [
-        "Let optional project IDs/bases vary normally while resource scarcity persists",
-        "Later make one justified project immediately executable"
-      ],
-      "measurements": [
-        "Player-wide per-resource provisional exposure and original denominator",
-        "Actual essential admission, paid spending and completed useful work"
-      ],
-      "required": [
-        "Waiting optional exposure stays within the configured 25 percent per-resource bound across all bases",
-        "Immediately executable justified work is not subjected to a fictitious four-times-cost rule"
-      ],
-      "forbidden": [
-        "Per-base cap evasion",
-        "Recursive denominator after optional reservations",
-        "Combining food and wood into fictional currency"
-      ],
-      "branches": [
-        "Many bases",
-        "New base/plan IDs",
-        "Immediately executable optional work",
-        "Essential recovery override with evidence"
-      ],
-      "executionBlockers": [
-        "native_case_binding",
-        "decision_history",
-        "lane_history"
-      ],
-      "reuse": [
-        "tools/ai/fixtures/controller-contract-scenarios.json"
-      ],
-      "checkpointTicks": [
-        0,
-        20,
-        200,
-        400,
-        800,
-        1200,
-        1600,
-        2000,
-        2400,
-        3000
-      ],
-      "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
-    },
-    {
-      "scenarioId": "H-14",
-      "status": "authored_not_executed",
-      "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
-      "requiredOutcome": "Emergency decays; feasible scouting/production/army lanes receive bounded service",
-      "world": "open",
-      "maximumTick": 3000,
-      "setup": [
-        "Affordable compatible scouting, production and army work exists simultaneously",
-        "Opponent can repeatedly show a harmless scout while supply forecasts fluctuate without real shortage"
-      ],
-      "actions": [
-        "Repeat native harmless sightings and keep each feasible lane eligible",
-        "Stop noise midway to verify emergency state decays"
-      ],
-      "measurements": [
-        "Lane consideration/service cursor per decision, rejected conflicts, actual actor ownership and resulting effects"
-      ],
-      "required": [
-        "Feasible non-emergency lanes receive consideration within four decisions and compatible command service within eight",
-        "Emergency labels expire when evidence no longer supports them"
-      ],
-      "forbidden": [
-        "Demanding dispatch under actual resource conflict",
-        "Harmless contact permanently starving all nondefense work"
-      ],
-      "branches": [
-        "Harmless repeated scout",
-        "Supply forecast noise",
-        "Genuine scarcity control with explicit blocker"
-      ],
-      "executionBlockers": [
-        "native_case_binding",
-        "opponent_script",
-        "lane_history"
-      ],
-      "reuse": [
-        "tools/ai/fixtures/controller-contract-scenarios.json"
-      ],
-      "checkpointTicks": [
-        0,
-        20,
-        200,
-        400,
-        800,
-        1200,
-        1600,
-        2000,
-        2400,
-        3000
-      ],
-      "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
-    },
-    {
-      "scenarioId": "H-15",
-      "status": "authored_not_executed",
-      "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
-      "requiredOutcome": "Survival preempts appropriate actors/resources while observation/reconciliation continue; no artificial “fairness” suicide",
-      "world": "open",
-      "maximumTick": 2400,
-      "setup": [
-        "A definition-compatible lethal home attack competes with optional ordinary work",
-        "Keep actual observation and reconciliation obligations due during the emergency"
-      ],
-      "actions": [
-        "Opponent attacks through legal native combat",
-        "Deliver a previously pending authoritative receipt while survival actions own the needed units/resources"
-      ],
-      "measurements": [
-        "Native threat/effects, survival command service, observation freshness and pending outcome reconciliation"
-      ],
-      "required": [
-        "Survival preempts the necessary actors/resources",
-        "Critical observation/reconciliation continue within their bounds"
-      ],
-      "forbidden": [
-        "Artificial fairness dispatches optional work into lethal loss",
-        "Emergency disables reconciliation or expires solely by elapsed time while threat persists"
-      ],
-      "branches": [
-        "Lethal threat",
-        "Threat resolves",
-        "Same contact strength far from assets control"
-      ],
-      "executionBlockers": [
-        "native_case_binding",
-        "opponent_script",
         "lane_history",
-        "receipt_fault",
-        "native_combat"
+        "authority_binding_h_12"
       ],
       "reuse": [
-        "tools/ai/fixtures/controller-contract-scenarios.json"
+        "tools/ai/fixtures/controller-contract-scenarios.json",
+        "tools/ai/native-authority-worlds.mjs",
+        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/install-ai-runtime-receipt-fault.ts"
       ],
       "checkpointTicks": [
         0,
@@ -808,7 +517,8 @@
         1200,
         1600,
         2000,
-        2400
+        2400,
+        3000
       ],
       "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
     },
@@ -1024,10 +734,13 @@
       "executionBlockers": [
         "native_case_binding",
         "input_fault",
-        "decision_history"
+        "decision_history",
+        "authority_binding_h_30"
       ],
       "reuse": [
-        "tools/ai/fixtures/stage-13-tactics.json"
+        "tools/ai/fixtures/stage-13-tactics.json",
+        "tools/ai/native-authority-worlds.mjs",
+        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/install-ai-runtime-receipt-fault.ts"
       ],
       "checkpointTicks": [
         0,
@@ -1079,12 +792,15 @@
         "native_case_binding",
         "snapshot_boundary",
         "receipt_fault",
-        "multiplayer_boundary"
+        "multiplayer_boundary",
+        "authority_binding_h_31"
       ],
       "reuse": [
         "tools/ai/fixtures/stage-14-adaptation.json",
         "libs/games/probable-waffle/phaser/src/lib/world/services/recovery/serialize-actor-queue-state.spec.ts",
-        "libs/games/probable-waffle/phaser/src/lib/entity/components/queue/queue-continuation.spec.ts"
+        "libs/games/probable-waffle/phaser/src/lib/entity/components/queue/queue-continuation.spec.ts",
+        "tools/ai/native-authority-worlds.mjs",
+        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/install-ai-runtime-receipt-fault.ts"
       ],
       "checkpointTicks": [
         0,
@@ -1137,10 +853,13 @@
         "native_case_binding",
         "snapshot_boundary",
         "multiplayer_boundary",
-        "receipt_fault"
+        "receipt_fault",
+        "authority_binding_h_32"
       ],
       "reuse": [
-        "tools/ai/fixtures/stage-14-adaptation.json"
+        "tools/ai/fixtures/stage-14-adaptation.json",
+        "tools/ai/native-authority-worlds.mjs",
+        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/install-ai-runtime-receipt-fault.ts"
       ],
       "checkpointTicks": [
         0,

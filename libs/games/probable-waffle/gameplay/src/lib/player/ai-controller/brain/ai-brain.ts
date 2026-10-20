@@ -166,6 +166,8 @@ export class PureAiBrain implements AiBrainV1 {
     const normalizedSquads = normalizePrimarySquadOwnership(projectedState.squads);
     const nextState: AiBrainStateV1 = {
       ...projectedState,
+      lanes: projectedState.lanes.map((lane) => accepted.some((intent) => intent.lane === lane.lane)
+        ? { ...lane, lastServicedTick: observation.tick } : lane),
       support: projectedState.support.filter(
         (plan) =>
           previousSupportIds.has(plan.planId) ||

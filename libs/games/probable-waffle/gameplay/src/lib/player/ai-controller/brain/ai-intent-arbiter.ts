@@ -145,6 +145,11 @@ export function arbitrateAiIntents(
       decisions.push({ outcome: "rejected", intent, reason: "invalid_numeric_input", detail: "numeric_guard" });
       continue;
     }
+    // Retain every unresolved effect; admission, rather than eviction, owns pending-outcome capacity.
+    if (accepted.length >= Math.max(0, state.authority.pendingLimit - state.authority.pendingCommandIds.length)) {
+      decisions.push({ outcome: "rejected", intent, reason: "profile_limit", detail: "authority_backpressure" });
+      continue;
+    }
     if (
       decisions.filter((decision) => decision.outcome === "accepted" || decision.reason !== "claim_conflict").length >=
         profile.maxIntentProposalsPerStep ||

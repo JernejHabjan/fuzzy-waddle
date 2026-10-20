@@ -68,3 +68,13 @@ describe("planAiDecisions", () => {
     expect(result.state.reservations.map((reservation) => reservation.claimId)).toEqual(["claim:spent"]);
   });
 });
+
+it("records proposal consideration without falsely claiming that a command was serviced", () => {
+  const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+  const state = createAiBrainStateV1({ playerNumber: 1, faction: FactionType.Tivara, profile, tick: 0, archetypeId: "balanced" });
+  const result = planAiDecisions(createAiTestObservation(), state, [], [{ managerId: "empty-production",
+    lane: "supply_production", evaluated: true, intents: [], reasons: [] }], profile);
+  const lane = result.state.lanes.find((entry) => entry.lane === "supply_production");
+  expect(lane?.lastConsideredTick).toBe(20);
+  expect(lane?.lastServicedTick).toBe(0);
+});

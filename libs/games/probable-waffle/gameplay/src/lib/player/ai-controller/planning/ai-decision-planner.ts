@@ -69,15 +69,21 @@ export function reconcileAiDecisionReservations(
 }
 
 function hasCycle(state: AiBrainStateV1, planId: AiPlanId): boolean {
-  const next = new Map(
-    state.waitEdges.filter((edge) => edge.toPlanId !== null).map((edge) => [edge.fromPlanId, edge.toPlanId!])
-  );
-  let cursor: AiPlanId | undefined = planId;
+  const next = new Map<AiPlanId, AiPlanId[]>();
+  for (const edge of state.waitEdges) {
+    if (edge.toPlanId === null) continue;
+    const targets = next.get(edge.fromPlanId) ?? [];
+    targets.push(edge.toPlanId);
+    next.set(edge.fromPlanId, targets);
+  }
+  const pending = [...(next.get(planId) ?? [])];
   const seen = new Set<AiPlanId>();
-  while (cursor) {
-    if (seen.has(cursor)) return true;
+  while (pending.length) {
+    const cursor = pending.pop()!;
+    if (cursor === planId) return true;
+    if (seen.has(cursor)) continue;
     seen.add(cursor);
-    cursor = next.get(cursor);
+    pending.push(...(next.get(cursor) ?? []));
   }
   return false;
 }
@@ -104,7 +110,8 @@ export function planAiDecisions(
       lastConsideredTick: wasConsidered
         ? observation.tick
         : (existing?.lastConsideredTick ?? previous.lastCommittedTick),
-      lastServicedTick: wasConsidered ? observation.tick : (existing?.lastServicedTick ?? previous.lastCommittedTick),
+      // Evaluation is not command service. The brain records service only after arbitration accepts a lane's command.
+      lastServicedTick: existing?.lastServicedTick ?? previous.lastCommittedTick,
       continuationCursor: ((existing?.continuationCursor ?? 0) + 1) % Math.max(1, profile.maxIntentProposalsPerStep)
     };
   });

@@ -29,6 +29,30 @@ const baseIntent = {
 describe("PlayerAiController pure planner integration", () => {
   afterEach(() => jest.clearAllMocks());
 
+  it("cannot reactivate a disposed controller through late host toggles, restore or queued steps", async () => {
+    const controller = Object.create(PlayerAiController.prototype) as PlayerAiController;
+    const reconciliation = { destroy: jest.fn() }, off = jest.fn(), unsubscribe = jest.fn();
+    Reflect.set(controller, "scene", { events: { off } });
+    Reflect.set(controller, "player", { playerNumber: 1 });
+    Reflect.set(controller, "commandReconciliation", reconciliation);
+    Reflect.set(controller, "tickSubscription", { unsubscribe });
+    Reflect.set(controller, "brainDebugHistory", []);
+    Reflect.set(controller, "authorityActive", true);
+    Reflect.set(controller, "stepQueued", true);
+    const step = jest.fn(); Reflect.set(controller, "stepDecisionPlanner", step);
+    const lifecycle = controller as unknown as { onShutdown(): void; runScheduledStep(): Promise<void> };
+    lifecycle.onShutdown(); lifecycle.onShutdown();
+    controller.setAuthorityActive(true); controller.setEnabled(true);
+    await lifecycle.runScheduledStep();
+    expect(step).not.toHaveBeenCalled();
+    expect(reconciliation.destroy).toHaveBeenCalledTimes(1);
+    expect(unsubscribe).toHaveBeenCalledTimes(1);
+    expect(Reflect.get(controller, "stepQueued")).toBe(false);
+    expect(() => controller.setBrainState({})).toThrow("ai_controller_disposed");
+    expect(() => controller.setSaveState({} as Parameters<PlayerAiController["setSaveState"]>[0]))
+      .toThrow("ai_controller_disposed");
+  });
+
   it("binds the actual committed read before reconciliation even when the pure step throws", () => {
     const controller = Object.create(PlayerAiController.prototype) as PlayerAiController;
     const observation = { schemaVersion: 1, generation: 7, tick: 0, playerNumber: 1, faction: FactionType.Tivara,

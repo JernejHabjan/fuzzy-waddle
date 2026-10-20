@@ -34,17 +34,17 @@ execution evidence separate, and never carry an earlier passing tool/native coun
 
 ### Native scenario bindings and bounded lookup
 
-The52 native bindings use tools/ai/native-scenario-bindings.json for original obligations/branches/ceilings and
+The58 native bindings use tools/ai/native-scenario-bindings.json for original obligations/branches/ceilings and
 native-scenario-registration.mjs to author ordinary matrix fixtures. Existing world layout/world factories own
 construction/scouting/combat inputs; native-strategic-worlds.mjs, native-domain-worlds.mjs and native-classic-worlds.mjs
-own the remaining mission/domain/classic inputs. skirmish-runtime-native-scenario-fixture.mjs refuses source-controlled
+own the remaining mission/domain/classic inputs. native-authority-worlds.mjs owns H-06/H-07/H-10/H-13–15. skirmish-runtime-native-scenario-fixture.mjs refuses source-controlled
 recipe/assertion drift. Read only the selected ID and its factory, not every generated fixture.
 
 The normal evaluation dispatches through apps/portal-e2e/src/e2e/skirmish-ai-native-scenario-evaluation.ts to the selected
 family reader. Full-case branch/faction comparisons live in skirmish-ai-native-scenario-pairs.ts. Physical hits,
 applied effects, paid output, exact service and original-destination arrivals are distinct from selected claims or
 receipts. Missing/truncated history and ambiguous spell/weapon attribution fail; no complete projectile trace is claimed.
-These52 bindings/332 faction-control variants are authored unrun. Native setup, timing and outcome correctness remain
+These58 bindings/370 faction-control variants are authored unrun. Native setup, timing and outcome correctness remain
 unmeasured until an authorized gate. New recipes must keep unavailable premises separate from AI behavior failures.
 
 Only Tivara offers current ships; real boat landing/escort uses that faction. Native hostile ship cases use the existing
@@ -498,3 +498,14 @@ actor-scoped; pending calls cap at32 and release in original request order or se
 H-05/H-20/H-21/H-23 remain unbound until original AI receipt uncertainty, post-disposal capture, physical
 unit/formation clearance and indispensable AI cargo ownership have native premises. Static geometry, a human
 scheduled command or scripted passenger membership cannot replace those obligations. All new sources remain unrun.
+
+### Command/resource authoring update — 2026-10-20
+
+Consumer-only receipt faults preserve the actual shared outcome stream and command application. Explicit preset opt-in
+selects original AI requests, retains bounded callbacks, releases them FIFO at fixed simulation ticks and detaches on shutdown.
+Ordinary gameplay has no installed fault policy. Existing root capture records narrow delivery metadata within its budget;
+it does not duplicate heavy world samples for those events. Selected authority/lanes/wait ownership has explicit loss bounds.
+H-06/H-07/H-10 readers join raw native charges/output/history; H-13–15 require player-wide resource exposure,
+actual applied service and relevant native defense. These six bindings/38 variants are authored unrun.
+H-08/H-09/H-11/H-12/H-30/H-31/H-32 stay unbound with exact missing seams in native-scenario-recipes.json.
+No recipe, test, lint, type check, formatter, build or other validation ran. Model summaries remain at most8192 UTF-8 bytes.

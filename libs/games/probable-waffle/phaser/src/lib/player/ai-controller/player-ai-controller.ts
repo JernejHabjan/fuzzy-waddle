@@ -52,6 +52,7 @@ export class PlayerAiController {
   private static readonly AI_ENABLED = true;
   private enabled = true;
   private authorityActive = true;
+  private disposed = false;
   private readonly stepInterval: number;
   telemetry = new TelemetrySink();
   private telemetryFrameModulo = AI_CONFIG.telemetryFrameModulo;
@@ -90,7 +91,7 @@ export class PlayerAiController {
     this.blackboard = new PlayerAiBlackboard(scene);
     const commandBus = getSceneService(scene, CommandBusService);
     if (commandBus && player.playerNumber !== undefined) {
-      this.commandReconciliation = new AiCommandReconciliation(player.playerNumber, commandBus);
+      this.commandReconciliation = new AiCommandReconciliation(player.playerNumber, commandBus, this.profile?.decisionIntervalTicks);
     }
     this.playerAiControllerAgent = new PlayerAiControllerAgent(this.scene, this.player, this.blackboard);
     this.playerAiControllerAgent.setPurePlannerOwnsCommands(this.pureBrain !== undefined);
@@ -191,6 +192,10 @@ export class PlayerAiController {
   }
 
   private onShutdown() {
+    if (this.disposed) return;
+    this.disposed = true;
+    this.authorityActive = false;
+    this.stepQueued = false;
     fenceAiResourceNeed(this.scene, this.player.playerNumber, "controller_shutdown");
     this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.updateFrameNonDeterministicFallback, this);
     this.tickSubscription?.unsubscribe();
@@ -226,6 +231,7 @@ export class PlayerAiController {
    * Set the AI behavior tree state from saved data.
    */
   public setSaveState(state: AIBehaviorTreeStateData): void {
+    if (this.disposed) throw new Error("ai_controller_disposed");
     fenceAiResourceNeed(this.scene, this.player.playerNumber, "controller_save_restore");
     this.setEnabled(state.enabled ?? true);
     if (state.blackboard) {
@@ -263,6 +269,7 @@ export class PlayerAiController {
 
   /** Documents the set enabled member and its declared contract at this boundary. */
   setEnabled(enabled: boolean): void {
+    if (this.disposed) return;
     if (!enabled) fenceAiResourceNeed(this.scene, this.player.playerNumber, "controller_disabled");
     this.enabled = enabled;
     const definition = this.player.playerController.data.playerDefinition;
@@ -271,6 +278,7 @@ export class PlayerAiController {
 
   /** Host transfer suspends planning without changing the campaign's persisted AI-enabled policy. */
   setAuthorityActive(active: boolean): void {
+    if (this.disposed) return;
     if (!active) fenceAiResourceNeed(this.scene, this.player.playerNumber, "controller_authority_lost");
     this.authorityActive = active;
     if (!active) this.stepQueued = false;
@@ -337,6 +345,7 @@ export class PlayerAiController {
 
   /** Replaces state only through the checked V1 migration boundary. */
   setBrainState(state: unknown): void {
+    if (this.disposed) throw new Error("ai_controller_disposed");
     fenceAiResourceNeed(this.scene, this.player.playerNumber, "controller_brain_replaced");
     const context = this.getBrainMigrationContext();
     if (!context) throw new Error("ai_brain_identity_unavailable");

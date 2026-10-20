@@ -2374,6 +2374,329 @@
         "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
         "executionStatus": "authored_not_executed"
       }
+    },
+    "H-06": {
+      "latestTick": 2000,
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000
+      ],
+      "branches": [
+        "withheld",
+        "rejected",
+        "late"
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "Same effect identity reconciles to actual state exactly once; no duplicate/refund assumption",
+        "setup": [
+          "Admit a normally priced build/train effect with a stable command/effect identity",
+          "Retain authoritative application and deliberately withhold only its outcome delivery to the AI"
+        ],
+        "actions": [
+          "Let the native effect apply once",
+          "Delay the receipt for two decision intervals, permit authoritative reconciliation, then release the original receipt"
+        ],
+        "measurements": [
+          "Real command application/charge/site or queue identity and processed-sequence history",
+          "Pending effect identity and reconciliation requests"
+        ],
+        "required": [
+          "Same effect reconciles to authoritative application exactly once",
+          "Original later receipt does not create another charge or output"
+        ],
+        "forbidden": [
+          "Invented refund/nonapplication from absent receipt",
+          "New effect ID used for optimistic retry"
+        ],
+        "branches": [
+          "Applied receipt withheld",
+          "Authoritatively rejected control",
+          "Receipt arrives after reconciliation"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      },
+      "capabilityLimits": [
+        "Consumer receipt delay is local to the AI; raw shared command application remains independently captured. This does not certify two-client relay or host transfer."
+      ]
+    },
+    "H-07": {
+      "latestTick": 2400,
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400
+      ],
+      "branches": [
+        "destroyed",
+        "alive"
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "Authoritative history proves application; absence of actor cannot cause second purchase",
+        "setup": [
+          "One normally paid command completes a real output actor",
+          "Withhold its completion receipt while retaining processed command and native completion history"
+        ],
+        "actions": [
+          "Destroy or legally consume the exact completed actor before reconciliation",
+          "Deliver delayed history/receipt after the actor is absent"
+        ],
+        "measurements": [
+          "Original charge, queue/site completion, output identity and subsequent destruction/consumption",
+          "Reconciled demand and later purchases"
+        ],
+        "required": [
+          "History proves original application/completion despite missing output",
+          "Any replacement is a new evidenced demand rather than a duplicate original purchase"
+        ],
+        "forbidden": [
+          "Missing actor accepted as proof command never applied",
+          "Same original effect charged again"
+        ],
+        "branches": [
+          "Destroyed output",
+          "Legally consumed output if supported",
+          "Output remains alive control"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      },
+      "capabilityLimits": [
+        "Consumer receipt delay is local to the AI; raw shared command application remains independently captured. This does not certify two-client relay or host transfer.",
+        "Destroyed and living output branches use normal worker/unit production. No legal actor-consumption capability is established for these products; conditional consumption branch is unsupported."
+      ]
+    },
+    "H-10": {
+      "latestTick": 3000,
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000
+      ],
+      "branches": [
+        "below_capacity",
+        "at_capacity",
+        "over_capacity",
+        "resumed"
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "Backpressure preserves required records and unrelated safe progress; explicit bounded technical recovery if needed",
+        "setup": [
+          "Use configured real pending-outcome capacity and enough normally priced commands to reach it",
+          "Provide an unrelated safe existing economy job"
+        ],
+        "actions": [
+          "Delay actual receipts at the transport boundary until backpressure activates",
+          "Restore transport and let retained outcomes reconcile"
+        ],
+        "measurements": [
+          "Backlog size/identity, dispatch admission, native charges/effects and unrelated delivered income",
+          "Technical recovery state and eventual backlog drain"
+        ],
+        "required": [
+          "Required unresolved records are never evicted to meet a UI quota",
+          "New work backpressures while safe existing work continues and recovery is bounded"
+        ],
+        "forbidden": [
+          "Dropping mandatory outcomes",
+          "Releasing uncertain paid resources as free money"
+        ],
+        "branches": [
+          "Capacity minus one",
+          "Exact capacity",
+          "Over-capacity attempted admission",
+          "Receipts resume"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      },
+      "capabilityLimits": [
+        "Consumer receipt delay is local to the AI; raw shared command application remains independently captured. This does not certify two-client relay or host transfer."
+      ]
+    },
+    "H-13": {
+      "latestTick": 3000,
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000
+      ],
+      "branches": [
+        "many_bases",
+        "new_identity",
+        "executable",
+        "essential"
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "Player-wide exposure remains bounded; legitimate committed military/essential economy retains funding",
+        "setup": [
+          "Several real owned bases have optional non-dispatchable projects plus dated essential economy and military demand",
+          "Freeze each actual resource budget after essentials and before optional waiting claims"
+        ],
+        "actions": [
+          "Let optional project IDs/bases vary normally while resource scarcity persists",
+          "Later make one justified project immediately executable"
+        ],
+        "measurements": [
+          "Player-wide per-resource provisional exposure and original denominator",
+          "Actual essential admission, paid spending and completed useful work"
+        ],
+        "required": [
+          "Waiting optional exposure stays within the configured 25 percent per-resource bound across all bases",
+          "Immediately executable justified work is not subjected to a fictitious four-times-cost rule"
+        ],
+        "forbidden": [
+          "Per-base cap evasion",
+          "Recursive denominator after optional reservations",
+          "Combining food and wood into fictional currency"
+        ],
+        "branches": [
+          "Many bases",
+          "New base/plan IDs",
+          "Immediately executable optional work",
+          "Essential recovery override with evidence"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      },
+      "capabilityLimits": [
+        "Consumer receipt delay is local to the AI; raw shared command application remains independently captured. This does not certify two-client relay or host transfer."
+      ]
+    },
+    "H-14": {
+      "latestTick": 3000,
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000
+      ],
+      "branches": [
+        "harmless",
+        "supply_noise",
+        "scarcity"
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "Emergency decays; feasible scouting/production/army lanes receive bounded service",
+        "setup": [
+          "Affordable compatible scouting, production and army work exists simultaneously",
+          "Opponent can repeatedly show a harmless scout while supply forecasts fluctuate without real shortage"
+        ],
+        "actions": [
+          "Repeat native harmless sightings and keep each feasible lane eligible",
+          "Stop noise midway to verify emergency state decays"
+        ],
+        "measurements": [
+          "Lane consideration/service cursor per decision, rejected conflicts, actual actor ownership and resulting effects"
+        ],
+        "required": [
+          "Feasible non-emergency lanes receive consideration within four decisions and compatible command service within eight",
+          "Emergency labels expire when evidence no longer supports them"
+        ],
+        "forbidden": [
+          "Demanding dispatch under actual resource conflict",
+          "Harmless contact permanently starving all nondefense work"
+        ],
+        "branches": [
+          "Harmless repeated scout",
+          "Supply forecast noise",
+          "Genuine scarcity control with explicit blocker"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      },
+      "capabilityLimits": [
+        "Consumer receipt delay is local to the AI; raw shared command application remains independently captured. This does not certify two-client relay or host transfer."
+      ]
+    },
+    "H-15": {
+      "latestTick": 2400,
+      "checkpointTicks": [
+        0,
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400
+      ],
+      "branches": [
+        "lethal",
+        "resolved",
+        "far"
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "Survival preempts appropriate actors/resources while observation/reconciliation continue; no artificial “fairness” suicide",
+        "setup": [
+          "A definition-compatible lethal home attack competes with optional ordinary work",
+          "Keep actual observation and reconciliation obligations due during the emergency"
+        ],
+        "actions": [
+          "Opponent attacks through legal native combat",
+          "Deliver a previously pending authoritative receipt while survival actions own the needed units/resources"
+        ],
+        "measurements": [
+          "Native threat/effects, survival command service, observation freshness and pending outcome reconciliation"
+        ],
+        "required": [
+          "Survival preempts the necessary actors/resources",
+          "Critical observation/reconciliation continue within their bounds"
+        ],
+        "forbidden": [
+          "Artificial fairness dispatches optional work into lethal loss",
+          "Emergency disables reconciliation or expires solely by elapsed time while threat persists"
+        ],
+        "branches": [
+          "Lethal threat",
+          "Threat resolves",
+          "Same contact strength far from assets control"
+        ],
+        "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+        "executionStatus": "authored_not_executed"
+      },
+      "capabilityLimits": [
+        "Consumer receipt delay is local to the AI; raw shared command application remains independently captured. This does not certify two-client relay or host transfer."
+      ]
     }
   }
 }

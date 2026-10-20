@@ -3,38 +3,39 @@
 Default resume page: read this first, then only the selected package in [REMAINING-WORK.md](REMAINING-WORK.md).
 Do not load the full plan directory or archive on startup.
 
-## Current cursor — recovery/liveness authoring partly bound, 2026-10-19
+## Current cursor — command/resource authoring partly bound, 2026-10-20
 
 - Worktree /home/jernej/.codex/worktrees/7977/fuzzy-waddle; branch feature/759-skirmish-ai.
-  Publication base f1c14ffd8fcffbf5da239de5b3f9372f5cbc4b29; verify the containing commit and remote on resume.
-  Actual model/effort unknown; no delegation/model switch. Preserve unrelated run XML and ALL_VISIBLE fog edits.
-- Selected12 IDs: H-01–05/H-19–21/H-23–26. Eight now have native registrations: H-01–04/H-19/H-24–26,
-  54 faction/control variants, authored unrun. This selected batch is8/12 bound (66.7%),4/12 unbound (33.3%);
-  it is NOT a completed12-ID batch or validated recovery behavior.
-- H-05/H-20/H-21/H-23 remain specifications with exact missing-premise owners in native-scenario-recipes.json.
-  H-05 needs an original AI receipt hold/release independently joined to shared application; a human scheduled command
-  cannot establish uncertain AI ownership. H-20 needs finite topology churn, bounded work/cursor samples and an external
-  post-shutdown boundary. H-21 needs real small/large-unit or formation clearance evidence, not tileMargin envelopes.
-  H-23 needs an AI-owned indispensable cargo mission/departure deadline; scripted passenger membership is insufficient.
-  These are implementation gaps, not unavailable test execution or proof that the intended gameplay is unsupported.
-- Supported runtime registration83/116 (71.6%);33 unbound (28.4%), plus4 deferred island rows. Pure111/111 (100%).
-  Definitions116/116 comprise83 bindings and33 specifications. No overall AI completion percentage or new gameplay pass.
-  Native factory52 bindings/332 variants and21 partial owner worlds remain unrun; variants are not unique maps.
-- Native recovery worlds/readers now cover fixed obstruction release, real but irrelevant motion/income, original paid
-  queues/crops/long travel, defense during finite pending/error queries, uncertainty, choke recovery and reinforcements.
-  Selected mission capture includes bounded recovery/blocker/transport ownership. Pending fault calls cap at32, retain
-  original destinations, release FIFO at fixed simulation ticks and settle null without native calls on shutdown.
-  No planner/balance changes, new observer or raw-report expansion; model summaries remain capped at8192 bytes.
-- **No execution:** no recipes/tests/lint/types/formatter/build/browser/server/doctor/context/dedicated validators.
-  Only source review and fixture/catalog --write authoring occurred. Setup geometry, timings, fault interception,
-  applicability and oracle correctness remain unmeasured; fail on missing premises instead of weakening outcomes.
-- **Next:** finish the four unbound IDs above together at their existing receipt/navigation/runner/transport owners.
-  Reuse native-recovery-worlds.mjs and the native recovery readers. Do not skip them for another registration family.
-  Then remaining authority/resources/lifecycle/peers, supported SEQ, difficulty/debug and later victory.
-  Machinery necessity review remains last overall.
-- Report done/why and next/why in short bullets; distinguish bindings from validated outcomes. Commit/push exact owned
-  paths, verify remote equality and pause. Next recommendation: Sol6.1/high for unresolved causal seam design.
-  The recommendation does not change active settings.
+  Publication base c681f7c94d489e1e2788039aaf73b5684a4ac53b; verify containing commit and remote on resume.
+  Preserve unrelated run XML and ALL_VISIBLE fog edits. No delegation or model switch occurred.
+- User selected13 cases: H-06–15/H-30–32. Six now register38 faction/control variants:
+  H-06/H-07/H-10/H-13/H-14/H-15. Selected registration6/13 (46.2%);7/13 unbound (53.8%).
+  This is a partial authoring batch, not thirteen completed scenarios or passing gameplay.
+- Source repairs: missing receipts no longer fabricate terminal failure/free uncertain work; full pending capacity
+  backpressures new admission instead of evicting obligations. Reconciliation consults actual shared history after
+  two decision intervals, including outputs already destroyed. Recent history now retains512 outcomes so a128-command
+  drain fits. Lane consideration and accepted service differ; dependency cycles follow every outgoing edge and exclude
+  acyclic feeders. Disposed controllers reject restore/reactivation and retained receipt callbacks cannot mutate them.
+- Consumer-only receipt controls leave raw shared application untouched, release FIFO at fixed simulation ticks,
+  bound retained callbacks/evidence and detach on shutdown. Native readers require original identities, paid effects,
+  delivered income, actual backlog boundaries and relevant defense. Missing premises fail; no fake receipts/AI state.
+- Supported runtime89/116 (76.7%) registered;27/116 (23.3%) unbound, plus4 deferred island rows.
+  Pure111/111 registered. Native factory58 bindings/370 variants and21 partial owner worlds remain unrun.
+  No overall AI completion percentage. Shared repairs invalidate affected retained acceptance until the later gate.
+- **Unbound:** H-08/H-09 need real peer/epoch/compaction boundaries; H-11 needs a definition-derived complete scarce
+  recovery chain and independently exhausted-source control; H-12 needs native competing claims, original victim priority
+  and reversed real proposal enumeration; H-30 needs optional/debug fault cooldown controls; H-31 needs real save/reload;
+  H-32 needs same-browser next-match/host replacement. Exact owners/blockers remain in native-scenario-recipes.json.
+  Prior H-05/H-20/H-21/H-23 recovery gaps also remain open; this batch does not erase them.
+- **No execution:** no recipes/tests/lint/types/formatters/builds/browser/server/doctor/context/dedicated validators.
+  Only source/diff review and fixture/catalog --write authoring. Model summaries remain capped at8192 UTF-8 bytes;
+  generated fixtures/raw reports must not be loaded wholesale. Machinery necessity review remains last overall.
+- **Next:** finish H-11/H-12 together at the real resource/proposal owners, using definition-priced chains and native
+  useful work to avoid circular recovery and deterministic victim errors. Then bind H-30 optional/debug faults together
+  with retained-scene H-32 controls; connect H-08/H-09/H-31 to real peer/save boundaries as one integration batch.
+  Reuse the receipt seam for prior H-05; keep topology/clearance/cargo requirements explicit. Execution stays deferred.
+- Report done/why, registration percentages, unrun limitations and next/why in short bullets. Commit/push only owned paths,
+  verify remote equality and pause. Recommendation: Sol6.1/high for the unresolved causal/integration design.
 
 ## What “continue” means
 
@@ -100,7 +101,7 @@ Keep the report self-contained and concise. A documentation-only update reports 
 gameplay progress unchanged. The execution plan links to this format rather than maintaining a second template.
 
 Registration coverage: pure **111/111 = 100% registered / 0% remaining**; supported runtime
-**83/116 = 71.6% registered / 28.4% remaining**, excluding four deferred runtime rows. These are not overall AI completion.
+**89/116 = 76.7% registered / 23.3% remaining**, excluding four deferred runtime rows. These are not overall AI completion.
 Reconcile behavior evidence per selected package; do not invent a global completion percentage.
 
 ## End-of-gate machinery necessity review

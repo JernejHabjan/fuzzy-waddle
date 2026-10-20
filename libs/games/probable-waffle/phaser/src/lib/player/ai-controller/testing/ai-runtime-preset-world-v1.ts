@@ -3,10 +3,13 @@ import type { ObjectNames, ResearchType, ResourceType } from "@fuzzy-waddle/prob
 import type { AiRuntimePresetControlV1 } from "./ai-runtime-preset-control-v1";
 import type { AiRuntimeConstructionOrderV1 } from "./ai-runtime-construction-order-v1";
 import type { AiRuntimeProtectedRouteV1 } from "./ai-runtime-protected-route-v1";
+import type { AiRuntimeReceiptFault } from "./ai-runtime-receipt-fault";
 
 /** Test-authored world inputs applied through real scene actor and resource services before tick zero. */
 export interface AiRuntimePresetWorldV1 {
   readonly fixtureId: string;
+  /** Consumer-local receipt/checkpoint delay; shared native application/capture is never withheld. */
+  readonly receiptFault?: AiRuntimeReceiptFault;
   /** Production recipes require the authored faction graph, including the ordinary map's indexed actors. */
   readonly requireFactionRoster?: true;
   /** Real base-layer terrain before navigation initialization; only explicit diagnostic presets can apply these. */

@@ -5,6 +5,22 @@ import { runtimeClosedHistoryFailures } from "./skirmish-ai-runtime-closed-histo
 import { runtimeControlTransitFailures } from "./skirmish-ai-runtime-control-transit";
 import { evaluateFortificationAccessWorld } from "./skirmish-ai-fortification-access-evaluation";
 import { evaluateExpansionWorld } from "./skirmish-ai-expansion-world-evaluation";
+import { evaluateNativeAuthority } from "./skirmish-ai-native-authority-evaluation";
+import { evaluateNativeResourcePriority } from "./skirmish-ai-native-resource-priority-evaluation";
+import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
+
+test("transport annotations and empty decision history cannot certify native authority or resource progress", () => {
+  const context = { frames: [], facts: [], roles: {}, capture: undefined,
+    result: { presetInitialQueueItems: [], perturbations: [] } } as unknown as ReturnType<typeof nativeScenarioContext>;
+  expect(evaluateNativeAuthority("H-06", "withheld", context)).toContain("authority_no_original_ai_receipt_actually_held");
+  expect(evaluateNativeAuthority("H-10", "over_capacity", context))
+    .toContain("authority_configured_native_backlog_premise_missing");
+  expect(evaluateNativeResourcePriority("H-13", "many_bases", context))
+    .toContain("resources_real_multiple_base_budget_premise_missing");
+  expect(evaluateNativeResourcePriority("H-14", "harmless", context)).toContain("priorities_native_harmless_scout_role_missing");
+  expect(evaluateNativeResourcePriority("H-15", "lethal", context))
+    .toContain("priorities_native_lethal_attack_and_effective_survival_missing");
+});
 
 /** Synthetic negative inputs test evidence readers; no native scenario execution is implied. */
 function receiptOnly(): AiRuntimeProductionCaptureV1 {

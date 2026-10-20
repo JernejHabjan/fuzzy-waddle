@@ -26,5 +26,6 @@ export interface AiDecisionDispatchEvent {
   readonly opening?: AiBrainStateV1["opening"];
   /** Selected ownership and knowledge, not proof of physical travel, firing or protection. Null means bounded loss. */
   readonly missionState?: Pick<AiBrainStateV1, "squads" | "knowledge" | "skirmish" | "bases" |
-    "fortifications" | "support" | "progress" | "recoveryEpisodes" | "recovery" | "blockers" | "transport"> | null;
+    "fortifications" | "support" | "progress" | "recoveryEpisodes" | "recovery" | "blockers" | "transport" |
+    "authority" | "pendingOutcomes" | "waitEdges" | "lanes" | "scheduler" | "queries"> | null;
 }

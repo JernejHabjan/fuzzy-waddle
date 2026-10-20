@@ -4,9 +4,9 @@ import { test } from "node:test";
 import { nativeScenarioBindings, nativeScenarioFixture } from "./native-scenario-registration.mjs";
 import { validNativeScenarioFixture } from "./skirmish-runtime-native-scenario-fixture.mjs";
 
-test("all fifty-two native bindings retain their full branches and original acceptance obligations", () => {
+test("all fifty-eight native bindings retain their full branches and original acceptance obligations", () => {
   const ids = Object.keys(nativeScenarioBindings.cases);
-  assert.equal(ids.length, 52);
+  assert.equal(ids.length, 58);
   const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish-v1.json", import.meta.url)));
   for (const id of ids) {
     const row = manifest.rows.find((row) => row.id === id);
@@ -17,6 +17,35 @@ test("all fifty-two native bindings retain their full branches and original acce
     assert.ok(fixture.acceptance.required.length > 0);
     assert.ok(fixture.acceptance.forbidden.length > 0);
     assert.equal(fixture.status, "authored_not_executed");
+  }
+});
+
+test("authority and priority bindings reject erased consumer faults and altered native premises", () => {
+  for (const [id, branch, mutate] of [
+    ["H-06", "rejected", (world) => delete world.receiptFault.contendQueue],
+    ["H-07", "destroyed", (world) => delete world.receiptFault.destroyOutput],
+    ["H-10", "below_capacity", (world) => world.receiptFault.maximumCommands++],
+    ["H-10", "resumed", (world) => world.receiptFault.throughTick++],
+    ["H-13", "new_identity", (world) => world.controls = []],
+    ["H-13", "essential", (world) => world.events = []],
+    ["H-14", "harmless", (world) => world.controls = []],
+    ["H-15", "lethal", (world) => delete world.receiptFault.holdHistory],
+    ["H-15", "resolved", (world) => world.controls = world.controls.filter((control) => control.applicationTick < 1000)]
+  ]) {
+    const fixture = nativeScenarioFixture(id), contract = fixture.assertions[id].requiredNativeScenario;
+    const variant = fixture.recipe.variants.find((value) => contract.branchByVariant[value.id] === branch);
+    assert.ok(variant);
+    mutate(variant.presetWorld);
+    assert.equal(validNativeScenarioFixture(fixture, id), false, `${id}:${branch}`);
+  }
+});
+
+test("missing real peer, save, chain, proposal-order and retained-scene premises remain explicit", () => {
+  const drafts = JSON.parse(readFileSync(new URL("./fixtures/native-scenario-recipes.json", import.meta.url)));
+  for (const id of ["H-08", "H-09", "H-11", "H-12", "H-30", "H-31", "H-32"]) {
+    assert.equal(Object.hasOwn(nativeScenarioBindings.cases, id), false);
+    const entry = drafts.cases.find((value) => value.scenarioId === id);
+    assert.ok(entry.executionBlockers.some((key) => key.startsWith("authority_binding_")));
   }
 });
 

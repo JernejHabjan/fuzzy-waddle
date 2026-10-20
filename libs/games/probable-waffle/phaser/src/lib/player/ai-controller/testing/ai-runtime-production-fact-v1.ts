@@ -25,6 +25,7 @@ import type { AiRuntimeQueueCatalogEntryV1 } from "./ai-runtime-queue-catalog-en
 import type { AiRuntimeDamageV1 } from "./ai-runtime-damage-v1";
 import type { AiRuntimeTacticalBoundaryV1 } from "./ai-runtime-tactical-boundary-v1";
 import type { AiRuntimeCombatOperationV1 } from "./ai-runtime-combat-operation-v1";
+import type { AiRuntimeAuthorityDeliveryV1 } from "./ai-runtime-authority-delivery-v1";
 
 /** Raw authority callbacks in observer order. No resource event is labelled a payment/refund without item provenance. */
 export type AiRuntimeProductionFactV1 = {
@@ -48,6 +49,7 @@ export type AiRuntimeProductionFactV1 = {
       readonly incomingRead?: AiResourceInputRead;
     }
   | { readonly kind: "preset_control"; readonly control: AiRuntimePresetControlEvent }
+  | { readonly kind: "authority_delivery"; readonly delivery: AiRuntimeAuthorityDeliveryV1 }
   | { readonly kind: "native_damage"; readonly damage: AiRuntimeDamageV1 }
   | { readonly kind: "native_combat"; readonly operation: AiRuntimeCombatOperationV1 }
   | { readonly kind: "recipient_resources_installed"; readonly resources: Record<ResourceType, number> | null }

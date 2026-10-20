@@ -5,6 +5,7 @@ import type { AiRuntimeUnspentClaims } from "./ai-runtime-unspent-claims";
 import type { AiRuntimeProductionFactV1 } from "./ai-runtime-production-fact-v1";
 import type { AiRuntimeTacticalBoundaryV1 } from "./ai-runtime-tactical-boundary-v1";
 import { captureAiRuntimeTacticalBoundary } from "./capture-ai-runtime-tactical-boundary";
+import { AI_RUNTIME_AUTHORITY_DELIVERY_EVENT, type AiRuntimeAuthorityDeliveryV1 } from "./ai-runtime-authority-delivery-v1";
 
 /** Existing root-capture listeners retain selection-before-dispatch order and detach as one owned subscription. */
 export function installAiRuntimeDecisionCapture(
@@ -15,6 +16,9 @@ export function installAiRuntimeDecisionCapture(
   let active = true;
   const control = (value: AiRuntimePresetControlEvent) => {
     if (active) append({ ...boundary(value.playerNumber), kind: "preset_control", control: value });
+  };
+  const delivery = (value: AiRuntimeAuthorityDeliveryV1) => {
+    if (active) append({ ...boundary(value.playerNumber), kind: "authority_delivery", delivery: value });
   };
   const decision = (value: AiDecisionDispatchEvent) => {
     if (!active) return;
@@ -29,10 +33,12 @@ export function installAiRuntimeDecisionCapture(
       ...(tacticalBoundary ? { tacticalBoundary } : {}), unspentClaimsBeforeSelection });
   };
   scene.events.on(AI_RUNTIME_PRESET_CONTROL_EVENT, control);
+  scene.events.on(AI_RUNTIME_AUTHORITY_DELIVERY_EVENT, delivery);
   scene.events.on(AI_DECISION_DISPATCH_EVENT, decision);
   return () => {
     active = false;
     scene.events.off(AI_RUNTIME_PRESET_CONTROL_EVENT, control);
+    scene.events.off(AI_RUNTIME_AUTHORITY_DELIVERY_EVENT, delivery);
     scene.events.off(AI_DECISION_DISPATCH_EVENT, decision);
   };
 }

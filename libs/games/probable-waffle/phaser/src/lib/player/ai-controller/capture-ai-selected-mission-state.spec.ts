@@ -12,6 +12,12 @@ it("retains causal and transport ownership with the selected mission boundary", 
   expect(sample?.recovery).toEqual(state.recovery);
   expect(sample?.blockers).toEqual(state.blockers);
   expect(sample?.transport).toEqual(state.transport);
+  expect(sample?.authority).toEqual(state.authority);
+  expect(sample?.pendingOutcomes).toEqual(state.pendingOutcomes);
+  expect(sample?.lanes).toEqual(state.lanes);
+  expect(sample?.waitEdges).toEqual(state.waitEdges);
+  expect(captureAiSelectedMissionState({ ...state,
+    authority: { ...state.authority, pendingCommandIds: Array(257).fill("command:overflow") } })).toBeNull();
 });
 
 it("fails the whole selected boundary rather than truncating causal ownership", () => {

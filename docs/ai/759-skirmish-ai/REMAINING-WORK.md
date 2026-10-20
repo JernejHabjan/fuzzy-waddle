@@ -1,15 +1,16 @@
 # #759 remaining work inventory
 
-Snapshot:2026-10-19; publication base f1c14ffd8fcffbf5da239de5b3f9372f5cbc4b29 plus task-owned source.
+Snapshot:2026-10-20; publication base c681f7c94d489e1e2788039aaf73b5684a4ac53b plus task-owned source.
 [HANDOFF.md](HANDOFF.md) owns the next action; [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) distinguishes authored and
 validated evidence. This is the existing execution inventory, not another design project. Read only the selected package.
 
 ## What the inventory establishes
 
 The original concrete plan contains121 named scenarios. Pure registration is111/111. Supported runtime registration
-is83/116 (71.6%);33 (28.4%) still have specifications without native bindings. Four island runtime rows are deferred.
-Definitions are116/116:83 registrations plus33 remaining specifications. The latest8 registrations contain54 faction/control
-variants, all unrun; the previous44/278 variants remain unrun. Four of the selected12 IDs remain unbound. Counts describe registration, not passed gameplay, unique physical maps, work sessions or time remaining.
+is89/116 (76.7%);27 (23.3%) still have specifications without native bindings. Four island runtime rows are deferred.
+Definitions are116/116:89 registrations plus27 specifications. Latest6 registrations contain38 faction/control variants;
+native factory58 bindings/370 variants and21 partial owner worlds are unrun. Selected13-ID batch is6/13 registered,
+7/13 unbound. Counts describe registration, not passing gameplay, unique physical maps, sessions or time remaining.
 Each row needs complete source-specific native outcome evidence before validation; an authored reader is not that evidence.
 
 Earlier descriptions such as “full acceptance open” concealed three different kinds of work. Use these states:
@@ -81,8 +82,8 @@ an entire scenario. Invalidate only outcomes affected by later source/fixture ch
 | Measured coverage at this snapshot    | Completed                                   | Remaining          | What the number means                                                                                              |
 | ------------------------------------- | ------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------ |
 | Pure fixture registration             | 111/111 = **100%**                          | 0/111 = **0%** | Required pure scenarios with registered fixtures; not behavior completion                                          |
-| Supported native definitions           | 116/116 = **100%**                          | 0/116 = **0%** | 83 scenario bindings plus33 specifications; definitions only, not validated gameplay |
-| Supported runtime recipe registration | 83/116 = **71.6%**                          | 33/116 = **28.4%** | Runtime recipes connected; four island-content rows excluded; not behavior completion                              |
+| Supported native definitions           | 116/116 = **100%**                          | 0/116 = **0%** | 89 scenario bindings plus27 specifications; definitions only, not validated gameplay |
+| Supported runtime recipe registration | 89/116 = **76.7%**                          | 27/116 = **23.3%** | Runtime recipes connected; four island-content rows excluded; not behavior completion                              |
 | Scenario behavior validation          | Not yet reconciled across the full manifest | Not yet measurable | Existing subset passes and failures are recorded, but no truthful overall completion percentage can yet be derived |
 
 During each selected package, reconcile its existing complete evidence into the row status and report its exact
@@ -108,18 +109,16 @@ main-building footprint were corrected in both paired worlds. Construction cance
 post-opening unfinished-site reassignment have focused controls. Native ECO-06 proves alternate drop-off/source
 recovery; native no-drain controls prove stop/assignment release with cargo preservation.
 
-**Current publication: recovery/liveness authoring partly bound, 2026-10-19.**
+**Current publication: command/resource authoring partly bound, 2026-10-20.**
 
-- Eight of the selected12 IDs now register54 native faction/control variants: H-01–04/H-19/H-24–26. Source-only,
-  authored unrun; no gameplay, typing or test execution is certified. Selected authoring8/12 (66.7%),4/12 (33.3%) unbound.
-- Native inputs cover obstruction release, irrelevant movement/child income, paid long work, finite pending/error routes,
-  nearby defense, uncertainty, repeated choke pressure and paid reinforcement duty. Original native effects remain required.
-- H-05/H-20/H-21/H-23 remain unbound: receipt uncertainty, post-shutdown topology/query capture, physical size/formation
-  clearance and original AI-owned indispensable cargo duty need real seams. The draft records name exact missing owners.
-  Finish these four together next; do not replace them with human-command receipts, static envelopes or scripted cargo.
-- Registration83/116 (71.6%),33 remaining (28.4%), plus4 island rows; definitions83 bindings +33 specifications.
-  Native factory52 bindings/332 variants and21 partial owner worlds are unrun. Prior family limits remain explicit.
-  Machinery review stays last. Publication base f1c14ffd8fcffbf5da239de5b3f9372f5cbc4b29; verify containing commit/remote.
+- H-06/H-07/H-10/H-13/H-14/H-15: six native bindings,38 faction/control variants, authored unrun.
+  Source repairs preserve uncertain paid ownership, admission capacity, history-based reconciliation, accurate lane service,
+  multi-edge cycles and disposed-controller fencing. See CURRENT-EVIDENCE for the13-ID disposition and source-only audits.
+- H-08/H-09/H-11/H-12/H-30/H-31/H-32 remain unbound. Finish real scarce recovery chains and proposal-order controls
+  together next; then optional-fault/scene controls and the real peer/save integration batch. No fake snapshots or human
+  command receipts may substitute for the required AI-owned boundaries. Earlier four recovery gaps remain open.
+- Runtime89/116 (76.7%),27 remaining (23.3%); pure111/111. No tests, scenarios or other validation ran.
+  Machinery review remains last; containing commit/remote must be verified on resume.
 
 ## Other concrete gaps already established
 

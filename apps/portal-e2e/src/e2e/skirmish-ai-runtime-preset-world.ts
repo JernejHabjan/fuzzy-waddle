@@ -10,6 +10,7 @@ export interface RuntimePresetWorldV1 {
   readonly terrainPatches?: AiRuntimePresetWorldV1["terrainPatches"];
   readonly terrainPreserveFootprints?: true;
   readonly routeOutages?: AiRuntimePresetWorldV1["routeOutages"];
+  readonly receiptFault?: AiRuntimePresetWorldV1["receiptFault"];
   readonly actors: readonly {
     readonly fixtureActorId: string;
     readonly actorName: string;

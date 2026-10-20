@@ -12,6 +12,8 @@ import { evaluateExpansionWorld } from "./skirmish-ai-expansion-world-evaluation
 import { evaluateNativeDomain } from "./skirmish-ai-native-domain-evaluation";
 import { evaluateNativeClassic } from "./skirmish-ai-native-classic-evaluation";
 import { evaluateNativeRecovery } from "./skirmish-ai-native-recovery-evaluation";
+import { evaluateNativeAuthority } from "./skirmish-ai-native-authority-evaluation";
+import { evaluateNativeResourcePriority } from "./skirmish-ai-native-resource-priority-evaluation";
 import { evaluateNativeRaidStrategy, evaluateNativeComeback, evaluateNativeFinish } from "./skirmish-ai-native-raid-strategy-evaluation";
 
 /** Mandatory matrix binding; existing partial owner-world experiments remain explicitly outside full case registration. */
@@ -42,7 +44,9 @@ export function evaluateNativeScenarioVariant(
   if (context.failures.length) return context.failures;
   if (id.startsWith("SCOUT-") || id === "H-22") return evaluateNativeScouting(id, branch, context);
   const failures = nativeScoutingFairness(context);
-  if (["H-01", "H-02", "H-03", "H-04", "H-19", "H-24", "H-25", "H-26"].includes(id))
+  if (["H-06", "H-07", "H-10"].includes(id)) failures.push(...evaluateNativeAuthority(id, branch, context));
+  else if (["H-13", "H-14", "H-15"].includes(id)) failures.push(...evaluateNativeResourcePriority(id, branch, context));
+  else if (["H-01", "H-02", "H-03", "H-04", "H-19", "H-24", "H-25", "H-26"].includes(id))
     failures.push(...evaluateNativeRecovery(id, branch, context));
   else if (["STRAT-02", "STRAT-03", "RAID-03"].includes(id)) failures.push(...evaluateNativeRaidStrategy(id, branch, context));
   else if (id === "STRAT-08") failures.push(...evaluateNativeFinish(branch, context));

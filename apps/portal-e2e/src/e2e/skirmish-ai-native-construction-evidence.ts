@@ -9,7 +9,8 @@ export function nativeCompletedPlacements(context: ReturnType<typeof nativeScena
         !value.sceneActive || value.snapshotRestoreInProgress || value.clockTick !== fact.tick ||
         value.gaps.length || !value.footprint?.length || Object.values(context.roles).includes(siteId)) return [];
     const selected = context.frames.find((frame) => frame.sequence < fact.sequence && frame.decision.acceptedIntents.some((intent) =>
-      intent.kind === "construct" && intent.effectId === execution.effectId && intent.objectName === value.command.actorName));
+      intent.kind === "construct" && intent.effectId.replace(/^effect:/, "") === execution.effectId &&
+      intent.objectName === value.command.actorName));
     const applied = context.facts.filter((entry) => entry.kind === "outcome" && entry.outcome.kind === "applied" &&
       entry.outcome.commandId === execution.commandId && entry.outcome.worldLinkIds.length === 1 &&
       entry.outcome.worldLinkIds[0] === siteId);

@@ -69,7 +69,8 @@ describe("AiCommandReconciliation", () => {
     const reconciliation = new AiCommandReconciliation(2, bus);
     outcomes.next(outcome("dispatched", 5, ["actor-a"]));
     reconciliation.observeTick(905);
-    expect(emitted.at(-1)).toMatchObject({ kind: "failed", reason: "lost_outcome", commandId: "2:0:5:game" });
+    expect(emitted).toEqual([]);
+    expect(reconciliation.getState().pendingCommandIds).toEqual(["2:0:5:game"]);
     expect(reconciliation.getState().health).toBe("technical_fault");
   });
 
@@ -102,7 +103,8 @@ describe("AiCommandReconciliation", () => {
     });
 
     reconciliation.observeTick(7206);
-    expect(emitted.at(-1)).toMatchObject({ kind: "failed", reason: "lost_outcome" });
+    expect(emitted).toEqual([]);
+    expect(reconciliation.getState().pendingCommandIds).toEqual(["2:0:6:game"]);
     expect(reconciliation.getState().recentOutcomes).toEqual(
       expect.arrayContaining([expect.objectContaining({ kind: "applied", worldLinkIds: ["queue:producer:6"] })])
     );
@@ -218,10 +220,11 @@ describe("AiCommandReconciliation", () => {
     restored.observeTick(7_229);
     expect(emitted).toEqual([]);
     restored.observeTick(7_230);
-    expect(emitted.at(-1)).toMatchObject({ kind: "failed", reason: "lost_outcome" });
+    expect(emitted).toEqual([]);
+    expect(restored.getState().pendingCommandIds).toEqual(["2:0:10:game"]);
   });
 
-  it("bounds the unresolved backlog with an explicit technical outcome", () => {
+  it("diagnoses unexpected overflow without evicting already dispatched obligations", () => {
     const outcomes = new Subject<GameCommandOutcome>();
     const emitted: GameCommandOutcome[] = [];
     const bus = {
@@ -243,13 +246,9 @@ describe("AiCommandReconciliation", () => {
       outcomes.next(outcome("dispatched", sequence, [`actor-${sequence}`]));
     }
 
-    expect(emitted.at(-1)).toMatchObject({
-      kind: "failed",
-      reason: "outcome_backlog_overflow",
-      commandId: "2:0:0:game"
-    });
+    expect(emitted).toEqual([]);
     expect(reconciliation.getState()).toMatchObject({ health: "technical_fault" });
-    expect(reconciliation.getState().pendingCommandIds).toHaveLength(128);
-    expect(reconciliation.getState().pendingCommands).toHaveLength(128);
+    expect(reconciliation.getState().pendingCommandIds).toHaveLength(129);
+    expect(reconciliation.getState().pendingCommands).toHaveLength(129);
   });
 });

@@ -134,6 +134,21 @@ class AdaptationLedgerManager implements AiProposalManagerV1 {
 }
 
 describe("PureAiBrain", () => {
+  it("records accepted command service separately from evaluated but rejected lanes", () => {
+    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainStateV1({ playerNumber: 1, faction: FactionType.Tivara,
+      profile, tick: 0, archetypeId: "balanced" });
+    const observation = createAiTestObservation();
+    const result = new PureAiBrain(profile, [new DummyManager([stopIntent("service", 900, "worker-1", 0)])])
+      .step(observation, state, []);
+    expect(result.acceptedIntents).toHaveLength(1);
+    expect(result.nextState.lanes.find((entry) => entry.lane === "essential_economy")?.lastServicedTick)
+      .toBe(observation.tick);
+    const blocked = new PureAiBrain(profile, [new DummyManager([stopIntent("blocked", 900, "absent", 100000)])])
+      .step(observation, state, []);
+    expect(blocked.acceptedIntents).toHaveLength(0);
+    expect(blocked.nextState.lanes.find((entry) => entry.lane === "essential_economy")?.lastServicedTick).toBe(0);
+  });
   it("SCOUT-05 commits identical exact intents from identical permitted inputs, then responds to a real sighting", () => {
     const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
     const state = createAiBrainStateV1({
