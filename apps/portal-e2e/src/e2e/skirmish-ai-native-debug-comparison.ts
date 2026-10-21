@@ -88,5 +88,5 @@ export async function nativeDebugWorldDigest(page: Page) {
     if (!scene || !hash) throw new Error("debug_comparison_native_projection_missing");
     return hash.captureAuthoritativeProjection(scene);
   });
-  return digestCanonicalAiValue(projection);
+  return digestCanonicalAiValue(JSON.parse(JSON.stringify(projection)));
 }

@@ -11,11 +11,16 @@ export async function captureNativeContinuationBoundary(page: Page, playerNumber
     const controller = window.__fuzzyWaddleAiRuntimePartsV1?.(playerNumber)?.controller;
     const brain = controller?.getBrainState(), saved = controller?.getSaveState();
     if (!brain || !saved?.controllerCadence) throw new Error("native_continuation_state_or_cadence_missing");
-    return { brain, cadence: saved.controllerCadence };
+    return { brain, cadence: saved.controllerCadence, income: saved.deliveredIncomeSampling,
+      blackboard: saved.blackboard, observationMemory: saved.observationMemory };
   }, playerNumber);
   const brain = capture.brain;
   return { owner, worldDigest: await nativeDebugWorldDigest(page), brainDigest: digestCanonicalAiValue(brain),
     profileVersion: brain.profileVersion, profileDifficulty: brain.profileDifficulty ?? null,
+    archetypeId: brain.opening.archetypeId,
+    blackboardDigest: digestCanonicalAiValue(JSON.parse(JSON.stringify(capture.blackboard ?? null))),
+    incomeSamplingDigest: digestCanonicalAiValue(capture.income ?? null),
+    observationMemoryDigest: digestCanonicalAiValue(JSON.parse(JSON.stringify(capture.observationMemory ?? null))),
     cadenceDigest: digestCanonicalAiValue(capture.cadence), elapsedMilliseconds: capture.cadence.elapsedMilliseconds,
     recoveryDigest: digestCanonicalAiValue(brain.recovery), recoveryCount: brain.recovery.records.length,
     retryDebt: brain.recovery.records.reduce((total, record) => total + record.attempt, 0),

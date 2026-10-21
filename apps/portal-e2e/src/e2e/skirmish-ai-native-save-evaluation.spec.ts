@@ -5,6 +5,8 @@ const boundary = (tick: number): NativeSaveProof["saved"] => ({
   owner: { tick, activeMapScenes: 1, handlerCount: 1, controllerCount: 1, nativePlayerCount: 1,
     seed: 759940, matchId: "match:original", decisionSequence: tick === 19 ? 0 : 20 },
   worldDigest: "full-shared-queue-and-world", brainDigest: "full-brain", profileVersion: "profile-v1", profileDifficulty: 1,
+  archetypeId: "opening:original", blackboardDigest: "original-blackboard", incomeSamplingDigest: "original-income",
+  observationMemoryDigest: "original-observation-memory",
   cadenceDigest: "real-cadence", elapsedMilliseconds: 950, recoveryDigest: "original-recovery", recoveryCount: 1,
   retryDebt: 3, oldestFailureTick: 2, reservationsDigest: "original-claims", reservationCount: 1,
   pendingOutcomeCount: 1, pendingCommandCount: 1, authorityDigest: "original-authority"

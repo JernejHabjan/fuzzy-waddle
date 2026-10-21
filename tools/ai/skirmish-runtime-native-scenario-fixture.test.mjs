@@ -6,7 +6,7 @@ import { validNativeScenarioFixture } from "./skirmish-runtime-native-scenario-f
 
 test("all native bindings retain their full branches and original acceptance obligations", () => {
   const ids = Object.keys(nativeScenarioBindings.cases);
-  assert.equal(ids.length, 77);
+  assert.equal(ids.length, 78);
   const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish-v1.json", import.meta.url)));
   for (const id of ids) {
     const row = manifest.rows.find((row) => row.id === id);
@@ -138,11 +138,26 @@ test("H-31 binds autonomous single-player codec continuation without unsupported
   }
 });
 
+test("D-02 retains all selected policies and independent real multiplayer checkpoint transfer", () => {
+  const fixture = nativeScenarioFixture("D-02"), branches = fixture.assertions["D-02"].requiredNativeScenario.branchByVariant;
+  assert.equal(fixture.recipe.requiresMultiplayer, true);
+  assert.equal(fixture.recipe.variants.length, 18);
+  for (const variant of fixture.recipe.variants) {
+    const branch = branches[variant.id], pending = branch.endsWith("pending_plan");
+    assert.equal(variant.checkpointTicks[0], pending ? 199 : { Easy: 39, Normal: 19, Hard: 9 }[variant.difficulty]);
+    assert.equal(variant.captureCombat, undefined);
+    assert.equal(variant.presetWorld.receiptFault?.holdHistory, pending ? true : undefined);
+  }
+  const withoutRealPeers = structuredClone(fixture);
+  delete withoutRealPeers.recipe.requiresMultiplayer;
+  assert.equal(validNativeScenarioFixture(withoutRealPeers, "D-02"), false);
+});
+
 test("native cases cannot downgrade to generic counts or omit a faction, branch or physical channel", () => {
   for (const id of Object.keys(nativeScenarioBindings.cases)) for (const mutate of [
     (value) => delete value.assertions[id].requiredNativeScenario,
     (value) => value.recipe.variants.pop(),
-    (value) => value.recipe.variants[0].captureCombat = ["H-31", "H-32", "DBG-05"].includes(id) ? true : undefined,
+    (value) => value.recipe.variants[0].captureCombat = ["D-02", "H-31", "H-32", "DBG-05"].includes(id) ? true : undefined,
     (value) => value.recipe.variants[0].captureConstruction = ["H-32", "DBG-05"].includes(id) ? true : undefined,
     (value) => value.recipe.variants[0].evidenceStop = { earliestTick: 20, stableForTicks: 0 },
     (value) => value.recipe.variants[0].seed++,

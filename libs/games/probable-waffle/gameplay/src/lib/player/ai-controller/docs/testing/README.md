@@ -567,6 +567,15 @@ debt/age and retained paid/unknown claims. New saves preserve confirmed delivere
 reset unsafe derived income. Deterministic comparison excludes measured telemetry only. Raw captures stay local; bounded
 fingerprints and the first differing decision enter reports. All controls remain authored and unrun.
 
+D-02 binds18 variants across every difficulty and both factions. Single-player legs save immediately before the selected
+profile's first eligible decision or with a genuine applied command still awaiting its consumer receipt. Separate
+multiplayer legs disconnect/reconnect a real ordinary peer through the actual socket, require the original host's current
+snapshot, then close the host and observe real promotion. The promoted handler restores actual reconnect-owned AI state;
+brain, cadence, blackboard, receipt-based income and observation memory must match the original checkpoint. Its next
+decision must use the retained profile's exact eligible tick and next sequence, with one controller and the genuine new
+authority epoch. This is checkpoint-backed transfer, not zero-loss abrupt failover without an available AI checkpoint.
+No multiplayer save/load is introduced. These drivers and negative controls are authored and unrun.
+
 DBG-05 binds twelve native worlds to the actual runtime-artifact import surface. It is present only under an explicit
 localhost developer marker and is excluded from production. The actual host gate protects capture and is rechecked on
 every import. Malformed JSON, bytes/counts/depth, schema, traversal and markup are rejected before any world application;

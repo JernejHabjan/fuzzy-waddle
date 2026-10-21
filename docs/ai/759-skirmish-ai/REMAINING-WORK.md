@@ -1,22 +1,24 @@
 # #759 remaining work inventory
 
-Snapshot:2026-10-21; publication base2e855e81a1da2152f2e9f7a0e8f516a4b6a81df9 plus task-owned H-31 source.
+Snapshot:2026-10-21; publication base68ac1ed40e91ff2437e50e88b89726383cccaa28 plus task-owned D-02 source.
 [HANDOFF.md](HANDOFF.md) owns the next action; [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) distinguishes authored and
 validated evidence. This is the existing execution inventory, not another design project. Read only the selected package.
 
 ## What the inventory establishes
 
 The original concrete plan contains121 named scenarios. Pure registration is111/111. Supported runtime registration
-is108/115 (93.9%);7 (6.1%) still have specifications without native bindings. Five runtime rows are explicitly deferred:
-four #822 island-content rows and H-21 larger-unit clearance by user2026-10-21. Definitions115/115 comprise108 bindings
-and7 specifications. This continuous batch has authored15 new registrations, with77 factory bindings/530 variants and
+is109/115 (94.8%);6 (5.2%) still have specifications without native bindings. Five runtime rows are explicitly deferred:
+four #822 island-content rows and H-21 larger-unit clearance by user2026-10-21. Definitions115/115 comprise109 bindings
+and6 specifications. This continuous batch has authored16 new registrations, with78 factory bindings/548 variants and
 21 retained partial owner worlds unrun. H-23 now includes user-authorized native island establishment; its small
 water-enclosed diagnostic preset does not silently close the four broader #822 content rows.
-**Continue the current batch through all seven active gaps; no per-case pause.** Shared peer/save/lifecycle integration
-owns H-08/H-09/SEQ-08/D-02; runtime debug capture/stepping/import owns DBG-01/03; calibration owns D-06.
+**Continue the current batch through all six active gaps; no per-case pause.** Shared peer/save/lifecycle integration
+owns H-08/H-09/SEQ-08; runtime debug capture/stepping/import owns DBG-01/03; calibration owns D-06.
 H-32 now binds actual same-realm UI transitions, retained paid/path work and real host replacement, authored unrun.
 DBG-05 binds actual runtime-artifact import UI, bounded hostile inputs and real peer import/capture denial, authored unrun.
 H-31 binds eight native SP save/continuation worlds, real paid/uncertain work and exact next-decision traces, authored unrun.
+D-02 binds18 variants across all policies/factions, separate SP codec continuation and real MP reconnect/checkpoint-backed
+host transfer. Actual stored AI state is restored on promotion; no lossless abrupt-failover claim without a checkpoint.
 User correction2026-10-21: save/load coverage belongs to single-player. Multiplayer coverage uses actual host transfer,
 reconnect and stale-event fencing. H-31 is SP; D-02/SEQ-08 use separate supported legs. No MP save/load feature is planned.
 Counts describe registration, not passing gameplay, unique physical maps, sessions or time remaining.
@@ -92,7 +94,7 @@ an entire scenario. Invalidate only outcomes affected by later source/fixture ch
 | ------------------------------------- | ------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------ |
 | Pure fixture registration             | 111/111 = **100%**                          | 0/111 = **0%** | Required pure scenarios with registered fixtures; not behavior completion                                          |
 | Supported native definitions           | 115/115 = **100%**                          | 0/115 = **0%** | 105 scenario bindings plus10 specifications; definitions only, not validated gameplay |
-| Supported runtime recipe registration | 108/115 = **93.9%**                          | 7/115 = **6.1%** | Runtime recipes connected; five explicitly deferred rows excluded; not behavior completion                              |
+| Supported runtime recipe registration | 109/115 = **94.8%**                          | 6/115 = **5.2%** | Runtime recipes connected; five explicitly deferred rows excluded; not behavior completion                              |
 | Scenario behavior validation          | Not yet reconciled across the full manifest | Not yet measurable | Existing subset passes and failures are recorded, but no truthful overall completion percentage can yet be derived |
 
 During each selected package, reconcile its existing complete evidence into the row status and report its exact

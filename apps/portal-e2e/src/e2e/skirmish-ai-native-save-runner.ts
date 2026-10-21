@@ -15,11 +15,12 @@ import type { AiRuntimeBrowserTestHostV1 } from
 
 /** Seal the original autonomous SP interval, rewind the real encrypted save and repeat the same logical ticks. */
 export async function runNativeSaveVariant(
-  browser: Browser, fixture: RuntimeFixtureV1, variant: RuntimeVariantV1, request: RuntimeRequestV1, branch: string
+  browser: Browser, fixture: RuntimeFixtureV1, variant: RuntimeVariantV1, request: RuntimeRequestV1, branch: string,
+  saveTickOverride?: number
 ) {
   const player = fixture.recipe.aiPlayerNumber;
   const saveTicks: Readonly<Record<string, number>> = { before_apply: 19, applied_pending: 199, during_active: 119, pause_speed: 599 };
-  const saveTick = saveTicks[branch];
+  const saveTick = saveTickOverride ?? saveTicks[branch];
   if (!saveTick) throw new Error("native_save_unknown_branch");
   const world = variant.presetWorld;
   if (!world || world.events?.length || world.controls?.length || world.routeOutages?.length ||

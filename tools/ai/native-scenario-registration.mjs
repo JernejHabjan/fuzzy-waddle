@@ -40,7 +40,8 @@ export function nativeScenarioFixture(id) {
   const variants = ["Tivara", "Skaduwee"].flatMap((faction) => nativeScenarioBranches(id, faction).map((branch) => {
     const recovery = ["H-01", "H-02", "H-03", "H-04", "H-19", "H-24", "H-25", "H-26"].includes(id);
     const authority = ["H-06", "H-07", "H-10", "H-13", "H-14", "H-15", "H-11", "H-12", "H-30"].includes(id);
-    const world = id === "H-31" ? nativeSaveWorld(faction, branch) : id === "H-32" ? nativeLifecycleWorld(faction, branch) :
+    const world = id === "D-02" ? nativeSaveWorld(faction, branch.endsWith("pending_plan") ? "applied_pending" : "before_apply") :
+      id === "H-31" ? nativeSaveWorld(faction, branch) : id === "H-32" ? nativeLifecycleWorld(faction, branch) :
       id === "H-23" ? nativeIslandEstablishmentWorld(faction, branch) :
       id === "DBG-06" ? nativeDebugParityWorld(faction) :
       id === "H-05" ? nativeOptionalReleaseWorld(faction, branch) :
@@ -79,7 +80,7 @@ export function nativeScenarioFixture(id) {
       role: "standalone", seed: id === "EXP-01" ? 759933 : 759940,
       deadlineRationale: "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
       aiFaction: faction, humanFaction: faction === "Tivara" ? "Skaduwee" : "Tivara",
-      difficulty: id === "DBG-06" ? "Hard" : id === "D-04" ? "Easy" : ["D-01", "D-03", "D-05"].includes(id) ?
+      difficulty: id === "DBG-06" ? "Hard" : id === "D-04" ? "Easy" : ["D-01", "D-02", "D-03", "D-05"].includes(id) ?
         ({ easy: "Easy", normal: "Normal", hard: "Hard" })[branch.split("_")[0]] : "Normal",
       ...(id === "C-06" ? {
         additionalAiPlayers: [{ playerNumber: 3, faction: faction === "Tivara" ? "Skaduwee" : "Tivara", difficulty: "Easy" }],
@@ -89,8 +90,10 @@ export function nativeScenarioFixture(id) {
       ...(id === "DOMAIN-02" ? {
         additionalAiPlayers: [{ playerNumber: 3, faction: "Tivara", difficulty: "Easy" }]
       } : {}),
-      ...(["H-31", "H-32", "DBG-05"].includes(id) ? {} : { captureConstruction: true, captureCombat: true }), scenarioIds: [id],
+      ...(["D-02", "H-31", "H-32", "DBG-05"].includes(id) ? {} : { captureConstruction: true, captureCombat: true }), scenarioIds: [id],
       ...(id === "DBG-05" ? { checkpointTicks: [20] } : {}),
+      ...(id === "D-02" ? { captureConstruction: true, checkpointTicks: [branch.endsWith("pending_plan") ? 199 :
+        ({ easy: 39, normal: 19, hard: 9 })[branch.split("_")[0]], 400] } : {}),
       ...(id === "H-31" ? { captureConstruction: true,
         checkpointTicks: branch === "pause_speed" ? [599, 800] :
           [({ before_apply: 19, applied_pending: 199, during_active: 119 })[branch], 400] } : {}),
@@ -108,7 +111,7 @@ export function nativeScenarioFixture(id) {
     acceptance: binding.acceptance,
     ...(binding.capabilityLimits ? { capabilityLimits: binding.capabilityLimits } : {}),
     recipe: { mapLabel: ["C-06", "DOMAIN-02"].includes(id) ? "AI Multiplayer (test only)" : "AI Open Economy (test only)",
-      aiPlayerNumber: 2, simulationTimeScale: 1, ...(["H-32", "DBG-05"].includes(id) ? { requiresMultiplayer: true } : {}),
+      aiPlayerNumber: 2, simulationTimeScale: 1, ...(["D-02", "H-32", "DBG-05"].includes(id) ? { requiresMultiplayer: true } : {}),
       fixedStepFrames: true, checkpointTicks: ticks, variants },
     assertions: { [id]: { maximumTick: binding.latestTick, minimumDecisions: 1,
       // Infeasible controls need no arbitrary command. Feasible branches separately require native paid work and delivery.

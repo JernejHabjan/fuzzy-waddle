@@ -6,11 +6,11 @@ Do not load the full plan directory or archive on startup.
 ## Current cursor — large registration batch in progress, 2026-10-21
 
 - Worktree /home/jernej/.codex/worktrees/skirmish-authority-recovery/fuzzy-waddle;
-  branch feature/759-skirmish-ai. Publication base2e855e81a1da2152f2e9f7a0e8f516a4b6a81df9;
+  branch feature/759-skirmish-ai. Publication base68ac1ed40e91ff2437e50e88b89726383cccaa28;
   verify containing commit/remote on resume. Preserve unrelated main-checkout issue-template edits.
   Actual model/effort unknown; no delegation or model switch.
 - User requests all23 remaining registrations in one continuous batch. **Do not pause merely after this partial slice.**
-  Fifteen new registrations authored: D-03, D-04, D-05, H-05, H-20, H-23, H-31, H-32, SEQ-03, SEQ-04, SEQ-06, SEQ-07, DBG-04, DBG-05, DBG-06.
+  Sixteen new registrations authored: D-02–05, H-05/H-20/H-23/H-31/H-32, SEQ-03/04/06/07 and DBG-04/05/06.
   They cover difficulty fairness/function/pressure, release safety, topology/disposal, continuous economy/combat,
   actual selected-input comparison/replay and debug parity/quota/disposal. They remain unrun.
 - User2026-10-21 explicitly defers H-21 native larger-unit/formation clearance until suitable content exists.
@@ -22,9 +22,9 @@ Do not load the full plan directory or archive on startup.
 - User correction2026-10-21: **save/load is single-player; multiplayer has no save/load feature.** H-31 uses native
   SP save continuation. H-09/D-02/SEQ-08 have independent SP save/replay and real MP authority/reconnect legs.
   Do not add coordinated multiplayer save/load or preserve the erroneous combined chain as a blocker.
-- Supported runtime108/115 (93.9%) registered,7/115 (6.1%) unbound; pure111/111 registered.
-  Native factory77 bindings/530 variants plus21 partial owner worlds, unrun. Original23:15 newly registered,
-  1 explicitly deferred,7 still active. These are registration counts, never gameplay completion.
+- Supported runtime109/115 (94.8%) registered,6/115 (5.2%) unbound; pure111/111 registered.
+  Native factory78 bindings/548 variants plus21 partial owner worlds, unrun. Original23:16 newly registered,
+  1 explicitly deferred,6 still active. These are registration counts, never gameplay completion.
 - H-32 now has ordinary UI same-realm next-match controls, original paid/path callbacks and a genuine two-client
   host-replacement branch. Its matrix driver selects the real multiplayer configuration; missing credentials fail closed.
   Reload preserves saved identity/seed and does not reapply fixture setup. Paid completion rejects dead owners.
@@ -39,7 +39,12 @@ Do not load the full plan directory or archive on startup.
   construction/training/research and pause/speed continuation. Missing original premises or differing next decisions fail.
   Pure saved-lease controls preserve original expiry, recovery age, debt and unresolved/paid claims; native synchronous
   selection/dispatch never receives an invented middle boundary. These source edits and authored controls remain unrun.
-- **Next grouped authoring action:** finish the seven active registrations: H-08/H-09/SEQ-08/D-02 share
+- **D-02 now authored:**18 variants cover all three selected policies/both factions, SP before-eligible and pending-plan
+  codec continuation, plus separate real MP disconnect/reconnect/checkpoint/host-promotion legs. Native socket and scene
+  hooks record actual boundaries; snapshot/brain/cadence/profile/plan drift and a reset next eligible decision fail.
+  AiPlayerHandler restores an actual reconnect-owned saved continuation when promoted; no private AI/epoch injection.
+  This is snapshot-backed transfer, not a claim of lossless abrupt failover without an available AI checkpoint.
+- **Next grouped authoring action:** finish the six active registrations: H-08/H-09/SEQ-08 share
   supported SP save/scene continuation and separate real MP transfer/reconnect; DBG-01/DBG-03 need runtime replay/stepping;
   D-06 needs the declared pinned-baseline/calibration/holdout/soak driver. Do not substitute a fresh realm,
   controller-only restore, local epoch edit, pure replay or generic command counts for those native obligations.
@@ -115,7 +120,7 @@ Keep the report self-contained and concise. A documentation-only update reports 
 gameplay progress unchanged. The execution plan links to this format rather than maintaining a second template.
 
 Registration coverage: pure **111/111 = 100% registered / 0% remaining**; supported runtime
-**108/115 = 93.9% registered / 6.1% remaining**, excluding five explicitly deferred runtime rows. These are not overall AI completion.
+**109/115 = 94.8% registered / 5.2% remaining**, excluding five explicitly deferred runtime rows. These are not overall AI completion.
 Reconcile behavior evidence per selected package; do not invent a global completion percentage.
 
 ## End-of-gate machinery necessity review

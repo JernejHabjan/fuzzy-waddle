@@ -2,15 +2,15 @@
 
 ## Continuous registration batch — in progress, authored unrun (2026-10-21)
 
-Publication base2e855e81a1da2152f2e9f7a0e8f516a4b6a81df9 plus owned H-31 source; same authority-recovery worktree/feature branch.
+Publication base68ac1ed40e91ff2437e50e88b89726383cccaa28 plus owned D-02 source; same authority-recovery worktree/feature branch.
 The user requested all23 remaining registrations together. This entry closes only the published source slice;
 the batch must continue. Actual model/effort unknown; no subagent or model switch.
 
 Numbered acceptance map / Omission Audit for the current slice:
 
-1. **Fifteen full source registrations authored:** D-03/D-04/D-05, H-05/H-20/H-23/H-31/H-32, SEQ-03/04/06/07,
+1. **Sixteen full source registrations authored:** D-02/D-03/D-04/D-05, H-05/H-20/H-23/H-31/H-32, SEQ-03/04/06/07,
    DBG-04/05/06. The manifest, native bindings, generated fixtures and mandatory ID-specific readers are connected.
-   Factory77 bindings/530 variants; supported registration108/115 (93.9%),7/115 unbound (6.1%). Pure111/111 unchanged.
+   Factory78 bindings/548 variants; supported registration109/115 (94.8%),6/115 unbound (5.2%). Pure111/111 unchanged.
    All new premises, timing, predicates and behavior remain unrun; no passing count or overall completion claimed.
 2. **Difficulty:** all three policies/both factions receive real hidden-position/health/queue/contact controls,
    same paired match identity, exact permitted inputs/intents and actual profile/cadence checks. Easy starts with
@@ -50,7 +50,7 @@ Numbered acceptance map / Omission Audit for the current slice:
 7. **Explicit deferral:** user2026-10-21 deferred H-21 larger-unit/formation native clearance until suitable content
    exists. Pure coverage remains. Manifest support/parser/catalog now distinguish this #759 deferral from the four
    #822 island rows. The H-23 island addition does not silently claim those broader content obligations completed.
-8. **Seven unfinished bindings:** H-08/H-09/SEQ-08/D-02 need the real peer/save/scene continuation path;
+8. **Six unfinished bindings:** H-08/H-09/SEQ-08 need the real peer/save/scene continuation path;
    DBG-01/03 need full runtime capture/stepping/import/access; D-06 needs declared calibration/holdout/soak and
    pinned-baseline execution/reporting. No placeholder or partial owner control was promoted for these IDs.
 9. **Execution deliberately deferred:** no recipe/test/lint/type/formatter/build/browser/server/doctor/context or
@@ -92,12 +92,22 @@ Numbered acceptance map / Omission Audit for the current slice:
     boundary inside synchronous selection/dispatch. New saves retain confirmed pending delivery sampling and sample age;
     legacy saves still reset unsafe net-income estimates. Full continuation omits measured telemetry only.
     Raw captures remain local, proof reports retain bounded digests/first difference. All controls remain unrun.
+14. **D-02 configuration continuation now registered:**18 native variants cover all three lobby-selected policies and
+    both factions. SP before-eligible/pending-application legs reuse real codec continuation and exact decision traces.
+    Separate actual two-client socket disconnect/reconnect legs require a current original host checkpoint, then actual
+    promotion with exactly one restored AI owner. Brain, cadence, blackboard, confirmed income and observation memory
+    must survive, followed by the exact next eligible tick/sequence under the selected profile. Authority epoch changes
+    intentionally; snapshot-backed transfer does not claim lossless abrupt failover without an available AI checkpoint.
+    AiPlayerHandler now restores actual reconnect-owned AI state when creating the promoted controller. It previously
+    discarded that available continuation. Optional undefined wire fields are normalized through JSON before native
+    digesting, matching codec serialization without erasing defined gameplay fields. Negative source controls reject
+    stale snapshots, fresh openings/cadence, profile fallback, duplicated owners and reset sequence. All remain unrun.
 
 Separate Final Closure Audit for this source slice: traced factory inputs and strict parsers through native controls,
 selected ownership, independent physical/paid effects, mandatory readers and manifest consumers. Reviewed paired
 instance identity, observer gating, finite faults, original queue handles, safe claim release, quota accounting and
 scene cleanup. Repaired source-review findings above. **The all-registrations batch remains incomplete.**
-Publish exact owned paths normally and verify remote SHA; do not force-push, merge or open a PR. Continue the seven
+Publish exact owned paths normally and verify remote SHA; do not force-push, merge or open a PR. Continue the six
 remaining bindings after this source checkpoint. Machinery necessity/removal stays last overall.
 
 ## D-01 registration batch — authored, not executed (2026-10-20)

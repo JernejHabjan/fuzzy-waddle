@@ -20,6 +20,7 @@ import { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
 import { nativeLifecycleProofFailures } from "./skirmish-ai-native-lifecycle-evaluation";
 import { nativeImportProofFailures } from "./skirmish-ai-native-import-evaluation";
 import { nativeSaveProofFailures } from "./skirmish-ai-native-save-evaluation";
+import { nativeProfileTransferFailures } from "./skirmish-ai-native-profile-transfer-evaluation";
 import { evaluateNativeScouting, nativeScoutingFairness } from "./skirmish-ai-native-scouting-evaluation";
 import { evaluateNativeStrategy } from "./skirmish-ai-native-strategy-evaluation";
 import { evaluateNativeCombat } from "./skirmish-ai-native-combat-evaluation";
@@ -43,6 +44,24 @@ export function evaluateNativeScenarioVariant(
   if (!fixture && !contract) return [];
   const variant = fixture?.recipe.variants.find((candidate) => candidate.id === result.variantId);
   const branch = contract?.branchByVariant[result.variantId];
+  if (id === "D-02") {
+    if (!contract || contract.schemaVersion !== 1 || contract.scenarioId !== id || contract.latestTick !== 4000 ||
+        !branch || !definition.branches.includes(branch) || !variant?.presetWorld || variant.evidenceStop ||
+        !fixture?.recipe.requiresMultiplayer || result.presetFixtureId !== variant.presetWorld.fixtureId)
+      return ["native_profile_source_binding_missing_or_drifted"];
+    const pending = branch.endsWith("pending_plan");
+    const saveTick = pending ? 199 : { Easy: 39, Normal: 19, Hard: 9 }[variant.difficulty];
+    const failures = nativeSaveProofFailures(pending ? "applied_pending" : "before_apply", result.nativeSave, saveTick);
+    const expectedDifficulty = { Easy: 0, Normal: 1, Hard: 2 }[variant.difficulty];
+    if (!result.nativeSave || result.nativeSave.saved.profileDifficulty !== expectedDifficulty ||
+        result.nativeSave.sourceRevision !== result.productionPreset?.sourceRevision ||
+        result.nativeSave.fixtureDigest !== result.productionPreset?.fixtureDigest)
+      failures.push("native_profile_save_configuration_or_source_drifted");
+    if (branch.endsWith("host_transfer"))
+      failures.push(...nativeProfileTransferFailures(variant.difficulty, result.nativeProfileTransfer));
+    if (result.aiErrors.length) failures.push("native_profile_save_ai_errors");
+    return failures;
+  }
   if (id === "H-31") {
     if (!contract || contract.schemaVersion !== 1 || contract.scenarioId !== id || contract.latestTick !== 4000 ||
         !branch || !definition.branches.includes(branch) || !variant?.presetWorld || variant.evidenceStop ||

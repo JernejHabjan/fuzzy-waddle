@@ -3621,6 +3621,60 @@
           "Matching incomplete legacy hash accepted as matching state"
         ]
       }
+    },
+    "D-02": {
+      "latestTick": 4000,
+      "checkpointTicks": [
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000,
+        4000
+      ],
+      "branches": [
+        "easy_before_eligible",
+        "easy_pending_plan",
+        "easy_host_transfer",
+        "normal_before_eligible",
+        "normal_pending_plan",
+        "normal_host_transfer",
+        "hard_before_eligible",
+        "hard_pending_plan",
+        "hard_host_transfer"
+      ],
+      "capabilityLimits": [
+        "Single-player save/replay and real multiplayer reconnect/host promotion are independent legs; multiplayer has no save/load.",
+        "Host-transfer coverage uses the actual current checkpoint received through native reconnect. It does not certify zero-loss abrupt failover without an available AI checkpoint.",
+        "Original and restored brains, cadence, profile, plans, claims and RNG remain separate actual boundaries; subsequent epoch fencing is an intentional authority change."
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/classic-rts-and-difficulty-scenarios.md",
+        "requiredOutcome": "Save/load/replay/host transfer preserves difficulty, archetype, scheduling and active plans; no silent profile drift",
+        "setup": [
+          "Each lobby difficulty has an active archetype, scheduler debt and in-progress plans",
+          "Separate native multiplayer sessions use two real peers for host transfer/reconnect with the same selected configuration; multiplayer save/load is not supported or required"
+        ],
+        "actions": [
+          "In single-player, save/reload and replay the same logical input continuation at equivalent safe boundaries",
+          "Independently, transfer actual multiplayer host authority and reconnect peers without loading a save",
+          "Resume before the next scheduled decision rather than resetting cadence"
+        ],
+        "measurements": [
+          "Profile/version, archetype, RNG, debt/cursors, active plan IDs and exact next eligible decisions",
+          "Peer canonical state including shared queue metadata"
+        ],
+        "required": [
+          "Save/replay/host transfer preserve the selected profile and active scheduling/plan state"
+        ],
+        "forbidden": [
+          "Normal fallback after restore",
+          "Fresh cadence timer or opening/archetype roll after host transfer"
+        ]
+      }
     }
   }
 }

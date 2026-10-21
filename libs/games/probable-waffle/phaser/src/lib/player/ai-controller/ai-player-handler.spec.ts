@@ -8,7 +8,8 @@ jest.mock("./player-ai-controller", () => ({
   PlayerAiController: jest.fn().mockImplementation((_scene, player) => ({
     player,
     setEnabled: jest.fn(),
-    setAuthorityActive: jest.fn()
+    setAuthorityActive: jest.fn(),
+    setSaveState: jest.fn()
   }))
 }));
 
@@ -19,6 +20,7 @@ describe("AiPlayerHandler campaign composition", () => {
     const onDestroy = new Subject<void>();
     const player = (playerNumber: number, campaignController?: "full-ai" | "scripted-ai" | "passive") => ({
       playerNumber,
+      playerState: { data: {} },
       playerController: {
         data: {
           playerDefinition: {
@@ -55,6 +57,7 @@ describe("AiPlayerHandler campaign composition", () => {
     const onDestroy = new Subject<void>();
     const player = {
       playerNumber: 2,
+      playerState: { data: {} },
       playerController: { data: { playerDefinition: {
         playerType: ProbableWafflePlayerType.AI, campaignAiEnabled: true
       } } }
@@ -82,5 +85,22 @@ describe("AiPlayerHandler campaign composition", () => {
     onDestroy.next();
     expect(controller.setAuthorityActive).toHaveBeenLastCalledWith(false);
     expect(handler.getAiPlayerController(2)).toBeUndefined();
+  });
+
+  it("restores the actual reconnect-owned continuation once when a peer becomes host", () => {
+    const continuation = { blackboard: { original: true }, controllerCadence: {
+      schemaVersion: 1, elapsedMilliseconds: 950, queuedAfterBoundary: false, completedDecisionSequence: 17 } };
+    const player = { playerNumber: 3, playerState: { data: { aiBehaviorTreeState: continuation } },
+      playerController: { data: { playerDefinition: { playerType: ProbableWafflePlayerType.AI, campaignAiEnabled: true } } } };
+    const scene = { isHost: false, players: [player], onShutdown: new Subject<void>(), onDestroy: new Subject<void>()
+    } as unknown as GameProbableWaffleScene;
+    const handler = new AiPlayerHandler(scene);
+    handler.setHostAuthorityActive(true);
+    const controller = handler.getAiPlayerController(3)!;
+    expect(controller.setSaveState).toHaveBeenCalledWith(continuation);
+    expect((controller.setSaveState as jest.Mock).mock.calls[0][0]).not.toBe(continuation);
+    handler.setHostAuthorityActive(true);
+    expect(controller.setSaveState).toHaveBeenCalledTimes(1);
+    expect(controller.setAuthorityActive).toHaveBeenLastCalledWith(true);
   });
 });

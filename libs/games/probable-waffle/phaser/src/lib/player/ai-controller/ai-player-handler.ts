@@ -31,6 +31,8 @@ export class AiPlayerHandler {
 
     aiPlayers.forEach((player) => {
       const aiPlayerController = new PlayerAiController(this.scene, player);
+      const continuation = player.playerState.data.aiBehaviorTreeState;
+      if (hostMigrationConfirmed && continuation) aiPlayerController.setSaveState(structuredClone(continuation));
       aiPlayerController.setEnabled(player.playerController.data.playerDefinition?.campaignAiEnabled ?? true);
       this.aiPlayerControllers.push(aiPlayerController);
     });

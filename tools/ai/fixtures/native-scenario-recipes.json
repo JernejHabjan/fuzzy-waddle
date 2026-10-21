@@ -204,7 +204,6 @@
     "H-08",
     "H-09",
     "SEQ-08",
-    "D-02",
     "D-06",
     "DBG-01",
     "DBG-03"
@@ -386,65 +385,6 @@
         6000,
         12000,
         18000
-      ],
-      "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
-    },
-    {
-      "scenarioId": "D-02",
-      "status": "authored_not_executed",
-      "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/classic-rts-and-difficulty-scenarios.md",
-      "requiredOutcome": "Save/load/replay/host transfer preserves difficulty, archetype, scheduling and active plans; no silent profile drift",
-      "world": "supported_lifecycle",
-      "maximumTick": 4000,
-      "setup": [
-        "Each lobby difficulty has an active archetype, scheduler debt and in-progress plans",
-        "Separate native multiplayer sessions use two real peers for host transfer/reconnect with the same selected configuration; multiplayer save/load is not supported or required"
-      ],
-      "actions": [
-        "In single-player, save/reload and replay the same logical input continuation at equivalent safe boundaries",
-        "Independently, transfer actual multiplayer host authority and reconnect peers without loading a save",
-        "Resume before the next scheduled decision rather than resetting cadence"
-      ],
-      "measurements": [
-        "Profile/version, archetype, RNG, debt/cursors, active plan IDs and exact next eligible decisions",
-        "Peer canonical state including shared queue metadata"
-      ],
-      "required": [
-        "Save/replay/host transfer preserve the selected profile and active scheduling/plan state"
-      ],
-      "forbidden": [
-        "Normal fallback after restore",
-        "Fresh cadence timer or opening/archetype roll after host transfer"
-      ],
-      "branches": [
-        "All three difficulties",
-        "Before eligible decision",
-        "Pending plan application",
-        "Host promotion"
-      ],
-      "executionBlockers": [
-        "native_case_binding",
-        "profile_history",
-        "snapshot_boundary",
-        "multiplayer_boundary"
-      ],
-      "reuse": [
-        "tools/ai/fixtures/stage-14-adaptation.json",
-        "libs/games/probable-waffle/phaser/src/lib/world/services/recovery/serialize-actor-queue-state.spec.ts",
-        "libs/games/probable-waffle/phaser/src/lib/entity/components/queue/queue-continuation.spec.ts"
-      ],
-      "checkpointTicks": [
-        0,
-        20,
-        200,
-        400,
-        800,
-        1200,
-        1600,
-        2000,
-        2400,
-        3000,
-        4000
       ],
       "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
     },

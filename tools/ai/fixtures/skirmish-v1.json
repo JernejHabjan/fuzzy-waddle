@@ -521,8 +521,7 @@
       "id": "D-02",
       "stages": [6, 14],
       "group": "difficulty",
-      "fixture": null,
-      "runtimeRecipeDraft": "native-scenario-recipes.json",
+      "fixture": "d-02-native-runtime.json",
       "authoredFixture": "stage-14-adaptation.json",
       "drivers": ["pure", "runtime"]
     },
