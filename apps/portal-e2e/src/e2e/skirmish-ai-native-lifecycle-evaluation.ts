@@ -1,7 +1,7 @@
 import type { NativeLifecycleProof } from "./skirmish-ai-native-lifecycle-proof";
 
 /** No command-count fallback: actual same-realm late work, native ownership and a functioning new scene are mandatory. */
-export function nativeLifecycleProofFailures(branch: string, proof: NativeLifecycleProof | undefined) {
+export function nativeLifecycleProofFailures(branch: string, proof: NativeLifecycleProof | undefined, maximumTick = 4000) {
   if (!proof || proof.branch !== branch) return ["native_lifecycle_proof_missing_or_wrong_branch"];
   const failures: string[] = [];
   if (!/^[a-f0-9]{40}$/.test(proof.sourceRevision) || !proof.fixtureDigest)
@@ -10,7 +10,7 @@ export function nativeLifecycleProofFailures(branch: string, proof: NativeLifecy
     ["next_active", proof.nextActive]] as const) {
     if (owner.activeMapScenes !== 1 || owner.handlerCount !== 1 || owner.controllerCount !== 1 || owner.nativePlayerCount !== 1)
       failures.push(`native_lifecycle_duplicate_or_missing_owner:${name}`);
-    if (!Number.isSafeInteger(owner.tick) || owner.tick < 0 || owner.tick > 4000)
+    if (!Number.isSafeInteger(owner.tick) || owner.tick < 0 || owner.tick > maximumTick)
       failures.push(`native_lifecycle_tick_outside_original_ceiling:${name}`);
   }
   if (!proof.original.matchId || proof.original.matchId === proof.nextInitial.matchId ||

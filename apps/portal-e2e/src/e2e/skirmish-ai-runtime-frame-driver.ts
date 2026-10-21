@@ -2,21 +2,22 @@ import type { Page } from "@playwright/test";
 
 /** Advance complete native Phaser frames, allowing Promise continuations between simulation ticks. */
 export async function advanceRuntimeFrames(
-  page: Page, playerNumber: number, targetTick: number, simulationTimeScale = 1
+  page: Page, playerNumber: number, targetTick: number, simulationTimeScale = 1, stopOnTerminal = false
 ): Promise<void> {
   if (!Number.isSafeInteger(targetTick) || targetTick < 0) throw new Error("runtime_frame_driver_invalid_tick");
   if (!Number.isFinite(simulationTimeScale) || simulationTimeScale < 0.25 || simulationTimeScale > 16)
     throw new Error("runtime_frame_driver_invalid_scale");
   await page.evaluate(
-    async ({ playerNumber, targetTick, simulationTimeScale }) => {
+    async ({ playerNumber, targetTick, simulationTimeScale, stopOnTerminal }) => {
       const parts = window.__fuzzyWaddleAiRuntimePartsV1?.(playerNumber);
-      const host = (
+      const realm = (
         window as unknown as {
-          __fuzzyWaddleAiRuntimeBrowserTestV1?: {
-            game: { loop: { sleep(): void; now: number }; headlessStep(time: number, delta: number): void };
-          };
+          __fuzzyWaddleAiRuntimeBrowserTestV1?: { game: FrameGame };
+          __fuzzyWaddleAiMultiplayerBrowserTestV1?: { game: FrameGame };
         }
-      ).__fuzzyWaddleAiRuntimeBrowserTestV1;
+      );
+      type FrameGame = { loop: { sleep(): void; now: number }; headlessStep(time: number, delta: number): void };
+      const host = realm.__fuzzyWaddleAiRuntimeBrowserTestV1 ?? realm.__fuzzyWaddleAiMultiplayerBrowserTestV1;
       if (!parts || !host) throw new Error("runtime_frame_driver_unavailable");
       const game = host.game;
       game.loop.sleep();
@@ -26,6 +27,7 @@ export async function advanceRuntimeFrames(
       let frameTime = game.loop.now + parts.tickService.currentTick * 50;
       try {
         while (parts.tickService.currentTick < targetTick) {
+          if (stopOnTerminal && ["win", "loss", "tie"].includes(parts.getScore(playerNumber).gameResult ?? "")) break;
           const before = parts.tickService.currentTick;
           // The native frame owns scene timers, pathfinding, physics and fixed-tick subscribers.
           const frameDelta = 50 / simulationTimeScale;
@@ -40,6 +42,6 @@ export async function advanceRuntimeFrames(
         parts.tickService.pauseTick("manual");
       }
     },
-    { playerNumber, targetTick, simulationTimeScale }
+    { playerNumber, targetTick, simulationTimeScale, stopOnTerminal }
   );
 }

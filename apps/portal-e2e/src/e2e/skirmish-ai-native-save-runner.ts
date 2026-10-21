@@ -1,4 +1,4 @@
-import type { Browser } from "@playwright/test";
+import type { Browser, Page } from "@playwright/test";
 import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
 import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
 import type { RuntimeRequestV1 } from "./skirmish-ai-runtime-request";
@@ -16,7 +16,8 @@ import type { AiRuntimeBrowserTestHostV1 } from
 /** Seal the original autonomous SP interval, rewind the real encrypted save and repeat the same logical ticks. */
 export async function runNativeSaveVariant(
   browser: Browser, fixture: RuntimeFixtureV1, variant: RuntimeVariantV1, request: RuntimeRequestV1, branch: string,
-  saveTickOverride?: number
+  saveTickOverride?: number, afterContinuation?: (page: Page, proof: NativeSaveProof) => Promise<void>,
+  beforeReplay?: (page: Page) => Promise<void>
 ) {
   const player = fixture.recipe.aiPlayerNumber;
   const saveTicks: Readonly<Record<string, number>> = { before_apply: 19, applied_pending: 199, during_active: 119, pause_speed: 599 };
@@ -45,8 +46,10 @@ export async function runNativeSaveVariant(
       await armNativeDecisionTrace(page, player);
     }, async (page) => {
       if (!save || !saved || !premises) throw new Error("native_save_exact_original_boundary_missing");
+      await beforeReplay?.(page);
       nativeSave = await replayNativeSavedContinuation(page, player, branch, request.sourceRevision,
         request.fixtureDigest, save, saved, premises, branch === "pause_speed" ? 2 : 1);
+      await afterContinuation?.(page, nativeSave);
     });
   if (!nativeSave) throw new Error("native_save_continuation_not_captured");
   // The sealed raw observer stays local; it supplies premises, not a large model-facing report.

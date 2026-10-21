@@ -1,4 +1,4 @@
-import { expect, type Browser } from "@playwright/test";
+import { expect, type Browser, type Page } from "@playwright/test";
 import { startMultiplayerTestMatch } from "./skirmish-ai-multiplayer-match";
 import { observeMultiplayerPeer } from "./skirmish-ai-multiplayer-observation";
 import { captureNativeContinuationBoundary } from "./skirmish-ai-native-continuation-boundary";
@@ -12,7 +12,7 @@ import { nativeDebugWorldDigest } from "./skirmish-ai-native-debug-comparison";
 export async function runNativeProfileTransfer(browser: Browser, options: {
   seed: number; aiFaction: "Tivara" | "Skaduwee"; aiDifficulty: "Easy" | "Normal" | "Hard";
   lateDeliveryOrder?: "command_then_receipt" | "receipt_then_command"
-}) {
+}, afterTransfer?: (page: Page) => Promise<void>) {
   if (process.env.AI_MULTIPLAYER_E2E !== "1") throw new Error("native_profile_transfer_requires_real_multiplayer_config");
   const match = await startMultiplayerTestMatch(browser, { ...options,
     ...(options.lateDeliveryOrder ? { authorityProbe: true as const } : {}) });
@@ -53,6 +53,7 @@ export async function runNativeProfileTransfer(browser: Browser, options: {
     await match.peer.waitForFunction(() => window.__fuzzyWaddleAiRuntimePartsV1?.(3)?.controller.isDecisionBoundarySettled());
     const next = await captureNativeContinuationBoundary(match.peer, 3);
     const hook = await nativeTransferHookAction(match.peer);
+    await afterTransfer?.(match.peer);
     return { humanClients: 2, sourceTick: original.owner.tick, disconnected: hook.disconnected,
       snapshotTick: hook.snapshotTick, snapshotBrainDigest, snapshotCadenceDigest,
       original, promoted, next, originalEpoch: peerEpoch, promotedEpoch, nextDecision: hook.nextDecision, aiErrors: [...aiErrors],

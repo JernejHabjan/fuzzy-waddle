@@ -3776,6 +3776,53 @@
           "Success inferred solely from bounded map size"
         ]
       }
+    },
+    "SEQ-08": {
+      "latestTick": 18000,
+      "checkpointTicks": [
+        19,
+        119,
+        199,
+        400,
+        18000
+      ],
+      "branches": [
+        "before_apply",
+        "applied_pending",
+        "during_active",
+        "host_transfer"
+      ],
+      "capabilityLimits": [
+        "Each SP branch compares the complete autonomous original-to-terminal decision trace and full native world with real codec replay, then starts a same-realm second match.",
+        "Host-transfer branch adds an independent real two-client reconnect/checkpoint/promotion and old-command/receipt fence, then continues that promoted match to its actual result and same-realm second match. Multiplayer has no save/load.",
+        "Actual terminal win/loss/tie, useful delivered income, production and native combat are mandatory; this lifecycle case does not replace the separate both-faction victory gate."
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "Exact saved continuation for equivalent logical inputs, applied-once effects, no duplicated brain/claims/results, clean new match",
+        "setup": [
+          "Single-player continuous economy/attack plus pending work has a real safe save boundary",
+          "An independent real two-client continuous match covers host transfer/reconnect and late old events; both legs preserve their own original identity, seed, profile and shared queue metadata"
+        ],
+        "actions": [
+          "Single-player leg: native save/reload, same logical continuation to authoritative finish, then ordinary same-realm second match",
+          "Multiplayer leg: real host promotion/reconnect, late old callbacks, authoritative finish, then ordinary same-realm second match; no multiplayer save/load"
+        ],
+        "measurements": [
+          "Canonical snapshot/state hash, input log and exact committed decisions through each boundary",
+          "Native exactly-once effects, result publication and listener/controller cleanup"
+        ],
+        "required": [
+          "Equivalent logical inputs continue equivalently after restore/transfer",
+          "One brain/claim/effect/result authority and a functional clean second match"
+        ],
+        "forbidden": [
+          "Single-browser host flag standing in for peer transfer",
+          "Legacy-only hash ignores sharedQueue",
+          "New browser hides disposal leaks",
+          "Coordinated multiplayer save/load invented as a prerequisite for supported host-transfer coverage"
+        ]
+      }
     }
   }
 }

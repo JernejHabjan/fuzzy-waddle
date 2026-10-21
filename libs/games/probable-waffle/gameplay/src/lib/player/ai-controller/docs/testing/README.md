@@ -594,6 +594,14 @@ old identity on each peer. Source reports keep native segments separate and redu
 projection includes all four resource balances, including food; the legacy multiplayer hash contract stays unchanged.
 All source controls remain authored/unrun. No multiplayer save/load is introduced.
 
+SEQ-08 binds eight complete supported lifecycle variants. Before-apply, actual held application and progressing paid
+construction/training/research use ordinary native SP saves. The original autonomous match continues to its actual
+terminal tick before rewind; full codec replay must match its complete world, every bounded decision and actual result,
+income, production and damage. The independent real MP leg reconnects/promotes, fences the original old command/receipt,
+then continues that promoted scene to native finish. Each uses the real end-game dialog/score screen and a same-realm
+second match with original-scene/authority callbacks fenced after disposal. No forced results or combined MP saves.
+Terminal loss/tie is valid lifecycle evidence, not both-faction victory certification. These bindings remain unrun.
+
 DBG-05 binds twelve native worlds to the actual runtime-artifact import surface. It is present only under an explicit
 localhost developer marker and is excluded from production. The actual host gate protects capture and is rechecked on
 every import. Malformed JSON, bytes/counts/depth, schema, traversal and markup are rejected before any world application;

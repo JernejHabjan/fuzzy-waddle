@@ -201,77 +201,11 @@
     }
   },
   "scenarioIds": [
-    "SEQ-08",
     "D-06",
     "DBG-01",
     "DBG-03"
   ],
   "cases": [
-    {
-      "scenarioId": "SEQ-08",
-      "status": "authored_not_executed",
-      "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
-      "requiredOutcome": "Exact saved continuation for equivalent logical inputs, applied-once effects, no duplicated brain/claims/results, clean new match",
-      "world": "supported_lifecycle",
-      "maximumTick": 18000,
-      "setup": [
-        "Single-player continuous economy/attack plus pending work has a real safe save boundary",
-        "An independent real two-client continuous match covers host transfer/reconnect and late old events; both legs preserve their own original identity, seed, profile and shared queue metadata"
-      ],
-      "actions": [
-        "Single-player leg: native save/reload, same logical continuation to authoritative finish, then ordinary same-realm second match",
-        "Multiplayer leg: real host promotion/reconnect, late old callbacks, authoritative finish, then ordinary same-realm second match; no multiplayer save/load"
-      ],
-      "measurements": [
-        "Canonical snapshot/state hash, input log and exact committed decisions through each boundary",
-        "Native exactly-once effects, result publication and listener/controller cleanup"
-      ],
-      "required": [
-        "Equivalent logical inputs continue equivalently after restore/transfer",
-        "One brain/claim/effect/result authority and a functional clean second match"
-      ],
-      "forbidden": [
-        "Single-browser host flag standing in for peer transfer",
-        "Legacy-only hash ignores sharedQueue",
-        "New browser hides disposal leaks",
-        "Coordinated multiplayer save/load invented as a prerequisite for supported host-transfer coverage"
-      ],
-      "branches": [
-        "Pending before apply",
-        "Applied receipt delayed",
-        "Construction/training/research active",
-        "Old-host callback after promotion"
-      ],
-      "executionBlockers": [
-        "native_case_binding",
-        "snapshot_boundary",
-        "multiplayer_boundary",
-        "receipt_fault",
-        "terminal_history"
-      ],
-      "reuse": [
-        "tools/ai/native-authority-worlds.mjs",
-        "libs/games/probable-waffle/phaser/src/lib/world/services/recovery/serialize-actor-queue-state.spec.ts",
-        "libs/games/probable-waffle/phaser/src/lib/entity/components/queue/queue-continuation.spec.ts"
-      ],
-      "checkpointTicks": [
-        0,
-        20,
-        200,
-        400,
-        800,
-        1200,
-        1600,
-        2000,
-        2400,
-        3000,
-        4000,
-        6000,
-        12000,
-        18000
-      ],
-      "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
-    },
     {
       "scenarioId": "D-06",
       "status": "authored_not_executed",

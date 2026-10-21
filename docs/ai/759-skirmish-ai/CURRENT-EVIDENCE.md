@@ -2,15 +2,15 @@
 
 ## Continuous registration batch — in progress, authored unrun (2026-10-21)
 
-Publication base2752c00a3acd57bc96e7583cce0d9bba83c51857 plus owned H-09 source; same authority-recovery worktree/feature branch.
+Publication basef2f13ded57d1a092497273a72aae81901d1b57ee plus owned SEQ-08 source; same authority-recovery worktree/feature branch.
 The user requested all23 remaining registrations together. This entry closes only the published source slice;
 the batch must continue. Actual model/effort unknown; no subagent or model switch.
 
 Numbered acceptance map / Omission Audit for the current slice:
 
-1. **Eighteen full source registrations authored:** D-02/D-03/D-04/D-05, H-05/H-08/H-09/H-20/H-23/H-31/H-32, SEQ-03/04/06/07,
+1. **Nineteen full source registrations authored:** D-02/D-03/D-04/D-05, H-05/H-08/H-09/H-20/H-23/H-31/H-32, SEQ-03/04/06/07/08,
    DBG-04/05/06. The manifest, native bindings, generated fixtures and mandatory ID-specific readers are connected.
-   Factory80 bindings/562 variants; supported registration111/115 (96.5%),4/115 unbound (3.5%). Pure111/111 unchanged.
+   Factory81 bindings/570 variants; supported registration112/115 (97.4%),3/115 unbound (2.6%). Pure111/111 unchanged.
    All new premises, timing, predicates and behavior remain unrun; no passing count or overall completion claimed.
 2. **Difficulty:** all three policies/both factions receive real hidden-position/health/queue/contact controls,
    same paired match identity, exact permitted inputs/intents and actual profile/cadence checks. Easy starts with
@@ -125,12 +125,23 @@ Numbered acceptance map / Omission Audit for the current slice:
     prepareNativePeerCheckpoint; Load waits for real scene/AI readiness and supports ordinary score-screen/home UI.
     Full harness projection now includes food and all other balances; the legacy multiplayer digest is unchanged.
     New negative/source controls remain unrun. Full traces/IDs stay local; bounded fingerprints enter summaries.
+17. **SEQ-08 continuous supported lifecycle now registered:** eight faction/branch variants retain genuine SP saves
+    before first application, with a held original application or with progressing paid construction/training/research.
+    The autonomous original continues through its actual terminal tick before rewind. Native codec replay must match
+    every bounded selected decision, complete terminal world and independently read final result/income/production/damage.
+    The real end-game dialog and score screen precede a same-realm second match; an early quit cannot satisfy finish.
+    The independent MP leg uses actual reconnect/checkpoint/promotion, original old-command/receipt delivery, then continues
+    that promoted scene to a native result. Original authority and scene work are delivered again after disposal and must
+    not change the new native scene. Income, production, useful combat, original identity/profile and unique owners are
+    mandatory. Loss/tie supports lifecycle coverage but does not close the separate both-faction victory gate. Shared
+    driver hooks now keep their contexts alive for these continuations; ordinary callers retain their previous boundaries.
+    All source controls remain authored/unrun, including the terminal-aware full-frame and ordinary end-dialog paths.
 
 Separate Final Closure Audit for this source slice: traced factory inputs and strict parsers through native controls,
 selected ownership, independent physical/paid effects, mandatory readers and manifest consumers. Reviewed paired
 instance identity, observer gating, finite faults, original queue handles, safe claim release, quota accounting and
 scene cleanup. Repaired source-review findings above. **The all-registrations batch remains incomplete.**
-Publish exact owned paths normally and verify remote SHA; do not force-push, merge or open a PR. Continue the four
+Publish exact owned paths normally and verify remote SHA; do not force-push, merge or open a PR. Continue the three
 remaining bindings after this source checkpoint. Machinery necessity/removal stays last overall.
 
 ## D-01 registration batch — authored, not executed (2026-10-20)

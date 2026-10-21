@@ -1,11 +1,11 @@
 # #759 scenario inventory
 
-Registration updated2026-10-21; publication base2752c00a3acd57bc96e7583cce0d9bba83c51857 plus owned H-09 source.
+Registration updated2026-10-21; publication basef2f13ded57d1a092497273a72aae81901d1b57ee plus owned SEQ-08 source.
 [Execution plan](REMAINING-WORK.md) and [handoff](HANDOFF.md) own order/current status. Open only the selected family.
 
-Pure111/111 (100%); supported runtime111/115 (96.5%),4 unbound (3.5%), plus5 explicitly deferred rows.
-Definitions115/115 comprise111 bindings and4 specifications. Eighteen new registrations in this ongoing batch,
-authored unrun; native factory80 bindings/562 variants plus21 partial owner worlds remain unrun.
+Pure111/111 (100%); supported runtime112/115 (97.4%),3 unbound (2.6%), plus5 explicitly deferred rows.
+Definitions115/115 comprise112 bindings and3 specifications. Nineteen new registrations in this ongoing batch,
+authored unrun; native factory81 bindings/570 variants plus21 partial owner worlds remain unrun.
 H-21 is deferred by user2026-10-21. H-23 now includes protected island establishment on actual water-enclosed land.
 No new gameplay pass is claimed. See [current evidence](CURRENT-EVIDENCE.md) and continue the unfinished batch.
 
@@ -25,14 +25,14 @@ Registration snapshot only; no percentages of gameplay completion are inferred.
 | placement     | 5         | 0 | 0 | 0 |
 | fortification | 7         | 0 | 0 | 0 |
 | recovery      | 5         | 0 | 0 | 0 |
-| authority     | 5         | 0 | 2 | 0 |
+| authority     | 5         | 0 | 0 | 0 |
 | reservations  | 2         | 0 | 0 | 0 |
 | lanes         | 3         | 0 | 0 | 0 |
 | transport     | 1         | 0 | 0 | 1 |
-| lifecycle     | 3         | 0 | 1 | 0 |
-| continuous    | 8         | 0 | 1 | 1 |
+| lifecycle     | 3         | 0 | 0 | 0 |
+| continuous    | 8         | 0 | 0 | 1 |
 | classic-rts   | 6         | 0 | 0 | 0 |
-| difficulty    | 6         | 0 | 2 | 0 |
+| difficulty    | 6         | 0 | 1 | 0 |
 | debug         | 6         | 0 | 2 | 0 |
 
 ## Scenario-by-scenario coverage snapshot
@@ -223,7 +223,7 @@ catalog renderer at the checkpoint above; refresh from that renderer and the man
 | [Island transport and expansion (SEQ-05)](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md)     | Island builder/combat transport -> unsafe landing -> reroute -> unload -> economy established -> return trip/escort loss                                        | Blocked for real-map E2E until an island map exists; pure transport phases remain required. When supported, all ownership phases reconcile, delivered island income is useful and no hidden backlog remains | Not required | Deferred: [#822](https://github.com/JernejHabjan/fuzzy-waddle/issues/822)                                                                       | Pending: no complete scenario-level certification asserted                                                            | Retain content deferral                                   |
 | [SEQ-06](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md)                                      | Fortified front with deliberate opening -> hostile ground approach -> wall/stair breach -> post withdrawal -> repair/alternate defense -> outside counterattack | Measured defense value, friendly clearance throughout, bounded repair spend, mobile force still fights outside; air threat not credited as blocked by walls                                                 | Not required | Registered [native recipe](../../../tools/ai/fixtures/seq-06-native-runtime.json); full authored branches, unrun | Native setup/outcome assertions authored; no execution or validation claimed | At the later authorized gate, prove actual premises and required native outcomes |
 | [SEQ-07](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md)                                      | Initial enemy composition -> stale sightings -> confirmed tech/counter transition -> failed assault -> revised composition -> alternate objective               | Proportionate evidence response, no queue churn, useful retained units, bounded tactical recovery and meaningful new pressure                                                                               | Not required | Registered [native recipe](../../../tools/ai/fixtures/seq-07-native-runtime.json); full authored branches, unrun | Native setup/outcome assertions authored; no execution or validation claimed | At the later authorized gate, prove actual premises and required native outcomes |
-| [SEQ-08](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md)                                      | Separate continuous supported legs: SP save/reload and MP host transfer/reconnect, each through finish and a clean next match | Exact saved continuation for equivalent logical inputs, applied-once effects, no duplicated brain/claims/results, clean new match                                                                           | Not required | Authored [native specification](../../../tools/ai/fixtures/native-scenario-recipes.json); not executable or run |Pending: no complete scenario-level certification asserted; shared-queue hashes/trajectory controls authored unrun | Bind supported SP save/replay and independent real MP transfer/reconnect where required; no MP save/load feature |
+| [SEQ-08](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md) | SP save/reload and independent real MP reconnect/promotion, each through actual finish and same-realm second match | Exact complete SP terminal world/decision trace; single current authority and clean next scene | Not required | Registered [native fixture](../../../tools/ai/fixtures/seq-08-native-runtime.json) | Authored unrun: eight variants, native income/production/combat, late old authority and original-scene disposal | Execute at the final authorized gate; terminal loss/tie does not replace the separate victory requirement |
 
 ## Classic RTS behavior
 

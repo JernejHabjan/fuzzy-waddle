@@ -1,12 +1,14 @@
 import type { NativeSaveProof } from "./skirmish-ai-native-save-proof";
 
 /** Native SP continuation must match complete saved state and every actual next decision, not just legacy score hashes. */
-export function nativeSaveProofFailures(branch: string, proof: NativeSaveProof | undefined, saveTickOverride?: number): string[] {
+export function nativeSaveProofFailures(
+  branch: string, proof: NativeSaveProof | undefined, saveTickOverride?: number, controlTickOverride?: number
+): string[] {
   if (!proof || proof.branch !== branch) return ["native_save_proof_missing_or_wrong_branch"];
   const failures: string[] = [];
   const saveTicks: Readonly<Record<string, number>> = { before_apply: 19, applied_pending: 199, during_active: 119, pause_speed: 599 };
   const saveTick = saveTickOverride ?? saveTicks[branch];
-  const controlTick = branch === "pause_speed" ? 801 : 401;
+  const controlTick = controlTickOverride ?? (branch === "pause_speed" ? 801 : 401);
   if (!saveTick) return ["native_save_unknown_branch"];
   if (!proof.sameRealm || !proof.saveId || !Number.isSafeInteger(proof.saveRevision) || proof.saveRevision < 1)
     failures.push("native_save_real_codec_or_same_realm_missing");

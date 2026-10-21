@@ -1,7 +1,7 @@
 import { expect, type Page } from "@playwright/test";
 import type { AiRuntimeBrowserTestHostV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host-v1";
-import { openNativeGameAction } from "./skirmish-ai-native-game-menu";
+import { continueNativeEndGameDialog, openNativeGameAction } from "./skirmish-ai-native-game-menu";
 import { installRuntimeAccessor } from "./skirmish-ai-runtime-browser-accessor";
 import { ProbableWaffleGameInstanceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type GameProbableWaffleScene from
@@ -45,6 +45,7 @@ export async function saveNativeMatch(page: Page, playerNumber: number) {
 export async function reloadNativeMatch(
   page: Page, playerNumber: number, boundary: Awaited<ReturnType<typeof saveNativeMatch>>
 ) {
+  await continueNativeEndGameDialog(page);
   if (await page.getByRole("heading", { name: "Score Screen" }).isVisible()) {
     await page.getByRole("button", { name: "Leave", exact: true }).click();
     await page.getByRole("button", { name: /Load Game.*Continue saved game/ }).click();

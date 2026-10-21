@@ -16,6 +16,7 @@ import { nativeDebugParityWorld } from "./native-debug-parity-worlds.mjs";
 import { nativeIslandEstablishmentWorld } from "./native-island-establishment-worlds.mjs";
 import { nativeLifecycleWorld } from "./native-lifecycle-worlds.mjs";
 import { nativeSaveWorld } from "./native-save-worlds.mjs";
+import { nativeLifecycleSequenceWorld } from "./native-lifecycle-sequence-worlds.mjs";
 
 export const nativeScenarioBindings = JSON.parse(readFileSync(new URL("./native-scenario-bindings.json", import.meta.url), "utf8"));
 const expansion = JSON.parse(readFileSync(new URL("./fixtures/expansion-pressure-runtime.json", import.meta.url), "utf8"));
@@ -40,7 +41,8 @@ export function nativeScenarioFixture(id) {
   const variants = ["Tivara", "Skaduwee"].flatMap((faction) => nativeScenarioBranches(id, faction).map((branch) => {
     const recovery = ["H-01", "H-02", "H-03", "H-04", "H-19", "H-24", "H-25", "H-26"].includes(id);
     const authority = ["H-06", "H-07", "H-10", "H-13", "H-14", "H-15", "H-11", "H-12", "H-30"].includes(id);
-    const world = ["H-08", "H-09"].includes(id) ? lateAuthorityWorld(faction) :
+    const world = id === "SEQ-08" ? nativeLifecycleSequenceWorld(faction, branch) :
+      ["H-08", "H-09"].includes(id) ? lateAuthorityWorld(faction) :
       id === "D-02" ? nativeSaveWorld(faction, branch.endsWith("pending_plan") ? "applied_pending" : "before_apply") :
       id === "H-31" ? nativeSaveWorld(faction, branch) : id === "H-32" ? nativeLifecycleWorld(faction, branch) :
       id === "H-23" ? nativeIslandEstablishmentWorld(faction, branch) :
@@ -98,6 +100,8 @@ export function nativeScenarioFixture(id) {
       ...(id === "H-31" ? { captureConstruction: true,
         checkpointTicks: branch === "pause_speed" ? [599, 800] :
           [({ before_apply: 19, applied_pending: 199, during_active: 119 })[branch], 400] } : {}),
+      ...(id === "SEQ-08" ? { captureConstruction: true, checkpointTicks: [
+        ({ before_apply: 19, applied_pending: 199, during_active: 119, host_transfer: 19 })[branch], 400] } : {}),
       ...(id === "H-32" ? { checkpointTicks: ["paid_queue", "pending_path"].includes(branch) ? [20] : [20, 200] } : {}),
       ...(id === "H-32" && branch === "host_replacement" ? {
         executionKind: "focused_natural", mapLabel: "AI Multiplayer (test only)",
@@ -113,7 +117,7 @@ export function nativeScenarioFixture(id) {
     ...(binding.capabilityLimits ? { capabilityLimits: binding.capabilityLimits } : {}),
     recipe: { mapLabel: ["C-06", "DOMAIN-02"].includes(id) ? "AI Multiplayer (test only)" : "AI Open Economy (test only)",
       aiPlayerNumber: 2, simulationTimeScale: 1,
-      ...(["D-02", "H-08", "H-09", "H-32", "DBG-05"].includes(id) ? { requiresMultiplayer: true } : {}),
+      ...(["D-02", "H-08", "H-09", "H-32", "SEQ-08", "DBG-05"].includes(id) ? { requiresMultiplayer: true } : {}),
       fixedStepFrames: true, checkpointTicks: ticks, variants },
     assertions: { [id]: { maximumTick: binding.latestTick, minimumDecisions: 1,
       // Infeasible controls need no arbitrary command. Feasible branches separately require native paid work and delivery.

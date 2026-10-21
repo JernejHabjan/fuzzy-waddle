@@ -481,7 +481,7 @@
     },
     { "id": "SEQ-06", "stages": [15], "group": "continuous", "fixture": "seq-06-native-runtime.json", "drivers": ["runtime"] },
     { "id": "SEQ-07", "stages": [15], "group": "continuous", "fixture": "seq-07-native-runtime.json", "drivers": ["runtime"] },
-    { "id": "SEQ-08", "stages": [15], "group": "continuous", "fixture": null, "runtimeRecipeDraft": "native-scenario-recipes.json", "drivers": ["runtime"] },
+    { "id": "SEQ-08", "stages": [15], "group": "continuous", "fixture": "seq-08-native-runtime.json", "drivers": ["runtime"] },
     {
       "id": "C-01",
       "stages": [7, 14],

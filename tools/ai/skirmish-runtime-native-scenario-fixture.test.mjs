@@ -6,7 +6,7 @@ import { validNativeScenarioFixture } from "./skirmish-runtime-native-scenario-f
 
 test("all native bindings retain their full branches and original acceptance obligations", () => {
   const ids = Object.keys(nativeScenarioBindings.cases);
-  assert.equal(ids.length, 80);
+  assert.equal(ids.length, 81);
   const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish-v1.json", import.meta.url)));
   for (const id of ids) {
     const row = manifest.rows.find((row) => row.id === id);
@@ -128,6 +128,22 @@ test("H-09 retains real compaction, SP codec restore and independent peer acknow
     assert.equal(variant.captureConstruction, true);
     assert.equal(variant.captureCombat, true);
     assert.equal(variant.presetWorld.receiptFault.holdHistory, true);
+  }
+});
+
+test("SEQ-08 binds complete supported SP chains and a distinct real MP transfer chain", () => {
+  const fixture = nativeScenarioFixture("SEQ-08");
+  assert.equal(fixture.recipe.requiresMultiplayer, true);
+  assert.equal(fixture.recipe.variants.length, 8);
+  assert.equal(fixture.assertions["SEQ-08"].requiredNativeScenario.latestTick, 18000);
+  for (const variant of fixture.recipe.variants) {
+    const branch = fixture.assertions["SEQ-08"].requiredNativeScenario.branchByVariant[variant.id];
+    assert.deepEqual(variant.checkpointTicks, [
+      { before_apply: 19, applied_pending: 199, during_active: 119, host_transfer: 19 }[branch], 400]);
+    assert.equal(variant.presetWorld.actors.some((actor) => actor.fixtureActorId === "recovery-door"), false);
+    assert.equal(variant.presetWorld.events.length, 0);
+    assert.equal(variant.presetWorld.controls.length, 0);
+    assert.equal(variant.presetWorld.routeOutages.length, 0);
   }
 });
 

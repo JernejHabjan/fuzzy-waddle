@@ -23,6 +23,7 @@ import { nativeSaveProofFailures } from "./skirmish-ai-native-save-evaluation";
 import { nativeProfileTransferFailures } from "./skirmish-ai-native-profile-transfer-evaluation";
 import { evaluateNativeLateAuthority } from "./skirmish-ai-native-late-authority";
 import { evaluateNativeRetention } from "./skirmish-ai-native-retention-evaluation";
+import { nativeSequenceProofFailures } from "./skirmish-ai-native-sequence-evaluation";
 import { evaluateNativeScouting, nativeScoutingFairness } from "./skirmish-ai-native-scouting-evaluation";
 import { evaluateNativeStrategy } from "./skirmish-ai-native-strategy-evaluation";
 import { evaluateNativeCombat } from "./skirmish-ai-native-combat-evaluation";
@@ -46,6 +47,13 @@ export function evaluateNativeScenarioVariant(
   if (!fixture && !contract) return [];
   const variant = fixture?.recipe.variants.find((candidate) => candidate.id === result.variantId);
   const branch = contract?.branchByVariant[result.variantId];
+  if (id === "SEQ-08") {
+    if (!contract || contract.schemaVersion !== 1 || contract.scenarioId !== id || contract.latestTick !== 18000 ||
+        !branch || !definition.branches.includes(branch) || !variant?.presetWorld || variant.evidenceStop ||
+        !fixture?.recipe.requiresMultiplayer || result.presetFixtureId !== variant.presetWorld.fixtureId)
+      return ["native_sequence_source_binding_missing_or_drifted"];
+    return nativeSequenceProofFailures(branch, result, variant.difficulty);
+  }
   if (id === "D-02") {
     if (!contract || contract.schemaVersion !== 1 || contract.scenarioId !== id || contract.latestTick !== 4000 ||
         !branch || !definition.branches.includes(branch) || !variant?.presetWorld || variant.evidenceStop ||
