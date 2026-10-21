@@ -23,11 +23,16 @@ import { runNativeProfileTransfer } from "./skirmish-ai-native-profile-transfer"
 import { cancelNativeOriginalProduction } from "./skirmish-ai-native-cancel-original-production";
 import { runNativeRetentionVariant } from "./skirmish-ai-native-retention-runner";
 import { runNativeSequenceVariant } from "./skirmish-ai-native-sequence-runner";
+import { runNativeReproVariant } from "./skirmish-ai-native-repro-runner";
 
 /** The existing runner owns the match. Bound cases additionally arm/read the same observer for the real human opponent. */
 export async function runRegisteredRuntimeVariant(
   browser: Browser, fixture: RuntimeFixtureV1, variant: RuntimeVariantV1, request: RuntimeRequestV1
 ) {
+  for (const id of ["DBG-01", "DBG-03"]) {
+    const branch = fixture.assertions[id]?.requiredNativeScenario?.branchByVariant[variant.id];
+    if (request.scenarioIds.includes(id) && branch) return runNativeReproVariant(browser, fixture, variant, request, branch);
+  }
   const sequenceBranch = fixture.assertions["SEQ-08"]?.requiredNativeScenario?.branchByVariant[variant.id];
   if (request.scenarioIds.includes("SEQ-08") && sequenceBranch)
     return runNativeSequenceVariant(browser, fixture, variant, request, sequenceBranch);

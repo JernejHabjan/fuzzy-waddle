@@ -74,6 +74,8 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
     this.once(Phaser.GameObjects.Events.DESTROY, this.destroyTransportOverlay, this);
     this.telemetryText.setInteractive();
     this.telemetryText.on("wheel", this.onTelemetryWheel, this);
+    this.telemetryText.on("pointerup", this.onTelemetryBookmark, this);
+    this.once(Phaser.GameObjects.Events.DESTROY, () => { this.bookmarks.length = 0; });
     const panelBackground = scene.add.rectangle(-250, 0, 500, 320, 0x111827, 0.74);
     panelBackground.setOrigin(0.5, 0);
     this.addAt(panelBackground, 0);
@@ -211,7 +213,8 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
     this.telemetryText.text = [
       ...page,
       pages > 1 ? `Page ${this.pageIndex + 1}/${pages} — mouse wheel to scroll` : "",
-      `Snapshot ${this.historyOffset === 0 ? "latest" : `-${this.historyOffset}`} — Shift+wheel changes history`
+      `Snapshot ${this.historyOffset === 0 ? "latest" : `-${this.historyOffset}`} — Shift+wheel changes history`,
+      `Ctrl+click bookmarks snapshot (${this.bookmarks.length}/16); Alt+click returns to the latest retained bookmark`
     ]
       .filter(Boolean)
       .join("\n");
@@ -222,6 +225,27 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
   private pageIndex = 0;
   private historyOffset = 0;
   private readonly linesPerPage = 7;
+  private readonly bookmarks: { playerNumber: number; tick: number; decisionSequence: number }[] = [];
+
+  private onTelemetryBookmark(pointer: Phaser.Input.Pointer): void {
+    const event = pointer.event as PointerEvent | undefined;
+    if ((!event?.ctrlKey && !event?.altKey) || this.playerNum === undefined) return;
+    const controller = getSceneSystem(this.mainSceneWithActors, AiPlayerHandler)?.getAiPlayerController(this.playerNum);
+    if (event.altKey && controller) {
+      const bookmark = [...this.bookmarks].reverse().find((entry) => entry.playerNumber === this.playerNum);
+      const history = controller.getBrainDebugHistory();
+      const index = bookmark ? history.findIndex((entry) => entry.tick === bookmark.tick &&
+        entry.decisionSequence === bookmark.decisionSequence) : -1;
+      if (index >= 0) { this.historyOffset = history.length - 1 - index; this.pageIndex = 0; this.lastTelemetryAt = 0; }
+      return;
+    }
+    const snapshot = controller ? this.getSelectedBrainSnapshot(controller) : undefined;
+    if (!snapshot || this.bookmarks.some((entry) => entry.playerNumber === this.playerNum && entry.tick === snapshot.tick &&
+      entry.decisionSequence === snapshot.decisionSequence)) return;
+    if (this.bookmarks.length >= 16) this.bookmarks.shift();
+    this.bookmarks.push({ playerNumber: this.playerNum, tick: snapshot.tick, decisionSequence: snapshot.decisionSequence });
+    this.lastTelemetryAt = 0;
+  }
 
   private onTelemetryWheel(
     pointer: Phaser.Input.Pointer,

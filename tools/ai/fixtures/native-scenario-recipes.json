@@ -201,9 +201,7 @@
     }
   },
   "scenarioIds": [
-    "D-06",
-    "DBG-01",
-    "DBG-03"
+    "D-06"
   ],
   "cases": [
     {
@@ -285,118 +283,6 @@
         ],
         "soakPolicy": "50 ms ticks make 72000 ticks sixty simulation minutes per soak. Three separate complete legal-start matches; retain full meaningful bounded-state and outcome evidence, not just a terminal tick. A match ending before 72000 ticks is a shorter terminal sample, not proof of a sixty-minute soak; never silently count it toward that denominator."
       }
-    },
-    {
-      "scenarioId": "DBG-01",
-      "status": "authored_not_executed",
-      "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/debugging-scenarios.md",
-      "requiredOutcome": "Real incident captures and reproduces pure decision and applicable full runtime outcome with exact provenance; truncated capture cannot claim exactness",
-      "world": "workbench",
-      "maximumTick": 4000,
-      "setup": [
-        "A real native incident has a complete safe checkpoint, exact input/event log and source/map/profile/RNG provenance",
-        "Retain both complete decision bundle and applicable complete runtime bundle"
-      ],
-      "actions": [
-        "Capture through developer-authorized native boundary and replay in an isolated session",
-        "Repeat with a required history range truncated from a copy of the bundle"
-      ],
-      "measurements": [
-        "Pure selected decisions and native runtime outcomes versus original at exact equivalent logical boundaries",
-        "Completeness and digest checks before replay"
-      ],
-      "required": [
-        "Complete matching bundle reproduces decision and applicable runtime outcome",
-        "Truncated capture refuses exact replay with explicit missing ranges"
-      ],
-      "forbidden": [
-        "Pure replay advertised as physical runtime reproduction",
-        "Candidate data silently replacing absent original inputs"
-      ],
-      "branches": [
-        "Complete decision capture",
-        "Complete runtime capture",
-        "Truncated history",
-        "Source/map/config mismatch"
-      ],
-      "executionBlockers": [
-        "native_case_binding",
-        "repro_driver",
-        "snapshot_boundary"
-      ],
-      "reuse": [
-        "tools/ai/fixtures/stage-5-bootstrap.json"
-      ],
-      "checkpointTicks": [
-        0,
-        20,
-        200,
-        400,
-        800,
-        1200,
-        1600,
-        2000,
-        2400,
-        3000,
-        4000
-      ],
-      "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
-    },
-    {
-      "scenarioId": "DBG-03",
-      "status": "authored_not_executed",
-      "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/debugging-scenarios.md",
-      "requiredOutcome": "Offline tick/decision step and named breakpoint stop at safe reproducible boundaries; live history/bookmark never pauses/mutates multiplayer",
-      "world": "workbench",
-      "maximumTick": 2400,
-      "setup": [
-        "An isolated captured match and a separate real live multiplayer session are both active",
-        "Named safe breakpoints use validated bounded predicates rather than arbitrary code"
-      ],
-      "actions": [
-        "Step isolated replay by one tick and one completed decision, then stop at a named application/progress breakpoint",
-        "In live session change history view and add a bookmark"
-      ],
-      "measurements": [
-        "Safe boundary tick, pending async work, command sequence and continuation equality",
-        "Live peer tick/hash advancement during read-only debug actions"
-      ],
-      "required": [
-        "Offline stepping stops only after the requested safe completed boundary and resumes equivalently",
-        "Live history/bookmark never pauses or mutates gameplay"
-      ],
-      "forbidden": [
-        "Half-applied command snapshot",
-        "Arbitrary eval from filter",
-        "Global multiplayer pause from a debug bookmark"
-      ],
-      "branches": [
-        "Tick step",
-        "Decision step",
-        "Named breakpoint",
-        "Live history/bookmark"
-      ],
-      "executionBlockers": [
-        "native_case_binding",
-        "repro_driver",
-        "debug_surface",
-        "multiplayer_boundary"
-      ],
-      "reuse": [
-        "tools/ai/fixtures/stage-5-bootstrap.json"
-      ],
-      "checkpointTicks": [
-        0,
-        20,
-        200,
-        400,
-        800,
-        1200,
-        1600,
-        2000,
-        2400
-      ],
-      "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
     }
   ]
 }

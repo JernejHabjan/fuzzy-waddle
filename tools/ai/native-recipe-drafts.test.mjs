@@ -10,7 +10,7 @@ const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish-v1.json", 
 test("every missing supported runtime case has a distinct authored specification without executable registration", () => {
   const missing = manifest.rows.filter((row) => row.drivers.includes("runtime") && !row.fixture && !row.runtimeSupport);
   assert.deepEqual(fixture.scenarioIds, missing.map((row) => row.id));
-  assert.equal(fixture.scenarioIds.length, 3);
+  assert.equal(fixture.scenarioIds.length, 1);
   for (const row of missing) {
     assert.equal(row.runtimeRecipeDraft, "native-scenario-recipes.json");
     const entry = readNativeRecipeDraft(fixture, row.id);
@@ -34,7 +34,7 @@ test("authoring reader rejects missing identities, requirements, assertions and 
     assert.throws(() => readNativeRecipeDraft(copy, copy.scenarioIds[0]), /unknown_native_recipe_hook/);
   }
   const duplicate = structuredClone(fixture);
-  duplicate.cases[1].scenarioId = duplicate.cases[0].scenarioId;
+  duplicate.cases.push(structuredClone(duplicate.cases[0]));
   assert.throws(() => readNativeRecipeDraft(duplicate, duplicate.scenarioIds[0]), /malformed_native_recipe_drafts/);
 });
 

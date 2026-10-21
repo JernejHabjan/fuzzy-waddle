@@ -6,7 +6,7 @@ import { validNativeScenarioFixture } from "./skirmish-runtime-native-scenario-f
 
 test("all native bindings retain their full branches and original acceptance obligations", () => {
   const ids = Object.keys(nativeScenarioBindings.cases);
-  assert.equal(ids.length, 81);
+  assert.equal(ids.length, 83);
   const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish-v1.json", import.meta.url)));
   for (const id of ids) {
     const row = manifest.rows.find((row) => row.id === id);
@@ -144,6 +144,24 @@ test("SEQ-08 binds complete supported SP chains and a distinct real MP transfer 
     assert.equal(variant.presetWorld.events.length, 0);
     assert.equal(variant.presetWorld.controls.length, 0);
     assert.equal(variant.presetWorld.routeOutages.length, 0);
+  }
+});
+
+test("DBG-01/03 retain native codec incidents, complete physical replay and isolated stepping/live-read boundaries", () => {
+  for (const id of ["DBG-01", "DBG-03"]) {
+    const fixture = nativeScenarioFixture(id);
+    assert.equal(fixture.recipe.requiresMultiplayer === true, id === "DBG-03");
+    assert.equal(fixture.recipe.variants.length, id === "DBG-01" ? 8 : 4);
+    for (const variant of fixture.recipe.variants) {
+      assert.deepEqual(variant.checkpointTicks, [599, 800]);
+      assert.equal(variant.captureConstruction, true);
+      assert.equal(variant.presetWorld.constructionOrders.length, 1);
+      assert.equal(variant.presetWorld.researchQueues.length, 1);
+      assert.equal(variant.presetWorld.queues[0].count, 4);
+      assert.equal(variant.presetWorld.events.length, 0);
+      assert.equal(variant.presetWorld.controls.length, 0);
+      assert.equal(variant.presetWorld.routeOutages.length, 0);
+    }
   }
 });
 

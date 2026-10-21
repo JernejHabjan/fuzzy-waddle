@@ -555,8 +555,7 @@
       "id": "DBG-01",
       "stages": [5, 13],
       "group": "debug",
-      "fixture": null,
-      "runtimeRecipeDraft": "native-scenario-recipes.json",
+      "fixture": "dbg-01-native-runtime.json",
       "authoredFixture": "stage-5-bootstrap.json",
       "drivers": ["pure", "runtime"]
     },
@@ -565,8 +564,7 @@
       "id": "DBG-03",
       "stages": [5, 13],
       "group": "debug",
-      "fixture": null,
-      "runtimeRecipeDraft": "native-scenario-recipes.json",
+      "fixture": "dbg-03-native-runtime.json",
       "authoredFixture": "stage-5-bootstrap.json",
       "drivers": ["pure", "runtime"]
     },

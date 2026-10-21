@@ -602,6 +602,16 @@ then continues that promoted scene to native finish. Each uses the real end-game
 second match with original-scene/authority callbacks fenced after disposal. No forced results or combined MP saves.
 Terminal loss/tie is valid lifecycle evidence, not both-faction victory certification. These bindings remain unrun.
 
+DBG-01/03 bind twelve native incident/replay/workbench variants. They capture an actual aged incident and opaque native
+SP codec record with a complete witnessed autonomous599–801 interval. A distinct isolated context loads the untouched
+record through ordinary Load, then full physical world/controller/queue/resource state and every selected decision must
+reproduce alongside independent pure replay. Incomplete ranges/decisions, capture overflow and source/map/config copies
+refuse exactness. Additional human inputs/future scripted events are unsupported rather than silently dropped.
+Named tick, completed-decision and original paid-queue-progress stops are finite and resume identically. Separate live
+two-client controls exercise actual history/bookmark handlers and compare synchronous full projection/pause state plus
+later matching peer hashes. Ctrl+click bookmarks a snapshot and Alt+click returns to the latest retained bookmark;
+only16 bounded metadata entries live with the panel. Attached MP cannot use physical stepping. All bindings remain unrun.
+
 DBG-05 binds twelve native worlds to the actual runtime-artifact import surface. It is present only under an explicit
 localhost developer marker and is excluded from production. The actual host gate protects capture and is rechecked on
 every import. Malformed JSON, bytes/counts/depth, schema, traversal and markup are rejected before any world application;

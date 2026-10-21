@@ -6,11 +6,12 @@ Do not load the full plan directory or archive on startup.
 ## Current cursor — large registration batch in progress, 2026-10-21
 
 - Worktree /home/jernej/.codex/worktrees/skirmish-authority-recovery/fuzzy-waddle;
-  branch feature/759-skirmish-ai. Publication basef2f13ded57d1a092497273a72aae81901d1b57ee;
+  branch feature/759-skirmish-ai. Publication baseb512371023c13823c1428387eb77016b84d12f97;
   verify containing commit/remote on resume. Preserve unrelated main-checkout issue-template edits.
   Actual model/effort unknown; no delegation or model switch.
 - User requests all23 remaining registrations in one continuous batch. **Do not pause merely after this partial slice.**
-  Nineteen new registrations authored: D-02–05, H-05/H-08/H-09/H-20/H-23/H-31/H-32, SEQ-03/04/06/07/08 and DBG-04/05/06.
+  Twenty-one new registrations authored: D-02–05, H-05/H-08/H-09/H-20/H-23/H-31/H-32,
+  SEQ-03/04/06/07/08 and DBG-01/03/04/05/06.
   They cover difficulty fairness/function/pressure, release safety, topology/disposal, continuous economy/combat,
   actual selected-input comparison/replay and debug parity/quota/disposal. They remain unrun.
 - User2026-10-21 explicitly defers H-21 native larger-unit/formation clearance until suitable content exists.
@@ -22,9 +23,9 @@ Do not load the full plan directory or archive on startup.
 - User correction2026-10-21: **save/load is single-player; multiplayer has no save/load feature.** H-31 uses native
   SP save continuation. H-09/D-02/SEQ-08 have independent SP save/replay and real MP authority/reconnect legs.
   Do not add coordinated multiplayer save/load or preserve the erroneous combined chain as a blocker.
-- Supported runtime112/115 (97.4%) registered,3/115 (2.6%) unbound; pure111/111 registered.
-  Native factory81 bindings/570 variants plus21 partial owner worlds, unrun. Original23:19 newly registered,
-  1 explicitly deferred,3 still active. These are registration counts, never gameplay completion.
+- Supported runtime114/115 (99.1%) registered,1/115 (0.9%) unbound; pure111/111 registered.
+  Native factory83 bindings/582 variants plus21 partial owner worlds, unrun. Original23:21 newly registered,
+  1 explicitly deferred,1 still active. These are registration counts, never gameplay completion.
 - H-32 now has ordinary UI same-realm next-match controls, original paid/path callbacks and a genuine two-client
   host-replacement branch. Its matrix driver selects the real multiplayer configuration; missing credentials fail closed.
   Reload preserves saved identity/seed and does not reapply fixture setup. Paid completion rejects dead owners.
@@ -67,8 +68,16 @@ Do not load the full plan directory or archive on startup.
   bounded decision trace. A separate real MP chain reconnects/promotes, fences old command/receipt delivery, continues
   that promoted scene to its actual result and fences original authority again after disposal. Each chain requires
   native delivered income, paid production/combat and a functioning same-realm second match. No forced result/MP saves.
-- **Next grouped authoring action:** finish the three active registrations: DBG-01/DBG-03 need runtime replay/stepping;
-  D-06 needs the declared pinned-baseline/calibration/holdout/soak driver. Do not substitute a fresh realm,
+- **DBG-01/03 now authored:** twelve combined native variants capture an actual aged recovery incident, opaque native
+  encrypted save and witnessed autonomous599–801 interval. A distinct isolated context loads the untouched native
+  record through ordinary codec Load. Full world/controller/queue/resources and complete selected decision fingerprints
+  must reproduce alongside the independent pure decision. Missing input/decision ranges and source/map/config copies
+  are explicitly refused before replay; arbitrary external-input replay is not claimed. Named tick/decision/original
+  paid-queue progress steps are bounded and must resume identically. Separate real MP history/bookmark controls use
+  actual panel input handlers, synchronous full-state/pause equality and later matching peer hashes. Physical stepping
+  rejects attached MP; Ctrl+click/Alt+click add/return bounded metadata-only bookmarks. All remain authored/unrun.
+- **Next grouped authoring action:** finish D-06, the declared pinned-baseline/calibration/holdout/soak driver.
+  Do not substitute a fresh realm for same-realm lifecycle disposal,
   controller-only restore, local epoch edit, pure replay or generic command counts for those native obligations.
 - **No execution:** no recipes/tests/lint/types/formatters/builds/browser/server/doctor/context/dedicated validators.
   Source/diff review and fixture/catalog --write authoring only. Model summaries capped8192 UTF-8 bytes.

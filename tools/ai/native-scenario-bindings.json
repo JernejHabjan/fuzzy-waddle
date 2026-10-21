@@ -3823,6 +3823,89 @@
           "Coordinated multiplayer save/load invented as a prerequisite for supported host-transfer coverage"
         ]
       }
+    },
+    "DBG-01": {
+      "latestTick": 4000,
+      "checkpointTicks": [
+        599,
+        800
+      ],
+      "branches": [
+        "complete_decision",
+        "complete_runtime",
+        "truncated_history",
+        "source_map_config_mismatch"
+      ],
+      "capabilityLimits": [
+        "Complete autonomous native interval599–801 uses an actual encrypted SP checkpoint and real codec Load in a distinct browser context. Full world and actual selected decisions must both reproduce.",
+        "The witness refuses additional human commands; external scripted faults/events are excluded, not silently omitted. Arbitrary interactive input-log replay is outside this captured autonomous recipe.",
+        "Encrypted payloads and complete decision inputs stay local. Reports contain bounded digests, native incident metadata and explicit missing-range/source/map/config refusal."
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/debugging-scenarios.md",
+        "requiredOutcome": "Real incident captures and reproduces pure decision and applicable full runtime outcome with exact provenance; truncated capture cannot claim exactness",
+        "setup": [
+          "A real native incident has a complete safe checkpoint, exact input/event log and source/map/profile/RNG provenance",
+          "Retain both complete decision bundle and applicable complete runtime bundle"
+        ],
+        "actions": [
+          "Capture through developer-authorized native boundary and replay in an isolated session",
+          "Repeat with a required history range truncated from a copy of the bundle"
+        ],
+        "measurements": [
+          "Pure selected decisions and native runtime outcomes versus original at exact equivalent logical boundaries",
+          "Completeness and digest checks before replay"
+        ],
+        "required": [
+          "Complete matching bundle reproduces decision and applicable runtime outcome",
+          "Truncated capture refuses exact replay with explicit missing ranges"
+        ],
+        "forbidden": [
+          "Pure replay advertised as physical runtime reproduction",
+          "Candidate data silently replacing absent original inputs"
+        ]
+      }
+    },
+    "DBG-03": {
+      "latestTick": 2400,
+      "checkpointTicks": [
+        599,
+        800
+      ],
+      "branches": [
+        "safe_steps",
+        "live_history_bookmark"
+      ],
+      "capabilityLimits": [
+        "Actual isolated SP replay steps one native tick, one completed decision and the original paid queue item progress under finite validated predicates, then must match full uninterrupted physical continuation.",
+        "A separate real two-client live match exercises actual Shift-wheel history and Ctrl-click bookmark/Alt-click return handlers. Native full projection and pause reasons must remain unchanged synchronously, and both clients must exchange later matching hashes.",
+        "Physical stepping rejects attached multiplayer before advancing anything. This registration does not add multiplayer pause/save/load or arbitrary predicate evaluation."
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/debugging-scenarios.md",
+        "requiredOutcome": "Offline tick/decision step and named breakpoint stop at safe reproducible boundaries; live history/bookmark never pauses/mutates multiplayer",
+        "setup": [
+          "An isolated captured match and a separate real live multiplayer session are both active",
+          "Named safe breakpoints use validated bounded predicates rather than arbitrary code"
+        ],
+        "actions": [
+          "Step isolated replay by one tick and one completed decision, then stop at a named application/progress breakpoint",
+          "In live session change history view and add a bookmark"
+        ],
+        "measurements": [
+          "Safe boundary tick, pending async work, command sequence and continuation equality",
+          "Live peer tick/hash advancement during read-only debug actions"
+        ],
+        "required": [
+          "Offline stepping stops only after the requested safe completed boundary and resumes equivalently",
+          "Live history/bookmark never pauses or mutates gameplay"
+        ],
+        "forbidden": [
+          "Half-applied command snapshot",
+          "Arbitrary eval from filter",
+          "Global multiplayer pause from a debug bookmark"
+        ]
+      }
     }
   }
 }
