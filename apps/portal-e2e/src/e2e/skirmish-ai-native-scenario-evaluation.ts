@@ -21,6 +21,7 @@ import { nativeLifecycleProofFailures } from "./skirmish-ai-native-lifecycle-eva
 import { nativeImportProofFailures } from "./skirmish-ai-native-import-evaluation";
 import { nativeSaveProofFailures } from "./skirmish-ai-native-save-evaluation";
 import { nativeProfileTransferFailures } from "./skirmish-ai-native-profile-transfer-evaluation";
+import { evaluateNativeLateAuthority } from "./skirmish-ai-native-late-authority";
 import { evaluateNativeScouting, nativeScoutingFairness } from "./skirmish-ai-native-scouting-evaluation";
 import { evaluateNativeStrategy } from "./skirmish-ai-native-strategy-evaluation";
 import { evaluateNativeCombat } from "./skirmish-ai-native-combat-evaluation";
@@ -116,6 +117,7 @@ export function evaluateNativeScenarioVariant(
   if (id.startsWith("SCOUT-") || id === "H-22") return evaluateNativeScouting(id, branch, context);
   const failures = nativeScoutingFairness(context);
   if (id === "H-05") failures.push(...evaluateNativeOptionalRelease(branch, context));
+  else if (id === "H-08") failures.push(...evaluateNativeLateAuthority(branch, context));
   else if (id === "H-23") failures.push(...evaluateNativeIslandEstablishment(branch, context));
   else if (id === "D-01") failures.push(...evaluateNativeDifficulty(branch, context));
   else if (id === "D-03") failures.push(...evaluateNativeDifficultyFairness(branch, context));

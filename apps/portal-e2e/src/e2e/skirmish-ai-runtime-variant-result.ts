@@ -16,6 +16,7 @@ import type { NativeLifecycleProof } from "./skirmish-ai-native-lifecycle-proof"
 import type { NativeImportProof } from "./skirmish-ai-native-import-proof";
 import type { NativeSaveProof } from "./skirmish-ai-native-save-proof";
 import type { runNativeProfileTransfer } from "./skirmish-ai-native-profile-transfer";
+import type { cancelNativeOriginalProduction } from "./skirmish-ai-native-cancel-original-production";
 // prettier-ignore
 import type { AiRuntimeProductionCaptureV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
@@ -23,6 +24,7 @@ import type { AiRuntimeProductionCaptureV1 } from
 export interface RuntimeVariantResultV1 {
   readonly nativeSave?: NativeSaveProof;
   readonly nativeProfileTransfer?: Awaited<ReturnType<typeof runNativeProfileTransfer>>;
+  readonly nativeCancellation?: Awaited<ReturnType<typeof cancelNativeOriginalProduction>>;
   readonly nativeLifecycle?: NativeLifecycleProof;
   readonly nativeImport?: NativeImportProof;
   /** Explicit H-20 shutdown branch, captured after sealed history and before closing the browser context. */

@@ -101,6 +101,7 @@ export class AiMultiplayerDiagnostics {
   /** Only the explicitly opted-in native experiment can retain/redeliver its own observed original command. */
   pinAuthorityProbe(): void { this.requireAuthorityProbe().pin(); }
   redeliverAuthorityProbe(): void { this.requireAuthorityProbe().redeliver(); }
+  redeliverAuthorityReceipt(): void { this.requireAuthorityProbe().redeliverReceipt(); }
   retainAuthorityReplay(): () => boolean { return this.requireAuthorityProbe().retainReplayCallback(); }
 
   private requireAuthorityProbe(): AiMultiplayerAuthorityProbe {

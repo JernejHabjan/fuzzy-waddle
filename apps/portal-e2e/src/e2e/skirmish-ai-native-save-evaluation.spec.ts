@@ -7,6 +7,7 @@ const boundary = (tick: number): NativeSaveProof["saved"] => ({
   worldDigest: "full-shared-queue-and-world", brainDigest: "full-brain", profileVersion: "profile-v1", profileDifficulty: 1,
   archetypeId: "opening:original", blackboardDigest: "original-blackboard", incomeSamplingDigest: "original-income",
   observationMemoryDigest: "original-observation-memory",
+  reconciliationDigest: "original-reconciliation",
   cadenceDigest: "real-cadence", elapsedMilliseconds: 950, recoveryDigest: "original-recovery", recoveryCount: 1,
   retryDebt: 3, oldestFailureTick: 2, reservationsDigest: "original-claims", reservationCount: 1,
   pendingOutcomeCount: 1, pendingCommandCount: 1, authorityDigest: "original-authority"

@@ -3675,6 +3675,57 @@
           "Fresh cadence timer or opening/archetype roll after host transfer"
         ]
       }
+    },
+    "H-08": {
+      "latestTick": 2400,
+      "checkpointTicks": [
+        20,
+        199,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        1800,
+        1801,
+        1820,
+        2000,
+        2400
+      ],
+      "branches": [
+        "timeout_then_receipt",
+        "cancellation_race",
+        "host_command_then_receipt",
+        "host_receipt_then_command"
+      ],
+      "capabilityLimits": [
+        "Native SP shared-authority worlds cover actual unobserved application timeout and actual cancellation/late consumer receipts. Independent real two-client reconnect/host-transfer legs exercise old commands and actual persisted receipts in both orders.",
+        "Cancellation requests alone cannot satisfy application: the original native cancellation acknowledgment and exactly one definition-priced refund are mandatory.",
+        "Multiplayer has no save/load. Host transfer is backed by an actual current reconnect checkpoint; no AI state, receipt, effect, epoch or sequence is fabricated."
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "Canonical epoch/sequence fencing and correct lifecycle; no resurrection of obsolete plans",
+        "setup": [
+          "Pending ordinary command has an identified epoch and sequence",
+          "Establish timeout/cancel request or a real host-promotion boundary without rewriting authority state directly"
+        ],
+        "actions": [
+          "Hold the old receipt/callback until the boundary completes",
+          "Deliver old command, receipt and callback in separately ordered variants"
+        ],
+        "measurements": [
+          "Epoch and processed-sequence history, native effects, current plan ownership and terminal receipts"
+        ],
+        "required": [
+          "Old authority cannot apply or resurrect obsolete work",
+          "Canonical current outcome remains consistent across peers"
+        ],
+        "forbidden": [
+          "Old callback mutates new epoch",
+          "Cancellation request treated as already applied cancellation"
+        ]
+      }
     }
   }
 }

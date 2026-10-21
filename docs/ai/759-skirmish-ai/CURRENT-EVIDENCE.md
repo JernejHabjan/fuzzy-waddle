@@ -2,15 +2,15 @@
 
 ## Continuous registration batch — in progress, authored unrun (2026-10-21)
 
-Publication base68ac1ed40e91ff2437e50e88b89726383cccaa28 plus owned D-02 source; same authority-recovery worktree/feature branch.
+Publication base1dc8ecaeda5fe5a1a479d9bbb90e449583b4536f plus owned H-08 source; same authority-recovery worktree/feature branch.
 The user requested all23 remaining registrations together. This entry closes only the published source slice;
 the batch must continue. Actual model/effort unknown; no subagent or model switch.
 
 Numbered acceptance map / Omission Audit for the current slice:
 
-1. **Sixteen full source registrations authored:** D-02/D-03/D-04/D-05, H-05/H-20/H-23/H-31/H-32, SEQ-03/04/06/07,
+1. **Seventeen full source registrations authored:** D-02/D-03/D-04/D-05, H-05/H-08/H-20/H-23/H-31/H-32, SEQ-03/04/06/07,
    DBG-04/05/06. The manifest, native bindings, generated fixtures and mandatory ID-specific readers are connected.
-   Factory78 bindings/548 variants; supported registration109/115 (94.8%),6/115 unbound (5.2%). Pure111/111 unchanged.
+   Factory79 bindings/556 variants; supported registration110/115 (95.7%),5/115 unbound (4.3%). Pure111/111 unchanged.
    All new premises, timing, predicates and behavior remain unrun; no passing count or overall completion claimed.
 2. **Difficulty:** all three policies/both factions receive real hidden-position/health/queue/contact controls,
    same paired match identity, exact permitted inputs/intents and actual profile/cadence checks. Easy starts with
@@ -50,7 +50,7 @@ Numbered acceptance map / Omission Audit for the current slice:
 7. **Explicit deferral:** user2026-10-21 deferred H-21 larger-unit/formation native clearance until suitable content
    exists. Pure coverage remains. Manifest support/parser/catalog now distinguish this #759 deferral from the four
    #822 island rows. The H-23 island addition does not silently claim those broader content obligations completed.
-8. **Six unfinished bindings:** H-08/H-09/SEQ-08 need the real peer/save/scene continuation path;
+8. **Five unfinished bindings:** H-09/SEQ-08 need the real peer/save/scene continuation path;
    DBG-01/03 need full runtime capture/stepping/import/access; D-06 needs declared calibration/holdout/soak and
    pinned-baseline execution/reporting. No placeholder or partial owner control was promoted for these IDs.
 9. **Execution deliberately deferred:** no recipe/test/lint/type/formatter/build/browser/server/doctor/context or
@@ -102,12 +102,22 @@ Numbered acceptance map / Omission Audit for the current slice:
     discarded that available continuation. Optional undefined wire fields are normalized through JSON before native
     digesting, matching codec serialization without erasing defined gameplay fields. Negative source controls reject
     stale snapshots, fresh openings/cadence, profile fallback, duplicated owners and reset sequence. All remain unrun.
+15. **H-08 late authority now registered:** eight faction/branch worlds require real shared application while its
+    consumer receipt/history is held through1800. Unobserved application must retain ownership through its actual900-tick
+    uncertainty deadline; actual release1801 and selected reconciliation after1820 cannot duplicate output or resurrect it.
+    Cancellation at199 addresses the original native AI-backed queue item, records its real request identity, then requires
+    native original cancellation plus exactly one lineage-priced, callback/balance-checked refund and no produced actor.
+    Separate real two-client snapshot-backed host transitions retain original command/applied receipt and deliver both
+    orders. Actual application count, epoch, processed watermark, next sequence and original identity must remain fenced.
+    Physical effects and full gameplay continuation are compared separately from expected rejection-history entries;
+    pending command state/age, brain/claims, cadence, blackboard, receipt income and observation memory are still required.
+    Native detailed captures stay local. New oracles and negative controls remain authored/unrun; no MP save/load is added.
 
 Separate Final Closure Audit for this source slice: traced factory inputs and strict parsers through native controls,
 selected ownership, independent physical/paid effects, mandatory readers and manifest consumers. Reviewed paired
 instance identity, observer gating, finite faults, original queue handles, safe claim release, quota accounting and
 scene cleanup. Repaired source-review findings above. **The all-registrations batch remains incomplete.**
-Publish exact owned paths normally and verify remote SHA; do not force-push, merge or open a PR. Continue the six
+Publish exact owned paths normally and verify remote SHA; do not force-push, merge or open a PR. Continue the five
 remaining bindings after this source checkpoint. Machinery necessity/removal stays last overall.
 
 ## D-01 registration batch — authored, not executed (2026-10-20)

@@ -6,7 +6,7 @@ import { validNativeScenarioFixture } from "./skirmish-runtime-native-scenario-f
 
 test("all native bindings retain their full branches and original acceptance obligations", () => {
   const ids = Object.keys(nativeScenarioBindings.cases);
-  assert.equal(ids.length, 78);
+  assert.equal(ids.length, 79);
   const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish-v1.json", import.meta.url)));
   for (const id of ids) {
     const row = manifest.rows.find((row) => row.id === id);
@@ -110,10 +110,23 @@ test("D-01 binds each actual lobby policy in both factions and rejects a relabel
 
 test("missing real peer, save, chain, proposal-order and retained-scene premises remain explicit", () => {
   const drafts = JSON.parse(readFileSync(new URL("./fixtures/native-scenario-recipes.json", import.meta.url)));
-  for (const id of ["H-08", "H-09"]) {
+  for (const id of ["H-09"]) {
     assert.equal(Object.hasOwn(nativeScenarioBindings.cases, id), false);
     const entry = drafts.cases.find((value) => value.scenarioId === id);
     assert.ok(entry.executionBlockers.some((key) => key.startsWith("authority_binding_")));
+  }
+});
+
+test("H-08 retains original timeout/cancel boundaries and both real old-epoch delivery orders", () => {
+  const fixture = nativeScenarioFixture("H-08");
+  assert.equal(fixture.recipe.requiresMultiplayer, true);
+  assert.equal(fixture.recipe.variants.length, 8);
+  assert.ok(fixture.recipe.checkpointTicks.includes(199));
+  assert.ok(fixture.recipe.checkpointTicks.includes(1801));
+  for (const variant of fixture.recipe.variants) {
+    assert.equal(variant.presetWorld.receiptFault.holdHistory, true);
+    assert.equal(variant.presetWorld.receiptFault.throughTick, 1800);
+    assert.equal(variant.presetWorld.receiptFault.maximumCommands, 1);
   }
 });
 

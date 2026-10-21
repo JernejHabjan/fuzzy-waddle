@@ -19,6 +19,8 @@ import { runNativeLifecycleVariant } from "./skirmish-ai-native-lifecycle-runner
 import { runNativeImportVariant } from "./skirmish-ai-native-import-runner";
 import { runNativeSaveVariant } from "./skirmish-ai-native-save-runner";
 import { runNativeProfileVariant } from "./skirmish-ai-native-profile-runner";
+import { runNativeProfileTransfer } from "./skirmish-ai-native-profile-transfer";
+import { cancelNativeOriginalProduction } from "./skirmish-ai-native-cancel-original-production";
 
 /** The existing runner owns the match. Bound cases additionally arm/read the same observer for the real human opponent. */
 export async function runRegisteredRuntimeVariant(
@@ -43,6 +45,9 @@ export async function runRegisteredRuntimeVariant(
   let nativeDisposal: NativeDisposalEvidence | undefined;
   let nativeDebugComparison: NativeDebugComparisonProof | undefined;
   let nativeDebugParity: NativeDebugParityProof | undefined;
+  let nativeCancellation: Awaited<ReturnType<typeof cancelNativeOriginalProduction>> | undefined;
+  let nativeProfileTransfer: Awaited<ReturnType<typeof runNativeProfileTransfer>> | undefined;
+  const lateBranch = fixture.assertions["H-08"]?.requiredNativeScenario?.branchByVariant[variant.id];
   const debugBranch = fixture.assertions["DBG-04"]?.requiredNativeScenario?.branchByVariant[variant.id];
   const parityBranch = fixture.assertions["DBG-06"]?.requiredNativeScenario?.branchByVariant[variant.id];
   const result = await runVariant(browser, fixture, variant, request.seed, request.scenarioIds,
@@ -59,6 +64,8 @@ export async function runRegisteredRuntimeVariant(
         parityBranch === "exporting" ? "exported" : "hidden", index, parityBranch === "shown");
       if (index === 0 && debugBranch) nativeDebugComparison = await captureNativeDebugComparison(
         page, debugBranch, request.sourceRevision, request.dirtySourceDigest);
+      if (lateBranch === "cancellation_race" && checkpoint?.tick === 199)
+        nativeCancellation = await cancelNativeOriginalProduction(page, fixture.recipe.aiPlayerNumber);
       if (index === (variant.checkpointTicks ?? fixture.recipe.checkpointTicks).length - 1 ||
           checkpoint?.gameResult === "win" && request.scenarioIds.some((id) => fixture.assertions[id]?.requireAiVictory)) {
         opponentCapture = await captureRuntimeHumanAuthority(page, contract.humanPlayerNumber);
@@ -68,10 +75,15 @@ export async function runRegisteredRuntimeVariant(
           nativeDisposal = await captureNativeDisposal(page);
         if (parityBranch) ({ nativeDisposal, nativeDebugParity } = await captureNativeDebugParity(page));
       }
+    } : undefined, lateBranch?.startsWith("host_") ? async () => {
+      nativeProfileTransfer = await runNativeProfileTransfer(browser, { seed: request.seed ?? variant.seed,
+        aiFaction: variant.aiFaction, aiDifficulty: variant.difficulty,
+        lateDeliveryOrder: lateBranch === "host_command_then_receipt" ? "command_then_receipt" : "receipt_then_command" });
     } : undefined
   );
   return contract ? { ...result, opponentCapture, ...(nativeDisposal ? { nativeDisposal } : {}),
     ...(nativeDebugComparison ? { nativeDebugComparison } : {}),
     ...(nativeDebugParity ? { nativeDebugParity } : {}),
+    ...(nativeCancellation ? { nativeCancellation } : {}), ...(nativeProfileTransfer ? { nativeProfileTransfer } : {}),
     ...(otherOpponentCaptures?.length ? { otherOpponentCaptures } : {}) } : result;
 }

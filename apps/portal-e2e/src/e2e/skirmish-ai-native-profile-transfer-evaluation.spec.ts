@@ -8,6 +8,7 @@ const boundary: Proof["original"] = {
   worldDigest: "full-native-world", brainDigest: "original-brain", profileVersion: "profile-v1", profileDifficulty: 1,
   archetypeId: "original-archetype", blackboardDigest: "original-blackboard", incomeSamplingDigest: "original-income",
   observationMemoryDigest: "original-observation-memory", cadenceDigest: "original-cadence", elapsedMilliseconds: 950,
+  reconciliationDigest: "original-reconciliation",
   recoveryDigest: "original-recovery", recoveryCount: 1, retryDebt: 3, oldestFailureTick: 2,
   reservationsDigest: "original-claims", reservationCount: 1, pendingOutcomeCount: 1, pendingCommandCount: 1,
   authorityDigest: "original-authority"

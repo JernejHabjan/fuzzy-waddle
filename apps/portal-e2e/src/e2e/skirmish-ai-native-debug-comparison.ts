@@ -75,8 +75,8 @@ export async function captureNativeDebugComparison(
     firstDifferenceActual: whatIf?.firstDifference?.actual ?? comparison.firstDifference?.actual ?? null };
 }
 
-/** Includes the production canonical world projection (AI, shared queues, authority and RNG), not just score totals. */
-export async function nativeDebugWorldDigest(page: Page) {
+/** Full canonical world by default. Late-delivery probes compare physical effects plus separate controller/epoch proofs. */
+export async function nativeDebugWorldDigest(page: Page, physicalEffectsOnly = false) {
   const projection = await page.evaluate(() => {
     const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: AiRuntimeBrowserTestHostV1;
       __fuzzyWaddleAiMultiplayerBrowserTestV1?: Pick<AiRuntimeBrowserTestHostV1, "game"> };
@@ -88,5 +88,7 @@ export async function nativeDebugWorldDigest(page: Page) {
     if (!scene || !hash) throw new Error("debug_comparison_native_projection_missing");
     return hash.captureAuthoritativeProjection(scene);
   });
-  return digestCanonicalAiValue(JSON.parse(JSON.stringify(projection)));
+  const { commandAuthority: _authority, aiControllers: _controllers, ...physicalSystems } = projection.systems;
+  const compared = physicalEffectsOnly ? { ...projection, systems: physicalSystems } : projection;
+  return digestCanonicalAiValue(JSON.parse(JSON.stringify(compared)));
 }

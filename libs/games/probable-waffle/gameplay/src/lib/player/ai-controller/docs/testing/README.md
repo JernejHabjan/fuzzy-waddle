@@ -520,7 +520,7 @@ actual applied service and relevant native defense. Cumulative nine bindings/62 
 H-11 independently prices/exhausts the complete scarce food chain. H-12 proves native atomic admission prevention
 plus pure cycle recovery under the explicitly approved scope; it reverses real proposal enumeration.
 H-30 uses finite optional/debug/mandatory faults with saved retry debt and original native reconciliation.
-H-08/H-09 stay unbound with exact missing seams in native-scenario-recipes.json. H-31 now has the native SP
+H-09 stays unbound with exact missing seams in native-scenario-recipes.json. H-08/H-31 now have native
 save/continuation registration described below; its execution is still deferred.
 No recipe, test, lint, type check, formatter, build or other validation ran. Model summaries remain at most8192 UTF-8 bytes.
 
@@ -538,8 +538,8 @@ addressed by splitting source, without updating the lint baseline. Dependency-in
 
 The localhost authority-probe opt-in retains only genuine admitted AI envelopes (16 candidates,32 selected outcomes,
 explicit overflow failure). skirmish-ai-multiplayer-authority-continuation.spec.ts authors ONE real host-promotion and
-original replay/application branch. Full H-08/H-09 registrations remain absent until their actual native
-cancellation/compaction drivers exist. Headless bus/codec tests cannot certify those rows.
+original replay/application branch. H-09 registration remains absent until its actual native compaction driver exists.
+Headless bus/codec tests cannot certify that row. H-08 now has the complete source registration described below.
 No recipes, tests, lint, types, formatter, browser or other verification ran in this source batch.
 
 H-32 uses native-lifecycle-worlds.mjs and the native lifecycle runner/readers for eight worlds: normal disposal,
@@ -575,6 +575,14 @@ brain, cadence, blackboard, receipt-based income and observation memory must mat
 decision must use the retained profile's exact eligible tick and next sequence, with one controller and the genuine new
 authority epoch. This is checkpoint-backed transfer, not zero-loss abrupt failover without an available AI checkpoint.
 No multiplayer save/load is introduced. These drivers and negative controls are authored and unrun.
+
+H-08 binds eight native worlds: genuine unknown application crosses its900-tick reconciliation timeout without
+manufactured settlement; original-item cancellation at199 requires native acknowledgment and one exact, provenance-backed
+refund; original delayed receipts release at1801 and cannot duplicate output or resurrect settled claims. Separate real
+two-client transfer legs deliver the actual old command and actual persisted applied receipt in both orders. Native
+application count, epoch, watermark, sequence and original identity remain fenced. Physical effects and save-owned
+gameplay continuation are compared independently of legitimate rejection-history entries; pending ownership/age,
+brain/claims, cadence, blackboard, income sampling and observation memory remain checked. All controls are authored/unrun.
 
 DBG-05 binds twelve native worlds to the actual runtime-artifact import surface. It is present only under an explicit
 localhost developer marker and is excluded from production. The actual host gate protects capture and is rechecked on
