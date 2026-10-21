@@ -504,9 +504,10 @@ Detailed requirements are split by concern:
 Recovery bindings H-01–04/H-19/H-24–26 use native-recovery-worlds.mjs and the native recovery/mission readers.
 They require original causal ownership and physical useful effects. Pending/error route faults are finite and
 actor-scoped; pending calls cap at32 and release in original request order or settle null on scene shutdown.
-H-05/H-20/H-21/H-23 remain unbound until original AI receipt uncertainty, post-disposal capture, physical
-unit/formation clearance and indispensable AI cargo ownership have native premises. Static geometry, a human
-scheduled command or scripted passenger membership cannot replace those obligations. All new sources remain unrun.
+H-05/H-20/H-23 now bind original AI receipt uncertainty, pending-query scene disposal and indispensable island
+builder cargo. H-21 native larger-unit/formation clearance is explicitly deferred until suitable content exists.
+Static geometry, a human scheduled command or scripted passenger membership cannot replace native outcomes.
+All new sources remain unrun.
 
 ### Command/resource authoring update — 2026-10-20
 
@@ -519,7 +520,7 @@ actual applied service and relevant native defense. Cumulative nine bindings/62 
 H-11 independently prices/exhausts the complete scarce food chain. H-12 proves native atomic admission prevention
 plus pure cycle recovery under the explicitly approved scope; it reverses real proposal enumeration.
 H-30 uses finite optional/debug/mandatory faults with saved retry debt and original native reconciliation.
-H-08/H-09/H-31/H-32 stay unbound with exact missing seams in native-scenario-recipes.json. H-31's detached save,
+H-08/H-09/H-31 stay unbound with exact missing seams in native-scenario-recipes.json. H-31's detached save,
 live state and restored clock repairs are prerequisites, not native paired-continuation certification.
 No recipe, test, lint, type check, formatter, build or other validation ran. Model summaries remain at most8192 UTF-8 bytes.
 
@@ -537,9 +538,20 @@ addressed by splitting source, without updating the lint baseline. Dependency-in
 
 The localhost authority-probe opt-in retains only genuine admitted AI envelopes (16 candidates,32 selected outcomes,
 explicit overflow failure). skirmish-ai-multiplayer-authority-continuation.spec.ts authors ONE real host-promotion and
-original replay/application branch. Full H-08/H-09/H-31/H-32 registrations remain absent until their actual native
-cancellation/compaction/paired reload/same-realm UI drivers exist. Headless bus/codec tests cannot certify those rows.
+original replay/application branch. Full H-08/H-09/H-31 registrations remain absent until their actual native
+cancellation/compaction/paired reload drivers exist. Headless bus/codec tests cannot certify those rows.
 No recipes, tests, lint, types, formatter, browser or other verification ran in this source batch.
+
+H-32 uses native-lifecycle-worlds.mjs and the native lifecycle runner/readers for eight worlds: normal disposal,
+an original pending path, an original paid queue and a real two-client host replacement, for both factions.
+Menu hitboxes, score-screen Leave and the skirmish lobby retain the same browser realm. The second match must have
+its own seed/identity, exactly one current controller/player and later decisions. Actual old queue completions,
+tick emissions, navigation promises and the retained multiplayer replay callback are exercised after the transition;
+the new world's full canonical projection, including RNG, must remain identical. Paid completion fences dead owners.
+The host branch uses a natural relayed AI3 match and an AI2 next match, with no single-player fallback. Matrix execution
+selects the multiplayer configuration and requires its existing local API/auth prerequisites. Original histories and
+next-match evidence remain separate. Save groundwork uses the actual quicksave/encrypted repository/Load UI;
+restored identity/seed and actors/queues are never replaced by fixture setup. This is authored support, not save certification.
 
 ### Difficulty policy registration (D-01)
 

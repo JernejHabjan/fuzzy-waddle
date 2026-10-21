@@ -308,6 +308,7 @@ export class ProductionComponent {
    * The optional removed handle scopes local creation diagnostics; other callers retain their existing behavior.
    */
   handleProductionComplete(item: ProductionQueueItem, queueItem?: UnifiedQueueItem): string | null {
+    if (this.disposed || !this.gameObject.active || !this.gameObject.scene.sys.isActive()) return null;
     return spawnProductionActor(
       this.gameObject,
       item,

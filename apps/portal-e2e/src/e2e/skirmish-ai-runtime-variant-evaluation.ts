@@ -25,6 +25,7 @@ import { evaluateRuntimeEconomy } from "./skirmish-ai-runtime-economy-evaluation
 import { evaluateRuntimeResourceRecovery } from "./skirmish-ai-runtime-resource-recovery-evaluation";
 import { evaluateRuntimeNativeContracts } from "./skirmish-ai-runtime-native-contracts";
 import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
+import { evaluateNativeScenarioVariant } from "./skirmish-ai-native-scenario-evaluation";
 
 export function evaluateRuntimeVariant(
   scenarioId: string,
@@ -32,6 +33,8 @@ export function evaluateRuntimeVariant(
   variant: RuntimeVariantResultV1,
   fixture?: RuntimeFixtureV1
 ): string[] {
+  if (scenarioId === "H-32") return evaluateNativeScenarioVariant(scenarioId, assertion, variant, fixture)
+    .map((failure) => `${variant.variantId}:${failure}`);
   const technologyFailures = evaluateRuntimeTechnology(
     scenarioId,
     assertion.requiredTechnologyContracts?.[variant.variantId],

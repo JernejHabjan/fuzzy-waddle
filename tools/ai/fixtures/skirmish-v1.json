@@ -449,8 +449,7 @@
       "id": "H-32",
       "stages": [13, 14, 15],
       "group": "lifecycle",
-      "fixture": null,
-      "runtimeRecipeDraft": "native-scenario-recipes.json",
+      "fixture": "h-32-native-runtime.json",
       "authoredFixture": "stage-14-adaptation.json",
       "drivers": ["pure", "runtime"]
     },

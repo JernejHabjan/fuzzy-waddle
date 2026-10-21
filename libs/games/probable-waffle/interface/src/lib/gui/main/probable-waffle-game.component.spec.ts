@@ -84,10 +84,37 @@ describe("ProbableWaffleGameComponent", () => {
       schemaVersion: 1,
       config: { schemaVersion: 1, enabled: true, seed: 759008, startPaused: true },
       game,
-      initialStateByPlayer: {}
+      initialStateByPlayer: {},
+      armIncidentCaptureProbe: expect.any(Function)
     });
     fixture.destroy();
     expect(window.__fuzzyWaddleAiRuntimeBrowserTestV1).toBeUndefined();
+  });
+
+  it("preserves saved session identity and RNG seed when the developer probe survives a native reload", async () => {
+    fixture.destroy();
+    await gameInstanceClientServiceStub.createGameInstance(
+      "saved-runtime-test",
+      ProbableWaffleGameInstanceVisibility.Private,
+      ProbableWaffleGameInstanceType.Skirmish
+    );
+    const metadata = gameInstanceClientServiceStub.gameInstance!.gameInstanceMetadata.data;
+    metadata.startOptions.loadFromSave = true;
+    metadata.rndSeed = 12345;
+    metadata.gameInstanceId = "actual-saved-session";
+    window.sessionStorage.setItem(AI_RUNTIME_BROWSER_TEST_CONFIG_KEY_V1,
+      JSON.stringify({ schemaVersion: 1, enabled: true, seed: 759008, startPaused: true }));
+    fixture = TestBed.createComponent(ProbableWaffleGameComponent);
+    fixture.detectChanges();
+    const container = fixture.debugElement.query(By.directive(GameContainerTestingComponent))
+      .componentInstance as GameContainerTestingComponent;
+    expect(metadata.rndSeed).toBe(12345);
+    expect(metadata.gameInstanceId).toBe("actual-saved-session");
+    expect(container.gameConfig()?.seed).toEqual(["12345"]);
+    const game = {} as Phaser.Game;
+    container.gameConfig()?.callbacks?.postBoot?.(game);
+    expect(window.__fuzzyWaddleAiRuntimeBrowserTestV1?.game).toBe(game);
+    fixture.destroy();
   });
 
   it("publishes a separate local multiplayer observer without replacing the network seed", async () => {

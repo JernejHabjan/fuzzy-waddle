@@ -12,6 +12,7 @@ export interface RuntimeFixtureV1 {
     readonly aiPlayerNumber: number;
     readonly simulationTimeScale: number;
     readonly fixedStepFrames?: boolean;
+    readonly requiresMultiplayer?: true;
     readonly checkpointTicks: readonly number[];
     readonly variants: readonly RuntimeVariantV1[];
   };

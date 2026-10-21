@@ -17,6 +17,7 @@ import type { RuntimeAssertionV1 } from "./skirmish-ai-runtime-assertion";
 import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
 import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
 import { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
+import { nativeLifecycleProofFailures } from "./skirmish-ai-native-lifecycle-evaluation";
 import { evaluateNativeScouting, nativeScoutingFairness } from "./skirmish-ai-native-scouting-evaluation";
 import { evaluateNativeStrategy } from "./skirmish-ai-native-strategy-evaluation";
 import { evaluateNativeCombat } from "./skirmish-ai-native-combat-evaluation";
@@ -40,6 +41,17 @@ export function evaluateNativeScenarioVariant(
   if (!fixture && !contract) return [];
   const variant = fixture?.recipe.variants.find((candidate) => candidate.id === result.variantId);
   const branch = contract?.branchByVariant[result.variantId];
+  if (id === "H-32") {
+    if (!contract || contract.schemaVersion !== 1 || contract.scenarioId !== id || contract.latestTick !== 4000 ||
+        !branch || !definition.branches.includes(branch) || !variant || !fixture?.recipe.requiresMultiplayer ||
+        variant.evidenceStop || (branch === "host_replacement" ?
+          !!variant.presetWorld || !variant.nextMatchPresetWorld || result.presetFixtureId !== null :
+          !variant.presetWorld || result.presetFixtureId !== variant.presetWorld.fixtureId))
+      return ["native_lifecycle_source_binding_missing_or_drifted"];
+    const failures = nativeLifecycleProofFailures(branch, result.nativeLifecycle);
+    if (result.aiErrors.length) failures.push("native_lifecycle_original_match_ai_errors");
+    return failures;
+  }
   const extraPlayers = variant?.additionalAiPlayers ?? [];
   if (!contract || contract.schemaVersion !== 1 || contract.scenarioId !== id ||
       contract.latestTick !== definition.latestTick || contract.humanPlayerNumber !== 1 ||

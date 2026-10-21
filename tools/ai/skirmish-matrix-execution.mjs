@@ -206,8 +206,10 @@ function invokeRuntimeHarness(input, context) {
   });
   const resultArtifact = createRuntimeResultPath(workspaceRoot);
   const sourceRevision = input.candidate ?? readHead();
+  const requiresMultiplayer = fixtures.some((fixture) => fixture.recipe.requiresMultiplayer === true);
   const environment = {
     ...process.env,
+    ...(requiresMultiplayer ? { AI_MULTIPLAYER_E2E: "1" } : {}),
     AI_SKIRMISH_RUNTIME_RESULT_PATH: resultArtifact,
     AI_SKIRMISH_RUNTIME_REQUEST: JSON.stringify({
       schemaVersion: 1,
@@ -227,7 +229,7 @@ function invokeRuntimeHarness(input, context) {
       "playwright",
       "test",
       "apps/portal-e2e/src/e2e/skirmish-ai-runtime.spec.ts",
-      "--config=apps/portal-e2e/playwright.config.ts",
+      `--config=apps/portal-e2e/${requiresMultiplayer ? "playwright.multiplayer.config.ts" : "playwright.config.ts"}`,
       "--workers=1"
     ],
     { cwd: workspaceRoot, env: environment, encoding: "utf8", maxBuffer: 32 * 1024 * 1024 }

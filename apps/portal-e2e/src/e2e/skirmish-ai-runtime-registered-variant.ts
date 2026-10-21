@@ -15,11 +15,15 @@ import type { NativeDebugComparisonProof } from "./skirmish-ai-native-debug-comp
 import { armNativeDebugParity, captureNativeDebugParity } from "./skirmish-ai-native-debug-parity";
 import type { NativeDebugParityProof } from "./skirmish-ai-native-debug-parity-proof";
 import { exerciseDebug } from "./skirmish-ai-debug-panel-exercise";
+import { runNativeLifecycleVariant } from "./skirmish-ai-native-lifecycle-runner";
 
 /** The existing runner owns the match. Bound cases additionally arm/read the same observer for the real human opponent. */
 export async function runRegisteredRuntimeVariant(
   browser: Browser, fixture: RuntimeFixtureV1, variant: RuntimeVariantV1, request: RuntimeRequestV1
 ) {
+  const lifecycleBranch = fixture.assertions["H-32"]?.requiredNativeScenario?.branchByVariant[variant.id];
+  if (request.scenarioIds.includes("H-32") && lifecycleBranch)
+    return runNativeLifecycleVariant(browser, fixture, variant, request, lifecycleBranch);
   const contract = (request.scenarioIds.includes("EXP-02") ? fixture.assertions["EXP-02"]?.requiredExpansionPressure : undefined) ??
     request.scenarioIds.map((id) => fixture.assertions[id]?.requiredNativeScenario).find((binding) => binding !== undefined);
   let opponentCapture: AiRuntimeProductionCaptureV1 | undefined;

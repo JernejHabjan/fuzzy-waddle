@@ -24,7 +24,8 @@ export async function runVariant(
   requestedScenarioIds: readonly string[],
   sourceRevision: string,
   fixtureDigest: string,
-  debugProbe?: (page: Page, checkpointIndex: number, checkpoint?: RuntimeCheckpointV1) => Promise<void>
+  debugProbe?: (page: Page, checkpointIndex: number, checkpoint?: RuntimeCheckpointV1) => Promise<void>,
+  afterVariant?: (page: Page, result: RuntimeVariantResultV1) => Promise<void>
 ): Promise<RuntimeVariantResultV1> {
   const profiling = process.env.AI_SKIRMISH_PROFILE === "1";
   const variantStartedAt = performance.now();
@@ -181,7 +182,7 @@ export async function runVariant(
       productionCapture && fullProductionProof
         ? buildRuntimeProductionReport(productionCapture, initialBoundary.presetApplication ?? undefined)
         : undefined;
-    return {
+    const result: RuntimeVariantResultV1 = {
       ...projectRuntimeVariantStart(variant, initialBoundary, effectiveSeed, fixture.recipe.mapLabel),
       stopReason,
       outcomeDigest,
@@ -194,7 +195,7 @@ export async function runVariant(
         : {}),
       checkpoints,
       perturbations,
-      aiErrors,
+      aiErrors: [...aiErrors],
       ...(profiling
         ? {
             timing: {
@@ -207,6 +208,9 @@ export async function runVariant(
           }
         : {})
     };
+    // Lifecycle controls act only after the original match's native history, event facts and result have been detached.
+    await afterVariant?.(page, result);
+    return result;
   } finally {
     await context.close();
   }

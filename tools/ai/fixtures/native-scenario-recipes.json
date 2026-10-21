@@ -198,7 +198,6 @@
     "H-08",
     "H-09",
     "H-31",
-    "H-32",
     "SEQ-08",
     "D-02",
     "D-06",
@@ -369,67 +368,6 @@
         "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/install-ai-runtime-receipt-fault.ts",
         "libs/games/probable-waffle/phaser/src/lib/world/services/multiplayer/restore-saved-command-input.spec.ts",
         "libs/games/probable-waffle/interface/src/lib/services/game-save/game-save-codec.service.spec.ts"
-      ],
-      "checkpointTicks": [
-        0,
-        20,
-        200,
-        400,
-        800,
-        1200,
-        1600,
-        2000,
-        2400,
-        3000,
-        4000
-      ],
-      "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
-    },
-    {
-      "scenarioId": "H-32",
-      "status": "authored_not_executed",
-      "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
-      "requiredOutcome": "Exactly one current controller/player; old callbacks cannot act or leak state across matches",
-      "world": "multiplayer",
-      "maximumTick": 4000,
-      "setup": [
-        "First match owns active timers, path query, queues, subscriptions and pending callback",
-        "Use one retained app/browser realm with distinct second-match seed and instance identity"
-      ],
-      "actions": [
-        "End/dispose first scene and start second via ordinary UI; repeat with a real host replacement",
-        "Deliver retained old callback/receipt after new match starts"
-      ],
-      "measurements": [
-        "Controller/player count, scene listener/timer disposal, old/new command match/epoch identities and second-match native activity"
-      ],
-      "required": [
-        "Exactly one current controller per player",
-        "Old scene work cannot dispatch or mutate second match; new match remains functional"
-      ],
-      "forbidden": [
-        "Fresh browser hiding leaked first-match ownership",
-        "Discarding callback without testing its fence"
-      ],
-      "branches": [
-        "Normal scene disposal",
-        "Pending path callback",
-        "Pending paid queue",
-        "Host replacement then new match"
-      ],
-      "executionBlockers": [
-        "native_case_binding",
-        "snapshot_boundary",
-        "multiplayer_boundary",
-        "receipt_fault",
-        "authority_binding_h_32"
-      ],
-      "reuse": [
-        "tools/ai/fixtures/stage-14-adaptation.json",
-        "tools/ai/native-authority-worlds.mjs",
-        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/install-ai-runtime-receipt-fault.ts",
-        "libs/games/probable-waffle/phaser/src/lib/data/save-game-lifecycle.spec.ts",
-        "libs/games/probable-waffle/interface/src/lib/communicators/scene-communicator-client.service.spec.ts"
       ],
       "checkpointTicks": [
         0,

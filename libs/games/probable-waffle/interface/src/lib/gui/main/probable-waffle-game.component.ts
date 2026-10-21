@@ -79,7 +79,7 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
     if (!gameInstance) return;
 
     const runtimeTestConfig = environment.production ? null : readAiRuntimeBrowserTestConfigV1();
-    if (runtimeTestConfig) {
+    if (runtimeTestConfig && !gameInstance.gameInstanceMetadata.data.startOptions.loadFromSave) {
       gameInstance.gameInstanceMetadata.data.rndSeed = runtimeTestConfig.seed;
       // Actor identity includes the session ID, so continuous seeded worlds need the same stable test salt as presets.
       gameInstance.gameInstanceMetadata.data.gameInstanceId = `runtime-fixture-${runtimeTestConfig.seed}-${runtimeTestConfig.presetWorld?.fixtureId ?? "continuous"}`;

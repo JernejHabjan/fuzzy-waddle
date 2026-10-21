@@ -3482,6 +3482,51 @@
           "Calling assemble state an attack launch"
         ]
       }
+    },
+    "H-32": {
+      "latestTick": 4000,
+      "checkpointTicks": [
+        20,
+        200,
+        400,
+        800,
+        1200,
+        2000,
+        3000,
+        4000
+      ],
+      "branches": [
+        "normal",
+        "pending_path",
+        "paid_queue",
+        "host_replacement"
+      ],
+      "capabilityLimits": [
+        "Normal, pending-path and paid-queue branches use native single-player scenes in one retained app realm. The host-replacement branch requires two authenticated native clients and the actual API relay; its initial match is natural AI3, followed by a native AI2 next match in the surviving peer realm. No single-player fallback is permitted. These recipes are authored, not executed."
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "Exactly one current controller/player; old callbacks cannot act or leak state across matches",
+        "setup": [
+          "First match owns active timers, path query, queues, subscriptions and pending callback",
+          "Use one retained app/browser realm with distinct second-match seed and instance identity"
+        ],
+        "actions": [
+          "End/dispose first scene and start second via ordinary UI; repeat with a real host replacement",
+          "Deliver retained old callback/receipt after new match starts"
+        ],
+        "measurements": [
+          "Controller/player count, scene listener/timer disposal, old/new command match/epoch identities and second-match native activity"
+        ],
+        "required": [
+          "Exactly one current controller per player",
+          "Old scene work cannot dispatch or mutate second match; new match remains functional"
+        ],
+        "forbidden": [
+          "Fresh browser hiding leaked first-match ownership",
+          "Discarding callback without testing its fence"
+        ]
+      }
     }
   }
 }

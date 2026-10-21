@@ -7,13 +7,14 @@ validated evidence. This is the existing execution inventory, not another design
 ## What the inventory establishes
 
 The original concrete plan contains121 named scenarios. Pure registration is111/111. Supported runtime registration
-is105/115 (91.3%);10 (8.7%) still have specifications without native bindings. Five runtime rows are explicitly deferred:
-four #822 island-content rows and H-21 larger-unit clearance by user2026-10-21. Definitions115/115 comprise105 bindings
-and10 specifications. This continuous batch has authored12 new registrations, with74 factory bindings/502 variants and
+is106/115 (92.2%);9 (7.8%) still have specifications without native bindings. Five runtime rows are explicitly deferred:
+four #822 island-content rows and H-21 larger-unit clearance by user2026-10-21. Definitions115/115 comprise106 bindings
+and9 specifications. This continuous batch has authored13 new registrations, with75 factory bindings/510 variants and
 21 retained partial owner worlds unrun. H-23 now includes user-authorized native island establishment; its small
 water-enclosed diagnostic preset does not silently close the four broader #822 content rows.
-**Continue the current batch through all ten active gaps; no per-case pause.** Shared peer/save/lifecycle integration
-owns H-08/H-09/H-31/H-32/SEQ-08/D-02; runtime debug capture/stepping/import owns DBG-01/03/05; calibration owns D-06.
+**Continue the current batch through all nine active gaps; no per-case pause.** Shared peer/save/lifecycle integration
+owns H-08/H-09/H-31/SEQ-08/D-02; runtime debug capture/stepping/import owns DBG-01/03/05; calibration owns D-06.
+H-32 now binds actual same-realm UI transitions, retained paid/path work and real host replacement, authored unrun.
 Counts describe registration, not passing gameplay, unique physical maps, sessions or time remaining.
 Each row needs complete source-specific native outcome evidence before validation; an authored reader is not that evidence.
 
@@ -87,7 +88,7 @@ an entire scenario. Invalidate only outcomes affected by later source/fixture ch
 | ------------------------------------- | ------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------ |
 | Pure fixture registration             | 111/111 = **100%**                          | 0/111 = **0%** | Required pure scenarios with registered fixtures; not behavior completion                                          |
 | Supported native definitions           | 115/115 = **100%**                          | 0/115 = **0%** | 105 scenario bindings plus10 specifications; definitions only, not validated gameplay |
-| Supported runtime recipe registration | 105/115 = **91.3%**                          | 10/115 = **8.7%** | Runtime recipes connected; five explicitly deferred rows excluded; not behavior completion                              |
+| Supported runtime recipe registration | 106/115 = **92.2%**                          | 9/115 = **7.8%** | Runtime recipes connected; five explicitly deferred rows excluded; not behavior completion                              |
 | Scenario behavior validation          | Not yet reconciled across the full manifest | Not yet measurable | Existing subset passes and failures are recorded, but no truthful overall completion percentage can yet be derived |
 
 During each selected package, reconcile its existing complete evidence into the row status and report its exact

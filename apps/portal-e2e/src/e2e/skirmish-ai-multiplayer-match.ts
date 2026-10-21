@@ -1,5 +1,6 @@
 import { expect, type Browser, type BrowserContext, type Page } from "@playwright/test";
 import { createMultiplayerTestIdentities, installMultiplayerIdentity } from "./skirmish-ai-multiplayer-auth";
+import { setMultiplayerLobbySeed } from "./skirmish-ai-multiplayer-lobby-input";
 
 export interface MultiplayerTestMatch {
   readonly host: Page;
@@ -26,7 +27,8 @@ async function waitForMultiplayerGame(page: Page): Promise<void> {
 /** Creates an ordinary public custom lobby with two real humans and one host-owned AI. */
 export async function startMultiplayerTestMatch(
   browser: Browser, options: { readonly queueWorld?: true; readonly sharedQueueWorld?: "shared_contention" | "cancel_research";
-    readonly authorityProbe?: true } = {}
+    readonly authorityProbe?: true; readonly seed?: number; readonly aiFaction?: "Tivara" | "Skaduwee";
+    readonly aiDifficulty?: "Easy" | "Normal" | "Hard" } = {}
 ): Promise<MultiplayerTestMatch> {
   if (options.queueWorld && options.sharedQueueWorld) throw new Error("multiplayer_queue_world_opt_ins_conflict");
   const provisioned = await createMultiplayerTestIdentities();
@@ -76,11 +78,14 @@ export async function startMultiplayerTestMatch(
     if (options.sharedQueueWorld) await host.locator("#faction-1").selectOption({ label: "Tivara" });
     await host.getByRole("button", { name: /Open player space/ }).click();
     await host.getByRole("button", { name: /Add A\.I\. player/ }).click();
+    if (options.aiFaction) await host.locator("#faction-3").selectOption({ label: options.aiFaction });
+    if (options.aiDifficulty) await host.locator("#difficulty-3").selectOption({ label: options.aiDifficulty });
 
     await openOnlineLobby(peer);
     await peer.getByRole("row", { name: new RegExp(lobbyName) }).click();
     await peer.getByRole("button", { name: "Join", exact: true }).click();
     await expect(peer).toHaveURL(/\/aota\/lobby/);
+    if (options.seed !== undefined) await setMultiplayerLobbySeed(host, peer, options.seed);
     await peer.getByRole("button", { name: "Mark as Ready" }).click();
     await expect(host.locator(".player-card").nth(1).locator(".detail-row")
       .filter({ hasText: "Ready:" }).locator("fa-icon.text-success")).toBeVisible();

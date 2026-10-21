@@ -36,6 +36,8 @@ import { readAiRuntimeBrowserTestConfigV1, recordAiRuntimePresetApplicationV1 } 
 export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, creator: SceneActorCreator): void {
   if (environment.production) return;
   installAiRuntimeProductionCapture(scene);
+  // A save already owns its actors, balances and queues; replaying fixture setup would corrupt continuation.
+  if (scene.baseGameData.gameInstance.gameInstanceMetadata.data.startOptions.loadFromSave) return;
   const preset = readAiRuntimeBrowserTestConfigV1()?.presetWorld;
   if (!preset) return;
   assertAiRuntimePresetRoster(scene, preset);

@@ -7,6 +7,8 @@ import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
 import { installRuntimeAccessor } from "./skirmish-ai-runtime-browser-accessor";
 import { assertRuntimePresetRoster } from "./skirmish-ai-runtime-preset-roster";
 import { assertRuntimeConstructionSetup } from "./skirmish-ai-runtime-construction-setup";
+import { installNativeRuntimeInputs } from "./skirmish-ai-native-runtime-inputs";
+import { installRuntimeErrorListeners } from "./skirmish-ai-runtime-error-listeners";
 
 /** Installs bounded browser probes, launches the ordinary lobby, and verifies authored pre-tick state. */
 export async function prepareRuntimeVariant(
@@ -18,7 +20,8 @@ export async function prepareRuntimeVariant(
   fixtureDigest: string,
   profiling: boolean,
   aiErrors: string[],
-  debugProbe?: (page: Page, checkpointIndex: number) => Promise<void>
+  debugProbe?: (page: Page, checkpointIndex: number) => Promise<void>,
+  sameRealm = false
 ) {
   if (profiling) {
     await page.addInitScript(() => {
@@ -36,46 +39,18 @@ export async function prepareRuntimeVariant(
       }).observe({ entryTypes: ["longtask"] });
     });
   }
-  page.on("console", (message) => {
-    const text = message.text();
-    if (/Error (stepping behaviour tree|updating AI on simulation tick|scheduling next AI step)/i.test(text)) {
-      aiErrors.push(text);
-    }
-  });
-  page.on("pageerror", (error) => {
-    if (/\bAI\b|player-ai|brain/i.test(error.message)) aiErrors.push(error.message);
-  });
-  await page.addInitScript(
-    ({ seed, presetWorld, revision, digest, captureProduction, captureCombat }) => {
-      window.sessionStorage.setItem(
-        "fuzzy-waddle:ai-runtime-browser-test-v1",
-        JSON.stringify({
-          schemaVersion: 1,
-          enabled: true,
-          seed,
-          startPaused: true,
-          ...(captureProduction ? { captureProduction: true } : {}),
-          ...(captureCombat ? { captureCombat: true } : {}),
-          ...(presetWorld
-            ? { presetWorld: { ...presetWorld, provenance: { sourceRevision: revision, fixtureDigest: digest } } }
-            : {})
-        })
-      );
-    },
-    {
+  installRuntimeErrorListeners(page, aiErrors);
+  const captureProduction = variant.captureConstruction === true || (variant.scenarioIds ?? fixture.scenarioIds).some(
+    (id) => ["PRO-03", "PRO-06", "PRO-07", "H-17", "H-18", "ECO-05", "ECO-06", "H-16"].includes(id) || id.startsWith("TECH-"));
+  await installNativeRuntimeInputs(page, {
+      schemaVersion: 1, enabled: true, startPaused: true,
       seed: effectiveSeed,
-      presetWorld: variant.presetWorld,
-      revision: sourceRevision,
-      digest: fixtureDigest,
-      captureCombat: variant.captureCombat === true,
-      captureProduction: variant.captureConstruction === true || (variant.scenarioIds ?? fixture.scenarioIds).some(
-        (id) =>
-          ["PRO-03", "PRO-06", "PRO-07", "H-17", "H-18", "ECO-05", "ECO-06", "H-16"].includes(id) ||
-          id.startsWith("TECH-")
-      )
-    }
-  );
-  await configureLobby(page, fixture, variant);
+      ...(variant.presetWorld ? { presetWorld: { ...variant.presetWorld,
+        provenance: { sourceRevision, fixtureDigest } } } : {}),
+      ...(variant.captureCombat === true ? { captureCombat: true } : {}),
+      ...(captureProduction ? { captureProduction: true } : {})
+    }, sameRealm);
+  await configureLobby(page, fixture, variant, sameRealm);
   await installRuntimeAccessor(page);
   await page.waitForFunction(
     (playerNumber) => !!window.__fuzzyWaddleAiRuntimePartsV1?.(playerNumber),
@@ -222,8 +197,9 @@ function compareQueueItem(
   );
 }
 
-async function configureLobby(page: Page, fixture: RuntimeFixtureV1, variant: RuntimeVariantV1): Promise<void> {
-  await page.goto("/aota/skirmish");
+async function configureLobby(page: Page, fixture: RuntimeFixtureV1, variant: RuntimeVariantV1, sameRealm: boolean): Promise<void> {
+  if (sameRealm) await page.getByRole("button", { name: /Skirmish.*Custom battles/ }).click();
+  else await page.goto("/aota/skirmish");
   await page.getByText(variant.mapLabel ?? fixture.recipe.mapLabel, { exact: true }).click();
   const dismissHint = page.getByRole("button", { name: "Got it" });
   if (await dismissHint.isVisible()) await dismissHint.click();

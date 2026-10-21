@@ -28,6 +28,14 @@ export function evaluateNativeScenarioPairs(id: string, fixture: RuntimeFixtureV
       failures.push(`native_required_branch_missing_or_repeated:${faction}`);
       continue;
     }
+    if (id === "H-32") {
+      if (new Set(worlds.map((world) => world.seed)).size !== 1 ||
+          worlds.some((world) => !world.nativeLifecycle?.sourceRevision || !world.nativeLifecycle.fixtureDigest) ||
+          new Set(worlds.map((world) => world.nativeLifecycle?.sourceRevision)).size !== 1 ||
+          new Set(worlds.map((world) => world.nativeLifecycle?.fixtureDigest)).size !== 1)
+        failures.push(`native_lifecycle_paired_source_or_seed_drift:${faction}`);
+      continue;
+    }
     if (new Set(worlds.map((world) => world.seed)).size !== 1 || new Set(worlds.map((world) => world.mapLabel)).size !== 1 ||
         new Set(worlds.map((world) => world.productionPreset?.sourceRevision)).size !== 1 ||
         new Set(worlds.map((world) => world.productionPreset?.fixtureDigest)).size !== 1)

@@ -78,8 +78,9 @@ export async function captureNativeDebugComparison(
 /** Includes the production canonical world projection (AI, shared queues, authority and RNG), not just score totals. */
 export async function nativeDebugWorldDigest(page: Page) {
   const projection = await page.evaluate(() => {
-    const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: AiRuntimeBrowserTestHostV1 })
-      .__fuzzyWaddleAiRuntimeBrowserTestV1;
+    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: AiRuntimeBrowserTestHostV1;
+      __fuzzyWaddleAiMultiplayerBrowserTestV1?: Pick<AiRuntimeBrowserTestHostV1, "game"> };
+    const host = realm.__fuzzyWaddleAiRuntimeBrowserTestV1 ?? realm.__fuzzyWaddleAiMultiplayerBrowserTestV1;
     const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
       ProbableWaffleScene | undefined;
     const services: readonly object[] = scene?.getSceneGameData().services ?? [];

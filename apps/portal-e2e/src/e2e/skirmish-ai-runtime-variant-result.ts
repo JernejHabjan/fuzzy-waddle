@@ -12,11 +12,13 @@ import type { RuntimeProductionEvidenceV2 } from "./skirmish-ai-runtime-producti
 import type { NativeDisposalEvidence } from "./skirmish-ai-native-disposal-evidence";
 import type { NativeDebugComparisonProof } from "./skirmish-ai-native-debug-comparison-proof";
 import type { NativeDebugParityProof } from "./skirmish-ai-native-debug-parity-proof";
+import type { NativeLifecycleProof } from "./skirmish-ai-native-lifecycle-proof";
 // prettier-ignore
 import type { AiRuntimeProductionCaptureV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
 
 export interface RuntimeVariantResultV1 {
+  readonly nativeLifecycle?: NativeLifecycleProof;
   /** Explicit H-20 shutdown branch, captured after sealed history and before closing the browser context. */
   readonly nativeDisposal?: NativeDisposalEvidence;
   /** Actual native selected input, isolated pure replay, first-field comparison and untouched native world. */

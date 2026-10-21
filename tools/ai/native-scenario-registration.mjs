@@ -14,6 +14,7 @@ import { nativeContinuityWorld } from "./native-continuity-worlds.mjs";
 import { nativeOptionalReleaseWorld } from "./native-optional-release-worlds.mjs";
 import { nativeDebugParityWorld } from "./native-debug-parity-worlds.mjs";
 import { nativeIslandEstablishmentWorld } from "./native-island-establishment-worlds.mjs";
+import { nativeLifecycleWorld } from "./native-lifecycle-worlds.mjs";
 
 export const nativeScenarioBindings = JSON.parse(readFileSync(new URL("./native-scenario-bindings.json", import.meta.url), "utf8"));
 const expansion = JSON.parse(readFileSync(new URL("./fixtures/expansion-pressure-runtime.json", import.meta.url), "utf8"));
@@ -38,7 +39,8 @@ export function nativeScenarioFixture(id) {
   const variants = ["Tivara", "Skaduwee"].flatMap((faction) => nativeScenarioBranches(id, faction).map((branch) => {
     const recovery = ["H-01", "H-02", "H-03", "H-04", "H-19", "H-24", "H-25", "H-26"].includes(id);
     const authority = ["H-06", "H-07", "H-10", "H-13", "H-14", "H-15", "H-11", "H-12", "H-30"].includes(id);
-    const world = id === "H-23" ? nativeIslandEstablishmentWorld(faction, branch) :
+    const world = id === "H-32" ? nativeLifecycleWorld(faction, branch) :
+      id === "H-23" ? nativeIslandEstablishmentWorld(faction, branch) :
       id === "DBG-06" ? nativeDebugParityWorld(faction) :
       id === "H-05" ? nativeOptionalReleaseWorld(faction, branch) :
       ["SEQ-03", "SEQ-04", "SEQ-06", "SEQ-07"].includes(id) ? nativeContinuityWorld(id, faction, branch) :
@@ -86,7 +88,13 @@ export function nativeScenarioFixture(id) {
       ...(id === "DOMAIN-02" ? {
         additionalAiPlayers: [{ playerNumber: 3, faction: "Tivara", difficulty: "Easy" }]
       } : {}),
-      captureConstruction: true, captureCombat: true, scenarioIds: [id], presetWorld: world
+      ...(id === "H-32" ? {} : { captureConstruction: true, captureCombat: true }), scenarioIds: [id],
+      ...(id === "H-32" ? { checkpointTicks: ["paid_queue", "pending_path"].includes(branch) ? [20] : [20, 200] } : {}),
+      ...(id === "H-32" && branch === "host_replacement" ? {
+        executionKind: "focused_natural", mapLabel: "AI Multiplayer (test only)",
+        setupRationale: "Actual two-human relay and host-owned AI3; this preset belongs only to the subsequent native AI2 match.",
+        nextMatchPresetWorld: world
+      } : { presetWorld: world })
     };
   }));
   return {
@@ -95,7 +103,7 @@ export function nativeScenarioFixture(id) {
     acceptance: binding.acceptance,
     ...(binding.capabilityLimits ? { capabilityLimits: binding.capabilityLimits } : {}),
     recipe: { mapLabel: ["C-06", "DOMAIN-02"].includes(id) ? "AI Multiplayer (test only)" : "AI Open Economy (test only)",
-      aiPlayerNumber: 2, simulationTimeScale: 1,
+      aiPlayerNumber: 2, simulationTimeScale: 1, ...(id === "H-32" ? { requiresMultiplayer: true } : {}),
       fixedStepFrames: true, checkpointTicks: ticks, variants },
     assertions: { [id]: { maximumTick: binding.latestTick, minimumDecisions: 1,
       // Infeasible controls need no arbitrary command. Feasible branches separately require native paid work and delivery.

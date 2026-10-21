@@ -6,7 +6,7 @@ import { validNativeScenarioFixture } from "./skirmish-runtime-native-scenario-f
 
 test("all native bindings retain their full branches and original acceptance obligations", () => {
   const ids = Object.keys(nativeScenarioBindings.cases);
-  assert.equal(ids.length, 74);
+  assert.equal(ids.length, 75);
   const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish-v1.json", import.meta.url)));
   for (const id of ids) {
     const row = manifest.rows.find((row) => row.id === id);
@@ -110,7 +110,7 @@ test("D-01 binds each actual lobby policy in both factions and rejects a relabel
 
 test("missing real peer, save, chain, proposal-order and retained-scene premises remain explicit", () => {
   const drafts = JSON.parse(readFileSync(new URL("./fixtures/native-scenario-recipes.json", import.meta.url)));
-  for (const id of ["H-08", "H-09", "H-31", "H-32"]) {
+  for (const id of ["H-08", "H-09", "H-31"]) {
     assert.equal(Object.hasOwn(nativeScenarioBindings.cases, id), false);
     const entry = drafts.cases.find((value) => value.scenarioId === id);
     assert.ok(entry.executionBlockers.some((key) => key.startsWith("authority_binding_")));
@@ -121,8 +121,8 @@ test("native cases cannot downgrade to generic counts or omit a faction, branch 
   for (const id of Object.keys(nativeScenarioBindings.cases)) for (const mutate of [
     (value) => delete value.assertions[id].requiredNativeScenario,
     (value) => value.recipe.variants.pop(),
-    (value) => value.recipe.variants[0].captureCombat = undefined,
-    (value) => value.recipe.variants[0].captureConstruction = undefined,
+    (value) => value.recipe.variants[0].captureCombat = id === "H-32" ? true : undefined,
+    (value) => value.recipe.variants[0].captureConstruction = id === "H-32" ? true : undefined,
     (value) => value.recipe.variants[0].evidenceStop = { earliestTick: 20, stableForTicks: 0 },
     (value) => value.recipe.variants[0].seed++,
     (value) => value.recipe.variants[0].presetWorld.resourceStarts[0].amounts.wood++,
@@ -131,6 +131,30 @@ test("native cases cannot downgrade to generic counts or omit a faction, branch 
     const fixture = nativeScenarioFixture(id);
     mutate(fixture);
     assert.equal(validNativeScenarioFixture(fixture, id), false, id);
+  }
+});
+
+test("H-32 binds real relay promotion, one retained realm and independent pending path/paid-work controls", () => {
+  const fixture = nativeScenarioFixture("H-32");
+  assert.equal(fixture.recipe.requiresMultiplayer, true);
+  assert.equal(fixture.recipe.variants.length, 8);
+  for (const faction of ["Tivara", "Skaduwee"]) {
+    const host = fixture.recipe.variants.find((variant) => variant.aiFaction === faction &&
+      fixture.assertions["H-32"].requiredNativeScenario.branchByVariant[variant.id] === "host_replacement");
+    assert.equal(host.presetWorld, undefined);
+    assert.equal(host.executionKind, "focused_natural");
+    assert.ok(host.nextMatchPresetWorld);
+  }
+  for (const mutate of [
+    (value) => delete value.recipe.requiresMultiplayer,
+    (value) => value.recipe.variants.find((variant) => variant.nextMatchPresetWorld).presetWorld = {},
+    (value) => delete value.recipe.variants.find((variant) => variant.nextMatchPresetWorld).nextMatchPresetWorld,
+    (value) => value.recipe.variants.find((variant) => variant.id.endsWith("paid-queue")).checkpointTicks = [4000],
+    (value) => value.recipe.variants.find((variant) => variant.id.endsWith("pending-path")).presetWorld.routeOutages = []
+  ]) {
+    const changed = structuredClone(fixture);
+    mutate(changed);
+    assert.equal(validNativeScenarioFixture(changed, "H-32"), false);
   }
 });
 

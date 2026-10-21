@@ -11,31 +11,29 @@ declare global {
 
 export async function installRuntimeAccessor(page: Page): Promise<void> {
   await page.waitForFunction(
-    () =>
-      !!(
-        window as unknown as {
-          __fuzzyWaddleAiRuntimeBrowserTestV1?: unknown;
-        }
-      ).__fuzzyWaddleAiRuntimeBrowserTestV1,
+    () => {
+      const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: unknown;
+        __fuzzyWaddleAiMultiplayerBrowserTestV1?: unknown };
+      return !!(realm.__fuzzyWaddleAiRuntimeBrowserTestV1 ?? realm.__fuzzyWaddleAiMultiplayerBrowserTestV1);
+    },
     undefined,
     { timeout: 120_000 }
   );
   await page.evaluate(() => {
     window.__fuzzyWaddleAiRuntimePartsV1 = (playerNumber: number) => {
-      const host = (
-        window as unknown as {
-          __fuzzyWaddleAiRuntimeBrowserTestV1?: {
-            game: {
-              scene: {
-                getScenes(active: boolean): {
-                  scene: { key: string };
-                  getSceneGameData?: () => { systems: unknown[]; services: unknown[]; components: unknown[] };
-                }[];
-              };
-            };
+      type Host = {
+        game: {
+          scene: {
+            getScenes(active: boolean): {
+              scene: { key: string };
+              getSceneGameData?: () => { systems: unknown[]; services: unknown[]; components: unknown[] };
+            }[];
           };
-        }
-      ).__fuzzyWaddleAiRuntimeBrowserTestV1;
+        };
+      };
+      const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: Host;
+        __fuzzyWaddleAiMultiplayerBrowserTestV1?: Host };
+      const host = realm.__fuzzyWaddleAiRuntimeBrowserTestV1 ?? realm.__fuzzyWaddleAiMultiplayerBrowserTestV1;
       const scene = host?.game.scene
         .getScenes(true)
         .find((candidate) => candidate.scene.key.startsWith("Map") && candidate.getSceneGameData);
