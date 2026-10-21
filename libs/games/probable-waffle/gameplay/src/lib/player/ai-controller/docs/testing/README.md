@@ -520,8 +520,8 @@ actual applied service and relevant native defense. Cumulative nine bindings/62 
 H-11 independently prices/exhausts the complete scarce food chain. H-12 proves native atomic admission prevention
 plus pure cycle recovery under the explicitly approved scope; it reverses real proposal enumeration.
 H-30 uses finite optional/debug/mandatory faults with saved retry debt and original native reconciliation.
-H-08/H-09/H-31 stay unbound with exact missing seams in native-scenario-recipes.json. H-31's detached save,
-live state and restored clock repairs are prerequisites, not native paired-continuation certification.
+H-08/H-09 stay unbound with exact missing seams in native-scenario-recipes.json. H-31 now has the native SP
+save/continuation registration described below; its execution is still deferred.
 No recipe, test, lint, type check, formatter, build or other validation ran. Model summaries remain at most8192 UTF-8 bytes.
 
 ### Authority/save/lifecycle source update — 2026-10-20
@@ -538,8 +538,8 @@ addressed by splitting source, without updating the lint baseline. Dependency-in
 
 The localhost authority-probe opt-in retains only genuine admitted AI envelopes (16 candidates,32 selected outcomes,
 explicit overflow failure). skirmish-ai-multiplayer-authority-continuation.spec.ts authors ONE real host-promotion and
-original replay/application branch. Full H-08/H-09/H-31 registrations remain absent until their actual native
-cancellation/compaction/paired reload drivers exist. Headless bus/codec tests cannot certify those rows.
+original replay/application branch. Full H-08/H-09 registrations remain absent until their actual native
+cancellation/compaction drivers exist. Headless bus/codec tests cannot certify those rows.
 No recipes, tests, lint, types, formatter, browser or other verification ran in this source batch.
 
 H-32 uses native-lifecycle-worlds.mjs and the native lifecycle runner/readers for eight worlds: normal disposal,
@@ -555,6 +555,17 @@ restored identity/seed and actors/queues are never replaced by fixture setup. Th
 
 Save/load cases are single-player coverage. Multiplayer lifecycle cases use real host transfer/reconnect and late-event
 fencing. D-02/SEQ-08 have independent supported legs; they do not require coordinated multiplayer save/load.
+
+H-31 binds eight actual single-player save/continuation worlds across both factions. The ordinary quicksave shortcut,
+encrypted repository and Load UI rewind only after the original uninterrupted continuation has been sealed. Saved/restored
+and control/resumed boundaries compare full canonical world/sharedQueue, live brain, cadence, claims, authority and RNG;
+each actual subsequent committed decision also has an exact input/result fingerprint. Pending applied receipts, unfinished
+paid construction, progressing training/research and chronic recovery are mandatory original premises. External future
+fixture inputs cannot silently disappear after reload. The pause/speed leg uses actual scaled native frames. Native
+selection/dispatch is synchronous: pure ai-saved-continuation.spec.ts covers otherwise unreachable saved provisional expiry,
+debt/age and retained paid/unknown claims. New saves preserve confirmed delivered-income sampling, while legacy saves still
+reset unsafe derived income. Deterministic comparison excludes measured telemetry only. Raw captures stay local; bounded
+fingerprints and the first differing decision enter reports. All controls remain authored and unrun.
 
 DBG-05 binds twelve native worlds to the actual runtime-artifact import surface. It is present only under an explicit
 localhost developer marker and is excluded from production. The actual host gate protects capture and is rechecked on

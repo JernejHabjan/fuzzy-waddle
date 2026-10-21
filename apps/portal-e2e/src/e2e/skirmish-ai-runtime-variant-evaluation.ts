@@ -33,7 +33,7 @@ export function evaluateRuntimeVariant(
   variant: RuntimeVariantResultV1,
   fixture?: RuntimeFixtureV1
 ): string[] {
-  if (["H-32", "DBG-05"].includes(scenarioId)) return evaluateNativeScenarioVariant(scenarioId, assertion, variant, fixture)
+  if (["H-31", "H-32", "DBG-05"].includes(scenarioId)) return evaluateNativeScenarioVariant(scenarioId, assertion, variant, fixture)
     .map((failure) => `${variant.variantId}:${failure}`);
   const technologyFailures = evaluateRuntimeTechnology(
     scenarioId,

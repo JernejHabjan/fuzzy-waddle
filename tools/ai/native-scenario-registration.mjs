@@ -15,6 +15,7 @@ import { nativeOptionalReleaseWorld } from "./native-optional-release-worlds.mjs
 import { nativeDebugParityWorld } from "./native-debug-parity-worlds.mjs";
 import { nativeIslandEstablishmentWorld } from "./native-island-establishment-worlds.mjs";
 import { nativeLifecycleWorld } from "./native-lifecycle-worlds.mjs";
+import { nativeSaveWorld } from "./native-save-worlds.mjs";
 
 export const nativeScenarioBindings = JSON.parse(readFileSync(new URL("./native-scenario-bindings.json", import.meta.url), "utf8"));
 const expansion = JSON.parse(readFileSync(new URL("./fixtures/expansion-pressure-runtime.json", import.meta.url), "utf8"));
@@ -39,7 +40,7 @@ export function nativeScenarioFixture(id) {
   const variants = ["Tivara", "Skaduwee"].flatMap((faction) => nativeScenarioBranches(id, faction).map((branch) => {
     const recovery = ["H-01", "H-02", "H-03", "H-04", "H-19", "H-24", "H-25", "H-26"].includes(id);
     const authority = ["H-06", "H-07", "H-10", "H-13", "H-14", "H-15", "H-11", "H-12", "H-30"].includes(id);
-    const world = id === "H-32" ? nativeLifecycleWorld(faction, branch) :
+    const world = id === "H-31" ? nativeSaveWorld(faction, branch) : id === "H-32" ? nativeLifecycleWorld(faction, branch) :
       id === "H-23" ? nativeIslandEstablishmentWorld(faction, branch) :
       id === "DBG-06" ? nativeDebugParityWorld(faction) :
       id === "H-05" ? nativeOptionalReleaseWorld(faction, branch) :
@@ -88,8 +89,11 @@ export function nativeScenarioFixture(id) {
       ...(id === "DOMAIN-02" ? {
         additionalAiPlayers: [{ playerNumber: 3, faction: "Tivara", difficulty: "Easy" }]
       } : {}),
-      ...(["H-32", "DBG-05"].includes(id) ? {} : { captureConstruction: true, captureCombat: true }), scenarioIds: [id],
+      ...(["H-31", "H-32", "DBG-05"].includes(id) ? {} : { captureConstruction: true, captureCombat: true }), scenarioIds: [id],
       ...(id === "DBG-05" ? { checkpointTicks: [20] } : {}),
+      ...(id === "H-31" ? { captureConstruction: true,
+        checkpointTicks: branch === "pause_speed" ? [599, 800] :
+          [({ before_apply: 19, applied_pending: 199, during_active: 119 })[branch], 400] } : {}),
       ...(id === "H-32" ? { checkpointTicks: ["paid_queue", "pending_path"].includes(branch) ? [20] : [20, 200] } : {}),
       ...(id === "H-32" && branch === "host_replacement" ? {
         executionKind: "focused_natural", mapLabel: "AI Multiplayer (test only)",

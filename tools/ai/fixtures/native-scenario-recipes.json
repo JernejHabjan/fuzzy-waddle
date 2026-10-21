@@ -203,7 +203,6 @@
   "scenarioIds": [
     "H-08",
     "H-09",
-    "H-31",
     "SEQ-08",
     "D-02",
     "D-06",
@@ -280,7 +279,7 @@
         "Retain unresolved commands and record the actual safe processed watermark"
       ],
       "actions": [
-        "Use real save/restore at a safe boundary after acknowledged compaction",
+        "Use real single-player save/restore after native compaction; independently use real multiplayer acknowledged compaction without save/load",
         "Redeliver the exact old command identity and an unresolved command separately"
       ],
       "measurements": [
@@ -322,69 +321,6 @@
         1600,
         2000,
         2400
-      ],
-      "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
-    },
-    {
-      "scenarioId": "H-31",
-      "status": "authored_not_executed",
-      "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
-      "requiredOutcome": "Failure age, debt, claims, epoch and next legitimate decisions preserved; no reset exploit",
-      "world": "supported_lifecycle",
-      "maximumTick": 4000,
-      "setup": [
-        "Single-player actual chronic blocker is near its original deadline with expiring provisional lease and unresolved applied command",
-        "Record the real queue lanes and command metadata in the saved world"
-      ],
-      "actions": [
-        "Save at safe completed boundaries before/during/after command application",
-        "Reload through real save codec and resume identical subsequent logical inputs beside an uninterrupted control"
-      ],
-      "measurements": [
-        "Complete saved AI debt/age/deadlines/claims/epoch/RNG and shared queue lane/item/command identity",
-        "Full canonical state plus exact committed decisions at equivalent ticks"
-      ],
-      "required": [
-        "Restored continuation preserves cumulative failure and exactly-once paid work",
-        "Hash comparison includes sharedQueue metadata rather than only legacy queue projections"
-      ],
-      "forbidden": [
-        "Reload creates a fresh opening/deadline",
-        "Matching incomplete legacy hash accepted as matching state"
-      ],
-      "branches": [
-        "Before apply",
-        "Applied outcome pending",
-        "During construction/training/research",
-        "Pause and speed changes"
-      ],
-      "executionBlockers": [
-        "native_case_binding",
-        "snapshot_boundary",
-        "receipt_fault",
-        "authority_binding_h_31"
-      ],
-      "reuse": [
-        "tools/ai/fixtures/stage-14-adaptation.json",
-        "libs/games/probable-waffle/phaser/src/lib/world/services/recovery/serialize-actor-queue-state.spec.ts",
-        "libs/games/probable-waffle/phaser/src/lib/entity/components/queue/queue-continuation.spec.ts",
-        "tools/ai/native-authority-worlds.mjs",
-        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/install-ai-runtime-receipt-fault.ts",
-        "libs/games/probable-waffle/phaser/src/lib/world/services/multiplayer/restore-saved-command-input.spec.ts",
-        "libs/games/probable-waffle/interface/src/lib/services/game-save/game-save-codec.service.spec.ts"
-      ],
-      "checkpointTicks": [
-        0,
-        20,
-        200,
-        400,
-        800,
-        1200,
-        1600,
-        2000,
-        2400,
-        3000,
-        4000
       ],
       "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
     },

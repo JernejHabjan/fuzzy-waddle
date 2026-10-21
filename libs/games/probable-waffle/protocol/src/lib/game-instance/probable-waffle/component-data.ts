@@ -694,6 +694,12 @@ export interface AIBehaviorTreeStateData {
    * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
    */
   telemetry?: unknown;
+  /** Confirmed delivery sampling survives reload; legacy saves without this state restart sampling safely. */
+  deliveredIncomeSampling?: {
+    readonly schemaVersion: 1;
+    readonly sampledAt: number;
+    readonly pending: Readonly<Record<ResourceType, number>>;
+  };
   /**
    * Optional boolean policy/value on {@link AIBehaviorTreeStateData} that explicitly controls whether the
    * associated behavior is active; do not infer it from unrelated state.

@@ -203,9 +203,13 @@ export abstract class PlayerAiAgentContext {
     this.observationPipeline.setState(state);
   }
 
-  /** Rebuild derived income from resumed receipts; restored stockpiles are not deliveries. */
-  resetDeliveredIncome(): void {
-    this.economyManager.reset();
+  /** Preserve confirmed sampling in new saves; legacy stockpile estimates still restart safely. */
+  restoreDeliveredIncomeSampling(state: Parameters<EconomyManager["setState"]>[0]): void {
+    this.economyManager.setState(state);
+  }
+
+  getDeliveredIncomeSamplingState() {
+    return this.economyManager.getState();
   }
 
   /** Supplies the debug panel with already committed observation metadata only. */

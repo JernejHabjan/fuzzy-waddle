@@ -6,6 +6,7 @@ export type RuntimePageControllerV1 = Pick<
   | "isDecisionBoundarySettled"
   | "getCommittedObservation"
   | "getBrainState"
+  | "getSaveState"
   | "getCommittedCapabilityCatalog"
   | "getBrainDebugSnapshot"
   | "getBrainDebugHistory"

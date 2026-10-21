@@ -200,6 +200,7 @@ export class PlayerAiController {
     return {
       blackboard: this.blackboard.getData(),
       telemetry: this.telemetry.snapshot(),
+      deliveredIncomeSampling: this.playerAiControllerAgent.getDeliveredIncomeSamplingState(),
       enabled: this.enabled,
       commandReconciliation: this.commandReconciliation?.getState(),
       observationMemory: this.playerAiControllerAgent.getObservationMemoryState(),
@@ -223,7 +224,7 @@ export class PlayerAiController {
     if (state.blackboard) {
       this.blackboard.setData(state.blackboard, this.scene);
     }
-    this.playerAiControllerAgent.resetDeliveredIncome();
+    this.playerAiControllerAgent.restoreDeliveredIncomeSampling(state.deliveredIncomeSampling);
     if (state.commandReconciliation) {
       const tick = getSceneService(this.scene, SimulationTickService)?.currentTick ?? 0;
       this.commandReconciliation?.setState(state.commandReconciliation, tick);

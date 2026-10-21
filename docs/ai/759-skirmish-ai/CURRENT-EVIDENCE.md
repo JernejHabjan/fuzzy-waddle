@@ -2,15 +2,15 @@
 
 ## Continuous registration batch — in progress, authored unrun (2026-10-21)
 
-Publication base96f6d73645f1b005468d3ea0f9e01f3d4c50648d; same authority-recovery worktree/feature branch.
+Publication base2e855e81a1da2152f2e9f7a0e8f516a4b6a81df9 plus owned H-31 source; same authority-recovery worktree/feature branch.
 The user requested all23 remaining registrations together. This entry closes only the published source slice;
 the batch must continue. Actual model/effort unknown; no subagent or model switch.
 
 Numbered acceptance map / Omission Audit for the current slice:
 
-1. **Fourteen full source registrations authored:** D-03/D-04/D-05, H-05/H-20/H-23/H-32, SEQ-03/04/06/07,
+1. **Fifteen full source registrations authored:** D-03/D-04/D-05, H-05/H-20/H-23/H-31/H-32, SEQ-03/04/06/07,
    DBG-04/05/06. The manifest, native bindings, generated fixtures and mandatory ID-specific readers are connected.
-   Factory76 bindings/522 variants; supported registration107/115 (93.0%),8/115 unbound (7.0%). Pure111/111 unchanged.
+   Factory77 bindings/530 variants; supported registration108/115 (93.9%),7/115 unbound (6.1%). Pure111/111 unchanged.
    All new premises, timing, predicates and behavior remain unrun; no passing count or overall completion claimed.
 2. **Difficulty:** all three policies/both factions receive real hidden-position/health/queue/contact controls,
    same paired match identity, exact permitted inputs/intents and actual profile/cadence checks. Easy starts with
@@ -50,7 +50,7 @@ Numbered acceptance map / Omission Audit for the current slice:
 7. **Explicit deferral:** user2026-10-21 deferred H-21 larger-unit/formation native clearance until suitable content
    exists. Pure coverage remains. Manifest support/parser/catalog now distinguish this #759 deferral from the four
    #822 island rows. The H-23 island addition does not silently claim those broader content obligations completed.
-8. **Eight unfinished bindings:** H-08/H-09/H-31/SEQ-08/D-02 need the real peer/save/scene continuation path;
+8. **Seven unfinished bindings:** H-08/H-09/SEQ-08/D-02 need the real peer/save/scene continuation path;
    DBG-01/03 need full runtime capture/stepping/import/access; D-06 needs declared calibration/holdout/soak and
    pinned-baseline execution/reporting. No placeholder or partial owner control was promoted for these IDs.
 9. **Execution deliberately deferred:** no recipe/test/lint/type/formatter/build/browser/server/doctor/context or
@@ -70,7 +70,7 @@ Numbered acceptance map / Omission Audit for the current slice:
     missing infrastructure cannot fall back to a single-player host flag. Other H-32 branches use native SP scenes.
     Native first-match histories and next-match proof remain separate. Per-page error collectors replace only their
     previous owned listeners. Save groundwork preserves saved identity/seed, skips preset reseeding on restore and
-    drives the actual shortcut/encrypted repository/Load UI; it does not yet certify H-31 or continuous save cases.
+    drives the actual shortcut/encrypted repository/Load UI; continuous SEQ-08 chains still require binding.
 11. **DBG-05 native import registered:** twelve worlds cover both factions and malformed JSON, oversized bytes/counts,
     schema mismatch, traversal, markup and ordinary-peer authorization. A real native selected boundary supplies
     source/map/catalog/profile provenance and a host-confidential runtime artifact through the original scene bridge.
@@ -80,15 +80,24 @@ Numbered acceptance map / Omission Audit for the current slice:
     entry point before any world inspection. Artifact bytes stay local; reports retain only digests and bounded results.
     Parser depth/node/array/byte limits precede recursive manifest inspection, and scene cleanup removes the UI/listener.
 12. **Product-scope correction from user:** multiplayer does not have save/load. H-31 now explicitly covers SP native
-    save/load; D-02/SEQ-08 use independent supported SP save/replay and real MP host-transfer/reconnect legs. Durable
+    save/load; H-09/D-02/SEQ-08 use independent supported SP save/replay and real MP authority/reconnect legs. Durable
     specifications and drafts have been reconciled. Coordinated MP save/load is not planned and is not a missing feature
     blocking these registrations. No MP save/load implementation was added.
+13. **H-31 SP continuation now registered:** eight faction/branch worlds use actual quicksave/encrypted storage/Load UI.
+    Original continuation is sealed before rewind; separate saved/restored and uninterrupted/resumed boundaries compare
+    full canonical world/sharedQueue/RNG, live brain, cadence, authority and exact selected-decision fingerprints.
+    Actual original held-applied receipt, paid construction/training/research and aged retry debt are mandatory premises.
+    Future external fixture inputs cannot vanish across restore. Native speed-change stepping uses the actual clock.
+    Pure saved-lease controls preserve absolute expiry/retry debt and paid/uncertain ownership without inventing a native
+    boundary inside synchronous selection/dispatch. New saves retain confirmed pending delivery sampling and sample age;
+    legacy saves still reset unsafe net-income estimates. Full continuation omits measured telemetry only.
+    Raw captures remain local, proof reports retain bounded digests/first difference. All controls remain unrun.
 
 Separate Final Closure Audit for this source slice: traced factory inputs and strict parsers through native controls,
 selected ownership, independent physical/paid effects, mandatory readers and manifest consumers. Reviewed paired
 instance identity, observer gating, finite faults, original queue handles, safe claim release, quota accounting and
 scene cleanup. Repaired source-review findings above. **The all-registrations batch remains incomplete.**
-Publish exact owned paths normally and verify remote SHA; do not force-push, merge or open a PR. Continue the eight
+Publish exact owned paths normally and verify remote SHA; do not force-push, merge or open a PR. Continue the seven
 remaining bindings after this source checkpoint. Machinery necessity/removal stays last overall.
 
 ## D-01 registration batch — authored, not executed (2026-10-20)

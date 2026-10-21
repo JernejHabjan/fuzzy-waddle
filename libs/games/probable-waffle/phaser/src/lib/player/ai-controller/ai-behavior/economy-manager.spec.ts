@@ -47,17 +47,54 @@ describe("native delivered-income accounting", () => {
     expect(f.blackboard.economy.incomeInstant.wood).toBe(0);
     expect(f.blackboard.economy.incomeSmoothed.wood).toBeCloseTo(0.36);
   });
-  it("resets legacy/save estimates and pending samples before counting resumed deliveries", () => {
+  it("resets legacy estimates and pending samples before counting resumed deliveries", () => {
     const f = fixture();
     f.deliver(100);
     f.blackboard.economy.incomeSmoothed.wood = 1000;
     jest.mocked(getSimulationNow).mockReturnValue(20000);
-    f.manager.reset();
+    f.manager.setState(undefined);
     f.manager.update(25000);
     expect(f.blackboard.economy.incomeSmoothed.wood).toBe(0);
     f.deliver(10);
     f.manager.update(30000);
     expect(f.blackboard.economy.incomeInstant.wood).toBe(2);
+  });
+  it("resumes confirmed pending receipts and sample age exactly without treating restored cash as deliveries", () => {
+    const original = fixture();
+    original.deliver(20);
+    original.manager.update(5000);
+    original.deliver(10);
+    const saved = original.manager.getState();
+    const instant = { ...original.blackboard.economy.incomeInstant };
+    const smoothed = { ...original.blackboard.economy.incomeSmoothed };
+    jest.mocked(getSimulationNow).mockReturnValue(6500);
+    const restored = fixture();
+    restored.blackboard.economy.incomeInstant = instant;
+    restored.blackboard.economy.incomeSmoothed = smoothed;
+    restored.manager.setState(saved);
+    restored.blackboard.economy.resources.wood = 9999;
+    expect(restored.manager.getState()).toEqual(saved);
+    for (const now of [10000, 10000, 15000]) {
+      original.manager.update(now);
+      restored.manager.update(now);
+      expect(restored.blackboard.economy.incomeInstant).toEqual(original.blackboard.economy.incomeInstant);
+      expect(restored.blackboard.economy.incomeSmoothed).toEqual(original.blackboard.economy.incomeSmoothed);
+    }
+    expect(saved.pending.wood).toBe(10);
+    expect(restored.manager.getState().pending.wood).toBe(0);
+  });
+  it("rejects future sampling clocks and invalid receipt amounts instead of minting income", () => {
+    const f = fixture();
+    const valid = f.manager.getState();
+    for (const saved of [{ ...valid, sampledAt: 50000 },
+      { ...valid, pending: { ...valid.pending, wood: -1 } },
+      { ...valid, pending: { ...valid.pending, wood: Number.NaN } }]) {
+      f.deliver(100);
+      f.blackboard.economy.incomeSmoothed.wood = 900;
+      f.manager.setState(saved);
+      expect(f.manager.getState().pending.wood).toBe(0);
+      expect(f.blackboard.economy.incomeSmoothed.wood).toBe(0);
+    }
   });
   it("releases its scene listener, including repeated disposal", () => {
     const f = fixture();

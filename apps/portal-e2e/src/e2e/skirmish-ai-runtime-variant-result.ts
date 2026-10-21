@@ -14,11 +14,13 @@ import type { NativeDebugComparisonProof } from "./skirmish-ai-native-debug-comp
 import type { NativeDebugParityProof } from "./skirmish-ai-native-debug-parity-proof";
 import type { NativeLifecycleProof } from "./skirmish-ai-native-lifecycle-proof";
 import type { NativeImportProof } from "./skirmish-ai-native-import-proof";
+import type { NativeSaveProof } from "./skirmish-ai-native-save-proof";
 // prettier-ignore
 import type { AiRuntimeProductionCaptureV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
 
 export interface RuntimeVariantResultV1 {
+  readonly nativeSave?: NativeSaveProof;
   readonly nativeLifecycle?: NativeLifecycleProof;
   readonly nativeImport?: NativeImportProof;
   /** Explicit H-20 shutdown branch, captured after sealed history and before closing the browser context. */

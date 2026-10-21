@@ -3575,6 +3575,52 @@
           "Silent truncation accepted as exact input"
         ]
       }
+    },
+    "H-31": {
+      "latestTick": 4000,
+      "checkpointTicks": [
+        19,
+        119,
+        199,
+        400,
+        599,
+        800
+      ],
+      "branches": [
+        "before_apply",
+        "applied_pending",
+        "during_active",
+        "pause_speed"
+      ],
+      "capabilityLimits": [
+        "Single-player actual encrypted save/load only; multiplayer has no save/load feature.",
+        "Native selection and dispatch are synchronous. Expiring saved provisional leases use ai-saved-continuation.spec.ts; native branches retain actual paid and unresolved command state without inventing an intermediate boundary.",
+        "All future external fixture inputs are forbidden after the save; actual autonomous logical ticks are replayed beside an uninterrupted same-realm control."
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "Failure age, debt, claims, epoch and next legitimate decisions preserved; no reset exploit",
+        "setup": [
+          "Single-player actual chronic blocker is near its original deadline with expiring provisional lease and unresolved applied command",
+          "Record the real queue lanes and command metadata in the saved world"
+        ],
+        "actions": [
+          "Save at safe completed boundaries before/during/after command application",
+          "Reload through real save codec and resume identical subsequent logical inputs beside an uninterrupted control"
+        ],
+        "measurements": [
+          "Complete saved AI debt/age/deadlines/claims/epoch/RNG and shared queue lane/item/command identity",
+          "Full canonical state plus exact committed decisions at equivalent ticks"
+        ],
+        "required": [
+          "Restored continuation preserves cumulative failure and exactly-once paid work",
+          "Hash comparison includes sharedQueue metadata rather than only legacy queue projections"
+        ],
+        "forbidden": [
+          "Reload creates a fresh opening/deadline",
+          "Matching incomplete legacy hash accepted as matching state"
+        ]
+      }
     }
   }
 }

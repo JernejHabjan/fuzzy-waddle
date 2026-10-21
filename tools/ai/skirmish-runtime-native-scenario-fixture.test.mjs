@@ -6,7 +6,7 @@ import { validNativeScenarioFixture } from "./skirmish-runtime-native-scenario-f
 
 test("all native bindings retain their full branches and original acceptance obligations", () => {
   const ids = Object.keys(nativeScenarioBindings.cases);
-  assert.equal(ids.length, 76);
+  assert.equal(ids.length, 77);
   const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish-v1.json", import.meta.url)));
   for (const id of ids) {
     const row = manifest.rows.find((row) => row.id === id);
@@ -110,10 +110,31 @@ test("D-01 binds each actual lobby policy in both factions and rejects a relabel
 
 test("missing real peer, save, chain, proposal-order and retained-scene premises remain explicit", () => {
   const drafts = JSON.parse(readFileSync(new URL("./fixtures/native-scenario-recipes.json", import.meta.url)));
-  for (const id of ["H-08", "H-09", "H-31"]) {
+  for (const id of ["H-08", "H-09"]) {
     assert.equal(Object.hasOwn(nativeScenarioBindings.cases, id), false);
     const entry = drafts.cases.find((value) => value.scenarioId === id);
     assert.ok(entry.executionBlockers.some((key) => key.startsWith("authority_binding_")));
+  }
+});
+
+test("H-31 binds autonomous single-player codec continuation without unsupported queues or future external inputs", () => {
+  const fixture = nativeScenarioFixture("H-31"), branches = fixture.assertions["H-31"].requiredNativeScenario.branchByVariant;
+  assert.equal(fixture.recipe.variants.length, 8);
+  assert.equal(fixture.recipe.requiresMultiplayer, undefined);
+  for (const variant of fixture.recipe.variants) {
+    const world = variant.presetWorld, branch = branches[variant.id];
+    assert.equal(world.events.length, 0);
+    assert.equal(world.controls.length, 0);
+    assert.equal(world.routeOutages.length, 0);
+    assert.equal(variant.captureConstruction, true);
+    assert.equal(variant.captureCombat, undefined);
+    assert.ok(variant.checkpointTicks[0] < variant.checkpointTicks[1]);
+    if (branch === "during_active") {
+      assert.equal(world.queues[0].count, 4);
+      assert.equal(world.researchQueues.length, 1);
+      assert.equal(world.constructionOrders.length, 1);
+    }
+    if (branch === "applied_pending") assert.equal(world.receiptFault.throughTick, variant.checkpointTicks[0]);
   }
 });
 
@@ -121,7 +142,7 @@ test("native cases cannot downgrade to generic counts or omit a faction, branch 
   for (const id of Object.keys(nativeScenarioBindings.cases)) for (const mutate of [
     (value) => delete value.assertions[id].requiredNativeScenario,
     (value) => value.recipe.variants.pop(),
-    (value) => value.recipe.variants[0].captureCombat = ["H-32", "DBG-05"].includes(id) ? true : undefined,
+    (value) => value.recipe.variants[0].captureCombat = ["H-31", "H-32", "DBG-05"].includes(id) ? true : undefined,
     (value) => value.recipe.variants[0].captureConstruction = ["H-32", "DBG-05"].includes(id) ? true : undefined,
     (value) => value.recipe.variants[0].evidenceStop = { earliestTick: 20, stableForTicks: 0 },
     (value) => value.recipe.variants[0].seed++,

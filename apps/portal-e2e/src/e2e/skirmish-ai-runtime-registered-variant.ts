@@ -17,11 +17,15 @@ import type { NativeDebugParityProof } from "./skirmish-ai-native-debug-parity-p
 import { exerciseDebug } from "./skirmish-ai-debug-panel-exercise";
 import { runNativeLifecycleVariant } from "./skirmish-ai-native-lifecycle-runner";
 import { runNativeImportVariant } from "./skirmish-ai-native-import-runner";
+import { runNativeSaveVariant } from "./skirmish-ai-native-save-runner";
 
 /** The existing runner owns the match. Bound cases additionally arm/read the same observer for the real human opponent. */
 export async function runRegisteredRuntimeVariant(
   browser: Browser, fixture: RuntimeFixtureV1, variant: RuntimeVariantV1, request: RuntimeRequestV1
 ) {
+  const saveBranch = fixture.assertions["H-31"]?.requiredNativeScenario?.branchByVariant[variant.id];
+  if (request.scenarioIds.includes("H-31") && saveBranch)
+    return runNativeSaveVariant(browser, fixture, variant, request, saveBranch);
   const lifecycleBranch = fixture.assertions["H-32"]?.requiredNativeScenario?.branchByVariant[variant.id];
   if (request.scenarioIds.includes("H-32") && lifecycleBranch)
     return runNativeLifecycleVariant(browser, fixture, variant, request, lifecycleBranch);

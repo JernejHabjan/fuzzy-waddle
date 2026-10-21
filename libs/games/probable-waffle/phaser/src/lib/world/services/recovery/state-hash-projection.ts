@@ -4,6 +4,7 @@ import { getSceneService, getSceneSystem } from "../scene-component-helpers";
 import { AiPlayerHandler } from "../../../player/ai-controller/ai-player-handler";
 import { CommandBusService } from "../multiplayer/command-bus.service";
 import { SimulationTickService } from "../simulation-tick.service";
+import { projectAiControllerContinuation } from "./ai-controller-continuation-projection";
 import { SummonExpiryService } from "../../../entity/systems/summon-expiry.service";
 import { AoeZoneManager } from "../../../entity/systems/aoe-zone-manager";
 import { ActorIndexSystem } from "../ActorIndexSystem";
@@ -129,6 +130,7 @@ export class StateHashProjection {
       .map((player) => [String(player.playerNumber ?? -1), player.playerNumber === undefined
         ? player.playerState.data.aiBehaviorTreeState
         : handler?.getAiPlayerController(player.playerNumber)?.getSaveState() ?? player.playerState.data.aiBehaviorTreeState] as const)
+      .map(([player, state]) => [player, projectAiControllerContinuation(state)] as const)
       .filter((entry) => entry[1] !== undefined)
       .sort(([left], [right]) => left.localeCompare(right));
     return {
