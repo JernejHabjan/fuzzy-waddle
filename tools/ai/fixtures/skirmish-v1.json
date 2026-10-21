@@ -363,7 +363,7 @@
     { "id": "H-02", "stages": [6, 12], "group": "recovery", "fixture": "h-02-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
     { "id": "H-03", "stages": [6, 12], "group": "recovery", "fixture": "h-03-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
     { "id": "H-04", "stages": [6, 12], "group": "recovery", "fixture": "h-04-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "H-05", "stages": [6, 12], "group": "recovery", "fixture": null, "runtimeRecipeDraft": "native-scenario-recipes.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
+    { "id": "H-05", "stages": [6, 12], "group": "recovery", "fixture": "h-05-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
     { "id": "H-06", "stages": [3], "group": "authority", "fixture": "h-06-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
     { "id": "H-07", "stages": [3], "group": "authority", "fixture": "h-07-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
     { "id": "H-08", "stages": [3], "group": "authority", "fixture": null, "runtimeRecipeDraft": "native-scenario-recipes.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
@@ -399,15 +399,14 @@
       "drivers": ["pure", "runtime"]
     },
     { "id": "H-19", "stages": [4, 8], "group": "access", "fixture": "h-19-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "H-20", "stages": [4, 8], "group": "access", "fixture": null, "runtimeRecipeDraft": "native-scenario-recipes.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "H-21", "stages": [8], "group": "access", "fixture": null, "runtimeRecipeDraft": "native-scenario-recipes.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
+    { "id": "H-20", "stages": [4, 8], "group": "access", "fixture": "h-20-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
+    { "id": "H-21", "stages": [8], "group": "access", "fixture": null, "runtimeSupport": { "status": "deferred_content", "issue": 759, "reason": "User 2026-10-21 deferred larger-unit/formation native clearance coverage until suitable content exists; preserve pure clearance contracts." }, "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
     { "id": "H-22", "stages": [4, 9], "group": "scouting", "fixture": "h-22-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
     {
       "id": "H-23",
       "stages": [9, 13],
       "group": "combat",
-      "fixture": null,
-      "runtimeRecipeDraft": "native-scenario-recipes.json",
+      "fixture": "h-23-native-runtime.json",
       "authoredFixture": "stage-13-tactics.json",
       "drivers": ["pure", "runtime"]
     },
@@ -471,8 +470,8 @@
       "fixture": "continuous-land-runtime.json",
       "drivers": ["runtime"]
     },
-    { "id": "SEQ-03", "stages": [15], "group": "continuous", "fixture": null, "runtimeRecipeDraft": "native-scenario-recipes.json", "drivers": ["runtime"] },
-    { "id": "SEQ-04", "stages": [15], "group": "continuous", "fixture": null, "runtimeRecipeDraft": "native-scenario-recipes.json", "drivers": ["runtime"] },
+    { "id": "SEQ-03", "stages": [15], "group": "continuous", "fixture": "seq-03-native-runtime.json", "drivers": ["runtime"] },
+    { "id": "SEQ-04", "stages": [15], "group": "continuous", "fixture": "seq-04-native-runtime.json", "drivers": ["runtime"] },
     {
       "id": "SEQ-05",
       "name": "Island transport and expansion",
@@ -482,8 +481,8 @@
       "drivers": ["runtime"],
       "runtimeSupport": { "status": "deferred_content", "issue": 822, "reason": "No shipped island map" }
     },
-    { "id": "SEQ-06", "stages": [15], "group": "continuous", "fixture": null, "runtimeRecipeDraft": "native-scenario-recipes.json", "drivers": ["runtime"] },
-    { "id": "SEQ-07", "stages": [15], "group": "continuous", "fixture": null, "runtimeRecipeDraft": "native-scenario-recipes.json", "drivers": ["runtime"] },
+    { "id": "SEQ-06", "stages": [15], "group": "continuous", "fixture": "seq-06-native-runtime.json", "drivers": ["runtime"] },
+    { "id": "SEQ-07", "stages": [15], "group": "continuous", "fixture": "seq-07-native-runtime.json", "drivers": ["runtime"] },
     { "id": "SEQ-08", "stages": [15], "group": "continuous", "fixture": null, "runtimeRecipeDraft": "native-scenario-recipes.json", "drivers": ["runtime"] },
     {
       "id": "C-01",
@@ -533,18 +532,16 @@
       "id": "D-03",
       "stages": [6, 14],
       "group": "difficulty",
-      "fixture": null,
-      "runtimeRecipeDraft": "native-scenario-recipes.json",
+      "fixture": "d-03-native-runtime.json",
       "authoredFixture": "stage-14-adaptation.json",
       "drivers": ["pure", "runtime"]
     },
-    { "id": "D-04", "stages": [7, 9, 12], "group": "difficulty", "fixture": null, "runtimeRecipeDraft": "native-scenario-recipes.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
+    { "id": "D-04", "stages": [7, 9, 12], "group": "difficulty", "fixture": "d-04-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
     {
       "id": "D-05",
       "stages": [9, 13, 14],
       "group": "difficulty",
-      "fixture": null,
-      "runtimeRecipeDraft": "native-scenario-recipes.json",
+      "fixture": "d-05-native-runtime.json",
       "authoredFixture": "stage-14-adaptation.json",
       "drivers": ["pure", "runtime"]
     },
@@ -580,8 +577,7 @@
       "id": "DBG-04",
       "stages": [5, 13],
       "group": "debug",
-      "fixture": null,
-      "runtimeRecipeDraft": "native-scenario-recipes.json",
+      "fixture": "dbg-04-native-runtime.json",
       "authoredFixture": "stage-5-bootstrap.json",
       "drivers": ["pure", "runtime"]
     },
@@ -594,6 +590,6 @@
       "authoredFixture": "stage-5-bootstrap.json",
       "drivers": ["pure", "runtime"]
     },
-    { "id": "DBG-06", "stages": [13, 15], "group": "debug", "fixture": null, "runtimeRecipeDraft": "native-scenario-recipes.json", "drivers": ["runtime"] }
+    { "id": "DBG-06", "stages": [13, 15], "group": "debug", "fixture": "dbg-06-native-runtime.json", "drivers": ["runtime"] }
   ]
 }

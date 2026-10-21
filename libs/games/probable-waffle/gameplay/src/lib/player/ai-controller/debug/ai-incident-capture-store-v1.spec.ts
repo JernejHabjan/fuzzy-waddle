@@ -65,4 +65,17 @@ describe("AiIncidentCaptureStoreV1", () => {
     expect(store.addAutomatic("episode:large", bundle(1))).toBe("quota_exceeded");
     expect(store.snapshot()).toEqual([]);
   });
+
+  it("DBG-06 cannot replenish session quota by evicting retained incidents and closes on disposal", () => {
+    const unitBytes = new TextEncoder().encode(JSON.stringify(bundle(1))).byteLength + 9;
+    const store = new AiIncidentCaptureStoreV1({ maxRetainedIncidentBundles: 5, sessionQuotaBytes: unitBytes * 7 });
+    for (let id = 1; id <= 7; id++) expect(store.addAutomatic(`episode:${id}`, bundle(id))).toBe("captured");
+    expect(store.snapshot()).toHaveLength(5);
+    expect(store.addAutomatic("episode:8", bundle(8))).toBe("quota_exceeded");
+    expect(store.addAutomatic("episode:1", bundle(1))).toBe("episode_already_captured");
+    expect(store.metrics().episodeCount).toBe(7);
+    store.dispose();
+    expect(store.metrics()).toMatchObject({ sessionBytes: 0, retainedBytes: 0, retainedCount: 0, episodeCount: 0, disposed: true });
+    expect(() => store.addAutomatic("episode:9", bundle(9))).toThrow("incident_capture_store_disposed");
+  });
 });

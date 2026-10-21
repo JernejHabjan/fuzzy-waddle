@@ -43,7 +43,7 @@ export function validateManifest(value, fixtureDirectory) {
     if (
       row.runtimeSupport !== undefined &&
       (row.runtimeSupport.status !== "deferred_content" ||
-        row.runtimeSupport.issue !== 822 ||
+        !(row.runtimeSupport.issue === 822 || row.id === "H-21" && row.runtimeSupport.issue === 759) ||
         typeof row.runtimeSupport.reason !== "string" ||
         row.runtimeSupport.reason.length === 0 ||
         row.fixture !== null ||

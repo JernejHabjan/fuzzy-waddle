@@ -21,7 +21,8 @@ export function reconcileAiTransportManifest(
     lifecycle: {
       ...plan.lifecycle,
       manifest: aliveManifest,
-      requiredCapacity: aliveManifest.reduce((sum, member) => sum + member.seats, 0),
+      // The original readiness denominator survives optional losses; death is not additional preparation.
+      requiredCapacity: plan.lifecycle.requiredCapacity,
       seatAssignments: plan.lifecycle.seatAssignments.map((assignment) => ({
         ...assignment,
         passengerIds: assignment.passengerIds.filter((actorId) => aliveIds.has(actorId))

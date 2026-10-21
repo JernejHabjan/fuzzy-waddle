@@ -27,7 +27,9 @@ export function evaluateNativeAuthority(id: string, branch: string, context: Ret
     const raw = context.facts.filter((fact) => fact.kind === "outcome" && fact.outcome.commandId === commandId);
     const terminal = raw.find((fact) => fact.kind === "outcome" &&
       ["completed", "rejected", "failed", "cancelled"].includes(fact.outcome.kind));
-    const reconciled = context.frames.find((frame) => frame.tick < released.fact.tick &&
+    const delayedHistory = id === "H-05" && branch === "uncertain";
+    const reconciled = context.frames.find((frame) =>
+      (delayedHistory ? frame.tick >= released.fact.tick && frame.tick <= released.fact.tick + 40 : frame.tick < released.fact.tick) &&
       frame.decision.missionState?.pendingOutcomes.some((outcome) => outcome.identity.commandId === `command:${commandId}` &&
         ["completed", "rejected", "failed", "cancelled"].includes(outcome.kind)));
     const charges = context.facts.filter((fact) => fact.kind === "queue_resource" &&

@@ -112,6 +112,12 @@ export function createAiRuntimePresetCommand(
       actorIds: [actorId],
       actorName: action.actorName
     };
+  } else if (action.kind === "cancel_research") {
+    // The public command cancels current research, so refuse to substitute a new item for the pinned original.
+    if (!setupItem?.researchData || getActorComponent(producer, QueueComponent)?.allItems.find((item) =>
+      item.researchData !== undefined) !== setupItem)
+      throw new Error(`runtime_preset_control_original_research_lost:${control.id}`);
+    command = { type: ProbableWaffleGameCommandTypes.CancelResearch, playerNumber: owner, actorIds: [actorId] };
   } else {
     if (!setupItem) throw new Error(`runtime_preset_control_paid_item_missing:${control.id}`);
     const index = getActorComponent(producer, QueueComponent)?.allItems.indexOf(setupItem);

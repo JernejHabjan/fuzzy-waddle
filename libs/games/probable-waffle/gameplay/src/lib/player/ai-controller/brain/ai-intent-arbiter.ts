@@ -9,6 +9,7 @@ import type {
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
 import { aiSpendingBudgetConflict, type AiSpendingBudget } from "./ai-spending-budget";
+import { aiIslandResourceReserve } from "./ai-island-resource-reserve";
 import { canRenewAiSquadActorClaim } from "./ai-squad-actor-claims";
 
 /** One deterministic admission pass across proposals from all managers. */
@@ -181,7 +182,8 @@ export function arbitrateAiIntents(
       (claim) =>
         claim.kind === "resource" &&
         (resourceClaims.get(claim.resourceType) ?? 0) + claim.amount >
-          availableResource(observation, claim.resourceType)
+          availableResource(observation, claim.resourceType) -
+            aiIslandResourceReserve(observation, state, intent, accepted, claim.resourceType)
     );
     if (resourceConflict?.kind === "resource") {
       decisions.push({

@@ -7,6 +7,8 @@ import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observa
 import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
 import { canAffordAiEconomyCost } from "./ai-economy-policy";
 import { createAiResourceCostClaims } from "./ai-resource-cost-claims";
+import { node, routeCapability } from "./ai-skirmish-support";
+import { queryAiAccessRouteV1 } from "./ai-access-graph-v1";
 
 const SERVICE_RADIUS = 10;
 const SITE_RADIUS = 6;
@@ -159,6 +161,13 @@ export class AiResourceServiceManager implements AiProposalManagerV1 {
             order !== OrderType.ReturnResources &&
             !(cargo?.status === "known" && cargo.value > 0)
           );
+        })
+        .filter((actor) => {
+          const graph = observation.map?.accessGraph, from = node(actor), to = node(source);
+          if (!graph || !from || !to || from === to) return true;
+          return queryAiAccessRouteV1(graph, { queryId: `query:resource-builder:${actor.actorId}:${source.actorId}`,
+            kind: "movement", fromNodeId: from, toNodeId: to, capabilities: routeCapability(observation, [actor], catalog),
+            firingNodeIds: [] }).kind === "direct";
         })
         .sort(
           (left, right) =>

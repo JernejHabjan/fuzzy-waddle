@@ -13,6 +13,19 @@ export function advanceAiTransportLoading(
   actors: ReadonlyMap<string, AiTransportPlanContext["observation"]["actors"][number]>
 ): AiTransportPlanWithLifecycle {
   if (plan.phase === "gather") {
+    const ready = plan.lifecycle.manifest.filter((member) =>
+      isAiTransportActorNear(actors.get(member.actorId), pickup.passengerPosition));
+    const readyIds = new Set(ready.map((member) => member.actorId));
+    const indispensableReady = plan.lifecycle.manifest.filter((member) => member.indispensable)
+      .every((member) => readyIds.has(member.actorId));
+    const sufficient = ready.reduce((sum, member) => sum + member.seats, 0) * 1000 >=
+      plan.lifecycle.requiredCapacity * plan.lifecycle.departureCapacityPermille;
+    if (indispensableReady && sufficient) {
+      const departing = { ...plan, passengerIds: ready.map((member) => member.actorId), lifecycle: { ...plan.lifecycle,
+        manifest: ready, seatAssignments: plan.lifecycle.seatAssignments.map((assignment) => ({ ...assignment,
+          passengerIds: assignment.passengerIds.filter((id) => readyIds.has(id)) })) } };
+      return withAiTransportPhase(departing, "rendezvous", context.observation.tick, AI_TRANSPORT_BOARDING_TIMEOUT_TICKS);
+    }
     const waiting = plan.passengerIds.filter(
       (actorId) => !isAiTransportActorNear(actors.get(actorId), pickup.passengerPosition)
     );

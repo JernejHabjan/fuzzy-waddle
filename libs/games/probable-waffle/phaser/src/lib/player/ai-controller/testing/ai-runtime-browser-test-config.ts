@@ -4,6 +4,7 @@ import type { AiRuntimeBrowserTestConfigV1 } from "./ai-runtime-browser-test-con
 import type { AiRuntimeBrowserTestHostV1 } from "./ai-runtime-browser-test-host-v1";
 import type { AiRuntimePresetApplicationV1 } from "./ai-runtime-preset-application-v1";
 import { isAiRuntimeBrowserTestConfigV1 } from "./validate-ai-runtime-browser-test-config-v1";
+import { armAiRuntimeIncidentCaptureProbe } from "./ai-runtime-incident-capture-probe";
 
 export const AI_RUNTIME_BROWSER_TEST_CONFIG_KEY_V1 = "fuzzy-waddle:ai-runtime-browser-test-v1";
 export const AI_RUNTIME_BROWSER_TEST_HOST_KEY_V1 = "__fuzzyWaddleAiRuntimeBrowserTestV1";
@@ -39,7 +40,12 @@ export function publishAiRuntimeBrowserTestHostV1(game: Phaser.Game, config: AiR
     schemaVersion: 1,
     config,
     game,
-    initialStateByPlayer: {}
+    initialStateByPlayer: {},
+    armIncidentCaptureProbe: (sourceRevision, dirtySourceDigest) => {
+      const scene = game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map"));
+      if (!scene) throw new Error("native_incident_scene_missing");
+      return armAiRuntimeIncidentCaptureProbe(scene, sourceRevision, dirtySourceDigest);
+    }
   };
 }
 

@@ -6,6 +6,14 @@ import { nativeClassicWorld } from "./native-classic-worlds.mjs";
 import { nativeRecoveryWorld } from "./native-recovery-worlds.mjs";
 import { nativeAuthorityWorld } from "./native-authority-worlds.mjs";
 import { nativeDifficultyWorld } from "./native-difficulty-worlds.mjs";
+import { nativeDifficultyFairnessWorld } from "./native-difficulty-fairness-worlds.mjs";
+import { nativeEasyContinuityWorld } from "./native-easy-continuity-worlds.mjs";
+import { nativeTopologyChurnWorld } from "./native-topology-churn-worlds.mjs";
+import { nativeDifficultyPressureWorld } from "./native-difficulty-pressure-worlds.mjs";
+import { nativeContinuityWorld } from "./native-continuity-worlds.mjs";
+import { nativeOptionalReleaseWorld } from "./native-optional-release-worlds.mjs";
+import { nativeDebugParityWorld } from "./native-debug-parity-worlds.mjs";
+import { nativeIslandEstablishmentWorld } from "./native-island-establishment-worlds.mjs";
 
 export const nativeScenarioBindings = JSON.parse(readFileSync(new URL("./native-scenario-bindings.json", import.meta.url), "utf8"));
 const expansion = JSON.parse(readFileSync(new URL("./fixtures/expansion-pressure-runtime.json", import.meta.url), "utf8"));
@@ -30,7 +38,15 @@ export function nativeScenarioFixture(id) {
   const variants = ["Tivara", "Skaduwee"].flatMap((faction) => nativeScenarioBranches(id, faction).map((branch) => {
     const recovery = ["H-01", "H-02", "H-03", "H-04", "H-19", "H-24", "H-25", "H-26"].includes(id);
     const authority = ["H-06", "H-07", "H-10", "H-13", "H-14", "H-15", "H-11", "H-12", "H-30"].includes(id);
-    const world = id === "D-01" ? nativeDifficultyWorld(faction, branch) :
+    const world = id === "H-23" ? nativeIslandEstablishmentWorld(faction, branch) :
+      id === "DBG-06" ? nativeDebugParityWorld(faction) :
+      id === "H-05" ? nativeOptionalReleaseWorld(faction, branch) :
+      ["SEQ-03", "SEQ-04", "SEQ-06", "SEQ-07"].includes(id) ? nativeContinuityWorld(id, faction, branch) :
+      id === "D-05" ? nativeDifficultyPressureWorld(faction, branch) :
+      id === "H-20" ? nativeTopologyChurnWorld(faction, branch) :
+      id === "D-04" ? nativeEasyContinuityWorld(faction, branch) :
+      id === "D-03" ? nativeDifficultyFairnessWorld(faction, branch) :
+      ["D-01", "DBG-04"].includes(id) ? nativeDifficultyWorld(faction, branch) :
       authority ? nativeAuthorityWorld(id, faction, branch) : recovery ? nativeRecoveryWorld(id, faction, branch) :
       id === "EXP-01" ? expansionWorld(faction, branch) : id.startsWith("DOMAIN-") ?
       nativeDomainWorld(id, faction, branch) : id.startsWith("C-") ? nativeClassicWorld(id, faction, branch) :
@@ -51,13 +67,17 @@ export function nativeScenarioFixture(id) {
         .map((actor) => ({ fixtureActorId: actor.fixtureActorId, amount: 0 }));
     }
     const variantId = `${id.toLowerCase()}-${faction.toLowerCase()}-${branch.replaceAll("_", "-")}`;
-    world.fixtureId = variantId;
+    // Paired controls need identical stamped match/actor/command identities, not merely the same random seed.
+    world.fixtureId = id === "DBG-06" ? `dbg-06-${faction.toLowerCase()}-parity` : id === "D-03" ?
+      `d-03-${faction.toLowerCase()}-${branch.split("_")[0]}` : variantId;
     branches[variantId] = branch;
     return {
-      id: variantId, executionKind: "focused_preset", role: "standalone", seed: id === "EXP-01" ? 759933 : 759940,
+      id: variantId, executionKind: "focused_preset",
+      role: "standalone", seed: id === "EXP-01" ? 759933 : 759940,
       deadlineRationale: "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
       aiFaction: faction, humanFaction: faction === "Tivara" ? "Skaduwee" : "Tivara",
-      difficulty: id === "D-01" ? ({ easy: "Easy", normal: "Normal", hard: "Hard" })[branch] : "Normal",
+      difficulty: id === "DBG-06" ? "Hard" : id === "D-04" ? "Easy" : ["D-01", "D-03", "D-05"].includes(id) ?
+        ({ easy: "Easy", normal: "Normal", hard: "Hard" })[branch.split("_")[0]] : "Normal",
       ...(id === "C-06" ? {
         additionalAiPlayers: [{ playerNumber: 3, faction: faction === "Tivara" ? "Skaduwee" : "Tivara", difficulty: "Easy" }],
         lobbyTeams: [{ playerNumber: 1, team: 1 }, { playerNumber: 2, team: branch === "allied_control" ? 1 : 2 },

@@ -1,0 +1,1254 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "runtime",
+  "driver": "runtime",
+  "scenarioIds": [
+    "SEQ-03"
+  ],
+  "status": "authored_not_executed",
+  "purpose": "Delivered income recovers within independent service/build bounds; useful duplicate deposits allowed; no farm/worker dependency cycle",
+  "acceptance": {
+    "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+    "requiredOutcome": "Delivered income recovers within independent service/build bounds; useful duplicate deposits allowed; no farm/worker dependency cycle",
+    "setup": [
+      "Legal economy start with identifiable partial-pack worker, nearly exhausted source and surviving alternative source/drain",
+      "Freeze service/build recovery bounds and preserve ordinary food prerequisites"
+    ],
+    "actions": [
+      "Establish income, then deplete/congest local service",
+      "Destroy the exact loaded worker's drain natively; continue through alternate delivery, renewable food and useful expansion"
+    ],
+    "measurements": [
+      "Original pack extraction and credit, exact drain loss, next source extraction and grown-food credit",
+      "Completed useful new service and delivered income after expansion"
+    ],
+    "required": [
+      "Each phase recovers within its predeclared bound without losing or duplicating cargo",
+      "Sustainable food and useful duplicate deposits resolve real service need"
+    ],
+    "forbidden": [
+      "Initial grant counted as income",
+      "Skipping the loaded-pack boundary",
+      "Circular worker/field waiting"
+    ]
+  },
+  "recipe": {
+    "mapLabel": "AI Open Economy (test only)",
+    "aiPlayerNumber": 2,
+    "simulationTimeScale": 1,
+    "fixedStepFrames": true,
+    "checkpointTicks": [
+      200,
+      400,
+      800,
+      1200,
+      1600,
+      2000,
+      2400,
+      3000,
+      4000,
+      6000,
+      12000,
+      18000
+    ],
+    "variants": [
+      {
+        "id": "seq-03-tivara-partial-pack",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "SEQ-03"
+        ],
+        "presetWorld": {
+          "fixtureId": "seq-03-tivara-partial-pack",
+          "actors": [
+            {
+              "fixtureActorId": "ai-worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 784,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 672,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 576,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 608,
+                "y": 904,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "field",
+              "actorName": "Field",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 640,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 960,
+                "y": 1120,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "lost-dropoff",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 1056,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "near-empty-tree",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": 896,
+                "y": 840,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "spare-tree",
+              "actorName": "Tree9",
+              "owner": null,
+              "position": {
+                "x": 960,
+                "y": 840,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1200,
+                "z": 0
+              }
+            }
+          ],
+          "requireFactionRoster": true,
+          "resourceStarts": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 0,
+                "wood": 0,
+                "minerals": 0,
+                "stone": 0
+              }
+            }
+          ],
+          "events": [
+            {
+              "id": "dropoff-loss",
+              "tick": 160,
+              "kind": "destroy_owned_actor",
+              "owner": 2,
+              "objectName": "WorkMill",
+              "fixtureActorId": "lost-dropoff"
+            }
+          ],
+          "resourceGrants": [],
+          "sourceStocks": [
+            {
+              "fixtureActorId": "near-empty-tree",
+              "amount": 2
+            }
+          ],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "ai-worker-1",
+              "sourceFixtureActorId": "near-empty-tree",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "ai-worker-2",
+              "sourceFixtureActorId": "field",
+              "kind": "gather"
+            }
+          ],
+          "controls": []
+        }
+      },
+      {
+        "id": "seq-03-tivara-congested",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "SEQ-03"
+        ],
+        "presetWorld": {
+          "fixtureId": "seq-03-tivara-congested",
+          "actors": [
+            {
+              "fixtureActorId": "ai-worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 784,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 672,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 576,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 608,
+                "y": 904,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "field",
+              "actorName": "Field",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 640,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 960,
+                "y": 1120,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "lost-dropoff",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 1056,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "near-empty-tree",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": 896,
+                "y": 840,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "spare-tree",
+              "actorName": "Tree9",
+              "owner": null,
+              "position": {
+                "x": 960,
+                "y": 840,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1200,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "surviving-drain",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 1088,
+                "y": 768,
+                "z": 0
+              }
+            }
+          ],
+          "requireFactionRoster": true,
+          "resourceStarts": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 0,
+                "wood": 0,
+                "minerals": 0,
+                "stone": 0
+              }
+            }
+          ],
+          "events": [
+            {
+              "id": "dropoff-loss",
+              "tick": 160,
+              "kind": "destroy_owned_actor",
+              "owner": 2,
+              "objectName": "WorkMill",
+              "fixtureActorId": "lost-dropoff"
+            }
+          ],
+          "resourceGrants": [],
+          "sourceStocks": [
+            {
+              "fixtureActorId": "near-empty-tree",
+              "amount": 2
+            }
+          ],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "ai-worker-1",
+              "sourceFixtureActorId": "near-empty-tree",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "ai-worker-2",
+              "sourceFixtureActorId": "field",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "ai-worker-3",
+              "sourceFixtureActorId": "spare-tree",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "ai-worker-4",
+              "sourceFixtureActorId": "spare-tree",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "ai-worker-5",
+              "sourceFixtureActorId": "spare-tree",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "ai-worker-6",
+              "sourceFixtureActorId": "spare-tree",
+              "kind": "gather"
+            }
+          ],
+          "controls": []
+        }
+      },
+      {
+        "id": "seq-03-tivara-efficient",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "SEQ-03"
+        ],
+        "presetWorld": {
+          "fixtureId": "seq-03-tivara-efficient",
+          "actors": [
+            {
+              "fixtureActorId": "ai-worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 784,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 672,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 576,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 608,
+                "y": 904,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "field",
+              "actorName": "Field",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 640,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 960,
+                "y": 1120,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "lost-dropoff",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 1056,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "near-empty-tree",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": 896,
+                "y": 840,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "spare-tree",
+              "actorName": "Tree9",
+              "owner": null,
+              "position": {
+                "x": 960,
+                "y": 840,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1200,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "surviving-drain",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 1088,
+                "y": 768,
+                "z": 0
+              }
+            }
+          ],
+          "requireFactionRoster": true,
+          "resourceStarts": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 0,
+                "wood": 0,
+                "minerals": 0,
+                "stone": 0
+              }
+            }
+          ],
+          "events": [
+            {
+              "id": "dropoff-loss",
+              "tick": 160,
+              "kind": "destroy_owned_actor",
+              "owner": 2,
+              "objectName": "WorkMill",
+              "fixtureActorId": "lost-dropoff"
+            }
+          ],
+          "resourceGrants": [],
+          "sourceStocks": [
+            {
+              "fixtureActorId": "near-empty-tree",
+              "amount": 2
+            }
+          ],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "ai-worker-1",
+              "sourceFixtureActorId": "near-empty-tree",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "ai-worker-2",
+              "sourceFixtureActorId": "field",
+              "kind": "gather"
+            }
+          ],
+          "controls": []
+        }
+      },
+      {
+        "id": "seq-03-skaduwee-partial-pack",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Skaduwee",
+        "humanFaction": "Tivara",
+        "difficulty": "Normal",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "SEQ-03"
+        ],
+        "presetWorld": {
+          "fixtureId": "seq-03-skaduwee-partial-pack",
+          "actors": [
+            {
+              "fixtureActorId": "ai-worker-1",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 784,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-2",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 672,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-3",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 576,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-4",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 608,
+                "y": 904,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-5",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-6",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "field",
+              "actorName": "Field",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 640,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 960,
+                "y": 1120,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "lost-dropoff",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 1056,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "near-empty-tree",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": 896,
+                "y": 840,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "spare-tree",
+              "actorName": "Tree9",
+              "owner": null,
+              "position": {
+                "x": 960,
+                "y": 840,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1200,
+                "z": 0
+              }
+            }
+          ],
+          "requireFactionRoster": true,
+          "resourceStarts": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 0,
+                "wood": 0,
+                "minerals": 0,
+                "stone": 0
+              }
+            }
+          ],
+          "events": [
+            {
+              "id": "dropoff-loss",
+              "tick": 160,
+              "kind": "destroy_owned_actor",
+              "owner": 2,
+              "objectName": "WorkMill",
+              "fixtureActorId": "lost-dropoff"
+            }
+          ],
+          "resourceGrants": [],
+          "sourceStocks": [
+            {
+              "fixtureActorId": "near-empty-tree",
+              "amount": 2
+            }
+          ],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "ai-worker-1",
+              "sourceFixtureActorId": "near-empty-tree",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "ai-worker-2",
+              "sourceFixtureActorId": "field",
+              "kind": "gather"
+            }
+          ],
+          "controls": []
+        }
+      },
+      {
+        "id": "seq-03-skaduwee-congested",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Skaduwee",
+        "humanFaction": "Tivara",
+        "difficulty": "Normal",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "SEQ-03"
+        ],
+        "presetWorld": {
+          "fixtureId": "seq-03-skaduwee-congested",
+          "actors": [
+            {
+              "fixtureActorId": "ai-worker-1",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 784,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-2",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 672,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-3",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 576,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-4",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 608,
+                "y": 904,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-5",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-6",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "field",
+              "actorName": "Field",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 640,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 960,
+                "y": 1120,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "lost-dropoff",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 1056,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "near-empty-tree",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": 896,
+                "y": 840,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "spare-tree",
+              "actorName": "Tree9",
+              "owner": null,
+              "position": {
+                "x": 960,
+                "y": 840,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1200,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "surviving-drain",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 1088,
+                "y": 768,
+                "z": 0
+              }
+            }
+          ],
+          "requireFactionRoster": true,
+          "resourceStarts": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 0,
+                "wood": 0,
+                "minerals": 0,
+                "stone": 0
+              }
+            }
+          ],
+          "events": [
+            {
+              "id": "dropoff-loss",
+              "tick": 160,
+              "kind": "destroy_owned_actor",
+              "owner": 2,
+              "objectName": "WorkMill",
+              "fixtureActorId": "lost-dropoff"
+            }
+          ],
+          "resourceGrants": [],
+          "sourceStocks": [
+            {
+              "fixtureActorId": "near-empty-tree",
+              "amount": 2
+            }
+          ],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "ai-worker-1",
+              "sourceFixtureActorId": "near-empty-tree",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "ai-worker-2",
+              "sourceFixtureActorId": "field",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "ai-worker-3",
+              "sourceFixtureActorId": "spare-tree",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "ai-worker-4",
+              "sourceFixtureActorId": "spare-tree",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "ai-worker-5",
+              "sourceFixtureActorId": "spare-tree",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "ai-worker-6",
+              "sourceFixtureActorId": "spare-tree",
+              "kind": "gather"
+            }
+          ],
+          "controls": []
+        }
+      },
+      {
+        "id": "seq-03-skaduwee-efficient",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Skaduwee",
+        "humanFaction": "Tivara",
+        "difficulty": "Normal",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "SEQ-03"
+        ],
+        "presetWorld": {
+          "fixtureId": "seq-03-skaduwee-efficient",
+          "actors": [
+            {
+              "fixtureActorId": "ai-worker-1",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 784,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-2",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 672,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-3",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 576,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-4",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 608,
+                "y": 904,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-5",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-6",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "field",
+              "actorName": "Field",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 640,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 960,
+                "y": 1120,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "lost-dropoff",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 1056,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "near-empty-tree",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": 896,
+                "y": 840,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "spare-tree",
+              "actorName": "Tree9",
+              "owner": null,
+              "position": {
+                "x": 960,
+                "y": 840,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1200,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "surviving-drain",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 1088,
+                "y": 768,
+                "z": 0
+              }
+            }
+          ],
+          "requireFactionRoster": true,
+          "resourceStarts": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 0,
+                "wood": 0,
+                "minerals": 0,
+                "stone": 0
+              }
+            }
+          ],
+          "events": [
+            {
+              "id": "dropoff-loss",
+              "tick": 160,
+              "kind": "destroy_owned_actor",
+              "owner": 2,
+              "objectName": "WorkMill",
+              "fixtureActorId": "lost-dropoff"
+            }
+          ],
+          "resourceGrants": [],
+          "sourceStocks": [
+            {
+              "fixtureActorId": "near-empty-tree",
+              "amount": 2
+            }
+          ],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "ai-worker-1",
+              "sourceFixtureActorId": "near-empty-tree",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "ai-worker-2",
+              "sourceFixtureActorId": "field",
+              "kind": "gather"
+            }
+          ],
+          "controls": []
+        }
+      }
+    ]
+  },
+  "assertions": {
+    "SEQ-03": {
+      "maximumTick": 18000,
+      "minimumDecisions": 1,
+      "minimumAppliedCommands": 1,
+      "requiredAiFactions": [
+        "Tivara",
+        "Skaduwee"
+      ],
+      "requiredNativeScenario": {
+        "schemaVersion": 1,
+        "scenarioId": "SEQ-03",
+        "latestTick": 18000,
+        "humanPlayerNumber": 1,
+        "branchByVariant": {
+          "seq-03-tivara-partial-pack": "partial_pack",
+          "seq-03-tivara-congested": "congested",
+          "seq-03-tivara-efficient": "efficient",
+          "seq-03-skaduwee-partial-pack": "partial_pack",
+          "seq-03-skaduwee-congested": "congested",
+          "seq-03-skaduwee-efficient": "efficient"
+        }
+      }
+    }
+  }
+}

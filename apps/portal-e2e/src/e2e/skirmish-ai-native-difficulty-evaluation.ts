@@ -16,9 +16,11 @@ export function evaluateNativeDifficulty(branch: string, context: ReturnType<typ
 }
 
 /** Separate predicate controls can erase/reorder real-shaped boundaries without constructing a fake native match. */
-export function nativeDifficultySelectionFailures(branch: string, frames: ReturnType<typeof nativeScenarioContext>["frames"]) {
+export function nativeDifficultySelectionFailures(
+  branch: string, frames: ReturnType<typeof nativeScenarioContext>["frames"], horizon = 2000
+) {
   const expected = nativeDifficultyProfile(branch), failures: string[] = [];
-  const horizon = 2000, interval = expected.decisionIntervalTicks;
+  const interval = expected.decisionIntervalTicks;
   if (frames.length !== horizon / interval) failures.push("difficulty_complete_cadence_missing");
   for (const [index, frame] of frames.entries()) {
     const input = frame.decision.input, profile = input?.profile;

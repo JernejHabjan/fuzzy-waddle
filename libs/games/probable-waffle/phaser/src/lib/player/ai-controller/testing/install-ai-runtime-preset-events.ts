@@ -11,6 +11,7 @@ import { SimulationTickService } from "../../../world/services/simulation-tick.s
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import type { AiRuntimePresetWorldV1 } from "./ai-runtime-preset-world-v1";
 import { recordAiRuntimePresetEventV1 } from "./ai-runtime-browser-test-config";
+import type { AiRuntimeDecisionRepro } from "./ai-runtime-decision-repro";
 import { PRODUCTION_SPATIAL_AUTHORITY_EVENT, type ProductionSpatialAuthorityEvent } from
   "../../../world/services/multiplayer/production-spatial-authority-event";
 
@@ -31,6 +32,17 @@ export function installAiRuntimePresetEvents(
   const actorIndex = getSceneService(scene, ActorIndexSystem);
   if (!tickService || !actorIndex) throw new Error("runtime_preset_event_services_unavailable");
   const cleanup = new Subscription();
+  let originalOptional: string | undefined;
+  if (pendingEvents.some((event) => event.membership)) {
+    const pin = (capture: AiRuntimeDecisionRepro) => {
+      if (capture.payload.observation.playerNumber !== 2) return;
+      originalOptional = capture.payload.expectedResult?.nextState.transport
+        .flatMap((plan) => plan.lifecycle?.manifest ?? []).find((member) => !member.indispensable)?.actorId;
+      if (originalOptional) scene.events.off("ai-runtime-decision-repro", pin);
+    };
+    scene.events.on("ai-runtime-decision-repro", pin);
+    cleanup.add(() => scene.events.off("ai-runtime-decision-repro", pin));
+  }
   const firstSites = new Map<string, Phaser.GameObjects.GameObject>();
   if (pendingEvents.some((event) => event.kind === "destroy_ai_site")) {
     const observe = (placement: ProductionSpatialAuthorityEvent) => {
@@ -46,7 +58,8 @@ export function installAiRuntimePresetEvents(
       while (pendingEvents[0] && pendingEvents[0].tick <= tickService.currentTick) {
         const event = pendingEvents.shift();
         if (!event) break;
-        const pinned = event.kind === "destroy_ai_site" ? firstSites.get(`${event.owner}:${event.objectName}`) :
+        const pinned = event.membership ? originalOptional ? actorIndex.getActorById(originalOptional) : undefined :
+          event.kind === "destroy_ai_site" ? firstSites.get(`${event.owner}:${event.objectName}`) :
           event.fixtureActorId ? createdActors.get(event.fixtureActorId) : undefined;
         const target = actorIndex
           .getOwnedActors(event.owner)
@@ -55,7 +68,7 @@ export function installAiRuntimePresetEvents(
               actor.scene === scene &&
               actor.active &&
               actor.name === event.objectName &&
-              (event.fixtureActorId === undefined && event.kind !== "destroy_ai_site" || actor === pinned)
+              (event.fixtureActorId === undefined && event.kind !== "destroy_ai_site" && !event.membership || actor === pinned)
           )
           .sort((left, right) => {
             const leftId = getActorComponent(left, IdComponent)?.id ?? "";

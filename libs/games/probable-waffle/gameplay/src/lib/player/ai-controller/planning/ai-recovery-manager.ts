@@ -410,7 +410,8 @@ export class AiRecoveryManager implements AiProposalManagerV1 {
           state: "abandoned",
           alternate: "release_optional_commitments",
           releasedClaimIds: state.reservations
-            .filter((reservation) => reservation.ownerPlanId === old.planId && reservation.state.kind === "provisional")
+            .filter((reservation) => reservation.ownerPlanId === old.planId &&
+              (reservation.state.kind === "provisional" || reservation.state.kind === "forecast"))
             .map((reservation) => reservation.claimId)
             .sort(),
           nextRetryTick: observation.tick

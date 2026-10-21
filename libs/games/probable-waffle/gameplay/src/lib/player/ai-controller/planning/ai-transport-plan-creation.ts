@@ -31,6 +31,7 @@ export function createAiTransportPlanV1(input: CreateAiTransportPlanV1Input): Ai
     queryIds: [input.routeRequest.queryId],
     lifecycle: {
       missionKind: input.missionKind,
+      ...(input.establishment ? { establishment: structuredClone(input.establishment) } : {}),
       route: input.route,
       routeRequest: input.routeRequest,
       routeGeneration: input.route.graphGeneration,

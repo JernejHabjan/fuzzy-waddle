@@ -4,9 +4,11 @@ import { hasNativeSourceDelivery } from "./skirmish-ai-source-delivery";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 /** Native recovery effects stay attached to their original actor/target/resource; aggregate busyness is insufficient. */
-export function nativeRecoveryIncome(context: ReturnType<typeof nativeScenarioContext>, after = 0, worker?: string,
+export function nativeRecoveryIncome(
+  context: Pick<ReturnType<typeof nativeScenarioContext>, "capture" | "frames"> &
+    Partial<Pick<ReturnType<typeof nativeScenarioContext>, "roles">>, after = 0, worker?: string,
   source = "own-source", type = ResourceType.Wood, owner: number | null = null) {
-  const sourceActorId = context.roles[source];
+  const sourceActorId = context.roles?.[source];
   return !!sourceActorId && hasNativeSourceDelivery(context.capture?.facts ?? [], {
     sourceActorId, sourceOwner: owner, playerNumber: 2, resourceType: type,
     fromTick: after, throughTick: context.frames.at(-1)?.tick ?? 0, workerActorId: worker

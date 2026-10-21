@@ -27,14 +27,23 @@ the existing driver or real multiplayer/replay harness. Resolve each named `exec
 and forbidden branch, then register an actual runtime fixture and remove that row's draft reference. Registration
 still does not imply execution or passing. Do not turn unmet hooks into skipped assertions or generic command-count
 checks. A missing map/capability, history gap or exhausted deadline cannot pass. The four #822 island-content rows
-remain explicitly deferred rather than receiving fake land recipes.
+and user-deferred H-21 larger-unit native clearance remain explicit deferrals rather than receiving fake coverage.
+H-23 separately includes user-authorized island establishment in a small native water-enclosed preset; this does not
+claim the public island map or broader deferred content is complete.
 
 Source review and catalog generation establish neither executable nor behavioral correctness. Keep source-specific
 execution evidence separate, and never carry an earlier passing tool/native count onto changed source automatically.
 
+Island establishment is created by the existing transport manager from permitted offshore resources, local exhaustion,
+available builder/protection and an affordable definition-backed service. The saved purpose protects the eventual
+deposit cost from unrelated AI spending; normal shared resource admission/payment takes over when construction is
+committed. Survival can use that policy hold. No hidden source lookup, fixture-supplied plan or extra payment is used.
+Native controls require physical boarding, landing, paid construction and delivered island income. Optional passengers
+may be released at the original readiness threshold; missing indispensable passengers still block departure.
+
 ### Native scenario bindings and bounded lookup
 
-The58 native bindings use tools/ai/native-scenario-bindings.json for original obligations/branches/ceilings and
+Native bindings use tools/ai/native-scenario-bindings.json for original obligations/branches/ceilings and
 native-scenario-registration.mjs to author ordinary matrix fixtures. Existing world layout/world factories own
 construction/scouting/combat inputs; native-strategic-worlds.mjs, native-domain-worlds.mjs and native-classic-worlds.mjs
 own the remaining mission/domain/classic inputs. native-authority-worlds.mjs owns H-06/H-07/H-10/H-13–15. skirmish-runtime-native-scenario-fixture.mjs refuses source-controlled

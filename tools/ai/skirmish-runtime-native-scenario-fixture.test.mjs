@@ -4,9 +4,9 @@ import { test } from "node:test";
 import { nativeScenarioBindings, nativeScenarioFixture } from "./native-scenario-registration.mjs";
 import { validNativeScenarioFixture } from "./skirmish-runtime-native-scenario-fixture.mjs";
 
-test("all sixty-two native bindings retain their full branches and original acceptance obligations", () => {
+test("all native bindings retain their full branches and original acceptance obligations", () => {
   const ids = Object.keys(nativeScenarioBindings.cases);
-  assert.equal(ids.length, 62);
+  assert.equal(ids.length, 74);
   const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish-v1.json", import.meta.url)));
   for (const id of ids) {
     const row = manifest.rows.find((row) => row.id === id);
@@ -17,6 +17,53 @@ test("all sixty-two native bindings retain their full branches and original acce
     assert.ok(fixture.acceptance.required.length > 0);
     assert.ok(fixture.acceptance.forbidden.length > 0);
     assert.equal(fixture.status, "authored_not_executed");
+  }
+});
+
+test("D-03 preserves every difficulty/hidden mutation and the legitimate-contact control", () => {
+  const fixture = nativeScenarioFixture("D-03"), contract = fixture.assertions["D-03"].requiredNativeScenario;
+  assert.equal(fixture.recipe.variants.length, 30);
+  for (const [mutation, mutate] of [
+    ["position", (v) => v.presetWorld.controls = []],
+    ["health", (v) => v.presetWorld.events = []],
+    ["queue", (v) => v.presetWorld.controls = []],
+    ["contact", (v) => v.presetWorld.controls[0].action.worldPosition.x = 0]
+  ]) {
+    const copy = structuredClone(fixture);
+    const variant = copy.recipe.variants.find((v) => contract.branchByVariant[v.id] === `easy_${mutation}`);
+    assert.ok(variant);
+    mutate(variant);
+    assert.equal(validNativeScenarioFixture(copy, "D-03"), false);
+  }
+});
+
+test("continuous, optional-release, topology and debug bindings retain their causal controls", () => {
+  for (const [id, branch, mutate] of [
+    ["H-05", "uncertain", (world) => delete world.receiptFault.holdHistory],
+    ["H-05", "paid", (world) => world.queues = []],
+    ["H-20", "dispose", (world) => world.routeOutages.pop()],
+    ["H-23", "builder_late", (world) => world.routeOutages[0].membership = "optional_passenger"],
+    ["H-23", "optional_lost", (world) => world.events = []],
+    ["H-23", "optional_late", (world) => world.terrainPatches = []],
+    ["SEQ-03", "congested", (world) => world.initialOrders = []],
+    ["SEQ-04", "cancel_race", (world) => world.researchQueues = []],
+    ["SEQ-06", "stair", (world) => world.events = []],
+    ["SEQ-07", "alternate", (world) => world.terrainPatches = []],
+    ["D-04", "opening_counter_retreat_recovery", (world) => world.events = []],
+    ["D-05", "hard", (world) => world.controls = []],
+    ["DBG-06", "quota", (world) => delete world.receiptFault.holdHistory]
+  ]) {
+    const fixture = nativeScenarioFixture(id), contract = fixture.assertions[id].requiredNativeScenario;
+    const variant = fixture.recipe.variants.find((value) => contract.branchByVariant[value.id] === branch);
+    assert.ok(variant, `${id}:${branch}`);
+    mutate(variant.presetWorld);
+    assert.equal(validNativeScenarioFixture(fixture, id), false, `${id}:${branch}`);
+  }
+  for (const id of ["D-03", "DBG-06"]) {
+    const fixture = nativeScenarioFixture(id), contract = fixture.assertions[id].requiredNativeScenario;
+    const pair = fixture.recipe.variants.filter((variant) => variant.aiFaction === "Tivara" &&
+      (id !== "D-03" || contract.branchByVariant[variant.id].startsWith("easy_")));
+    assert.equal(new Set(pair.map((variant) => variant.presetWorld.fixtureId)).size, 1);
   }
 });
 
@@ -161,11 +208,12 @@ test("recovery bindings preserve actual obstruction, healthy work and finite pen
   }
 });
 
-test("unimplemented receipt, disposal, clearance and indispensable-cargo premises are not promoted", () => {
-  const drafts = JSON.parse(readFileSync(new URL("./fixtures/native-scenario-recipes.json", import.meta.url)));
-  for (const id of ["H-05", "H-20", "H-21", "H-23"]) {
-    assert.equal(Object.hasOwn(nativeScenarioBindings.cases, id), false);
-    const entry = drafts.cases.find((value) => value.scenarioId === id);
-    assert.ok(entry.executionBlockers.some((key) => key.startsWith("recovery_binding_")));
-  }
+test("H-21 native larger-unit clearance is explicitly deferred by the user", () => {
+  const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish-v1.json", import.meta.url)));
+  const row = manifest.rows.find((row) => row.id === "H-21");
+  assert.equal(Object.hasOwn(nativeScenarioBindings.cases, "H-21"), false);
+  assert.equal(row.runtimeRecipeDraft, undefined);
+  assert.equal(row.runtimeSupport.status, "deferred_content");
+  assert.equal(row.runtimeSupport.issue, 759);
+  assert.match(row.runtimeSupport.reason, /User 2026-10-21/);
 });

@@ -3,7 +3,8 @@ import { Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
-import { getSceneService } from "../../../world/services/scene-component-helpers";
+import { getSceneService, getSceneSystem } from "../../../world/services/scene-component-helpers";
+import { AiPlayerHandler } from "../ai-player-handler";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { isRecord, hasOnlyKeys } from "./ai-runtime-fixture-values";
@@ -16,13 +17,15 @@ export function validAiRuntimeRouteOutages(value: unknown, roles: ReadonlySet<st
   if (!Array.isArray(value) || value.length > 8) return false;
   const ids = new Set<string>();
   return value.every((entry) => {
-    if (!isRecord(entry) || !hasOnlyKeys(entry, ["id", "fromTick", "throughTick", "fixtureActorIds", "mode"])) return false;
+    if (!isRecord(entry) || !hasOnlyKeys(entry, ["id", "fromTick", "throughTick", "fixtureActorIds", "mode", "membership"]))
+      return false;
     const id = entry["id"], from = entry["fromTick"], through = entry["throughTick"], actors = entry["fixtureActorIds"];
     if (typeof id !== "string" || !/^[a-z0-9][a-z0-9-]{2,63}$/.test(id) || ids.has(id) ||
         typeof from !== "number" || !Number.isSafeInteger(from) || from < 1 || typeof through !== "number" ||
         !Number.isSafeInteger(through) || through < from || through > 100000 || through - from > 1000 ||
         !Array.isArray(actors) || !actors.length || actors.length > 32 || new Set(actors).size !== actors.length ||
         actors.some((role) => typeof role !== "string" || !roles.has(role)) ||
+        entry["membership"] !== undefined && !["optional_passenger", "indispensable_builder"].includes(String(entry["membership"])) ||
         entry["mode"] !== undefined && (typeof entry["mode"] !== "string" ||
           !["null", "pending", "error"].includes(entry["mode"]))) return false;
     ids.add(id);
@@ -43,14 +46,26 @@ export function installAiRuntimeRouteOutages(
       const actor = actors.get(role);
       if (!actor || actor.scene !== scene) throw new Error(`runtime_route_outage_actor_missing:${role}`);
       return actor;
-    }), observed: false }));
+    }), observed: false, pinnedActorId: null as string | null }));
   const cleanup = new Subscription();
   let disposed = false;
   const pending: { throughTick: number; release: (shutdown: boolean) => void }[] = [];
   const blocked = (actor: Phaser.GameObjects.GameObject) => {
     if (cleanup.closed || actor.scene !== scene) return undefined;
-    const entry = entries.find((entry) => clock.currentTick >= entry.fromTick && clock.currentTick <= entry.throughTick &&
-      entry.actors.includes(actor));
+    const actorId = getActorComponent(actor, IdComponent)?.id;
+    const entry = entries.find((entry) => {
+      if (clock.currentTick < entry.fromTick || clock.currentTick > entry.throughTick || !entry.actors.includes(actor)) return false;
+      if (!entry.membership) return true;
+      if (entry.pinnedActorId) return entry.pinnedActorId === actorId;
+      const manifest = getSceneSystem(scene, AiPlayerHandler)?.getAiPlayerController(2)?.getBrainState()?.transport
+        .filter((plan) => !["completed", "cancelled", "failed"].includes(plan.phase))
+        .flatMap((plan) => plan.lifecycle?.manifest ?? []);
+      const member = manifest?.find((member) => entry.membership === "optional_passenger" ? !member.indispensable :
+        member.indispensable && member.role === "builder");
+      if (!actorId || member?.actorId !== actorId) return false;
+      entry.pinnedActorId = actorId;
+      return true;
+    });
     if (!entry) return undefined;
     if (!entry.observed) {
       entry.observed = true;

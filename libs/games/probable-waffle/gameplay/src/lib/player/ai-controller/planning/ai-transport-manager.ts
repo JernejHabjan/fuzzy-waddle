@@ -4,6 +4,7 @@ import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
 import { advanceAiTransportPlan } from "./ai-transport-plan-advancer";
+import { proposeAiIslandEstablishment } from "./ai-island-establishment";
 
 export { AI_TRANSPORT_BOARDING_TIMEOUT_TICKS, AI_TRANSPORT_MINIMUM_DEPARTURE_PERMILLE } from "./ai-transport-constants";
 export { createAiTransportPlanV1 } from "./ai-transport-plan-creation";
@@ -32,13 +33,15 @@ export class AiTransportManager implements AiProposalManagerV1 {
     const transport = [...state.transport]
       .sort((left, right) => left.planId.localeCompare(right.planId))
       .map((plan) => (plan.lifecycle ? advanceAiTransportPlan({ ...plan, lifecycle: plan.lifecycle }, context) : plan));
+    const establishment = context.catalog ? proposeAiIslandEstablishment(observation, { ...state, transport }, context.catalog) : undefined;
+    const newPlans = establishment?.statePatch?.transportAppend ?? [];
     return {
       managerId: this.managerId,
       lane: "army_threat",
       evaluated: true,
       intents: context.intents,
-      reasons: context.reasons,
-      statePatch: { transport }
+      reasons: [...context.reasons, ...(establishment?.reasons ?? [])],
+      statePatch: { transport: [...transport, ...newPlans] }
     };
   }
 }

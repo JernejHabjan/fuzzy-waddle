@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { Subject } from "rxjs";
-import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
+import { ObjectNames, ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../../../entity/components/owner-component";
@@ -15,14 +15,15 @@ import { installAiRuntimePresetControls } from "./install-ai-runtime-preset-cont
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
-function fixture() {
+function fixture(research = false) {
   const tick$ = new Subject<number>(),
     onShutdown = new Subject<void>();
   const clock = { currentTick: 0, tick$ };
   const scene = { events: new Phaser.Events.EventEmitter(), onShutdown } as unknown as ProbableWaffleScene;
   const producer = { scene, active: true } as unknown as Phaser.GameObjects.GameObject;
   const paid = {
-    productionData: { actorName: ObjectNames.TivaraMacemanMale },
+    productionData: research ? undefined : { actorName: ObjectNames.TivaraMacemanMale },
+    researchData: research ? ResearchType.TivaraMacemanUpgradeLevel2 : undefined,
     commandContext: { execution: { commandId: "paid-tail" } }
   };
   const allItems = [{ productionData: { actorName: ObjectNames.TivaraMacemanMale } }, paid];
@@ -59,7 +60,7 @@ function fixture() {
         requestTick: 1,
         applicationTick: 4,
         producerFixtureActorId: "producer",
-        action: { kind: "cancel_production", setupQueueIndex: 1 }
+        action: { kind: research ? "cancel_research" : "cancel_production", setupQueueIndex: 1 }
       }
     ]
   };
@@ -91,6 +92,18 @@ it("records request separately, then resolves the original paid handle after the
   expect(f.records[1]).toMatchObject({ phase: "applied", command: { execution: { source: "human" } } });
   expect(f.tick$.observed).toBe(false);
   expect(f.onShutdown.observed).toBe(false);
+});
+
+it("cancels only the pinned original research through the normal research command after its queue index changes", () => {
+  const f = fixture(true);
+  f.advance(1);
+  expect(f.dispatchDeterministic).not.toHaveBeenCalled();
+  f.allItems.shift();
+  f.advance(4);
+  expect(f.dispatchDeterministic).toHaveBeenCalledWith(
+    { type: "CANCEL_RESEARCH", playerNumber: 2, actorIds: ["producer"] }, "human"
+  );
+  expect(f.records[1]).toMatchObject({ phase: "applied", setupItemId: "queue:producer:paid-tail" });
 });
 
 it("shutdown detaches pending controls", () => {

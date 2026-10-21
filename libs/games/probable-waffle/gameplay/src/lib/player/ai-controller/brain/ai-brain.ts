@@ -1,4 +1,5 @@
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
+import { aiTransportReleasedClaimIds } from "./ai-transport-released-claims";
 import type { AiCommandOutcomeV1 } from "../contracts/ai-command-contracts";
 import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
@@ -146,9 +147,13 @@ export class PureAiBrain implements AiBrainV1 {
     const releasedRecoveryClaims = new Set(
       projectedState.recovery.records
         .filter((record) => record.state === "abandoned")
-        .flatMap((record) => record.releasedClaimIds)
+        // Saved release lists are advisory: reconciliation may since have paid/dispatched a claim or changed its owner.
+        .flatMap((record) => projectedState.reservations.filter((claim) => claim.ownerPlanId === record.planId &&
+          (claim.state.kind === "forecast" || claim.state.kind === "provisional") &&
+          record.releasedClaimIds.includes(claim.claimId)).map((claim) => claim.claimId))
     );
     const acceptedEffectIds = new Set(accepted.map((intent) => intent.effectId));
+    const releasedTransportClaims = aiTransportReleasedClaimIds(projectedState);
     const previousSupportIds = new Set(previousState.support.map((plan) => plan.planId));
     const previousDamageEffectIds = new Set(
       previousState.squads.flatMap(
@@ -202,6 +207,7 @@ export class PureAiBrain implements AiBrainV1 {
         ...projectedState.reservations.filter(
           (existing) =>
             !releasedRecoveryClaims.has(existing.claimId) &&
+            !releasedTransportClaims.has(existing.claimId) &&
             !acceptedReservations.some(
               (acceptedReservation) =>
                 acceptedReservation.ownerPlanId === existing.ownerPlanId &&

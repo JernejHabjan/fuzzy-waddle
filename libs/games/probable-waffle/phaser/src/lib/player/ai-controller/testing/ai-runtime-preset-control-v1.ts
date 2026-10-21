@@ -18,5 +18,5 @@ export interface AiRuntimePresetControlV1 {
     | { readonly kind: "unload"; readonly worldPosition: Vector3Simple }
     | { readonly kind: "cast"; readonly spellType: SpellType; readonly targetFixtureActorId: string }
     | { readonly kind: "construct"; readonly actorName: ObjectNames; readonly worldPosition: Vector3Simple }
-    | { readonly kind: "cancel_production"; readonly setupQueueIndex: number };
+    | { readonly kind: "cancel_production" | "cancel_research"; readonly setupQueueIndex: number };
 }

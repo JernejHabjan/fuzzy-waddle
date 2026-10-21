@@ -2,6 +2,7 @@ import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
 import type { AiDeadlineV1, AiSimulationTick, AiTransportPlanId } from "../ai-core-types";
 import type { AiDemandV1 } from "../ai-plan-contracts";
 import type { AiRouteRequestV1, AiRouteResultV1 } from "../ai-access-graph-v1";
+import type { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 /** Persisted transport phase without live actor references or promises. */
 export interface AiTransportStateV1 {
@@ -32,6 +33,9 @@ export interface AiTransportStateV1 {
   /** Extended lifecycle is optional only for migration of earlier empty/preparatory V1 saves. */
   readonly lifecycle?: Readonly<{
     readonly missionKind: "island_establishment" | "army_transfer" | "evacuation";
+    /** Definition-priced foothold budget, retained through landing until the native service purchase is committed. */
+    readonly establishment?: Readonly<{ sourceActorId: ActorId; serviceObjectName: ObjectNames;
+      resourceCost: Readonly<Partial<Record<ResourceType, number>>> }>;
     readonly route: AiRouteResultV1;
     readonly routeRequest: AiRouteRequestV1;
     readonly routeGeneration: number;

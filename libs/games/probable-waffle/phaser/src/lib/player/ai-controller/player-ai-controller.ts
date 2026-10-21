@@ -24,18 +24,9 @@ import { createAiBrainStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay/pla
 import { migrateAiBrainState } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/migrate-ai-brain-state";
 import { canonicalizeAiBrainStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/canonical-ai-serialization";
 import { createAiProfileConfigV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-profile-defaults";
-import { PureAiBrain } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain";
+import type { PureAiBrain } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain";
 import type { AiDebugSnapshotV1, AiProfileConfigV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { selectAiOpeningArchetypeV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-opening-archetypes-v1";
-import { AiMacroManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-macro-manager";
-import { AiResourceServiceManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-resource-service-manager";
-import { AiTransportManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-transport-manager";
-import { AiSkirmishManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-skirmish-manager";
-import { AiBaseManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-base-manager";
-import { AiFortificationManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-fortification-manager";
-import { AiRecoveryManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-recovery-manager";
-import { AiTacticsManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-tactics-manager";
-import { AiAdaptationManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-adaptation-manager";
 import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import type { AiBrainStepResultV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain-step-result-v1";
 import { dispatchAiIntents } from "./ai-intent-dispatcher";
@@ -43,6 +34,9 @@ import { dispatchAiBrainResult } from "./dispatch-ai-brain-result";
 import { captureAiDecisionInput } from "./capture-ai-decision-input";
 import { beginAiResourceDecision, fenceAiResourceNeed } from "./observation/ai-resource-input-observation";
 import type { AiDecisionInputV1 } from "./ai-decision-input-v1";
+import { createAiProductionBrain } from
+  "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-production-brain";
+import { publishAiRuntimeDecisionRepro } from "./testing/ai-runtime-decision-repro";
 
 export class PlayerAiController {
   private static readonly MAX_SCHEDULED_STEPS_PER_RUN = 5;
@@ -77,17 +71,8 @@ export class PlayerAiController {
         AI_CONFIG.controllerStepIntervalMs / SimulationTickService.TICK_INTERVAL_MS) *
       SimulationTickService.TICK_INTERVAL_MS;
     this.pureBrain = this.profile
-      ? new PureAiBrain(this.profile, [
-          new AiMacroManager(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
-          new AiResourceServiceManager(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
-          new AiTransportManager(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
-          new AiSkirmishManager(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
-          new AiBaseManager(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
-          new AiFortificationManager(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
-          new AiRecoveryManager(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
-          new AiTacticsManager(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
-          new AiAdaptationManager(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog())
-        ], createAiRuntimeBrainHooks(scene, player.playerNumber))
+      ? createAiProductionBrain(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog(),
+        createAiRuntimeBrainHooks(scene, player.playerNumber))
       : undefined;
     this.blackboard = new PlayerAiBlackboard(scene);
     const commandBus = getSceneService(scene, CommandBusService);
@@ -375,6 +360,8 @@ export class PlayerAiController {
       this.brainState = { ...this.brainState, authority: { ...this.brainState.authority, health: "technical_fault" } };
       throw error;
     }
+    publishAiRuntimeDecisionRepro(this.scene, this.profile, this.getCommittedCapabilityCatalog(),
+      observation, previous, bridge?.outcomes ?? [], result);
     this.dispatchAcceptedIntents(result.acceptedIntents, {
       result,
       authority: bridge?.authority ?? result.nextState.authority,

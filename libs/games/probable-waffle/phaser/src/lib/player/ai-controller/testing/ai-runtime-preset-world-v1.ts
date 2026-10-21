@@ -27,6 +27,8 @@ export interface AiRuntimePresetWorldV1 {
   /** Test-only finite query outage for original actors; never changes ownership, terrain or strategic defeat state. */
   readonly routeOutages?: readonly { readonly id: string; readonly fromTick: number; readonly throughTick: number;
     readonly fixtureActorIds: readonly string[];
+    /** Match the first actual mission-owned passenger of this role; no fixture may seed its manifest. */
+    readonly membership?: "optional_passenger" | "indispensable_builder";
     /** Omitted preserves legacy null failures; pending retains at most 32 calls until the fixed end or shutdown. */
     readonly mode?: "null" | "pending" | "error" }[];
   readonly provenance: {
@@ -92,6 +94,7 @@ export interface AiRuntimePresetWorldV1 {
     readonly tick: number;
     /** Cancellation uses native unfinished-site teardown/refund; it is not a relayed multiplayer cancel command. */
     readonly kind: "destroy_owned_actor" | "cancel_unfinished_site" | "damage_owned_actor" | "destroy_ai_site";
+    readonly membership?: "optional_passenger";
     /** Nonlethal native perturbation for hidden-durability controls, never credited as AI damage. */
     readonly damage?: number;
     readonly owner: number;

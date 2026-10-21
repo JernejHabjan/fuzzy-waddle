@@ -419,7 +419,9 @@
       "coverage": "owner_contract",
       "setup": "Terminal optional recovery and healthy resource ownership",
       "expected": "Record only terminal optional claim release and preserve healthy gather/return work",
-      "remaining": ["Atomic applied reassignment and orphan detection across native owners"],
+      "remaining": [
+        "Native authored controls remain unrun; saved-only intermediate claims use approved pure recovery partition."
+      ],
       "tests": [
         {
           "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-recovery-manager.spec.ts",
@@ -428,6 +430,10 @@
         {
           "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-recovery-manager.spec.ts",
           "title": "preserves healthy gather/return ownership and pending extraction during zero-income recovery"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/brain/ai-optional-release.spec.ts",
+          "title": "H-05 releases the complete terminal optional forecast/lease bundle while preserving paid, unknown and foreign ownership"
         }
       ]
     },

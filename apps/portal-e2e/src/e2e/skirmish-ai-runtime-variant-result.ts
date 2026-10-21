@@ -9,11 +9,19 @@ import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
 import type { RuntimeProductionEvidenceV1 } from "./skirmish-ai-runtime-production-evidence";
 import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
 import type { RuntimeProductionEvidenceV2 } from "./skirmish-ai-runtime-production-evidence-v2";
+import type { NativeDisposalEvidence } from "./skirmish-ai-native-disposal-evidence";
+import type { NativeDebugComparisonProof } from "./skirmish-ai-native-debug-comparison-proof";
+import type { NativeDebugParityProof } from "./skirmish-ai-native-debug-parity-proof";
 // prettier-ignore
 import type { AiRuntimeProductionCaptureV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
 
 export interface RuntimeVariantResultV1 {
+  /** Explicit H-20 shutdown branch, captured after sealed history and before closing the browser context. */
+  readonly nativeDisposal?: NativeDisposalEvidence;
+  /** Actual native selected input, isolated pure replay, first-field comparison and untouched native world. */
+  readonly nativeDebugComparison?: NativeDebugComparisonProof;
+  readonly nativeDebugParity?: NativeDebugParityProof;
   /** Exact paused native application permits re-projecting raw world artifacts without inferred setup. */
   readonly productionPreset?: AiRuntimePresetApplicationV1;
   /** Absent until a real runtime adapter has retained ordered production/resource authority facts. */

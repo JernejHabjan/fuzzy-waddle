@@ -1,14 +1,18 @@
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
+import { runtimeResourceCreditMatches } from "./skirmish-ai-runtime-resource-service-validation";
 
 /** Native money plus reconciled unspent commitments, across every plan/base identity, including lost and unfinished sites. */
-export function nativeFortificationBudgetFailures(context: ReturnType<typeof nativeScenarioContext>): string[] {
+export function nativeFortificationBudgetFailures(
+  context: ReturnType<typeof nativeScenarioContext>, allowEarnedIncome = false
+): string[] {
   const first = context.frames[0]?.decision.input?.resources;
   if (!first || first.length !== 4) return ["fortification_fixed_budget_native_ledger_missing"];
-  const cap = new Map(first.map((resource) => [resource.resourceType,
-    Math.floor(Math.max(0, resource.stockpile - resource.reservedUnspent - resource.obligationsDue) * 0.2)]));
+  const envelope = new Map(first.map((resource) => [resource.resourceType,
+    Math.max(0, resource.stockpile - resource.reservedUnspent - resource.obligationsDue)]));
+  const cap = new Map(first.map((resource) => [resource.resourceType, Math.floor((envelope.get(resource.resourceType) ?? 0) * 0.2)]));
   const spent = new Map<ResourceType, number>(), failures: string[] = [];
-  if (context.capture?.setup?.actors.some((actor) => actor.definition.resourceSource &&
+  if (!allowEarnedIncome && context.capture?.setup?.actors.some((actor) => actor.definition.resourceSource &&
       actor.definition.resourceSource.currentResources !== 0))
     failures.push("fortification_fixed_budget_has_undepleted_native_source");
   const sites = new Set(context.facts.flatMap((fact) => fact.kind === "spatial_authority" && fact.spatial.kind === "placement" &&
@@ -16,6 +20,14 @@ export function nativeFortificationBudgetFailures(context: ReturnType<typeof nat
     ["Wall", "Stairs", "WatchTower"].includes(fact.spatial.site.canonicalObjectName) && fact.spatial.site.actorId
     ? [fact.spatial.site.actorId] : []));
   for (const fact of context.capture?.facts ?? []) {
+    // Continuous recovery may earn a larger envelope, but only an independently attributed native delivery can fund it.
+    if (allowEarnedIncome && fact.tick > (context.frames[0]?.tick ?? Infinity) && fact.kind === "spatial_authority" &&
+      fact.spatial.kind === "resource_service" && fact.spatial.phase === "resource_credit" &&
+      fact.spatial.beneficiary === 2 && fact.spatial.resourceType && runtimeResourceCreditMatches(fact.spatial)) {
+      const resource = fact.spatial.resourceType;
+      envelope.set(resource, (envelope.get(resource) ?? 0) + fact.spatial.amount);
+      cap.set(resource, Math.floor((envelope.get(resource) ?? 0) * 0.2));
+    }
     if (fact.kind === "construction_authority" && fact.construction.kind === "resource" &&
         sites.has(fact.construction.site.actorId ?? "") && fact.construction.status === "returned") {
       const charge = fact.construction, sign = charge.operation === "start_charge" ? 1 : -1;

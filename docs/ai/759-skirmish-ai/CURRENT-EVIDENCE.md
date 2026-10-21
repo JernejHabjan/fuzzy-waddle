@@ -1,5 +1,70 @@
 # #759 current evidence
 
+## Continuous registration batch — in progress, authored unrun (2026-10-21)
+
+Publication base0f790de1408901d745f069aea46572e3dea1a914; same authority-recovery worktree/feature branch.
+The user requested all23 remaining registrations together. This entry closes only the published source slice;
+the batch must continue. Actual model/effort unknown; no subagent or model switch.
+
+Numbered acceptance map / Omission Audit for the current slice:
+
+1. **Twelve full source registrations authored:** D-03/D-04/D-05, H-05/H-20/H-23, SEQ-03/04/06/07,
+   DBG-04/06. The manifest, native bindings, generated fixtures and mandatory ID-specific readers are connected.
+   Factory74 bindings/502 variants; supported registration105/115 (91.3%),10/115 unbound (8.7%). Pure111/111 unchanged.
+   All new premises, timing, predicates and behavior remain unrun; no passing count or overall completion claimed.
+2. **Difficulty:** all three policies/both factions receive real hidden-position/health/queue/contact controls,
+   same paired match identity, exact permitted inputs/intents and actual profile/cadence checks. Easy starts with
+   ordinary faction actors and its original200-resource bank, earns workers/production, then faces pressure and
+   recovery. Pressure uses actual selected scheduler rejection alongside independently damaging emergency combat;
+   domain partitions count as one voluntary mission. Missing pressure/confirmation is a failure, not a skip.
+3. **Release/recovery:** user approved H-05 native cancellation/paid/uncertain plus pure saved-claim release;
+   synchronous selection/dispatch cannot expose the originally requested intermediate world boundary. Terminal
+   optional recovery releases forecasts as well as provisional leases. Saved stale lists cannot remove currently
+   paid, dispatched or foreign-owned claims. Withheld-history work reconciles after the actual original release;
+   no re-created command/effect identity is substituted. Native topology changes require real graph progress,
+   original-actor arrival/income and actual pending-query scene shutdown.
+4. **Island establishment added by explicit user direction:** ai-island-establishment.ts seeds the existing
+   transport owner from permitted offshore resources after local exhaustion, with an affordable service building,
+   a legal water route, an indispensable builder/protection and optional workers. The actual native H-23 preset
+   has land enclosed by water and an initially owned CommonBoat in either faction; no claim that Skaduwee can
+   recruit that carrier, and no public island map added. The AI authors boarding/travel/unload/build commands.
+   Native assertions require actual cargo, original readiness/departure deadline, landing, paid useful deposit
+   and source-specific income into that deposit. Required-builder delay must recover or cancel boundedly.
+   Saved establishment purpose retains the actual definition-priced foothold budget. Admission protects that cash
+   from unrelated purchases until the real service commitment takes over, without another charge/escrow or blocking
+   survival spending. Cancellation, observed depletion and actual service ownership release the policy hold.
+   Optional gathering can release a straggler at sufficient original readiness; death never lowers the original
+   capacity denominator. Only reversible actor leases are released. Resource-service builders need a direct
+   route when the admitted graph/source nodes are available, preventing another mainland builder being selected.
+5. **Continuous sequences:** one physical world each retains original partial packs/queues, exact native losses,
+   genuine cancellation/research refund, restored paid economy/production, repaired defense/passage and subsequent
+   useful combat. Real cancel-research controls pin the original paid queue handle rather than its shifting index.
+   Original ceilings stay fixed. Artificial grants, labels and accepted commands alone cannot satisfy outcomes.
+6. **Debug:** actual pre-dispatch input/state/outcomes/catalog/profile feed the exact shared production brain factory
+   for isolated decision replay and first-field comparison. What-if/comparison must leave original world/RNG and
+   artifact unchanged. Hidden/shown/category-filter/export modes compare exact selected decisions and canonical
+   native state under the same deterministic instance. Actual scene-owned incident quota uses a declared16KiB
+   functional-control policy; ordinary policy remains64MiB. Cumulative session bytes include evicted episodes,
+   so eviction cannot replenish quota or grow an unlimited episode set. History overflow and pending authority
+   retention are checked separately; actual shutdown releases capture, subscriptions and the original pending route.
+7. **Explicit deferral:** user2026-10-21 deferred H-21 larger-unit/formation native clearance until suitable content
+   exists. Pure coverage remains. Manifest support/parser/catalog now distinguish this #759 deferral from the four
+   #822 island rows. The H-23 island addition does not silently claim those broader content obligations completed.
+8. **Ten unfinished bindings:** H-08/H-09/H-31/H-32/SEQ-08/D-02 need the real peer/save/scene continuation path;
+   DBG-01/03/05 need full runtime capture/stepping/import/access; D-06 needs declared calibration/holdout/soak and
+   pinned-baseline execution/reporting. No placeholder or partial owner control was promoted for these IDs.
+9. **Execution deliberately deferred:** no recipe/test/lint/type/formatter/build/browser/server/doctor/context or
+   dedicated validator ran. Source/diff review and fixture/catalog authoring only. New tests include erasure,
+   identity drift, release authority, quota/eviction/disposal, original research identity and cargo-readiness controls.
+   Runtime premises, source typing, compilation and all passing claims remain for the later authorized gate.
+
+Separate Final Closure Audit for this source slice: traced factory inputs and strict parsers through native controls,
+selected ownership, independent physical/paid effects, mandatory readers and manifest consumers. Reviewed paired
+instance identity, observer gating, finite faults, original queue handles, safe claim release, quota accounting and
+scene cleanup. Repaired source-review findings above. **The all-registrations batch remains incomplete.**
+Publish exact owned paths normally and verify remote SHA; do not force-push, merge or open a PR. Continue the ten
+remaining bindings after this source checkpoint. Machinery necessity/removal stays last overall.
+
 ## D-01 registration batch — authored, not executed (2026-10-20)
 
 Publication base63297db700c51dde27ca013407560a4f34b066fa on feature/759-skirmish-ai in

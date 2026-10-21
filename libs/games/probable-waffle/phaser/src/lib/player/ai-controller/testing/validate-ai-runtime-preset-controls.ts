@@ -70,7 +70,7 @@ export function validAiRuntimePresetControls(value: unknown, owners: ReadonlyMap
         only(action, ["kind", "actorName"]) && typeof action["actorName"] === "string" && names.has(action["actorName"])
       );
     return (
-      action["kind"] === "cancel_production" &&
+      (action["kind"] === "cancel_production" || action["kind"] === "cancel_research") &&
       only(action, ["kind", "setupQueueIndex"]) &&
       typeof action["setupQueueIndex"] === "number" &&
       Number.isSafeInteger(action["setupQueueIndex"]) &&

@@ -3,33 +3,36 @@
 Default resume page: read this first, then only the selected package in [REMAINING-WORK.md](REMAINING-WORK.md).
 Do not load the full plan directory or archive on startup.
 
-## Current cursor — D-01 difficulty registration authored, 2026-10-20
+## Current cursor — large registration batch in progress, 2026-10-21
 
 - Worktree /home/jernej/.codex/worktrees/skirmish-authority-recovery/fuzzy-waddle;
-  branch feature/759-skirmish-ai. Publication base63297db700c51dde27ca013407560a4f34b066fa;
+  branch feature/759-skirmish-ai. Publication base0f790de1408901d745f069aea46572e3dea1a914;
   verify containing commit/remote on resume. Preserve unrelated main-checkout issue-template edits.
-  Actual model/effort unknown; no delegation/model switch. Latest user explicitly requests registration work.
-- D-01 now registers6 native worlds: Easy/Normal/Hard × Tivara/Skaduwee, authored unrun.
-  The ordinary lobby selects each policy. Exact controller profile is captured only with existing diagnostic listeners.
-  Pinned independent version/quotas, every actual decision tick/sequence, saved difficulty and real AI application are required.
-  Invalid difficulty uses the actual controller/factory boundary controls, not a nonexistent invalid lobby option.
-  Saturation, fair hidden-state comparisons and challenge calibration remain D-03/D-05/D-06 obligations.
-- Supported runtime93/116 (80.2%) registered,23/116 (19.8%) unbound, plus4 deferred island rows; pure111/111.
-  Native factory62 bindings/400 variants plus21 partial owner worlds remain unrun. Difficulty1/6 registered,5/6 unbound.
-  These counts describe registration, never passing gameplay or overall AI completion.
-- **Next registration action:** D-03, all three difficulties/both factions with paired hidden position/HP/queue changes
-  and legitimate new-contact controls. Reuse existing native sight, resource/definition authority and exact profile inputs;
-  require real hidden-premise mutation and allowed-input invariance before binding. Keep D-05 eligible-lane pressure,
-  D-04 Easy gameplay and D-06 measured calibration separate until their full required branches exist.
-- H-08/H-09/H-31/H-32 remain0/4 fully registered. Their authority/save/lifecycle source repairs and partial H-08
-  host-promotion control are retained in CURRENT-EVIDENCE, not replaced by difficulty coverage.
-  Original/unacknowledged peer tails, full save/scene continuation and same-realm next-match drivers remain unfinished.
-  Prior H-05/H-20/H-21/H-23 gaps remain. H-12 keeps user-approved native prevention/pure recovery scope.
+  Actual model/effort unknown; no delegation or model switch.
+- User requests all23 remaining registrations in one continuous batch. **Do not pause merely after this partial slice.**
+  Twelve new registrations authored: D-03, D-04, D-05, H-05, H-20, H-23, SEQ-03, SEQ-04, SEQ-06, SEQ-07, DBG-04, DBG-06.
+  They cover difficulty fairness/function/pressure, release safety, topology/disposal, continuous economy/combat,
+  actual selected-input comparison/replay and debug parity/quota/disposal. They remain unrun.
+- User2026-10-21 explicitly defers H-21 native larger-unit/formation clearance until suitable content exists.
+  Pure controls remain. Five runtime rows are now deferred: the four #822 island rows plus H-21 under#759.
+  User separately authorizes island establishment NOW for H-23: observed offshore resources, protected builder,
+  real carrier, actual landing, useful paid deposit and delivered income. This does not add a public island map.
+- H-05 approved partition: native cancelled/paid/uncertain work plus pure saved forecast/provisional release;
+  no invented world boundary between synchronous selection and dispatch. H-12 keeps its earlier approved partition.
+- Supported runtime105/115 (91.3%) registered,10/115 (8.7%) unbound; pure111/111 registered.
+  Native factory74 bindings/502 variants plus21 partial owner worlds, unrun. Original23:12 newly registered,
+  1 explicitly deferred,10 still active. These are registration counts, never gameplay completion.
+- **Next grouped authoring action:** finish the ten active registrations: H-08/H-09/H-31/H-32/SEQ-08/D-02 share
+  real peer/save/scene continuation; DBG-01/DBG-03/DBG-05 need runtime capture/stepping/import/access;
+  D-06 needs the declared pinned-baseline/calibration/holdout/soak driver. Do not substitute a fresh realm,
+  controller-only restore, local epoch edit, pure replay or generic command counts for those native obligations.
 - **No execution:** no recipes/tests/lint/types/formatters/builds/browser/server/doctor/context/dedicated validators.
-  Source/diff review and fixture/catalog --write authoring only. Model summaries capped8192 UTF-8 bytes;
-  never load generated fixtures/raw reports wholesale. Machinery review remains last overall.
-- Report done/why, coverage, next/why. Commit/push owned paths, verify remote equality, then pause.
-  Recommend Sol6.1/high for the paired fairness/hidden-state driver design; recommendation does not change settings.
+  Source/diff review and fixture/catalog --write authoring only. Model summaries capped8192 UTF-8 bytes.
+  No gameplay pass is claimed. Machinery necessity/removal review stays last overall.
+- Existing source repairs in this slice: release only current-owned reversible claims; preserve paid/uncertain work;
+  cumulative incident quota survives eviction; live/pure replay share the production manager factory;
+  protected island service mission creation, fixed original cargo readiness and bounded optional-straggler release.
+  Current closure state/source anchors are in CURRENT-EVIDENCE. Publish only task-owned changes, no force push/PR/merge.
 
 ## What “continue” means
 
@@ -95,7 +98,7 @@ Keep the report self-contained and concise. A documentation-only update reports 
 gameplay progress unchanged. The execution plan links to this format rather than maintaining a second template.
 
 Registration coverage: pure **111/111 = 100% registered / 0% remaining**; supported runtime
-**93/116 = 80.2% registered / 19.8% remaining**, excluding four deferred runtime rows. These are not overall AI completion.
+**105/115 = 91.3% registered / 8.7% remaining**, excluding five explicitly deferred runtime rows. These are not overall AI completion.
 Reconcile behavior evidence per selected package; do not invent a global completion percentage.
 
 ## End-of-gate machinery necessity review

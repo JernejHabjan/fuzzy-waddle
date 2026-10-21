@@ -1,17 +1,19 @@
 # #759 remaining work inventory
 
-Snapshot:2026-10-20; publication base 63297db700c51dde27ca013407560a4f34b066fa plus task-owned source.
+Snapshot:2026-10-21; publication base 0f790de1408901d745f069aea46572e3dea1a914 plus task-owned source.
 [HANDOFF.md](HANDOFF.md) owns the next action; [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) distinguishes authored and
 validated evidence. This is the existing execution inventory, not another design project. Read only the selected package.
 
 ## What the inventory establishes
 
 The original concrete plan contains121 named scenarios. Pure registration is111/111. Supported runtime registration
-is93/116 (80.2%);23 (19.8%) still have specifications without native bindings. Four island runtime rows are deferred.
-Definitions are116/116:93 registrations plus23 specifications. Latest D-01 registration adds6 faction/policy variants;
-native factory62 bindings/400 variants and21 partial owner worlds are unrun. Selected13-ID batch is9/13 registered,
-4/13 unbound. Current H-08/H-09/H-31/H-32 source batch remains0/4 fully registered; its native drivers are unfinished.
-Current registration request selects D-01: six worlds authored unrun; next D-03 paired fairness bindings.
+is105/115 (91.3%);10 (8.7%) still have specifications without native bindings. Five runtime rows are explicitly deferred:
+four #822 island-content rows and H-21 larger-unit clearance by user2026-10-21. Definitions115/115 comprise105 bindings
+and10 specifications. This continuous batch has authored12 new registrations, with74 factory bindings/502 variants and
+21 retained partial owner worlds unrun. H-23 now includes user-authorized native island establishment; its small
+water-enclosed diagnostic preset does not silently close the four broader #822 content rows.
+**Continue the current batch through all ten active gaps; no per-case pause.** Shared peer/save/lifecycle integration
+owns H-08/H-09/H-31/H-32/SEQ-08/D-02; runtime debug capture/stepping/import owns DBG-01/03/05; calibration owns D-06.
 Counts describe registration, not passing gameplay, unique physical maps, sessions or time remaining.
 Each row needs complete source-specific native outcome evidence before validation; an authored reader is not that evidence.
 
@@ -77,15 +79,15 @@ status, concrete grouped follow-up, publication status and model/effort recommen
 package/selected IDs, exact counts and metric labels, source/evidence date, and newly closed or still-failing/missing items.
 
 Use separate percentages for fixture registration and validated behavior. Calculate from the existing manifest and
-retained complete evidence, not commit counts, elapsed sessions, helper counts or guesses. Four content-deferred runtime
+retained complete evidence, not commit counts, elapsed sessions, helper counts or guesses. Five explicitly deferred runtime
 rows are excluded from the supported runtime denominator and reported separately. Partial branch passes do not validate
 an entire scenario. Invalidate only outcomes affected by later source/fixture changes, with a reason.
 
 | Measured coverage at this snapshot    | Completed                                   | Remaining          | What the number means                                                                                              |
 | ------------------------------------- | ------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------ |
 | Pure fixture registration             | 111/111 = **100%**                          | 0/111 = **0%** | Required pure scenarios with registered fixtures; not behavior completion                                          |
-| Supported native definitions           | 116/116 = **100%**                          | 0/116 = **0%** | 93 scenario bindings plus23 specifications; definitions only, not validated gameplay |
-| Supported runtime recipe registration | 93/116 = **80.2%**                          | 23/116 = **19.8%** | Runtime recipes connected; four island-content rows excluded; not behavior completion                              |
+| Supported native definitions           | 115/115 = **100%**                          | 0/115 = **0%** | 105 scenario bindings plus10 specifications; definitions only, not validated gameplay |
+| Supported runtime recipe registration | 105/115 = **91.3%**                          | 10/115 = **8.7%** | Runtime recipes connected; five explicitly deferred rows excluded; not behavior completion                              |
 | Scenario behavior validation          | Not yet reconciled across the full manifest | Not yet measurable | Existing subset passes and failures are recorded, but no truthful overall completion percentage can yet be derived |
 
 During each selected package, reconcile its existing complete evidence into the row status and report its exact

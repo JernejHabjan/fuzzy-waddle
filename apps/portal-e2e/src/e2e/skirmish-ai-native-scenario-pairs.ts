@@ -3,6 +3,7 @@ import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
 import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
 import { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
 import { nativeCompletedPlacements } from "./skirmish-ai-native-construction-evidence";
+import { evaluateDifficultyFairnessPairs } from "./skirmish-ai-native-difficulty-fairness";
 
 /** Full-case coverage and counterfactual comparisons; a successful individual diagnostic world remains partial. */
 export function evaluateNativeScenarioPairs(id: string, fixture: RuntimeFixtureV1, results: readonly RuntimeVariantResultV1[]): string[] {
@@ -32,6 +33,15 @@ export function evaluateNativeScenarioPairs(id: string, fixture: RuntimeFixtureV
         new Set(worlds.map((world) => world.productionPreset?.fixtureDigest)).size !== 1)
       failures.push(`native_paired_source_seed_or_map_drift:${faction}`);
     const find = (branch: string) => worlds.find((world) => contract.branchByVariant[world.variantId] === branch);
+    if (id === "DBG-06") {
+      const digests = worlds.map((world) => world.nativeDebugParity?.beforeDigest);
+      const decisions = worlds.map((world) => JSON.stringify(nativeScenarioContext(world, definition.latestTick).frames
+        .map((frame) => ({ tick: frame.tick, input: frame.decision.input, intents: frame.decision.acceptedIntents }))));
+      if (digests.some((digest) => !digest) || new Set(digests).size !== 1 || new Set(decisions).size !== 1)
+        failures.push("debug_modes_differ_in_canonical_native_world_rng_or_exact_selected_decisions");
+    }
+    if (id === "D-03") failures.push(...evaluateDifficultyFairnessPairs(worlds, (world) =>
+      contract.branchByVariant[world.variantId]));
     if (id === "SCOUT-01") failures.push(...hiddenParity(find("hidden_a"), find("hidden_b"), definition.latestTick, true));
     if (id === "SCOUT-02") for (const branch of ["hidden_position", "hidden_health", "hidden_queue"])
       failures.push(...hiddenParity(find("withdrawn"), find(branch), definition.latestTick));

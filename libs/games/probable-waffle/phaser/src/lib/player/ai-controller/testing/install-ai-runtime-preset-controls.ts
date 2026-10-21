@@ -29,14 +29,15 @@ export function installAiRuntimePresetControls(
     const actorId = producer && getActorComponent(producer, IdComponent)?.id;
     const owner = producer && getActorComponent(producer, OwnerComponent)?.getOwner();
     const setupItem =
-      control.action.kind === "cancel_production" && producer
+      (control.action.kind === "cancel_production" || control.action.kind === "cancel_research") && producer
         ? getActorComponent(producer, QueueComponent)?.allItems[control.action.setupQueueIndex]
         : undefined;
     if (
       !producer ||
       !actorId ||
       owner === undefined ||
-      (control.action.kind === "cancel_production" && !setupItem?.productionData)
+      (control.action.kind === "cancel_production" && !setupItem?.productionData) ||
+      (control.action.kind === "cancel_research" && !setupItem?.researchData)
     ) {
       throw new Error(`runtime_preset_control_actor_missing:${control.id}`);
     }

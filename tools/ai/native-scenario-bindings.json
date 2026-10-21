@@ -2918,6 +2918,570 @@
       "capabilityLimits": [
         "Every valid lobby choice uses native matches in both factions. Invalid difficulty is rejected at the real configuration boundary; the existing profile factory and authored controller-boundary controls cover that negative branch. There is no invalid option in the lobby. Runtime profiles and selected command quotas are checked; saturation/calibration and defense-lane performance belong to D-05/D-06, which remain unbound."
       ]
+    },
+    "D-03": {
+      "latestTick": 2000,
+      "checkpointTicks": [
+        40,
+        200,
+        400,
+        600,
+        800,
+        1200,
+        1600,
+        2000
+      ],
+      "branches": [
+        "easy_baseline",
+        "easy_position",
+        "easy_health",
+        "easy_queue",
+        "easy_contact",
+        "normal_baseline",
+        "normal_position",
+        "normal_health",
+        "normal_queue",
+        "normal_contact",
+        "hard_baseline",
+        "hard_position",
+        "hard_health",
+        "hard_queue",
+        "hard_contact"
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/classic-rts-and-difficulty-scenarios.md",
+        "requiredOutcome": "Equal permitted observations/rules across profiles; no hidden current state or unadvertised resource/stat bonuses",
+        "setup": [
+          "Identical native rules, balances, actors and permitted contacts are used for Easy/Normal/Hard",
+          "Pair hidden enemy HP/position/queue differences while preserving each profile's permitted input"
+        ],
+        "actions": [
+          "Capture permitted observations and native actor/resource definitions at matching logical boundaries",
+          "Let profiles run their own allowed scheduling without demanding identical cross-profile intents"
+        ],
+        "measurements": [
+          "Permitted observation/rules digests, native costs/stats and starting/granted resources",
+          "Within-profile hidden-state paired committed intents until real contact differs"
+        ],
+        "required": [
+          "Profiles differ only by advertised policy/configuration",
+          "Equal permitted observation/rules across difficulty and no hidden-state leakage within a profile"
+        ],
+        "forbidden": [
+          "Demanding equal cross-profile decisions",
+          "Resource/stat advantage absent from advertised rules",
+          "Hidden-current facts in observation"
+        ]
+      }
+    },
+    "D-04": {
+      "latestTick": 18000,
+      "checkpointTicks": [
+        40,
+        400,
+        1200,
+        2400,
+        2600,
+        3000,
+        3200,
+        4000,
+        5000,
+        6000,
+        12000,
+        18000
+      ],
+      "branches": [
+        "opening_counter_retreat_recovery"
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/classic-rts-and-difficulty-scenarios.md",
+        "requiredOutcome": "Easy still opens, produces useful copies, counters legal threats, retreats and recovers; reduced breadth is not broken behavior",
+        "setup": [
+          "Easy ordinary legal start uses the real reduced-breadth profile for each faction",
+          "Opponent script creates a legal counterable threat and a later recovery opportunity"
+        ],
+        "actions": [
+          "Let opening establish delivered income, useful repeated production and an actual mission",
+          "Turn one engagement unfavorable then allow a valid retreat and recovery"
+        ],
+        "measurements": [
+          "Native opening completions, repeated useful output, target-compatible counters, retreat arrival and resumed income/mission effect"
+        ],
+        "required": [
+          "Easy remains functional across opening, copies, countering, retreat and recovery",
+          "Reduced search breadth does not disable necessary gameplay"
+        ],
+        "forbidden": [
+          "Passing on profile lookup alone",
+          "Fixture grants mistaken for earned economy",
+          "Forced suicide to demonstrate attack"
+        ]
+      }
+    },
+    "H-20": {
+      "latestTick": 4000,
+      "checkpointTicks": [
+        40,
+        200,
+        360,
+        520,
+        680,
+        840,
+        1000,
+        1200,
+        1600,
+        2000,
+        3000,
+        3500,
+        4000
+      ],
+      "branches": [
+        "unrelated",
+        "corridor",
+        "dispose"
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "Bounded backlog/cursors, eventual stable-route publication and unrelated progress",
+        "setup": [
+          "A reachable useful route crosses a topology subregion while unrelated native construction can invalidate revisions",
+          "Keep a stable alternative local economy/defense duty"
+        ],
+        "actions": [
+          "Complete/destroy a finite schedule of legal topology-changing actors",
+          "Stop changes at a predeclared tick, then allow the existing query work to finish"
+        ],
+        "measurements": [
+          "Query generations, work cursor/backlog, actual topology revisions and eventual route publication",
+          "Native unrelated income/defense during the storm"
+        ],
+        "required": [
+          "Backlog and ownership remain bounded",
+          "Stable route publishes after churn stops and unrelated work continues"
+        ],
+        "forbidden": [
+          "Starting unlimited fresh queries on every revision",
+          "Restarting the full graph forever",
+          "Treating unknown as unreachable"
+        ]
+      }
+    },
+    "D-05": {
+      "latestTick": 4000,
+      "checkpointTicks": [
+        40,
+        200,
+        390,
+        400,
+        410,
+        600,
+        800,
+        1200,
+        1600,
+        2000,
+        3000,
+        4000
+      ],
+      "branches": [
+        "easy",
+        "normal",
+        "hard"
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/classic-rts-and-difficulty-scenarios.md",
+        "requiredOutcome": "Caps and reconsideration cadence affect eligible voluntary activity while independent defense/rescue remains serviced",
+        "setup": [
+          "For each profile create voluntary eligible work at known reconsideration/cap boundaries",
+          "Keep an independently urgent visible defense/rescue need outside voluntary activity limits"
+        ],
+        "actions": [
+          "Advance at exact logical ticks immediately before/at/after each cadence boundary",
+          "Trigger real urgent danger while voluntary budget is exhausted"
+        ],
+        "measurements": [
+          "Per-profile eligibility and consumed quotas, selected voluntary commands and native defense/rescue response"
+        ],
+        "required": [
+          "Configured caps/cadence constrain eligible voluntary activity",
+          "Independent emergency defense/rescue still receives its required service"
+        ],
+        "forbidden": [
+          "Voluntary action before eligibility",
+          "Urgent defense suppressed by optional search cap",
+          "Quota copied from debug text without scheduler evidence"
+        ]
+      }
+    },
+    "SEQ-03": {
+      "latestTick": 18000,
+      "checkpointTicks": [
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000,
+        4000,
+        6000,
+        12000,
+        18000
+      ],
+      "branches": [
+        "partial_pack",
+        "congested",
+        "efficient"
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "Delivered income recovers within independent service/build bounds; useful duplicate deposits allowed; no farm/worker dependency cycle",
+        "setup": [
+          "Legal economy start with identifiable partial-pack worker, nearly exhausted source and surviving alternative source/drain",
+          "Freeze service/build recovery bounds and preserve ordinary food prerequisites"
+        ],
+        "actions": [
+          "Establish income, then deplete/congest local service",
+          "Destroy the exact loaded worker's drain natively; continue through alternate delivery, renewable food and useful expansion"
+        ],
+        "measurements": [
+          "Original pack extraction and credit, exact drain loss, next source extraction and grown-food credit",
+          "Completed useful new service and delivered income after expansion"
+        ],
+        "required": [
+          "Each phase recovers within its predeclared bound without losing or duplicating cargo",
+          "Sustainable food and useful duplicate deposits resolve real service need"
+        ],
+        "forbidden": [
+          "Initial grant counted as income",
+          "Skipping the loaded-pack boundary",
+          "Circular worker/field waiting"
+        ]
+      }
+    },
+    "SEQ-04": {
+      "latestTick": 18000,
+      "checkpointTicks": [
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000,
+        4000,
+        6000,
+        12000,
+        18000
+      ],
+      "branches": [
+        "immediate_paid",
+        "cancel_race"
+      ],
+      "capabilityLimits": [
+        "Current production definitions pay immediately; per-successful-tick payment is covered by actual queue-owner controls, not invented native content."
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "No ghost reservations/double spending; recovery essentials outrank optional research; productive capacity and military mission return",
+        "setup": [
+          "Legal economy has useful military transition, normally paid queue and optional upgrade waiting",
+          "Pin real housing and critical producer identities before losses"
+        ],
+        "actions": [
+          "Lose the pinned supply structure and producer during partial queued spending",
+          "Continue native cancellation/reconciliation, funded rebuilding and renewed mission"
+        ],
+        "measurements": [
+          "Queue/item/payment/refund identities, actual supply and balances, completed replacement and new force effect"
+        ],
+        "required": [
+          "Essentials regain funding before optional upgrade",
+          "Paid resources reconcile once and productive military work returns"
+        ],
+        "forbidden": [
+          "Ghost commitments or double spending",
+          "Queue cancellation credited as completed output",
+          "Replacement demand counted as completed producer"
+        ]
+      }
+    },
+    "SEQ-06": {
+      "latestTick": 18000,
+      "checkpointTicks": [
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000,
+        4000,
+        6000,
+        12000,
+        18000
+      ],
+      "branches": [
+        "wall",
+        "stair",
+        "value_lost",
+        "ground_air"
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "Measured defense value, friendly clearance throughout, bounded repair spend, mobile force still fights outside; air threat not credited as blocked by walls",
+        "setup": [
+          "Useful real fortified entrance includes deliberate friendly opening and reachable occupied posts",
+          "Ordinary mobile force retains an outside counterattack route"
+        ],
+        "actions": [
+          "Approach with hostile ground units, breach a wall/stair, then require defender withdrawal and repair/alternate defense",
+          "Introduce an observed air threat separately before outside counterattack"
+        ],
+        "measurements": [
+          "Per-prefix friendly clearance, native hostile detour/exposure, post withdrawal, cumulative repair spend and outside damage"
+        ],
+        "required": [
+          "Useful defense recovers without trapping friendlies or monopolizing resources",
+          "Mobile force creates real outside pressure and air is handled by actual compatible capability"
+        ],
+        "forbidden": [
+          "Wall credited with stopping air",
+          "Rebuilding full graph each breach",
+          "Counterattack launch without objective effect"
+        ]
+      }
+    },
+    "SEQ-07": {
+      "latestTick": 18000,
+      "checkpointTicks": [
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000,
+        4000,
+        6000,
+        12000,
+        18000
+      ],
+      "branches": [
+        "confirmed",
+        "stale",
+        "alternate"
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "Proportionate evidence response, no queue churn, useful retained units, bounded tactical recovery and meaningful new pressure",
+        "setup": [
+          "Enemy first composition is legitimately visible; later technology/counter transition occurs outside vision",
+          "AI has retained useful units and an alternate reachable objective"
+        ],
+        "actions": [
+          "Age initial sightings, reveal confirmed new counter capability, and execute a real failed assault",
+          "Continue production adjustment and a revised mission without resetting opening"
+        ],
+        "measurements": [
+          "Evidence source/age, native queue changes/refunds, retained output identities, assault losses and later useful pressure"
+        ],
+        "required": [
+          "Response is proportional to fresh evidence with bounded queue churn",
+          "Failed assault yields useful composition/objective adjustment and new native effect"
+        ],
+        "forbidden": [
+          "Hidden tech knowledge",
+          "All old units discarded",
+          "Repeated start/cancel counted as adaptation"
+        ]
+      }
+    },
+    "DBG-04": {
+      "latestTick": 2400,
+      "checkpointTicks": [
+        40,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400
+      ],
+      "branches": [
+        "identical",
+        "changed_input",
+        "changed_config",
+        "same_input_divergence",
+        "what_if"
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/debugging-scenarios.md",
+        "requiredOutcome": "Different input/config labeled correctly; same-input divergence reports first field; isolated what-if leaves original state/RNG unchanged",
+        "setup": [
+          "Preserve an immutable complete captured decision/runtime input and RNG state",
+          "Make separate copies with one changed input field, one changed profile and one controlled same-input divergence"
+        ],
+        "actions": [
+          "Run isolated compare/what-if without dispatch to original world",
+          "Capture original canonical state, RNG and native command count before and after"
+        ],
+        "measurements": [
+          "Input/config provenance labels, first differing canonical field and original state/RNG/command equality"
+        ],
+        "required": [
+          "Changed input/config is labeled hypothetical/different",
+          "Same-input divergence names its first field and what-if leaves original untouched"
+        ],
+        "forbidden": [
+          "Counterfactual claimed as exact replay",
+          "Any what-if command dispatched into live match",
+          "Comparing only summary totals"
+        ]
+      }
+    },
+    "H-05": {
+      "latestTick": 3000,
+      "checkpointTicks": [
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000
+      ],
+      "branches": [
+        "cancelled",
+        "paid",
+        "uncertain"
+      ],
+      "capabilityLimits": [
+        "Approved user partition: native cancellation/paid/uncertain purpose loss plus pure saved-claim release; no intermediate dispatch boundary exists."
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "Atomic safe release and bounded reassignment; no orphan actors or global concession",
+        "setup": [
+          "Optional construction/mission owns reversible claims and workers while separate useful duties exist",
+          "Include normally paid/in-flight work which must not be erased as if unspent"
+        ],
+        "actions": [
+          "Remove the optional purpose through observed loss or true route infeasibility",
+          "Let normal cancellation/reconciliation precede actor reassignment"
+        ],
+        "measurements": [
+          "Per-actor and per-resource ownership, actual cancellation/refund lifecycle and next useful orders"
+        ],
+        "required": [
+          "Safe-to-release claims close atomically and actors gain valid useful duty",
+          "Applied or uncertain effects remain authoritatively reconciled"
+        ],
+        "forbidden": [
+          "Deleting AI records treated as native cancellation",
+          "Orphan workers, double refunds or global concession"
+        ],
+        "approvedScope": "User approved 2026-10-21: native purpose cancellation plus paid and uncertain preservation; saved undispatched forecast/provisional atomic release covered by PureAiBrain recovery controls. Native selection/dispatch is synchronous, so no invented intermediate world boundary."
+      }
+    },
+    "DBG-06": {
+      "latestTick": 4000,
+      "checkpointTicks": [
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000,
+        4000
+      ],
+      "branches": [
+        "hidden",
+        "shown",
+        "filtered",
+        "exporting",
+        "quota",
+        "shutdown"
+      ],
+      "capabilityLimits": [
+        "Actual scene-owned capture uses a declared 16 KiB diagnostic session budget to reach the production quota path in a brief functional control; normal policy remains 64 MiB. All modes share one deterministic native setup and Hard profile so 4000 ticks exceed the real 256-decision trace retention."
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/debugging-scenarios.md",
+        "requiredOutcome": "Capture quota/history truncation/scene disposal stay bounded; debug shown/hidden/exporting/filtering gives identical gameplay/AI outcomes",
+        "setup": [
+          "Qualified same-source fixed-frame workload has exact seed/instance and identical native inputs",
+          "Create separate hidden, shown, filtered and exporting debug modes; retain actual capture session quota"
+        ],
+        "actions": [
+          "Drive identical logical inputs in each debug mode",
+          "Exceed disposable incident retention/history quota without deleting unresolved authority records, then dispose scene"
+        ],
+        "measurements": [
+          "Exact committed intents, canonical native outcomes/RNG and bounded retained bytes/counts with explicit truncation",
+          "Listener disposal and unresolved authority record retention"
+        ],
+        "required": [
+          "Debug modes have identical gameplay/AI outcomes",
+          "Capture/history stays within configured quota and teardown releases scene ownership"
+        ],
+        "forbidden": [
+          "Fresh random instance per compared run",
+          "Missing trace treated as exactness",
+          "Full performance benchmark introduced for this brief functional check"
+        ]
+      }
+    },
+    "H-23": {
+      "latestTick": 3000,
+      "checkpointTicks": [
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2400,
+        3000
+      ],
+      "branches": [
+        "optional_late",
+        "optional_lost",
+        "builder_late"
+      ],
+      "capabilityLimits": [
+        "User 2026-10-21 authorizes native island establishment now. A native CommonBoat is initially owned by either faction; this does not claim Skaduwee can recruit a foreign carrier. Land is physically surrounded by water in this diagnostic preset; no public island map is added. Original 3000-tick horizon and 750-permille readiness remain fixed."
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "Useful force launches or changes to feasible mission by deadline; indispensable cargo rules remain respected",
+        "setup": [
+          "Useful force meets independently specified minimum readiness except one optional support/straggler",
+          "Keep the optional actor on an actual delayed route and preserve indispensable roles separately"
+        ],
+        "actions": [
+          "Let normal assembly proceed and retain the original departure deadline",
+          "Continue through launch or a changed feasible mission"
+        ],
+        "measurements": [
+          "Mission membership roles, actual readiness, original deadline and native departing/engaging identities"
+        ],
+        "required": [
+          "Optional straggler cannot indefinitely block useful departure",
+          "Missing indispensable cargo remains a real prerequisite with bounded recovery"
+        ],
+        "forbidden": [
+          "Lowering minimum readiness after every failed poll",
+          "Calling assemble state an attack launch"
+        ]
+      }
     }
   }
 }
