@@ -28,6 +28,7 @@ import type { SceneActorCreator } from "../../../world/services/scene-actor-crea
 import { scheduleAiRuntimePresetSetup } from "./schedule-ai-runtime-preset-setup";
 import { applyAiRuntimePresetQueues } from "./apply-ai-runtime-preset-queues";
 import { installAiRuntimeProductionCapture } from "./install-ai-runtime-production-capture";
+import { mountAiRuntimeBundleImport } from "../../../prefabs/gui/debug/ai-runtime-bundle-import";
 import { installAiRuntimePresetEvents } from "./install-ai-runtime-preset-events";
 import { assertAiRuntimePresetRoster } from "./assert-ai-runtime-preset-roster";
 import { readAiRuntimeBrowserTestConfigV1, recordAiRuntimePresetApplicationV1 } from "./ai-runtime-browser-test-config";
@@ -36,6 +37,7 @@ import { readAiRuntimeBrowserTestConfigV1, recordAiRuntimePresetApplicationV1 } 
 export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, creator: SceneActorCreator): void {
   if (environment.production) return;
   installAiRuntimeProductionCapture(scene);
+  mountAiRuntimeBundleImport(scene);
   // A save already owns its actors, balances and queues; replaying fixture setup would corrupt continuation.
   if (scene.baseGameData.gameInstance.gameInstanceMetadata.data.startOptions.loadFromSave) return;
   const preset = readAiRuntimeBrowserTestConfigV1()?.presetWorld;

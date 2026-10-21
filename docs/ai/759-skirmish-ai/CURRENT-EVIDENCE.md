@@ -2,15 +2,15 @@
 
 ## Continuous registration batch — in progress, authored unrun (2026-10-21)
 
-Publication base45b0ce952b67b2f8b7db9640a115ce770b15292e; same authority-recovery worktree/feature branch.
+Publication base96f6d73645f1b005468d3ea0f9e01f3d4c50648d; same authority-recovery worktree/feature branch.
 The user requested all23 remaining registrations together. This entry closes only the published source slice;
 the batch must continue. Actual model/effort unknown; no subagent or model switch.
 
 Numbered acceptance map / Omission Audit for the current slice:
 
-1. **Thirteen full source registrations authored:** D-03/D-04/D-05, H-05/H-20/H-23/H-32, SEQ-03/04/06/07,
-   DBG-04/06. The manifest, native bindings, generated fixtures and mandatory ID-specific readers are connected.
-   Factory75 bindings/510 variants; supported registration106/115 (92.2%),9/115 unbound (7.8%). Pure111/111 unchanged.
+1. **Fourteen full source registrations authored:** D-03/D-04/D-05, H-05/H-20/H-23/H-32, SEQ-03/04/06/07,
+   DBG-04/05/06. The manifest, native bindings, generated fixtures and mandatory ID-specific readers are connected.
+   Factory76 bindings/522 variants; supported registration107/115 (93.0%),8/115 unbound (7.0%). Pure111/111 unchanged.
    All new premises, timing, predicates and behavior remain unrun; no passing count or overall completion claimed.
 2. **Difficulty:** all three policies/both factions receive real hidden-position/health/queue/contact controls,
    same paired match identity, exact permitted inputs/intents and actual profile/cadence checks. Easy starts with
@@ -50,8 +50,8 @@ Numbered acceptance map / Omission Audit for the current slice:
 7. **Explicit deferral:** user2026-10-21 deferred H-21 larger-unit/formation native clearance until suitable content
    exists. Pure coverage remains. Manifest support/parser/catalog now distinguish this #759 deferral from the four
    #822 island rows. The H-23 island addition does not silently claim those broader content obligations completed.
-8. **Nine unfinished bindings:** H-08/H-09/H-31/SEQ-08/D-02 need the real peer/save/scene continuation path;
-   DBG-01/03/05 need full runtime capture/stepping/import/access; D-06 needs declared calibration/holdout/soak and
+8. **Eight unfinished bindings:** H-08/H-09/H-31/SEQ-08/D-02 need the real peer/save/scene continuation path;
+   DBG-01/03 need full runtime capture/stepping/import/access; D-06 needs declared calibration/holdout/soak and
    pinned-baseline execution/reporting. No placeholder or partial owner control was promoted for these IDs.
 9. **Execution deliberately deferred:** no recipe/test/lint/type/formatter/build/browser/server/doctor/context or
    dedicated validator ran. Source/diff review and fixture/catalog authoring only. New tests include erasure,
@@ -71,12 +71,24 @@ Numbered acceptance map / Omission Audit for the current slice:
     Native first-match histories and next-match proof remain separate. Per-page error collectors replace only their
     previous owned listeners. Save groundwork preserves saved identity/seed, skips preset reseeding on restore and
     drives the actual shortcut/encrypted repository/Load UI; it does not yet certify H-31 or continuous save cases.
+11. **DBG-05 native import registered:** twelve worlds cover both factions and malformed JSON, oversized bytes/counts,
+    schema mismatch, traversal, markup and ordinary-peer authorization. A real native selected boundary supplies
+    source/map/catalog/profile provenance and a host-confidential runtime artifact through the original scene bridge.
+    The localhost developer-only UI invokes the bounded decoder and renders text; it never applies imported state or
+    claims replay. Native canonical world/RNG before/after the actual handler must match. A valid import control is
+    required before each negative. A real two-client peer must be denied both import and the shared native capture
+    entry point before any world inspection. Artifact bytes stay local; reports retain only digests and bounded results.
+    Parser depth/node/array/byte limits precede recursive manifest inspection, and scene cleanup removes the UI/listener.
+12. **Product-scope correction from user:** multiplayer does not have save/load. H-31 now explicitly covers SP native
+    save/load; D-02/SEQ-08 use independent supported SP save/replay and real MP host-transfer/reconnect legs. Durable
+    specifications and drafts have been reconciled. Coordinated MP save/load is not planned and is not a missing feature
+    blocking these registrations. No MP save/load implementation was added.
 
 Separate Final Closure Audit for this source slice: traced factory inputs and strict parsers through native controls,
 selected ownership, independent physical/paid effects, mandatory readers and manifest consumers. Reviewed paired
 instance identity, observer gating, finite faults, original queue handles, safe claim release, quota accounting and
 scene cleanup. Repaired source-review findings above. **The all-registrations batch remains incomplete.**
-Publish exact owned paths normally and verify remote SHA; do not force-push, merge or open a PR. Continue the nine
+Publish exact owned paths normally and verify remote SHA; do not force-push, merge or open a PR. Continue the eight
 remaining bindings after this source checkpoint. Machinery necessity/removal stays last overall.
 
 ## D-01 registration batch — authored, not executed (2026-10-20)

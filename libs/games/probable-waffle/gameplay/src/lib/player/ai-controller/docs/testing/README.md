@@ -553,6 +553,15 @@ selects the multiplayer configuration and requires its existing local API/auth p
 next-match evidence remain separate. Save groundwork uses the actual quicksave/encrypted repository/Load UI;
 restored identity/seed and actors/queues are never replaced by fixture setup. This is authored support, not save certification.
 
+Save/load cases are single-player coverage. Multiplayer lifecycle cases use real host transfer/reconnect and late-event
+fencing. D-02/SEQ-08 have independent supported legs; they do not require coordinated multiplayer save/load.
+
+DBG-05 binds twelve native worlds to the actual runtime-artifact import surface. It is present only under an explicit
+localhost developer marker and is excluded from production. The actual host gate protects capture and is rechecked on
+every import. Malformed JSON, bytes/counts/depth, schema, traversal and markup are rejected before any world application;
+labels use textContent. Actual native canonical state/RNG must remain unchanged. A real ordinary peer must be denied
+both import and native capture. Only bounded digests/results enter reports. Import never claims runtime replay.
+
 ### Difficulty policy registration (D-01)
 
 Six native worlds select Easy/Normal/Hard in the ordinary lobby for both factions on the same legal setup/seed.

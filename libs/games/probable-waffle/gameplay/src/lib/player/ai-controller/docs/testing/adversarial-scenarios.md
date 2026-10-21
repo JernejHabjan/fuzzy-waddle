@@ -65,12 +65,15 @@ Each row gets independent semantic predicates, forbidden outcomes, resolved nume
 | H-28 | Repeated short fortification prefixes bypass single-plan budget                   | Cumulative base/player commitments counted; stop unjustified new nodes                                                     |
 | H-29 | Boat succeeds but cargo workers never resume income or boat remains reserved      | Handoff releases/reassigns both passenger and transport roles; delivered-income/next-mission progress                      |
 | H-30 | Optional proposer/debug throws or produces NaN/invalid utility                    | Boundary guards isolate faulty output, preserve valid orders and surface incident; no best-score corruption                |
-| H-31 | Save/load occurs during chronic block, lease expiry and authority reconciliation  | Failure age, debt, claims, epoch and next legitimate decisions preserved; no reset exploit                                 |
+| H-31 | Single-player save/load occurs during chronic block, lease expiry and authority reconciliation | Failure age, debt, claims, epoch and next legitimate decisions preserved; no reset exploit                                 |
 | H-32 | Second match starts in same app after disposal/host replacement                   | Exactly one current controller/player; old callbacks cannot act or leak state across matches                               |
 
 ## Continuous match sequences
 
 These are skirmish soak/interaction tests, not a new campaign game mode. Each uses one continuous world and brain without resetting between disruptions. Require economy, military and authority progress together. Individual paired unit cases cannot substitute for them.
+
+SEQ-08 has two independent supported lifecycle legs: single-player save/load and multiplayer host transfer/reconnect.
+Each leg retains its own continuous world and brain. Multiplayer save/load is not a product feature or a prerequisite.
 
 | ID     | Sequence                                                                                                                                                        | Measured acceptance                                                                                                                                                                                         |
 | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -81,7 +84,7 @@ These are skirmish soak/interaction tests, not a new campaign game mode. Each us
 | SEQ-05 | Island builder/combat transport -> unsafe landing -> reroute -> unload -> economy established -> return trip/escort loss                                        | Blocked for real-map E2E until an island map exists; pure transport phases remain required. When supported, all ownership phases reconcile, delivered island income is useful and no hidden backlog remains |
 | SEQ-06 | Fortified front with deliberate opening -> hostile ground approach -> wall/stair breach -> post withdrawal -> repair/alternate defense -> outside counterattack | Measured defense value, friendly clearance throughout, bounded repair spend, mobile force still fights outside; air threat not credited as blocked by walls                                                 |
 | SEQ-07 | Initial enemy composition -> stale sightings -> confirmed tech/counter transition -> failed assault -> revised composition -> alternate objective               | Proportionate evidence response, no queue churn, useful retained units, bounded tactical recovery and meaningful new pressure                                                                               |
-| SEQ-08 | Active economy/attack + pending command -> save -> reload -> host transfer -> late old events -> finish -> second match                                         | Exact saved continuation for equivalent logical inputs, applied-once effects, no duplicated brain/claims/results, clean new match                                                                           |
+| SEQ-08 | Separate supported legs: SP economy/attack + pending work -> save/reload -> finish -> second match; MP economy/attack -> host transfer/reconnect -> late events -> finish -> second match | Exact saved continuation for equivalent logical inputs, applied-once effects, no duplicated brain/claims/results, clean new match                                                                           |
 
 Fixed disturbance timing must preserve the scenario's declared feasibility. For losses modeled by an opponent, use deterministic legal attacks; for lifecycle faults, use labeled test transport seams. Report damage and assets removed. A fixture that destroys every recovery route cannot demand normal recovery and then fault the AI for obeying defeat rules.
 

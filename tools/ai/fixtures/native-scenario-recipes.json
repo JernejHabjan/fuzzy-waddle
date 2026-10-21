@@ -24,7 +24,8 @@
     "assertionsPolicy": "All required branches need independent native assertions plus forbidden predicates. Missing/truncated setup, input, history, action or oracle is unavailable/failed, never success. Planner explanations and dispatch alone are not applied useful effects.",
     "cleanupPolicy": "Dispose scoped fault interceptors, listeners, scene and browser contexts in finally paths. Lifecycle cases intentionally retain one app realm across matches. Never turn these authoring controls on in ordinary gameplay.",
     "reportPolicy": "Keep raw proof local/ignored. Deterministic code evaluates assertions. Model input is only the bounded existing summary (maximum 8192 UTF-8 bytes), with explicit omitted counts and narrow causal projections when needed.",
-    "reviewStatus": "Source and contract review only; no gameplay recipe, test, lint, type check, formatter or dedicated validation command executed. Catalog generation is authoring only."
+    "reviewStatus": "Source and contract review only; no gameplay recipe, test, lint, type check, formatter or dedicated validation command executed. Catalog generation is authoring only.",
+    "lifecyclePolicy": "User correction 2026-10-21: save/load is single-player coverage. Multiplayer coverage uses real host transfer, reconnect and stale-command fencing. Do not invent coordinated multiplayer save/load or require a save-to-multiplayer transition."
   },
   "worlds": {
     "open": {
@@ -70,6 +71,11 @@
       "mapLabel": "AI Open Economy (test only)",
       "topology": "tools/ai/fixtures/test-map-topology.json",
       "precondition": "Real developer-authorized incident/import/replay surfaces, isolated replay world and retained live peers when required. No privileged captures shared with ordinary players."
+    },
+    "supported_lifecycle": {
+      "mapLabel": null,
+      "topology": "separate_supported_single_player_and_multiplayer_sessions",
+      "precondition": "Single-player save/load uses the actual codec and ordinary UI. Independently, multiplayer host transfer/reconnect uses real clients and relay. Never treat these as coordinated multiplayer save/load."
     }
   },
   "hooks": {
@@ -202,8 +208,7 @@
     "D-02",
     "D-06",
     "DBG-01",
-    "DBG-03",
-    "DBG-05"
+    "DBG-03"
   ],
   "cases": [
     {
@@ -325,10 +330,10 @@
       "status": "authored_not_executed",
       "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
       "requiredOutcome": "Failure age, debt, claims, epoch and next legitimate decisions preserved; no reset exploit",
-      "world": "multiplayer",
+      "world": "supported_lifecycle",
       "maximumTick": 4000,
       "setup": [
-        "Actual chronic blocker is near its original deadline with expiring provisional lease and unresolved applied command",
+        "Single-player actual chronic blocker is near its original deadline with expiring provisional lease and unresolved applied command",
         "Record the real queue lanes and command metadata in the saved world"
       ],
       "actions": [
@@ -357,7 +362,6 @@
         "native_case_binding",
         "snapshot_boundary",
         "receipt_fault",
-        "multiplayer_boundary",
         "authority_binding_h_31"
       ],
       "reuse": [
@@ -389,15 +393,15 @@
       "status": "authored_not_executed",
       "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
       "requiredOutcome": "Exact saved continuation for equivalent logical inputs, applied-once effects, no duplicated brain/claims/results, clean new match",
-      "world": "multiplayer",
+      "world": "supported_lifecycle",
       "maximumTick": 18000,
       "setup": [
-        "Real two-client match has active income, offense and pending command at a safe boundary",
-        "Preserve original match identity, seed, profile and all shared queue metadata"
+        "Single-player continuous economy/attack plus pending work has a real safe save boundary",
+        "An independent real two-client continuous match covers host transfer/reconnect and late old events; both legs preserve their own original identity, seed, profile and shared queue metadata"
       ],
       "actions": [
-        "Save and reload through native UI/codec, promote the other peer through real authority path and deliver late old events",
-        "Continue to authoritative finish, then start a second match in the same app realm"
+        "Single-player leg: native save/reload, same logical continuation to authoritative finish, then ordinary same-realm second match",
+        "Multiplayer leg: real host promotion/reconnect, late old callbacks, authoritative finish, then ordinary same-realm second match; no multiplayer save/load"
       ],
       "measurements": [
         "Canonical snapshot/state hash, input log and exact committed decisions through each boundary",
@@ -410,7 +414,8 @@
       "forbidden": [
         "Single-browser host flag standing in for peer transfer",
         "Legacy-only hash ignores sharedQueue",
-        "New browser hides disposal leaks"
+        "New browser hides disposal leaks",
+        "Coordinated multiplayer save/load invented as a prerequisite for supported host-transfer coverage"
       ],
       "branches": [
         "Pending before apply",
@@ -426,7 +431,7 @@
         "terminal_history"
       ],
       "reuse": [
-        "tools/ai/fixtures/undefined",
+        "tools/ai/native-authority-worlds.mjs",
         "libs/games/probable-waffle/phaser/src/lib/world/services/recovery/serialize-actor-queue-state.spec.ts",
         "libs/games/probable-waffle/phaser/src/lib/entity/components/queue/queue-continuation.spec.ts"
       ],
@@ -453,14 +458,15 @@
       "status": "authored_not_executed",
       "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/classic-rts-and-difficulty-scenarios.md",
       "requiredOutcome": "Save/load/replay/host transfer preserves difficulty, archetype, scheduling and active plans; no silent profile drift",
-      "world": "multiplayer",
+      "world": "supported_lifecycle",
       "maximumTick": 4000,
       "setup": [
         "Each lobby difficulty has an active archetype, scheduler debt and in-progress plans",
-        "Two real peers share the same selected configuration and exact match identity"
+        "Separate native multiplayer sessions use two real peers for host transfer/reconnect with the same selected configuration; multiplayer save/load is not supported or required"
       ],
       "actions": [
-        "Save/reload, replay the same logical input continuation, then transfer host authority",
+        "In single-player, save/reload and replay the same logical input continuation at equivalent safe boundaries",
+        "Independently, transfer actual multiplayer host authority and reconnect peers without loading a save",
         "Resume before the next scheduled decision rather than resetting cadence"
       ],
       "measurements": [
@@ -548,7 +554,7 @@
       ],
       "reuse": [
         "tools/ai/fixtures/difficulty-calibration-v1.json",
-        "tools/ai/fixtures/difficulty-calibration-v1.json"
+        "tools/ai/baseline-adapter-v1.mjs"
       ],
       "checkpointTicks": [
         0,
@@ -695,63 +701,6 @@
         1600,
         2000,
         2400
-      ],
-      "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
-    },
-    {
-      "scenarioId": "DBG-05",
-      "status": "authored_not_executed",
-      "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/debugging-scenarios.md",
-      "requiredOutcome": "Malformed/oversized/version-mismatched/traversal/HTML payloads rejected or rendered safely; hidden runtime bundle is access-controlled",
-      "world": "workbench",
-      "maximumTick": 2000,
-      "setup": [
-        "Use the actual runtime-bundle import, decoder and debug display entry points",
-        "Prepare malformed JSON, oversized counts/bytes, unsupported schema, traversal reference and HTML labels as data"
-      ],
-      "actions": [
-        "Import each payload into isolated developer UI and attempt privileged bundle access as an ordinary peer",
-        "Render hostile labels without executing them"
-      ],
-      "measurements": [
-        "Decoder rejection reason and work/byte bounds, DOM text rendering and absence of script/network/path effects",
-        "Real host/developer access checks for confidential full-world content"
-      ],
-      "required": [
-        "Unsafe payload is rejected or rendered as inert text before game mutation",
-        "Unauthorized peer cannot access hidden runtime bundle"
-      ],
-      "forbidden": [
-        "Parser-only safety claim without actual UI/import/access path",
-        "Reading arbitrary paths or running HTML",
-        "Silent truncation accepted as exact input"
-      ],
-      "branches": [
-        "Malformed",
-        "Oversized",
-        "Version mismatch",
-        "Traversal",
-        "HTML",
-        "Unauthorized peer"
-      ],
-      "executionBlockers": [
-        "native_case_binding",
-        "repro_driver",
-        "debug_surface",
-        "multiplayer_boundary"
-      ],
-      "reuse": [
-        "tools/ai/fixtures/stage-5-bootstrap.json"
-      ],
-      "checkpointTicks": [
-        0,
-        20,
-        200,
-        400,
-        800,
-        1200,
-        1600,
-        2000
       ],
       "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
     }

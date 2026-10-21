@@ -7,14 +7,17 @@ validated evidence. This is the existing execution inventory, not another design
 ## What the inventory establishes
 
 The original concrete plan contains121 named scenarios. Pure registration is111/111. Supported runtime registration
-is106/115 (92.2%);9 (7.8%) still have specifications without native bindings. Five runtime rows are explicitly deferred:
-four #822 island-content rows and H-21 larger-unit clearance by user2026-10-21. Definitions115/115 comprise106 bindings
-and9 specifications. This continuous batch has authored13 new registrations, with75 factory bindings/510 variants and
+is107/115 (93.0%);8 (7.0%) still have specifications without native bindings. Five runtime rows are explicitly deferred:
+four #822 island-content rows and H-21 larger-unit clearance by user2026-10-21. Definitions115/115 comprise107 bindings
+and8 specifications. This continuous batch has authored14 new registrations, with76 factory bindings/522 variants and
 21 retained partial owner worlds unrun. H-23 now includes user-authorized native island establishment; its small
 water-enclosed diagnostic preset does not silently close the four broader #822 content rows.
-**Continue the current batch through all nine active gaps; no per-case pause.** Shared peer/save/lifecycle integration
-owns H-08/H-09/H-31/SEQ-08/D-02; runtime debug capture/stepping/import owns DBG-01/03/05; calibration owns D-06.
+**Continue the current batch through all eight active gaps; no per-case pause.** Shared peer/save/lifecycle integration
+owns H-08/H-09/H-31/SEQ-08/D-02; runtime debug capture/stepping/import owns DBG-01/03; calibration owns D-06.
 H-32 now binds actual same-realm UI transitions, retained paid/path work and real host replacement, authored unrun.
+DBG-05 binds actual runtime-artifact import UI, bounded hostile inputs and real peer import/capture denial, authored unrun.
+User correction2026-10-21: save/load coverage belongs to single-player. Multiplayer coverage uses actual host transfer,
+reconnect and stale-event fencing. H-31 is SP; D-02/SEQ-08 use separate supported legs. No MP save/load feature is planned.
 Counts describe registration, not passing gameplay, unique physical maps, sessions or time remaining.
 Each row needs complete source-specific native outcome evidence before validation; an authored reader is not that evidence.
 
@@ -88,7 +91,7 @@ an entire scenario. Invalidate only outcomes affected by later source/fixture ch
 | ------------------------------------- | ------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------ |
 | Pure fixture registration             | 111/111 = **100%**                          | 0/111 = **0%** | Required pure scenarios with registered fixtures; not behavior completion                                          |
 | Supported native definitions           | 115/115 = **100%**                          | 0/115 = **0%** | 105 scenario bindings plus10 specifications; definitions only, not validated gameplay |
-| Supported runtime recipe registration | 106/115 = **92.2%**                          | 9/115 = **7.8%** | Runtime recipes connected; five explicitly deferred rows excluded; not behavior completion                              |
+| Supported runtime recipe registration | 107/115 = **93.0%**                          | 8/115 = **7.0%** | Runtime recipes connected; five explicitly deferred rows excluded; not behavior completion                              |
 | Scenario behavior validation          | Not yet reconciled across the full manifest | Not yet measurable | Existing subset passes and failures are recorded, but no truthful overall completion percentage can yet be derived |
 
 During each selected package, reconcile its existing complete evidence into the row status and report its exact

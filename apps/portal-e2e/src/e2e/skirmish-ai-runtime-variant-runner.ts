@@ -25,7 +25,8 @@ export async function runVariant(
   sourceRevision: string,
   fixtureDigest: string,
   debugProbe?: (page: Page, checkpointIndex: number, checkpoint?: RuntimeCheckpointV1) => Promise<void>,
-  afterVariant?: (page: Page, result: RuntimeVariantResultV1) => Promise<void>
+  afterVariant?: (page: Page, result: RuntimeVariantResultV1) => Promise<void>,
+  beforeVariant?: (page: Page) => Promise<void>
 ): Promise<RuntimeVariantResultV1> {
   const profiling = process.env.AI_SKIRMISH_PROFILE === "1";
   const variantStartedAt = performance.now();
@@ -42,6 +43,7 @@ export async function runVariant(
   const effectiveSeed = requestedSeed ?? variant.seed;
 
   try {
+    await beforeVariant?.(page);
     const initialBoundary = await prepareRuntimeVariant(
       page,
       fixture,

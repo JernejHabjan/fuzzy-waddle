@@ -92,7 +92,7 @@ Run focused cases while developing their responsible subsystem and all cases in 
 | C-05 | Bait retreat cannot pull asset defenders into a bad pursuit; won battle creates useful follow-up pressure                                                |
 | C-06 | Multiple opponents retain coherent mission focus; diplomacy/defeat cleanly retargets without ignoring local threats                                      |
 | D-01 | Every lobby difficulty selects the exact versioned profile and expected cadence/quotas with no fallback to identical defaults                            |
-| D-02 | Save/load/replay/host transfer preserves difficulty, archetype, scheduling and active plans; no silent profile drift                                     |
+| D-02 | Single-player save/load/replay and independent multiplayer host transfer/reconnect preserve difficulty, archetype, scheduling and active plans; no silent profile drift |
 | D-03 | Equal permitted observations/rules across profiles; no hidden current state or unadvertised resource/stat bonuses                                        |
 | D-04 | Easy still opens, produces useful copies, counters legal threats, retreats and recovers; reduced breadth is not broken behavior                          |
 | D-05 | Caps and reconsideration cadence affect eligible voluntary activity while independent defense/rescue remains serviced                                    |

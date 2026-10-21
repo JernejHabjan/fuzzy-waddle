@@ -16,6 +16,7 @@ import { armNativeDebugParity, captureNativeDebugParity } from "./skirmish-ai-na
 import type { NativeDebugParityProof } from "./skirmish-ai-native-debug-parity-proof";
 import { exerciseDebug } from "./skirmish-ai-debug-panel-exercise";
 import { runNativeLifecycleVariant } from "./skirmish-ai-native-lifecycle-runner";
+import { runNativeImportVariant } from "./skirmish-ai-native-import-runner";
 
 /** The existing runner owns the match. Bound cases additionally arm/read the same observer for the real human opponent. */
 export async function runRegisteredRuntimeVariant(
@@ -24,6 +25,9 @@ export async function runRegisteredRuntimeVariant(
   const lifecycleBranch = fixture.assertions["H-32"]?.requiredNativeScenario?.branchByVariant[variant.id];
   if (request.scenarioIds.includes("H-32") && lifecycleBranch)
     return runNativeLifecycleVariant(browser, fixture, variant, request, lifecycleBranch);
+  const importBranch = fixture.assertions["DBG-05"]?.requiredNativeScenario?.branchByVariant[variant.id];
+  if (request.scenarioIds.includes("DBG-05") && importBranch)
+    return runNativeImportVariant(browser, fixture, variant, request, importBranch);
   const contract = (request.scenarioIds.includes("EXP-02") ? fixture.assertions["EXP-02"]?.requiredExpansionPressure : undefined) ??
     request.scenarioIds.map((id) => fixture.assertions[id]?.requiredNativeScenario).find((binding) => binding !== undefined);
   let opponentCapture: AiRuntimeProductionCaptureV1 | undefined;

@@ -6,7 +6,7 @@ import { validNativeScenarioFixture } from "./skirmish-runtime-native-scenario-f
 
 test("all native bindings retain their full branches and original acceptance obligations", () => {
   const ids = Object.keys(nativeScenarioBindings.cases);
-  assert.equal(ids.length, 75);
+  assert.equal(ids.length, 76);
   const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish-v1.json", import.meta.url)));
   for (const id of ids) {
     const row = manifest.rows.find((row) => row.id === id);
@@ -121,8 +121,8 @@ test("native cases cannot downgrade to generic counts or omit a faction, branch 
   for (const id of Object.keys(nativeScenarioBindings.cases)) for (const mutate of [
     (value) => delete value.assertions[id].requiredNativeScenario,
     (value) => value.recipe.variants.pop(),
-    (value) => value.recipe.variants[0].captureCombat = id === "H-32" ? true : undefined,
-    (value) => value.recipe.variants[0].captureConstruction = id === "H-32" ? true : undefined,
+    (value) => value.recipe.variants[0].captureCombat = ["H-32", "DBG-05"].includes(id) ? true : undefined,
+    (value) => value.recipe.variants[0].captureConstruction = ["H-32", "DBG-05"].includes(id) ? true : undefined,
     (value) => value.recipe.variants[0].evidenceStop = { earliestTick: 20, stableForTicks: 0 },
     (value) => value.recipe.variants[0].seed++,
     (value) => value.recipe.variants[0].presetWorld.resourceStarts[0].amounts.wood++,
@@ -156,6 +156,17 @@ test("H-32 binds real relay promotion, one retained realm and independent pendin
     mutate(changed);
     assert.equal(validNativeScenarioFixture(changed, "H-32"), false);
   }
+});
+
+test("DBG-05 retains every hostile import branch and real-peer authorization requirement", () => {
+  const fixture = nativeScenarioFixture("DBG-05");
+  assert.equal(fixture.recipe.variants.length, 12);
+  assert.equal(fixture.recipe.requiresMultiplayer, true);
+  assert.deepEqual(nativeScenarioBindings.cases["DBG-05"].branches,
+    ["malformed", "oversized", "version_mismatch", "traversal", "html", "unauthorized_peer"]);
+  assert.ok(fixture.recipe.variants.every((variant) => variant.checkpointTicks[0] === 20 && !variant.captureConstruction));
+  delete fixture.recipe.requiresMultiplayer;
+  assert.equal(validNativeScenarioFixture(fixture, "DBG-05"), false);
 });
 
 test("source-controlled worlds reject erased perturbations, fake observations and altered topology", () => {

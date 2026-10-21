@@ -3527,6 +3527,54 @@
           "Discarding callback without testing its fence"
         ]
       }
+    },
+    "DBG-05": {
+      "latestTick": 2000,
+      "checkpointTicks": [
+        20,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        2000
+      ],
+      "branches": [
+        "malformed",
+        "oversized",
+        "version_mismatch",
+        "traversal",
+        "html",
+        "unauthorized_peer"
+      ],
+      "capabilityLimits": [
+        "Actual native developer import validates a host-confidential runtime artifact and renders metadata only; import does not claim physical replay. The ordinary peer denial uses two real authenticated clients and the API relay. The surface is absent in production and without an explicit localhost developer opt-in. These recipes are authored, not executed."
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/debugging-scenarios.md",
+        "requiredOutcome": "Malformed/oversized/version-mismatched/traversal/HTML payloads rejected or rendered safely; hidden runtime bundle is access-controlled",
+        "setup": [
+          "Use the actual runtime-bundle import, decoder and debug display entry points",
+          "Prepare malformed JSON, oversized counts/bytes, unsupported schema, traversal reference and HTML labels as data"
+        ],
+        "actions": [
+          "Import each payload into isolated developer UI and attempt privileged bundle access as an ordinary peer",
+          "Render hostile labels without executing them"
+        ],
+        "measurements": [
+          "Decoder rejection reason and work/byte bounds, DOM text rendering and absence of script/network/path effects",
+          "Real host/developer access checks for confidential full-world content"
+        ],
+        "required": [
+          "Unsafe payload is rejected or rendered as inert text before game mutation",
+          "Unauthorized peer cannot access hidden runtime bundle"
+        ],
+        "forbidden": [
+          "Parser-only safety claim without actual UI/import/access path",
+          "Reading arbitrary paths or running HTML",
+          "Silent truncation accepted as exact input"
+        ]
+      }
     }
   }
 }

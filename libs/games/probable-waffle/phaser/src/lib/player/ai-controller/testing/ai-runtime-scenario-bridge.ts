@@ -9,6 +9,8 @@ import { StateHashService } from "../../../world/services/recovery/state-hash.se
 import { digestAiWorldProjectionV1 } from "../../../world/services/recovery/authoritative-state-projection";
 import type { AiReproBundleV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { AiIncidentCaptureStoreV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import { digestAiReproJson as digestJson } from
+  "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/debug/ai-repro-json-digest";
 
 const MAX_ADVANCE_TICKS = 20_000;
 
@@ -126,6 +128,7 @@ export class AiRuntimeScenarioBridgeV1 {
     targetTick: number,
     provenance: AiRuntimeReproProvenanceV1
   ): Promise<AiRuntimeReproArtifactV1> {
+    if (!this.scene.isHost) throw new Error("runtime_capture_access_denied");
     const boundary = await this.advanceToCommittedObservation(playerNumber, targetTick);
     const controller = this.requireController(playerNumber);
     const observation = controller.getCommittedObservation();
@@ -212,12 +215,3 @@ export class AiRuntimeScenarioBridgeV1 {
   }
 }
 
-function digestJson(value: unknown): string {
-  const input = JSON.stringify(value);
-  let hash = 0x811c9dc5;
-  for (let index = 0; index < input.length; index += 1) {
-    hash ^= input.charCodeAt(index);
-    hash = Math.imul(hash, 0x01000193);
-  }
-  return `fnv1a32:${(hash >>> 0).toString(16).padStart(8, "0")}`;
-}

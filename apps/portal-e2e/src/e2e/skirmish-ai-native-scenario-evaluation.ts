@@ -18,6 +18,7 @@ import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
 import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
 import { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
 import { nativeLifecycleProofFailures } from "./skirmish-ai-native-lifecycle-evaluation";
+import { nativeImportProofFailures } from "./skirmish-ai-native-import-evaluation";
 import { evaluateNativeScouting, nativeScoutingFairness } from "./skirmish-ai-native-scouting-evaluation";
 import { evaluateNativeStrategy } from "./skirmish-ai-native-strategy-evaluation";
 import { evaluateNativeCombat } from "./skirmish-ai-native-combat-evaluation";
@@ -41,6 +42,18 @@ export function evaluateNativeScenarioVariant(
   if (!fixture && !contract) return [];
   const variant = fixture?.recipe.variants.find((candidate) => candidate.id === result.variantId);
   const branch = contract?.branchByVariant[result.variantId];
+  if (id === "DBG-05") {
+    if (!contract || contract.schemaVersion !== 1 || contract.scenarioId !== id || contract.latestTick !== 2000 ||
+        !branch || !definition.branches.includes(branch) || !variant?.presetWorld || variant.evidenceStop ||
+        !fixture?.recipe.requiresMultiplayer || result.presetFixtureId !== variant.presetWorld.fixtureId)
+      return ["native_import_source_binding_missing_or_drifted"];
+    const failures = nativeImportProofFailures(branch, result.nativeImport);
+    if (result.nativeImport?.sourceRevision !== result.productionPreset?.sourceRevision ||
+        result.nativeImport?.fixtureDigest !== result.productionPreset?.fixtureDigest)
+      failures.push("native_import_capture_provenance_drifted_from_actual_setup");
+    if (result.aiErrors.length) failures.push("native_import_world_ai_errors");
+    return failures;
+  }
   if (id === "H-32") {
     if (!contract || contract.schemaVersion !== 1 || contract.scenarioId !== id || contract.latestTick !== 4000 ||
         !branch || !definition.branches.includes(branch) || !variant || !fixture?.recipe.requiresMultiplayer ||

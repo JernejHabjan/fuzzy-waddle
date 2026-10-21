@@ -28,7 +28,7 @@ async function waitForMultiplayerGame(page: Page): Promise<void> {
 export async function startMultiplayerTestMatch(
   browser: Browser, options: { readonly queueWorld?: true; readonly sharedQueueWorld?: "shared_contention" | "cancel_research";
     readonly authorityProbe?: true; readonly seed?: number; readonly aiFaction?: "Tivara" | "Skaduwee";
-    readonly aiDifficulty?: "Easy" | "Normal" | "Hard" } = {}
+    readonly aiDifficulty?: "Easy" | "Normal" | "Hard"; readonly runtimeImport?: true } = {}
 ): Promise<MultiplayerTestMatch> {
   if (options.queueWorld && options.sharedQueueWorld) throw new Error("multiplayer_queue_world_opt_ins_conflict");
   const provisioned = await createMultiplayerTestIdentities();
@@ -41,6 +41,11 @@ export async function startMultiplayerTestMatch(
   try {
     await installMultiplayerIdentity(hostContext, provisioned.identities[0]);
     await installMultiplayerIdentity(peerContext, provisioned.identities[1]);
+    if (options.runtimeImport) for (const context of [hostContext, peerContext])
+      await context.addInitScript(() => {
+        if (window.location.origin === "http://127.0.0.1:4200")
+          sessionStorage.setItem("fuzzy-waddle:ai-runtime-import-v1", "1");
+      });
     if (options.authorityProbe) for (const context of [hostContext, peerContext]) {
       await context.addInitScript(() => {
         if (window.location.origin === "http://127.0.0.1:4200")

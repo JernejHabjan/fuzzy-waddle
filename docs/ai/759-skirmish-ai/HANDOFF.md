@@ -6,11 +6,11 @@ Do not load the full plan directory or archive on startup.
 ## Current cursor — large registration batch in progress, 2026-10-21
 
 - Worktree /home/jernej/.codex/worktrees/skirmish-authority-recovery/fuzzy-waddle;
-  branch feature/759-skirmish-ai. Publication base45b0ce952b67b2f8b7db9640a115ce770b15292e;
+  branch feature/759-skirmish-ai. Publication base96f6d73645f1b005468d3ea0f9e01f3d4c50648d;
   verify containing commit/remote on resume. Preserve unrelated main-checkout issue-template edits.
   Actual model/effort unknown; no delegation or model switch.
 - User requests all23 remaining registrations in one continuous batch. **Do not pause merely after this partial slice.**
-  Thirteen new registrations authored: D-03, D-04, D-05, H-05, H-20, H-23, H-32, SEQ-03, SEQ-04, SEQ-06, SEQ-07, DBG-04, DBG-06.
+  Fourteen new registrations authored: D-03, D-04, D-05, H-05, H-20, H-23, H-32, SEQ-03, SEQ-04, SEQ-06, SEQ-07, DBG-04, DBG-05, DBG-06.
   They cover difficulty fairness/function/pressure, release safety, topology/disposal, continuous economy/combat,
   actual selected-input comparison/replay and debug parity/quota/disposal. They remain unrun.
 - User2026-10-21 explicitly defers H-21 native larger-unit/formation clearance until suitable content exists.
@@ -19,15 +19,20 @@ Do not load the full plan directory or archive on startup.
   real carrier, actual landing, useful paid deposit and delivered income. This does not add a public island map.
 - H-05 approved partition: native cancelled/paid/uncertain work plus pure saved forecast/provisional release;
   no invented world boundary between synchronous selection and dispatch. H-12 keeps its earlier approved partition.
-- Supported runtime106/115 (92.2%) registered,9/115 (7.8%) unbound; pure111/111 registered.
-  Native factory75 bindings/510 variants plus21 partial owner worlds, unrun. Original23:13 newly registered,
-  1 explicitly deferred,9 still active. These are registration counts, never gameplay completion.
+- User correction2026-10-21: **save/load is single-player; multiplayer has no save/load feature.** H-31 uses native
+  SP save continuation. D-02/SEQ-08 have independent SP save/replay and real MP host-transfer/reconnect legs.
+  Do not add coordinated multiplayer save/load or preserve the erroneous combined chain as a blocker.
+- Supported runtime107/115 (93.0%) registered,8/115 (7.0%) unbound; pure111/111 registered.
+  Native factory76 bindings/522 variants plus21 partial owner worlds, unrun. Original23:14 newly registered,
+  1 explicitly deferred,8 still active. These are registration counts, never gameplay completion.
 - H-32 now has ordinary UI same-realm next-match controls, original paid/path callbacks and a genuine two-client
   host-replacement branch. Its matrix driver selects the real multiplayer configuration; missing credentials fail closed.
   Reload preserves saved identity/seed and does not reapply fixture setup. Paid completion rejects dead owners.
   saveAndReloadNativeMatch is authored but H-31/SEQ-08 save/continuation predicates still need binding.
-- **Next grouped authoring action:** finish the nine active registrations: H-08/H-09/H-31/SEQ-08/D-02 share
-  real peer/save/scene continuation; DBG-01/DBG-03/DBG-05 need runtime capture/stepping/import/access;
+- DBG-05 now binds actual native runtime capture, a localhost developer import UI, bounded decoding, hostile inputs
+  and a real ordinary peer's import/capture denial. Import explicitly does not claim physical replay.
+- **Next grouped authoring action:** finish the eight active registrations: H-08/H-09/H-31/SEQ-08/D-02 share
+  supported SP save/scene continuation and separate real MP transfer/reconnect; DBG-01/DBG-03 need runtime replay/stepping;
   D-06 needs the declared pinned-baseline/calibration/holdout/soak driver. Do not substitute a fresh realm,
   controller-only restore, local epoch edit, pure replay or generic command counts for those native obligations.
 - **No execution:** no recipes/tests/lint/types/formatters/builds/browser/server/doctor/context/dedicated validators.
@@ -102,7 +107,7 @@ Keep the report self-contained and concise. A documentation-only update reports 
 gameplay progress unchanged. The execution plan links to this format rather than maintaining a second template.
 
 Registration coverage: pure **111/111 = 100% registered / 0% remaining**; supported runtime
-**106/115 = 92.2% registered / 7.8% remaining**, excluding five explicitly deferred runtime rows. These are not overall AI completion.
+**107/115 = 93.0% registered / 7.0% remaining**, excluding five explicitly deferred runtime rows. These are not overall AI completion.
 Reconcile behavior evidence per selected package; do not invent a global completion percentage.
 
 ## End-of-gate machinery necessity review

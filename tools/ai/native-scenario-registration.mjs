@@ -48,7 +48,7 @@ export function nativeScenarioFixture(id) {
       id === "H-20" ? nativeTopologyChurnWorld(faction, branch) :
       id === "D-04" ? nativeEasyContinuityWorld(faction, branch) :
       id === "D-03" ? nativeDifficultyFairnessWorld(faction, branch) :
-      ["D-01", "DBG-04"].includes(id) ? nativeDifficultyWorld(faction, branch) :
+      ["D-01", "DBG-04", "DBG-05"].includes(id) ? nativeDifficultyWorld(faction, branch) :
       authority ? nativeAuthorityWorld(id, faction, branch) : recovery ? nativeRecoveryWorld(id, faction, branch) :
       id === "EXP-01" ? expansionWorld(faction, branch) : id.startsWith("DOMAIN-") ?
       nativeDomainWorld(id, faction, branch) : id.startsWith("C-") ? nativeClassicWorld(id, faction, branch) :
@@ -88,7 +88,8 @@ export function nativeScenarioFixture(id) {
       ...(id === "DOMAIN-02" ? {
         additionalAiPlayers: [{ playerNumber: 3, faction: "Tivara", difficulty: "Easy" }]
       } : {}),
-      ...(id === "H-32" ? {} : { captureConstruction: true, captureCombat: true }), scenarioIds: [id],
+      ...(["H-32", "DBG-05"].includes(id) ? {} : { captureConstruction: true, captureCombat: true }), scenarioIds: [id],
+      ...(id === "DBG-05" ? { checkpointTicks: [20] } : {}),
       ...(id === "H-32" ? { checkpointTicks: ["paid_queue", "pending_path"].includes(branch) ? [20] : [20, 200] } : {}),
       ...(id === "H-32" && branch === "host_replacement" ? {
         executionKind: "focused_natural", mapLabel: "AI Multiplayer (test only)",
@@ -103,7 +104,7 @@ export function nativeScenarioFixture(id) {
     acceptance: binding.acceptance,
     ...(binding.capabilityLimits ? { capabilityLimits: binding.capabilityLimits } : {}),
     recipe: { mapLabel: ["C-06", "DOMAIN-02"].includes(id) ? "AI Multiplayer (test only)" : "AI Open Economy (test only)",
-      aiPlayerNumber: 2, simulationTimeScale: 1, ...(id === "H-32" ? { requiresMultiplayer: true } : {}),
+      aiPlayerNumber: 2, simulationTimeScale: 1, ...(["H-32", "DBG-05"].includes(id) ? { requiresMultiplayer: true } : {}),
       fixedStepFrames: true, checkpointTicks: ticks, variants },
     assertions: { [id]: { maximumTick: binding.latestTick, minimumDecisions: 1,
       // Infeasible controls need no arbitrary command. Feasible branches separately require native paid work and delivery.

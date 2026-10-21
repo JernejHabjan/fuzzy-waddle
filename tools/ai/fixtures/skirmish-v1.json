@@ -584,8 +584,7 @@
       "id": "DBG-05",
       "stages": [2, 5, 13],
       "group": "debug",
-      "fixture": null,
-      "runtimeRecipeDraft": "native-scenario-recipes.json",
+      "fixture": "dbg-05-native-runtime.json",
       "authoredFixture": "stage-5-bootstrap.json",
       "drivers": ["pure", "runtime"]
     },

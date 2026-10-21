@@ -85,6 +85,7 @@ describe("ProbableWaffleGameComponent", () => {
       config: { schemaVersion: 1, enabled: true, seed: 759008, startPaused: true },
       game,
       initialStateByPlayer: {},
+      captureRuntimeArtifact: expect.any(Function),
       armIncidentCaptureProbe: expect.any(Function)
     });
     fixture.destroy();
