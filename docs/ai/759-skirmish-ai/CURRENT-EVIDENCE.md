@@ -2,15 +2,15 @@
 
 ## Continuous registration batch — in progress, authored unrun (2026-10-21)
 
-Publication base1dc8ecaeda5fe5a1a479d9bbb90e449583b4536f plus owned H-08 source; same authority-recovery worktree/feature branch.
+Publication base2752c00a3acd57bc96e7583cce0d9bba83c51857 plus owned H-09 source; same authority-recovery worktree/feature branch.
 The user requested all23 remaining registrations together. This entry closes only the published source slice;
 the batch must continue. Actual model/effort unknown; no subagent or model switch.
 
 Numbered acceptance map / Omission Audit for the current slice:
 
-1. **Seventeen full source registrations authored:** D-02/D-03/D-04/D-05, H-05/H-08/H-20/H-23/H-31/H-32, SEQ-03/04/06/07,
+1. **Eighteen full source registrations authored:** D-02/D-03/D-04/D-05, H-05/H-08/H-09/H-20/H-23/H-31/H-32, SEQ-03/04/06/07,
    DBG-04/05/06. The manifest, native bindings, generated fixtures and mandatory ID-specific readers are connected.
-   Factory79 bindings/556 variants; supported registration110/115 (95.7%),5/115 unbound (4.3%). Pure111/111 unchanged.
+   Factory80 bindings/562 variants; supported registration111/115 (96.5%),4/115 unbound (3.5%). Pure111/111 unchanged.
    All new premises, timing, predicates and behavior remain unrun; no passing count or overall completion claimed.
 2. **Difficulty:** all three policies/both factions receive real hidden-position/health/queue/contact controls,
    same paired match identity, exact permitted inputs/intents and actual profile/cadence checks. Easy starts with
@@ -50,7 +50,7 @@ Numbered acceptance map / Omission Audit for the current slice:
 7. **Explicit deferral:** user2026-10-21 deferred H-21 larger-unit/formation native clearance until suitable content
    exists. Pure coverage remains. Manifest support/parser/catalog now distinguish this #759 deferral from the four
    #822 island rows. The H-23 island addition does not silently claim those broader content obligations completed.
-8. **Five unfinished bindings:** H-09/SEQ-08 need the real peer/save/scene continuation path;
+8. **Four unfinished bindings:** SEQ-08 needs the real peer/save/scene continuation path;
    DBG-01/03 need full runtime capture/stepping/import/access; D-06 needs declared calibration/holdout/soak and
    pinned-baseline execution/reporting. No placeholder or partial owner control was promoted for these IDs.
 9. **Execution deliberately deferred:** no recipe/test/lint/type/formatter/build/browser/server/doctor/context or
@@ -112,12 +112,25 @@ Numbered acceptance map / Omission Audit for the current slice:
     Physical effects and full gameplay continuation are compared separately from expected rejection-history entries;
     pending command state/age, brain/claims, cadence, blackboard, receipt income and observation memory are still required.
     Native detailed captures stay local. New oracles and negative controls remain authored/unrun; no MP save/load is added.
+16. **H-09 retention now registered:** six faction/branch variants cross the actual2048-entry native detail limit with
+    2049 ordinary human rally commands. Actual admission and successful completion witnesses fingerprint the original
+    input stream; no sequence/dedup editing, fake command or generic bounded-map-size pass is allowed. The original paid
+    AI envelope comes from its real dispatch receipt. Its detailed entry must be absent while exact unresolved execution
+    remains active, then the actual sequence-watermark rejection must block old replay without authority/gameplay changes.
+    SP codec coverage saves at199, restores the exact full world/queue/authority in the same realm and rejects the same
+    retained original before resuming actual native decisions through201 without another charge or output. H-31 separately
+    covers equivalent-input full-tail parity; original and restored segments are never concatenated. A separate actual
+    two-client leg completes bounded64-command relayed batches on both peers and requires matching input fingerprints,
+    native effects and independent stale rejections. No MP save/load. Shared reconnect setup is factored through
+    prepareNativePeerCheckpoint; Load waits for real scene/AI readiness and supports ordinary score-screen/home UI.
+    Full harness projection now includes food and all other balances; the legacy multiplayer digest is unchanged.
+    New negative/source controls remain unrun. Full traces/IDs stay local; bounded fingerprints enter summaries.
 
 Separate Final Closure Audit for this source slice: traced factory inputs and strict parsers through native controls,
 selected ownership, independent physical/paid effects, mandatory readers and manifest consumers. Reviewed paired
 instance identity, observer gating, finite faults, original queue handles, safe claim release, quota accounting and
 scene cleanup. Repaired source-review findings above. **The all-registrations batch remains incomplete.**
-Publish exact owned paths normally and verify remote SHA; do not force-push, merge or open a PR. Continue the five
+Publish exact owned paths normally and verify remote SHA; do not force-push, merge or open a PR. Continue the four
 remaining bindings after this source checkpoint. Machinery necessity/removal stays last overall.
 
 ## D-01 registration batch — authored, not executed (2026-10-20)

@@ -21,11 +21,15 @@ import { runNativeSaveVariant } from "./skirmish-ai-native-save-runner";
 import { runNativeProfileVariant } from "./skirmish-ai-native-profile-runner";
 import { runNativeProfileTransfer } from "./skirmish-ai-native-profile-transfer";
 import { cancelNativeOriginalProduction } from "./skirmish-ai-native-cancel-original-production";
+import { runNativeRetentionVariant } from "./skirmish-ai-native-retention-runner";
 
 /** The existing runner owns the match. Bound cases additionally arm/read the same observer for the real human opponent. */
 export async function runRegisteredRuntimeVariant(
   browser: Browser, fixture: RuntimeFixtureV1, variant: RuntimeVariantV1, request: RuntimeRequestV1
 ) {
+  const retentionBranch = fixture.assertions["H-09"]?.requiredNativeScenario?.branchByVariant[variant.id];
+  if (request.scenarioIds.includes("H-09") && retentionBranch)
+    return runNativeRetentionVariant(browser, fixture, variant, request, retentionBranch);
   const profileBranch = fixture.assertions["D-02"]?.requiredNativeScenario?.branchByVariant[variant.id];
   if (request.scenarioIds.includes("D-02") && profileBranch)
     return runNativeProfileVariant(browser, fixture, variant, request, profileBranch);

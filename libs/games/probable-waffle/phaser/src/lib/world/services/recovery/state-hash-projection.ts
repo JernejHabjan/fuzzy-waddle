@@ -135,6 +135,9 @@ export class StateHashProjection {
       .sort(([left], [right]) => left.localeCompare(right));
     return {
       aiControllers: this.stableSerialize(this.toStableSerializable(Object.fromEntries(aiControllers))),
+      playerResources: this.stableSerialize(this.toStableSerializable(Object.fromEntries(
+        (scene as ProbableWaffleScene).players.map((player) => [String(player.playerNumber ?? -1), player.playerState.data.resources ?? {}])
+      ))),
       simulationTick: String(getSceneService(scene, SimulationTickService)?.currentTick ?? gameState?.simulationTick ?? 0),
       aoeZones: this.stableSerialize(this.toStableSerializable(getSceneService(scene, AoeZoneManager)?.getData() ??
         gameState?.aoeZones ?? [])),

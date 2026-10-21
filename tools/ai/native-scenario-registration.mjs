@@ -40,7 +40,7 @@ export function nativeScenarioFixture(id) {
   const variants = ["Tivara", "Skaduwee"].flatMap((faction) => nativeScenarioBranches(id, faction).map((branch) => {
     const recovery = ["H-01", "H-02", "H-03", "H-04", "H-19", "H-24", "H-25", "H-26"].includes(id);
     const authority = ["H-06", "H-07", "H-10", "H-13", "H-14", "H-15", "H-11", "H-12", "H-30"].includes(id);
-    const world = id === "H-08" ? lateAuthorityWorld(faction) :
+    const world = ["H-08", "H-09"].includes(id) ? lateAuthorityWorld(faction) :
       id === "D-02" ? nativeSaveWorld(faction, branch.endsWith("pending_plan") ? "applied_pending" : "before_apply") :
       id === "H-31" ? nativeSaveWorld(faction, branch) : id === "H-32" ? nativeLifecycleWorld(faction, branch) :
       id === "H-23" ? nativeIslandEstablishmentWorld(faction, branch) :
@@ -113,7 +113,7 @@ export function nativeScenarioFixture(id) {
     ...(binding.capabilityLimits ? { capabilityLimits: binding.capabilityLimits } : {}),
     recipe: { mapLabel: ["C-06", "DOMAIN-02"].includes(id) ? "AI Multiplayer (test only)" : "AI Open Economy (test only)",
       aiPlayerNumber: 2, simulationTimeScale: 1,
-      ...(["D-02", "H-08", "H-32", "DBG-05"].includes(id) ? { requiresMultiplayer: true } : {}),
+      ...(["D-02", "H-08", "H-09", "H-32", "DBG-05"].includes(id) ? { requiresMultiplayer: true } : {}),
       fixedStepFrames: true, checkpointTicks: ticks, variants },
     assertions: { [id]: { maximumTick: binding.latestTick, minimumDecisions: 1,
       // Infeasible controls need no arbitrary command. Feasible branches separately require native paid work and delivery.

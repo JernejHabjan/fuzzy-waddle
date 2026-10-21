@@ -3726,6 +3726,56 @@
           "Cancellation request treated as already applied cancellation"
         ]
       }
+    },
+    "H-09": {
+      "latestTick": 2400,
+      "checkpointTicks": [
+        20,
+        199,
+        200,
+        400,
+        800,
+        1200,
+        1600,
+        1800,
+        1801,
+        1820,
+        2000,
+        2400
+      ],
+      "branches": [
+        "acknowledged_compaction",
+        "save_restore",
+        "unresolved_retention"
+      ],
+      "capabilityLimits": [
+        "Actual 2048-entry native retention is crossed by 2049 ordinary human rally commands, with independent native admission/completion witnesses; no dedup map or sequence is edited.",
+        "Single-player save/load preserves the exact compacted authority and paid queue at tick199; the exact old command is rejected and native ticks resume through the next eligible decision. Full identical-input tail parity is covered separately by H-31.",
+        "Independent real multiplayer peers admit/complete bounded relayed batches, retain the same original paid AI identity and both reject its old replay. Multiplayer has no save/load."
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+        "requiredOutcome": "Safe watermark rejects stale reapplication; unresolved records were not evicted",
+        "setup": [
+          "Apply enough distinct ordinary commands to cross the configured detailed-dedup retention boundary",
+          "Retain unresolved commands and record the actual safe processed watermark"
+        ],
+        "actions": [
+          "Use real single-player save/restore after native compaction; independently use real multiplayer acknowledged compaction without save/load",
+          "Redeliver the exact old command identity and an unresolved command separately"
+        ],
+        "measurements": [
+          "Dedup/watermark snapshot, authoritative command applications, charges and output identities before/after restore"
+        ],
+        "required": [
+          "Old command at or below the safe watermark is rejected as stale without another effect",
+          "Unresolved authority records survive compaction and save"
+        ],
+        "forbidden": [
+          "Manually deleting arbitrary dedup entries",
+          "Success inferred solely from bounded map size"
+        ]
+      }
     }
   }
 }

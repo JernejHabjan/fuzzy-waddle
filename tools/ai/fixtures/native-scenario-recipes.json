@@ -201,70 +201,12 @@
     }
   },
   "scenarioIds": [
-    "H-09",
     "SEQ-08",
     "D-06",
     "DBG-01",
     "DBG-03"
   ],
   "cases": [
-    {
-      "scenarioId": "H-09",
-      "status": "authored_not_executed",
-      "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
-      "requiredOutcome": "Safe watermark rejects stale reapplication; unresolved records were not evicted",
-      "world": "multiplayer",
-      "maximumTick": 2400,
-      "setup": [
-        "Apply enough distinct ordinary commands to cross the configured detailed-dedup retention boundary",
-        "Retain unresolved commands and record the actual safe processed watermark"
-      ],
-      "actions": [
-        "Use real single-player save/restore after native compaction; independently use real multiplayer acknowledged compaction without save/load",
-        "Redeliver the exact old command identity and an unresolved command separately"
-      ],
-      "measurements": [
-        "Dedup/watermark snapshot, authoritative command applications, charges and output identities before/after restore"
-      ],
-      "required": [
-        "Old command at or below the safe watermark is rejected as stale without another effect",
-        "Unresolved authority records survive compaction and save"
-      ],
-      "forbidden": [
-        "Manually deleting arbitrary dedup entries",
-        "Success inferred solely from bounded map size"
-      ],
-      "branches": [
-        "Acknowledged compaction",
-        "Save restore",
-        "Unresolved record at retention pressure"
-      ],
-      "executionBlockers": [
-        "native_case_binding",
-        "receipt_fault",
-        "snapshot_boundary",
-        "multiplayer_boundary",
-        "authority_binding_h_09"
-      ],
-      "reuse": [
-        "tools/ai/fixtures/controller-contract-scenarios.json",
-        "tools/ai/native-authority-worlds.mjs",
-        "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/install-ai-runtime-receipt-fault.ts",
-        "libs/games/probable-waffle/phaser/src/lib/world/services/multiplayer/command-authority-continuation.spec.ts"
-      ],
-      "checkpointTicks": [
-        0,
-        20,
-        200,
-        400,
-        800,
-        1200,
-        1600,
-        2000,
-        2400
-      ],
-      "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient."
-    },
     {
       "scenarioId": "SEQ-08",
       "status": "authored_not_executed",

@@ -6,7 +6,7 @@ import { validNativeScenarioFixture } from "./skirmish-runtime-native-scenario-f
 
 test("all native bindings retain their full branches and original acceptance obligations", () => {
   const ids = Object.keys(nativeScenarioBindings.cases);
-  assert.equal(ids.length, 79);
+  assert.equal(ids.length, 80);
   const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish-v1.json", import.meta.url)));
   for (const id of ids) {
     const row = manifest.rows.find((row) => row.id === id);
@@ -108,12 +108,26 @@ test("D-01 binds each actual lobby policy in both factions and rejects a relabel
   assert.equal(validNativeScenarioFixture(fixture, "D-01"), false);
 });
 
-test("missing real peer, save, chain, proposal-order and retained-scene premises remain explicit", () => {
+test("remaining continuous/replay/calibration bindings stay explicit until their real drivers are connected", () => {
   const drafts = JSON.parse(readFileSync(new URL("./fixtures/native-scenario-recipes.json", import.meta.url)));
-  for (const id of ["H-09"]) {
+  for (const id of drafts.scenarioIds) {
     assert.equal(Object.hasOwn(nativeScenarioBindings.cases, id), false);
     const entry = drafts.cases.find((value) => value.scenarioId === id);
-    assert.ok(entry.executionBlockers.some((key) => key.startsWith("authority_binding_")));
+    assert.ok(entry.executionBlockers.includes("native_case_binding"));
+  }
+});
+
+test("H-09 retains real compaction, SP codec restore and independent peer acknowledgment branches", () => {
+  const fixture = nativeScenarioFixture("H-09");
+  assert.equal(fixture.recipe.requiresMultiplayer, true);
+  assert.equal(fixture.recipe.variants.length, 6);
+  assert.ok(fixture.recipe.checkpointTicks.includes(20));
+  assert.ok(fixture.recipe.checkpointTicks.includes(199));
+  assert.equal(fixture.assertions["H-09"].requiredNativeScenario.latestTick, 2400);
+  for (const variant of fixture.recipe.variants) {
+    assert.equal(variant.captureConstruction, true);
+    assert.equal(variant.captureCombat, true);
+    assert.equal(variant.presetWorld.receiptFault.holdHistory, true);
   }
 });
 

@@ -367,7 +367,7 @@
     { "id": "H-06", "stages": [3], "group": "authority", "fixture": "h-06-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
     { "id": "H-07", "stages": [3], "group": "authority", "fixture": "h-07-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
     { "id": "H-08", "stages": [3], "group": "authority", "fixture": "h-08-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "H-09", "stages": [3], "group": "authority", "fixture": null, "runtimeRecipeDraft": "native-scenario-recipes.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
+    { "id": "H-09", "stages": [3], "group": "authority", "fixture": "h-09-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
     { "id": "H-10", "stages": [3], "group": "authority", "fixture": "h-10-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
     { "id": "H-11", "stages": [6, 12], "group": "reservations", "fixture": "h-11-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
     { "id": "H-12", "stages": [6, 12], "group": "reservations", "fixture": "h-12-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },

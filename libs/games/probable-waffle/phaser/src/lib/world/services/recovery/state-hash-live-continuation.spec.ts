@@ -2,6 +2,7 @@ import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getSceneService, getSceneSystem } from "../scene-component-helpers";
 import { CommandBusService } from "../multiplayer/command-bus.service";
 import { SimulationTickService } from "../simulation-tick.service";
+import { ActorIndexSystem } from "../ActorIndexSystem";
 import { StateHashProjection } from "./state-hash-projection";
 
 jest.mock("../scene-component-helpers", () => ({ getSceneService: jest.fn(), getSceneSystem: jest.fn() }));
@@ -47,4 +48,19 @@ it("ignores measured telemetry while retaining recovery age, retry debt, cadence
   expect(capture().aiControllers).not.toBe(original.aiControllers);
   authority.authorityEpoch++;
   expect(capture().commandAuthority).not.toBe(original.commandAuthority);
+});
+
+it("includes food in full native continuation even though the legacy multiplayer player projection omits it", () => {
+  const resources = { food: 100, wood: 200, stone: 50, minerals: 10 };
+  const scene = { players: [{ playerNumber: 2, playerState: { data: { resources } } }],
+    baseGameData: { gameInstance: { gameState: { data: {} } } }
+  } as unknown as ProbableWaffleScene;
+  (getSceneSystem as jest.Mock).mockReturnValue(undefined);
+  (getSceneService as jest.Mock).mockImplementation((_scene, token) => token === ActorIndexSystem
+    ? { getAllIdActors: () => [] } : undefined);
+  const original = new StateHashProjection().captureAuthoritativeProjection(scene);
+  resources.food--;
+  const changed = new StateHashProjection().captureAuthoritativeProjection(scene);
+  expect(changed.systems.playerResources).not.toBe(original.systems.playerResources);
+  expect(changed.players).toEqual(original.players);
 });

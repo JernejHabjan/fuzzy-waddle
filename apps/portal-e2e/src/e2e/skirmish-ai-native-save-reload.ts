@@ -20,11 +20,15 @@ export async function saveNativeMatch(page: Page, playerNumber: number) {
       GameProbableWaffleScene | undefined;
     if (scene?.baseGameData.gameInstance.gameInstanceMetadata.data.type !== supportedType)
       throw new Error("native_save_requires_single_player_skirmish");
+    if (!parts.controller.isDecisionBoundarySettled()) throw new Error("native_save_boundary_has_inflight_ai_work");
+    const decisionSequence = parts.controller.getBrainState()?.scheduler.decisionSequence;
+    if (decisionSequence === undefined || !Number.isSafeInteger(decisionSequence))
+      throw new Error("native_save_original_decision_boundary_missing");
     parts.tickService.pauseTick("manual");
     host.game.loop.wake();
     realm.__nativeSavedGameOwner = host.game;
     realm.__nativeSaveRealm = crypto.randomUUID();
-    return { tick: parts.tickService.currentTick, realmId: realm.__nativeSaveRealm };
+    return { tick: parts.tickService.currentTick, realmId: realm.__nativeSaveRealm, decisionSequence };
   }, { playerNumber, supportedType: ProbableWaffleGameInstanceType.Skirmish });
   await page.keyboard.press("Control+s");
   await expect.poll(async () => {
@@ -41,7 +45,10 @@ export async function saveNativeMatch(page: Page, playerNumber: number) {
 export async function reloadNativeMatch(
   page: Page, playerNumber: number, boundary: Awaited<ReturnType<typeof saveNativeMatch>>
 ) {
-  await openNativeGameAction(page, "load");
+  if (await page.getByRole("heading", { name: "Score Screen" }).isVisible()) {
+    await page.getByRole("button", { name: "Leave", exact: true }).click();
+    await page.getByRole("button", { name: /Load Game.*Continue saved game/ }).click();
+  } else await openNativeGameAction(page, "load");
   // A fresh runtime context owns exactly one quicksave. Never silently load another row from a reused profile.
   const row = page.locator(".aota-save-row").filter({ hasText: "Quick Save" });
   await expect(row).toHaveCount(1);
@@ -53,9 +60,16 @@ export async function reloadNativeMatch(
     return !!current && current.game !== realm.__nativeSavedGameOwner;
   }, undefined, { timeout: 120_000 });
   await installRuntimeAccessor(page);
-  await page.waitForFunction(({ playerNumber, tick }) =>
-    window.__fuzzyWaddleAiRuntimePartsV1?.(playerNumber)?.tickService.currentTick === tick,
-  { playerNumber, tick: boundary.tick }, { timeout: 30_000 });
+  await page.waitForFunction(({ playerNumber, tick, sequence }) => {
+    const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: AiRuntimeBrowserTestHostV1 })
+      .__fuzzyWaddleAiRuntimeBrowserTestV1;
+    const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
+      GameProbableWaffleScene | undefined;
+    const parts = window.__fuzzyWaddleAiRuntimePartsV1?.(playerNumber);
+    return scene?.getSceneGameData().initializers.sceneInitialized.getValue() === true &&
+      parts?.tickService.currentTick === tick && parts.controller.getBrainState()?.scheduler.decisionSequence === sequence &&
+      parts.controller.isDecisionBoundarySettled();
+  }, { playerNumber, tick: boundary.tick, sequence: boundary.decisionSequence }, { timeout: 30_000 });
   const sameRealm = await page.evaluate((realmId) => {
     const realm = window as unknown as { __nativeSaveRealm?: string; __nativeSavedGameOwner?: unknown };
     const same = realm.__nativeSaveRealm === realmId;

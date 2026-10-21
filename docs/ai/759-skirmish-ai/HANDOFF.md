@@ -6,11 +6,11 @@ Do not load the full plan directory or archive on startup.
 ## Current cursor — large registration batch in progress, 2026-10-21
 
 - Worktree /home/jernej/.codex/worktrees/skirmish-authority-recovery/fuzzy-waddle;
-  branch feature/759-skirmish-ai. Publication base1dc8ecaeda5fe5a1a479d9bbb90e449583b4536f;
+  branch feature/759-skirmish-ai. Publication base2752c00a3acd57bc96e7583cce0d9bba83c51857;
   verify containing commit/remote on resume. Preserve unrelated main-checkout issue-template edits.
   Actual model/effort unknown; no delegation or model switch.
 - User requests all23 remaining registrations in one continuous batch. **Do not pause merely after this partial slice.**
-  Seventeen new registrations authored: D-02–05, H-05/H-08/H-20/H-23/H-31/H-32, SEQ-03/04/06/07 and DBG-04/05/06.
+  Eighteen new registrations authored: D-02–05, H-05/H-08/H-09/H-20/H-23/H-31/H-32, SEQ-03/04/06/07 and DBG-04/05/06.
   They cover difficulty fairness/function/pressure, release safety, topology/disposal, continuous economy/combat,
   actual selected-input comparison/replay and debug parity/quota/disposal. They remain unrun.
 - User2026-10-21 explicitly defers H-21 native larger-unit/formation clearance until suitable content exists.
@@ -22,9 +22,9 @@ Do not load the full plan directory or archive on startup.
 - User correction2026-10-21: **save/load is single-player; multiplayer has no save/load feature.** H-31 uses native
   SP save continuation. H-09/D-02/SEQ-08 have independent SP save/replay and real MP authority/reconnect legs.
   Do not add coordinated multiplayer save/load or preserve the erroneous combined chain as a blocker.
-- Supported runtime110/115 (95.7%) registered,5/115 (4.3%) unbound; pure111/111 registered.
-  Native factory79 bindings/556 variants plus21 partial owner worlds, unrun. Original23:17 newly registered,
-  1 explicitly deferred,5 still active. These are registration counts, never gameplay completion.
+- Supported runtime111/115 (96.5%) registered,4/115 (3.5%) unbound; pure111/111 registered.
+  Native factory80 bindings/562 variants plus21 partial owner worlds, unrun. Original23:18 newly registered,
+  1 explicitly deferred,4 still active. These are registration counts, never gameplay completion.
 - H-32 now has ordinary UI same-realm next-match controls, original paid/path callbacks and a genuine two-client
   host-replacement branch. Its matrix driver selects the real multiplayer configuration; missing credentials fail closed.
   Reload preserves saved identity/seed and does not reapply fixture setup. Paid completion rejects dead owners.
@@ -50,7 +50,18 @@ Do not load the full plan directory or archive on startup.
   Independent real MP transfer arms retain actual old command/applied receipt and deliver both orders after promotion.
   Native application count, epoch/watermark/next sequence, physical effects and gameplay continuation must stay valid.
   Diagnostic rejection history is reported separately, never mistaken for gameplay mutation or fake application proof.
-- **Next grouped authoring action:** finish the five active registrations: H-09/SEQ-08 share
+- **H-09 now authored:** six faction/branch variants connect native-retention-boundary/pressure/witness/multiplayer/
+  proof/runner and mandatory independent predicates. They cross actual2048-entry retention with2049 ordinary human rally commands,
+  never direct dedup edits; native admission/completion witnesses preserve exact input fingerprints. SP uses actual
+  stamped dispatch envelopes and optional real codec reload; MP uses both real clients and bounded64-command batches.
+  prepareNativePeerCheckpoint now owns the shared real reconnect setup used by profile transfer. Native save loading
+  waits for actual scene readiness, saved decision sequence and a settled controller; score-screen Load uses ordinary UI.
+  Full harness projection now retains all four resource balances including food; legacy multiplayer digest is unchanged.
+  Old replay must hit the actual sequence-watermark rejection, retain original unresolved execution and avoid another
+  native application/charge/output. The SP codec leg resumes through the next native decision at201; H-31 separately
+  covers identical-input full-tail parity. MP completion fingerprints on both actual clients must match the sent stream.
+  All controls remain authored/unrun, including the all-resource/full-continuation projection change.
+- **Next grouped authoring action:** finish the four active registrations: SEQ-08 needs
   supported SP save/scene continuation and separate real MP transfer/reconnect; DBG-01/DBG-03 need runtime replay/stepping;
   D-06 needs the declared pinned-baseline/calibration/holdout/soak driver. Do not substitute a fresh realm,
   controller-only restore, local epoch edit, pure replay or generic command counts for those native obligations.
@@ -126,7 +137,7 @@ Keep the report self-contained and concise. A documentation-only update reports 
 gameplay progress unchanged. The execution plan links to this format rather than maintaining a second template.
 
 Registration coverage: pure **111/111 = 100% registered / 0% remaining**; supported runtime
-**110/115 = 95.7% registered / 4.3% remaining**, excluding five explicitly deferred runtime rows. These are not overall AI completion.
+**111/115 = 96.5% registered / 3.5% remaining**, excluding five explicitly deferred runtime rows. These are not overall AI completion.
 Reconcile behavior evidence per selected package; do not invent a global completion percentage.
 
 ## End-of-gate machinery necessity review
