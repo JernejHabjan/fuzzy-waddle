@@ -7,15 +7,23 @@ export function nativeDebugParityProofFailures(proof: NativeDebugParityProof | u
   const failures: string[] = [];
   if (!proof.beforeDigest || proof.beforeDigest !== proof.afterDigest) failures.push("debug_quota_mutated_native_world_or_rng");
   const { peak, shutdown, history } = proof;
-  if (proof.accepted <= 5 || !proof.rejected || proof.repeated !== "episode_already_captured" ||
+  const counters = peak && shutdown && history ? [proof.accepted,
+    ...[peak, shutdown].flatMap((boundary) => [boundary.quotaBytes, boundary.sessionBytes,
+      boundary.retainedBytes, boundary.retainedCount, boundary.episodeCount]),
+    history.count, history.firstSequence, history.lastSequence, history.missingThroughTick] : [];
+  if (counters.length === 0 || counters.some((value) => !Number.isSafeInteger(value) || value < 0))
+    return ["debug_native_quota_history_or_shutdown_counter_invalid"];
+  if (proof.accepted <= 5 || proof.rejected !== true || proof.repeated !== "episode_already_captured" ||
     peak.quotaBytes !== 16384 || peak.sessionBytes <= 0 || peak.sessionBytes > peak.quotaBytes ||
     peak.retainedCount !== 5 || peak.episodeCount !== proof.accepted || peak.retainedBytes <= 0 ||
-    peak.retainedBytes > peak.sessionBytes || peak.disposed || !peak.listenerDetached || peak.captureReleased)
+    peak.retainedBytes > peak.sessionBytes || peak.disposed !== false || peak.listenerDetached !== true || peak.captureReleased !== false)
     failures.push("debug_native_session_quota_eviction_or_episode_deduplication_invalid");
   if (history.count !== 256 || history.firstSequence <= 1 || history.lastSequence - history.firstSequence !== 255 ||
     history.missingThroughTick <= 0) failures.push("debug_actual_history_retention_and_explicit_missing_range_missing");
-  if (!shutdown.disposed || shutdown.sessionBytes || shutdown.retainedCount || shutdown.retainedBytes || shutdown.episodeCount ||
-    !shutdown.listenerDetached || !shutdown.captureReleased) failures.push("debug_scene_shutdown_retained_incident_ownership");
+  if (shutdown.quotaBytes !== peak.quotaBytes || shutdown.disposed !== true || shutdown.sessionBytes ||
+    shutdown.retainedCount || shutdown.retainedBytes || shutdown.episodeCount ||
+    shutdown.listenerDetached !== true || shutdown.captureReleased !== true)
+    failures.push("debug_scene_shutdown_retained_incident_ownership");
   return failures;
 }
 

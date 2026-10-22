@@ -4,7 +4,7 @@ import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-resul
 
 test("a missing original role cannot broaden a target-specific native query", () => {
   // Deliberately incomplete capture: this checks rejection only and supplies no native acceptance evidence.
-  const result = { presetCreatedActorIds: { original: "native-original" } } as RuntimeVariantResultV1;
+  const result = { presetCreatedActorIds: { original: "native-original" } } as unknown as RuntimeVariantResultV1;
   const context = nativeScenarioContext(result, 100);
   expect(context.failures.length).toBeGreaterThan(0);
   expect(context.role("original")).toBe("native-original");

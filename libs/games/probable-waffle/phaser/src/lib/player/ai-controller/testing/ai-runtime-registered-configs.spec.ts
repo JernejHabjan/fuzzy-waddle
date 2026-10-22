@@ -9,6 +9,7 @@ it("admits every registered native world's complete opt-in config before launchi
     rows: { id: string; fixture?: string }[];
   };
   const rejected: string[] = [];
+  const nonPreset: string[] = [];
   let checked = 0;
   for (const row of manifest.rows.filter((row) => row.fixture?.endsWith("-native-runtime.json"))) {
     if (!row.fixture) throw new Error("native_fixture_reference_missing");
@@ -16,7 +17,10 @@ it("admits every registered native world's complete opt-in config before launchi
       recipe: { variants: { id: string; seed: number; captureConstruction?: true; captureCombat?: true; presetWorld?: object }[] };
     };
     for (const variant of fixture.recipe.variants) {
-      if (!variant.presetWorld) continue;
+      if (!variant.presetWorld) {
+        nonPreset.push(variant.id);
+        continue;
+      }
       checked++;
       const config = { schemaVersion: 1, enabled: true, startPaused: true, seed: variant.seed,
         presetWorld: { ...variant.presetWorld, provenance: { sourceRevision: "a".repeat(40), fixtureDigest: "fnv1a32:12345678" } },
@@ -26,5 +30,10 @@ it("admits every registered native world's complete opt-in config before launchi
     }
   }
   expect({ count: rejected.length, first: rejected.slice(0, 40) }).toEqual({ count: 0, first: [] });
-  expect(checked).toBe(582);
+  expect(checked).toBe(580);
+  expect(nonPreset.sort()).toEqual([
+    "d-06-skaduwee-holdout", "d-06-skaduwee-long-soaks", "d-06-skaduwee-paired-calibration",
+    "d-06-tivara-holdout", "d-06-tivara-long-soaks", "d-06-tivara-paired-calibration",
+    "h-32-skaduwee-host-replacement", "h-32-tivara-host-replacement"
+  ]);
 });

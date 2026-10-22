@@ -35,6 +35,8 @@ export class GathererTargetSelection {
     }
 
     const gatherer = this.gameObject;
+    const scene = gatherer.scene;
+    const resourceType = this.gatherer.carriedResourceType;
     const gatherOwnerComponent = getActorComponent(gatherer, OwnerComponent);
     const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
 
@@ -53,6 +55,9 @@ export class GathererTargetSelection {
     const pairs: [GameObject, GameObject][] = validDrains.map((drain) => [gatherer, drain]);
     const distances = await DistanceHelper.batchGetDistancesBetweenGameObjects(pairs);
 
+    // Pathfinding may outlive the carrier, its cargo or a drop-off's death/capture/finish state.
+    if (!gatherer.active || gatherer.scene !== scene || this.gatherer.carriedResourceType !== resourceType) return null;
+
     let closestResourceDrain: GameObject | null = null;
     let closestResourceDrainDistance = Infinity;
 
@@ -62,6 +67,11 @@ export class GathererTargetSelection {
         continue;
       }
       const candidate = validDrains[i]!;
+      if (
+        candidate.scene !== scene ||
+        !GathererTargetSelection.isReadyToUse(candidate) ||
+        !getActorComponent(gatherer, OwnerComponent)?.isSameTeamAsGameObject(candidate)
+      ) continue;
       if (
         distance < closestResourceDrainDistance ||
         (distance === closestResourceDrainDistance &&

@@ -30,7 +30,10 @@ export function nativeSaveProofFailures(
     for (const key of ["worldDigest", "brainDigest", "cadenceDigest", "recoveryDigest", "reservationsDigest", "authorityDigest"] as const)
       if (!left[key] || left[key] !== right[key]) failures.push(`native_save_${label}_diverged:${key}`);
   }
-  if (proof.traceOverflow || proof.firstTraceDifference || proof.controlTraceCount < 1 ||
+  if (proof.traceOverflow !== false || proof.firstTraceDifference !== null ||
+      !Number.isSafeInteger(proof.controlTraceCount) || proof.controlTraceCount < 1 ||
+      !Number.isSafeInteger(proof.resumedTraceCount) ||
+      typeof proof.controlTraceDigest !== "string" || proof.controlTraceDigest.length === 0 ||
       proof.controlTraceCount !== proof.resumedTraceCount || proof.controlTraceDigest !== proof.resumedTraceDigest)
     failures.push("native_save_next_legitimate_decisions_diverged_or_incomplete");
   if (proof.resumedSimulationTimeScale !== (branch === "pause_speed" ? 2 : 1))

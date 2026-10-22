@@ -14,7 +14,7 @@ jest.mock("../../../world/services/simulation-time", () => ({ waitForSimulationD
 
 function fixture(contained = false) {
   const scene = new Phaser.Scene();
-  Object.assign(scene, { sys: { queueDepthSort: jest.fn() } });
+  Object.assign(scene, { sys: { queueDepthSort: jest.fn() }, events: new Phaser.Events.EventEmitter() });
   const worker = new Phaser.GameObjects.GameObject(scene, "worker");
   const target = new Phaser.GameObjects.GameObject(scene, "drain");
   const container = { containerDefinition: { capacity: 1 }, loadGameObject: jest.fn(), unloadGameObject: jest.fn() };
@@ -65,6 +65,17 @@ describe("drop-off lifetime and transfer authority", () => {
     f.settle();
     expect(await pending).toBe(3);
     expect(emitResource).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not credit a pending unload or accept another transfer after scene shutdown", async () => {
+    const f = fixture(true);
+    const pending = f.drain.returnResources(f.worker, ResourceType.Wood, 3);
+    f.scene.events.emit(Phaser.Scenes.Events.SHUTDOWN);
+    f.settle();
+    expect(await pending).toBe(0);
+    expect(await f.drain.returnResources(f.worker, ResourceType.Wood, 3)).toBe(0);
+    expect(f.drain.getData().currentCapacity).toBe(0);
+    expect(emitResource).not.toHaveBeenCalled();
   });
 
   it("keeps the offered cargo unreturned when its recipient player disappeared", async () => {

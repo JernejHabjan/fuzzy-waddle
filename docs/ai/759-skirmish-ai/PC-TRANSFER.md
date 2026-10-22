@@ -1,7 +1,8 @@
 # #759 cross-PC resume
 
-Read HANDOFF.md first; this file is the short machine-transfer packet. The user explicitly requests an unfinished
-commit now. Browser execution must move off the current thermally constrained PC. Do not claim stage completion.
+Read HANDOFF.md first; this file is the short machine-transfer packet. The unfinished checkpoint83f835f90 is followed
+by a checked five-item non-browser repair batch (see CURRENT-EVIDENCE). Fetch the latest containing commit.
+Browser execution must move off the current thermally constrained PC. Native stage acceptance remains open.
 
 ## Fetch the work
 
@@ -48,14 +49,14 @@ Old artifacts are not needed to resume: rerun on the checkpoint source and retai
 | Scope | Last result | Remaining limit |
 | --- | --- | --- |
 | Node tools including D-06 driver/refusal and request transport |109/109 pass|Not native calibration |
-| Browser config schema in Phaser Jest |582/582 presets accepted|Exact checked-count assertion added after that run; rerun |
+| Browser config schema in Phaser Jest |580/580 presets accepted|8 explicit non-preset variants:6 D-06,2 H-32 |
 | Selected pure matrix |15/15 mappings;196 assertions/37 suites|Owner-contract proof only |
-| Affected Phaser |90/90;16 suites|Later equivalent movement mock typing needs final recheck |
-| Affected gameplay |60/60;9 suites|Later mutable test fixture typing needs final recheck |
+| Affected Phaser |124/124;11 suites|Source/lifecycle proof, not native paths |
+| Affected gameplay |82/82;13 suites|Pure planner proof, not a match |
 | UI startup/host |9/9;2 suites|Not a running match |
-| Assertion-only Playwright readers |13/13 and16/16|Later registration import repair needs affected recheck |
-| e2e/Phaser/gameplay actual-source type checks |Passed|Complete final post-edit gate not repeated |
-| Changed-file lint |Four errors repaired; focused rerun clean|Full changed-file rerun outstanding; warnings retained |
+| Assertion-only Playwright readers |6/6 latest;13/13 and16/16 retained|No browser launched |
+| e2e/Phaser/gameplay actual-source type checks |All3 pass|Latest non-browser source |
+| Changed-file lint |82 previous/current code paths;0 errors,24 warnings|Warnings remain explicit |
 | Selected native obligations |0/22 newly closed|14 SP unproved,7 peer environment-blocked,D-06 expensive work deferred |
 
 Local-only evidence: /tmp/759-ai-tools-gate.log, /tmp/759-native-configs.log, /tmp/759-phaser-controls.log,
@@ -103,7 +104,9 @@ Do not create more registrations or remove machinery yet. Reconcile exact behavi
 
 ## Useful work without launching a browser
 
-These are alternatives for a future selected batch, not new acceptance stages or permission to claim native passes:
+The user-selected five-item audit/check/repair batch has now been completed; do not repeat it as unfinished work.
+Latest results, causal fixes and exact commands are recorded in CURRENT-EVIDENCE. The list below is a menu of possible
+later source work only when new evidence identifies a defect, not additional mandatory preparation stages or native proof:
 
 1. **Finish the lightweight publication checks:** actual-source typing, changed-file lint, schema Jest and Node
    controls. Use one worker for Jest if useful. Pure matrix command below repeats the15 declared mappings.

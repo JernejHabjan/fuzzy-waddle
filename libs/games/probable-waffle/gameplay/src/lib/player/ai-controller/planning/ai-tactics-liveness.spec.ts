@@ -141,6 +141,23 @@ function observation(tick: number, actors: readonly AiObservedActorV1[]): AiObse
 }
 
 describe("AiTacticsManager pressure liveness", () => {
+  it("retreats an endangered assembling squad without launching an attack prematurely", () => {
+    const friendly = actor("guard", "self", 200, 10);
+    const enemy = actor("core", "enemy", 1000, 100);
+    const initial = state({ ...squad(), state: "forming" });
+    const waiting = {
+      ...initial,
+      strategy: { ...initial.strategy, assessment: {
+        choice: "pressure" as const, reason: "assembling_against_developed_base", targetActorId: enemy.actorId,
+        readyForce: 1, requiredForce: 8, visibleThreatCount: 1, confidencePermille: 1000,
+        expectedEffectTick: 500, reconsiderTick: 240, alternatives: []
+      } }
+    };
+    const proposal = manager.propose(observation(200, [friendly, enemy]), waiting);
+    expect(proposal.statePatch?.squadUpdates?.[0]?.state).toBe("retreat");
+    expect(proposal.intents.some((intent) => intent.kind === "attack")).toBe(false);
+    expect(proposal.intents.some((intent) => intent.kind === "move" && intent.actorIds.includes("guard"))).toBe(true);
+  });
   it("does not fold an air reinforcement into a ground-only attack mission", () => {
     const ground = actor("guard", "self", 1000, 10);
     const air = {

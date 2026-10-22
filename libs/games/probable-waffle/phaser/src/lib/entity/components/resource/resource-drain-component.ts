@@ -30,6 +30,7 @@ export class ResourceDrainComponent {
   private gathererMustEnter = false;
   private maximumGathererCapacity = 0;
   private currentCapacity = 0;
+  private sceneStopped = false;
   /** Native transfer lock; repeated calls for the same carrier cannot credit the same cargo twice. */
   private readonly returningGatherers = new Set<GameObject>();
 
@@ -37,6 +38,8 @@ export class ResourceDrainComponent {
     private readonly gameObject: GameObject,
     private readonly resourceDrainDefinition: ResourceDrainDefinition
   ) {
+    // Simulation waits settle on shutdown; that wake-up must release capacity without crediting old cargo.
+    gameObject.scene?.events?.once(Phaser.Scenes.Events.SHUTDOWN, () => { this.sceneStopped = true; });
     onObjectReady(gameObject, this.init, this);
   }
 
@@ -106,6 +109,7 @@ export class ResourceDrainComponent {
   private isLiveTransfer(gatherer: GameObject, scene: Phaser.Scene): boolean {
     return (
       !!scene &&
+      !this.sceneStopped &&
       this.gameObject.scene === scene &&
       gatherer.scene === scene &&
       this.gameObject.active !== false &&

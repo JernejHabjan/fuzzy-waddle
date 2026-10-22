@@ -40,3 +40,14 @@ it("rejects a declared lifecycle branch without its actual original paid work or
     expect(nativeSaveProofFailures(branch, proof).length).toBeGreaterThan(0);
   }
 });
+
+it("refuses matching erased trace digests and fabricated decision counts", () => {
+  expect(nativeSaveProofFailures("before_apply", {
+    ...base, controlTraceDigest: "", resumedTraceDigest: ""
+  }).length).toBeGreaterThan(0);
+  for (const count of [Number.NaN, Infinity, -1, 0, 0.5]) {
+    expect(nativeSaveProofFailures("before_apply", {
+      ...base, controlTraceCount: count, resumedTraceCount: count
+    }).length).toBeGreaterThan(0);
+  }
+});

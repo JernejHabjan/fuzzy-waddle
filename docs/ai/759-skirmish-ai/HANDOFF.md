@@ -3,7 +3,30 @@
 Default resume page: read this first, then only the selected package in [REMAINING-WORK.md](REMAINING-WORK.md).
 Do not load the full plan directory or archive on startup.
 
-## Current cursor — unfinished checkpoint for another PC, 2026-10-22
+## Current cursor — five-item non-browser batch checked, 2026-10-22
+
+User requested all five non-browser items together; **5/5 checked (100%),0/5 remaining in this batch**.
+Base83f835f90a72e6e1533bda32c2040fc2d0f5f040; verify the commit containing this record and the remote SHA.
+No browser, application server, native match, calibration or soak launched. Actual model/effort unknown.
+
+- **Checks:** all three actual-source type checks pass; scoped ESLint across82 previous/current code paths has0 errors,
+  24 warnings; Node tools109/109; selected pure mappings15/15,196 assertions; affected Phaser124/124 across11 suites;
+  gameplay82/82 across13 suites; assertion-only readers6/6. These prove their declared layers, not native acceptance.
+- **Resources:** revalidate deposit/cargo/carrier after asynchronous path selection; shutdown wakes unload waits
+  without crediting abandoned transfers. Existing duplicate-charge/refund, deposit-loss and cargo-preservation controls pass.
+- **Construction:** pending path results recheck cancellation/completion/capacity/owner before assigning a site;
+  existing reassignment, release and abandoned-site recovery controls pass without a new purchase.
+- **Combat:** a losing assembling squad can retreat before strategic launch; it still cannot attack prematurely.
+  Target-domain, launch, retreat hysteresis, mission deadline and reinforcement controls remain passing.
+- **Readers:** reject missing/nonfinite/fractional quota counters, erased trace digests and fabricated trace counts.
+  Schema count corrected to580 actual presets plus8 explicit non-preset dispatch variants (6 D-06,2 H-32).
+- **Next:** move the retained native startup probe and then the14 SP rows to the other PC, following PC-TRANSFER.md.
+  Seven peer rows still need Supabase/Docker; D-06 expensive runs and full victory remain deferred. Native selected
+  obligations newly closed remain0/22; registration115/115 does not describe behavioral completion.
+- **Tooling limit:** doctor passed; context generator still fails issue_plan_count:759:6. Use this handoff;
+  no unrelated context-tool repair is needed. Scoped source/audit/check evidence is in CURRENT-EVIDENCE.md.
+
+### Previous cross-PC checkpoint (historical)
 
 Latest user instruction: commit the unfinished changes and prepare a cross-PC handoff. **Do not launch browser runs
 on this PC: thermal throttling makes them unsuitable here.** Read [PC-TRANSFER.md](PC-TRANSFER.md) for setup,
@@ -14,8 +37,8 @@ No owned browser/matrix process remained active at this checkpoint. Ignored tmp/
 The last D-03 diagnostic failed after2160074ms with0 ticks/decisions and a browser-context disposal error.
 It supplies no gameplay pass and does not establish a gameplay defect. All22 selected native obligations remain open:
 14 SP-capable rows lack usable evidence,7 real-peer rows lack local Supabase/Docker, and D-06 has driver controls only.
-The scoped results below were collected before publication; final complete changed-file lint and final post-edit
-affected rechecks remain unrun. Actual model/effort unknown. No next implementation batch is started at this boundary.
+The scoped results below describe the previous checkpoint. Its final lint/type/affected-check debt has now been
+addressed by the non-browser batch above; native proof remains open.
 
 ### Previous execution cursor and retained check results
 
@@ -28,7 +51,7 @@ expensive calibration/holdout/soaks and machinery removal remain deferred. No ne
 - Tool controls109/109; selected pure matrix15/15 mappings,196 assertions; Phaser90/90; gameplay60/60;
   UI startup9/9; reader controls13/13. These are not native scenario passes. Browser-harness/Phaser/gameplay typing
   repaired; final affected rechecks remain before publication.
-- All582 native preset configs pass the actual browser schema after fixing empty route declarations, 2D route
+- All580 native preset configs pass the actual browser schema after fixing empty route declarations, 2D route
   points and H-26's enemy rally target. Generated fixtures preserve the original outcome obligations.
 - Large runtime requests now use a bounded8MiB digest-bound local file after the original inline request hit E2BIG.
   Raw proof stays local; use only bounded summaries for model inspection.
@@ -107,8 +130,8 @@ the agreed coherent boundary. Do not merge, force-push or create a PR unless sep
 
 ## Verification policy — cross-PC checkpoint
 
-Latest instruction pauses browser execution on this PC. Lightweight non-browser authoring/checks remain within the
-authorized scope, but this turn only checkpoints and hands off. On the other PC, the previously authorized selected
+Latest instruction authorizes the five non-browser audit/repair/check items together. They are checked above.
+Browser execution remains paused on this PC. On the other PC, the previously authorized selected
 execution batch can resume; deferred expensive gates still need their separate later authorization.
 
 User2026-10-22 explicitly authorized the large execution/repair batch described in the current cursor. Continue it

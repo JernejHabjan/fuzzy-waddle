@@ -273,19 +273,16 @@ export class BuilderComponent {
     const tileSize = TilemapComponent.tileWidth;
     const worldRange = rangeInTiles * tileSize;
 
+    const canUseSite = (site: Phaser.GameObjects.GameObject) =>
+      site.active !== false && site.scene === this.gameObject.scene &&
+      site !== this.assignedConstructionSite &&
+      getActorComponent(site, ConstructionSiteComponent)?.canAssignBuilder() === true &&
+      getActorComponent(site, OwnerComponent)?.getOwner() === owner;
+
     // First filter by geometric distance and ownership
     const availableConstructionSites = this.gameObject.scene.children.list.filter((go) => {
       // Skip the currently assigned construction site (we're looking for the NEXT one)
-      if (go === this.assignedConstructionSite) return false;
-
-      const constructionSiteComponent = getActorComponent(go, ConstructionSiteComponent);
-      if (!constructionSiteComponent) return false;
-      if (!constructionSiteComponent.canAssignBuilder()) return false;
-      const targetOwnerComponent = getActorComponent(go, OwnerComponent);
-      if (!targetOwnerComponent) return false;
-      const targetOwner = targetOwnerComponent.getOwner();
-      if (!targetOwner) return false;
-      if (targetOwner !== owner) return false;
+      if (!canUseSite(go)) return false;
 
       // Pre-filter by geometric distance to avoid unnecessary pathfinding
       const targetPosition = getGameObjectLogicalTransform(go);
@@ -306,11 +303,14 @@ export class BuilderComponent {
     const sitesWithDistance: { site: Phaser.GameObjects.GameObject; distance: number }[] = [];
 
     for (let i = 0; i < availableConstructionSites.length; i++) {
+      // Cancellation, completion, capture or a competing builder can invalidate a pending lookup.
+      const site = availableConstructionSites[i];
+      if (!site || !canUseSite(site)) continue;
       const distance = distances[i];
       // console.log("[Build] getClosestConstructionSite: Site", availableConstructionSites[i], "navDistance=", distance);
       // Only include reachable sites
       if (typeof distance === "number" && distance <= rangeInTiles) {
-        sitesWithDistance.push({ site: availableConstructionSites[i]!, distance });
+        sitesWithDistance.push({ site, distance });
       }
     }
 

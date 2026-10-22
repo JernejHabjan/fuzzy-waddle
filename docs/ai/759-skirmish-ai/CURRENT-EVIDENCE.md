@@ -1,5 +1,82 @@
 # #759 current evidence
 
+## Five-item non-browser batch — checked (2026-10-22)
+
+User explicitly requested all five items in one batch. **5/5 checked (100%);0/5 remaining in this selected batch.**
+Base83f835f90a72e6e1533bda32c2040fc2d0f5f040, branch feature/759-skirmish-ai, same authority-recovery worktree.
+The containing commit owns these changes; verify local/remote equality at publication. Actual model/effort unknown.
+No browser, game/server start, native recipe, calibration, soak or machinery removal ran. Playwright below executes
+only assertion functions with no browser fixtures and no webServer configuration.
+
+Requirement-to-evidence / Omission Audit:
+
+1. **Typing/lint/pure checks — checked.** Fixed the intentionally partial runtime-result fixture's explicit unknown
+   cast. All3 actual-source tsc projects pass. ESLint across82 code files from the previous checkpoint plus this batch:
+   0 errors,24 warnings (nonnull/unused declarations retained). Node tools109/109. Selected pure matrix15/15 mappings,
+   196 assertions/37 suites, artifact tmp/ai-skirmish-matrix/759-five-pure/1792697244139-passed.json,
+   fixtureDigest fnv1a32:ccb3fc22. No native acceptance asserted by that matrix.
+   Schema regression corrected the former582 count:580 presets plus6 D-06 and2 H-32 non-preset dispatch variants
+   equals588 variants. All84 native bindings are referenced; the test pins every permitted non-preset ID.
+2. **Resources/deposits — checked.** GathererTargetSelection.findClosestResourceDrain rechecks live carrier/cargo,
+   same-scene readiness and current team after native path lookup. Regression covers destroyed/killed/captured
+   deposit, lost carrier, changed cargo and an unchanged valid control. ResourceDrainComponent fences scene shutdown:
+   a simulation wait waking on shutdown releases unload capacity but returns0, preserving the carrier's pile.
+   Existing exact paid-handle cancellation, duplicate/reentrant purchase/refund, gather/return overlap and native
+   destroyed-deposit Stop/source-slot/cargo controls pass. Existing per-tick PayOverTime pricing/refund policy was
+   inspected and preserved; no new economy formula or balance change was inferred from absent match evidence.
+3. **Construction recovery — checked.** BuilderComponent.getClosestConstructionSite uses the same live predicate
+   before/after path lookup, rejecting cancelled/finished/full/captured/destroyed candidates while retaining valid
+   jobs. Existing site worker release, reassignment, dead-worker cleanup, abandoned-site no-charge resume and cargo
+   protection controls pass. The new native-adapter regression supplies controlled distances, not physical path proof.
+4. **Attack/retreat/reinforcements — checked.** decideAiTacticalSquad now considers emergency retreat before the
+   strategic launch hold, so assembling forces can withdraw while still forbidden from launching prematurely.
+   New losing-assembly regression failed before the repair. Existing target eligibility/domain, commitment,
+   reinforcement dispatch, retreat hysteresis/reinforcement release, readiness and bounded mission recovery pass.
+   No launch threshold, combat balance or route-pending timeout was relaxed.
+5. **Result readers — checked.** nativeDebugParityProofFailures validates all quota/history/shutdown counters as
+   nonnegative safe integers, exact ownership booleans and matching quota. nativeSaveProofFailures requires positive
+   integer trace counts, a nonempty equal trace digest and explicit overflow/difference state. New erasure,
+   fractional/nonfinite/absent counter and empty-digest controls failed before and pass after. Required actor-role
+   rejection still passes; no synthetic record counts as native proof.
+
+Final affected results: Phaser124/124 across11 suites (including580-world schema check); gameplay82/82 across13 suites;
+assertion-only readers6/6; Node109/109; matrix15/15 with196 assertions. Counts overlap across layers; do not add them
+into a unique scenario or gameplay-pass total. Three final type-check logs empty; final diff whitespace check passes.
+
+Exact commands (from repository root; all Jest runs single-worker):
+
+```sh
+node --test tools/ai/*.test.mjs
+NX_DAEMON=false pnpm exec tsc --noEmit -p apps/portal-e2e/tsconfig.json
+NX_DAEMON=false pnpm exec tsc --noEmit -p libs/games/probable-waffle/phaser/tsconfig.spec.json
+NX_DAEMON=false pnpm exec tsc --noEmit -p libs/games/probable-waffle/gameplay/tsconfig.spec.json
+NX_DAEMON=false pnpm exec jest --config libs/games/probable-waffle/phaser/jest.config.cts --runInBand \
+  --testPathPatterns='(resource-drain-lifetime|gatherer-target-lifetime|builder-target-lifetime|builder-membership|construction-worker-membership|construction-site-component|shared-queue-resource|gatherer-resource-execution|pawn-resource-drain-loss|pawn-resource-order-lifetime|ai-runtime-registered-configs)\.spec\.ts$'
+NX_DAEMON=false pnpm exec jest --config libs/games/probable-waffle/gameplay/jest.config.cts --runInBand \
+  --testPathPatterns='(ai-tactics.*|ai-construction-recovery-proposal|ai-builder-delivery|ai-resource-cost-claims|ai-field-labor-return|ai-decision-cycle)\.spec\.ts$'
+NX_DAEMON=false node tools/ai/run-skirmish-matrix.mjs \
+  --scenarios D-02,D-03,D-04,D-05,H-05,H-08,H-09,H-20,H-23,H-31,H-32,DBG-01,DBG-03,DBG-04,DBG-05 \
+  --mode pure --output tmp/ai-skirmish-matrix/759-five-pure
+```
+
+Lint invoked pnpm exec eslint with exact changed TS/JS/MJS paths since b2c9868bb plus the two new specs, via argument
+array rather than shell interpolation; /tmp/759-five-lint.log. No unrelated files staged. Assertion-only reader runner:
+create an ignored tmp/759-five/readers.config.ts exporting testDir equal to the absolute repository e2e directory,
+workers1, reporter list, timeout30000 and testMatch for skirmish-ai-native-debug-parity.spec.ts,
+skirmish-ai-native-save-evaluation.spec.ts and skirmish-ai-native-scenario-context.spec.ts; no use/browser/webServer.
+Then pnpm exec playwright test --config tmp/759-five/readers.config.ts. These specs request no browser/page fixtures.
+Local logs /tmp/759-five-{tools,final-phaser,gameplay,readers,pure,lint}.log and
+/tmp/759-five-final-{e2e,phaser,gameplay}-types.log are ignored/not transferred.
+Changed code provenance (sorted path/content-SHA256 manifest,14 files):
+sha256:d6c20d635517842a327fcfffb895ba903ba0b8035ba0d0d31dc3a1a16c85968a.
+
+**Separate Final Closure Audit:** the five requested non-browser items are implemented/reviewed with passing affected
+controls; no unregistered new tests or weakened gameplay thresholds, and no new tooling subsystem. This closes the
+selected audit/repair batch only. All22 retained native obligations remain unclosed (14 SP unproved,7 peer setup blocked,
+1 D-06 expensive run deferred/legacy comparison unsupported). Native startup/path arrivals/income/victory still need
+the other PC. Context generator issue_plan_count:759:6 remains an unrelated tool limit; doctor passed. Machinery
+review stays last overall. Next action remains the exact other-PC D-03 startup probe in PC-TRANSFER.md.
+
 ## Cross-PC checkpoint — scoped controls checked, native acceptance open (2026-10-22)
 
 The user requests publication of unfinished work and no further browser runs on this thermally constrained PC.
@@ -10,9 +87,9 @@ The older authoring-only record below is historical, superseded for the selected
 1. **Request transport — implemented/checked:** digest-bound, exclusive-create local requests capped8MiB replace
    oversized environment-variable payloads. Node tooling109/109 includes two transport controls. Raw proof is local;
    model summaries remain capped8192 bytes.
-2. **Native config repairs — implemented/checked:**582/582 actual preset configs accepted by the browser schema.
+2. **Native config repairs — implemented/checked:**580/580 actual preset configs accepted by the browser schema.
    Empty route declarations removed, route endpoints normalized to2D, H-26 rally points to an owned front actor.
-   Outcome requirements and the strict schema were not weakened. Six D-06 descriptors have no ordinary preset.
+   Outcome requirements and the strict schema were not weakened. Six D-06 and two H-32 descriptors have no ordinary preset.
 3. **Reader/test integration — implemented/partially checked:** repaired actual-source types, required-role guards,
    Playwright test registration and lifecycle test fixtures. Phaser90/90, gameplay60/60, UI9/9, reader groups13/13
    and16/16 passed. Three project type checks passed. Minor later fixture/import edits require final affected rechecks;

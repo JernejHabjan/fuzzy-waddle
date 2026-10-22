@@ -83,10 +83,10 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
       ? "completed"
       : members.length === 0 || missionExpired
         ? "recover"
-        : awaitingStrategicLaunch
-          ? "assemble"
-          : (unfavorable || topologyLost || (previousRetreat && visibleTarget && !favorable)) && retreat
-            ? "retreat"
+        : (unfavorable || topologyLost || (previousRetreat && visibleTarget && !favorable)) && retreat
+          ? "retreat"
+          : awaitingStrategicLaunch
+            ? "assemble"
             : localEnemies.length > 0 && (favorable || forcedDecision)
               ? "engage"
               : localEnemies.length > 0

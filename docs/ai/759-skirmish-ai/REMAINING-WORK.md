@@ -10,6 +10,9 @@ Publish unfinished work and move browser execution to another PC; thermal thrott
 [PC-TRANSFER.md](PC-TRANSFER.md) owns the portable resume commands and optional non-browser work queue.
 Registration is complete. Scoped controls have run, but no newly selected native obligation is closed.
 The registration snapshot below describes the prior authoring state, not current verification authorization.
+The subsequent five-item non-browser batch is checked: typing/lint/pure controls, resource/deposit audit,
+construction recovery, combat rules and fail-closed readers. See HANDOFF's current cursor and CURRENT-EVIDENCE.
+Do not repeat that batch as unfinished preparation. The next execution work is the retained other-PC native probe.
 
 ## What the inventory establishes
 

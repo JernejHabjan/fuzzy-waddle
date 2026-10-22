@@ -21,3 +21,20 @@ it("DBG-06 refuses replenished quota, hidden truncation, changed world and leake
     { ...proof, shutdown: { ...proof.shutdown, captureReleased: false } }
   ]) expect(nativeDebugParityProofFailures(changed).length).toBeGreaterThan(0);
 });
+
+it("rejects absent, fractional and nonfinite quota/history/shutdown counters", () => {
+  for (const invalid of [undefined, Number.NaN, Infinity, -1, 0.5]) {
+    for (const key of ["sessionBytes", "retainedBytes", "retainedCount", "episodeCount", "quotaBytes"] as const) {
+      for (const boundary of ["peak", "shutdown"] as const) {
+        const changed = { ...proof, [boundary]: { ...proof[boundary], [key]: invalid } } as NativeDebugParityProof;
+        expect(nativeDebugParityProofFailures(changed).length).toBeGreaterThan(0);
+      }
+    }
+    for (const key of ["count", "firstSequence", "lastSequence", "missingThroughTick"] as const) {
+      const changed = { ...proof, history: { ...proof.history, [key]: invalid } } as NativeDebugParityProof;
+      expect(nativeDebugParityProofFailures(changed).length).toBeGreaterThan(0);
+    }
+    const changed = { ...proof, accepted: invalid, peak: { ...proof.peak, episodeCount: invalid } } as NativeDebugParityProof;
+    expect(nativeDebugParityProofFailures(changed).length).toBeGreaterThan(0);
+  }
+});
