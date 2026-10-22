@@ -6,7 +6,7 @@ import { validNativeScenarioFixture } from "./skirmish-runtime-native-scenario-f
 
 test("all native bindings retain their full branches and original acceptance obligations", () => {
   const ids = Object.keys(nativeScenarioBindings.cases);
-  assert.equal(ids.length, 83);
+  assert.equal(ids.length, 84);
   const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish-v1.json", import.meta.url)));
   for (const id of ids) {
     const row = manifest.rows.find((row) => row.id === id);
@@ -108,13 +108,12 @@ test("D-01 binds each actual lobby policy in both factions and rejects a relabel
   assert.equal(validNativeScenarioFixture(fixture, "D-01"), false);
 });
 
-test("remaining continuous/replay/calibration bindings stay explicit until their real drivers are connected", () => {
+test("all supported native bindings are connected and no executable registration hides behind a draft", () => {
   const drafts = JSON.parse(readFileSync(new URL("./fixtures/native-scenario-recipes.json", import.meta.url)));
-  for (const id of drafts.scenarioIds) {
-    assert.equal(Object.hasOwn(nativeScenarioBindings.cases, id), false);
-    const entry = drafts.cases.find((value) => value.scenarioId === id);
-    assert.ok(entry.executionBlockers.includes("native_case_binding"));
-  }
+  assert.deepEqual(drafts.scenarioIds, []);
+  assert.deepEqual(drafts.cases, []);
+  const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish-v1.json", import.meta.url)));
+  assert.deepEqual(manifest.rows.filter((row) => row.drivers.includes("runtime") && !row.fixture && !row.runtimeSupport), []);
 });
 
 test("H-09 retains real compaction, SP codec restore and independent peer acknowledgment branches", () => {
@@ -162,6 +161,19 @@ test("DBG-01/03 retain native codec incidents, complete physical replay and isol
       assert.equal(variant.presetWorld.controls.length, 0);
       assert.equal(variant.presetWorld.routeOutages.length, 0);
     }
+  }
+});
+
+test("D-06 dispatch descriptors bind frozen legal starts without substituting generic preset worlds for calibration", () => {
+  const fixture = nativeScenarioFixture("D-06");
+  assert.equal(fixture.recipe.variants.length, 6);
+  assert.equal(fixture.recipe.mapLabel, "River Crossing");
+  assert.ok(fixture.capabilityLimits.some((entry) => /^Frozen workload specification sha256:[a-f0-9]{64}$/.test(entry)));
+  for (const variant of fixture.recipe.variants) {
+    assert.equal(variant.executionKind, "focused_natural");
+    assert.equal(variant.presetWorld, undefined);
+    assert.equal(variant.captureConstruction, undefined);
+    assert.ok(variant.setupRationale.includes("frozen"));
   }
 });
 

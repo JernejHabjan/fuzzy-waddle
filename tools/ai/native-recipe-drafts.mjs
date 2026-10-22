@@ -10,7 +10,6 @@ export function readNativeRecipeDraft(fixture, scenarioId) {
     fixture.evidenceKind !== "recipe_authoring" ||
     fixture.status !== "authored_not_executed" ||
     !Array.isArray(fixture.scenarioIds) ||
-    fixture.scenarioIds.length === 0 ||
     !Array.isArray(fixture.cases) ||
     fixture.cases.length !== fixture.scenarioIds.length ||
     new Set(fixture.scenarioIds).size !== fixture.scenarioIds.length ||

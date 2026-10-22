@@ -9,7 +9,9 @@ export function resolvePinnedBaselineSupport(row, baselineManifest) {
       ? { status: "unsupported", reason: baselineManifest.compatibility.pureBrain, adapter: null }
       : { status: "not_requested", adapter: null },
     runtime: row.drivers.includes("runtime")
-      ? { status: "supported", adapter: "legacy-runtime-command-and-world-projection-v1" }
+      ? { status: "supported", adapter: "legacy-runtime-command-and-world-projection-v1",
+        ...(row.id === "D-06" ? { scope: "native_legacy_reference_only",
+          unsupported: ["new_difficulty_profiles", "fixed_new_opening_opponents"] } : {}) }
       : { status: "not_requested", adapter: null }
   };
 }

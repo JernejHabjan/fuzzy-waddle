@@ -6,11 +6,24 @@ import { readPureFixtureCase } from "./pure-fixture-cases.mjs";
 import { pureFixtureReference, runtimeFixtureReference } from "./skirmish-matrix-fixtures.mjs";
 import { digestString, readHead, readJson, readWorkingTreeSource } from "./skirmish-matrix-io.mjs";
 import { createRuntimeResultPath, readRuntimeResult } from "./skirmish-runtime-result.mjs";
+import { invokeCalibrationHarness } from "./skirmish-calibration-execution.mjs";
 
 export function invokeSelectedHarness(input, context) {
   const { manifest, fixtureDirectory } = context;
   const requestedPure = input.mode !== "runtime";
   const requestedRuntime = input.mode !== "pure";
+  if (requestedRuntime && input.rows.some((row) => row.id === "D-06")) {
+    const rest = input.rows.filter((row) => row.id !== "D-06");
+    const selected = rest.length ? invokeSelectedHarness({ ...input, rows: rest }, context) : null;
+    if (selected && selected.status !== "passed") return { ...selected, rows: input.rows.map((row) => row.id),
+      calibration: { status: "not_run", reason: "core_runtime_gate_failed" } };
+    const calibration = invokeCalibrationHarness({ ...input, rows: input.rows.filter((row) => row.id === "D-06") }, context);
+    if (!selected) return calibration;
+    return { ...selected, status: selected.status === "passed" && calibration.status === "passed" ? "passed" : "failed",
+      rows: input.rows.map((row) => row.id), calibration,
+      workCounts: Object.fromEntries(["scenarios", "testSuites", "tests", "decisions", "ticks"].map((key) =>
+        [key, selected.workCounts[key] + calibration.workCounts[key]])) };
+  }
   const pureRows = requestedPure
     ? input.rows.filter((row) => row.drivers.includes("pure") && pureFixtureReference(row, fixtureDirectory))
     : [];

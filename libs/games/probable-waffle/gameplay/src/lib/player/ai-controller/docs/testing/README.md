@@ -626,3 +626,19 @@ pins every policy field independently of the production factory and requires eve
 persisted difficulty, accepted proposal/command quota consistency and a real applied AI action. No checks have run.
 Invalid configuration is covered at the actual controller/factory boundary: there is no invalid lobby option to select.
 This is registration, not difficulty calibration, quota saturation or D-03 hidden-state fairness certification.
+
+### Frozen difficulty calibration registration
+
+D-06 uses tools/ai/run-difficulty-calibration.mjs through the matrix's dedicated dispatch, after core rows pass.
+The six native fixture descriptors expand difficulty-calibration-v1.json; they are not six physical matches.
+The frozen workload covers both maps/factions, five existing fixed Normal openings, both sides and three policies,
+20 initial seed clusters with up to80 reserved extension seeds,5 isolated holdout seeds and3 full72000-tick soaks.
+Whole native frames advance both actual controllers; authoritative results, legal-start parity, actual selected
+profiles and bounded queue/resource/recovery/strategy samples own the report. No starting-bank or unit-stat grants.
+Each exact source builds in its own detached checkout with its own lockfile when authorized execution starts.
+The immutable legacy adapter exposes native legal starts/clock/hash/results only; its absent matching difficulty
+and fixed-opening policies are an explicit unsupported comparison and prevent acceptance. Candidate fallback is forbidden.
+Indistinguishable ordering, incomplete pairs, changed starts and short terminal soaks remain failures.
+Per-match artifacts cap128KiB locally; model-facing summaries cap8192 UTF-8 bytes.
+All supported runtime IDs are now registered; the authoring draft catalog has no active cases. Registration does
+not certify typing, compilation, native premises or gameplay. All new calibration/holdout/soak controls remain unrun.

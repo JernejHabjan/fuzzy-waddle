@@ -51,5 +51,22 @@
     "separateBalanceFindingFromCorrectnessFailure": true,
     "failClosedOnMissingRuntimeEvidence": true
   },
-  "runtimeCounterpart": "required_after_core_runtime_and_ai_opponent_harness"
+  "runtimeCounterpart": "d-06-native-runtime.json",
+  "execution": {
+    "driver": "tools/ai/run-difficulty-calibration.mjs",
+    "maximumMatchTick": 18000,
+    "cellPolicy": "Twenty seed cells cover both declared maps, both factions and all five fixed native opponent openings; each repeats both original spawn sides and all three difficulties. Normal matches are shared across the two comparisons.",
+    "uncertaintyExtension": { "firstSeed": 759101, "seedCount": 80, "batchSize": 20 },
+    "holdoutPolicy": "Run the five disjoint holdout seeds once after all tuning/calibration rounds; never use them to choose another round.",
+    "holdoutCells": [0, 6, 12, 18, 9],
+    "primaryMetric": "Upper-minus-lower authoritative win score (win=1,tie=0.5,loss=0), averaged across both sides within each seed.",
+    "confidencePolicy": "Distribution-free Hoeffding intervals on independent seed clusters in [-1,1], adjusted for five declared looks and two comparisons to retain family-wise95% coverage; a nonpositive lower bound remains indistinguishable, not a pass.",
+    "soaks": [
+      { "seed": 759981, "simulationTicks": 72000 },
+      { "seed": 759982, "simulationTicks": 72000 },
+      { "seed": 759983, "simulationTicks": 72000 }
+    ],
+    "retention": { "perMatchMaximumBytes": 131072, "modelSummaryMaximumBytes": 8192 },
+    "baselineLimit": "Pinned legacy source has no new difficulty/opening policies. Execute its native legacy reference matches separately; report that policy comparison as unsupported, never as a pass or candidate fallback."
+  }
 }

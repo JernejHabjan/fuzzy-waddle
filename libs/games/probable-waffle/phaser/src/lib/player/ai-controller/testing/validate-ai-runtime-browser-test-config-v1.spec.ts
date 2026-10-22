@@ -21,6 +21,16 @@ const config = {
 };
 
 describe("runtime preset neutral source validation", () => {
+  it("keeps calibration confined to explicit supported native duels without presets or privilege fields", () => {
+    const natural = { schemaVersion: 1, enabled: true, seed: 759061, startPaused: true,
+      calibration: { targetPlayerNumber: 1, difficulty: "Hard", opponentArchetype: "rush" } };
+    expect(isAiRuntimeBrowserTestConfigV1(natural)).toBe(true);
+    for (const calibration of [{ ...natural.calibration, targetPlayerNumber: 3 },
+      { ...natural.calibration, difficulty: "Impossible" }, { ...natural.calibration, opponentArchetype: "omniscient" },
+      { ...natural.calibration, resources: 10000 }])
+      expect(isAiRuntimeBrowserTestConfigV1({ ...natural, calibration })).toBe(false);
+    expect(isAiRuntimeBrowserTestConfigV1({ ...config, calibration: natural.calibration })).toBe(false);
+  });
   it("requires a separate strict combat marker inside the explicit authority capture", () => {
     expect(isAiRuntimeBrowserTestConfigV1({ ...config, captureProduction: true, captureCombat: true })).toBe(true);
     expect(isAiRuntimeBrowserTestConfigV1({ ...config, captureCombat: true })).toBe(false);

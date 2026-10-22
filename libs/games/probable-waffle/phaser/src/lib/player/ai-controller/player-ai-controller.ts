@@ -27,6 +27,7 @@ import { createAiProfileConfigV1 } from "@fuzzy-waddle/probable-waffle-gameplay/
 import type { PureAiBrain } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain";
 import type { AiDebugSnapshotV1, AiProfileConfigV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { selectAiOpeningArchetypeV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-opening-archetypes-v1";
+import { readAiRuntimeCalibrationOpening } from "./testing/ai-runtime-calibration";
 import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import type { AiBrainStepResultV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain-step-result-v1";
 import { dispatchAiIntents } from "./ai-intent-dispatcher";
@@ -435,7 +436,7 @@ export class PlayerAiController {
       faction,
       profile,
       tick: getSceneService(this.scene, SimulationTickService)?.currentTick ?? 0,
-      archetypeId: archetype.id,
+      archetypeId: readAiRuntimeCalibrationOpening(this.scene, playerNumber, faction) ?? archetype.id,
       satisfiedOpeningStepIds: []
     } as const;
   }

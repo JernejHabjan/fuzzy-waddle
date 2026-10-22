@@ -5,7 +5,7 @@ type Proof = Awaited<ReturnType<typeof runNativeProfileTransfer>>;
 const boundary: Proof["original"] = {
   owner: { tick: 79, activeMapScenes: 1, handlerCount: 1, controllerCount: 1, nativePlayerCount: 1,
     seed: 759940, matchId: "match:original", decisionSequence: 3 },
-  worldDigest: "full-native-world", brainDigest: "original-brain", profileVersion: "profile-v1", profileDifficulty: 1,
+  worldDigest: "full-native-world", brainDigest: "original-brain", profileVersion: "skirmish-ai-v1", profileDifficulty: "normal",
   archetypeId: "original-archetype", blackboardDigest: "original-blackboard", incomeSamplingDigest: "original-income",
   observationMemoryDigest: "original-observation-memory", cadenceDigest: "original-cadence", elapsedMilliseconds: 950,
   reconciliationDigest: "original-reconciliation",

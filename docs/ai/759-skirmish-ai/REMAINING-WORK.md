@@ -1,18 +1,20 @@
 # #759 remaining work inventory
 
-Snapshot:2026-10-21; publication baseb512371023c13823c1428387eb77016b84d12f97 plus task-owned DBG-01/03 source.
+Snapshot:2026-10-22; Publication base6fbae050665f0ef10a13b2b3596c047451205f68 plus task-owned D-06 source; verify containing commit/remote.
 [HANDOFF.md](HANDOFF.md) owns the next action; [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) distinguishes authored and
 validated evidence. This is the existing execution inventory, not another design project. Read only the selected package.
 
 ## What the inventory establishes
 
 The original concrete plan contains121 named scenarios. Pure registration is111/111. Supported runtime registration
-is114/115 (99.1%);1 (0.9%) still has a specification without native binding. Five runtime rows are explicitly deferred:
-four #822 island-content rows and H-21 larger-unit clearance by user2026-10-21. Definitions115/115 comprise114 bindings
-and1 specification. This continuous batch has authored21 new registrations, with83 factory bindings/582 variants and
+is115/115 (100%);0 active specifications remain without native binding. Five runtime rows are explicitly deferred:
+four #822 island-content rows and H-21 larger-unit clearance by user2026-10-21. Definitions115/115 all have bindings.
+This continuous batch has authored22 new registrations, with84 factory bindings/588 variants and
 21 retained partial owner worlds unrun. H-23 now includes user-authorized native island establishment; its small
 water-enclosed diagnostic preset does not silently close the four broader #822 content rows.
-**Continue the current batch through its last active registration; no per-case pause.** Calibration owns D-06.
+**Registration authoring is complete; execution remains deferred.** D-06 owns the frozen calibration driver.
+Its six descriptors are dispatch groups, not six games. The pinned legacy difficulty/opening comparison is unsupported;
+this remains an explicit acceptance failure, never a passing legacy comparison or a request for more registrations.
 H-32 now binds actual same-realm UI transitions, retained paid/path work and real host replacement, authored unrun.
 DBG-05 binds actual runtime-artifact import UI, bounded hostile inputs and real peer import/capture denial, authored unrun.
 H-31 binds eight native SP save/continuation worlds, real paid/uncertain work and exact next-decision traces, authored unrun.
@@ -100,8 +102,8 @@ an entire scenario. Invalidate only outcomes affected by later source/fixture ch
 | Measured coverage at this snapshot    | Completed                                   | Remaining          | What the number means                                                                                              |
 | ------------------------------------- | ------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------ |
 | Pure fixture registration             | 111/111 = **100%**                          | 0/111 = **0%** | Required pure scenarios with registered fixtures; not behavior completion                                          |
-| Supported native definitions           | 115/115 = **100%**                          | 0/115 = **0%** | 114 scenario bindings plus1 specification; definitions only, not validated gameplay |
-| Supported runtime recipe registration | 114/115 = **99.1%**                          | 1/115 = **0.9%** | Runtime recipes connected; five explicitly deferred rows excluded; not behavior completion                              |
+| Supported native definitions           | 115/115 = **100%**                          | 0/115 = **0%** | 115 scenario bindings; definitions only, not validated gameplay |
+| Supported runtime recipe registration | 115/115 = **100%**                          | 0/115 = **0%** | Runtime recipes connected; five explicitly deferred rows excluded; not behavior completion                              |
 | Scenario behavior validation          | Not yet reconciled across the full manifest | Not yet measurable | Existing subset passes and failures are recorded, but no truthful overall completion percentage can yet be derived |
 
 During each selected package, reconcile its existing complete evidence into the row status and report its exact
@@ -127,7 +129,10 @@ main-building footprint were corrected in both paired worlds. Construction cance
 post-opening unfinished-site reassignment have focused controls. Native ECO-06 proves alternate drop-off/source
 recovery; native no-drain controls prove stop/assignment release with cargo preservation.
 
-**Current publication: grouped H-08/H-09/H-31/H-32 source repairs; native integration unfinished, 2026-10-20.**
+**Historical source checkpoint — superseded registration counts, 2026-10-20.**
+
+All four IDs below now have complete authored native bindings; none of those new bindings has run.
+The paragraphs below retain source provenance only. The top snapshot and HANDOFF own current work.
 
 - Preserve admitted ownership/original execution identity across host transfer and retention pressure; distinguish
   duplicate diagnostics from terminal application, explicitly retire actual unsent epoch input and restore saved unsent
@@ -157,7 +162,8 @@ recovery; native no-drain controls prove stop/assignment release with cargo pres
 - **Save/lifecycle:** required phases include delivery, construction, training/research, squad missions, transport,
   fortification and recovery. Before/during/after-apply save boundaries need exactly-once continuation or cleanup.
   Plans also identify interrupted awaited-planner disposal fencing as a gap to inspect against current source.
-- **Calibration:** isolated pinned-baseline execution, D-06 comparisons and long soaks lack complete release evidence.
+- **Calibration:** isolated pinned-baseline execution, D-06 comparisons and long soaks are now authored but lack release evidence.
+  The immutable legacy difficulty/opening policy comparison is explicitly unsupported, not a passing result.
   Existing plan calls for 20 paired seeds plus a disjoint holdout and at least three 60-minute simulation soaks;
   expand samples only when uncertainty changes a decision. These are explicit workload commitments, not new stages.
 - **Legacy:** unresolved identity/faction still has a legacy-controller fallback according to the owning plan.

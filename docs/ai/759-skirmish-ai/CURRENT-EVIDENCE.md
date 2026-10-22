@@ -1,16 +1,17 @@
 # #759 current evidence
 
-## Continuous registration batch — in progress, authored unrun (2026-10-21)
+## Continuous registration batch — authoring complete, all new bindings unrun (2026-10-22)
 
-Publication baseb512371023c13823c1428387eb77016b84d12f97 plus owned DBG-01/03 source; same authority-recovery worktree/feature branch.
-The user requested all23 remaining registrations together. This entry closes only the published source slice;
-the batch must continue. Actual model/effort unknown; no subagent or model switch.
+Publication base6fbae050665f0ef10a13b2b3596c047451205f68 plus task-owned D-06 source; verify containing commit/remote.
+Same authority-recovery worktree/feature branch.
+The user requested all23 remaining registrations together. All original23 are accounted:22 authored registrations plus human-deferred H-21.
+Execution/acceptance remains open; registration authoring is complete. Actual model/effort unknown; no subagent or model switch.
 
 Numbered acceptance map / Omission Audit for the current slice:
 
-1. **Twenty-one full source registrations authored:** D-02/D-03/D-04/D-05, H-05/H-08/H-09/H-20/H-23/H-31/H-32,
+1. **Twenty-two full source registrations authored:** D-02/D-03/D-04/D-05/D-06, H-05/H-08/H-09/H-20/H-23/H-31/H-32,
    SEQ-03/04/06/07/08, DBG-01/03/04/05/06. Manifest, native bindings, fixtures and mandatory ID readers are connected.
-   Factory83 bindings/582 variants; supported registration114/115 (99.1%),1/115 unbound (0.9%). Pure111/111 unchanged.
+   Factory84 bindings/588 variants; supported registration115/115 (100%),0/115 active unbound (0%). Pure111/111 unchanged.
    All new premises, timing, predicates and behavior remain unrun; no passing count or overall completion claimed.
 2. **Difficulty:** all three policies/both factions receive real hidden-position/health/queue/contact controls,
    same paired match identity, exact permitted inputs/intents and actual profile/cadence checks. Easy starts with
@@ -50,9 +51,8 @@ Numbered acceptance map / Omission Audit for the current slice:
 7. **Explicit deferral:** user2026-10-21 deferred H-21 larger-unit/formation native clearance until suitable content
    exists. Pure coverage remains. Manifest support/parser/catalog now distinguish this #759 deferral from the four
    #822 island rows. The H-23 island addition does not silently claim those broader content obligations completed.
-8. **Four unfinished bindings:** SEQ-08 needs the real peer/save/scene continuation path;
-   DBG-01/03 need full runtime capture/stepping/import/access; D-06 needs declared calibration/holdout/soak and
-   pinned-baseline execution/reporting. No placeholder or partial owner control was promoted for these IDs.
+8. **Last four bindings now authored:** SEQ-08, DBG-01/03 and D-06 have dedicated native paths described below.
+   No generic command-count or partial-owner control substitutes for those obligations. All remain unrun.
 9. **Execution deliberately deferred:** no recipe/test/lint/type/formatter/build/browser/server/doctor/context or
    dedicated validator ran. Source/diff review and fixture/catalog authoring only. New tests include erasure,
    identity drift, release authority, quota/eviction/disposal, original research identity and cargo-readiness controls.
@@ -152,12 +152,33 @@ Numbered acceptance map / Omission Audit for the current slice:
     an assumed queue-item ID to the actual native command-context ID and used the real pause-reason accessor. New oracles,
     negative controls and the fixture/catalog authoring are unrun; no physical reproduction or playtest pass is claimed.
 
+19. **D-06 frozen calibration source registered:** dedicated matrix dispatch runs core first, then actual legal two-AI
+    matches in detached candidate/baseline sources with their own lockfiles/builds.20 predeclared seed cells cover
+    both maps/factions and five existing Normal openings, both sides and three policies. Up to80 reserved seeds
+    extend uncertainty;5 separate holdout seeds never tune, and3 soaks require the full72000 native ticks each.
+    Native results, banks, queue/strategy/recovery samples and exact policy identities feed seed-clustered paired
+    comparisons with family-wise confidence. Incomplete/fairness/short-terminal cases cannot silently pass.
+    A narrow pinned-source adapter exposes native legal starts/clock/hash/results; no candidate AI code is copied.
+    **Pinned legacy difficulty/opening policies are absent: comparison unsupported, acceptance remains failed/open.**
+    Reports retain exact source/spec/fixture/adapter identities and actual completed denominators. Match bodies cap
+    128KiB locally; model-facing summaries cap8192 UTF-8 bytes. The six catalog descriptors are dispatch groups.
+20. **Source repairs and authored negative controls:** D-02 checks now use actual saved string profile identities.
+    Config rejects privilege fields, saves/presets and invalid roles/policies; native role preparation prevalidates
+    both slots before mutation. Angular controls preserve banks/factions. Statistical and fixture-reader controls
+    cover missing/duplicate pairs, changed legal starts, holdout isolation, unsupported baseline and short soaks.
+    Empty draft catalogs remain readable and negative-reader controls use their own populated fixture.
+
 Separate Final Closure Audit for this source slice: traced factory inputs and strict parsers through native controls,
 selected ownership, independent physical/paid effects, mandatory readers and manifest consumers. Reviewed paired
 instance identity, observer gating, finite faults, original queue handles, safe claim release, quota accounting and
-scene cleanup. Repaired source-review findings above. **The all-registrations batch remains incomplete.**
-Publish exact owned paths normally and verify remote SHA; do not force-push, merge or open a PR. Continue D-06,
-the last active binding, after this source checkpoint. Machinery necessity/removal stays last overall.
+scene cleanup. Repaired source-review findings above. **The all-registrations authoring batch is complete.**
+All active IDs are bound; H-21 remains explicitly deferred. No native execution or gameplay certification is claimed.
+Source/config/fixture/callers, error/cleanup paths, bounded outputs, draft/catalog consumers and documentation
+were reviewed separately after repairs. No recipe, test, lint, type check, formatting, build, install, server, browser
+or dedicated validator ran. Only fixture/catalog --write generation ran as authoring. No skill/tool expansion was added.
+Publish exact owned paths normally and verify remote SHA; no force push, merge or PR. Next requires explicitly
+authorized scoped controls and native core execution, shared-owner repairs, then deferred victory/calibration gates.
+Legacy/closure follows; machinery necessity/removal stays last overall.
 
 ## D-01 registration batch — authored, not executed (2026-10-20)
 

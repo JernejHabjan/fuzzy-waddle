@@ -4,6 +4,8 @@ import type { AiRuntimePresetApplicationV1 } from
 import type { Page } from "@playwright/test";
 import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
 import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
+import type { AiRuntimeCalibrationV1 } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-calibration-v1";
 import { installRuntimeAccessor } from "./skirmish-ai-runtime-browser-accessor";
 import { assertRuntimePresetRoster } from "./skirmish-ai-runtime-preset-roster";
 import { assertRuntimeConstructionSetup } from "./skirmish-ai-runtime-construction-setup";
@@ -21,7 +23,7 @@ export async function prepareRuntimeVariant(
   profiling: boolean,
   aiErrors: string[],
   debugProbe?: (page: Page, checkpointIndex: number) => Promise<void>,
-  sameRealm = false
+  sameRealm = false, calibration?: AiRuntimeCalibrationV1
 ) {
   if (profiling) {
     await page.addInitScript(() => {
@@ -45,6 +47,7 @@ export async function prepareRuntimeVariant(
   await installNativeRuntimeInputs(page, {
       schemaVersion: 1, enabled: true, startPaused: true,
       seed: effectiveSeed,
+      ...(calibration ? { calibration } : {}),
       ...(variant.presetWorld ? { presetWorld: { ...variant.presetWorld,
         provenance: { sourceRevision, fixtureDigest } } } : {}),
       ...(variant.captureCombat === true ? { captureCombat: true } : {}),
@@ -197,7 +200,9 @@ function compareQueueItem(
   );
 }
 
-async function configureLobby(page: Page, fixture: RuntimeFixtureV1, variant: RuntimeVariantV1, sameRealm: boolean): Promise<void> {
+export async function configureLobby(
+  page: Page, fixture: RuntimeFixtureV1, variant: RuntimeVariantV1, sameRealm: boolean
+): Promise<void> {
   if (sameRealm) await page.getByRole("button", { name: /Skirmish.*Custom battles/ }).click();
   else await page.goto("/aota/skirmish");
   await page.getByText(variant.mapLabel ?? fixture.recipe.mapLabel, { exact: true }).click();

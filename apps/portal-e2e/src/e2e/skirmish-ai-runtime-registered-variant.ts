@@ -29,6 +29,7 @@ import { runNativeReproVariant } from "./skirmish-ai-native-repro-runner";
 export async function runRegisteredRuntimeVariant(
   browser: Browser, fixture: RuntimeFixtureV1, variant: RuntimeVariantV1, request: RuntimeRequestV1
 ) {
+  if (request.scenarioIds.includes("D-06")) throw new Error("d06_requires_frozen_calibration_workload_driver");
   for (const id of ["DBG-01", "DBG-03"]) {
     const branch = fixture.assertions[id]?.requiredNativeScenario?.branchByVariant[variant.id];
     if (request.scenarioIds.includes(id) && branch) return runNativeReproVariant(browser, fixture, variant, request, branch);

@@ -3,89 +3,42 @@
 Default resume page: read this first, then only the selected package in [REMAINING-WORK.md](REMAINING-WORK.md).
 Do not load the full plan directory or archive on startup.
 
-## Current cursor — large registration batch in progress, 2026-10-21
+## Current cursor — registration authoring complete; execution pending, 2026-10-22
 
 - Worktree /home/jernej/.codex/worktrees/skirmish-authority-recovery/fuzzy-waddle;
-  branch feature/759-skirmish-ai. Publication baseb512371023c13823c1428387eb77016b84d12f97;
-  verify containing commit/remote on resume. Preserve unrelated main-checkout issue-template edits.
-  Actual model/effort unknown; no delegation or model switch.
-- User requests all23 remaining registrations in one continuous batch. **Do not pause merely after this partial slice.**
-  Twenty-one new registrations authored: D-02–05, H-05/H-08/H-09/H-20/H-23/H-31/H-32,
-  SEQ-03/04/06/07/08 and DBG-01/03/04/05/06.
-  They cover difficulty fairness/function/pressure, release safety, topology/disposal, continuous economy/combat,
-  actual selected-input comparison/replay and debug parity/quota/disposal. They remain unrun.
-- User2026-10-21 explicitly defers H-21 native larger-unit/formation clearance until suitable content exists.
-  Pure controls remain. Five runtime rows are now deferred: the four #822 island rows plus H-21 under#759.
-  User separately authorizes island establishment NOW for H-23: observed offshore resources, protected builder,
-  real carrier, actual landing, useful paid deposit and delivered income. This does not add a public island map.
-- H-05 approved partition: native cancelled/paid/uncertain work plus pure saved forecast/provisional release;
-  no invented world boundary between synchronous selection and dispatch. H-12 keeps its earlier approved partition.
-- User correction2026-10-21: **save/load is single-player; multiplayer has no save/load feature.** H-31 uses native
-  SP save continuation. H-09/D-02/SEQ-08 have independent SP save/replay and real MP authority/reconnect legs.
-  Do not add coordinated multiplayer save/load or preserve the erroneous combined chain as a blocker.
-- Supported runtime114/115 (99.1%) registered,1/115 (0.9%) unbound; pure111/111 registered.
-  Native factory83 bindings/582 variants plus21 partial owner worlds, unrun. Original23:21 newly registered,
-  1 explicitly deferred,1 still active. These are registration counts, never gameplay completion.
-- H-32 now has ordinary UI same-realm next-match controls, original paid/path callbacks and a genuine two-client
-  host-replacement branch. Its matrix driver selects the real multiplayer configuration; missing credentials fail closed.
-  Reload preserves saved identity/seed and does not reapply fixture setup. Paid completion rejects dead owners.
-  H-31 binds native SP save/reload; SEQ-08 extends actual uninterrupted/replayed continuation through native finish.
-- DBG-05 now binds actual native runtime capture, a localhost developer import UI, bounded decoding, hostile inputs
-  and a real ordinary peer's import/capture denial. Import explicitly does not claim physical replay.
-- **H-31 authored source after publication:** native continuation digests now omit measured telemetry only; new saves
-  retain confirmed delivered-income sampling (pending receipts/sample age), while legacy saves restart safely.
-  Native SP save/reload is split so an uninterrupted control can finish before rewinding the real saved scene.
-  New captureNativeContinuationBoundary/armNativeDecisionTrace/replayNativeSavedContinuation helpers retain bounded
-  fingerprints, not raw payloads. Eight native faction/branch worlds bind before-apply, held-applied, actual paid
-  construction/training/research and pause/speed continuation. Missing original premises or differing next decisions fail.
-  Pure saved-lease controls preserve original expiry, recovery age, debt and unresolved/paid claims; native synchronous
-  selection/dispatch never receives an invented middle boundary. These source edits and authored controls remain unrun.
-- **D-02 now authored:**18 variants cover all three selected policies/both factions, SP before-eligible and pending-plan
-  codec continuation, plus separate real MP disconnect/reconnect/checkpoint/host-promotion legs. Native socket and scene
-  hooks record actual boundaries; snapshot/brain/cadence/profile/plan drift and a reset next eligible decision fail.
-  AiPlayerHandler restores an actual reconnect-owned saved continuation when promoted; no private AI/epoch injection.
-  This is snapshot-backed transfer, not a claim of lossless abrupt failover without an available AI checkpoint.
-- **H-08 now authored:** eight faction/branch worlds bind native unobserved-application timeout, original-item
-  cancellation and delayed real receipts. Cancellation request199 needs actual native acknowledgment and one correct
-  lineage-priced refund; fixed receipt release1801 must not duplicate output or resurrect settled ownership.
-  Independent real MP transfer arms retain actual old command/applied receipt and deliver both orders after promotion.
-  Native application count, epoch/watermark/next sequence, physical effects and gameplay continuation must stay valid.
-  Diagnostic rejection history is reported separately, never mistaken for gameplay mutation or fake application proof.
-- **H-09 now authored:** six faction/branch variants connect native-retention-boundary/pressure/witness/multiplayer/
-  proof/runner and mandatory independent predicates. They cross actual2048-entry retention with2049 ordinary human rally commands,
-  never direct dedup edits; native admission/completion witnesses preserve exact input fingerprints. SP uses actual
-  stamped dispatch envelopes and optional real codec reload; MP uses both real clients and bounded64-command batches.
-  prepareNativePeerCheckpoint now owns the shared real reconnect setup used by profile transfer. Native save loading
-  waits for actual scene readiness, saved decision sequence and a settled controller; score-screen Load uses ordinary UI.
-  Full harness projection now retains all four resource balances including food; legacy multiplayer digest is unchanged.
-  Old replay must hit the actual sequence-watermark rejection, retain original unresolved execution and avoid another
-  native application/charge/output. The SP codec leg resumes through the next native decision at201; H-31 separately
-  covers identical-input full-tail parity. MP completion fingerprints on both actual clients must match the sent stream.
-  All controls remain authored/unrun, including the all-resource/full-continuation projection change.
-- **SEQ-08 now authored:** eight faction/branch worlds reuse actual safe saves before apply, held application and
-  progressing construction/training/research. Open native access replaces the unrelated chronic enclosure. The original
-  autonomous control continues to its actual result, then real codec replay must match the complete terminal world and
-  bounded decision trace. A separate real MP chain reconnects/promotes, fences old command/receipt delivery, continues
-  that promoted scene to its actual result and fences original authority again after disposal. Each chain requires
-  native delivered income, paid production/combat and a functioning same-realm second match. No forced result/MP saves.
-- **DBG-01/03 now authored:** twelve combined native variants capture an actual aged recovery incident, opaque native
-  encrypted save and witnessed autonomous599–801 interval. A distinct isolated context loads the untouched native
-  record through ordinary codec Load. Full world/controller/queue/resources and complete selected decision fingerprints
-  must reproduce alongside the independent pure decision. Missing input/decision ranges and source/map/config copies
-  are explicitly refused before replay; arbitrary external-input replay is not claimed. Named tick/decision/original
-  paid-queue progress steps are bounded and must resume identically. Separate real MP history/bookmark controls use
-  actual panel input handlers, synchronous full-state/pause equality and later matching peer hashes. Physical stepping
-  rejects attached MP; Ctrl+click/Alt+click add/return bounded metadata-only bookmarks. All remain authored/unrun.
-- **Next grouped authoring action:** finish D-06, the declared pinned-baseline/calibration/holdout/soak driver.
-  Do not substitute a fresh realm for same-realm lifecycle disposal,
-  controller-only restore, local epoch edit, pure replay or generic command counts for those native obligations.
-- **No execution:** no recipes/tests/lint/types/formatters/builds/browser/server/doctor/context/dedicated validators.
-  Source/diff review and fixture/catalog --write authoring only. Model summaries capped8192 UTF-8 bytes.
-  No gameplay pass is claimed. Machinery necessity/removal review stays last overall.
-- Existing source repairs in this slice: release only current-owned reversible claims; preserve paid/uncertain work;
-  cumulative incident quota survives eviction; live/pure replay share the production manager factory;
-  protected island service mission creation, fixed original cargo readiness and bounded optional-straggler release.
-  Current closure state/source anchors are in CURRENT-EVIDENCE. Publish only task-owned changes, no force push/PR/merge.
+  branch feature/759-skirmish-ai. Publication base6fbae050665f0ef10a13b2b3596c047451205f68 plus task-owned D-06 source; verify containing commit/remote.
+  Preserve unrelated main-checkout issue-template edits. Actual model/effort unknown; no delegation/model switch.
+- All23 original obligations accounted: **22 newly registered,1 explicitly deferred H-21**.
+  New registrations: D-02–06, H-05/H-08/H-09/H-20/H-23/H-31/H-32,
+  SEQ-03/04/06/07/08 and DBG-01/03/04/05/06. All authored/unrun.
+- Supported runtime **115/115 (100%) registered,0 active unbound (0%)**; pure111/111 (100%).
+  Native factory84 bindings/588 variants plus21 retained partial owner worlds. Six D-06 descriptors dispatch a
+  larger frozen workload; these are not six physical matches. Registration is not validated behavior/overall completion.
+- Five runtime deferrals: four #822 island-content rows and human-deferred H-21 larger-unit/formation clearance.
+  H-23 separately implements authorized island establishment on water-enclosed land; no public island map was added.
+- Approved scope: H-05 native cancelled/paid/uncertain work plus pure saved claims; H-12 native atomic prevention
+  plus pure cycle recovery. No invented boundary inside synchronous selection/dispatch.
+- **Save/load is single-player. Multiplayer has no save/load.** H-31 uses native SP continuation;
+  H-09/D-02/SEQ-08 separate SP codec/replay from real MP authority/reconnect/host-transfer controls.
+- D-06 now dispatches tools/ai/run-difficulty-calibration.mjs: immutable candidate/baseline checkouts, separate
+  native builds,20 declared paired seeds (up to100 for uncertainty), disjoint5-seed holdout and3 actual72000-tick
+  soaks. Legal two-AI starts preserve banks/actors/rules; existing Normal opening policies define fixed opponents.
+  Native outcomes, complete denominators, paired confidence and short-soak failures remain explicit.
+- **D-06 acceptance remains open:** pinned legacy AI lacks matching new difficulty/opening policies. Its actual
+  reference matches can execute, but that comparison is explicitly unsupported and cannot pass. Never copy candidate
+  AI into baseline, substitute another revision or waive this limit silently. Short terminal soaks also cannot pass.
+- Source review fixed older D-02 readers/controls to expect saved string profiles easy/normal/hard, not numeric lobby enums.
+  Frozen match artifacts cap128KiB; model summaries cap8192 UTF-8 bytes. Raw records stay local.
+- **Next grouped work:** after explicit execution authorization, run scoped typing/schema and authored negative controls,
+  then supported native core scenarios together; fix earliest causal failures in shared-owner batches. Core failures
+  block expensive calibration. Both-faction victory/calibration remain deferred until separately authorized.
+  Reconcile supported behavior evidence, finish legacy callers/closure, and review machinery necessity LAST.
+- **Current no-execution override persists:** no recipes/tests/lint/types/formatters/builds/browser/server/install/
+  doctor/context/dedicated validators ran. Only source/diff review and fixture/catalog --write authoring.
+  A plain “continue” cannot override this policy: absent authorization, resume source-only closure/known repairs,
+  not another registration batch. All active registrations are now authored; do not invent more preparation stages.
+- Source acceptance map, separate Omission/Final Closure Audits and unresolved limits: CURRENT-EVIDENCE.md.
+  Publish only task-owned paths, normal push/exact remote SHA verification; no force push, PR or merge.
 
 ## What “continue” means
 
@@ -151,7 +104,7 @@ Keep the report self-contained and concise. A documentation-only update reports 
 gameplay progress unchanged. The execution plan links to this format rather than maintaining a second template.
 
 Registration coverage: pure **111/111 = 100% registered / 0% remaining**; supported runtime
-**111/115 = 96.5% registered / 3.5% remaining**, excluding five explicitly deferred runtime rows. These are not overall AI completion.
+**115/115 = 100% registered / 0% remaining**, excluding five explicitly deferred runtime rows. These are not overall AI completion.
 Reconcile behavior evidence per selected package; do not invent a global completion percentage.
 
 ## End-of-gate machinery necessity review

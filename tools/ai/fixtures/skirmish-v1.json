@@ -546,8 +546,7 @@
       "id": "D-06",
       "stages": [15],
       "group": "difficulty",
-      "fixture": null,
-      "runtimeRecipeDraft": "native-scenario-recipes.json",
+      "fixture": "d-06-native-runtime.json",
       "authoredFixture": "difficulty-calibration-v1.json",
       "drivers": ["runtime"]
     },

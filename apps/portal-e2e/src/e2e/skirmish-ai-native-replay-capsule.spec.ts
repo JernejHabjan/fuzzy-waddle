@@ -2,7 +2,7 @@ import { nativeReplayCapsuleBlocker, nativeReplayCapsuleDigest, type NativeRepla
   "./skirmish-ai-native-replay-capsule";
 
 const saved = { owner: { tick: 599, decisionSequence: 29, matchId: "original-match", seed: 759 },
-  profileVersion: "original-profile", profileDifficulty: 1 } as unknown as NativeReplayCapsule["saved"];
+  profileVersion: "skirmish-ai-v1", profileDifficulty: "normal" } as unknown as NativeReplayCapsule["saved"];
 const body: Omit<NativeReplayCapsule, "payloadDigest"> = { schemaVersion: 1, sourceRevision: "a".repeat(40),
   fixtureDigest: "original-fixture", mapId: "AI Open Economy (test only)", saved,
   control: { ...saved, owner: { ...saved.owner, tick: 801, decisionSequence: 40 } },

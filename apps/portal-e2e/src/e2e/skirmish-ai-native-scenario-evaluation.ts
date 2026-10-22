@@ -48,6 +48,7 @@ export function evaluateNativeScenarioVariant(
   if (!fixture && !contract) return [];
   const variant = fixture?.recipe.variants.find((candidate) => candidate.id === result.variantId);
   const branch = contract?.branchByVariant[result.variantId];
+  if (id === "D-06") return ["native_calibration_requires_multi_source_workload_evidence"];
   if (["DBG-01", "DBG-03"].includes(id)) {
     if (!contract || contract.schemaVersion !== 1 || contract.scenarioId !== id ||
         contract.latestTick !== (id === "DBG-01" ? 4000 : 2400) || !branch || !definition.branches.includes(branch) ||
@@ -71,7 +72,7 @@ export function evaluateNativeScenarioVariant(
     const pending = branch.endsWith("pending_plan");
     const saveTick = pending ? 199 : { Easy: 39, Normal: 19, Hard: 9 }[variant.difficulty];
     const failures = nativeSaveProofFailures(pending ? "applied_pending" : "before_apply", result.nativeSave, saveTick);
-    const expectedDifficulty = { Easy: 0, Normal: 1, Hard: 2 }[variant.difficulty];
+    const expectedDifficulty = { Easy: "easy", Normal: "normal", Hard: "hard" }[variant.difficulty];
     if (!result.nativeSave || result.nativeSave.saved.profileDifficulty !== expectedDifficulty ||
         result.nativeSave.sourceRevision !== result.productionPreset?.sourceRevision ||
         result.nativeSave.fixtureDigest !== result.productionPreset?.fixtureDigest)

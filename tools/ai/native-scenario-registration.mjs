@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { nativeScenarioWorld } from "./native-scenario-worlds.mjs";
 import { nativeDomainWorld } from "./native-domain-worlds.mjs";
 import { nativeStrategicWorld } from "./native-strategic-worlds.mjs";
@@ -81,7 +82,7 @@ export function nativeScenarioFixture(id) {
     branches[variantId] = branch;
     return {
       id: variantId, executionKind: "focused_preset",
-      role: "standalone", seed: id === "EXP-01" ? 759933 : 759940,
+      role: "standalone", seed: id === "D-06" ? 759061 : id === "EXP-01" ? 759933 : 759940,
       deadlineRationale: "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
       aiFaction: faction, humanFaction: faction === "Tivara" ? "Skaduwee" : "Tivara",
       difficulty: id === "DBG-06" ? "Hard" : id === "D-04" ? "Easy" : ["D-01", "D-02", "D-03", "D-05"].includes(id) ?
@@ -94,7 +95,8 @@ export function nativeScenarioFixture(id) {
       ...(id === "DOMAIN-02" ? {
         additionalAiPlayers: [{ playerNumber: 3, faction: "Tivara", difficulty: "Easy" }]
       } : {}),
-      ...(["D-02", "H-31", "H-32", "DBG-05"].includes(id) ? {} : { captureConstruction: true, captureCombat: true }), scenarioIds: [id],
+      ...(["D-02", "D-06", "H-31", "H-32", "DBG-05"].includes(id) ? {} :
+        { captureConstruction: true, captureCombat: true }), scenarioIds: [id],
       ...(id === "DBG-05" ? { checkpointTicks: [20] } : {}),
       ...(["DBG-01", "DBG-03"].includes(id) ? { captureConstruction: true, checkpointTicks: [599, 800] } : {}),
       ...(id === "D-02" ? { captureConstruction: true, checkpointTicks: [branch.endsWith("pending_plan") ? 199 :
@@ -109,15 +111,20 @@ export function nativeScenarioFixture(id) {
         executionKind: "focused_natural", mapLabel: "AI Multiplayer (test only)",
         setupRationale: "Actual two-human relay and host-owned AI3; this preset belongs only to the subsequent native AI2 match.",
         nextMatchPresetWorld: world
-      } : { presetWorld: world })
+      } : id === "D-06" ? { executionKind: "focused_natural", mapLabel: "River Crossing",
+        setupRationale: "Dispatch group for the frozen multi-map legal-start calibration driver; no actor/resource preset." } :
+        { presetWorld: world })
     };
   }));
   return {
     schemaVersion: 1, evidenceKind: "runtime", driver: "runtime", scenarioIds: [id], status: "authored_not_executed",
     purpose: binding.acceptance?.requiredOutcome ?? id,
     acceptance: binding.acceptance,
-    ...(binding.capabilityLimits ? { capabilityLimits: binding.capabilityLimits } : {}),
-    recipe: { mapLabel: ["C-06", "DOMAIN-02"].includes(id) ? "AI Multiplayer (test only)" : "AI Open Economy (test only)",
+    ...(binding.capabilityLimits ? { capabilityLimits: id === "D-06" ? [...binding.capabilityLimits,
+      `Frozen workload specification sha256:${createHash("sha256").update(readFileSync(
+        new URL("./fixtures/difficulty-calibration-v1.json", import.meta.url))).digest("hex")}`] : binding.capabilityLimits } : {}),
+    recipe: { mapLabel: id === "D-06" ? "River Crossing" :
+      ["C-06", "DOMAIN-02"].includes(id) ? "AI Multiplayer (test only)" : "AI Open Economy (test only)",
       aiPlayerNumber: 2, simulationTimeScale: 1,
       ...(["D-02", "H-08", "H-09", "H-32", "SEQ-08", "DBG-03", "DBG-05"].includes(id) ? { requiresMultiplayer: true } : {}),
       fixedStepFrames: true, checkpointTicks: ticks, variants },

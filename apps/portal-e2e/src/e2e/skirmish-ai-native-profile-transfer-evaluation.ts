@@ -7,7 +7,7 @@ export function nativeProfileTransferFailures(
   if (!proof) return ["native_profile_transfer_proof_missing"];
   const failures: string[] = [];
   if (proof.aiErrors.length) failures.push("native_profile_transfer_ai_errors");
-  const expectedDifficulty = { Easy: 0, Normal: 1, Hard: 2 }[difficulty];
+  const expectedDifficulty = { Easy: "easy", Normal: "normal", Hard: "hard" }[difficulty];
   const intervalTicks = { Easy: 40, Normal: 20, Hard: 10 }[difficulty];
   if (proof.humanClients !== 2 || !proof.disconnected || proof.snapshotTick !== proof.sourceTick ||
       proof.original.owner.tick !== proof.sourceTick || proof.promoted.owner.tick !== proof.sourceTick ||

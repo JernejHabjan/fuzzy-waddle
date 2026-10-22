@@ -3906,6 +3906,69 @@
           "Global multiplayer pause from a debug bookmark"
         ]
       }
+    },
+    "D-06": {
+      "latestTick": 18000,
+      "checkpointTicks": [
+        20,
+        200,
+        18000
+      ],
+      "branches": [
+        "paired_calibration",
+        "holdout",
+        "long_soaks"
+      ],
+      "capabilityLimits": [
+        "D-06 dispatches tools/ai/run-difficulty-calibration.mjs, not the generic per-variant runner. Six faction/phase descriptors expand the frozen difficulty-calibration-v1.json workload; they are not six physical matches.",
+        "Twenty predeclared seed cells cover both maps/factions and all five fixed native opponent openings, both sides and all three policies. Up to80 disjoint reserved seeds extend uncertain comparisons; five disjoint holdout seeds are never used for tuning.",
+        "Each revision builds in its own detached checkout with its own lockfile. The pinned legacy adapter exposes only native legal starts, commands/world hash and final metrics; its missing new difficulty/opening policies remain an explicit unsupported comparison, never a pass or candidate fallback.",
+        "Three separate72000-tick soaks must actually reach that boundary. Short terminal matches do not count as hour-long evidence. Native correctness, fairness, challenge uncertainty and unsupported baseline policies remain separate verdicts.",
+        "Opaque traces stay local; per-match artifacts are capped128KiB and the model-facing summary8192 UTF-8 bytes. No calibration, build, install, server or browser execution has run during registration authoring."
+      ],
+      "acceptance": {
+        "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/classic-rts-and-difficulty-scenarios.md",
+        "requiredOutcome": "Paired calibration report identifies versions, sample counts/uncertainty and challenge trend; indistinguishable levels remain an explicit tuning failure",
+        "setup": [
+          "Pin immutable candidate/baseline source, map/content/profile versions and ordinary legal starts",
+          "Predeclare 20 paired seeds plus disjoint holdout, side/faction swaps and three 60-minute simulation soaks"
+        ],
+        "actions": [
+          "At the later authorized gate execute equal paired workloads for each difficulty",
+          "Build an offline report from authoritative terminal/recovery outcomes with exact sample denominators"
+        ],
+        "measurements": [
+          "Per-seed outcome and challenge metrics, confidence/uncertainty, baseline adapter identity and actual sample counts",
+          "Soak bounded-state and gameplay outcome evidence separately from short-match calibration"
+        ],
+        "required": [
+          "Report exposes whether difficulty ordering changes challenge with uncertainty",
+          "Indistinguishable levels remain an explicit tuning failure rather than a manufactured trend"
+        ],
+        "forbidden": [
+          "Candidate fallback when baseline unsupported",
+          "Selecting only winning seeds",
+          "Claiming one run establishes difficulty ordering"
+        ],
+        "workloads": {
+          "calibration": "Use existing declared pairedRuns/holdoutSeeds/difficultyPairs/opponentProfiles/mapLabels without silently substituting defaults.",
+          "soaks": [
+            {
+              "seed": 759981,
+              "simulationTicks": 72000
+            },
+            {
+              "seed": 759982,
+              "simulationTicks": 72000
+            },
+            {
+              "seed": 759983,
+              "simulationTicks": 72000
+            }
+          ],
+          "soakPolicy": "50 ms ticks make 72000 ticks sixty simulation minutes per soak. Three separate complete legal-start matches; retain full meaningful bounded-state and outcome evidence, not just a terminal tick. A match ending before 72000 ticks is a shorter terminal sample, not proof of a sixty-minute soak; never silently count it toward that denominator."
+        }
+      }
     }
   }
 }

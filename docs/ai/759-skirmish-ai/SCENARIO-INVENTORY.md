@@ -1,13 +1,13 @@
 # #759 scenario inventory
 
-Registration updated2026-10-21; publication baseb512371023c13823c1428387eb77016b84d12f97 plus owned DBG-01/03 source.
+Registration updated2026-10-22; Publication base6fbae050665f0ef10a13b2b3596c047451205f68 plus task-owned D-06 source; verify containing commit/remote.
 [Execution plan](REMAINING-WORK.md) and [handoff](HANDOFF.md) own order/current status. Open only the selected family.
 
-Pure111/111 (100%); supported runtime114/115 (99.1%),1 unbound (0.9%), plus5 explicitly deferred rows.
-Definitions115/115 comprise114 bindings and1 specification. Twenty-one new registrations in this ongoing batch,
-authored unrun; native factory83 bindings/582 variants plus21 partial owner worlds remain unrun.
+Pure111/111 (100%); supported runtime115/115 (100%),0 active unbound (0%), plus5 explicitly deferred rows.
+Definitions115/115 all have bindings. Twenty-two new registrations in this completed authoring batch,
+authored unrun; native factory84 bindings/588 variants plus21 partial owner worlds remain unrun.
 H-21 is deferred by user2026-10-21. H-23 now includes protected island establishment on actual water-enclosed land.
-No new gameplay pass is claimed. See [current evidence](CURRENT-EVIDENCE.md) and continue the unfinished batch.
+No new gameplay pass is claimed. See [current evidence](CURRENT-EVIDENCE.md) for the later authorized execution gate; do not schedule more registrations.
 
 ## Coverage gaps by family
 
@@ -32,7 +32,7 @@ Registration snapshot only; no percentages of gameplay completion are inferred.
 | lifecycle     | 3         | 0 | 0 | 0 |
 | continuous    | 8         | 0 | 0 | 1 |
 | classic-rts   | 6         | 0 | 0 | 0 |
-| difficulty    | 6         | 0 | 1 | 0 |
+| difficulty    | 6         | 0 | 0 | 0 |
 | debug         | 6         | 0 | 0 | 0 |
 
 ## Scenario-by-scenario coverage snapshot
@@ -245,7 +245,7 @@ catalog renderer at the checkpoint above; refresh from that renderer and the man
 | [D-03](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/classic-rts-and-difficulty-scenarios.md) | Setup must be authored in its fixture | Equal permitted observations/rules across profiles; no hidden current state or unadvertised resource/stat bonuses                                        | Registered [fixture](../../../tools/ai/fixtures/stage-14-adaptation.json); [ai-profile-defaults.spec.ts](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/profiles/ai-profile-defaults.spec.ts)                                                                                                                                            | Registered [native recipe](../../../tools/ai/fixtures/d-03-native-runtime.json); full authored branches, unrun | Native setup/outcome assertions authored; no execution or validation claimed | At the later authorized gate, prove actual premises and required native outcomes |
 | [D-04](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/classic-rts-and-difficulty-scenarios.md) | Setup must be authored in its fixture | Easy still opens, produces useful copies, counters legal threats, retreats and recovers; reduced breadth is not broken behavior                          | Registered [fixture](../../../tools/ai/fixtures/controller-contract-scenarios.json); [ai-combat-contract-scenarios.spec.ts](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/ai-combat-contract-scenarios.spec.ts) | Registered [native recipe](../../../tools/ai/fixtures/d-04-native-runtime.json); full authored branches, unrun | Native setup/outcome assertions authored; no execution or validation claimed | At the later authorized gate, prove actual premises and required native outcomes |
 | [D-05](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/classic-rts-and-difficulty-scenarios.md) | Setup must be authored in its fixture | Caps and reconsideration cadence affect eligible voluntary activity while independent defense/rescue remains serviced                                    | Registered [fixture](../../../tools/ai/fixtures/stage-14-adaptation.json); [ai-adaptation-manager.spec.ts](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-adaptation-manager.spec.ts)                                                                                                                                        | Registered [native recipe](../../../tools/ai/fixtures/d-05-native-runtime.json); full authored branches, unrun | Native setup/outcome assertions authored; no execution or validation claimed | At the later authorized gate, prove actual premises and required native outcomes |
-| [D-06](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/classic-rts-and-difficulty-scenarios.md) | Setup must be authored in its fixture | Paired calibration report identifies versions, sample counts/uncertainty and challenge trend; indistinguishable levels remain an explicit tuning failure | Not required                                                                                                                                                                                                                                                                                                                                                        | Authored [native specification](../../../tools/ai/fixtures/native-scenario-recipes.json); not executable or run | Pending: no complete scenario-level certification asserted | Implement named setup/action/evidence/oracle bindings; execution deferred |
+| [D-06](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/classic-rts-and-difficulty-scenarios.md) | Frozen legal starts,20–100 paired seeds, disjoint holdout,3 native soaks | Paired calibration report identifies versions, sample counts/uncertainty and challenge trend; indistinguishable levels remain an explicit tuning failure | Not required                                                                                                                                                                                                                                                                                                                                                        | Registered [native recipe](../../../tools/ai/fixtures/d-06-native-runtime.json); dedicated frozen-source driver authored unrun | Unrun; pinned legacy difficulty/opening policy comparison explicitly unsupported | At authorized gate execute native workloads; unsupported policy comparison cannot pass |
 
 ## Debugging and reproduction
 
