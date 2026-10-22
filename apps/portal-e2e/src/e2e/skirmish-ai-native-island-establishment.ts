@@ -52,7 +52,7 @@ export function evaluateNativeIslandEstablishment(branch: string, context: Retur
       placement.value.command.tileVec3.x >= 17 && placement.value.command.tileVec3.x <= 22 &&
       placement.value.command.tileVec3.y >= 22 && placement.value.command.tileVec3.y <= 33);
     if (!landings.length || !deposit || !hasNativeSourceDelivery(context.capture?.facts ?? [], {
-      sourceActorId: context.roles["island-source"], sourceOwner: null, playerNumber: 2, resourceType: ResourceType.Wood,
+      sourceActorId: context.role("island-source"), sourceOwner: null, playerNumber: 2, resourceType: ResourceType.Wood,
       depositActorId: deposit?.siteId, fromTick: deposit?.completionTick ?? 3000, throughTick: 3000 }))
       failures.push("island_actual_unload_paid_foothold_and_delivered_income_missing");
   }

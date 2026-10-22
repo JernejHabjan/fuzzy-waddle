@@ -23,7 +23,7 @@ export async function installNativeTransferHooks(page: Page) {
     const state = { disconnected: false, snapshotTick: null as number | null, promoted: false,
       nextDecision: null as { tick: number; sequence: number } | null,
       reconnect: () => socket.connect(), resume: () => {
-        clock.resumeTick("manual");
+        clock.resumeTick();
         scene.game.loop.wake();
       } };
     realm.__nativeTransfer = state;
@@ -31,19 +31,19 @@ export async function installNativeTransferHooks(page: Page) {
     const applied = (event: { tick?: number }) => {
       if (!state.disconnected || event.tick === undefined) return;
       state.snapshotTick = event.tick;
-      clock.pauseTick("manual");
+      clock.pauseTick();
     };
     const migration = communicator.hostMigrated.on.subscribe((event) => {
       if (event.currentHostUserId !== scene.userId) return;
       state.promoted = true;
-      clock.pauseTick("manual");
+      clock.pauseTick();
     });
     const selected = (capture: AiRuntimeDecisionRepro) => {
       if (!state.promoted || state.nextDecision || capture.payload.observation.playerNumber !== 3) return;
       const result = capture.payload.expectedResult;
       if (!result) throw new Error("native_transfer_next_selected_result_missing");
       state.nextDecision = { tick: capture.payload.observation.tick, sequence: result.nextState.scheduler.decisionSequence };
-      clock.pauseTick("manual");
+      clock.pauseTick();
     };
     scene.events.on("local-connection-lost", lost);
     scene.events.on("reconnect-snapshot-applied", applied);

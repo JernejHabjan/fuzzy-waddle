@@ -1,5 +1,35 @@
 # #759 current evidence
 
+## Cross-PC checkpoint — scoped controls checked, native acceptance open (2026-10-22)
+
+The user requests publication of unfinished work and no further browser runs on this thermally constrained PC.
+Start at [HANDOFF.md](HANDOFF.md), then [PC-TRANSFER.md](PC-TRANSFER.md). Implementation base:
+b2c9868bba35818afd4ddad026121732cb6f668b; verify the commit containing this record and remote equality.
+The older authoring-only record below is historical, superseded for the selected batch by explicit execution authority.
+
+1. **Request transport — implemented/checked:** digest-bound, exclusive-create local requests capped8MiB replace
+   oversized environment-variable payloads. Node tooling109/109 includes two transport controls. Raw proof is local;
+   model summaries remain capped8192 bytes.
+2. **Native config repairs — implemented/checked:**582/582 actual preset configs accepted by the browser schema.
+   Empty route declarations removed, route endpoints normalized to2D, H-26 rally points to an owned front actor.
+   Outcome requirements and the strict schema were not weakened. Six D-06 descriptors have no ordinary preset.
+3. **Reader/test integration — implemented/partially checked:** repaired actual-source types, required-role guards,
+   Playwright test registration and lifecycle test fixtures. Phaser90/90, gameplay60/60, UI9/9, reader groups13/13
+   and16/16 passed. Three project type checks passed. Minor later fixture/import edits require final affected rechecks;
+   complete changed-file lint has not been repeated after focused repair of its four errors.
+4. **Pure mapping — checked:**15/15 selected mappings,196 assertions/37 suites. H-32 and DBG owner controls now
+   bind real existing assertions; these are explicitly owner-contract proof, never native acceptance.
+5. **Native outcomes — blocked/unproved:**0/22 selected obligations newly closed. Fourteen SP-capable rows have
+   no usable gameplay evidence; seven real-peer rows are environment-blocked; D-06 expensive execution is deferred.
+   Last D-03 attempt2160074ms,0 ticks/decisions, browserContext.close protocol error; no causal gameplay conclusion.
+6. **Omission Audit:** registrations complete; no new IDs needed. Native behavioral proof, final affected rechecks,
+   multiplayer environment and D-06 baseline compatibility remain explicit gaps, not silently passed requirements.
+7. **Final Closure Audit:** publication is an unfinished checkpoint by user direction. No native acceptance or full
+   stage closure claimed; no browser run remains active. No unrelated main-checkout edits, raw reports, local secrets,
+   dependencies or ignored tmp artifacts belong in the commit. No machinery removal; that remains last overall.
+
+Evidence paths, portable rerun commands and machine-specific limitations are recorded in PC-TRANSFER.md.
+
 ## Continuous registration batch — authoring complete, all new bindings unrun (2026-10-22)
 
 Publication base6fbae050665f0ef10a13b2b3596c047451205f68 plus task-owned D-06 source; verify containing commit/remote.

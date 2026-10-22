@@ -548,7 +548,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [
             {
               "x": 25,
@@ -1167,7 +1166,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [
             {
               "x": 25,
@@ -1777,7 +1775,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [
             {
               "x": 25,
@@ -2387,7 +2384,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [
             {
               "x": 25,
@@ -3006,7 +3002,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [
             {
               "x": 25,
@@ -3616,7 +3611,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [
             {
               "x": 25,

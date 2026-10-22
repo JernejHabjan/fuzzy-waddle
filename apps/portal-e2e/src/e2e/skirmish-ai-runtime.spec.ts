@@ -8,8 +8,9 @@ import { runRegisteredRuntimeVariant } from "./skirmish-ai-runtime-registered-va
 import { last } from "./skirmish-ai-runtime-value";
 import { checkRuntimeProductionReportBridge } from "./skirmish-ai-runtime-production-report";
 import { publishRuntimeResult } from "./skirmish-ai-runtime-result-output";
+import { readRuntimeRequestText } from "./skirmish-ai-runtime-request-transport.mjs";
 
-const runtimeRequestText = process.env.AI_SKIRMISH_RUNTIME_REQUEST;
+const runtimeRequestText = readRuntimeRequestText(process.env);
 
 test.skip(!runtimeRequestText, "The skirmish AI runtime driver is invoked only by the matrix runner.");
 test.setTimeout(1_200_000);
@@ -17,6 +18,7 @@ test.setTimeout(1_200_000);
 test("executes selected AI scenarios in real lobby-started Phaser matches", async ({ browser }) => {
   const request = parseRequest(runtimeRequestText);
   const fixtureRuns = new Map<RuntimeFixtureV1, readonly RuntimeVariantResultV1[]>();
+  const fixtureErrors = new Map<RuntimeFixtureV1, string[]>();
   const scenarioResults: {
     scenarioId: string;
     passed: boolean;
@@ -38,10 +40,15 @@ test("executes selected AI scenarios in real lobby-started Phaser matches", asyn
       )) {
         for (let repetition = 1; repetition <= (variant.repetitions ?? 1); repetition += 1) {
           if (request.diagnosticSelection && repetition !== request.diagnosticSelection.repetition) continue;
-          executed.push({
-            ...(await runRegisteredRuntimeVariant(browser, fixture, variant, request)),
-            repetition
-          });
+          try {
+            executed.push({ ...(await runRegisteredRuntimeVariant(browser, fixture, variant, request)), repetition });
+          } catch (error) {
+            // Preserve successful worlds and continue independent cases; an absent world is never a synthetic pass.
+            const failures = fixtureErrors.get(fixture) ?? [];
+            failures.push(`runtime_variant_failed:${variant.id}:${repetition}:${
+              (error instanceof Error ? error.message : String(error)).slice(0, 1024)}`);
+            fixtureErrors.set(fixture, failures);
+          }
         }
       }
       variants = executed;
@@ -59,14 +66,20 @@ test("executes selected AI scenarios in real lobby-started Phaser matches", asyn
     );
     const diagnosticVariant = scenarioVariants[0];
     const assertion = fixture.assertions[scenarioId];
-    const failures = request.diagnosticSelection
+    let failures: string[];
+    try {
+      failures = request.diagnosticSelection
       ? scenarioVariants.length === 1 && diagnosticVariant
         ? assertion
           ? evaluateRuntimeVariant(scenarioId, assertion, diagnosticVariant, fixture)
           : [`runtime_assertions_missing:${scenarioId}`]
         : ["diagnostic_variant_missing_or_ambiguous"]
-      : evaluateScenario(scenarioId, fixture, scenarioVariants);
+        : evaluateScenario(scenarioId, fixture, scenarioVariants);
+    } catch (error) {
+      failures = [`runtime_oracle_failed:${(error instanceof Error ? error.message : String(error)).slice(0, 1024)}`];
+    }
     failures.push(...bridgeFailures);
+    failures.push(...(fixtureErrors.get(fixture) ?? []));
     scenarioResults.push({ scenarioId, passed: failures.length === 0, failures, variants: scenarioVariants });
   }
 

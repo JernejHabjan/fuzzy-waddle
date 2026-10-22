@@ -66,7 +66,7 @@ export function movementTestFixture() {
     hasAnyActiveStepReservation: jest.fn(() => true),
     getDynamicBlockersForActor: jest.fn((): MovementDynamicBlocker[] => []),
     isFootprintFree: jest.fn(() => true),
-    reserveDestination: jest.fn(() => true)
+    reserveDestination: jest.fn<boolean, Parameters<MovementOccupancyService["reserveDestination"]>>(() => true)
   } satisfies Pick<
     MovementOccupancyService,
     | "releaseStep"

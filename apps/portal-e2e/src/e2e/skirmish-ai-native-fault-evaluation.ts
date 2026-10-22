@@ -37,8 +37,9 @@ export function evaluateNativeFault(branch: string, context: ReturnType<typeof n
     const cadence = frames[0]?.decision.input?.cadence.configuredIntervalTicks ?? 0;
     for (let index = 1; index < injections.length; index++) {
       const before = injections[index - 1], after = injections[index];
-      const incident = incidents.find((entry) => entry.lastFailureTick === before.tick);
-      if (!cadence || !incident || after.tick < incident.retryAtTick) failures.push("fault_retry_cooldown_bypassed");
+      const incident = incidents.find((entry) => entry.lastFailureTick === before?.tick);
+      if (!before || !after || !cadence || !incident || after.tick < incident.retryAtTick)
+        failures.push("fault_retry_cooldown_bypassed");
     }
   }
   if (!frames.some((frame) => frame.tick > 800 && frame.decision.acceptedIntents.length))

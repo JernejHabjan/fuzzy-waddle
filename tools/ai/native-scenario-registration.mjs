@@ -80,6 +80,11 @@ export function nativeScenarioFixture(id) {
     world.fixtureId = id === "DBG-06" ? `dbg-06-${faction.toLowerCase()}-parity` : id === "D-03" ?
       `d-03-${faction.toLowerCase()}-${branch.split("_")[0]}` : variantId;
     branches[variantId] = branch;
+    // An explicit route declaration requires at least one route; empty factory scratch arrays are not declarations.
+    if (world.protectedRoutes?.length === 0) delete world.protectedRoutes;
+    else if (world.protectedRoutes) world.protectedRoutes = world.protectedRoutes.map((route) => ({ ...route,
+      from: { x: route.from.x, y: route.from.y }, to: { x: route.to.x, y: route.to.y }
+    }));
     return {
       id: variantId, executionKind: "focused_preset",
       role: "standalone", seed: id === "D-06" ? 759061 : id === "EXP-01" ? 759933 : 759940,

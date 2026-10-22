@@ -1,10 +1,11 @@
+import { test as it, expect } from "@playwright/test";
 import { nativeSaveProofFailures } from "./skirmish-ai-native-save-evaluation";
 import type { NativeSaveProof } from "./skirmish-ai-native-save-proof";
 
 const boundary = (tick: number): NativeSaveProof["saved"] => ({
   owner: { tick, activeMapScenes: 1, handlerCount: 1, controllerCount: 1, nativePlayerCount: 1,
     seed: 759940, matchId: "match:original", decisionSequence: tick === 19 ? 0 : 20 },
-  worldDigest: "full-shared-queue-and-world", brainDigest: "full-brain", profileVersion: "profile-v1", profileDifficulty: 1,
+  worldDigest: "full-shared-queue-and-world", brainDigest: "full-brain", profileVersion: "profile-v1", profileDifficulty: "normal",
   archetypeId: "opening:original", blackboardDigest: "original-blackboard", incomeSamplingDigest: "original-income",
   observationMemoryDigest: "original-observation-memory",
   reconciliationDigest: "original-reconciliation",

@@ -449,7 +449,7 @@
       "stages": [13, 14, 15],
       "group": "lifecycle",
       "fixture": "h-32-native-runtime.json",
-      "authoredFixture": "stage-14-adaptation.json",
+      "authoredFixture": "controller-lifecycle-scenarios.json",
       "drivers": ["pure", "runtime"]
     },
     {

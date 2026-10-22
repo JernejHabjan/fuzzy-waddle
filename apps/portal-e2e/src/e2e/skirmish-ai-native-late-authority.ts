@@ -13,7 +13,7 @@ export function evaluateNativeLateAuthority(branch: string, context: ReturnType<
   const original = held.find((fact) => fact.delivery.outcome?.kind === "applied")?.delivery.outcome;
   if (!original?.effectId || original.authorityEpoch !== 0 || new Set(held.map((fact) => fact.delivery.outcome?.commandId)).size !== 1)
     return ["late_authority_original_applied_command_missing_or_ambiguous"];
-  const commandId = original.commandId, brainCommandId = `command:${commandId}`;
+  const commandId = original.commandId, brainCommandId = `command:${commandId}` as const;
   const releases = deliveries.filter((fact) => fact.delivery.phase === "released");
   if (!releases.length || deliveries.some((fact) => fact.delivery.faultId !== "original-ai-receipt") ||
       releases.some((fact) => fact.tick !== 1801 || !fact.delivery.outcome ||

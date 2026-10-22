@@ -20,6 +20,7 @@ function fixture(positions: readonly (readonly [number, number])[]) {
       ...source.map,
       bounds: { status: "known", value: { width: 12, height: 12 }, observedTick: 200 },
       staticRevision: 1,
+      regionGeneration: { generation: 1, status: "ready", continuationCursor: 0 },
       frontierAccessNodeIds: [],
       scoutCoverageAccessNodeIds: [],
       dynamicObstacleActorIds: [],

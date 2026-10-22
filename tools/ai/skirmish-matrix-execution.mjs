@@ -7,6 +7,7 @@ import { pureFixtureReference, runtimeFixtureReference } from "./skirmish-matrix
 import { digestString, readHead, readJson, readWorkingTreeSource } from "./skirmish-matrix-io.mjs";
 import { createRuntimeResultPath, readRuntimeResult } from "./skirmish-runtime-result.mjs";
 import { invokeCalibrationHarness } from "./skirmish-calibration-execution.mjs";
+import { writeRuntimeRequest } from "../../apps/portal-e2e/src/e2e/skirmish-ai-runtime-request-transport.mjs";
 
 export function invokeSelectedHarness(input, context) {
   const { manifest, fixtureDirectory } = context;
@@ -220,20 +221,19 @@ function invokeRuntimeHarness(input, context) {
   const resultArtifact = createRuntimeResultPath(workspaceRoot);
   const sourceRevision = input.candidate ?? readHead();
   const requiresMultiplayer = fixtures.some((fixture) => fixture.recipe.requiresMultiplayer === true);
+  const requestPath = `${resultArtifact}.request.json`;
+  const requestDigest = writeRuntimeRequest(requestPath, {
+    schemaVersion: 1, sourceRevision, dirtySourceDigest: workingTreeDigest, fixtureDigest,
+    seed: input.seed ?? null, scenarioIds: input.rows.map((row) => row.id),
+    diagnosticSelection: input.diagnosticSelection ?? undefined, fixtures
+  });
   const environment = {
     ...process.env,
     ...(requiresMultiplayer ? { AI_MULTIPLAYER_E2E: "1" } : {}),
     AI_SKIRMISH_RUNTIME_RESULT_PATH: resultArtifact,
-    AI_SKIRMISH_RUNTIME_REQUEST: JSON.stringify({
-      schemaVersion: 1,
-      sourceRevision,
-      dirtySourceDigest: workingTreeDigest,
-      fixtureDigest,
-      seed: input.seed ?? null,
-      scenarioIds: input.rows.map((row) => row.id),
-      diagnosticSelection: input.diagnosticSelection ?? undefined,
-      fixtures
-    })
+    AI_SKIRMISH_RUNTIME_REQUEST: "",
+    AI_SKIRMISH_RUNTIME_REQUEST_PATH: requestPath,
+    AI_SKIRMISH_RUNTIME_REQUEST_SHA256: requestDigest
   };
   const command = spawnSync(
     "pnpm",

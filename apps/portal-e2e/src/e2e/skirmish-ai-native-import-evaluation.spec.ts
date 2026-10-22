@@ -1,3 +1,4 @@
+import { test as it, expect } from "@playwright/test";
 import { nativeImportProofFailures } from "./skirmish-ai-native-import-evaluation";
 import type { NativeImportProof } from "./skirmish-ai-native-import-proof";
 

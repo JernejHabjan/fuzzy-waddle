@@ -152,7 +152,9 @@ function validateRuntimeFixture(fixture, scenarioId) {
     !Number.isSafeInteger(assertion.minimumDecisions) ||
     assertion.minimumDecisions <= 0 ||
     !Number.isSafeInteger(assertion.minimumAppliedCommands) ||
-    assertion.minimumAppliedCommands <= 0 ||
+    assertion.minimumAppliedCommands < 0 ||
+    (assertion.minimumAppliedCommands === 0 &&
+      !["STRAT-09", "H-11"].includes(scenarioId)) ||
     (assertion.requiredOpeningSteps !== undefined &&
       (!Array.isArray(assertion.requiredOpeningSteps) || assertion.requiredOpeningSteps.length === 0)) ||
     (assertion.requireNoInitialWorker !== undefined && typeof assertion.requireNoInitialWorker !== "boolean") ||

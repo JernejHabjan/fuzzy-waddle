@@ -1,3 +1,4 @@
+import { requireAiTestEntry } from "../testing/ai-test-fixtures";
 import { aiDeadline, type AiPlanId } from "../contracts/ai-core-types";
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
 import { createAiProductionPolicyFixture } from "../testing/ai-production-policy-fixture";
@@ -21,7 +22,7 @@ it("finds a cycle behind an additional outgoing edge, without releasing its acyc
   const normal = planAiDecisions(f.observation, f.state, [], [], f.profile);
   const reverse = planAiDecisions(f.observation, { ...f.state, waitEdges: [...f.state.waitEdges].reverse() }, [], [], f.profile);
   expect(normal.preDecisions).toHaveLength(1);
-  expect(normal.preDecisions[0].intent.planId).toBe("plan:b");
+  expect(requireAiTestEntry(normal.preDecisions, 0).intent.planId).toBe("plan:b");
   expect(reverse.preDecisions).toEqual(normal.preDecisions);
   expect(normal.state.reservations.some((claim) => claim.ownerPlanId === "plan:a")).toBe(true);
 });
@@ -69,5 +70,5 @@ it("protects a provisional label when current original outcomes already prove di
       authorityEpoch: 0, sequence: 1, commandId: "command:original", intentId: "intent:original", effectId: "effect:original" } }] };
   expect(selectAiCycleVictim(state)).toBe("plan:b");
   const result = planAiDecisions(f.observation, { ...state, pendingOutcomes: [] }, state.pendingOutcomes, [], f.profile);
-  expect(result.preDecisions[0].intent.planId).toBe("plan:b");
+  expect(requireAiTestEntry(result.preDecisions, 0).intent.planId).toBe("plan:b");
 });

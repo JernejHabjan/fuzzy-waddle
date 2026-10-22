@@ -24,16 +24,16 @@ export function evaluateNativeEconomySequence(branch: string, context: ReturnTyp
     const redundantServedSource = deposits.some((deposit) => deposit.fact.tick <= 1200 &&
       deposit.selected.decision.acceptedIntents.some((intent) => intent.kind === "construct" &&
         intent.effectId.replace(/^effect:/, "") === deposit.value.command.execution?.effectId &&
-        intent.demandId === `demand:resource-service:${context.roles["spare-tree"]}`));
+        intent.demandId === `demand:resource-service:${context.role("spare-tree")}`));
     if (!credits.some((entry) => entry.fact.tick > 160 && entry.fact.tick <= 1200 &&
-      entry.value.target?.actorId === context.roles["surviving-drain"]) || redundantServedSource)
+      entry.value.target?.actorId === context.role("surviving-drain")) || redundantServedSource)
       failures.push("sequence_efficient_existing_service_not_used_or_redundantly_duplicated");
   } else if (!deposits.some((deposit) => credits.some((entry) => entry.value.target?.actorId === deposit.siteId &&
     entry.value.resourceType === "wood" && entry.fact.tick > deposit.completionTick && entry.fact.tick <= 8000)))
     failures.push("sequence_useful_duplicate_deposit_never_completed_and_delivered");
   if (branch === "congested") {
     const users = context.facts.filter((fact) => fact.tick <= 1200 && fact.kind === "spatial_authority" &&
-      fact.spatial.kind === "service_attempt" && fact.spatial.target.actorId === context.roles["surviving-drain"])
+      fact.spatial.kind === "service_attempt" && fact.spatial.target.actorId === context.role("surviving-drain"))
       .flatMap((fact) => fact.kind === "spatial_authority" && fact.spatial.kind === "service_attempt" &&
         fact.spatial.source.actorId ? [fact.spatial.source.actorId] : []);
     if (new Set(users).size < 3) failures.push("sequence_shared_surviving_drain_pressure_not_exercised");
@@ -71,7 +71,7 @@ export function evaluateNativeSupplySequence(branch: string, context: ReturnType
     if (refunds.length > 1 || complete.length > 1 || refunds.length && complete.length)
       failures.push("sequence_original_paid_item_was_refunded_or_created_twice");
     if (context.frames.some((frame) => frame.tick > 1000 && frame.boundaryState?.pendingCommands.some((command) =>
-      command.scheduledTick <= 200 && command.unresolvedActorIds.includes(context.roles["ready-producer"]))))
+      command.scheduledTick <= 200 && command.unresolvedActorIds.includes(context.role("ready-producer")))))
       failures.push("sequence_destroyed_producer_kept_ghost_pending_work");
   }
   const renewed = nativePaidMissionOutputs(context).filter((output) => output.fact.tick >= readyTick &&

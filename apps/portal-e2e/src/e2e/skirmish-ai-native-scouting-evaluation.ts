@@ -57,7 +57,7 @@ export function evaluateNativeScouting(
   scenarioId: string, branch: string, context: ReturnType<typeof nativeScenarioContext>
 ): string[] {
   const failures = nativeScoutingFairness(context);
-  const targetId = context.roles["contact-group"], scoutId = context.roles["scout-probe"];
+  const targetId = context.role("contact-group"), scoutId = context.role("scout-probe");
   const visible = context.frames.filter((frame) => frame.decision.input?.observation?.actors.some((actor) =>
     actor.actorId === targetId && actor.visibility === "visible"));
   const remembered = context.frames.filter((frame) => frame.decision.input?.observation?.actors.some((actor) =>
@@ -94,7 +94,7 @@ export function evaluateNativeScouting(
       fact.damage.target.actorId === targetId && fact.damage.initiator === null && fact.damage.amount > 0))
       failures.push("scouting_hidden_health_control_never_changed_native_durability");
     if (branch === "hidden_queue" && !context.opponent?.facts.some((fact) => fact.kind === "queue_mutation" &&
-      fact.tick >= 600 && fact.mutation.actorId === context.roles["enemy-producer"]))
+      fact.tick >= 600 && fact.mutation.actorId === context.role("enemy-producer")))
       failures.push("scouting_hidden_queue_control_never_changed_native_queue");
   }
   if (scenarioId === "SCOUT-03") {

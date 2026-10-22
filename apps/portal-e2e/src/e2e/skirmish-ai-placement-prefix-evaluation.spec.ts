@@ -31,7 +31,7 @@ function input(): Parameters<typeof evaluateRuntimePlacementPrefixes>[1] {
       schemaVersion: 1, kind: "production_authority_capture", startedTick: 0, playerNumber: 2,
       droppedFactCount: 0, droppedSnapshotCount: 0, gaps: [], snapshots: [], facts: [
         { kind: "spatial_authority", sequence: 1, tick: 0, playerNumber: 2, spatial: {
-          kind: "placement", command, site: { actorId: "site", objectName: "Wall", canonicalObjectName: "Wall",
+          kind: "placement", command, site: { actorId: "site", objectName: "Wall", canonicalObjectName: ObjectNames.Wall,
             playerNumber: 2, active: true, alive: true, finished: false, indexed: true },
           footprint: [{ x: 10, y: 10 }], legal: true, clockTick: 0, sceneActive: true,
           snapshotRestoreInProgress: false, gaps: [], clearance: sample()

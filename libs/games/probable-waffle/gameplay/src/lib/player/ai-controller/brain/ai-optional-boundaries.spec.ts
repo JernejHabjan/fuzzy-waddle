@@ -1,3 +1,4 @@
+import { requireAiTestEntry } from "../testing/ai-test-fixtures";
 import { PureAiBrain } from "./ai-brain";
 import { createAiProductionPolicyFixture } from "../testing/ai-production-policy-fixture";
 import type { AiProposalManagerV1 } from "../planning/ai-manager-proposal";
@@ -40,7 +41,7 @@ it("a diagnostic exception cannot discard accepted work or poison mandatory auth
   expect(result.acceptedIntents).toHaveLength(1);
   expect(result.nextState.authority.health).toBe("healthy");
   expect(result.debugSnapshot.completeness.alternatives).toBe("not_recorded");
-  expect(result.nextState.scheduler.boundaryFaults?.[0].owner).toBe("debug_projection");
+  expect(requireAiTestEntry(result.nextState.scheduler.boundaryFaults, 0).owner).toBe("debug_projection");
 });
 
 it("mandatory corruption is never converted into an empty optional proposal", () => {

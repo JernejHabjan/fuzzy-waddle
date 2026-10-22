@@ -1,3 +1,4 @@
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import Phaser from "phaser";
 import { type ProbableWafflePlayer, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { emitResource, getPlayer, isSnapshotApplyInProgress } from "../../../data/scene-data";
@@ -31,7 +32,7 @@ describe("gathered resource receipts", () => {
     const f = fixture();
     f.credit();
     expect(emitResource).toHaveBeenCalledTimes(1);
-    expect(jest.mocked(emitResource).mock.calls[0][2]).toBe(f.amounts);
+    expect(requireAiTestEntry(jest.mocked(emitResource).mock.calls, 0)[2]).toBe(f.amounts);
     expect(f.listener).toHaveBeenCalledWith(2, ResourceType.Wood, 10);
   });
   it.each([0, 5, 20])("does not invent income for a missing/partial/overwritten credit (%s)", (amount) => {

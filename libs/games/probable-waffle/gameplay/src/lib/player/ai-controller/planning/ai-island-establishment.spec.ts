@@ -27,7 +27,7 @@ function setup() {
   const source: AiObservedActorV1 = { ...actor("island-source", ObjectNames.Tree1, toNodeId, 4), relation: "neutral",
     visibility: "visible", owner: null, resourceState: { status: "known", observedTick: 20,
       value: { resourceType: ResourceType.Wood, available: { status: "known", value: 2000, observedTick: 20 },
-        carried: { status: "known", value: 0, observedTick: 20 }, growthReadyTick: { status: "unknown", reason: "not_growth" },
+        carried: { status: "known", value: 0, observedTick: 20 }, growthReadyTick: { status: "unknown", reason: "not_supported" },
         serviceCapacity: { status: "known", value: 4, observedTick: 20 } } } };
   const boat: AiObservedActorV1 = { ...actor("boat", ObjectNames.CommonBoat, built.waterNodeByTileKey.get("1,0")!, 1),
     containerState: { status: "known", observedTick: 20, value: { capacity: 4, passengerIds: [], pendingPassengerIds: [],

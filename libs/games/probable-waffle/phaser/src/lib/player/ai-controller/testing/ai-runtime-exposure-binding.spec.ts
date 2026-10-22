@@ -1,3 +1,4 @@
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import type Phaser from "phaser";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import {
@@ -60,7 +61,7 @@ function fixture(armed = false) {
     playerNumber: actor === actors[2] ? 3 : 2,
     active: true,
     alive: !dead.has(actor),
-    indexed: indexed.get(ids[actors.indexOf(actor)]) === actor,
+    indexed: indexed.get(requireAiTestEntry(ids, actors.indexOf(actor))) === actor,
     finished: true
   }));
   const base = unspentClaimFixture().decision;
@@ -118,9 +119,9 @@ function fixture(armed = false) {
     decision: { ...base, input }
   });
   const killThreat = () => {
-    dead.add(actors[2]);
+    dead.add(requireAiTestEntry(actors, 2));
     indexed.delete("enemy");
-    return captureAiRuntimeCreatedActor(actors[2]);
+    return captureAiRuntimeCreatedActor(requireAiTestEntry(actors, 2));
   };
   return { binding, indexed, visible, distance, threatPosition, weapon, killThreat, actors };
 }

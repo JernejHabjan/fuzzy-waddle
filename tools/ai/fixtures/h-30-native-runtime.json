@@ -455,7 +455,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "brainFault": {
             "kind": "throw",
@@ -870,7 +869,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "brainFault": {
             "kind": "nan",
@@ -1285,7 +1283,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "brainFault": {
             "kind": "cost",
@@ -1700,7 +1697,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "brainFault": {
             "kind": "debug",
@@ -2115,7 +2111,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "brainFault": {
             "kind": "mandatory",
@@ -2530,7 +2525,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "brainFault": {
             "kind": "throw",
@@ -2945,7 +2939,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "brainFault": {
             "kind": "nan",
@@ -3360,7 +3353,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "brainFault": {
             "kind": "cost",
@@ -3775,7 +3767,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "brainFault": {
             "kind": "debug",
@@ -4190,7 +4181,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "brainFault": {
             "kind": "mandatory",

@@ -481,7 +481,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "researchQueues": [
             {
@@ -881,7 +880,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": []
         }
       },
@@ -1282,7 +1280,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": []
         }
       },
@@ -1683,7 +1680,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [
             {
               "x": 25,
@@ -2253,7 +2249,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "researchQueues": [
             {
@@ -2653,7 +2648,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": []
         }
       },
@@ -3054,7 +3048,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": []
         }
       },
@@ -3455,7 +3448,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [
             {
               "x": 25,

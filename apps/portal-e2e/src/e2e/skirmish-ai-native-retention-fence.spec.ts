@@ -1,3 +1,4 @@
+import { test as it, expect } from "@playwright/test";
 import { nativeRetentionFenceFailures } from "./skirmish-ai-native-retention-fence";
 import type { GameCommandExecution } from "@fuzzy-waddle/probable-waffle-protocol";
 

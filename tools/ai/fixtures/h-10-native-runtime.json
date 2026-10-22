@@ -835,7 +835,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "receiptFault": {
             "id": "original-ai-receipt",
@@ -1624,7 +1623,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "receiptFault": {
             "id": "original-ai-receipt",
@@ -2413,7 +2411,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "receiptFault": {
             "id": "original-ai-receipt",
@@ -3202,7 +3199,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "receiptFault": {
             "id": "original-ai-receipt",
@@ -3991,7 +3987,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "receiptFault": {
             "id": "original-ai-receipt",
@@ -4780,7 +4775,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "receiptFault": {
             "id": "original-ai-receipt",
@@ -5569,7 +5563,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "receiptFault": {
             "id": "original-ai-receipt",
@@ -6358,7 +6351,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "receiptFault": {
             "id": "original-ai-receipt",

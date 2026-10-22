@@ -3,7 +3,44 @@
 Default resume page: read this first, then only the selected package in [REMAINING-WORK.md](REMAINING-WORK.md).
 Do not load the full plan directory or archive on startup.
 
-## Current cursor — registration authoring complete; execution pending, 2026-10-22
+## Current cursor — unfinished checkpoint for another PC, 2026-10-22
+
+Latest user instruction: commit the unfinished changes and prepare a cross-PC handoff. **Do not launch browser runs
+on this PC: thermal throttling makes them unsuitable here.** Read [PC-TRANSFER.md](PC-TRANSFER.md) for setup,
+exact resume commands, evidence and the non-browser work queue. This is a publication checkpoint, not stage closure.
+The next agent verifies the commit containing this record and its remote SHA; no self-referential commit hash is embedded.
+No owned browser/matrix process remained active at this checkpoint. Ignored tmp/ artifacts are not transferred by Git.
+
+The last D-03 diagnostic failed after2160074ms with0 ticks/decisions and a browser-context disposal error.
+It supplies no gameplay pass and does not establish a gameplay defect. All22 selected native obligations remain open:
+14 SP-capable rows lack usable evidence,7 real-peer rows lack local Supabase/Docker, and D-06 has driver controls only.
+The scoped results below were collected before publication; final complete changed-file lint and final post-edit
+affected rechecks remain unrun. Actual model/effort unknown. No next implementation batch is started at this boundary.
+
+### Previous execution cursor and retained check results
+
+User explicitly authorized the proposed large batch with “go”, then “continue”. The earlier no-execution authoring
+override is superseded for this batch: scoped typing/schema/negative controls, all22 newly registered obligations
+(D-06 driver/refusal controls only), affected native controls and grouped causal repairs. Full-match victory reruns,
+expensive calibration/holdout/soaks and machinery removal remain deferred. No new registration stages.
+
+- Checkpoint implementation base is b2c9868bba35818afd4ddad026121732cb6f668b; verify the containing checkpoint commit.
+- Tool controls109/109; selected pure matrix15/15 mappings,196 assertions; Phaser90/90; gameplay60/60;
+  UI startup9/9; reader controls13/13. These are not native scenario passes. Browser-harness/Phaser/gameplay typing
+  repaired; final affected rechecks remain before publication.
+- All582 native preset configs pass the actual browser schema after fixing empty route declarations, 2D route
+  points and H-26's enemy rally target. Generated fixtures preserve the original outcome obligations.
+- Large runtime requests now use a bounded8MiB digest-bound local file after the original inline request hit E2BIG.
+  Raw proof stays local; use only bounded summaries for model inspection.
+- First native attempts had zero usable runtime evidence: E2BIG, unhydrated audio, then rejected preset config.
+  Audio is now hydrated from the shared Git LFS cache. No browser retry on this PC; resume on the other PC.
+- Seven real-peer scenarios are blocked by unavailable local Supabase/Docker: D-02,H-08,H-09,H-32,SEQ-08,DBG-03,DBG-05.
+  No multiplayer save/load is added. The14 selected single-player-capable scenarios are D-03,D-04,D-05,H-05,H-20,H-23,
+  H-31,SEQ-03,SEQ-04,SEQ-06,SEQ-07,DBG-01,DBG-04,DBG-06. Retain complete attempts and fix the earliest actual cause.
+- Doctor passed; context tool failed issue_plan_count:759:5. Use this authoritative handoff; no unrelated context-tool
+  refactor is required to run the selected checks.
+
+The registration snapshot below remains source history; the authorization and active cursor above take precedence.
 
 - Worktree /home/jernej/.codex/worktrees/skirmish-authority-recovery/fuzzy-waddle;
   branch feature/759-skirmish-ai. Publication base6fbae050665f0ef10a13b2b3596c047451205f68 plus task-owned D-06 source; verify containing commit/remote.
@@ -29,14 +66,14 @@ Do not load the full plan directory or archive on startup.
   AI into baseline, substitute another revision or waive this limit silently. Short terminal soaks also cannot pass.
 - Source review fixed older D-02 readers/controls to expect saved string profiles easy/normal/hard, not numeric lobby enums.
   Frozen match artifacts cap128KiB; model summaries cap8192 UTF-8 bytes. Raw records stay local.
-- **Next grouped work:** after explicit execution authorization, run scoped typing/schema and authored negative controls,
+- **Next grouped work:** execution is now authorized; run scoped typing/schema and authored negative controls,
   then supported native core scenarios together; fix earliest causal failures in shared-owner batches. Core failures
   block expensive calibration. Both-faction victory/calibration remain deferred until separately authorized.
   Reconcile supported behavior evidence, finish legacy callers/closure, and review machinery necessity LAST.
-- **Current no-execution override persists:** no recipes/tests/lint/types/formatters/builds/browser/server/install/
+- **Previous authoring batch only:** no recipes/tests/lint/types/formatters/builds/browser/server/install/
   doctor/context/dedicated validators ran. Only source/diff review and fixture/catalog --write authoring.
-  A plain “continue” cannot override this policy: absent authorization, resume source-only closure/known repairs,
-  not another registration batch. All active registrations are now authored; do not invent more preparation stages.
+  That earlier override was explicitly superseded for the active batch above. All active registrations are authored;
+  do not invent more preparation stages.
 - Source acceptance map, separate Omission/Final Closure Audits and unresolved limits: CURRENT-EVIDENCE.md.
   Publish only task-owned paths, normal push/exact remote SHA verification; no force push, PR or merge.
 
@@ -68,11 +105,18 @@ Use Sol for unresolved causal/design questions; economical models can implement 
 No per-file/scenario model-switch pauses. Commit/push task-owned changes, verify remote equality, report and pause at
 the agreed coherent boundary. Do not merge, force-push or create a PR unless separately authorized.
 
-## Verification policy — current no-execution authoring override
+## Verification policy — cross-PC checkpoint
 
-User2026-10-18 requests source review/repairs but **no recipes, tests, lint or similar verification execution**.
-This overrides the earlier focused-check policy below for this authoring batch and remains the resume default until
-the user authorizes execution. Reading source/diffs, writing files and regenerating the catalog are authoring work.
+Latest instruction pauses browser execution on this PC. Lightweight non-browser authoring/checks remain within the
+authorized scope, but this turn only checkpoints and hands off. On the other PC, the previously authorized selected
+execution batch can resume; deferred expensive gates still need their separate later authorization.
+
+User2026-10-22 explicitly authorized the large execution/repair batch described in the current cursor. Continue it
+without another per-case approval. The earlier authoring-only policy below is historical, not the resume default.
+
+Historical2026-10-18 authoring policy requested source review/repairs without recipe/test/lint execution.
+It applied to that earlier batch and was superseded by the2026-10-22 execution authorization.
+Reading source/diffs, writing files and regenerating the catalog are authoring work.
 Keep authored specifications, executable registration, executed checks and passing behavior separate. Publication
 does not certify unrun code. Do not run doctor/context/validators merely because a skill lists them.
 

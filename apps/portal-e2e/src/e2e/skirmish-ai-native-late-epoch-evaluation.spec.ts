@@ -1,10 +1,11 @@
+import { test as it, expect } from "@playwright/test";
 import { nativeLateEpochReplayFailures } from "./skirmish-ai-native-late-epoch-evaluation";
 
 type Proof = NonNullable<Parameters<typeof nativeLateEpochReplayFailures>[1]>;
 const continuation: Proof["beforeContinuation"] = {
   owner: { tick: 79, activeMapScenes: 1, handlerCount: 1, controllerCount: 1, nativePlayerCount: 1,
     seed: 759940, matchId: "match:original", decisionSequence: 3 },
-  worldDigest: "full-world", brainDigest: "original-brain", profileVersion: "profile-v1", profileDifficulty: 1,
+  worldDigest: "full-world", brainDigest: "original-brain", profileVersion: "profile-v1", profileDifficulty: "normal",
   archetypeId: "original-archetype", blackboardDigest: "original-blackboard", incomeSamplingDigest: "original-income",
   observationMemoryDigest: "original-observation-memory", reconciliationDigest: "original-pending-and-age",
   cadenceDigest: "original-cadence", elapsedMilliseconds: 950, recoveryDigest: "original-recovery", recoveryCount: 1,

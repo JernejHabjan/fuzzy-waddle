@@ -352,8 +352,7 @@ describe("paid queue callback and shutdown fences", () => {
     f.commands.next(purchase());
     const item = requireAiTestEntry(f.queue.allItems, 0);
     if (!item.productionData) throw new Error("production_data_missing");
-    item.productionData.costData.costType = PaymentType.PayOverTime;
-    item.productionData.costData.productionTime = 0;
+    item.productionData.costData = { ...item.productionData.costData, costType: PaymentType.PayOverTime, productionTime: 0 };
     item.totalTime = item.remainingTime = 0;
     f.commands.next(cancel());
     expect(emitResource).toHaveBeenLastCalledWith(f.scene, "resource.added", { food: 0 }, 2);

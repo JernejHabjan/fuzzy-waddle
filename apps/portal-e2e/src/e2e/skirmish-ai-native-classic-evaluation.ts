@@ -22,7 +22,7 @@ function transitionFailures(branch: string, context: ReturnType<typeof nativeSce
   if (initial.length !== 4) failures.push("classic_transition_original_paid_queue_missing");
   const frames = context.frames.filter((frame) => frame.tick >= 400);
   if (!frames.some((frame) => frame.decision.economyProduction.adaptation.lastTransitionTick !== null &&
-      frame.decision.economyProduction.adaptation.evidence.some((evidence) => evidence.sourceContactId === context.roles["new-contact"])))
+      frame.decision.economyProduction.adaptation.evidence.some((evidence) => evidence.sourceContactId === context.role("new-contact"))))
     failures.push("classic_transition_has_no_fair_causal_evidence");
   for (const item of initial) {
     const complete = nativePaidMissionOutputs(context).filter((output) => output.item.itemId === item.itemId);
@@ -35,7 +35,7 @@ function transitionFailures(branch: string, context: ReturnType<typeof nativeSce
   }
   for (const role of ["ready-producer", "ready-house", "own-deposit"])
     if (!nativeRetainedActor(context, context.roles[role])) failures.push(`classic_useful_completed_asset_lost:${role}`);
-  const plans = context.frames.map((frame) => frame.decision.opening?.planId);
+  const plans = context.frames.map((frame) => frame.decision.opening?.plan?.planId);
   if (new Set(plans).size > 1) failures.push("classic_transition_restarted_opening");
   if (branch === "obsolete" && !context.facts.some((fact) => fact.kind === "queue_resource" &&
       initial.some((item) => item.itemId === fact.resource.itemId) && fact.tick >= 400 &&
@@ -50,7 +50,7 @@ function windowFailures(branch: string, context: ReturnType<typeof nativeScenari
   const failures: string[] = [], close = branch === "window_closed" ? 800 : 1200;
   const research = context.facts.find((fact) => fact.kind === "research_completed" &&
     fact.researchType === (context.result.aiFaction === "Tivara" ? "tivaraMacemanUpgradeLevel2" : "skaduweeWarriorUpgradeLevel2"));
-  const hits = nativeWeaponHits(context, context.roles["contact-group"]);
+  const hits = nativeWeaponHits(context, context.role("contact-group"));
   if (branch === "upgrade_ready" && (!research || research.tick >= close || !hits.some((hit) =>
       hit.tick >= research.tick && hit.tick < close))) failures.push("classic_paid_upgrade_window_not_used");
   if (branch === "optional_delayed" && (!hits.some((hit) => hit.tick < close) ||
@@ -63,7 +63,7 @@ function windowFailures(branch: string, context: ReturnType<typeof nativeScenari
     if (!seen || !research || research.tick <= close) failures.push("classic_window_did_not_close_before_real_research");
     if (!context.frames.some((frame) => frame.tick > (seen?.tick ?? Infinity) && frame.tick <= (seen?.tick ?? 0) + 400 &&
         frame.decision.missionState?.squads.some((squad) => ["retreat", "regroup", "recover"].includes(squad.state))) ||
-        !context.arrived(context.roles["ranged-probe"], close).length)
+        !context.arrived(context.role("ranged-probe"), close).length)
       failures.push("classic_closed_window_has_no_bounded_feasible_replan_effect");
   }
   return failures;
@@ -90,19 +90,19 @@ function armyDemandFailures(branch: string, context: ReturnType<typeof nativeSce
       failures.push("classic_fulfilled_demand_keeps_buying_extra_copies");
   }
   if (branch === "need_removed" && !context.result.perturbations.some((event) => event.id === "loss-original-mission" &&
-      event.affectedActorId === context.roles["contact-group"])) failures.push("classic_demand_removal_not_natively_applied");
+      event.affectedActorId === context.role("contact-group"))) failures.push("classic_demand_removal_not_natively_applied");
   if (branch === "paid_queue" && context.result.presetInitialQueueItems.some((item) =>
       outputs.filter((output) => output.item.itemId === item.itemId).length !== 1))
     failures.push("classic_paid_queue_was_not_counted_once");
-  if (!hasNativeSourceDelivery(context.capture?.facts ?? [], { sourceActorId: context.roles["own-source"], sourceOwner: null,
-    playerNumber: 2, resourceType: ResourceType.Wood, fromTick: 0, throughTick: 4000, depositActorId: context.roles["own-deposit"] }))
+  if (!hasNativeSourceDelivery(context.capture?.facts ?? [], { sourceActorId: context.role("own-source"), sourceOwner: null,
+    playerNumber: 2, resourceType: ResourceType.Wood, fromTick: 0, throughTick: 4000, depositActorId: context.role("own-deposit") }))
     failures.push("classic_army_growth_starved_essential_native_income");
   return failures;
 }
 
 /** One source identity cannot become several enemies; same dated evidence must remain stable under repeated reads. */
 function informationFailures(branch: string, context: ReturnType<typeof nativeScenarioContext>) {
-  const failures: string[] = [], target = context.roles["contact-group"];
+  const failures: string[] = [], target = context.role("contact-group");
   const seen = new Map<string, { tick: number; confidence: number }>();
   for (const frame of context.frames) {
     const evidence = frame.decision.economyProduction.adaptation.evidence;
@@ -121,7 +121,7 @@ function informationFailures(branch: string, context: ReturnType<typeof nativeSc
   if (branch === "repeated" && context.frames.filter((frame) => frame.decision.input?.observation?.actors.some((actor) =>
       actor.actorId === target && actor.visibility === "visible")).length < 8) failures.push("classic_repeated_contact_premise_missing");
   if (branch === "distinct" && !context.frames.some((frame) => frame.tick >= 1200 &&
-      [target, context.roles["distinct-contact"]].every((id) => frame.decision.input?.observation?.actors.some((actor) =>
+      [target, context.role("distinct-contact")].every((id) => frame.decision.input?.observation?.actors.some((actor) =>
         actor.actorId === id && actor.visibility === "visible")))) failures.push("classic_second_distinct_native_contact_missing");
   if (branch === "irrelevant" && !nativeWeaponHits(context).length) failures.push("classic_irrelevant_control_stopped_useful_work");
   return [...new Set(failures)];
@@ -129,8 +129,8 @@ function informationFailures(branch: string, context: ReturnType<typeof nativeSc
 
 /** A real bait retreat must not drag essential defenders under observed towers; victories need useful follow-up. */
 function pursuitFailures(branch: string, context: ReturnType<typeof nativeScenarioContext>) {
-  const failures: string[] = [], target = context.roles["contact-group"];
-  const home = context.roles["own-deposit"];
+  const failures: string[] = [], target = context.role("contact-group");
+  const home = context.role("own-deposit");
   if (!nativeRetainedActor(context, home)) failures.push("classic_protected_service_asset_lost");
   const sawDanger = context.frames.some((frame) => frame.tick >= 600 && frame.decision.input?.observation?.actors.some((actor) =>
     actor.visibility === "visible" && Object.entries(context.roles).some(([role, id]) =>
@@ -142,7 +142,7 @@ function pursuitFailures(branch: string, context: ReturnType<typeof nativeScenar
     failures.push("classic_bait_pulled_asset_defenders_beyond_safe_leash");
   if (["won_battle", "unsafe"].includes(branch) && !nativeWeaponHits(context, target).some((hit) =>
       hit.kind === "native_damage" && hit.damage.healthAfter === 0)) failures.push("classic_native_battle_win_missing");
-  if (["valuable", "won_battle"].includes(branch) && !nativeWeaponHits(context, context.roles["front-target-a"], 600).length)
+  if (["valuable", "won_battle"].includes(branch) && !nativeWeaponHits(context, context.role("front-target-a"), 600).length)
     failures.push("classic_safe_post_battle_objective_has_no_native_pressure");
   if (branch === "unsafe" && context.frames.some((frame) => frame.tick > 600 && frame.decision.missionState?.squads.some((squad) =>
       squad.role === "defense" && squad.actorIds.length && squad.state === "advance")))
@@ -167,14 +167,14 @@ function opponentFailures(branch: string, context: ReturnType<typeof nativeScena
   if (branch !== "allied_control") {
     const defeated = context.frames.find((frame) => frame.tacticalBoundary?.players?.some((player) =>
       player.playerNumber === 1 && player.defeated));
-    if (!defeated || !nativeWeaponHits(context, context.roles["enemy-home"]).length ||
-        !nativeWeaponHits(context, context.roles["third-home"], defeated?.tick ?? Infinity).length)
+    if (!defeated || !nativeWeaponHits(context, context.role("enemy-home")).length ||
+        !nativeWeaponHits(context, context.role("third-home"), defeated?.tick ?? Infinity).length)
       failures.push("classic_real_focus_defeat_has_no_useful_other_opponent_retarget");
-  } else if (!nativeWeaponHits(context, context.roles["third-home"]).length)
+  } else if (!nativeWeaponHits(context, context.role("third-home")).length)
     failures.push("classic_allied_control_has_no_useful_remaining_enemy_focus");
   if (branch === "local_threat" && (!context.facts.some((fact) => fact.kind === "native_damage" &&
-      fact.damage.target.actorId === context.roles["own-deposit"] && fact.damage.initiator?.playerNumber === 3) ||
-      !nativeWeaponHits(context, context.roles["third-raider"], 400).length))
+      fact.damage.target.actorId === context.role("own-deposit") && fact.damage.initiator?.playerNumber === 3) ||
+      !nativeWeaponHits(context, context.role("third-raider"), 400).length))
     failures.push("classic_distinct_local_threat_not_physically_serviced");
   return [...new Set(failures)];
 }

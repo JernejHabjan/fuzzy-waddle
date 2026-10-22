@@ -36,7 +36,7 @@ function fixture() {
   const actor = createAiTestOwnedActor("scout"),
     live = {} as Phaser.GameObjects.GameObject;
   const index = new Map([[actor.actorId, live]]);
-  jest.mocked(getGameObjectCurrentTile).mockReturnValue({ x: 0, y: 0, z: 0 });
+  jest.mocked(getGameObjectCurrentTile).mockReturnValue({ x: 0, y: 0 });
   jest.mocked(getActorComponent).mockReturnValue({ range: 2 } as never);
   return { actor, index };
 }
@@ -58,7 +58,7 @@ describe("player-fair scouting coverage geometry", () => {
       true,
       false
     ]);
-    jest.mocked(getGameObjectCurrentTile).mockReturnValue({ x: 12, y: 0, z: 0 });
+    jest.mocked(getGameObjectCurrentTile).mockReturnValue({ x: 12, y: 0 });
     expect(observeAiScoutSearchPoints(points, [f.actor], f.index).map((point) => point.observed)).toEqual([
       false,
       true

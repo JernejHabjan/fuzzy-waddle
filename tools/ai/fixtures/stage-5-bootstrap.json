@@ -1,10 +1,17 @@
 {
   "schemaVersion": 1,
   "evidenceKind": "authored",
-  "scenarioIds": ["DBG-01", "DBG-03", "DBG-04", "DBG-05"],
+  "scenarioIds": [
+    "DBG-01",
+    "DBG-03",
+    "DBG-04",
+    "DBG-05"
+  ],
   "purpose": "Exercise one deterministic decision capture and one command/save continuation boundary.",
   "driver": "both",
-  "seeds": [759001],
+  "seeds": [
+    759001
+  ],
   "context": {
     "mapId": "stage-5-runtime-bootstrap",
     "mapDigest": "authored-at-runtime-bootstrap",
@@ -20,7 +27,73 @@
       "worldProjection": 1
     }
   },
-  "expectedAssertions": ["non_vacuous_world", "command_applied_once", "save_continuation_digest"],
+  "expectedAssertions": [
+    "non_vacuous_world",
+    "command_applied_once",
+    "save_continuation_digest"
+  ],
   "deliberatelyBrokenOracle": "command_applied_twice",
-  "status": "authored_not_run"
+  "status": "authored_not_run",
+  "pureCases": [
+    {
+      "scenarioId": "DBG-01",
+      "coverage": "owner_contract",
+      "setup": "Use the existing deterministic isolated owner fixture",
+      "expected": "Reject incomplete or incompatible captured decisions before replay",
+      "remaining": [
+        "Native world, UI, physical continuation and applicable peer acceptance remain required by the registered runtime recipe"
+      ],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/ai-repro-cli.spec.ts",
+          "title": "blocks incomplete history and incompatible source instead of claiming exact replay"
+        }
+      ]
+    },
+    {
+      "scenarioId": "DBG-03",
+      "coverage": "owner_contract",
+      "setup": "Use the existing deterministic isolated owner fixture",
+      "expected": "Advance exactly one isolated decision and stop at its safe boundary",
+      "remaining": [
+        "Native world, UI, physical continuation and applicable peer acceptance remain required by the registered runtime recipe"
+      ],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/ai-repro-cli.spec.ts",
+          "title": "steps an isolated decision once and stops on a named safe boundary"
+        }
+      ]
+    },
+    {
+      "scenarioId": "DBG-04",
+      "coverage": "owner_contract",
+      "setup": "Use the existing deterministic isolated owner fixture",
+      "expected": "Keep the original capture unchanged during an isolated what-if",
+      "remaining": [
+        "Native world, UI, physical continuation and applicable peer acceptance remain required by the registered runtime recipe"
+      ],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/ai-repro-cli.spec.ts",
+          "title": "DBG-04 runs a pure what-if without mutating the captured observation, state or RNG"
+        }
+      ]
+    },
+    {
+      "scenarioId": "DBG-05",
+      "coverage": "owner_contract",
+      "setup": "Use the existing deterministic isolated owner fixture",
+      "expected": "Keep imported labels inert",
+      "remaining": [
+        "Native world, UI, physical continuation and applicable peer acceptance remain required by the registered runtime recipe"
+      ],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/debug/ai-incident-capture-store-v1.spec.ts",
+          "title": "DBG-05 stores labels as inert data rather than rendering HTML"
+        }
+      ]
+    }
+  ]
 }

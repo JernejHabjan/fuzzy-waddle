@@ -491,7 +491,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "queues": [
             {
@@ -998,7 +997,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "queues": [
             {
@@ -1445,7 +1443,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "queues": [
             {
@@ -1952,7 +1949,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "queues": [
             {

@@ -4,6 +4,13 @@ Snapshot:2026-10-22; Publication base6fbae050665f0ef10a13b2b3596c047451205f68 pl
 [HANDOFF.md](HANDOFF.md) owns the next action; [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) distinguishes authored and
 validated evidence. This is the existing execution inventory, not another design project. Read only the selected package.
 
+## Active checkpoint policy (2026-10-22)
+
+Publish unfinished work and move browser execution to another PC; thermal throttling makes this PC unsuitable.
+[PC-TRANSFER.md](PC-TRANSFER.md) owns the portable resume commands and optional non-browser work queue.
+Registration is complete. Scoped controls have run, but no newly selected native obligation is closed.
+The registration snapshot below describes the prior authoring state, not current verification authorization.
+
 ## What the inventory establishes
 
 The original concrete plan contains121 named scenarios. Pure registration is111/111. Supported runtime registration
@@ -12,7 +19,8 @@ four #822 island-content rows and H-21 larger-unit clearance by user2026-10-21. 
 This continuous batch has authored22 new registrations, with84 factory bindings/588 variants and
 21 retained partial owner worlds unrun. H-23 now includes user-authorized native island establishment; its small
 water-enclosed diagnostic preset does not silently close the four broader #822 content rows.
-**Registration authoring is complete; execution remains deferred.** D-06 owns the frozen calibration driver.
+**Registration authoring is complete; native evidence remains open and browser execution moves to the other PC.**
+D-06 owns the frozen calibration driver; expensive calibration remains deferred.
 Its six descriptors are dispatch groups, not six games. The pinned legacy difficulty/opening comparison is unsupported;
 this remains an explicit acceptance failure, never a passing legacy comparison or a request for more registrations.
 H-32 now binds actual same-realm UI transitions, retained paid/path work and real host replacement, authored unrun.

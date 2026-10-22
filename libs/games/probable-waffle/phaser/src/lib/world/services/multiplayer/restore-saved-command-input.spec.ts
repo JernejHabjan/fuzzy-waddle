@@ -1,3 +1,4 @@
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import type { GameCommand, ProbableWaffleReplayCommandBatch } from "@fuzzy-waddle/probable-waffle-protocol";
 import { commandBusTestScene } from "./command-bus-test-scene";
 import { CommandLockstep } from "./command-lockstep";
@@ -28,7 +29,7 @@ it("restores detached original unsent input above the saved clock without applyi
   restoreSavedCommandInput(f.transport, CommandLockstep.INPUT_DELAY_TICKS);
   const commands = f.transport.pendingOutbound.get(903);
   expect(commands).toEqual([{ ...f.command, tick: 903 }]);
-  expect(commands?.[0].execution).toEqual(f.command.execution);
+  expect(requireAiTestEntry(commands, 0).execution).toEqual(f.command.execution);
   expect(f.apply).not.toHaveBeenCalled();
   expect(f.state.data.pendingCommandBatches).toEqual(f.batches);
   f.transport.destroy();

@@ -1,3 +1,4 @@
+import { test as it, expect } from "@playwright/test";
 import { nativeProfileTransferFailures } from "./skirmish-ai-native-profile-transfer-evaluation";
 import type { runNativeProfileTransfer } from "./skirmish-ai-native-profile-transfer";
 

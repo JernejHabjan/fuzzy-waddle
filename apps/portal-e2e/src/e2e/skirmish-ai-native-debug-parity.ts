@@ -32,10 +32,11 @@ export async function captureNativeDebugParity(page: Page) {
       if (result === "quota_exceeded") { rejected = true; break; }
     }
     const history = window.__fuzzyWaddleAiRuntimePartsV1?.(2)?.controller.getBrainDebugHistory();
-    if (!history?.length) throw new Error("native_debug_retained_history_missing");
+    const first = history?.[0], last = history?.at(-1);
+    if (!history || !first || !last) throw new Error("native_debug_retained_history_missing");
     return { accepted, rejected, repeated: probe.captureEpisode("diagnostic-quota-0"), peak: probe.metrics(),
-      history: { count: history.length, firstSequence: history[0].decisionSequence,
-        lastSequence: history.at(-1)!.decisionSequence, missingThroughTick: history[0].tick - 10 } };
+      history: { count: history.length, firstSequence: first.decisionSequence,
+        lastSequence: last.decisionSequence, missingThroughTick: first.tick - 10 } };
   });
   const afterDigest = await nativeDebugWorldDigest(page);
   const nativeDisposal = await captureNativeDisposal(page);

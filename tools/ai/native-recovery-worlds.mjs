@@ -109,7 +109,8 @@ function configureMissionRecovery(world, id, faction, enemy, branch, actor, move
     for (const a of world.actors.filter((a) => a.fixtureActorId.startsWith("army-")))
       a.position = tile(18 + Number(a.fixtureActorId.split("-")[1]) % 3, 30 + Math.floor(Number(a.fixtureActorId.split("-")[1]) / 3));
     world.queues = [{ producerFixtureActorId: "ready-producer", actorName: melee(faction), count: 4 }];
-    world.productionRallies = [{ producerObjectName: producer(faction), owner: 2, targetFixtureActorId: "mission-target" }];
+    // Rally toward the owned front-line member; enemy objectives are not legal shared rally targets.
+    world.productionRallies = [{ producerObjectName: producer(faction), owner: 2, targetFixtureActorId: "army-0" }];
     if (branch === "threat_clears") for (let i = 0; i < 4; i++) world.events.push({ id: `loss-choke-guard-${i}`,
       tick: 1200, kind: "destroy_owned_actor", owner: 1, objectName: "WatchTower", fixtureActorId: `choke-guard-${i}` });
   }

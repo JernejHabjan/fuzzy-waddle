@@ -42,7 +42,7 @@ export async function installNativeRetentionWitness(page: Page, humanPlayerNumbe
         if (completed.size >= 4096) throw new Error("native_retention_completion_witness_overflow");
         if (completed.has(outcome.commandId)) duplicateCompletions++;
         completed.add(outcome.commandId);
-        if (completed.size >= target) clock.pauseTick("manual");
+        if (completed.size >= target) clock.pauseTick();
       } else if (["failed", "rejected"].includes(outcome.kind)) {
         if (failed.size >= 4096) throw new Error("native_retention_rejection_witness_overflow");
         failed.add(outcome.commandId);
@@ -54,7 +54,7 @@ export async function installNativeRetentionWitness(page: Page, humanPlayerNumbe
           throw new Error("native_retention_witness_target_invalid");
         target = next;
       },
-      resume: () => { clock.resumeTick("manual"); scene.game.loop.wake(); },
+      resume: () => { clock.resumeTick(); scene.game.loop.wake(); },
       read: () => ({ admitted: admitted.size, completed: [...admitted].filter((id) => completed.has(id)).length,
         failed: [...admitted].filter((id) => failed.has(id)).length, duplicateCompletions, firstId, lastId, lastSequence,
         tick: clock.currentTick, playerNumber, admittedDigest: admittedDigest() })

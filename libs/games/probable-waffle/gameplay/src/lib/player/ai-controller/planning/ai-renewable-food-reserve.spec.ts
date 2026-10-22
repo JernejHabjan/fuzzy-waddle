@@ -1,3 +1,4 @@
+import { requireAiTestEntry } from "../testing/ai-test-fixtures";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import { createAiProductionPolicyFixture } from "../testing/ai-production-policy-fixture";
@@ -9,7 +10,7 @@ import { proposeAiWorkerRecovery } from "./ai-worker-recovery";
 function fixture() {
   const f = createAiProductionPolicyFixture(), workerName = ObjectNames.TivaraWorkerMale;
   const entry = (sourceObjectName: ObjectNames, wood: number, requiredObjectNames: readonly ObjectNames[] = []) => ({
-    ...f.catalog.entries[0], sourceObjectName, produces: [], constructs: [], gathers: [],
+    ...requireAiTestEntry(f.catalog.entries, 0), sourceObjectName, produces: [], constructs: [], gathers: [],
     constructionProfile: { resourceCost: { [ResourceType.Wood]: wood }, requiredObjectNames,
       footprintRadiusTiles: 0, visionRange: 6, navigableHeight: null, enterHeight: null, exitHeight: null }
   });

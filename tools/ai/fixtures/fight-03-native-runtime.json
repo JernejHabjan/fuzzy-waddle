@@ -623,7 +623,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": []
         }
       },
@@ -1148,7 +1147,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": []
         }
       },
@@ -1682,7 +1680,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": []
         }
       },
@@ -2250,7 +2247,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": []
         }
       },
@@ -2775,7 +2771,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": []
         }
       },
@@ -3309,7 +3304,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": []
         }
       }

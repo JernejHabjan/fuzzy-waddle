@@ -588,7 +588,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": []
         }
       },
@@ -1123,7 +1122,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": []
         }
       },
@@ -1505,7 +1503,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "sourceStocks": [
             {
@@ -2082,7 +2079,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "routeOutages": [
             {
@@ -2632,7 +2628,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": []
         }
       },
@@ -3167,7 +3162,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": []
         }
       },
@@ -3549,7 +3543,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "sourceStocks": [
             {
@@ -4126,7 +4119,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "routeOutages": [
             {

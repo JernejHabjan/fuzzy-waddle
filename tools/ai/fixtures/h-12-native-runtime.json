@@ -447,7 +447,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "proposalOrder": "forward"
         }
@@ -838,7 +837,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "proposalOrder": "forward",
           "constructionOrders": [
@@ -1243,7 +1241,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "proposalOrder": "reverse"
         }
@@ -1634,7 +1631,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "proposalOrder": "forward"
         }
@@ -2025,7 +2021,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "proposalOrder": "forward"
         }
@@ -2416,7 +2411,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "proposalOrder": "forward",
           "constructionOrders": [
@@ -2821,7 +2815,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "proposalOrder": "reverse"
         }
@@ -3212,7 +3205,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "proposalOrder": "forward"
         }

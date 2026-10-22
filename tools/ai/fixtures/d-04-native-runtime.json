@@ -682,7 +682,6 @@
             }
           ],
           "initialOrders": [],
-          "protectedRoutes": [],
           "terrainPatches": []
         }
       },
@@ -1317,7 +1316,6 @@
             }
           ],
           "initialOrders": [],
-          "protectedRoutes": [],
           "terrainPatches": []
         }
       }

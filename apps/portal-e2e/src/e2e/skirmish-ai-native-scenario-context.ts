@@ -35,6 +35,12 @@ export function nativeScenarioContext(result: RuntimeVariantResultV1, latestTick
   const movements = capture ? normalizeRuntimeMovement(capture) : { failures: ["native_movement_missing"], movements: [] };
   failures.push(...movements.failures);
   const roles = result.presetCreatedActorIds;
+  /** A missing authored actor must fail the oracle, never widen a target-specific query to every actor. */
+  const role = (name: string): string => {
+    const id = roles[name];
+    if (!id) throw new Error(`native_required_actor_role_missing:${name}`);
+    return id;
+  };
   const facts = [...(capture?.facts ?? []), ...(opponent?.facts ?? []),
     ...(result.otherOpponentCaptures ?? []).flatMap((other) => other.facts)].filter((fact) => fact.tick <= latestTick)
     .sort((a, b) => a.sequence - b.sequence);
@@ -59,5 +65,5 @@ export function nativeScenarioContext(result: RuntimeVariantResultV1, latestTick
     const commanded = selectedActorIds(frame);
     if (commanded.length !== new Set(commanded).size) failures.push("native_actor_commanded_twice_in_decision");
   }
-  return { result, capture, opponent, frames, facts, roles, arrived, damageTo, failures };
+  return { result, capture, opponent, frames, facts, roles, role, arrived, damageTo, failures };
 }

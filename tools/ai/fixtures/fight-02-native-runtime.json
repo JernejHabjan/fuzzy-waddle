@@ -449,7 +449,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "healthStarts": [
             {
@@ -842,7 +841,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "healthStarts": [
             {
@@ -1245,7 +1243,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "healthStarts": [
             {
@@ -1648,7 +1645,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "healthStarts": [
             {
@@ -2041,7 +2037,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "healthStarts": [
             {
@@ -2444,7 +2439,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "healthStarts": [
             {

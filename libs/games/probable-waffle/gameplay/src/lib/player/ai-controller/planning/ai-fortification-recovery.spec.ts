@@ -87,6 +87,7 @@ describe("fortification recovery ownership", () => {
     const blocked = plan?.graph?.nodes.find((node) => node.kind !== "gate_slot" && node.dependsOnNodeId === null);
     if (!plan || !blocked) throw new Error("missing_plan");
     const current = observation([], 150);
+    if (!current.map) throw new Error("missing_observed_map");
     const proposal = manager.propose(
       {
         ...current,

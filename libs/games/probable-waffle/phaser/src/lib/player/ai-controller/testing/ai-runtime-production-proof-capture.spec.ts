@@ -17,8 +17,8 @@ jest.mock("./capture-ai-runtime-production-frontier", () => ({ captureAiRuntimeP
 
 it("pins an existing deposit without a queue or weapon before its first delivery", () => {
   const scene = { players: [{ playerNumber: 2 }] } as unknown as ProbableWaffleScene;
-  const deposit = { name: "WorkMill", scene } as Phaser.GameObjects.GameObject;
-  const unrelated = { name: "Wall", scene } as Phaser.GameObjects.GameObject;
+  const deposit = { name: "WorkMill", scene } as unknown as Phaser.GameObjects.GameObject;
+  const unrelated = { name: "Wall", scene } as unknown as Phaser.GameObjects.GameObject;
   let close: ((tick: number) => void) | undefined;
   const detach = jest.fn();
   const clock = { currentTick: 0, observeClosedFrontiers: (callback: (tick: number) => void) => {
@@ -51,8 +51,8 @@ it("pins an existing deposit without a queue or weapon before its first delivery
 it.each([false, true])("tracks initial passive assets only for explicit combat capture=%s", (captureCombat) => {
   jest.clearAllMocks();
   const scene = { players: [{ playerNumber: 2 }] } as unknown as ProbableWaffleScene;
-  const house = { name: "Olival", scene } as Phaser.GameObjects.GameObject;
-  const carrier = { name: "CommonBoat", scene } as Phaser.GameObjects.GameObject;
+  const house = { name: "Olival", scene } as unknown as Phaser.GameObjects.GameObject;
+  const carrier = { name: "CommonBoat", scene } as unknown as Phaser.GameObjects.GameObject;
   let close: ((tick: number) => void) | undefined;
   const clock = { currentTick: 0, observeClosedFrontiers: (callback: (tick: number) => void) => {
     close = callback;

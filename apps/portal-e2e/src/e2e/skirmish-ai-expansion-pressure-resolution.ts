@@ -44,7 +44,8 @@ export function expansionPressureResolution(
       const commandId = withdrawal.control.command?.execution?.commandId;
       const arrival = normalizeRuntimeMovement(human).movements.find((movement) =>
         movement.callerAttributed && !movement.gaps.length && movement.arrival === "original_destination" &&
-        movement.returned === "true" && movement.started.spatial.caller?.order?.commandContext?.execution.commandId === commandId
+        movement.returned === "true" && movement.started.spatial.kind === "movement" &&
+        movement.started.spatial.caller?.order?.commandContext?.execution.commandId === commandId
       );
       const event = arrival?.observations.find((entry) => entry.spatial.phase === "arrived");
       if (event) {

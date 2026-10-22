@@ -27,7 +27,7 @@ export function nativeRecoveryObligation(context: ReturnType<typeof nativeScenar
 
 /** Recovery state is explanatory only; a later real original-actor arrival, income or objective hit is still required. */
 export function nativeRecoveryDeadlineFailures(context: ReturnType<typeof nativeScenarioContext>, role = "army-0") {
-  const failures: string[] = [], actorId = context.roles[role], obligation = nativeRecoveryObligation(context, actorId);
+  const failures: string[] = [], actorId = context.role(role), obligation = nativeRecoveryObligation(context, actorId);
   if (!actorId || !obligation || obligation.frame.tick > 400) return ["recovery_original_obligation_premise_missing"];
   const planId = `plan:${obligation.squad.squadId}`;
   const records = context.frames.flatMap((frame) => (frame.decision.missionState?.recovery?.records ?? [])

@@ -15,12 +15,12 @@ export function evaluateNativeRecovery(id: string, branch: string, context: Retu
   else if (["H-01", "H-02", "H-04"].includes(id)) {
     const early = ["clears_early", "relevant_child"].includes(branch);
     if (!context.result.perturbations.some((event) => event.id === "loss-recovery-door" &&
-      event.affectedActorId === context.roles["recovery-door"] && event.tick === (early ? 400 : 2400)))
+      event.affectedActorId === context.role("recovery-door") && event.tick === (early ? 400 : 2400)))
       failures.push("recovery_pinned_obstruction_release_missing");
     if (!context.result.perturbations.some((event) => event.id === "original-route-outage" && event.tick <= 400))
       failures.push("recovery_original_failed_query_not_exercised");
     if (early) {
-      if (!context.arrived(context.roles["army-0"], 400).length)
+      if (!context.arrived(context.role("army-0"), 400).length)
         failures.push("recovery_early_clear_control_has_no_native_continuation");
     } else if (!(id === "H-04" && branch === "income_parent")) failures.push(...nativeRecoveryDeadlineFailures(context));
     if (id === "H-02") failures.push(...falseProgressFailures(branch, context));
@@ -48,13 +48,13 @@ function healthyWorkFailures(branch: string, context: ReturnType<typeof nativeSc
       fact.progress.item.remainingTimeMs < fact.progress.remainingBeforeMs)) failures.push("recovery_real_long_queue_progress_missing");
   } else if (branch === "crop") {
     const growing = context.frames.find((frame) => frame.decision.input?.observation?.actors.some((actor) =>
-      actor.actorId === context.roles["healthy-field"] && actor.resourceState.status === "known" &&
+      actor.actorId === context.role("healthy-field") && actor.resourceState.status === "known" &&
       actor.resourceState.value.growthReadyTick.status === "known" &&
       actor.resourceState.value.growthReadyTick.value > frame.tick + 200));
-    if (!growing || !nativeRecoveryIncome(context, growing.tick + 200, context.roles["worker-0"],
+    if (!growing || !nativeRecoveryIncome(context, growing.tick + 200, context.role("worker-0"),
       "healthy-field", ResourceType.Food, 2)) failures.push("recovery_original_crop_growth_and_delivered_harvest_missing");
   } else {
-    const actor = context.roles["army-0"], arrived = context.arrived(actor).filter((movement) =>
+    const actor = context.role("army-0"), arrived = context.arrived(actor).filter((movement) =>
       branch !== "stalled" || (movement.observations.at(-1)?.tick ?? 0) > 1001);
     if (branch === "travel" && !arrived.some((movement) =>
       (movement.observations.at(-1)?.tick ?? 0) - movement.started.tick > 200))
@@ -71,20 +71,20 @@ function healthyWorkFailures(branch: string, context: ReturnType<typeof nativeSc
 function optionalQueryFailures(branch: string, context: ReturnType<typeof nativeScenarioContext>) {
   const failures: string[] = [], end = branch === "late" ? 600 : 1001;
   const fault = context.result.perturbations.find((event) => event.id === "optional-query-outage" &&
-    event.affectedActorId === context.roles["army-0"]);
-  const defense = nativeWeaponHits(context, context.roles["local-attacker"], 200).find((fact) => fact.tick <= end);
+    event.affectedActorId === context.role("army-0"));
+  const defense = nativeWeaponHits(context, context.role("local-attacker"), 200).find((fact) => fact.tick <= end);
   if (!fault || !defense || fault.tick >= defense.tick) failures.push("recovery_local_defense_not_effective_during_optional_query_fault");
   if (!context.facts.some((fact) => fact.kind === "native_damage" && fact.damage.initiator?.actorId ===
-      context.roles["local-attacker"] && fact.damage.target.actorId === context.roles["worker-0"] && fact.tick <= end))
+      context.role("local-attacker") && fact.damage.target.actorId === context.role("worker-0") && fact.tick <= end))
     failures.push("recovery_real_local_attack_premise_missing");
-  if (!context.arrived(context.roles["army-0"]).some((movement) => (movement.observations.at(-1)?.tick ?? 0) > end))
+  if (!context.arrived(context.role("army-0")).some((movement) => (movement.observations.at(-1)?.tick ?? 0) > end))
     failures.push("recovery_original_optional_query_never_resumed_after_fixed_release");
   return failures;
 }
 
 /** Repeated motion and replacement names cannot supply meaningful evidence for the original blocked purpose. */
 function falseProgressFailures(branch: string, context: ReturnType<typeof nativeScenarioContext>) {
-  const failures: string[] = [], actor = context.roles[branch === "circling_worker" ? "worker-0" : "army-0"];
+  const failures: string[] = [], actor = context.role(branch === "circling_worker" ? "worker-0" : "army-0");
   const positions = context.frames.filter((frame) => frame.tick <= 1200).flatMap((frame) =>
     frame.tacticalBoundary?.actors.filter((entry) => entry.identity.actorId === actor && !!entry.tile)
       .map((entry) => `${entry.tile?.x},${entry.tile?.y}`) ?? []);
@@ -103,7 +103,7 @@ function falseProgressFailures(branch: string, context: ReturnType<typeof native
 function parentProgressFailures(branch: string, context: ReturnType<typeof nativeScenarioContext>) {
   if (branch === "relevant_child") return [];
   if (branch === "income_parent") return incomeParentFailures(context);
-  const obligation = nativeRecoveryObligation(context, context.roles["army-0"]);
+  const obligation = nativeRecoveryObligation(context, context.role("army-0"));
   const failures: string[] = [];
   if (!obligation || !nativeRecoveryIncome(context, obligation.frame.tick))
     failures.push("recovery_unrelated_child_progress_premise_missing");
@@ -117,16 +117,16 @@ function parentProgressFailures(branch: string, context: ReturnType<typeof nativ
 
 /** A blocked wood duty is not advanced by a different worker's delivered food, even though both are real income. */
 function incomeParentFailures(context: ReturnType<typeof nativeScenarioContext>) {
-  const failures: string[] = [], worker = context.roles["worker-0"], source = context.roles["blocked-source"];
+  const failures: string[] = [], worker = context.role("worker-0"), source = context.role("blocked-source");
   const original = context.frames.find((frame) => frame.tick <= 400 &&
     frame.decision.input?.observation?.actors.some((actor) => actor.actorId === worker &&
-      actor.activeOrder.status === "known" && actor.activeOrder.value?.targetActorId === source));
+      actor.activeOrder?.status === "known" && actor.activeOrder.value?.targetActorId === source));
   const records = context.frames.flatMap((frame) => frame.tick < 2400 ?
     frame.decision.missionState?.recovery?.records.filter((record) => record.actorId === worker)
       .map((record) => ({ frame, record })) ?? [] : []);
   const first = records[0];
   if (!original || !first) failures.push("recovery_original_blocked_income_ownership_missing");
-  if (!nativeRecoveryIncome(context, 0, context.roles["worker-1"], "unrelated-field", ResourceType.Food, 2))
+  if (!nativeRecoveryIncome(context, 0, context.role("worker-1"), "unrelated-field", ResourceType.Food, 2))
     failures.push("recovery_unrelated_different_resource_child_not_delivered");
   if (first && records.some(({ record }) => record.recoveryKey === first.record.recoveryKey &&
       (record.enteredTick !== first.record.enteredTick || record.phaseDeadline.dueTick !== first.record.phaseDeadline.dueTick ||

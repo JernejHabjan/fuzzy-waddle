@@ -52,9 +52,9 @@ export function evaluateNativeDomain(id: string, branch: string, context: Return
         hit.kind === "native_damage" && hit.damage.initiator?.actorId === actor.actorId)))
       failures.push("domain_paid_air_output_has_no_physical_backline_effect");
     if (branch === "anti_air") {
-      const known = context.frames.find((frame) => frame.decision.input?.observation?.actors.filter((actor) =>
+      const known = context.frames.find((frame) => (frame.decision.input?.observation?.actors.filter((actor) =>
         actor.relation === "enemy" && actor.visibility === "visible" && actor.combatProfile?.status === "known" &&
-        actor.combatProfile.value.attacks.some((attack) => attack.targetDomains.includes("air"))).length >= 4);
+        actor.combatProfile.value.attacks.some((attack) => attack.targetDomains.includes("air")))?.length ?? 0) >= 4);
       if (!known) failures.push("domain_strong_anti_air_never_fairly_observed");
       if (outputs.filter(({ fact }) => fact.tick > (known?.tick ?? Infinity) + 400).length > 2)
         failures.push("domain_excessive_air_investment_after_strong_anti_air");

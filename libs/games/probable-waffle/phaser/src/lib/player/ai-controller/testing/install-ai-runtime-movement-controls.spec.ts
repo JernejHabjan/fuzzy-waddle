@@ -25,8 +25,8 @@ function setup(action: AiRuntimePresetControlV1["action"], active = true, target
   const tick$ = new Subject<number>(), onShutdown = new Subject<void>();
   const clock = { currentTick: 0, tick$ };
   const scene = { events: new Phaser.Events.EventEmitter(), onShutdown } as unknown as ProbableWaffleScene;
-  const source = { scene, active } as Phaser.GameObjects.GameObject;
-  const target = { scene, active: true } as Phaser.GameObjects.GameObject;
+  const source = { scene, active } as unknown as Phaser.GameObjects.GameObject;
+  const target = { scene, active: true } as unknown as Phaser.GameObjects.GameObject;
   jest.mocked(getActorComponent).mockImplementation((actor, component) => {
     if (component === IdComponent) return { id: actor === source ? "source" : "target" } as never;
     if (component === OwnerComponent) return { getOwner: () => actor === source ? 2 : targetOwner } as never;

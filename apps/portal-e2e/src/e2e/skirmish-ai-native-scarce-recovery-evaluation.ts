@@ -12,7 +12,7 @@ export function evaluateNativeScarceRecovery(branch: string, context: ReturnType
     fact.kind === "recovery_setup" && fact.playerNumber === 2);
   const setup = records[0]?.recovery, input = context.frames[0]?.decision.input;
   const catalog = input?.capabilityCatalog, actors = context.capture?.setup?.actors;
-  if (records.length !== 1 || !setup || records[0].tick !== 0 || setup.branch !== branch || !catalog || !actors)
+  if (records.length !== 1 || !setup || records[0]?.tick !== 0 || setup.branch !== branch || !catalog || !actors)
     return ["scarce_native_definition_setup_missing"];
   const failures: string[] = [];
   const actualSources = actors.filter((actor) => actor.definition.resourceSource !== undefined);

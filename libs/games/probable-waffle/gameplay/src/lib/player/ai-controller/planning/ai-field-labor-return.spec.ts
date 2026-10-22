@@ -6,7 +6,7 @@ import { proposeAiFieldLabor } from "./ai-field-labor-proposal";
 
 function fixture(resource: ResourceType | null, targetObjectName = ObjectNames.Sandhold) {
   const observation = createAiTestObservation();
-  const returned = {
+  const returned: { -readonly [K in keyof AiObservedActorV1]: AiObservedActorV1[K] } = {
     ...createAiTestOwnedActor("returning"),
     activeOrder: {
       status: "known",
@@ -77,7 +77,8 @@ describe("Field labor during native food returns", () => {
     farmer.activeOrder = { status: "known", observedTick: 20, value: null };
     expect(f.propose()).toMatchObject({ sourceActorId: "field", actorIds: ["wood-worker"] });
     if (farmer.resourceState.status !== "known") throw new Error("Missing farmer cargo");
-    farmer.resourceState.value.carried = { status: "known", value: 0, observedTick: 20 };
+    farmer.resourceState = { ...farmer.resourceState, value: { ...farmer.resourceState.value,
+      carried: { status: "known", value: 0, observedTick: 20 } } };
     expect(f.propose()).toMatchObject({ sourceActorId: "field", actorIds: ["returning"] });
   });
   it("defers another farmer when cargo identity is unavailable at a food-capable dropoff", () => {

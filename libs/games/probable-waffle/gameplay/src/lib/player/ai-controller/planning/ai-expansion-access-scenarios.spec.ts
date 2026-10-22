@@ -81,6 +81,7 @@ function fixture() {
     map: {
       bounds: { status: "known", value: { width: 29, height: 8 }, observedTick: tick },
       staticRevision: 1,
+      regionGeneration: { generation: 1, status: "ready", continuationCursor: 0 },
       frontierAccessNodeIds: [],
       scoutCoverageAccessNodeIds: [],
       dynamicObstacleActorIds: [],
@@ -130,8 +131,7 @@ describe("expansion placement and worker ownership", () => {
             kind === "delivery" || kind === "construction"
               ? {
                   orderType: kind === "delivery" ? OrderType.ReturnResources : OrderType.Build,
-                  targetActorId: "job",
-                  targetPosition: null
+                  targetActorId: "job"
                 }
               : null
         }

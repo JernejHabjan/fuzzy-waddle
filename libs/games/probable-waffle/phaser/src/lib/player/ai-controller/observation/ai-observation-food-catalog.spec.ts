@@ -1,3 +1,4 @@
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import type Phaser from "phaser";
 import { FactionType, ObjectNames, type ProbableWafflePlayer } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiCapabilityCatalogEntryV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
@@ -17,7 +18,7 @@ it.each([true, false])("exposes locked food prerequisite prices only when factio
   projectAvailableCatalogEntries({} as Phaser.Scene, { factionType: FactionType.Tivara } as ProbableWafflePlayer, 2, catalog);
   if (!allowed) expect(catalog.size).toBe(0);
   else {
-    const field = [...catalog.values()][0];
+    const field = requireAiTestEntry([...catalog.values()], 0);
     expect(field.sourceObjectName).toBe(ObjectNames.Field);
     expect(field.constructionProfile?.requiredObjectNames).toEqual([ObjectNames.Granary]);
     expect(field.constructionProfile?.resourceCost.wood).toBeGreaterThan(0);

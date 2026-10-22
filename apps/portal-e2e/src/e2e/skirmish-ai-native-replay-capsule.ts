@@ -42,7 +42,7 @@ export function nativeReplayCapsuleBlocker(
       capsule.trace.records.some((entry) => entry.tick <= start || entry.tick > end)) return "incomplete_native_capture";
   const originalSequence = capsule.saved.owner.decisionSequence;
   if (originalSequence === null || capsule.trace.records.some((entry, index) => entry.sequence !== originalSequence + index + 1 ||
-      index > 0 && entry.tick <= capsule.trace.records[index - 1].tick) ||
+      index > 0 && entry.tick <= (capsule.trace.records[index - 1]?.tick ?? Infinity)) ||
       capsule.trace.records.at(-1)?.sequence !== capsule.control.owner.decisionSequence) return "missing_input_ranges";
   if (capsule.saved.owner.matchId !== capsule.control.owner.matchId || capsule.saved.owner.seed !== capsule.control.owner.seed ||
       capsule.saved.profileVersion !== capsule.control.profileVersion ||

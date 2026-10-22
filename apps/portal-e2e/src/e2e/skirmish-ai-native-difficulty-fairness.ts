@@ -6,7 +6,10 @@ import { normalizeRuntimeProductionSetup } from "./skirmish-ai-runtime-productio
 
 /** Independently prove each changed native premise; labels and scheduled inputs alone cannot satisfy fairness. */
 export function evaluateNativeDifficultyFairness(branch: string, context: ReturnType<typeof nativeScenarioContext>) {
-  const [policy, mutation] = branch.split("_"), expected = nativeDifficultyProfile(policy);
+  const [policy, mutation] = branch.split("_");
+  if (!policy || !["baseline", "position", "health", "queue", "contact"].includes(mutation ?? ""))
+    return ["fairness_branch_invalid"];
+  const expected = nativeDifficultyProfile(policy);
   const failures = nativeDifficultySelectionFailures(policy, context.frames);
   if (context.capture?.setup?.players.find((player) => player.playerNumber === 2)
     ?.controller.playerDefinition?.difficulty !== expected.sourceDifficulty)
@@ -47,6 +50,7 @@ export function evaluateDifficultyFairnessPairs(
     if (normalized.failures.length) failures.push("fairness_actual_setup_unavailable");
     // Only the selected lobby policy differs across difficulty. Native definitions, resources, tech and actors stay compared.
     const canonical = structuredClone(normalized.canonical);
+    if (!Array.isArray(canonical.players)) { failures.push("fairness_native_players_missing"); continue; }
     for (const player of canonical.players) {
       if (player && typeof player === "object" && "controller" in player && player.controller &&
         typeof player.controller === "object" && "playerDefinition" in player.controller &&

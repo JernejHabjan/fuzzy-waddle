@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiRuntimeProductionFactV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
 import { hasNativeFieldFoodDelivery } from "./skirmish-ai-field-food-delivery";
@@ -7,10 +7,10 @@ import { hasNativeSourceDelivery } from "./skirmish-ai-source-delivery";
 
 /** Synthetic causality controls, never native recipe evidence. */
 function stream(): AiRuntimeProductionFactV1[] {
-  const identity = { actorId: "worker", objectName: "TivaraWorkerMale", canonicalObjectName: "TivaraWorker",
+  const identity = { actorId: "worker", objectName: "TivaraWorkerMale", canonicalObjectName: ObjectNames.TivaraWorker,
     playerNumber: 2, active: true, alive: true, indexed: true, finished: true };
-  const field = { ...identity, actorId: "field", objectName: "Field", canonicalObjectName: "Field" };
-  const drain = { ...identity, actorId: "granary", objectName: "Granary", canonicalObjectName: "Granary" };
+  const field = { ...identity, actorId: "field", objectName: "Field", canonicalObjectName: ObjectNames.Field };
+  const drain = { ...identity, actorId: "granary", objectName: "Granary", canonicalObjectName: ObjectNames.Granary };
   const common = { kind: "resource_service" as const, clockTick: 20, sceneActive: true, snapshotRestoreInProgress: false,
     source: identity, sourceInCaptureScene: true, targetInCaptureScene: true, cargoId: 1, attemptId: 1,
     lifetimeValid: true, gaps: [] };

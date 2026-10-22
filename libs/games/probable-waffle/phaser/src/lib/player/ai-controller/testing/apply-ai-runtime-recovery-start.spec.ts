@@ -1,3 +1,4 @@
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import { EventEmitter } from "node:events";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
@@ -38,7 +39,7 @@ function fixture(workerCount = 1, remaining = 0) {
 it.each(["one_worker", "bootstrap", "infeasible"] as const)("authors only a pre-tick definition-derived %s budget", (branch) => {
   const f = fixture(branch === "bootstrap" ? 0 : 1);
   applyAiRuntimeRecoveryStart(f.scene, branch);
-  const setup = f.captured[0];
+  const setup = requireAiTestEntry(f.captured, 0);
   expect(setup.workerIds).toHaveLength(branch === "bootstrap" ? 0 : 1);
   expect(setup.steps.map((step) => step.objectName)).toContain(ObjectNames.Field);
   expect(setup.steps.map((step) => step.objectName)).toContain(ObjectNames.Granary);

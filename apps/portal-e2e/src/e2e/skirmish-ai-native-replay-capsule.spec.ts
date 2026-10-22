@@ -1,3 +1,4 @@
+import { test as it, expect } from "@playwright/test";
 import { nativeReplayCapsuleBlocker, nativeReplayCapsuleDigest, type NativeReplayCapsule } from
   "./skirmish-ai-native-replay-capsule";
 

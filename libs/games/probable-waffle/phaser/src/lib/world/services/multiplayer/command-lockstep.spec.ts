@@ -1,3 +1,4 @@
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import { Subject } from "rxjs";
 import {
   ProbableWafflePlayerType,
@@ -85,15 +86,15 @@ it("preserves an unsent original identity after snapshot correction without bypa
   f.transport.resetAfterSnapshot(2);
   const retained = [...f.transport.pendingOutbound.values()].flat();
   expect(retained).toHaveLength(1);
-  expect(retained[0].execution).toEqual(command.execution);
-  const targetTick = retained[0].tick;
+  expect(requireAiTestEntry(retained, 0).execution).toEqual(command.execution);
+  const targetTick = requireAiTestEntry(retained, 0).tick;
   expect(f.transport.buffer.hasPlayerCommit(targetTick, 2)).toBe(false);
   f.clock.currentTick = targetTick - 2;
   f.clock.tick$.next(targetTick - 2);
   expect(f.apply).not.toHaveBeenCalled();
   const sent = f.sent.find((event) => event.tick === targetTick);
   if (!sent) throw new Error("Missing re-timed original batch");
-  expect(sent.commands[0].execution).toEqual(command.execution);
+  expect(requireAiTestEntry(sent.commands, 0).execution).toEqual(command.execution);
   f.incoming.next(sent);
   f.incoming.next({ ...sent, playerNumber: 3, commands: [] });
   f.clock.currentTick = targetTick;

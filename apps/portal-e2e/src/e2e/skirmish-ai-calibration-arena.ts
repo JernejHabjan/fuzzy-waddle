@@ -56,7 +56,7 @@ export async function runCalibrationArena(page: Page, job: AiCalibrationJob) {
     const selected = (capture: AiRuntimeDecisionRepro) => {
       const number = capture.payload.observation.playerNumber;
       if (![1, 2].includes(number)) { failures.add("unexpected_ai_player"); return; }
-      decisionCounts[number]++;
+      decisionCounts[number] = (decisionCounts[number] ?? 0) + 1;
       if (!capture.payload.expectedResult) failures.add("native_selected_result_missing");
       if (capture.profile.cheats || capture.profile.intentionalErrors) failures.add("unfair_native_profile");
       const archetype = capture.payload.priorState.opening.archetypeId;
@@ -129,14 +129,14 @@ export async function runCalibrationArena(page: Page, job: AiCalibrationJob) {
       const row = score.getScoreData()?.get(job.targetPlayerNumber), result = row?.gameResult ?? null;
       const terminal = ["win", "loss", "tie"].includes(result ?? "");
       const finalPlayers = controllers.map(nativePlayerSample);
-      if (job.revision === "candidate" && (decisionCounts[1] < 1 || decisionCounts[2] < 1 ||
+      if (job.revision === "candidate" && ((decisionCounts[1] ?? 0) < 1 || (decisionCounts[2] ?? 0) < 1 ||
           profiles.target !== job.difficulty.toLowerCase() || profiles.opponent !== "normal" ||
           !profiles.opponentArchetype?.endsWith(`:${job.opponentArchetype}`))) failures.add("selected_native_policy_or_opponent_missing");
       return { job, tick: clock.currentTick, result, status: job.phase === "soak" ?
         clock.currentTick === job.maximumTick ? "soak_completed" : "short_terminal" : terminal ? "completed" : "timeout",
         initialPhysicalDigest, initialBanks, targetProfile: profiles.target, targetArchetype: profiles.targetArchetype,
         opponentProfile: profiles.opponent, opponentArchetype: profiles.opponentArchetype,
-        decisions: job.revision === "candidate" ? decisionCounts[1] + decisionCounts[2] :
+        decisions: job.revision === "candidate" ? (decisionCounts[1] ?? 0) + (decisionCounts[2] ?? 0) :
           controllers.reduce((sum, controller) => sum + (controller.telemetry?.snapshot().frame ?? 0), 0),
         metrics: { ...row?.metrics }, finalPlayers, outcomeCounts: job.revision === "candidate" ? outcomeCounts : null,
         timeline, failures: [...failures] };

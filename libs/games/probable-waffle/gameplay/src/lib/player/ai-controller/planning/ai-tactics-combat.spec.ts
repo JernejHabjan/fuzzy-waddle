@@ -19,7 +19,7 @@ describe("AiTacticsManager", () => {
     );
     expect(result.intents).toContainEqual(expect.objectContaining({ kind: "move", actorIds: [reinforcement.actorId] }));
     expect(
-      result.intents.filter((intent) => intent.kind === "move").flatMap((intent) => intent.actorIds)
+      result.intents.flatMap((intent) => intent.kind === "move" ? intent.actorIds : [])
     ).not.toContain(front.actorId);
     const attackingFront = {
       ...front,
@@ -33,7 +33,7 @@ describe("AiTacticsManager", () => {
     expect(continuing.intents).toContainEqual(
       expect.objectContaining({ kind: "move", actorIds: [reinforcement.actorId] })
     );
-    expect(continuing.intents.flatMap((intent) => intent.actorIds)).not.toContain(front.actorId);
+    expect(continuing.intents.flatMap((intent) => "actorIds" in intent ? intent.actorIds : [])).not.toContain(front.actorId);
   });
 
   it.each(["squad:attack:primary", "squad:attack:primary:domain:ground", "squad:attack:other"])(
@@ -65,7 +65,7 @@ describe("AiTacticsManager", () => {
         },
         skirmish: {
           ...base.skirmish,
-          timeline: [{ tick: 80, kind: "mission" as const, subjectId, detail: "launch:direct" }]
+          timeline: [{ eventId: `launch:${subjectId}`, tick: 80, kind: "mission" as const, subjectId, detail: "launch:direct" }]
         }
       };
       const result = manager.propose(observation([guard, flyer, enemy]), state);

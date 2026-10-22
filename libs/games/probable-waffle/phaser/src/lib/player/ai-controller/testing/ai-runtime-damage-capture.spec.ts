@@ -1,3 +1,4 @@
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import Phaser from "phaser";
 import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
@@ -22,8 +23,8 @@ function setup(captureCombat: boolean) {
   const scene = { events: new Phaser.Events.EventEmitter(), players: [{ playerNumber: 2 }],
     sys: { isActive: () => true }, communicator: { playerChanged: { on: new Subject() } }
   } as unknown as ProbableWaffleScene;
-  const target = { scene, name: "Sandhold", active: true } as Phaser.GameObjects.GameObject;
-  const attacker = { scene, name: "SkaduweeWarriorMale", active: true } as Phaser.GameObjects.GameObject;
+  const target = { scene, name: "Sandhold", active: true } as unknown as Phaser.GameObjects.GameObject;
+  const attacker = { scene, name: "SkaduweeWarriorMale", active: true } as unknown as Phaser.GameObjects.GameObject;
   const health = { healthComponentData: { health: 80, armour: 0 }, latestDamage: { simulationTick: 20 } };
   jest.mocked(getActorComponent).mockImplementation((actor, component) => {
     if (component === OwnerComponent) return { getOwner: () => actor === target ? 2 : 1 } as never;
@@ -35,7 +36,7 @@ function setup(captureCombat: boolean) {
   } : { researchCompleted: new Subject() }) as never);
   jest.mocked(isSnapshotApplyInProgress).mockReturnValue(false);
   jest.mocked(captureAiRuntimeCreatedActor).mockImplementation((actor) => ({
-    actorId: actor === target ? "home" : "raider", objectName: actor.name, canonicalObjectName: actor.name,
+    actorId: actor === target ? "home" : "raider", objectName: actor.name, canonicalObjectName: actor === target ? ObjectNames.Sandhold : ObjectNames.SkaduweeWarriorMale,
     playerNumber: actor === target ? 2 : 1, active: true, alive: true, finished: true, indexed: true
   }));
   const facts: AiRuntimeProductionFactV1[] = [];

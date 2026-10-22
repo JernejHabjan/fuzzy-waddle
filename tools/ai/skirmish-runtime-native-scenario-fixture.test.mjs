@@ -230,11 +230,17 @@ test("native cases cannot downgrade to generic counts or omit a faction, branch 
   for (const id of Object.keys(nativeScenarioBindings.cases)) for (const mutate of [
     (value) => delete value.assertions[id].requiredNativeScenario,
     (value) => value.recipe.variants.pop(),
-    (value) => value.recipe.variants[0].captureCombat = ["D-02", "H-31", "H-32", "DBG-05"].includes(id) ? true : undefined,
-    (value) => value.recipe.variants[0].captureConstruction = ["H-32", "DBG-05"].includes(id) ? true : undefined,
+    (value) => value.recipe.variants[0].captureCombat = value.recipe.variants[0].captureCombat === true ? undefined : true,
+    (value) => value.recipe.variants[0].captureConstruction =
+      value.recipe.variants[0].captureConstruction === true ? undefined : true,
     (value) => value.recipe.variants[0].evidenceStop = { earliestTick: 20, stableForTicks: 0 },
     (value) => value.recipe.variants[0].seed++,
-    (value) => value.recipe.variants[0].presetWorld.resourceStarts[0].amounts.wood++,
+    (value) => {
+      const variant = value.recipe.variants[0];
+      const bank = variant.presetWorld?.resourceStarts[0];
+      if (bank) bank.amounts.wood++;
+      else variant.mapLabel = "invented-native-map";
+    },
     (value) => value.assertions[id].requiredNativeScenario.branchByVariant.invented = "quiet"
   ]) {
     const fixture = nativeScenarioFixture(id);

@@ -19,9 +19,9 @@ function uncertaintyFailures(branch: string, context: ReturnType<typeof nativeSc
   if (hidden.length !== 16 || !initial || initial.decision.input?.observation?.actors.some((actor) => hidden.includes(actor.actorId)))
     failures.push("recovery_real_hidden_force_uncertainty_missing");
   if (branch === "unsafe") {
-    const seen = context.frames.find((frame) => frame.decision.input?.observation?.actors.filter((actor) =>
+    const seen = context.frames.find((frame) => (frame.decision.input?.observation?.actors.filter((actor) =>
       actor.visibility === "visible" && Object.entries(context.roles).some(([role, id]) =>
-        role.startsWith("known-danger-") && id === actor.actorId)).length >= 4);
+        role.startsWith("known-danger-") && id === actor.actorId))?.length ?? 0) >= 4);
     const lost = context.facts.filter((fact) => fact.kind === "actor_unregistered" &&
       Object.entries(context.roles).some(([role, id]) => role.startsWith("army-") && id === fact.actorId));
     if (!seen || lost.length > 2 || !context.frames.some((frame) => frame.tick > (seen?.tick ?? Infinity) &&

@@ -422,7 +422,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [
             {
               "x": 26,
@@ -1482,7 +1481,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [
             {
               "x": 26,
@@ -2542,7 +2540,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [
             {
               "x": 26,

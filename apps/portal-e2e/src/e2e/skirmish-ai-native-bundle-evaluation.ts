@@ -65,7 +65,7 @@ export function evaluateNativeBundles(branch: string, context: ReturnType<typeof
     failures.push("bundles_newly_feasible_useful_projects_did_not_complete");
   for (const placement of placements) {
     const charge = placement.charge;
-    if (charge.kind !== "construction_authority" || charge.construction.kind !== "resource" ||
+    if (!charge || charge.kind !== "construction_authority" || charge.construction.kind !== "resource" ||
         !sameVector(charge.construction.configuredCost, charge.construction.requested))
       failures.push("bundles_native_payment_did_not_consume_a_complete_price");
   }

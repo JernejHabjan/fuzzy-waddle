@@ -15,6 +15,7 @@ import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 export function commandBusTestScene(commandAuthority?: GameCommandAuthorityState): ProbableWaffleScene {
   const scene = new ProbableWaffleScene();
   const gameInstance = new ProbableWaffleGameInstance();
+  gameInstance.gameInstanceMetadata.data.startOptions = { loadFromSave: false };
   gameInstance.gameInstanceMetadata.data.gameInstanceId = "authority-test";
   gameInstance.gameState = new ProbableWaffleGameState();
   gameInstance.gameState.data.commandAuthority = commandAuthority;

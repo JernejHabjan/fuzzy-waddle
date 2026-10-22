@@ -95,5 +95,5 @@ test("a route outage must actually intercept an original actor within its fixed 
   expect(() => assertRuntimePresetEvents(fault, { ...observed, eventResults: [] })).toThrow("runtime_preset_events_incomplete");
   for (const change of [{ tick: 399 }, { tick: 801 }, { affectedActorId: "replacement" }, { affectedActors: 0 }])
     expect(() => assertRuntimePresetEvents(fault, { ...observed,
-      eventResults: [{ ...observed.eventResults[0], ...change }] })).toThrow("runtime_route_outage_target_mismatch");
+      eventResults: [{ ...observed.eventResults[0]!, ...change }] })).toThrow("runtime_route_outage_target_mismatch");
 });

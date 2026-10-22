@@ -1,3 +1,4 @@
+import { test as it, expect } from "@playwright/test";
 import { nativeDebugParityProofFailures } from "./skirmish-ai-native-debug-parity-evaluation";
 import type { NativeDebugParityProof } from "./skirmish-ai-native-debug-parity-proof";
 

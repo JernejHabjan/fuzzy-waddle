@@ -39,10 +39,11 @@ export function nativeReproProofFailures(id: string, branch: string, result: Run
 
 function workbenchFailures(result: RuntimeVariantResultV1) {
   const proof = result.nativeRepro, live = result.nativeLiveWorkbench;
-  if (!proof || proof.steps.length !== 3 || proof.steps[0].kind !== "tick" || proof.steps[1].kind !== "decision" ||
-      proof.steps[2].kind !== "queue_progress") return ["native_workbench_named_safe_steps_missing"];
+  if (!proof || proof.steps.length !== 3) return ["native_workbench_named_safe_steps_missing"];
   const failures: string[] = [];
   const [tick, decision, progress] = proof.steps;
+  if (!tick || !decision || !progress || tick.kind !== "tick" || decision.kind !== "decision" || progress.kind !== "queue_progress")
+    return ["native_workbench_named_safe_steps_missing"];
   if (tick.after.tick !== tick.before.tick + 1 || decision.after.sequence !== decision.before.sequence + 1 ||
       progress.originalQueueId === null || progress.beforeRemainingTime === null || progress.afterRemainingTime === null ||
       progress.afterRemainingTime >= progress.beforeRemainingTime || proof.steps.some((step) =>

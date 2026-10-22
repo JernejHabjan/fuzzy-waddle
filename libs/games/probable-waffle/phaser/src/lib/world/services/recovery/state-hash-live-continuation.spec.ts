@@ -1,3 +1,4 @@
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getSceneService, getSceneSystem } from "../scene-component-helpers";
 import { CommandBusService } from "../multiplayer/command-bus.service";
@@ -17,10 +18,10 @@ it("compares current live controller/authority state rather than the last saved 
   (getSceneService as jest.Mock).mockImplementation((_scene, token) => token === CommandBusService
     ? { getAuthorityState: () => authority } : token === SimulationTickService ? { currentTick: 1999 } : undefined);
   const result = new StateHashProjection().captureAuthoritativeProjection(scene);
-  expect(JSON.parse(result.systems.aiControllers)).toEqual({ "2": live });
-  expect(JSON.parse(result.systems.commandAuthority)).toEqual(authority);
+  expect(result.systems.aiControllers).toBe("{2:{marker:current-boundary}}");
+  expect(result.systems.commandAuthority).toBe("{authorityEpoch:4,nextSequence:17}");
   expect(result.systems.simulationTick).toBe("1999");
-  expect(scene.players[0].playerState.data.aiBehaviorTreeState).toBe(stale);
+  expect(requireAiTestEntry(scene.players, 0).playerState.data.aiBehaviorTreeState).toBe(stale);
 });
 
 it("ignores measured telemetry while retaining recovery age, retry debt, cadence and authority state", () => {
@@ -38,12 +39,12 @@ it("ignores measured telemetry while retaining recovery age, retry debt, cadence
   const capture = () => new StateHashProjection().captureAuthoritativeProjection(scene).systems;
   const original = capture();
   live.telemetry.spans.preTick.last = 9876;
-  live.telemetry.events[0].t = 50000;
+  requireAiTestEntry(live.telemetry.events, 0).t = 50000;
   expect(capture()).toEqual(original);
   expect(live.telemetry.spans.preTick.last).toBe(9876);
-  live.brainState.recovery.records[0].nextRetryTick++;
+  requireAiTestEntry(live.brainState.recovery.records, 0).nextRetryTick++;
   expect(capture().aiControllers).not.toBe(original.aiControllers);
-  live.brainState.recovery.records[0].nextRetryTick--;
+  requireAiTestEntry(live.brainState.recovery.records, 0).nextRetryTick--;
   live.controllerCadence.elapsedMilliseconds++;
   expect(capture().aiControllers).not.toBe(original.aiControllers);
   authority.authorityEpoch++;

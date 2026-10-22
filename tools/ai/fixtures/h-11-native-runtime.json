@@ -345,7 +345,6 @@
           "controls": [],
           "events": [],
           "initialOrders": [],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "recoveryStart": "one_worker",
           "sourceStocks": [
@@ -668,7 +667,6 @@
           "controls": [],
           "events": [],
           "initialOrders": [],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "recoveryStart": "bootstrap",
           "sourceStocks": [
@@ -1001,7 +999,6 @@
           "controls": [],
           "events": [],
           "initialOrders": [],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "recoveryStart": "infeasible",
           "sourceStocks": [
@@ -1334,7 +1331,6 @@
           "controls": [],
           "events": [],
           "initialOrders": [],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "recoveryStart": "one_worker",
           "sourceStocks": [
@@ -1657,7 +1653,6 @@
           "controls": [],
           "events": [],
           "initialOrders": [],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "recoveryStart": "bootstrap",
           "sourceStocks": [
@@ -1990,7 +1985,6 @@
           "controls": [],
           "events": [],
           "initialOrders": [],
-          "protectedRoutes": [],
           "terrainPatches": [],
           "recoveryStart": "infeasible",
           "sourceStocks": [

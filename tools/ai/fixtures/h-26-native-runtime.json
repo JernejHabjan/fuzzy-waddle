@@ -502,7 +502,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [
             {
               "x": 24,
@@ -1020,7 +1019,7 @@
             {
               "producerObjectName": "AnkGuard",
               "owner": 2,
-              "targetFixtureActorId": "mission-target"
+              "targetFixtureActorId": "army-0"
             }
           ]
         }
@@ -1471,7 +1470,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [
             {
               "x": 24,
@@ -1989,7 +1987,7 @@
             {
               "producerObjectName": "AnkGuard",
               "owner": 2,
-              "targetFixtureActorId": "mission-target"
+              "targetFixtureActorId": "army-0"
             }
           ]
         }
@@ -2440,7 +2438,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [
             {
               "x": 24,
@@ -3006,7 +3003,7 @@
             {
               "producerObjectName": "AnkGuard",
               "owner": 2,
-              "targetFixtureActorId": "mission-target"
+              "targetFixtureActorId": "army-0"
             }
           ]
         }
@@ -3490,7 +3487,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [
             {
               "x": 24,
@@ -4008,7 +4004,7 @@
             {
               "producerObjectName": "AnkGuard",
               "owner": 2,
-              "targetFixtureActorId": "mission-target"
+              "targetFixtureActorId": "army-0"
             }
           ]
         }
@@ -4459,7 +4455,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [
             {
               "x": 24,
@@ -4977,7 +4972,7 @@
             {
               "producerObjectName": "InfantryInn",
               "owner": 2,
-              "targetFixtureActorId": "mission-target"
+              "targetFixtureActorId": "army-0"
             }
           ]
         }
@@ -5428,7 +5423,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [
             {
               "x": 24,
@@ -5946,7 +5940,7 @@
             {
               "producerObjectName": "InfantryInn",
               "owner": 2,
-              "targetFixtureActorId": "mission-target"
+              "targetFixtureActorId": "army-0"
             }
           ]
         }
@@ -6397,7 +6391,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [
             {
               "x": 24,
@@ -6963,7 +6956,7 @@
             {
               "producerObjectName": "InfantryInn",
               "owner": 2,
-              "targetFixtureActorId": "mission-target"
+              "targetFixtureActorId": "army-0"
             }
           ]
         }
@@ -7447,7 +7440,6 @@
               "kind": "gather"
             }
           ],
-          "protectedRoutes": [],
           "terrainPatches": [
             {
               "x": 24,
@@ -7965,7 +7957,7 @@
             {
               "producerObjectName": "InfantryInn",
               "owner": 2,
-              "targetFixtureActorId": "mission-target"
+              "targetFixtureActorId": "army-0"
             }
           ]
         }

@@ -8,7 +8,7 @@ jest.mock("./production-spawner", () => ({ spawnProductionActor: jest.fn(() => "
 describe("retained paid completion lifecycle fence", () => {
   beforeEach(() => jest.clearAllMocks());
 
-  function owner(disposed: boolean, actorActive: boolean, sceneActive: boolean) {
+  function owner(disposed: boolean, actorActive: boolean, sceneActive: boolean): ProductionComponent {
     // Exercise the original completion method after its native owner becomes unavailable, without creating another queue.
     return Object.assign(Object.create(ProductionComponent.prototype) as ProductionComponent, {
       disposed,

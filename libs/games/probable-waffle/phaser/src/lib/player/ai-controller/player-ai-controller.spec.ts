@@ -1,3 +1,4 @@
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import type { AiIntentV1, AiObservationV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { FactionType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { OrderType } from "../../ai/order-type";
@@ -50,7 +51,7 @@ describe("PlayerAiController pure planner integration", () => {
       live = { ...live, pendingCommandIds: ["command:before", "command:during"] };
     });
     (controller as unknown as { stepPureBrain(): void }).stepPureBrain();
-    expect(step.mock.calls[0][1].authority.pendingCommandIds).toEqual(["command:before"]);
+    expect(requireAiTestEntry(step.mock.calls, 0)[1].authority.pendingCommandIds).toEqual(["command:before"]);
     expect(controller.getBrainState()?.authority.pendingCommandIds).toEqual(["command:before", "command:during"]);
   });
 
