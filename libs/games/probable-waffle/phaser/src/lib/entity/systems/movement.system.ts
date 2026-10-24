@@ -42,6 +42,12 @@ import { CommandBusService } from "../../world/services/multiplayer/command-bus.
 import { getInterpolatedSimulationNow } from "../../world/services/simulation-time";
 import { MovementOccupancyService } from "../../world/services/movement-occupancy.service";
 import { applyCampaignProgressionModifiers } from "../../campaign/campaign-progression-modifier";
+import {
+  getAirFormationCandidateForActor,
+  getAirFormationCandidates,
+  type AirFormationBounds
+} from "../../world/services/air-formation";
+import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 /**
  * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
  * storage boundaries do not drift into an unconstrained primitive.
@@ -65,6 +71,9 @@ const BLOCKED_STEP_FALLBACK_RADIUS = 6;
 // Formation expansion stops after a bounded connected-component search so large
 // move groups do not flood-fill an entire platform while assigning destinations.
 const FORMATION_MAX_CONNECTED_CELLS = 96;
+// A 16-tile spiral supplies 1,089 pre-clamp candidates while bounding command
+// work on large maps. Edge clamping still deduplicates every usable map tile.
+const AIR_FORMATION_MAX_RADIUS = 16;
 
 /**
  * Defines the structured blocked step recovery state contract for this module. Its declared surface makes wait
@@ -118,6 +127,9 @@ export class MovementSystem {
   private animationActorComponent?: AnimationActorComponent;
   private statusEffectComponent?: StatusEffectComponent;
   private _movementOccupancyService?: MovementOccupancyService;
+  // Identifies the slot allocated for the currently executing air movement so
+  // a superseded tween cannot release the replacement command's reservation.
+  private activeAirDestinationReservationToken?: number;
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     this.listenToMoveEvents();
@@ -195,9 +207,17 @@ export class MovementSystem {
     const flyingComponent = getActorComponent(this.gameObject, FlyingComponent);
     const usePathfinding = !flyingComponent;
     if (!usePathfinding) {
+      const airReservationToken = this.activeAirDestinationReservationToken;
       return this.moveDirectlyToLocationWithoutPathfinding(tileVec3, pathMoveConfig)
         .then(() => true)
-        .catch(() => false);
+        .catch(() => false)
+        .finally(() => {
+          const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+          if (actorId) this.movementOccupancyService?.releaseAirDestination(actorId, airReservationToken);
+          if (this.activeAirDestinationReservationToken === airReservationToken) {
+            this.activeAirDestinationReservationToken = undefined;
+          }
+        });
     }
 
     if (!this.navigationService) return false;
@@ -686,11 +706,20 @@ export class MovementSystem {
     this.actorTranslateComponent.moveActorToLogicalPosition(logicalTransform);
   };
 
-  cancelMovement() {
+  /**
+   * Cancels the active tween and clears transient reservations. A caller that
+   * has just allocated a new air destination may retain that slot while it
+   * replaces the previous tween.
+   */
+  cancelMovement(releaseAirDestination: boolean = true) {
     this._cancelCurrentMovement?.();
     this._cancelCurrentMovement = undefined;
     const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
     if (actorId) this.movementOccupancyService?.releaseStep(actorId);
+    if (actorId && releaseAirDestination) {
+      this.movementOccupancyService?.releaseAirDestination(actorId, this.activeAirDestinationReservationToken);
+      this.activeAirDestinationReservationToken = undefined;
+    }
   }
 
   /**
@@ -716,7 +745,7 @@ export class MovementSystem {
   ): Promise<void> {
     // don't use pathfinding
     // use worldXY to move directly to location
-    this.cancelMovement();
+    this.cancelMovement(false);
 
     const tileWorldXY = this.navigationService?.getTileWorldCenter(vec3);
     if (!tileWorldXY) {
@@ -983,11 +1012,11 @@ export class MovementSystem {
     tileVec3: Vector3Simple,
     selectedActorObjectIds: ActorId[]
   ): Promise<Vector3Simple> {
+    if (getActorComponent(this.gameObject, FlyingComponent)) {
+      return this.getAirFormationDestination(tileVec3, selectedActorObjectIds);
+    }
     const unitCount = selectedActorObjectIds.length;
     if (unitCount < 2) {
-      return tileVec3;
-    }
-    if (getActorComponent(this.gameObject, FlyingComponent)) {
       return tileVec3;
     }
 
@@ -1078,6 +1107,65 @@ export class MovementSystem {
 
     // Fallback to original target if no suitable position is found
     return tileVec3;
+  }
+
+  /**
+   * Allocates an air-only final destination. Simultaneous commands derive their
+   * preferred spiral slot from sorted actor IDs; single-actor production rally
+   * orders scan that same spiral around active reservations. No ground navigation
+   * APIs are used, so water, cliffs, and walls remain valid flight destinations.
+   */
+  private getAirFormationDestination(tileVec3: Vector3Simple, selectedActorIds: ActorId[]): Vector3Simple {
+    const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+    const occupancy = this.movementOccupancyService;
+    const bounds = this.getAirFormationBounds();
+    if (!actorId || !occupancy || !bounds) return tileVec3;
+
+    const candidates = getAirFormationCandidates({ x: tileVec3.x, y: tileVec3.y }, bounds, AIR_FORMATION_MAX_RADIUS);
+    if (candidates.length === 0) return tileVec3;
+
+    const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
+    // Ground actors intentionally do not consume air slots in mixed selections.
+    // The actor index is the authoritative ID lookup and avoids scene-child order.
+    const flyingActorIds = selectedActorIds.filter((selectedActorId) => {
+      const selectedActor = actorIndex?.getActorById(selectedActorId);
+      return !!selectedActor && !!getActorComponent(selectedActor, FlyingComponent);
+    });
+    const commandFlyerIds = flyingActorIds.length > 0 ? flyingActorIds : selectedActorIds;
+    const preferredCandidate = getAirFormationCandidateForActor(actorId, commandFlyerIds, candidates);
+    const preferredIndex = Math.max(0, preferredCandidate ? candidates.indexOf(preferredCandidate) : 0);
+    occupancy.releaseAirDestination(actorId, this.activeAirDestinationReservationToken);
+    this.activeAirDestinationReservationToken = undefined;
+
+    for (let offset = 0; offset < candidates.length; offset++) {
+      const candidate = candidates[(preferredIndex + offset) % candidates.length]!;
+      const token = occupancy.reserveAirDestination(actorId, candidate, tileVec3.z);
+      if (token !== undefined) {
+        this.activeAirDestinationReservationToken = token;
+        return { x: candidate.x, y: candidate.y, z: tileVec3.z } satisfies Vector3Simple;
+      }
+    }
+
+    return tileVec3;
+  }
+
+  /**
+   * Allocates the next available air slot for a unit produced after earlier
+   * units have already left for the same location rally point. Non-flying
+   * callers retain their supplied destination so ground rally behavior stays
+   * owned by its existing occupancy and navigation flow.
+   */
+  getAirFormationDestinationForSequentialRally(tileVec3: Vector3Simple): Vector3Simple {
+    if (!getActorComponent(this.gameObject, FlyingComponent)) return tileVec3;
+    const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+    return this.getAirFormationDestination(tileVec3, actorId ? [actorId] : []);
+  }
+
+  /** Reads tilemap dimensions without involving ground navigation constraints. */
+  private getAirFormationBounds(): AirFormationBounds | undefined {
+    const tilemap = this.tileMapComponent?.tilemap;
+    if (!tilemap || tilemap.width <= 0 || tilemap.height <= 0) return undefined;
+    return { minX: 0, maxX: tilemap.width - 1, minY: 0, maxY: tilemap.height - 1 } satisfies AirFormationBounds;
   }
 
   private getConnectedFormationPoints(tileVec3: Vector3Simple, unitCount: number): Vector2Simple[] {
