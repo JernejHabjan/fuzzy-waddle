@@ -1,0 +1,2883 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "runtime",
+  "scenarioIds": ["TECH-01", "TECH-02", "TECH-03", "TECH-04", "TECH-05", "TECH-06"],
+  "purpose": "Normal visible capabilities, beneficiary-scaled research, emergency spending and executable counter response.",
+  "driver": "runtime",
+  "status": "ready_for_runtime_execution",
+  "context": {
+    "mapId": "AiOpenEconomy",
+    "mapDigest": "resolved_from_candidate_assets",
+    "side": 2,
+    "rulesVersion": "probable-waffle-rules-v1"
+  },
+  "recipe": {
+    "mapLabel": "AI Open Economy (test only)",
+    "aiPlayerNumber": 2,
+    "simulationTimeScale": 100,
+    "checkpointTicks": [20, 200, 400, 700, 1000],
+    "variants": [
+      {
+        "id": "technology-small-army",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "scenarioIds": ["TECH-01"],
+        "seed": 759900,
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "presetWorld": {
+          "fixtureId": "technology-small-army",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 1056,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1200,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "field",
+              "actorName": "Field",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 640,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "wood-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 680,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 720,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 680,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 720,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing-extra",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 1000,
+                "y": 1056,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-0",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-2",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 768,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-3",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 832,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-4",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-5",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-6",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 768,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-7",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 832,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-8",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-9",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-10",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 768,
+                "y": 864,
+                "z": 0
+              }
+            }
+          ],
+          "resourceGrants": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1000,
+                "wood": 1000,
+                "stone": 1000,
+                "minerals": 1000
+              }
+            }
+          ],
+          "resourceStarts": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 4000,
+                "wood": 4000,
+                "stone": 4000,
+                "minerals": 4000
+              }
+            }
+          ],
+          "controls": [],
+          "productionRallies": [],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "main-producer",
+              "actorName": "Sandhold",
+              "owner": 2
+            }
+          ],
+          "researchQueues": [],
+          "events": [],
+          "queues": []
+        }
+      },
+      {
+        "id": "technology-mass-army",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "scenarioIds": ["TECH-01"],
+        "seed": 759901,
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "presetWorld": {
+          "fixtureId": "technology-mass-army",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 1056,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1200,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "field",
+              "actorName": "Field",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 640,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "wood-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 680,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 720,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 680,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 720,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing-extra",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 1000,
+                "y": 1056,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-0",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-2",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 768,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-3",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 832,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-4",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-5",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-6",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 768,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-7",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 832,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-8",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-9",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-10",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 768,
+                "y": 864,
+                "z": 0
+              }
+            }
+          ],
+          "resourceGrants": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1000,
+                "wood": 1000,
+                "stone": 1000,
+                "minerals": 1000
+              }
+            }
+          ],
+          "resourceStarts": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 4000,
+                "wood": 4000,
+                "stone": 4000,
+                "minerals": 4000
+              }
+            }
+          ],
+          "controls": [],
+          "productionRallies": [],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "main-producer",
+              "actorName": "Sandhold",
+              "owner": 2
+            }
+          ],
+          "researchQueues": [],
+          "events": [],
+          "queues": []
+        }
+      },
+      {
+        "id": "technology-emergency",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "scenarioIds": ["TECH-02"],
+        "seed": 759902,
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "presetWorld": {
+          "fixtureId": "technology-emergency",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 1056,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1200,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "field",
+              "actorName": "Field",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 640,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "wood-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 680,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 720,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 680,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 720,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing-extra",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 1000,
+                "y": 1056,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-0",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-2",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 768,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-3",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 832,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-4",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-5",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-6",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 768,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-7",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 832,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-8",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-9",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-10",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 768,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "attacker",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": 960,
+                "y": 848,
+                "z": 0
+              }
+            }
+          ],
+          "resourceGrants": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1000,
+                "wood": 1000,
+                "stone": 1000,
+                "minerals": 1000
+              }
+            }
+          ],
+          "resourceStarts": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 4000,
+                "wood": 4000,
+                "stone": 4000,
+                "minerals": 4000
+              }
+            }
+          ],
+          "controls": [],
+          "productionRallies": [],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "main-producer",
+              "actorName": "Sandhold",
+              "owner": 2
+            }
+          ],
+          "researchQueues": [],
+          "events": [],
+          "queues": []
+        }
+      },
+      {
+        "id": "technology-air-clue",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "scenarioIds": ["TECH-03"],
+        "seed": 759903,
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "presetWorld": {
+          "fixtureId": "technology-air-clue",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 1056,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1200,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "field",
+              "actorName": "Field",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 640,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "wood-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 680,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 720,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 680,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 720,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing-extra",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 1000,
+                "y": 1056,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-0",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-2",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 768,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-3",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 832,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-4",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-5",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-6",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 768,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-7",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 832,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-8",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-9",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-10",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 768,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "air-clue",
+              "actorName": "Owlery",
+              "owner": 1,
+              "position": {
+                "x": 1056,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "temple",
+              "actorName": "Temple",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1440,
+                "z": 0
+              }
+            }
+          ],
+          "resourceGrants": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1000,
+                "wood": 1000,
+                "stone": 1000,
+                "minerals": 1000
+              }
+            }
+          ],
+          "resourceStarts": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 4000,
+                "wood": 4000,
+                "stone": 4000,
+                "minerals": 4000
+              }
+            }
+          ],
+          "controls": [],
+          "productionRallies": [],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "main-producer",
+              "actorName": "Sandhold",
+              "owner": 2
+            }
+          ],
+          "researchQueues": [],
+          "events": [],
+          "queues": []
+        }
+      },
+      {
+        "id": "technology-air-one",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "scenarioIds": ["TECH-04"],
+        "seed": 759904,
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "presetWorld": {
+          "fixtureId": "technology-air-one",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 1056,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1200,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "field",
+              "actorName": "Field",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 640,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "wood-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 680,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 720,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 680,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 720,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing-extra",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 1000,
+                "y": 1056,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-0",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-2",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 768,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-3",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 832,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-4",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-5",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-6",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 768,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-7",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 832,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-8",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-9",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-10",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 768,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "flyer-0",
+              "actorName": "SkaduweeOwl",
+              "owner": 1,
+              "position": {
+                "x": 1000,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "temple",
+              "actorName": "Temple",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1440,
+                "z": 0
+              }
+            }
+          ],
+          "resourceGrants": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1000,
+                "wood": 1000,
+                "stone": 1000,
+                "minerals": 1000
+              }
+            }
+          ],
+          "resourceStarts": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 4000,
+                "wood": 4000,
+                "stone": 4000,
+                "minerals": 4000
+              }
+            }
+          ],
+          "controls": [],
+          "productionRallies": [],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "main-producer",
+              "actorName": "Sandhold",
+              "owner": 2
+            }
+          ],
+          "researchQueues": [],
+          "events": [],
+          "queues": []
+        }
+      },
+      {
+        "id": "technology-air-four",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "scenarioIds": ["TECH-03", "TECH-04"],
+        "seed": 759905,
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "presetWorld": {
+          "fixtureId": "technology-air-four",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 1056,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1200,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "field",
+              "actorName": "Field",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 640,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "wood-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 680,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 720,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 680,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 720,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing-extra",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 1000,
+                "y": 1056,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-0",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-2",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 768,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-3",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 832,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-4",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-5",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-6",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 768,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-7",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 832,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-8",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-9",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-10",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 768,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "flyer-0",
+              "actorName": "SkaduweeOwl",
+              "owner": 1,
+              "position": {
+                "x": 1000,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "flyer-1",
+              "actorName": "SkaduweeOwl",
+              "owner": 1,
+              "position": {
+                "x": 1064,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "flyer-2",
+              "actorName": "SkaduweeOwl",
+              "owner": 1,
+              "position": {
+                "x": 1000,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "flyer-3",
+              "actorName": "SkaduweeOwl",
+              "owner": 1,
+              "position": {
+                "x": 1064,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "temple",
+              "actorName": "Temple",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1440,
+                "z": 0
+              }
+            }
+          ],
+          "resourceGrants": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1000,
+                "wood": 1000,
+                "stone": 1000,
+                "minerals": 1000
+              }
+            }
+          ],
+          "resourceStarts": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 4000,
+                "wood": 4000,
+                "stone": 4000,
+                "minerals": 4000
+              }
+            }
+          ],
+          "controls": [],
+          "productionRallies": [],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "main-producer",
+              "actorName": "Sandhold",
+              "owner": 2
+            }
+          ],
+          "researchQueues": [],
+          "events": [],
+          "queues": []
+        }
+      },
+      {
+        "id": "technology-air-withdrawn",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "scenarioIds": ["TECH-05"],
+        "seed": 759906,
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "presetWorld": {
+          "fixtureId": "technology-air-withdrawn",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 1056,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1200,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "field",
+              "actorName": "Field",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 640,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "wood-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 680,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 720,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 680,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 720,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing-extra",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 1000,
+                "y": 1056,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-0",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-2",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 768,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-3",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 832,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-4",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-5",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-6",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 768,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-7",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 832,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-8",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-9",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-10",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 768,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "flyer-0",
+              "actorName": "SkaduweeOwl",
+              "owner": 1,
+              "position": {
+                "x": 1000,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "flyer-1",
+              "actorName": "SkaduweeOwl",
+              "owner": 1,
+              "position": {
+                "x": 1064,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "flyer-2",
+              "actorName": "SkaduweeOwl",
+              "owner": 1,
+              "position": {
+                "x": 1000,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "flyer-3",
+              "actorName": "SkaduweeOwl",
+              "owner": 1,
+              "position": {
+                "x": 1064,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "temple",
+              "actorName": "Temple",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1440,
+                "z": 0
+              }
+            }
+          ],
+          "resourceGrants": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1000,
+                "wood": 1000,
+                "stone": 1000,
+                "minerals": 1000
+              }
+            }
+          ],
+          "resourceStarts": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 4000,
+                "wood": 4000,
+                "stone": 4000,
+                "minerals": 4000
+              }
+            }
+          ],
+          "controls": [],
+          "productionRallies": [],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "main-producer",
+              "actorName": "Sandhold",
+              "owner": 2
+            }
+          ],
+          "researchQueues": [],
+          "events": [
+            {
+              "id": "flyer-loss-0",
+              "tick": 500,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "SkaduweeOwl",
+              "fixtureActorId": "flyer-0"
+            },
+            {
+              "id": "flyer-loss-1",
+              "tick": 500,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "SkaduweeOwl",
+              "fixtureActorId": "flyer-1"
+            },
+            {
+              "id": "flyer-loss-2",
+              "tick": 500,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "SkaduweeOwl",
+              "fixtureActorId": "flyer-2"
+            },
+            {
+              "id": "flyer-loss-3",
+              "tick": 500,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "SkaduweeOwl",
+              "fixtureActorId": "flyer-3"
+            }
+          ],
+          "queues": []
+        }
+      },
+      {
+        "id": "technology-matchup",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "scenarioIds": ["TECH-06"],
+        "seed": 759907,
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "presetWorld": {
+          "fixtureId": "technology-matchup",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 1056,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1200,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "field",
+              "actorName": "Field",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 640,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "wood-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 680,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 720,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 680,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 720,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing-extra",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 1000,
+                "y": 1056,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-0",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-2",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 768,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-3",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 832,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-4",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-5",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-6",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 768,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-7",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 832,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-8",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-9",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-10",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 768,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "attacker",
+              "actorName": "FrostForge",
+              "owner": 1,
+              "position": {
+                "x": 960,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "temple",
+              "actorName": "Temple",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1440,
+                "z": 0
+              }
+            }
+          ],
+          "resourceGrants": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1000,
+                "wood": 1000,
+                "stone": 1000,
+                "minerals": 1000
+              }
+            }
+          ],
+          "resourceStarts": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 4000,
+                "wood": 4000,
+                "stone": 4000,
+                "minerals": 4000
+              }
+            }
+          ],
+          "controls": [],
+          "productionRallies": [],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "main-producer",
+              "actorName": "Sandhold",
+              "owner": 2
+            }
+          ],
+          "researchQueues": [],
+          "events": [],
+          "queues": []
+        }
+      },
+      {
+        "id": "technology-matchup-unavailable",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "scenarioIds": ["TECH-06"],
+        "seed": 759927,
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "presetWorld": {
+          "fixtureId": "technology-matchup-unavailable",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 1056,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1200,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "field",
+              "actorName": "Field",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 640,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "wood-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 680,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 720,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 680,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 720,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing-extra",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 1000,
+                "y": 1056,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-0",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-2",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 768,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-3",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 832,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-4",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-5",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-6",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 768,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-7",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 832,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-8",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-9",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-10",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 768,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "attacker",
+              "actorName": "FrostForge",
+              "owner": 1,
+              "position": {
+                "x": 960,
+                "y": 848,
+                "z": 0
+              }
+            }
+          ],
+          "resourceGrants": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1000,
+                "wood": 1000,
+                "stone": 1000,
+                "minerals": 1000
+              }
+            }
+          ],
+          "resourceStarts": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 4000,
+                "wood": 4000,
+                "stone": 4000,
+                "minerals": 4000
+              }
+            }
+          ],
+          "controls": [],
+          "productionRallies": [],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "main-producer",
+              "actorName": "Sandhold",
+              "owner": 2
+            }
+          ],
+          "researchQueues": [],
+          "events": [],
+          "queues": []
+        }
+      }
+    ]
+  },
+  "assertions": {
+    "TECH-01": {
+      "maximumTick": 1000,
+      "minimumDecisions": 10,
+      "minimumAppliedCommands": 1,
+      "requiredAiFactions": ["Tivara"],
+      "requiredTechnologyContracts": {
+        "technology-small-army": {
+          "latestTick": 1000,
+          "branch": "small_army",
+          "productObjectName": "TivaraMacemanMale",
+          "researchType": "tivaraMacemanUpgradeLevel2",
+          "minimumBeneficiaries": 4
+        },
+        "technology-mass-army": {
+          "latestTick": 1000,
+          "branch": "mass_army",
+          "productObjectName": "TivaraMacemanMale",
+          "researchType": "tivaraMacemanUpgradeLevel2",
+          "minimumBeneficiaries": 4
+        }
+      }
+    },
+    "TECH-02": {
+      "maximumTick": 1000,
+      "minimumDecisions": 10,
+      "minimumAppliedCommands": 1,
+      "requiredAiFactions": ["Tivara"],
+      "requiredTechnologyContracts": {
+        "technology-emergency": {
+          "latestTick": 1000,
+          "branch": "emergency",
+          "productObjectName": "TivaraMacemanMale",
+          "researchType": "tivaraMacemanUpgradeLevel2",
+          "minimumBeneficiaries": 4
+        }
+      }
+    },
+    "TECH-03": {
+      "maximumTick": 1000,
+      "minimumDecisions": 10,
+      "minimumAppliedCommands": 1,
+      "requiredAiFactions": ["Tivara"],
+      "requiredTechnologyContracts": {
+        "technology-air-clue": {
+          "latestTick": 1000,
+          "branch": "air_clue",
+          "productObjectName": "TivaraMacemanMale",
+          "researchType": "tivaraMacemanUpgradeLevel2",
+          "minimumBeneficiaries": 4,
+          "counterCount": 1
+        },
+        "technology-air-four": {
+          "latestTick": 1000,
+          "branch": "air_mass",
+          "productObjectName": "TivaraMacemanMale",
+          "researchType": "tivaraMacemanUpgradeLevel2",
+          "minimumBeneficiaries": 4,
+          "counterCount": 4
+        }
+      }
+    },
+    "TECH-04": {
+      "maximumTick": 1000,
+      "minimumDecisions": 10,
+      "minimumAppliedCommands": 1,
+      "requiredAiFactions": ["Tivara"],
+      "requiredTechnologyContracts": {
+        "technology-air-one": {
+          "latestTick": 1000,
+          "branch": "air_mass",
+          "productObjectName": "TivaraMacemanMale",
+          "researchType": "tivaraMacemanUpgradeLevel2",
+          "minimumBeneficiaries": 4,
+          "counterCount": 1
+        },
+        "technology-air-four": {
+          "latestTick": 1000,
+          "branch": "air_mass",
+          "productObjectName": "TivaraMacemanMale",
+          "researchType": "tivaraMacemanUpgradeLevel2",
+          "minimumBeneficiaries": 4,
+          "counterCount": 4
+        }
+      }
+    },
+    "TECH-05": {
+      "maximumTick": 1000,
+      "minimumDecisions": 10,
+      "minimumAppliedCommands": 1,
+      "requiredAiFactions": ["Tivara"],
+      "requiredTechnologyContracts": {
+        "technology-air-withdrawn": {
+          "latestTick": 1000,
+          "branch": "stale_counter",
+          "productObjectName": "TivaraMacemanMale",
+          "researchType": "tivaraMacemanUpgradeLevel2",
+          "minimumBeneficiaries": 4,
+          "counterCount": 4,
+          "withdrawnTick": 500
+        }
+      }
+    },
+    "TECH-06": {
+      "maximumTick": 1000,
+      "minimumDecisions": 10,
+      "minimumAppliedCommands": 1,
+      "requiredAiFactions": ["Tivara"],
+      "requiredTechnologyContracts": {
+        "technology-matchup": {
+          "latestTick": 1000,
+          "branch": "matchup",
+          "productObjectName": "TivaraMacemanMale",
+          "researchType": "tivaraMacemanUpgradeLevel2",
+          "minimumBeneficiaries": 4,
+          "requiredRangedAlternative": true
+        },
+        "technology-matchup-unavailable": {
+          "latestTick": 1000,
+          "branch": "matchup",
+          "productObjectName": "TivaraMacemanMale",
+          "researchType": "tivaraMacemanUpgradeLevel2",
+          "minimumBeneficiaries": 4,
+          "unavailableProductObjectName": "TivaraSlingshotFemale"
+        }
+      }
+    }
+  }
+}

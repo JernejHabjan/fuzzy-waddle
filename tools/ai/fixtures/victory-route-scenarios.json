@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "scenarioIds": ["STRAT-05", "STRAT-06", "STRAT-07", "STRAT-08"],
+  "driver": "pure",
+  "purpose": "Visible counters and workforce losses alter strategy; executable routes and exposed cores restore pressure.",
+  "seeds": [827701, 827702, 827703],
+  "context": {
+    "mapId": "typed-credible-route-pair",
+    "mapDigest": "paired-known-and-unknown-routes",
+    "side": 1,
+    "faction": "Tivara",
+    "rulesVersion": "probable-waffle-rules-v1",
+    "contractVersions": { "scenario": 1, "brain": 1, "observation": 1, "command": 1 }
+  },
+  "assertionPolicy": {
+    "repetitions": 3,
+    "requires": [
+      "visible-counterforce-pause",
+      "same-tick-economy-recovery",
+      "confirmed-reachable-objective",
+      "pending-route-scout-fallback",
+      "reachable-core-finish",
+      "canonical-digest"
+    ],
+    "forbids": [
+      "token-attack-into-visible-counterforce",
+      "time-only-strategy",
+      "pending-route-outranks-direct-route",
+      "blind-attack-order"
+    ]
+  }
+}

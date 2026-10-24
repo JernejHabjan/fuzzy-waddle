@@ -1,0 +1,37 @@
+import type {
+  AiAccessGraphV1, AiCapabilityCatalogV1, AiObservationV1, AiProfileConfigV1
+} from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiDecisionProducerExposureV1 } from "./ai-decision-producer-exposure-v1";
+
+/** Test-only inputs actually consumed by a selected pure step, separate from later settled world snapshots. */
+export interface AiDecisionInputV1 {
+  /** Actual controller/brain policy at selection. Missing legacy evidence cannot certify difficulty or quotas. */
+  readonly profile?: AiProfileConfigV1;
+  /** Null marks bounded capture loss; no actor/query subset may masquerade as a complete input. */
+  readonly observation: Pick<
+    AiObservationV1,
+    "schemaVersion" | "generation" | "tick" | "playerNumber" | "faction" | "actors" | "accessProducts" | "threatSummary"
+  > | null;
+  readonly capabilityCatalog: AiCapabilityCatalogV1 | null;
+  /** Exact consumed four-resource ledger. This is an observation input, not complete native alias/lifetime authority. */
+  readonly resources?: AiObservationV1["resources"];
+  /** Exact permitted scouting/effect inputs; null is capture loss, never an empty explored world. */
+  readonly map?: Pick<NonNullable<AiObservationV1["map"]>, "bounds" | "staticRevision" | "frontierAccessNodeIds" |
+    "scoutSearchPoints" | "scoutCoverageAccessNodeIds" | "dynamicObstacleActorIds" | "regionGeneration"> | null;
+  readonly effects?: AiObservationV1["effects"] | null;
+  readonly modeGoals?: AiObservationV1["modeGoals"] | null;
+  /** The observation's permitted cached topology, with its own generation/status/age. */
+  readonly accessGraph: AiAccessGraphV1 | null;
+  /** Optional only for older publishers; current capture preserves explicit missing/binding gaps. */
+  readonly producerExposure?: AiDecisionProducerExposureV1 | null;
+  readonly cadence: {
+    readonly clock: "simulation" | "render_fallback";
+    /** Actual fixed-clock boundary; fallback has no deterministic tick authority. */
+    readonly tick: number | null;
+    readonly configuredIntervalTicks: number;
+    /** Completed controller attempts BEFORE this selected step; distinct from the pure decision sequence. */
+    readonly completedBefore: number;
+  };
+  readonly snapshotRestoreInProgress: boolean;
+  readonly gaps: readonly string[];
+}

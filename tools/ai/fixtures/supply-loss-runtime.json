@@ -1,0 +1,366 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "runtime",
+  "scenarioIds": ["H-18"],
+  "purpose": "Destroy actual paid-queue supply and require one funded housing replacement without cancelling or losing those native outputs; paired intact supply must avoid unnecessary housing.",
+  "driver": "runtime",
+  "status": "ready_for_runtime_execution",
+  "context": {
+    "mapId": "AiOpenEconomy",
+    "mapDigest": "resolved_from_candidate_assets",
+    "side": 2,
+    "rulesVersion": "probable-waffle-rules-v1"
+  },
+  "recipe": {
+    "mapLabel": "AI Open Economy (test only)",
+    "aiPlayerNumber": 2,
+    "simulationTimeScale": 1,
+    "fixedStepFrames": true,
+    "checkpointTicks": [20, 180, 220, 400, 800, 1000, 1200],
+    "variants": [
+      {
+        "id": "paid-supply-loss",
+        "executionKind": "focused_preset",
+        "role": "subject",
+        "pairId": "paid-supply-recovery",
+        "deadlineRationale": "A lost house must be replaced while all five already-paid military queue items retain useful completion by tick 1200.",
+        "scenarioIds": ["H-18"],
+        "seed": 759181,
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "supplyBranch": "prebuild",
+        "repetitions": 1,
+        "presetWorld": {
+          "fixtureId": "paid-supply-recovery",
+          "actors": [
+            {
+              "fixtureActorId": "ai-producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 576,
+                "y": 656,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 608,
+                "y": 680,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 704,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 672,
+                "y": 728,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1200,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "field",
+              "actorName": "Field",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 640,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "original-house",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 960,
+                "y": 1120,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "spare-house",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 960,
+                "y": 960,
+                "z": 0
+              }
+            }
+          ],
+          "resourceGrants": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1000
+              }
+            }
+          ],
+          "queues": [
+            {
+              "producerFixtureActorId": "ai-producer",
+              "actorName": "TivaraMacemanMale",
+              "count": 5
+            }
+          ],
+          "requireFactionRoster": true,
+          "resourceStarts": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 0,
+                "wood": 100,
+                "stone": 0,
+                "minerals": 0
+              }
+            }
+          ],
+          "events": [
+            {
+              "id": "supply-loss",
+              "tick": 200,
+              "kind": "destroy_owned_actor",
+              "owner": 2,
+              "objectName": "Olival",
+              "fixtureActorId": "original-house"
+            }
+          ]
+        }
+      },
+      {
+        "id": "paid-supply-intact",
+        "executionKind": "focused_preset",
+        "role": "control",
+        "pairId": "paid-supply-recovery",
+        "deadlineRationale": "A lost house must be replaced while all five already-paid military queue items retain useful completion by tick 1200.",
+        "scenarioIds": ["H-18"],
+        "seed": 759181,
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "supplyBranch": "ample_control",
+        "repetitions": 1,
+        "presetWorld": {
+          "fixtureId": "paid-supply-recovery",
+          "actors": [
+            {
+              "fixtureActorId": "ai-producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 576,
+                "y": 656,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 608,
+                "y": 680,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 704,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 672,
+                "y": 728,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ai-worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 720,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1200,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "field",
+              "actorName": "Field",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 640,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "original-house",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 960,
+                "y": 1120,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "spare-house",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 960,
+                "y": 960,
+                "z": 0
+              }
+            }
+          ],
+          "resourceGrants": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1000
+              }
+            }
+          ],
+          "queues": [
+            {
+              "producerFixtureActorId": "ai-producer",
+              "actorName": "TivaraMacemanMale",
+              "count": 5
+            }
+          ],
+          "requireFactionRoster": true,
+          "resourceStarts": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 0,
+                "wood": 100,
+                "stone": 0,
+                "minerals": 0
+              }
+            }
+          ],
+          "events": []
+        }
+      }
+    ]
+  },
+  "assertions": {
+    "H-18": {
+      "minimumDecisions": 10,
+      "minimumAppliedCommands": 1,
+      "requiredAiFactions": ["Tivara"],
+      "requiredSupplyPrebuild": {
+        "minimumBuffer": 5,
+        "latestTick": 1200,
+        "housingObjectName": "Olival"
+      },
+      "requireSupplyControl": true,
+      "requiredSupplyRecovery": {
+        "lossEventId": "supply-loss",
+        "housingObjectName": "Olival",
+        "latestTick": 1200,
+        "paidQueueCount": 5
+      }
+    }
+  },
+  "deliberatelyBrokenOracle": "accept_a_housing_demand_or_cancelled_paid_queue_instead_of_actual_replacement_and_five_matched_native_completions"
+}

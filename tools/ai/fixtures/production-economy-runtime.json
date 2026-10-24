@@ -1,0 +1,325 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "runtime",
+  "scenarioIds": ["PRO-03", "PRO-06", "PRO-07"],
+  "purpose": "Legal faction economy diagnostic for production funding and throughput; causal transition, resilience and queue pairs remain required.",
+  "driver": "runtime",
+  "status": "ready_for_runtime_execution",
+  "context": {
+    "mapId": "AiOpenEconomy",
+    "mapDigest": "resolved_from_candidate_assets",
+    "side": 2,
+    "rulesVersion": "probable-waffle-rules-v1"
+  },
+  "recipe": {
+    "mapLabel": "AI Open Economy (test only)",
+    "aiPlayerNumber": 2,
+    "simulationTimeScale": 100,
+    "checkpointTicks": [20, 1000, 2000, 3000, 4500, 6000, 8000, 10000, 12000],
+    "variants": [
+      {
+        "id": "tivara-production",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759101,
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "deadlineRationale": "Retain the existing 12000-tick production recovery horizon while diagnosing funding; this standalone world cannot certify causal paired branches.",
+        "presetWorld": {
+          "fixtureId": "tivara-production",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 360,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1200,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "field",
+              "actorName": "Field",
+              "owner": 2,
+              "position": {
+                "x": -320,
+                "y": 1200,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "wood-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 288,
+                "y": 1040,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 680,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 720,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 680,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 720,
+                "y": 600,
+                "z": 0
+              }
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 200,
+                "wood": 200,
+                "stone": 200,
+                "minerals": 200
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "skaduwee-production",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759102,
+        "aiFaction": "Skaduwee",
+        "humanFaction": "Tivara",
+        "difficulty": "Normal",
+        "deadlineRationale": "Retain the existing 12000-tick production recovery horizon while diagnosing funding; this standalone world cannot certify causal paired branches.",
+        "presetWorld": {
+          "fixtureId": "skaduwee-production",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "producer",
+              "actorName": "InfantryInn",
+              "owner": 2,
+              "position": {
+                "x": 800,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "housing",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 360,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 1200,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "field",
+              "actorName": "Field",
+              "owner": 2,
+              "position": {
+                "x": -320,
+                "y": 1200,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "wood-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 288,
+                "y": 1040,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 680,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 720,
+                "y": 480,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 640,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 680,
+                "y": 600,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 720,
+                "y": 600,
+                "z": 0
+              }
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 200,
+                "wood": 200,
+                "stone": 200,
+                "minerals": 200
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "assertions": {
+    "PRO-03": {
+      "maximumTick": 12000,
+      "minimumDecisions": 100,
+      "minimumAppliedCommands": 12,
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "minimumMilitaryProducerCount": 2,
+      "requireCapacityDemand": true
+    },
+    "PRO-06": {
+      "maximumTick": 12000,
+      "minimumDecisions": 100,
+      "minimumAppliedCommands": 12,
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "maximumMilitaryProducerCount": 2,
+      "requireCapacityDemand": true
+    },
+    "PRO-07": {
+      "maximumTick": 12000,
+      "minimumDecisions": 100,
+      "minimumAppliedCommands": 12,
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "maximumQueueOccupancyPerProducer": 2,
+      "requireCompositionDemand": true
+    }
+  },
+  "deliberatelyBrokenOracle": "accept_a_self_reported_composition_without_ready_units_or_applied_commands"
+}

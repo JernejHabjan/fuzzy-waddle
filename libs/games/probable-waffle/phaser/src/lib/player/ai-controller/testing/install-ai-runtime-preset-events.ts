@@ -1,0 +1,108 @@
+import type Phaser from "phaser";
+import { Subscription } from "rxjs";
+import { DamageType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
+import { getActorComponent } from "../../../data/actor-component";
+import { HealthComponent } from "../../../entity/components/combat/components/health-component";
+import { ConstructionSiteComponent } from "../../../entity/components/construction/construction-site-component";
+import type GameProbableWaffleScene from "../../../world/scenes/GameProbableWaffleScene";
+import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
+import { SimulationTickService } from "../../../world/services/simulation-tick.service";
+import { getSceneService } from "../../../world/services/scene-component-helpers";
+import type { AiRuntimePresetWorldV1 } from "./ai-runtime-preset-world-v1";
+import { recordAiRuntimePresetEventV1 } from "./ai-runtime-browser-test-config";
+import type { AiRuntimeDecisionRepro } from "./ai-runtime-decision-repro";
+import { PRODUCTION_SPATIAL_AUTHORITY_EVENT, type ProductionSpatialAuthorityEvent } from
+  "../../../world/services/multiplayer/production-spatial-authority-event";
+
+/** Test-owned scheduled losses use native damage and retain the exact original identity when explicitly pinned. */
+export function installAiRuntimePresetEvents(
+  scene: GameProbableWaffleScene,
+  preset: AiRuntimePresetWorldV1,
+  createdActors: ReadonlyMap<string, Phaser.GameObjects.GameObject>
+): void {
+  const pendingEvents = [...(preset.events ?? [])].sort(
+    (left, right) => left.tick - right.tick || left.id.localeCompare(right.id)
+  );
+  if (pendingEvents.length === 0) return;
+  if (pendingEvents.some((event) => event.kind === "cancel_unfinished_site" && !event.fixtureActorId)) {
+    throw new Error("runtime_preset_cancellation_requires_original_role");
+  }
+  const tickService = getSceneService(scene, SimulationTickService);
+  const actorIndex = getSceneService(scene, ActorIndexSystem);
+  if (!tickService || !actorIndex) throw new Error("runtime_preset_event_services_unavailable");
+  const cleanup = new Subscription();
+  let originalOptional: string | undefined;
+  if (pendingEvents.some((event) => event.membership)) {
+    const pin = (capture: AiRuntimeDecisionRepro) => {
+      if (capture.payload.observation.playerNumber !== 2) return;
+      originalOptional = capture.payload.expectedResult?.nextState.transport
+        .flatMap((plan) => plan.lifecycle?.manifest ?? []).find((member) => !member.indispensable)?.actorId;
+      if (originalOptional) scene.events.off("ai-runtime-decision-repro", pin);
+    };
+    scene.events.on("ai-runtime-decision-repro", pin);
+    cleanup.add(() => scene.events.off("ai-runtime-decision-repro", pin));
+  }
+  const firstSites = new Map<string, Phaser.GameObjects.GameObject>();
+  if (pendingEvents.some((event) => event.kind === "destroy_ai_site")) {
+    const observe = (placement: ProductionSpatialAuthorityEvent) => {
+      if (placement.kind !== "placement" || !placement.legal || placement.command.execution?.source !== "ai") return;
+      const key = `${placement.command.playerNumber}:${placement.command.actorName}`;
+      if (!firstSites.has(key)) firstSites.set(key, placement.site);
+    };
+    scene.events.on(PRODUCTION_SPATIAL_AUTHORITY_EVENT, observe);
+    cleanup.add(() => { scene.events.off(PRODUCTION_SPATIAL_AUTHORITY_EVENT, observe); firstSites.clear(); });
+  }
+  cleanup.add(
+    tickService.tick$.subscribe(() => {
+      while (pendingEvents[0] && pendingEvents[0].tick <= tickService.currentTick) {
+        const event = pendingEvents.shift();
+        if (!event) break;
+        const pinned = event.membership ? originalOptional ? actorIndex.getActorById(originalOptional) : undefined :
+          event.kind === "destroy_ai_site" ? firstSites.get(`${event.owner}:${event.objectName}`) :
+          event.fixtureActorId ? createdActors.get(event.fixtureActorId) : undefined;
+        const target = actorIndex
+          .getOwnedActors(event.owner)
+          .filter(
+            (actor) =>
+              actor.scene === scene &&
+              actor.active &&
+              actor.name === event.objectName &&
+              (event.fixtureActorId === undefined && event.kind !== "destroy_ai_site" && !event.membership || actor === pinned)
+          )
+          .sort((left, right) => {
+            const leftId = getActorComponent(left, IdComponent)?.id ?? "";
+            const rightId = getActorComponent(right, IdComponent)?.id ?? "";
+            return leftId.localeCompare(rightId);
+          })[0];
+        const health = target ? getActorComponent(target, HealthComponent) : undefined;
+        const actorId = target ? (getActorComponent(target, IdComponent)?.id ?? null) : null;
+        const construction = target && getActorComponent(target, ConstructionSiteComponent);
+        if (event.kind === "damage_owned_actor" && health &&
+            (event.damage === undefined || event.damage >= (health.healthComponentData.armour > 0
+              ? health.healthComponentData.armour : health.healthComponentData.health))) {
+          throw new Error(`runtime_preset_damage_must_be_nonlethal:${event.id}`);
+        }
+        const applied = !!health && !!actorId && health.healthComponentData.health > 0 &&
+          (event.kind !== "cancel_unfinished_site" || !!construction && !construction.isFinished);
+        if (applied && event.kind === "cancel_unfinished_site") target?.destroy();
+        else if (applied && health) {
+          // Native damage consumes armour without carrying excess into health; a scheduled loss must cross both layers.
+          if (event.kind !== "damage_owned_actor" && health.healthComponentData.armour > 0)
+            health.takeDamage(health.healthComponentData.armour, DamageType.Physical);
+          health.takeDamage(event.kind === "damage_owned_actor" ? event.damage ?? 0 : Number.MAX_SAFE_INTEGER,
+            DamageType.Physical);
+        }
+        recordAiRuntimePresetEventV1({
+          id: event.id,
+          tick: tickService.currentTick,
+          affectedActors: applied ? 1 : 0,
+          subjectName: event.objectName,
+          affectedActorId: applied ? actorId : null
+        });
+      }
+      if (pendingEvents.length === 0) cleanup.unsubscribe();
+    })
+  );
+  cleanup.add(scene.onShutdown.subscribe(() => cleanup.unsubscribe()));
+}

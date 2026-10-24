@@ -1,0 +1,771 @@
+{
+  "schemaVersion": 1,
+  "scenarioIds": [
+    "SCOUT-01",
+    "SCOUT-02",
+    "SCOUT-03",
+    "SCOUT-04",
+    "STRAT-02",
+    "STRAT-03",
+    "STRAT-04",
+    "STRAT-10",
+    "STRAT-11",
+    "STRAT-12",
+    "STRAT-13",
+    "DOMAIN-03",
+    "DOMAIN-04",
+    "RAID-03",
+    "PLACE-01",
+    "PLACE-02",
+    "FIGHT-03",
+    "FIGHT-05",
+    "H-01",
+    "H-02",
+    "H-03",
+    "H-04",
+    "H-05",
+    "H-06",
+    "H-07",
+    "H-08",
+    "H-09",
+    "H-10",
+    "H-11",
+    "H-12",
+    "H-13",
+    "H-14",
+    "H-15",
+    "H-19",
+    "H-20",
+    "H-21",
+    "H-22",
+    "H-26",
+    "C-03",
+    "C-05",
+    "D-01",
+    "D-04",
+    "DBG-02"
+  ],
+  "driver": "pure",
+  "purpose": "Exact existing and new owner assertions for remaining pure registrations. Passing these bindings is partial owner evidence, not complete scenario or native acceptance.",
+  "seeds": [759043],
+  "context": {
+    "mapId": "pure-controller-contract-inputs",
+    "mapDigest": "fixture-authored-per-test",
+    "side": 1,
+    "faction": "fixture-declared",
+    "rulesVersion": "probable-waffle-rules-v1",
+    "contractVersions": {
+      "scenario": 1,
+      "brain": 1,
+      "observation": 1,
+      "command": 1
+    }
+  },
+  "pureCases": [
+    {
+      "scenarioId": "SCOUT-01",
+      "coverage": "owner_contract",
+      "setup": "Unseen connected frontier points and distinct owned vision",
+      "expected": "Visit reachable unanswered points without enemy-vision knowledge",
+      "remaining": ["Native discovery, expansion and resource/access-route variants"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-scout-search-questions.spec.ts",
+          "title": "SCOUT-01/SCOUT-02 progresses through unseen points in one region and remembers answers after leaving"
+        },
+        {
+          "file": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/observation/ai-scout-coverage.spec.ts",
+          "title": "SCOUT-01 searches distinct positions in the same connected region using actual owned vision"
+        }
+      ]
+    },
+    {
+      "scenarioId": "SCOUT-02",
+      "coverage": "owner_contract",
+      "setup": "Repeated and remembered enemy observations",
+      "expected": "Decay memory and avoid treating a remembered contact as a fresh sighting",
+      "remaining": ["Native long-absence composition search and forbidden hidden-field perturbations"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/observation/ai-observation-pipeline.spec.ts",
+          "title": "decays remembered evidence without creating another sighting"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-skirmish-manager.spec.ts",
+          "title": "SCOUT-02/H-22 does not send scouts back to an answered frontier after its units leave"
+        }
+      ]
+    },
+    {
+      "scenarioId": "SCOUT-03",
+      "coverage": "owner_contract",
+      "setup": "Scout plus safe and fully blocked ground escape cells",
+      "expected": "Return a legal escape location or explicit lack of escape",
+      "remaining": ["Integrated scout danger/risk decision, knowledge update and native escape route"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/ai-combat-contract-scenarios.spec.ts",
+          "title": "SCOUT-03 chooses a legal escape cell and returns no fabricated escape when every cell is blocked"
+        }
+      ]
+    },
+    {
+      "scenarioId": "SCOUT-04",
+      "coverage": "owner_contract",
+      "setup": "Permitted production clues and repeated visible contacts",
+      "expected": "New observed production prepares a counter; repeated contact does not inflate knowledge",
+      "remaining": ["Expansion, bridge/island and alternative-route objective updates with fact/inference separation"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-adaptation-scenarios.spec.ts",
+          "title": "TECH-03: one observed air-production clue prepares one counter, confirmed flyers scale the response"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-skirmish-manager.spec.ts",
+          "title": "keeps a repeated visible contact as one incident rather than inflating enemy confidence"
+        }
+      ]
+    },
+    {
+      "scenarioId": "STRAT-02",
+      "coverage": "owner_contract",
+      "setup": "Minor visible mobile home raid with a larger available force",
+      "expected": "Commit only a bounded local defense rather than every unit",
+      "remaining": ["Authored 30-army/4-raider bands, retained offensive claims and landing integration"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-skirmish-defense-sizing.spec.ts",
+          "title": "uses a bounded pair of defenders against one mobile home raider"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-economy-defense.spec.ts",
+          "title": "credits assigned defenders toward the home reserve so a viable offensive force can launch"
+        }
+      ]
+    },
+    {
+      "scenarioId": "STRAT-03",
+      "coverage": "owner_contract",
+      "setup": "Escalated multi-unit home pressure",
+      "expected": "Increase defenders and keep useful recruitment pressure until defense can fight",
+      "remaining": ["Escalating landed raid during an applied offensive with recall outcomes"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-skirmish-defense-sizing.spec.ts",
+          "title": "scales defense to visible multi-unit home pressure instead of recalling only a quarter of the army"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-economy-defense.spec.ts",
+          "title": "reinforces defense until it can fight a strong observed raider instead of repeatedly retreating with a quarter of the army"
+        }
+      ]
+    },
+    {
+      "scenarioId": "STRAT-04",
+      "coverage": "owner_contract",
+      "setup": "Distant bait contact and a committed tactical raid objective",
+      "expected": "Retain chosen focus and strategic objective under competing contact noise",
+      "remaining": ["Whole-brain harmless-scout appearance/disappearance with unchanged goal steps and claims"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-skirmish-boundaries.spec.ts",
+          "title": "keeps the chosen opponent focus and does not recall a defender for a distant bait contact"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-tactics-liveness.spec.ts",
+          "title": "keeps a visible strategic raid objective instead of replacing it with a higher-scored fortified core"
+        }
+      ]
+    },
+    {
+      "scenarioId": "STRAT-10",
+      "coverage": "owner_contract",
+      "setup": "Damaged workforce with current military demand",
+      "expected": "Recover the workforce before noncredible offense and preserve a completed opening",
+      "remaining": ["Combined worker/producer/army loss through native rebuilding and renewed offense"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/select-ai-offensive-opportunity.spec.ts",
+          "title": "recovers a damaged workforce before assembling a non-credible attack"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-worker-recovery.spec.ts",
+          "title": "replaces a lost worker ahead of military spending while preserving the completed opening"
+        }
+      ]
+    },
+    {
+      "scenarioId": "STRAT-11",
+      "coverage": "owner_contract",
+      "setup": "Useful bounded front versus an unanchored open-field proposal",
+      "expected": "Admit terrain-backed defense and reject a perimeter without measured choke value",
+      "remaining": ["Independent strategic choke/resource/reinforcement value comparisons and native control outcomes"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-fortification-manager.spec.ts",
+          "title": "WALL-01/02 creates a deterministic bounded front with a permanently empty opening"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-fortification-manager.spec.ts",
+          "title": "H-27 rejects an unanchored open-field wall that has no measured choke value"
+        }
+      ]
+    },
+    {
+      "scenarioId": "STRAT-12",
+      "coverage": "owner_contract",
+      "setup": "Exposed enemy economy target and threatened own distant worker",
+      "expected": "Select a useful denial objective and provide a credible local defense",
+      "remaining": ["Simultaneous own/enemy deposit dependency comparison and native proportional losses"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-tactics-combat.spec.ts",
+          "title": "RAID-01/02 prioritizes an exposed economy or production objective over a generic combat contact"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-economy-defense.spec.ts",
+          "title": "defends a distant worker with a credible local force instead of leaving all guards idle at home"
+        }
+      ]
+    },
+    {
+      "scenarioId": "STRAT-13",
+      "coverage": "owner_contract",
+      "setup": "Two spatially separate compatible squads with different targets",
+      "expected": "Keep separate actors and objectives instead of combining every force",
+      "remaining": ["Different-severity reinforcement allocation, route variants and native fronts"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/ai-combat-contract-scenarios.spec.ts",
+          "title": "STRAT-13 keeps separate compatible fronts with distinct actors and objectives"
+        }
+      ]
+    },
+    {
+      "scenarioId": "DOMAIN-03",
+      "coverage": "owner_contract",
+      "setup": "Transport-capable access graph and a phased carrier operation",
+      "expected": "Select legal transport access and retain passenger ownership through handoff",
+      "remaining": ["Costed detour/escort comparison and real island map establishment (content remains deferred)"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-access-graph-v1.spec.ts",
+          "title": "returns a transport route when legal carrier production can satisfy missing capacity"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-transport-manager-lifecycle.spec.ts",
+          "title": "reserves, gathers, boards, travels, unloads, regroups and releases mission ownership"
+        }
+      ]
+    },
+    {
+      "scenarioId": "DOMAIN-04",
+      "coverage": "owner_contract",
+      "setup": "Lost carrier, missing passenger and unsafe landing",
+      "expected": "Bound retries, retain surviving cargo and refuse unsafe unloading",
+      "remaining": ["Native loss/capacity-change timing and recovery after host/snapshot boundaries"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-transport-manager-lifecycle.spec.ts",
+          "title": "bounds a lost indispensable passenger instead of producing endless boats"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-transport-manager-lifecycle.spec.ts",
+          "title": "revalidates an unsafe landing and enters bounded recovery without unloading"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-transport-manager-lifecycle.spec.ts",
+          "title": "hands off surviving cargo already ashore after its transport is lost"
+        }
+      ]
+    },
+    {
+      "scenarioId": "RAID-03",
+      "coverage": "owner_contract",
+      "setup": "Observed mobile raider ordered at a protected base plus transport phase ownership",
+      "expected": "Respond to a concrete permitted threat and keep carrier/passenger handoff coherent",
+      "remaining": [
+        "Actual amphibious/air landing, visibility and combat during an existing offensive; pure observations are not landing proof"
+      ],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-skirmish-manager.spec.ts",
+          "title": "forms a defense squad for a visible raider explicitly ordered against a protected base"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-transport-manager-lifecycle.spec.ts",
+          "title": "reserves, gathers, boards, travels, unloads, regroups and releases mission ownership"
+        }
+      ]
+    },
+    {
+      "scenarioId": "PLACE-01",
+      "coverage": "owner_contract",
+      "setup": "Two requested economic sites and centrally reserved tiles",
+      "expected": "Reserve distinct aligned eligible sites without consuming central space",
+      "remaining": ["Definition-backed actual Field footprints, deposit/tending access and efficiency comparison"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/ai-placement-contract-scenarios.spec.ts",
+          "title": "PLACE-01 reserves distinct aligned economic sites while preserving central reserved space"
+        }
+      ]
+    },
+    {
+      "scenarioId": "PLACE-02",
+      "coverage": "owner_contract",
+      "setup": "Near economic candidate paired with visible enemy exposure",
+      "expected": "Use the near site when safe and choose the safer alternative when exposed",
+      "remaining": ["Actual Field admission and inner/outer geometry across native maps"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/ai-placement-contract-scenarios.spec.ts",
+          "title": "PLACE-02 uses the nearer economic site when safe and an inner alternative when that site is exposed"
+        }
+      ]
+    },
+    {
+      "scenarioId": "FIGHT-03",
+      "coverage": "owner_contract",
+      "setup": "Committed useful front with a distant reinforcement and two independent fronts",
+      "expected": "Continue local combat while moving reinforcements and preserve separate objectives",
+      "remaining": ["Unequal-value contact allocation with independently calculated force bands"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-tactics-combat.spec.ts",
+          "title": "moves a distant reinforcement while locally aware members continue fighting"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/ai-combat-contract-scenarios.spec.ts",
+          "title": "STRAT-13 keeps separate compatible fronts with distinct actors and objectives"
+        }
+      ]
+    },
+    {
+      "scenarioId": "FIGHT-05",
+      "coverage": "owner_contract",
+      "setup": "Lost target or failed physical route and dated recovery episode",
+      "expected": "Release invalid pursuit and retain bounded recovery ownership",
+      "remaining": ["Stun/slow durations, disconnected native retreat and actual wall blocker variants"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-tactics-targeting.spec.ts",
+          "title": "releases a mission after its concrete objective disappears from permitted observation"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-recovery-manager.spec.ts",
+          "title": "WALL-04/DOMAIN-04/FIGHT-05 preserves recovery as a bounded state instead of teleporting or deleting actors"
+        }
+      ]
+    },
+    {
+      "scenarioId": "H-01",
+      "coverage": "owner_contract",
+      "setup": "Equivalent repeated recovery request and no-effect mission deadline",
+      "expected": "Retain causal backoff and terminate a no-effect mission after bounded recovery",
+      "remaining": ["Cross-domain useful-duty restoration after cumulative timeout"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-recovery-manager.spec.ts",
+          "title": "REC-02/H-01 retains causal age and backs off equivalent retries rather than command spam"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-tactics-liveness.spec.ts",
+          "title": "terminates a no-effect mission at the second deadline even after it briefly leaves recovery"
+        }
+      ]
+    },
+    {
+      "scenarioId": "H-02",
+      "coverage": "owner_contract",
+      "setup": "Same overdue purpose with renewed decision/retry identity",
+      "expected": "Keep original causal age and phase deadline",
+      "remaining": ["Circling actor and renamed parent-plan equivalence across all owners"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/ai-controller-contract-scenarios.spec.ts",
+          "title": "H-02 keeps causal age when decision identities and retry ticks change"
+        }
+      ]
+    },
+    {
+      "scenarioId": "H-03",
+      "coverage": "owner_contract",
+      "setup": "Long journey before its authored milestone",
+      "expected": "Preserve healthy work beyond the generic short watchdog period",
+      "remaining": ["Long crop/training/native route variants with actual milestone delivery"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/ai-controller-contract-scenarios.spec.ts",
+          "title": "H-03 retains long healthy work until its declared milestone instead of a generic 200-tick timeout"
+        }
+      ]
+    },
+    {
+      "scenarioId": "H-04",
+      "coverage": "owner_contract",
+      "setup": "Stalled parent and recently progressing unrelated child",
+      "expected": "Only the parent enters overdue-progress recovery",
+      "remaining": ["Native parent/child recovery outcome after escalation"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/ai-controller-contract-scenarios.spec.ts",
+          "title": "H-04 does not let a child's unrelated progress refresh a stalled parent"
+        }
+      ]
+    },
+    {
+      "scenarioId": "H-05",
+      "coverage": "owner_contract",
+      "setup": "Terminal optional recovery and healthy resource ownership",
+      "expected": "Record only terminal optional claim release and preserve healthy gather/return work",
+      "remaining": [
+        "Native authored controls remain unrun; saved-only intermediate claims use approved pure recovery partition."
+      ],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-recovery-manager.spec.ts",
+          "title": "REC-04 records rejected placement cooldowns and releases only terminal optional recovery claims"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-recovery-manager.spec.ts",
+          "title": "preserves healthy gather/return ownership and pending extraction during zero-income recovery"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/brain/ai-optional-release.spec.ts",
+          "title": "H-05 releases the complete terminal optional forecast/lease bundle while preserving paid, unknown and foreign ownership"
+        }
+      ]
+    },
+    {
+      "scenarioId": "H-06",
+      "coverage": "owner_contract",
+      "setup": "Applied effect while terminal acknowledgment is delayed",
+      "expected": "Retain authoritative applied history rather than retry an uncertain effect",
+      "remaining": ["Real delayed network acknowledgments with exactly-once world effect"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/ai-command-reconciliation.spec.ts",
+          "title": "retains applied history while waiting for a delayed terminal outcome"
+        }
+      ]
+    },
+    {
+      "scenarioId": "H-07",
+      "coverage": "owner_contract",
+      "setup": "Completed production whose resulting actor is already absent",
+      "expected": "Settle from authoritative completion despite missing actor",
+      "remaining": ["Consumed/destroyed native actor during peer reconciliation"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/ai-command-reconciliation.spec.ts",
+          "title": "settles from authoritative completion even when the resulting actor is already absent"
+        }
+      ]
+    },
+    {
+      "scenarioId": "H-08",
+      "coverage": "owner_contract",
+      "setup": "Late result from a prior host authority epoch",
+      "expected": "Fence obsolete epoch results",
+      "remaining": ["Timeout/cancellation/new-host interleavings through two actual peers"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/ai-command-reconciliation.spec.ts",
+          "title": "fences late outcomes from a previous authority epoch"
+        }
+      ]
+    },
+    {
+      "scenarioId": "H-09",
+      "coverage": "owner_contract",
+      "setup": "Old sequence after detailed command identity eviction and restore",
+      "expected": "Reject stale sequence and keep frontier monotonic",
+      "remaining": ["Interrupted real delivery across peer save/reconnect"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/phaser/src/lib/world/services/multiplayer/command-authority-policy.spec.ts",
+          "title": "rejects an old sequence even after its detailed command id was evicted"
+        },
+        {
+          "file": "libs/games/probable-waffle/phaser/src/lib/world/services/multiplayer/command-authority-policy.spec.ts",
+          "title": "never moves the processed frontier backwards during restore or duplicate delivery"
+        }
+      ]
+    },
+    {
+      "scenarioId": "H-10",
+      "coverage": "owner_contract",
+      "setup": "Unresolved outcome backlog at its configured capacity",
+      "expected": "Bound pending work with an explicit fault while retaining unresolved identity",
+      "remaining": ["Native unrelated safe progress and required-record backpressure across peers"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/ai-command-reconciliation.spec.ts",
+          "title": "bounds the unresolved backlog with an explicit technical outcome"
+        },
+        {
+          "file": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/ai-command-reconciliation.spec.ts",
+          "title": "preserves an unresolved command's causal age and partial actor progress across save restore"
+        }
+      ]
+    },
+    {
+      "scenarioId": "H-11",
+      "coverage": "owner_contract",
+      "setup": "Lost housing prerequisite and renewable food capacity demand",
+      "expected": "Choose a legal recovery core and staff real renewable food capacity",
+      "remaining": ["Complete cheapest feasible food/worker/core/field prerequisite chain under scarcity"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-housing-demand.spec.ts",
+          "title": "rebuilds a legal housing core when the preferred house loses its prerequisite"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-macro-food-capacity.spec.ts",
+          "title": "staffs completed renewable food sources and does not request a third Field"
+        }
+      ]
+    },
+    {
+      "scenarioId": "H-12",
+      "coverage": "owner_contract",
+      "setup": "Known synthetic wait cycles with original admission priorities, paid/uncertain neighbors and acyclic/unknown controls",
+      "expected": "Select the original lowest-priority wholly reversible bundle; native atomic prevention is registered separately",
+      "remaining": [
+        "Execute registered native atomic prevention, paid/foreign preservation and real proposal-order controls"
+      ],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/ai-controller-contract-scenarios.spec.ts",
+          "title": "H-12 releases the deterministic reversible side of a wait cycle while preserving paid work"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-decision-cycle.spec.ts",
+          "title": "releases the original lowest-priority bundle independently of plan name, edge and claim enumeration"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-decision-cycle.spec.ts",
+          "title": "protects a provisional label when current original outcomes already prove dispatch/application"
+        }
+      ]
+    },
+    {
+      "scenarioId": "H-13",
+      "coverage": "owner_contract",
+      "setup": "Other-base fortification commitments and individually affordable shared purchases",
+      "expected": "Count cumulative exposure and reject aggregate overspending",
+      "remaining": ["Cross-base optional categories with protected essential and military funding"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-fortification-continuation.spec.ts",
+          "title": "H-28 prices cumulative other-base commitments instead of admitting a second short prefix against the full budget"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/brain/ai-brain.spec.ts",
+          "title": "admits only the affordable combination of separately affordable resource claims"
+        }
+      ]
+    },
+    {
+      "scenarioId": "H-14",
+      "coverage": "owner_contract",
+      "setup": "Repeated planning steps and an optional proposer failure",
+      "expected": "Keep every lane visible to scheduling and isolate optional faults",
+      "remaining": ["Bound actual dispatch service under persistent scout/supply pressure, including emergency decay"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-decision-planner.spec.ts",
+          "title": "services every lane deterministically even when no manager can dispatch work"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/brain/ai-brain.spec.ts",
+          "title": "H-30 isolates an optional proposer exception and records why it was not evaluated"
+        }
+      ]
+    },
+    {
+      "scenarioId": "H-15",
+      "coverage": "owner_contract",
+      "setup": "Emergency versus competing affordable economic purchases",
+      "expected": "Protect defense while allowing survival to bypass posture quotas",
+      "remaining": ["Lethal native attack while observation/reconciliation continue and appropriate actors preempt"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/brain/ai-spending-budget.spec.ts",
+          "title": "protects an affordable defense purchase during an emergency"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/brain/ai-spending-budget.spec.ts",
+          "title": "never reserves idle resources and lets survival bypass a posture quota"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/brain/ai-brain.spec.ts",
+          "title": "applies the emergency posture to competing affordable spending while preserving survival"
+        }
+      ]
+    },
+    {
+      "scenarioId": "H-19",
+      "coverage": "owner_contract",
+      "setup": "Unfinished optional access queries and bounded observation work",
+      "expected": "Keep optional work bounded with a continuation",
+      "remaining": ["Concurrent nearby attack executes local defense while query never completes"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/observation/ai-observation-pipeline.spec.ts",
+          "title": "H-19/H-20 schedules only bounded optional access work and preserves a fair continuation"
+        }
+      ]
+    },
+    {
+      "scenarioId": "H-20",
+      "coverage": "owner_contract",
+      "setup": "Repeated dynamic blocker changes and oversized topology input",
+      "expected": "Bound access work and eventually publish a stable generation",
+      "remaining": ["Native continuous topology churn with unrelated applied progress"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/observation/ai-access-graph-progress.spec.ts",
+          "title": "completes current supported-map topology even when observed blockers change on every decision"
+        },
+        {
+          "file": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/observation/ai-access-graph-progress.spec.ts",
+          "title": "keeps oversized-map work bounded and completes a stable generation across observations"
+        }
+      ]
+    },
+    {
+      "scenarioId": "H-21",
+      "coverage": "owner_contract",
+      "setup": "Connected region with corridor narrower than the requested formation",
+      "expected": "Reject impossible clearance while admitting a single-tile mover",
+      "remaining": ["Native formation traversal and bounded alternate/failure"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-access-graph-v1.spec.ts",
+          "title": "rejects a wide formation at a narrow connected corridor but admits a single-tile mover"
+        }
+      ]
+    },
+    {
+      "scenarioId": "H-22",
+      "coverage": "owner_contract",
+      "setup": "Answered frontier and expired last-seen objective",
+      "expected": "Retire stale objective and search another legal frontier",
+      "remaining": ["Native exploration proves the region vacated without hidden current contact"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-skirmish-manager.spec.ts",
+          "title": "retires an old last-seen objective and sends a bounded scout to the next frontier"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-skirmish-manager.spec.ts",
+          "title": "SCOUT-02/H-22 does not send scouts back to an answered frontier after its units leave"
+        }
+      ]
+    },
+    {
+      "scenarioId": "H-26",
+      "coverage": "owner_contract",
+      "setup": "Losing force and mission with no useful effect across recovery",
+      "expected": "Retreat/stop a futile mission rather than renew its deadline indefinitely",
+      "remaining": ["Intercepted reinforcement stream, regroup/alternate route and native casualty bands"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/ai-combat-contract-scenarios.spec.ts",
+          "title": "D-04 Easy still retreats a losing squad and retains its bounded recovery deadline"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-tactics-liveness.spec.ts",
+          "title": "terminates a no-effect mission at the second deadline even after it briefly leaves recovery"
+        }
+      ]
+    },
+    {
+      "scenarioId": "C-03",
+      "coverage": "owner_contract",
+      "setup": "Useful composition demand with sufficient and fulfilled commitments",
+      "expected": "Produce useful repeated units and stop when demand is satisfied",
+      "remaining": ["Full army growth with simultaneous worker/supply obligations"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-macro-production.spec.ts",
+          "title": "uses every free producer and permits repeated useful unit types"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-macro-production.spec.ts",
+          "title": "stops production and capacity admission after ready and queued commitments satisfy demand"
+        }
+      ]
+    },
+    {
+      "scenarioId": "C-05",
+      "coverage": "owner_contract",
+      "setup": "Distant bait and completed prior offensive mission",
+      "expected": "Keep protected focus and permit a useful follow-up after completion",
+      "remaining": ["Native pursuit boundary and post-victory pressure effects"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-skirmish-boundaries.spec.ts",
+          "title": "keeps the chosen opponent focus and does not recall a defender for a distant bait contact"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-offensive-opportunity-recovery.spec.ts",
+          "title": "launches a useful new mission after a prior mission with the same squad ID completed"
+        }
+      ]
+    },
+    {
+      "scenarioId": "D-01",
+      "coverage": "owner_contract",
+      "setup": "All lobby difficulties plus invalid difficulty",
+      "expected": "Match exact versioned cadence and quotas and reject unsupported input",
+      "remaining": ["Six native lobby/profile worlds are registered but unrun; runtime certification remains deferred"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/ai-controller-contract-scenarios.spec.ts",
+          "title": "D-01 maps every lobby profile to distinct exact cadence and quotas without fallback"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/profiles/ai-profile-defaults.spec.ts",
+          "title": "rejects an unknown lobby difficulty"
+        },
+        {
+          "file": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/player-ai-profile-boundary.spec.ts",
+          "title": "fails before scheduling or dispatch when the configuration is invalid"
+        }
+      ]
+    },
+    {
+      "scenarioId": "D-04",
+      "coverage": "owner_contract",
+      "setup": "Easy tactical profile with an unfavorable visible fight",
+      "expected": "Retreat while retaining a bounded recovery lifecycle",
+      "remaining": ["Easy legal opening, useful copies, counters and native recovery/match variants"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/ai-combat-contract-scenarios.spec.ts",
+          "title": "D-04 Easy still retreats a losing squad and retains its bounded recovery deadline"
+        }
+      ]
+    },
+    {
+      "scenarioId": "DBG-02",
+      "coverage": "owner_contract",
+      "setup": "Saved why-not answers for evaluated and missing subjects",
+      "expected": "Distinguish recorded statuses and honest absence without mutating planner data",
+      "remaining": ["Projection/UI-to-real-rejection/unresolved command integration"],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/ai-controller-contract-scenarios.spec.ts",
+          "title": "DBG-02 returns every recorded why-not status and honest absence without changing the planner snapshot"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/brain/ai-brain.spec.ts",
+          "title": "H-30 isolates an optional proposer exception and records why it was not evaluated"
+        }
+      ]
+    }
+  ]
+}

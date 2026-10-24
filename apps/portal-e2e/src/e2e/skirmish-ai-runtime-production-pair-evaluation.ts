@@ -1,0 +1,131 @@
+import type { RuntimeProductionPairInput } from "./skirmish-ai-runtime-production-pair-input";
+import type { RuntimeAssertionV1 } from "./skirmish-ai-runtime-assertion";
+import type { RuntimeProductionContractV1 } from "./skirmish-ai-runtime-production-contract";
+import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import { compareRuntimeProductionSetups } from "./skirmish-ai-runtime-production-setup";
+
+const branches = {
+  "H-17": ["future_committed", "future_abandoned"],
+  "PRO-03": ["future_committed", "future_abandoned"],
+  "PRO-06": ["critical_exposed", "safe_served", "low_value", "no_demand"],
+  "PRO-07": ["shared_contention", "cancel_pending_refund"]
+} as const;
+
+function balances(variant: Pick<RuntimeVariantResultV1, "presetInitialResourceBalances">): string {
+  return JSON.stringify(
+    Object.entries(variant.presetInitialResourceBalances)
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(([owner, resources]) => [
+        owner,
+        Object.entries(resources).sort(([left], [right]) => left.localeCompare(right))
+      ])
+  );
+}
+
+/** Every required faction must supply distinct causal branches; one passing subject cannot stand in for controls. */
+export function evaluateRuntimeProductionPairs(
+  scenarioId: string,
+  assertion: RuntimeAssertionV1,
+  variants: readonly RuntimeProductionPairInput[]
+): string[] {
+  if (scenarioId !== "PRO-03" && scenarioId !== "PRO-06" && scenarioId !== "PRO-07" && scenarioId !== "H-17") return [];
+  const failures: string[] = [];
+  for (const faction of assertion.requiredAiFactions) {
+    const selected = variants.filter((variant) => variant.aiFaction === faction);
+    const contracts = selected.map((variant) => assertion.requiredProductionContracts?.[variant.variantId]);
+    if (
+      !branches[scenarioId].every((branch) =>
+        contracts.some((contract) => contract?.scenarioId === scenarioId && contract.branch === branch)
+      )
+    )
+      failures.push(`${faction}:production_required_branches_missing`);
+    if (scenarioId === "PRO-07") continue;
+    const groups = new Map<string, typeof selected>();
+    for (const variant of selected) {
+      const contract = assertion.requiredProductionContracts?.[variant.variantId];
+      if (contract) groups.set(contract.pairId, [...(groups.get(contract.pairId) ?? []), variant]);
+    }
+    for (const [pairId, pair] of groups) {
+      const pairContracts = pair.flatMap((variant) => {
+        const contract = assertion.requiredProductionContracts?.[variant.variantId];
+        return contract ? [contract] : [];
+      });
+      const [leftContract, rightContract] = pairContracts;
+      const [left, right] = pair;
+      const required: readonly RuntimeProductionContractV1["branch"][] =
+        scenarioId === "PRO-03" || scenarioId === "H-17"
+          ? branches["PRO-03"]
+          : pairContracts.some((contract) => contract.branch === "critical_exposed")
+            ? ["critical_exposed", "safe_served"]
+            : ["low_value", "no_demand"];
+      const signatures = pairContracts.map((contract) => contract.branch);
+      const compatible = (left: RuntimeProductionContractV1, right: RuntimeProductionContractV1) =>
+        left.scenarioId === right.scenarioId &&
+        left.latestTick === right.latestTick &&
+        left.stableForTicks === right.stableForTicks &&
+        left.producerObjectName === right.producerObjectName &&
+        left.productKey === right.productKey;
+      if (
+        pair.length !== 2 ||
+        !left ||
+        !right ||
+        !leftContract ||
+        !rightContract ||
+        !required.every((branch) => signatures.includes(branch)) ||
+        new Set(pair.map((variant) => variant.variantId)).size !== 2 ||
+        !compatible(leftContract, rightContract)
+      ) {
+        failures.push(`${faction}:${pairId}:production_pair_shape`);
+        continue;
+      }
+      if (
+        !left.presetFixtureId ||
+        !right.presetFixtureId ||
+        Object.keys(left.presetInitialResourceBalances).length === 0 ||
+        left.seed !== right.seed ||
+        left.mapLabel !== right.mapLabel ||
+        balances(left) !== balances(right) ||
+        !left.productionEvidenceV2?.setup ||
+        !right.productionEvidenceV2?.setup
+      ) {
+        failures.push(`${faction}:${pairId}:production_pair_world_mismatch`);
+      } else {
+        if (
+          leftContract.pairedPositionRole !== rightContract.pairedPositionRole ||
+          ((scenarioId === "PRO-03" || scenarioId === "H-17") && leftContract.pairedPositionRole) ||
+          (scenarioId === "PRO-06" && !leftContract.pairedPositionRole)
+        ) {
+          failures.push(`${faction}:${pairId}:production_pair_exclusion_invalid`);
+        } else
+          failures.push(
+            ...compareRuntimeProductionSetups(
+              left.productionEvidenceV2.setup,
+              right.productionEvidenceV2.setup,
+              leftContract.pairedPositionRole
+            ).map((failure) => `${faction}:${pairId}:${failure}`)
+          );
+        if (scenarioId === "PRO-03" || scenarioId === "H-17") {
+          const prefix = (variant: typeof left) => {
+            const evidence = variant.productionEvidenceV2;
+            const first = evidence?.decisions.find(
+              (entry) => entry.result.economyProduction.transition?.status === "committed"
+            );
+            const transition = first?.result.economyProduction.transition;
+            if (!first || !transition || !evidence?.setup) return null;
+            return {
+              inputTick: first.inputTick,
+              selectedTick: first.selectedTick,
+              transition: { ...transition, targetActorId: evidence.setup.roles[transition.targetActorId] ?? null }
+            };
+          };
+          const a = prefix(left),
+            b = prefix(right);
+          if (!a || !b || !a.transition.targetActorId || JSON.stringify(a) !== JSON.stringify(b)) {
+            failures.push(`${faction}:${pairId}:production_pair_common_commitment_missing`);
+          }
+        }
+      }
+    }
+  }
+  return failures;
+}

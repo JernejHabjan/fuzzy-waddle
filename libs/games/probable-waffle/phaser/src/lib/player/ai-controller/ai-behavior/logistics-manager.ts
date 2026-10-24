@@ -89,6 +89,7 @@ export class LogisticsManager {
     for (const worker of workers) {
       const gatherer = getActorComponent(worker, GathererComponent);
       if (!gatherer) continue;
+      if (gatherer.isCarryingResources()) continue;
 
       // Skip if already gathering the scarce resource
       const currentTarget = gatherer.currentResourceSource;
@@ -101,9 +102,16 @@ export class LogisticsManager {
         AI_CONFIG.gatherSearchRadius
       );
       if (!closestResourceSource) continue;
-
-      gatherer.startGatheringResources(closestResourceSource);
-      reassignedCount++;
+      // Selection must not steal cargo or a newer assignment created while navigation awaited.
+      if (
+        !worker.active ||
+        !worker.scene?.sys.isActive() ||
+        !gatherer.isGathering ||
+        gatherer.isCarryingResources() ||
+        gatherer.currentResourceSource !== currentTarget
+      )
+        continue;
+      if (gatherer.startGatheringResources(closestResourceSource)) reassignedCount++;
     }
 
     if (reassignedCount > 0) {
@@ -197,7 +205,8 @@ export class LogisticsManager {
 
     if (mostConstrained) {
       this.log(
-        `[Logistics] Most constrained resource: ${mostConstrained} (score: ${maxScore.toFixed(2)}, stock: ${economy.resources[mostConstrained]}, demand: ${projectedSpend[mostConstrained]})`
+        `[Logistics] Most constrained resource: ${mostConstrained} (score: ${maxScore.toFixed(2)}, ` +
+          `stock: ${economy.resources[mostConstrained]}, demand: ${projectedSpend[mostConstrained]})`
       );
     }
 

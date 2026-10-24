@@ -1,4 +1,10 @@
-import { type AIBehaviorTreeStateData, ProbableWafflePlayer } from "@fuzzy-waddle/probable-waffle-protocol";
+import { createAiRuntimeBrainHooks } from "./testing/create-ai-runtime-brain-hooks";
+import {
+  type AiCommandReconciliationStateData,
+  type AIBehaviorTreeStateData,
+  ProbableWaffleAiDifficulty,
+  ProbableWafflePlayer
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { PlayerAiBlackboard } from "./player-ai-blackboard";
 import { PlayerAiControllerAgent } from "./player-ai-controller.agent";
 import { BehaviourTree } from "mistreevous";
@@ -11,27 +17,73 @@ import { getSceneService } from "../../world/services/scene-component-helpers";
 import { SimulationTickService } from "../../world/services/simulation-tick.service";
 import type { Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
+import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
+import { AiCommandReconciliation } from "./ai-command-reconciliation";
+import type { AiAuthorityStateV1, AiBrainStateV1, AiCommandOutcomeV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import { createAiBrainStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-brain-state-v1";
+import { migrateAiBrainState } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/migrate-ai-brain-state";
+import { canonicalizeAiBrainStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/canonical-ai-serialization";
+import { createAiProfileConfigV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-profile-defaults";
+import type { PureAiBrain } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain";
+import type { AiDebugSnapshotV1, AiProfileConfigV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import { selectAiOpeningArchetypeV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-opening-archetypes-v1";
+import { readAiRuntimeCalibrationOpening } from "./testing/ai-runtime-calibration";
+import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiBrainStepResultV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain-step-result-v1";
+import { dispatchAiIntents } from "./ai-intent-dispatcher";
+import { dispatchAiBrainResult } from "./dispatch-ai-brain-result";
+import { captureAiDecisionInput } from "./capture-ai-decision-input";
+import { beginAiResourceDecision, fenceAiResourceNeed } from "./observation/ai-resource-input-observation";
+import type { AiDecisionInputV1 } from "./ai-decision-input-v1";
+import { createAiProductionBrain } from
+  "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-production-brain";
+import { publishAiRuntimeDecisionRepro } from "./testing/ai-runtime-decision-repro";
 
 export class PlayerAiController {
   private static readonly MAX_SCHEDULED_STEPS_PER_RUN = 5;
   readonly playerAiControllerAgent: PlayerAiControllerAgent;
   public blackboard: PlayerAiBlackboard;
   private behaviourTree: BehaviourTree;
-  private elapsedTime: number = 0;
+  private elapsedTime = 0;
   private static readonly AI_ENABLED = true;
   private enabled = true;
-  private readonly stepInterval: number = AI_CONFIG.controllerStepIntervalMs;
+  private authorityActive = true;
+  private disposed = false;
+  private readonly stepInterval: number;
   telemetry = new TelemetrySink();
   private telemetryFrameModulo = AI_CONFIG.telemetryFrameModulo;
   private tickSubscription?: Subscription;
   private stepInFlight = false;
   private stepQueued = false;
+  private readonly commandReconciliation?: AiCommandReconciliation;
+  private brainState?: AiBrainStateV1;
+  private readonly profile: AiProfileConfigV1 | undefined;
+  private readonly pureBrain: PureAiBrain | undefined;
+  private latestBrainDebug?: AiDebugSnapshotV1;
+  private readonly brainDebugHistory: AiDebugSnapshotV1[] = [];
+  private completedDecisionSequence = 0;
   constructor(
     public readonly scene: ProbableWaffleScene,
     public readonly player: ProbableWafflePlayer
   ) {
+    this.profile = this.resolveProfile();
+    this.stepInterval =
+      (this.profile?.decisionIntervalTicks ??
+        AI_CONFIG.controllerStepIntervalMs / SimulationTickService.TICK_INTERVAL_MS) *
+      SimulationTickService.TICK_INTERVAL_MS;
+    this.pureBrain = this.profile
+      ? createAiProductionBrain(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog(),
+        createAiRuntimeBrainHooks(scene, player.playerNumber))
+      : undefined;
     this.blackboard = new PlayerAiBlackboard(scene);
+    const commandBus = getSceneService(scene, CommandBusService);
+    if (commandBus && player.playerNumber !== undefined) {
+      this.commandReconciliation = new AiCommandReconciliation(player.playerNumber, commandBus, this.profile?.decisionIntervalTicks);
+    }
     this.playerAiControllerAgent = new PlayerAiControllerAgent(this.scene, this.player, this.blackboard);
+    this.playerAiControllerAgent.setPurePlannerOwnsCommands(this.pureBrain !== undefined);
+    this.playerAiControllerAgent.setPurePlannerOwnsResearch(this.pureBrain !== undefined);
+    this.brainState = this.createInitialBrainState();
     this.behaviourTree = new BehaviourTree(PlayerAiControllerMdsl, this.playerAiControllerAgent);
     // expose telemetry snapshot container in diagnostics if absent
     this.blackboard.diagnostics.telemetry = this.telemetry.snapshot();
@@ -39,6 +91,7 @@ export class PlayerAiController {
     const simulationTickService = getSceneService(scene, SimulationTickService);
     if (simulationTickService) {
       this.tickSubscription = simulationTickService.tick$.subscribe(() => {
+        this.commandReconciliation?.observeTick(simulationTickService.currentTick);
         this.updateOnSimulationTick().catch((error: unknown) => {
           console.error(error, "Error updating AI on simulation tick");
         });
@@ -54,7 +107,7 @@ export class PlayerAiController {
   private async updateFrameNonDeterministicFallback(_: number, delta: number) {
     const deltaWithTimeScale = delta * this.scene.time.timeScale;
 
-    if (!PlayerAiController.AI_ENABLED || !this.enabled) return;
+    if (!PlayerAiController.AI_ENABLED || !this.enabled || !this.authorityActive) return;
     this.elapsedTime += deltaWithTimeScale;
     if (this.elapsedTime >= this.stepInterval) {
       await this.runScheduledStep();
@@ -62,7 +115,7 @@ export class PlayerAiController {
   }
 
   private async updateOnSimulationTick(): Promise<void> {
-    if (!PlayerAiController.AI_ENABLED || !this.enabled) return;
+    if (!PlayerAiController.AI_ENABLED || !this.enabled || !this.authorityActive) return;
     this.elapsedTime += SimulationTickService.TICK_INTERVAL_MS;
     if (this.elapsedTime >= this.stepInterval) {
       await this.runScheduledStep();
@@ -70,6 +123,7 @@ export class PlayerAiController {
   }
 
   private async runScheduledStep(): Promise<void> {
+    if (!this.authorityActive || !this.enabled) return;
     if (this.stepInFlight) {
       this.stepQueued = true;
       return;
@@ -83,11 +137,18 @@ export class PlayerAiController {
         this.telemetry.nextFrame();
         const frameBeforeSnapshot = this.telemetry.snapshot().frame;
         try {
-          await this.telemetry.withSpanAsync(
-            "ai.preTick",
-            async () => await this.playerAiControllerAgent.preTick(getSimulationNow(this.scene))
-          );
-          this.telemetry.withSpan("ai.behaviourTreeStep", () => this.behaviourTree.step());
+          if (this.pureBrain) {
+            this.telemetry.withSpan("ai.preTick", () =>
+              this.playerAiControllerAgent.preparePureDecision(getSimulationNow(this.scene))
+            );
+          } else {
+            await this.telemetry.withSpanAsync(
+              "ai.preTick",
+              async () => await this.playerAiControllerAgent.preTick(getSimulationNow(this.scene))
+            );
+          }
+          if (!this.authorityActive || !this.enabled) break;
+          this.stepDecisionPlanner();
           if (this.telemetryFrameModulo && frameBeforeSnapshot % this.telemetryFrameModulo === 0) {
             this.blackboard.diagnostics.telemetry = this.telemetry.snapshot();
           }
@@ -97,6 +158,7 @@ export class PlayerAiController {
           this.telemetry.recordEvent("bt.error", { message });
         }
         this.elapsedTime = Math.max(0, this.elapsedTime - this.stepInterval);
+        this.completedDecisionSequence = Math.min(Number.MAX_SAFE_INTEGER, this.completedDecisionSequence + 1);
         processedSteps++;
         if (processedSteps >= PlayerAiController.MAX_SCHEDULED_STEPS_PER_RUN) {
           this.stepQueued = this.stepQueued || this.elapsedTime >= this.stepInterval;
@@ -117,8 +179,15 @@ export class PlayerAiController {
   }
 
   private onShutdown() {
+    if (this.disposed) return;
+    this.disposed = true;
+    this.authorityActive = false;
+    this.stepQueued = false;
+    fenceAiResourceNeed(this.scene, this.player.playerNumber, "controller_shutdown");
     this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.updateFrameNonDeterministicFallback, this);
     this.tickSubscription?.unsubscribe();
+    this.commandReconciliation?.destroy();
+    this.brainDebugHistory.length = 0;
   }
 
   public getTelemetrySnapshot() {
@@ -132,7 +201,17 @@ export class PlayerAiController {
     return {
       blackboard: this.blackboard.getData(),
       telemetry: this.telemetry.snapshot(),
-      enabled: this.enabled
+      deliveredIncomeSampling: this.playerAiControllerAgent.getDeliveredIncomeSamplingState(),
+      enabled: this.enabled,
+      commandReconciliation: this.commandReconciliation?.getState(),
+      observationMemory: this.playerAiControllerAgent.getObservationMemoryState(),
+      brainState: this.brainState ? structuredClone(canonicalizeAiBrainStateV1(this.brainState)) : undefined,
+      controllerCadence: {
+        schemaVersion: 1,
+        elapsedMilliseconds: this.elapsedTime,
+        queuedAfterBoundary: this.stepQueued,
+        completedDecisionSequence: this.completedDecisionSequence
+      }
     };
   }
 
@@ -140,20 +219,225 @@ export class PlayerAiController {
    * Set the AI behavior tree state from saved data.
    */
   public setSaveState(state: AIBehaviorTreeStateData): void {
+    if (this.disposed) throw new Error("ai_controller_disposed");
+    fenceAiResourceNeed(this.scene, this.player.playerNumber, "controller_save_restore");
     this.setEnabled(state.enabled ?? true);
     if (state.blackboard) {
       this.blackboard.setData(state.blackboard, this.scene);
+    }
+    this.playerAiControllerAgent.restoreDeliveredIncomeSampling(state.deliveredIncomeSampling);
+    if (state.commandReconciliation) {
+      const tick = getSceneService(this.scene, SimulationTickService)?.currentTick ?? 0;
+      this.commandReconciliation?.setState(state.commandReconciliation, tick);
+    }
+    if (state.observationMemory) {
+      this.playerAiControllerAgent.setObservationMemoryState(state.observationMemory);
+    }
+    if (state.brainState) {
+      const context = this.getBrainMigrationContext();
+      if (context)
+        this.brainState = structuredClone(canonicalizeAiBrainStateV1(migrateAiBrainState(state.brainState, context)));
+    } else {
+      const context = this.getBrainMigrationContext();
+      if (context) {
+        this.brainState = structuredClone(
+          canonicalizeAiBrainStateV1(migrateAiBrainState(state, { ...context, legacyOpeningLifecycle: "completed" }))
+        );
+      }
+    }
+    if (state.controllerCadence?.schemaVersion === 1) {
+      const elapsed = state.controllerCadence.elapsedMilliseconds;
+      this.elapsedTime = Number.isFinite(elapsed) && elapsed >= 0 ? Math.min(elapsed, this.stepInterval) : 0;
+      this.stepQueued = state.controllerCadence.queuedAfterBoundary === true;
+      this.completedDecisionSequence = Number.isSafeInteger(state.controllerCadence.completedDecisionSequence)
+        ? Math.max(0, state.controllerCadence.completedDecisionSequence)
+        : 0;
     }
   }
 
   /** Documents the set enabled member and its declared contract at this boundary. */
   setEnabled(enabled: boolean): void {
+    if (this.disposed) return;
+    if (!enabled) fenceAiResourceNeed(this.scene, this.player.playerNumber, "controller_disabled");
     this.enabled = enabled;
     const definition = this.player.playerController.data.playerDefinition;
     if (definition) definition.campaignAiEnabled = enabled;
   }
 
+  /** Host transfer suspends planning without changing the campaign's persisted AI-enabled policy. */
+  setAuthorityActive(active: boolean): void {
+    if (this.disposed) return;
+    if (!active) fenceAiResourceNeed(this.scene, this.player.playerNumber, "controller_authority_lost");
+    this.authorityActive = active;
+    if (!active) this.stepQueued = false;
+  }
+
   isEnabled(): boolean {
     return this.enabled;
+  }
+
+  getCommandReconciliationSnapshot(): AiCommandReconciliationStateData | undefined {
+    return this.commandReconciliation?.getState();
+  }
+
+  /** Stage 4 fair observation consumed by the later pure brain and current read-only debug UI. */
+  getCommittedObservation() {
+    return this.playerAiControllerAgent.getCommittedObservation();
+  }
+
+  /** Runtime-derived, generation-paired capability catalog. */
+  getCommittedCapabilityCatalog() {
+    return this.playerAiControllerAgent.getCommittedCapabilityCatalog();
+  }
+
+  /** Read-only metadata; panel callers never query the live world for hidden information. */
+  getObservationDebugSnapshot() {
+    return this.playerAiControllerAgent.getObservationDebugSnapshot();
+  }
+
+  /** Stage 6 committed planner view; callers receive facts captured at the decision boundary only. */
+  getBrainDebugSnapshot(): AiDebugSnapshotV1 | undefined {
+    return this.latestBrainDebug ? structuredClone(this.latestBrainDebug) : undefined;
+  }
+
+  /** Bounded immutable live history; navigating it never pauses or advances the match. */
+  getBrainDebugHistory(): readonly AiDebugSnapshotV1[] {
+    return this.brainDebugHistory.map((snapshot) => structuredClone(snapshot));
+  }
+
+  /** Explicit text export for developer tooling; callers own any user-initiated file download. */
+  exportBrainDebugHistory(): string {
+    return JSON.stringify(this.brainDebugHistory);
+  }
+
+  /** Read-only Stage 3 adapter consumed when the pure brain becomes live in Stage 6. */
+  getBrainCommandBridgeSnapshot():
+    | { readonly outcomes: readonly AiCommandOutcomeV1[]; readonly authority: AiAuthorityStateV1 }
+    | undefined {
+    if (!this.commandReconciliation) return undefined;
+    return {
+      outcomes: this.commandReconciliation.getBrainOutcomes(this.scene.gameInstanceId),
+      authority: this.commandReconciliation.getBrainAuthorityState()
+    };
+  }
+
+  /** True only after asynchronous observation and behavior work has crossed its save-safe boundary. */
+  isDecisionBoundarySettled(): boolean {
+    return !this.stepInFlight && !this.stepQueued;
+  }
+
+  /** Canonical save-owned pure state prepared for Stage 6 live adoption and Stage 5 replay. */
+  getBrainState(): AiBrainStateV1 | undefined {
+    return this.brainState ? structuredClone(canonicalizeAiBrainStateV1(this.brainState)) : undefined;
+  }
+
+  /** Replaces state only through the checked V1 migration boundary. */
+  setBrainState(state: unknown): void {
+    if (this.disposed) throw new Error("ai_controller_disposed");
+    fenceAiResourceNeed(this.scene, this.player.playerNumber, "controller_brain_replaced");
+    const context = this.getBrainMigrationContext();
+    if (!context) throw new Error("ai_brain_identity_unavailable");
+    this.brainState = structuredClone(canonicalizeAiBrainStateV1(migrateAiBrainState(state, context)));
+  }
+
+  private createInitialBrainState(): AiBrainStateV1 | undefined {
+    const context = this.getBrainMigrationContext();
+    return context ? createAiBrainStateV1(context) : undefined;
+  }
+
+  /** Runs the persisted pure planner at the same boundary as transitional legacy execution. */
+  /** Stage 15 makes the two planners exclusive so legacy commands cannot conflict with accepted pure intents. */
+  private stepPureBrain(): void {
+    const observation = this.playerAiControllerAgent.getCommittedObservation();
+    const bridge = this.getBrainCommandBridgeSnapshot();
+    if (!observation || !this.brainState || !this.pureBrain) return;
+    beginAiResourceDecision(this.scene, this.player.playerNumber, observation);
+    // Outcomes can arrive between decisions or synchronously during dispatch. Admission must consume the live frontier.
+    const previous = { ...this.brainState, authority: bridge?.authority ?? this.brainState.authority };
+    let result: AiBrainStepResultV1;
+    try {
+      result = this.pureBrain.step(observation, previous, bridge?.outcomes ?? []);
+    } catch (error) {
+      this.commandReconciliation?.markTechnicalFault();
+      this.brainState = { ...this.brainState, authority: { ...this.brainState.authority, health: "technical_fault" } };
+      throw error;
+    }
+    publishAiRuntimeDecisionRepro(this.scene, this.profile, this.getCommittedCapabilityCatalog(),
+      observation, previous, bridge?.outcomes ?? [], result);
+    this.dispatchAcceptedIntents(result.acceptedIntents, {
+      result,
+      authority: bridge?.authority ?? result.nextState.authority,
+      input: captureAiDecisionInput(
+        this.scene,
+        observation,
+        this.playerAiControllerAgent.getCommittedCapabilityCatalog(),
+        this.stepInterval,
+        this.completedDecisionSequence,
+        this.profile
+      )
+    });
+    this.brainState = structuredClone(
+      canonicalizeAiBrainStateV1({
+        ...result.nextState,
+        authority: this.getBrainCommandBridgeSnapshot()?.authority ?? result.nextState.authority
+      })
+    );
+    this.latestBrainDebug = structuredClone(result.debugSnapshot);
+    this.brainDebugHistory.push(structuredClone(result.debugSnapshot));
+    const limit = this.profile?.traceHistoryDecisions ?? 128;
+    if (this.brainDebugHistory.length > limit) this.brainDebugHistory.splice(0, this.brainDebugHistory.length - limit);
+  }
+
+  private stepDecisionPlanner(): void {
+    if (this.authorityActive === false) return;
+    if (this.pureBrain) {
+      this.telemetry.withSpan("ai.pureBrainStep", () => this.stepPureBrain());
+      return;
+    }
+    this.telemetry.withSpan("ai.behaviourTreeStep", () => this.behaviourTree.step());
+  }
+
+  /** Routes accepted commands under the host fence; real pure steps also publish their exact accepting result. */
+  private dispatchAcceptedIntents(
+    intents: readonly AiIntentV1[],
+    decision?: {
+      readonly result: AiBrainStepResultV1;
+      readonly authority: AiAuthorityStateV1;
+      readonly input?: AiDecisionInputV1;
+    }
+  ): void {
+    if (this.authorityActive === false || this.player.playerNumber === undefined) return;
+    if (decision)
+      dispatchAiBrainResult(this.scene, this.player.playerNumber, decision.result, decision.authority, decision.input);
+    else dispatchAiIntents(this.scene, this.player.playerNumber, intents);
+  }
+
+  private resolveProfile(): AiProfileConfigV1 | undefined {
+    const definition = this.player.playerController.data.playerDefinition;
+    if (this.player.playerNumber === undefined || definition?.factionType === undefined) return undefined;
+    return createAiProfileConfigV1(definition.difficulty ?? ProbableWaffleAiDifficulty.Medium);
+  }
+
+  private getBrainMigrationContext() {
+    const playerNumber = this.player.playerNumber;
+    const definition = this.player.playerController.data.playerDefinition;
+    const faction = definition?.factionType;
+    if (playerNumber === undefined || faction === undefined) return undefined;
+    const profile =
+      this.profile ?? createAiProfileConfigV1(definition?.difficulty ?? ProbableWaffleAiDifficulty.Medium);
+    const archetype = selectAiOpeningArchetypeV1({
+      faction,
+      playerNumber,
+      profile,
+      seed: playerNumber
+    });
+    return {
+      playerNumber,
+      faction,
+      profile,
+      tick: getSceneService(this.scene, SimulationTickService)?.currentTick ?? 0,
+      archetypeId: readAiRuntimeCalibrationOpening(this.scene, playerNumber, faction) ?? archetype.id,
+      satisfiedOpeningStepIds: []
+    } as const;
   }
 }

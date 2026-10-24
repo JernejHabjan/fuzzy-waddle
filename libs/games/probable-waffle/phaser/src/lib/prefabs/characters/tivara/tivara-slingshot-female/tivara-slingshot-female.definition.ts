@@ -62,7 +62,7 @@ export const tivaraSlingshotFemaleDefinition = {
     productionCost: {
       resources: {
         [ResourceType.Wood]: 25,
-        [ResourceType.Food]: 120
+        [ResourceType.Food]: 80
       },
       refundFactor: 0.5,
       productionTime: 10000,

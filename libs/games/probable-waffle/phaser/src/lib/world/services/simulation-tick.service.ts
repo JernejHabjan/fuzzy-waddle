@@ -1,72 +1,8 @@
 import { Subject } from "rxjs";
 import Phaser from "phaser";
 
-/**
- * Defines the closed simulation pause reason classification. Use an explicit member rather than a free-form
- * string so branching, persistence, and diagnostics share the same vocabulary.
- */
-export enum SimulationPauseReason {
-  /**
-   * Selects the `Manual` case of {@link SimulationPauseReason}. Use this explicit member when the surrounding
-   * flow requires this distinct policy or state; never substitute a free-form string.
-   */
-  Manual = "manual",
-  /**
-   * Selects the `SceneBootstrap` case of {@link SimulationPauseReason}. Use this explicit member when the
-   * surrounding flow requires this distinct policy or state; never substitute a free-form string.
-   */
-  SceneBootstrap = "scene-bootstrap",
-  /**
-   * Selects the `Lockstep` case of {@link SimulationPauseReason}. Use this explicit member when the surrounding
-   * flow requires this distinct policy or state; never substitute a free-form string.
-   */
-  Lockstep = "lockstep",
-  /**
-   * Selects the `Reconnect` case of {@link SimulationPauseReason}. Use this explicit member when the surrounding
-   * flow requires this distinct policy or state; never substitute a free-form string.
-   */
-  Reconnect = "reconnect",
-  /**
-   * Selects the `SnapshotRestore` case of {@link SimulationPauseReason}. Use this explicit member when the
-   * surrounding flow requires this distinct policy or state; never substitute a free-form string.
-   */
-  SnapshotRestore = "snapshot-restore",
-  /**
-   * Selects the `Desync` case of {@link SimulationPauseReason}. Use this explicit member when the surrounding
-   * flow requires this distinct policy or state; never substitute a free-form string.
-   */
-  Desync = "desync",
-  /**
-   * Selects the `DesyncCorrection` case of {@link SimulationPauseReason}. Use this explicit member when the
-   * surrounding flow requires this distinct policy or state; never substitute a free-form string.
-   */
-  DesyncCorrection = "desync-correction",
-  /**
-   * Selects the `Player` case of {@link SimulationPauseReason}. Use this explicit member when the surrounding
-   * flow requires this distinct policy or state; never substitute a free-form string.
-   */
-  Player = "player",
-  /**
-   * Selects the `ExternalModal` case of {@link SimulationPauseReason}. Use this explicit member when the
-   * surrounding flow requires this distinct policy or state; never substitute a free-form string.
-   */
-  ExternalModal = "external-modal",
-  /**
-   * Selects the `CampaignCinematic` case of {@link SimulationPauseReason}. Use this explicit member when the
-   * surrounding flow requires this distinct policy or state; never substitute a free-form string.
-   */
-  CampaignCinematic = "campaign-cinematic",
-  /**
-   * Selects the `CampaignRuntimeFailure` case of {@link SimulationPauseReason}. Use this explicit member when
-   * the surrounding flow requires this distinct policy or state; never substitute a free-form string.
-   */
-  CampaignRuntimeFailure = "campaign-runtime-failure",
-  /**
-   * Selects the `CampaignRestore` case of {@link SimulationPauseReason}. Use this explicit member when the
-   * surrounding flow requires this distinct policy or state; never substitute a free-form string.
-   */
-  CampaignRestore = "campaign-restore"
-}
+import { SimulationPauseReason } from "./simulation-pause-reason";
+export { SimulationPauseReason } from "./simulation-pause-reason";
 
 /**
  * Drives the deterministic simulation at a fixed 20 Hz tick rate.
@@ -93,8 +29,32 @@ export class SimulationTickService {
   private accumulated = 0;
   private readonly pauseReasons = new Set<SimulationPauseReason>();
   private simulationTimeScale = 1;
+  private frontierObserver?: { close: (capturedAtTick: number) => void; lost: (reason: string) => void };
 
-  constructor(private readonly scene: Phaser.Scene) {
+  /** Test-owned observer runs after increment, before next-tick subscribers. Failure detaches without stopping gameplay. */
+  observeClosedFrontiers(close: (capturedAtTick: number) => void, lost: (reason: string) => void): () => void {
+    if (this.frontierObserver) throw new Error("simulation_frontier_observer_already_installed");
+    const observer = { close, lost };
+    this.frontierObserver = observer;
+    return () => {
+      if (this.frontierObserver === observer) this.frontierObserver = undefined;
+    };
+  }
+
+  private loseFrontier(reason: string): void {
+    const observer = this.frontierObserver;
+    this.frontierObserver = undefined;
+    try {
+      observer?.lost(reason);
+    } catch {
+      /* Diagnostic failure cannot change simulation progress. */
+    }
+  }
+
+  constructor(private readonly scene: Phaser.Scene, initialTick = 0) {
+    if (!Number.isSafeInteger(initialTick) || initialTick < 0) throw new Error("invalid_initial_simulation_tick");
+    // Restore before registering update consumers; absolute deadlines must never see a fresh opening clock.
+    this.currentTick = initialTick;
     scene.events.on(Phaser.Scenes.Events.UPDATE, this.onUpdateFrameNonDeterministic, this);
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
   }
@@ -146,6 +106,7 @@ export class SimulationTickService {
    */
   fastForwardTo(tick: number): void {
     if (tick > this.currentTick) {
+      this.loseFrontier("simulation_clock_fast_forward");
       this.currentTick = tick;
       this.accumulated = 0;
     }
@@ -154,14 +115,20 @@ export class SimulationTickService {
   private onUpdateFrameNonDeterministic(_time: number, delta: number): void {
     if (this.isPaused) return;
     this.accumulated += delta * this.simulationTimeScale;
-    while (this.accumulated >= SimulationTickService.TICK_INTERVAL_MS) {
+    while (!this.isPaused && this.accumulated >= SimulationTickService.TICK_INTERVAL_MS) {
       this.accumulated -= SimulationTickService.TICK_INTERVAL_MS;
       this.currentTick++;
+      try {
+        this.frontierObserver?.close(this.currentTick);
+      } catch {
+        this.loseFrontier("simulation_frontier_listener_failed");
+      }
       this.tick$.next(this.currentTick);
     }
   }
 
   private destroy(): void {
+    this.loseFrontier("simulation_clock_shutdown");
     this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.onUpdateFrameNonDeterministic, this);
     this.tick$.complete();
     this.currentTick = 0;

@@ -1,0 +1,7302 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "runtime",
+  "driver": "runtime",
+  "scenarioIds": [
+    "WALL-05"
+  ],
+  "status": "authored_not_executed",
+  "purpose": "Preserve shore/egress; don't credit walls with stopping flight or generic towers with nonexistent anti-air",
+  "acceptance": {
+    "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
+    "requiredOutcome": "Preserve shore/egress; don't credit walls with stopping flight or generic towers with nonexistent anti-air",
+    "setup": [
+      "Legal ground wall proposal borders an actual shore transfer and land egress",
+      "Fairly observed hostile air unit has an actual weapon-compatible target"
+    ],
+    "actions": [
+      "Let fortification and defense planning run while ordinary friendly units use shore/egress",
+      "Fly the hostile unit across the proposed ground barrier"
+    ],
+    "measurements": [
+      "Native shore clearances, ground/air routes, target-specific tower capability and actual hostile passage"
+    ],
+    "required": [
+      "Wall placement preserves shore and egress",
+      "Defense handles air only with real compatible capability"
+    ],
+    "forbidden": [
+      "Crediting a ground wall as stopping flight",
+      "Invented generic anti-air tower",
+      "Shore service space consumed by a legal-looking wall prefix"
+    ],
+    "branches": [
+      "Ground approach only",
+      "Air threat",
+      "Transport-shore use; actual transport phase remains capability-gated"
+    ],
+    "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
+    "executionStatus": "authored_not_executed"
+  },
+  "recipe": {
+    "mapLabel": "AI Open Economy (test only)",
+    "aiPlayerNumber": 2,
+    "simulationTimeScale": 1,
+    "fixedStepFrames": true,
+    "checkpointTicks": [
+      20,
+      100,
+      199,
+      200,
+      399,
+      400,
+      600,
+      800,
+      1000,
+      1200,
+      1600,
+      2000,
+      2400,
+      3000
+    ],
+    "variants": [
+      {
+        "id": "wall-05-tivara-ground",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "WALL-05"
+        ],
+        "presetWorld": {
+          "fixtureId": "wall-05-tivara-ground",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "worker-0",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 352,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-7",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-0",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 160,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-2",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 224,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-3",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 256,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-4",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-5",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 160,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-6",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-7",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 224,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-house",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 1008,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -32,
+                "y": 1072,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 1088,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "scout-probe",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ranged-probe",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "support-probe",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "contact-group",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": 0,
+                "y": 768,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-producer",
+              "actorName": "InfantryInn",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 496,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-deposit",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -320,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -448,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-worker",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": -352,
+                "y": 784,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-target-a",
+              "actorName": "InfantryInn",
+              "owner": 1,
+              "position": {
+                "x": 160,
+                "y": 592,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-target-b",
+              "actorName": "InfantryInn",
+              "owner": 1,
+              "position": {
+                "x": -416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "noise-scout",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": 288,
+                "y": 400,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "perimeter-stair",
+              "actorName": "Stairs",
+              "owner": 2,
+              "position": {
+                "x": 256,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "perimeter-wall",
+              "actorName": "Wall",
+              "owner": 2,
+              "position": {
+                "x": 288,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "perimeter-wall-2",
+              "actorName": "Wall",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "protected-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-transit",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-transit",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 848,
+                "z": 0
+              }
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "original-home",
+              "actorName": "Sandhold",
+              "owner": 2
+            },
+            {
+              "fixtureActorId": "enemy-home",
+              "actorName": "FrostForge",
+              "owner": 1
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            {
+              "playerNumber": 1,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            },
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            }
+          ],
+          "controls": [
+            {
+              "id": "move-worker-transit-200",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 320,
+                  "y": 896,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-200",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 576,
+                  "y": 1088,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-600",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 960,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-600",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-1000",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 1000,
+              "applicationTick": 1000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 320,
+                  "y": 896,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-1000",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 1000,
+              "applicationTick": 1000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 576,
+                  "y": 1088,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-1400",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 1400,
+              "applicationTick": 1400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 960,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-1400",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 1400,
+              "applicationTick": 1400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-1800",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 1800,
+              "applicationTick": 1800,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 320,
+                  "y": 896,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-1800",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 1800,
+              "applicationTick": 1800,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 576,
+                  "y": 1088,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-2200",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 2200,
+              "applicationTick": 2200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 960,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-2200",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 2200,
+              "applicationTick": 2200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            }
+          ],
+          "events": [],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "enemy-worker",
+              "sourceFixtureActorId": "enemy-source",
+              "kind": "gather"
+            }
+          ],
+          "protectedRoutes": [
+            {
+              "id": "worker-service",
+              "playerNumber": 2,
+              "from": {
+                "x": 320,
+                "y": 896
+              },
+              "to": {
+                "x": -64,
+                "y": 960
+              },
+              "tileMargin": 0
+            },
+            {
+              "id": "production-army",
+              "playerNumber": 2,
+              "from": {
+                "x": 576,
+                "y": 1088
+              },
+              "to": {
+                "x": 96,
+                "y": 848
+              },
+              "tileMargin": 1
+            },
+            {
+              "id": "retreat",
+              "playerNumber": 2,
+              "from": {
+                "x": 128,
+                "y": 864
+              },
+              "to": {
+                "x": 288,
+                "y": 944
+              },
+              "tileMargin": 1
+            }
+          ],
+          "terrainPatches": [
+            {
+              "x": 24,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 2,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 2,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 3,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 3,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 4,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 4,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 5,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 5,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 6,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 6,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 7,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 7,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 8,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 8,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 9,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 9,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 10,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 10,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 11,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 11,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 12,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 12,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 13,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 13,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 14,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 14,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 15,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 15,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 16,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 16,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 17,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 17,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 18,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 18,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 19,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 19,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 26,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 26,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 27,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 27,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 28,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 28,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 29,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 29,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 30,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 30,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 31,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 31,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 32,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 32,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 33,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 33,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 34,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 34,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 35,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 35,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 36,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 36,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 37,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 37,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 38,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 38,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 39,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 39,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 40,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 40,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 41,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 41,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 42,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 42,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 43,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 43,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 49,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 49,
+              "terrain": "water",
+              "blocked": false
+            }
+          ]
+        }
+      },
+      {
+        "id": "wall-05-tivara-air",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "WALL-05"
+        ],
+        "presetWorld": {
+          "fixtureId": "wall-05-tivara-air",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "worker-0",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 352,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-7",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-0",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 160,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-2",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 224,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-3",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 256,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-4",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-5",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 160,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-6",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-7",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 224,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-house",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 1008,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -32,
+                "y": 1072,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 1088,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "scout-probe",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ranged-probe",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "support-probe",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "contact-group",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": 0,
+                "y": 768,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-producer",
+              "actorName": "InfantryInn",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 496,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-deposit",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -320,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -448,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-worker",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": -352,
+                "y": 784,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-target-a",
+              "actorName": "InfantryInn",
+              "owner": 1,
+              "position": {
+                "x": 160,
+                "y": 592,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-target-b",
+              "actorName": "InfantryInn",
+              "owner": 1,
+              "position": {
+                "x": -416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "noise-scout",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": 288,
+                "y": 400,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "perimeter-stair",
+              "actorName": "Stairs",
+              "owner": 2,
+              "position": {
+                "x": 256,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "perimeter-wall",
+              "actorName": "Wall",
+              "owner": 2,
+              "position": {
+                "x": 288,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "perimeter-wall-2",
+              "actorName": "Wall",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "protected-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-transit",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-transit",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "air-threat",
+              "actorName": "SkaduweeOwl",
+              "owner": 1,
+              "position": {
+                "x": 32,
+                "y": 752,
+                "z": 0
+              }
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "original-home",
+              "actorName": "Sandhold",
+              "owner": 2
+            },
+            {
+              "fixtureActorId": "enemy-home",
+              "actorName": "FrostForge",
+              "owner": 1
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            {
+              "playerNumber": 1,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            },
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            }
+          ],
+          "controls": [
+            {
+              "id": "move-worker-transit-200",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 320,
+                  "y": 896,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-200",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 576,
+                  "y": 1088,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-600",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 960,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-600",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-1000",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 1000,
+              "applicationTick": 1000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 320,
+                  "y": 896,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-1000",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 1000,
+              "applicationTick": 1000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 576,
+                  "y": 1088,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-1400",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 1400,
+              "applicationTick": 1400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 960,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-1400",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 1400,
+              "applicationTick": 1400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-1800",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 1800,
+              "applicationTick": 1800,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 320,
+                  "y": 896,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-1800",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 1800,
+              "applicationTick": 1800,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 576,
+                  "y": 1088,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-2200",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 2200,
+              "applicationTick": 2200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 960,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-2200",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 2200,
+              "applicationTick": 2200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "attack-air-threat-200",
+              "producerFixtureActorId": "air-threat",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            }
+          ],
+          "events": [],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "enemy-worker",
+              "sourceFixtureActorId": "enemy-source",
+              "kind": "gather"
+            }
+          ],
+          "protectedRoutes": [
+            {
+              "id": "worker-service",
+              "playerNumber": 2,
+              "from": {
+                "x": 320,
+                "y": 896
+              },
+              "to": {
+                "x": -64,
+                "y": 960
+              },
+              "tileMargin": 0
+            },
+            {
+              "id": "production-army",
+              "playerNumber": 2,
+              "from": {
+                "x": 576,
+                "y": 1088
+              },
+              "to": {
+                "x": 96,
+                "y": 848
+              },
+              "tileMargin": 1
+            },
+            {
+              "id": "retreat",
+              "playerNumber": 2,
+              "from": {
+                "x": 128,
+                "y": 864
+              },
+              "to": {
+                "x": 288,
+                "y": 944
+              },
+              "tileMargin": 1
+            }
+          ],
+          "terrainPatches": [
+            {
+              "x": 24,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 2,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 2,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 3,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 3,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 4,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 4,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 5,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 5,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 6,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 6,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 7,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 7,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 8,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 8,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 9,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 9,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 10,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 10,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 11,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 11,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 12,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 12,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 13,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 13,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 14,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 14,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 15,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 15,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 16,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 16,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 17,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 17,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 18,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 18,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 19,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 19,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 26,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 26,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 27,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 27,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 28,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 28,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 29,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 29,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 30,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 30,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 31,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 31,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 32,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 32,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 33,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 33,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 34,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 34,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 35,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 35,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 36,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 36,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 37,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 37,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 38,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 38,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 39,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 39,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 40,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 40,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 41,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 41,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 42,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 42,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 43,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 43,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 49,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 49,
+              "terrain": "water",
+              "blocked": false
+            }
+          ]
+        }
+      },
+      {
+        "id": "wall-05-tivara-shore",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "WALL-05"
+        ],
+        "presetWorld": {
+          "fixtureId": "wall-05-tivara-shore",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "worker-0",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 352,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-7",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-0",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 160,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-2",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 224,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-3",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 256,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-4",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-5",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 160,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-6",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-7",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 224,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-house",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 1008,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -32,
+                "y": 1072,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 1088,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "scout-probe",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ranged-probe",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "support-probe",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "contact-group",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": 0,
+                "y": 768,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-producer",
+              "actorName": "InfantryInn",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 496,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-deposit",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -320,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -448,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-worker",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": -352,
+                "y": 784,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-target-a",
+              "actorName": "InfantryInn",
+              "owner": 1,
+              "position": {
+                "x": 160,
+                "y": 592,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-target-b",
+              "actorName": "InfantryInn",
+              "owner": 1,
+              "position": {
+                "x": -416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "noise-scout",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": 288,
+                "y": 400,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "perimeter-stair",
+              "actorName": "Stairs",
+              "owner": 2,
+              "position": {
+                "x": 256,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "perimeter-wall",
+              "actorName": "Wall",
+              "owner": 2,
+              "position": {
+                "x": 288,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "perimeter-wall-2",
+              "actorName": "Wall",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "protected-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-transit",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-transit",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "shore-transit",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 32,
+                "y": 848,
+                "z": 0
+              }
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "original-home",
+              "actorName": "Sandhold",
+              "owner": 2
+            },
+            {
+              "fixtureActorId": "enemy-home",
+              "actorName": "FrostForge",
+              "owner": 1
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            {
+              "playerNumber": 1,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            },
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            }
+          ],
+          "controls": [
+            {
+              "id": "move-worker-transit-200",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 320,
+                  "y": 896,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-200",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 576,
+                  "y": 1088,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-600",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 960,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-600",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-1000",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 1000,
+              "applicationTick": 1000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 320,
+                  "y": 896,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-1000",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 1000,
+              "applicationTick": 1000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 576,
+                  "y": 1088,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-1400",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 1400,
+              "applicationTick": 1400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 960,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-1400",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 1400,
+              "applicationTick": 1400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-1800",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 1800,
+              "applicationTick": 1800,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 320,
+                  "y": 896,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-1800",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 1800,
+              "applicationTick": 1800,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 576,
+                  "y": 1088,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-2200",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 2200,
+              "applicationTick": 2200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 960,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-2200",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 2200,
+              "applicationTick": 2200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "shore-egress",
+              "producerFixtureActorId": "shore-transit",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 944,
+                  "z": 0
+                }
+              }
+            }
+          ],
+          "events": [],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "enemy-worker",
+              "sourceFixtureActorId": "enemy-source",
+              "kind": "gather"
+            }
+          ],
+          "protectedRoutes": [
+            {
+              "id": "worker-service",
+              "playerNumber": 2,
+              "from": {
+                "x": 320,
+                "y": 896
+              },
+              "to": {
+                "x": -64,
+                "y": 960
+              },
+              "tileMargin": 0
+            },
+            {
+              "id": "production-army",
+              "playerNumber": 2,
+              "from": {
+                "x": 576,
+                "y": 1088
+              },
+              "to": {
+                "x": 96,
+                "y": 848
+              },
+              "tileMargin": 1
+            },
+            {
+              "id": "retreat",
+              "playerNumber": 2,
+              "from": {
+                "x": 128,
+                "y": 864
+              },
+              "to": {
+                "x": 288,
+                "y": 944
+              },
+              "tileMargin": 1
+            },
+            {
+              "id": "shore-egress",
+              "playerNumber": 2,
+              "from": {
+                "x": 32,
+                "y": 848
+              },
+              "to": {
+                "x": 96,
+                "y": 944
+              },
+              "tileMargin": 0
+            }
+          ],
+          "terrainPatches": [
+            {
+              "x": 24,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 2,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 2,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 3,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 3,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 4,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 4,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 5,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 5,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 6,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 6,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 7,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 7,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 8,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 8,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 9,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 9,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 10,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 10,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 11,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 11,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 12,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 12,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 13,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 13,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 14,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 14,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 15,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 15,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 16,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 16,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 17,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 17,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 18,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 18,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 19,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 19,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 26,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 26,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 27,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 27,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 28,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 28,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 29,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 29,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 30,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 30,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 31,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 31,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 32,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 32,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 33,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 33,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 34,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 34,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 35,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 35,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 36,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 36,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 37,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 37,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 38,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 38,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 39,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 39,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 40,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 40,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 41,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 41,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 42,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 42,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 43,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 43,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 49,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 49,
+              "terrain": "water",
+              "blocked": false
+            }
+          ]
+        }
+      },
+      {
+        "id": "wall-05-skaduwee-ground",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Skaduwee",
+        "humanFaction": "Tivara",
+        "difficulty": "Normal",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "WALL-05"
+        ],
+        "presetWorld": {
+          "fixtureId": "wall-05-skaduwee-ground",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "worker-0",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 352,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-7",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-0",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 160,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-2",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 224,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-3",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 256,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-4",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-5",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 160,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-6",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-7",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 224,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-producer",
+              "actorName": "InfantryInn",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-house",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 1008,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -32,
+                "y": 1072,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 1088,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "scout-probe",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ranged-probe",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "support-probe",
+              "actorName": "SkaduweeMagicianFemale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "contact-group",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": 0,
+                "y": 768,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-producer",
+              "actorName": "AnkGuard",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 496,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-deposit",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -320,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -448,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-worker",
+              "actorName": "TivaraWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": -352,
+                "y": 784,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-target-a",
+              "actorName": "AnkGuard",
+              "owner": 1,
+              "position": {
+                "x": 160,
+                "y": 592,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-target-b",
+              "actorName": "AnkGuard",
+              "owner": 1,
+              "position": {
+                "x": -416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "noise-scout",
+              "actorName": "TivaraWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": 288,
+                "y": 400,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "perimeter-stair",
+              "actorName": "Stairs",
+              "owner": 2,
+              "position": {
+                "x": 256,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "perimeter-wall",
+              "actorName": "Wall",
+              "owner": 2,
+              "position": {
+                "x": 288,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "perimeter-wall-2",
+              "actorName": "Wall",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "protected-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-transit",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-transit",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 848,
+                "z": 0
+              }
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "original-home",
+              "actorName": "FrostForge",
+              "owner": 2
+            },
+            {
+              "fixtureActorId": "enemy-home",
+              "actorName": "Sandhold",
+              "owner": 1
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            {
+              "playerNumber": 1,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            },
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            }
+          ],
+          "controls": [
+            {
+              "id": "move-worker-transit-200",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 320,
+                  "y": 896,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-200",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 576,
+                  "y": 1088,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-600",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 960,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-600",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-1000",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 1000,
+              "applicationTick": 1000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 320,
+                  "y": 896,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-1000",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 1000,
+              "applicationTick": 1000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 576,
+                  "y": 1088,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-1400",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 1400,
+              "applicationTick": 1400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 960,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-1400",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 1400,
+              "applicationTick": 1400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-1800",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 1800,
+              "applicationTick": 1800,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 320,
+                  "y": 896,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-1800",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 1800,
+              "applicationTick": 1800,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 576,
+                  "y": 1088,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-2200",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 2200,
+              "applicationTick": 2200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 960,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-2200",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 2200,
+              "applicationTick": 2200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            }
+          ],
+          "events": [],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "enemy-worker",
+              "sourceFixtureActorId": "enemy-source",
+              "kind": "gather"
+            }
+          ],
+          "protectedRoutes": [
+            {
+              "id": "worker-service",
+              "playerNumber": 2,
+              "from": {
+                "x": 320,
+                "y": 896
+              },
+              "to": {
+                "x": -64,
+                "y": 960
+              },
+              "tileMargin": 0
+            },
+            {
+              "id": "production-army",
+              "playerNumber": 2,
+              "from": {
+                "x": 576,
+                "y": 1088
+              },
+              "to": {
+                "x": 96,
+                "y": 848
+              },
+              "tileMargin": 1
+            },
+            {
+              "id": "retreat",
+              "playerNumber": 2,
+              "from": {
+                "x": 128,
+                "y": 864
+              },
+              "to": {
+                "x": 288,
+                "y": 944
+              },
+              "tileMargin": 1
+            }
+          ],
+          "terrainPatches": [
+            {
+              "x": 24,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 2,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 2,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 3,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 3,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 4,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 4,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 5,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 5,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 6,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 6,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 7,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 7,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 8,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 8,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 9,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 9,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 10,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 10,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 11,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 11,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 12,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 12,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 13,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 13,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 14,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 14,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 15,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 15,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 16,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 16,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 17,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 17,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 18,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 18,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 19,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 19,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 26,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 26,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 27,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 27,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 28,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 28,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 29,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 29,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 30,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 30,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 31,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 31,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 32,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 32,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 33,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 33,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 34,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 34,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 35,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 35,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 36,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 36,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 37,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 37,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 38,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 38,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 39,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 39,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 40,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 40,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 41,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 41,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 42,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 42,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 43,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 43,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 49,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 49,
+              "terrain": "water",
+              "blocked": false
+            }
+          ]
+        }
+      },
+      {
+        "id": "wall-05-skaduwee-air",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Skaduwee",
+        "humanFaction": "Tivara",
+        "difficulty": "Normal",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "WALL-05"
+        ],
+        "presetWorld": {
+          "fixtureId": "wall-05-skaduwee-air",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "worker-0",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 352,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-7",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-0",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 160,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-2",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 224,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-3",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 256,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-4",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-5",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 160,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-6",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-7",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 224,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-producer",
+              "actorName": "InfantryInn",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-house",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 1008,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -32,
+                "y": 1072,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 1088,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "scout-probe",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ranged-probe",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "support-probe",
+              "actorName": "SkaduweeMagicianFemale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "contact-group",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": 0,
+                "y": 768,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-producer",
+              "actorName": "AnkGuard",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 496,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-deposit",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -320,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -448,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-worker",
+              "actorName": "TivaraWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": -352,
+                "y": 784,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-target-a",
+              "actorName": "AnkGuard",
+              "owner": 1,
+              "position": {
+                "x": 160,
+                "y": 592,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-target-b",
+              "actorName": "AnkGuard",
+              "owner": 1,
+              "position": {
+                "x": -416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "noise-scout",
+              "actorName": "TivaraWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": 288,
+                "y": 400,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "perimeter-stair",
+              "actorName": "Stairs",
+              "owner": 2,
+              "position": {
+                "x": 256,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "perimeter-wall",
+              "actorName": "Wall",
+              "owner": 2,
+              "position": {
+                "x": 288,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "perimeter-wall-2",
+              "actorName": "Wall",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "protected-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-transit",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-transit",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "air-threat",
+              "actorName": "TivaraAlchemist",
+              "owner": 1,
+              "position": {
+                "x": 32,
+                "y": 752,
+                "z": 0
+              }
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "original-home",
+              "actorName": "FrostForge",
+              "owner": 2
+            },
+            {
+              "fixtureActorId": "enemy-home",
+              "actorName": "Sandhold",
+              "owner": 1
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            {
+              "playerNumber": 1,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            },
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            }
+          ],
+          "controls": [
+            {
+              "id": "move-worker-transit-200",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 320,
+                  "y": 896,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-200",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 576,
+                  "y": 1088,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-600",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 960,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-600",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-1000",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 1000,
+              "applicationTick": 1000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 320,
+                  "y": 896,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-1000",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 1000,
+              "applicationTick": 1000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 576,
+                  "y": 1088,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-1400",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 1400,
+              "applicationTick": 1400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 960,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-1400",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 1400,
+              "applicationTick": 1400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-1800",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 1800,
+              "applicationTick": 1800,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 320,
+                  "y": 896,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-1800",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 1800,
+              "applicationTick": 1800,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 576,
+                  "y": 1088,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-2200",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 2200,
+              "applicationTick": 2200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 960,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-2200",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 2200,
+              "applicationTick": 2200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "attack-air-threat-200",
+              "producerFixtureActorId": "air-threat",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            }
+          ],
+          "events": [],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "enemy-worker",
+              "sourceFixtureActorId": "enemy-source",
+              "kind": "gather"
+            }
+          ],
+          "protectedRoutes": [
+            {
+              "id": "worker-service",
+              "playerNumber": 2,
+              "from": {
+                "x": 320,
+                "y": 896
+              },
+              "to": {
+                "x": -64,
+                "y": 960
+              },
+              "tileMargin": 0
+            },
+            {
+              "id": "production-army",
+              "playerNumber": 2,
+              "from": {
+                "x": 576,
+                "y": 1088
+              },
+              "to": {
+                "x": 96,
+                "y": 848
+              },
+              "tileMargin": 1
+            },
+            {
+              "id": "retreat",
+              "playerNumber": 2,
+              "from": {
+                "x": 128,
+                "y": 864
+              },
+              "to": {
+                "x": 288,
+                "y": 944
+              },
+              "tileMargin": 1
+            }
+          ],
+          "terrainPatches": [
+            {
+              "x": 24,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 2,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 2,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 3,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 3,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 4,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 4,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 5,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 5,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 6,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 6,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 7,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 7,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 8,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 8,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 9,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 9,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 10,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 10,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 11,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 11,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 12,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 12,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 13,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 13,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 14,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 14,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 15,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 15,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 16,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 16,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 17,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 17,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 18,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 18,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 19,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 19,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 26,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 26,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 27,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 27,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 28,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 28,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 29,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 29,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 30,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 30,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 31,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 31,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 32,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 32,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 33,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 33,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 34,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 34,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 35,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 35,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 36,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 36,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 37,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 37,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 38,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 38,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 39,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 39,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 40,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 40,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 41,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 41,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 42,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 42,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 43,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 43,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 49,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 49,
+              "terrain": "water",
+              "blocked": false
+            }
+          ]
+        }
+      },
+      {
+        "id": "wall-05-skaduwee-shore",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Skaduwee",
+        "humanFaction": "Tivara",
+        "difficulty": "Normal",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "WALL-05"
+        ],
+        "presetWorld": {
+          "fixtureId": "wall-05-skaduwee-shore",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "worker-0",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 352,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-7",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-0",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 160,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-2",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 224,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-3",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 256,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-4",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-5",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 160,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-6",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-7",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 224,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-producer",
+              "actorName": "InfantryInn",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-house",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 1008,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -32,
+                "y": 1072,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 1088,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "scout-probe",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ranged-probe",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "support-probe",
+              "actorName": "SkaduweeMagicianFemale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "contact-group",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": 0,
+                "y": 768,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-producer",
+              "actorName": "AnkGuard",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 496,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-deposit",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -320,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -448,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-worker",
+              "actorName": "TivaraWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": -352,
+                "y": 784,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-target-a",
+              "actorName": "AnkGuard",
+              "owner": 1,
+              "position": {
+                "x": 160,
+                "y": 592,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-target-b",
+              "actorName": "AnkGuard",
+              "owner": 1,
+              "position": {
+                "x": -416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "noise-scout",
+              "actorName": "TivaraWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": 288,
+                "y": 400,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "perimeter-stair",
+              "actorName": "Stairs",
+              "owner": 2,
+              "position": {
+                "x": 256,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "perimeter-wall",
+              "actorName": "Wall",
+              "owner": 2,
+              "position": {
+                "x": 288,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "perimeter-wall-2",
+              "actorName": "Wall",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "protected-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-transit",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": -64,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-transit",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "shore-transit",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 32,
+                "y": 848,
+                "z": 0
+              }
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "original-home",
+              "actorName": "FrostForge",
+              "owner": 2
+            },
+            {
+              "fixtureActorId": "enemy-home",
+              "actorName": "Sandhold",
+              "owner": 1
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            {
+              "playerNumber": 1,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            },
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            }
+          ],
+          "controls": [
+            {
+              "id": "move-worker-transit-200",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 320,
+                  "y": 896,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-200",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 576,
+                  "y": 1088,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-600",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 960,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-600",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-1000",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 1000,
+              "applicationTick": 1000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 320,
+                  "y": 896,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-1000",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 1000,
+              "applicationTick": 1000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 576,
+                  "y": 1088,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-1400",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 1400,
+              "applicationTick": 1400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 960,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-1400",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 1400,
+              "applicationTick": 1400,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-1800",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 1800,
+              "applicationTick": 1800,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 320,
+                  "y": 896,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-1800",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 1800,
+              "applicationTick": 1800,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 576,
+                  "y": 1088,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-worker-transit-2200",
+              "producerFixtureActorId": "worker-transit",
+              "requestTick": 2200,
+              "applicationTick": 2200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 960,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-army-transit-2200",
+              "producerFixtureActorId": "army-transit",
+              "requestTick": 2200,
+              "applicationTick": 2200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "shore-egress",
+              "producerFixtureActorId": "shore-transit",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 944,
+                  "z": 0
+                }
+              }
+            }
+          ],
+          "events": [],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "enemy-worker",
+              "sourceFixtureActorId": "enemy-source",
+              "kind": "gather"
+            }
+          ],
+          "protectedRoutes": [
+            {
+              "id": "worker-service",
+              "playerNumber": 2,
+              "from": {
+                "x": 320,
+                "y": 896
+              },
+              "to": {
+                "x": -64,
+                "y": 960
+              },
+              "tileMargin": 0
+            },
+            {
+              "id": "production-army",
+              "playerNumber": 2,
+              "from": {
+                "x": 576,
+                "y": 1088
+              },
+              "to": {
+                "x": 96,
+                "y": 848
+              },
+              "tileMargin": 1
+            },
+            {
+              "id": "retreat",
+              "playerNumber": 2,
+              "from": {
+                "x": 128,
+                "y": 864
+              },
+              "to": {
+                "x": 288,
+                "y": 944
+              },
+              "tileMargin": 1
+            },
+            {
+              "id": "shore-egress",
+              "playerNumber": 2,
+              "from": {
+                "x": 32,
+                "y": 848
+              },
+              "to": {
+                "x": 96,
+                "y": 944
+              },
+              "tileMargin": 0
+            }
+          ],
+          "terrainPatches": [
+            {
+              "x": 24,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 2,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 2,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 3,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 3,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 4,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 4,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 5,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 5,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 6,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 6,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 7,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 7,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 8,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 8,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 9,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 9,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 10,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 10,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 11,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 11,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 12,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 12,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 13,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 13,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 14,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 14,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 15,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 15,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 16,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 16,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 17,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 17,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 18,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 18,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 19,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 19,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 26,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 26,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 27,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 27,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 28,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 28,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 29,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 29,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 30,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 30,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 31,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 31,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 32,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 32,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 33,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 33,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 34,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 34,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 35,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 35,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 36,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 36,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 37,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 37,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 38,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 38,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 39,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 39,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 40,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 40,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 41,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 41,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 42,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 42,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 43,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 43,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 49,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 25,
+              "y": 49,
+              "terrain": "water",
+              "blocked": false
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "assertions": {
+    "WALL-05": {
+      "maximumTick": 3000,
+      "minimumDecisions": 1,
+      "minimumAppliedCommands": 1,
+      "requiredAiFactions": [
+        "Tivara",
+        "Skaduwee"
+      ],
+      "requiredNativeScenario": {
+        "schemaVersion": 1,
+        "scenarioId": "WALL-05",
+        "latestTick": 3000,
+        "humanPlayerNumber": 1,
+        "branchByVariant": {
+          "wall-05-tivara-ground": "ground",
+          "wall-05-tivara-air": "air",
+          "wall-05-tivara-shore": "shore",
+          "wall-05-skaduwee-ground": "ground",
+          "wall-05-skaduwee-air": "air",
+          "wall-05-skaduwee-shore": "shore"
+        }
+      }
+    }
+  }
+}

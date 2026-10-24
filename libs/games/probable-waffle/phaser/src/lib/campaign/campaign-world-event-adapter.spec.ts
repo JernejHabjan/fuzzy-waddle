@@ -44,7 +44,7 @@ describe("CampaignWorldEventAdapter", () => {
     techTree.researchCompleted.emit({ playerNumber: 2, researchType: ResearchType.SnowstormSpell });
     playerChanged.next({
       property: "resource.added",
-      data: { playerNumber: 2, playerStateData: { resources: { [ResourceType.Wood]: 25 } } },
+      data: { playerNumber: 2, playerStateData: { resources: { wood: 25, food: 0, stone: 0, minerals: 0 } } },
       gameInstanceId: "test-game",
       emitterUserId: null
     });

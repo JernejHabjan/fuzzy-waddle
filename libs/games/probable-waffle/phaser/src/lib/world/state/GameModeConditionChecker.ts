@@ -5,7 +5,7 @@ import {
   getPlayersFromScene,
   isPlayerHostInScene
 } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";
-import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
+import { GameSessionState, type PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import {
   GameResultStatus,
   type LoseConditions,
@@ -33,6 +33,7 @@ import { SceneDialogHelper } from "../scenes/scene-dialog-helper";
 import { ScoreTracker } from "./ScoreTracker";
 import { SimulationTickService } from "../services/simulation-tick.service";
 import { CancelableSimDelay } from "../services/simulation-time";
+import { CommandBusService } from "../services/multiplayer/command-bus.service";
 
 export class GameModeConditionChecker {
   private loseConditions: LoseConditions;
@@ -250,15 +251,28 @@ export class GameModeConditionChecker {
   private handleSurrenderAccepted(player: ProbableWafflePlayer) {
     console.log(`Player ${player.playerNumber} surrender accepted - eliminating player`);
     // Mark player as eliminated
-    this.markPlayerLeftOrKilled(player);
-
     // Destroy all units/buildings owned by this player
-    const actors = this.actorsByPlayer?.get(player.playerNumber!) || [];
-    actors.forEach((actor) => {
-      if (isGameObjectActiveInActiveScene(actor)) {
-        actor.destroy();
-      }
+    if (player.playerNumber === undefined) return;
+    getSceneService(this.scene, CommandBusService)?.dispatch({
+      type: "CONCEDE",
+      playerNumber: player.playerNumber,
+      actorIds: [],
+      reason: "surrender_accepted"
     });
+  }
+
+  /** Applies a shared concession command through the normal mode elimination path. */
+  applyConcession(playerNumber: PlayerNumber): boolean {
+    const players = this.players ?? getPlayersFromScene<ProbableWafflePlayer>(this.scene);
+    const player = players.find((candidate) => candidate.playerNumber === playerNumber);
+    if (!player || player.playerController.data.leftOrKilled) return false;
+    this.markPlayerLeftOrKilled(player);
+    const actorsByPlayer = this.actorsByPlayer ?? ScenePlayerHelpers.getActorsByPlayer(this.scene).actorsByPlayer;
+    const actors = actorsByPlayer.get(player.playerNumber!) || [];
+    actors.forEach((actor) => {
+      if (isGameObjectActiveInActiveScene(actor)) actor.destroy();
+    });
+    return true;
   }
 
   private handleSurrenderRejected(player: ProbableWafflePlayer) {

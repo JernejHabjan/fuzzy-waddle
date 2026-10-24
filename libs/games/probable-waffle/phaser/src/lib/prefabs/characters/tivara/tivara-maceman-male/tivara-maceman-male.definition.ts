@@ -61,7 +61,7 @@ export const tivaraMacemanMaleDefinition = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Food]: 100
+        [ResourceType.Food]: 60
       },
       refundFactor: 0.5,
       productionTime: 5000,

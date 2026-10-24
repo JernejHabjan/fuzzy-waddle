@@ -1,23 +1,25 @@
+import { emitQueueItemResource, recordQueueItemPaymentDenied } from "../../../data/emit-queue-item-resource";
 import Phaser from "phaser";
 import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
 import { OwnerComponent } from "../owner-component";
 import { getActorComponent } from "../../../data/actor-component";
-import { emitResource, getPlayer } from "../../../data/scene-data";
+import { getPlayer } from "../../../data/scene-data";
 import { QueueComponent } from "../queue/queue-component";
 import {
   QueueItemType,
   type UnifiedQueueItem
 } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
 import {
+  type GameCommandExecution,
+  type CancelProductionCommand,
   ProbableWaffleGameCommandTypes,
   type ProductionComponentData,
   ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
-import { type Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
+import type { ActorId, PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import { HealthComponent } from "../combat/components/health-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
-import { SceneActorCreator } from "../../../world/services/scene-actor-creator";
-import { getGameObjectBounds, getGameObjectLogicalTransform, onObjectReady } from "../../../data/game-object-helper";
+import { onObjectReady } from "../../../data/game-object-helper";
 import { Subject, Subscription } from "rxjs";
 import RallyPoint from "../../../prefabs/buildings/misc/RallyPoint";
 import { ConstructionSiteComponent } from "../construction/construction-site-component";
@@ -28,24 +30,20 @@ import type {
 } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-events";
 import type { ProductionQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/game-object";
 import type { ProductionDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-definition";
-import { AssignProductionErrorCode } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/assign-production-error-code";
-import type { ProductionCostDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-cost-definition";
+// prettier-ignore
+import { AssignProductionErrorCode } from
+  "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/assign-production-error-code";
+// prettier-ignore
+import type { ProductionCostDefinition } from
+  "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-cost-definition";
 import { NavigationService } from "../../../world/services/navigation.service";
-import { IsoHelper } from "../../../world/tilemap/iso-helper";
-import { MovementTerrainType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/movement-terrain-type";
-import { ProbableWaffleSceneEventName } from "../../../world/services/recovery/probable-waffle-scene-events";
 import { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { OrderType } from "../../../ai/order-type";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
-import { getActorSystem } from "../../../data/actor-system";
-import { ActionSystem } from "../../systems/action.system";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
-/**
- * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
- * storage boundaries do not drift into an unconstrained primitive.
- */
-type GameObject = Phaser.GameObjects.GameObject;
+import type { ProductionGameObject as GameObject } from "./production-game-object";
+import { spawnProductionActor } from "./production-spawner";
 
 export class ProductionComponent {
   private readonly rallyPoint: RallyPoint;
@@ -54,6 +52,8 @@ export class ProductionComponent {
   private playerChangedSubscription?: Subscription;
   private productionProgressSubject = new Subject<ProductionProgressEvent>();
   private queueChangeSubject = new Subject<ProductionQueueChangeEvent>();
+  private disposed = false;
+  private starting = false;
 
   constructor(
     private readonly gameObject: GameObject,
@@ -65,9 +65,11 @@ export class ProductionComponent {
     gameObject.on(OwnerComponent.OwnerChangedEvent, this.handleOwnerChanged, this);
     gameObject.on(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
+    gameObject.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
   }
 
   initOnObjectReady() {
+    if (this.disposed) return;
     this.ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
     this.navigationService = getSceneService(this.gameObject.scene, NavigationService)!;
     this.rallyPoint.init(this.gameObject);
@@ -114,10 +116,29 @@ export class ProductionComponent {
         return;
       }
 
+      if (command.type === ProbableWaffleGameCommandTypes.SetRallyPoint) {
+        if (command.targetObjectId) {
+          const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
+          const targetActor = actorIndex?.getActorById(command.targetObjectId);
+          if (!targetActor?.active) {
+            commandBus.reportOutcome(command, "rejected", "invalid_target", [actorId]);
+            return;
+          }
+          this.rallyPoint.setActor(
+            targetActor as Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Transform
+          );
+        } else {
+          this.rallyPoint.setLocation(command.tileVec3, command.worldVec3);
+        }
+        commandBus.reportOutcome(command, "completed", "applied", [actorId], ["rally-point"]);
+        return;
+      }
+
       if (command.type === ProbableWaffleGameCommandTypes.Move) {
         // Rally-point assignment is a deterministic MOVE command targeting production buildings.
         // Apply it on every client from the command bus stream, not local UI events.
         this.rallyPoint.setLocation(command.tileVec3, command.worldVec3);
+        commandBus.reportOutcome(command, "completed", "applied", [actorId], ["rally-point"]);
         return;
       }
 
@@ -185,34 +206,45 @@ export class ProductionComponent {
   /**
    * Start production - delegates to SharedQueueComponent
    */
-  startProduction(queueItem: ProductionQueueItem): AssignProductionErrorCode | null {
-    if (!this.isFinished) return AssignProductionErrorCode.NotFinished;
+  startProduction(
+    queueItem: ProductionQueueItem,
+    commandContext?: { execution: GameCommandExecution; playerNumber: PlayerNumber; actorIds: readonly ActorId[] }
+  ): AssignProductionErrorCode | null {
+    if (this.disposed || this.starting) return AssignProductionErrorCode.QueueFull;
+    this.starting = true;
+    try {
+      if (!this.isFinished) return AssignProductionErrorCode.NotFinished;
 
-    const productionState = this.canAssignProduction(queueItem);
-    if (productionState) {
-      return productionState;
+      const productionState = this.canAssignProduction(queueItem);
+      if (productionState) {
+        return productionState;
+      }
+
+      const unifiedItem: UnifiedQueueItem = {
+        type: QueueItemType.Production,
+        productionData: queueItem,
+        totalTime: queueItem.costData.productionTime,
+        remainingTime: queueItem.costData.productionTime,
+        commandContext
+      };
+
+      const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
+      if (!sharedQueue) {
+        throw new Error("SharedQueueComponent not found");
+      }
+
+      const generation = sharedQueue.workGeneration;
+      this.handleImmediatePayment(queueItem, unifiedItem);
+      if (generation !== sharedQueue.workGeneration || !sharedQueue.findQueueForNewItem())
+        return AssignProductionErrorCode.QueueFull;
+      sharedQueue.addItem(unifiedItem, generation);
+      return null;
+    } finally {
+      this.starting = false;
     }
-
-    this.handleImmediatePayment(queueItem);
-
-    // Delegate to SharedQueueComponent
-    const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
-    if (!sharedQueue) {
-      throw new Error("SharedQueueComponent not found");
-    }
-
-    const unifiedItem: UnifiedQueueItem = {
-      type: QueueItemType.Production,
-      productionData: queueItem,
-      totalTime: queueItem.costData.productionTime,
-      remainingTime: queueItem.costData.productionTime
-    };
-
-    sharedQueue.addItem(unifiedItem);
-    return null;
   }
 
-  private handleImmediatePayment(queueItem: ProductionQueueItem): void {
+  private handleImmediatePayment(queueItem: ProductionQueueItem, item: UnifiedQueueItem): void {
     if (queueItem.costData.costType === PaymentType.PayImmediately) {
       const owner = this.ownerComponent?.getOwner();
       if (!owner) return;
@@ -221,14 +253,21 @@ export class ProductionComponent {
       if (!player) return;
 
       // Fully pay for the production item
-      emitResource(this.gameObject.scene, "resource.removed", queueItem.costData.resources, owner);
+      emitQueueItemResource({
+        producer: this.gameObject,
+        item,
+        playerNumber: owner,
+        operation: "immediate_charge",
+        amounts: queueItem.costData.resources
+      });
     }
   }
 
   /**
-   * Public method for SharedQueueComponent to call during PayOverTime processing
+   * Charge the full stored vector for one successful queue tick. The physical item is observed before progress.
+   * An unaffordable tick emits only a denial diagnostic and returns false, leaving queue progress unchanged.
    */
-  public handlePayOverTimePayment(resources: Partial<Record<ResourceType, number>>): boolean {
+  public handlePayOverTimePayment(resources: Partial<Record<ResourceType, number>>, item: UnifiedQueueItem): boolean {
     const owner = this.ownerComponent?.getOwner();
     if (!owner) {
       throw new Error("Owner not found");
@@ -242,8 +281,22 @@ export class ProductionComponent {
 
     let productionCostPaid = false;
     if (canPayAllResources) {
-      emitResource(this.gameObject.scene, "resource.removed", resources, owner);
+      emitQueueItemResource({
+        producer: this.gameObject,
+        item,
+        playerNumber: owner,
+        operation: "tick_charge",
+        amounts: resources
+      });
       productionCostPaid = true;
+    } else {
+      recordQueueItemPaymentDenied({
+        producer: this.gameObject,
+        item,
+        playerNumber: owner,
+        operation: "tick_charge",
+        amounts: resources
+      });
     }
 
     return productionCostPaid;
@@ -252,99 +305,18 @@ export class ProductionComponent {
   /**
    * Called by SharedQueueComponent when production completes.
    * Handles spawning logic only - queue manipulation is handled by SharedQueue.
+   * The optional removed handle scopes local creation diagnostics; other callers retain their existing behavior.
    */
-  async handleProductionComplete(item: ProductionQueueItem): Promise<void> {
-    const { actorName } = item;
-
-    const logicalTransform = getGameObjectLogicalTransform(this.gameObject);
-    if (!logicalTransform) throw new Error("Transform not found");
-
-    // offset spawn position
-    const bounds = getGameObjectBounds(this.gameObject);
-    if (!bounds) throw new Error("Bounds not found");
-    const { width, height } = bounds;
-
-    // Get NavigationService to find a valid spawn location
-    let finalSpawnPosition = {
-      x: logicalTransform.x + width / 2,
-      y: logicalTransform.y + height / 4,
-      z: logicalTransform.z
-    } satisfies Vector3Simple;
-    let validSpawnLocationFound = false;
-
-    // Determine target tile preference based on rally point if it's set
-    let targetTile: Vector3Simple | undefined;
-    if (this.rallyPoint.isSet()) {
-      targetTile = this.rallyPoint.getTargetTileVec3();
-    }
-
-    const unitDef = getPwActorDefinition(actorName, null);
-    const isWaterUnit = unitDef?.components?.translatable?.movementTerrainType === MovementTerrainType.Water;
-
-    let spawnTile: { x: number; y: number } | null | undefined;
-    if (isWaterUnit) {
-      const buildingTile = this.navigationService.getCenterTileCoordUnderObject(this.gameObject);
-      if (buildingTile) {
-        spawnTile = this.navigationService.findNearestWaterTile(buildingTile);
-      }
-    } else {
-      spawnTile = this.navigationService.getSpawnPointAroundGameObject(this.gameObject, undefined, targetTile);
-    }
-
-    if (spawnTile) {
-      const unoccupiedWorldPosition = IsoHelper.isometricTileToWorldXY(
-        this.gameObject.scene,
-        spawnTile.x,
-        spawnTile.y
-      )!;
-      finalSpawnPosition = {
-        x: unoccupiedWorldPosition.x,
-        y: unoccupiedWorldPosition.y,
-        z: finalSpawnPosition.z
-      } satisfies Vector3Simple;
-      validSpawnLocationFound = true;
-    }
-
-    // If no valid spawn location found, don't spawn (item stays completed in queue logic)
-    if (!validSpawnLocationFound) {
-      return;
-    }
-
-    // Spawn gameObject using helper
-    const originalOwner = this.ownerComponent?.getOwner();
-
-    const sceneActorCreator = getSceneService(this.gameObject.scene, SceneActorCreator);
-    if (!sceneActorCreator) throw new Error("SceneActorCreator not found");
-
-    const newGameObject = sceneActorCreator.createFinishedActor(actorName, finalSpawnPosition, originalOwner);
-    if (newGameObject) {
-      if (originalOwner !== undefined) {
-        this.gameObject.scene.events.emit(ProbableWaffleSceneEventName.ScoreUnitProduced, originalOwner);
-      }
-      if (this.rallyPoint.isSet()) {
-        this.executeSpawnRallyAction(newGameObject);
-      }
-    }
-  }
-
-  private executeSpawnRallyAction(newGameObject: Phaser.GameObjects.GameObject) {
-    const actionSystem = getActorSystem<ActionSystem>(newGameObject, ActionSystem);
-    if (!actionSystem) {
-      // noinspection JSIgnoredPromiseFromCall
-      this.rallyPoint.navigateGameObjectToRallyPoint(newGameObject);
-      return;
-    }
-
-    const targetGameObject = this.rallyPoint.getTargetGameObject();
-    if (targetGameObject?.active) {
-      actionSystem.executeAction(undefined, targetGameObject);
-      return;
-    }
-
-    const targetTile = this.rallyPoint.getTargetTileVec3();
-    if (targetTile) {
-      actionSystem.executeAction(OrderType.Move, undefined, targetTile);
-    }
+  handleProductionComplete(item: ProductionQueueItem, queueItem?: UnifiedQueueItem): string | null {
+    if (this.disposed || !this.gameObject.active || !this.gameObject.scene.sys.isActive()) return null;
+    return spawnProductionActor(
+      this.gameObject,
+      item,
+      this.rallyPoint,
+      this.navigationService,
+      this.ownerComponent,
+      queueItem
+    );
   }
 
   /**
@@ -362,36 +334,39 @@ export class ProductionComponent {
   }
 
   /**
-   * Public method for SharedQueueComponent to handle production refunds
+   * Refund the actual removed item using its stored policy. Cancellation lineage is separate from purchase context.
    */
-  public handleProductionRefund(costData: ProductionCostDefinition, item: UnifiedQueueItem): void {
+  public handleProductionRefund(
+    costData: ProductionCostDefinition,
+    item: UnifiedQueueItem,
+    cancellationCommand?: CancelProductionCommand
+  ): void {
     const owner = this.ownerComponent?.getOwner();
     if (!owner) return;
     const player = getPlayer(this.gameObject.scene, owner);
     if (!player) return;
 
     const refundedResources: Partial<Record<ResourceType, number>> = {};
-    switch (costData.costType) {
-      case PaymentType.PayOverTime: // For pay over time, calculate partial refund based on progress
-        const totalProductionTime = costData.productionTime;
-        const remainingTime = item.remainingTime;
-        const elapsedTime = totalProductionTime - remainingTime;
-        const progressPercentage = elapsedTime / totalProductionTime;
-
-        Object.entries(costData.resources).forEach(([type, amount]) => {
-          // Refund based on remaining progress and refund factor
-          refundedResources[type as ResourceType] = Math.floor(
-            (amount || 0) * (1 - progressPercentage) * costData.refundFactor
-          );
-        });
-        break;
-      case PaymentType.PayImmediately: // For immediate payment, use full refund factor
-        Object.entries(costData.resources).forEach(([type, amount]) => {
-          refundedResources[type as ResourceType] = Math.floor((amount || 0) * costData.refundFactor);
-        });
-        break;
-    }
-    emitResource(this.gameObject.scene, "resource.added", refundedResources, owner);
+    // Immediate purchases retain the full configured factor; over-time refunds also use remaining progress.
+    const progressPercentage =
+      costData.costType === PaymentType.PayOverTime
+        ? costData.productionTime > 0
+          ? Math.min(1, Math.max(0, (costData.productionTime - item.remainingTime) / costData.productionTime))
+          : 1
+        : 0;
+    Object.entries(costData.resources).forEach(([type, amount]) => {
+      refundedResources[type as ResourceType] = Math.floor(
+        (amount || 0) * (1 - progressPercentage) * costData.refundFactor
+      );
+    });
+    emitQueueItemResource({
+      producer: this.gameObject,
+      item,
+      playerNumber: owner,
+      operation: "cancellation_refund",
+      amounts: refundedResources,
+      cancellationCommand
+    });
   }
 
   private canAssignProduction(item: ProductionQueueItem): AssignProductionErrorCode | null {
@@ -427,21 +402,28 @@ export class ProductionComponent {
   }
 
   private destroy() {
+    if (this.disposed) return;
+    this.disposed = true;
     this.playerChangedSubscription?.unsubscribe();
     this.gameObject.off(OwnerComponent.OwnerChangedEvent, this.handleOwnerChanged, this);
     this.rallyPoint.destroy();
+    this.gameObject.off(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
+    this.gameObject.off(HealthComponent.KilledEvent, this.destroy, this);
+    this.gameObject.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+    this.productionProgressSubject.complete();
+    this.queueChangeSubject.complete();
   }
 
   /**
    * Cancel production - delegates to SharedQueueComponent
    */
-  cancelProduction(item: ProductionQueueItem) {
-    if (!this.isFinished) return;
+  cancelProduction(item: ProductionQueueItem, cancellationCommand?: CancelProductionCommand): boolean {
+    if (!this.isFinished) return false;
 
     const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
-    if (!sharedQueue) return;
+    if (!sharedQueue) return false;
 
-    sharedQueue.cancelProductionItem(item);
+    return sharedQueue.cancelProductionItem(item, cancellationCommand);
   }
 
   getData(): ProductionComponentData {
@@ -462,9 +444,9 @@ export class ProductionComponent {
     } satisfies ProductionComponentData;
   }
 
-  setData(data: Partial<ProductionComponentData>) {
+  setData(data: Partial<ProductionComponentData>, restoreLegacyQueue = true) {
     // Fixes stale local queue state when snapshot intentionally contains an empty queue.
-    if (data.queue !== undefined) {
+    if (restoreLegacyQueue && data.queue !== undefined) {
       this.createSharedQueue();
       const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
       if (!sharedQueue) return;
@@ -497,7 +479,7 @@ export class ProductionComponent {
       });
 
       // Delegate to SharedQueue
-      sharedQueue.setData(items);
+      sharedQueue.replaceLegacyItems(QueueItemType.Production, items);
     }
 
     if (data.rallyPoint) this.rallyPoint.setRallyData(data.rallyPoint);

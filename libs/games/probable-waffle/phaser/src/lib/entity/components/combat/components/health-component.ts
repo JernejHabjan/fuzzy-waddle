@@ -1,14 +1,11 @@
 import { GameEventEmitter as EventEmitter } from "@fuzzy-waddle/platform-game-host";
-import { HealthUiComponent } from "./health-ui-component";
-import { Subject, Subscription } from "rxjs";
+import { Subject } from "rxjs";
+import { HealthPresentation } from "./health-presentation";
 import { DamageType, type HealthComponentData } from "@fuzzy-waddle/probable-waffle-protocol";
-import { ContainerComponent } from "../../building/container-component";
 import Phaser from "phaser";
 import { getActorComponent } from "../../../../data/actor-component";
 import { ConstructionSiteComponent } from "../../construction/construction-site-component";
 import {
-  getGameObjectBounds,
-  getGameObjectDepth,
   getGameObjectVisibility,
   isGameObjectActiveInActiveScene,
   onObjectReady
@@ -18,15 +15,12 @@ import { OwnerComponent } from "../../owner-component";
 import { getCurrentPlayerNumber, getPlayer } from "../../../../data/scene-data";
 import { AudioActorComponent } from "../../actor-audio/audio-actor-component";
 import { AnimationActorComponent } from "../../animation/animation-actor-component";
-import { EffectsAnims } from "../../../../animations/effects";
-import { ActorTranslateComponent } from "../../movement/actor-translate-component";
 import { getSceneService } from "../../../../world/services/scene-component-helpers";
 import { AudioService } from "../../../../world/services/audio.service";
 import {
   SharedActorActionsSfxBodyFallSounds,
   SharedActorActionsSfxBuildingDestroySounds
 } from "../../../../sfx/shared-actor-actions-sfx";
-import { VisionComponent } from "../../vision-component";
 import { AnimationType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-type";
 import { SoundType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-type";
 import { ActorPhysicalType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/actor-physical-type";
@@ -39,6 +33,7 @@ import type { FadeOutDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/e
 import { SimulationTickService } from "../../../../world/services/simulation-tick.service";
 import { CancelableSimDelay, getSimulationNow } from "../../../../world/services/simulation-time";
 import { ProbableWaffleSceneEventName } from "../../../../world/services/recovery/probable-waffle-scene-events";
+import { fenceSceneResourceHistory } from "../../../../data/scene-resource-observation";
 
 export class HealthComponent {
   static readonly DEBUG = false;
@@ -46,9 +41,9 @@ export class HealthComponent {
   healthChanged: EventEmitter<number> = new EventEmitter<number>();
   armorChanged: EventEmitter<number> = new EventEmitter<number>();
 
+  /** Authoritative mutable state; presentation reads this reference rather than a snapshot. */
   healthComponentData: HealthComponentData;
-  private healthUiComponent!: HealthUiComponent;
-  private armorUiComponent?: HealthUiComponent;
+  private readonly presentation: HealthPresentation;
 
   private destroyAfterMs = 30000;
 
@@ -60,15 +55,10 @@ export class HealthComponent {
     sceneTime: number;
     simulationTick?: number;
   };
-  private uiComponentsVisible: boolean = true;
   uiComponentsVisibilityChanged: Subject<boolean> = new Subject<boolean>();
-  private shouldUiElementsBeVisible: boolean = false;
-  private constructionProgressSubscription?: Subscription;
-  private healthUiHideOnTimeout?: Phaser.Time.TimerEvent;
   private destroyActorOnDelay?: CancelableSimDelay;
   private animationActorComponent?: AnimationActorComponent;
   private audioActorComponent?: AudioActorComponent;
-  private actorTranslateComponent?: ActorTranslateComponent;
   private audioService?: AudioService;
   hidden: boolean = false;
   /** Documents the following declaration and its compatibility contract. */
@@ -86,14 +76,13 @@ export class HealthComponent {
 
     this.healthComponentData = initialData;
 
-    // Initialize UI components for health and armor
-    this.healthUiComponent = new HealthUiComponent(this.gameObject, "health");
-    if (this.healthComponentData.armour > 0) {
-      this.armorUiComponent = new HealthUiComponent(this.gameObject, "armor");
-    }
+    this.presentation = new HealthPresentation(
+      this.gameObject, () => this.healthDefinition, () => this.healthComponentData,
+      (visible) => this.uiComponentsVisibilityChanged.next(visible)
+    );
 
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
-    gameObject.on(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
+    this.presentation.attach();
 
     onObjectReady(gameObject, this.init, this);
   }
@@ -101,52 +90,12 @@ export class HealthComponent {
   private reactToDamage(): void {
     if (this.suppressReactions) return;
     if (this.audioActorComponent) this.audioActorComponent.playCustomSound(SoundType.Damage);
-    if (this.latestDamage?.damageType !== DamageType.Poison) this.reactToDamageVisually();
-  }
-
-  private reactToDamageVisually() {
-    let asTint: Phaser.GameObjects.Components.Tint & { clearTint?: () => void };
-    switch (this.healthDefinition.physicalState) {
-      case ActorPhysicalType.Biological:
-        if (this.actorTranslateComponent) {
-          const renderedTransform = this.actorTranslateComponent.renderedTransform;
-          const effect = EffectsAnims.createAndPlayBloodAnimation(
-            this.gameObject.scene,
-            renderedTransform.x,
-            renderedTransform.y
-          );
-          const gameObjectDepth = getGameObjectDepth(this.gameObject);
-          if (gameObjectDepth) {
-            effect.setDepth(gameObjectDepth + 1);
-          }
-        }
-        break;
-      case ActorPhysicalType.Structural:
-        asTint = this.gameObject as any as Phaser.GameObjects.Components.Tint & { clearTint?: () => void };
-        if (asTint.setTint) {
-          asTint.setTint(0xff0000);
-          // Clear the hit-flash tint after a short delay so it doesn't stick
-          // Intentional wall-clock timer: tint cleanup is visual-only.
-          this.gameObject.scene.time.delayedCall(500, () => {
-            if (this.gameObject.active) asTint.clearTint?.();
-          });
-        }
-        break;
-      case ActorPhysicalType.Organic:
-        asTint = this.gameObject as any as Phaser.GameObjects.Components.Tint & { clearTint?: () => void };
-        if (asTint.setTint) {
-          asTint.setTint(0xff0000);
-          // console.warn("this tint is not working "); // todo
-          // Intentional wall-clock timer: tint cleanup is visual-only.
-          this.gameObject.scene.time.delayedCall(500, () => {
-            if (this.gameObject.active) asTint.clearTint?.();
-          });
-        }
-        break;
-    }
+    if (this.latestDamage?.damageType !== DamageType.Poison) this.presentation.reactToDamageVisually();
   }
 
   private init() {
+    // Initialization replaces definition/state directly; matching values still close the prior history.
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_actor_health_change");
     const maximumHealth = applyCampaignProgressionModifiers(
       this.gameObject,
       "maximum-health",
@@ -160,35 +109,11 @@ export class HealthComponent {
     this.healthDefinition = { ...this.healthDefinition, maxHealth: maximumHealth, maxArmour: maximumArmour };
     this.healthComponentData.health = maximumHealth;
     this.healthComponentData.armour = maximumArmour;
-    if (maximumArmour > 0 && !this.armorUiComponent) {
-      this.armorUiComponent = new HealthUiComponent(this.gameObject, "armor");
-    }
+    this.presentation.initializeArmorFromData();
     this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
     this.audioActorComponent = getActorComponent(this.gameObject, AudioActorComponent);
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
-    this.actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
-    const constructionSiteComponent = getActorComponent(this.gameObject, ConstructionSiteComponent);
-    if (constructionSiteComponent && !constructionSiteComponent.isFinished) {
-      const shouldBeVisible = this.shouldUiElementsBeVisible;
-      this.setVisibilityUiComponent(false);
-      this.shouldUiElementsBeVisible = shouldBeVisible;
-      this.constructionProgressSubscription = constructionSiteComponent.constructionStateChanged.subscribe(() =>
-        this.refreshVisibilityFrameNonDeterministic()
-      );
-    }
-    // Todo - now calling refreshVisibility on tick to update visibility due to FOW changes
-    // Intentional frame update: health/armor bars are UI visibility, not simulation-authoritative state.
-    this.gameObject.scene.events.on(Phaser.Scenes.Events.UPDATE, this.refreshVisibilityFrameNonDeterministic, this);
-
-    if (!this.healthDefinition.healthDisplayBehavior || this.healthDefinition.healthDisplayBehavior === "always") {
-      this.setVisibilityUiComponent(true);
-    } else {
-      this.setVisibilityUiComponent(false);
-    }
-  }
-
-  private refreshVisibilityFrameNonDeterministic() {
-    this.setVisibilityUiComponent(this.shouldUiElementsBeVisible);
+    this.presentation.init();
   }
 
   canDamageOrKillOnOwnerAction(): boolean {
@@ -205,32 +130,8 @@ export class HealthComponent {
     return true;
   }
 
-  private gameObjectVisibilityChanged(visible: boolean) {
-    if (visible) {
-      if (!this.healthDefinition.healthDisplayBehavior || this.healthDefinition.healthDisplayBehavior === "always") {
-        this.setVisibilityUiComponent(true);
-      } else {
-        this.setVisibilityUiComponent(visible);
-      }
-    } else {
-      this.setVisibilityUiComponent(false);
-    }
-  }
-
   getHealthUiComponentBounds(): Phaser.Geom.Rectangle {
-    const healthComponentBounds = this.healthUiComponent.getBounds();
-    const armorComponentBounds = this.armorUiComponent?.getBounds();
-
-    return new Phaser.Geom.Rectangle(
-      healthComponentBounds.x,
-      healthComponentBounds.y,
-      this.uiComponentsVisible ? healthComponentBounds.width : 0,
-      this.uiComponentsVisible
-        ? armorComponentBounds
-          ? healthComponentBounds.height + armorComponentBounds.height - HealthUiComponent.barBorder
-          : healthComponentBounds.height
-        : 0
-    );
+    return this.presentation.getHealthUiComponentBounds();
   }
 
   takeDamage(damage: number, damageType: DamageType, damageInitiator?: Phaser.GameObjects.GameObject) {
@@ -262,15 +163,7 @@ export class HealthComponent {
       damageInitiator
     );
 
-    if (this.healthDefinition.healthDisplayBehavior === "onDamage") {
-      this.setVisibilityUiComponent(true);
-      // Hide the UI component after a delay if it's set to "onDamage"
-      this.healthUiHideOnTimeout?.remove();
-      // Intentional wall-clock timer: health bar visibility timeout is UI-only.
-      this.healthUiHideOnTimeout = this.gameObject.scene.time.delayedCall(3000, () => {
-        if (this.gameObject.active) this.setVisibilityUiComponent(false);
-      });
-    }
+    this.presentation.showOnDamage();
   }
 
   heal(amount: number) {
@@ -280,6 +173,7 @@ export class HealthComponent {
   /** Documents the destroy actor silently member and its declared contract at this boundary. */
   destroyActorSilently() {
     if (!isGameObjectActiveInActiveScene(this.gameObject)) return;
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_actor_health_change");
     this.suppressReactions = true;
     this.setHealthValue(0, false);
     this.gameObject.scene.events.emit(HealthComponent.KilledEvent, this.gameObject);
@@ -290,6 +184,8 @@ export class HealthComponent {
 
   killActor() {
     if (!isGameObjectActiveInActiveScene(this.gameObject)) return;
+    // Already-zero health makes the setter a no-op, but death still invalidates readiness.
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_actor_health_change");
     this.setHealthValue(0, false);
     this.gameObject.scene.events.emit(HealthComponent.KilledEvent, this.gameObject);
     this.playDeathSound();
@@ -364,34 +260,22 @@ export class HealthComponent {
   }
 
   setHealthDefinition(healthDefinition: HealthDefinition) {
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_actor_health_change");
     this.healthDefinition = healthDefinition;
     this.setHealthValue(healthDefinition.maxHealth, false);
     this.setArmorValue(healthDefinition.maxArmour ?? 0, false);
-    this.syncArmorUiComponent();
-    this.refreshUiComponents();
+    this.presentation.syncArmorUiComponent();
+    this.presentation.refreshUiComponents();
   }
 
   setVisibilityUiComponent(visible: boolean) {
-    if (!isGameObjectActiveInActiveScene(this.gameObject)) return;
-    this.shouldUiElementsBeVisible = visible;
-    const constructionSiteComponent = getActorComponent(this.gameObject, ConstructionSiteComponent);
-    if (constructionSiteComponent && !constructionSiteComponent.isFinished) visible = false;
-    const previousVisibility = this.uiComponentsVisible;
-    const visionComponent = getActorComponent(this.gameObject, VisionComponent);
-    if (!visionComponent || !visionComponent.visibilityByCurrentPlayer) visible = false;
-    if (visible === previousVisibility) return;
-    this.healthUiComponent.setVisibility(visible);
-    this.armorUiComponent?.setVisibility(visible);
-    this.uiComponentsVisible = visible;
-    this.uiComponentsVisibilityChanged.next(visible);
+    this.presentation.setVisibilityUiComponent(visible);
   }
 
   private destroy() {
-    this.constructionProgressSubscription?.unsubscribe();
-    this.healthUiHideOnTimeout?.remove();
+    this.presentation.disposeTimers();
     this.destroyActorOnDelay?.remove();
-    this.gameObject.off(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
-    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.refreshVisibilityFrameNonDeterministic, this);
+    this.presentation.detach();
   }
 
   get alive(): boolean {
@@ -412,9 +296,9 @@ export class HealthComponent {
     }
     if (data.armour !== undefined) {
       this.setArmorValue(data.armour, false);
-      this.syncArmorUiComponent();
+      this.presentation.syncArmorUiComponent();
     }
-    this.refreshUiComponents();
+    this.presentation.refreshUiComponents();
   }
 
   get isDamaged() {
@@ -425,45 +309,12 @@ export class HealthComponent {
     return this.healthComponentData.health === this.healthDefinition.maxHealth;
   }
 
-  private reactToHeal() {
-    if (!this.actorTranslateComponent) return;
-    const renderedTransform = this.actorTranslateComponent.renderedTransform;
-    const bounds = getGameObjectBounds(this.gameObject)!;
-    const effect = EffectsAnims.createAndPlayEffectAnimation(
-      this.gameObject.scene,
-      EffectsAnims.ANIM_IMPACT_16,
-      renderedTransform.x,
-      bounds.top
-    );
-    effect.setScale(0.5);
-    effect.setTint(0x00ff00);
-    const gameObjectDepth = getGameObjectDepth(this.gameObject);
-    if (gameObjectDepth) {
-      effect.setDepth(gameObjectDepth + 1);
-    }
-  }
-
-  private syncArmorUiComponent() {
-    const hasArmor = (this.healthDefinition.maxArmour ?? 0) > 0;
-    if (hasArmor) {
-      this.armorUiComponent ??= new HealthUiComponent(this.gameObject, "armor");
-      this.armorUiComponent.setVisibility(this.uiComponentsVisible);
-      return;
-    }
-
-    this.armorUiComponent?.destroy();
-    this.armorUiComponent = undefined;
-  }
-
-  private refreshUiComponents() {
-    this.healthUiComponent.refresh();
-    this.armorUiComponent?.refresh();
-  }
-
   private setHealthValue(value: number, triggerReactions: boolean = true) {
     const previousValue = this.healthComponentData.health;
     if (previousValue === value) return;
 
+    // Close all installed resource history before native callbacks can reenter changed readiness.
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_actor_health_change");
     this.healthComponentData.health = value;
     this.healthChanged.emit(value);
 
@@ -472,7 +323,7 @@ export class HealthComponent {
     if (value < previousValue) {
       this.reactToDamage();
     } else {
-      this.reactToHeal();
+      this.presentation.reactToHeal();
     }
 
     if (value <= 0 && !this.suppressReactions) {
@@ -484,6 +335,7 @@ export class HealthComponent {
     const previousValue = this.healthComponentData.armour;
     if (previousValue === value) return;
 
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_actor_health_change");
     this.healthComponentData.armour = value;
     this.armorChanged.emit(value);
 
