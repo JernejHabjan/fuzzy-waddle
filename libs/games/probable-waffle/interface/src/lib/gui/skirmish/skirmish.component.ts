@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
 import type { OnInit } from "@angular/core";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import {
@@ -11,6 +11,7 @@ import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
 @Component({
   template: `<fuzzy-waddle-loader />`,
   imports: [LoaderComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: AngularHost.contentFlexFullHeightCenter
 })
 export class SkirmishComponent implements OnInit {

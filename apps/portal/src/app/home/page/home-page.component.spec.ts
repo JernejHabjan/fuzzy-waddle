@@ -41,4 +41,12 @@ describe("HomePageComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+
+  it("features Trump Defense and links it from the portal", () => {
+    const featured = fixture.nativeElement.querySelector(".tile-featured") as HTMLElement;
+    expect(featured.textContent).toContain("Trump Defense 2016");
+    expect(component.displayGames).toEqual(
+      expect.arrayContaining([expect.objectContaining({ name: "Trump Defense 2016", route: "trump-defense" })])
+    );
+  });
 });

@@ -20,22 +20,27 @@ Reuse, redistribution, or commercial use outside of GitHub requires explicit wri
 
 ## Games
 
-| Game            | Genre              | Status         |
-| --------------- | ------------------ | -------------- |
-| Probable Waffle | Real-time strategy | Active         |
-| Little Muncher  | Platformer         | Active         |
-| Fly Squasher    | Arcade             | Active         |
-| Dungeon Crawler | RPG                | In development |
+| Game               | Genre              | Status         |
+| ------------------ | ------------------ | -------------- |
+| Probable Waffle    | Real-time strategy | Active         |
+| Little Muncher     | Platformer         | Active         |
+| Fly Squasher       | Arcade             | Active         |
+| Trump Defense 2016 | Tower defense      | Active         |
+| Dungeon Crawler    | RPG                | In development |
+
+### Trump Defense 2016
+
+Originally created in 2016 as a school project for the Computer Graphics class at the Faculty of Computer and Information Science, University of Ljubljana. The browser version is a rewrite built with Angular and Three.js.
 
 ### Phaser Editor projects
 
 Open Phaser Editor in the project directory listed for the game. Do not open `libs/games` or the game’s parent directory as the editor project:
 
-| Game | Phaser Editor project directory |
-| ---- | -------------------------------- |
-| Probable Waffle | `libs/games/probable-waffle/phaser` |
-| Little Muncher | `libs/games/little-muncher/gameplay` |
-| Fly Squasher | `libs/games/fly-squasher/gameplay` |
+| Game            | Phaser Editor project directory       |
+| --------------- | ------------------------------------- |
+| Probable Waffle | `libs/games/probable-waffle/phaser`   |
+| Little Muncher  | `libs/games/little-muncher/gameplay`  |
+| Fly Squasher    | `libs/games/fly-squasher/gameplay`    |
 | Dungeon Crawler | `libs/games/dungeon-crawler/gameplay` |
 
 Run `pnpm phaser-editor:check` after changing scenes, prefabs, atlases, or asset packs. The check verifies
@@ -45,14 +50,14 @@ that each editor project can resolve its own asset URLs, atlas frames, and prefa
 
 ## Tech Stack
 
-| Layer              | Technology                        |
-| ------------------ | --------------------------------- |
-| Frontend (web)     | Angular 21, Phaser 4, Bootstrap 5 |
-| Frontend (desktop) | Tauri 2 (wraps the Angular build) |
-| Backend            | NestJS 11, Socket.IO              |
-| Database / Auth    | Supabase (PostgreSQL + OAuth)     |
-| Monorepo           | Nx 23                             |
-| Package manager    | pnpm                              |
+| Layer              | Technology                                  |
+| ------------------ | ------------------------------------------- |
+| Frontend (web)     | Angular 21, Phaser 4, Three.js, Bootstrap 5 |
+| Frontend (desktop) | Tauri 2 (wraps the Angular build)           |
+| Backend            | NestJS 11, Socket.IO                        |
+| Database / Auth    | Supabase (PostgreSQL + OAuth)               |
+| Monorepo           | Nx 23                                       |
+| Package manager    | pnpm                                        |
 
 ---
 

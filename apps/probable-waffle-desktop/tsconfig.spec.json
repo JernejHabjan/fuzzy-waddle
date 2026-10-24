@@ -5,7 +5,8 @@
     "module": "preserve",
     "types": ["jest", "node"],
     "verbatimModuleSyntax": false,
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "rootDir": "../.."
   },
   "files": ["../../tools/testing/angular/test-setup.ts", "../../tools/testing/angular/mocks/phaser-module.d.ts"],
   "include": ["jest.config.ts", "**/*.test.ts", "**/*.spec.ts", "**/*.d.ts"]

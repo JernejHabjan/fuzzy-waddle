@@ -15,6 +15,7 @@
     "sourceMap": true,
     "emitDecoratorMetadata": true,
     "moduleResolution": "Node",
-    "verbatimModuleSyntax": false
+    "verbatimModuleSyntax": false,
+    "ignoreDeprecations": "6.0"
   }
 }

@@ -7,7 +7,8 @@ import {
   type OnInit,
   input,
   output,
-  viewChild
+  viewChild,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import { ChatReportReason } from "@fuzzy-waddle/platform-database-schema";
 import type { ChatMessage } from "../../chat";
@@ -32,6 +33,7 @@ const SCROLL_THRESHOLD = 50;
   templateUrl: "./chat.component.html",
   styleUrls: ["./chat.component.scss"],
   imports: [FormsModule, FaIconComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: AngularHost.contentFlexFullHeight
 })
 export class ChatComponent implements OnInit, OnDestroy {

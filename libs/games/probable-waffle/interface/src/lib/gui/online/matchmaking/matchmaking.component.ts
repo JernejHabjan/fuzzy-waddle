@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, type OnDestroy, type OnInit } from "@angular/core";
+import { Component, HostListener, inject, type OnDestroy, type OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { FactionDefinitions } from "@fuzzy-waddle/probable-waffle-phaser";
 import { RoomsService } from "../../../communicators/rooms/rooms.service";
 
@@ -9,6 +9,7 @@ import { MatchmakingService } from "./matchmaking.service";
   selector: "probable-waffle-matchmaking",
   templateUrl: "./matchmaking.component.html",
   styleUrls: ["./matchmaking.component.scss"],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule]
 })
 export class MatchmakingComponent implements OnInit, OnDestroy {

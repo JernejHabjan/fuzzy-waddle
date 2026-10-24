@@ -1,4 +1,4 @@
-import { Component, inject, type OnDestroy, type OnInit, input } from "@angular/core";
+import { Component, inject, type OnDestroy, type OnInit, input, ChangeDetectionStrategy } from "@angular/core";
 import { flySquasherGameConfig } from "@fuzzy-waddle/fly-squasher-gameplay/consts/game-config";
 import { FlySquasherGameInstance, FlySquasherLevels, FlySquasherUserInfo } from "@fuzzy-waddle/fly-squasher-protocol";
 import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
@@ -24,6 +24,7 @@ import { LeaveButtonComponent } from "@fuzzy-waddle/platform-game-host/angular/c
     },
     SceneCommunicatorClientService
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: AngularHost.contentFlexFullHeight
 })
 export class MainComponent implements OnInit, OnDestroy {

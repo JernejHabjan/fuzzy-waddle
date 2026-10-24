@@ -1,5 +1,5 @@
 import type { OnInit } from "@angular/core";
-import { Component, computed, inject } from "@angular/core";
+import { Component, computed, inject, ChangeDetectionStrategy } from "@angular/core";
 import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
 import { SwRefreshComponent } from "@fuzzy-waddle/platform-game-host/angular/components/sw-refresh/sw-refresh.component";
@@ -15,6 +15,7 @@ import { TauriTitlebarComponent } from "@fuzzy-waddle/platform-game-host/angular
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"],
   host: AngularHost.contentFlexFullHeight,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterOutlet, SwRefreshComponent, ToastContainerComponent, TauriSplashComponent, TauriTitlebarComponent]
 })
 export class AppComponent implements OnInit {

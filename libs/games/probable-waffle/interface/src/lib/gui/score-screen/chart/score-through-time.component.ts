@@ -1,4 +1,4 @@
-import { Component, inject, input, type OnInit } from "@angular/core";
+import { Component, inject, input, type OnInit, ChangeDetectionStrategy } from "@angular/core";
 
 import {
   type GameScoreSnapshot,
@@ -23,6 +23,7 @@ interface MetricOption {
   imports: [BaseChartDirective],
   providers: [provideCharts(withDefaultRegisterables())],
   templateUrl: "./score-through-time.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ["./score-through-time.component.scss"]
 })
 export class ScoreThroughTimeComponent implements OnInit {

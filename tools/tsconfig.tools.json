@@ -5,7 +5,8 @@
     "rootDir": ".",
     "module": "commonjs",
     "types": ["node"],
-    "importHelpers": false
+    "importHelpers": false,
+    "ignoreDeprecations": "6.0"
   },
   "include": ["**/*.ts"]
 }

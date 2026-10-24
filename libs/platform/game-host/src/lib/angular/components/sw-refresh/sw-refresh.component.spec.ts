@@ -1,10 +1,11 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { SwRefreshComponent } from "./sw-refresh.component";
-import { Component } from "@angular/core";
+import { Component, ChangeDetectionStrategy } from "@angular/core";
 import { VersionService } from "./version.service";
 import { versionServiceStub } from "./version.service.stub";
 
-@Component({ selector: "fuzzy-waddle-sw-refresh", template: "", standalone: true, imports: [] })
+@Component({ selector: "fuzzy-waddle-sw-refresh", template: "", standalone: true, changeDetection: ChangeDetectionStrategy.Eager,
+ imports: [] })
 export class SwRefreshTestingComponent {}
 
 describe("SwRefreshComponent", () => {

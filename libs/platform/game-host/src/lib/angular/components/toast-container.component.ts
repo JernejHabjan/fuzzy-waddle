@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
 import type { OnInit } from "@angular/core";
 import { NgClass } from "@angular/common";
 import { type Toast, ToastService } from "../services/toast.service";
@@ -26,6 +26,7 @@ import { type Toast, ToastService } from "../services/toast.service";
       }
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       .toast-container {
