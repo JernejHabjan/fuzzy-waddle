@@ -36,6 +36,10 @@ export async function runVariant(
   const variantStartedAt = performance.now();
   const context = await browser.newContext();
   const page = await context.newPage();
+  page.on("console", (message) => {
+    if (message.text().startsWith("[AI_SKIRMISH_PRODUCTION_CAPTURE]"))
+      process.stdout.write(`${message.text()}\n`);
+  });
   const checkpointPhases: {
     targetTick: number;
     advanceMs: number;
@@ -163,8 +167,13 @@ export async function runVariant(
         (productionCapture?.frontiers?.closedThroughTick ?? -1) < checkpoint.tick
       )
         await advanceRuntimeToTick(page, fixture, checkpoint.tick + 1, index);
-      if (captureProduction)
-        productionCapture = await captureRuntimeProductionAuthority(page, fixture.recipe.aiPlayerNumber);
+      if (captureProduction) {
+        productionCapture = await captureRuntimeProductionAuthorityWithDiagnostics(
+          page,
+          fixture.recipe.aiPlayerNumber,
+          targetTick
+        );
+      }
       await debugProbe?.(page, index, checkpoint);
       if (profiling) {
         checkpointPhases.push({
@@ -250,6 +259,46 @@ export async function runVariant(
     return result;
   } finally {
     await context.close();
+  }
+}
+
+async function captureRuntimeProductionAuthorityWithDiagnostics(
+  page: Page,
+  playerNumber: number,
+  targetTick: number
+) {
+  const trace = process.env.AI_SKIRMISH_DIAGNOSTIC_CHECKPOINT_TRACE === "1" && targetTick >= 4000;
+  if (!trace) return captureRuntimeProductionAuthority(page, playerNumber);
+
+  const startedAt = performance.now();
+  process.stdout.write(`[AI_SKIRMISH_CHECKPOINT] tick=${targetTick} phase=production-authority start\n`);
+  await page.evaluate(() => {
+    (window as unknown as { __aiSkirmishProductionCaptureTrace?: boolean }).__aiSkirmishProductionCaptureTrace = true;
+  });
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  try {
+    const capture = captureRuntimeProductionAuthority(page, playerNumber);
+    const result = await Promise.race([
+      capture,
+      new Promise<never>((_, reject) => {
+        timeout = setTimeout(() => reject(new Error("runtime_production_capture_phase_timeout:120000ms")), 120_000);
+      })
+    ]);
+    process.stdout.write(
+      `[AI_SKIRMISH_CHECKPOINT] tick=${targetTick} phase=production-authority complete elapsedMs=${Math.round(
+        performance.now() - startedAt
+      )}\n`
+    );
+    return result;
+  } catch (error) {
+    process.stdout.write(
+      `[AI_SKIRMISH_CHECKPOINT] tick=${targetTick} phase=production-authority failed elapsedMs=${Math.round(
+        performance.now() - startedAt
+      )} reason=${error instanceof Error ? error.message : String(error)}\n`
+    );
+    throw error;
+  } finally {
+    if (timeout) clearTimeout(timeout);
   }
 }
 

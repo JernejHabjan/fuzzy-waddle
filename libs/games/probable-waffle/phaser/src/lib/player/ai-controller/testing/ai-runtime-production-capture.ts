@@ -242,8 +242,13 @@ export class AiRuntimeProductionCapture {
   }
 
   private readBoundary(playerNumber: number, requireDecision: boolean): AiRuntimeProductionCaptureV1 {
+    let phaseStartedAt = performance.now();
+    traceProductionCapturePhase("recipient-reconcile", "start");
     this.recipientResources.reconcile();
+    traceProductionCapturePhase("recipient-reconcile", "complete", performance.now() - phaseStartedAt);
     if (isSnapshotApplyInProgress(this.scene)) this.resourceCoverage.lose("snapshot_restore");
+    phaseStartedAt = performance.now();
+    traceProductionCapturePhase("snapshot-read", "start");
     const { snapshot, pending } = captureAiRuntimeProductionSnapshot(this.scene, playerNumber, requireDecision, {
       startedTick: this.startedTick,
       afterSequence: this.facts.reduce(
@@ -256,19 +261,40 @@ export class AiRuntimeProductionCapture {
       identify: this.identify,
       watchQueue: (actor) => this.watchQueue(actor)
     });
+    traceProductionCapturePhase("snapshot-read", "complete", performance.now() - phaseStartedAt);
     const snapshots = this.snapshots.get(playerNumber) ?? [];
+    phaseStartedAt = performance.now();
+    traceProductionCapturePhase("snapshot-clone", "start");
     if (snapshots.length < MAX_SNAPSHOTS) snapshots.push(structuredClone(snapshot));
     else {
       this.resourceCoverage.lose("snapshot_overflow");
       this.snapshotDrops.set(playerNumber, (this.snapshotDrops.get(playerNumber) ?? 0) + 1);
     }
     this.snapshots.set(playerNumber, snapshots);
-    return structuredClone({
+    traceProductionCapturePhase("snapshot-clone", "complete", performance.now() - phaseStartedAt);
+    phaseStartedAt = performance.now();
+    traceProductionCapturePhase("proof-read", "start");
+    const proof = this.proof.read(playerNumber);
+    traceProductionCapturePhase("proof-read", "complete", performance.now() - phaseStartedAt);
+    phaseStartedAt = performance.now();
+    traceProductionCapturePhase("fact-filter", "start", undefined, this.facts.length);
+    const facts = this.facts.filter((fact) => fact.playerNumber === playerNumber);
+    const recipientResourceFacts = this.facts.filter(
+      (fact) =>
+        fact.kind === "recipient_resources_installed" ||
+        fact.kind === "recipient_resource_mutation" ||
+        fact.kind === "resource_input_read" ||
+        fact.kind === "resource_need_fence"
+    );
+    traceProductionCapturePhase("fact-filter", "complete", performance.now() - phaseStartedAt, facts.length);
+    phaseStartedAt = performance.now();
+    traceProductionCapturePhase("final-clone", "start");
+    const result = structuredClone({
       schemaVersion: 1,
       kind: "production_authority_capture",
       startedTick: this.startedTick,
       playerNumber,
-      ...this.proof.read(playerNumber),
+      ...proof,
       droppedFactCount: this.factDrops.get(playerNumber) ?? 0,
       droppedSnapshotCount: this.snapshotDrops.get(playerNumber) ?? 0,
       initialConstruction: this.initialConstruction.get(playerNumber),
@@ -285,16 +311,12 @@ export class AiRuntimeProductionCapture {
         "decision_snapshot_cadence",
         ...pending.gaps
       ],
-      facts: this.facts.filter((fact) => fact.playerNumber === playerNumber),
+      facts,
       snapshots,
-      recipientResourceFacts: this.facts.filter(
-        (fact) =>
-          fact.kind === "recipient_resources_installed" ||
-          fact.kind === "recipient_resource_mutation" ||
-          fact.kind === "resource_input_read" ||
-          fact.kind === "resource_need_fence"
-      )
+      recipientResourceFacts
     } satisfies AiRuntimeProductionCaptureV1);
+    traceProductionCapturePhase("final-clone", "complete", performance.now() - phaseStartedAt, facts.length);
+    return result;
   }
 
   /** Idempotent scene teardown fences retained handles and unsubscribes even while a callback is awaiting a boundary. */
@@ -422,4 +444,13 @@ export class AiRuntimeProductionCapture {
       }
     );
   }
+}
+
+function traceProductionCapturePhase(phase: string, state: "start" | "complete", elapsedMs?: number, facts?: number): void {
+  if (typeof window === "undefined" || !(window as unknown as { __aiSkirmishProductionCaptureTrace?: boolean }).__aiSkirmishProductionCaptureTrace)
+    return;
+  const detail = [elapsedMs === undefined ? undefined : `elapsedMs=${Math.round(elapsedMs)}`, facts === undefined ? undefined : `facts=${facts}`]
+    .filter(Boolean)
+    .join(" ");
+  console.info(`[AI_SKIRMISH_PRODUCTION_CAPTURE] phase=${phase} state=${state}${detail ? ` ${detail}` : ""}`);
 }

@@ -3,7 +3,7 @@
 Updated 2026-10-26. This is the active evidence snapshot. Detailed prior run notes are preserved in
 [EVIDENCE-ARCHIVE.md](EVIDENCE-ARCHIVE.md); use HANDOFF.md for the live cursor and next action.
 
-Source checkpoint `f982f1df4` contains the STRAT-09 elimination evaluator repair; push pending. Latest CI diagnostics were read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad` (runtime jobs skipped on draft PR #814).
+The STRAT-09 elimination evaluator repair is pushed on `feature/759-skirmish-ai`; latest CI diagnostics were read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad` (runtime jobs skipped on draft PR #814).
 GitHub reports `skirmish-runtime-plan`, `skirmish-multiplayer` and `skirmish-runtime` skipped because PR #814 is draft;
 the runtime matrix starts on `ready_for_review`. PR status is left unchanged per the existing handoff boundary. H-10's two
 over-capacity variants and real-peer obligations still need that matrix evidence.
@@ -57,10 +57,11 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   supports objective/attack application trouble, not economic collapse. Artifact:
   `tmp/ai-skirmish-matrix/776-package3-strat09-tivara-path-outage/1793021312931-diagnostic_failed.json`. Current STRAT-09
   branch evidence: 3 passes / 3 failures / 2 unproven of 8; overall closure remains open. Skaduwee runs 777/778/781/782/783
-  (denial) and 779 (path outage) timed out before recording decisions/ticks. Run 783 advanced to tick 4,000 in 630s, then
-  spent the remaining 22 minutes without sealing the checkpoint. This localizes the expensive phase to final capture/seal,
-  not simulation. Run 784 will trace economy, strategy, and transport capture separately with a 120s phase limit; fix the
-  blocking capture before retrying the two unproven branches. Details and artifacts are in HANDOFF.md.
+  (denial) and 779 (path outage) timed out before recording decisions/ticks. Runs 783/784 reached tick 4,000 in about 630s;
+  784 showed checkpoint, economy, strategy and transport capture complete within 65ms combined. Run 785 then confirmed
+  the final production-authority `page.evaluate` stalls for over 120s; this is harness failure, with no gameplay evidence.
+  The next replay instruments its internal browser-side phases to isolate the blocking operation. Details and artifacts are
+  in HANDOFF.md.
 - The native scouting oracle matches `effect:`-prefixed accepted intents to movement execution IDs.
 - Movement capture normalization now admits up to 2,048 execution groups; caller-history validation admits 4,096
   identities. The latest H-14 capture contained 1,567 movement executions and 1,869 caller identities; route-order

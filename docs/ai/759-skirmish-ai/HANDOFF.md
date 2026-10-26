@@ -15,7 +15,7 @@ Read this file, then [REMAINING-WORK.md](REMAINING-WORK.md) for package acceptan
 
 ## Current checkpoint — 2026-10-26
 
-- Branch `feature/759-skirmish-ai`, source checkpoint `f982f1df4` (evaluator fix committed; push pending); latest CI diagnostics read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad`. Node 24.18.0 / pnpm 11.14.0.
+- Branch `feature/759-skirmish-ai`; latest source checkpoint is the current pushed branch tip plus the diagnostic trace work recorded below. Latest CI diagnostics read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad`. Node 24.18.0 / pnpm 11.14.0.
 - Packages 1–2 are validated; two-faction SEQ-01 passes with the adaptive build-space rule.
 - Package 5 current focused evidence: H-14 Skaduwee harmless passes one of its branches. H-10 passes below-capacity,
   at-capacity and resumed-capacity for both factions (6/8 variants); over-capacity remains for CI. Neither family is closed.
@@ -97,12 +97,16 @@ results. Artifacts: `tmp/ai-skirmish-matrix/777-package3-strat09-skaduwee-denial
 `tmp/ai-skirmish-matrix/779-package3-strat09-skaduwee-path-outage/1793024888536-failed.json`,
 `tmp/ai-skirmish-matrix/781-package3-strat09-skaduwee-denial-horizon-budget/1793026466163-failed.json`,
 `tmp/ai-skirmish-matrix/782-package3-strat09-skaduwee-denial-at-horizon/1793027972762-failed.json`, and
-`tmp/ai-skirmish-matrix/783-package3-strat09-skaduwee-denial-capture/1793030159937-failed.json`. Run 783 reached tick
-4,000/4,000 in 630s, then failed to seal for the rest of its 1,980s test budget. The simulation horizon is not the slow
-part; final checkpoint capture/sealing is. An opt-in trace now times economy, strategy and transport checkpoint capture
-separately with a 120s limit (`AI_SKIRMISH_DIAGNOSTIC_CHECKPOINT_TRACE=1`). Use it to identify the blocking capture, fix
-that path, then retry the two unproven branches.
-Do not repeat 777–783 unchanged or treat them as scenario evidence.
+`tmp/ai-skirmish-matrix/783-package3-strat09-skaduwee-denial-capture/1793030159937-failed.json` and
+`tmp/ai-skirmish-matrix/784-package3-strat09-skaduwee-denial-checkpoint-trace/1793032332874-failed.json`. Runs 783/784
+reached tick 4,000/4,000 in about 630s, then stalled before the report for the rest of their 1,980s budgets. Run 784's
+opt-in trace showed advance, settle, checkpoint, economy, strategy and transport capture all complete; economy/strategy/
+transport took 15/12/35ms. The likely next boundary is the final production-authority recapture. The trace now marks that
+phase and fails it after 120s (`AI_SKIRMISH_DIAGNOSTIC_CHECKPOINT_TRACE=1`). Run 785 confirmed the final authority
+`page.evaluate` remains pending for 120s, after which the harness records
+`runtime_production_capture_phase_timeout:120000ms`; it is not scenario evidence. Browser-side phase markers now isolate
+recipient reconciliation, snapshot read/clone, proof read, fact filtering and final clone. Run 786 is the next single
+variant denial diagnostic. Do not repeat 777–785 unchanged or treat them as scenario evidence.
 
 ## Package cursor and known open work
 
