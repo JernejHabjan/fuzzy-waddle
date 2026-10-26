@@ -1,6 +1,398 @@
 # #759 current evidence
 
-## Five-item non-browser batch — checked (2026-10-22)
+## Latest checkpoint - 2026-10-25
+
+- **Latest focused H-30 progress:** Tivara throw now passes after binding a research-specific receipt fault through tick
+  2800 and extending the native horizon to 4000; its terminal research receipt was held/released and drained by a later
+  healthy decision, while exact native worker deliveries, resumed planning, and two-faction victory all passed
+  (`tmp/ai-skirmish-matrix/760-package5-h30-tivara-terminal-receipt-v2/1792966085082-diagnostic_passed.json`, 200
+  decisions / 4001 ticks). H-30's recovery income oracle now accepts any authored worker only when its exact source→cargo→
+  deposit credit chain is present. H-30 Skaduwee throw re-evaluates with no context or fault failures under the corrected
+  terminal-receipt oracle; its archived report retains its old diagnostic status. Other fault branches remain CI-owned.
+- **H-30 Skaduwee throw:** the updated receipt window now captures its first production completion. The branch passes at
+  200 decisions / 4,001 ticks, with six fault injections, continued gathering/planning and a win
+  (`tmp/ai-skirmish-matrix/760-package5-h30-skaduwee-receipt-window/1792969100377-diagnostic_passed.json`, 669,078 ms).
+  Together with Tivara this closes the paired throw diagnostic subset, not the full H-30 fault family.
+- **Latest H-32 pending-path result:** the event-history handoff issue is repaired and the route outage now creates a
+  genuine pending query at tick 20. The same-realm transition still fails to settle it: the old scene becomes inactive
+  with status 8, but Phaser shutdown/destroy listeners remain uncalled; a simulation-clock completion fallback also does
+  not fire. Focused route-outage tests pass 9/9, but the native lifecycle requirement stays open. Artifact:
+  `tmp/ai-skirmish-matrix/760-package5-h32-clock-disposal/1792968377392-failed.json` (68,771 ms, zero decisions by design;
+  failure occurs during lifecycle teardown). Do not replay this branch until the teardown owner is understood.
+- **H-15 Skaduwee lethal:** the shared owner-navigation fix now captures every decision's tactical boundary and the exact
+  lethal/withdrawal diagnostic passes at 120 decisions / 2,401 ticks. Result: five workers, one army unit, 1,556 damage
+  and seven enemy losses. Paired with Tivara lethal only; other H-15 branches remain open. Artifact:
+  `tmp/ai-skirmish-matrix/760-package5-h15-owner-navigation/1792974044197-diagnostic_passed.json`.
+- **H-14 Skaduwee harmless:** its native wood delivery and a paid military output both exist; the unresolved requirement
+  is a physical scout trip. Four accepted scout effects all stop/return false before arrival. The first, toward `(3,3)`, is
+  replaced after tick 80 and later tactical movement uses a new effect identity. Inspect scout mission ownership/cancel
+  behavior before one changed-source replay. Artifact:
+  `tmp/ai-skirmish-matrix/760-package5-h14-skaduwee-harmless/1792953741166-diagnostic_failed.json`.
+- **H-11 Tivara one-worker recheck:** the changed source still gets `no_path` from builder `(33,21)` to legal outside
+  endpoint `(31,22)` beside its Granary at tick 20; no construction or income follows. It reaches 200 decisions / 4,001
+  ticks, but the sole scenario failure is `native_capture_channel_lost`, so it is not closure evidence. Artifact:
+  `tmp/ai-skirmish-matrix/760-package4-h11-current-navigation/1792971090725-diagnostic_failed.json`. Park until route
+  connectivity and capture-channel causes change.
+- **PLACE-03 Tivara concurrent:** the 150-decision changed-source run found its first Granary footprint covers the
+  worker-service clearance route's first tile, then subsequent prefixes inherit the blocked route; worker/army physical
+  transit also remains incomplete. The observation showed nearby owned workers, while placement only protected exact
+  order endpoints and connected map cells. A one-tile maneuvering clearance ring around other owned gather/build workers
+  is now enforced. Focused placement access specs pass 8/8. Artifact:
+  `tmp/ai-skirmish-matrix/760-package4-place03-current-endpoint-protection/1792971915347-diagnostic_failed.json`.
+- **PLACE-03 owner-navigation replay:** the scene lookup cause is fixed and tactical boundaries now exist for all 150/150
+  decisions. The native run still fails route clearance on later prefixes and both protected physical transits; outcome
+  workers 17, army 5, four enemy losses. Focused visibility/capture specs pass 8/8. Artifact:
+  `tmp/ai-skirmish-matrix/760-package4-place03-owner-navigation/1792973519220-diagnostic_failed.json`.
+- **Next local owner:** trace the H-14 primary scout's stop/return-false before waypoint arrival, repair the mission owner,
+  and use one changed-source diagnostic. Do not repeat PLACE-03 until its active route premise or source-level corridor model
+  changes. Keep H-11/H-31/H-32 parked without a new cause. Package 5 and peer obligations remain open; CI owns routine
+  rows.
+
+- The user authorized continuing through the remaining Skirmish AI checks without stopping at each passing gate. Do not commit,
+  push, open/update a PR or merge. CI already owns routine registered runtime rows; use local native runs only for targeted
+  evidence after a relevant source/fixture change. Keep one browser process at a time and do not replay unchanged failures.
+- Latest: H-32 normal and paid-queue lifecycle samples pass for both Tivara and Skaduwee, with clean same-realm next-match
+  ownership and late-work fencing. Pending-path still stops at zero ticks with `runtime_preset_events_incomplete` after its
+  event-history handoff fix; its route outage is not observed. H-32 host replacement remains real-peer CI work.
+  H-30 Skaduwee throw reached 120 decisions / 2,401 ticks and showed six injections, continued native income, and resumed
+  planning, but generated no held production receipt; its only failed predicate is original-receipt reconciliation. The
+  fixture needs a real producer/receipt premise before another replay. H-15 Skaduwee lethal reached 120 decisions / 2,401
+  ticks but ended with no workers (`worker_bootstrap`); record as a survivability failure, not an emergency-proof pass.
+  Diagnosis found the player-visible threat was outside each defender's native vision. The AI now carries each owned unit's
+  native visible enemy IDs and uses them before issuing attacks. Focused defense/tactics tests pass (31/31), Phaser
+  projection passes (3/3), and gameplay and Phaser spec typechecks pass. The changed-source H-15 replay had zero
+  `hidden_target` rejections and retained two workers (previously zero), but military fell 11→1 and it still lost at tick
+  2,401. The only scenario predicate is `native_decision_or_mission_boundary_missing`: tactical boundary capture is absent
+  for 118/120 decisions after tick 40, so this cannot close H-15. Identify the capture exception and continue other P5
+  owners before replay. Its far control initially
+  failed the distant-strength predicate; the synchronized hold fixture now passes that scenario predicate.
+  H-15 Skaduwee resolved passes the corrected native delayed-receipt/withdrawal predicates at 120 decisions / 2,401 ticks;
+  lethal remains open. Its far replay with synchronized hold controls passed the distant-threat predicate; the only old
+  evaluator failure was an unrelated receipt requirement, now scoped away for the far control. Fixture contracts pass 23/23,
+  owner-binding checks 12/12, and Portal E2E TypeScript passes.
+  H-14 Skaduwee harmless reached 150 decisions / 3,001 ticks but failed the physical-economy/scouting/paid-output predicate;
+  Tivara harmless had passed the exact threat/service/decay checks. Keep the Skaduwee useful-work gap open.
+  H-13 Skaduwee many-bases reached 150 decisions / 3,001 ticks but lacked the native original-cash/ownership premise for
+  waiting-exposure evaluation; Tivara's exact branch passed.
+  H-12 Skaduwee scarce then failed its foreign-bank observation/stability predicate after 150 decisions / 3,001 ticks;
+  the paired fixture/evidence premise needs repair before replay.
+  H-10 Skaduwee resumed-capacity passed at 150 decisions / 3,001 ticks, pairing Tivara's earlier pass; this is one branch,
+  not full H-10 closure. Next: continue other dependency-ready P5 owners; keep H-15 open until its tactical-boundary
+  capture issue and remaining survivability cause have changed.
+  H-31 Tivara `before_apply` stopped because the native commit checkpoint was missing; `applied_pending` was blocked at Nx
+  startup, and `during_active` timed out waiting for UI state before any decisions/ticks. Park these unchanged boundaries
+  locally and continue with independent checks; H-32 host replacement and remaining save/peer branches stay CI-owned.
+- **Latest focused follow-up:** H-14 Skaduwee search-order capture (`tmp/ai-skirmish-matrix/760-package5-h14-skaduwee-harmless-search-order/1792961263429-diagnostic_failed.json`)
+  records actor-attributed movement from `(31,26)` toward `(3,3)` to `(9,3)` and previously hidden search points becoming
+  visible. The oracle still requires exact arrival at the original waypoint; do not weaken the shared predicate without
+  proving the selected scout caused the discovery. H-31 `before_apply` now saves before the first decision and reaches
+  20 decisions / 401 ticks after omitting the unavailable tick-19 observation/catalog checkpoint. Its corrected-source
+  diagnostic (`tmp/ai-skirmish-matrix/760-package5-h31-tivara-before-apply-undefined-state-fix/1792962106190-diagnostic_failed.json`)
+  still fails world parity after load and continuation, full decision-tail parity, and native capture-gap requirements.
+  The state digest had rejected an explicitly undefined optional base `expansion`; the base manager now omits that field.
+  Keep H-31 open and advance to a different owner. Next local owner: repair H-30 Skaduwee's receipt window, which currently
+  ends at tick 600 although its first production queue begins at tick 1260 and completes at 1459. Then rerun only that
+  changed branch and continue; selected native obligations remain 0/22.
+- **Package 5 is active.** H-06–15/H-30–32 linked pure contracts pass (13 scenarios, 37 suites, 219 assertions;
+  `tmp/ai-skirmish-matrix/760-package5-pure-owner-update/1792917048672-passed.json`). H-06/H-07 corrected captures
+  exposed fixture/evaluator gaps; H-08 timeout captures exposed broad resource-coverage failures, cancellation setup
+  without an original applied receipt, and four peer branches requiring CI Supabase credentials. Keep H-08/H-09 peer
+  proof on credentialed CI. Chunked capture storage and 8 GB CI heap address the prior report-sealing limits.
+  H-10 had two evaluator defects plus repeated Gather while a delayed receipt was unresolved. Generic command-linked
+  reservation retention now covers actor/effect claim bundles. Focused Playwright owner tests pass 10/10, gameplay
+  reservation/planner tests pass 3 suites / 6 tests, gameplay spec and Portal E2E TypeScript checks pass. The H-11–15
+  pure batch passes (`tmp/ai-skirmish-matrix/760-package5-reservations-pure-after-h10-fix/1792933874048-passed.json`).
+  Changed-source H-10 Tivara resumed-capacity diagnostic passes (150 decisions / 3,001 ticks, one browser, 556,841 ms;
+  `tmp/ai-skirmish-matrix/760-package5-h10-reservation-fix/1792934322497-diagnostic_passed.json`). This is a single
+  variant, not H-10 closure. H-11's first Tivara one-worker capture sealed after 200 decisions / 4,001 ticks in 226,586
+  ms, but failed the broad capture-history guard. Its raw native path records found the real blocker: fixed construction
+  radius 1 returned `no_path` four times from the builder at `(33,21)` to its Granary at `(33,23)`, whose 3x3 footprint
+  blocked the entire allowed arrival radius. Construction approach range now derives from the site's occupied footprint.
+  The next capture confirmed radius 2 was active, but endpoint selection chose `(33,22)` inside the Granary because
+  navigation can report target-footprint tiles navigable. The selector now excludes target-footprint coordinates; its
+  focused spec passes 6/6. The third capture selected a legal outside tile `(31,22)` but its native path query had no
+  route; broad resource history also remains incomplete. The path routine now tries all legal endpoints in deterministic
+  distance order. The latest H-11 diagnostic still finds only one legal endpoint; its native route fails, construction and
+  food delivery remain zero, and broad resource coverage remains incomplete
+  (`tmp/ai-skirmish-matrix/760-package5-h11-reachable-endpoint-fallback/1792945791852-diagnostic_failed.json`; 200 decisions /
+  4,001 ticks, 221,868 ms). Keep H-11
+  open; do not replay until the cause of the single legal endpoint and the required resource-history gaps are addressed.
+  Phaser/movement/command checks previously passed 3 suites / 19 tests; selector spec passes 6/6 and Phaser spec TypeScript
+  passes. H-12 Tivara-scarce native capture reached 150 decisions / 3,001 ticks (421,786 ms) and completed its Field;
+  its only failure was the broad resource-coverage guard. The exact bundle evaluator passed its checks for definition costs,
+  atomic admission, physical payment/delivery, actual proposer order and foreign-bank stability. H-12 now relies on these
+  exact proofs instead of broad unrelated history; its context guard spec passes. This is one checked branch, not H-12
+  closure. H-13 Tivara many-bases also reached 150 decisions / 3,001 ticks (556,893 ms); its only failure was broad resource
+  history, while the exact evaluator passed multi-base waiting exposure, optional spending and physical outcomes
+  (`tmp/ai-skirmish-matrix/760-package5-h13-tivara-many-bases/1792947006926-diagnostic_failed.json`). H-13 now relies on
+   those exact predicates and has a focused context guard. This is one checked branch, not H-13 closure. H-14 Tivara
+   harmless-noise reached 150 decisions / 3,001 ticks (465,648 ms); its only failure was broad resource history, while the
+   exact evaluator passed its harmless-threat, native-service and emergency-decay checks
+   (`tmp/ai-skirmish-matrix/760-package5-h14-tivara-harmless/1792947552643-diagnostic_failed.json`). H-14 now also uses its
+   exact predicates without unrelated broad history, and the context guard tests cover H-12–14. This is one branch, not
+   H-14 family closure. H-15 Tivara lethal reached 120 decisions / 2,401 ticks (396,686 ms), with 119 emergency decisions,
+   583 hostile-damage facts and three held receipts; its only failure was broad resource history, while exact lethal-defense,
+   fresh-generation and delayed-receipt checks passed (`tmp/ai-skirmish-matrix/760-package5-h15-tivara-lethal/1792948040709-
+   diagnostic_failed.json`). H-15 now uses its exact damage/defense/receipt evidence and is covered by a focused context
+    guard test. This is one branch, not H-15 closure. H-14 Tivara scarcity reached 150 decisions / 3,001 ticks
+    (465,860 ms) but failed two real predicates: no explicit resource blocker and no combined physical-economy/scouting
+    output (`tmp/ai-skirmish-matrix/760-package5-h14-tivara-scarcity/1792948619979-diagnostic_failed.json`). Native facts
+    show the zero-start budget still enabled wood harvesting and paid work, but no mission resource blocker; the scarcity
+    branch should require physical income and an explicit blocker without requiring discretionary scouting. The evaluator
+    now separates that branch; the missing blocked-demand premise remains an open fixture issue. Do not repeat until the
+    fixture supplies an active resource-blocked demand. H-15 Tivara resolved reached 120 decisions / 2,401 ticks
+    (446,261 ms); emergency cleared after the scheduled withdrawal, but the evaluator incorrectly required the completed
+    producer command to remain pending past receipt release. Native execution completed it at tick 319; release came at
+    tick 801, after pending ownership correctly drained. The evaluator now requires pending while held, a native terminal
+    outcome, and release of the same receipt. The synthetic regression and 11-test owner-binding suite pass; Portal E2E
+    TypeScript passes. No runtime replay was needed for this evaluator-only correction; CI owns the updated full matrix.
+    H-15 Tivara far passed with no false emergency
+    (`tmp/ai-skirmish-matrix/760-package5-h15-tivara-far/1792949928016-diagnostic_passed.json`, 120 decisions / 2,401
+    ticks, 562,827 ms), despite broad resource-history loss. Three Tivara H-15 branches now have targeted evidence;
+    Skaduwee counterparts remain CI-owned. H-14's active blocked-demand premise and H-11's single unreachable legal endpoint
+    remain open. H-30 Tivara throw reached 120 decisions / 2,401 ticks (361,487 ms) with six native `brain_fault` events;
+    its only failure was broad resource history, while exact fault injection, resumed planning, gathering and original-receipt
+    reconciliation passed (`tmp/ai-skirmish-matrix/760-package5-h30-tivara-throw/1792950409961-diagnostic_failed.json`).
+    H-30 now relies on those exact checks and has a context guard test. H-32 Tivara normal and paid-queue lifecycle
+    diagnostics passed: each retained one owner per player, disposed the first scene, fenced late work, and advanced a
+    distinct next match in the same realm. Artifacts:
+    `tmp/ai-skirmish-matrix/760-package5-h32-tivara-normal/1792950997858-diagnostic_passed.json` and
+    `tmp/ai-skirmish-matrix/760-package5-h32-tivara-paid-queue/1792950738940-diagnostic_passed.json`. These are two
+    branches, not H-32 closure. Pending-path hit an event-history overwrite at first; the runner now preserves the original
+    match's preset-event record across the UI transition, and Portal E2E typing passes. The changed-source replay stopped
+    before Playwright due Nx recursive webserver startup, with zero simulated ticks. Host replacement needs authenticated
+    peers and remains CI-owned. Next local branch: H-31 single-player save continuation; return once to pending-path after
+    clean startup. H-11/H-14 remain parked until their missing endpoint/blocked-demand premises change.
+- **Package 4 native check:** focused placement access tests pass 4/4. A changed-fixture PLACE-03 Tivara concurrent run
+  completed 150 decisions / 3,001 ticks (767,760 ms; source `f083fddbc483`, dirty `fnv1a32:86af2577`, fixture
+  `fnv1a32:a080c4f7`) but failed clearance from its first applied prefixes and worker/army physical arrival. H-27's earlier
+  capture showed a legal Olival covering the protected worker-service route origin at `(32,23)`. The selector gets no
+  `protectedRoutes` from runtime presets; those are test-side oracles, so this is both a real site-safety failure and a
+  missing fair movement-endpoint contract. Do not replay either capture unchanged. Next: derive route endpoints from
+  observable owned movement/service facts or revise the oracle to measure those facts, then repair the shared placement
+  owner and physical transit.
+- **Two-faction victory and adaptive observation are complete:** current SEQ-01 run passes both faction orientations at the
+  18,000-tick horizon. The adaptive home observation starts at 12 tiles, guarantees at least eight legal sites for the largest
+  buildable footprint, and grows by four to a 24-tile cap. Do not repeat this unchanged full match locally.
+- **Package 3 progress:** STRAT-01 paired pressure passes six repetitions. STRAT-02 native capture remains blocked by throughput /
+  timeout (pure 7/7); STRAT-03 pure passes 30 tests / 7 suites but its native attempt timed out before sealing decisions. DOMAIN-01's
+  corrected irrelevant control passes for both catalogs: Tivara
+  `tmp/ai-skirmish-matrix/759-domain01-tivara-irrelevant-corrected/1792911974491-diagnostic_passed.json` and Skaduwee
+  `tmp/ai-skirmish-matrix/759-domain01-skaduwee-irrelevant-corrected/1792912278394-diagnostic_passed.json` (100 decisions / 2,001 ticks
+  each; source `fnv1a32:55d9103b`, fixture `fnv1a32:52d1c5db`). The RAID-03 Tivara air-raid capture then stalled: its
+  worker stayed alive for about 75 minutes with under eight minutes CPU and no sealed result file. It was interrupted as
+  infrastructure-only. RAID-03's pure contract now passes in the combat audit below; the unchanged native capture is not being
+  replayed.
+- DOMAIN-02's pure selection passes; its coast run pays and completes a VikingBoat but no compatible objective hit occurs. The boat
+  no longer goes to ground reserve; native moves to water positions `(36,42)` / `(36,46)` fail while `(27,19)` is reachable. Keep
+  the route issue open and do not replay until path/position selection changes.
+- DOMAIN-05 pure positive/suppression controls pass (focused adaptation 10/10). Four native anti-air/no-value controls pass. A changed
+  Tivara backline run now pays and completes a TivaraAlchemist, but records no native damage to the required target; the home-reserve
+  order remains unexpected. Keep both positive faction branches open and do not replay until the air assignment/effect cause changes.
+- **Scouting remains open:** SCOUT-02's scheduling-only capture passed the trip predicate but revealed a duplicated Stage-9/Stage-13
+  command at tick 520. Strategic Stage-9 actor claims removed SCOUT-03's duplicate-command failure. SCOUT-02 and SCOUT-03 still fail
+  the physical information-trip predicate after the claim change; SCOUT-01/04 also remain open. Do not replay these branches unchanged.
+  Batch the scout dispatch/mission-persistence cause across them after isolating it.
+- Focused route tests pass 5/5; focused adaptation tests 10/10; manager/offense/tactics tests 25/25; gameplay TSC passes. A mistaken
+  Nx file-filter invocation ran the full gameplay suite: 524/526 passed, with failures in the one-worker renewable-food expectation
+  and the two-member stale-objective scout expectation. These are recorded in HANDOFF; the intended route spec passed under direct Jest.
+  The selected native-obligation count remains **0/22**; registration or partial intent evidence does not close an obligation.
+
+### Latest Package 3 audit — 2026-10-25
+
+- The linked pure audit passes: `tmp/ai-skirmish-matrix/760-package3-combat-pure-linked/1792914563012-passed.json`.
+  Eight rows / 36 suites / 214 tests, zero missing IDs. Seven rows have partial owner-contract bindings; this does not
+  assert native acceptance. C-01/02/04/06 retain explicit unfinished phase-transition, opportunity-window,
+  decision-consequence or multi-opponent native branches.
+- Wider package-3 pure recheck passes current source: `tmp/ai-skirmish-matrix/760-package3-pure-wide/1792914665791-passed.json`;
+  39 scenarios / 48 suites / 280 assertions, zero missing IDs. Twenty-four rows have partial owner-contract coverage.
+- The audit exposed a scheduling conflict: a question scout could consume a unit needed to finish an actionable visible
+  core, leaving the force one unit short. A visible core now defers a new frontier scout. Focused manager/opportunity/
+  boundary specs pass 25/25; gameplay TypeScript checking passes.
+- FIGHT-01 `fight-01-tivara-reinforced` ran alone, then was stopped manually after about 13 minutes without an artifact.
+  The prior configured Playwright minimum was 20 minutes, so this was not a runner timeout or gameplay verdict. Runtime
+  timeout now has a 10-minute floor plus 10 minutes per serial variant and 3 minutes startup/sealing; four arithmetic
+  regression tests pass. Do not replay the unchanged branch.
+- SCOUT-02/03 still lack physical information trips after their prior actor-claim changes; those artifacts are not being
+  replayed unchanged. DOMAIN-02 naval route, DOMAIN-05 air effect, and RAID-03 capture stall remain open.
+
+## Package 3 historical debugging log — current cursor is above
+
+- Windows pure-runner quoting was fixed by launching `node_modules/jest/bin/jest.js` directly through Node. An exploratory
+  42-case selection passed 47 suites/259 tests, but properly failed evidence closure for seven cases with native
+  recipes and no bound pure assertion (STRAT-09, DOMAIN-02/05, C-01/02/04/06). The scoped 35-case pure-contract batch
+  then passed all 35 selected cases: 47 suites, 259 assertions, zero missing scenario bindings. Artifact:
+  `tmp/ai-skirmish-matrix/759-package3-pure-contracts/1792850156005-passed.json`. This is pure-contract coverage only;
+  newly selected native obligations remain 0/22 closed.
+
+- CI shard selector repair accepts H-21's positive issue #759 deferral; focused Node controls pass. Dynamic selector
+  resolves 103 runtime shards while preserving five explicit content deferrals. Windows `pnpm.cmd` harness controls
+  pass (2/2).
+- SEQ-01 Skaduwee source-base run failed: `1792831930713-diagnostic_failed.json`, 600 decisions/12,000 ticks,
+  2812 damage, eight enemy losses, no authoritative victory. The AI changed objectives early and ended on a damaged
+  FrostForge target. This is a gameplay failure, not infrastructure.
+- Repair: visible enemy building identity was omitted by the Phaser observation projector although owned building
+  identity was present. Project visible/owned main-building identity; retain fog-of-war for `last_seen`. Focused
+  projector spec passes 2/2. This changes the Skaduwee attack assessment to `finish` against FrostForge.
+- Corrected-source SEQ-01 still fails at 12,000 ticks: 600 decisions, 4702 damage, 12 enemy losses, 32 produced,
+  income/min 401. FrostForge is the `finish` target. Bounded report:
+  `tmp/ai-skirmish-matrix/759-seq01-skaduwee-visible-core-v2/1792832588729-diagnostic_failed.json`.
+- Added actor ID, owner and known main-building status to bounded checkpoint facts. Trace v3 shows enemy FrostForge
+  and Sandhold both have main-building role while visible; both turn into role-less `last_seen` contacts by tick 12000,
+  when the AI selects Owlery. The run fails victory with 4129 damage and 13 enemy losses. Report:
+  `tmp/ai-skirmish-matrix/759-seq01-skaduwee-objective-trace-v3/1792832974387-diagnostic_failed.json`.
+- Contact memory now retains the last observed main-building role with the old position/tick only. No hidden health,
+  queue, or live actor handle is persisted. Projector+memory focused specs pass 9/9; Phaser and portal E2E type checks
+  pass. The v4 rerun still fails at tick 12,000: 4702 damage, 12 enemy losses. Remembered Sandhold core remains
+  available, but attack squads target Stairs at 94% health; no transport plan exists. Report:
+  `tmp/ai-skirmish-matrix/759-seq01-skaduwee-memory-core-v4/1792833360982-diagnostic_failed.json`. Next capture
+  strategy alternatives. Trace v5 shows Sandhold is absent from target candidates because last-seen actors lack an
+  access-node ID. The selector rejects the core before routing; report:
+  `tmp/ai-skirmish-matrix/759-seq01-skaduwee-alternatives-v5/1792833712136-diagnostic_failed.json`.
+- Repair: for a last-seen contact, derive the nearest known current-graph access region from its remembered position,
+  then use the normal route scorer. Tactics scout/approach without attacking through fog. Focused offense controls
+  pass 8/8; gameplay and E2E type checks pass. SEQ-01 Skaduwee run v6 still fails at tick 12,000 (1813 damage,
+  eight enemy losses).
+  Sandhold now appears in alternatives at score 400; FrostForge at 746. The strategic target remains PirateScimitar
+  while its active attack squad is retreating. Report:
+  `tmp/ai-skirmish-matrix/759-seq01-skaduwee-remembered-route-v6/1792834146796-diagnostic_failed.json`.
+- Retreat/recovery attack states now release strategic objective hysteresis. Regression and offensive-opportunity
+  specs pass 9/9, gameplay typecheck passes. Route-aware approach selection adds ground region IDs to visible tactical
+  cells and filters cells with no known graph route from each member. Disconnected-region regression passes;
+  observation specs pass 10/10; gameplay, Phaser, and portal E2E typechecks pass.
+- v9 still misses authoritative victory at 12,000 ticks: 3,631 damage, four buildings destroyed, four enemy unit
+  kills, 33 units produced, and 42 application failures (87 in v7). Two attackers remain at `(43,4)` and `(43,17)`,
+  assigned cells near `(34,14)` and `(35,16)`; the graph permits those routes, but native movement fails. Report:
+  `tmp/ai-skirmish-matrix/759-seq01-skaduwee-route-aware-approach-v9/1792835445820-diagnostic_failed.json`.
+  Next trace graph-to-native path disagreement. Lower failure counts do not close the victory outcome.
+- v10 records ground height links as directional. The one-way ramp graph regression and approach/selection tests pass
+  19/19, but native results match v7: 4,450 damage, five buildings destroyed, six enemy unit kills, 87 application
+  failures, and no victory. Directionality alone is not the blocker. Adapter review found same-height fallback links
+  are admitted on diagonals without a corresponding native height-graph edge. Add a blocked-corner regression, then
+  rerun the unchanged victory fixture:
+  `tmp/ai-skirmish-matrix/759-seq01-skaduwee-directed-ground-routes-v10/1792835947673-diagnostic_failed.json`.
+- v11 prevents equal-height diagonal fallback links without native height-graph edges; adapter regression passes 3/3
+  and gameplay/Phaser typechecks pass. Native result still matches v7 at 12,000 ticks: 4,444 damage, five buildings
+  destroyed, six enemy unit kills, 87 application failures, no victory. Directionality and diagonal filtering alone
+  are not the blocker. Capture native move completion phase and candidate-cell route evidence before another
+  pathfinding change. Report:
+  `tmp/ai-skirmish-matrix/759-seq01-skaduwee-no-corner-cut-routes-v11/1792836383163-diagnostic_failed.json`.
+- v14/v18 native movement diagnostics showed tactical Move orders being replaced during active movement and a unit
+  stranded at `(43,4)`, which the native height graph marks nonnavigable. Tactical projection now preserves an active
+  Move across an order-signature change when its prior assignment/anchor is within four tiles of the new target. The
+  regression plus manager/liveness tests pass 16/16; gameplay typecheck passes and changed-file ESLint has no errors
+  (two existing non-null warnings). v19 ran without movement capture to reduce memory: 12,000 ticks/600 decisions,
+  5,963 damage, 10 buildings destroyed, eight enemy kills, 15 own unit losses and 36 application failures, with 99
+  cancellations. It still lacks authoritative victory. At the final checkpoint the attack squad is engaging visible
+  AnkGuard; several other enemy structures and units are last-seen, and no enemy main-building role is currently
+  visible. Treat this as a new scouting/target-priority question, not proof that all cores were removed. Report:
+  `tmp/ai-skirmish-matrix/759-seq01-skaduwee-order-hysteresis-v19/1792853568451-diagnostic_failed.json`; runtime data:
+  `tmp/ai-skirmish-runtime-results/run-nBq2RN/runtime.json`. The run completed in 229s at about 2.0 GB peak worker
+  working set with `--max-old-space-size=8192`; no recorder was enabled.
+- v20 preserved the original assignment baseline as the active Move continued. This was too sticky: the same 12,000
+  tick fixture ended with only 3 buildings destroyed, six enemy kills, 13 own losses, 45 application failures and 79
+  cancellations; Sandhold remained visible at 92.8% health. The last objective switched to Sandhold, so the run did
+  not meet the victory oracle. Report `tmp/ai-skirmish-matrix/759-seq01-skaduwee-stable-move-target-v20/1792853989607-diagnostic_failed.json`;
+  runtime artifact is `tmp/ai-skirmish-runtime-results/run-eKo0XF/runtime.json`. The guard is now narrowed to cases
+  where the strategic target ID stays unchanged, and the latest assignment becomes the next comparison point. The
+  v21 result below shows this heuristic is still insufficient.
+- v21's narrowed four-tile guard still failed victory: 3,880 damage, four buildings destroyed, five kills, 11 own
+  losses, 65 application failures and 49 cancellations. Both enemy core roles remain last-seen at the deadline. This
+  rejects distance-only suppression as a sufficient fix. The Phaser projector now includes the native tile destination
+  on owned active/pending orders; tactical projection suppresses a replacement only when that exact active Move target
+  matches the newly assigned target. Contract/projector and tactics regressions pass, focused gameplay/Phaser
+  typechecks pass; v22 showed this one-tile threshold was too strict.
+- v22 used exact active Move target matching within one tile, but still failed: 4,322 damage, four buildings, seven
+  kills, 18 own losses, 33 application failures and 107 cancellations; Sandhold remained last-seen. Report:
+  `tmp/ai-skirmish-matrix/759-seq01-skaduwee-exact-active-move-target-v22/1792854726293-diagnostic_failed.json`.
+  The threshold was too strict for small tactical-anchor shifts. v23 now tolerates a four-tile Manhattan difference
+  from the native order's fixed endpoint (which prevents cumulative drift) and reissues at five tiles; boundary
+  regression tests pass 17/17 and gameplay/Phaser typechecks pass. v23 still missed victory at 12,000 ticks, with
+  6,104 damage, nine buildings destroyed, ten kills, 14 own losses, 101 Move application failures and 23 cancellations.
+  The last checkpoint shows the attack squad repeatedly receiving `Move - Movement Failed` every 20 ticks for
+  `sim-ef33c9b4` and `sim-b755739d`; a separate reserve actor also fails. Report:
+  `tmp/ai-skirmish-matrix/759-seq01-skaduwee-fixed-endpoint-hysteresis-v23/1792855057317-diagnostic_failed.json`.
+  Despite reduced cancellation count, repeated native movement failures are the immediate blocker. v24 bounded capture
+  confirms the first actor reaches `(45,6)` around tick 3306 and the second is at `(39,16)` by tick 4143; both source
+  tiles are nonnavigable and all later native routes fail from them. The trace shows repeated movement invocations
+  under stable destinations, but query capture began at tick 9000 after stranding. Report:
+  `tmp/ai-skirmish-matrix/759-seq01-skaduwee-movement-failure-v24/1792855406369-diagnostic_failed.json`. v25 capped
+  tick-zero path queries for the two stuck actors. `sim-ef33c9b4` has a valid route from `(45,7)` to `(44,3)` whose
+  next cell is `(46,6)`, yet movement is canceled while the diagonal tween is between cells and the actor is left at
+  nonnavigable `(45,6)`. The route graph is not creating that tile; cancellation preserves an intermediate position.
+  Report `tmp/ai-skirmish-matrix/759-seq01-skaduwee-early-native-paths-v25/1792855870588-diagnostic_failed.json`.
+- v26 changed tile-step cancellation to snap to the nearer validated endpoint. This removed captured nonnavigable
+  query sources but regressed the battle to 329 damage, zero enemy kills by the deadline, 14 unit losses, and seven
+  building losses. Report `tmp/ai-skirmish-matrix/759-seq01-skaduwee-cancel-tile-snap-v26/1792856443212-diagnostic_failed.json`.
+- v27 changed cancellation to complete the validated next tile and coalesced concurrent same-order movement calls.
+  Focused movement tests pass 20/20 and the Phaser spec typecheck passes. The 12,000-tick result improved over v26
+  (1,596 damage, one building destroyed, six kills) but failed victory with 25 unit losses and three buildings lost.
+  The capture shows no nonnavigable movement-query sources and no six-tick same-order restart loop; instead, the
+  attack squad alternates every 20 ticks between tactical `position` and `protected_retreat` move orders, generally
+  toward `(25,7)` and `(42,5)`. Report:
+  `tmp/ai-skirmish-matrix/759-seq01-skaduwee-single-order-movement-v27/1792856838620-diagnostic_failed.json`.
+- v28's retreat hold did not change the result; v29 improved to 3,039 damage, three buildings destroyed, five kills,
+  13 own losses, and two buildings lost, but still missed victory. v30 expanded capture to five actors and regressed
+  to 1,230 damage. v31 made interrupted tile movement snap to the validated endpoint and reject rather than report
+  success; captured actors no longer queried from nonnavigable sources. v31 still failed at 12,000 ticks (1,850
+  damage, one building, three kills, 15 losses, two buildings lost), mostly with nonnavigable requested targets.
+  Their reports remain in the corresponding `tmp/ai-skirmish-matrix/759-seq01-skaduwee-*-v28` through `*-v31`
+  folders.
+- v32 searches a deterministic Manhattan radius of two for reachable tiles only when a requested location is
+  nonnavigable, and AI range treats the adjacent tile as arrival. Focused Phaser movement tests pass 40/40 and the
+  spec typecheck passes. Native SEQ-01 Skaduwee still misses victory at 12,000 ticks: 4,343 damage, six enemy
+  buildings destroyed, five kills, 12 own losses, and three buildings lost. Capture: 403 facts, 82 path queries,
+  zero no-path queries from nonnavigable sources, and one blocked-target no-path followed by a reachable neighboring
+  route. The attack squad still alternates between position and retreat orders. Report:
+  `tmp/ai-skirmish-matrix/759-seq01-skaduwee-nearby-approach-v32/1792858834692-diagnostic_failed.json`;
+  runtime data: `tmp/ai-skirmish-runtime-results/run-DroneH/runtime.json`.
+- v33 raised the retreat-release bar but still alternated between retreat and position, and lost the minimum army
+  count. At 12,000 ticks it had 3,354 damage, three enemy buildings destroyed, three kills, eight own unit losses,
+  and two buildings lost. The same bounded capture had zero failed sources on nonnavigable tiles and one no-path to
+  a nonnavigable target followed by a reachable approach. It completed under `--max-old-space-size=4096`; the sampled
+  largest process stayed around 1.9 GB. Report:
+  `tmp/ai-skirmish-matrix/759-seq01-skaduwee-retreat-hysteresis-v33/1792859280723-diagnostic_failed.json`;
+  runtime data: `tmp/ai-skirmish-runtime-results/run-qYXgP7/runtime.json`.
+- v34 carried retreat identity into `recover` and held the squad until contact looked favorable, but its native order
+  trace still cycled between retreat and position from ticks 320–400. Results regressed to 1,852 damage, two enemy
+  buildings, four kills, 13 own losses, and one building lost; minimum military count and victory both failed. Capture
+  had 106 facts, 17 path queries, no failed query from a nonnavigable source, and one blocked-target no-path. It
+  completed under the 4 GB Node ceiling in 199.5s. Report:
+  `tmp/ai-skirmish-matrix/759-seq01-skaduwee-recover-lock-v34/1792859631039-diagnostic_failed.json`;
+  runtime data: `tmp/ai-skirmish-runtime-results/run-ZUoxg3/runtime.json`.
+- Current source also holds during an 80-tick local-contact commitment, preserves the no-enemy reconsideration exit,
+  and permits the explicit one-count rapid-oscillation release rule. Focused combat/liveness/manager tests pass 39/39
+  and gameplay spec typecheck passes. v35 is the next native check; v34 does not validate this refinement.
+- v35 kept minimum military count (no minimum-army failure), trained 25 units, and delivered 3,913 damage, four enemy
+  buildings destroyed, five kills, 12 own losses, and no victory. It still oscillated early, then stabilized mostly
+  on position orders. The v35 order trace captured 113 `no_path` dynamic-blocker retries around tick 6451 from a
+  cluster of 99–100 blockers; none originated from a nonnavigable source. Report:
+  `tmp/ai-skirmish-matrix/759-seq01-skaduwee-retreat-commitment-v35/1792860009995-diagnostic_failed.json`;
+  runtime data: `tmp/ai-skirmish-runtime-results/run-QfEFt6/runtime.json`.
+- v36 adds a priority for visible directly reachable enemy main buildings even when the current force is below the
+  local-threat threshold; a regression proves the core stays selected while force assembles. Focused offense/combat
+  tests pass 32/32 and gameplay spec typecheck passes. In native SEQ-01 Skaduwee, strategy selected visible Sandhold
+  (main building) over Owlery, and both attack squads were engaged near it. Still no victory: Sandhold remained at
+  full health at tick 12,000; 3,017 damage, three buildings destroyed, six kills, 16 own losses, two buildings lost.
+  Only 40 movement facts and seven path queries were captured because the prior focus actors were no longer the attack
+  group. Report:
+  `tmp/ai-skirmish-matrix/759-seq01-skaduwee-core-target-v36/1792860419829-diagnostic_failed.json`;
+  runtime data: `tmp/ai-skirmish-runtime-results/run-hhlufD/runtime.json`.
+- Next v37 capture should focus on the current attack members so position and attack orders can be followed through
+  their repeated cancellations near the deadline. The 4 GB heap ceiling completed v35/v36; observed process use
+  remains about 2.0–2.1 GB at peak, then drops after the run.
+- Memory samples put the portal development server at about 2 GB both in the no-recorder v19 run and the recorded
+  v32 run; the v32–v34 Playwright workers were about 0.2 GB and report/runtime JSON files about 0.6–1.1 MB each.
+  This does not indicate recorder growth or Node heap exhaustion. The 8 GB ceiling is not preallocated memory; 4 GB
+  also completes these native runs, so use it unless measured heap pressure requires more.
+- A broad Phaser command started because Nx did not honor `--testPathPattern`; it was stopped after unrelated
+  failures in queue continuation and drain-credit tests. The focused projector test passed with Jest
+  `--runTestsByPath`. No package closure is claimed yet.
+- Overall newly selected native obligations remain 0/22 until source-specific runtime evidence closes them; 14 SP
+  need usable native evidence, seven need real-peer evidence, and D-06's legacy comparison remains unsupported.
+  For current state and next action, read [HANDOFF.md](HANDOFF.md).
+
+## Five-item non-browser batch — checked (2026-10-22); CI status updated (2026-10-24)
 
 User explicitly requested all five items in one batch. **5/5 checked (100%);0/5 remaining in this selected batch.**
 Base83f835f90a72e6e1533bda32c2040fc2d0f5f040, branch feature/759-skirmish-ai, same authority-recovery worktree.
@@ -74,13 +466,15 @@ sha256:d6c20d635517842a327fcfffb895ba903ba0b8035ba0d0d31dc3a1a16c85968a.
 controls; no unregistered new tests or weakened gameplay thresholds, and no new tooling subsystem. This closes the
 selected audit/repair batch only. All22 retained native obligations remain unclosed (14 SP unproved,7 peer setup blocked,
 1 D-06 expensive run deferred/legacy comparison unsupported). Native startup/path arrivals/income/victory still need
-the other PC. Context generator issue_plan_count:759:6 remains an unrelated tool limit; doctor passed. Machinery
-review stays last overall. Next action remains the exact other-PC D-03 startup probe in PC-TRANSFER.md.
+runtime CI evidence. The pull-request shard selector currently fails on H-21 because its deferred-issue allowlist
+does not accept the manifest's issue759 user deferral; repair this before relying on the matrix. Context generator
+issue_plan_count:759:6 remains an unrelated tool limit; doctor passed. Machinery review stays last overall. The former
+other-PC D-03 startup probe is removed; see [CI-RESUME.md](CI-RESUME.md).
 
 ## Cross-PC checkpoint — scoped controls checked, native acceptance open (2026-10-22)
 
-The user requests publication of unfinished work and no further browser runs on this thermally constrained PC.
-Start at [HANDOFF.md](HANDOFF.md), then [PC-TRANSFER.md](PC-TRANSFER.md). Implementation base:
+The user requested publication of unfinished work and no further browser runs on the thermally constrained PC.
+This is a historical checkpoint. Current instructions start at [HANDOFF.md](HANDOFF.md), then [CI-RESUME.md](CI-RESUME.md). Implementation base:
 b2c9868bba35818afd4ddad026121732cb6f668b; verify the commit containing this record and remote equality.
 The older authoring-only record below is historical, superseded for the selected batch by explicit execution authority.
 
@@ -105,7 +499,7 @@ The older authoring-only record below is historical, superseded for the selected
    stage closure claimed; no browser run remains active. No unrelated main-checkout edits, raw reports, local secrets,
    dependencies or ignored tmp artifacts belong in the commit. No machinery removal; that remains last overall.
 
-Evidence paths, portable rerun commands and machine-specific limitations are recorded in PC-TRANSFER.md.
+The current CI runtime path and resume status are in [CI-RESUME.md](CI-RESUME.md).
 
 ## Continuous registration batch — authoring complete, all new bindings unrun (2026-10-22)
 
@@ -334,7 +728,6 @@ plus a legitimate-contact control. Require real premise changes, allowed-input i
 rules; reuse existing sight/resource/content authority. Keep native execution deferred. Recommend Sol6.1/high for
 causal comparison design; this is task judgment, not an automatic model change.
 
-
 [HANDOFF.md](HANDOFF.md) owns continuation. Read this current batch; older sections retain historical evidence.
 
 ## Grouped authority/save/lifecycle source repairs — native integration still unfinished, 2026-10-20
@@ -392,12 +785,12 @@ are unchanged: runtime92/116 (79.3%),24 unbound (20.7%); pure111/111. Current fo
 
 ### Scenario disposition and immediate next work
 
-| ID | Implemented source/control | Still required before full native registration |
-| --- | --- | --- |
-| H-08 | Admitted/unsent epoch ownership, original identity fences, native host branch authored unrun | Actual timeout/cancellation ordering, original delayed callbacks and canonical peers/network redelivery |
-| H-09 | Original active metadata after real bus retention pressure/JSON restore, authored unrun | Acknowledged native peer compaction, real codec/scene restore, original paid effects and unresolved replay |
+| ID   | Implemented source/control                                                                                 | Still required before full native registration                                                                                                                      |
+| ---- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| H-08 | Admitted/unsent epoch ownership, original identity fences, native host branch authored unrun               | Actual timeout/cancellation ordering, original delayed callbacks and canonical peers/network redelivery                                                             |
+| H-09 | Original active metadata after real bus retention pressure/JSON restore, authored unrun                    | Acknowledged native peer compaction, real codec/scene restore, original paid effects and unresolved replay                                                          |
 | H-31 | Original unsent-input persistence/restore, saved-clock relay startup and previous detached/live save fixes | Actual paired codec/scene reload versus uninterrupted play at before/during/after apply; chronic blocker/lease, full queue/debt/RNG and authoritative accepted tail |
-| H-32 | Disposed bus/transport/save, host event and asynchronous client ownership fences; retained callback seam | Ordinary UI second match in same realm, distinct seed/identity, pending path/receipt callbacks, host replacement and controller/effect counts |
+| H-32 | Disposed bus/transport/save, host event and asynchronous client ownership fences; retained callback seam   | Ordinary UI second match in same realm, distinct seed/identity, pending path/receipt callbacks, host replacement and controller/effect counts                       |
 
 These four remain specifications, not complete native bindings. Cumulative selected13 stays9/13 registered (69.2%),
 4/13 unbound (30.8%); factory61 bindings/394 variants plus21 partial owner worlds remain unrun. Do not create another
@@ -497,21 +890,21 @@ This does not constitute executed gameplay or test evidence.
 
 ### Thirteen selected obligations — source-only disposition
 
-| Obligation | Authored change / purpose | Registration and missing evidence |
-| --- | --- | --- |
-| H-06 delayed/rejected/late receipt | Consumer-only hold/release; real queue contention via ordinary shared production; actual checkpoint reconciliation after two decision intervals | Registered unrun,6 variants; original shared charge/completion, identity retention and no optimistic retry required |
-| H-07 output already absent | Destroy original completed actor through native damage at next simulation tick; postpone checkpoint while loss is pending, retain original history | Registered unrun,4 variants; original death-before-reconciliation and living control required. Legal consumption conditional on actual product support, not invented |
-| H-08 epoch/cancellation race | Existing epoch fence and disposed-consumer guard retained; reusable original-receipt seam authored | Unbound; real cancellation/host-promotion race and canonical peer outcomes missing |
-| H-09 dedup retention/restore | No arbitrary authority-state edits or fake save | Unbound; acknowledged compaction pressure, native save/restore and old/unresolved redelivery driver missing |
-| H-10 backlog capacity | Arbiter admission backpressure, no eviction/synthetic terminal failure,512 recent outcomes for128-command drain; unavailable history control and timed FIFO release | Registered unrun,8 variants; actual127/128 pending identities, attempted over-admission and native drain/income required. Resume branch restores at1201 versus1801 |
-| H-11 scarce recovery | Missing complete-chain and independent source-exhaustion requirements recorded rather than promoting a zero-bank approximation | Unbound; definition-priced complete cheapest chain, legal bootstrap and physically infeasible control missing |
-| H-12 dependency bundles | Follow all outgoing dependencies, detect actual membership rather than a feeder into another plan's cycle; reversed graph and acyclic controls authored | Unbound; real competing claims, original lowest-priority victim, paid/foreign neighbors and reversed proposer enumeration missing |
-| H-13 optional budgets | Four real bases, paid ordinary fifth-base construction, scarce/executable/essential branches; per-resource denominator reconstructed from original selected claim tick/owner | Registered unrun,8 variants; optional proposals must exist, waiting exposure stay bounded and real useful paid work complete |
-| H-14 lane fairness | Consideration no longer implies service; accepted commands update service tick; actual applied outcome within eligible window required | Registered unrun,6 variants; native harmless sightings, scouting/income, scarcity blocker and emergency decay required |
-| H-15 genuine emergency | Native lethal/withdrawn/distant force; delayed receipt and unavailable checkpoint during attack; relevant native hits rather than arbitrary combat | Registered unrun,6 variants; fresh observation and actual original receipt reconciliation while survival remains effective |
-| H-30 optional faults | Exact remaining proposer/debug fault and retry/cooldown requirements recorded | Unbound; scoped real throw/NaN/invalid-cost/debug controls and mandatory-authority negative control missing |
-| H-31 save continuation | Existing save-owned cadence/queue identities preserved; no counterfeit JSON restore | Unbound; ordinary codec/reload, unchanged input continuation and full sharedQueue/RNG/debt paired comparison missing |
-| H-32 clean next match | Shutdown fences policy/queued work before cleanup; restore after disposal throws; retained old receipt callback cannot mutate disposed reconciliation | Unbound; same-realm UI restart, native second-match controller count and real host-replacement controls missing |
+| Obligation                         | Authored change / purpose                                                                                                                                                    | Registration and missing evidence                                                                                                                                    |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| H-06 delayed/rejected/late receipt | Consumer-only hold/release; real queue contention via ordinary shared production; actual checkpoint reconciliation after two decision intervals                              | Registered unrun,6 variants; original shared charge/completion, identity retention and no optimistic retry required                                                  |
+| H-07 output already absent         | Destroy original completed actor through native damage at next simulation tick; postpone checkpoint while loss is pending, retain original history                           | Registered unrun,4 variants; original death-before-reconciliation and living control required. Legal consumption conditional on actual product support, not invented |
+| H-08 epoch/cancellation race       | Existing epoch fence and disposed-consumer guard retained; reusable original-receipt seam authored                                                                           | Unbound; real cancellation/host-promotion race and canonical peer outcomes missing                                                                                   |
+| H-09 dedup retention/restore       | No arbitrary authority-state edits or fake save                                                                                                                              | Unbound; acknowledged compaction pressure, native save/restore and old/unresolved redelivery driver missing                                                          |
+| H-10 backlog capacity              | Arbiter admission backpressure, no eviction/synthetic terminal failure,512 recent outcomes for128-command drain; unavailable history control and timed FIFO release          | Registered unrun,8 variants; actual127/128 pending identities, attempted over-admission and native drain/income required. Resume branch restores at1201 versus1801   |
+| H-11 scarce recovery               | Missing complete-chain and independent source-exhaustion requirements recorded rather than promoting a zero-bank approximation                                               | Unbound; definition-priced complete cheapest chain, legal bootstrap and physically infeasible control missing                                                        |
+| H-12 dependency bundles            | Follow all outgoing dependencies, detect actual membership rather than a feeder into another plan's cycle; reversed graph and acyclic controls authored                      | Unbound; real competing claims, original lowest-priority victim, paid/foreign neighbors and reversed proposer enumeration missing                                    |
+| H-13 optional budgets              | Four real bases, paid ordinary fifth-base construction, scarce/executable/essential branches; per-resource denominator reconstructed from original selected claim tick/owner | Registered unrun,8 variants; optional proposals must exist, waiting exposure stay bounded and real useful paid work complete                                         |
+| H-14 lane fairness                 | Consideration no longer implies service; accepted commands update service tick; actual applied outcome within eligible window required                                       | Registered unrun,6 variants; native harmless sightings, scouting/income, scarcity blocker and emergency decay required                                               |
+| H-15 genuine emergency             | Native lethal/withdrawn/distant force; delayed receipt and unavailable checkpoint during attack; relevant native hits rather than arbitrary combat                           | Registered unrun,6 variants; fresh observation and actual original receipt reconciliation while survival remains effective                                           |
+| H-30 optional faults               | Exact remaining proposer/debug fault and retry/cooldown requirements recorded                                                                                                | Unbound; scoped real throw/NaN/invalid-cost/debug controls and mandatory-authority negative control missing                                                          |
+| H-31 save continuation             | Existing save-owned cadence/queue identities preserved; no counterfeit JSON restore                                                                                          | Unbound; ordinary codec/reload, unchanged input continuation and full sharedQueue/RNG/debt paired comparison missing                                                 |
+| H-32 clean next match              | Shutdown fences policy/queued work before cleanup; restore after disposal throws; retained old receipt callback cannot mutate disposed reconciliation                        | Unbound; same-realm UI restart, native second-match controller count and real host-replacement controls missing                                                      |
 
 ### Omission Audit — source review only
 
@@ -529,7 +922,7 @@ This does not constitute executed gameplay or test evidence.
 5. Construction evidence now joins stripped runtime effect identity to prefixed selected intent identity, matching the real
    dispatch adapter. This repairs a source-only mismatch; it does not validate earlier construction scenarios.
 6. Authored unrun controls cover preserved uncertainty, checkpoint availability, late callback disposal, player isolation,
-  128-terminal drain, admission slots, lane consideration/service, branching cycles and acyclic convergence,
+   128-terminal drain, admission slots, lane consideration/service, branching cycles and acyclic convergence,
    strict receipt options, installer expiry/shutdown, fixture mutations and reader negatives. No baseline is refreshed.
 
 ### Final Closure Audit — separate source/publication review
@@ -555,20 +948,20 @@ browser/server, doctor/context or dedicated validators ran. Catalog --write and 
 
 ### Acceptance map — source review, not gameplay evidence
 
-| Selected obligation | Implementation / immediate consumers | State / deferred evidence |
-| --- | --- | --- |
-| H-01 cumulative deadline | native-recovery-worlds.mjs: original enclosed actor, fixed early/late native door loss and alternate duty; native-recovery-evidence.ts freezes first obligation and causal record | Registered unrun; establish actual initial obligation, fault interception, escalation before release and original-actor native effect |
-| H-02 false motion / renamed purpose | Native loop moves remain distinct from causal due/entry fields; native-recovery-evaluation.ts compares same-objective age across replacement squad names | Registered unrun; real movement must occur; deadline/age cannot renew from motion or naming |
-| H-03 healthy long work | Original four paid queue items, native growing Field/harvest and long original travel versus fixed failed-route control; exact native queue identity/progress/completion and source-delivery readers | Registered unrun; actual >200-tick work/growth/travel and retained useful completion must be established |
-| H-04 unrelated child progress | Native wood obstruction plus separate worker food harvest; selected original recovery ownership/deadline separated from delivered food; attack-parent income control | Registered unrun; original parent ownership, unrelated native delivery, bounded escalation and original worker duty remain required |
-| H-19 optional route failure | Existing route outage gains explicit finite pending/error modes; real nearby attacker/shared attack; native defense hit before fault release and original route continuation | Registered unrun; missing interception or defense during the actual window fails |
-| H-24 uncertain force | Real hidden16-unit reserve, exposed information/raid/denial and visible losing control; native fog fairness, physical scout/damage and survival reader | Registered unrun; hidden premise, opportunity and bounded effect still need native proof |
-| H-25 choke recovery | Actual water choke, native armed guards and finite recurring opponent moves; alternate objective, paid changed force and bounded optional closure | Registered unrun; early effective avoidance can pass; cosmetic state changes/renaming alone cannot |
-| H-26 reinforcement safety | Four original normally paid outputs, native guard coverage, actual grouping/alternate transit/stop-feeding/guard-loss control and continuing original-front effect | Registered unrun; actual paid identities, physical route and native loss budgets are required |
-| H-05 uncertain receipt / atomic release | Existing AiCommandReconciliation plus independent shared application; exact missing receipt hold/release obligation recorded in native-scenario-recipes.json | **Unbound**; scheduling a human command does not prove unknown AI application ownership |
-| H-20 topology storm / shutdown | Existing navigation adapter/runner; exact finite churn, work/cursor capture and outside-scene shutdown boundary obligation recorded in draft | **Unbound**; pending fault cleanup source/tests do not prove native scene-disposal/query fencing |
-| H-21 physical clearance | Existing navigation native movement and static placement probes; exact small versus larger-unit/formation transit obligation recorded in draft | **Unbound**; tileMargin and graph clearance cannot substitute for physical body/service transit |
-| H-23 indispensable cargo | Existing native transport membership and mission ownership; exact original AI transport-worker/departure control obligation recorded in draft | **Unbound**; human-scripted cargo cannot establish an AI-owned indispensable prerequisite |
+| Selected obligation                     | Implementation / immediate consumers                                                                                                                                                                 | State / deferred evidence                                                                                                             |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| H-01 cumulative deadline                | native-recovery-worlds.mjs: original enclosed actor, fixed early/late native door loss and alternate duty; native-recovery-evidence.ts freezes first obligation and causal record                    | Registered unrun; establish actual initial obligation, fault interception, escalation before release and original-actor native effect |
+| H-02 false motion / renamed purpose     | Native loop moves remain distinct from causal due/entry fields; native-recovery-evaluation.ts compares same-objective age across replacement squad names                                             | Registered unrun; real movement must occur; deadline/age cannot renew from motion or naming                                           |
+| H-03 healthy long work                  | Original four paid queue items, native growing Field/harvest and long original travel versus fixed failed-route control; exact native queue identity/progress/completion and source-delivery readers | Registered unrun; actual >200-tick work/growth/travel and retained useful completion must be established                              |
+| H-04 unrelated child progress           | Native wood obstruction plus separate worker food harvest; selected original recovery ownership/deadline separated from delivered food; attack-parent income control                                 | Registered unrun; original parent ownership, unrelated native delivery, bounded escalation and original worker duty remain required   |
+| H-19 optional route failure             | Existing route outage gains explicit finite pending/error modes; real nearby attacker/shared attack; native defense hit before fault release and original route continuation                         | Registered unrun; missing interception or defense during the actual window fails                                                      |
+| H-24 uncertain force                    | Real hidden16-unit reserve, exposed information/raid/denial and visible losing control; native fog fairness, physical scout/damage and survival reader                                               | Registered unrun; hidden premise, opportunity and bounded effect still need native proof                                              |
+| H-25 choke recovery                     | Actual water choke, native armed guards and finite recurring opponent moves; alternate objective, paid changed force and bounded optional closure                                                    | Registered unrun; early effective avoidance can pass; cosmetic state changes/renaming alone cannot                                    |
+| H-26 reinforcement safety               | Four original normally paid outputs, native guard coverage, actual grouping/alternate transit/stop-feeding/guard-loss control and continuing original-front effect                                   | Registered unrun; actual paid identities, physical route and native loss budgets are required                                         |
+| H-05 uncertain receipt / atomic release | Existing AiCommandReconciliation plus independent shared application; exact missing receipt hold/release obligation recorded in native-scenario-recipes.json                                         | **Unbound**; scheduling a human command does not prove unknown AI application ownership                                               |
+| H-20 topology storm / shutdown          | Existing navigation adapter/runner; exact finite churn, work/cursor capture and outside-scene shutdown boundary obligation recorded in draft                                                         | **Unbound**; pending fault cleanup source/tests do not prove native scene-disposal/query fencing                                      |
+| H-21 physical clearance                 | Existing navigation native movement and static placement probes; exact small versus larger-unit/formation transit obligation recorded in draft                                                       | **Unbound**; tileMargin and graph clearance cannot substitute for physical body/service transit                                       |
+| H-23 indispensable cargo                | Existing native transport membership and mission ownership; exact original AI transport-worker/departure control obligation recorded in draft                                                        | **Unbound**; human-scripted cargo cannot establish an AI-owned indispensable prerequisite                                             |
 
 ### Shared source review and Omission Audit
 
@@ -1093,7 +1486,7 @@ behavior, balance, native recipes or diagnostic capture architecture changed. Fu
 
 ### Focused checks and source provenance
 
-Ignored artifacts use tmp/ai-plans/759-validation/pure-registration-*. Only bounded projections are model inputs.
+Ignored artifacts use tmp/ai-plans/759-validation/pure-registration-\*. Only bounded projections are model inputs.
 
 - Combined selection: `node tools/ai/run-skirmish-matrix.mjs --scenarios <controller-contract-scenarios.json scenarioIds joined by commas> --mode pure`
   — **43/43 IDs,73/73 declared bindings,36 suites194 tests pass**,0missing bindings. Exact list is fixture.scenarioIds;

@@ -1,18 +1,22 @@
 # #759 remaining work inventory
 
-Snapshot:2026-10-22; Publication base6fbae050665f0ef10a13b2b3596c047451205f68 plus task-owned D-06 source; verify containing commit/remote.
+Inventory snapshot:2026-10-22; active CI status:2026-10-24. Publication base6fbae050665f0ef10a13b2b3596c047451205f68 plus task-owned D-06 source; verify containing commit/remote.
 [HANDOFF.md](HANDOFF.md) owns the next action; [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) distinguishes authored and
 validated evidence. This is the existing execution inventory, not another design project. Read only the selected package.
 
-## Active checkpoint policy (2026-10-22)
+## Active checkpoint policy (2026-10-24)
 
-Publish unfinished work and move browser execution to another PC; thermal throttling makes this PC unsuitable.
-[PC-TRANSFER.md](PC-TRANSFER.md) owns the portable resume commands and optional non-browser work queue.
-Registration is complete. Scoped controls have run, but no newly selected native obligation is closed.
+Runtime scenarios are already automated in the pull-request CI matrix; routine execution does not need a second-PC
+probe or a hand-maintained scenario command. [CI-RESUME.md](CI-RESUME.md) records the matrix path. Its deferred-row
+selector defect is fixed; it emits 103 dynamic shards. Registration is complete, but no newly selected native
+obligation is closed.
 The registration snapshot below describes the prior authoring state, not current verification authorization.
 The subsequent five-item non-browser batch is checked: typing/lint/pure controls, resource/deposit audit,
 construction recovery, combat rules and fail-closed readers. See HANDOFF's current cursor and CURRENT-EVIDENCE.
-Do not repeat that batch as unfinished preparation. The next execution work is the retained other-PC native probe.
+Do not repeat that batch as unfinished preparation. The current-source two-faction SEQ-01 victory gate now passes on the
+adaptive site-observation implementation. Continue from HANDOFF's Package 3 cursor through remaining registered outcomes,
+then advance to Packages 4–7. Do not rerun unchanged passing full scenarios locally; grouped CI runtime shards already
+cover registered cases.
 
 ## What the inventory establishes
 
@@ -22,8 +26,8 @@ four #822 island-content rows and H-21 larger-unit clearance by user2026-10-21. 
 This continuous batch has authored22 new registrations, with84 factory bindings/588 variants and
 21 retained partial owner worlds unrun. H-23 now includes user-authorized native island establishment; its small
 water-enclosed diagnostic preset does not silently close the four broader #822 content rows.
-**Registration authoring is complete; native evidence remains open and browser execution moves to the other PC.**
-D-06 owns the frozen calibration driver; expensive calibration remains deferred.
+**Registration authoring is complete; native evidence remains open and should be collected through the required CI matrix.**
+D-06 owns the frozen calibration driver; calibration is a completion gate after core behavior closes and its baseline compatibility issue is resolved.
 Its six descriptors are dispatch groups, not six games. The pinned legacy difficulty/opening comparison is unsupported;
 this remains an explicit acceptance failure, never a passing legacy comparison or a request for more registrations.
 H-32 now binds actual same-realm UI transitions, retained paid/path work and real host replacement, authored unrun.
@@ -160,8 +164,9 @@ The paragraphs below retain source provenance only. The top snapshot and HANDOFF
 ## Other concrete gaps already established
 
 - **Full victory:** latest published evidence has Tivara victory and an unresolved Skaduwee finish (1/2 factions).
-  Both-faction reruns are now user-deferred. At the later gate, use the unchanged legal-start recipe and fix the earliest
-  causal failure; no additional diagnostic architecture is scheduled.
+  Both-faction reruns were user-deferred, then brought back into scope by the 2026-10-24 instruction to finish the AI
+  work. Use the unchanged legal-start recipe and fix the earliest causal failure; no additional diagnostic architecture
+  is scheduled.
 - **Raid recovery:** historical SEQ-02 passed both factions. Current shared-source acceptance needs a rerun; do not
   describe this as wholly unimplemented or carry forward an older failure as its latest result.
 - **Resource authority/M11:** complete usefulness is still unavailable for required arbitrary replacement, net-zero
