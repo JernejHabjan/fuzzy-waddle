@@ -3,7 +3,7 @@
 Updated 2026-10-26. This is the active evidence snapshot. Detailed prior run notes are preserved in
 [EVIDENCE-ARCHIVE.md](EVIDENCE-ARCHIVE.md); use HANDOFF.md for the live cursor and next action.
 
-Source checkpoint `cbb0c04259522e5f9096a40f9a4d3aa2d857ac43` is pushed. Latest CI diagnostics were read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad` (runtime jobs skipped on draft PR #814).
+Source checkpoint `f982f1df4` contains the STRAT-09 elimination evaluator repair; push pending. Latest CI diagnostics were read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad` (runtime jobs skipped on draft PR #814).
 GitHub reports `skirmish-runtime-plan`, `skirmish-multiplayer` and `skirmish-runtime` skipped because PR #814 is draft;
 the runtime matrix starts on `ready_for_review`. PR status is left unchanged per the existing handoff boundary. H-10's two
 over-capacity variants and real-peer obligations still need that matrix evidence.
@@ -42,7 +42,13 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   actor at (18,31), native distance 2 vs range 1; the tick-20 AI observation exposes no tactical/construction cells.
   This suggests missing usable approach geometry, but attack-request/committed facts do not establish hit attempts. Resolve
   the geometry/input contract before another denial replay, while advancing other Package 3 cases. Do not repeat 768–771
-  unchanged.
+  unchanged. The Tivara unrecoverable run 772 then exposed an evaluator contradiction: its authored events intentionally
+  destroy the final worker and home at tick 800, while the generic runtime rule always required a final worker. The new
+  exception is limited to STRAT-09 variant IDs ending in `-unrecoverable`; a focused test verifies other STRAT-09
+  branches and unrelated scenarios retain the worker requirement. Changed-evaluator native replays pass for Tivara and
+  Skaduwee unrecoverable branches at 200 decisions / 4,001 ticks: artifacts 773 and 774. They prove the intended native
+  elimination control, not viable-comeback closure. Current STRAT-09 branch evidence: 3 passes / 1 failure / 4 unrun of 8;
+  the family and overall native-obligation tally remain open.
 - The native scouting oracle matches `effect:`-prefixed accepted intents to movement execution IDs.
 - Movement capture normalization now admits up to 2,048 execution groups; caller-history validation admits 4,096
   identities. The latest H-14 capture contained 1,567 movement executions and 1,869 caller identities; route-order

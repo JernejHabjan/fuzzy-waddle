@@ -15,7 +15,7 @@ Read this file, then [REMAINING-WORK.md](REMAINING-WORK.md) for package acceptan
 
 ## Current checkpoint — 2026-10-26
 
-- Branch `feature/759-skirmish-ai`, source checkpoint `cbb0c04259522e5f9096a40f9a4d3aa2d857ac43` (pushed); latest CI diagnostics read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad`. Node 24.18.0 / pnpm 11.14.0.
+- Branch `feature/759-skirmish-ai`, source checkpoint `f982f1df4` (evaluator fix committed; push pending); latest CI diagnostics read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad`. Node 24.18.0 / pnpm 11.14.0.
 - Packages 1–2 are validated; two-faction SEQ-01 passes with the adaptive build-space rule.
 - Package 5 current focused evidence: H-14 Skaduwee harmless passes one of its branches. H-10 passes below-capacity,
   at-capacity and resumed-capacity for both factions (6/8 variants); over-capacity remains for CI. Neither family is closed.
@@ -69,11 +69,23 @@ determine how the runtime can expose legal approach cells (or whether this fixtu
 focused geometry/input test, and only then replay denial. Advance other Package 3 cases between attempts; do not extend
 pressure commitment alone or rerun this branch unchanged.
 
+The Tivara unrecoverable branch then reached its expected loss after its fixture removed the last worker and home at
+tick 800, but failed the generic evaluator's unconditional `worker_bootstrap` check. That contradicted STRAT-09's
+authored elimination control. The check is now exempt only for variant IDs ending in `-unrecoverable` under STRAT-09; the
+focused evaluator test confirms raid/denial branches and other scenarios still require a worker. Changed-evaluator replays
+pass for both `strat-09-tivara-unrecoverable`
+(`tmp/ai-skirmish-matrix/773-package3-strat09-unrecoverable-worker-oracle/1793019529045-diagnostic_passed.json`) and
+`strat-09-skaduwee-unrecoverable`
+(`tmp/ai-skirmish-matrix/774-package3-strat09-skaduwee-unrecoverable-worker-oracle/1793019662573-diagnostic_passed.json`),
+each at 200 decisions / 4,001 ticks with an authoritative loss after elimination. STRAT-09 now has 3 passing and 1
+failing native branch evidence out of 8; this is not family closure. Continue with remaining STRAT-09 branches and
+Package 3, while preserving the denial geometry/input lead.
+
 ## Package cursor and known open work
 
 | Package | Open work |
 | --- | --- |
-| 3 — scouting, combat, access | STRAT-09: one Tivara raid branch passes; other branches remain; SCOUT, STRAT-02/03, DOMAIN, RAID, FIGHT and C families. |
+| 3 — scouting, combat, access | STRAT-09: Tivara raid and both unrecoverable branches pass; Tivara denial fails; four branches remain; SCOUT, STRAT-02/03, DOMAIN, RAID, FIGHT and C families. |
 | 4 — placement, walls, recovery | PLACE-03 route clearance and physical transit; H-11 construction path returns `no_path`; remaining PLACE/EXP/WALL/H cases. |
 | 5 — authority and lifecycle | H-06/07 fixture/evaluator gaps; H-08/09 peer evidence; remaining H-10 over-capacity CI variants; remaining H-14/H-15 branches; H-31/H-32, M11, #819/#823. |
 | 6 — continuous play and difficulty | SEQ-02 and remaining supported SEQ/D cases; D-06 legacy comparison remains unsupported. |
@@ -81,11 +93,13 @@ pressure commitment alone or rerun this branch unchanged.
 
 ### Next action
 
-The SCOUT-02, DOMAIN-05 and STRAT-09 feasible-objective repairs are pushed through `cbb0c0425`. PR #814 remains draft; its
+The SCOUT-02, DOMAIN-05 and STRAT-09 feasible-objective repairs are pushed through `cbb0c0425`; the STRAT-09 elimination
+oracle repair is committed at `f982f1df4`, push pending. PR #814 remains draft; its
 runtime matrix runs only after `ready_for_review`, and the existing
 handoff forbids changing PR status. Do not repeat the local SCOUT-02 match or STRAT-09 Tivara raid. Continue Package 3
-with remaining evidence-ready cases and resolve the Tivara denial geometry/input lead before its next local replay;
-advance if the next hypothesis needs a fixture change or external CI. Leave current SCOUT-02/DOMAIN-05 native outcomes for CI. PLACE-03 can
+with remaining evidence-ready STRAT-09 branches and other Package 3 cases; resolve the Tivara denial geometry/input lead
+before its next local replay. Advance if the next hypothesis needs a fixture change or external CI. Leave current
+SCOUT-02/DOMAIN-05 native outcomes for CI. PLACE-03 can
 be revisited once route/movement inputs are observable, as described above. Preserve the CI dependency for H-10's two
 over-capacity variants and real-peer obligations. Keep CURRENT-EVIDENCE concise; archive only details that aid a later
 causal repair.
