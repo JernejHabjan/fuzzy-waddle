@@ -59,17 +59,17 @@ export function nativeDomainWorld(id, faction, branch) {
 export function addNativeBoatRaid(world) {
   world.actors = world.actors.filter((actor) => !actor.fixtureActorId.startsWith("raider-"));
   world.controls = world.controls.filter((entry) => !entry.producerFixtureActorId.startsWith("raider-"));
-  world.actors.push({ fixtureActorId: "raid-carrier", actorName: "CommonBoat", owner: 1, position: tile(22, 7) });
-  for (let x = 20; x <= 27; x++) for (let y = 5; y <= 19; y++)
+  world.actors.push({ fixtureActorId: "raid-carrier", actorName: "CommonBoat", owner: 1, position: tile(10, 7) });
+  for (let x = 8; x <= 29; x++) for (let y = 5; y <= 19; y++)
     world.terrainPatches.push({ x, y, terrain: "water", blocked: false });
   for (let i = 0; i < 4; i++) {
-    world.actors.push({ fixtureActorId: `raider-${i}`, actorName: melee("Tivara"), owner: 1, position: tile(19, 6 + i) });
+    world.actors.push({ fixtureActorId: `raider-${i}`, actorName: melee("Tivara"), owner: 1, position: tile(7, 6 + i) });
     world.controls.push(control(`raid-board-${i}`, `raider-${i}`, 100,
       { kind: "board", targetFixtureActorId: "raid-carrier" }),
-    control(`raid-attack-${i}`, `raider-${i}`, 1000, { kind: "attack", targetFixtureActorId: `worker-${i}` }));
+    control(`raid-attack-${i}`, `raider-${i}`, 700, { kind: "attack", targetFixtureActorId: `worker-${i}` }));
   }
-  world.controls.push(control("raid-sail", "raid-carrier", 500, { kind: "move", worldPosition: tile(27, 18) }),
-    control("raid-unload", "raid-carrier", 900, { kind: "unload", worldPosition: tile(28, 18) }));
+  world.controls.push(control("raid-sail", "raid-carrier", 500, { kind: "move", worldPosition: tile(30, 20) }),
+    control("raid-unload", "raid-carrier", 680, { kind: "unload", worldPosition: tile(30, 21) }));
 }
 
 export function control(id, role, tick, action) {

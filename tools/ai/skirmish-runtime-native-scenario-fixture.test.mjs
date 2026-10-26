@@ -66,6 +66,26 @@ test("STRAT-02 and STRAT-03 keep the main offensive objective alive beyond raid 
   }
 });
 
+test("STRAT-02 boat raid starts out of sight and unloads before its attack orders", () => {
+  const fixture = nativeScenarioFixture("STRAT-02");
+  const variant = fixture.recipe.variants.find((candidate) => candidate.id === "strat-02-skaduwee-boat-raid");
+  assert.ok(variant);
+  const actors = new Map(variant.presetWorld.actors.map((actor) => [actor.fixtureActorId, actor]));
+  const controls = new Map(variant.presetWorld.controls.map((control) => [control.id, control]));
+  assert.deepEqual(actors.get("raid-carrier")?.position, { x: 128, y: 288, z: 0 });
+  assert.deepEqual(actors.get("raider-0")?.position, { x: 64, y: 224, z: 0 });
+  assert.ok(variant.presetWorld.terrainPatches.some((patch) => patch.x === 10 && patch.y === 7 && patch.terrain === "water"));
+  assert.ok(variant.presetWorld.terrainPatches.some((patch) => patch.x === 8 && patch.y === 6 && patch.terrain === "water"));
+  assert.ok(!variant.presetWorld.terrainPatches.some((patch) => patch.x === 7 && patch.y === 6));
+  assert.ok(variant.presetWorld.terrainPatches.some((patch) => patch.x === 29 && patch.y === 19 && patch.terrain === "water"));
+  assert.ok(!variant.presetWorld.terrainPatches.some((patch) => patch.x === 30 && patch.y === 20));
+  assert.equal(controls.get("raid-sail")?.applicationTick, 500);
+  assert.deepEqual(controls.get("raid-sail")?.action.worldPosition, { x: 352, y: 816, z: 0 });
+  assert.equal(controls.get("raid-unload")?.applicationTick, 680);
+  assert.deepEqual(controls.get("raid-unload")?.action.worldPosition, { x: 320, y: 832, z: 0 });
+  assert.equal(controls.get("raid-attack-0")?.applicationTick, 700);
+});
+
 test("STRAT-09 failing combat variants stage the initial army on navigable field tiles", () => {
   const fixture = nativeScenarioFixture("STRAT-09");
   for (const id of ["strat-09-tivara-denial", "strat-09-skaduwee-raid", "strat-09-tivara-path-outage"]) {

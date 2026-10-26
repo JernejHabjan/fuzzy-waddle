@@ -2,6 +2,16 @@ import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-contex
 import { nativeWeaponHits } from "./skirmish-ai-native-combat-effects";
 import { runtimeControlTransitFailures } from "./skirmish-ai-runtime-control-transit";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+
+export function nativePresetControlSucceeded(
+  fact: Extract<AiRuntimeProductionFactV1, { kind: "preset_control" }>, id: string
+): boolean {
+  const commandId = fact.control.command?.execution?.commandId;
+  return fact.control.id === id && fact.control.phase === "applied" && !!commandId &&
+    fact.control.outcomes.some((outcome) => outcome.commandId === commandId && outcome.reason === "applied" &&
+      ["applied", "active", "completed"].includes(outcome.kind));
+}
 
 /** Paid native output, unique creation and legal spawn share the exact original item identity. */
 export function nativePaidMissionOutputs(context: ReturnType<typeof nativeScenarioContext>) {
@@ -43,7 +53,12 @@ export function nativeLandingFailures(context: ReturnType<typeof nativeScenarioC
   const passengers = prefix === "raid" ? Array.from({ length: 4 }, (_, i) => context.roles[`raider-${i}`]) :
     [context.roles["escort-worker"]];
   const capture = prefix === "raid" ? context.opponent : context.capture;
-  const sailTick = prefix === "raid" ? 500 : 600, unloadTick = prefix === "raid" ? 900 : 1200;
+  const controlTick = (id: string, fallback: number) => capture?.facts.find(
+    (fact): fact is Extract<AiRuntimeProductionFactV1, { kind: "preset_control" }> =>
+      fact.kind === "preset_control" && fact.control.id === id && fact.control.phase === "requested"
+  )?.control.scheduledTick ?? fallback;
+  const sailTick = controlTick(`${prefix}-sail`, prefix === "raid" ? 500 : 600);
+  const unloadTick = controlTick(`${prefix}-unload`, prefix === "raid" ? 900 : 1200);
   const loaded = context.frames.find((frame) => frame.tick < sailTick && frame.tacticalBoundary?.actors.some((actor) =>
     actor.identity.actorId === carrier && passengers.every((id) => !!id && actor.passengerIds?.includes(id))));
   const unloaded = context.frames.find((frame) => frame.tick >= unloadTick && frame.tick <= unloadTick + 200 &&
@@ -54,8 +69,8 @@ export function nativeLandingFailures(context: ReturnType<typeof nativeScenarioC
   if (!carrier || !loaded || !unloaded || !capture ||
       runtimeControlTransitFailures(capture, `${prefix}-sail`, unloadTick, "arrive").length)
     failures.push("mission_real_board_sail_unload_missing");
-  if (!capture?.facts.some((fact) => fact.kind === "preset_control" && fact.control.id === `${prefix}-unload` &&
-      fact.control.phase === "applied" && fact.control.outcomes.some((outcome) => outcome.kind === "applied")))
+  if (!capture?.facts.some((fact): fact is Extract<AiRuntimeProductionFactV1, { kind: "preset_control" }> =>
+      fact.kind === "preset_control" && nativePresetControlSucceeded(fact, `${prefix}-unload`)))
     failures.push("mission_native_unload_application_missing");
   return failures;
 }

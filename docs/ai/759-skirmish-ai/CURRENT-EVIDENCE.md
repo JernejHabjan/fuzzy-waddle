@@ -1,9 +1,9 @@
 # #759 current evidence
 
-Updated 2026-10-26. This is the active evidence snapshot. Detailed prior run notes are preserved in
+Updated 2026-10-27. This is the active evidence snapshot. Detailed prior run notes are preserved in
 [EVIDENCE-ARCHIVE.md](EVIDENCE-ARCHIVE.md); use HANDOFF.md for the live cursor and next action.
 
-Latest local source checkpoint: `5480ef0b3` on `feature/759-skirmish-ai`. Latest CI diagnostics were read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad` (runtime jobs skipped on draft PR #814).
+Latest tested source: `e9022b2d5` plus dirty-source digest `fnv1a32:469f1efd` on `feature/759-skirmish-ai`. Latest CI diagnostics were read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad` (runtime jobs skipped on draft PR #814).
 GitHub reports `skirmish-runtime-plan`, `skirmish-multiplayer` and `skirmish-runtime` skipped because PR #814 is draft;
 the runtime matrix starts on `ready_for_review`. PR status is left unchanged per the existing handoff boundary. H-10's two
 over-capacity variants and real-peer obligations still need that matrix evidence.
@@ -21,6 +21,10 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   H-10 artifacts are listed in HANDOFF.md.
 - Package 3 pure batch: 40 scenarios, 46 suites and 278 tests pass with no missing scenario bindings. STRAT-09 now has
   passing evidence for all eight native branches; run 814 closes its last branch on current local source.
+- STRAT-02 now has passing native evidence for all five registered branches. The Skaduwee boat capture completes the
+  full board/sail/unload/attack chain and wins at 120 decisions / 2,401 ticks. The shared RAID-03 Skaduwee boat branch
+  also passes at 150 decisions / 3,001 ticks. Both captures use the same tested dirty-source digest; exact artifacts and
+  fixture/evaluator repairs are in the archive. STRAT-02 closes a second of the 22 selected native obligations.
 
 ## Latest implementation and checks
 
@@ -67,7 +71,8 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   members and continued main-force hits satisfy the physical defense/offense predicates. The initial report's only failure
   was the evaluator requiring a neutral Wood delivery; replay against the same captured facts proves player-owned Food
   extraction, offered cargo and successful credit after contact. The evaluator now accepts any exact native resource/source
-  ownership combination and owned drop-off. STRAT-02 remains open pending other supported branches and CI evidence.
+  ownership combination and owned drop-off. Runs 837–839 plus the run-QitzIS replay and the Skaduwee boat capture closes the fifth
+  registered STRAT-02 branches; grouped CI remains the final regression gate.
 - STRAT-03 run 822 (`tmp/ai-skirmish-matrix/822-strat03-defense-ownership/1793048522716-diagnostic_failed.json`) completed
   150 decisions / 3,001 ticks with the original Sandhold alive at the terminal checkpoint and no AI technical faults.
   Filtering stale per-actor tactics whenever defense or attack squad membership changes fixed the
@@ -92,19 +97,19 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   Playwright suites 76/76; exact-file ESLint completed with no errors; `git diff --check` passes. Two existing non-null
   assertion warnings remain in route specs and two in the gameplay scouting spec.
 
-- STRAT-05 is validated across all six native branches. Four STRAT-02 branches pass: Skaduwee quiet run 837; Tivara quiet run 838 replay (136 native hits destroyed FrostForge before contact); Tivara air raid run 839; and Skaduwee air raid replay from complete capture `run-QitzIS` (source `eb8721795`). The latter retained 15 distinct defenders over time, peaked at 10 simultaneously, and landed 142 post-contact hits. The prior predicate counted rotating defenders as simultaneous; replay now passes with the peak-based bound. Its matrix wrapper hit ENOSPC, so the raw runtime capture/request are retained on the local results path. Closure remains 1/22 until the full STRAT-02 family and CI evidence are closed.
+- STRAT-05 is validated across all six native branches. STRAT-02 is now validated across all five: Skaduwee quiet run 837; Tivara quiet run 838 replay (136 native hits destroyed FrostForge before contact); Tivara air raid run 839; Skaduwee air raid replay from complete capture `run-QitzIS`; and the native boat capture. The air-raid branch retained 15 distinct defenders over time, peaked at 10 simultaneously, and landed 142 post-contact hits. Its prior matrix wrapper hit ENOSPC, but the raw capture/request are retained. Current-source boat outcomes and the RAID-03 shared-helper regression are recorded in the archive. Two obligations are closed; grouped CI remains the final regression gate.
 
 ## Open work by package
 
 | Package | Status |
 | --- | --- |
-| 3 — scouting, combat, access | STRAT-09 has passing evidence for 8/8 branches; current-source path-outage is closed. STRAT-02 has four passing branches; Skaduwee boat and STRAT-03/04, SCOUT, DOMAIN, RAID, FIGHT and C remain. Grouped CI is the final gate. |
+| 3 — scouting, combat, access | STRAT-09 has passing evidence for 8/8 branches; STRAT-02 is validated 5/5; one affected RAID-03 boat branch passes. STRAT-03/04, SCOUT, DOMAIN, remaining RAID, FIGHT and C cases remain. Grouped CI is the final gate. |
 | 4 — placement, walls, recovery | PLACE-03 still has route-clearance and worker/army transit failures. H-11 has one legal construction endpoint returning `no_path` and capture-channel loss. Other PLACE/EXP/WALL/H cases remain. |
 | 5 — authority and lifecycle | H-10 awaits over-capacity CI results. H-14 is one passing branch only. H-06/07 retain fixture/evaluator gaps; H-08/09 require credentialed peers. H-15, H-31/H-32, M11, #819 and #823 remain open. |
 | 6 — continuous play and difficulty | SEQ-02 and remaining supported SEQ/D cases; D-06 legacy difficulty comparison is unsupported and remains an explicit blocker. |
 | 7 — debug and closure | DBG cases, #820/#821, final machinery/legacy audit and closure review remain. |
 
-One of the 22 selected native obligations is closed: STRAT-05 has passing evidence for all six Tivara/Skaduwee reinforced, quiet and blocked-retreat branches, including current-source full-evaluator replay of runs 830, 831 and 835. The other 21 still require complete family/source evidence. The runtime matrix remains the final regression gate.
+Two of the 22 selected native obligations are closed: STRAT-05 has passing evidence for all six Tivara/Skaduwee reinforced, quiet and blocked-retreat branches, and STRAT-02 has passing evidence for all five supported quiet, air-raid and boat-raid branches. The other 20 still require complete family/source evidence. The runtime matrix remains the final regression gate.
 Seven real-peer obligations depend on credentialed CI evidence; do not substitute local single-player runs.
 
 ## Evidence rules
