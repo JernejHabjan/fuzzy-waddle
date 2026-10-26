@@ -109,7 +109,11 @@ recipient reconciliation (1ms), snapshot read (2ms), snapshot clone (3ms), proof
 final clone (4,195ms) all completed. The final record had 22,510 owner facts from 24,576 retained facts; Playwright
 serialization/transport of that object did not return within 120s. The capture transport now gzip-compresses JSON in the
 browser and inflates it in Node, preserving the evidence object. Run 787 is the single-variant check of this transport
-change. Do not repeat 777–786 unchanged or treat them as scenario evidence.
+change. Do not repeat 777–787 unchanged or treat them as passing scenario evidence. Run 787 validated browser gzip + Node
+inflate: full evidence returned in 12s. The authored 4,000-tick stop then correctly failed closed-history sealing, and
+both AI/opponent captures reported fact overflow (1,995 / 257 drops). The root fact budget is now 32,768 with an exact
+overflow-boundary unit test. Next run the same denial variant to tick 4,001 with the new budget and compressed transport,
+then advance to the remaining STRAT-09 and Package 3 cases.
 
 ## Package cursor and known open work
 

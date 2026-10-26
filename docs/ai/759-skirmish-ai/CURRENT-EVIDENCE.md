@@ -60,9 +60,10 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   (denial) and 779 (path outage) timed out before recording decisions/ticks. Runs 783/784 reached tick 4,000 in about 630s;
   784 showed checkpoint, economy, strategy and transport capture complete within 65ms combined. Runs 785/786 confirmed
   the final authority call stalls while transferring its large result: browser-side capture completes, with 22,510 owner
-  facts and a 4.2s final clone, but Playwright serialization does not return within 120s. The capture transport now gzips
-  the JSON in-browser before transfer and restores the same record in Node; run 787 is checking the change. Details and
-  artifacts are in HANDOFF.md.
+  facts and a 4.2s final clone, but Playwright serialization does not return within 120s. Run 787 showed browser gzip +
+  Node inflate returns the full record in 12s. Its diagnostic stop still reported closed-history gaps and fact overflow
+  (1,995 AI / 257 opponent facts dropped); the shared cap is raised to 32,768 with a focused overflow-boundary test.
+  Next is a normal 4,001-tick denial capture with the new cap. Details and artifacts are in HANDOFF.md.
 - The native scouting oracle matches `effect:`-prefixed accepted intents to movement execution IDs.
 - Movement capture normalization now admits up to 2,048 execution groups; caller-history validation admits 4,096
   identities. The latest H-14 capture contained 1,567 movement executions and 1,869 caller identities; route-order
