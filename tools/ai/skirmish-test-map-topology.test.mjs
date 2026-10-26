@@ -14,6 +14,40 @@ function frozenJson(path, expectedDigest) {
   return JSON.parse(content.toString("utf8"));
 }
 
+test("continuous victory uses frozen bridge terrain without inherited campaign armies", () => {
+  const map = contract.maps.find((candidate) => candidate.id === "ai-bridge-crossing");
+  assert.ok(map);
+  const scene = frozenJson(map.scene, map.sceneSha256);
+  const tilemap = frozenJson(map.tilemap, map.tilemapSha256);
+  const pack = frozenJson(`${map.assetPackDirectory}/${map.assetPack}`, map.assetPackSha256);
+  assert.equal(scene.settings.sceneKey, "MapAiBridgeCrossing");
+  const owned = scene.displayList.filter((entry) => entry["EditorOwner.owner_id"]);
+  assert.deepEqual(owned.map((entry) => entry["EditorOwner.owner_id"]), ["1", "2"]);
+  assert.ok(owned.every((entry) => entry.prefabId === "c91c72f2-a5b5-4fea-abde-27ebfc228ae5"));
+  assert.ok(scene.displayList.every((entry) => !entry.components?.includes("EditorScenarioReference")));
+  assert.equal(scene.displayList.filter((entry) => entry.label === "bridgeStone").length, 1);
+  assert.deepEqual(scene.displayList.filter((entry) => entry.type === "Zone")
+    .map((entry) => [entry.label, entry.x, entry.y]), [
+      ["opponent_producer_a", -224, 672], ["opponent_producer_b", -160, 464]
+    ]);
+  assert.equal(tilemap.width, 50);
+  assert.equal(tilemap.height, 50);
+  assert.equal(scene.plainObjects[0].key, "tiles_ai_bridge_crossing");
+  assert.equal(pack.section1.files[0].key, "tiles_ai_bridge_crossing");
+  const fixture = JSON.parse(readFileSync(resolve(root, "tools/ai/fixtures/continuous-land-runtime.json"), "utf8"));
+  const variants = fixture.recipe.variants.filter((variant) => variant.scenarioIds.includes("SEQ-01"));
+  assert.equal(variants.length, 2);
+  assert.deepEqual(variants.map((variant) => variant.aiFaction).sort(), ["Skaduwee", "Tivara"]);
+  for (const variant of variants) {
+    assert.equal(variant.mapLabel, "AI Bridge Crossing (test only)");
+    assert.equal(variant.executionKind, "continuous");
+    assert.equal(variant.presetWorld, undefined);
+  }
+  assert.equal(fixture.assertions["SEQ-01"].requireAiVictory, true);
+  assert.equal(fixture.assertions["SEQ-01"].minimumMilitaryCount, 8);
+  assert.equal(fixture.assertions["SEQ-01"].maximumTick, 20000);
+});
+
 test("the open-economy scene has only two owned spawns and symmetric neutral resources", () => {
   const map = contract.maps.find((candidate) => candidate.id === "ai-open-economy");
   assert.ok(map);

@@ -15,6 +15,32 @@ export function nativeRecoveryIncome(
   });
 }
 
+/** H-30 accepts any authored worker's exact native source-to-deposit transaction after the fault boundary. */
+export function nativeAuthoredWorkerRecoveryIncome(
+  context: Pick<ReturnType<typeof nativeScenarioContext>, "capture" | "frames" | "roles">, after = 0
+): boolean {
+  const facts = context.capture?.facts ?? [], throughTick = context.frames.at(-1)?.tick ?? 0;
+  const workers = new Set(Object.entries(context.roles).filter(([role, actorId]) =>
+    /^worker-\d+$/.test(role) && !!actorId).map(([, actorId]) => actorId));
+  return facts.some((fact) => {
+    if (fact.kind !== "spatial_authority" || fact.spatial.kind !== "resource_service" ||
+        fact.spatial.phase !== "cargo_changed" || fact.spatial.change.reason !== "added" ||
+        !fact.spatial.target || !fact.spatial.target.actorId || !fact.spatial.source.actorId ||
+        !fact.spatial.change.resourceType || !workers.has(fact.spatial.source.actorId) ||
+        fact.tick < after || fact.tick > throughTick)
+      return false;
+    return hasNativeSourceDelivery(facts, {
+      sourceActorId: fact.spatial.target.actorId,
+      sourceOwner: fact.spatial.target.playerNumber,
+      playerNumber: context.capture?.playerNumber ?? 2,
+      resourceType: fact.spatial.change.resourceType,
+      fromTick: after,
+      throughTick,
+      workerActorId: fact.spatial.source.actorId
+    });
+  });
+}
+
 /** Keep the initial mission identity and its independently due milestone instead of adopting every replacement's estimate. */
 export function nativeRecoveryObligation(context: ReturnType<typeof nativeScenarioContext>, actorId: string) {
   for (const frame of context.frames) {

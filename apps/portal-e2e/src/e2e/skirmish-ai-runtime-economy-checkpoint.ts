@@ -1,12 +1,41 @@
 import type { Page } from "@playwright/test";
 import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
 
+type RuntimeMacroDecision = {
+  readonly outcome: string;
+  readonly reason: string;
+  readonly detail?: string;
+  readonly intent: { readonly kind: string; readonly reasonCode: string; readonly objectName?: string };
+};
+
+/** A controller can have no debug snapshot before its first decision. */
+export function summarizeRuntimeMacroDecisions(decisions: readonly RuntimeMacroDecision[] | undefined): string[] {
+  return (decisions ?? [])
+    .filter((decision) =>
+      ["opening:", "supply_buffer:", "capacity:", "composition:", "adapt:"].some((prefix) =>
+        decision.intent.reasonCode.startsWith(prefix)
+      )
+    )
+    .map((decision) =>
+      [
+        decision.outcome,
+        decision.reason,
+        decision.outcome === "rejected" ? decision.detail : undefined,
+        decision.intent.kind,
+        decision.intent.objectName,
+        decision.intent.reasonCode
+      ]
+        .filter((value) => value !== undefined)
+        .join(":")
+    );
+}
+
 export async function captureRuntimeEconomyCheckpoint(
   page: Page,
   aiPlayerNumber: number,
   targetTick: number
 ): Promise<Partial<RuntimeCheckpointV1>> {
-  return page.evaluate(
+  const checkpoint = await page.evaluate(
     ({ playerNumber, expectedTick }) => {
       const parts = window.__fuzzyWaddleAiRuntimePartsV1?.(playerNumber);
       if (!parts) throw new Error("runtime_controller_unavailable");
@@ -15,7 +44,8 @@ export async function captureRuntimeEconomyCheckpoint(
       const catalog = parts.controller.getCommittedCapabilityCatalog();
       const bridge = parts.controller.getBrainCommandBridgeSnapshot();
       const debug = parts.controller.getBrainDebugSnapshot();
-      if (!observation || !state || !catalog || !bridge || !debug) throw new Error("runtime_checkpoint_not_committed");
+      if (!observation || !state || !catalog || !bridge)
+        throw new Error(`runtime_checkpoint_not_committed:observation=${!!observation},state=${!!state},catalog=${!!catalog},bridge=${!!bridge}`);
       const selfActors = observation.actors.filter(
         (actor) => actor.relation === "self" && actor.visibility === "owned"
       );
@@ -173,29 +203,13 @@ export async function captureRuntimeEconomyCheckpoint(
                 : null
           }))
           .sort((left, right) => left.actorId.localeCompare(right.actorId)),
-        recentMacroDecisions: debug.decisions
-          .filter(
-            (decision) =>
-              decision.intent.reasonCode.startsWith("opening:") ||
-              decision.intent.reasonCode.startsWith("supply_buffer:") ||
-              decision.intent.reasonCode.startsWith("capacity:") ||
-              decision.intent.reasonCode.startsWith("composition:") ||
-              decision.intent.reasonCode.startsWith("adapt:")
-          )
-          .map((decision) =>
-            [
-              decision.outcome,
-              decision.reason,
-              decision.outcome === "rejected" ? decision.detail : undefined,
-              decision.intent.kind,
-              "objectName" in decision.intent ? decision.intent.objectName : undefined,
-              decision.intent.reasonCode
-            ]
-              .filter((value) => value !== undefined)
-              .join(":")
-          )
+        recentMacroDecisions: debug?.decisions ?? []
       };
     },
     { playerNumber: aiPlayerNumber, expectedTick: targetTick }
   );
+  return {
+    ...checkpoint,
+    recentMacroDecisions: summarizeRuntimeMacroDecisions(checkpoint.recentMacroDecisions)
+  };
 }

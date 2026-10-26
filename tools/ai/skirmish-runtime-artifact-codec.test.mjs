@@ -92,3 +92,38 @@ test("file reader reconstructs shared results and still rejects foreign provenan
     rmSync(directory, { recursive: true, force: true });
   }
 });
+
+test("large variant sets are externalized into bounded files and reconstructed by the result reader", () => {
+  const directory = mkdtempSync(join(tmpdir(), "runtime-external-codec-"));
+  const path = join(directory, "runtime.json");
+  try {
+    const report = groupedReport();
+    report.scenarios = [
+      {
+        ...report.scenarios[0],
+        variants: Array.from({ length: 6 }, (_, repetition) => ({
+          ...report.scenarios[0].variants[0],
+          repetition: repetition + 1,
+          productionCapture: { facts: [{ kind: "resources_applied", amounts: { food: repetition + 1 } }], gaps: [] }
+        }))
+      }
+    ];
+    const encoded = encodeRuntimeArtifact(report, path);
+    assert.equal(encoded.artifactEncoding, "external-runtime-variants-v1");
+    assert.equal(encoded.artifactVariantFiles.length, 6);
+    writeFileSync(path, JSON.stringify(encoded));
+    assert.deepEqual(readRuntimeResult(path, identity), report);
+    assert.match(summarizeReport(JSON.parse(readFileSync(path, "utf8")), { path }), /VARIANT native/);
+    const lazy = readRuntimeResult(path, identity, { expandExternalVariants: false });
+    const matrixPath = join(directory, "matrix.json");
+    const matrix = { schemaVersion: 1, status: "failed", rows: ["PRO-03"], runtime: lazy,
+      workCounts: report.workCounts, process: { exitCode: 1 } };
+    writeFileSync(matrixPath, JSON.stringify(encodeRuntimeArtifact(matrix, matrixPath)));
+    assert.deepEqual(decodeRuntimeArtifact(JSON.parse(readFileSync(matrixPath, "utf8")), matrixPath).runtime, report);
+    const corrupt = structuredClone(encoded);
+    corrupt.scenarios[0].variants[0] = 99;
+    assert.throws(() => decodeRuntimeArtifact(corrupt, path), /external_reference_invalid/);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});

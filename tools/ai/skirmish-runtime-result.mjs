@@ -2,8 +2,8 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, statSync } from "node
 import { join } from "node:path";
 import { decodeRuntimeArtifact } from "../../apps/portal-e2e/src/e2e/skirmish-ai-runtime-artifact-codec.mjs";
 
-// Raw bounded captures can exceed the subprocess log buffer. Read their artifact separately, with a byte ceiling.
-export const MAX_RUNTIME_RESULT_BYTES = 256 * 1024 * 1024;
+// One complete native placement result is ~388 MiB; retain a hard ceiling while allowing that bounded evidence.
+export const MAX_RUNTIME_RESULT_BYTES = 512 * 1024 * 1024;
 
 /** Allocates a unique retained result path. A failed process cannot reuse another run's payload. */
 export function createRuntimeResultPath(workspaceRoot) {
@@ -13,12 +13,12 @@ export function createRuntimeResultPath(workspaceRoot) {
 }
 
 /** Missing output is infrastructure failure; malformed, oversized or foreign output never supplies runtime evidence. */
-export function readRuntimeResult(path, identity) {
+export function readRuntimeResult(path, identity, options = {}) {
   if (!existsSync(path)) return null;
   if (statSync(path).size > MAX_RUNTIME_RESULT_BYTES) throw new Error("runtime_result_artifact_oversized");
   let report;
   try {
-    report = decodeRuntimeArtifact(JSON.parse(readFileSync(path, "utf8")));
+    report = decodeRuntimeArtifact(JSON.parse(readFileSync(path, "utf8")), path, options);
   } catch {
     throw new Error("runtime_result_artifact_malformed");
   }
@@ -37,5 +37,7 @@ export function readRuntimeResult(path, identity) {
   ) {
     throw new Error("runtime_result_artifact_identity_or_shape_invalid");
   }
+  if (report.artifactEncoding === "external-runtime-variants-v1" && !Object.hasOwn(report, "__artifactSourcePath"))
+    Object.defineProperty(report, "__artifactSourcePath", { value: path });
   return report;
 }

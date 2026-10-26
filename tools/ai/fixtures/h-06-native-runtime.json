@@ -71,7 +71,7 @@
           "H-06"
         ],
         "presetWorld": {
-          "fixtureId": "h-06-tivara-withheld",
+          "fixtureId": "h-06-tivara-receipt-pair",
           "requireFactionRoster": true,
           "actors": [
             {
@@ -457,7 +457,7 @@
             "id": "original-ai-receipt",
             "playerNumber": 2,
             "fromTick": 1,
-            "throughTick": 800,
+            "throughTick": 1800,
             "maximumCommands": 1,
             "commandKind": "production"
           }
@@ -478,7 +478,7 @@
           "H-06"
         ],
         "presetWorld": {
-          "fixtureId": "h-06-tivara-rejected",
+          "fixtureId": "h-06-tivara-receipt-pair",
           "requireFactionRoster": true,
           "actors": [
             {
@@ -864,7 +864,7 @@
             "id": "original-ai-receipt",
             "playerNumber": 2,
             "fromTick": 1,
-            "throughTick": 800,
+            "throughTick": 1800,
             "maximumCommands": 1,
             "commandKind": "production",
             "contendQueue": true
@@ -886,7 +886,7 @@
           "H-06"
         ],
         "presetWorld": {
-          "fixtureId": "h-06-tivara-late",
+          "fixtureId": "h-06-tivara-receipt-pair",
           "requireFactionRoster": true,
           "actors": [
             {
@@ -1272,7 +1272,7 @@
             "id": "original-ai-receipt",
             "playerNumber": 2,
             "fromTick": 1,
-            "throughTick": 1000,
+            "throughTick": 1800,
             "maximumCommands": 1,
             "commandKind": "production"
           }
@@ -1293,7 +1293,7 @@
           "H-06"
         ],
         "presetWorld": {
-          "fixtureId": "h-06-skaduwee-withheld",
+          "fixtureId": "h-06-skaduwee-receipt-pair",
           "requireFactionRoster": true,
           "actors": [
             {
@@ -1679,7 +1679,7 @@
             "id": "original-ai-receipt",
             "playerNumber": 2,
             "fromTick": 1,
-            "throughTick": 800,
+            "throughTick": 1800,
             "maximumCommands": 1,
             "commandKind": "production"
           }
@@ -1700,7 +1700,7 @@
           "H-06"
         ],
         "presetWorld": {
-          "fixtureId": "h-06-skaduwee-rejected",
+          "fixtureId": "h-06-skaduwee-receipt-pair",
           "requireFactionRoster": true,
           "actors": [
             {
@@ -2086,7 +2086,7 @@
             "id": "original-ai-receipt",
             "playerNumber": 2,
             "fromTick": 1,
-            "throughTick": 800,
+            "throughTick": 1800,
             "maximumCommands": 1,
             "commandKind": "production",
             "contendQueue": true
@@ -2108,7 +2108,7 @@
           "H-06"
         ],
         "presetWorld": {
-          "fixtureId": "h-06-skaduwee-late",
+          "fixtureId": "h-06-skaduwee-receipt-pair",
           "requireFactionRoster": true,
           "actors": [
             {
@@ -2494,7 +2494,7 @@
             "id": "original-ai-receipt",
             "playerNumber": 2,
             "fromTick": 1,
-            "throughTick": 1000,
+            "throughTick": 1800,
             "maximumCommands": 1,
             "commandKind": "production"
           }

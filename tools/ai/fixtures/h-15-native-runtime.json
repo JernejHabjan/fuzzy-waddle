@@ -2290,7 +2290,232 @@
               }
             }
           ],
-          "controls": [],
+          "controls": [
+            {
+              "id": "distant-hold-0",
+              "producerFixtureActorId": "lethal-attacker-0",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 176,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-1",
+              "producerFixtureActorId": "lethal-attacker-1",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 64,
+                  "y": 192,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-2",
+              "producerFixtureActorId": "lethal-attacker-2",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 208,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-3",
+              "producerFixtureActorId": "lethal-attacker-3",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 128,
+                  "y": 224,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-4",
+              "producerFixtureActorId": "lethal-attacker-4",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 0,
+                  "y": 192,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-5",
+              "producerFixtureActorId": "lethal-attacker-5",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 208,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-6",
+              "producerFixtureActorId": "lethal-attacker-6",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 64,
+                  "y": 224,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-7",
+              "producerFixtureActorId": "lethal-attacker-7",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 240,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-8",
+              "producerFixtureActorId": "lethal-attacker-8",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -32,
+                  "y": 208,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-9",
+              "producerFixtureActorId": "lethal-attacker-9",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 0,
+                  "y": 224,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-10",
+              "producerFixtureActorId": "lethal-attacker-10",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 240,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-11",
+              "producerFixtureActorId": "lethal-attacker-11",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 64,
+                  "y": 256,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-12",
+              "producerFixtureActorId": "lethal-attacker-12",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 224,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-13",
+              "producerFixtureActorId": "lethal-attacker-13",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -32,
+                  "y": 240,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-14",
+              "producerFixtureActorId": "lethal-attacker-14",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 0,
+                  "y": 256,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-15",
+              "producerFixtureActorId": "lethal-attacker-15",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 272,
+                  "z": 0
+                }
+              }
+            }
+          ],
           "events": [],
           "initialOrders": [
             {
@@ -4550,7 +4775,232 @@
               }
             }
           ],
-          "controls": [],
+          "controls": [
+            {
+              "id": "distant-hold-0",
+              "producerFixtureActorId": "lethal-attacker-0",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 176,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-1",
+              "producerFixtureActorId": "lethal-attacker-1",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 64,
+                  "y": 192,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-2",
+              "producerFixtureActorId": "lethal-attacker-2",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 208,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-3",
+              "producerFixtureActorId": "lethal-attacker-3",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 128,
+                  "y": 224,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-4",
+              "producerFixtureActorId": "lethal-attacker-4",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 0,
+                  "y": 192,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-5",
+              "producerFixtureActorId": "lethal-attacker-5",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 208,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-6",
+              "producerFixtureActorId": "lethal-attacker-6",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 64,
+                  "y": 224,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-7",
+              "producerFixtureActorId": "lethal-attacker-7",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 240,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-8",
+              "producerFixtureActorId": "lethal-attacker-8",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -32,
+                  "y": 208,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-9",
+              "producerFixtureActorId": "lethal-attacker-9",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 0,
+                  "y": 224,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-10",
+              "producerFixtureActorId": "lethal-attacker-10",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 240,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-11",
+              "producerFixtureActorId": "lethal-attacker-11",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 64,
+                  "y": 256,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-12",
+              "producerFixtureActorId": "lethal-attacker-12",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 224,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-13",
+              "producerFixtureActorId": "lethal-attacker-13",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -32,
+                  "y": 240,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-14",
+              "producerFixtureActorId": "lethal-attacker-14",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 0,
+                  "y": 256,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "distant-hold-15",
+              "producerFixtureActorId": "lethal-attacker-15",
+              "requestTick": 200,
+              "applicationTick": 200,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 272,
+                  "z": 0
+                }
+              }
+            }
+          ],
           "events": [],
           "initialOrders": [
             {

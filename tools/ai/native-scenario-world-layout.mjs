@@ -31,6 +31,23 @@ export function nativeScenarioActors(id, own, enemy, branch) {
     actor("front-target-a", producer(enemy), 1, 20, 16), actor("front-target-b", producer(enemy), 1, 20, 34),
     actor("noise-scout", `${enemy}WorkerMale`, 1, 16, 8)
   ];
+  if (id === "SCOUT-01") {
+    // Keep the opposing base roster outside the player's opening vision. Otherwise this
+    // hidden-start case immediately becomes an attack scenario and never exercises scouting.
+    const enemyPositions = {
+      "enemy-producer": [6, 18],
+      "enemy-deposit": [6, 28],
+      "enemy-source": [7, 30],
+      "enemy-worker": [8, 30],
+      "front-target-a": [8, 16],
+      "front-target-b": [8, 34],
+      "noise-scout": [6, 8]
+    };
+    for (const entry of actors) {
+      const position = enemyPositions[entry.fixtureActorId];
+      if (position) entry.position = tile(...position);
+    }
+  }
   if (placement) {
     actors.push(actor("worker-transit", `${own}WorkerMale`, 2, 28, 31), actor("army-transit", melee(own), 2, 27, 25));
     if (branch === "loss") actors.push(actor("perimeter-wall", "Wall", 2, 30, 22));
@@ -46,6 +63,8 @@ export function nativeScenarioActors(id, own, enemy, branch) {
     if (id === "WALL-05" && branch === "shore") actors.push(actor("shore-transit", `${own}WorkerMale`, 2, 26, 26));
     if (branch === "multiple_bases") actors.push(actor("second-home", own === "Tivara" ? "Sandhold" : "FrostForge", 2, 38, 36));
   }
+  if (id === "H-27" && branch === "uncovered")
+    actors.find((entry) => entry.fixtureActorId === "contact-group").position = tile(28, 21);
   if (["STRAT-04", "STRAT-05", "STRAT-12", "STRAT-13", "FIGHT-01", "FIGHT-03"].includes(id)) {
     for (let i = 0; i < 12; i++) actors.push(actor(`reinforcement-${i}`, melee(enemy), 1, 4 + i % 4, 8 + Math.floor(i / 4)));
   }

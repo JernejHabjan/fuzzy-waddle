@@ -8,11 +8,24 @@ import { invokeHarness, invokeSelectedHarness } from "./skirmish-matrix-executio
 import { selectDiagnosticVariant } from "./skirmish-runtime-diagnostic-selection.mjs";
 import { buildSkirmishShardIndex } from "./skirmish-shard-index.mjs";
 import {
-  fixtureReference, pureFixtureReference, runtimeFixtureReference, safeReference, validateManifest
+  fixtureReference,
+  pureFixtureReference,
+  runtimeFixtureReference,
+  safeReference,
+  validateManifest
 } from "./skirmish-matrix-fixtures.mjs";
 import {
-  digestString, isRecord, readHead, readJson, readWorkingTreeSource, required, requireEnum, requireInteger,
-  requireSha, resolveExplicitPath, workspaceRoot
+  digestString,
+  isRecord,
+  readHead,
+  readJson,
+  readWorkingTreeSource,
+  required,
+  requireEnum,
+  requireInteger,
+  requireSha,
+  resolveExplicitPath,
+  workspaceRoot
 } from "./skirmish-matrix-io.mjs";
 
 const toolDirectory = dirname(fileURLToPath(import.meta.url));
@@ -47,8 +60,15 @@ try {
 
 function dispatch(options) {
   if (options.variant !== undefined || options.repetition !== undefined) {
-    if (!options.scenario || options.scenarios || options.suite || options.candidate || options.baseline ||
-        options["replay-bundle"] || options["compare-bundle"]) {
+    if (
+      !options.scenario ||
+      options.scenarios ||
+      options.suite ||
+      options.candidate ||
+      options.baseline ||
+      options["replay-bundle"] ||
+      options["compare-bundle"]
+    ) {
       throw new Error("diagnostic_selection_requires_single_scenario");
     }
   }
@@ -79,7 +99,9 @@ function runSuite(options) {
   const baselineManifest = readJson(join(fixtureDirectory, manifest.baseline), 64 * 1024);
   if (baseline !== baselineManifest.baselineSourceSha) throw new Error("baseline_not_pinned_manifest_sha");
   const missingRuntime = manifest.rows.filter(
-    (row) => row.drivers.includes("runtime") && row.runtimeSupport?.status !== "deferred_content" &&
+    (row) =>
+      row.drivers.includes("runtime") &&
+      row.runtimeSupport?.status !== "deferred_content" &&
       runtimeFixtureReference(row) === null
   );
   const missingPure = manifest.rows.filter(
@@ -98,18 +120,25 @@ function runSuite(options) {
   }));
   if (readHead() !== candidate) throw new Error(`candidate_source_not_checked_out:${candidate}`);
   if (readWorkingTreeSource().length > 0) throw new Error("candidate_source_is_dirty");
-  const report = invokeSelectedHarness({
-    suite,
-    mode: "both",
-    rows: manifest.rows,
-    options,
-    candidate,
-    baseline,
-    baselineSupport
-  }, matrixContext);
-  const calibrationBaseline = report.calibration?.runtime?.calibration?.baseline ?? report.runtime?.calibration?.baseline;
+  const report = invokeSelectedHarness(
+    {
+      suite,
+      mode: "both",
+      rows: manifest.rows,
+      options,
+      candidate,
+      baseline,
+      baselineSupport
+    },
+    matrixContext
+  );
+  const calibrationBaseline =
+    report.calibration?.runtime?.calibration?.baseline ?? report.runtime?.calibration?.baseline;
   const unexecutedBaselineRuntime = baselineSupport
-    .filter((support) => support.runtime.status === "supported" && !(support.id === "D-06" && calibrationBaseline?.completed > 0))
+    .filter(
+      (support) =>
+        support.runtime.status === "supported" && !(support.id === "D-06" && calibrationBaseline?.completed > 0)
+    )
     .map((support) => support.id);
   if (report.status === "passed" && unexecutedBaselineRuntime.length > 0) {
     process.exitCode = 1;
@@ -147,9 +176,10 @@ function runSelectedScenarios(options) {
   const allHaveRuntime = rows.every((row) => runtimeFixtureReference(row) !== null);
   const defaultMode = allHaveRuntime && allHavePure ? "both" : allHaveRuntime ? "runtime" : "pure";
   const mode = requireEnum(options.mode ?? defaultMode, ["pure", "runtime", "both"], "mode");
-  const diagnosticSelection = options.variant === undefined && options.repetition === undefined
-    ? null
-    : selectedDiagnosticVariant(options, rows, mode);
+  const diagnosticSelection =
+    options.variant === undefined && options.repetition === undefined
+      ? null
+      : selectedDiagnosticVariant(options, rows, mode);
   const seed =
     options.seed === undefined
       ? mode === "runtime"
@@ -231,11 +261,14 @@ function replayBundle(options) {
       { flag: "wx" }
     );
   }
-  return invokeHarness({
-    suite: "replay",
-    rows: [scenarioRow(artifact.manifest.replayInputs.scenarioId)],
-    options: { ...options, untilTick, breakOn, artifactPath }
-  }, matrixContext);
+  return invokeHarness(
+    {
+      suite: "replay",
+      rows: [scenarioRow(artifact.manifest.replayInputs.scenarioId)],
+      options: { ...options, untilTick, breakOn, artifactPath }
+    },
+    matrixContext
+  );
 }
 
 function compareBundles(options) {
@@ -342,22 +375,26 @@ function parseArguments(tokens) {
 function helpText() {
   return [
     "Run deterministic or real-runtime skirmish AI scenarios.",
-    "", "Usage:",
+    "",
+    "Usage:",
     "  node tools/ai/run-skirmish-matrix.mjs --scenario ID [--mode pure|runtime|both]",
     "  node tools/ai/run-skirmish-matrix.mjs --scenario ID --mode runtime --variant ID --repetition N [--seed INTEGER]",
     "  node tools/ai/run-skirmish-matrix.mjs --scenarios ID,ID [--mode pure|runtime|both]",
     "  node tools/ai/run-skirmish-matrix.mjs --suite stage-smoke --stage N --working-tree",
     "  node tools/ai/run-skirmish-matrix.mjs --candidate SHA --baseline SHA",
-    "", "Options:",
+    "",
+    "Options:",
     "  --manifest PATH       Override tools/ai/fixtures/skirmish-v1.json",
     "  --output DIRECTORY    Store the JSON artifact in this directory",
     "  --seed INTEGER        Override the authored seed for a selected run",
     "  --variant ID          Diagnostic-only: run one variant of --scenario in runtime mode",
     "  --repetition INTEGER  Diagnostic-only: select one 1-based repetition with --variant",
     "  --help                Show this help without creating a failure artifact",
-    "", "Diagnostic replays cannot satisfy full scenario coverage.",
+    "",
+    "Diagnostic replays cannot satisfy full scenario coverage.",
     "Use tools/ai/summarize-skirmish-report.mjs on the emitted artifact.",
-    "Group compatible runtime IDs with --scenarios so Playwright starts once.", ""
+    "Group compatible runtime IDs with --scenarios so Playwright starts once.",
+    ""
   ].join("\n");
 }
 
@@ -366,7 +403,7 @@ function writeReport(report) {
   const name = `${Date.now()}-${report.status ?? "report"}.json`;
   const path = join(reportDirectory, name);
   // Preserve shared captures in storage too; expanding them again would recreate the V8 string-length failure.
-  writeFileSync(path, `${JSON.stringify(encodeRuntimeArtifact(report))}\n`);
+  writeFileSync(path, `${JSON.stringify(encodeRuntimeArtifact(report, path))}\n`);
   process.stdout.write(`${relative(workspaceRoot, path)}\n`);
   if (report.runtime || report.reason) {
     const indexDirectory = join(reportDirectory, "indexes");

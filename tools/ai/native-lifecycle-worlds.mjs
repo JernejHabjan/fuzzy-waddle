@@ -6,7 +6,7 @@ import { nativeDifficultyWorld } from "./native-difficulty-worlds.mjs";
 export function nativeLifecycleWorld(faction, branch) {
   if (branch === "pending_path") {
     const world = nativeTopologyChurnWorld(faction, "dispose");
-    // Retain the original early query; combat must not destroy its owner while waiting for an unrelated late outage.
+    // The first match can terminate at tick 20; retain its query while the original early outage is active.
     world.routeOutages = world.routeOutages.filter((outage) => outage.id === "churn-stable-query");
     world.events = [];
     return world;

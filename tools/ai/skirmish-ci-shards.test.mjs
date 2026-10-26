@@ -10,22 +10,26 @@ const fixture = {
   assertions: { "ECO-01": {}, "ECO-02": {} }
 };
 
-test("groups runnable supported rows once and visibly defers only island content", () => {
+test("groups runnable rows and visibly preserves content and user deferrals", () => {
   const manifest = {
     schemaVersion: 1,
-    requiredCaseCount: 3,
+    requiredCaseCount: 4,
     rows: [
       { id: "ECO-01", group: "economy", fixture: "economy.json", drivers: ["pure", "runtime"] },
       { id: "ECO-02", group: "economy", fixture: "economy.json", drivers: ["runtime"] },
       {
         id: "DOMAIN-03", group: "access", fixture: null, drivers: ["pure", "runtime"],
         runtimeSupport: { status: "deferred_content", issue: 822, reason: "island map unavailable" }
+      },
+      {
+        id: "H-21", group: "access", fixture: null, drivers: ["pure", "runtime"],
+        runtimeSupport: { status: "deferred_content", issue: 759, reason: "user deferred larger-unit clearance" }
       }
     ]
   };
   const plan = planSkirmishRuntimeShards(manifest, () => fixture);
   assert.deepEqual(plan.shards, [{ id: "economy-1", scenarios: "ECO-01,ECO-02" }]);
-  assert.deepEqual(plan.deferred.map((entry) => entry.id), ["DOMAIN-03"]);
+  assert.deepEqual(plan.deferred.map((entry) => entry.id), ["DOMAIN-03", "H-21"]);
 });
 
 test("fails closed when a supported row has no executable recipe", () => {

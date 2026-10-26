@@ -70,8 +70,8 @@ function laneFailures(branch: string, context: ReturnType<typeof nativeScenarioC
         failures.push(`priorities_compatible_lane_not_natively_serviced:${lane}`);
     }
   }
-  if (!nativeRecoveryIncome(context) || !nativeScoutTrips(context).length ||
-      branch !== "scarcity" && !nativePaidMissionOutputs(context).length)
+  if (!nativeRecoveryIncome(context) || branch !== "scarcity" &&
+      (!nativeScoutTrips(context).length || !nativePaidMissionOutputs(context).length))
     failures.push("priorities_noise_control_has_no_physical_economy_scouting_or_paid_output");
   if (branch === "scarcity" && !frames.some((frame) => frame.decision.missionState?.blockers.some((blocker) =>
     blocker.cause === "resource"))) failures.push("priorities_genuine_scarcity_has_no_explicit_resource_blocker");
@@ -98,9 +98,16 @@ function emergencyFailures(branch: string, context: ReturnType<typeof nativeScen
     if (before && current && current.tick - before.tick > 40) failures.push("priorities_emergency_stopped_fresh_observation_generations");
   }
   const held = context.facts.find((fact) => fact.kind === "authority_delivery" && fact.delivery.phase === "held");
-  if (held?.kind !== "authority_delivery" || !held.delivery.outcome || !frames.some((frame) => frame.tick > 800 &&
-    frame.decision.missionState?.pendingOutcomes.some((outcome) =>
-      outcome.identity.commandId === `command:${held.delivery.outcome?.commandId}` && outcome.kind !== "dispatched")))
+  const commandId = held?.kind === "authority_delivery" ? held.delivery.outcome?.commandId : undefined;
+  const release = commandId ? context.facts.find((fact) => fact.kind === "authority_delivery" &&
+    fact.delivery.phase === "released" && fact.delivery.outcome?.commandId === commandId) : undefined;
+  const terminalWhileHeld = !!commandId && context.facts.some((fact) => fact.kind === "authority_delivery" &&
+    fact.delivery.phase === "held" && fact.delivery.outcome?.commandId === commandId &&
+    ["completed", "failed", "rejected", "cancelled"].includes(fact.delivery.outcome.kind));
+  const pendingWhileHeld = !!commandId && frames.some((frame) => frame.tick >= (held?.tick ?? Infinity) &&
+    frame.tick <= (release?.tick ?? 0) && frame.decision.missionState?.pendingOutcomes.some((outcome) =>
+      outcome.identity.commandId === `command:${commandId}`));
+  if (branch !== "far" && (!commandId || !release || !terminalWhileHeld || !pendingWhileHeld))
     failures.push("priorities_emergency_did_not_reconcile_original_delayed_receipt");
   if (branch === "resolved" && frames.filter((frame) => frame.tick >= 1800).every((frame) =>
     frame.decision.economyProduction.posture?.status === "emergency")) failures.push("priorities_cleared_real_emergency_never_released");

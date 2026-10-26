@@ -42,7 +42,7 @@ export async function prepareRuntimeVariant(
     });
   }
   installRuntimeErrorListeners(page, aiErrors);
-  const captureProduction = variant.captureConstruction === true || (variant.scenarioIds ?? fixture.scenarioIds).some(
+  const captureProduction = process.env.AI_SKIRMISH_CAPTURE_MOVEMENT === "1" || variant.captureConstruction === true || (variant.scenarioIds ?? fixture.scenarioIds).some(
     (id) => ["PRO-03", "PRO-06", "PRO-07", "H-17", "H-18", "ECO-05", "ECO-06", "H-16"].includes(id) || id.startsWith("TECH-"));
   await installNativeRuntimeInputs(page, {
       schemaVersion: 1, enabled: true, startPaused: true,
@@ -51,7 +51,8 @@ export async function prepareRuntimeVariant(
       ...(variant.presetWorld ? { presetWorld: { ...variant.presetWorld,
         provenance: { sourceRevision, fixtureDigest } } } : {}),
       ...(variant.captureCombat === true ? { captureCombat: true } : {}),
-      ...(captureProduction ? { captureProduction: true } : {})
+      ...(captureProduction ? { captureProduction: true } : {}),
+      ...(process.env.AI_SKIRMISH_CAPTURE_MOVEMENT === "1" ? { captureMovementOnly: true } : {})
     }, sameRealm);
   await configureLobby(page, fixture, variant, sameRealm);
   await installRuntimeAccessor(page);

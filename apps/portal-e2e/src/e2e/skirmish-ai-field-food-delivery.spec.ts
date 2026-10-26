@@ -3,6 +3,7 @@ import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protoco
 import type { AiRuntimeProductionFactV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
 import { hasNativeFieldFoodDelivery } from "./skirmish-ai-field-food-delivery";
+import { nativeAuthoredWorkerRecoveryIncome } from "./skirmish-ai-native-recovery-evidence";
 import { hasNativeSourceDelivery } from "./skirmish-ai-source-delivery";
 
 /** Synthetic causality controls, never native recipe evidence. */
@@ -46,6 +47,15 @@ test.describe("new-field delivered-food attribution", () => {
       fact.spatial.phase !== "cargo_changed" || !fact.spatial.target ? fact : { ...fact,
         spatial: { ...fact.spatial, target: { ...fact.spatial.target, playerNumber: null } } });
     expect(hasNativeSourceDelivery(neutral, { ...contract, sourceOwner: null })).toBe(true);
+  });
+  test("H-30 can credit any authored worker while preserving exact source and deposit causality", () => {
+    const roles = { "worker-4": "worker", "worker-1": "inactive-worker", "own-source": "wood-source" };
+    const context = { capture: { facts: stream(), playerNumber: 2 }, frames: [{ tick: 30 }], roles } as
+      unknown as Parameters<typeof nativeAuthoredWorkerRecoveryIncome>[0];
+    expect(nativeAuthoredWorkerRecoveryIncome(context, 10)).toBe(true);
+    expect(nativeAuthoredWorkerRecoveryIncome(context, 21)).toBe(false);
+    const unrelatedRole = { ...roles, "worker-4": "other-worker" };
+    expect(nativeAuthoredWorkerRecoveryIncome({ ...context, roles: unrelatedRole }, 10)).toBe(false);
   });
   test("requires actual extraction after completion and its exact successful offered transfer", () => {
     const facts = stream();

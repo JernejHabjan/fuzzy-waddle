@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "scenarioIds": ["C-01", "C-02", "C-04", "C-06"],
+  "driver": "pure",
+  "purpose": "Link existing focused owner controls for the classic RTS checks while keeping uncovered scenario behavior explicit.",
+  "seeds": [759043],
+  "context": {
+    "mapId": "pure-classic-rts-owner-controls",
+    "mapDigest": "fixture-authored-per-test",
+    "side": 1,
+    "faction": "fixture-declared",
+    "rulesVersion": "probable-waffle-rules-v1",
+    "contractVersions": { "scenario": 1, "brain": 1, "observation": 1, "command": 1 }
+  },
+  "pureCases": [
+    {
+      "scenarioId": "C-01",
+      "coverage": "owner_contract",
+      "setup": "Terminal optional ownership is released while paid commitments remain protected.",
+      "expected": "Preserve paid and unknown ownership during cleanup of an optional claim bundle.",
+      "remaining": [
+        "Evidence-backed phase transition after both faction openings",
+        "No duplicate essential opening purchase",
+        "Native completion or lawful cancellation of old work"
+      ],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/brain/ai-optional-release.spec.ts",
+          "title": "H-05 releases the complete terminal optional forecast/lease bundle while preserving paid, unknown and foreign ownership"
+        }
+      ]
+    },
+    {
+      "scenarioId": "C-02",
+      "coverage": "owner_contract",
+      "setup": "A visible reachable core is evaluated with a small force near its local-threat requirement.",
+      "expected": "Keep a feasible objective and admit a small compatible force instead of waiting for an arbitrary roster size.",
+      "remaining": [
+        "Fixed native opportunity interval and close tick",
+        "Launch or explicit changed plan when the window closes",
+        "Actual upgrade/output completion and departure"
+      ],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/select-ai-offensive-opportunity.spec.ts",
+          "title": "finishes an exposed reachable core with a small compatible force before the old six-unit gate"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/select-ai-offensive-opportunity.spec.ts",
+          "title": "keeps a visible reachable core as the objective while a force just below its local-threat requirement assembles"
+        }
+      ]
+    },
+    {
+      "scenarioId": "C-04",
+      "coverage": "owner_contract",
+      "setup": "A reachable question is answered, followed by a distinct frontier; an unchanged visible contact is observed twice.",
+      "expected": "Advance the question-driven scout and keep repeated reads of the same contact as one incident.",
+      "remaining": [
+        "Native trip produces new information that changes a real target/counter/access decision",
+        "Native repeated reads keep exact enemy count and confidence stable"
+      ],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-skirmish-manager.spec.ts",
+          "title": "advances an existing scout to the next uncovered frontier and closes the prior question"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-skirmish-manager.spec.ts",
+          "title": "keeps a repeated visible contact as one incident rather than inflating enemy confidence"
+        }
+      ]
+    },
+    {
+      "scenarioId": "C-06",
+      "coverage": "owner_contract",
+      "setup": "Maintain a selected opponent focus while a distant bait contact and a separate local defense duty are present.",
+      "expected": "Keep coherent focus and service the local threat without recalling its defender for distant bait.",
+      "remaining": [
+        "Three-player native opponent set and actual defeat/retarget transition",
+        "Native local-defense effect during retargeting",
+        "Dynamic diplomacy transition is unsupported by current relation authority"
+      ],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-skirmish-boundaries.spec.ts",
+          "title": "keeps the chosen opponent focus and does not recall a defender for a distant bait contact"
+        },
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-skirmish-manager.spec.ts",
+          "title": "anchors local defense to the main building instead of a distant roaming combat unit"
+        }
+      ]
+    }
+  ]
+}

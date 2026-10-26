@@ -323,8 +323,8 @@
               "actorName": "SkaduweeWarriorMale",
               "owner": 1,
               "position": {
-                "x": 0,
-                "y": 768,
+                "x": 256,
+                "y": 800,
                 "z": 0
               }
             },
@@ -662,10 +662,10 @@
               }
             },
             {
-              "id": "attack-contact-group-200",
+              "id": "attack-contact-group-20",
               "producerFixtureActorId": "contact-group",
-              "requestTick": 200,
-              "applicationTick": 200,
+              "requestTick": 20,
+              "applicationTick": 20,
               "action": {
                 "kind": "attack",
                 "targetFixtureActorId": "original-home"
@@ -686,7 +686,7 @@
               "playerNumber": 2,
               "from": {
                 "x": 320,
-                "y": 896
+                "y": 928
               },
               "to": {
                 "x": -64,
@@ -1336,10 +1336,10 @@
               }
             },
             {
-              "id": "attack-contact-group-200",
+              "id": "attack-contact-group-20",
               "producerFixtureActorId": "contact-group",
-              "requestTick": 200,
-              "applicationTick": 200,
+              "requestTick": 20,
+              "applicationTick": 20,
               "action": {
                 "kind": "attack",
                 "targetFixtureActorId": "original-home"
@@ -1360,7 +1360,7 @@
               "playerNumber": 2,
               "from": {
                 "x": 320,
-                "y": 896
+                "y": 928
               },
               "to": {
                 "x": -64,
@@ -2000,10 +2000,10 @@
               }
             },
             {
-              "id": "attack-contact-group-200",
+              "id": "attack-contact-group-20",
               "producerFixtureActorId": "contact-group",
-              "requestTick": 200,
-              "applicationTick": 200,
+              "requestTick": 20,
+              "applicationTick": 20,
               "action": {
                 "kind": "attack",
                 "targetFixtureActorId": "original-home"
@@ -2024,7 +2024,7 @@
               "playerNumber": 2,
               "from": {
                 "x": 320,
-                "y": 896
+                "y": 928
               },
               "to": {
                 "x": -64,
@@ -2325,8 +2325,8 @@
               "actorName": "TivaraMacemanMale",
               "owner": 1,
               "position": {
-                "x": 0,
-                "y": 768,
+                "x": 256,
+                "y": 800,
                 "z": 0
               }
             },
@@ -2664,10 +2664,10 @@
               }
             },
             {
-              "id": "attack-contact-group-200",
+              "id": "attack-contact-group-20",
               "producerFixtureActorId": "contact-group",
-              "requestTick": 200,
-              "applicationTick": 200,
+              "requestTick": 20,
+              "applicationTick": 20,
               "action": {
                 "kind": "attack",
                 "targetFixtureActorId": "original-home"
@@ -2688,7 +2688,7 @@
               "playerNumber": 2,
               "from": {
                 "x": 320,
-                "y": 896
+                "y": 928
               },
               "to": {
                 "x": -64,
@@ -3338,10 +3338,10 @@
               }
             },
             {
-              "id": "attack-contact-group-200",
+              "id": "attack-contact-group-20",
               "producerFixtureActorId": "contact-group",
-              "requestTick": 200,
-              "applicationTick": 200,
+              "requestTick": 20,
+              "applicationTick": 20,
               "action": {
                 "kind": "attack",
                 "targetFixtureActorId": "original-home"
@@ -3362,7 +3362,7 @@
               "playerNumber": 2,
               "from": {
                 "x": 320,
-                "y": 896
+                "y": 928
               },
               "to": {
                 "x": -64,
@@ -4002,10 +4002,10 @@
               }
             },
             {
-              "id": "attack-contact-group-200",
+              "id": "attack-contact-group-20",
               "producerFixtureActorId": "contact-group",
-              "requestTick": 200,
-              "applicationTick": 200,
+              "requestTick": 20,
+              "applicationTick": 20,
               "action": {
                 "kind": "attack",
                 "targetFixtureActorId": "original-home"
@@ -4026,7 +4026,7 @@
               "playerNumber": 2,
               "from": {
                 "x": 320,
-                "y": 896
+                "y": 928
               },
               "to": {
                 "x": -64,

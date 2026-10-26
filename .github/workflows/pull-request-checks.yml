@@ -159,7 +159,7 @@ jobs:
       - name: Install Playwright Chromium
         run: pnpm exec playwright install --with-deps chromium
       - name: Run required skirmish shard
-        run: node tools/ai/run-skirmish-matrix.mjs --scenarios "${{ matrix.scenarios }}" --mode runtime
+        run: node --max-old-space-size=8192 tools/ai/run-skirmish-matrix.mjs --scenarios "${{ matrix.scenarios }}" --mode runtime
         env:
           AI_SKIRMISH_MATRIX_RUN_ID: ${{ github.run_id }}-${{ github.run_attempt }}
       - name: Retain skirmish evidence
@@ -169,6 +169,7 @@ jobs:
           name: skirmish-${{ matrix.id }}
           path: |
             tmp/ai-skirmish-matrix/*.json
+            tmp/ai-skirmish-matrix/*.json.variants/**
             tmp/ai-skirmish-matrix/indexes/*.json
             test-results/
           if-no-files-found: warn

@@ -80,7 +80,7 @@ export function resolveRepairReportPaths(input, root = workspaceRoot) {
 }
 
 export function summarizeReport(report, options = {}) {
-  report = decodeRuntimeArtifact(report);
+  report = decodeRuntimeArtifact(report, options.path, { expandExternalVariants: false });
   const lines = [];
   const runtime = report.runtime ?? (Array.isArray(report.scenarios) ? report : null);
   const label = options.path ? relative(workspaceRoot, options.path) || options.path : "report";
@@ -155,10 +155,9 @@ export function summarizeReport(report, options = {}) {
       }`
     );
     const failingVariantIds = new Set(failures.map((failure) => failure.split(":", 1)[0]));
-    const variants = options.failuresOnly
-      ? (scenario.variants ?? []).filter((variant) => failingVariantIds.has(variant.variantId))
-      : (scenario.variants ?? []);
-    for (const variant of variants) {
+    for (const reference of scenario.variants ?? []) {
+      const variant = resolveRuntimeVariant(runtime, options.path, reference);
+      if (options.failuresOnly && !failingVariantIds.has(variant.variantId)) continue;
       const final = variant.checkpoints?.at(-1) ?? {};
       const score = final.scoreMetrics ?? {};
       const enemyLosses = (score.units_killed ?? 0) + (score.buildings_destroyed ?? 0);
@@ -211,6 +210,18 @@ export function summarizeReport(report, options = {}) {
     if (tail.length > 0) lines.push("PROCESS STDERR", ...tail.map((line) => `  ${line}`));
   }
   return boundSummaryOutput(lines, options.maxBytes ?? 8192);
+}
+
+function resolveRuntimeVariant(runtime, artifactPath, reference) {
+  if (reference !== null && typeof reference === "object" && !Array.isArray(reference)) return reference;
+  if (
+    !Number.isSafeInteger(reference) ||
+    runtime?.artifactEncoding !== "external-runtime-variants-v1" ||
+    !artifactPath ||
+    !runtime.artifactVariantFiles?.[reference]
+  )
+    return {};
+  return JSON.parse(readFileSync(`${artifactPath}.variants/${runtime.artifactVariantFiles[reference]}`, "utf8"));
 }
 
 /** Model-facing output has a byte budget independent of the locally retained proof size. */
@@ -317,7 +328,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
           throw new Error("repair_report_invalid_manifest");
         const entries = resolveRepairReportPaths(options.input).map((path) => ({
           path: relative(workspaceRoot, path) || path,
-          report: decodeRuntimeArtifact(JSON.parse(readFileSync(path, "utf8")))
+          report: decodeRuntimeArtifact(JSON.parse(readFileSync(path, "utf8")), path, { expandExternalVariants: false })
         }));
         const expectedIds = manifest?.rows
           .filter((row) => row.drivers.includes("runtime") && row.runtimeSupport?.status !== "deferred_content")

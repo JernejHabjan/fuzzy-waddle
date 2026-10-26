@@ -39,6 +39,8 @@ export interface RuntimeCheckpointV1 {
   }[];
   readonly ownedActorNames: readonly string[];
   readonly rawOwnedActorNames: readonly string[];
+  /** Authoritative test-only terminal diagnostics; never fed into the observing AI. */
+  readonly opponentAssets?: readonly { readonly playerNumber: number; readonly actorNames: readonly string[] }[];
   readonly ownedConstruction: readonly {
     readonly actorId: string;
     readonly objectName: string;
@@ -111,15 +113,20 @@ export interface RuntimeCheckpointV1 {
   readonly strategyAssessment?: {
     readonly choice: string;
     readonly reason: string;
+    readonly selectionSource?: string;
     readonly targetActorId: string | null;
     readonly routeDomain: string | null;
     readonly readyForce: number;
     readonly requiredForce: number;
+    readonly alternatives: readonly { readonly targetActorId: string; readonly reason: string }[];
   } | null;
   readonly visibleEnemyFacts: readonly {
+    readonly actorId: string;
     readonly objectName: string;
+    readonly owner: number | null;
     readonly relation: string;
     readonly visibility: string;
+    readonly mainBuilding: boolean | null;
     readonly position: { readonly x: number; readonly y: number; readonly z: number } | null;
     readonly healthPermille: number | null;
   }[];
@@ -141,7 +148,17 @@ export interface RuntimeCheckpointV1 {
   }[];
   readonly militaryActorNames: readonly string[];
   /** Owned ready military identities distinguish produced copies from preset copies or demand counters. */
-  readonly militaryActors?: readonly { readonly actorId: string; readonly objectName: string }[];
+  readonly militaryActors?: readonly {
+    readonly actorId: string;
+    readonly objectName: string;
+    readonly position?: { readonly x: number; readonly y: number; readonly z: number } | null;
+    readonly accessNodeId?: string | null;
+    readonly activeOrder?: {
+      readonly orderType: string;
+      readonly targetActorId: string | null;
+      readonly targetPosition: { readonly x: number; readonly y: number; readonly z: number } | null;
+    } | null;
+  }[];
   readonly militaryProducerNames: readonly string[];
   readonly militaryProducerQueues: readonly {
     readonly actorId: string;
@@ -164,6 +181,14 @@ export interface RuntimeCheckpointV1 {
     readonly actorNames: readonly string[];
     readonly actorCount: number;
     readonly objectiveId: string | null;
+    readonly tacticalTargetActorId?: string | null;
+    readonly engagementRatioPermille?: number | null;
+    readonly engagementConfidencePermille?: number | null;
+    readonly assignedPositions?: readonly {
+      readonly actorId: string;
+      readonly position: { readonly x: number; readonly y: number; readonly z: number };
+      readonly groundAccessNodeId?: string | null;
+    }[];
     readonly createdTick: number | null;
     readonly lastUsefulEffectTick: number | null;
     readonly terminalReason: string | null;

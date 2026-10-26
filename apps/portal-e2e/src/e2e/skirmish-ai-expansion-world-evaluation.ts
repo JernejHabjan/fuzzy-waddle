@@ -73,7 +73,8 @@ export function evaluateExpansionWorld(
     if (branch === "served" && execution?.source === "ai" && applied && distance(value.command.tileVec3) <= 12) {
       failures.push("expansion_duplicate_deposit_at_already_served_resource");
     }
-    const selected = accepted.find((entry) => entry.intent.effectId === execution?.effectId && entry.fact.sequence < fact.sequence);
+    const selected = accepted.find((entry) => expansionEffectMatchesExecution(entry.intent.effectId, execution) &&
+      entry.fact.sequence < fact.sequence);
     if (!id || !execution || !selected || execution.source !== "ai" || Object.values(roles).includes(id)) continue;
     if (!value.legal || !value.footprint?.length || value.gaps.length || !value.sceneActive ||
         value.snapshotRestoreInProgress || value.clockTick !== fact.tick) {
@@ -125,4 +126,12 @@ export function evaluateExpansionWorld(
   }
   failures.push(...expansionPressureFailures(branch, result, human));
   return [...new Set(failures)];
+}
+
+/** Native command lineage strips the protocol's `effect:` label when stamping the shared command. */
+export function expansionEffectMatchesExecution(
+  intentEffectId: string,
+  execution: { readonly effectId?: string } | undefined
+): boolean {
+  return !!execution?.effectId && intentEffectId.replace(/^effect:/, "") === execution.effectId;
 }

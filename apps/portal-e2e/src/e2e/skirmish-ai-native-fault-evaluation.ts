@@ -1,5 +1,32 @@
 import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
-import { nativeRecoveryIncome } from "./skirmish-ai-native-recovery-evidence";
+import { nativeAuthoredWorkerRecoveryIncome } from "./skirmish-ai-native-recovery-evidence";
+
+/** A settled receipt may be applied between decision samples; verify it is held, released and drained by identity. */
+export function nativeFaultReceiptReconciled(context: ReturnType<typeof nativeScenarioContext>): boolean {
+  const held = context.facts.filter((fact) => fact.kind === "authority_delivery" && fact.delivery.phase === "held" &&
+    fact.delivery.outcome);
+  return held.some((original) => {
+    if (original.kind !== "authority_delivery" || !original.delivery.outcome) return false;
+    const commandId = original.delivery.outcome.commandId;
+    const terminal = context.facts.find((fact) => fact.kind === "outcome" && fact.outcome.commandId === commandId &&
+      ["completed", "failed", "cancelled", "rejected"].includes(fact.outcome.kind) &&
+      fact.outcome.sequence === original.delivery.outcome?.sequence &&
+      fact.outcome.authorityEpoch === original.delivery.outcome?.authorityEpoch);
+    if (!terminal || terminal.kind !== "outcome") return false;
+    const release = context.facts.find((fact) => fact.kind === "authority_delivery" && fact.delivery.phase === "released" &&
+      fact.delivery.outcome?.commandId === commandId && fact.delivery.outcome.kind === terminal.outcome.kind &&
+      fact.delivery.outcome.sequence === terminal.outcome.sequence &&
+      fact.delivery.outcome.authorityEpoch === terminal.outcome.authorityEpoch);
+    if (!release || release.kind !== "authority_delivery") return false;
+    const pendingId = `command:${commandId}` as `command:${string}`;
+    const stayedPending = context.frames.some((frame) => frame.tick > original.delivery.tick &&
+      frame.tick < release.delivery.tick && frame.decision.missionState?.authority.pendingCommandIds.includes(pendingId));
+    const drained = context.frames.some((frame) => frame.tick > release.delivery.tick &&
+      frame.decision.missionState?.authority.health === "healthy" &&
+      !frame.decision.missionState.authority.pendingCommandIds.includes(pendingId));
+    return stayedPending && drained;
+  });
+}
 
 /** Fault annotations prove injection only. Real work, original receipt ownership and committed retry history prove isolation. */
 export function evaluateNativeFault(branch: string, context: ReturnType<typeof nativeScenarioContext>): string[] {
@@ -10,14 +37,8 @@ export function evaluateNativeFault(branch: string, context: ReturnType<typeof n
       fact.playerNumber !== 2 || fact.tick < 200 || fact.tick > 800)) failures.push("fault_real_boundary_injection_missing");
   if (!frames.some((frame) => frame.tick < 200 && frame.decision.acceptedIntents.length))
     failures.push("fault_preexisting_native_orders_missing");
-  if (!nativeRecoveryIncome(context, 200, context.roles["worker-1"])) failures.push("fault_native_gathering_did_not_continue");
-  const held = facts.filter((fact) => fact.kind === "authority_delivery" && fact.delivery.phase === "held");
-  if (!held.length || !held.some((original) => original.kind === "authority_delivery" && original.delivery.outcome &&
-    facts.some((raw) => raw.kind === "outcome" && raw.outcome.commandId === original.delivery.outcome?.commandId &&
-      ["completed", "failed", "cancelled", "rejected"].includes(raw.outcome.kind) &&
-      frames.some((frame) => frame.tick > 600 && frame.decision.missionState?.pendingOutcomes.some((outcome) =>
-        outcome.identity.commandId === `command:${raw.outcome.commandId}` && outcome.kind === raw.outcome.kind &&
-        outcome.identity.sequence === raw.outcome.sequence && outcome.identity.authorityEpoch === raw.outcome.authorityEpoch)))))
+  if (!nativeAuthoredWorkerRecoveryIncome(context, 200)) failures.push("fault_native_gathering_did_not_continue");
+  if (!nativeFaultReceiptReconciled(context))
     failures.push("fault_mandatory_original_reconciliation_missing");
   if (frames.some((frame) => frame.decision.acceptedIntents.some((intent) => !Number.isFinite(intent.utility) ||
       intent.claims.some((claim) => claim.kind === "resource" && (!Number.isFinite(claim.amount) || claim.amount < 0)))))

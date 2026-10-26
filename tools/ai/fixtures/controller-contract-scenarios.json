@@ -502,7 +502,7 @@
       "tests": [
         {
           "file": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/ai-command-reconciliation.spec.ts",
-          "title": "bounds the unresolved backlog with an explicit technical outcome"
+          "title": "diagnoses unexpected overflow without evicting already dispatched obligations"
         },
         {
           "file": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/ai-command-reconciliation.spec.ts",

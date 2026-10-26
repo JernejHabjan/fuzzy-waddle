@@ -84,7 +84,10 @@ export function nativeScenarioWorld(id, faction, branch) {
   });
   if (id.startsWith("PLACE-") || id.startsWith("WALL-") || ["H-27", "H-28"].includes(id)) {
     world.protectedRoutes = [
-      { id: "worker-service", playerNumber: 2, from: tile(32, 23), to: tile(28, 31), tileMargin: 0 },
+      { id: "worker-service", playerNumber: 2,
+        from: tile(id.startsWith("WALL-") || ["H-27", "H-28"].includes(id) ? 33 : 32,
+          id.startsWith("WALL-") || ["H-27", "H-28"].includes(id) ? 24 : 23),
+        to: tile(28, 31), tileMargin: 0 },
       { id: "production-army", playerNumber: 2, from: tile(42, 25), to: tile(27, 25), tileMargin: 1 },
       { id: "retreat", playerNumber: 2, from: tile(28, 25), to: tile(33, 25), tileMargin: 1 }
     ];
@@ -93,7 +96,7 @@ export function nativeScenarioWorld(id, faction, branch) {
       move("army-transit", tick, index % 2 ? 27 : 42, 25);
     }
     if (["WALL-02", "H-27"].includes(id) || ["exposed", "both_exposed"].includes(branch))
-      attack("contact-group", "original-home", 200);
+      attack("contact-group", "original-home", id === "H-27" ? 20 : 200);
     if (["stairs_loss", "stairs_missing", "breach", "unreachable", "loss"].includes(branch))
       loss(["breach", "repair", "loss", "changed_plan"].includes(branch) ? "perimeter-wall" : "perimeter-stair",
         branch === "stairs_missing" ? 1 : 400);

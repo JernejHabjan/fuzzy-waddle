@@ -2,6 +2,7 @@ import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
 import { runPureJestWithScenarioEvidence } from "./pure-scenario-evidence.mjs";
+import { pnpmInvocation } from "./command-invocation.mjs";
 import { readPureFixtureCase } from "./pure-fixture-cases.mjs";
 import { pureFixtureReference, runtimeFixtureReference } from "./skirmish-matrix-fixtures.mjs";
 import { digestString, readHead, readJson, readWorkingTreeSource } from "./skirmish-matrix-io.mjs";
@@ -16,14 +17,29 @@ export function invokeSelectedHarness(input, context) {
   if (requestedRuntime && input.rows.some((row) => row.id === "D-06")) {
     const rest = input.rows.filter((row) => row.id !== "D-06");
     const selected = rest.length ? invokeSelectedHarness({ ...input, rows: rest }, context) : null;
-    if (selected && selected.status !== "passed") return { ...selected, rows: input.rows.map((row) => row.id),
-      calibration: { status: "not_run", reason: "core_runtime_gate_failed" } };
-    const calibration = invokeCalibrationHarness({ ...input, rows: input.rows.filter((row) => row.id === "D-06") }, context);
+    if (selected && selected.status !== "passed")
+      return {
+        ...selected,
+        rows: input.rows.map((row) => row.id),
+        calibration: { status: "not_run", reason: "core_runtime_gate_failed" }
+      };
+    const calibration = invokeCalibrationHarness(
+      { ...input, rows: input.rows.filter((row) => row.id === "D-06") },
+      context
+    );
     if (!selected) return calibration;
-    return { ...selected, status: selected.status === "passed" && calibration.status === "passed" ? "passed" : "failed",
-      rows: input.rows.map((row) => row.id), calibration,
-      workCounts: Object.fromEntries(["scenarios", "testSuites", "tests", "decisions", "ticks"].map((key) =>
-        [key, selected.workCounts[key] + calibration.workCounts[key]])) };
+    return {
+      ...selected,
+      status: selected.status === "passed" && calibration.status === "passed" ? "passed" : "failed",
+      rows: input.rows.map((row) => row.id),
+      calibration,
+      workCounts: Object.fromEntries(
+        ["scenarios", "testSuites", "tests", "decisions", "ticks"].map((key) => [
+          key,
+          selected.workCounts[key] + calibration.workCounts[key]
+        ])
+      )
+    };
   }
   const pureRows = requestedPure
     ? input.rows.filter((row) => row.drivers.includes("pure") && pureFixtureReference(row, fixtureDirectory))
@@ -60,6 +76,7 @@ export function invokeHarness(input, context) {
   const { manifest, workspaceRoot, fixtureDirectory } = context;
   const environment = {
     ...process.env,
+    NODE_OPTIONS: [process.env.NODE_OPTIONS, "--max-old-space-size=8192"].filter(Boolean).join(" "),
     AI_SKIRMISH_MATRIX_REQUEST: JSON.stringify({
       schemaVersion: 1,
       manifestVersion: manifest.manifestVersion,
@@ -223,9 +240,14 @@ function invokeRuntimeHarness(input, context) {
   const requiresMultiplayer = fixtures.some((fixture) => fixture.recipe.requiresMultiplayer === true);
   const requestPath = `${resultArtifact}.request.json`;
   const requestDigest = writeRuntimeRequest(requestPath, {
-    schemaVersion: 1, sourceRevision, dirtySourceDigest: workingTreeDigest, fixtureDigest,
-    seed: input.seed ?? null, scenarioIds: input.rows.map((row) => row.id),
-    diagnosticSelection: input.diagnosticSelection ?? undefined, fixtures
+    schemaVersion: 1,
+    sourceRevision,
+    dirtySourceDigest: workingTreeDigest,
+    fixtureDigest,
+    seed: input.seed ?? null,
+    scenarioIds: input.rows.map((row) => row.id),
+    diagnosticSelection: input.diagnosticSelection ?? undefined,
+    fixtures
   });
   const environment = {
     ...process.env,
@@ -235,25 +257,32 @@ function invokeRuntimeHarness(input, context) {
     AI_SKIRMISH_RUNTIME_REQUEST_PATH: requestPath,
     AI_SKIRMISH_RUNTIME_REQUEST_SHA256: requestDigest
   };
-  const command = spawnSync(
-    "pnpm",
-    [
-      "exec",
-      "playwright",
-      "test",
-      "apps/portal-e2e/src/e2e/skirmish-ai-runtime.spec.ts",
-      `--config=apps/portal-e2e/${requiresMultiplayer ? "playwright.multiplayer.config.ts" : "playwright.config.ts"}`,
-      "--workers=1"
-    ],
-    { cwd: workspaceRoot, env: environment, encoding: "utf8", maxBuffer: 32 * 1024 * 1024 }
-  );
+  const playwrightArgs = [
+    "exec",
+    "playwright",
+    "test",
+    "apps/portal-e2e/src/e2e/skirmish-ai-runtime.spec.ts",
+    `--config=apps/portal-e2e/${requiresMultiplayer ? "playwright.multiplayer.config.ts" : "playwright.config.ts"}`,
+    "--workers=1"
+  ];
+  const invocation = pnpmInvocation(playwrightArgs);
+  const command = spawnSync(invocation.command, invocation.args, {
+    cwd: workspaceRoot,
+    env: environment,
+    encoding: "utf8",
+    maxBuffer: 32 * 1024 * 1024
+  });
   const wallMs = Math.round(performance.now() - startedAt);
   if (command.error) throw command.error;
-  const runtimeReport = readRuntimeResult(resultArtifact, {
-    sourceRevision,
-    dirtySourceDigest: workingTreeDigest,
-    fixtureDigest
-  });
+  const runtimeReport = readRuntimeResult(
+    resultArtifact,
+    {
+      sourceRevision,
+      dirtySourceDigest: workingTreeDigest,
+      fixtureDigest
+    },
+    { expandExternalVariants: false }
+  );
   const report = {
     schemaVersion: 1,
     status: input.diagnosticSelection
@@ -296,3 +325,5 @@ function invokeRuntimeHarness(input, context) {
   if (report.status !== "passed" && report.status !== "diagnostic_passed") process.exitCode = 1;
   return report;
 }
+
+export { pnpmInvocation } from "./command-invocation.mjs";

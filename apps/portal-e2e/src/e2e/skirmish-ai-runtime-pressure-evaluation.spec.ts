@@ -5,7 +5,8 @@ import { evaluateRuntimePressureResponse } from "./skirmish-ai-runtime-pressure-
 const balances = { 2: { food: 200, wood: 200, stone: 200, minerals: 200 } };
 const command = { commandId: "first", effectId: "effect:first" };
 const contact = {
-  objectName: "Banshee", relation: "enemy", visibility: "visible",
+  actorId: "enemy-banshee", objectName: "Banshee", owner: 1, relation: "enemy", visibility: "visible",
+  mainBuilding: false,
   position: { x: 4, y: 8, z: 2 }, healthPermille: 900
 };
 const defender = {
@@ -20,7 +21,9 @@ const budget = {
 const safeBudget = { ...budget, desiredWorkers: 8, economyPermille: 650, defensePermille: 350 };
 
 const raid = {
-  variantId: "raid", pressureBranch: "raid", initialWorldDigest: "same",
+  variantId: "raid", pressureBranch: "raid", initialWorldDigest: "with-raid",
+  initialOwnedActorCount: 6, presetFixtureId: "early-pressure-pair",
+  presetCreatedActorNames: ["TivaraWorkerMale", "Banshee", "Banshee"],
   presetResourceStartCount: 1, presetInitialResourceBalances: balances, initialWorkerCount: 6,
   perturbations: [{ id: "home-raid", tick: 100, dispatchedActors: 2, subjectName: "Banshee" }],
   checkpoints: [
@@ -41,7 +44,9 @@ const raid = {
 } as const satisfies PressureVariant;
 
 const control = {
-  variantId: "control", pressureBranch: "safe_control", initialWorldDigest: "same",
+  variantId: "control", pressureBranch: "safe_control", initialWorldDigest: "without-raid",
+  initialOwnedActorCount: 6, presetFixtureId: "early-pressure-pair",
+  presetCreatedActorNames: ["TivaraWorkerMale"],
   presetResourceStartCount: 1, presetInitialResourceBalances: balances, initialWorkerCount: 6,
   perturbations: [],
   checkpoints: [
@@ -71,8 +76,16 @@ test.describe("paired low-resource pressure oracle", () => {
     );
   });
 
+  test("permits only the pressure attackers to differ in a paired world", () => {
+    expect(evaluateRuntimePressureResponse([raid, control])).toEqual([]);
+    expect(evaluateRuntimePressureResponse([
+      raid,
+      { ...control, presetCreatedActorNames: ["TivaraWorkerMale", "WorkMill"] }
+    ])).toContain("pressure_initial_world_mismatch");
+  });
+
   test("rejects mismatched worlds and an economy control that fails to grow", () => {
-    expect(evaluateRuntimePressureResponse([raid, { ...control, initialWorldDigest: "other" }])).toContain(
+    expect(evaluateRuntimePressureResponse([raid, { ...control, presetFixtureId: "other" }])).toContain(
       "pressure_initial_world_mismatch"
     );
     expect(evaluateRuntimePressureResponse([

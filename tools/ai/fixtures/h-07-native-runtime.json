@@ -73,7 +73,7 @@
           "H-07"
         ],
         "presetWorld": {
-          "fixtureId": "h-07-tivara-destroyed",
+          "fixtureId": "h-07-tivara-receipt-pair",
           "requireFactionRoster": true,
           "actors": [
             {
@@ -459,7 +459,7 @@
             "id": "original-ai-receipt",
             "playerNumber": 2,
             "fromTick": 1,
-            "throughTick": 800,
+            "throughTick": 1800,
             "maximumCommands": 1,
             "commandKind": "production",
             "destroyOutput": true
@@ -481,7 +481,7 @@
           "H-07"
         ],
         "presetWorld": {
-          "fixtureId": "h-07-tivara-alive",
+          "fixtureId": "h-07-tivara-receipt-pair",
           "requireFactionRoster": true,
           "actors": [
             {
@@ -867,7 +867,7 @@
             "id": "original-ai-receipt",
             "playerNumber": 2,
             "fromTick": 1,
-            "throughTick": 800,
+            "throughTick": 1800,
             "maximumCommands": 1,
             "commandKind": "production"
           }
@@ -888,7 +888,7 @@
           "H-07"
         ],
         "presetWorld": {
-          "fixtureId": "h-07-skaduwee-destroyed",
+          "fixtureId": "h-07-skaduwee-receipt-pair",
           "requireFactionRoster": true,
           "actors": [
             {
@@ -1274,7 +1274,7 @@
             "id": "original-ai-receipt",
             "playerNumber": 2,
             "fromTick": 1,
-            "throughTick": 800,
+            "throughTick": 1800,
             "maximumCommands": 1,
             "commandKind": "production",
             "destroyOutput": true
@@ -1296,7 +1296,7 @@
           "H-07"
         ],
         "presetWorld": {
-          "fixtureId": "h-07-skaduwee-alive",
+          "fixtureId": "h-07-skaduwee-receipt-pair",
           "requireFactionRoster": true,
           "actors": [
             {
@@ -1682,7 +1682,7 @@
             "id": "original-ai-receipt",
             "playerNumber": 2,
             "fromTick": 1,
-            "throughTick": 800,
+            "throughTick": 1800,
             "maximumCommands": 1,
             "commandKind": "production"
           }

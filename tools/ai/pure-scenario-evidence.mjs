@@ -2,6 +2,10 @@ import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
+export function pureJestInvocation(args, nodeExecutable = process.execPath) {
+  const jestArgs = args[0] === "exec" && args[1] === "jest" ? args.slice(2) : args;
+  return { command: nodeExecutable, args: ["node_modules/jest/bin/jest.js", ...jestArgs] };
+}
 
 function namesScenario(fullName, scenarioId) {
   const escaped = scenarioId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -10,7 +14,10 @@ function namesScenario(fullName, scenarioId) {
 
 export function summarizePureScenarioEvidence(jestReport, scenarioIds, cases = [], workspaceRoot = process.cwd()) {
   const assertions = (jestReport?.testResults ?? []).flatMap((suite) =>
-    (suite.assertionResults ?? []).map((assertion) => ({ ...assertion, file: suite.name }))
+    (suite.assertionResults ?? []).map((assertion) => ({
+      ...assertion,
+      file: suite.name ? resolve(suite.name) : ""
+    }))
   );
   const executed = scenarioIds.map((scenarioId) => {
     const bound = cases.find((entry) => entry.scenarioId === scenarioId);
@@ -58,9 +65,7 @@ export function runPureJestWithScenarioEvidence({
     for (const project of ["gameplay", "phaser"]) {
       const resultPath = join(temporaryDirectory, `${project}.json`);
       const configPath = `libs/games/probable-waffle/${project}/jest.config.cts`;
-      const command = spawnSync(
-        "pnpm",
-        [
+      const invocation = pureJestInvocation([
           "exec",
           "jest",
           `--config=${configPath}`,
@@ -68,9 +73,10 @@ export function runPureJestWithScenarioEvidence({
           `--testPathPatterns=${testPathPattern}`,
           "--json",
           `--outputFile=${resultPath}`
-        ],
-        { cwd: workspaceRoot, env: environment, encoding: "utf8", maxBuffer: 16 * 1024 * 1024 }
-      );
+        ]);
+      const command = spawnSync(invocation.command, invocation.args, {
+        cwd: workspaceRoot, env: environment, encoding: "utf8", maxBuffer: 16 * 1024 * 1024
+      });
       commands.push(command);
       try {
         reports.push(JSON.parse(readFileSync(resultPath, "utf8")));

@@ -180,10 +180,38 @@
       "authoredFixture": "stage-14-adaptation.json",
       "drivers": ["pure", "runtime"]
     },
-    { "id": "SCOUT-01", "stages": [9], "group": "scouting", "fixture": "scout-01-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "SCOUT-02", "stages": [9], "group": "scouting", "fixture": "scout-02-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "SCOUT-03", "stages": [9, 13], "group": "scouting", "fixture": "scout-03-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "SCOUT-04", "stages": [9], "group": "scouting", "fixture": "scout-04-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
+    {
+      "id": "SCOUT-01",
+      "stages": [9],
+      "group": "scouting",
+      "fixture": "scout-01-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "SCOUT-02",
+      "stages": [9],
+      "group": "scouting",
+      "fixture": "scout-02-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "SCOUT-03",
+      "stages": [9, 13],
+      "group": "scouting",
+      "fixture": "scout-03-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "SCOUT-04",
+      "stages": [9],
+      "group": "scouting",
+      "fixture": "scout-04-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
     {
       "id": "SCOUT-05",
       "stages": [4, 9, 14],
@@ -200,9 +228,30 @@
       "authoredFixture": "pressure-strategy-scenarios.json",
       "drivers": ["pure", "runtime"]
     },
-    { "id": "STRAT-02", "stages": [9, 13], "group": "strategy", "fixture": "strat-02-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "STRAT-03", "stages": [9, 13], "group": "strategy", "fixture": "strat-03-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "STRAT-04", "stages": [6, 9], "group": "strategy", "fixture": "strat-04-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
+    {
+      "id": "STRAT-02",
+      "stages": [9, 13],
+      "group": "strategy",
+      "fixture": "strat-02-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "STRAT-03",
+      "stages": [9, 13],
+      "group": "strategy",
+      "fixture": "strat-03-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "STRAT-04",
+      "stages": [6, 9],
+      "group": "strategy",
+      "fixture": "strat-04-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
     {
       "id": "STRAT-05",
       "stages": [6, 13, 14],
@@ -243,10 +292,38 @@
       "authoredFixture": "stage-14-adaptation.json",
       "drivers": ["pure", "runtime"]
     },
-    { "id": "STRAT-10", "stages": [7, 12], "group": "strategy", "fixture": "strat-10-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "STRAT-11", "stages": [9, 13], "group": "strategy", "fixture": "strat-11-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "STRAT-12", "stages": [9, 13], "group": "strategy", "fixture": "strat-12-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "STRAT-13", "stages": [9, 13], "group": "strategy", "fixture": "strat-13-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
+    {
+      "id": "STRAT-10",
+      "stages": [7, 12],
+      "group": "strategy",
+      "fixture": "strat-10-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "STRAT-11",
+      "stages": [9, 13],
+      "group": "strategy",
+      "fixture": "strat-11-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "STRAT-12",
+      "stages": [9, 13],
+      "group": "strategy",
+      "fixture": "strat-12-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "STRAT-13",
+      "stages": [9, 13],
+      "group": "strategy",
+      "fixture": "strat-13-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
     {
       "id": "DOMAIN-01",
       "stages": [8, 9, 14],
@@ -268,7 +345,8 @@
       "stages": [8, 9],
       "group": "access",
       "fixture": null,
-      "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"],
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"],
       "runtimeSupport": {
         "status": "deferred_content",
         "issue": 822,
@@ -280,7 +358,8 @@
       "stages": [8, 12],
       "group": "access",
       "fixture": null,
-      "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"],
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"],
       "runtimeSupport": { "status": "deferred_content", "issue": 822, "reason": "No shipped carrier-loss island route" }
     },
     {
@@ -315,14 +394,70 @@
       "authoredFixture": "stage-13-tactics.json",
       "drivers": ["pure", "runtime"]
     },
-    { "id": "RAID-03", "stages": [8, 9, 13], "group": "combat", "fixture": "raid-03-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "PLACE-01", "stages": [10], "group": "placement", "fixture": "place-01-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "PLACE-02", "stages": [10], "group": "placement", "fixture": "place-02-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "PLACE-03", "stages": [10], "group": "placement", "fixture": "place-03-native-runtime.json", "drivers": ["pure", "runtime"], "authoredFixture": "placement-recovery-scenarios.json" },
-    { "id": "EXP-01", "stages": [10], "group": "placement", "fixture": "exp-01-native-runtime.json", "drivers": ["pure", "runtime"], "authoredFixture": "placement-recovery-scenarios.json" },
-    { "id": "EXP-02", "stages": [10], "group": "placement", "fixture": "expansion-pressure-runtime.json", "drivers": ["pure", "runtime"], "authoredFixture": "placement-recovery-scenarios.json" },
-    { "id": "WALL-01", "stages": [11], "group": "fortification", "fixture": "wall-01-native-runtime.json", "drivers": ["pure", "runtime"], "authoredFixture": "placement-recovery-scenarios.json" },
-    { "id": "WALL-02", "stages": [11], "group": "fortification", "fixture": "wall-02-native-runtime.json", "drivers": ["pure", "runtime"], "authoredFixture": "placement-recovery-scenarios.json" },
+    {
+      "id": "RAID-03",
+      "stages": [8, 9, 13],
+      "group": "combat",
+      "fixture": "raid-03-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "PLACE-01",
+      "stages": [10],
+      "group": "placement",
+      "fixture": "place-01-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "PLACE-02",
+      "stages": [10],
+      "group": "placement",
+      "fixture": "place-02-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "PLACE-03",
+      "stages": [10],
+      "group": "placement",
+      "fixture": "place-03-native-runtime.json",
+      "drivers": ["pure", "runtime"],
+      "authoredFixture": "placement-recovery-scenarios.json"
+    },
+    {
+      "id": "EXP-01",
+      "stages": [10],
+      "group": "placement",
+      "fixture": "exp-01-native-runtime.json",
+      "drivers": ["pure", "runtime"],
+      "authoredFixture": "placement-recovery-scenarios.json"
+    },
+    {
+      "id": "EXP-02",
+      "stages": [10],
+      "group": "placement",
+      "fixture": "expansion-pressure-runtime.json",
+      "drivers": ["pure", "runtime"],
+      "authoredFixture": "placement-recovery-scenarios.json"
+    },
+    {
+      "id": "WALL-01",
+      "stages": [11],
+      "group": "fortification",
+      "fixture": "wall-01-native-runtime.json",
+      "drivers": ["pure", "runtime"],
+      "authoredFixture": "placement-recovery-scenarios.json"
+    },
+    {
+      "id": "WALL-02",
+      "stages": [11],
+      "group": "fortification",
+      "fixture": "wall-02-native-runtime.json",
+      "drivers": ["pure", "runtime"],
+      "authoredFixture": "placement-recovery-scenarios.json"
+    },
     {
       "id": "WALL-03",
       "stages": [11, 13],
@@ -331,8 +466,22 @@
       "authoredFixture": "stage-13-tactics.json",
       "drivers": ["pure", "runtime"]
     },
-    { "id": "WALL-04", "stages": [11, 12], "group": "fortification", "fixture": "wall-04-native-runtime.json", "drivers": ["pure", "runtime"], "authoredFixture": "placement-recovery-scenarios.json" },
-    { "id": "WALL-05", "stages": [11], "group": "fortification", "fixture": "wall-05-native-runtime.json", "drivers": ["pure", "runtime"], "authoredFixture": "placement-recovery-scenarios.json" },
+    {
+      "id": "WALL-04",
+      "stages": [11, 12],
+      "group": "fortification",
+      "fixture": "wall-04-native-runtime.json",
+      "drivers": ["pure", "runtime"],
+      "authoredFixture": "placement-recovery-scenarios.json"
+    },
+    {
+      "id": "WALL-05",
+      "stages": [11],
+      "group": "fortification",
+      "fixture": "wall-05-native-runtime.json",
+      "drivers": ["pure", "runtime"],
+      "authoredFixture": "placement-recovery-scenarios.json"
+    },
     {
       "id": "FIGHT-01",
       "stages": [13],
@@ -349,7 +498,14 @@
       "authoredFixture": "stage-13-tactics.json",
       "drivers": ["pure", "runtime"]
     },
-    { "id": "FIGHT-03", "stages": [9, 13], "group": "combat", "fixture": "fight-03-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
+    {
+      "id": "FIGHT-03",
+      "stages": [9, 13],
+      "group": "combat",
+      "fixture": "fight-03-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
     {
       "id": "FIGHT-04",
       "stages": [13],
@@ -358,22 +514,134 @@
       "authoredFixture": "stage-13-tactics.json",
       "drivers": ["pure", "runtime"]
     },
-    { "id": "FIGHT-05", "stages": [12, 13], "group": "combat", "fixture": "fight-05-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "H-01", "stages": [6, 12], "group": "recovery", "fixture": "h-01-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "H-02", "stages": [6, 12], "group": "recovery", "fixture": "h-02-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "H-03", "stages": [6, 12], "group": "recovery", "fixture": "h-03-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "H-04", "stages": [6, 12], "group": "recovery", "fixture": "h-04-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "H-05", "stages": [6, 12], "group": "recovery", "fixture": "h-05-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "H-06", "stages": [3], "group": "authority", "fixture": "h-06-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "H-07", "stages": [3], "group": "authority", "fixture": "h-07-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "H-08", "stages": [3], "group": "authority", "fixture": "h-08-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "H-09", "stages": [3], "group": "authority", "fixture": "h-09-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "H-10", "stages": [3], "group": "authority", "fixture": "h-10-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "H-11", "stages": [6, 12], "group": "reservations", "fixture": "h-11-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "H-12", "stages": [6, 12], "group": "reservations", "fixture": "h-12-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "H-13", "stages": [6, 12], "group": "lanes", "fixture": "h-13-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "H-14", "stages": [6, 12], "group": "lanes", "fixture": "h-14-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "H-15", "stages": [6, 12], "group": "lanes", "fixture": "h-15-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
+    {
+      "id": "FIGHT-05",
+      "stages": [12, 13],
+      "group": "combat",
+      "fixture": "fight-05-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-01",
+      "stages": [6, 12],
+      "group": "recovery",
+      "fixture": "h-01-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-02",
+      "stages": [6, 12],
+      "group": "recovery",
+      "fixture": "h-02-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-03",
+      "stages": [6, 12],
+      "group": "recovery",
+      "fixture": "h-03-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-04",
+      "stages": [6, 12],
+      "group": "recovery",
+      "fixture": "h-04-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-05",
+      "stages": [6, 12],
+      "group": "recovery",
+      "fixture": "h-05-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-06",
+      "stages": [3],
+      "group": "authority",
+      "fixture": "h-06-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-07",
+      "stages": [3],
+      "group": "authority",
+      "fixture": "h-07-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-08",
+      "stages": [3],
+      "group": "authority",
+      "fixture": "h-08-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-09",
+      "stages": [3],
+      "group": "authority",
+      "fixture": "h-09-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-10",
+      "stages": [3],
+      "group": "authority",
+      "fixture": "h-10-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-11",
+      "stages": [6, 12],
+      "group": "reservations",
+      "fixture": "h-11-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-12",
+      "stages": [6, 12],
+      "group": "reservations",
+      "fixture": "h-12-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-13",
+      "stages": [6, 12],
+      "group": "lanes",
+      "fixture": "h-13-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-14",
+      "stages": [6, 12],
+      "group": "lanes",
+      "fixture": "h-14-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-15",
+      "stages": [6, 12],
+      "group": "lanes",
+      "fixture": "h-15-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
     {
       "id": "H-16",
       "stages": [7, 12],
@@ -398,10 +666,43 @@
       "authoredFixture": "economy-supply-scenarios.json",
       "drivers": ["pure", "runtime"]
     },
-    { "id": "H-19", "stages": [4, 8], "group": "access", "fixture": "h-19-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "H-20", "stages": [4, 8], "group": "access", "fixture": "h-20-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "H-21", "stages": [8], "group": "access", "fixture": null, "runtimeSupport": { "status": "deferred_content", "issue": 759, "reason": "User 2026-10-21 deferred larger-unit/formation native clearance coverage until suitable content exists; preserve pure clearance contracts." }, "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "H-22", "stages": [4, 9], "group": "scouting", "fixture": "h-22-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
+    {
+      "id": "H-19",
+      "stages": [4, 8],
+      "group": "access",
+      "fixture": "h-19-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-20",
+      "stages": [4, 8],
+      "group": "access",
+      "fixture": "h-20-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-21",
+      "stages": [8],
+      "group": "access",
+      "fixture": null,
+      "runtimeSupport": {
+        "status": "deferred_content",
+        "issue": 759,
+        "reason": "User 2026-10-21 deferred larger-unit/formation native clearance coverage until suitable content exists; preserve pure clearance contracts."
+      },
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-22",
+      "stages": [4, 9],
+      "group": "scouting",
+      "fixture": "h-22-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
     {
       "id": "H-23",
       "stages": [9, 13],
@@ -410,11 +711,46 @@
       "authoredFixture": "stage-13-tactics.json",
       "drivers": ["pure", "runtime"]
     },
-    { "id": "H-24", "stages": [9, 13], "group": "combat", "fixture": "h-24-native-runtime.json", "authoredFixture": "stage-13-tactics.json", "drivers": ["pure", "runtime"] },
-    { "id": "H-25", "stages": [9, 13], "group": "combat", "fixture": "h-25-native-runtime.json", "authoredFixture": "stage-13-tactics.json", "drivers": ["pure", "runtime"] },
-    { "id": "H-26", "stages": [9, 13], "group": "combat", "fixture": "h-26-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
-    { "id": "H-27", "stages": [11], "group": "fortification", "fixture": "h-27-native-runtime.json", "drivers": ["pure", "runtime"], "authoredFixture": "placement-recovery-scenarios.json" },
-    { "id": "H-28", "stages": [11, 12], "group": "fortification", "fixture": "h-28-native-runtime.json", "drivers": ["pure", "runtime"], "authoredFixture": "placement-recovery-scenarios.json" },
+    {
+      "id": "H-24",
+      "stages": [9, 13],
+      "group": "combat",
+      "fixture": "h-24-native-runtime.json",
+      "authoredFixture": "stage-13-tactics.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-25",
+      "stages": [9, 13],
+      "group": "combat",
+      "fixture": "h-25-native-runtime.json",
+      "authoredFixture": "stage-13-tactics.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-26",
+      "stages": [9, 13],
+      "group": "combat",
+      "fixture": "h-26-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-27",
+      "stages": [11],
+      "group": "fortification",
+      "fixture": "h-27-native-runtime.json",
+      "drivers": ["pure", "runtime"],
+      "authoredFixture": "placement-recovery-scenarios.json"
+    },
+    {
+      "id": "H-28",
+      "stages": [11, 12],
+      "group": "fortification",
+      "fixture": "h-28-native-runtime.json",
+      "drivers": ["pure", "runtime"],
+      "authoredFixture": "placement-recovery-scenarios.json"
+    },
     {
       "id": "H-29",
       "stages": [8, 12, 13],
@@ -468,8 +804,20 @@
       "fixture": "continuous-land-runtime.json",
       "drivers": ["runtime"]
     },
-    { "id": "SEQ-03", "stages": [15], "group": "continuous", "fixture": "seq-03-native-runtime.json", "drivers": ["runtime"] },
-    { "id": "SEQ-04", "stages": [15], "group": "continuous", "fixture": "seq-04-native-runtime.json", "drivers": ["runtime"] },
+    {
+      "id": "SEQ-03",
+      "stages": [15],
+      "group": "continuous",
+      "fixture": "seq-03-native-runtime.json",
+      "drivers": ["runtime"]
+    },
+    {
+      "id": "SEQ-04",
+      "stages": [15],
+      "group": "continuous",
+      "fixture": "seq-04-native-runtime.json",
+      "drivers": ["runtime"]
+    },
     {
       "id": "SEQ-05",
       "name": "Island transport and expansion",
@@ -479,15 +827,33 @@
       "drivers": ["runtime"],
       "runtimeSupport": { "status": "deferred_content", "issue": 822, "reason": "No shipped island map" }
     },
-    { "id": "SEQ-06", "stages": [15], "group": "continuous", "fixture": "seq-06-native-runtime.json", "drivers": ["runtime"] },
-    { "id": "SEQ-07", "stages": [15], "group": "continuous", "fixture": "seq-07-native-runtime.json", "drivers": ["runtime"] },
-    { "id": "SEQ-08", "stages": [15], "group": "continuous", "fixture": "seq-08-native-runtime.json", "drivers": ["runtime"] },
+    {
+      "id": "SEQ-06",
+      "stages": [15],
+      "group": "continuous",
+      "fixture": "seq-06-native-runtime.json",
+      "drivers": ["runtime"]
+    },
+    {
+      "id": "SEQ-07",
+      "stages": [15],
+      "group": "continuous",
+      "fixture": "seq-07-native-runtime.json",
+      "drivers": ["runtime"]
+    },
+    {
+      "id": "SEQ-08",
+      "stages": [15],
+      "group": "continuous",
+      "fixture": "seq-08-native-runtime.json",
+      "drivers": ["runtime"]
+    },
     {
       "id": "C-01",
       "stages": [7, 14],
       "group": "classic-rts",
       "fixture": "c-01-native-runtime.json",
-      "authoredFixture": "stage-14-adaptation.json",
+      "authoredFixture": "classic-rts-pure-controls.json",
       "drivers": ["pure", "runtime"]
     },
     {
@@ -495,28 +861,49 @@
       "stages": [7, 13, 14],
       "group": "classic-rts",
       "fixture": "c-02-native-runtime.json",
-      "authoredFixture": "stage-14-adaptation.json",
+      "authoredFixture": "classic-rts-pure-controls.json",
       "drivers": ["pure", "runtime"]
     },
-    { "id": "C-03", "stages": [7], "group": "classic-rts", "fixture": "c-03-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
+    {
+      "id": "C-03",
+      "stages": [7],
+      "group": "classic-rts",
+      "fixture": "c-03-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
     {
       "id": "C-04",
       "stages": [4, 9, 14],
       "group": "classic-rts",
       "fixture": "c-04-native-runtime.json",
-      "authoredFixture": "stage-14-adaptation.json",
+      "authoredFixture": "classic-rts-pure-controls.json",
       "drivers": ["pure", "runtime"]
     },
-    { "id": "C-05", "stages": [9, 13], "group": "classic-rts", "fixture": "c-05-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
+    {
+      "id": "C-05",
+      "stages": [9, 13],
+      "group": "classic-rts",
+      "fixture": "c-05-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
     {
       "id": "C-06",
       "stages": [9, 13],
       "group": "classic-rts",
       "fixture": "c-06-native-runtime.json",
-      "authoredFixture": "stage-13-tactics.json",
+      "authoredFixture": "classic-rts-pure-controls.json",
       "drivers": ["pure", "runtime"]
     },
-    { "id": "D-01", "stages": [6], "group": "difficulty", "fixture": "d-01-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
+    {
+      "id": "D-01",
+      "stages": [6],
+      "group": "difficulty",
+      "fixture": "d-01-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
     {
       "id": "D-02",
       "stages": [6, 14],
@@ -533,7 +920,14 @@
       "authoredFixture": "stage-14-adaptation.json",
       "drivers": ["pure", "runtime"]
     },
-    { "id": "D-04", "stages": [7, 9, 12], "group": "difficulty", "fixture": "d-04-native-runtime.json", "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure", "runtime"] },
+    {
+      "id": "D-04",
+      "stages": [7, 9, 12],
+      "group": "difficulty",
+      "fixture": "d-04-native-runtime.json",
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
     {
       "id": "D-05",
       "stages": [9, 13, 14],
@@ -558,7 +952,14 @@
       "authoredFixture": "stage-5-bootstrap.json",
       "drivers": ["pure", "runtime"]
     },
-    { "id": "DBG-02", "stages": [6, 13], "group": "debug", "fixture": null, "authoredFixture": "controller-contract-scenarios.json", "drivers": ["pure"] },
+    {
+      "id": "DBG-02",
+      "stages": [6, 13],
+      "group": "debug",
+      "fixture": null,
+      "authoredFixture": "controller-contract-scenarios.json",
+      "drivers": ["pure"]
+    },
     {
       "id": "DBG-03",
       "stages": [5, 13],
@@ -583,6 +984,12 @@
       "authoredFixture": "stage-5-bootstrap.json",
       "drivers": ["pure", "runtime"]
     },
-    { "id": "DBG-06", "stages": [13, 15], "group": "debug", "fixture": "dbg-06-native-runtime.json", "drivers": ["runtime"] }
+    {
+      "id": "DBG-06",
+      "stages": [13, 15],
+      "group": "debug",
+      "fixture": "dbg-06-native-runtime.json",
+      "drivers": ["runtime"]
+    }
   ]
 }

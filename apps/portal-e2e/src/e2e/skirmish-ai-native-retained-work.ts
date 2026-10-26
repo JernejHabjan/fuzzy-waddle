@@ -38,20 +38,61 @@ export async function retainNativeSceneWork(
       if (candidate && paid) { production = candidate; item = paid; break; }
     }
     if (requirePaidQueue && (!production || !item?.productionData)) throw new Error("retained_original_paid_queue_missing");
-    let pathSettled = false;
+    let pathSettled = false, sceneShutdownObserved = false, sceneDestroyObserved = false, sceneSleepObserved = false;
+    const sceneEvents = scene.events;
+    const systemsEvents = scene.sys.events;
+    const onShutdownProbe = () => { sceneShutdownObserved = true; };
+    const onDestroyProbe = () => { sceneDestroyObserved = true; };
+    const onSleepProbe = () => { sceneSleepObserved = true; };
+    scene.events.once("shutdown", onShutdownProbe);
+    scene.events.once("destroy", onDestroyProbe);
+    scene.events.once("sleep", onSleepProbe);
+    const removeSceneProbes = () => {
+      scene.events.off("shutdown", onShutdownProbe);
+      scene.events.off("destroy", onDestroyProbe);
+      scene.events.off("sleep", onSleepProbe);
+    };
+    const shutdownObserver = scene.onShutdown.subscribe(() => { sceneShutdownObserved = true; });
     const actor = pathActorId ? index.getActorById(pathActorId) : undefined;
     if (pathActorId && (!actor || !navigation)) throw new Error("retained_original_path_owner_missing");
     const pending = actor && navigation ? navigation.findPathFromGameObjectToTile(actor, { x: 19, y: 27 })
       .then((result) => { pathSettled = true; return result; }) : null;
     await Promise.resolve();
     const pathWasPending = !!pending && !pathSettled;
-    if (pathActorId && !pathWasPending) throw new Error("retained_native_query_not_pending");
+    if (pathActorId && !pathWasPending) {
+      removeSceneProbes();
+      shutdownObserver.unsubscribe();
+      const observed = realm.__fuzzyWaddleAiRuntimeBrowserTestV1?.presetApplication?.eventResults
+        .map((event) => `${event.id}@${event.tick}`).join(",") ?? "missing";
+      throw new Error(`retained_native_query_not_pending:tick=${clock.currentTick}:events=${observed}:settled=${pathSettled}`);
+    }
+    if (!pathWasPending) {
+      removeSceneProbes();
+      shutdownObserver.unsubscribe();
+    }
     const originalPaidCommandId = item?.commandContext?.execution.commandId ?? null;
     realm.__nativeRetainedWork = async () => {
       const completionResults: (string | null)[] = [];
       if (production && item?.productionData) for (let attempt = 0; attempt < 2; attempt++)
         completionResults.push(production.handleProductionComplete(item.productionData, item));
-      const path = pending ? await pending : undefined;
+      let path: Awaited<typeof pending> | undefined, pathTimer: number | undefined;
+      if (pending) {
+        try {
+          path = await Promise.race([pending, new Promise<never>((_resolve, reject) => {
+            pathTimer = window.setTimeout(() => reject(new Error(
+              `retained_native_path_drain_timeout:active=${scene.sys.isActive()}:sleeping=${scene.sys.isSleeping()}:` +
+              `status=${scene.sys.settings.status}:tick=${clock.currentTick}:shutdown=${sceneShutdownObserved}:destroy=${sceneDestroyObserved}:` +
+              `sleep=${sceneSleepObserved}:sameSceneEmitter=${scene.events === sceneEvents}:` +
+              `sameSystemsEmitter=${scene.sys.events === systemsEvents}:sceneShutdownListeners=${sceneEvents.listenerCount("shutdown")}:` +
+              `sceneDestroyListeners=${sceneEvents.listenerCount("destroy")}`
+            )), 5000);
+          })]);
+        } finally {
+          if (pathTimer !== undefined) window.clearTimeout(pathTimer);
+          shutdownObserver.unsubscribe();
+          removeSceneProbes();
+        }
+      }
       // Redeliver through the actual old emitter. Shutdown must have removed every original subscriber.
       clock.tick$.next(clock.currentTick + 1);
       const result = { oldSceneInactive: !scene.sys.isActive(), oldTickObservers: clock.tick$.observers.length,

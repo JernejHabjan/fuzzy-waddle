@@ -3,8 +3,9 @@ import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-resul
 
 export type PressureVariant = Pick<
   RuntimeVariantResultV1,
-  "variantId" | "pressureBranch" | "initialWorldDigest" | "presetResourceStartCount" |
-  "presetInitialResourceBalances" | "initialWorkerCount" | "perturbations"
+  "variantId" | "pressureBranch" | "initialWorldDigest" | "initialOwnedActorCount" | "presetFixtureId" |
+  "presetCreatedActorNames" | "presetResourceStartCount" | "presetInitialResourceBalances" |
+  "initialWorkerCount" | "perturbations"
 > & {
   readonly checkpoints: readonly Pick<
     RuntimeCheckpointV1,
@@ -29,7 +30,13 @@ export function evaluateRuntimePressureResponse(variants: readonly PressureVaria
 
 function evaluatePressurePair(raid: PressureVariant, control: PressureVariant): string[] {
   const failures: string[] = [];
-  if (raid.initialWorldDigest !== control.initialWorldDigest) failures.push("pressure_initial_world_mismatch");
+  const sameNonRaidWorld =
+    raid.initialWorldDigest === control.initialWorldDigest ||
+    (raid.presetFixtureId === control.presetFixtureId &&
+      raid.initialOwnedActorCount === control.initialOwnedActorCount &&
+      raid.initialWorkerCount === control.initialWorkerCount &&
+      sameActorRosterExceptBanshees(raid.presetCreatedActorNames, control.presetCreatedActorNames));
+  if (!sameNonRaidWorld) failures.push("pressure_initial_world_mismatch");
   for (const variant of [raid, control]) {
     const balances = variant.presetInitialResourceBalances[2];
     if (variant.presetResourceStartCount < 1 ||
@@ -75,4 +82,9 @@ function evaluatePressurePair(raid: PressureVariant, control: PressureVariant): 
     failures.push("pressure_control_no_growth");
   }
   return failures;
+}
+
+function sameActorRosterExceptBanshees(raid: readonly string[], control: readonly string[]): boolean {
+  const normalize = (actors: readonly string[]) => actors.filter((actor) => actor !== "Banshee").sort();
+  return JSON.stringify(normalize(raid)) === JSON.stringify(normalize(control));
 }

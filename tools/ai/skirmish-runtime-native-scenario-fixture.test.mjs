@@ -93,6 +93,32 @@ test("authority and priority bindings reject erased consumer faults and altered 
   }
 });
 
+test("H-06/H-07 keep the receipt fault active through their first native production demand", () => {
+  for (const id of ["H-06", "H-07"]) {
+    const fixture = nativeScenarioFixture(id), identities = new Map();
+    for (const variant of fixture.recipe.variants) {
+      assert.equal(variant.presetWorld.receiptFault.commandKind, "production");
+      assert.equal(variant.presetWorld.receiptFault.throughTick, 1800);
+      const branch = fixture.assertions[id].requiredNativeScenario.branchByVariant[variant.id];
+      identities.set(variant.aiFaction, [...(identities.get(variant.aiFaction) ?? []), variant.presetWorld.fixtureId]);
+      if (id === "H-06" && branch === "rejected") assert.equal(variant.presetWorld.receiptFault.contendQueue, true);
+      if (id === "H-07" && branch === "destroyed") assert.equal(variant.presetWorld.receiptFault.destroyOutput, true);
+    }
+    for (const fixtureIds of identities.values()) assert.equal(new Set(fixtureIds).size, 1);
+  }
+});
+
+test("H-30 holds the faction's late native queue command and samples after release", () => {
+  const fixture = nativeScenarioFixture("H-30"), contract = fixture.assertions["H-30"].requiredNativeScenario;
+  assert.equal(contract.latestTick, 4000);
+  assert.ok(fixture.recipe.checkpointTicks.includes(4000));
+  for (const variant of fixture.recipe.variants) {
+    assert.equal(variant.presetWorld.receiptFault.commandKind, variant.aiFaction === "Skaduwee" ? "production" : "research");
+    assert.equal(variant.presetWorld.receiptFault.throughTick, variant.aiFaction === "Skaduwee" ? 1800 : 2800);
+    assert.equal(variant.presetWorld.brainFault.throughTick, 800);
+  }
+});
+
 test("D-01 binds each actual lobby policy in both factions and rejects a relabelled Normal fallback", () => {
   const fixture = nativeScenarioFixture("D-01"), contract = fixture.assertions["D-01"].requiredNativeScenario;
   assert.equal(fixture.recipe.variants.length, 6);
@@ -254,6 +280,10 @@ test("H-32 binds real relay promotion, one retained realm and independent pendin
   assert.equal(fixture.recipe.requiresMultiplayer, true);
   assert.equal(fixture.recipe.variants.length, 8);
   for (const faction of ["Tivara", "Skaduwee"]) {
+    const pending = fixture.recipe.variants.find((variant) => variant.aiFaction === faction &&
+      fixture.assertions["H-32"].requiredNativeScenario.branchByVariant[variant.id] === "pending_path");
+    assert.deepEqual(pending.presetWorld.routeOutages, [{ id: "churn-stable-query", fromTick: 1,
+      throughTick: 1001, fixtureActorIds: ["army-0"], mode: "pending" }]);
     const host = fixture.recipe.variants.find((variant) => variant.aiFaction === faction &&
       fixture.assertions["H-32"].requiredNativeScenario.branchByVariant[variant.id] === "host_replacement");
     assert.equal(host.presetWorld, undefined);
@@ -330,7 +360,12 @@ test("mission bindings cannot erase native transport, outages, team controls or 
 });
 
 test("unsupported naval and diplomacy content is explicit rather than silently invented", () => {
+  const waterOnly = nativeScenarioFixture("DOMAIN-01");
+  assert.deepEqual(waterOnly.recipe.variants.map((variant) =>
+    waterOnly.assertions["DOMAIN-01"].requiredNativeScenario.branchByVariant[variant.id]), ["irrelevant", "irrelevant"]);
   const naval = nativeScenarioFixture("DOMAIN-02");
+  assert.ok(naval.recipe.variants.some((variant) =>
+    naval.assertions["DOMAIN-02"].requiredNativeScenario.branchByVariant[variant.id] === "coast"));
   assert.ok(naval.capabilityLimits.length);
   assert.deepEqual(naval.recipe.variants.filter((v) => v.aiFaction === "Skaduwee").map((v) =>
     naval.assertions["DOMAIN-02"].requiredNativeScenario.branchByVariant[v.id]), ["unsupported"]);

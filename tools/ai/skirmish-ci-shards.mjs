@@ -10,7 +10,9 @@ export function planSkirmishRuntimeShards(manifest, readFixture) {
     seen.add(row.id);
     if (!row.drivers?.includes("runtime")) continue;
     if (row.runtimeSupport?.status === "deferred_content") {
-      if (row.fixture !== null || row.runtimeSupport.issue !== 822 || !row.runtimeSupport.reason) {
+      if (row.fixture !== null || !Number.isSafeInteger(row.runtimeSupport.issue) ||
+        row.runtimeSupport.issue <= 0 || typeof row.runtimeSupport.reason !== "string" ||
+        row.runtimeSupport.reason.trim().length === 0) {
         throw new Error(`invalid_deferred_content:${row.id}`);
       }
       deferred.push({ id: row.id, issue: row.runtimeSupport.issue, reason: row.runtimeSupport.reason });

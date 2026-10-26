@@ -31,8 +31,10 @@ export function runtimeControlTransitFailures(
       command.tick !== control.tick) return [`native_transit_request_boundary_invalid:${controlId}`];
   if (command.playerNumber !== capture.playerNumber || command.actorIds.length !== 1 || command.actorIds[0] !== actorId ||
       command.execution?.source !== "human" || !control.control.outcomes.some((outcome) =>
-        outcome.commandId === command.execution?.commandId && outcome.reason === "applied" &&
-        ["applied", "active", "completed"].includes(outcome.kind)
+        outcome.commandId === command.execution?.commandId && (
+          outcome.reason === "applied" && ["applied", "active", "completed"].includes(outcome.kind) ||
+          outcome.kind === "dispatched" && outcome.reason === "accepted_for_dispatch"
+        )
       ) || control.control.outcomes.some((outcome) => ["failed", "rejected"].includes(outcome.kind))) {
     return [`native_transit_control_not_applied:${controlId}`];
   }

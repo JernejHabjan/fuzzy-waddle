@@ -1,20 +1,23 @@
 import type { Page } from "@playwright/test";
 import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
 import { digestRuntimeValue } from "./skirmish-ai-runtime-digest";
+import { writeFileSync } from "node:fs";
 
 export async function captureRuntimeStrategyCheckpoint(
   page: Page,
   aiPlayerNumber: number,
   captureFairness = false
 ): Promise<Partial<RuntimeCheckpointV1>> {
-  const { fairnessObservation, ...checkpoint } = await page.evaluate(
-    ({ playerNumber, captureFairness }) => {
+  const diagnosticTick = Number(process.env.AI_SKIRMISH_CAPTURE_DECISION_TICK ?? -1);
+  const { fairnessObservation, diagnosticInputs, ...checkpoint } = await page.evaluate(
+    ({ playerNumber, captureFairness, diagnosticTick }) => {
       const parts = window.__fuzzyWaddleAiRuntimePartsV1?.(playerNumber);
       if (!parts) throw new Error("runtime_controller_unavailable");
       const observation = parts.controller.getCommittedObservation();
       const state = parts.controller.getBrainState();
       const catalog = parts.controller.getCommittedCapabilityCatalog();
       if (!observation || !state || !catalog) throw new Error("runtime_checkpoint_not_committed");
+      const tacticalCells = observation.map?.tacticalCells;
       const selfActors = observation.actors.filter(
         (actor) => actor.relation === "self" && actor.visibility === "owned"
       );
@@ -22,7 +25,7 @@ export async function captureRuntimeStrategyCheckpoint(
         catalog.entries
           .filter(
             (entry) =>
-              entry.gathers.length === 0 && entry.targetDomains.length > 0 && entry.movementDomains.includes("ground")
+              entry.gathers.length === 0 && entry.targetDomains.length > 0 && entry.movementDomains.length > 0
           )
           .map((entry) => entry.sourceObjectName)
       );
@@ -34,27 +37,44 @@ export async function captureRuntimeStrategyCheckpoint(
       const score = parts.getScore(playerNumber);
       const decisions = parts.controller.getBrainDebugSnapshot()?.decisions ?? [];
       return {
+        diagnosticInputs: observation.tick === diagnosticTick ? { observation, state, catalog } : undefined,
         decisionIntentsTruncated: decisions.length > 64,
         fairnessObservation: captureFairness ? observation : undefined,
         decisionIntents: decisions.slice(0, 64).map((decision) => decision.intent),
         profileDifficulty: state.profileDifficulty ?? null,
+        opponentAssets: [
+          ...new Set(
+            observation.actors.flatMap((actor) =>
+              actor.relation === "enemy" && actor.owner !== null ? [actor.owner] : []
+            )
+          )
+        ]
+          .sort((left, right) => left - right)
+          .map((owner) => ({ playerNumber: owner, actorNames: [...parts.getRawOwnedActorNames(owner)] })),
         strategyStance: state.strategy.stance,
         strategyAssessment: state.strategy.assessment
           ? {
               choice: state.strategy.assessment.choice,
               reason: state.strategy.assessment.reason,
+              ...(state.strategy.assessment.selectionSource
+                ? { selectionSource: state.strategy.assessment.selectionSource }
+                : {}),
               targetActorId: state.strategy.assessment.targetActorId,
               routeDomain: state.strategy.assessment.routeDomain ?? null,
               readyForce: state.strategy.assessment.readyForce,
-              requiredForce: state.strategy.assessment.requiredForce
+              requiredForce: state.strategy.assessment.requiredForce,
+              alternatives: state.strategy.assessment.alternatives
             }
           : null,
         visibleEnemyFacts: observation.actors
           .filter((actor) => actor.relation !== "self")
           .map((actor) => ({
+            actorId: actor.actorId,
             objectName: actor.objectName,
+            owner: actor.owner,
             relation: actor.relation,
             visibility: actor.visibility,
+            mainBuilding: actor.mainBuilding?.status === "known" ? actor.mainBuilding.value : null,
             position: actor.logicalPosition.status === "known" ? actor.logicalPosition.value : null,
             healthPermille: actor.healthPermille?.status === "known" ? actor.healthPermille.value : null
           }))
@@ -88,7 +108,22 @@ export async function captureRuntimeStrategyCheckpoint(
         militaryActors: selfActors
           .filter((actor) => militaryNames.has(actor.objectName))
           .filter((actor) => actor.constructionProgress?.status !== "known" || actor.constructionProgress.value >= 100)
-          .map((actor) => ({ actorId: actor.actorId, objectName: actor.objectName }))
+          .map((actor) => ({
+            actorId: actor.actorId,
+            objectName: actor.objectName,
+            position: actor.logicalPosition.status === "known" ? actor.logicalPosition.value : null,
+            accessNodeId: actor.accessNodeId.status === "known" ? actor.accessNodeId.value : null,
+            activeOrder:
+              actor.activeOrder?.status === "known"
+                ? actor.activeOrder.value
+                  ? {
+                      orderType: actor.activeOrder.value.orderType,
+                      targetActorId: actor.activeOrder.value.targetActorId,
+                      targetPosition: actor.activeOrder.value.targetPosition ?? null
+                    }
+                  : null
+                : null
+          }))
           .sort((left, right) => left.actorId.localeCompare(right.actorId)),
         militaryProducerNames: selfActors
           .filter(
@@ -138,6 +173,17 @@ export async function captureRuntimeStrategyCheckpoint(
               .sort(),
             actorCount: squad.actorIds.length,
             objectiveId: squad.objectiveId,
+            tacticalTargetActorId: squad.tactics?.targetActorId ?? null,
+            engagementRatioPermille: squad.tactics?.engagementRatioPermille ?? null,
+            engagementConfidencePermille: squad.tactics?.confidencePermille ?? null,
+            assignedPositions: (squad.tactics?.assignedPositions ?? []).map((assignment) => ({
+              actorId: assignment.actorId,
+              position: assignment.position,
+              groundAccessNodeId:
+                tacticalCells?.find(
+                  (cell) => cell.position.x === assignment.position.x && cell.position.y === assignment.position.y
+                )?.groundAccessNodeId ?? null
+            })),
             createdTick: squad.lifecycle?.createdTick ?? null,
             lastUsefulEffectTick: squad.lifecycle?.lastUsefulEffectTick ?? null,
             terminalReason: squad.lifecycle?.terminalReason ?? null
@@ -197,8 +243,11 @@ export async function captureRuntimeStrategyCheckpoint(
         gameResult: score.gameResult
       };
     },
-    { playerNumber: aiPlayerNumber, captureFairness }
+    { playerNumber: aiPlayerNumber, captureFairness, diagnosticTick }
   );
+  if (diagnosticInputs && process.env.AI_SKIRMISH_CAPTURE_DECISION_PATH) {
+    writeFileSync(process.env.AI_SKIRMISH_CAPTURE_DECISION_PATH, JSON.stringify(diagnosticInputs));
+  }
   return {
     ...checkpoint,
     ...(fairnessObservation ? { permittedObservationDigest: digestRuntimeValue(fairnessObservation) } : {})

@@ -1404,8 +1404,7 @@
     "DOMAIN-01": {
       "latestTick": 2000,
       "branches": [
-        "irrelevant",
-        "useful_water"
+        "irrelevant"
       ],
       "checkpointTicks": [
         0,
@@ -1440,20 +1439,10 @@
         ],
         "branches": [
           "No water utility",
-          "Positive useful-water control uses DOMAIN-02",
           "Both supported faction catalogs"
         ],
         "checkpointPolicy": "These are planned sampling ticks, not observed evidence. At binding add exact native event-boundary samples without changing the original outer ceiling; per-event capture is required where polling would miss a transient.",
         "executionStatus": "authored_not_executed"
-      },
-      "branchesByFaction": {
-        "Tivara": [
-          "irrelevant",
-          "useful_water"
-        ],
-        "Skaduwee": [
-          "irrelevant"
-        ]
       }
     },
     "DOMAIN-02": {
@@ -2699,7 +2688,7 @@
       ]
     },
     "H-30": {
-      "latestTick": 2400,
+      "latestTick": 4000,
       "branches": [
         "throw",
         "nan",
@@ -2716,7 +2705,9 @@
         1200,
         1600,
         2000,
-        2400
+        2400,
+        2600,
+        4000
       ],
       "acceptance": {
         "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",

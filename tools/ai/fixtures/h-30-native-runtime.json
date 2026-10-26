@@ -56,7 +56,9 @@
       1200,
       1600,
       2000,
-      2400
+      2400,
+      2600,
+      4000
     ],
     "variants": [
       {
@@ -466,9 +468,9 @@
             "id": "fault-reconciliation-control",
             "playerNumber": 2,
             "fromTick": 1,
-            "throughTick": 600,
+            "throughTick": 2800,
             "maximumCommands": 1,
-            "commandKind": "production",
+            "commandKind": "research",
             "holdHistory": true
           }
         }
@@ -880,9 +882,9 @@
             "id": "fault-reconciliation-control",
             "playerNumber": 2,
             "fromTick": 1,
-            "throughTick": 600,
+            "throughTick": 2800,
             "maximumCommands": 1,
-            "commandKind": "production",
+            "commandKind": "research",
             "holdHistory": true
           }
         }
@@ -1294,9 +1296,9 @@
             "id": "fault-reconciliation-control",
             "playerNumber": 2,
             "fromTick": 1,
-            "throughTick": 600,
+            "throughTick": 2800,
             "maximumCommands": 1,
-            "commandKind": "production",
+            "commandKind": "research",
             "holdHistory": true
           }
         }
@@ -1708,9 +1710,9 @@
             "id": "fault-reconciliation-control",
             "playerNumber": 2,
             "fromTick": 1,
-            "throughTick": 600,
+            "throughTick": 2800,
             "maximumCommands": 1,
-            "commandKind": "production",
+            "commandKind": "research",
             "holdHistory": true
           }
         }
@@ -2122,9 +2124,9 @@
             "id": "fault-reconciliation-control",
             "playerNumber": 2,
             "fromTick": 1,
-            "throughTick": 600,
+            "throughTick": 2800,
             "maximumCommands": 1,
-            "commandKind": "production",
+            "commandKind": "research",
             "holdHistory": true
           }
         }
@@ -2536,7 +2538,7 @@
             "id": "fault-reconciliation-control",
             "playerNumber": 2,
             "fromTick": 1,
-            "throughTick": 600,
+            "throughTick": 1800,
             "maximumCommands": 1,
             "commandKind": "production",
             "holdHistory": true
@@ -2950,7 +2952,7 @@
             "id": "fault-reconciliation-control",
             "playerNumber": 2,
             "fromTick": 1,
-            "throughTick": 600,
+            "throughTick": 1800,
             "maximumCommands": 1,
             "commandKind": "production",
             "holdHistory": true
@@ -3364,7 +3366,7 @@
             "id": "fault-reconciliation-control",
             "playerNumber": 2,
             "fromTick": 1,
-            "throughTick": 600,
+            "throughTick": 1800,
             "maximumCommands": 1,
             "commandKind": "production",
             "holdHistory": true
@@ -3778,7 +3780,7 @@
             "id": "fault-reconciliation-control",
             "playerNumber": 2,
             "fromTick": 1,
-            "throughTick": 600,
+            "throughTick": 1800,
             "maximumCommands": 1,
             "commandKind": "production",
             "holdHistory": true
@@ -4192,7 +4194,7 @@
             "id": "fault-reconciliation-control",
             "playerNumber": 2,
             "fromTick": 1,
-            "throughTick": 600,
+            "throughTick": 1800,
             "maximumCommands": 1,
             "commandKind": "production",
             "holdHistory": true
@@ -4203,7 +4205,7 @@
   },
   "assertions": {
     "H-30": {
-      "maximumTick": 2400,
+      "maximumTick": 4000,
       "minimumDecisions": 1,
       "minimumAppliedCommands": 1,
       "requiredAiFactions": [
@@ -4213,7 +4215,7 @@
       "requiredNativeScenario": {
         "schemaVersion": 1,
         "scenarioId": "H-30",
-        "latestTick": 2400,
+        "latestTick": 4000,
         "humanPlayerNumber": 1,
         "branchByVariant": {
           "h-30-tivara-throw": "throw",

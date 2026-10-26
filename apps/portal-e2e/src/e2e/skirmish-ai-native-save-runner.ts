@@ -32,24 +32,35 @@ export async function runNativeSaveVariant(
   let saved: Awaited<ReturnType<typeof captureNativeContinuationBoundary>> | undefined;
   let premises: NativeSaveProof["premises"] | undefined;
   let nativeSave: NativeSaveProof | undefined;
-  const result = await runVariant(browser, fixture, variant, request.seed, request.scenarioIds,
+  const captureSaveBoundary = async (page: Page) => {
+    saved = await captureNativeContinuationBoundary(page, player);
+    const capture = await captureRuntimeProductionAuthority(page, player);
+    const siteId = await page.evaluate(() => (window as unknown as {
+      __fuzzyWaddleAiRuntimeBrowserTestV1?: AiRuntimeBrowserTestHostV1
+    }).__fuzzyWaddleAiRuntimeBrowserTestV1?.presetApplication?.createdActorIds["save-paid-site"]);
+    premises = nativeSavePremises(capture, saveTick, siteId);
+    save = await saveNativeMatch(page, player);
+    if (save.tick !== saved.owner.tick) throw new Error("native_save_clock_advanced_during_snapshot");
+    await armNativeDecisionTrace(page, player);
+  };
+  const runVariantInput = branch === "before_apply"
+    ? { ...variant, checkpointTicks: [...new Set([...(variant.checkpointTicks ?? fixture.recipe.checkpointTicks), 40])]
+      .sort((left, right) => left - right) }
+    : variant;
+  const result = await runVariant(browser, fixture, runVariantInput, request.seed, request.scenarioIds,
     request.sourceRevision, request.fixtureDigest, async (page, index, checkpoint) => {
       if (index < 0 || checkpoint?.tick !== saveTick) return;
-      saved = await captureNativeContinuationBoundary(page, player);
-      const capture = await captureRuntimeProductionAuthority(page, player);
-      const siteId = await page.evaluate(() => (window as unknown as {
-        __fuzzyWaddleAiRuntimeBrowserTestV1?: AiRuntimeBrowserTestHostV1
-      }).__fuzzyWaddleAiRuntimeBrowserTestV1?.presetApplication?.createdActorIds["save-paid-site"]);
-      premises = nativeSavePremises(capture, saveTick, siteId);
-      save = await saveNativeMatch(page, player);
-      if (save.tick !== saved.owner.tick) throw new Error("native_save_clock_advanced_during_snapshot");
-      await armNativeDecisionTrace(page, player);
+      await captureSaveBoundary(page);
     }, async (page) => {
       if (!save || !saved || !premises) throw new Error("native_save_exact_original_boundary_missing");
       await beforeReplay?.(page);
       nativeSave = await replayNativeSavedContinuation(page, player, branch, request.sourceRevision,
         request.fixtureDigest, save, saved, premises, branch === "pause_speed" ? 2 : 1);
       await afterContinuation?.(page, nativeSave);
+    }, undefined, async (page, _index, targetTick) => {
+      if (branch !== "before_apply" || targetTick !== saveTick) return false;
+      await captureSaveBoundary(page);
+      return true;
     });
   if (!nativeSave) throw new Error("native_save_continuation_not_captured");
   // The sealed raw observer stays local; it supplies premises, not a large model-facing report.

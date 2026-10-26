@@ -1,6 +1,6 @@
 import { strict as assert } from "node:assert";
 import { test } from "node:test";
-import { summarizePureScenarioEvidence } from "./pure-scenario-evidence.mjs";
+import { pureJestInvocation, summarizePureScenarioEvidence } from "./pure-scenario-evidence.mjs";
 import { readPureFixtureCase } from "./pure-fixture-cases.mjs";
 
 test("requires a passing executed assertion naming every requested pure scenario", () => {
@@ -20,6 +20,17 @@ test("requires a passing executed assertion naming every requested pure scenario
     "PRO-03"
   ]);
   assert.equal(summarizePureScenarioEvidence(null, ["ECO-01"]).missingScenarioIds[0], "ECO-01");
+});
+
+test("pure Jest execution invokes the JavaScript entry point without a shell", () => {
+  assert.deepEqual(pureJestInvocation(["exec", "jest", "spec.ts"], "node.exe"), {
+    command: "node.exe",
+    args: ["node_modules/jest/bin/jest.js", "spec.ts"]
+  });
+  assert.deepEqual(pureJestInvocation(["exec", "jest", "--testPathPatterns=(a|b)\\.spec.ts$"], "node.exe"), {
+    command: "node.exe",
+    args: ["node_modules/jest/bin/jest.js", "--testPathPatterns=(a|b)\\.spec.ts$"]
+  });
 });
 
 const file = "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/example.spec.ts";

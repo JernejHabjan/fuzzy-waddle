@@ -1,4 +1,5 @@
 import { isRecord } from "./skirmish-matrix-io.mjs";
+import { readFileSync } from "node:fs";
 
 function requiredText(value, label) {
   if (typeof value !== "string" || value.length === 0) throw new Error(`repair_report_missing_${label}`);
@@ -34,7 +35,9 @@ function failureRecord(report, path, source, scenario, failure) {
   const separator = failure.indexOf(":");
   const variantId = separator >= 0 ? failure.slice(0, separator) : "unknown";
   const code = separator >= 0 ? failure.slice(separator + 1) : failure;
-  const variant = scenario.variants?.find((candidate) => candidate.variantId === variantId);
+  const variant = scenario.variants
+    ?.map((candidate) => resolveVariant(report.runtime, candidate))
+    .find((candidate) => candidate?.variantId === variantId);
   const classification = classify(code, report);
   const map = variant?.mapLabel ?? source.map;
   return {
@@ -53,14 +56,41 @@ function failureRecord(report, path, source, scenario, failure) {
   };
 }
 
+function resolveVariant(runtime, reference) {
+  if (isRecord(reference)) return reference;
+  if (
+    !Number.isSafeInteger(reference) ||
+    runtime?.artifactEncoding !== "external-runtime-variants-v1" ||
+    !runtime.__artifactSourcePath ||
+    !runtime.artifactVariantFiles?.[reference]
+  )
+    return undefined;
+  try {
+    return JSON.parse(
+      readFileSync(`${runtime.__artifactSourcePath}.variants/${runtime.artifactVariantFiles[reference]}`, "utf8")
+    );
+  } catch {
+    return undefined;
+  }
+}
+
 function validateReport(report, path, shared, fixtures, rows) {
   if (!isRecord(report) || report.schemaVersion !== 1) throw new Error(`repair_report_invalid_schema:${path}`);
-  if (report.diagnosticSelection || report.runtime?.diagnosticSelection ||
-      !["passed", "failed"].includes(report.status)) throw new Error(`repair_report_not_full_coverage:${path}`);
+  if (
+    report.diagnosticSelection ||
+    report.runtime?.diagnosticSelection ||
+    !["passed", "failed"].includes(report.status)
+  )
+    throw new Error(`repair_report_not_full_coverage:${path}`);
   for (const field of ["runId", "candidate", "manifestVersion"]) requiredText(report[field], field);
   requiredText(report.fixtureDigest, "fixture_digest");
-  if (!Array.isArray(report.rows) || report.rows.length === 0 || !Array.isArray(report.scenarioSources) ||
-      !Array.isArray(report.fixtureIdentityDigests)) throw new Error(`repair_report_missing_membership:${path}`);
+  if (
+    !Array.isArray(report.rows) ||
+    report.rows.length === 0 ||
+    !Array.isArray(report.scenarioSources) ||
+    !Array.isArray(report.fixtureIdentityDigests)
+  )
+    throw new Error(`repair_report_missing_membership:${path}`);
   if (shared) {
     for (const field of ["runId", "candidate", "dirtySourceDigest", "manifestVersion"]) {
       if (report[field] !== shared[field]) throw new Error(`repair_report_provenance_mismatch:${field}:${path}`);
@@ -68,16 +98,27 @@ function validateReport(report, path, shared, fixtures, rows) {
   }
   const sources = new Map();
   for (const source of report.scenarioSources) {
-    if (!isRecord(source) || typeof source.scenarioId !== "string" || typeof source.reference !== "string" ||
-        typeof source.group !== "string" || typeof source.map !== "string" || sources.has(source.scenarioId)) {
+    if (
+      !isRecord(source) ||
+      typeof source.scenarioId !== "string" ||
+      typeof source.reference !== "string" ||
+      typeof source.group !== "string" ||
+      typeof source.map !== "string" ||
+      sources.has(source.scenarioId)
+    ) {
       throw new Error(`repair_report_invalid_source:${path}`);
     }
     sources.set(source.scenarioId, source);
   }
   const localFixtures = new Map();
   for (const fixture of report.fixtureIdentityDigests) {
-    if (!isRecord(fixture) || typeof fixture.reference !== "string" || typeof fixture.digest !== "string" ||
-        localFixtures.has(fixture.reference)) throw new Error(`repair_report_invalid_fixture:${path}`);
+    if (
+      !isRecord(fixture) ||
+      typeof fixture.reference !== "string" ||
+      typeof fixture.digest !== "string" ||
+      localFixtures.has(fixture.reference)
+    )
+      throw new Error(`repair_report_invalid_fixture:${path}`);
     if (fixtures.has(fixture.reference) && fixtures.get(fixture.reference) !== fixture.digest)
       throw new Error(`repair_report_fixture_conflict:${fixture.reference}`);
     localFixtures.set(fixture.reference, fixture.digest);
@@ -90,12 +131,18 @@ function validateReport(report, path, shared, fixtures, rows) {
     rows.add(id);
   }
   const referencedFixtures = new Set([...sources.values()].map((source) => source.reference));
-  if (sources.size !== report.rows.length || localFixtures.size === 0 ||
-      [...localFixtures.keys()].some((reference) => !referencedFixtures.has(reference)))
+  if (
+    sources.size !== report.rows.length ||
+    localFixtures.size === 0 ||
+    [...localFixtures.keys()].some((reference) => !referencedFixtures.has(reference))
+  )
     throw new Error(`repair_report_unexpected_membership:${path}`);
-  if (report.runtime && (!Array.isArray(report.runtime.scenarios) ||
+  if (
+    report.runtime &&
+    (!Array.isArray(report.runtime.scenarios) ||
       report.runtime.scenarios.some((scenario) => !localRows.has(scenario.scenarioId)) ||
-      new Set(report.runtime.scenarios.map((scenario) => scenario.scenarioId)).size !== report.runtime.scenarios.length)) {
+      new Set(report.runtime.scenarios.map((scenario) => scenario.scenarioId)).size !== report.runtime.scenarios.length)
+  ) {
     throw new Error(`repair_report_invalid_runtime:${path}`);
   }
   return sources;
@@ -133,18 +180,32 @@ export function buildRepairReport(entries, options = {}) {
       }
     }
     const processFailed = report.process?.exitCode !== undefined && report.process.exitCode !== 0;
-    if (hasWork && (report.status !== "passed" || processFailed) && report.rows.every((id) => scenarios.get(id)?.passed)) {
+    if (
+      hasWork &&
+      (report.status !== "passed" || processFailed) &&
+      report.rows.every((id) => scenarios.get(id)?.passed)
+    ) {
       const id = report.rows[0];
       if (id) {
         passed -= 1;
-        failures.push(failureRecord(report, path, sources.get(id), { scenarioId: id },
-          `unknown:process_failed:${brief(report.reason ?? report.process?.exitCode)}`));
+        failures.push(
+          failureRecord(
+            report,
+            path,
+            sources.get(id),
+            { scenarioId: id },
+            `unknown:process_failed:${brief(report.reason ?? report.process?.exitCode)}`
+          )
+        );
       }
     }
   }
   const expectedIds = options.expectedIds ?? [...rows];
-  if (!Array.isArray(expectedIds) || new Set(expectedIds).size !== expectedIds.length ||
-      expectedIds.some((id) => typeof id !== "string" || !/^[A-Z]+-[0-9]{2}$/.test(id))) {
+  if (
+    !Array.isArray(expectedIds) ||
+    new Set(expectedIds).size !== expectedIds.length ||
+    expectedIds.some((id) => typeof id !== "string" || !/^[A-Z]+-[0-9]{2}$/.test(id))
+  ) {
     throw new Error("repair_report_invalid_expected_rows");
   }
   const expected = new Set(expectedIds);
@@ -153,8 +214,15 @@ export function buildRepairReport(entries, options = {}) {
   for (const id of expectedIds) {
     if (rows.has(id)) continue;
     unexecuted += 1;
-    failures.push(failureRecord(shared, "tools/ai/fixtures/skirmish-v1.json",
-      { group: "selection", map: "unassigned" }, { scenarioId: id }, "unknown:missing_required_row"));
+    failures.push(
+      failureRecord(
+        shared,
+        "tools/ai/fixtures/skirmish-v1.json",
+        { group: "selection", map: "unassigned" },
+        { scenarioId: id },
+        "unknown:missing_required_row"
+      )
+    );
   }
   const groups = new Map();
   for (const failure of failures) {
@@ -162,8 +230,9 @@ export function buildRepairReport(entries, options = {}) {
     group.push(failure);
     groups.set(failure.key, group);
   }
-  const sorted = [...groups.entries()].sort((left, right) => right[1].length - left[1].length ||
-    left[0].localeCompare(right[0]));
+  const sorted = [...groups.entries()].sort(
+    (left, right) => right[1].length - left[1].length || left[0].localeCompare(right[0])
+  );
   const base = {
     schemaVersion: 1,
     status: failures.length ? "failed" : "passed",
@@ -171,9 +240,15 @@ export function buildRepairReport(entries, options = {}) {
     candidate: shared.candidate,
     dirtySourceDigest: shared.dirtySourceDigest ?? null,
     manifestVersion: shared.manifestVersion,
-    totals: { expected: expectedIds.length, executed: rows.size - runtimeUnexecuted,
-      passed, failed: rows.size - passed - runtimeUnexecuted,
-      unexecuted, failureOccurrences: failures.length, clusters: sorted.length },
+    totals: {
+      expected: expectedIds.length,
+      executed: rows.size - runtimeUnexecuted,
+      passed,
+      failed: rows.size - passed - runtimeUnexecuted,
+      unexecuted,
+      failureOccurrences: failures.length,
+      clusters: sorted.length
+    },
     artifacts: entries.map(({ path }) => path),
     clusters: [],
     omittedClusters: 0,
@@ -182,21 +257,32 @@ export function buildRepairReport(entries, options = {}) {
   for (const [key, members] of sorted) {
     const first = members[0];
     const cluster = {
-      key: brief(key, 220), classification: first.classification, count: members.length,
+      key: brief(key, 220),
+      classification: first.classification,
+      count: members.length,
       affectedIds: [...new Set(members.map((member) => member.scenarioId))].slice(0, 40),
       omittedIds: Math.max(0, new Set(members.map((member) => member.scenarioId)).size - 40),
-      representative: { scenarioId: first.scenarioId, variantId: first.variantId, seed: first.seed,
+      representative: {
+        scenarioId: first.scenarioId,
+        variantId: first.variantId,
+        seed: first.seed,
         repetition: first.repetition,
-        failedPredicate: first.code, lastObserved: first.observed, stopReason: first.stopReason,
+        failedPredicate: first.code,
+        lastObserved: first.observed,
+        stopReason: first.stopReason,
         artifact: first.path,
-        rerunScenario: `node tools/ai/run-skirmish-matrix.mjs --scenario ${first.scenarioId} --mode runtime` +
+        rerunScenario:
+          `node tools/ai/run-skirmish-matrix.mjs --scenario ${first.scenarioId} --mode runtime` +
           (Number.isSafeInteger(first.seed) ? ` --seed ${first.seed}` : ""),
-        rerunVariant: /^[A-Za-z0-9._-]{1,100}$/.test(first.variantId) && first.variantId !== "unknown" &&
+        rerunVariant:
+          /^[A-Za-z0-9._-]{1,100}$/.test(first.variantId) &&
+          first.variantId !== "unknown" &&
           Number.isSafeInteger(first.repetition)
-          ? `node tools/ai/run-skirmish-matrix.mjs --scenario ${first.scenarioId} --mode runtime` +
-            ` --variant ${first.variantId} --repetition ${first.repetition}` +
-            (Number.isSafeInteger(first.seed) ? ` --seed ${first.seed}` : "")
-          : null }
+            ? `node tools/ai/run-skirmish-matrix.mjs --scenario ${first.scenarioId} --mode runtime` +
+              ` --variant ${first.variantId} --repetition ${first.repetition}` +
+              (Number.isSafeInteger(first.seed) ? ` --seed ${first.seed}` : "")
+            : null
+      }
     };
     const withCluster = { ...base, clusters: [...base.clusters, cluster] };
     if (base.clusters.length >= maxClusters || Buffer.byteLength(JSON.stringify(withCluster)) > maxBytes) {
@@ -204,6 +290,7 @@ export function buildRepairReport(entries, options = {}) {
       base.omittedFailureOccurrences += members.length;
     } else base.clusters.push(cluster);
   }
-  if (Buffer.byteLength(JSON.stringify(base)) > maxBytes) throw new Error("repair_report_limit_too_small_for_provenance");
+  if (Buffer.byteLength(JSON.stringify(base)) > maxBytes)
+    throw new Error("repair_report_limit_too_small_for_provenance");
   return base;
 }

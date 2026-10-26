@@ -46,7 +46,7 @@ export function readHead() {
 }
 
 function readGitText(arguments_) {
-  const result = spawnSync("git", arguments_, { cwd: workspaceRoot, encoding: "utf8" });
+  const result = spawnSync("git", arguments_, { cwd: workspaceRoot, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
   if (result.status !== 0) throw new Error(`git_inspection_failed:${arguments_.join("_")}`);
   return result.stdout;
 }

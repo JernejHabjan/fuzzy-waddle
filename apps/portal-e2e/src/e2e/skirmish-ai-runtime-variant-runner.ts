@@ -26,7 +26,9 @@ export async function runVariant(
   fixtureDigest: string,
   debugProbe?: (page: Page, checkpointIndex: number, checkpoint?: RuntimeCheckpointV1) => Promise<void>,
   afterVariant?: (page: Page, result: RuntimeVariantResultV1) => Promise<void>,
-  beforeVariant?: (page: Page) => Promise<void>
+  beforeVariant?: (page: Page) => Promise<void>,
+  beforeCheckpoint?: (page: Page, checkpointIndex: number, targetTick: number) => Promise<boolean>,
+  beforeFinalize?: (page: Page) => Promise<void>
 ): Promise<RuntimeVariantResultV1> {
   const profiling = process.env.AI_SKIRMISH_PROFILE === "1";
   const variantStartedAt = performance.now();
@@ -70,7 +72,9 @@ export async function runVariant(
       (id) => ["PRO-03", "PRO-06", "PRO-07", "H-17", "H-18"].includes(id) || id.startsWith("TECH-")
     );
     const captureProduction =
-      fullProductionProof || variant.captureConstruction === true ||
+      fullProductionProof ||
+      process.env.AI_SKIRMISH_CAPTURE_MOVEMENT === "1" ||
+      variant.captureConstruction === true ||
       applicableScenarioIds.some((id) => ["ECO-05", "ECO-06", "H-16"].includes(id));
     const productionHorizons = applicableScenarioIds.flatMap((id) => {
       const contract =
@@ -79,8 +83,11 @@ export async function runVariant(
         fixture.assertions[id]?.requiredSupplyRecovery;
       return contract ? [contract.latestTick] : [];
     });
-    const productionHorizon = productionHorizons.length ? Math.max(...productionHorizons) :
-      variant.captureConstruction === true ? (variant.checkpointTicks ?? fixture.recipe.checkpointTicks).at(-1) : undefined;
+    const productionHorizon = productionHorizons.length
+      ? Math.max(...productionHorizons)
+      : variant.captureConstruction === true
+        ? (variant.checkpointTicks ?? fixture.recipe.checkpointTicks).at(-1)
+        : undefined;
     let productionCapture = captureProduction
       ? await captureRuntimeProductionAuthority(page, fixture.recipe.aiPlayerNumber, productionHorizon)
       : undefined;
@@ -117,6 +124,16 @@ export async function runVariant(
       await setSimulationState(page, fixture.recipe.aiPlayerNumber, "pause", fixture.recipe.simulationTimeScale);
       await waitForSettledDecision(page, fixture.recipe.aiPlayerNumber);
       const captureStartedAt = performance.now();
+      if (await beforeCheckpoint?.(page, index, targetTick)) {
+        if (profiling)
+          checkpointPhases.push({
+            targetTick,
+            advanceMs: Math.round(settleStartedAt - advanceStartedAt),
+            settleMs: Math.round(captureStartedAt - settleStartedAt),
+            captureMs: 0
+          });
+        continue;
+      }
       const checkpoint = await captureCheckpoint(
         page,
         fixture.recipe.aiPlayerNumber,
@@ -125,9 +142,12 @@ export async function runVariant(
       );
       checkpoints.push(checkpoint);
       // A terminal score does not seal its own native tick. Close that tick before reading early-terminal proof.
-      if (captureProduction && checkpoint.gameResult === "win" &&
-          applicableScenarioIds.some((id) => fixture.assertions[id]?.requireAiVictory) &&
-          (productionCapture?.frontiers?.closedThroughTick ?? -1) < checkpoint.tick)
+      if (
+        captureProduction &&
+        checkpoint.gameResult === "win" &&
+        applicableScenarioIds.some((id) => fixture.assertions[id]?.requireAiVictory) &&
+        (productionCapture?.frontiers?.closedThroughTick ?? -1) < checkpoint.tick
+      )
         await advanceRuntimeToTick(page, fixture, checkpoint.tick + 1, index);
       if (captureProduction)
         productionCapture = await captureRuntimeProductionAuthority(page, fixture.recipe.aiPlayerNumber);
@@ -168,6 +188,7 @@ export async function runVariant(
         }
       }
     }
+    await beforeFinalize?.(page);
     perturbations.push(...(await collectRuntimePresetEvents(page, variant)));
 
     const outcomeDigest = digestRuntimeValue({
@@ -224,7 +245,11 @@ async function advanceRuntimeToTick(
   targetTick: number,
   checkpointIndex: number
 ) {
-  if (fixture.recipe.fixedStepFrames) return advanceRuntimeFrames(page, fixture.recipe.aiPlayerNumber, targetTick);
+  if (fixture.recipe.fixedStepFrames)
+    return advanceRuntimeFrames(page, fixture.recipe.aiPlayerNumber, targetTick, 1, false, (tick) => {
+      if (tick % 500 === 0)
+        process.stdout.write(`[AI_SKIRMISH_PROGRESS] ${fixture.scenarioIds.join(",")} ${tick}/${targetTick}\n`);
+    });
   await setSimulationState(
     page,
     fixture.recipe.aiPlayerNumber,
@@ -286,9 +311,13 @@ async function setSimulationState(
 async function readRuntimeLongTasks(page: Page, profiling: boolean) {
   if (!profiling) return null;
   return page.evaluate(() => {
-    const metrics = (window as unknown as {
-      __skirmishPerf?: { count: number; totalMs: number; maximumMs: number };
-    }).__skirmishPerf;
-    return metrics ? { count: metrics.count, totalMs: Math.round(metrics.totalMs), maximumMs: Math.round(metrics.maximumMs) } : null;
+    const metrics = (
+      window as unknown as {
+        __skirmishPerf?: { count: number; totalMs: number; maximumMs: number };
+      }
+    ).__skirmishPerf;
+    return metrics
+      ? { count: metrics.count, totalMs: Math.round(metrics.totalMs), maximumMs: Math.round(metrics.maximumMs) }
+      : null;
   });
 }

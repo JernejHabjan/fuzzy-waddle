@@ -14,7 +14,10 @@ export function nativeAuthorityWorld(id, faction, branch) {
     faction === "Tivara" ? "Olival" : "Emberstone", 2, 43, 28 + i * 4));
   if (["H-06", "H-07", "H-10", "H-15"].includes(id)) {
     world.receiptFault = { id: "original-ai-receipt", playerNumber: 2, fromTick: 1,
-      throughTick: id === "H-10" ? branch === "resumed" ? 1200 : 1800 : branch === "late" ? 1000 : 800,
+      // H-06/H-07 production demand is first observed around tick 1200; keep
+      // the consumer fault active through reconciliation and output loss.
+      throughTick: ["H-06", "H-07"].includes(id) ? 1800 :
+        id === "H-10" ? branch === "resumed" ? 1200 : 1800 : branch === "late" ? 1000 : 800,
       maximumCommands: id === "H-10" ? branch === "below_capacity" ? 127 : 128 : 1,
       commandKind: id === "H-10" ? "any" : "production",
       ...(["H-10", "H-15"].includes(id) ? { holdHistory: true } : {}),
@@ -26,8 +29,6 @@ export function nativeAuthorityWorld(id, faction, branch) {
       { food: 50000, wood: 50000, stone: 10000, minerals: 10000 };
     for (let i = 0; i < 6; i++) world.actors.push(actor(`stress-producer-${i}`, producer(faction), 2,
       35 + i % 2 * 5, 5 + Math.floor(i / 2) * 6));
-    for (let i = 0; i < 32; i++) world.actors.push(actor(`pressure-${i}`, melee(enemy), 1,
-      17 + i % 4, 15 + Math.floor(i / 4)));
   }
   if (id === "H-13") {
     for (const [i, x, y] of [[0, 40, 9], [1, 40, 40], [2, 12, 40]])
@@ -68,6 +69,8 @@ export function nativeAuthorityWorld(id, faction, branch) {
         branch === "far" ? 5 + Math.floor(i / 4) : 10 + Math.floor(i / 4)));
       if (branch !== "far") world.controls.push(control(`lethal-attack-${i}`, role, 200,
         { kind: "attack", targetFixtureActorId: "original-home" }));
+      else world.controls.push(control(`distant-hold-${i}`, role, 200,
+        { kind: "move", worldPosition: tile(5 + i % 4, 5 + Math.floor(i / 4)) }));
       if (branch === "resolved") world.controls.push(control(`lethal-withdraw-${i}`, role, 1000,
         { kind: "move", worldPosition: tile(5 + i % 4, 5 + Math.floor(i / 4)) }));
     }
@@ -96,8 +99,11 @@ export function nativeAuthorityWorld(id, faction, branch) {
   }
   if (id === "H-30") {
     world.brainFault = { kind: branch, playerNumber: 2, fromTick: 200, throughTick: 800 };
-    world.receiptFault = { id: "fault-reconciliation-control", playerNumber: 2, fromTick: 1, throughTick: 600,
-      maximumCommands: 1, commandKind: "production", holdHistory: true };
+    // Native production starts at tick 1180 for Skaduwee and tick 2280 for Tivara.
+    // Release each held receipt before its reconciliation deadline, then sample a later decision.
+    world.receiptFault = { id: "fault-reconciliation-control", playerNumber: 2, fromTick: 1,
+      throughTick: faction === "Skaduwee" ? 1800 : 2800,
+      maximumCommands: 1, commandKind: faction === "Skaduwee" ? "production" : "research", holdHistory: true };
   }
   return world;
 }

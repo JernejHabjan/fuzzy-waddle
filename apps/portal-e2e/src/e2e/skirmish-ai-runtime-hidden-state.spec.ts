@@ -126,9 +126,12 @@ test("a later legitimate contact difference permits changed decisions", () => {
           ...checkpoint,
           visibleEnemyFacts: [
             {
+              actorId: "enemy-banshee",
               objectName: "Banshee",
+              owner: 2,
               relation: "enemy",
               visibility: "visible",
+              mainBuilding: false,
               position: { x: 3, y: 4, z: 0 },
               healthPermille: 1000
             }
