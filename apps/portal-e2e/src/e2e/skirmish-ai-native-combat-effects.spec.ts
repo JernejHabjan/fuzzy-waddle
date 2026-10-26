@@ -1,7 +1,8 @@
 import { test as it, expect } from "@playwright/test";
 import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
 import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import { nativePhysicalDamageFromActor, nativeRetreats } from "./skirmish-ai-native-combat-effects";
+import type { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
+import { nativePhysicalDamageFromActor, nativeRetreats, nativeWeaponHits } from "./skirmish-ai-native-combat-effects";
 
 const damage = (overrides: Partial<Extract<AiRuntimeProductionFactV1, { kind: "native_damage" }>> = {}) => ({
   sequence: 1,
@@ -48,6 +49,104 @@ it.describe("native physical damage attribution", () => {
     } as ReturnType<typeof nativeScenarioContext>;
 
     expect(nativePhysicalDamageFromActor(context, "air-output", "backline")).toEqual([]);
+  });
+});
+
+it.describe("native weapon hits against building footprints", () => {
+  const actor = (actorId: string, objectName: string, playerNumber: number) => ({
+    actorId,
+    objectName,
+    canonicalObjectName: objectName as ObjectNames,
+    playerNumber,
+    active: true,
+    alive: true,
+    finished: true,
+    indexed: true
+  });
+  const weapon = {
+    minRange: 0,
+    range: 1,
+    damage: 6,
+    damageType: 0,
+    cooldown: 1000,
+    delays: { fire: 0, hit: 50 },
+    projectile: null,
+    canTargetAir: false
+  };
+  const hitFacts = (targetName: string, distance: number) => [
+    {
+      sequence: 1,
+      tick: 10,
+      playerNumber: 2,
+      kind: "native_combat",
+      operation: {
+        kind: "attack_requested",
+        actor: actor("attacker", "TivaraMacemanMale", 2),
+        target: actor("target", targetName, 1),
+        weapon,
+        distance,
+        highGroundRangeBonus: 0,
+        targetFlying: false,
+        stunned: false,
+        gaps: [],
+        sceneActive: true,
+        snapshotRestoreInProgress: false,
+        clockTick: 10
+      }
+    },
+    {
+      sequence: 2,
+      tick: 10,
+      playerNumber: 2,
+      kind: "native_combat",
+      operation: {
+        kind: "attack_committed",
+        actor: actor("attacker", "TivaraMacemanMale", 2),
+        target: actor("target", targetName, 1),
+        weapon
+      }
+    },
+    damage({
+      sequence: 3,
+      tick: 20,
+      playerNumber: 1,
+      damage: {
+        ...damage().damage,
+        target: actor("target", targetName, 1),
+        initiator: actor("attacker", "TivaraMacemanMale", 2),
+        amount: 6,
+        damageType: 0,
+        damageTick: 20
+      }
+    })
+  ];
+  const contextFor = (facts: readonly unknown[], targetName: string, footprintRadiusTiles: number) => ({
+    facts,
+    frames: [{
+      decision: {
+        input: {
+          capabilityCatalog: {
+            entries: [{
+              sourceObjectName: targetName,
+              constructionProfile: { footprintRadiusTiles }
+            }]
+          }
+        }
+      }
+    }]
+  }) as unknown as ReturnType<typeof nativeScenarioContext>;
+
+  it("accepts a physical hit at a building's adjacent footprint edge", () => {
+    const facts = hitFacts("FrostForge", 2);
+    const context = contextFor(facts, "FrostForge", 1);
+
+    expect(nativeWeaponHits(context, "target")).toHaveLength(1);
+  });
+
+  it("keeps the ordinary weapon range for units and targets beyond the footprint", () => {
+    expect(nativeWeaponHits(contextFor(hitFacts("SkaduweeWorkerMale", 2), "SkaduweeWorkerMale", 0), "target"))
+      .toEqual([]);
+    expect(nativeWeaponHits(contextFor(hitFacts("FrostForge", 3), "FrostForge", 1), "target")).toEqual([]);
   });
 });
 

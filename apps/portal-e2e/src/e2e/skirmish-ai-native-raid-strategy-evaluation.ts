@@ -28,7 +28,9 @@ export function evaluateNativeRaidStrategy(id: string, branch: string, context: 
     context.arrived(member, responseTick).some((move) => move.observations.some((entry) =>
       entry.spatial.phase === "arrived" && entry.spatial.actualTile && entry.spatial.actualTile.x >= 28)));
   if (activeRaid && !effective.length) failures.push("raid_defense_label_has_no_physical_intervention");
-  if (!serious && (members.size >= 15 || !nativeWeaponHits(context, main, 400).length))
+  const objectiveResolvedBeforeContact = !!contact && nativeWeaponHits(context, main).some((hit) =>
+    hit.kind === "native_damage" && hit.tick < contact.tick && hit.damage.healthAfter === 0);
+  if (!serious && (members.size >= 15 || !nativeWeaponHits(context, main, 400).length && !objectiveResolvedBeforeContact))
     failures.push("raid_minor_threat_recalled_main_force_or_stopped_native_offense");
   if (activeRaid && !nativeRetainedActor(context, context.role("original-home"))) failures.push("raid_original_home_not_retained");
   if (serious) {

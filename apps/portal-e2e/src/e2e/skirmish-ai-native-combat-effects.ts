@@ -25,6 +25,14 @@ export function nativePhysicalDamageFromActor(
 
 /** Actual native weapon start, compatible range/domain and positive damage; reserved/expected damage never counts. */
 export function nativeWeaponHits(context: ReturnType<typeof nativeScenarioContext>, targetId?: string, fromTick = 0) {
+  const targetFootprintRadiusTiles = new Map<string, number>();
+  for (const frame of context.frames) {
+    for (const entry of frame.decision.input?.capabilityCatalog?.entries ?? []) {
+      const radius = entry.constructionProfile?.footprintRadiusTiles ?? 0;
+      if (radius > (targetFootprintRadiusTiles.get(entry.sourceObjectName) ?? 0))
+        targetFootprintRadiusTiles.set(entry.sourceObjectName, radius);
+    }
+  }
   const requested = context.facts.flatMap((fact) => fact.kind === "native_combat" && fact.operation.kind === "attack_requested"
     ? [{ fact, value: fact.operation }] : []);
   const startsByTarget = new Map<string, typeof requested>();
@@ -59,7 +67,9 @@ export function nativeWeaponHits(context: ReturnType<typeof nativeScenarioContex
         value.clockTick === start.tick && !value.snapshotRestoreInProgress && value.sceneActive && value.actor.alive &&
         value.actor.indexed && !value.stunned && !value.gaps.length && start.sequence < fact.sequence && start.tick <= fact.tick &&
         value.distance !== null && value.distance >= value.weapon.minRange &&
-        value.distance <= value.weapon.range + value.highGroundRangeBonus && (!value.targetFlying || value.weapon.canTargetAir) &&
+        value.distance <= value.weapon.range + value.highGroundRangeBonus +
+          (targetFootprintRadiusTiles.get(value.target.objectName) ?? 0) &&
+        (!value.targetFlying || value.weapon.canTargetAir) &&
         value.weapon.damageType === fact.damage.damageType && value.weapon.damage === fact.damage.amount &&
         fact.tick - start.tick >= Math.ceil((value.weapon.projectile ? value.weapon.delays.fire : value.weapon.delays.hit) / 50) &&
         fact.tick - start.tick < Math.ceil(value.weapon.cooldown / 50) &&
