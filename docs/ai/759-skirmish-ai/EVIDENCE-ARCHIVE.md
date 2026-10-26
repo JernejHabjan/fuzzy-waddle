@@ -3,6 +3,19 @@
 Historical snapshots through 2026-10-26. This file preserves detailed diagnostic notes from earlier checkpoints; it may
 contain superseded observations and next actions. Use HANDOFF.md and CURRENT-EVIDENCE.md for the active status.
 
+## 2026-10-26 — STRAT-03 tactical ownership repair
+
+- Run 821 exposed `invalid_ai_tactical_order_owner:squad:defense:home` after the attack-squad membership repair removed
+  the corresponding attack fault. A shared helper now filters ordered actor IDs, assigned positions and damage
+  reservations to current squad members, and both attack and home-defense squad reconstruction use it. Regression tests
+  cover ownership filtering; gameplay tests pass 104 suites / 549 tests.
+- Run 822 (`tmp/ai-skirmish-matrix/822-strat03-defense-ownership/1793048522716-diagnostic_failed.json`) completed 150
+  decisions / 3,001 ticks. The original Sandhold survives; no AI technical faults remain. The reinforced Tivara branch
+  still fails its strict post-800 reinforcement visibility / scaled physical defense predicate and native damage to the
+  original home. Do not call the family closed or repeat the same branch without a new hypothesis.
+- STRAT-03's authored offensive target is now durable through raid contact: FrostForge for Tivara and WatchTower for
+  Skaduwee. Native fixture audit passes 27/27. Advance to STRAT-04 while preserving STRAT-03 for a targeted follow-up.
+
 ## Latest checkpoint - 2026-10-26
 
 - **STRAT-09 changed-source Tivara raid:** two focused runs reached 200 decisions / 4,001 ticks. The latest fails the
@@ -2208,7 +2221,7 @@ Summaries use `node tools/ai/summarize-skirmish-report.mjs --report <path> --fai
 
 ## 2026-10-26 STRAT-02 durable-target and service-evidence follow-up
 
-- Run 817 established the air-raid branch's initial evaluator and capture issues. Run 818 changed only the STRAT-02 main objective to a durable, reachable WatchTower (Tivara) / FrostForge (Skaduwee), then captured Tivara air-raid for 120 decisions / 2,401 ticks. It wins with six workers, 34 army units, 2,602 damage and 11 enemy losses. Native post-400 hits reach the main objective; a reserve squad targeting the raiders physically intervenes without stopping the main offensive.
+- Run 817 established the air-raid branch's initial evaluator and capture issues. Run 818 changed only the STRAT-02 main objective to a durable, reachable FrostForge (Tivara) / WatchTower (Skaduwee), then captured Tivara air-raid for 120 decisions / 2,401 ticks. It wins with six workers, 34 army units, 2,602 damage and 11 enemy losses. Native post-400 hits reach the main objective; a reserve squad targeting the raiders physically intervenes without stopping the main offensive.
 - Run 818's saved diagnostic initially reports only `raid_home_service_never_continued_after_contact`, because the prior predicate required a neutral Wood source. Replaying the exact source→cargo offer→successful credit proof against the same capture confirms player-owned Food delivery after contact. The evaluator now accepts any of the native resource types from either neutral or player-owned sources to an owned drop-off, while retaining full causal proof. STRAT-02 remains open until its other supported branches and registered CI evidence are covered.
 - `tools/ai/fixtures/d-05-native-runtime.json` was stale against its generated registration, blocking all native runtime selection before execution. Regenerating its authored fields restores the 26/26 native fixture audit; STRAT-02 fixture fields were also regenerated from its recipe.
 - Validation: portal-e2e TypeScript check passes; focused Playwright specs pass 19/19; exact-file ESLint and `git diff --check` pass. Source checkpoint `8d1cfcee1` is pushed; run artifact `tmp/ai-skirmish-matrix/818-strat02-durable-objective/1793046114901-diagnostic_failed.json` is retained with its original runner status, and the updated service predicate was independently replayed against its captured facts.

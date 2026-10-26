@@ -13,9 +13,10 @@ export function recordAiBoundaryFailure(
 ): AiBoundaryFault[] {
   const previous = records.find((record) => record.owner === owner);
   const failures = Math.min(16, (previous?.failures ?? 0) + 1);
+  const detail = error instanceof Error ? `${error.name}:${error.message}` : "unknown";
   const incident = { owner, failures, lastFailureTick: tick,
     retryAtTick: tick + cadence * 2 ** Math.min(3, failures - 1),
-    reason: `technical_fault:${error instanceof Error ? error.name.slice(0, 64) : "unknown"}`,
+    reason: `technical_fault:${detail}`.slice(0, 128),
     recoveredTick: null } satisfies AiBoundaryFault;
   return [...records.filter((record) => record.owner !== owner), incident].sort((a, b) => a.owner.localeCompare(b.owner));
 }

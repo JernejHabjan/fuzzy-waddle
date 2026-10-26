@@ -6,6 +6,7 @@ import type { AiSkirmishProposalContext } from "./ai-skirmish-proposal-context";
 import { observedAiEconomyThreats } from "./ai-economy-policy";
 import { canSeeTarget, estimateAiEngagementV1 } from "./ai-tactics-combat";
 import { AI_TACTICS_ATTACK_RATIO_PERMILLE } from "./ai-tactics-rules";
+import { retainAiSquadTacticsForActors } from "./ai-skirmish-tactics-ownership";
 import {
   baseId,
   canTarget,
@@ -78,7 +79,9 @@ export function advanceAiSkirmishDefense(context: AiSkirmishProposalContext, pro
     actorIds: defenders.map((actor) => actor.actorId),
     objectiveId: localThreat.actorId,
     state: targetPosition ? "engaged" : "searching",
-    ...(activeDefense?.tactics ? { tactics: activeDefense.tactics } : {}),
+    ...(activeDefense?.tactics
+      ? { tactics: retainAiSquadTacticsForActors(activeDefense.tactics, defenders.map((actor) => actor.actorId)) }
+      : {}),
     lifecycle: {
       targetPlayerNumber: localThreat.owner,
       targetRegionId: regionId(localThreat),

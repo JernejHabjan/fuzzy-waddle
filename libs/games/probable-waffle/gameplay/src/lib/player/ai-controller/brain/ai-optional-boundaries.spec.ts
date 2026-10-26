@@ -17,7 +17,8 @@ it("preserves retry age across serialized continuation, skips cooldown, then rec
   const brain = new PureAiBrain(f.profile, [f.manager]);
   const first = brain.step(f.observation, f.state, []);
   const incident = first.nextState.scheduler.boundaryFaults?.[0];
-  expect(incident).toMatchObject({ failures: 1, lastFailureTick: f.observation.tick, recoveredTick: null });
+  expect(incident).toMatchObject({ failures: 1, lastFailureTick: f.observation.tick, recoveredTick: null,
+    reason: "technical_fault:Error:optional broke" });
   const saved = JSON.parse(JSON.stringify(first.nextState));
   const resumed = new PureAiBrain(f.profile, [f.manager]);
   const early = resumed.step({ ...f.observation, tick: f.observation.tick + 1 }, saved, []);

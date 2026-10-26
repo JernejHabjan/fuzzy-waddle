@@ -66,7 +66,7 @@ Focused gameplay passes 103 suites / 547 tests and `pnpm nx build portal` succee
 STRAT-02 now has one focused Tivara air-raid capture at 120 decisions / 2,401 ticks: win, six workers, 34 army units,
 2,602 damage and 11 enemy losses. Run 818 originally failed only the narrow neutral-Wood service assertion; artifact replay
 with the updated exact source-to-offer-to-credit predicate confirms the capture's player-owned Food deliveries after
-contact. The objective is now a durable, reachable WatchTower for Tivara / FrostForge for Skaduwee. Type-check, native
+contact. The objective is now a durable, reachable FrostForge for Tivara / WatchTower for Skaduwee. Type-check, native
 fixture audit (26/26), exact ESLint and focused Playwright evidence (19/19) pass. STRAT-02 is still open until its other
 supported branches have evidence in the registered matrix; do not repeat this branch unchanged.
 
@@ -94,11 +94,17 @@ matches, and its overflow boundary has a focused passing test. Skaduwee denial (
 
 ### Next action
 
-STRAT-09 closes all eight branches; runs 804–805 predate the last selector edit, so revalidate affected branches in the
-grouped matrix/final gate. SCOUT-01 remains open after runs 815–816: hidden-pair intents diverge at tick 20 despite equal
-canonical inputs, and Tivara hidden-b movement reaches an alternate destination rather than completing the selected scout
-point. Keep physical-arrival and information-learning predicates strict. Advance to STRAT-03 next; revisit SCOUT-01 when
-candidate ordering or a fixture adjustment has a focused hypothesis. Run 816's exact evidence is in the archive.
+STRAT-03 run 822 completed 150 decisions / 3,001 ticks with no tactical ownership faults and the original Sandhold
+retained. Its reinforced Tivara branch still fails the strict post-800 native checks: the captured evidence did not meet
+the eight-visible-reinforcements plus more-than-six-effective-defenders threshold, and no native damage hit the original
+Sandhold after tick 800. Keep the branch open; revisit when a concrete visibility/pressure hypothesis is available. The
+shared tactical-membership repair is checked and pushed. Advance to STRAT-04's quiet/noise/real-threat matrix next; use a
+focused local variant only after inspecting its existing CI evidence and owner contract.
+
+SCOUT-01 remains open after runs 815–816: hidden-pair intents diverge at tick 20 despite equal canonical inputs, and
+Tivara hidden-b movement reaches an alternate destination rather than completing the selected scout point. Keep
+physical-arrival and information-learning predicates strict. Revisit when candidate ordering or a fixture adjustment has
+a focused hypothesis. Run 816's exact evidence is in the archive.
 
 SCOUT-02's changed-source native match timed out; leave it for the existing CI matrix unless its owner repair or harness
 changes. PLACE-03 can be revisited once route/movement inputs are observable. Preserve the CI dependency for H-10's

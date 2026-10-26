@@ -63,11 +63,21 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   parity and physical arrival strict. SCOUT-01 remains open; continue to STRAT-03 while waiting for a focused candidate-order / fixture hypothesis.
 - STRAT-02 run 818 (`tmp/ai-skirmish-matrix/818-strat02-durable-objective/1793046114901-diagnostic_failed.json`)
   completed Tivara air-raid at 120 decisions / 2,401 ticks: win, six workers, 34 army, 2,602 damage, 11 enemy losses.
-  The durable WatchTower fixture lets the main objective take native damage after tick 400. Raider-targeting reserve
+  The durable FrostForge fixture lets the main objective take native damage after tick 400. Raider-targeting reserve
   members and continued main-force hits satisfy the physical defense/offense predicates. The initial report's only failure
   was the evaluator requiring a neutral Wood delivery; replay against the same captured facts proves player-owned Food
   extraction, offered cargo and successful credit after contact. The evaluator now accepts any exact native resource/source
   ownership combination and owned drop-off. STRAT-02 remains open pending other supported branches and CI evidence.
+- STRAT-03 run 822 (`tmp/ai-skirmish-matrix/822-strat03-defense-ownership/1793048522716-diagnostic_failed.json`) completed
+  150 decisions / 3,001 ticks with the original Sandhold alive at the terminal checkpoint and no AI technical faults.
+  Filtering stale per-actor tactics whenever defense or attack squad membership changes fixed the
+  `invalid_ai_tactical_order_owner` failure seen in run 821. The reinforced Tivara branch still fails two native
+  predicates: its post-800 response did not meet the combined eight-visible-reinforcements / more-than-six-effective-
+  defenders threshold, and no post-800 native damage struck the original Sandhold. Aggregate damage to other assets does
+  not satisfy the home-injury predicate; leave the branch open pending a concrete pressure/visibility hypothesis. STRAT-03
+  also now preserves a durable FrostForge / WatchTower offensive target through raid contact. Gameplay tests pass 104
+  suites / 549 tests; native fixture audit passes 27/27; exact-source ESLint has no errors (nine existing non-null
+  warnings); `git diff --check` passes. Advance to STRAT-04 rather than repeating this unchanged reinforced branch.
 - Checks: focused gameplay suites 44/44; scouting-evidence Playwright specs 2/2; movement/scout-evidence/route-order/route-caller
   Playwright suites 76/76; exact-file ESLint completed with no errors; `git diff --check` passes. Two existing non-null
   assertion warnings remain in route specs and two in the gameplay scouting spec.

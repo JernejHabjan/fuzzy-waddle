@@ -295,4 +295,100 @@ describe("AiSkirmishManager offense target selection", () => {
       expect.objectContaining({ role: "defense", objectiveId: "air-raider", actorIds: ["anti-air-guard"] })
     );
   });
+
+  it("removes defense reassignees from the retained attack tactics ownership", () => {
+    const home = {
+      ...createAiTestOwnedActor("home"),
+      objectName: ObjectNames.Sandhold,
+      logicalPosition: { status: "known" as const, value: { x: 0, y: 0, z: 0 }, observedTick: 20 },
+      mainBuilding: { status: "known" as const, value: true, observedTick: 20 },
+      housingCost: { status: "known" as const, value: 0, observedTick: 20 }
+    };
+    const members = Array.from({ length: 5 }, (_, index) => actor(`member-${index}`, homeNode, 0));
+    const raider = {
+      ...actor("raider", homeNode, 1),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const,
+      activeOrder: { status: "known" as const, value: { orderType: OrderType.Attack, targetActorId: "home" }, observedTick: 20 }
+    };
+    const enemyMain = {
+      ...actor("enemy-main", enemyNode, 8),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const,
+      housingCost: { status: "known" as const, value: 0, observedTick: 20 },
+      mainBuilding: { status: "known" as const, value: true, observedTick: 20 },
+      capabilities: []
+    };
+    const observation = createAiTestObservation();
+    const baseState = createAiBrainStateV1({
+      playerNumber: 1, faction: FactionType.Tivara, profile, tick: 0, archetypeId: "balanced"
+    });
+    const tactics = {
+      taskForceId: "task-force:1",
+      script: "hold_front" as const,
+      targetActorId: "enemy-main",
+      targetScore: 900,
+      engagementRatioPermille: 1000,
+      confidencePermille: 1000,
+      predictedFriendlyLossPermille: 0,
+      predictedEnemyLossPermille: 0,
+      lastObservedMemberCount: members.length,
+      observedLossCount: 0,
+      lastTransitionTick: 20,
+      nextReconsiderTick: 100,
+      oscillationCount: 0,
+      orderSignature: "attack:enemy-main",
+      orderedActorIds: members.map((member) => member.actorId),
+      assignedPositions: [],
+      damageReservations: [],
+      protectedRouteNodeIds: [],
+      mobileReserveActorIds: [],
+      objectiveAlternatives: []
+    };
+    const state: AiBrainStateV1 = {
+      ...baseState,
+      squads: [{
+        squadId: "squad:attack:primary",
+        role: "attack",
+        domain: "ground",
+        actorIds: members.map((member) => member.actorId),
+        objectiveId: "enemy-main",
+        state: "engaged",
+        lifecycle: {
+          targetPlayerNumber: 2,
+          targetRegionId: enemyNode,
+          protectedBaseId: null,
+          rallyNodeId: homeNode,
+          retreatNodeId: homeNode,
+          createdTick: 0,
+          assemblyDeadline: { clock: "simulation", unit: "tick", dueTick: 1000, persistence: "save" },
+          effectDeadline: { clock: "simulation", unit: "tick", dueTick: 1000, persistence: "save" },
+          lastUsefulEffectTick: 20,
+          recoveryAttempt: 0,
+          terminalReason: null
+        },
+        tactics
+      }]
+    };
+    const proposal = new AiSkirmishManager(profile, () => catalog).propose({
+      ...observation,
+      tick: 20,
+      actors: [home, ...members, raider, enemyMain],
+      threatSummary: { ...observation.threatSummary, visibleEnemyActorIds: [raider.actorId] },
+      map: {
+        bounds: { status: "known", value: { width: 10, height: 1 }, observedTick: 20 },
+        staticRevision: 1,
+        frontierAccessNodeIds: [enemyNode],
+        scoutCoverageAccessNodeIds: [],
+        dynamicObstacleActorIds: [],
+        regionGeneration: { generation: 1, status: "ready", continuationCursor: 0 },
+        accessGraph: graph.graph
+      }
+    }, state);
+    const attack = proposal.statePatch?.squads?.find((squad) => squad.role === "attack");
+    expect(attack).toBeDefined();
+    expect(attack?.tactics?.orderedActorIds.every((actorId) => attack.actorIds.includes(actorId))).toBe(true);
+  });
 });

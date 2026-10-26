@@ -10,6 +10,7 @@ import type { AiSkirmishProposalContext } from "./ai-skirmish-proposal-context";
 import { createAiTransportPlanV1 } from "./ai-transport-manager";
 import { AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS } from "./ai-skirmish-defense";
 import { selectAiOffensiveOpportunity } from "./select-ai-offensive-opportunity";
+import { retainAiSquadTacticsForActors } from "./ai-skirmish-tactics-ownership";
 import { canSeeTarget } from "./ai-tactics-combat";
 import {
   selectAiAttackApproachPositions,
@@ -25,6 +26,14 @@ import {
   routeCapability,
   withTimeline
 } from "./ai-skirmish-support";
+
+function retainSquadTacticsForActors(squad: AiSquadStateV1, actorIds: readonly string[]): AiSquadStateV1 {
+  return {
+    ...squad,
+    actorIds: [...actorIds],
+    ...(squad.tactics ? { tactics: retainAiSquadTacticsForActors(squad.tactics, actorIds) } : {})
+  };
+}
 
 function appendReserve(context: AiSkirmishProposalContext, committedAttackers: ReadonlySet<string>): void {
   const assignedDefenders = new Set(
@@ -119,7 +128,9 @@ function createAttackSquad(
       : "forming";
   const attackId = context.activeAttack?.squadId ?? ("squad:attack:primary" as AiSquadId);
   context.attackPlanId = `plan:${attackId}` as AiPlanId;
-  return {
+  const actorIds = attackers.map((actor) => actor.actorId);
+  const previousTactics = context.activeAttack?.tactics;
+  const attack: AiSquadStateV1 = {
     squadId: attackId,
     role: "attack",
     domain: domains(attackers[0]!).includes("air")
@@ -127,7 +138,7 @@ function createAttackSquad(
       : domains(attackers[0]!).includes("water")
         ? "water"
         : "ground",
-    actorIds: attackers.map((actor) => actor.actorId),
+    actorIds,
     objectiveId: opponent.visibility === "visible" ? opponent.actorId : `hypothesis:${opponent.evidenceId}`,
     state: attackState,
     lifecycle: {
@@ -145,8 +156,9 @@ function createAttackSquad(
       recoveryAttempt: context.activeAttack?.lifecycle?.recoveryAttempt ?? 0,
       terminalReason: route?.kind === "impossible" ? route.reason : null
     },
-    ...(context.activeAttack?.tactics ? { tactics: context.activeAttack.tactics } : {})
+    ...(previousTactics ? { tactics: previousTactics } : {})
   };
+  return retainSquadTacticsForActors(attack, actorIds);
 }
 
 function transportProposal(
@@ -267,7 +279,8 @@ export function advanceAiSkirmishOffense(
     const available = new Set(attackers.map((actor) => actor.actorId));
     context.nextSquads.push(
       ...missionSquads
-        .map((squad) => ({ ...squad, actorIds: squad.actorIds.filter((actorId) => available.has(actorId)) }))
+        .map((squad) => retainSquadTacticsForActors(squad,
+          squad.actorIds.filter((actorId) => available.has(actorId))))
         .filter((squad) => squad.actorIds.length > 0)
     );
     context.opponent = liveTarget;

@@ -44,6 +44,17 @@ test("STRAT-09 target-specific variants separate an equivalent competing drop-of
     { x: -256, y: 832, z: 0 });
 });
 
+test("STRAT-02 and STRAT-03 keep the main offensive objective alive beyond raid contact", () => {
+  for (const scenarioId of ["STRAT-02", "STRAT-03"]) {
+    const fixture = nativeScenarioFixture(scenarioId);
+    for (const variant of fixture.recipe.variants) {
+      const target = variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "main-target");
+      assert.equal(target?.actorName, variant.aiFaction === "Tivara" ? "FrostForge" : "WatchTower");
+      assert.deepEqual(target?.position, { x: -544, y: 688, z: 0 });
+    }
+  }
+});
+
 test("STRAT-09 failing combat variants stage the initial army on navigable field tiles", () => {
   const fixture = nativeScenarioFixture("STRAT-09");
   for (const id of ["strat-09-tivara-denial", "strat-09-skaduwee-raid", "strat-09-tivara-path-outage"]) {
