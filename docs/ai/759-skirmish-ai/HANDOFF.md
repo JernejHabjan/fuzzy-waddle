@@ -12,9 +12,9 @@ Read this file, then [REMAINING-WORK.md](REMAINING-WORK.md) for package acceptan
 
 ## Current checkpoint — 2026-10-26
 
-- Latest local source commit: `cb2ec8650` (`fix(ai): preserve STRAT-05 native retreat evidence`); it is ready to push with the progress-doc commit. Node 24.18.0 / pnpm 11.14.0.
+- Latest local source commit: `d252d7164` (`fix(ai): accept authored STRAT-05 quiet retargets`); it is ready to push with the progress-doc commit. Node 24.18.0 / pnpm 11.14.0.
 - Packages 1–2 are validated; SEQ-01 completes the two-faction victory at the 18,000-tick horizon with adaptive build-space radius.
-- STRAT-05 Tivara reinforced now passes full native branch evaluation when run 830 is replayed against current source. The saved report originally failed because the evidence pipeline discarded history: 621 distinct route-order identities exceeded the 512 cap, and accepted move IDs include an `effect:` prefix absent from native execution IDs. Current-source replay preserves 566 normalized movements, recognizes nine physical retreats, and returns no branch failures. This is a checked branch, not family closure.
+- STRAT-05 Tivara reinforced and quiet now pass full native branch evaluation on saved current-source replays. Reinforced run 830 is accepted after preserving 621 route-order identities (limit 1,024) and matching accepted `effect:` move IDs to native IDs; replay yields 566 normalized movements and nine physical retreats. Quiet run 831 records 14 hits on the spent contact through tick 222, then eight hits on authored `front-target-b` at ticks 468–741. The quiet oracle now accepts any authored front target after tick 400 and has a regression for continued effect versus no effect. Two checked branches are not family closure.
 - STRAT-03 and STRAT-04 remain open; do not rerun unchanged. STRAT-09 has passing branch evidence; revalidate affected rows in the grouped CI/final gate.
 - H-10 has local evidence for six of eight variants; over-capacity and seven real-peer obligations remain with CI. Newly selected obligations remain 0/22 closed until full family/source gates are satisfied.
 
@@ -30,6 +30,6 @@ Read this file, then [REMAINING-WORK.md](REMAINING-WORK.md) for package acceptan
 
 ## Next action
 
-Run the STRAT-05 Tivara quiet control (`strat-05-tivara-quiet`) once. It is the next authored branch and checks offensive continuation without reinforcements. Reuse the same fixed evidence bounds; if it passes, advance to Tivara `blocked_retreat`, then move to Skaduwee branches. Do not replay reinforced unchanged; saved run 830 already passes the full evaluator on current source.
+Run the STRAT-05 Tivara blocked-retreat branch (`strat-05-tivara-blocked-retreat`) once. Reinforced and quiet are checked; do not replay either unchanged. If the branch passes, advance through Skaduwee reinforced, quiet and blocked-retreat.
 
 After each coherent source/evidence batch: update CURRENT-EVIDENCE and this cursor, run focused checks, commit/push task-owned files, and select the next unfinished case. Use EVIDENCE-ARCHIVE for run chronology. Do not stop at validation when another dependency-ready case remains.
