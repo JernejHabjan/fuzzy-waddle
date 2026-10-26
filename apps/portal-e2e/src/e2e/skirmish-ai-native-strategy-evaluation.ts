@@ -25,7 +25,9 @@ export function evaluateNativeStrategy(id: string, branch: string, context: Retu
   }
   if (id === "STRAT-05") {
     if (!nativeWeaponHits(context, target).some((fact) => fact.tick < 400)) failures.push("strategy_initial_offensive_effect_missing");
-    if (branch === "quiet" ? !offensiveEffect : !nativeRetreats(context, 400).length)
+    const quietContinuation = [target, context.role("front-target-a"), context.role("front-target-b")]
+      .some((actorId) => nativeWeaponHits(context, actorId, 400).length > 0);
+    if (branch === "quiet" ? !quietContinuation : !nativeRetreats(context, 400).length)
       failures.push("strategy_counterforce_reassessment_or_control_continuation_missing");
     if (branch !== "quiet") {
       const discovery = after.find((frame) => frame.decision.input?.observation?.actors.filter((actor) =>
