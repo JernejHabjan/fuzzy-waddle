@@ -2252,3 +2252,9 @@ Summaries use `node tools/ai/summarize-skirmish-report.mjs --report <path> --fai
 - Run 831 (`tmp/ai-skirmish-matrix/831-strat05-tivara-quiet/1793051339095-diagnostic_failed.json`) records 14 valid native hits on `contact-group` through tick 222. That target was spent; the AI moved to authored `front-target-b` and dealt eight native hits at ticks 468–741. The old evaluator checked only the original contact target after tick 400 and falsely rejected the quiet control.
 - The quiet predicate now accepts exact post-400 hits on the authored contact or either authored front target. A regression confirms a valid retarget passes and absence of continued effect still fails. Full evaluator replay returns no failures; original report status remains unchanged. Tivara quiet is checked, not the whole STRAT-05 family.
 - Focused evaluator test 1/1; portal-e2e TypeScript, ESLint and `git diff --check` pass. Source commit: `d252d7164`.
+
+## 2026-10-26 — STRAT-05 Tivara blocked-retreat fixture repair
+
+- Run 832 showed that the authored blocked-retreat ring enclosed the starting army and separated it from every authored opening target. It had no pre-contact native hits; later hits on reinforcements could not satisfy a genuine offensive-start premise. The scenario therefore did not exercise its stated condition.
+- The fixture now stages one reachable forward objective and blocks the homeward route with a full-width native terrain barrier. For this branch, the evaluator requires a pre-contact hit on an authored front, a bounded post-contact plan change and native damage to a revealed reinforcement; it does not demand a retreat in a no-safe-retreat world.
+- Changed-fixture run 833 passes with 120 decisions / 2,401 ticks, complete native history and no AI errors. Fixture audit 28/28; evaluator Playwright 2/2; typecheck and ESLint pass. Tivara STRAT-05 branches are 3/3 checked. Source commit: `a1345cc2c`.

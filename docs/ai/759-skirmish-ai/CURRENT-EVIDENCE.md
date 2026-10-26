@@ -3,7 +3,7 @@
 Updated 2026-10-26. This is the active evidence snapshot. Detailed prior run notes are preserved in
 [EVIDENCE-ARCHIVE.md](EVIDENCE-ARCHIVE.md); use HANDOFF.md for the live cursor and next action.
 
-Latest local source checkpoint: `d252d7164` on `feature/759-skirmish-ai`. Latest CI diagnostics were read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad` (runtime jobs skipped on draft PR #814).
+Latest local source checkpoint: `a1345cc2c` on `feature/759-skirmish-ai`. Latest CI diagnostics were read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad` (runtime jobs skipped on draft PR #814).
 GitHub reports `skirmish-runtime-plan`, `skirmish-multiplayer` and `skirmish-runtime` skipped because PR #814 is draft;
 the runtime matrix starts on `ready_for_review`. PR status is left unchanged per the existing handoff boundary. H-10's two
 over-capacity variants and real-peer obligations still need that matrix evidence.
@@ -101,6 +101,7 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   `git diff --check` passes. This closes only the Tivara reinforced branch. Next: quiet, blocked-retreat, then Skaduwee.
   See archive for details.
 - STRAT-05 Tivara quiet run 831 (`tmp/ai-skirmish-matrix/831-strat05-tivara-quiet/1793051339095-diagnostic_failed.json`) has zero full branch-evaluator failures on current source replay. Its contact-group took 14 native hits through tick 222; the AI then made eight exact hits on authored `front-target-b` at ticks 468–741. The old quiet oracle required only more damage to the original contact and incorrectly rejected the exhausted target. It now accepts post-400 physical hits on any authored front target; a regression verifies this and still rejects no post-400 effect. The saved report retains its original diagnostic-failed status. Focused evaluator test 1/1, portal-e2e TypeScript and exact ESLint pass. Tivara reinforced and quiet are checked; next run Tivara blocked-retreat.
+- STRAT-05 Tivara blocked-retreat passes changed-fixture run 833 (`tmp/ai-skirmish-matrix/833-strat05-tivara-blocked-retreat-forward-gate/1793052151292-diagnostic_passed.json`): 120 decisions, history closed through tick 2,400, no AI errors, zero evaluator failures. The previous run 832 exposed a closed ring that trapped the opening army and made all authored front targets unreachable before reinforcement contact. The updated world gives the army a reachable forward target while a homeward terrain barrier removes the safe fallback. The branch now requires a bounded plan change and exact damage to a revealed reinforcement rather than a physical retreat. Fixture audit passes 28/28; STRAT-05 evaluator Playwright passes 2/2; portal-e2e TypeScript and exact ESLint pass. Tivara branches 3/3 checked; next run Skaduwee reinforced. Full lineage in archive.
 ## Open work by package
 
 | Package | Status |
