@@ -104,9 +104,12 @@ opt-in trace showed advance, settle, checkpoint, economy, strategy and transport
 transport took 15/12/35ms. The likely next boundary is the final production-authority recapture. The trace now marks that
 phase and fails it after 120s (`AI_SKIRMISH_DIAGNOSTIC_CHECKPOINT_TRACE=1`). Run 785 confirmed the final authority
 `page.evaluate` remains pending for 120s, after which the harness records
-`runtime_production_capture_phase_timeout:120000ms`; it is not scenario evidence. Browser-side phase markers now isolate
-recipient reconciliation, snapshot read/clone, proof read, fact filtering and final clone. Run 786 is the next single
-variant denial diagnostic. Do not repeat 777–785 unchanged or treat them as scenario evidence.
+`runtime_production_capture_phase_timeout:120000ms`; it is not scenario evidence. Run 786's browser-side trace found
+recipient reconciliation (1ms), snapshot read (2ms), snapshot clone (3ms), proof read (403ms), fact filtering (2ms) and
+final clone (4,195ms) all completed. The final record had 22,510 owner facts from 24,576 retained facts; Playwright
+serialization/transport of that object did not return within 120s. The capture transport now gzip-compresses JSON in the
+browser and inflates it in Node, preserving the evidence object. Run 787 is the single-variant check of this transport
+change. Do not repeat 777–786 unchanged or treat them as scenario evidence.
 
 ## Package cursor and known open work
 

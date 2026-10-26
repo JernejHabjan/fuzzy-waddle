@@ -58,10 +58,11 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   `tmp/ai-skirmish-matrix/776-package3-strat09-tivara-path-outage/1793021312931-diagnostic_failed.json`. Current STRAT-09
   branch evidence: 3 passes / 3 failures / 2 unproven of 8; overall closure remains open. Skaduwee runs 777/778/781/782/783
   (denial) and 779 (path outage) timed out before recording decisions/ticks. Runs 783/784 reached tick 4,000 in about 630s;
-  784 showed checkpoint, economy, strategy and transport capture complete within 65ms combined. Run 785 then confirmed
-  the final production-authority `page.evaluate` stalls for over 120s; this is harness failure, with no gameplay evidence.
-  The next replay instruments its internal browser-side phases to isolate the blocking operation. Details and artifacts are
-  in HANDOFF.md.
+  784 showed checkpoint, economy, strategy and transport capture complete within 65ms combined. Runs 785/786 confirmed
+  the final authority call stalls while transferring its large result: browser-side capture completes, with 22,510 owner
+  facts and a 4.2s final clone, but Playwright serialization does not return within 120s. The capture transport now gzips
+  the JSON in-browser before transfer and restores the same record in Node; run 787 is checking the change. Details and
+  artifacts are in HANDOFF.md.
 - The native scouting oracle matches `effect:`-prefixed accepted intents to movement execution IDs.
 - Movement capture normalization now admits up to 2,048 execution groups; caller-history validation admits 4,096
   identities. The latest H-14 capture contained 1,567 movement executions and 1,869 caller identities; route-order
