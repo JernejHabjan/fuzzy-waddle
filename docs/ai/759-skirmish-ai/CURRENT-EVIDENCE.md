@@ -51,7 +51,12 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   predicates and ended with zero workers (`quit`). At tick 20 it chose a nearby second `WorkMill` (`enemy-deposit` at
   17,28) over the authored `main-target` at 16,30; its attack-move and later direct attack targeted the deposit, while
   multiple Stage 13 approach moves failed. Treat this as a fixture/objective and approach lead; do not rerun unchanged.
-  Current STRAT-09 branch evidence: 3 passes / 2 failures / 3 unrun of 8;
+  Tivara path-outage run 776 reached 200 decisions / 4,001 ticks and failed the authored-target attack/effect predicates
+  with 7 workers and 10 military units. It selected `enemy-deposit` as the tick-20 working pressure target despite
+  `main-target` ranking first among alternatives, then selected the enemy home as a finish objective by tick 800. This
+  supports objective/attack application trouble, not economic collapse. Artifact:
+  `tmp/ai-skirmish-matrix/776-package3-strat09-tivara-path-outage/1793021312931-diagnostic_failed.json`. Current STRAT-09
+  branch evidence: 3 passes / 3 failures / 2 unrun of 8;
   the family and overall native-obligation tally remain open.
 - The native scouting oracle matches `effect:`-prefixed accepted intents to movement execution IDs.
 - Movement capture normalization now admits up to 2,048 execution groups; caller-history validation admits 4,096

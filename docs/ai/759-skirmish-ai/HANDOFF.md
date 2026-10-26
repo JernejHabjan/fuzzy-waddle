@@ -83,15 +83,21 @@ It selected a nearby second `WorkMill` (`enemy-deposit` at 17,28) over `main-tar
 that deposit's tile, the later direct attack also targeted it, and multiple Stage 13 approach moves failed natively.
 The match reached 200 decisions / 4,001 ticks, ending with `quit`, zero workers and one enemy loss. Artifact:
 `tmp/ai-skirmish-matrix/775-package3-strat09-skaduwee-raid/1793020426279-diagnostic_failed.json`. This establishes a
-fixture/objective ambiguity and physical approach failure lead; do not rerun unchanged. STRAT-09 now has 3 passing and 2
-failing native branch evidence out of 8, with 3 branches unrun; this is not family closure. Continue with another open
-branch while preparing one focused fixture/approach correction.
+fixture/objective ambiguity and physical approach failure lead; do not rerun unchanged. STRAT-09 then had 3 passing and 2
+failing native branch evidence out of 8, with 3 branches unrun; this was not family closure. The Tivara path-outage branch
+(776) also reached 200 decisions / 4,001 ticks and failed the same authored-target attack/effect predicates. It kept 7
+workers and 10 military units. At tick 20 it selected `enemy-deposit` as the working pressure target while `main-target`
+ranked first among alternatives; by tick 800 it had changed to the enemy home as a finish objective. This supports an
+objective/attack-application issue rather than economic collapse. Artifact:
+`tmp/ai-skirmish-matrix/776-package3-strat09-tivara-path-outage/1793021312931-diagnostic_failed.json`. STRAT-09 now has
+3 passing and 3 failing native branch evidence out of 8, with 2 branches unrun. Continue with an open branch while
+preparing one focused fixture/approach correction; do not repeat 775/776 unchanged.
 
 ## Package cursor and known open work
 
 | Package | Open work |
 | --- | --- |
-| 3 — scouting, combat, access | STRAT-09: Tivara raid and both unrecoverable branches pass; Tivara denial and Skaduwee raid fail; three branches remain; SCOUT, STRAT-02/03, DOMAIN, RAID, FIGHT and C families. |
+| 3 — scouting, combat, access | STRAT-09: Tivara raid and both unrecoverable branches pass; Tivara denial, Skaduwee raid and Tivara path-outage fail; two branches remain; SCOUT, STRAT-02/03, DOMAIN, RAID, FIGHT and C families. |
 | 4 — placement, walls, recovery | PLACE-03 route clearance and physical transit; H-11 construction path returns `no_path`; remaining PLACE/EXP/WALL/H cases. |
 | 5 — authority and lifecycle | H-06/07 fixture/evaluator gaps; H-08/09 peer evidence; remaining H-10 over-capacity CI variants; remaining H-14/H-15 branches; H-31/H-32, M11, #819/#823. |
 | 6 — continuous play and difficulty | SEQ-02 and remaining supported SEQ/D cases; D-06 legacy comparison remains unsupported. |
@@ -100,7 +106,7 @@ branch while preparing one focused fixture/approach correction.
 ### Next action
 
 The SCOUT-02, DOMAIN-05 and STRAT-09 feasible-objective repairs are pushed through `cbb0c0425`; the STRAT-09 elimination
-oracle repair is committed at `f982f1df4`, push pending. PR #814 remains draft; its
+oracle repair is pushed at `f982f1df4`. PR #814 remains draft; its
 runtime matrix runs only after `ready_for_review`, and the existing
 handoff forbids changing PR status. Do not repeat the local SCOUT-02 match or STRAT-09 Tivara raid. Continue Package 3
 with remaining evidence-ready STRAT-09 branches and other Package 3 cases; resolve the denial/raid fixture and approach
