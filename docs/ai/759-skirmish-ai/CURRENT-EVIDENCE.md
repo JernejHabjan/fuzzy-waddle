@@ -92,13 +92,13 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   Playwright suites 76/76; exact-file ESLint completed with no errors; `git diff --check` passes. Two existing non-null
   assertion warnings remain in route specs and two in the gameplay scouting spec.
 
-- STRAT-05 is validated across all six native branches: Tivara and Skaduwee reinforced, quiet and blocked-retreat. Runs 830, 831 and 835 pass the full evaluator on current-source replay; corrected-fixture runs 833, 834 and 836 pass directly. The focused changes fix exact native-evidence matching, valid authored-target continuation and the unreachable blocked-retreat fixture. Count STRAT-05 as 1/22 selected obligations closed; the runtime matrix remains the final regression gate. See EVIDENCE-ARCHIVE for run details.
+- STRAT-05 is validated across all six native branches. STRAT-02 Skaduwee quiet also passes on current source (run 837, 120 decisions / 2,401 ticks). STRAT-02 Tivara quiet (run 838) reaches the horizon but has 293 committed attacks on FrostForge and no native damage; the attack squad keeps 23–25 actors while assigning eight defenders after contact at tick 1,160. This is a real offensive-effect gap, not a whole-army recall. Investigate/fix before rerunning; see EVIDENCE-ARCHIVE. The 22-obligation closure count remains 1/22.
 
 ## Open work by package
 
 | Package | Status |
 | --- | --- |
-| 3 — scouting, combat, access | STRAT-09 has passing evidence for 8/8 branches; current-source path-outage is closed. Revalidate affected branches in the final grouped gate. SCOUT, STRAT-02/03, DOMAIN, RAID, FIGHT and C families remain. |
+| 3 — scouting, combat, access | STRAT-09 has passing evidence for 8/8 branches; current-source path-outage is closed. STRAT-02 Skaduwee quiet passes; Tivara quiet needs offensive-effect repair. Revalidate affected branches in final grouped gate. SCOUT, STRAT-03/04, DOMAIN, RAID, FIGHT and C remain. |
 | 4 — placement, walls, recovery | PLACE-03 still has route-clearance and worker/army transit failures. H-11 has one legal construction endpoint returning `no_path` and capture-channel loss. Other PLACE/EXP/WALL/H cases remain. |
 | 5 — authority and lifecycle | H-10 awaits over-capacity CI results. H-14 is one passing branch only. H-06/07 retain fixture/evaluator gaps; H-08/09 require credentialed peers. H-15, H-31/H-32, M11, #819 and #823 remain open. |
 | 6 — continuous play and difficulty | SEQ-02 and remaining supported SEQ/D cases; D-06 legacy difficulty comparison is unsupported and remains an explicit blocker. |
