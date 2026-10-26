@@ -57,10 +57,12 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   supports objective/attack application trouble, not economic collapse. Artifact:
   `tmp/ai-skirmish-matrix/776-package3-strat09-tivara-path-outage/1793021312931-diagnostic_failed.json`. Current STRAT-09
   branch evidence: 3 passes / 3 failures / 2 unrun of 8; the family and overall native-obligation tally remain open.
-  Skaduwee denial attempt 777 reached 4,000/4,001 ticks, then Playwright's 780-second timeout closed the browser before
-  the final tick and evidence seal. Its artifact has zero captured decisions/ticks and is not branch evidence. Increase
-  the runtime test budget to 15 minutes per selected variant (18 minutes including startup/sealing), then replay 777 once;
-  do not interpret it as a scenario failure.
+  Skaduwee denial attempts 777 and 778 both reached 4,000/4,001 ticks, then timed out before the final tick and evidence
+  seal. Attempt 777 used a 780-second Playwright budget; 778 used the raised 1,080-second budget. Both artifacts have zero
+  captured decisions/ticks and are not branch evidence. Artifacts:
+  `tmp/ai-skirmish-matrix/777-package3-strat09-skaduwee-denial/1793022297327-failed.json` and
+  `tmp/ai-skirmish-matrix/778-package3-strat09-skaduwee-denial-timeout-fix/1793023500229-failed.json`. Treat this as a
+  final-tick runtime stall, not a gameplay outcome; don't repeat unchanged.
 - The native scouting oracle matches `effect:`-prefixed accepted intents to movement execution IDs.
 - Movement capture normalization now admits up to 2,048 execution groups; caller-history validation admits 4,096
   identities. The latest H-14 capture contained 1,567 movement executions and 1,869 caller identities; route-order

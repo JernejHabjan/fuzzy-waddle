@@ -90,12 +90,13 @@ workers and 10 military units. At tick 20 it selected `enemy-deposit` as the wor
 ranked first among alternatives; by tick 800 it had changed to the enemy home as a finish objective. This supports an
 objective/attack-application issue rather than economic collapse. Artifact:
 `tmp/ai-skirmish-matrix/776-package3-strat09-tivara-path-outage/1793021312931-diagnostic_failed.json`. STRAT-09 now has
-3 passing and 3 failing native branch evidence out of 8, with 2 branches unrun. The first Skaduwee denial attempt (777)
-reached 4,000/4,001 ticks, but Playwright's 780-second timeout closed the browser before the final tick and evidence seal;
-the resulting artifact has zero captured decisions/ticks, so it is not branch evidence. The timeout budget was sized for
-roughly 2,400 ticks, not these 4,001-tick matches. It is being increased to 15 minutes per selected runtime variant
-(18 minutes including startup/sealing), then 777 will be replayed once. Do not replay 775/776 unchanged. Continue the
-remaining open STRAT-09 branch after correcting the harness budget.
+3 passing and 3 failing native branch evidence out of 8, with 2 branches unrun. Skaduwee denial attempts 777 and 778 both
+reached progress 4,000/4,001, then timed out before the final tick and evidence seal. Attempt 777 used a 780-second
+Playwright budget; 778 used the raised 1,080-second budget and still ended with zero captured decisions/ticks. Artifacts:
+`tmp/ai-skirmish-matrix/777-package3-strat09-skaduwee-denial/1793022297327-failed.json` and
+`tmp/ai-skirmish-matrix/778-package3-strat09-skaduwee-denial-timeout-fix/1793023500229-failed.json`. This is a final-tick
+runtime stall, not a denial result. Do not repeat 777/778 or 775/776 unchanged. Advance to the last open STRAT-09 branch;
+diagnose the 4000-to-4001 transition with a bounded targeted harness change before revisiting denial.
 
 ## Package cursor and known open work
 
