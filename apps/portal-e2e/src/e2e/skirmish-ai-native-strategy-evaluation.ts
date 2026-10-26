@@ -24,15 +24,20 @@ export function evaluateNativeStrategy(id: string, branch: string, context: Retu
     } else if (!nativeRetreats(context, 400).length) failures.push("strategy_real_threat_control_never_adapted_physically");
   }
   if (id === "STRAT-05") {
-    if (!nativeWeaponHits(context, target).some((fact) => fact.tick < 400)) failures.push("strategy_initial_offensive_effect_missing");
+    const authoredFronts = [target, context.role("front-target-a"), context.role("front-target-b")];
+    if (!authoredFronts.some((actorId) => nativeWeaponHits(context, actorId).some((fact) => fact.tick < 400)))
+      failures.push("strategy_initial_offensive_effect_missing");
     const quietContinuation = [target, context.role("front-target-a"), context.role("front-target-b")]
       .some((actorId) => nativeWeaponHits(context, actorId, 400).length > 0);
-    if (branch === "quiet" ? !quietContinuation : !nativeRetreats(context, 400).length)
+    const discovery = branch === "quiet" ? undefined : after.find((frame) => frame.decision.input?.observation?.actors.some((actor) =>
+      actor.relation === "enemy" && actor.visibility === "visible" &&
+      Object.entries(context.roles).some(([role, id]) => role.startsWith("reinforcement-") && id === actor.actorId)));
+    const counterforceEffect = discovery && Object.entries(context.roles).some(([role, actorId]) =>
+      role.startsWith("reinforcement-") && nativeWeaponHits(context, actorId, discovery.tick).length > 0);
+    if (branch === "quiet" ? !quietContinuation :
+      branch === "blocked_retreat" ? !counterforceEffect : !nativeRetreats(context, 400).length)
       failures.push("strategy_counterforce_reassessment_or_control_continuation_missing");
     if (branch !== "quiet") {
-      const discovery = after.find((frame) => frame.decision.input?.observation?.actors.filter((actor) =>
-        actor.relation === "enemy" && actor.visibility === "visible" &&
-        Object.entries(context.roles).some(([role, id]) => role.startsWith("reinforcement-") && id === actor.actorId)).length);
       if (!discovery || !after.some((frame) => frame.tick > discovery.tick && frame.tick <= discovery.tick + 400 &&
         (frame.decision.strategy?.objectiveId !== before?.decision.strategy?.objectiveId ||
          frame.decision.acceptedIntents.some((intent) => intent.kind === "produce"))))

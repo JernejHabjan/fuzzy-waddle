@@ -1558,8 +1558,8 @@
               "actorName": "InfantryInn",
               "owner": 1,
               "position": {
-                "x": -416,
-                "y": 880,
+                "x": 32,
+                "y": 656,
                 "z": 0
               }
             },
@@ -1907,38 +1907,152 @@
           ],
           "terrainPatches": [
             {
-              "x": 25,
-              "y": 22,
+              "x": 0,
+              "y": 28,
               "terrain": "grass",
               "blocked": true
             },
             {
-              "x": 25,
-              "y": 23,
+              "x": 1,
+              "y": 28,
               "terrain": "grass",
               "blocked": true
             },
             {
-              "x": 25,
-              "y": 24,
+              "x": 2,
+              "y": 28,
               "terrain": "grass",
               "blocked": true
             },
             {
-              "x": 25,
-              "y": 25,
+              "x": 3,
+              "y": 28,
               "terrain": "grass",
               "blocked": true
             },
             {
-              "x": 25,
-              "y": 26,
+              "x": 4,
+              "y": 28,
               "terrain": "grass",
               "blocked": true
             },
             {
-              "x": 25,
-              "y": 27,
+              "x": 5,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 6,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 7,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 8,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 9,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 10,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 11,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 12,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 13,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 14,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 15,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 16,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 17,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 18,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 19,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 20,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 21,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 22,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 23,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 24,
+              "y": 28,
               "terrain": "grass",
               "blocked": true
             },
@@ -1950,19 +2064,7 @@
             },
             {
               "x": 26,
-              "y": 22,
-              "terrain": "grass",
-              "blocked": true
-            },
-            {
-              "x": 26,
               "y": 28,
-              "terrain": "grass",
-              "blocked": true
-            },
-            {
-              "x": 27,
-              "y": 22,
               "terrain": "grass",
               "blocked": true
             },
@@ -1974,19 +2076,7 @@
             },
             {
               "x": 28,
-              "y": 22,
-              "terrain": "grass",
-              "blocked": true
-            },
-            {
-              "x": 28,
               "y": 28,
-              "terrain": "grass",
-              "blocked": true
-            },
-            {
-              "x": 29,
-              "y": 22,
               "terrain": "grass",
               "blocked": true
             },
@@ -1998,54 +2088,120 @@
             },
             {
               "x": 30,
-              "y": 22,
-              "terrain": "grass",
-              "blocked": true
-            },
-            {
-              "x": 30,
               "y": 28,
               "terrain": "grass",
               "blocked": true
             },
             {
               "x": 31,
-              "y": 22,
+              "y": 28,
               "terrain": "grass",
               "blocked": true
             },
             {
-              "x": 31,
-              "y": 23,
+              "x": 32,
+              "y": 28,
               "terrain": "grass",
               "blocked": true
             },
             {
-              "x": 31,
-              "y": 24,
+              "x": 33,
+              "y": 28,
               "terrain": "grass",
               "blocked": true
             },
             {
-              "x": 31,
-              "y": 25,
+              "x": 34,
+              "y": 28,
               "terrain": "grass",
               "blocked": true
             },
             {
-              "x": 31,
-              "y": 26,
+              "x": 35,
+              "y": 28,
               "terrain": "grass",
               "blocked": true
             },
             {
-              "x": 31,
-              "y": 27,
+              "x": 36,
+              "y": 28,
               "terrain": "grass",
               "blocked": true
             },
             {
-              "x": 31,
+              "x": 37,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 38,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 39,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 40,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 41,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 42,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 43,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 44,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 45,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 46,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 47,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 48,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 49,
               "y": 28,
               "terrain": "grass",
               "blocked": true
@@ -3553,8 +3709,8 @@
               "actorName": "AnkGuard",
               "owner": 1,
               "position": {
-                "x": -416,
-                "y": 880,
+                "x": 32,
+                "y": 656,
                 "z": 0
               }
             },
@@ -3902,38 +4058,152 @@
           ],
           "terrainPatches": [
             {
-              "x": 25,
-              "y": 22,
+              "x": 0,
+              "y": 28,
               "terrain": "grass",
               "blocked": true
             },
             {
-              "x": 25,
-              "y": 23,
+              "x": 1,
+              "y": 28,
               "terrain": "grass",
               "blocked": true
             },
             {
-              "x": 25,
-              "y": 24,
+              "x": 2,
+              "y": 28,
               "terrain": "grass",
               "blocked": true
             },
             {
-              "x": 25,
-              "y": 25,
+              "x": 3,
+              "y": 28,
               "terrain": "grass",
               "blocked": true
             },
             {
-              "x": 25,
-              "y": 26,
+              "x": 4,
+              "y": 28,
               "terrain": "grass",
               "blocked": true
             },
             {
-              "x": 25,
-              "y": 27,
+              "x": 5,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 6,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 7,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 8,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 9,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 10,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 11,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 12,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 13,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 14,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 15,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 16,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 17,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 18,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 19,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 20,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 21,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 22,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 23,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 24,
+              "y": 28,
               "terrain": "grass",
               "blocked": true
             },
@@ -3945,19 +4215,7 @@
             },
             {
               "x": 26,
-              "y": 22,
-              "terrain": "grass",
-              "blocked": true
-            },
-            {
-              "x": 26,
               "y": 28,
-              "terrain": "grass",
-              "blocked": true
-            },
-            {
-              "x": 27,
-              "y": 22,
               "terrain": "grass",
               "blocked": true
             },
@@ -3969,19 +4227,7 @@
             },
             {
               "x": 28,
-              "y": 22,
-              "terrain": "grass",
-              "blocked": true
-            },
-            {
-              "x": 28,
               "y": 28,
-              "terrain": "grass",
-              "blocked": true
-            },
-            {
-              "x": 29,
-              "y": 22,
               "terrain": "grass",
               "blocked": true
             },
@@ -3993,54 +4239,120 @@
             },
             {
               "x": 30,
-              "y": 22,
-              "terrain": "grass",
-              "blocked": true
-            },
-            {
-              "x": 30,
               "y": 28,
               "terrain": "grass",
               "blocked": true
             },
             {
               "x": 31,
-              "y": 22,
+              "y": 28,
               "terrain": "grass",
               "blocked": true
             },
             {
-              "x": 31,
-              "y": 23,
+              "x": 32,
+              "y": 28,
               "terrain": "grass",
               "blocked": true
             },
             {
-              "x": 31,
-              "y": 24,
+              "x": 33,
+              "y": 28,
               "terrain": "grass",
               "blocked": true
             },
             {
-              "x": 31,
-              "y": 25,
+              "x": 34,
+              "y": 28,
               "terrain": "grass",
               "blocked": true
             },
             {
-              "x": 31,
-              "y": 26,
+              "x": 35,
+              "y": 28,
               "terrain": "grass",
               "blocked": true
             },
             {
-              "x": 31,
-              "y": 27,
+              "x": 36,
+              "y": 28,
               "terrain": "grass",
               "blocked": true
             },
             {
-              "x": 31,
+              "x": 37,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 38,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 39,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 40,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 41,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 42,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 43,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 44,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 45,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 46,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 47,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 48,
+              "y": 28,
+              "terrain": "grass",
+              "blocked": true
+            },
+            {
+              "x": 49,
               "y": 28,
               "terrain": "grass",
               "blocked": true

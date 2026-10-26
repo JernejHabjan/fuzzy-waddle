@@ -54,6 +54,8 @@ export function nativeScenarioActors(id, own, enemy, branch) {
     if (["exposed", "both_exposed"].includes(branch)) actors.push(actor("outer-threat", "WatchTower", 1, 29, 29));
     if (branch === "both_exposed") actors.push(actor("inner-threat", "WatchTower", 1, 38, 15));
   }
+  if (id === "STRAT-05" && branch === "blocked_retreat")
+    actors.find((entry) => entry.fixtureActorId === "front-target-b").position = tile(20, 20);
   if (wall) {
     actors.push(actor("perimeter-stair", "Stairs", 2, 29, 22), actor("perimeter-wall", "Wall", 2, 30, 22),
       actor("perimeter-wall-2", "Wall", 2, 31, 22), actor("protected-deposit", "WorkMill", 2, 32, 21),
@@ -117,7 +119,10 @@ export function nativeScenarioTerrain(id, branch) {
     if (y >= 20 && y <= 25 || id === "SCOUT-04" && y >= 34 && y <= 37) continue;
     patches.push({ x, y, terrain: "water", blocked: false });
   }
-  if (branch === "trapped" || branch === "blocked_retreat" || branch === "disconnected") {
+  if (id === "STRAT-05" && branch === "blocked_retreat") {
+    // Keep the opening target reachable, but separate the forward force from its home-side fallback.
+    for (let x = 0; x < 50; x++) patches.push({ x, y: 28, terrain: "grass", blocked: true });
+  } else if (branch === "trapped" || branch === "disconnected") {
     for (let x = 25; x <= 31; x++) for (let y = 22; y <= 28; y++)
       if (x === 25 || x === 31 || y === 22 || y === 28) patches.push({ x, y, terrain: "grass", blocked: true });
   }

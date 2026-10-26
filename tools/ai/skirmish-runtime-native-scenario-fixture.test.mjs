@@ -44,6 +44,17 @@ test("STRAT-09 target-specific variants separate an equivalent competing drop-of
     { x: -256, y: 832, z: 0 });
 });
 
+test("STRAT-05 blocked-retreat keeps a forward target on the attack side of the homeward barrier", () => {
+  const fixture = nativeScenarioFixture("STRAT-05");
+  const variant = fixture.recipe.variants.find((candidate) => candidate.id === "strat-05-tivara-blocked-retreat");
+  assert.ok(variant);
+  const barrier = variant.presetWorld.terrainPatches.filter((patch) => patch.y === 28 && patch.blocked);
+  assert.equal(barrier.length, 50);
+  assert.deepEqual(barrier.map((patch) => patch.x), Array.from({ length: 50 }, (_, index) => index));
+  assert.deepEqual(variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "front-target-b")?.position,
+    { x: 32, y: 656, z: 0 });
+});
+
 test("STRAT-02 and STRAT-03 keep the main offensive objective alive beyond raid contact", () => {
   for (const scenarioId of ["STRAT-02", "STRAT-03"]) {
     const fixture = nativeScenarioFixture(scenarioId);

@@ -69,15 +69,17 @@ function attackFacts(sequence: number, tick: number, targetId: string): AiRuntim
   ] as unknown as AiRuntimeProductionFactV1[];
 }
 
-function context(facts: AiRuntimeProductionFactV1[]) {
+function context(facts: AiRuntimeProductionFactV1[], frames: unknown[] = []) {
   const roles = {
     "contact-group": "contact-group",
     "front-target-a": "front-target-a",
-    "front-target-b": "front-target-b"
+    "front-target-b": "front-target-b",
+    "reinforcement-0": "reinforcement-0"
   };
   return {
     facts,
-    frames: [],
+    frames,
+    roles,
     role: (name: keyof typeof roles) => roles[name]
   } as unknown as ReturnType<typeof nativeScenarioContext>;
 }
@@ -87,6 +89,32 @@ test("STRAT-05 quiet control accepts physical damage on another authored front a
 
   expect(evaluateNativeStrategy("STRAT-05", "quiet", context(facts))).toEqual([]);
   expect(evaluateNativeStrategy("STRAT-05", "quiet", context(attackFacts(1, 200, "contact-group")))).toContain(
+    "strategy_counterforce_reassessment_or_control_continuation_missing"
+  );
+});
+
+test("STRAT-05 blocked-retreat accepts a bounded counterforce response when no retreat completes", () => {
+  const frames = [
+    {
+      tick: 200,
+      decision: { strategy: { objectiveId: "opening" }, missionState: { squads: [] }, acceptedIntents: [],
+        input: { observation: { actors: [] } } }
+    },
+    {
+      tick: 400,
+      decision: { strategy: { objectiveId: "opening" }, missionState: { squads: [] }, acceptedIntents: [],
+        input: { observation: { actors: [{ actorId: "reinforcement-0", relation: "enemy", visibility: "visible" }] } } }
+    },
+    {
+      tick: 600,
+      decision: { strategy: { objectiveId: "counterforce" }, missionState: { squads: [] }, acceptedIntents: [],
+        input: { observation: { actors: [] } } }
+    }
+  ];
+  const initial = attackFacts(1, 200, "front-target-b"), counterforce = attackFacts(4, 700, "reinforcement-0");
+
+  expect(evaluateNativeStrategy("STRAT-05", "blocked_retreat", context([...initial, ...counterforce], frames))).toEqual([]);
+  expect(evaluateNativeStrategy("STRAT-05", "blocked_retreat", context(initial, frames))).toContain(
     "strategy_counterforce_reassessment_or_control_continuation_missing"
   );
 });
