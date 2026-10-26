@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import type { AiRuntimeProductionFactV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
 import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
-import { evaluateNativeRaidStrategy } from "./skirmish-ai-native-raid-strategy-evaluation";
+import { evaluateNativeRaidStrategy, nativeMaximumRaidResponseMembers } from "./skirmish-ai-native-raid-strategy-evaluation";
 
 const actor = (actorId: string, objectName: string, playerNumber: number) => ({
   actorId,
@@ -105,4 +105,16 @@ test("STRAT-02 accepts a physically proven main-objective kill before the later 
   expect(evaluateNativeRaidStrategy("STRAT-02", "quiet", raidContext(1))).toContain(
     "raid_minor_threat_recalled_main_force_or_stopped_native_offense"
   );
+});
+
+test("STRAT-02 bounds peak simultaneous defense instead of the rotating response roster", () => {
+  const raiders = new Set(["raider-0"]);
+  const context = {
+    frames: [
+      { tick: 440, decision: { missionState: { squads: [{ role: "defense", actorIds: Array.from({ length: 9 }, (_, i) => `unit-${i}`) }] } } },
+      { tick: 460, decision: { missionState: { squads: [{ role: "defense", actorIds: Array.from({ length: 6 }, (_, i) => `unit-${i + 9}`) }] } } }
+    ]
+  } as unknown as ReturnType<typeof nativeScenarioContext>;
+
+  expect(nativeMaximumRaidResponseMembers(context, 440, raiders)).toBe(9);
 });

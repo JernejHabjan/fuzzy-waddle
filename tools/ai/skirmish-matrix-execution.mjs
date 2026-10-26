@@ -235,7 +235,10 @@ function invokeRuntimeHarness(input, context) {
     const fixture = readJson(join(fixtureDirectory, reference), 1024 * 1024);
     return { scenarioId: row.id, group: row.group, reference, map: fixture.recipe.mapLabel };
   });
-  const resultArtifact = createRuntimeResultPath(workspaceRoot);
+  const resultArtifact = createRuntimeResultPath(
+    workspaceRoot,
+    process.env.AI_SKIRMISH_RUNTIME_RESULTS_DIRECTORY || join(workspaceRoot, "tmp/ai-skirmish-runtime-results")
+  );
   const sourceRevision = input.candidate ?? readHead();
   const requiresMultiplayer = fixtures.some((fixture) => fixture.recipe.requiresMultiplayer === true);
   const requestPath = `${resultArtifact}.request.json`;

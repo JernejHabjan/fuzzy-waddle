@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { mkdtempSync, rmSync, truncateSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import test from "node:test";
 import { createRuntimeResultPath, MAX_RUNTIME_RESULT_BYTES, readRuntimeResult } from "./skirmish-runtime-result.mjs";
 
@@ -34,6 +34,14 @@ test("missing output stays unavailable and each attempt owns a fresh path", () =
   fixture((path, directory) => {
     assert.equal(readRuntimeResult(path, identity), null);
     assert.notEqual(createRuntimeResultPath(directory), path);
+  }));
+
+test("stores native results in a caller-selected directory", () =>
+  fixture((path, directory) => {
+    const resultsDirectory = join(directory, "alternate-volume");
+    const alternatePath = createRuntimeResultPath(directory, resultsDirectory);
+    assert.equal(dirname(dirname(alternatePath)), resultsDirectory);
+    assert.equal(readRuntimeResult(path, identity), null);
   }));
 
 test("rejects foreign provenance, malformed output and invalid counters", () =>

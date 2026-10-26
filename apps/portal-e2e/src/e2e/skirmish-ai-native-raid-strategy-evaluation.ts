@@ -4,6 +4,17 @@ import { nativeLandingFailures, nativeUsefulMissionMembers } from "./skirmish-ai
 import { hasNativeSourceDeliveryToAnyDropOff } from "./skirmish-ai-source-delivery";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 
+/** Peak simultaneous responders are bounded; rotating defenders may exceed that count across the full window. */
+export function nativeMaximumRaidResponseMembers(
+  context: ReturnType<typeof nativeScenarioContext>,
+  responseTick: number,
+  raiderIds: ReadonlySet<string>
+) {
+  return Math.max(0, ...context.frames.filter((frame) => frame.tick >= responseTick && frame.tick <= responseTick + 800)
+    .map((frame) => new Set(frame.decision.missionState?.squads.filter((squad) =>
+      squad.role === "defense" || raiderIds.has(squad.objectiveId ?? "")).flatMap((squad) => squad.actorIds) ?? []).size));
+}
+
 /** Real threat arrival, proportional physical defense and continuing offense must agree across raid controls. */
 export function evaluateNativeRaidStrategy(id: string, branch: string, context: ReturnType<typeof nativeScenarioContext>) {
   const failures: string[] = [], main = context.role("main-target");
@@ -28,9 +39,10 @@ export function evaluateNativeRaidStrategy(id: string, branch: string, context: 
     context.arrived(member, responseTick).some((move) => move.observations.some((entry) =>
       entry.spatial.phase === "arrived" && entry.spatial.actualTile && entry.spatial.actualTile.x >= 28)));
   if (activeRaid && !effective.length) failures.push("raid_defense_label_has_no_physical_intervention");
+  const maximumResponseMembers = nativeMaximumRaidResponseMembers(context, responseTick, new Set(ids));
   const objectiveResolvedBeforeContact = !!contact && nativeWeaponHits(context, main).some((hit) =>
     hit.kind === "native_damage" && hit.tick < contact.tick && hit.damage.healthAfter === 0);
-  if (!serious && (members.size >= 15 || !nativeWeaponHits(context, main, 400).length && !objectiveResolvedBeforeContact))
+  if (!serious && (maximumResponseMembers >= 15 || !nativeWeaponHits(context, main, 400).length && !objectiveResolvedBeforeContact))
     failures.push("raid_minor_threat_recalled_main_force_or_stopped_native_offense");
   if (activeRaid && !nativeRetainedActor(context, context.role("original-home"))) failures.push("raid_original_home_not_retained");
   if (serious) {

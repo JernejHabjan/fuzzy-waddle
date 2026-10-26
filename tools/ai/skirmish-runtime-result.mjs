@@ -1,13 +1,13 @@
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, statSync } from "node:fs";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { decodeRuntimeArtifact } from "../../apps/portal-e2e/src/e2e/skirmish-ai-runtime-artifact-codec.mjs";
 
 // One complete native placement result is ~388 MiB; retain a hard ceiling while allowing that bounded evidence.
 export const MAX_RUNTIME_RESULT_BYTES = 512 * 1024 * 1024;
 
 /** Allocates a unique retained result path. A failed process cannot reuse another run's payload. */
-export function createRuntimeResultPath(workspaceRoot) {
-  const directory = join(workspaceRoot, "tmp/ai-skirmish-runtime-results");
+export function createRuntimeResultPath(workspaceRoot, resultsDirectory = join(workspaceRoot, "tmp/ai-skirmish-runtime-results")) {
+  const directory = resolve(resultsDirectory);
   mkdirSync(directory, { recursive: true });
   return join(mkdtempSync(join(directory, "run-")), "runtime.json");
 }
