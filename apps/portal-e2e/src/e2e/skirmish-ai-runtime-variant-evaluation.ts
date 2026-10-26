@@ -78,7 +78,8 @@ export function evaluateRuntimeVariant(
     failures.push(`${variant.variantId}:delivered_income`);
   if (assertion.requireRenewableFoodIncome && !hasRenewableFoodIncome(variant.checkpoints))
     failures.push(`${variant.variantId}:renewable_food_income`);
-  if (final.workerCount < 1) failures.push(`${variant.variantId}:worker_bootstrap`);
+  if (requiresSurvivingWorker(scenarioId, variant.variantId) && final.workerCount < 1)
+    failures.push(`${variant.variantId}:worker_bootstrap`);
   if (new Set(variant.checkpoints.map((checkpoint) => checkpoint.openingPlanId)).size !== 1)
     failures.push(`${variant.variantId}:opening_plan_restarted`);
   for (const stepId of assertion.requiredOpeningSteps ?? []) {
@@ -233,4 +234,9 @@ export function evaluateRuntimeVariant(
   failures.push(...variant.aiErrors.filter((error) => !mandatoryFault || !isExpectedNativeMandatoryError(error, variant))
     .map((error) => `${variant.variantId}:ai_error:${error}`));
   return failures;
+}
+
+/** An authored STRAT-09 unrecoverable branch deliberately removes the last worker and home. */
+export function requiresSurvivingWorker(scenarioId: string, variantId: string): boolean {
+  return !(scenarioId === "STRAT-09" && variantId.endsWith("-unrecoverable"));
 }
