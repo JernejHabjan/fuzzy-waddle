@@ -3,7 +3,8 @@
 Updated 2026-10-26. This is the active evidence snapshot. Detailed prior run notes are preserved in
 [EVIDENCE-ARCHIVE.md](EVIDENCE-ARCHIVE.md); use HANDOFF.md for the live cursor and next action.
 
-Source checkpoint `5da21a50d89ea866972cead3b945d7e1a59b4897` is committed. GitHub skipped its PR workflow because PR #814 is draft;
+Source checkpoint `5da21a50d89ea866972cead3b945d7e1a59b4897` is pushed; latest CI diagnostics were read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad` (docs-only change afterward).
+GitHub reports `skirmish-runtime-plan`, `skirmish-multiplayer` and `skirmish-runtime` skipped because PR #814 is draft;
 the runtime matrix starts on `ready_for_review`. PR status is left unchanged per the existing handoff boundary. H-10's two
 over-capacity variants and real-peer obligations still need that matrix evidence.
 
