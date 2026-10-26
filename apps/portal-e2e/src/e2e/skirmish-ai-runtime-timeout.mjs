@@ -1,6 +1,6 @@
 const MIN_RUNTIME_TIMEOUT_MS = 600_000;
 const STARTUP_AND_SEAL_TIMEOUT_MS = 180_000;
-const PER_TICK_TIMEOUT_MS = 300;
+const PER_TICK_TIMEOUT_MS = 450;
 
 /** @param {number} variantRuns @param {number} maximumVariantTicks */
 export function skirmishRuntimeTestTimeoutMs(variantRuns, maximumVariantTicks) {

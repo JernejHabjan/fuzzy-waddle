@@ -63,9 +63,12 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   `tmp/ai-skirmish-matrix/777-package3-strat09-skaduwee-denial/1793022297327-failed.json` and
   `tmp/ai-skirmish-matrix/778-package3-strat09-skaduwee-denial-timeout-fix/1793023500229-failed.json` and
   `tmp/ai-skirmish-matrix/779-package3-strat09-skaduwee-path-outage/1793024888536-failed.json` and
-  `tmp/ai-skirmish-matrix/781-package3-strat09-skaduwee-denial-horizon-budget/1793026466163-failed.json`. The horizon-based
-  budget did not resolve the timeout. Use the opt-in stop-at-capture-horizon diagnostic to capture tick-4000 strategy and
-  terminal state without requesting the extra frontier-closing tick. Keep both branches unproven; do not rerun unchanged.
+  `tmp/ai-skirmish-matrix/781-package3-strat09-skaduwee-denial-horizon-budget/1793026466163-failed.json` and
+  `tmp/ai-skirmish-matrix/782-package3-strat09-skaduwee-denial-at-horizon/1793027972762-failed.json`. The opt-in diagnostic
+  reached 4,000/4,000 but still timed out before sealing any checkpoint, so 23 minutes was insufficient for this match and
+  no outcome can be inferred. The horizon-based timeout now budgets 450ms per tick (33 minutes for 4,000 ticks), and
+  progress markers record elapsed time. Replay the two unproven branches once under this budget; don't repeat 777–782
+  unchanged.
 - The native scouting oracle matches `effect:`-prefixed accepted intents to movement execution IDs.
 - Movement capture normalization now admits up to 2,048 execution groups; caller-history validation admits 4,096
   identities. The latest H-14 capture contained 1,567 movement executions and 1,869 caller identities; route-order

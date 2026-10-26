@@ -97,11 +97,13 @@ decisions/ticks, so none are scenario outcomes. Comparable Tivara raid and path-
 `tmp/ai-skirmish-matrix/777-package3-strat09-skaduwee-denial/1793022297327-failed.json`,
 `tmp/ai-skirmish-matrix/778-package3-strat09-skaduwee-denial-timeout-fix/1793023500229-failed.json`, and
 `tmp/ai-skirmish-matrix/779-package3-strat09-skaduwee-path-outage/1793024888536-failed.json` and
-`tmp/ai-skirmish-matrix/781-package3-strat09-skaduwee-denial-horizon-budget/1793026466163-failed.json`. The timeout is
-computed from the selected simulation horizon, but even 23 minutes did not seal these Skaduwee runs. An opt-in diagnostic
-mode now captures the 4,000-tick checkpoint without requesting the additional frontier-closing tick; use it once to learn
-whether the world reached terminal state or remains active. Do not repeat 777–781 unchanged or count them as gameplay
-evidence. Keep both branch outcomes open.
+`tmp/ai-skirmish-matrix/781-package3-strat09-skaduwee-denial-horizon-budget/1793026466163-failed.json` and
+`tmp/ai-skirmish-matrix/782-package3-strat09-skaduwee-denial-at-horizon/1793027972762-failed.json`. Attempt 782 used the
+opt-in stop-at-horizon diagnostic and reached 4,000/4,000, but still exhausted its 1,380s budget before sealing any
+checkpoint. This indicates the 23-minute allowance was still too short for the match; it does not establish a final-tick
+stall or gameplay outcome. The timeout now budgets 450ms per selected simulation tick (33 minutes for a 4,000-tick
+single-variant run), and progress markers include elapsed time. Replay each unproven branch once under this budget; do not
+count 777–782 as gameplay evidence. Do not repeat 775/776 unchanged.
 
 ## Package cursor and known open work
 

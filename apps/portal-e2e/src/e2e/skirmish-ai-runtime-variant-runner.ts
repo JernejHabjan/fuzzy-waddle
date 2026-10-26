@@ -16,6 +16,8 @@ import { captureRuntimeProductionAuthority } from "./skirmish-ai-runtime-product
 import { buildRuntimeProductionReport, compactRuntimeProductionReport } from "./skirmish-ai-runtime-production-report";
 import { advanceRuntimeFrames } from "./skirmish-ai-runtime-frame-driver";
 
+const runtimeProgressStartedAt = performance.now();
+
 export async function runVariant(
   browser: Browser,
   fixture: RuntimeFixtureV1,
@@ -254,7 +256,11 @@ async function advanceRuntimeToTick(
   if (fixture.recipe.fixedStepFrames)
     return advanceRuntimeFrames(page, fixture.recipe.aiPlayerNumber, targetTick, 1, false, (tick) => {
       if (tick % 500 === 0)
-        process.stdout.write(`[AI_SKIRMISH_PROGRESS] ${fixture.scenarioIds.join(",")} ${tick}/${targetTick}\n`);
+        process.stdout.write(
+          `[AI_SKIRMISH_PROGRESS] ${fixture.scenarioIds.join(",")} ${tick}/${targetTick} elapsedMs=${Math.round(
+            performance.now() - runtimeProgressStartedAt
+          )}\n`
+        );
     });
   await setSimulationState(
     page,
