@@ -57,7 +57,7 @@ test("executes selected AI scenarios in real lobby-started Phaser matches", asyn
       })
   );
   const maximumVariantTicks = Math.max(0, ...selectedVariantHorizons);
-  // Budget each serial variant from its simulation horizon; 4,000-tick matches can exceed 18 minutes locally.
+  // Budget each serial variant from its simulation horizon; selected Skaduwee matches exceed 30 minutes locally.
   test.setTimeout(skirmishRuntimeTestTimeoutMs(variantRuns, maximumVariantTicks));
   const fixtureRuns = new Map<RuntimeFixtureV1, readonly RuntimeVariantResultV1[]>();
   const fixtureErrors = new Map<RuntimeFixtureV1, string[]>();

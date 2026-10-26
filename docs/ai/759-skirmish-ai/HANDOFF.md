@@ -90,20 +90,19 @@ workers and 10 military units. At tick 20 it selected `enemy-deposit` as the wor
 ranked first among alternatives; by tick 800 it had changed to the enemy home as a finish objective. This supports an
 objective/attack-application issue rather than economic collapse. Artifact:
 `tmp/ai-skirmish-matrix/776-package3-strat09-tivara-path-outage/1793021312931-diagnostic_failed.json`. STRAT-09 now has
-3 passing and 3 failing native branch evidence out of 8, with 2 branches unproven. Skaduwee denial attempts 777, 778 and
-781, and path-outage attempts 779, all reached progress 4,000/4,001 then timed out before evidence sealing. Their budgets
-were 780s, 1,080s, 1,080s and 1,380s; wall durations were 829s, 1,124s, 1,128s and 1,434s. They contain zero captured
-decisions/ticks, so none are scenario outcomes. Comparable Tivara raid and path-outage runs took 696s and 684s. Artifacts:
-`tmp/ai-skirmish-matrix/777-package3-strat09-skaduwee-denial/1793022297327-failed.json`,
-`tmp/ai-skirmish-matrix/778-package3-strat09-skaduwee-denial-timeout-fix/1793023500229-failed.json`, and
-`tmp/ai-skirmish-matrix/779-package3-strat09-skaduwee-path-outage/1793024888536-failed.json` and
-`tmp/ai-skirmish-matrix/781-package3-strat09-skaduwee-denial-horizon-budget/1793026466163-failed.json` and
-`tmp/ai-skirmish-matrix/782-package3-strat09-skaduwee-denial-at-horizon/1793027972762-failed.json`. Attempt 782 used the
-opt-in stop-at-horizon diagnostic and reached 4,000/4,000, but still exhausted its 1,380s budget before sealing any
-checkpoint. This indicates the 23-minute allowance was still too short for the match; it does not establish a final-tick
-stall or gameplay outcome. The timeout now budgets 450ms per selected simulation tick (33 minutes for a 4,000-tick
-single-variant run), and progress markers include elapsed time. Replay each unproven branch once under this budget; do not
-count 777–782 as gameplay evidence. Do not repeat 775/776 unchanged.
+STRAT-09 still has 3 passing / 3 failing / 2 unproven branches. Skaduwee denial attempts 777/778/781/782/783 and
+Skaduwee path-outage attempt 779 timed out without captured decisions or ticks; these are harness failures, not gameplay
+results. Artifacts: `tmp/ai-skirmish-matrix/777-package3-strat09-skaduwee-denial/1793022297327-failed.json`,
+`tmp/ai-skirmish-matrix/778-package3-strat09-skaduwee-denial-timeout-fix/1793023500229-failed.json`,
+`tmp/ai-skirmish-matrix/779-package3-strat09-skaduwee-path-outage/1793024888536-failed.json`,
+`tmp/ai-skirmish-matrix/781-package3-strat09-skaduwee-denial-horizon-budget/1793026466163-failed.json`,
+`tmp/ai-skirmish-matrix/782-package3-strat09-skaduwee-denial-at-horizon/1793027972762-failed.json`, and
+`tmp/ai-skirmish-matrix/783-package3-strat09-skaduwee-denial-capture/1793030159937-failed.json`. Run 783 reached tick
+4,000/4,000 in 630s, then failed to seal for the rest of its 1,980s test budget. The simulation horizon is not the slow
+part; final checkpoint capture/sealing is. An opt-in trace now times economy, strategy and transport checkpoint capture
+separately with a 120s limit (`AI_SKIRMISH_DIAGNOSTIC_CHECKPOINT_TRACE=1`). Use it to identify the blocking capture, fix
+that path, then retry the two unproven branches.
+Do not repeat 777–783 unchanged or treat them as scenario evidence.
 
 ## Package cursor and known open work
 

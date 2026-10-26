@@ -56,19 +56,11 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   `main-target` ranking first among alternatives, then selected the enemy home as a finish objective by tick 800. This
   supports objective/attack application trouble, not economic collapse. Artifact:
   `tmp/ai-skirmish-matrix/776-package3-strat09-tivara-path-outage/1793021312931-diagnostic_failed.json`. Current STRAT-09
-  branch evidence: 3 passes / 3 failures / 2 unproven of 8; the family and overall native-obligation tally remain open.
-  Skaduwee denial attempts 777/778/781 and path-outage attempt 779 reached 4,000/4,001, then timed out before evidence
-  sealing. Their 780/1,080/1,080/1,380-second budgets yielded 829/1,124/1,128/1,434-second wall runs. Each artifact has
-  zero captured decisions/ticks and is not scenario evidence. Artifacts:
-  `tmp/ai-skirmish-matrix/777-package3-strat09-skaduwee-denial/1793022297327-failed.json` and
-  `tmp/ai-skirmish-matrix/778-package3-strat09-skaduwee-denial-timeout-fix/1793023500229-failed.json` and
-  `tmp/ai-skirmish-matrix/779-package3-strat09-skaduwee-path-outage/1793024888536-failed.json` and
-  `tmp/ai-skirmish-matrix/781-package3-strat09-skaduwee-denial-horizon-budget/1793026466163-failed.json` and
-  `tmp/ai-skirmish-matrix/782-package3-strat09-skaduwee-denial-at-horizon/1793027972762-failed.json`. The opt-in diagnostic
-  reached 4,000/4,000 but still timed out before sealing any checkpoint, so 23 minutes was insufficient for this match and
-  no outcome can be inferred. The horizon-based timeout now budgets 450ms per tick (33 minutes for 4,000 ticks), and
-  progress markers record elapsed time. Replay the two unproven branches once under this budget; don't repeat 777–782
-  unchanged.
+  branch evidence: 3 passes / 3 failures / 2 unproven of 8; overall closure remains open. Skaduwee runs 777/778/781/782/783
+  (denial) and 779 (path outage) timed out before recording decisions/ticks. Run 783 advanced to tick 4,000 in 630s, then
+  spent the remaining 22 minutes without sealing the checkpoint. This localizes the expensive phase to final capture/seal,
+  not simulation. Run 784 will trace economy, strategy, and transport capture separately with a 120s phase limit; fix the
+  blocking capture before retrying the two unproven branches. Details and artifacts are in HANDOFF.md.
 - The native scouting oracle matches `effect:`-prefixed accepted intents to movement execution IDs.
 - Movement capture normalization now admits up to 2,048 execution groups; caller-history validation admits 4,096
   identities. The latest H-14 capture contained 1,567 movement executions and 1,869 caller identities; route-order

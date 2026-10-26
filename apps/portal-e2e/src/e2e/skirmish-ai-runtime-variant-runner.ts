@@ -128,9 +128,13 @@ export async function runVariant(
             ? closedProductionHorizon + 1
           : targetTick;
       await advanceRuntimeToTick(page, fixture, stopAtTick, index);
+      if (process.env.AI_SKIRMISH_DIAGNOSTIC_CHECKPOINT_TRACE === "1" && targetTick >= 4000)
+        process.stdout.write(`[AI_SKIRMISH_CHECKPOINT] tick=${targetTick} phase=advance complete\n`);
       const settleStartedAt = performance.now();
       await setSimulationState(page, fixture.recipe.aiPlayerNumber, "pause", fixture.recipe.simulationTimeScale);
       await waitForSettledDecision(page, fixture.recipe.aiPlayerNumber);
+      if (process.env.AI_SKIRMISH_DIAGNOSTIC_CHECKPOINT_TRACE === "1" && targetTick >= 4000)
+        process.stdout.write(`[AI_SKIRMISH_CHECKPOINT] tick=${targetTick} phase=settle complete\n`);
       const captureStartedAt = performance.now();
       if (await beforeCheckpoint?.(page, index, targetTick)) {
         if (profiling)
@@ -148,6 +152,8 @@ export async function runVariant(
         targetTick,
         applicableScenarioIds.some((id) => fixture.assertions[id]?.requireHiddenStateParity)
       );
+      if (process.env.AI_SKIRMISH_DIAGNOSTIC_CHECKPOINT_TRACE === "1" && targetTick >= 4000)
+        process.stdout.write(`[AI_SKIRMISH_CHECKPOINT] tick=${targetTick} phase=checkpoint complete\n`);
       checkpoints.push(checkpoint);
       // A terminal score does not seal its own native tick. Close that tick before reading early-terminal proof.
       if (
