@@ -30,7 +30,7 @@ describe("AI macro renewable food capacity", () => {
       ordinal: 0
     });
     expect(demands.find((demand) => demand.purpose === "renewable_food_capacity")?.desired ?? 0).toBe(
-      count >= 2 ? 1 : 0
+      count >= 1 ? 1 : 0
     );
   });
   it("creates bounded renewable food capacity after the opening instead of treating the granary as food", () => {

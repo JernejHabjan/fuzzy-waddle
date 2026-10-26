@@ -17,6 +17,7 @@ export function canSeeTarget(
   target: AiObservedActorV1,
   catalog: AiCapabilityCatalogV1 | undefined
 ): boolean {
+  if (attacker.visibleEnemyActorIds !== undefined) return attacker.visibleEnemyActorIds.includes(target.actorId);
   const attackerPosition = knownPosition(attacker);
   const targetPosition = knownPosition(target);
   if (!attackerPosition || !targetPosition) return false;

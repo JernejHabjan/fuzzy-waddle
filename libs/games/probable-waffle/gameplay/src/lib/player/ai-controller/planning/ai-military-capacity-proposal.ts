@@ -64,11 +64,14 @@ export function proposeAiMilitaryCapacity(args: {
     assessment && ["pressure", "finish"].includes(assessment.choice)
       ? Math.max(0, Math.min(targetMilitary, assessment.requiredForce) - militaryCount - queuedMilitaryCount)
       : 0;
-  const lostCriticalDemand =
-    producers.length === 0 && usefulDeficit > 0
+  // A completed opening records past progress; it cannot certify that its producer survived an unanticipated loss.
+  const lostProducerDemand =
+    producers.length === 0 &&
+    (usefulDeficit > 0 || (openingComplete && targetMilitary > militaryCount + queuedMilitaryCount))
       ? state.economyProduction.demands.find(
           (demand) =>
-            demand.purpose === "critical_producer_resilience" &&
+            (demand.purpose === "critical_producer_resilience" ||
+              (openingComplete && demand.purpose === "first_military_producer")) &&
             demand.preferredObjectNames.some(
               (objectName) => producerMilitaryProducts(objectName, catalog, pressureDomain).length > 0
             )
@@ -77,11 +80,11 @@ export function proposeAiMilitaryCapacity(args: {
   const primaryObjectName =
     transition?.status === "committed"
       ? transition.producerObjectName
-      : (producers[0]?.objectName ?? lostCriticalDemand?.preferredObjectNames[0]);
+      : (producers[0]?.objectName ?? lostProducerDemand?.preferredObjectNames[0]);
   if (!primaryObjectName) return { demand: null, intent: null, producers };
   const resilient =
     openingComplete &&
-    (lostCriticalDemand !== undefined || needsAiProducerResilience(observation, producers, usefulDeficit));
+    (lostProducerDemand !== undefined || needsAiProducerResilience(observation, producers, usefulDeficit));
   const throughput =
     transition?.status === "committed"
       ? transition.desiredProducers
@@ -182,7 +185,7 @@ export function proposeAiMilitaryCapacity(args: {
     reasonCode:
       `capacity:dated_target=${targetMilitary}:ready=${producers.length}:committed=${committed}/${desiredCount}` +
       (resilient
-        ? lostCriticalDemand
+        ? lostProducerDemand
           ? ":critical_recovery"
           : ":critical_exposed"
         : transition?.status === "committed"

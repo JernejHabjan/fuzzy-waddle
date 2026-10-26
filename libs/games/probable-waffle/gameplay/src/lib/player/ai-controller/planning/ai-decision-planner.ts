@@ -7,7 +7,7 @@ import type { AiIntentDecisionV1, AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
 import type { AiManagerProposalV1 } from "./ai-manager-proposal";
-import { reconcileAiProductionReservations } from "./reconcile-ai-production-reservations";
+import { reconcileAiCommandReservations } from "./reconcile-ai-command-reservations";
 
 /** The shared, deterministic Stage 6 reducer result. It owns only durable planning state. */
 export interface AiDecisionPlanningResult {
@@ -62,7 +62,7 @@ export function reconcileAiDecisionReservations(
   tick: number
 ) {
   const terminalCommands = new Set<string>(outcomes.filter(isTerminal).map((outcome) => outcome.identity.commandId));
-  return reconcileAiProductionReservations(state.reservations, outcomes).filter((reservation) => {
+  return reconcileAiCommandReservations(state.reservations, outcomes).filter((reservation) => {
     if (reservation.state.kind === "provisional") return reservation.state.expiresAt.dueTick > tick;
     if (reservation.state.kind === "dispatched") return !terminalCommands.has(reservation.state.commandId);
     return true;

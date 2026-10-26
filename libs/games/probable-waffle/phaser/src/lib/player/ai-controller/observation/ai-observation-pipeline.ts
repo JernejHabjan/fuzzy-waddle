@@ -252,6 +252,17 @@ export class AiObservationPipeline {
     const actors = [...projectedActors, ...rememberedActors];
     const accessProducts = this.projectAccessProducts(actors, liveById, tick);
     const effects = projectPermittedZones(this.scene, this.player, policy, tick);
+    const ownedBuilderTypes = new Set(
+      projectedActors.filter((actor) => actor.relation === "self").map((actor) => actor.objectName)
+    );
+    const buildableNames = new Set(
+      [...catalogEntries.values()]
+        .filter((entry) => ownedBuilderTypes.has(entry.sourceObjectName))
+        .flatMap((entry) => entry.constructs)
+    );
+    const largestBuildableFootprintRadius = [...catalogEntries.values()]
+      .filter((entry) => buildableNames.has(entry.sourceObjectName) && entry.constructionProfile)
+      .reduce((largest, entry) => Math.max(largest, entry.constructionProfile?.footprintRadiusTiles ?? 0), 0);
     const map = projectAiObservationMap(
       this.scene,
       this.requestedGeneration,
@@ -261,7 +272,9 @@ export class AiObservationPipeline {
       tick,
       accessGraph,
       permittedTopology,
-      this.accessGraphAdapter.getScoutSearchPoints()
+      this.accessGraphAdapter.getScoutSearchPoints(),
+      (tile) => this.accessGraphAdapter.resolveNodeId(tile, ["ground"]),
+      largestBuildableFootprintRadius
     );
     const finishResourceRead = beginAiResourceInputRead(this.scene, this.player);
     const obligations = projectAiProductionObligations(
@@ -330,6 +343,7 @@ export class AiObservationPipeline {
       evidenceId: actor.evidenceId,
       lastSeenTick: tick,
       confidencePermille: 1000,
+      ...(actor.mainBuilding?.status === "known" ? { mainBuilding: actor.mainBuilding.value } : {}),
       position: actor.logicalPosition.status === "known" ? { ...actor.logicalPosition.value } : null
     });
     trimRememberedContacts(this.memory);

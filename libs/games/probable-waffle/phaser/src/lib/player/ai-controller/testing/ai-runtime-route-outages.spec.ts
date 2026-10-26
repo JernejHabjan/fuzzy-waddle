@@ -1,4 +1,5 @@
 import type Phaser from "phaser";
+import { EventEmitter } from "node:events";
 import { Subject } from "rxjs";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { NavigationService } from "../../../world/services/navigation.service";
@@ -21,7 +22,7 @@ it("rejects missing roles, duplicate IDs and moving/unbounded outage deadlines",
 
 it("scopes null responses to the original actor/window and restores owned methods without clobbering later hooks", async () => {
   const shutdown = new Subject<void>(), tick$ = new Subject<number>();
-  const scene = { onShutdown: shutdown } as unknown as ProbableWaffleScene;
+  const scene = { onShutdown: shutdown, events: new EventEmitter() } as unknown as ProbableWaffleScene;
   const mover = { scene, name: "original" } as unknown as Phaser.GameObjects.GameObject;
   const other = { scene, name: "other" } as unknown as Phaser.GameObjects.GameObject;
   const nativePath = [{ x: 1, y: 2 }], basic = jest.fn(async () => nativePath), dynamic = jest.fn(async () => nativePath);
@@ -53,7 +54,7 @@ it("scopes null responses to the original actor/window and restores owned method
 
 it.each([false, true])("releases retained native queries in request order, shutdown=%s", async (dispose) => {
   const shutdown = new Subject<void>(), tick$ = new Subject<number>();
-  const scene = { onShutdown: shutdown } as unknown as ProbableWaffleScene;
+  const scene = { onShutdown: shutdown, events: new EventEmitter() } as unknown as ProbableWaffleScene;
   const mover = { scene, name: "original" } as unknown as Phaser.GameObjects.GameObject;
   const order: number[] = [], basic = jest.fn(async (_actor, to: { x: number; y: number }) => {
     order.push(to.x); return [to];
@@ -72,7 +73,7 @@ it.each([false, true])("releases retained native queries in request order, shutd
   expect(basic).not.toHaveBeenCalled();
   clock.currentTick = 800; tick$.next(800);
   expect(basic).not.toHaveBeenCalled();
-  if (dispose) shutdown.next();
+  if (dispose) scene.events.emit("shutdown");
   else { clock.currentTick = 801; tick$.next(801); }
   expect(await first).toEqual(dispose ? null : [{ x: 1, y: 2 }]);
   expect(await second).toEqual(dispose ? null : [{ x: 2, y: 2 }]);
@@ -80,6 +81,49 @@ it.each([false, true])("releases retained native queries in request order, shutd
   expect(tick$.observed).toBe(false);
   expect(shutdown.observed).toBe(false);
   if (dispose) expect(await retained(mover, { x: 3, y: 2 })).toBeNull();
+});
+
+it("settles retained native queries on Phaser's destroy-only scene lifecycle", async () => {
+  const shutdown = new Subject<void>(), tick$ = new Subject<number>(), events = new EventEmitter();
+  const scene = { onShutdown: shutdown, events } as unknown as ProbableWaffleScene;
+  const mover = { scene, name: "original" } as unknown as Phaser.GameObjects.GameObject;
+  const basic = jest.fn(async () => [{ x: 1, y: 2 }]);
+  const nav = { findPathFromGameObjectToTile: basic, findPathFromGameObjectToTileAvoidingDynamicBlockers: basic };
+  const clock = { currentTick: 400, tick$ };
+  jest.mocked(getSceneService).mockImplementation((_scene, service) =>
+    (service === NavigationService ? nav : service === SimulationTickService ? clock : undefined) as never);
+  installAiRuntimeRouteOutages(scene, { fixtureId: "destroy-pending-route-world", actors: [], resourceGrants: [],
+    provenance: { sourceRevision: "a".repeat(40), fixtureDigest: "fnv1a32:12345678" },
+    routeOutages: [{ id: "destroy-held-query", fromTick: 400, throughTick: 800,
+      fixtureActorIds: ["mover"], mode: "pending" }]
+  }, new Map([["mover", mover]]));
+  const first = nav.findPathFromGameObjectToTile(mover, { x: 1, y: 2 });
+  events.emit("destroy");
+  await expect(first).resolves.toBeNull();
+  expect(tick$.observed).toBe(false);
+  expect(shutdown.observed).toBe(false);
+});
+
+it("settles retained native queries when the owning simulation clock completes", async () => {
+  const shutdown = new Subject<void>(), tick$ = new Subject<number>();
+  const scene = { onShutdown: shutdown, events: new EventEmitter() } as unknown as ProbableWaffleScene;
+  const mover = { scene, name: "original" } as unknown as Phaser.GameObjects.GameObject;
+  const basic = jest.fn(async () => [{ x: 1, y: 2 }]);
+  const nav = { findPathFromGameObjectToTile: basic, findPathFromGameObjectToTileAvoidingDynamicBlockers: basic };
+  const clock = { currentTick: 400, tick$ };
+  jest.mocked(getSceneService).mockImplementation((_scene, service) =>
+    (service === NavigationService ? nav : service === SimulationTickService ? clock : undefined) as never);
+  installAiRuntimeRouteOutages(scene, { fixtureId: "clock-completion-world", actors: [], resourceGrants: [],
+    provenance: { sourceRevision: "a".repeat(40), fixtureDigest: "fnv1a32:12345678" },
+    routeOutages: [{ id: "clock-completion-query", fromTick: 400, throughTick: 800,
+      fixtureActorIds: ["mover"], mode: "pending" }]
+  }, new Map([["mover", mover]]));
+  const pending = nav.findPathFromGameObjectToTile(mover, { x: 1, y: 2 });
+  tick$.complete();
+  await expect(pending).resolves.toBeNull();
+  expect(basic).not.toHaveBeenCalled();
+  expect(nav.findPathFromGameObjectToTile).toBe(basic);
+  expect(shutdown.observed).toBe(false);
 });
 
 it("rejects unknown failure modes while retaining old null-response fixtures", () => {
@@ -93,7 +137,7 @@ it("rejects unknown failure modes while retaining old null-response fixtures", (
 /** Native seam fixture only; production route execution and scenario validity remain unrun. */
 function failureFixture(mode: "pending" | "error") {
   const shutdown = new Subject<void>(), tick$ = new Subject<number>();
-  const scene = { onShutdown: shutdown } as unknown as ProbableWaffleScene;
+  const scene = { onShutdown: shutdown, events: new EventEmitter() } as unknown as ProbableWaffleScene;
   const mover = { scene, name: "original" } as unknown as Phaser.GameObjects.GameObject;
   const basic = jest.fn(async () => [{ x: 1, y: 2 }]);
   const nav = { findPathFromGameObjectToTile: basic, findPathFromGameObjectToTileAvoidingDynamicBlockers: basic };

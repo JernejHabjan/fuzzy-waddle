@@ -5,6 +5,8 @@ import { getPlayerRelation, type PlayerRelation } from "../../../data/player-rel
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import { VisionComponent } from "../../../entity/components/vision-component";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
+import type { ActorIndexSystem as ActorIndexSystemType } from "../../../world/services/ActorIndexSystem";
+import type { NavigationService } from "../../../world/services/navigation.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { getGameObjectCurrentTile } from "../../../data/game-object-helper";
 
@@ -34,7 +36,9 @@ type SceneWithPlayers = Phaser.Scene & {
 export class AiObservationVisibilityPolicy {
   constructor(
     private readonly scene: Phaser.Scene,
-    private readonly playerNumber: PlayerNumber
+    private readonly playerNumber: PlayerNumber,
+    private readonly ownerIndex?: Pick<ActorIndexSystemType, "getOwnedActors">,
+    private readonly ownerNavigation?: Pick<NavigationService, "getCenterTileCoordUnderObject">
   ) {}
 
   get informationPolicy(): AiObservationInformationPolicy {
@@ -64,7 +68,7 @@ export class AiObservationVisibilityPolicy {
     if (owner === this.playerNumber) return true;
     if (this.informationPolicy !== "skirmish") return true;
 
-    const index = getSceneService(this.scene, ActorIndexSystem);
+    const index = this.ownerIndex ?? getSceneService(this.scene, ActorIndexSystem);
     if (!index) return false;
     return index.getOwnedActors(this.playerNumber).some((source) => {
       const vision = getActorComponent(source, VisionComponent);
@@ -75,10 +79,12 @@ export class AiObservationVisibilityPolicy {
   /** Applies the same owned vision ranges to a map effect that has no actor handle. */
   mayObserveTile(tile: Vector2Simple): boolean {
     if (this.informationPolicy !== "skirmish") return true;
-    const index = getSceneService(this.scene, ActorIndexSystem);
+    const index = this.ownerIndex ?? getSceneService(this.scene, ActorIndexSystem);
     if (!index) return false;
     return index.getOwnedActors(this.playerNumber).some((source) => {
-      const sourceTile = getGameObjectCurrentTile(source);
+      const sourceTile = this.ownerNavigation
+        ? this.ownerNavigation.getCenterTileCoordUnderObject(source)
+        : getGameObjectCurrentTile(source);
       const vision = getActorComponent(source, VisionComponent);
       if (!sourceTile || !vision) return false;
       return Math.floor(Math.hypot(sourceTile.x - tile.x, sourceTile.y - tile.y)) <= vision.range;

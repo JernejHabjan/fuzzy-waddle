@@ -49,7 +49,11 @@ describe("scouting search questions", () => {
     });
     const first = manager.propose(world(20, false), state);
     expect(first.intents).toContainEqual(
-      expect.objectContaining({ kind: "scout", logicalPosition: { x: 4, y: 0, z: 0 } })
+      expect.objectContaining({
+        kind: "scout",
+        actorIds: ["scout"],
+        logicalPosition: { x: 4, y: 0, z: 0 }
+      })
     );
     const knowledge = first.statePatch?.knowledge,
       squads = first.statePatch?.squads;

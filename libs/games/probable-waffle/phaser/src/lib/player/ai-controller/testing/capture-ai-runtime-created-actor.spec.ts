@@ -43,3 +43,14 @@ it("retains the last actual indexed identity after destruction without retaining
   const unknown = { ...actor } as Phaser.GameObjects.GameObject;
   expect(captureAiRuntimeCreatedActor(unknown).actorId).toBeNull();
 });
+
+it("uses the explicitly supplied owner index for actors whose scene service context is unavailable", () => {
+  const actor = { scene: {} as Phaser.Scene, name: ObjectNames.TivaraMacemanMale, active: true } as
+    Phaser.GameObjects.GameObject;
+  jest.mocked(getActorComponent).mockImplementation((_actor, component) =>
+    (component === IdComponent ? { id: "owner-indexed-actor" } : undefined) as never);
+  jest.mocked(getSceneService).mockClear();
+  const ownerIndex = { getActorById: (id: string) => id === "owner-indexed-actor" ? actor : undefined };
+  expect(captureAiRuntimeCreatedActor(actor, ownerIndex)).toMatchObject({ actorId: "owner-indexed-actor", indexed: true });
+  expect(getSceneService).not.toHaveBeenCalled();
+});

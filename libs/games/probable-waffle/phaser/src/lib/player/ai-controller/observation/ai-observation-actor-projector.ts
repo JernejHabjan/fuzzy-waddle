@@ -7,6 +7,7 @@ import { getResearchedLevelForActor } from "../../../data/actor-level-utils";
 import { getGameObjectCurrentTile, getGameObjectLogicalTransform } from "../../../data/game-object-helper";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import { OwnerComponent } from "../../../entity/components/owner-component";
+import { VisionComponent } from "../../../entity/components/vision-component";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { QueueComponent } from "../../../entity/components/queue/queue-component";
 import { ResourceSourceComponent } from "../../../entity/components/resource/resource-source-component";
@@ -46,6 +47,7 @@ export function projectAiObservedActor(
   const gatherer = getActorComponent(actor, GathererComponent);
   const health = getActorComponent(actor, HealthComponent);
   const statusEffects = getActorComponent(actor, StatusEffectComponent);
+  const vision = owned ? getActorComponent(actor, VisionComponent) : undefined;
   const constructionSite = getActorComponent(actor, ConstructionSiteComponent);
   const capabilities = projectActorCapabilities(actor.name as ObjectNames, definition, level);
   const logicalPosition = tilePosition
@@ -100,6 +102,15 @@ export function projectAiObservedActor(
     owner: actorOwner,
     relation,
     visibility,
+    ...(vision
+      ? {
+          visibleEnemyActorIds: vision
+            .getVisibleEnemies()
+            .map((enemy) => getActorComponent(enemy, IdComponent)?.id)
+            .filter((visibleId): visibleId is ActorId => visibleId !== undefined)
+            .sort()
+        }
+      : {}),
     evidenceId: `evidence:contact:${actorId}` as const,
     observedTick: tick,
     logicalPosition,
@@ -206,7 +217,10 @@ export function projectAiObservedActor(
             currentOrder
               ? {
                   orderType: currentOrder.orderType,
-                  targetActorId: orderTargetId
+                  targetActorId: orderTargetId,
+                  ...(currentOrder.data.targetTileLocation
+                    ? { targetPosition: { ...currentOrder.data.targetTileLocation } }
+                    : {})
                 }
               : null,
             tick
@@ -215,9 +229,22 @@ export function projectAiObservedActor(
     combatProfile: projectAiCombatProfile(actor, definition, owned, visibility, tick),
     pendingOrder:
       owned && pawnAi
-        ? knownValue(pendingOrder ? { orderType: pendingOrder.orderType, targetActorId: pendingTargetId } : null, tick)
+        ? knownValue(
+            pendingOrder
+              ? {
+                  orderType: pendingOrder.orderType,
+                  targetActorId: pendingTargetId,
+                  ...(pendingOrder.data.targetTileLocation
+                    ? { targetPosition: { ...pendingOrder.data.targetTileLocation } }
+                    : {})
+                }
+              : null,
+            tick
+          )
         : unknownValue(owned ? "not_supported" : "not_observed"),
-    ...(owned ? { mainBuilding: knownValue(definition?.meta?.isMainBuilding === true, tick) } : {}),
+    ...(owned || visibility === "visible"
+      ? { mainBuilding: knownValue(definition?.meta?.isMainBuilding === true, tick) }
+      : {}),
     containedInActorId: containerOwnerId,
     ...(containerState ? { containerState } : {})
   };

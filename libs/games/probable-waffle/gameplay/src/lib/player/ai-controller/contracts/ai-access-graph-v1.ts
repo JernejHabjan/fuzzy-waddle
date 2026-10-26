@@ -23,6 +23,8 @@ export interface AiAccessLinkV1 {
   readonly clearance: number;
   readonly distanceCost: number;
   readonly knowledge: "known_static" | "observed_dynamic" | "unknown";
+  /** Ground height transitions may be one-way; water adjacency is bidirectional. */
+  readonly directional?: boolean;
 }
 
 /** Executable boundary between two access regions; it is geography, not an exclusive mission claim. */

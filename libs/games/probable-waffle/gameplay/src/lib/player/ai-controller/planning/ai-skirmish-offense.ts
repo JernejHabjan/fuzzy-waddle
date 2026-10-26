@@ -1,7 +1,9 @@
 import type { AiManagerProposalV1 } from "./ai-manager-proposal";
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { AiIntentV1 } from "../contracts/ai-intent-v1";
+import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
 import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
-import { aiDeadline, type AiPlanId, type AiSquadId } from "../contracts/ai-core-types";
+import { aiDeadline, type AiClaimId, type AiPlanId, type AiSquadId } from "../contracts/ai-core-types";
 import type { AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
 import { queryAiAccessRouteV1 } from "./ai-access-graph-v1";
 import type { AiSkirmishProposalContext } from "./ai-skirmish-proposal-context";
@@ -31,7 +33,13 @@ function appendReserve(context: AiSkirmishProposalContext, committedAttackers: R
     (context.combat.length >= 8 ? Math.ceil(context.combat.length * 0.25) : 0) - assignedDefenders
   );
   const reserveMembers = context.combat
-    .filter((actor) => !context.primaryOwnedActors.has(actor.actorId) && !committedAttackers.has(actor.actorId))
+    .filter(
+      (actor) =>
+        !context.primaryOwnedActors.has(actor.actorId) &&
+        !committedAttackers.has(actor.actorId) &&
+        !domains(actor).includes("water") &&
+        !domains(actor).includes("air")
+    )
     .sort(
       (left, right) =>
         Number(domains(left).includes("air")) - Number(domains(right).includes("air")) ||
@@ -68,6 +76,14 @@ function appendReserve(context: AiSkirmishProposalContext, committedAttackers: R
       terminalReason: null
     }
   });
+}
+
+function actorClaims(actorIds: readonly string[]): AiIntentV1["claims"] {
+  return actorIds.map((actorId) => ({
+    claimId: `claim:stage9:actor:${actorId}` as AiClaimId,
+    kind: "actor" as const,
+    actorId: actorId as ActorId
+  }));
 }
 
 function createAttackSquad(
@@ -229,7 +245,12 @@ export function advanceAiSkirmishOffense(
       .map((actor) => actor.actorId)
   );
   appendReserve(context, committedAttackers);
-  const attackers = context.combat.filter((actor) => !context.primaryOwnedActors.has(actor.actorId));
+  const activeFrontierScoutIds = new Set(
+    context.activeScout?.objectiveId?.startsWith("question:") ? context.activeScout.actorIds : []
+  );
+  const attackers = context.combat.filter(
+    (actor) => !context.primaryOwnedActors.has(actor.actorId) && !activeFrontierScoutIds.has(actor.actorId)
+  );
   const choice = selectAiOffensiveOpportunity(context, attackers);
   context.opponent = choice.opponent;
   context.assessment = choice.assessment;
@@ -253,7 +274,89 @@ export function advanceAiSkirmishOffense(
   const route = choice.route;
   if (choice.assessment.choice === "recover" || choice.assessment.choice === "scout") return undefined;
   const attack = createAttackSquad(context, context.opponent, choice.attackers, route, sourceNode);
-  context.nextSquads.push(attack);
+  const targetPosition = position(context.opponent);
+  const rememberedCore =
+    context.opponent.visibility === "last_seen" &&
+    context.opponent.mainBuilding?.status === "known" &&
+    context.opponent.mainBuilding.value;
+  const coreScoutObjective = `core:${context.opponent.evidenceId}`;
+  const existingScout = context.activeScout;
+  const continuingCoreScout = existingScout?.objectiveId === coreScoutObjective;
+  const scoutActor =
+    rememberedCore && attack.state === "forming"
+      ? (choice.attackers.find((actor) => continuingCoreScout && existingScout.actorIds.includes(actor.actorId)) ??
+        choice.attackers.find((actor) => domains(actor).includes("air")) ??
+        choice.attackers[0])
+      : undefined;
+  const coreScout = scoutActor
+    ? {
+        squadId: (continuingCoreScout ? existingScout?.squadId : "squad:scout:core") as AiSquadId,
+        role: "scout" as const,
+        domain: domains(scoutActor).includes("air")
+          ? ("air" as const)
+          : domains(scoutActor).includes("water")
+            ? ("water" as const)
+            : ("ground" as const),
+        actorIds: [scoutActor.actorId],
+        objectiveId: coreScoutObjective,
+        state: "moving" as const,
+        lifecycle: {
+          targetPlayerNumber: null,
+          targetRegionId: route?.destinationNodeId ?? null,
+          protectedBaseId: context.state.bases.find((base) => base.active)?.baseId ?? "base:home",
+          rallyNodeId: node(scoutActor) ?? null,
+          retreatNodeId: context.homeAccess ?? null,
+          createdTick: continuingCoreScout
+            ? (existingScout?.lifecycle?.createdTick ?? context.observation.tick)
+            : context.observation.tick,
+          assemblyDeadline: continuingCoreScout
+            ? (existingScout?.lifecycle?.assemblyDeadline ?? aiDeadline(context.observation.tick + 200))
+            : aiDeadline(context.observation.tick + 200),
+          effectDeadline: continuingCoreScout
+            ? (existingScout?.lifecycle?.effectDeadline ?? aiDeadline(context.observation.tick + 2400))
+            : aiDeadline(context.observation.tick + 2400),
+          lastUsefulEffectTick: continuingCoreScout ? (existingScout?.lifecycle?.lastUsefulEffectTick ?? null) : null,
+          recoveryAttempt: continuingCoreScout ? (existingScout?.lifecycle?.recoveryAttempt ?? 0) : 0,
+          terminalReason: null
+        },
+        ...(continuingCoreScout && existingScout?.tactics ? { tactics: existingScout.tactics } : {})
+      }
+    : undefined;
+  context.nextSquads.push(
+    ...(coreScout
+      ? [{ ...attack, actorIds: attack.actorIds.filter((actorId) => actorId !== scoutActor?.actorId) }]
+      : [attack])
+  );
+  if (coreScout && scoutActor && targetPosition) {
+    context.primaryOwnedActors.add(scoutActor.actorId);
+    context.nextSquads.push(coreScout);
+    if (!continuingCoreScout || !coreScout.tactics)
+      context.intents.push({
+        ...intentBase(
+          context.state,
+          `plan:${coreScout.squadId}` as AiPlanId,
+          context.observation.tick,
+          `core:${context.opponent.evidenceId}`,
+          "scouting",
+          650
+        ),
+        kind: "scout",
+        actorIds: coreScout.actorIds,
+        logicalPosition: targetPosition,
+        claims: coreScout.actorIds.map((actorId) => ({
+          claimId: `claim:core-scout:${actorId}` as const,
+          kind: "actor" as const,
+          actorId
+        }))
+      });
+    context.skirmish = withTimeline(
+      context.skirmish,
+      context.observation.tick,
+      "mission",
+      coreScout.squadId,
+      `core_scout:${context.opponent.evidenceId}`
+    );
+  }
   if ((route?.kind === "water_transport" || route?.kind === "air_transport") && sourceNode && targetNode)
     return transportProposal(context, attack, choice.attackers, route, sourceNode, targetNode);
   const launchRecorded = context.state.skirmish.timeline.some(
@@ -270,7 +373,6 @@ export function advanceAiSkirmishOffense(
     context.state.squads.filter((squad) => squad.role === "attack" && squad.state !== "completed").length <
       profile.voluntaryOffensiveMissionLimit + 1
   ) {
-    const targetPosition = position(context.opponent);
     if (context.opponent.visibility === "visible" && canTarget(choice.attackers[0]!, context.opponent)) {
       const opponent = context.opponent;
       const directAttack = choice.attackers.every((actor) => canSeeTarget(actor, opponent, context.catalog));
@@ -291,6 +393,7 @@ export function advanceAiSkirmishOffense(
         ),
         kind: "attack",
         actorIds: attack.actorIds,
+        claims: actorClaims(attack.actorIds),
         targetActorId: directAttack ? context.opponent.actorId : null,
         targetPosition: directAttack ? null : (approach ?? null)
       });
@@ -306,6 +409,7 @@ export function advanceAiSkirmishOffense(
         ),
         kind: "scout",
         actorIds: attack.actorIds,
+        claims: actorClaims(attack.actorIds),
         logicalPosition: targetPosition
       });
     context.skirmish = withTimeline(

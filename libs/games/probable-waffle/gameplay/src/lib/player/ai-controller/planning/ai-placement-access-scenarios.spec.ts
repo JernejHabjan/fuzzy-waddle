@@ -1,6 +1,7 @@
 import { createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 import { createAiProductionPolicyFixture } from "../testing/ai-production-policy-fixture";
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
+import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { selectConstructionPosition } from "./ai-construction-site-selector";
 
 function fixture(positions: readonly (readonly [number, number])[]) {
@@ -69,6 +70,81 @@ describe("observed construction access scenarios", () => {
       selectConstructionPosition(observation, builder, 1, 0, new Set(), 0, (cell) => cell.tileKey === "2,1")
     ).toBeUndefined();
   });
+
+  it("keeps an owned unit's active movement destination free even when the whole ground area stays connected", () => {
+    const { observation, builder } = fixture(rooms());
+    const mover = {
+      ...createAiTestOwnedActor("mover"),
+      activeOrder: {
+        status: "known" as const,
+        value: { orderType: OrderType.Move, targetActorId: null, targetPosition: { x: 3, y: 1, z: 0 } },
+        observedTick: 200
+      }
+    };
+    const selected = selectConstructionPosition(
+      { ...observation, actors: [builder, mover] },
+      builder,
+      1,
+      0,
+      new Set(),
+      0,
+      (cell) => cell.tileKey === "3,1" || cell.tileKey === "5,1"
+    );
+    expect(selected).toEqual({ x: 5, y: 1, z: 0 });
+  });
+
+  it("preserves one-tile maneuvering clearance around other owned workers", () => {
+    const positions: [number, number][] = [];
+    for (let y = 0; y < 9; y += 1) for (let x = 0; x < 9; x += 1) positions.push([x, y]);
+    const { observation, builder } = fixture(positions);
+    const worker = {
+      ...createAiTestOwnedActor("service-worker"),
+      logicalPosition: { status: "known" as const, value: { x: 4, y: 4, z: 0 }, observedTick: 200 },
+      capabilities: [{
+        id: "gather", family: "gather", level: 1, domains: ["ground" as const], targetDomains: ["ground" as const],
+        capacity: { status: "known" as const, value: 1, observedTick: 200 }
+      }]
+    };
+    const selected = selectConstructionPosition(
+      { ...observation, actors: [builder, worker] },
+      builder,
+      1,
+      0,
+      new Set(),
+      0,
+      (cell) => cell.tileKey === "4,3" || cell.tileKey === "7,7"
+    );
+    expect(selected).toEqual({ x: 7, y: 7, z: 0 });
+  });
+
+  it.each([OrderType.Gather, OrderType.ReturnResources])(
+    "keeps an owned pending %s service target free",
+    (orderType) => {
+      const { observation, builder } = fixture(rooms());
+      const worker = {
+        ...createAiTestOwnedActor("worker"),
+        pendingOrder: {
+          status: "known" as const,
+          value: { orderType, targetActorId: "service-target" },
+          observedTick: 200
+        }
+      };
+      const target = {
+        ...createAiTestOwnedActor("service-target"),
+        logicalPosition: { status: "known" as const, value: { x: 3, y: 1, z: 0 }, observedTick: 200 }
+      };
+      const selected = selectConstructionPosition(
+        { ...observation, actors: [builder, worker, target] },
+        builder,
+        1,
+        0,
+        new Set(),
+        0,
+        (cell) => cell.tileKey === "3,1" || cell.tileKey === "5,1"
+      );
+      expect(selected).toEqual({ x: 5, y: 1, z: 0 });
+    }
+  );
 
   it("PLACE-03 checks each simultaneous footprint against the whole reserved prefix without overlap", () => {
     const positions: [number, number][] = [];

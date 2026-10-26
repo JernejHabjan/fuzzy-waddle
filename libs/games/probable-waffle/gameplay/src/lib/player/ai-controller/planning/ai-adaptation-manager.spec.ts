@@ -13,6 +13,7 @@ import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
+import { buildAiAccessGraphV1 } from "./ai-access-graph-v1";
 import { AiAdaptationManager } from "./ai-adaptation-manager";
 
 const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
@@ -76,6 +77,51 @@ const catalog: AiCapabilityCatalogV1 = {
     }
   ],
   unsupported: []
+};
+
+const airPressureCatalog: AiCapabilityCatalogV1 = {
+  ...catalog,
+  entries: [
+    ...catalog.entries,
+    {
+      capabilityId: "air-producer",
+      family: "producer",
+      sourceObjectName: ObjectNames.Temple,
+      effectiveLevel: 1,
+      movementDomains: [],
+      targetDomains: [],
+      produces: [ObjectNames.Banshee],
+      constructs: [],
+      researches: [],
+      gathers: [],
+      housingCapacity: null,
+      housingCost: null,
+      cargoCapacity: null
+    },
+    {
+      capabilityId: "air-pressure",
+      family: "air_attack",
+      sourceObjectName: ObjectNames.Banshee,
+      effectiveLevel: 1,
+      movementDomains: ["air"],
+      targetDomains: ["ground"],
+      produces: [],
+      constructs: [],
+      researches: [],
+      gathers: [],
+      housingCapacity: null,
+      housingCost: 1,
+      cargoCapacity: null,
+      constructionProfile: {
+        resourceCost: { [ResourceType.Food]: 100, [ResourceType.Wood]: 40 },
+        footprintRadiusTiles: 0,
+        visionRange: 8,
+        navigableHeight: null,
+        enterHeight: null,
+        exitHeight: null
+      }
+    }
+  ]
 };
 
 function actor(
@@ -157,6 +203,139 @@ describe("AiAdaptationManager", () => {
     );
     expect(second.statePatch?.adaptation?.activeRoleTargets).toContainEqual(
       expect.objectContaining({ role: "anti_air", desired: 1 })
+    );
+  });
+
+  it("DOMAIN-02 treats a visible valuable shoreline objective as evidence for bounded naval control", () => {
+    const base = createAiTestObservation();
+    const access = buildAiAccessGraphV1({
+      generation: 1,
+      staticRevision: 1,
+      dynamicRevision: 1,
+      threatRevision: 0,
+      builtTick: 100,
+      continuationCursor: 0,
+      includeAirRegion: true,
+      cells: [
+        {
+          x: 0,
+          y: 0,
+          ground: true,
+          water: false,
+          elevation: 0,
+          groundNeighborKeys: [],
+          knowledge: "known_static",
+          clearance: 2
+        },
+        {
+          x: 1,
+          y: 0,
+          ground: false,
+          water: true,
+          elevation: 0,
+          groundNeighborKeys: [],
+          knowledge: "known_static",
+          clearance: 2
+        }
+      ]
+    });
+    const shorelineNode = access.groundNodeByTileKey.get("0,0");
+    if (!shorelineNode) throw new Error("test_shoreline_ground_node_missing");
+    const shoreline = {
+      ...actor("coastal-workmill", ObjectNames.WorkMill, "enemy", []),
+      accessNodeId: {
+        status: "known" as const,
+        value: shorelineNode,
+        observedTick: 100
+      },
+      capabilities: [
+        {
+          id: "coastal-workmill:drop-off",
+          family: "drop_off",
+          level: 1,
+          domains: [],
+          targetDomains: [],
+          capacity: { status: "known" as const, value: 0, observedTick: 100 }
+        }
+      ]
+    };
+    const navalCatalog: AiCapabilityCatalogV1 = {
+      ...catalog,
+      entries: [
+        ...catalog.entries.map((entry) =>
+          entry.sourceObjectName === ObjectNames.Sandhold
+            ? { ...entry, produces: [...entry.produces, ObjectNames.VikingBoat] }
+            : entry
+        ),
+        {
+          capabilityId: "viking-boat",
+          family: "naval",
+          sourceObjectName: ObjectNames.VikingBoat,
+          effectiveLevel: 1,
+          movementDomains: ["water"],
+          targetDomains: ["ground", "water"],
+          produces: [],
+          constructs: [],
+          researches: [],
+          gathers: [],
+          housingCapacity: null,
+          housingCost: 1,
+          cargoCapacity: null,
+          constructionProfile: {
+            resourceCost: { [ResourceType.Wood]: 40 },
+            footprintRadiusTiles: 0,
+            visionRange: 8,
+            navigableHeight: null,
+            enterHeight: null,
+            exitHeight: null
+          }
+        }
+      ]
+    };
+    const navalManager = new AiAdaptationManager(profile, () => navalCatalog);
+    const main = { ...createAiTestOwnedActor("main"), objectName: ObjectNames.Sandhold };
+    const makeObservation = (tick: number) => ({
+      ...base,
+      tick,
+      actors: [main, shoreline],
+      map: {
+        bounds: { status: "known" as const, value: { width: 2, height: 1 }, observedTick: tick },
+        staticRevision: 1,
+        frontierAccessNodeIds: [],
+        scoutCoverageAccessNodeIds: [],
+        dynamicObstacleActorIds: [],
+        regionGeneration: { generation: 1, status: "ready" as const, continuationCursor: 0 },
+        accessGraph: access.graph
+      }
+    });
+    const initial = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "opening:1:balanced"
+    });
+
+    const first = navalManager.propose(makeObservation(100), initial);
+    expect(
+      first.intents.some((intent) => intent.kind === "produce" && intent.objectName === ObjectNames.VikingBoat)
+    ).toBe(false);
+    expect(first.statePatch?.adaptation?.evidence).toContainEqual(
+      expect.objectContaining({ kind: "water_or_transport", permittedFacts: ["visible_coastal_objective"] })
+    );
+    const firstAdaptation = first.statePatch?.adaptation;
+    if (!firstAdaptation) throw new Error("test_coastal_adaptation_state_missing");
+
+    const second = navalManager.propose(makeObservation(140), {
+      ...initial,
+      economyProduction: { ...initial.economyProduction, adaptation: firstAdaptation }
+    });
+
+    expect(second.intents).toContainEqual(
+      expect.objectContaining({ kind: "produce", objectName: ObjectNames.VikingBoat })
+    );
+    expect(second.statePatch?.adaptationDemands).toContainEqual(
+      expect.objectContaining({ demandId: "demand:adapt:water_control", desired: 1 })
     );
   });
 
@@ -299,9 +478,7 @@ describe("AiAdaptationManager", () => {
         }
       }
     };
-    const committed = Array.from({ length: 3 }, () =>
-      manager.propose(funded([queuedMain, slingshot]), state)
-    );
+    const committed = Array.from({ length: 3 }, () => manager.propose(funded([queuedMain, slingshot]), state));
     expect(new Set(early.map(digestCanonicalAiValue)).size).toBe(1);
     expect(new Set(quiet.map(digestCanonicalAiValue)).size).toBe(1);
     expect(new Set(committed.map(digestCanonicalAiValue)).size).toBe(1);
@@ -313,10 +490,12 @@ describe("AiAdaptationManager", () => {
     expect(committed[0]?.intents).toContainEqual(
       expect.objectContaining({ kind: "research", researchType: candidate.researchType })
     );
-    const underAttack = Array.from({ length: 3 }, () => manager.propose(
-      funded([main, ...army, actor("enemy", ObjectNames.TivaraSlingshotFemale, "enemy", ["ground"])]),
-      state
-    ));
+    const underAttack = Array.from({ length: 3 }, () =>
+      manager.propose(
+        funded([main, ...army, actor("enemy", ObjectNames.TivaraSlingshotFemale, "enemy", ["ground"])]),
+        state
+      )
+    );
     expect(new Set(underAttack.map(digestCanonicalAiValue)).size).toBe(1);
     expect(underAttack[0]?.intents.some((intent) => intent.kind === "research")).toBe(false);
     expect(underAttack[0]?.reasons).toContain("research:survival_threat");
@@ -383,5 +562,147 @@ describe("AiAdaptationManager", () => {
       archetypeId: "opening:1:balanced"
     });
     expect(manager.propose(observation(100, [main]), balanced).statePatch?.openingArchetypeId).toBeUndefined();
+  });
+
+  it("DOMAIN-05: produces one air unit for a confirmed exposed valuable objective", () => {
+    const airManager = new AiAdaptationManager(profile, () => airPressureCatalog);
+    const home = {
+      ...createAiTestOwnedActor("air-home"),
+      objectName: ObjectNames.Sandhold,
+      logicalPosition: { status: "known" as const, value: { x: 0, y: 0, z: 0 }, observedTick: 100 },
+      mainBuilding: { status: "known" as const, value: true, observedTick: 100 }
+    };
+    const producer = { ...createAiTestOwnedActor("air-producer"), objectName: ObjectNames.Temple };
+    const target = {
+      ...actor("backline-workmill", ObjectNames.WorkMill, "enemy", []),
+      logicalPosition: { status: "known" as const, value: { x: 30, y: 30, z: 0 }, observedTick: 100 },
+      capabilities: [
+        {
+          id: "backline-workmill:drop-off",
+          family: "drop_off",
+          level: 1,
+          domains: [],
+          targetDomains: [],
+          capacity: { status: "known" as const, value: 0, observedTick: 100 }
+        }
+      ]
+    };
+    const initial = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "opening:1:balanced"
+    });
+    const makeObservation = (tick: number) => ({
+      ...observation(tick, [home, producer, target]),
+      resources: [ResourceType.Food, ResourceType.Wood].map((resourceType) => ({
+        resourceType,
+        stockpile: 2000,
+        reservedUnspent: 0,
+        obligationsDue: 0,
+        deliveredIncomePerMinute: { status: "known" as const, value: 30, observedTick: tick }
+      }))
+    });
+    const first = airManager.propose(makeObservation(100), initial);
+    expect(first.intents.some((intent) => intent.kind === "produce" && intent.objectName === ObjectNames.Banshee)).toBe(
+      false
+    );
+    const second = airManager.propose(makeObservation(140), {
+      ...initial,
+      economyProduction: { ...initial.economyProduction, adaptation: first.statePatch!.adaptation! }
+    });
+    expect(second.statePatch?.adaptation?.evidence).toContainEqual(
+      expect.objectContaining({ kind: "exposed_backline", consecutiveEvaluations: 2 })
+    );
+    expect(second.statePatch?.adaptationDemands).toContainEqual(
+      expect.objectContaining({ demandId: "demand:adapt:air_pressure", desired: 1 })
+    );
+    expect(second.intents).toContainEqual(
+      expect.objectContaining({
+        kind: "produce",
+        objectName: ObjectNames.Banshee,
+        demandId: "demand:adapt:air_pressure"
+      })
+    );
+  });
+
+  it("DOMAIN-05: suppresses air demand for an irrelevant target or one covered by observed anti-air", () => {
+    const airManager = new AiAdaptationManager(profile, () => airPressureCatalog);
+    const home = {
+      ...createAiTestOwnedActor("air-home"),
+      objectName: ObjectNames.Sandhold,
+      logicalPosition: { status: "known" as const, value: { x: 0, y: 0, z: 0 }, observedTick: 100 },
+      mainBuilding: { status: "known" as const, value: true, observedTick: 100 }
+    };
+    const producer = { ...createAiTestOwnedActor("air-producer"), objectName: ObjectNames.Temple };
+    const irrelevant = actor("irrelevant-worker", ObjectNames.TivaraWorkerMale, "enemy", []);
+    const target = {
+      ...actor("covered-workmill", ObjectNames.WorkMill, "enemy", []),
+      logicalPosition: { status: "known" as const, value: { x: 30, y: 30, z: 0 }, observedTick: 100 },
+      capabilities: [
+        {
+          id: "covered-workmill:drop-off",
+          family: "drop_off",
+          level: 1,
+          domains: [],
+          targetDomains: [],
+          capacity: { status: "known" as const, value: 0, observedTick: 100 }
+        }
+      ]
+    };
+    const antiAirTower = {
+      ...actor("anti-air-tower", ObjectNames.WatchTower, "enemy", []),
+      logicalPosition: { status: "known" as const, value: { x: 34, y: 30, z: 0 }, observedTick: 100 },
+      combatProfile: {
+        status: "known" as const,
+        observedTick: 100,
+        value: {
+          maxHealth: 100,
+          maxArmour: 0,
+          armourPermille: 1000,
+          passiveRegenerationPerSecond: 0,
+          healing: { amount: 0, cooldownTicks: 0, remainingCooldownTicks: 0, range: 0 },
+          attacks: [
+            {
+              damage: 10,
+              cooldownTicks: 20,
+              range: 20,
+              minRange: 0,
+              highGroundRangeBonus: 0,
+              impactDelayTicks: 0,
+              areaRadius: 0,
+              targetDomains: ["air" as const]
+            }
+          ],
+          spells: [],
+          statuses: []
+        }
+      }
+    };
+    const initial = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "opening:1:balanced"
+    });
+    const irrelevantFirst = airManager.propose(observation(100, [home, producer, irrelevant]), initial);
+    const irrelevantSecond = airManager.propose(observation(140, [home, producer, irrelevant]), {
+      ...initial,
+      economyProduction: { ...initial.economyProduction, adaptation: irrelevantFirst.statePatch!.adaptation! }
+    });
+    expect(
+      irrelevantSecond.intents.some((intent) => intent.kind === "produce" && intent.objectName === ObjectNames.Banshee)
+    ).toBe(false);
+
+    const defendedFirst = airManager.propose(observation(100, [home, producer, target, antiAirTower]), initial);
+    const defendedSecond = airManager.propose(observation(140, [home, producer, target, antiAirTower]), {
+      ...initial,
+      economyProduction: { ...initial.economyProduction, adaptation: defendedFirst.statePatch!.adaptation! }
+    });
+    expect(
+      defendedSecond.intents.some((intent) => intent.kind === "produce" && intent.objectName === ObjectNames.Banshee)
+    ).toBe(false);
   });
 });

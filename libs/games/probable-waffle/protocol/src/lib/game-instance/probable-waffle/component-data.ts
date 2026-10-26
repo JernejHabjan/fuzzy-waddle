@@ -744,6 +744,8 @@ export interface AiObservationRememberedContactData {
   readonly evidenceId: string;
   readonly lastSeenTick: number;
   readonly confidencePermille: number;
+  /** Previously observed public building role; never inferred from hidden current state. */
+  readonly mainBuilding?: boolean;
   readonly position: Vector3Simple | null;
 }
 

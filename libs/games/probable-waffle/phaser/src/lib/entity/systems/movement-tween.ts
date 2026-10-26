@@ -15,6 +15,7 @@ import { throttle } from "../../library/throttle";
 import { getInterpolatedSimulationNow } from "../../world/services/simulation-time";
 import { applyCampaignProgressionModifiers } from "../../campaign/campaign-progression-modifier";
 import { MovementStepBlockedError } from "./movement-step-blocked-error";
+import { MovementStepInterruptedError } from "./movement-step-interrupted-error";
 import type { MovementRuntime } from "./movement-runtime";
 import type { MovementPresentation } from "./movement-presentation";
 import type { MovementCompletionObservation } from "./movement-completion-observation";
@@ -86,7 +87,14 @@ export class MovementTween {
       onStop?.();
     };
 
-    return this.startMovementTween(newLogicalTransform, config, wrappedOnComplete, wrappedOnStop).catch((error) => {
+    return this.startMovementTween(
+      newLogicalTransform,
+      config,
+      wrappedOnComplete,
+      wrappedOnStop,
+      1,
+      new MovementStepInterruptedError(tile)
+    ).catch((error) => {
       if (actorId) movementOccupancy?.releaseStep(actorId);
       throw error;
     });
@@ -171,7 +179,8 @@ export class MovementTween {
     config: PathMoveConfig | Partial<PathMoveConfig> | undefined,
     onComplete?: (() => void) | (() => Promise<void>),
     onStop?: () => void,
-    tileDistanceMultiplier = 1
+    tileDistanceMultiplier = 1,
+    interruptedStep?: MovementStepInterruptedError
   ): Promise<void> {
     const scene = this.runtime.gameObject.scene;
     if (!isGameObjectActiveInActiveScene(this.runtime.gameObject) || !scene) {
@@ -240,13 +249,15 @@ export class MovementTween {
         }
         settled = true;
         cleanup();
+        if (interruptedStep) this.tweenUpdate({ ...newLogicalTransform });
         if (onStop) {
           onStop();
         } else {
           config?.onStop?.();
           if (!config?.ignoreAnimations) this.presentation.playMovementAnimation(false, config);
         }
-        resolve();
+        if (interruptedStep) reject(interruptedStep);
+        else resolve();
       };
 
       const updateMovement = () => {

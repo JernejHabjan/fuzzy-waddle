@@ -1,6 +1,6 @@
 import Phaser from "phaser";
-import type { ActorId, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
-import type { AiObservedActorV1, AiObservationV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { ActorId, Vector2Simple, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
+import type { AiAccessNodeId, AiObservedActorV1, AiObservationV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { getActorComponent } from "../../../data/actor-component";
 import { getGameObjectCurrentTile } from "../../../data/game-object-helper";
 import { getTileCoordsUnderObject } from "../../../library/tile-under-object";
@@ -18,6 +18,11 @@ import { observedConstructionOccupancy } from "./observed-construction-occupancy
 
 type GameObject = Phaser.GameObjects.GameObject;
 
+const BASE_MAIN_ANCHOR_RADIUS = 12;
+const MAIN_ANCHOR_RADIUS_STEP = 4;
+const MAX_MAIN_ANCHOR_RADIUS = 24;
+const MIN_LEGAL_BUILD_SITES = 8;
+
 /** Produces bounded static/topology metadata without exposing hidden occupancy. */
 export function projectAiObservationMap(
   scene: Phaser.Scene,
@@ -31,7 +36,9 @@ export function projectAiObservationMap(
     readonly blockedTileKeys: ReadonlySet<string>;
     readonly navigableTileKeys: ReadonlySet<string>;
   },
-  staticScoutSearchPoints?: NonNullable<NonNullable<AiObservationV1["map"]>["scoutSearchPoints"]>
+  staticScoutSearchPoints?: NonNullable<NonNullable<AiObservationV1["map"]>["scoutSearchPoints"]>,
+  resolveGroundNodeId: (tile: Vector2Simple) => AiAccessNodeId | undefined = () => undefined,
+  largestBuildableFootprintRadius = 0
 ): NonNullable<AiObservationV1["map"]> {
   const tilemap = getSceneComponent(scene, TilemapComponent)?.tilemap;
   const navigation = getSceneService(scene, NavigationService);
@@ -91,10 +98,61 @@ export function projectAiObservationMap(
     })
     .sort((left, right) => left.position.y - right.position.y || left.position.x - right.position.x)
     .slice(0, 4);
-  const anchors = [...mainAnchors.map((position) => ({ position, radius: 12 })), ...serviceAnchors];
   const included = new Set<string>();
   if (tilemap && navigation) {
     const occupied = observedConstructionOccupancy(tilemap, actors, liveById);
+    const cellCache = new Map<string, NonNullable<NonNullable<AiObservationV1["map"]>["constructionCells"]>[number]>();
+    const cellAt = (x: number, y: number) => {
+      if (x < 0 || y < 0 || x >= tilemap.width || y >= tilemap.height) return undefined;
+      const tileKey = `${x},${y}`;
+      const cached = cellCache.get(tileKey);
+      if (cached) return cached;
+      const observedNavigable = permittedTopology.navigableTileKeys.has(tileKey);
+      const terrainBlocked = permittedTopology.blockedTileKeys.has(tileKey);
+      const cell = {
+        tileKey,
+        position: { x, y, z: 0 },
+        groundPassable: !terrainBlocked && navigation.isTileGridWithoutBlockingObjectsNavigable({ x, y }),
+        waterPassable: navigation.isTileNavigable({ x, y }, MovementTerrainType.Water),
+        elevation: observedNavigable ? (navigation.getNavigableHeightAtTile({ x, y }) ?? 0) : 0,
+        observedBlocked: terrainBlocked || occupied.has(tileKey)
+      };
+      cellCache.set(tileKey, cell);
+      return cell;
+    };
+    const hasMinimumBuildSites = (anchor: Vector3Simple, radius: number) => {
+      const footprint = Math.max(0, largestBuildableFootprintRadius);
+      if (footprint === 0) return true;
+      let availableSites = 0;
+      const minX = Math.max(footprint, anchor.x - radius + footprint);
+      const maxX = Math.min(tilemap.width - 1 - footprint, anchor.x + radius - footprint);
+      const minY = Math.max(footprint, anchor.y - radius + footprint);
+      const maxY = Math.min(tilemap.height - 1 - footprint, anchor.y + radius - footprint);
+      for (let y = minY; y <= maxY; y += 1) {
+        for (let x = minX; x <= maxX; x += 1) {
+          let available = true;
+          for (let offsetY = -footprint; offsetY <= footprint && available; offsetY += 1) {
+            for (let offsetX = -footprint; offsetX <= footprint; offsetX += 1) {
+              const cell = cellAt(x + offsetX, y + offsetY);
+              if (!cell?.groundPassable || cell.observedBlocked) {
+                available = false;
+                break;
+              }
+            }
+          }
+          if (available && ++availableSites >= MIN_LEGAL_BUILD_SITES) return true;
+        }
+      }
+      return false;
+    };
+    const mainAnchorRanges = mainAnchors.map((position) => {
+      let radius = BASE_MAIN_ANCHOR_RADIUS;
+      while (radius < MAX_MAIN_ANCHOR_RADIUS && !hasMinimumBuildSites(position, radius)) {
+        radius = Math.min(MAX_MAIN_ANCHOR_RADIUS, radius + MAIN_ANCHOR_RADIUS_STEP);
+      }
+      return { position, radius };
+    });
+    const anchors = [...mainAnchorRanges, ...serviceAnchors];
     anchorCells: for (const anchor of anchors) {
       for (
         let y = Math.max(0, anchor.position.y - anchor.radius);
@@ -110,18 +168,8 @@ export function projectAiObservationMap(
           const tileKey = `${x},${y}`;
           if (included.has(tileKey)) continue;
           included.add(tileKey);
-          const observedNavigable = permittedTopology.navigableTileKeys.has(tileKey);
-          const terrainBlocked = permittedTopology.blockedTileKeys.has(tileKey);
           // Placement rejects every current fair body; travel retains the native terrain passability.
-          const observedBlocked = terrainBlocked || occupied.has(tileKey);
-          constructionCells.push({
-            tileKey,
-            position: { x, y, z: 0 },
-            groundPassable: !terrainBlocked && navigation.isTileGridWithoutBlockingObjectsNavigable({ x, y }),
-            waterPassable: navigation.isTileNavigable({ x, y }, MovementTerrainType.Water),
-            elevation: observedNavigable ? (navigation.getNavigableHeightAtTile({ x, y }) ?? 0) : 0,
-            observedBlocked
-          });
+          constructionCells.push(cellAt(x, y)!);
         }
       }
     }
@@ -161,6 +209,7 @@ export function projectAiObservationMap(
           includedTactical.add(tileKey);
           const observedNavigable = permittedTopology.navigableTileKeys.has(tileKey);
           const observedBlocked = permittedTopology.blockedTileKeys.has(tileKey);
+          const groundAccessNodeId = resolveGroundNodeId({ x, y });
           tacticalCells.push({
             tileKey,
             position: { x, y, z: observedNavigable ? (navigation.getNavigableHeightAtTile({ x, y }) ?? 0) : 0 },
@@ -168,7 +217,8 @@ export function projectAiObservationMap(
               !observedBlocked && (observedNavigable || navigation.isTileGridWithoutBlockingObjectsNavigable({ x, y })),
             waterPassable: navigation.isTileNavigable({ x, y }, MovementTerrainType.Water),
             elevation: observedNavigable ? (navigation.getNavigableHeightAtTile({ x, y }) ?? 0) : 0,
-            observedBlocked
+            observedBlocked,
+            ...(groundAccessNodeId ? { groundAccessNodeId } : {})
           });
         }
       }

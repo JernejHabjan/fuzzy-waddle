@@ -6,7 +6,7 @@ export function isAiRuntimeBrowserTestConfigV1(value: unknown): value is AiRunti
   if (
     !isRecord(value) ||
     !hasOnlyKeys(value, ["schemaVersion", "enabled", "seed", "startPaused", "presetWorld", "captureProduction", "captureCombat",
-      "calibration"])
+      "captureMovementOnly", "calibration"])
   ) {
     return false;
   }
@@ -25,6 +25,8 @@ export function isAiRuntimeBrowserTestConfigV1(value: unknown): value is AiRunti
     Number.isSafeInteger(value["seed"]) &&
     (value["seed"] as number) >= 0 &&
     (value["captureProduction"] === undefined || value["captureProduction"] === true) &&
+    (value["captureMovementOnly"] === undefined || value["captureMovementOnly"] === true &&
+      value["captureProduction"] === true) &&
     (value["captureCombat"] === undefined || value["captureCombat"] === true && value["captureProduction"] === true) &&
     (value["presetWorld"] === undefined || validAiRuntimePresetWorld(value["presetWorld"]))
   );

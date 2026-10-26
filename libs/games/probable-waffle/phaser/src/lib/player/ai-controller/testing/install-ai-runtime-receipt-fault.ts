@@ -38,6 +38,7 @@ export function installAiRuntimeReceiptFault(scene: ProbableWaffleScene, preset:
   const request = (event: AiIntentCommandDispatchEvent) => {
     if (!within() || event.kind !== "requested" || event.playerNumber !== fault.playerNumber ||
         fault.commandKind === "production" && event.command.type !== "PRODUCTION" ||
+        fault.commandKind === "research" && event.command.type !== "RESEARCH" ||
         effects.size >= fault.maximumCommands) return;
     effects.add(event.correlation.effectId);
     if (!fault.contendQueue || contended || event.command.type !== "PRODUCTION") return;

@@ -24,6 +24,9 @@ import type { AnimationOptions } from "@fuzzy-waddle/probable-waffle-gameplay/en
 import type { BuilderDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/builder-definition";
 import { TilemapComponent } from "../../../world/tilemap/tilemap.component";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
+import { getSceneComponent } from "../../../world/services/scene-component-helpers";
+import { getCenterTileCoordUnderObject, getTileCoordsUnderObject } from "../../../library/tile-under-object";
+import { constructionApproachRange } from "./construction-approach-range";
 
 // Allows the actor to construct building
 export class BuilderComponent {
@@ -183,8 +186,15 @@ export class BuilderComponent {
     }
   }
 
-  getConstructionRange(): number {
-    return 1;
+  /** Uses the target footprint to give pathfinding a free tile beyond its blocked center. */
+  getConstructionRange(target?: Phaser.GameObjects.GameObject): number {
+    if (!target) return 1;
+    const tilemap = getSceneComponent(target.scene, TilemapComponent)?.tilemap;
+    if (!tilemap) return 1;
+    return constructionApproachRange(
+      getTileCoordsUnderObject(tilemap, target),
+      getCenterTileCoordUnderObject(tilemap, target)
+    );
   }
 
   /**

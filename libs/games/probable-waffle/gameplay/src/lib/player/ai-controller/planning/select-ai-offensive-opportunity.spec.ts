@@ -1,4 +1,5 @@
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
+import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 import { createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 
@@ -88,6 +89,194 @@ describe("fastest credible offense", () => {
       })
     );
     expect(result.intents).toContainEqual(expect.objectContaining({ kind: "attack", targetActorId: "enemy-core" }));
+  });
+
+  it("keeps a visible reachable core as the objective while a force just below its local-threat requirement assembles", () => {
+    const enemies = Array.from({ length: 8 }, (_, index) => guard(`enemy-guard-${index}`, "enemy", 1));
+    const distantProducer = {
+      ...producer("enemy-owlery"),
+      logicalPosition: { status: "known" as const, value: { x: 25, y: 0, z: 0 }, observedTick: 20 }
+    };
+    const result = manager.propose(
+      world([...Array.from({ length: 9 }, (_, index) => guard(`attacker-${index}`, "self", 0)), ...enemies,
+        core("enemy-core"), distantProducer]),
+      brain()
+    );
+
+    const assessment = result.statePatch?.strategy?.assessment;
+    expect(assessment).toEqual(
+      expect.objectContaining({
+        targetActorId: "enemy-core",
+        requiredForce: 13,
+        reason: "assembling_compatible_force",
+        selectionSource: "visible_core"
+      })
+    );
+    expect(assessment!.readyForce).toBeLessThan(assessment!.requiredForce);
+  });
+
+  it("routes toward a remembered core using its last-known position without attacking it through fog", () => {
+    const rememberedCore = {
+      ...core("enemy-core"),
+      visibility: "last_seen" as const,
+      accessNodeId: { status: "unknown" as const, reason: "query_pending" as const }
+    };
+    const result = manager.propose(world([guard("a", "self", 0), guard("b", "self", 0), rememberedCore]), brain());
+
+    expect(result.statePatch?.strategy?.assessment).toEqual(
+      expect.objectContaining({
+        choice: "finish",
+        targetActorId: "enemy-core",
+        routeDomain: "ground",
+        selectionSource: "remembered_core"
+      })
+    );
+    expect(result.intents.some((intent) => intent.kind === "attack" && intent.targetActorId === "enemy-core")).toBe(
+      false
+    );
+    expect(result.intents).toContainEqual(
+      expect.objectContaining({ kind: "scout", logicalPosition: { x: 1, y: 0, z: 0 } })
+    );
+  });
+
+  it("keeps attacking a visible core instead of yielding to a remembered core scout", () => {
+    const initial = brain();
+    const guards = [guard("a", "self", 0), guard("b", "self", 0)];
+    const rememberedCore = { ...core("sandhold"), visibility: "last_seen" as const };
+    const enemyBarracks = producer("enemy-barracks");
+    const enemyRange = producer("enemy-range");
+    const first = manager.propose(world([...guards, rememberedCore, enemyBarracks, enemyRange]), initial);
+    if (!first.statePatch?.strategy || !first.statePatch.skirmish || !first.statePatch.squads?.some((squad) => squad.role === "scout"))
+      throw new Error("missing_remembered_core_scout");
+
+    const visibleCore = core("frostforge");
+    const result = manager.propose(world([...guards, rememberedCore, visibleCore, enemyBarracks, enemyRange], 120), {
+      ...initial,
+      squads: first.statePatch.squads,
+      strategy: first.statePatch.strategy,
+      skirmish: first.statePatch.skirmish
+    });
+
+    expect(result.statePatch?.strategy?.assessment).toEqual(
+      expect.objectContaining({ targetActorId: visibleCore.actorId, selectionSource: "visible_core" })
+    );
+  });
+
+  it("releases a retreating side-building mission for a reachable remembered core", () => {
+    const initial = brain();
+    const guards = [guard("a", "self", 0), guard("b", "self", 0)];
+    const sideBuilding = producer("enemy-producer");
+    const first = manager.propose(world([...guards, sideBuilding]), initial);
+    const attack = first.statePatch?.squads?.find((squad) => squad.role === "attack");
+    const strategy = first.statePatch?.strategy;
+    const skirmish = first.statePatch?.skirmish;
+    if (!attack?.lifecycle || !strategy || !skirmish) throw new Error("missing_attack_lifecycle");
+
+    const rememberedCore = {
+      ...core("enemy-core"),
+      visibility: "last_seen" as const,
+      accessNodeId: { status: "unknown" as const, reason: "query_pending" as const }
+    };
+    const localThreat = Array.from({ length: 4 }, (_, index) => guard(`enemy-${index}`, "enemy", 1));
+    const result = manager.propose(world([...guards, sideBuilding, rememberedCore, ...localThreat], 120), {
+      ...initial,
+      squads: [
+        {
+          ...attack,
+          state: "retreat",
+          lifecycle: {
+            ...attack.lifecycle,
+            lastUsefulEffectTick: 100,
+            effectDeadline: { ...attack.lifecycle.effectDeadline, dueTick: 1000 }
+          }
+        }
+      ],
+      strategy,
+      skirmish
+    });
+
+    expect(result.statePatch?.strategy?.assessment).toEqual(
+      expect.objectContaining({ targetActorId: "enemy-core", choice: "pressure" })
+    );
+    expect(result.intents).toContainEqual(
+      expect.objectContaining({ kind: "scout", logicalPosition: { x: 1, y: 0, z: 0 } })
+    );
+    expect(result.intents.some((intent) => intent.kind === "attack" && intent.targetActorId === "enemy-core")).toBe(
+      false
+    );
+  });
+
+  it("promotes a remembered core over a progressing side-building objective", () => {
+    const initial = brain();
+    const producerTarget = producer("enemy-producer");
+    const first = manager.propose(world([guard("a", "self", 0), guard("b", "self", 0), producerTarget]), initial);
+    const attack = first.statePatch?.squads?.find((squad) => squad.role === "attack");
+    if (!attack?.lifecycle || !first.statePatch?.strategy || !first.statePatch.skirmish)
+      throw new Error("missing_attack_lifecycle");
+    const activeGuards = ["a", "b"].map((id) => ({
+      ...guard(id, "self", 0),
+      activeOrder: {
+        status: "known" as const,
+        value: { orderType: OrderType.Attack, targetActorId: producerTarget.actorId },
+        observedTick: 100
+      }
+    }));
+    const rememberedCore = {
+      ...core("enemy-core"),
+      visibility: "last_seen" as const,
+      accessNodeId: { status: "unknown" as const, reason: "query_pending" as const }
+    };
+    const localThreat = Array.from({ length: 4 }, (_, index) => guard(`enemy-${index}`, "enemy", 1));
+    const result = manager.propose(world([...activeGuards, producerTarget, rememberedCore, ...localThreat], 120), {
+      ...initial,
+      squads: [
+        {
+          ...attack,
+          state: "engage",
+          lifecycle: {
+            ...attack.lifecycle,
+            lastUsefulEffectTick: 100,
+            effectDeadline: { ...attack.lifecycle.effectDeadline, dueTick: 1000 }
+          }
+        }
+      ],
+      strategy: first.statePatch.strategy,
+      skirmish: first.statePatch.skirmish
+    });
+
+    expect(result.statePatch?.strategy?.assessment?.targetActorId).toBe("enemy-core");
+  });
+
+  it("releases objective hysteresis when an active attack mission is retreating", () => {
+    const guards = [guard("a", "self", 0), guard("b", "self", 0), guard("c", "self", 0)];
+    const producerTarget = producer("enemy-producer");
+    const initial = brain();
+    const first = manager.propose(world([...guards, producerTarget]), initial);
+    const attack = first.statePatch?.squads?.find((squad) => squad.role === "attack");
+    const strategy = first.statePatch?.strategy;
+    const skirmish = first.statePatch?.skirmish;
+    if (!attack?.lifecycle || !strategy || !skirmish) throw new Error("missing_attack_lifecycle");
+
+    const result = manager.propose(world([...guards, producerTarget, core("enemy-core")], 120), {
+      ...initial,
+      squads: [
+        {
+          ...attack,
+          state: "retreat",
+          lifecycle: {
+            ...attack.lifecycle,
+            lastUsefulEffectTick: 100,
+            effectDeadline: { ...attack.lifecycle.effectDeadline, dueTick: 1000 }
+          }
+        }
+      ],
+      strategy,
+      skirmish
+    });
+
+    expect(result.statePatch?.strategy?.assessment).toEqual(
+      expect.objectContaining({ targetActorId: "enemy-core", choice: "finish" })
+    );
   });
 
   it("does not treat a visibly developed base as an exposed two-unit finish, even at the assembly timeout", () => {

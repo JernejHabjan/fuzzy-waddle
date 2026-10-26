@@ -116,6 +116,8 @@ describe("runtime preset neutral source validation", () => {
   });
   it("accepts only the explicit production capture opt-in", () => {
     expect(isAiRuntimeBrowserTestConfigV1({ ...config, captureProduction: true })).toBe(true);
+    expect(isAiRuntimeBrowserTestConfigV1({ ...config, captureProduction: true, captureMovementOnly: true })).toBe(true);
+    expect(isAiRuntimeBrowserTestConfigV1({ ...config, captureMovementOnly: true })).toBe(false);
     for (const captureProduction of [false, "true", 1, {}]) {
       expect(isAiRuntimeBrowserTestConfigV1({ ...config, captureProduction })).toBe(false);
     }

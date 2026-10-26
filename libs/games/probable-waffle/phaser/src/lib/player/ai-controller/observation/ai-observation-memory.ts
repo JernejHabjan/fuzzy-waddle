@@ -38,6 +38,9 @@ export function projectRememberedContacts(
       observedTick: contact.lastSeenTick,
       logicalPosition: position,
       accessNodeId: unknownValue("query_pending"),
+      ...(contact.mainBuilding === undefined
+        ? {}
+        : { mainBuilding: knownValue(contact.mainBuilding, contact.lastSeenTick) }),
       effectiveLevel: unknownValue("not_observed"),
       capabilities: [],
       queue: unknownValue("not_observed"),
@@ -82,7 +85,8 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function isValidRememberedContact(contact: unknown): contact is RememberedContact {
   if (!isRecord(contact)) return false;
-  const { actorId, objectName, owner, evidenceId, lastSeenTick, confidencePermille, relation, position } = contact;
+  const { actorId, objectName, owner, evidenceId, lastSeenTick, confidencePermille, relation, position, mainBuilding } =
+    contact;
   if (
     typeof actorId !== "string" ||
     typeof objectName !== "string" ||
@@ -98,6 +102,7 @@ function isValidRememberedContact(contact: unknown): contact is RememberedContac
   ) {
     return false;
   }
+  if (mainBuilding !== undefined && typeof mainBuilding !== "boolean") return false;
   return (
     position === null ||
     (isRecord(position) &&

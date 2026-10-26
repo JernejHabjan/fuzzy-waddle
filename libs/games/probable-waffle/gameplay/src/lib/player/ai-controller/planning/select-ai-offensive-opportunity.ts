@@ -150,34 +150,84 @@ export function selectAiOffensiveOpportunity(
       )
       .flatMap((squad) => squad.actorIds)
   );
-  // Ranking new opportunities must not pull a live native attack away from its still-reachable objective.
-  // Tactical retreat and the existing effect deadline remain responsible for unsafe or stalled work.
+  // Ranking new opportunities must not pull a progressing attack away from its reachable objective. Retreat and
+  // recovery release the strategic target so another viable mission can take over.
+  const canRetainObjective =
+    mission !== undefined && !["retreat", "retreating", "recover", "recovering"].includes(mission.state);
   const usefulMission =
+    canRetainObjective &&
     mission?.lifecycle?.lastUsefulEffectTick != null &&
     mission.lifecycle.effectDeadline.dueTick > context.observation.tick;
-  const workingObjective = actionable.find(
-    (candidate) =>
-      candidate.opponent.actorId === mission?.objectiveId &&
-      candidate.opponent.visibility === "visible" &&
-      (usefulMission ||
-        attackers.some((actor) => {
-          const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
-          return (
-            missionMembers.has(actor.actorId) &&
-            order?.orderType === OrderType.Attack &&
-            order.targetActorId === candidate.opponent.actorId
-          );
-        }))
-  );
+  const workingObjective = canRetainObjective
+    ? actionable.find(
+        (candidate) =>
+          candidate.opponent.actorId === mission?.objectiveId &&
+          candidate.opponent.visibility === "visible" &&
+          (usefulMission ||
+            attackers.some((actor) => {
+              const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
+              return (
+                missionMembers.has(actor.actorId) &&
+                order?.orderType === OrderType.Attack &&
+                order.targetActorId === candidate.opponent.actorId
+              );
+            }))
+      )
+    : undefined;
   const focused = ranked.find((candidate) => candidate.opponent.owner === focusedPlayer);
   const best = ranked[0];
+  const visibleReachableCore = actionable
+    .filter(
+      (candidate) =>
+        candidate.opponent.visibility === "visible" &&
+        isCore(candidate.opponent) &&
+        candidate.route.kind === "direct"
+    )
+    .sort((left, right) => right.score - left.score || left.opponent.actorId.localeCompare(right.opponent.actorId))[0];
+  const rememberedCore = actionable
+    .filter(
+      (candidate) =>
+        candidate.opponent.visibility === "last_seen" &&
+        isCore(candidate.opponent)
+    )
+    .sort((left, right) => right.score - left.score || left.opponent.actorId.localeCompare(right.opponent.actorId))[0];
+  const scoutingCore = context.activeScout
+    ? actionable.find(
+        (candidate) =>
+          isCore(candidate.opponent) &&
+          context.activeScout?.objectiveId === `core:${candidate.opponent.evidenceId}`
+      )
+    : undefined;
+  const coreScoutTarget = scoutingCore ?? rememberedCore;
+  const competingVisibleCore =
+    visibleReachableCore &&
+    (coreScoutTarget !== undefined || mission?.objectiveId !== visibleReachableCore.opponent.actorId)
+      ? visibleReachableCore
+      : undefined;
   const selected =
+    competingVisibleCore ??
+    scoutingCore ??
+    rememberedCore ??
     workingObjective ??
     (focused &&
     best &&
     focused.score >= best.score - Math.max(50, Math.floor((Math.abs(best.score) * TARGET_HYSTERESIS_PERMILLE) / 1000))
       ? focused
       : best);
+  const selectionSource: AiStrategyAssessment["selectionSource"] =
+    selected && scoutingCore === selected
+      ? "active_core_scout"
+      : selected && rememberedCore === selected
+        ? "remembered_core"
+        : selected && visibleReachableCore === selected
+          ? "visible_core"
+          : selected && workingObjective === selected
+            ? "working_objective"
+            : selected && focused === selected
+              ? "focused_opponent"
+              : selected
+                ? "highest_ranked"
+                : undefined;
   const workers = context.observation.actors.filter(
     (actor) => actor.relation === "self" && actor.capabilities.some((capability) => capability.family === "gather")
   ).length;
@@ -189,6 +239,19 @@ export function selectAiOffensiveOpportunity(
     selected !== undefined &&
     recentFailure?.targetActorId === selected.opponent.actorId &&
     context.observation.tick < recentFailure.observedTick + Math.min(400, recentFailure.repeatedFailures * 100);
+  const assessmentReason = selected
+    ? pendingRoute
+      ? "route_pending"
+      : recovering || rebuildingFailedMission
+        ? recovering
+          ? "workforce_below_recovery_floor"
+          : "recent_failed_mission_rebuild"
+        : ready
+          ? "credible_force_and_route"
+          : selected.producers >= 2
+            ? "assembling_against_developed_base"
+            : "assembling_compatible_force"
+    : "no_reachable_observed_objective";
   const choice: AiStrategyAssessment["choice"] = selected
     ? pendingRoute
       ? "scout"
@@ -205,19 +268,8 @@ export function selectAiOffensiveOpportunity(
     route: selected?.route,
     assessment: {
       choice,
-      reason: selected
-        ? pendingRoute
-          ? "route_pending"
-          : recovering || rebuildingFailedMission
-            ? recovering
-              ? "workforce_below_recovery_floor"
-              : "recent_failed_mission_rebuild"
-            : ready
-              ? "credible_force_and_route"
-              : selected.producers >= 2
-                ? "assembling_against_developed_base"
-                : "assembling_compatible_force"
-        : "no_reachable_observed_objective",
+      reason: assessmentReason,
+      ...(selectionSource ? { selectionSource } : {}),
       targetActorId: selected?.opponent.actorId ?? null,
       routeDomain: selected?.route.kind === "direct" ? selected.route.domain : null,
       readyForce: selected?.capable ?? 0,
@@ -235,7 +287,15 @@ export function selectAiOffensiveOpportunity(
         .slice(0, 4)
         .map((candidate) => ({
           targetActorId: candidate.opponent.actorId,
-          reason: `score_${candidate.score}_threats_${candidate.threats}`
+          reason: [
+            `score_${candidate.score}`,
+            `threats_${candidate.threats}`,
+            `route_${candidate.route.kind}`,
+            `force_${candidate.capable}_${candidate.required}`,
+            candidate.opponent.visibility,
+            `core_${isCore(candidate.opponent)}`,
+            `working_${candidate === workingObjective}`
+          ].join("_")
         }))
     }
   };

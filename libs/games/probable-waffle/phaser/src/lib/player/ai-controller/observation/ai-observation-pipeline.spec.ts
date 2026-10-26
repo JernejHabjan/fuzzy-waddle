@@ -13,6 +13,7 @@ import {
   normalizeAiObservationMemoryState,
   selectBoundedObservationWork
 } from "./ai-observation-pipeline";
+import { projectRememberedContacts } from "./ai-observation-memory";
 
 const unknown = { status: "unknown", reason: "not_observed" } as const;
 
@@ -162,6 +163,7 @@ describe("Stage 4 observation generation guards", () => {
           evidenceId: "evidence:contact:enemy-b",
           lastSeenTick: 80,
           confidencePermille: 800,
+          mainBuilding: true,
           position: { x: 2, y: 3, z: 0 }
         },
         {
@@ -181,5 +183,56 @@ describe("Stage 4 observation generation guards", () => {
       expect.objectContaining({ actorId: "enemy-b", lastSeenTick: 81, position: { x: 4, y: 3, z: 0 } })
     ]);
     expect(memory?.contacts[0]).not.toHaveProperty("gameObject");
+  });
+
+  it("remembers a previously observed main-building role without restoring current contact data", () => {
+    const memory = normalizeAiObservationMemoryState({
+      schemaVersion: 1,
+      generation: 1,
+      committedTick: 500,
+      knowledgeRevision: 1,
+      queryInputRevision: 1,
+      queryContinuationCursor: 0,
+      invalidationDebt: 0,
+      contacts: [
+        {
+          actorId: "enemy-core",
+          objectName: ObjectNames.Sandhold,
+          owner: 2,
+          relation: "enemy",
+          evidenceId: "evidence:contact:enemy-core",
+          lastSeenTick: 420,
+          confidencePermille: 920,
+          mainBuilding: true,
+          position: { x: 2, y: 3, z: 0 }
+        }
+      ]
+    });
+    const remembered = projectRememberedContacts(
+      new Map(memory?.contacts.map((contact) => [contact.actorId, contact])),
+      new Set(),
+      500
+    )[0];
+
+    expect(remembered).toMatchObject({
+      actorId: "enemy-core",
+      visibility: "last_seen",
+      mainBuilding: { status: "known", value: true, observedTick: 420 },
+      queue: unknown
+    });
+    expect(remembered).not.toHaveProperty("healthPermille");
+    expect(remembered).not.toHaveProperty("gameObject");
+    expect(
+      normalizeAiObservationMemoryState({
+        schemaVersion: 1,
+        generation: 1,
+        committedTick: 500,
+        knowledgeRevision: 1,
+        queryInputRevision: 1,
+        queryContinuationCursor: 0,
+        invalidationDebt: 0,
+        contacts: [{ ...memory!.contacts[0], mainBuilding: "true" }]
+      })?.contacts
+    ).toEqual([]);
   });
 });

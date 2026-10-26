@@ -28,6 +28,7 @@ import { MovementFormation } from "./movement-formation";
 import type { MovementQueryContext } from "./movement-query-context";
 import { MovementQueryObservation } from "./movement-query-observation";
 import { MovementCompletionObservation } from "./movement-completion-observation";
+import { MovementTerrainType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/movement-terrain-type";
 
 /**
  * Actor-system token and public movement facade. Shared MOVE admission stays here; actor-local owners handle
@@ -163,6 +164,18 @@ export class MovementSystem {
     if (path?.length === 0 && isGameObjectActiveInActiveScene(this.gameObject)) {
       const currentTile = getGameObjectCurrentTile(this.gameObject);
       if (currentTile?.x === tileVec3.x && currentTile.y === tileVec3.y) path = [{ ...currentTile }];
+    }
+    if ((!path || !path.length) && this.isLocationNavigable(tileVec3)) {
+      completion?.returned(false);
+      return false;
+    }
+    if (!path || !path.length) {
+      try {
+        path = await this.findReachableApproachPath(tileVec3, queryContext);
+      } catch (error) {
+        completion?.threw();
+        throw error;
+      }
     }
     if (!path || !path.length) {
       completion?.returned(false);
@@ -405,6 +418,54 @@ export class MovementSystem {
 
   cancelMovement() {
     this.tween.cancelMovement();
+  }
+
+  /** Whether this actor can occupy the requested location using its native movement terrain. */
+  isLocationNavigable(tile: Vector2Simple): boolean {
+    const navigation = this.runtime.navigationService;
+    if (!navigation) return false;
+    const terrainType =
+      this.runtime.actorTranslateComponent?.actorTranslateDefinition.movementTerrainType ?? MovementTerrainType.Ground;
+    return navigation.isTileNavigable(tile, terrainType);
+  }
+
+  /** Resolve a blocked location to the nearest reachable legal approach tile, with a fixed 12-cell bound. */
+  private async findReachableApproachPath(
+    destination: Vector2Simple,
+    queryContext?: MovementQueryContext
+  ): Promise<Vector2Simple[] | null> {
+    const navigation = this.runtime.navigationService;
+    if (!navigation || this.isLocationNavigable(destination)) return null;
+    const terrainType =
+      this.runtime.actorTranslateComponent?.actorTranslateDefinition.movementTerrainType ?? MovementTerrainType.Ground;
+    const candidates: Vector2Simple[] = [];
+    for (let radius = 1; radius <= 2; radius++) {
+      for (let y = destination.y - radius; y <= destination.y + radius; y++) {
+        for (let x = destination.x - radius; x <= destination.x + radius; x++) {
+          if (Math.abs(x - destination.x) + Math.abs(y - destination.y) !== radius) continue;
+          const candidate = { x, y };
+          if (!navigation.isWithinGridBounds(candidate, terrainType) || !navigation.isTileNavigable(candidate, terrainType))
+            continue;
+          candidates.push(candidate);
+        }
+      }
+    }
+    candidates.sort(
+      (left, right) =>
+        Math.abs(left.x - destination.x) + Math.abs(left.y - destination.y) -
+          (Math.abs(right.x - destination.x) + Math.abs(right.y - destination.y)) ||
+        left.y - right.y ||
+        left.x - right.x
+    );
+    for (const candidate of candidates) {
+      const path = await MovementQueryObservation.invoke(this.gameObject, queryContext, "initial", () =>
+        navigation.findPathFromGameObjectToTile(this.gameObject, candidate)
+      );
+      if (path?.length) return path;
+      const currentTile = getGameObjectCurrentTile(this.gameObject);
+      if (path && currentTile?.x === candidate.x && currentTile.y === candidate.y) return [candidate];
+    }
+    return null;
   }
 }
 

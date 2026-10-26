@@ -95,6 +95,7 @@ function buildRegions(
         if (
           visited.has(neighborKey) ||
           !neighbor ||
+          (domain === "ground" && !neighbor.groundNeighborKeys.includes(currentKey)) ||
           clearanceFor(neighbor, domain) !== clearanceFor(current, domain) ||
           neighbor.elevation !== current.elevation
         )
@@ -146,7 +147,8 @@ export function buildAiAccessGraphV1(input: BuildAiAccessGraphV1Input): BuiltAiA
       for (const neighborKey of neighborKeys) {
         const toNodeId = lookup.get(neighborKey);
         if (!toNodeId || toNodeId === fromNodeId) continue;
-        const left = fromNodeId.localeCompare(toNodeId) <= 0 ? fromNodeId : toNodeId;
+        const directional = domain === "ground";
+        const left = !directional && fromNodeId.localeCompare(toNodeId) > 0 ? toNodeId : fromNodeId;
         const right = left === fromNodeId ? toNodeId : fromNodeId;
         const linkId = `access:link:${domain}:${left}:${right}`;
         const neighbor = cellByKey.get(neighborKey);
@@ -166,7 +168,8 @@ export function buildAiAccessGraphV1(input: BuildAiAccessGraphV1Input): BuiltAiA
             domain,
             clearance,
             distanceCost: 1,
-            knowledge
+            knowledge,
+            ...(directional ? { directional: true } : {})
           });
         }
       }
@@ -268,9 +271,9 @@ function findDomainRoute(
           link.domain === source.domain &&
           (allowUnknown || link.knowledge !== "unknown") &&
           link.clearance >= requiredClearance &&
-          (link.fromNodeId === current || link.toNodeId === current)
+          (link.fromNodeId === current || (!link.directional && link.toNodeId === current))
       )
-      .map((link) => (link.fromNodeId === current ? link.toNodeId : link.fromNodeId))
+      .map((link) => link.toNodeId)
       .sort();
     for (const neighbor of neighbors) {
       if (visited.has(neighbor)) continue;

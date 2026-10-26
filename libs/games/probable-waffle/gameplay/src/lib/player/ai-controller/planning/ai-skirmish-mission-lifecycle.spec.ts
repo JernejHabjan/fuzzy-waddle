@@ -32,7 +32,8 @@ describe("AiSkirmishManager", () => {
             groundPassable: true,
             waterPassable: false,
             elevation: 0,
-            observedBlocked: false
+            observedBlocked: false,
+            groundAccessNodeId: enemyNode
           }
         ]
       }

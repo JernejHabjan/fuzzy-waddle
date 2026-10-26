@@ -6,6 +6,7 @@ import { RepresentableComponent } from "../components/representable-component";
 import { MovementPresentation } from "./movement-presentation";
 import { MovementTween } from "./movement-tween";
 import { MovementStepBlockedError } from "./movement-step-blocked-error";
+import { MovementStepInterruptedError } from "./movement-step-interrupted-error";
 import { MovementCompletionObservation } from "./movement-completion-observation";
 import type { MovementCompletionEvent } from "./movement-completion-event";
 import { PawnAiBlackboard } from "../../prefabs/ai-agents/pawn-ai-blackboard";
@@ -162,18 +163,30 @@ describe("movement interpolation/reservation extraction (unrun until final gate)
     expect(f.positions.at(-1)).toEqual({ x: 1, y: 0, z: 0 });
   });
 
-  it("cancels once, releases the step, resolves and leaves the completion callback unused", async () => {
+  it("cancels once, finishes the tile step, rejects the interrupted path and releases the step", async () => {
     const f = fixture(),
       onComplete = jest.fn(),
       onStop = jest.fn();
     const pending = f.tween.moveActorToTileWithTween({ x: 1, y: 0 }, undefined, onComplete, onStop);
     f.tween.cancelMovement();
     f.tween.cancelMovement();
-    await pending;
+    await expect(pending).rejects.toEqual(new MovementStepInterruptedError({ x: 1, y: 0 }));
     expect(onStop).toHaveBeenCalledTimes(1);
     expect(onComplete).not.toHaveBeenCalled();
     expect(f.events.off).toHaveBeenCalledTimes(2);
     expect(f.occupancy.releaseStep).toHaveBeenCalledWith("actor:1");
+  });
+
+  it.each([25, 75])("finishes a cancelled tile step at its validated destination at $progress%", async (progress) => {
+    const f = fixture();
+    const pending = f.tween.moveActorToTileWithTween({ x: 1, y: 1 });
+    jest.mocked(getInterpolatedSimulationNow).mockReturnValue(progress);
+    update(f);
+
+    f.tween.cancelMovement();
+    await expect(pending).rejects.toEqual(new MovementStepInterruptedError({ x: 1, y: 1 }));
+
+    expect(f.positions.at(-1)).toEqual({ x: 1, y: 1, z: 0 });
   });
 
   it("resolves through the original shutdown cancellation callback and removes both listeners", async () => {
@@ -184,7 +197,7 @@ describe("movement interpolation/reservation extraction (unrun until final gate)
     const shutdown = f.events.once.mock.calls.find(([event]) => event === Phaser.Scenes.Events.SHUTDOWN);
     if (!shutdown || typeof shutdown[1] !== "function") throw new Error("movement_test_shutdown_missing");
     shutdown[1]();
-    await pending;
+    await expect(pending).rejects.toEqual(new MovementStepInterruptedError({ x: 1, y: 0 }));
     expect(onStop).toHaveBeenCalledTimes(1);
     expect(onComplete).not.toHaveBeenCalled();
     expect(f.events.off).toHaveBeenCalledTimes(2);

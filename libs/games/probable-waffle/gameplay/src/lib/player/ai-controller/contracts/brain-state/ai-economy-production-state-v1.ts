@@ -35,7 +35,7 @@ export interface AiEconomyProductionStateV1 {
   readonly adaptation: Readonly<{
     readonly evidence: readonly {
       readonly evidenceId: AiEvidenceId;
-      readonly kind: "flyer" | "water_or_transport" | "area_damage" | "static_fortification";
+      readonly kind: "flyer" | "water_or_transport" | "area_damage" | "static_fortification" | "exposed_backline";
       readonly sourceContactId: string;
       readonly observedTick: AiSimulationTick;
       readonly confidencePermille: number;
@@ -44,7 +44,14 @@ export interface AiEconomyProductionStateV1 {
       readonly permittedFacts: readonly string[];
     }[];
     readonly activeRoleTargets: readonly {
-      readonly role: "frontline" | "ranged" | "support" | "anti_air" | "water_control" | "fortification_breaker";
+      readonly role:
+        | "frontline"
+        | "ranged"
+        | "support"
+        | "anti_air"
+        | "water_control"
+        | "fortification_breaker"
+        | "air_pressure";
       readonly desired: number;
       readonly evidenceIds: readonly AiEvidenceId[];
     }[];

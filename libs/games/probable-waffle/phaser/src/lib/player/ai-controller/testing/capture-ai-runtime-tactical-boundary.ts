@@ -1,6 +1,5 @@
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getActorComponent } from "../../../data/actor-component";
-import { getGameObjectCurrentTile } from "../../../data/game-object-helper";
 import { isSnapshotApplyInProgress } from "../../../data/scene-data";
 import { LevelComponent } from "../../../entity/components/level/level-component";
 import { ContainerComponent } from "../../../entity/components/building/container-component";
@@ -10,6 +9,7 @@ import { HealthComponent } from "../../../entity/components/combat/components/he
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
+import { NavigationService } from "../../../world/services/navigation.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { AiObservationVisibilityPolicy } from "../observation/ai-observation-visibility-policy";
 import { projectAiCombatProfile } from "../observation/ai-observation-combat-profile";
@@ -22,8 +22,9 @@ export function captureAiRuntimeTacticalBoundary(
   scene: ProbableWaffleScene, decision: AiDecisionDispatchEvent
 ): AiRuntimeTacticalBoundaryV1 {
   const playerNumber = decision.identity.playerNumber;
-  const policy = new AiObservationVisibilityPolicy(scene, playerNumber);
   const index = getSceneService(scene, ActorIndexSystem);
+  const navigation = getSceneService(scene, NavigationService);
+  const policy = new AiObservationVisibilityPolicy(scene, playerNumber, index, navigation);
   const tick = getSceneService(scene, SimulationTickService)?.currentTick ?? null;
   const actors = index?.getAllIdActors() ?? [];
   const points = decision.input?.map?.scoutSearchPoints ?? [];
@@ -51,7 +52,8 @@ export function captureAiRuntimeTacticalBoundary(
       const passengers = getActorComponent(actor, ContainerComponent)?.getContainedGameObjects() ?? [];
       if (passengers.length > 64) gaps.push("tactical_transport_membership_overflow");
       return {
-        identity: captureAiRuntimeCreatedActor(actor), tile: getGameObjectCurrentTile(actor) ?? null,
+        identity: captureAiRuntimeCreatedActor(actor, index),
+        tile: navigation?.getCenterTileCoordUnderObject(actor) ?? null,
         visible: policy.mayObserve(actor), health: health?.healthComponentData.health ?? null,
         armour: health?.healthComponentData.armour ?? null,
         containerId: parent ? getActorComponent(parent, IdComponent)?.id ?? null : null,

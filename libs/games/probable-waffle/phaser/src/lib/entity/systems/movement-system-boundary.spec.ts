@@ -360,6 +360,32 @@ describe("movement facade extraction boundaries (unrun until final gate)", () =>
     release();
   });
 
+  it("uses the nearest reachable legal approach tile for a non-navigable location", async () => {
+    const f = fixture(),
+      requested = { x: 3, y: 3, z: 0 },
+      approach = { x: 3, y: 2 },
+      execute = jest
+        .spyOn(MovementPathExecution.prototype, "moveAlongPathByFollowingPreCalculatedStaticPath")
+        .mockResolvedValue(undefined);
+    f.navigation.isWithinGridBounds.mockReturnValue(true);
+    f.navigation.isTileNavigable.mockImplementation((tile) => tile.x !== requested.x || tile.y !== requested.y);
+    f.navigation.findPathFromGameObjectToTile
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce([{ x: 0, y: 0 }, approach]);
+
+    expect(await f.system.moveToLocationByFollowingStaticPath(requested)).toBe(true);
+    expect(f.navigation.findPathFromGameObjectToTile.mock.calls.map((call) => call[1])).toEqual([requested, approach]);
+    expect(execute.mock.calls[0]?.[0]).toEqual([approach]);
+  });
+
+  it("does not search nearby tiles when a navigable location has no route", async () => {
+    const f = fixture();
+    f.navigation.findPathFromGameObjectToTile.mockResolvedValue(null);
+
+    expect(await f.system.moveToLocationByFollowingStaticPath({ x: 3, y: 3, z: 0 })).toBe(false);
+    expect(f.navigation.findPathFromGameObjectToTile).toHaveBeenCalledTimes(1);
+  });
+
   it("keeps query rejection identity while recording no physical arrival", async () => {
     const f = fixture(),
       board = new PawnAiBlackboard(),

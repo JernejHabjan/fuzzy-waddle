@@ -36,6 +36,24 @@ export interface AiRuntimeProductionCaptureV1 {
     readonly intervals: readonly AiRuntimeResourceServiceIntervalV1[];
   };
   readonly facts: readonly AiRuntimeProductionFactV1[];
+  /** Optional bounded movement-only path query trace; diagnostic raw data, not a route proof. */
+  readonly movementQueries?: readonly {
+    readonly tick: number;
+    readonly playerNumber: number;
+    readonly actorId: string | null;
+    readonly method: "tile_static" | "tile_dynamic";
+    readonly sourceTile: { readonly x: number; readonly y: number } | null;
+    readonly targetTile: { readonly x: number; readonly y: number };
+    readonly dynamicBlockerCount: number | null;
+    readonly result: "path" | "no_path" | "threw";
+    readonly pathLength: number | null;
+    readonly firstStep: { readonly x: number; readonly y: number } | null;
+    readonly lastStep: { readonly x: number; readonly y: number } | null;
+    readonly pathTiles?: readonly { readonly x: number; readonly y: number }[] | null;
+    readonly sourceNavigable: boolean | null;
+    readonly targetNavigable: boolean | null;
+    readonly heightGraphReachable: boolean | null;
+  }[];
   /** All beneficiaries share the original root budget; retained separately from source-player filtered service facts. */
   readonly recipientResourceFacts?: readonly AiRuntimeProductionFactV1[];
   readonly snapshots: readonly {

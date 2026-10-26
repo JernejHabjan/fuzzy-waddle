@@ -3,9 +3,46 @@ import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { SpellType } from "../../../entity/components/combat/spell-type";
 
 import { requireValue, combatActor, squad, fixtureState, observation, manager } from "./ai-tactics-test-fixtures";
-import { estimateAiEngagementV1 } from "./ai-tactics-combat";
+import { canSeeTarget, estimateAiEngagementV1 } from "./ai-tactics-combat";
 
 describe("AiTacticsManager", () => {
+  it("uses an owned actor's native visibility evidence when it is available", () => {
+    const attacker = {
+      ...combatActor("attacker", "self", 0, "ground", 1000, { damage: 10 }),
+      visibleEnemyActorIds: []
+    };
+    const enemy = combatActor("enemy", "enemy", 1, "ground", 1000, { damage: 1 });
+
+    expect(canSeeTarget(attacker, enemy, undefined)).toBe(false);
+    expect(canSeeTarget({ ...attacker, visibleEnemyActorIds: [enemy.actorId] }, enemy, undefined)).toBe(true);
+  });
+
+  it("keeps a scout searching instead of engaging a known harmless contact", () => {
+    const recon = combatActor("recon", "self", 0, "ground", 1000, { damage: 10 });
+    const harmless = combatActor("harmless", "enemy", 3, "ground", 1000, { damage: 1 });
+    if (harmless.combatProfile?.status !== "known") throw new Error("missing_harmless_combat_profile");
+    const harmlessWithoutWeapons = {
+      ...harmless,
+      combatProfile: {
+        ...harmless.combatProfile,
+        value: { ...harmless.combatProfile.value, attacks: [] }
+      }
+    };
+    const mission = {
+      ...squad("squad:scout:recon", "scout", [recon.actorId]),
+      objectiveId: "question:search:ground:8:0:0"
+    };
+
+    const result = manager.propose(observation([recon, harmlessWithoutWeapons]), fixtureState([mission]));
+
+    expect(result.intents.some((intent) => intent.kind === "attack" && intent.targetActorId === harmless.actorId)).toBe(
+      false
+    );
+    expect(
+      result.intents.some((intent) => intent.kind === "move" && intent.actorIds.includes(recon.actorId))
+    ).toBe(false);
+  });
+
   it("moves a distant reinforcement while locally aware members continue fighting", () => {
     const front = combatActor("front", "self", 1, "ground", 1000, { damage: 100 });
     const reinforcement = combatActor("reinforcement", "self", 20, "ground", 1000, { damage: 100 });
@@ -18,9 +55,9 @@ describe("AiTacticsManager", () => {
       expect.objectContaining({ kind: "attack", actorIds: [front.actorId], targetActorId: enemy.actorId })
     );
     expect(result.intents).toContainEqual(expect.objectContaining({ kind: "move", actorIds: [reinforcement.actorId] }));
-    expect(
-      result.intents.flatMap((intent) => intent.kind === "move" ? intent.actorIds : [])
-    ).not.toContain(front.actorId);
+    expect(result.intents.flatMap((intent) => (intent.kind === "move" ? intent.actorIds : []))).not.toContain(
+      front.actorId
+    );
     const attackingFront = {
       ...front,
       activeOrder: {
@@ -33,7 +70,110 @@ describe("AiTacticsManager", () => {
     expect(continuing.intents).toContainEqual(
       expect.objectContaining({ kind: "move", actorIds: [reinforcement.actorId] })
     );
-    expect(continuing.intents.flatMap((intent) => "actorIds" in intent ? intent.actorIds : [])).not.toContain(front.actorId);
+    expect(continuing.intents.flatMap((intent) => ("actorIds" in intent ? intent.actorIds : []))).not.toContain(
+      front.actorId
+    );
+  });
+
+  it("keeps an attack on a visible main building focused when a defender is nearby", () => {
+    const attackers = Array.from({ length: 4 }, (_, index) =>
+      combatActor(`attacker-${index}`, "self", 0, "ground", 1000, { damage: 40 })
+    );
+    const core = combatActor("enemy-core", "enemy", 15, "ground", 1000, {
+      damage: 1,
+      mainBuilding: true
+    });
+    const defender = combatActor("defender", "enemy", 3, "ground", 1000, { damage: 100 });
+    const mission = {
+      ...squad(
+        "squad:attack",
+        "attack",
+        attackers.map((actor) => actor.actorId)
+      ),
+      objectiveId: core.actorId
+    };
+
+    const result = manager.propose(observation([...attackers, core, defender]), fixtureState([mission]));
+
+    expect(result.intents.some((intent) => intent.kind === "attack" && intent.targetActorId === defender.actorId)).toBe(
+      false
+    );
+    expect(result.intents).toContainEqual(
+      expect.objectContaining({ kind: "move", logicalPosition: { x: 15, y: 0, z: 0 } })
+    );
+  });
+
+  it("keeps a last-seen core hypothesis as the approach target when a different core is visible", () => {
+    const attackers = Array.from({ length: 4 }, (_, index) =>
+      combatActor(`attacker-${index}`, "self", 0, "ground", 1000, { damage: 40 })
+    );
+    const rememberedCore = {
+      ...combatActor("remembered-core", "enemy", 15, "ground", 1000, { damage: 1, mainBuilding: true }),
+      evidenceId: "evidence:sandhold" as const,
+      visibility: "last_seen" as const
+    };
+    const visibleCore = combatActor("visible-core", "enemy", 14, "ground", 1000, {
+      damage: 1,
+      mainBuilding: true
+    });
+    const mission = {
+      ...squad(
+        "squad:attack",
+        "attack",
+        attackers.map((actor) => actor.actorId)
+      ),
+      objectiveId: `hypothesis:${rememberedCore.evidenceId}` as never
+    };
+
+    const result = manager.propose(observation([...attackers, rememberedCore, visibleCore]), fixtureState([mission]));
+
+    expect(result.intents).not.toContainEqual(
+      expect.objectContaining({ kind: "attack", targetActorId: visibleCore.actorId })
+    );
+    expect(result.intents).toContainEqual(
+      expect.objectContaining({ kind: "move", logicalPosition: { x: 15, y: 0, z: 0 } })
+    );
+  });
+
+  it("reissues a move when a committed core changes from visible to last-seen", () => {
+    const attackers = Array.from({ length: 4 }, (_, index) =>
+      combatActor(`attacker-${index}`, "self", 0, "ground", 1000, { damage: 40 })
+    );
+    const core = combatActor("enemy-core", "enemy", 25, "ground", 1000, {
+      damage: 1,
+      mainBuilding: true
+    });
+    const mission = {
+      ...squad(
+        "squad:attack",
+        "attack",
+        attackers.map((actor) => actor.actorId)
+      ),
+      objectiveId: core.actorId,
+      state: "advance" as const
+    };
+    const first = manager.propose(observation([...attackers, core]), fixtureState([mission]));
+    const previous = first.statePatch?.squadUpdates?.find((entry) => entry.role === "attack");
+    if (!previous?.tactics) throw new Error("missing_initial_approach");
+    const currentCore = { ...core, visibility: "last_seen" as const };
+    const members = attackers.map((actor) => ({
+      ...actor,
+      activeOrder: {
+        status: "known" as const,
+        observedTick: 120,
+        value: { orderType: OrderType.Attack, targetActorId: core.actorId }
+      }
+    }));
+
+    const result = manager.propose(
+      observation([...members, currentCore], 120),
+      fixtureState([{ ...previous, state: "advance" }])
+    );
+
+    expect(result.intents).toContainEqual(expect.objectContaining({ kind: "move", actorIds: expect.any(Array) }));
+    expect(result.intents.some((intent) => intent.kind === "attack" && intent.targetActorId === core.actorId)).toBe(
+      false
+    );
   });
 
   it.each(["squad:attack:primary", "squad:attack:primary:domain:ground", "squad:attack:other"])(
@@ -65,7 +205,9 @@ describe("AiTacticsManager", () => {
         },
         skirmish: {
           ...base.skirmish,
-          timeline: [{ eventId: `launch:${subjectId}`, tick: 80, kind: "mission" as const, subjectId, detail: "launch:direct" }]
+          timeline: [
+            { eventId: `launch:${subjectId}`, tick: 80, kind: "mission" as const, subjectId, detail: "launch:direct" }
+          ]
         }
       };
       const result = manager.propose(observation([guard, flyer, enemy]), state);
@@ -185,7 +327,7 @@ describe("AiTacticsManager", () => {
     }
   });
 
-  it("does not end retreat at a merely neutral ratio, but releases it when reinforcements make combat favorable", () => {
+  it("requires a clearly favorable, well-supported force estimate to end retreat", () => {
     const enemy = combatActor("enemy", "enemy", 3, "ground", 1000, { damage: 10 });
     const mission = {
       ...squad("squad:defense", "defense", ["guard"]),
@@ -198,12 +340,71 @@ describe("AiTacticsManager", () => {
       state
     );
     expect(neutral.statePatch?.squadUpdates?.[0]?.state).toBe("retreat");
+    const slightAdvantage = manager.propose(
+      observation([combatActor("guard", "self", 0, "ground", 1000, { damage: 13 }), enemy]),
+      state
+    );
+    expect(slightAdvantage.statePatch?.squadUpdates?.[0]?.state).toBe("retreat");
     const favorable = manager.propose(
       observation([combatActor("guard", "self", 0, "ground", 1000, { damage: 20 }), enemy]),
       state
     );
     expect(favorable.statePatch?.squadUpdates?.[0]?.state).toBe("engage");
     expect(favorable.intents).toContainEqual(expect.objectContaining({ kind: "attack", targetActorId: enemy.actorId }));
+  });
+
+  it("holds a safe retreat through its reconsideration window when the threat temporarily disappears", () => {
+    const guard = combatActor("guard", "self", 0, "ground", 1000, { damage: 1 });
+    const enemy = combatActor("enemy", "enemy", 25, "ground", 1000, { damage: 100 });
+    const initial = manager.propose(
+      observation([guard, enemy], 100),
+      fixtureState([{ ...squad("squad:defense", "defense", [guard.actorId]), objectiveId: enemy.actorId }])
+    );
+    const retreated = requireValue(initial.statePatch?.squadUpdates?.[0], "missing_retreat_update");
+    const quiet = manager.propose(observation([guard], 120), fixtureState([retreated]));
+
+    expect(quiet.statePatch?.squadUpdates?.[0]?.state).toBe("retreat");
+    const afterWindow = manager.propose(
+      observation([guard], retreated.tactics?.nextReconsiderTick ?? 140),
+      fixtureState([requireValue(quiet.statePatch?.squadUpdates?.[0], "missing_held_retreat_update")])
+    );
+    expect(afterWindow.statePatch?.squadUpdates?.[0]?.state).toBe("defend");
+  });
+
+  it("keeps a retreating squad in recovery until a local threat is clearly favorable", () => {
+    const guard = combatActor("guard", "self", 0, "ground", 1000, { damage: 1 });
+    const enemy = combatActor("enemy", "enemy", 3, "ground", 1000, { damage: 10 });
+    const initial = manager.propose(
+      observation([guard, enemy], 100),
+      fixtureState([squad("squad:attack", "attack", [guard.actorId])])
+    );
+    const retreating = requireValue(initial.statePatch?.squadUpdates?.[0], "missing_retreat_update");
+    const safe = manager.propose(observation([guard], 120), fixtureState([retreating]));
+    expect(safe.statePatch?.squadUpdates?.[0]?.state).toBe("retreat");
+    const safeWindow = manager.propose(
+      observation([guard], retreating.tactics?.nextReconsiderTick ?? 140),
+      fixtureState([requireValue(safe.statePatch?.squadUpdates?.[0], "missing_held_retreat_update")])
+    );
+    const recovering = requireValue(safeWindow.statePatch?.squadUpdates?.[0], "missing_recovery_update");
+    expect(recovering.state).toBe("recover");
+
+    const contact = manager.propose(
+      observation([combatActor("guard", "self", 0, "ground", 1000, { damage: 13 }), enemy], 160),
+      fixtureState([recovering])
+    );
+    expect(contact.statePatch?.squadUpdates?.[0]?.state).toBe("retreat");
+    expect(contact.intents.some((intent) => intent.kind === "attack")).toBe(false);
+
+    const earlyReinforcements = manager.propose(
+      observation([combatActor("guard", "self", 0, "ground", 1000, { damage: 20 }), enemy], 180),
+      fixtureState([requireValue(contact.statePatch?.squadUpdates?.[0], "missing_held_retreat_update")])
+    );
+    expect(earlyReinforcements.statePatch?.squadUpdates?.[0]?.state).toBe("retreat");
+    const reinforced = manager.propose(
+      observation([combatActor("guard", "self", 0, "ground", 1000, { damage: 20 }), enemy], 240),
+      fixtureState([requireValue(earlyReinforcements.statePatch?.squadUpdates?.[0], "missing_locked_retreat_update")])
+    );
+    expect(reinforced.statePatch?.squadUpdates?.[0]?.state).toBe("engage");
   });
 
   it("FIGHT-04 reserves expected impact and spreads fire after lethal damage is covered", () => {

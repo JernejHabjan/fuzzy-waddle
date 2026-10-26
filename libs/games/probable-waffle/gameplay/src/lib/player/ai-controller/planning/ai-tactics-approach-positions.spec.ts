@@ -48,10 +48,11 @@ describe("observed attack approach positions", () => {
       {
         tileKey: "10,10",
         position: target,
-        groundPassable: false,
+        // Native tactical projection can fail to mark the observed objective's own tile blocked.
+        groundPassable: true,
         waterPassable: false,
         elevation: 0,
-        observedBlocked: true
+        observedBlocked: false
       },
       {
         tileKey: "9,10",
@@ -98,5 +99,71 @@ describe("observed attack approach positions", () => {
       { x: 7, y: 11, z: 0 }
     ]);
     expect(positions.every((entry) => entry.position.x !== target.x)).toBe(true);
+  });
+
+  it("skips a nearer assault cell when the actor's known ground region cannot reach it", () => {
+    const base = createAiTestObservation();
+    const member = {
+      ...attacker("a"),
+      accessNodeId: { status: "known" as const, value: "home" as never, observedTick: 100 }
+    };
+    const unreachable = {
+      tileKey: "19,20",
+      position: { x: 19, y: 20, z: 0 },
+      groundPassable: true,
+      waterPassable: false,
+      elevation: 0,
+      observedBlocked: false,
+      groundAccessNodeId: "island" as never
+    };
+    const reachable = {
+      ...unreachable,
+      tileKey: "21,20",
+      position: { x: 21, y: 20, z: 0 },
+      groundAccessNodeId: "bridge" as never
+    };
+    const observation = {
+      ...base,
+      map: {
+        ...base.map!,
+        tacticalCells: [unreachable, reachable],
+        accessGraph: {
+          schemaVersion: 1 as const,
+          generation: 1,
+          status: "ready" as const,
+          staticRevision: 1,
+          dynamicRevision: 1,
+          threatRevision: 1,
+          builtTick: 100,
+          continuationCursor: 0,
+          nodes: ["home", "bridge", "island"].map((nodeId) => ({
+            nodeId: nodeId as never,
+            domain: "ground" as const,
+            elevation: 0,
+            knowledge: "known_static" as const,
+            representativePosition: { x: 0, y: 0, z: 0 },
+            tileCount: 1,
+            clearance: 1
+          })),
+          links: [
+            {
+              linkId: "home-bridge",
+              fromNodeId: "home" as never,
+              toNodeId: "bridge" as never,
+              domain: "ground" as const,
+              clearance: 1,
+              distanceCost: 1,
+              knowledge: "known_static" as const
+            }
+          ],
+          transferPoints: [],
+          unknownNodeIds: []
+        }
+      }
+    } satisfies AiObservationV1;
+
+    expect(selectAiAttackApproachPositions([member], { x: 20, y: 20, z: 0 }, observation)).toEqual([
+      { actorId: "a", position: reachable.position }
+    ]);
   });
 });

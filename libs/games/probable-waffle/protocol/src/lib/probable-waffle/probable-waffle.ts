@@ -212,6 +212,29 @@ export const ProbableWaffleLevels: ProbableWaffleMapType = {
     },
     lighting: { ambientColor: 0xe6edf5 }
   },
+  [ProbableWaffleMapEnum.AiBridgeCrossing]: {
+    id: ProbableWaffleMapEnum.AiBridgeCrossing,
+    devOnly: true,
+    testOnly: true,
+    name: "AI Bridge Crossing (test only)",
+    loader: {
+      mapSceneKey: "MapAiBridgeCrossing",
+      mapLoaderAssetPackPath: "asset-pack-probable-waffle-ai-bridge-crossing.json"
+    },
+    presentation: {
+      description: "Frozen bridge terrain with ordinary faction starts and no showcase army",
+      imagePath: "assets/probable-waffle/tilemaps/thumbnails/river_crossing.png"
+    },
+    mapInfo: {
+      startPositionsOnTile: [
+        { x: 20, y: 17, z: 0 },
+        { x: 44, y: 5, z: 0 }
+      ],
+      widthTiles: 50,
+      heightTiles: 50
+    },
+    lighting: { ambientColor: 0xe6edf5 }
+  },
   [ProbableWaffleMapEnum.AiMultiplayer]: {
     id: ProbableWaffleMapEnum.AiMultiplayer,
     devOnly: true,

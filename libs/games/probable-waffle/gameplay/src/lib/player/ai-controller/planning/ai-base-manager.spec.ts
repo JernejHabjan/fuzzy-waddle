@@ -115,6 +115,7 @@ describe("AiBaseManager", () => {
     expect(proposal.statePatch?.bases).toContainEqual(
       expect.objectContaining({ baseId: "base:main:sandhold", anchorActorId: "sandhold", memberActorIds: ["sandhold"] })
     );
+    expect(proposal.statePatch?.bases?.[0]).not.toHaveProperty("expansion");
   });
 
   it("creates one stable expansion reservation from a visible distant resource instead of duplicate same-tick plans", () => {

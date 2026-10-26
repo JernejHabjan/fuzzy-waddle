@@ -51,3 +51,51 @@ it("reports current placement occupancy without blocking travel, while keeping s
     observedBlocked: true
   });
 });
+
+it("includes producer-sized placement space beyond the original home-anchor window", () => {
+  jest.mocked(getActorComponent).mockReturnValue(undefined);
+  jest.mocked(getTileCoordsUnderObject).mockReturnValue([]);
+  jest.mocked(getSceneComponent).mockReturnValue({ tilemap: { width: 50, height: 50 } } as never);
+  jest.mocked(getSceneService).mockReturnValue({
+    isTileGridWithoutBlockingObjectsNavigable: () => true,
+    isTileNavigable: () => true,
+    getNavigableHeightAtTile: () => 0
+  } as never);
+  const actor = {
+    ...createAiTestOwnedActor("main"),
+    mainBuilding: { status: "known" as const, value: true, observedTick: 0 },
+    logicalPosition: { status: "known" as const, value: { x: 44, y: 5, z: 0 }, observedTick: 0 }
+  };
+  const crowdedHome = new Set(
+    Array.from({ length: 18 * 18 }, (_, index) => `${32 + (index % 18)},${Math.floor(index / 18)}`)
+  );
+  const map = projectAiObservationMap(
+    {} as Phaser.Scene,
+    1,
+    0,
+    [actor],
+    new Map([["main", {} as Phaser.GameObjects.GameObject]]),
+    0,
+    undefined,
+    { blockedTileKeys: crowdedHome, navigableTileKeys: new Set() },
+    undefined,
+    undefined,
+    2
+  );
+  const openHome = projectAiObservationMap(
+    {} as Phaser.Scene,
+    1,
+    0,
+    [actor],
+    new Map([["main", {} as Phaser.GameObjects.GameObject]]),
+    0,
+    undefined,
+    { blockedTileKeys: new Set(), navigableTileKeys: new Set() },
+    undefined,
+    undefined,
+    2
+  );
+
+  expect(map.constructionCells?.some((cell) => cell.tileKey === "24,5" && cell.groundPassable)).toBe(true);
+  expect(openHome.constructionCells?.some((cell) => cell.tileKey === "28,5")).toBe(false);
+});

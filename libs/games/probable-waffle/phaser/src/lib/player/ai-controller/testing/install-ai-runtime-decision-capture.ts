@@ -39,7 +39,10 @@ export function installAiRuntimeDecisionCapture(
     let tacticalBoundary: AiRuntimeTacticalBoundaryV1 | undefined;
     if (combat) {
       try { tacticalBoundary = captureAiRuntimeTacticalBoundary(scene, value); }
-      catch { lose("tactical_boundary_reader_failed"); }
+      catch (error: unknown) {
+        const detail = error instanceof Error ? `${error.name}:${error.message}` : typeof error;
+        lose(`tactical_boundary_reader_failed:${detail.replace(/[\r\n\t]/g, " ").slice(0, 160)}`);
+      }
     }
     append({ ...boundary(value.identity.playerNumber), kind: "decision_selected", decision: value,
       ...(tacticalBoundary ? { tacticalBoundary } : {}), unspentClaimsBeforeSelection });

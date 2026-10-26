@@ -59,3 +59,33 @@ it("keeps a scout travelling to its information destination instead of reforming
   const next = manager.propose({ ...world, tick: 140, actors: [movingActor] }, { ...state, squads: updates });
   expect(next.intents.filter((intent) => intent.kind === "move")).toEqual([]);
 });
+
+it("keeps a frontier scout on its information destination after an enemy becomes visible", () => {
+  const actor = combatActor("scout", "self", 0);
+  const enemy = combatActor("enemy", "enemy", 3);
+  const mission = { ...squad("squad:scout:primary", "scout", [actor.actorId]), objectiveId: "question:search:a" };
+  const base = observation([actor, enemy]);
+  const world = {
+    ...base,
+    map: {
+      ...base.map!,
+      scoutSearchPoints: [
+        { pointId: "search:a", accessNodeId: "access:front" as const, position: { x: 12, y: 0, z: 0 }, observed: false }
+      ],
+      constructionCells: Array.from({ length: 18 }, (_, x) => ({
+        tileKey: `${x},0`,
+        position: { x, y: 0, z: 0 },
+        groundPassable: true,
+        waterPassable: false,
+        elevation: 0,
+        observedBlocked: false
+      }))
+    }
+  };
+  const state = fixtureState([mission]);
+  const proposal = manager.propose(world, state);
+  const move = proposal.intents.find((intent) => intent.kind === "move");
+  if (move?.kind !== "move") throw new Error("scout_move_missing");
+  expect(move.logicalPosition.x).toBeGreaterThan(8);
+  expect(Math.abs(move.logicalPosition.x - 12)).toBeLessThanOrEqual(4);
+});

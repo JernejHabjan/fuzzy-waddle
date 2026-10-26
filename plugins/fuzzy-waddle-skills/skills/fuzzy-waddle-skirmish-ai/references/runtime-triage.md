@@ -26,6 +26,28 @@ steps 4–5 also apply before expensive runtime validation without a prior failu
 6. Ensure the explicit test timeout covers selected variants plus startup/checkpoint overhead. Prefer #826 preset-world
    runtime for focused invariants; keep full natural matches for emergent and terminal evidence.
 
+## Required gates before another full match
+
+Full matches establish integration and terminal outcomes. Do not use them as the default debugger for an isolated planner or command failure.
+
+1. **Validate the workload statically.** Inspect initial raw ownership rosters on every side, authored scene actors,
+   faction legality, terrain and the actual terminal rules. Confirm that the fixture represents its stated scenario.
+2. **Record the first broken invariant.** Identify the responsible owner and the first observed disagreement. Label
+   hypotheses separately from demonstrated causes; an improved score does not prove the diagnosis.
+3. **Reproduce the actual decision offline.** Prefer a retained committed observation, brain state and capability
+   catalogue. Reduce those inputs to a focused regression that fails before the repair and passes afterward. A test
+   with conveniently available builders/sites does not reproduce a native failure involving unavailable builders/sites.
+4. **Verify the affected native path in a bounded case.** For construction, observe selection, shared acceptance/payment,
+   a real site, builder arrival and completion, plus duplicate suppression. Preserve the relevant negative control.
+   Reuse the existing preset bridge and target only the failed behavior; do not run an unrelated scenario family.
+5. **Run the full scenario only after gates 1-4 pass**, or document the specific integration-only behavior that cannot
+   be reproduced below that layer. Batch the required affected checks once the repair is stable. A new full-match
+   failure returns to capture/reproduction; it does not authorize another speculative tweak and full replay.
+
+Record the current gate and evidence in the existing handoff. A one-time capture run is justified only when the
+necessary native input is missing; reuse its artifact for subsequent investigation. Do not restart an existing capture
+or rerun unchanged full matches. Never lower an oracle or alter the workload merely to turn a report green.
+
 ## Proven interpretation traps
 
 - `gameResult: quit` means the harness reached its bound and exited; it is not a victory or defeat.

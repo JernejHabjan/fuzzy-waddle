@@ -42,6 +42,26 @@ describe("Stage 4 AI visibility policy", () => {
     expect(new AiObservationVisibilityPolicy(scene("omniscient-ai"), 1).mayObserve(actor(2))).toBe(true);
   });
 
+  it("uses the supplied owner scene index when a capture spans an actor with a separate scene context", () => {
+    const captureScene = { baseGameData: { gameInstance: { players: [
+      { playerNumber: 1, playerController: { data: { playerDefinition: { campaignFogPolicy: "normal" } } } }
+    ] } } } as unknown as Phaser.Scene;
+    const ownerIndex = { getOwnedActors: () => [] };
+    const policy = new AiObservationVisibilityPolicy(captureScene, 1, ownerIndex);
+    expect(policy.mayObserve(actor(2))).toBe(false);
+  });
+
+  it("uses owner navigation for vision-source tiles without looking up the source actor's scene", () => {
+    const captureScene = { baseGameData: { gameInstance: { players: [
+      { playerNumber: 1, playerController: { data: { playerDefinition: { campaignFogPolicy: "normal" } } } }
+    ] } } } as unknown as Phaser.Scene;
+    const source = actor(1);
+    const navigation = { getCenterTileCoordUnderObject: jest.fn(() => ({ x: 0, y: 0 })) };
+    const policy = new AiObservationVisibilityPolicy(captureScene, 1, { getOwnedActors: () => [source] }, navigation);
+    expect(policy.mayObserveTile({ x: 0, y: 0 })).toBe(false);
+    expect(navigation.getCenterTileCoordUnderObject).toHaveBeenCalledWith(source);
+  });
+
   it("distinguishes allied support from enemy targets", () => {
     const policy = new AiObservationVisibilityPolicy(scene("normal"), 1);
     expect(policy.relationTo(actor(3))).toBe("ally");

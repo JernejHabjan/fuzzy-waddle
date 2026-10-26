@@ -55,4 +55,32 @@ describe("bounded access graph progress", () => {
     expect(completed).toBe(true);
     expect(heightSnapshot.mock.calls.length).toBe(10000);
   });
+
+  it("does not connect same-height diagonal tiles through two blocked orthogonal corners", () => {
+    const side = 2;
+    jest.mocked(getSceneComponent).mockReturnValue({ tilemap: { width: side, height: side } } as never);
+    jest.mocked(getSceneService).mockReturnValue({
+      getHeightGraphDebugSnapshot: () => ({
+        cells: [
+          [{ isNavigable: true, navigableHeight: 0 }, { isNavigable: false, navigableHeight: 0 }],
+          [{ isNavigable: false, navigableHeight: 0 }, { isNavigable: true, navigableHeight: 0 }]
+        ],
+        edgesByTileKey: new Map()
+      }),
+      isTileGridWithoutBlockingObjectsNavigable: ({ x, y }: { x: number; y: number }) => x === y,
+      isTileNavigable: () => false,
+      getNavigableHeightAtTile: () => 0
+    } as never);
+    const adapter = new AiAccessGraphAdapter({} as Phaser.Scene);
+    const graph = adapter.advanceGraph(20, 0, {
+      revision: 1,
+      blockedTileKeys: new Set(),
+      navigableTileKeys: new Set(["0,0", "1,1"])
+    });
+
+    expect(graph?.nodes.filter((node) => node.domain === "ground")).toHaveLength(2);
+    expect(adapter.resolveNodeId({ x: 0, y: 0 }, ["ground"])).not.toBe(
+      adapter.resolveNodeId({ x: 1, y: 1 }, ["ground"])
+    );
+  });
 });

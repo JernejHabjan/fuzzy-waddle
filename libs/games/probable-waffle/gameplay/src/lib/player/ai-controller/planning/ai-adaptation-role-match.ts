@@ -9,6 +9,8 @@ export function matchesAdaptationRole(entry: AiCapabilityCatalogEntryV1, role: A
       return entry.targetDomains.includes("air");
     case "water_control":
       return entry.movementDomains.includes("water") && entry.targetDomains.includes("water");
+    case "air_pressure":
+      return entry.movementDomains.includes("air") && entry.targetDomains.includes("ground");
     case "ranged":
       return family.includes("range") || family.includes("spell");
     case "support":

@@ -21,5 +21,6 @@ export enum ProbableWaffleMapEnum {
   /** Test-owned, campaign-free economy map; never offered as an ordinary public choice. */
   AiOpenEconomy = 4,
   /** Test-owned three-spawn relay map; never offered as an ordinary public choice. */
-  AiMultiplayer = 5
+  AiMultiplayer = 5,
+  AiBridgeCrossing = 6
 }

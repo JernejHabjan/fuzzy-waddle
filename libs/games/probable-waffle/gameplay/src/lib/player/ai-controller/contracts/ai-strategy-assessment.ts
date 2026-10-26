@@ -2,6 +2,14 @@
 export interface AiStrategyAssessment {
   readonly choice: "finish" | "pressure" | "recover" | "scout";
   readonly reason: string;
+  /** Which deterministic objective-selection branch selected the current target. */
+  readonly selectionSource?:
+    | "active_core_scout"
+    | "remembered_core"
+    | "visible_core"
+    | "working_objective"
+    | "focused_opponent"
+    | "highest_ranked";
   readonly targetActorId: string | null;
   readonly routeDomain?: "ground" | "air" | "water" | null;
   readonly readyForce: number;

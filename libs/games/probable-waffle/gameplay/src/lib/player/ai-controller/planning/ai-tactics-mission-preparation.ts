@@ -13,11 +13,26 @@ import {
 
 import type { AiTacticsContext } from "./ai-tactics-context";
 import { canPursueAiTacticalObjective } from "./ai-tactics-objective-eligibility";
+
+function isCredibleScoutThreat(enemy: AiObservedActorV1): boolean {
+  if (enemy.combatProfile?.status !== "known") return true;
+  const maxHealth = Math.max(1, enemy.combatProfile.value.maxHealth);
+  return enemy.combatProfile.value.attacks.some((attack) => attack.damage * 20 >= maxHealth);
+}
+
 /** Prepares current members and permitted combat facts. */
 export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquadStateV1) {
   const { actorById, catalog, claimedActors, observation, profile, state, transportOwned, updates, visibleEnemies } =
     context;
-  const objectiveActor = squad.objectiveId ? actorById.get(squad.objectiveId as ActorId) : undefined;
+  const hypothesisEvidenceId = squad.objectiveId?.startsWith("hypothesis:")
+    ? squad.objectiveId.slice("hypothesis:".length)
+    : undefined;
+  const objectiveActor = squad.objectiveId
+    ? (actorById.get(squad.objectiveId as ActorId) ??
+      (hypothesisEvidenceId
+        ? observation.actors.find((actor) => actor.evidenceId === hypothesisEvidenceId)
+        : undefined))
+    : undefined;
   const objectiveObservedTick =
     objectiveActor?.logicalPosition.status === "known"
       ? objectiveActor.logicalPosition.observedTick
@@ -59,9 +74,13 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
     .sort((left, right) => left.actorId.localeCompare(right.actorId));
   members.forEach((actor) => claimedActors.add(actor.actorId));
   const origin = knownPosition(members[0]);
-  const localEnemies = visibleEnemies
+  const nearbyEnemies = visibleEnemies
     .filter((enemy) => !origin || distance(origin, knownPosition(enemy)!) <= 18)
     .slice(0, MAX_LOCAL_ENEMIES);
+  // Recon units keep searching through harmless contacts; only a credible attacker should interrupt scouting.
+  const localEnemies = squad.role === "scout"
+    ? nearbyEnemies.filter(isCredibleScoutThreat)
+    : nearbyEnemies;
   const sourceNodeId = members[0]?.accessNodeId.status === "known" ? members[0].accessNodeId.value : null;
   const alternatives = visibleEnemies
     .slice(0, MAX_STRATEGIC_CONTACTS)
@@ -85,20 +104,31 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
     .slice(0, MAX_OBJECTIVE_ALTERNATIVES);
   const previousTarget = squad.tactics?.targetActorId ? actorById.get(squad.tactics.targetActorId) : undefined;
   const bestTarget = alternatives[0];
-  const rememberedTarget = squad.objectiveId ? actorById.get(squad.objectiveId as ActorId) : undefined;
+  const rememberedTarget = objectiveActor;
   const committedTarget =
     ["attack", "defense"].includes(squad.role) &&
     rememberedTarget?.relation === "enemy" &&
-    rememberedTarget.visibility === "visible" &&
+    (rememberedTarget.visibility === "visible" ||
+      (squad.role === "attack" &&
+        rememberedTarget.visibility === "last_seen" &&
+        rememberedTarget.mainBuilding?.status === "known" &&
+        rememberedTarget.mainBuilding.value)) &&
     canPursueAiTacticalObjective(members, rememberedTarget, observation)
       ? rememberedTarget
       : undefined;
-  const immediateThreat = (committedTarget ? localEnemies : [])
+  const committedCoreObjective =
+    squad.role === "attack" &&
+    committedTarget?.mainBuilding?.status === "known" &&
+    committedTarget.mainBuilding.value &&
+    (committedTarget.visibility === "visible" || committedTarget.visibility === "last_seen");
+  const immediateThreat = (squad.role === "scout" || (committedTarget && !committedCoreObjective) ? localEnemies : [])
     .filter(
       (enemy) =>
         canPursueAiTacticalObjective(members, enemy, observation) &&
         enemy.combatProfile?.status === "known" &&
-        enemy.combatProfile.value.attacks.some((attack) => attack.damage > 0)
+        (squad.role === "scout"
+          ? isCredibleScoutThreat(enemy)
+          : enemy.combatProfile.value.attacks.some((attack) => attack.damage > 0))
     )
     .flatMap((enemy) => {
       const enemyPosition = knownPosition(enemy);
@@ -123,15 +153,13 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
       bestTarget &&
       bestTarget.score * 1000 < squad.tactics.targetScore * (1000 + AI_TACTICS_TARGET_SWITCH_IMPROVEMENT_PERMILLE)
   );
-  const targetId =
-    immediateThreat?.actorId ??
-    committedTarget?.actorId ??
-    (retainPrevious
-      ? previousTarget?.actorId
-      : ((bestTarget?.objectiveId as ActorId | undefined) ??
-        (canPursueAiTacticalObjective(members, rememberedTarget, observation)
-          ? rememberedTarget?.actorId
-          : undefined)));
+  let targetId = immediateThreat?.actorId;
+  if (!targetId && squad.role !== "scout") {
+    if (committedTarget) targetId = committedTarget.actorId;
+    else if (retainPrevious) targetId = previousTarget?.actorId;
+    else if (bestTarget) targetId = bestTarget.objectiveId as ActorId;
+    else if (canPursueAiTacticalObjective(members, rememberedTarget, observation)) targetId = rememberedTarget?.actorId;
+  }
   const target = targetId ? actorById.get(targetId) : undefined;
   const visibleTarget = target?.visibility === "visible" ? target : undefined;
   const targetAwareMembers = visibleTarget

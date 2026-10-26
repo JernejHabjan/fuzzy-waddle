@@ -17,4 +17,5 @@ it("permits original production death/contention controls and explicit unavailab
   expect(validAiRuntimeReceiptFault({ ...original, destroyOutput: true })).toBe(true);
   expect(validAiRuntimeReceiptFault({ ...original, contendQueue: true })).toBe(true);
   expect(validAiRuntimeReceiptFault({ ...original, commandKind: "any", maximumCommands: 128, holdHistory: true })).toBe(true);
+  expect(validAiRuntimeReceiptFault({ ...original, commandKind: "research" })).toBe(true);
 });

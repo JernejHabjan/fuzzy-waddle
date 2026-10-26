@@ -7,4 +7,5 @@ export type ProbableWaffleMapKey =
   | "MapRiverCrossing"
   | "MapEmberEnclave"
   | "MapAiOpenEconomy"
-  | "MapAiMultiplayer";
+  | "MapAiMultiplayer"
+  | "MapAiBridgeCrossing";

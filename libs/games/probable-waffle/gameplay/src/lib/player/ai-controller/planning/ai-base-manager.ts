@@ -120,6 +120,7 @@ export class AiBaseManager implements AiProposalManagerV1 {
         })
         .map((actor) => actor.actorId)
         .sort();
+      const expansion = prior?.expansion ?? establishedExpansion?.expansion;
       return {
         baseId: prior?.baseId ?? establishedExpansion?.baseId ?? baseId(anchor.actorId),
         anchorActorId: anchor.actorId,
@@ -135,7 +136,7 @@ export class AiBaseManager implements AiProposalManagerV1 {
             : (prior?.rejectedSiteKeys ?? establishedExpansion?.rejectedSiteKeys ?? []).filter(
                 (entry) => entry.retryAfterTick > observation.tick
               ),
-        expansion: prior?.expansion ?? establishedExpansion?.expansion
+        ...(expansion ? { expansion } : {})
       };
     });
     for (const prior of state.bases.filter(

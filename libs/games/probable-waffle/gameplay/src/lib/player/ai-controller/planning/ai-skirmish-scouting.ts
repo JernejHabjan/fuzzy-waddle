@@ -163,7 +163,13 @@ function appendNeutralClaim(context: AiSkirmishProposalContext): void {
 function appendFrontierScout(context: AiSkirmishProposalContext): void {
   const { currentQuestion, combat, observation } = context;
   const activeScout = context.activeScout?.squadId === "squad:scout:neutral" ? undefined : context.activeScout;
-  if (context.opponent || !currentQuestion || !combat[0] || !observation.map?.accessGraph) return;
+  if (!currentQuestion || !combat[0] || !observation.map?.accessGraph) return;
+  const exposedVisibleCore = context.visibleEnemies.some(
+    (actor) => actor.mainBuilding?.status === "known" && actor.mainBuilding.value
+  );
+  if (exposedVisibleCore && !activeScout) return;
+  const knownOpponent = context.visibleEnemies.length > 0 || context.rememberedEnemies.length > 0;
+  if (knownOpponent && combat.length <= 2 && !activeScout) return;
   const searchPoint = currentQuestion.kind.startsWith("explore:")
     ? observation.map.scoutSearchPoints?.find(
         (point) => point.pointId === currentQuestion.kind.slice("explore:".length)
@@ -176,13 +182,26 @@ function appendFrontierScout(context: AiSkirmishProposalContext): void {
       );
   if (!target) return;
   const scoutPosition = target.representativePosition;
-  const eligible = combat.filter((actor) => canScoutNode(context, actor, target.nodeId));
+  const continuingActorIds = new Set(activeScout?.actorIds ?? []);
+  const assignedActorIds = new Set(
+    context.state.squads
+      .filter((squad) => !["completed", "cancelled"].includes(squad.state))
+      .flatMap((squad) => squad.actorIds)
+  );
+  const eligible = combat.filter(
+    (actor) =>
+      !context.primaryOwnedActors.has(actor.actorId) &&
+      (!assignedActorIds.has(actor.actorId) || continuingActorIds.has(actor.actorId)) &&
+      canScoutNode(context, actor, target.nodeId)
+  );
   const scoutId = activeScout?.squadId ?? ("squad:scout:primary" as AiSquadId);
   const scoutPlanId = `plan:${scoutId}` as AiPlanId;
   const continuingScout = activeScout?.objectiveId === currentQuestion.questionId;
   const retainedScoutMembers =
-    continuingScout && activeScout ? eligible.filter((actor) => activeScout.actorIds.includes(actor.actorId)) : [];
-  const scoutMembers = retainedScoutMembers.length > 0 ? retainedScoutMembers : eligible.slice(0, 3);
+    continuingScout && activeScout
+      ? eligible.filter((actor) => activeScout.actorIds.includes(actor.actorId)).slice(0, 1)
+      : [];
+  const scoutMembers = retainedScoutMembers.length > 0 ? retainedScoutMembers : eligible.slice(0, 1);
   const lead = scoutMembers[0];
   if (!lead) return;
   const sameMembers =

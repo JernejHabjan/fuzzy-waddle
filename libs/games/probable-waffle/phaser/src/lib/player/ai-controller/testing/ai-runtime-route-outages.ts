@@ -1,4 +1,4 @@
-import type Phaser from "phaser";
+import Phaser from "phaser";
 import { Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { NavigationService } from "../../../world/services/navigation.service";
@@ -107,11 +107,21 @@ export function installAiRuntimeRouteOutages(
       navigation.findPathFromGameObjectToTileAvoidingDynamicBlockers = dynamic;
   });
   const lastTick = Math.max(...entries.map((entry) => entry.throughTick));
-  cleanup.add(clock.tick$.subscribe(() => {
-    const due = pending.filter((entry) => clock.currentTick > entry.throughTick);
-    for (const entry of due) pending.splice(pending.indexOf(entry), 1);
-    for (const entry of due) entry.release(false);
-    if (clock.currentTick > lastTick) cleanup.unsubscribe();
+  const shutdown = () => { disposed = true; cleanup.unsubscribe(); };
+  cleanup.add(clock.tick$.subscribe({
+    next: () => {
+      const due = pending.filter((entry) => clock.currentTick > entry.throughTick);
+      for (const entry of due) pending.splice(pending.indexOf(entry), 1);
+      for (const entry of due) entry.release(false);
+      if (clock.currentTick > lastTick) cleanup.unsubscribe();
+    },
+    // The clock is a scene-owned service; its completion still fences retained work if
+    // an earlier scene listener aborts Phaser's SHUTDOWN event dispatch.
+    complete: shutdown
   }));
-  cleanup.add(scene.onShutdown.subscribe(() => { disposed = true; cleanup.unsubscribe(); }));
+  scene.events.once(Phaser.Scenes.Events.SHUTDOWN, shutdown);
+  scene.events.once(Phaser.Scenes.Events.DESTROY, shutdown);
+  cleanup.add(scene.onShutdown.subscribe(shutdown));
+  cleanup.add(() => scene.events.off(Phaser.Scenes.Events.SHUTDOWN, shutdown));
+  cleanup.add(() => scene.events.off(Phaser.Scenes.Events.DESTROY, shutdown));
 }

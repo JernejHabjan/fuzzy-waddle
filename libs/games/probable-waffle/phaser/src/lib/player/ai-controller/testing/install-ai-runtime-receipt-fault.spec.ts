@@ -1,6 +1,6 @@
 import { EventEmitter } from "node:events";
 import { Subject } from "rxjs";
-import type { GameCommandOutcome } from "@fuzzy-waddle/probable-waffle-protocol";
+import { ObjectNames, ResearchType, type GameCommandOutcome } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
@@ -14,14 +14,14 @@ import { AI_RUNTIME_AUTHORITY_DELIVERY_EVENT } from "./ai-runtime-authority-deli
 
 jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
-function deliveryFixture() {
+function deliveryFixture(commandKind: "any" | "research" = "any") {
   const ticks = new Subject<void>(), shutdown = new Subject<void>(), events = new EventEmitter();
   const clock = { currentTick: 1, tick$: ticks.asObservable() }, bus = {} as CommandBusService;
   (getSceneService as jest.Mock).mockImplementation((_scene, service) =>
     service === SimulationTickService ? clock : service === CommandBusService ? bus : service === ActorIndexSystem ? {} : null);
   const scene = { events, onShutdown: shutdown.asObservable() } as unknown as ProbableWaffleScene;
   const preset = { receiptFault: { id: "original-receipt", playerNumber: 2, fromTick: 1, throughTick: 10,
-    maximumCommands: 1, commandKind: "any" } } as AiRuntimePresetWorldV1;
+    maximumCommands: 1, commandKind } } as AiRuntimePresetWorldV1;
   const outcome: GameCommandOutcome = { schemaVersion: 1, playerNumber: 2, commandId: "original",
     commitmentKey: "original-effect", effectId: "original-effect", authorityEpoch: 0, sequence: 1,
     tick: 2, kind: "completed", reason: "applied", actorIds: ["worker"], worldLinkIds: [] };
@@ -54,4 +54,22 @@ it("drops held scene work on shutdown and restores direct delivery for later own
   expect(f.events.listenerCount(AI_INTENT_COMMAND_DISPATCH_EVENT)).toBe(0);
   deliverAiCommandOutcome(f.bus, f.outcome, received);
   expect(received).toHaveBeenCalledTimes(1);
+});
+
+it("holds only native research receipts when the research-specific control is selected", () => {
+  const f = deliveryFixture("research"), received: GameCommandOutcome[] = [];
+  f.events.emit(AI_INTENT_COMMAND_DISPATCH_EVENT, { kind: "requested", playerNumber: 2,
+    command: { type: "PRODUCTION", actorIds: ["producer"], actorName: ObjectNames.TivaraWorker, playerNumber: 2 },
+    correlation: { effectId: f.outcome.effectId } });
+  deliverAiCommandOutcome(f.bus, f.outcome, (value) => received.push(value));
+  expect(received).toEqual([f.outcome]);
+  const research = { ...f.outcome, commandId: "research", effectId: "research-effect" };
+  f.events.emit(AI_INTENT_COMMAND_DISPATCH_EVENT, { kind: "requested", playerNumber: 2,
+    command: { type: "RESEARCH", actorIds: ["producer"], researchType: ResearchType.TivaraMacemanUpgradeLevel2, playerNumber: 2 },
+    correlation: { effectId: research.effectId } });
+  deliverAiCommandOutcome(f.bus, research, (value) => received.push(value));
+  expect(received).toEqual([f.outcome]);
+  f.clock.currentTick = 11; f.ticks.next();
+  expect(received).toEqual([f.outcome, research]);
+  f.shutdown.next();
 });

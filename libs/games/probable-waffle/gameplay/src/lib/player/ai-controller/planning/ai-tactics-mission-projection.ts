@@ -47,8 +47,15 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
     nextState === "assemble" ||
     nextState === "rally" ||
     nextState === "reserve";
+  const retainedRetreatAssignments = input.holdRetreat
+    ? (squad.tactics?.assignedPositions ?? []).filter((assignment) =>
+        members.some((member) => member.actorId === assignment.actorId)
+      )
+    : [];
   const anchor = recoveryPhase
-    ? (retreat ?? origin)
+    ? (retainedRetreatAssignments[0]?.position ?? retreat ?? origin)
+    : squad.role === "scout"
+      ? (aiTacticalScoutDestination(observation, squad) ?? knownPosition(target) ?? origin)
     : nextState === "regroup"
       ? origin
       : (rampartPositions[0] ?? knownPosition(target) ?? aiTacticalScoutDestination(observation, squad) ?? origin);
@@ -62,20 +69,22 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
     return legalForMembers(position, observation, [actor]) ? [{ actorId: actor.actorId, position }] : [];
   });
   const postedActorIds = new Set(postAssignments.map((assignment) => assignment.actorId));
-  const assignedPositions = [
-    ...postAssignments,
-    ...(squad.role === "attack" && !recoveryPhase && anchor && observation.map?.tacticalCells?.length
-      ? selectAiAttackApproachPositions(
-          postMembers.filter((actor) => !postedActorIds.has(actor.actorId)),
-          anchor,
-          observation
-        )
-      : formationPositions(
-          postMembers.filter((actor) => !postedActorIds.has(actor.actorId)),
-          anchor,
-          observation
-        ))
-  ];
+  const assignedPositions = retainedRetreatAssignments.length
+    ? retainedRetreatAssignments
+    : [
+        ...postAssignments,
+        ...(squad.role === "attack" && !recoveryPhase && anchor && observation.map?.tacticalCells?.length
+          ? selectAiAttackApproachPositions(
+              postMembers.filter((actor) => !postedActorIds.has(actor.actorId)),
+              anchor,
+              observation
+            )
+          : formationPositions(
+              postMembers.filter((actor) => !postedActorIds.has(actor.actorId)),
+              anchor,
+              observation
+            ))
+      ];
   const finalState: AiSquadStateV1["state"] = oscillationCount >= 2 && nextState === "engage" ? "regroup" : nextState;
   const previousDamageEffectIds = new Set(
     (squad.tactics?.damageReservations ?? [])
@@ -93,7 +102,7 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
           state.pendingOutcomes
         )
       : [];
-  const orderSignature = `${finalState}:${script}:${targetId ?? "none"}:${anchor ? `${anchor.x},${anchor.y},${anchor.z}` : "none"}`;
+  const orderSignature = `${finalState}:${script}:${targetId ?? "none"}:${target?.visibility ?? "missing"}:${anchor ? `${anchor.x},${anchor.y},${anchor.z}` : "none"}`;
   const previouslyOrderedActorIds =
     squad.tactics?.orderSignature === orderSignature
       ? squad.tactics.orderedActorIds.filter((actorId) => members.some((member) => member.actorId === actorId))
@@ -101,6 +110,14 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
   const actorsNeedingOrder = members
     .filter((actor) => {
       const activeOrder = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
+      const assignment = assignedPositions.find((candidate) => candidate.actorId === actor.actorId);
+      const desiredPosition =
+        assignment?.position ??
+        (assignedPositions.length === 0 &&
+        anchor &&
+        (squad.role !== "attack" || recoveryPhase || !observation.map?.tacticalCells?.length)
+          ? anchor
+          : undefined);
       // Attack-move is the legal approach before this member sees the mission's player-visible target.
       if (
         visibleTarget &&
@@ -110,6 +127,10 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
         !targetAwareMembers.some((member) => member.actorId === actor.actorId)
       )
         return false;
+      // Preserve small destination changes, but replace stale retreat moves even under the same order signature.
+      if (activeOrder?.orderType === OrderType.Move && activeOrder.targetPosition && desiredPosition) {
+        return distance(activeOrder.targetPosition, desiredPosition) > 4;
+      }
       if (!previouslyOrderedActorIds.includes(actor.actorId)) return true;
       if (
         visibleTarget &&
@@ -118,7 +139,6 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
       ) {
         return activeOrder?.orderType !== OrderType.Attack || activeOrder.targetActorId !== visibleTarget.actorId;
       }
-      const assignment = assignedPositions.find((candidate) => candidate.actorId === actor.actorId);
       if (assignment && distance(knownPosition(actor) ?? assignment.position, assignment.position) > 2) {
         return activeOrder?.orderType !== OrderType.Move;
       }
@@ -142,7 +162,7 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
                   effectDeadline: aiDeadline(observation.tick + MISSION_EFFECT_EXTENSION_TICKS),
                   terminalReason: null
                 }
-              : missionExpired && squad.state !== "recover" && squad.state !== "recovering"
+              : missionExpired && squad.lifecycle.recoveryAttempt === 0
                 ? {
                     effectDeadline: aiDeadline(observation.tick + MISSION_EFFECT_EXTENSION_TICKS),
                     recoveryAttempt: squad.lifecycle.recoveryAttempt + 1,
@@ -179,7 +199,10 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
       observedLossCount: (squad.tactics?.observedLossCount ?? 0) + Math.max(0, previousMemberCount - members.length),
       lastTransitionTick:
         squad.state === finalState ? (squad.tactics?.lastTransitionTick ?? observation.tick) : observation.tick,
-      nextReconsiderTick: observation.tick + TACTICAL_RECONSIDERATION_TICKS,
+      nextReconsiderTick:
+        squad.state === finalState && squad.tactics && observation.tick < squad.tactics.nextReconsiderTick
+          ? squad.tactics.nextReconsiderTick
+          : observation.tick + TACTICAL_RECONSIDERATION_TICKS,
       oscillationCount,
       orderSignature,
       orderedActorIds: previouslyOrderedActorIds,

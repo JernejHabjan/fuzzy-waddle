@@ -24,6 +24,9 @@ import { NavigableComponent } from "../../entity/components/movement/navigable-c
  * Actor-local collaborators own no subscriptions, timers or saved state; the controller owns their lifetime.
  */
 export class PawnAgentMovement {
+  private activeMovementOrder?: OrderData;
+  private activeMovementPromise?: Promise<State>;
+
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
     private readonly blackboard: PawnAiBlackboard,
@@ -114,7 +117,7 @@ export class PawnAgentMovement {
         case "dropOff":
           return getActorComponent(targetGameObject, ResourceDrainComponent)?.getDropOffRange();
         case "construct":
-          return getActorComponent(this.gameObject, BuilderComponent)?.getConstructionRange();
+          return getActorComponent(this.gameObject, BuilderComponent)?.getConstructionRange(targetGameObject);
         case "heal":
           return getActorComponent(this.gameObject, HealingComponent)?.getHealRange();
         case "repair":
@@ -123,19 +126,23 @@ export class PawnAgentMovement {
           throw new Error("Invalid range type");
       }
     } else if (targetLocation) {
-      // range to location is always 0
-      return 0;
+      const movementSystem = getActorSystem(this.gameObject, MovementSystem);
+      return movementSystem?.isLocationNavigable(targetLocation) === false ? 1 : 0;
     }
     return undefined;
   }
 
   /** Retains the selected target across the separately awaited reachability probe. */
-  async MoveToTarget(type: PlayerPawnRangeType): Promise<State> {
+  MoveToTarget(type: PlayerPawnRangeType): Promise<State> {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) {
       // console.log("[Build] MoveToTarget: No current order");
-      return State.FAILED;
+      return Promise.resolve(State.FAILED);
     }
+    return this.runMovementForOrder(currentOrder, () => this.moveToTargetForOrder(currentOrder, type));
+  }
+
+  private async moveToTargetForOrder(currentOrder: OrderData, type: PlayerPawnRangeType): Promise<State> {
     const target = currentOrder.data.targetGameObject;
     if (!target) {
       // console.log("[Build] MoveToTarget: No target");
@@ -206,9 +213,13 @@ export class PawnAgentMovement {
   }
 
   /** The attack-move callback mutates this invocation's order and cancels its native movement. */
-  async MoveToLocation() {
+  MoveToLocation(): Promise<State> {
     const currentOrder = this.blackboard.getCurrentOrder();
-    if (!currentOrder) return State.FAILED;
+    if (!currentOrder) return Promise.resolve(State.FAILED);
+    return this.runMovementForOrder(currentOrder, () => this.moveToLocationForOrder(currentOrder));
+  }
+
+  private async moveToLocationForOrder(currentOrder: OrderData): Promise<State> {
     const location = currentOrder.data.targetTileLocation;
     if (!location) return State.FAILED;
     const movementSystem = getActorSystem(this.gameObject, MovementSystem);
@@ -259,6 +270,20 @@ export class PawnAgentMovement {
     ) {
       this.agent.Stop("Move - Movement Failed");
     }
+  }
+
+  /** Repeated tree steps for one order share its active native path operation. */
+  private runMovementForOrder(order: OrderData, run: () => Promise<State>): Promise<State> {
+    if (this.activeMovementOrder === order && this.activeMovementPromise) return this.activeMovementPromise;
+
+    const promise = run().finally(() => {
+      if (this.activeMovementPromise !== promise) return;
+      this.activeMovementOrder = undefined;
+      this.activeMovementPromise = undefined;
+    });
+    this.activeMovementOrder = order;
+    this.activeMovementPromise = promise;
+    return promise;
   }
 
   private async CanMoveToTarget(range: number): Promise<boolean> {

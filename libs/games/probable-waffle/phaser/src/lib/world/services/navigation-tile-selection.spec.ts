@@ -86,8 +86,24 @@ describe("native navigation candidate selection", () => {
       x: 1,
       y: 0
     });
+    expect(f.selection.getNavigableTilesAroundBlockedTilesInRadius({ x: 1, y: 1 }, [{ x: 0, y: 0 }], 1)).toEqual([
+      { x: 1, y: 0 },
+      { x: 0, y: 1 }
+    ]);
     expect(f.query).not.toHaveBeenCalled();
     expect(f.index.getAllIdActors).not.toHaveBeenCalled();
+  });
+
+  it("never returns a blocked footprint tile even when the navigation grid reports it as navigable", () => {
+    const f = fixture();
+    f.navigation.isTileNavigable.mockReturnValue(true);
+    expect(
+      f.selection.getClosestNavigableTileAroundBlockedTilesInRadius(
+        { x: 0, y: 0 },
+        [{ x: 0, y: 0 }],
+        1
+      )
+    ).toEqual({ x: 1, y: 0 });
   });
 
   it("selects the next legal endpoint when the nearest footprint is occupied", () => {

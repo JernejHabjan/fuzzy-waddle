@@ -127,35 +127,87 @@ export class NavigationObjectRoutes {
     // Step 2: Find the closest navigable tile around the building within the radius.
     // The target object's own footprint stays blocked; callers move beside it,
     // not into the occupied structure tiles.
-    const closestNavigableTile = this.navigation.closestNavigableTileBetweenGameObjectsInRadius(
-      gameObject,
-      targetGameObject,
-      radiusTiles
-    );
-
-    if (!closestNavigableTile) {
+    const candidates = this.getPathCandidates(gameObject, targetGameObject, fromTile, radiusTiles);
+    if (candidates.length === 0) {
       return null; // No native target tile is available
     }
 
-    // Step 3: Use EasyStar to find the path to the closest navigable tile
     const terrainType = this.getUnitTerrainType(gameObject);
-    const path = await this.findPathForTerrain(fromTile, closestNavigableTile, terrainType);
+    let path: Vector2Simple[] | null = null;
+    let pathTarget = candidates[0]!;
+    for (const candidate of candidates) {
+      pathTarget = candidate;
+      path = await this.findPathForTerrain(fromTile, candidate, terrainType);
+      if (path) break;
+    }
+
     if (this.DEBUG_OBJECT_TARGET_PATHS) {
       const centerTile = getCenterTileCoordUnderObject(this.tilemap, targetGameObject);
       const pathString = path ? path.map((tile) => `${tile.x},${tile.y}`).join(" -> ") : "null";
       console.log(
         `[ObjectTargetPath] actor=${gameObject.name} target=${targetGameObject.name} ` +
-          `from=${fromTile.x},${fromTile.y} chosen=${closestNavigableTile.x},${closestNavigableTile.y} ` +
-          `center=${centerTile?.x ?? "?"},${centerTile?.y ?? "?"} ` +
+          `from=${fromTile.x},${fromTile.y} chosen=${pathTarget.x},${pathTarget.y} ` +
+          `candidates=${candidates.length} center=${centerTile?.x ?? "?"},${centerTile?.y ?? "?"} ` +
           `targetTiles=[${getTileCoordsUnderObject(this.tilemap, targetGameObject)
             .map((tile) => `${tile.x},${tile.y}`)
             .join(";")}] path=${pathString}`
       );
     }
     if (!path) {
-      this.logMissingObjectTargetPath(gameObject, targetGameObject, fromTile, closestNavigableTile);
+      this.logMissingObjectTargetPath(gameObject, targetGameObject, fromTile, pathTarget);
     }
     return path;
+  }
+
+  private getPathCandidates(
+    gameObject: Phaser.GameObjects.GameObject,
+    targetGameObject: Phaser.GameObjects.GameObject,
+    fromTile: Vector2Simple,
+    radiusTiles?: number
+  ): Vector2Simple[] {
+    const closest = this.navigation.closestNavigableTileBetweenGameObjectsInRadius(
+      gameObject,
+      targetGameObject,
+      radiusTiles
+    );
+    if (!closest) return [];
+
+    const terrainType = this.getUnitTerrainType(gameObject);
+    const targetTiles = getTileCoordsUnderObject(this.tilemap, targetGameObject);
+    const navigableTarget = !!getActorComponent(targetGameObject, NavigableComponent);
+    if (navigableTarget && (radiusTiles === undefined || radiusTiles <= 0)) return [closest];
+
+    const actorId = getActorComponent(gameObject, IdComponent)?.id;
+    const occupancy = getSceneService(this.scene, MovementOccupancyService);
+    const blocked = new Set(
+      actorId && occupancy
+        ? occupancy
+            .getDynamicBlockersForActor(actorId)
+            .map((entry) => `${entry.tile.x},${entry.tile.y},${entry.heightLayer}`)
+        : []
+    );
+    const alternatives = this.selection.getNavigableTilesAroundBlockedTilesInRadius(
+      fromTile,
+      targetTiles,
+      radiusTiles,
+      terrainType,
+      occupancy && actorId
+        ? (tile) => {
+            const height = this.heightGraph.getNavigationCell(tile)?.navigableHeight ?? 0;
+            return occupancy
+              .getActorFootprintAtTile(gameObject, tile)
+              .every((cell) => !blocked.has(`${cell.x},${cell.y},${height}`));
+          }
+        : undefined
+    );
+    const ordered = [closest, ...alternatives];
+    const seen = new Set<string>();
+    return ordered.filter((tile) => {
+      const key = `${tile.x},${tile.y}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
   }
 
   private logMissingObjectTargetPath(

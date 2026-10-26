@@ -1,9 +1,10 @@
 import { aiDeadline, type AiPlanId, type AiSquadId } from "../contracts/ai-core-types";
 import type { AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
+import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiSkirmishProposalContext } from "./ai-skirmish-proposal-context";
 import { observedAiEconomyThreats } from "./ai-economy-policy";
-import { estimateAiEngagementV1 } from "./ai-tactics-combat";
+import { canSeeTarget, estimateAiEngagementV1 } from "./ai-tactics-combat";
 import { AI_TACTICS_ATTACK_RATIO_PERMILLE } from "./ai-tactics-rules";
 import {
   baseId,
@@ -22,7 +23,13 @@ export const AI_PURSUIT_LEASH_TICKS = 200;
 export function advanceAiSkirmishDefense(context: AiSkirmishProposalContext, profile: AiProfileConfigV1): void {
   const { localThreat, combat, activeDefense, state, observation, homeAccess } = context;
   if (!localThreat || combat.length === 0) return;
-  const eligibleDefenders = combat.filter((actor) => canTarget(actor, localThreat));
+  let eligibleDefenders = combat.filter((actor) => canTarget(actor, localThreat));
+  const questionScoutActors = new Set(
+    context.activeScout?.objectiveId?.startsWith("question:") ? context.activeScout.actorIds : []
+  );
+  if (eligibleDefenders.length > 1 && questionScoutActors.size > 0) {
+    eligibleDefenders = eligibleDefenders.filter((actor) => !questionScoutActors.has(actor.actorId));
+  }
   if (eligibleDefenders.length === 0) return;
   const confirmedHome =
     context.homeBaseActor?.mainBuilding?.status === "known" && context.homeBaseActor.mainBuilding.value;
@@ -85,21 +92,32 @@ export function advanceAiSkirmishDefense(context: AiSkirmishProposalContext, pro
     }
   };
   context.nextSquads.push(defense);
-  if (!activeDefense?.tactics && targetPosition && canTarget(defenders[0] ?? combat[0]!, localThreat))
-    context.intents.push({
-      ...intentBase(state, defensePlanId, observation.tick, `defend:${localThreat.actorId}`, "army_threat", 940),
-      kind: "attack",
-      actorIds: defense.actorIds,
-      targetActorId: localThreat.actorId,
-      targetPosition: null
-    });
-  else if (!activeDefense?.tactics && targetPosition)
-    context.intents.push({
-      ...intentBase(state, defensePlanId, observation.tick, `intercept:${localThreat.actorId}`, "army_threat", 900),
-      kind: "move",
-      actorIds: defense.actorIds,
-      logicalPosition: targetPosition
-    });
+  const actorClaims = defense.actorIds.map((actorId) => ({
+    claimId: `claim:stage9:actor:${actorId}` as AiIntentV1["claims"][number]["claimId"],
+    kind: "actor" as const,
+    actorId
+  }));
+  if (!activeDefense?.tactics && targetPosition) {
+    const attackableDefenders = defenders.filter((actor) => canSeeTarget(actor, localThreat, context.catalog));
+    const interceptors = defenders.filter((actor) => !attackableDefenders.includes(actor));
+    if (attackableDefenders.length > 0)
+      context.intents.push({
+        ...intentBase(state, defensePlanId, observation.tick, `defend:${localThreat.actorId}`, "army_threat", 940),
+        kind: "attack",
+        actorIds: attackableDefenders.map((actor) => actor.actorId),
+        claims: actorClaims.filter((claim) => attackableDefenders.some((actor) => actor.actorId === claim.actorId)),
+        targetActorId: localThreat.actorId,
+        targetPosition: null
+      });
+    if (interceptors.length > 0)
+      context.intents.push({
+        ...intentBase(state, defensePlanId, observation.tick, `intercept:${localThreat.actorId}`, "army_threat", 900),
+        kind: "move",
+        actorIds: interceptors.map((actor) => actor.actorId),
+        claims: actorClaims.filter((claim) => interceptors.some((actor) => actor.actorId === claim.actorId)),
+        logicalPosition: targetPosition
+      });
+  }
   context.skirmish = withTimeline(
     context.skirmish,
     observation.tick,

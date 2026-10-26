@@ -1,5 +1,11 @@
-import { FactionType, ObjectNames, OrderType, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  FactionType,
+  ObjectNames,
+  OrderType,
+  ProbableWaffleAiDifficulty
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
+import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
@@ -16,8 +22,26 @@ const graph = buildAiAccessGraphV1({
   continuationCursor: 0,
   includeAirRegion: true,
   cells: [
-    { x: 0, y: 0, ground: true, water: false, elevation: 0, groundNeighborKeys: ["1,0"], knowledge: "known_static", clearance: 2 },
-    { x: 1, y: 0, ground: true, water: false, elevation: 0, groundNeighborKeys: ["0,0"], knowledge: "known_static", clearance: 1 }
+    {
+      x: 0,
+      y: 0,
+      ground: true,
+      water: false,
+      elevation: 0,
+      groundNeighborKeys: ["1,0"],
+      knowledge: "known_static",
+      clearance: 2
+    },
+    {
+      x: 1,
+      y: 0,
+      ground: true,
+      water: false,
+      elevation: 0,
+      groundNeighborKeys: ["0,0"],
+      knowledge: "known_static",
+      clearance: 1
+    }
   ]
 });
 const homeNode = graph.groundNodeByTileKey.get("0,0")!;
@@ -68,6 +92,79 @@ function actor(actorId: string, nodeId: typeof homeNode, x: number): AiObservedA
 }
 
 describe("AiSkirmishManager offense target selection", () => {
+  it("keeps an active frontier scout out of a newly formed attack force", () => {
+    const scout = actor("frontier-scout", homeNode, 0);
+    const guard = actor("guard", homeNode, 0);
+    const enemy = {
+      ...actor("enemy", enemyNode, 1),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const,
+      housingCost: { status: "known" as const, value: 0, observedTick: 20 },
+      capabilities: []
+    };
+    const observation = createAiTestObservation();
+    const world = {
+      ...observation,
+      tick: 20,
+      actors: [scout, guard, enemy],
+      map: {
+        bounds: { status: "known" as const, value: { width: 2, height: 1 }, observedTick: 20 },
+        staticRevision: 1,
+        frontierAccessNodeIds: [enemyNode],
+        scoutCoverageAccessNodeIds: [],
+        scoutSearchPoints: [
+          { pointId: "search:front", accessNodeId: enemyNode, position: { x: 1, y: 0, z: 0 }, observed: false }
+        ],
+        dynamicObstacleActorIds: [],
+        regionGeneration: { generation: 1, status: "ready" as const, continuationCursor: 0 },
+        accessGraph: graph.graph
+      }
+    };
+    const baseState = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const state: AiBrainStateV1 = {
+      ...baseState,
+      squads: [
+        {
+          squadId: "squad:scout:neutral",
+          role: "scout",
+          domain: "ground",
+          actorIds: [],
+          objectiveId: "neutral:nearby",
+          state: "recover"
+        },
+        {
+          squadId: "squad:scout:primary",
+          role: "scout",
+          domain: "ground",
+          actorIds: [scout.actorId],
+          objectiveId: "question:search:front",
+          state: "moving"
+        }
+      ]
+    };
+
+    const proposal = new AiSkirmishManager(profile, () => catalog).propose(world, state);
+    const attack = proposal.statePatch?.squads?.find((squad) => squad.role === "attack");
+    const frontierScout = proposal.statePatch?.squads?.find((squad) => squad.objectiveId === "question:search:front");
+
+    expect(attack?.actorIds).toContain(guard.actorId);
+    expect(attack?.actorIds).not.toContain(scout.actorId);
+    expect(frontierScout?.actorIds).toEqual([scout.actorId]);
+    for (const intent of proposal.intents) {
+      if (intent.kind !== "attack" && intent.kind !== "scout") continue;
+      expect(intent.claims.flatMap((claim) => (claim.kind === "actor" ? [claim.actorId] : [])).sort()).toEqual(
+        [...intent.actorIds].sort()
+      );
+    }
+  });
+
   it("prioritizes an observed enemy main building over a nearer non-terminal structure", () => {
     const guard = actor("guard", homeNode, 0);
     const enemyStructure = {

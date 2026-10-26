@@ -26,15 +26,28 @@ function enemyEvidence(observation: AiObservationV1): readonly {
         (actor.housingCost.status === "known" &&
           actor.housingCost.value > 0 &&
           actor.capabilities.some((capability) => capability.domains.includes("water"))) ||
-        (actor.containerState?.status === "known" && actor.containerState.value.mobileDomains.length > 0)
+        (actor.containerState?.status === "known" && actor.containerState.value.mobileDomains.length > 0) ||
+        isValuableCoastalObjective(actor, observation)
       ) {
-        kinds.push({ kind: "water_or_transport", facts: ["visible_water_or_container"] });
+        kinds.push({
+          kind: "water_or_transport",
+          facts: [
+            ...(actor.capabilities.some((capability) => capability.domains.includes("water")) ||
+            (actor.containerState?.status === "known" && actor.containerState.value.mobileDomains.length > 0)
+              ? ["visible_water_or_container"]
+              : []),
+            ...(isValuableCoastalObjective(actor, observation) ? ["visible_coastal_objective"] : [])
+          ]
+        });
       }
       if (
         actor.combatProfile?.status === "known" &&
         actor.combatProfile.value.attacks.some((attack) => attack.areaRadius > 0)
       ) {
         kinds.push({ kind: "area_damage", facts: ["visible_area_attack"] });
+      }
+      if (isExposedValuableBackline(actor, observation)) {
+        kinds.push({ kind: "exposed_backline", facts: ["visible_exposed_valuable_producer"] });
       }
       if (
         actor.capabilities.every((capability) => capability.domains.length === 0) &&
@@ -52,6 +65,71 @@ function enemyEvidence(observation: AiObservationV1): readonly {
       }));
     })
     .sort((left, right) => left.evidenceId.localeCompare(right.evidenceId));
+}
+
+function isExposedValuableBackline(actor: AiObservationV1["actors"][number], observation: AiObservationV1): boolean {
+  const objectivePosition = knownPosition(actor);
+  if (
+    !objectivePosition ||
+    !actor.capabilities.some((capability) => ["produce", "drop_off"].includes(capability.family))
+  )
+    return false;
+  const homePositions = observation.actors
+    .filter(
+      (candidate) =>
+        candidate.relation === "self" && candidate.mainBuilding?.status === "known" && candidate.mainBuilding.value
+    )
+    .map(knownPosition)
+    .filter((position): position is { readonly x: number; readonly y: number } => position !== undefined);
+  if (!homePositions.some((home) => Math.hypot(home.x - objectivePosition.x, home.y - objectivePosition.y) >= 16))
+    return false;
+  return !observation.actors.some((guard) => {
+    if (
+      guard.actorId === actor.actorId ||
+      guard.relation !== "enemy" ||
+      guard.visibility === "last_seen" ||
+      guard.combatProfile?.status !== "known" ||
+      !guard.combatProfile.value.attacks.some((attack) => attack.targetDomains.includes("air"))
+    )
+      return false;
+    const guardPosition = knownPosition(guard);
+    return (
+      guardPosition !== undefined &&
+      Math.hypot(guardPosition.x - objectivePosition.x, guardPosition.y - objectivePosition.y) <= 18
+    );
+  });
+}
+
+function knownPosition(
+  actor: AiObservationV1["actors"][number]
+): { readonly x: number; readonly y: number } | undefined {
+  return actor.logicalPosition.status === "known"
+    ? { x: actor.logicalPosition.value.x, y: actor.logicalPosition.value.y }
+    : undefined;
+}
+
+function isValuableCoastalObjective(actor: AiObservationV1["actors"][number], observation: AiObservationV1): boolean {
+  const accessNodeId = actor.accessNodeId.status === "known" ? actor.accessNodeId.value : undefined;
+  const graph = observation.map?.accessGraph;
+  if (
+    !accessNodeId ||
+    !actor.capabilities.some((capability) => ["produce", "drop_off"].includes(capability.family)) ||
+    graph?.status !== "ready" ||
+    graph.nodes.find((node) => node.nodeId === accessNodeId)?.domain !== "ground"
+  )
+    return false;
+  return graph.transferPoints.some((transfer) => {
+    if (transfer.kind !== "shore" || transfer.knowledge === "unknown") return false;
+    const otherNodeId =
+      transfer.fromNodeId === accessNodeId
+        ? transfer.toNodeId
+        : transfer.toNodeId === accessNodeId
+          ? transfer.fromNodeId
+          : undefined;
+    return (
+      otherNodeId !== undefined && graph.nodes.some((node) => node.nodeId === otherNodeId && node.domain === "water")
+    );
+  });
 }
 
 export function mergeAdaptationEvidence(
@@ -111,6 +189,11 @@ export function adaptationRoleTargets(
   const antiAir = Math.min(6, Math.max(actualFlyers, byKind("flyer").length > 0 ? 1 : 0));
   const targets: { role: AiAdaptationRole; desired: number; evidenceIds: readonly AiEvidenceId[] }[] = [
     { role: "anti_air", desired: antiAir, evidenceIds: byKind("flyer") },
+    {
+      role: "air_pressure",
+      desired: Math.min(1, byKind("exposed_backline").length),
+      evidenceIds: byKind("exposed_backline")
+    },
     {
       role: "water_control",
       desired: Math.min(2, byKind("water_or_transport").length),

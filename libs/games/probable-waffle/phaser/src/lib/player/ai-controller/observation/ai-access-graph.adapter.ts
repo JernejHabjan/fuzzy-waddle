@@ -194,7 +194,8 @@ export class AiAccessGraphAdapter {
           continue;
         const explicitEdge = edges.some((edge) => edge.to.x === neighbor.x && edge.to.y === neighbor.y);
         const sameHeight = navigation.getNavigableHeightAtTile(neighbor) === (heightCell?.navigableHeight ?? 0);
-        if (explicitEdge || sameHeight) adjacentGroundKeys.push(`${neighbor.x},${neighbor.y}`);
+        const diagonal = dx !== 0 && dy !== 0;
+        if (explicitEdge || (sameHeight && !diagonal)) adjacentGroundKeys.push(`${neighbor.x},${neighbor.y}`);
       }
     }
     return {

@@ -1,4 +1,4 @@
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 import { AiTacticsManager } from "./ai-tactics-manager";
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
@@ -131,6 +131,56 @@ describe("AiTacticsManager", () => {
     expect(second.intents.flatMap((intent) => ("actorIds" in intent ? intent.actorIds : []))).toHaveLength(3);
     expect(second.statePatch?.squadUpdates?.[0]?.tactics?.orderedActorIds).toHaveLength(guards.length);
   });
+
+  it.each([
+    { offset: 4, sameSignature: false, expectedMove: false },
+    { offset: 5, sameSignature: false, expectedMove: true },
+    { offset: 4, sameSignature: true, expectedMove: false },
+    { offset: 5, sameSignature: true, expectedMove: true }
+  ])(
+    "retains an active move only near its assigned destination ($offset, same signature $sameSignature)",
+    ({ offset, sameSignature, expectedMove }) => {
+      const guard = combatActor("guard", "self", 1);
+      const enemy = combatActor("enemy", "enemy", 6);
+      const initial = fixtureState([squad("squad:attack", "attack", [guard.actorId])]);
+      const first = manager.propose(observation([guard, enemy]), initial);
+      const firstUpdate = requireValue(first.statePatch?.squadUpdates?.[0], "missing_initial_squad_update");
+      const firstTactics = requireValue(firstUpdate.tactics, "missing_initial_squad_tactics");
+      const firstMove = requireValue(
+        first.intents.find((intent) => intent.kind === "move" && intent.actorIds.includes(guard.actorId)),
+        "missing_initial_move_intent"
+      );
+      if (firstMove.kind !== "move") throw new Error("unexpected_initial_intent_kind");
+      const activeMoveGuard = {
+        ...guard,
+        activeOrder: {
+          status: "known" as const,
+          value: {
+            orderType: OrderType.Move,
+            targetActorId: null,
+            targetPosition: { ...firstMove.logicalPosition, x: firstMove.logicalPosition.x + offset }
+          },
+          observedTick: 120
+        }
+      };
+      const staleSignature = {
+        ...firstUpdate,
+        tactics: {
+          ...firstTactics,
+          orderSignature: sameSignature ? firstTactics.orderSignature : "previous:move:anchor:0,0,0"
+        }
+      };
+
+      const next = manager.propose(observation([activeMoveGuard, enemy], 120), {
+        ...initial,
+        squads: [staleSignature]
+      });
+
+      expect(next.intents.some((intent) => intent.kind === "move" && intent.actorIds.includes(guard.actorId))).toBe(
+        expectedMove
+      );
+    }
+  );
 
   it("H-23 gives each actor one primary owner and releases an absent straggler", () => {
     const actors = [

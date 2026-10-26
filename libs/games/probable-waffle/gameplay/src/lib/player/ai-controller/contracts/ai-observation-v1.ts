@@ -55,6 +55,8 @@ export interface AiObservedResourceStateV1 {
 export interface AiObservedOrderV1 {
   readonly orderType: OrderType;
   readonly targetActorId: ActorId | null;
+  /** Native tile destination for owned move orders when the pawn order provides one. */
+  readonly targetPosition?: Vector3Simple | null;
 }
 
 /** Owned cargo facts needed to reconcile physical boarding without inspecting live objects in the brain. */
@@ -128,6 +130,8 @@ export interface AiObservedActorV1 {
   readonly owner: PlayerNumber | null;
   readonly relation: AiDiplomacyRelationV1;
   readonly visibility: "owned" | "visible" | "last_seen";
+  /** Current enemy contacts visible to this owned actor's native vision source. */
+  readonly visibleEnemyActorIds?: readonly ActorId[];
   readonly evidenceId: AiEvidenceId;
   readonly observedTick: AiSimulationTick;
   readonly logicalPosition: AiKnownValueV1<Vector3Simple>;
@@ -253,6 +257,7 @@ export interface AiObservedMapV1 {
     readonly waterPassable: boolean;
     readonly elevation: number;
     readonly observedBlocked: boolean;
+    readonly groundAccessNodeId?: AiAccessNodeId;
   }[];
   readonly tacticalCells?: readonly {
     readonly tileKey: string;
@@ -261,6 +266,8 @@ export interface AiObservedMapV1 {
     readonly waterPassable: boolean;
     readonly elevation: number;
     readonly observedBlocked: boolean;
+    /** Known region lookup for route-checking ground assault approach cells. */
+    readonly groundAccessNodeId?: AiAccessNodeId;
   }[];
   /** Completed cached topology generation; optional for legacy observations and isolated fixtures. */
   readonly accessGraph?: AiAccessGraphV1;

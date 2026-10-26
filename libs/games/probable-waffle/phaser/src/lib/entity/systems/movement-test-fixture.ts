@@ -23,7 +23,9 @@ export function movementTestFixture() {
   const navigation = {
     getTileWorldCenter: jest.fn((tile: Vector2Simple): Vector2Simple | undefined => ({ x: tile.x, y: tile.y })),
     getNavigableHeightAtTile: jest.fn((_tile: Vector2Simple) => 0),
-    findPathFromGameObjectToTile: jest.fn(async (): Promise<Vector2Simple[] | null> => null),
+    findPathFromGameObjectToTile: jest.fn(
+      async (_actor: Phaser.GameObjects.GameObject, _tile: Vector2Simple): Promise<Vector2Simple[] | null> => null
+    ),
     findAndUseNavigablePathBetweenGameObjectsWithRadius: jest.fn(async (): Promise<Vector2Simple[] | null> => null),
     findPathFromGameObjectToTileAvoidingDynamicBlockers: jest.fn(
       async (
@@ -39,7 +41,7 @@ export function movementTestFixture() {
       ]
     ),
     isWithinGridBounds: jest.fn(() => false),
-    isTileNavigable: jest.fn(() => true),
+    isTileNavigable: jest.fn((_tile: Vector2Simple) => true),
     canTraverseBetweenTiles: jest.fn(() => true),
     getClosestUnoccupiedTile: jest.fn(async () => undefined),
     drawDebugPath: jest.fn()

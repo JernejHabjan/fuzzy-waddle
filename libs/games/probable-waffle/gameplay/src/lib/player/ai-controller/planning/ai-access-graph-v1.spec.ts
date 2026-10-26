@@ -196,6 +196,55 @@ describe("Stage 8 access graph", () => {
     );
   });
 
+  it("keeps one-way ground height transitions directional", () => {
+    const ramp = build([
+      {
+        x: 0,
+        y: 0,
+        ground: true,
+        water: false,
+        elevation: 0,
+        groundNeighborKeys: ["1,0"],
+        knowledge: "known_static",
+        clearance: 1
+      },
+      {
+        x: 1,
+        y: 0,
+        ground: true,
+        water: false,
+        elevation: 1,
+        groundNeighborKeys: [],
+        knowledge: "known_static",
+        clearance: 1
+      }
+    ]);
+    const low = ramp.groundNodeByTileKey.get("0,0")!;
+    const high = ramp.groundNodeByTileKey.get("1,0")!;
+    const request = {
+      queryId: "query:one-way-ramp",
+      kind: "movement" as const,
+      capabilities: {
+        moverDomains: ["ground" as const],
+        targetDomains: [],
+        waterTransportSeats: 0,
+        airTransportSeats: 0,
+        requiredPassengerSeats: 1,
+        requiredClearance: 1
+      },
+      firingNodeIds: []
+    };
+
+    expect(queryAiAccessRouteV1(ramp.graph, { ...request, fromNodeId: low, toNodeId: high })).toMatchObject({
+      kind: "direct",
+      routeNodeIds: [low, high]
+    });
+    expect(queryAiAccessRouteV1(ramp.graph, { ...request, fromNodeId: high, toNodeId: low })).toMatchObject({
+      kind: "impossible",
+      reason: "no_compatible_domain"
+    });
+  });
+
   it("returns a transport route when legal carrier production can satisfy missing capacity", () => {
     const built = build(cells);
     const fromNodeId = built.groundNodeByTileKey.get("0,0")!;

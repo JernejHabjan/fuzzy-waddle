@@ -147,11 +147,21 @@ describe("AiTacticsManager pressure liveness", () => {
     const initial = state({ ...squad(), state: "forming" });
     const waiting = {
       ...initial,
-      strategy: { ...initial.strategy, assessment: {
-        choice: "pressure" as const, reason: "assembling_against_developed_base", targetActorId: enemy.actorId,
-        readyForce: 1, requiredForce: 8, visibleThreatCount: 1, confidencePermille: 1000,
-        expectedEffectTick: 500, reconsiderTick: 240, alternatives: []
-      } }
+      strategy: {
+        ...initial.strategy,
+        assessment: {
+          choice: "pressure" as const,
+          reason: "assembling_against_developed_base",
+          targetActorId: enemy.actorId,
+          readyForce: 1,
+          requiredForce: 8,
+          visibleThreatCount: 1,
+          confidencePermille: 1000,
+          expectedEffectTick: 500,
+          reconsiderTick: 240,
+          alternatives: []
+        }
+      }
     };
     const proposal = manager.propose(observation(200, [friendly, enemy]), waiting);
     expect(proposal.statePatch?.squadUpdates?.[0]?.state).toBe("retreat");
@@ -226,9 +236,14 @@ describe("AiTacticsManager pressure liveness", () => {
   it("engages an immediate armed defender while retaining the strategic objective", () => {
     const friendly = actor("guard", "self", 1000, 10);
     const core = actor("core", "enemy", 1000, 0);
-    const defender = { ...actor("defender", "enemy", 1000, 20), logicalPosition: {
-      status: "known" as const, value: { x: 2, y: 0, z: 0 }, observedTick: 100
-    } };
+    const defender = {
+      ...actor("defender", "enemy", 1000, 20),
+      logicalPosition: {
+        status: "known" as const,
+        value: { x: 2, y: 0, z: 0 },
+        observedTick: 100
+      }
+    };
     const update = manager.propose(observation(200, [friendly, core, defender]), state(squad())).statePatch
       ?.squadUpdates?.[0];
 
@@ -244,6 +259,23 @@ describe("AiTacticsManager pressure liveness", () => {
 
     expect(update?.state).toBe("engage");
     expect(update?.tactics?.script).not.toBe("protected_retreat");
+  });
+
+  it("releases a squad from recovery when its first no-effect deadline expires", () => {
+    const friendly = actor("guard", "self", 1000, 10);
+    const passiveCore = actor("core", "enemy", 1000, 0);
+    const initialSquad = squad();
+    const recovering: AiSquadStateV1 = {
+      ...initialSquad,
+      state: "recover",
+      lifecycle: { ...initialSquad.lifecycle!, effectDeadline: aiDeadline(1000) }
+    };
+
+    const update = manager.propose(observation(1200, [friendly, passiveCore]), state(recovering)).statePatch
+      ?.squadUpdates?.[0];
+
+    expect(update?.state).toBe("rally");
+    expect(update?.lifecycle).toMatchObject({ recoveryAttempt: 1, effectDeadline: aiDeadline(3600) });
   });
 
   it("terminates a no-effect mission at the second deadline even after it briefly leaves recovery", () => {

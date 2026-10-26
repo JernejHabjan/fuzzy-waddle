@@ -1,6 +1,11 @@
 import type { AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
 import { movementDomains } from "./ai-tactics-geometry";
-import { AI_TACTICS_ATTACK_RATIO_PERMILLE, AI_TACTICS_RETREAT_RATIO_PERMILLE } from "./ai-tactics-rules";
+import {
+  AI_TACTICS_ATTACK_RATIO_PERMILLE,
+  AI_TACTICS_RETREAT_RATIO_PERMILLE,
+  AI_TACTICS_RETREAT_RELEASE_RATIO_PERMILLE,
+  TACTICAL_RECONSIDERATION_TICKS
+} from "./ai-tactics-rules";
 
 import type { prepareAiTacticalSquad } from "./ai-tactics-mission-preparation";
 /** Chooses bounded mission state and recovery. */
@@ -21,7 +26,17 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
     (plan) => plan.phase === "handoff" && plan.passengerIds.some((actorId) => squad.actorIds.includes(actorId))
   );
   const previousRetreat = squad.state === "retreat" || squad.state === "retreating";
+  const recoveringFromRetreat =
+    previousRetreat ||
+    ((squad.state === "recover" || squad.state === "recovering") &&
+      (squad.tactics?.script === "protected_retreat" || (squad.tactics?.oscillationCount ?? 0) > 0));
   const favorable = estimate.ratioPermille >= AI_TACTICS_ATTACK_RATIO_PERMILLE && estimate.confidencePermille >= 500;
+  const favorableRecovery =
+    visibleTarget !== null &&
+    localEnemies.length > 0 &&
+    estimate.ratioPermille >= AI_TACTICS_RETREAT_RELEASE_RATIO_PERMILLE &&
+    estimate.confidencePermille >= 750 &&
+    estimate.predictedFriendlyLossPermille <= 400;
   const unfavorable =
     estimate.ratioPermille < AI_TACTICS_RETREAT_RATIO_PERMILLE ||
     (estimate.predictedFriendlyLossPermille > 0 &&
@@ -78,20 +93,37 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
                 : squad.state === "recover" || squad.state === "recovering"
                   ? "rally"
                   : "advance";
-  const nextState: AiSquadStateV1["state"] =
+  const proposedState: AiSquadStateV1["state"] =
     emptyRecoveryExhausted || missionRecoveryExhausted
       ? "completed"
-      : members.length === 0 || missionExpired
+      : members.length === 0
         ? "recover"
-        : (unfavorable || topologyLost || (previousRetreat && visibleTarget && !favorable)) && retreat
-          ? "retreat"
-          : awaitingStrategicLaunch
-            ? "assemble"
-            : localEnemies.length > 0 && (favorable || forcedDecision)
-              ? "engage"
-              : localEnemies.length > 0
-                ? "regroup"
-                : quietState;
+        : missionExpired
+          ? squad.state === "recover" || squad.state === "recovering"
+            ? quietState
+            : "recover"
+          : (unfavorable || topologyLost || (recoveringFromRetreat && localEnemies.length > 0 && !favorableRecovery)) &&
+              retreat
+            ? "retreat"
+            : awaitingStrategicLaunch
+              ? "assemble"
+              : localEnemies.length > 0 && ((recoveringFromRetreat ? favorableRecovery : favorable) || forcedDecision)
+                ? "engage"
+                : localEnemies.length > 0
+                  ? "regroup"
+                  : quietState;
+  const holdRetreat =
+    recoveringFromRetreat &&
+    squad.tactics !== undefined &&
+    !missionExpired &&
+    !topologyLost &&
+    Boolean(retreat) &&
+    (localEnemies.length > 0
+      ? !favorableRecovery ||
+        (squad.tactics.oscillationCount !== 1 &&
+          observation.tick - squad.tactics.lastTransitionTick < 2 * TACTICAL_RECONSIDERATION_TICKS)
+      : observation.tick < squad.tactics.nextReconsiderTick);
+  const nextState: AiSquadStateV1["state"] = holdRetreat ? "retreat" : proposedState;
   const nowRetreat = nextState === "retreat";
   const oscillationCount =
     previousRetreat !== nowRetreat && squad.tactics && observation.tick <= squad.tactics.nextReconsiderTick
@@ -128,7 +160,9 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
     topologyLost,
     landedForRegroup,
     previousRetreat,
+    recoveringFromRetreat,
     favorable,
+    favorableRecovery,
     unfavorable,
     awaitingLaunch,
     forcedDecision,
@@ -139,6 +173,7 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
     missionExpired,
     missionRecoveryExhausted,
     emptyRecoveryExhausted,
+    holdRetreat,
     quietState,
     nextState,
     nowRetreat,

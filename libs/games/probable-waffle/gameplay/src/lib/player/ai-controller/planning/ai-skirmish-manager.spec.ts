@@ -142,11 +142,80 @@ describe("AiSkirmishManager", () => {
     );
 
     expect(proposal.statePatch?.squads?.some((squad) => squad.role === "attack")).toBe(false);
-    expect(proposal.statePatch?.squads?.find((squad) => squad.role === "scout")?.actorIds).toEqual([
-      "guard-1",
-      "guard-2"
-    ]);
+    expect(proposal.statePatch?.squads?.find((squad) => squad.role === "scout")?.actorIds).toEqual(["guard-1"]);
     expect(proposal.intents).toContainEqual(expect.objectContaining({ kind: "scout" }));
+  });
+
+  it("keeps a question scout separate from the force assigned to a visible contact", () => {
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const enemy = {
+      ...unit("enemy-visible", enemyNode, 1),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const
+    };
+    const proposal = manager.propose(
+      observation(20, [
+        unit("guard-1", homeNode, 0),
+        unit("guard-2", homeNode, 0),
+        unit("guard-3", homeNode, 0),
+        enemy
+      ]),
+      state
+    );
+    const squads = proposal.statePatch?.squads ?? [];
+    const scout = squads.find((squad) => squad.role === "scout");
+    const attack = squads.filter((squad) => squad.role === "attack").flatMap((squad) => squad.actorIds);
+
+    expect(proposal.intents).toContainEqual(expect.objectContaining({ kind: "scout" }));
+    expect(scout?.actorIds).toHaveLength(1);
+    expect(attack).not.toContain(scout?.actorIds[0]);
+    expect(new Set([...attack, ...(scout?.actorIds ?? [])]).size).toBe(attack.length + (scout?.actorIds.length ?? 0));
+  });
+
+  it("preserves an active question scout when another defender can cover the local threat", () => {
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const scoutId = `question:frontier:${enemyNode}`;
+    const enemy = {
+      ...unit("enemy-visible", enemyNode, 1),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const
+    };
+    const proposal = manager.propose(
+      observation(40, [unit("scout-guard", homeNode, 0), unit("home-guard", homeNode, 0), enemy]),
+      {
+        ...state,
+        squads: [
+          {
+            squadId: "squad:scout:primary",
+            role: "scout",
+            domain: "ground",
+            actorIds: ["scout-guard"],
+            objectiveId: scoutId,
+            state: "moving"
+          }
+        ]
+      }
+    );
+    const scout = proposal.statePatch?.squads?.find((squad) => squad.role === "scout" && squad.objectiveId === scoutId);
+    const defense = proposal.statePatch?.squads?.find((squad) => squad.role === "defense");
+
+    expect(scout?.actorIds).toEqual(["scout-guard"]);
+    expect(defense?.actorIds).toContain("home-guard");
+    expect(defense?.actorIds).not.toContain("scout-guard");
   });
 
   it("anchors local defense to the main building instead of a distant roaming combat unit", () => {

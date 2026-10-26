@@ -17,8 +17,8 @@ export function proposeAiSkirmish(
 ): AiManagerProposalV1 {
   const context = createAiSkirmishProposalContext(observation, state, catalog);
   advanceAiSkirmishDefense(context, profile);
+  advanceAiSkirmishScouting(context);
   const transportProposal = advanceAiSkirmishOffense(context, profile);
   if (transportProposal) return transportProposal;
-  advanceAiSkirmishScouting(context);
   return finalizeAiSkirmishProposal(context);
 }

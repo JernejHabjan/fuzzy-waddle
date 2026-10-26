@@ -11,6 +11,7 @@ import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/compo
 import { PawnAiBlackboard } from "./pawn-ai-blackboard";
 import { PawnAgentMovement } from "./pawn-agent-movement";
 import { PawnAgentOrders } from "./pawn-agent-orders";
+import { DistanceHelper } from "../../library/distance-helper";
 
 jest.mock("../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 jest.mock("../../data/actor-system", () => ({ getActorSystem: jest.fn() }));
@@ -60,13 +61,15 @@ function fixture(orderType = OrderType.Move) {
   const nativeMove = jest.fn(async () => false),
     cancelMovement = jest.fn(),
     canMoveTo = jest.fn(async () => false);
-  jest.mocked(getActorSystem).mockReturnValue({
+  const movementSystem = {
     moveToLocationByFollowingStaticPath: nativeMove,
     moveToActorByAdjustingPathDynamically: nativeMove,
     canMoveTo,
+    isLocationNavigable: jest.fn(() => true),
     cancelMovement
-  } as never);
-  return { actor, board, order, orders, move, report, nativeMove, canMoveTo, cancelMovement };
+  };
+  jest.mocked(getActorSystem).mockReturnValue(movementSystem as never);
+  return { actor, board, order, orders, move, report, nativeMove, canMoveTo, cancelMovement, movementSystem };
 }
 
 describe("native Move refusal settles its command", () => {
@@ -106,6 +109,14 @@ describe("native Move refusal settles its command", () => {
     expect(f.cancelMovement).toHaveBeenCalledTimes(1);
   });
 
+  it("considers a blocked location reached from one tile away", async () => {
+    const f = fixture();
+    f.movementSystem.isLocationNavigable.mockReturnValue(false);
+    jest.spyOn(DistanceHelper, "getTileDistanceBetweenGameObjectAndTile").mockReturnValue(1);
+
+    expect(await f.move.InRange("move")).toBe(State.SUCCEEDED);
+  });
+
   it.each(["probe", "movement"] as const)("settles the target Move when its %s returns false", async (boundary) => {
     const f = fixture();
     f.order.data.targetGameObject = f.actor;
@@ -133,6 +144,27 @@ describe("native Move refusal settles its command", () => {
     expect(f.report).not.toHaveBeenCalled();
     expect(f.board.getCurrentOrder()).toBe(replacement);
     expect(f.cancelMovement).not.toHaveBeenCalled();
+  });
+
+  it("shares one pending native path when the same order is polled again", async () => {
+    const f = fixture();
+    let resolve: ((result: boolean) => void) | undefined;
+    f.nativeMove.mockImplementation(
+      () =>
+        new Promise<boolean>((release) => {
+          resolve = release;
+        })
+    );
+    const first = f.move.MoveToLocation();
+    const second = f.move.MoveToLocation();
+    await Promise.resolve();
+
+    expect(second).toBe(first);
+    expect(f.nativeMove).toHaveBeenCalledTimes(1);
+    if (!resolve) throw new Error("movement_pending_missing");
+    resolve(true);
+    await expect(first).resolves.toBe(State.SUCCEEDED);
+    await expect(second).resolves.toBe(State.SUCCEEDED);
   });
 
   it("retains attack-move recovery and successful Move completion ownership", async () => {

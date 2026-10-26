@@ -135,7 +135,19 @@ export class NavigationTileSelection {
     terrainType: MovementTerrainType = MovementTerrainType.Ground,
     acceptTile?: (tile: Vector2Simple) => boolean
   ): Vector2Simple | undefined {
+    return this.getNavigableTilesAroundBlockedTilesInRadius(fromTile, blockedTiles, radiusTiles, terrainType, acceptTile)[0];
+  }
+
+  /** Returns all legal footprint-adjacent candidates in deterministic distance order, without path queries. */
+  getNavigableTilesAroundBlockedTilesInRadius(
+    fromTile: Vector2Simple,
+    blockedTiles: Vector2Simple[],
+    radiusTiles = 6,
+    terrainType: MovementTerrainType = MovementTerrainType.Ground,
+    acceptTile?: (tile: Vector2Simple) => boolean
+  ): Vector2Simple[] {
     const navigableTiles: Set<string> = new Set(); // Use Set to avoid duplicates
+    const blockedTileKeys = new Set(blockedTiles.map((tile) => `${tile.x},${tile.y}`));
 
     // Step 1: Loop through each blocked tile
     blockedTiles.forEach((blockedTile) => {
@@ -147,6 +159,7 @@ export class NavigationTileSelection {
 
           // Check if the neighbor is within easyStarNavigationGrid bounds, navigable, and within radius
           if (
+            !blockedTileKeys.has(`${neighbor.x},${neighbor.y}`) &&
             this.navigation.isWithinGridBounds(neighbor, terrainType) &&
             this.navigation.isTileNavigable(neighbor, terrainType) &&
             (acceptTile?.(neighbor) ?? true) &&
@@ -165,16 +178,10 @@ export class NavigationTileSelection {
       return { x: x!, y: y! };
     });
 
-    // Step 2: Find the closest navigable tile to the fromTile
-    if (navigableTilesArray.length === 0) {
-      // console.warn("No navigable tiles found around the blocked tiles.");
-      return undefined;
-    }
-
-    // Sort the navigable tiles based on distance to fromTile
+    // Sort by path-start proximity with deterministic coordinate tie-breaks.
     navigableTilesArray.sort((a, b) => this.compareTilesByDistanceThenCoordinates(a, b, fromTile));
 
-    return navigableTilesArray[0]!; // Return the closest tile
+    return navigableTilesArray;
   }
 
   private getTileDistance(tile1: Vector2Simple, tile2: Vector2Simple): number {

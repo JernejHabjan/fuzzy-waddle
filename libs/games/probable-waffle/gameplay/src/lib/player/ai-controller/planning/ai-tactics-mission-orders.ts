@@ -28,7 +28,8 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
     updated,
     visibleTarget
   } = input;
-  if (materiallyChanged && updated.state === "retreat" && retreat) {
+  const preserveSearchOrder = updated.role === "scout" && updated.objectiveId?.startsWith("question:") && localEnemies.length === 0;
+  if (!preserveSearchOrder && materiallyChanged && updated.state === "retreat" && retreat) {
     const batch = actorsNeedingOrder.slice(0, profile.maxActorOrdersPerStep);
     if (batch.length > 0)
       intents.push({
@@ -43,6 +44,7 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
         logicalPosition: retreat
       });
   } else if (
+    !preserveSearchOrder &&
     materiallyChanged &&
     (updated.state === "engage" || updated.state === "advance") &&
     visibleTarget &&
@@ -87,7 +89,7 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
         logicalPosition: assignment.position
       });
     }
-  } else if (materiallyChanged && anchor && !["completed", "cancelled"].includes(updated.state)) {
+  } else if (!preserveSearchOrder && materiallyChanged && anchor && !["completed", "cancelled"].includes(updated.state)) {
     if (assignedPositions.length > 0) {
       for (const assignment of assignedPositions.filter((entry) => actorsNeedingOrder.includes(entry.actorId))) {
         const positioned = { ...updated, actorIds: [assignment.actorId] };

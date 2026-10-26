@@ -2,7 +2,7 @@ import { FactionType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiCommandOutcomeV1 } from "../contracts/ai-command-contracts";
 import { PureAiBrain } from "../brain/ai-brain";
 import { AiMacroManager } from "../planning/ai-macro-manager";
-import { reconcileAiProductionReservations } from "../planning/reconcile-ai-production-reservations";
+import { reconcileAiCommandReservations } from "../planning/reconcile-ai-command-reservations";
 import { unresolvedReservedEffectIds } from "../planning/ai-macro-effect-identity";
 import { createAiProductionPolicyFixture } from "./ai-production-policy-fixture";
 
@@ -33,7 +33,7 @@ describe.each([FactionType.Tivara, FactionType.Skaduwee])("native outcome produc
     const stem = unit.claims.find((claim) => claim.kind === "production_slot")?.claimId;
     if (!stem) throw new Error("production_identity_slot_missing");
     expect(original.some((claim) => claim.claimId === stem)).toBe(true);
-    const remaining = reconcileAiProductionReservations(original, [outcome]);
+    const remaining = reconcileAiCommandReservations(original, [outcome]);
     expect(remaining.some((claim) => claim.claimId === stem)).toBe(false);
     expect(remaining.filter((claim) => !claim.claimId.startsWith(stem))).toEqual(
       original.filter((claim) => !claim.claimId.startsWith(stem))

@@ -99,9 +99,13 @@ export function createAiSkirmishProposalContext(
   const activeAttack = state.squads.find(
     (squad) => squad.role === "attack" && squad.state !== "completed" && squad.state !== "cancelled"
   );
-  const activeScout = state.squads.find(
+  const activeScouts = state.squads.filter(
     (squad) => squad.role === "scout" && squad.state !== "completed" && squad.state !== "cancelled"
   );
+  const activeScout =
+    activeScouts.find((squad) => squad.objectiveId === currentQuestion?.questionId) ??
+    activeScouts.find((squad) => squad.squadId !== "squad:scout:neutral") ??
+    activeScouts[0];
   const protectedActorIds = new Set<ActorId>([
     ...(homeBaseActor ? [homeBaseActor.actorId] : []),
     ...state.bases
