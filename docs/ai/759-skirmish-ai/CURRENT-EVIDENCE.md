@@ -3,7 +3,7 @@
 Updated 2026-10-26. This is the active evidence snapshot. Detailed prior run notes are preserved in
 [EVIDENCE-ARCHIVE.md](EVIDENCE-ARCHIVE.md); use HANDOFF.md for the live cursor and next action.
 
-The STRAT-02 targeted fixture/evaluator repair is pushed on `feature/759-skirmish-ai` at `8d1cfcee1`; latest CI diagnostics were read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad` (runtime jobs skipped on draft PR #814).
+Latest local source checkpoint: `cb2ec8650` on `feature/759-skirmish-ai`. Latest CI diagnostics were read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad` (runtime jobs skipped on draft PR #814).
 GitHub reports `skirmish-runtime-plan`, `skirmish-multiplayer` and `skirmish-runtime` skipped because PR #814 is draft;
 the runtime matrix starts on `ready_for_review`. PR status is left unchanged per the existing handoff boundary. H-10's two
 over-capacity variants and real-peer obligations still need that matrix evidence.
@@ -92,6 +92,14 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   Playwright suites 76/76; exact-file ESLint completed with no errors; `git diff --check` passes. Two existing non-null
   assertion warnings remain in route specs and two in the gameplay scouting spec.
 
+- STRAT-05 Tivara reinforced run 830 (`tmp/ai-skirmish-matrix/830-strat05-tivara-reinforced-exact/1793050472515-diagnostic_failed.json`)
+  re-evaluates with zero full native-branch failures on current source. The report retains its original failed status;
+  current evaluation proves the branch after two evidence-pipeline corrections: route-order identity retention rises
+  from 512 to 1,024 (621 identities were captured), and accepted move IDs normalize the `effect:` prefix before
+  matching native execution IDs. The corrected capture yields 566 normalized movements and nine physical retreats.
+  Focused Playwright passes 64/64; portal-e2e TypeScript passes; exact ESLint has 0 errors (one existing warning);
+  `git diff --check` passes. This closes only the Tivara reinforced branch. Next: quiet, blocked-retreat, then Skaduwee.
+  See archive for details.
 ## Open work by package
 
 | Package | Status |
