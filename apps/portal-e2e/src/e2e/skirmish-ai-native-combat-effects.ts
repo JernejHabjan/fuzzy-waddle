@@ -82,7 +82,7 @@ export function nativeRetreats(context: ReturnType<typeof nativeScenarioContext>
     if (frame.tick < afterTick || !["retreat", "retreating", "regroup", "recover", "recovering"].includes(squad.state)) return [];
     return squad.actorIds.flatMap((id) => nativeRetainedActor(context, id) ? context.arrived(id, frame.tick).filter((movement) =>
       frame.decision.acceptedIntents.some((intent) => (intent.kind === "move" || intent.kind === "scout") &&
-        intent.actorIds.includes(id) && intent.effectId ===
+        intent.actorIds.includes(id) && intent.effectId.replace(/^effect:/, "") ===
           movement.observations[0]?.spatial.caller?.order?.commandContext?.execution.effectId)) : []);
   }));
 }

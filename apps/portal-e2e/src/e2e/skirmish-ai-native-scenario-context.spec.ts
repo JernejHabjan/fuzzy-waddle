@@ -25,12 +25,13 @@ test("placement evidence can rely on its complete transaction facts without unre
   );
 });
 
-test("domain evidence uses exact native production and combat proof instead of broad resource coverage", () => {
+test("exact native transaction, strategy and combat proof do not require unrelated broad resource coverage", () => {
   expect(nativeScenarioRequiresResourceCoverage("DOMAIN-01")).toBe(false);
   expect(nativeScenarioRequiresResourceCoverage("DOMAIN-05")).toBe(false);
   expect(nativeScenarioRequiresResourceCoverage("STRAT-02")).toBe(false);
   expect(nativeScenarioRequiresResourceCoverage("STRAT-03")).toBe(false);
   expect(nativeScenarioRequiresResourceCoverage("STRAT-04")).toBe(false);
+  expect(nativeScenarioRequiresResourceCoverage("STRAT-05")).toBe(false);
   expect(nativeScenarioRequiresResourceCoverage("RAID-03")).toBe(false);
 });
 

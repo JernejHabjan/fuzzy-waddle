@@ -353,6 +353,20 @@ test("native route-order history retains scout-heavy captures through the declar
   expect(validateRuntimeRouteOrders(overflow).overflow).toBe(true);
 });
 
+test("native route-order history retains the measured STRAT-05 count above the previous 512 identity bound", () => {
+  const f = routeOrderFixture();
+  const sample = f.capture.facts.find((fact) => fact.kind === "spatial_authority" && fact.spatial.kind === "route_order");
+  if (!sample || sample.kind !== "spatial_authority" || sample.spatial.kind !== "route_order")
+    throw new Error("synthetic_route_order_missing");
+  const routeOrder = sample.spatial;
+  const admissions = Array.from({ length: 620 }, (_, index) =>
+    ({ ...sample, spatial: { ...routeOrder, order: { ...routeOrder.order,
+      orderId: index + 2, commandContext: null } } })
+  );
+  const facts = [...f.capture.facts, ...admissions].map((fact, index) => ({ ...fact, sequence: index + 1 }));
+  expect(validateRuntimeRouteOrders({ ...f.capture, facts }).overflow).toBe(false);
+});
+
 test("invocation overflow drops the whole route group and still inspects the last contradictory stamp", () => {
   const f = callerFixture();
   const tail = Array.from({ length: RUNTIME_ROUTE_HISTORY_LIMIT }, (_, index) =>

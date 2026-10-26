@@ -1,7 +1,7 @@
 import { test as it, expect } from "@playwright/test";
 import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
 import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import { nativePhysicalDamageFromActor } from "./skirmish-ai-native-combat-effects";
+import { nativePhysicalDamageFromActor, nativeRetreats } from "./skirmish-ai-native-combat-effects";
 
 const damage = (overrides: Partial<Extract<AiRuntimeProductionFactV1, { kind: "native_damage" }>> = {}) => ({
   sequence: 1,
@@ -49,4 +49,54 @@ it.describe("native physical damage attribution", () => {
 
     expect(nativePhysicalDamageFromActor(context, "air-output", "backline")).toEqual([]);
   });
+});
+
+it("matches an accepted retreat move to its native execution after normalizing the effect prefix", () => {
+  const movement = {
+    callerAttributed: true,
+    gaps: [],
+    returned: "true",
+    arrival: "original_destination",
+    started: { tick: 500 },
+    observations: [
+      {
+        spatial: {
+          source: { actorId: "retreating-unit" },
+          caller: {
+            order: {
+              commandContext: { execution: { effectId: "stage13:retreat:retreating-unit:500" } }
+            }
+          }
+        }
+      }
+    ]
+  };
+  const frame = {
+    tick: 500,
+    decision: {
+      missionState: { squads: [{ state: "retreat", actorIds: ["retreating-unit"] }] },
+      acceptedIntents: [
+        { kind: "move", actorIds: ["retreating-unit"], effectId: "effect:stage13:retreat:retreating-unit:500" }
+      ]
+    }
+  };
+  const context = {
+    frames: [frame],
+    capture: { frontiers: { intervals: [{ actors: [{ identity: {
+      actorId: "retreating-unit", active: true, alive: true, indexed: true, finished: true
+    } }] }] } },
+    arrived: () => [movement]
+  } as unknown as ReturnType<typeof nativeScenarioContext>;
+
+  expect(nativeRetreats(context, 400)).toEqual([movement]);
+  const unrelatedContext = {
+    ...context,
+    frames: [{
+      ...frame,
+      decision: { ...frame.decision, acceptedIntents: [
+        { kind: "move", actorIds: ["retreating-unit"], effectId: "effect:unrelated" }
+      ] }
+    }]
+  } as unknown as ReturnType<typeof nativeScenarioContext>;
+  expect(nativeRetreats(unrelatedContext, 400)).toEqual([]);
 });
