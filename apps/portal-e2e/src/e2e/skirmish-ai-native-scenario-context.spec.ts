@@ -30,6 +30,7 @@ test("domain evidence uses exact native production and combat proof instead of b
   expect(nativeScenarioRequiresResourceCoverage("DOMAIN-05")).toBe(false);
   expect(nativeScenarioRequiresResourceCoverage("STRAT-02")).toBe(false);
   expect(nativeScenarioRequiresResourceCoverage("STRAT-03")).toBe(false);
+  expect(nativeScenarioRequiresResourceCoverage("STRAT-04")).toBe(false);
   expect(nativeScenarioRequiresResourceCoverage("RAID-03")).toBe(false);
 });
 

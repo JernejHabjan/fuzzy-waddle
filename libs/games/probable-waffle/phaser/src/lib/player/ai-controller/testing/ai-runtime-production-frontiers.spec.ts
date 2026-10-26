@@ -32,6 +32,14 @@ describe("native production closed intervals", () => {
     expect(late.read().gaps).toContain("production_frontier_deadline_unavailable");
   });
 
+  it("does not require a commitment deadline beyond the authored capture horizon", () => {
+    const history = new AiRuntimeProductionFrontiers();
+    history.arm(8, 0);
+    history.require([3, 12]);
+    for (let tick = 1; tick <= 9; tick++) history.close(tick, state);
+    expect(history.read()).toMatchObject({ closedThroughTick: 8, requiredTicks: [3, 8], gaps: [] });
+  });
+
   it("keeps changed exposure intervals and does not erase an invalid binding with a later good one", () => {
     const history = new AiRuntimeProductionFrontiers();
     history.arm(3, 0);

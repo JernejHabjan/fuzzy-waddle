@@ -156,14 +156,19 @@ export function selectAiOffensiveOpportunity(
       )
       .flatMap((squad) => squad.actorIds)
   );
-  // Ranking new opportunities must not pull a progressing attack away from its reachable objective. Retreat and
-  // recovery release the strategic target so another viable mission can take over.
+  // Ranking new opportunities must not pull a committed attack away before its effect deadline or after it has useful
+  // progress. Retreat and recovery release the strategic target so another viable mission can take over.
   const canRetainObjective =
     mission !== undefined && !["retreat", "retreating", "recover", "recovering"].includes(mission.state);
   const usefulMission =
     canRetainObjective &&
     mission?.lifecycle?.lastUsefulEffectTick != null &&
     mission.lifecycle.effectDeadline.dueTick > context.observation.tick;
+  const committedMission =
+    canRetainObjective &&
+    mission?.lifecycle?.effectDeadline.dueTick !== undefined &&
+    mission.lifecycle.effectDeadline.dueTick > context.observation.tick &&
+    missionMembers.size > 0;
   const hasNativeAttackOrder = (targetActorId: string) =>
     attackers.some((actor) => {
       const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
@@ -173,9 +178,9 @@ export function selectAiOffensiveOpportunity(
         order.targetActorId === targetActorId
       );
     });
-  const hasNativePursuitOrder = (target: AiObservedActorV1) => {
+  const hasFreshNativePursuitOrder = (target: AiObservedActorV1) => {
     const targetPosition = position(target);
-    if (!targetPosition || target.visibility !== "last_seen") return false;
+    if (!targetPosition) return false;
     return attackers.some((actor) => {
       const activeOrder = actor.activeOrder?.status === "known" ? actor.activeOrder : null;
       const order = activeOrder?.value ?? null;
@@ -200,16 +205,18 @@ export function selectAiOffensiveOpportunity(
             `hypothesis:${candidate.opponent.evidenceId}` === mission?.objectiveId) &&
           (candidate.opponent.visibility === "visible" ||
             (context.observation.tick - candidate.opponent.observedTick <= REMEMBERED_OBJECTIVE_MAX_AGE_TICKS &&
-              hasNativePursuitOrder(candidate.opponent)) ||
+              hasFreshNativePursuitOrder(candidate.opponent)) ||
             (usefulMission &&
               context.observation.tick - candidate.opponent.observedTick <= USEFUL_REMEMBERED_OBJECTIVE_MAX_AGE_TICKS)) &&
           (candidate.capable >= candidate.required ||
             usefulMission ||
+            committedMission ||
             hasNativeAttackOrder(candidate.opponent.actorId) ||
             !readyActionable.some((alternative) => alternative.opponent.actorId !== candidate.opponent.actorId)) &&
           (usefulMission ||
+            committedMission ||
             hasNativeAttackOrder(candidate.opponent.actorId) ||
-            hasNativePursuitOrder(candidate.opponent))
+            hasFreshNativePursuitOrder(candidate.opponent))
       )
     : undefined;
   const focused = ranked.find((candidate) => candidate.opponent.owner === focusedPlayer);
@@ -224,10 +231,18 @@ export function selectAiOffensiveOpportunity(
     .sort((left, right) => right.score - left.score || left.opponent.actorId.localeCompare(right.opponent.actorId))[0];
   const retainedRememberedObjective =
     workingObjective?.opponent.visibility === "last_seen" &&
-    (hasNativePursuitOrder(workingObjective.opponent) ||
+    (hasFreshNativePursuitOrder(workingObjective.opponent) ||
       (usefulMission &&
         context.observation.tick - workingObjective.opponent.observedTick <=
           USEFUL_REMEMBERED_OBJECTIVE_MAX_AGE_TICKS));
+  const retainedNativePursuit =
+    workingObjective !== undefined && hasFreshNativePursuitOrder(workingObjective.opponent);
+  const retainedViableMission =
+    workingObjective !== undefined &&
+    committedMission &&
+    workingObjective.capable >= workingObjective.required &&
+    visibleReachableCore !== undefined &&
+    visibleReachableCore.capable < visibleReachableCore.required;
   const rememberedCore = actionable
     .filter(
       (candidate) =>
@@ -254,6 +269,8 @@ export function selectAiOffensiveOpportunity(
   const competingVisibleCore =
     visibleReachableCore &&
     !retainedRememberedObjective &&
+    !retainedNativePursuit &&
+    !retainedViableMission &&
     !hasMateriallyBetterReadyAlternative &&
     (coreScoutTarget !== undefined || mission?.objectiveId !== visibleReachableCore.opponent.actorId)
       ? visibleReachableCore

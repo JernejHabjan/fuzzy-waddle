@@ -78,6 +78,16 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   also now preserves a durable FrostForge / WatchTower offensive target through raid contact. Gameplay tests pass 104
   suites / 549 tests; native fixture audit passes 27/27; exact-source ESLint has no errors (nine existing non-null
   warnings); `git diff --check` passes. Advance to STRAT-04 rather than repeating this unchanged reinforced branch.
+- STRAT-04 Tivara-noise run 827 (`tmp/ai-skirmish-matrix/827-strat04-tivara-noise-committed/1793049976853-diagnostic_failed.json`)
+  reached 100 decisions / 2,001 ticks with complete native frontier history. Runs 823–824 had unrelated capture-channel
+  failures: a committed deadline beyond the 2,000-tick horizon stopped frontier capture, and broad resource-ledger
+  coverage was irrelevant to this exact objective case. These are repaired and covered by focused tests. Run 825 showed
+  objective resets and no damage to the authored contact group; the planner now retains a viable staffed commitment and
+  treats fresh native movement toward visible targets as pursuit. Runs 826–827 still fail
+  `strategy_minor_noise_reset_commitment_or_stopped_useful_offense`; run 827 keeps the original objective through tick 600,
+  then switches at tick 800, and no native damage reaches the authored contact group. STRAT-04 remains open. Focused tests:
+  selector 16/16, frontier capture 5/5, scenario-context Playwright 12/12; exact ESLint and portal-e2e TypeScript checks
+  pass. Advance to STRAT-05 pending a specific native-order or route hypothesis.
 - Checks: focused gameplay suites 44/44; scouting-evidence Playwright specs 2/2; movement/scout-evidence/route-order/route-caller
   Playwright suites 76/76; exact-file ESLint completed with no errors; `git diff --check` passes. Two existing non-null
   assertion warnings remain in route specs and two in the gameplay scouting spec.

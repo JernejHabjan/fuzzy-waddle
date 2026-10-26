@@ -16,6 +16,21 @@ contain superseded observations and next actions. Use HANDOFF.md and CURRENT-EVI
 - STRAT-03's authored offensive target is now durable through raid contact: FrostForge for Tivara and WatchTower for
   Skaduwee. Native fixture audit passes 27/27. Advance to STRAT-04 while preserving STRAT-03 for a targeted follow-up.
 
+## 2026-10-26 — STRAT-04 Tivara harmless-noise investigation
+
+- Runs 823–825 reached the 2,001-tick horizon. Run 823 lost frontier history when a committed force deadline exceeded
+  the authored 2,000-tick horizon. The frontier recorder now ignores only deadlines beyond that horizon while still
+  rejecting late in-horizon deadlines (5/5 focused tests). STRAT-04's native oracle now skips unrelated broad resource
+  ledger coverage because it asserts exact strategy and combat evidence instead (scenario-context Playwright 12/12).
+- Run 825 then exposed the strategic defect: after scout contact the AI escalates to a visible enemy core needing 21
+  units while its current objective needs 3, despite having 8 ready. A current mission with members and an unexpired
+  effect deadline now counts as committed; fresh native movement toward visible objectives also counts as pursuit. The
+  focused selector spec passes 16/16.
+- Runs 826–827 still fail `strategy_minor_noise_reset_commitment_or_stopped_useful_offense`. Run 827 retains the original
+  objective through tick 600 but switches to the core by tick 800; the match records no native damage against the authored
+  `contact-group`. Do not repeat this branch unchanged. Revisit only with a targeted native-order/route hypothesis and
+  advance to STRAT-05 meanwhile.
+
 ## Latest checkpoint - 2026-10-26
 
 - **STRAT-09 changed-source Tivara raid:** two focused runs reached 200 decisions / 4,001 ticks. The latest fails the

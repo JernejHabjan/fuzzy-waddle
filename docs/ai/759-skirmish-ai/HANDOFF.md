@@ -101,6 +101,12 @@ Sandhold after tick 800. Keep the branch open; revisit when a concrete visibilit
 shared tactical-membership repair is checked and pushed. Advance to STRAT-04's quiet/noise/real-threat matrix next; use a
 focused local variant only after inspecting its existing CI evidence and owner contract.
 
+STRAT-04 Tivara-noise reached 2,001 ticks. Runs 823–825 exposed evidence-channel gaps; the frontier fix now preserves
+capture through the full horizon. Runs 826–827 confirm that a harmless-scout contact can divert the force and later
+replace its target; no native damage reached the authored contact group, so the case remains open. The selector now keeps
+an in-time, staffed mission and recognizes fresh movement toward visible objectives, but run 827 still fails. Advance to
+STRAT-05; revisit STRAT-04 only with a focused native-order/route hypothesis.
+
 SCOUT-01 remains open after runs 815–816: hidden-pair intents diverge at tick 20 despite equal canonical inputs, and
 Tivara hidden-b movement reaches an alternate destination rather than completing the selected scout point. Keep
 physical-arrival and information-learning predicates strict. Revisit when candidate ordering or a fixture adjustment has

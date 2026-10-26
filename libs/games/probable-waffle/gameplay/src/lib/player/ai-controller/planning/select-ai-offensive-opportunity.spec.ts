@@ -369,6 +369,42 @@ describe("fastest credible offense", () => {
     ).toBe(false);
   });
 
+  it("retains a visible committed objective while its mission members have a fresh native pursuit move", () => {
+    const initial = brain();
+    const producerTarget = {
+      ...producer("enemy-producer"),
+      logicalPosition: { status: "known" as const, value: { x: 0, y: 0, z: 0 }, observedTick: 20 }
+    };
+    const first = manager.propose(
+      world([guard("a", "self", 0), guard("b", "self", 0), guard("c", "self", 0), guard("d", "self", 0), producerTarget]),
+      initial
+    );
+    const attack = first.statePatch?.squads?.find((squad) => squad.role === "attack");
+    if (!attack?.lifecycle || !first.statePatch?.strategy || !first.statePatch.skirmish)
+      throw new Error("missing_attack_lifecycle");
+
+    const pursuingGuards = ["a", "b", "c", "d"].map((id) => ({
+      ...guard(id, "self", 0),
+      activeOrder: {
+        status: "known" as const,
+        value: { orderType: OrderType.Move, targetActorId: null, targetPosition: { x: 1, y: 0, z: 0 } },
+        observedTick: 100
+      }
+    }));
+    const visibleCore = core("enemy-core");
+    const coreGuards = Array.from({ length: 8 }, (_, index) => guard(`core-guard-${index}`, "enemy", 1));
+    const result = manager.propose(world([...pursuingGuards, producerTarget, visibleCore, ...coreGuards], 120), {
+      ...initial,
+      squads: [attack],
+      strategy: first.statePatch.strategy,
+      skirmish: first.statePatch.skirmish
+    });
+
+    expect(result.statePatch?.strategy?.assessment).toEqual(
+      expect.objectContaining({ targetActorId: producerTarget.actorId, selectionSource: "working_objective" })
+    );
+  });
+
   it("releases objective hysteresis when an active attack mission is retreating", () => {
     const guards = [guard("a", "self", 0), guard("b", "self", 0), guard("c", "self", 0)];
     const producerTarget = producer("enemy-producer");

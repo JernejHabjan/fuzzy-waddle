@@ -29,7 +29,8 @@ export class AiRuntimeProductionFrontiers {
     if (this.latestTick === null) return;
     for (const tick of ticks) {
       if (this.required.has(tick)) continue;
-      if (!Number.isSafeInteger(tick) || tick < 0 || tick <= this.lastClosed || tick > this.latestTick) {
+      if (Number.isSafeInteger(tick) && tick > this.latestTick) continue;
+      if (!Number.isSafeInteger(tick) || tick < 0 || tick <= this.lastClosed) {
         this.lose("production_frontier_deadline_unavailable");
       } else this.required.add(tick);
     }
