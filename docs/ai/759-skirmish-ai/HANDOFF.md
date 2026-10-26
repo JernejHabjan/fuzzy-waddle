@@ -15,7 +15,7 @@ Read this file, then [REMAINING-WORK.md](REMAINING-WORK.md) for package acceptan
 
 ## Current checkpoint — 2026-10-26
 
-- Branch `feature/759-skirmish-ai`, source commit `65a367d891886c90b9bd80b84b4cb156ee9df3dd` (committed, not yet pushed); latest CI diagnostics read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad`. Node 24.18.0 / pnpm 11.14.0.
+- Branch `feature/759-skirmish-ai`, source checkpoint `b3de4aa550507a666f379f3c0130d90b5d12cb9d` (committed locally, push pending); latest CI diagnostics read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad`. Node 24.18.0 / pnpm 11.14.0.
 - Packages 1–2 are validated; two-faction SEQ-01 passes with the adaptive build-space rule.
 - Package 5 current focused evidence: H-14 Skaduwee harmless passes one of its branches. H-10 passes below-capacity,
   at-capacity and resumed-capacity for both factions (6/8 variants); over-capacity remains for CI. Neither family is closed.
@@ -48,19 +48,21 @@ Treat this as a fixture/input contract gap, not a permanent ban on iterating the
 before construction or scope the probe to native movement, then use one changed-source replay. Do not repeat unchanged.
 
 STRAT-09 has one bound pure owner contract; the Package 3 audit passes 40 scenarios / 46 suites / 278 tests with no
-missing bindings. Its changed-source Tivara raid (`tmp/ai-skirmish-matrix/764-package3-strat09-defense-objective/1793012199028-diagnostic_failed.json`)
-reaches 200 decisions / 4,001 ticks but still fails native attack/effect against `main-target` and worker survival (all
-eight workers lost). A Stage 13 guard that keeps defense squads on their committed threat passes a focused targeting
-spec, but did not change the match outcome. The report shows repeated failed Stage 13 movement applications and the
-attack squad still in `recover`; do not repeat this match unchanged. Next inspect the Stage 9-to-Stage 13 target/order
-handoff and native movement-failure causes, then use a focused owner test before deciding whether another replay can
-answer a changed hypothesis.
+missing bindings. Runtime evidence advanced from failed attack/effect and worker survival (764), through a Stage 13
+pressure-commitment attempt (765) and an ineffective tactical-target guard (766), to a changed-source Tivara raid that
+passes its registered native predicates (767). The 767 report records 200 decisions / 4,001 ticks, 10 enemy losses,
+1,925 native damage and all eight workers alive. It does not damage `main-target` specifically; record this as one passing
+raid branch, not target destruction or family closure. The owner fix releases an unproductive, underpowered working
+objective when another observed target already meets its force requirement, while retaining objectives with active
+native attack orders or useful effect progress. It also keeps an explicitly viable pressure mission moving through its
+commitment window. Focused gameplay gate: 103 suites / 546 tests. Next test the separate Tivara denial branch on this
+source, then continue through remaining STRAT-09 branches and Package 3; do not repeat the raid artifact unchanged.
 
 ## Package cursor and known open work
 
 | Package | Open work |
 | --- | --- |
-| 3 — scouting, combat, access | STRAT-09 native target/effect and worker-survival failure; SCOUT, STRAT-02/03, DOMAIN, RAID, FIGHT and C families. |
+| 3 — scouting, combat, access | STRAT-09: one Tivara raid branch passes; other branches remain; SCOUT, STRAT-02/03, DOMAIN, RAID, FIGHT and C families. |
 | 4 — placement, walls, recovery | PLACE-03 route clearance and physical transit; H-11 construction path returns `no_path`; remaining PLACE/EXP/WALL/H cases. |
 | 5 — authority and lifecycle | H-06/07 fixture/evaluator gaps; H-08/09 peer evidence; remaining H-10 over-capacity CI variants; remaining H-14/H-15 branches; H-31/H-32, M11, #819/#823. |
 | 6 — continuous play and difficulty | SEQ-02 and remaining supported SEQ/D cases; D-06 legacy comparison remains unsupported. |
@@ -68,12 +70,12 @@ answer a changed hypothesis.
 
 ### Next action
 
-The SCOUT-02 and DOMAIN-05 source/evaluator repairs are pushed at `5da21a50d`; the latest STRAT-09 source and evidence
-update is committed and pushed at the next checkpoint. PR #814 remains draft; its
+The SCOUT-02 and DOMAIN-05 source/evaluator repairs are pushed at `5da21a50d`; STRAT-09's feasible-objective fix is
+committed locally at `b3de4aa55` and push is pending. PR #814 remains draft; its
 runtime matrix runs only after `ready_for_review`, and the existing
-handoff forbids changing PR status. Do not repeat the local SCOUT-02 match. Continue Package 3 from its next
-evidence-ready source action after addressing STRAT-09's target/effect and worker-survival failure; advance if the next
-hypothesis needs a fixture change or external CI. Leave current SCOUT-02/DOMAIN-05 native outcomes for CI. PLACE-03 can
+handoff forbids changing PR status. Do not repeat the local SCOUT-02 match or STRAT-09 Tivara raid. Continue Package 3
+with the Tivara denial branch, then other evidence-ready Package 3 work; advance if the next hypothesis needs a fixture
+change or external CI. Leave current SCOUT-02/DOMAIN-05 native outcomes for CI. PLACE-03 can
 be revisited once route/movement inputs are observable, as described above. Preserve the CI dependency for H-10's two
 over-capacity variants and real-peer obligations. Keep CURRENT-EVIDENCE concise; archive only details that aid a later
 causal repair.
