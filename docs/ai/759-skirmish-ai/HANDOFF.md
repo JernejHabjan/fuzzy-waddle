@@ -15,7 +15,7 @@ Read this file, then [REMAINING-WORK.md](REMAINING-WORK.md) for package acceptan
 
 ## Current checkpoint — 2026-10-26
 
-- Branch `feature/759-skirmish-ai`, source checkpoint `b3de4aa550507a666f379f3c0130d90b5d12cb9d` (committed locally, push pending); latest CI diagnostics read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad`. Node 24.18.0 / pnpm 11.14.0.
+- Branch `feature/759-skirmish-ai`, source checkpoint `cbb0c04259522e5f9096a40f9a4d3aa2d857ac43` (pushed); latest CI diagnostics read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad`. Node 24.18.0 / pnpm 11.14.0.
 - Packages 1–2 are validated; two-faction SEQ-01 passes with the adaptive build-space rule.
 - Package 5 current focused evidence: H-14 Skaduwee harmless passes one of its branches. H-10 passes below-capacity,
   at-capacity and resumed-capacity for both factions (6/8 variants); over-capacity remains for CI. Neither family is closed.
@@ -54,9 +54,20 @@ passes its registered native predicates (767). The 767 report records 200 decisi
 1,925 native damage and all eight workers alive. It does not damage `main-target` specifically; record this as one passing
 raid branch, not target destruction or family closure. The owner fix releases an unproductive, underpowered working
 objective when another observed target already meets its force requirement, while retaining objectives with active
-native attack orders or useful effect progress. It also keeps an explicitly viable pressure mission moving through its
-commitment window. Focused gameplay gate: 103 suites / 546 tests. Next test the separate Tivara denial branch on this
-source, then continue through remaining STRAT-09 branches and Package 3; do not repeat the raid artifact unchanged.
+native attack orders or useful effect progress. Focused gameplay gate: 103 suites / 546 tests. The separate Tivara denial
+branch on this source was attempted: run 768 exhausted Node before producing a payload (infrastructure only); run 769
+completed 200 decisions / 4,001 ticks and failed only `comeback_feasible_risky_objective_has_no_native_effect` (7 workers
+survived, 7 enemy losses, 2,097 damage, no damage to `main-target`). A pressure-window experiment replayed as 771 kept the
+attack mission's target on the producer through tick 400, but still produced no producer damage and ended with only two
+workers; that unproven source experiment was reverted. Artifact:
+`tmp/ai-skirmish-matrix/771-package3-strat09-denial-pressure-objective/1793018412392-diagnostic_failed.json`. The 771
+capture shows repeated native attack requests against the `InfantryInn` at (16,30), while a Tivara Maceman at (18,31)
+has native distance 2 and range 1. Tick-20 observation has no tactical or construction cells, so the AI has no public
+legal approach-cell set to position melee units against this target. This is a geometry/input-contract lead, not proof
+that range alone blocks damage: attack-request/committed capture means cooldown started, not that impact occurred. Next
+determine how the runtime can expose legal approach cells (or whether this fixture should use a reachable target), add a
+focused geometry/input test, and only then replay denial. Advance other Package 3 cases between attempts; do not extend
+pressure commitment alone or rerun this branch unchanged.
 
 ## Package cursor and known open work
 
@@ -70,12 +81,11 @@ source, then continue through remaining STRAT-09 branches and Package 3; do not 
 
 ### Next action
 
-The SCOUT-02 and DOMAIN-05 source/evaluator repairs are pushed at `5da21a50d`; STRAT-09's feasible-objective fix is
-committed locally at `b3de4aa55` and push is pending. PR #814 remains draft; its
+The SCOUT-02, DOMAIN-05 and STRAT-09 feasible-objective repairs are pushed through `cbb0c0425`. PR #814 remains draft; its
 runtime matrix runs only after `ready_for_review`, and the existing
 handoff forbids changing PR status. Do not repeat the local SCOUT-02 match or STRAT-09 Tivara raid. Continue Package 3
-with the Tivara denial branch, then other evidence-ready Package 3 work; advance if the next hypothesis needs a fixture
-change or external CI. Leave current SCOUT-02/DOMAIN-05 native outcomes for CI. PLACE-03 can
+with remaining evidence-ready cases and resolve the Tivara denial geometry/input lead before its next local replay;
+advance if the next hypothesis needs a fixture change or external CI. Leave current SCOUT-02/DOMAIN-05 native outcomes for CI. PLACE-03 can
 be revisited once route/movement inputs are observable, as described above. Preserve the CI dependency for H-10's two
 over-capacity variants and real-peer obligations. Keep CURRENT-EVIDENCE concise; archive only details that aid a later
 causal repair.

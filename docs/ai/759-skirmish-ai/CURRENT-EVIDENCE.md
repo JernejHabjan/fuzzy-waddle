@@ -3,7 +3,7 @@
 Updated 2026-10-26. This is the active evidence snapshot. Detailed prior run notes are preserved in
 [EVIDENCE-ARCHIVE.md](EVIDENCE-ARCHIVE.md); use HANDOFF.md for the live cursor and next action.
 
-Source checkpoint `b3de4aa550507a666f379f3c0130d90b5d12cb9d` is committed locally; push is pending. Latest CI diagnostics were read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad` (runtime jobs skipped on draft PR #814).
+Source checkpoint `cbb0c04259522e5f9096a40f9a4d3aa2d857ac43` is pushed. Latest CI diagnostics were read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad` (runtime jobs skipped on draft PR #814).
 GitHub reports `skirmish-runtime-plan`, `skirmish-multiplayer` and `skirmish-runtime` skipped because PR #814 is draft;
 the runtime matrix starts on `ready_for_review`. PR status is left unchanged per the existing handoff boundary. H-10's two
 over-capacity variants and real-peer obligations still need that matrix evidence.
@@ -31,13 +31,18 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   addition to that physical hit; the retained-artifact check clears the old predicate. This is one branch/artifact, not
   full DOMAIN-05 closure. The exact-damage reader spec passes 2/2.
 - STRAT-09 now abandons an underpowered, inactive working target when a second observed objective already meets its
-  force requirement. It preserves objectives with a live native attack order or useful effect progress. A viable pressure
-  commitment advances through its strategy deadline. The gameplay gate passes 103 suites / 546 tests. Changed-source
+  force requirement. It preserves objectives with a live native attack order or useful effect progress. The gameplay gate passes 103 suites / 546 tests. Changed-source
   Tivara raid artifact `tmp/ai-skirmish-matrix/767-package3-strat09-feasible-objective/1793014878089-diagnostic_passed.json`
   passes all registered predicates at 200 decisions / 4,001 ticks, with 10 enemy losses, 1,925 damage and all eight
   workers alive. It records no damage to authored `main-target` specifically, so this is one predicate-passing raid
-  branch, not target destruction or scenario-family closure. The 764–766 hypotheses are superseded; do not repeat those
-  variants unchanged. Next: run the separate Tivara denial branch on this source, then continue other Package 3 cases.
+  branch, not target destruction or scenario-family closure. Tivara denial run 768 failed before payload creation; 769
+  completed but failed the native-effect predicate with 7 workers and no damage to `main-target`. Experimental replay 771
+  retained the producer target through tick 400, still had no target damage, and ended with 2 workers; those pressure-window
+  code edits were reverted. Its bounded trace shows melee attack requests against an `InfantryInn` at (16,30) from an
+  actor at (18,31), native distance 2 vs range 1; the tick-20 AI observation exposes no tactical/construction cells.
+  This suggests missing usable approach geometry, but attack-request/committed facts do not establish hit attempts. Resolve
+  the geometry/input contract before another denial replay, while advancing other Package 3 cases. Do not repeat 768–771
+  unchanged.
 - The native scouting oracle matches `effect:`-prefixed accepted intents to movement execution IDs.
 - Movement capture normalization now admits up to 2,048 execution groups; caller-history validation admits 4,096
   identities. The latest H-14 capture contained 1,567 movement executions and 1,869 caller identities; route-order
