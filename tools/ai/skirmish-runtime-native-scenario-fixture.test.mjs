@@ -33,6 +33,9 @@ test("STRAT-09 target-specific variants separate an equivalent competing drop-of
   const unmodifiedControl = fixture.recipe.variants.find((candidate) => candidate.id === "strat-09-skaduwee-denial");
   assert.deepEqual(unmodifiedControl?.presetWorld.actors.find((actor) => actor.fixtureActorId === "enemy-deposit")?.position,
     { x: -320, y: 736, z: 0 });
+  const denial = fixture.recipe.variants.find((candidate) => candidate.id === "strat-09-tivara-denial");
+  assert.deepEqual(denial?.presetWorld.actors.find((actor) => actor.fixtureActorId === "main-target")?.position,
+    { x: -256, y: 832, z: 0 });
 });
 
 test("STRAT-09 failing combat variants stage the initial army on navigable field tiles", () => {

@@ -36,10 +36,10 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   existing initial-bundle budget warning. The footprint-aware approach filter excludes cells inside published building
   footprints. Changed-source Skaduwee raid run 804 passes all native predicates at 200 decisions / 4,001 ticks, including
   damage to the authored WorkMill; it ends with one worker and one army unit. The fixture places the raid target at (26,26)
-  so the recorded ranged attackers fight within their legal 3–7 tile distance. This closes only the Skaduwee raid branch.
-  STRAT-09 branch evidence is now 6 passes / 2 failures / 0 unproven of 8: Tivara denial and Tivara path-outage remain open.
-  Their older results are summarized in HANDOFF.md and archived evidence; advance between targeted repairs rather than
-  repeating unchanged captures.
+  so ranged attackers fight within their legal 3–7 tile distance. Changed-source Tivara denial run 805 also passes all
+  predicates at the same horizon, with 8 workers, 6 army units, 1,810 total damage and 5 enemy losses; its target is at
+  (21,30), within the Slingshot's 5-tile range. STRAT-09 is now 7 passes / 1 failure / 0 unproven of 8. Tivara
+  path-outage remains; see HANDOFF.md and the evidence archive. Advance without repeating passing branches.
 - The native scouting oracle matches `effect:`-prefixed accepted intents to movement execution IDs.
 - Movement capture normalization now admits up to 2,048 execution groups; caller-history validation admits 4,096
   identities. The latest H-14 capture contained 1,567 movement executions and 1,869 caller identities; route-order
@@ -61,7 +61,7 @@ over-capacity variants and real-peer obligations still need that matrix evidence
 
 | Package | Status |
 | --- | --- |
-| 3 — scouting, combat, access | STRAT-09 is 6/8 native branches passing; Tivara denial and path-outage remain. SCOUT, STRAT-02/03, DOMAIN, RAID, FIGHT and C families remain. |
+| 3 — scouting, combat, access | STRAT-09 is 7/8 native branches passing; Tivara path-outage remains. SCOUT, STRAT-02/03, DOMAIN, RAID, FIGHT and C families remain. |
 | 4 — placement, walls, recovery | PLACE-03 still has route-clearance and worker/army transit failures. H-11 has one legal construction endpoint returning `no_path` and capture-channel loss. Other PLACE/EXP/WALL/H cases remain. |
 | 5 — authority and lifecycle | H-10 awaits over-capacity CI results. H-14 is one passing branch only. H-06/07 retain fixture/evaluator gaps; H-08/09 require credentialed peers. H-15, H-31/H-32, M11, #819 and #823 remain open. |
 | 6 — continuous play and difficulty | SEQ-02 and remaining supported SEQ/D cases; D-06 legacy difficulty comparison is unsupported and remains an explicit blocker. |
