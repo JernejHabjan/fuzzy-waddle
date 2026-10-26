@@ -85,6 +85,45 @@ describe("fastest credible offense", () => {
     expect(result.statePatch?.strategy?.assessment?.targetActorId).toBe(expected);
   });
 
+  it("abandons an underpowered working objective when another observed objective is already feasible", () => {
+    const currentTarget = {
+      ...producer("working-producer"),
+      logicalPosition: { status: "known" as const, value: { x: 25, y: 0, z: 0 }, observedTick: 120 }
+    };
+    const feasibleTarget = {
+      ...producer("feasible-producer"),
+      logicalPosition: { status: "known" as const, value: { x: 0, y: 0, z: 0 }, observedTick: 120 }
+    };
+    const attackers = Array.from({ length: 4 }, (_, index) => ({
+      ...guard(`attacker-${index}`, "self", 0),
+      activeOrder: {
+        status: "known" as const,
+        observedTick: 120,
+        value: null
+      }
+    }));
+    const defenders = Array.from({ length: 6 }, (_, index) => guard(`defender-${index}`, "enemy", 20 + index));
+    const attackSquad = {
+      ...squad("squad:attack", "attack", attackers.map((actor) => actor.actorId)),
+      objectiveId: currentTarget.actorId,
+      state: "advance" as const
+    };
+
+    const result = manager.propose(
+      world([...attackers, currentTarget, feasibleTarget, ...defenders], 120),
+      { ...brain(), squads: [attackSquad] }
+    );
+
+    expect(result.statePatch?.strategy?.assessment).toEqual(
+      expect.objectContaining({
+        choice: "pressure",
+        targetActorId: feasibleTarget.actorId,
+        readyForce: 4,
+        requiredForce: 3
+      })
+    );
+  });
+
   it("changes plan when the same force has lost its worker economy", () => {
     const initial = brain();
     const completedOpening: AiBrainStateV1 = {

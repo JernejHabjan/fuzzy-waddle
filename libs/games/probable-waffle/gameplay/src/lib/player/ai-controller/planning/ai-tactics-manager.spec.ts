@@ -83,6 +83,53 @@ describe("AiTacticsManager", () => {
     expect(regrouped.statePatch?.squadUpdates?.[0]?.state).toBe("regroup");
   });
 
+  it("keeps an attack squad advancing through a viable committed pressure mission", () => {
+    const attackers = [
+      combatActor("attacker-a", "self", 1, "ground", 1000, { damage: 10 }),
+      combatActor("attacker-b", "self", 2, "ground", 1000, { damage: 10 })
+    ];
+    const target = combatActor("target", "enemy", 5, "ground", 1000, { damage: 0 });
+    const defenders = [3, 4, 6].map((x) => combatActor(`defender-${x}`, "enemy", x, "ground", 1000, { damage: 100 }));
+    const committedSquad = {
+      ...squad("squad:attack", "attack", attackers.map((actor) => actor.actorId)),
+      objectiveId: target.actorId,
+      state: "retreat" as const
+    };
+    const initial = fixtureState([committedSquad]);
+    const pressureState: AiBrainStateV1 = {
+      ...initial,
+      strategy: {
+        ...initial.strategy,
+        stance: "pressure",
+        objectiveId: target.actorId,
+        commitmentDeadline: { ...initial.strategy.commitmentDeadline, dueTick: 300 },
+        assessment: {
+          choice: "pressure",
+          reason: "credible_force_and_route",
+          targetActorId: target.actorId,
+          readyForce: 2,
+          requiredForce: 2,
+          visibleThreatCount: defenders.length,
+          confidencePermille: 1000,
+          expectedEffectTick: 200,
+          reconsiderTick: 200,
+          alternatives: []
+        }
+      },
+      skirmish: {
+        ...initial.skirmish,
+        timeline: [
+          ...initial.skirmish.timeline,
+          { eventId: "launch", tick: 0, kind: "mission", subjectId: committedSquad.squadId, detail: "launch:direct" }
+        ]
+      }
+    };
+
+    const proposal = manager.propose(observation([...attackers, target, ...defenders]), pressureState);
+
+    expect(proposal.statePatch?.squadUpdates?.[0]?.state).toBe("engage");
+  });
+
   it("keeps new reinforcements on offense when only a static enemy building is near home", () => {
     const defender = combatActor("defender", "self", 1);
     const attacker = combatActor("attacker", "self", 2);

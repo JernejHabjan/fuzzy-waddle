@@ -159,20 +159,25 @@ export function selectAiOffensiveOpportunity(
     canRetainObjective &&
     mission?.lifecycle?.lastUsefulEffectTick != null &&
     mission.lifecycle.effectDeadline.dueTick > context.observation.tick;
+  const hasNativeAttackOrder = (targetActorId: string) =>
+    attackers.some((actor) => {
+      const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
+      return (
+        missionMembers.has(actor.actorId) &&
+        order?.orderType === OrderType.Attack &&
+        order.targetActorId === targetActorId
+      );
+    });
   const workingObjective = canRetainObjective
     ? actionable.find(
         (candidate) =>
           candidate.opponent.actorId === mission?.objectiveId &&
           candidate.opponent.visibility === "visible" &&
-          (usefulMission ||
-            attackers.some((actor) => {
-              const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
-              return (
-                missionMembers.has(actor.actorId) &&
-                order?.orderType === OrderType.Attack &&
-                order.targetActorId === candidate.opponent.actorId
-              );
-            }))
+          (candidate.capable >= candidate.required ||
+            usefulMission ||
+            hasNativeAttackOrder(candidate.opponent.actorId) ||
+            !readyActionable.some((alternative) => alternative.opponent.actorId !== candidate.opponent.actorId)) &&
+          (usefulMission || hasNativeAttackOrder(candidate.opponent.actorId))
       )
     : undefined;
   const focused = ranked.find((candidate) => candidate.opponent.owner === focusedPlayer);

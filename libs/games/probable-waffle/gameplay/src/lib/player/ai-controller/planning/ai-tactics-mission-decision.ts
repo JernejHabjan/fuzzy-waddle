@@ -70,6 +70,14 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
     squad.role === "attack" &&
     state.strategy.assessment?.targetActorId === squad.objectiveId &&
     !strategicLaunchRecorded;
+  const committedPressure =
+    squad.role === "attack" &&
+    state.strategy.stance === "pressure" &&
+    state.strategy.objectiveId === squad.objectiveId &&
+    state.strategy.assessment?.choice === "pressure" &&
+    state.strategy.assessment.targetActorId === squad.objectiveId &&
+    state.strategy.commitmentDeadline.dueTick >= observation.tick &&
+    !topologyLost;
   const missionExpired =
     ["attack", "escort", "reinforcement", "scout"].includes(squad.role) &&
     !missionProgressed &&
@@ -102,6 +110,10 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
           ? squad.state === "recover" || squad.state === "recovering"
             ? quietState
             : "recover"
+          : committedPressure
+            ? localEnemies.length > 0
+              ? "engage"
+              : "advance"
           : (unfavorable || topologyLost || (recoveringFromRetreat && localEnemies.length > 0 && !favorableRecovery)) &&
               retreat
             ? "retreat"
@@ -113,6 +125,7 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
                   ? "regroup"
                   : quietState;
   const holdRetreat =
+    !committedPressure &&
     recoveringFromRetreat &&
     squad.tactics !== undefined &&
     !missionExpired &&
@@ -170,6 +183,7 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
     missionProgressed,
     strategicLaunchRecorded,
     awaitingStrategicLaunch,
+    committedPressure,
     missionExpired,
     missionRecoveryExhausted,
     emptyRecoveryExhausted,
