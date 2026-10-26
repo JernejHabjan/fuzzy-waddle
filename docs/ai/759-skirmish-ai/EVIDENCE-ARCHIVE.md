@@ -2170,12 +2170,6 @@ Summaries use `node tools/ai/summarize-skirmish-report.mjs --report <path> --fai
   Final Closure Audit: only changed readers/fixtures/tests/docs publish; historical failed PRO-04 evidence is superseded,
   unaffected predicates remain retained, and no unrelated gameplay/migration changes are staged.
 
-## Next batch
-
-Continue the unfinished economy/technology package using HANDOFF's current cursor and the four concrete remaining
-recovery/budget controls in REMAINING-WORK. Do not reopen completed technology registration or advance to combat
-while Package 2 remains open. Machinery review/removal remains the last roadmap task.
-
 ## 2026-10-26 STRAT-09 capture transport and Skaduwee closure
 
 - Runs 777–783 repeatedly timed out before returning authority captures. Runs 783/784 reached tick 4,000; 784 traced advance, settle, checkpoint, economy, strategy and transport as complete, leaving the final production capture boundary.
@@ -2205,3 +2199,9 @@ while Package 2 remains open. Machinery review/removal remains the last roadmap 
 - Run 811 proved the 400-HP InfantryInn died by tick 756, before the post-outage evidence window. Run 812 changed it to FrostForge at (21,24); it survived to tick 986 and received 37 post-800 hits, but the attack starts were outside recorded weapon range. Run 813 moved the target to (25,25); legal range improved, but it died at tick 744.
 - Run 814 places the same legal FrostForge at (25,29), balancing durability and legal range. It passes all STRAT-09 predicates after 200 decisions / 4,001 ticks, ends with six workers, and records 34 range-compatible native hits after tick 800; the target dies at tick 994. Total damage is 2,061, enemy losses 9. Artifact: `tmp/ai-skirmish-matrix/814-strat09-tivara-path-outage-middle-range/1793042862573-diagnostic_passed.json`.
 - Both target durability and recorded native range were required; `nativeWeaponHits` remains unchanged. STRAT-09 now has passing branch evidence for all eight branches. Runs 804–805 predate the final useful-objective selector change, so revalidate source-affected branches in the grouped matrix/final gate.
+
+## 2026-10-26 SCOUT-01 capture-bound and parity follow-up
+
+- Run 815 (`tmp/ai-skirmish-matrix/815-package3-scout01/1793043423636-failed.json`) showed Tivara route histories with 309 / 352 identities against the 256 cap; broad resource coverage also falsely rejected hidden-pair history for this scenario. Run 816 raises the route-order identity limit to 512 and opts the pair comparison out of unrelated resource coverage.
+- Run 816 (`tmp/ai-skirmish-matrix/816-scout01-neutral-scout-retention/1793044713767-failed.json`) clears those false capture failures. Canonical permitted inputs match at tick 20, while selected intents differ in authored worker/scout roles. Tivara hidden-b's selected scout movement reaches an alternate destination after tactical interruption, so it fails the strict native information-trip predicate. Do not count the alternate arrival or treat the family as closed.
+- The same change protects a moving neutral scout from premature attack/defense recruitment. Focused gameplay passes 103 suites / 547 tests; `pnpm exec tsc --noEmit -p apps/portal-e2e/tsconfig.json` passes. The registered runtime remains open; advance to STRAT-02 while the SCOUT-01 candidate-order / fixture hypothesis is unresolved.

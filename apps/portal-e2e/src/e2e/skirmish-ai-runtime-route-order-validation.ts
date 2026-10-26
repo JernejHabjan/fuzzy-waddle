@@ -11,6 +11,7 @@ import type { AiRuntimeCreatedActorV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-created-actor-v1";
 import { matchRuntimeRouteServiceLineage } from "./skirmish-ai-runtime-route-service-lineage";
 import { validateRuntimeRouteCallers } from "./skirmish-ai-runtime-route-caller-validation";
+import { RUNTIME_ROUTE_ORDER_IDENTITY_LIMIT } from "./skirmish-ai-runtime-route-history-budget";
 
 /** Inspect every admission/current/caller sample and orphan rally claim, including overflow tails and failure terminals. */
 export function validateRuntimeRouteOrders(capture: AiRuntimeProductionCaptureV1) {
@@ -114,5 +115,10 @@ export function validateRuntimeRouteOrders(capture: AiRuntimeProductionCaptureV1
   }
   const callers = validateRuntimeRouteCallers(capture);
   failures.push(...callers.failures);
-  return { admissions, rallies, overflow: identities.size > 256 || callers.overflow, failures: [...new Set(failures)] };
+  return {
+    admissions,
+    rallies,
+    overflow: identities.size > RUNTIME_ROUTE_ORDER_IDENTITY_LIMIT || callers.overflow,
+    failures: [...new Set(failures)]
+  };
 }

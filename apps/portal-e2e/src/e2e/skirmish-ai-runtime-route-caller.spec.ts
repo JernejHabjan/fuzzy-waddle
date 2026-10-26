@@ -1,4 +1,4 @@
-import { RUNTIME_ROUTE_HISTORY_LIMIT } from "./skirmish-ai-runtime-route-history-budget";
+import { RUNTIME_ROUTE_HISTORY_LIMIT, RUNTIME_ROUTE_ORDER_IDENTITY_LIMIT } from "./skirmish-ai-runtime-route-history-budget";
 import { expect, test } from "@playwright/test";
 // prettier-ignore
 import type { AiRuntimeProductionFactV1 } from
@@ -328,6 +328,29 @@ test("nested unbound observations remain missing, while failed outer queries can
   expect(notFound.failures).toEqual([]);
   expect(notFound.producerRoutes.paths[0]?.orderLineage.queryCallerAttributed).toBe(true);
   expect(notFound.gaps).toContain("production_route_native_path_not_found");
+});
+
+test("native route-order history retains scout-heavy captures through the declared identity bound", () => {
+  const f = routeOrderFixture();
+  const sample = f.capture.facts.find((fact) => fact.kind === "spatial_authority" && fact.spatial.kind === "route_order");
+  if (!sample || sample.kind !== "spatial_authority" || sample.spatial.kind !== "route_order")
+    throw new Error("synthetic_route_order_missing");
+  const spatial = sample.spatial;
+  const admissions = Array.from({ length: RUNTIME_ROUTE_ORDER_IDENTITY_LIMIT - 1 }, (_, index) =>
+    ({ ...sample, spatial: { ...spatial, order: { ...spatial.order,
+      orderId: index + 2, commandContext: null } } })
+  );
+  const facts = [...f.capture.facts, ...admissions].map((fact, index) => ({ ...fact, sequence: index + 1 }));
+  const capture = { ...f.capture, facts };
+
+  expect(validateRuntimeRouteOrders(capture).overflow).toBe(false);
+
+  const overflow = { ...capture, facts: [...facts,
+    { ...sample, sequence: facts.length + 1,
+      spatial: { ...spatial, order: { ...spatial.order,
+        orderId: RUNTIME_ROUTE_ORDER_IDENTITY_LIMIT + 1, commandContext: null } } }
+  ] };
+  expect(validateRuntimeRouteOrders(overflow).overflow).toBe(true);
 });
 
 test("invocation overflow drops the whole route group and still inspects the last contradictory stamp", () => {

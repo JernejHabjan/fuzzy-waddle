@@ -15,7 +15,7 @@ Read this file, then [REMAINING-WORK.md](REMAINING-WORK.md) for package acceptan
 
 ## Current checkpoint — 2026-10-26
 
-- Branch `feature/759-skirmish-ai`; latest pushed source checkpoint is `b77e5bac7`; STRAT-09 path-outage repair and evidence are current local work. Latest CI diagnostics read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad`. Node 24.18.0 / pnpm 11.14.0.
+- Branch `feature/759-skirmish-ai`; latest pushed source checkpoint is `51c789217`; STRAT-09 path-outage repair and evidence are pushed. Latest CI diagnostics read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad`. Node 24.18.0 / pnpm 11.14.0.
 - Packages 1–2 are validated; two-faction SEQ-01 passes with the adaptive build-space rule.
 - Package 5 current focused evidence: H-14 Skaduwee harmless passes one of its branches. H-10 passes below-capacity,
   at-capacity and resumed-capacity for both factions (6/8 variants); over-capacity remains for CI. Neither family is closed.
@@ -87,11 +87,13 @@ matches, and its overflow boundary has a focused passing test. Skaduwee denial (
 
 ### Next action
 
-The SCOUT-02 and DOMAIN-05 owner repairs are pushed; latest pushed source before this local checkpoint is `b77e5bac7`.
-The path-outage source/fixture/evidence checkpoint is currently local. PR #814 remains draft; its runtime matrix runs only after
-`ready_for_review`, and the existing handoff forbids changing PR status. Runs 804–805 close only the Skaduwee raid and
-Tivara denial branches; run 814 closes Tivara path-outage. Advance now to the next Package 3 family with concrete
-registered evidence; do not repeat SCOUT-02's timed-out local match without a harness change. Leave its changed-source
-result and DOMAIN-05's partial result for the grouped CI/final matrix. PLACE-03 can be revisited once route/movement inputs are observable. Preserve the CI
-dependency for H-10's over-capacity variants and real-peer cases. Keep CURRENT-EVIDENCE concise; archive details only
-when they aid a later causal repair.
+STRAT-09 closes all eight branches; runs 804–805 predate the last selector edit, so revalidate affected branches in the
+grouped matrix/final gate. SCOUT-01 remains open after runs 815–816: the 512 route-order bound and resource-coverage
+exception remove false evidence failures, but hidden-pair intents diverge at tick 20 despite equal canonical inputs,
+and Tivara hidden-b movement reaches an alternate destination rather than completing the selected scout point. Keep the
+physical-arrival and information-learning predicates strict. Advance to STRAT-02 next; revisit SCOUT-01 when candidate
+ordering or a fixture adjustment has a focused hypothesis. Run 816's exact evidence is in the archive.
+
+SCOUT-02's changed-source native match timed out; leave it for the existing CI matrix unless its owner repair or harness
+changes. PLACE-03 can be revisited once route/movement inputs are observable. Preserve the CI dependency for H-10's
+over-capacity variants and real-peer cases.

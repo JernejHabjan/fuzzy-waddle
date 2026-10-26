@@ -249,7 +249,10 @@ export function advanceAiSkirmishOffense(
   );
   appendReserve(context, committedAttackers);
   const activeFrontierScoutIds = new Set(
-    context.activeScout?.objectiveId?.startsWith("question:") ? context.activeScout.actorIds : []
+    context.activeScout?.objectiveId?.startsWith("question:") ||
+      (context.activeScout?.objectiveId?.startsWith("neutral:") && context.activeScout.state === "moving")
+      ? context.activeScout.actorIds
+      : []
   );
   const attackers = context.combat.filter(
     (actor) => !context.primaryOwnedActors.has(actor.actorId) && !activeFrontierScoutIds.has(actor.actorId)

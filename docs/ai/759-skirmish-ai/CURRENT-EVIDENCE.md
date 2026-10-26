@@ -3,7 +3,7 @@
 Updated 2026-10-26. This is the active evidence snapshot. Detailed prior run notes are preserved in
 [EVIDENCE-ARCHIVE.md](EVIDENCE-ARCHIVE.md); use HANDOFF.md for the live cursor and next action.
 
-The STRAT-09 elimination evaluator repair is pushed on `feature/759-skirmish-ai`; latest CI diagnostics were read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad` (runtime jobs skipped on draft PR #814).
+The STRAT-09 elimination evaluator repair is pushed on `feature/759-skirmish-ai` at `51c789217`; latest CI diagnostics were read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad` (runtime jobs skipped on draft PR #814).
 GitHub reports `skirmish-runtime-plan`, `skirmish-multiplayer` and `skirmish-runtime` skipped because PR #814 is draft;
 the runtime matrix starts on `ready_for_review`. PR status is left unchanged per the existing handoff boundary. H-10's two
 over-capacity variants and real-peer obligations still need that matrix evidence.
@@ -45,9 +45,9 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   change; revalidate affected branches in the grouped matrix/final gate instead of repeating unchanged local variants.
   See HANDOFF.md and the evidence archive; move to the next Package 3 family.
 - The native scouting oracle matches `effect:`-prefixed accepted intents to movement execution IDs.
-- Movement capture normalization now admits up to 2,048 execution groups; caller-history validation admits 4,096
-  identities. The latest H-14 capture contained 1,567 movement executions and 1,869 caller identities; route-order
-  identities numbered 235, so that independent 256 bound remains unchanged.
+- Movement capture normalization admits 2,048 execution groups and caller-history validation 4,096 identities. SCOUT-01
+  run 815 recorded 309 / 352 route-order identities, exceeding the former 256 cap; run 816 and the new 512 identity
+  boundary address that capture loss.
 - SCOUT-02's first changed-source replay on `1f96d11b1` still lacked a Stage 9 physical trip: Stage 13 redirected the scout
   into engage on visible contact, then happened to reach the same coordinate under its own effect ID. That arrival is not
   credited. A follow-up showed the scout's order was Attack, while Stage 9 incorrectly treated its earlier selection as
@@ -57,6 +57,10 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   44/44. The changed-source runtime replay exceeded its 13-minute one-variant test budget; the owned runner and
   Playwright process tree were stopped without a result artifact. SCOUT-02 remains open for CI; do not repeat this local
   match without a harness fix.
+- SCOUT-01 runs 815–816 also removed a false resource-history gate from hidden-pair comparison. Run 816 remains failed:
+  canonical permitted inputs match at tick 20, but authored worker/scout choices differ; Tivara hidden-b's scout route
+  ends at another destination after tactical interruption, so it earns no information-trip credit. Keep selected-intent
+  parity and physical arrival strict. Advance to STRAT-02 while that candidate-order / fixture hypothesis is unresolved.
 - Checks: focused gameplay suites 44/44; scouting-evidence Playwright specs 2/2; movement/scout-evidence/route-order/route-caller
   Playwright suites 76/76; exact-file ESLint completed with no errors; `git diff --check` passes. Two existing non-null
   assertion warnings remain in route specs and two in the gameplay scouting spec.

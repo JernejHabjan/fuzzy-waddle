@@ -163,6 +163,16 @@ describe("AiSkirmishManager offense target selection", () => {
         [...intent.actorIds].sort()
       );
     }
+
+    const neutralProposal = new AiSkirmishManager(profile, () => catalog).propose(world, {
+      ...state,
+      squads: state.squads.filter((squad) => squad.squadId !== "squad:scout:neutral").map((squad) =>
+        squad.squadId === "squad:scout:primary"
+          ? { ...squad, squadId: "squad:scout:neutral", objectiveId: "neutral:nearby" }
+          : squad)
+    });
+    const neutralAttack = neutralProposal.statePatch?.squads?.find((squad) => squad.role === "attack");
+    expect(neutralAttack?.actorIds).not.toContain(scout.actorId);
   });
 
   it("prioritizes an observed enemy main building over a nearer non-terminal structure", () => {

@@ -82,16 +82,19 @@ function hiddenParity(
 ): string[] {
   if (!a || !b || differentSetup && a.initialWorldDigest === b.initialWorldDigest)
     return ["scouting_hidden_counterfactual_world_missing"];
-  const left = nativeScenarioContext(a, latestTick), right = nativeScenarioContext(b, latestTick);
+  const left = nativeScenarioContext(a, latestTick, undefined, { requireResourceCoverage: false });
+  const right = nativeScenarioContext(b, latestTick, undefined, { requireResourceCoverage: false });
   if (left.failures.length || right.failures.length) return ["scouting_hidden_pair_native_history_incomplete"];
   let compared = 0;
   for (const frame of left.frames) {
     const other = right.frames.find((candidate) => candidate.tick === frame.tick);
     if (!other) return ["scouting_hidden_pair_decision_boundary_missing"];
-    const visible = (value: typeof frame) => value.decision.input?.observation?.actors.filter((actor) => actor.visibility === "visible");
-    if (JSON.stringify(visible(frame)) !== JSON.stringify(visible(other))) break;
-    if (JSON.stringify(permitted(frame)) !== JSON.stringify(permitted(other))) return ["scouting_hidden_world_altered_permitted_inputs"];
-    if (JSON.stringify(frame.decision.acceptedIntents) !== JSON.stringify(other.decision.acceptedIntents))
+    if (JSON.stringify(canonical(frame.decision.input?.observation?.actors.filter((actor) => actor.visibility === "visible"), left, "actors")) !==
+        JSON.stringify(canonical(other.decision.input?.observation?.actors.filter((actor) => actor.visibility === "visible"), right, "actors"))) break;
+    if (JSON.stringify(canonical(permitted(frame), left)) !== JSON.stringify(canonical(permitted(other), right)))
+      return ["scouting_hidden_world_altered_permitted_inputs"];
+    if (JSON.stringify(canonical(frame.decision.acceptedIntents, left)) !==
+        JSON.stringify(canonical(other.decision.acceptedIntents, right)))
       return ["scouting_hidden_world_altered_selected_intents"];
     compared++;
   }
@@ -103,4 +106,42 @@ function permitted(frame: ReturnType<typeof nativeScenarioContext>["frames"][num
   const input = frame.decision.input;
   return { observation: input?.observation, resources: input?.resources, map: input?.map,
     effects: input?.effects, modeGoals: input?.modeGoals, capabilityCatalog: input?.capabilityCatalog, accessGraph: input?.accessGraph };
+}
+
+/** Simulation IDs and discovery ordering are run-local; compare the observable world by authored role and position. */
+function canonical(value: unknown, context: ReturnType<typeof nativeScenarioContext>, parentKey = ""): unknown {
+  const aliases = new Map<string, string>();
+  for (const [role, actorId] of Object.entries(context.roles)) aliases.set(actorId, `role:${role}`);
+  const initial = context.frames[0]?.decision.input?.observation?.actors ?? [];
+  const fallback = new Map<string, string[]>();
+  const actorKey = (actor: (typeof initial)[number]) => JSON.stringify([
+    actor.relation, actor.owner, actor.objectName, actor.logicalPosition.status === "known"
+      ? actor.logicalPosition.value : null
+  ]);
+  for (const actor of initial) {
+    if (aliases.has(actor.actorId)) continue;
+    const group = fallback.get(actorKey(actor)) ?? [];
+    group.push(actor.actorId);
+    fallback.set(actorKey(actor), group);
+  }
+  for (const [key, ids] of fallback) ids.sort().forEach((id, index) => aliases.set(id, `actor:${key}:${index}`));
+  const unordered = new Set([
+    "actors", "actorIds", "targetActorIds", "dynamicObstacleActorIds", "frontierAccessNodeIds", "unknownNodeIds",
+    "nodes", "links", "transferPoints", "scoutSearchPoints"
+  ]);
+  const normalize = (entry: unknown, key: string): unknown => {
+    if (Array.isArray(entry)) {
+      const normalized = entry.map((item) => normalize(item, key));
+      return unordered.has(key) ? normalized.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b))) : normalized;
+    }
+    if (entry && typeof entry === "object") {
+      return Object.fromEntries(Object.entries(entry).filter(([field]) =>
+        !(key === "accessGraph" && ["generation", "dynamicRevision", "threatRevision", "builtTick", "continuationCursor"].includes(field)) &&
+        !(key === "regionGeneration" && field === "generation")
+      ).sort(([left], [right]) => left.localeCompare(right)).map(([field, item]) => [field, normalize(item, field)]));
+    }
+    if (typeof entry === "string") return entry.replace(/sim-[a-f\d]+/g, (id) => aliases.get(id) ?? id);
+    return entry;
+  };
+  return normalize(value, parentKey);
 }
