@@ -3,12 +3,15 @@
 Read this page, then the selected package in [REMAINING-WORK.md](REMAINING-WORK.md).
 [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) retains outcomes; [CI-RESUME.md](CI-RESUME.md) describes the existing matrix.
 
-## Current scope and stop boundary — 2026-10-25
+## Current scope and stop boundary — 2026-10-26
 
 - Branch `feature/759-skirmish-ai`; source base `f083fddbc483a0741c35697c70c24c6c98414f94`; Node 24.18.0 / pnpm 11.14.0.
 - Latest user direction supersedes the earlier batch stop: finish the two-faction victory gate, then continue through
   all remaining roadmap packages without stopping at each passing gate. Track progress and keep the next action explicit.
-  No commit, push, PR change or merge is authorized.
+  The user authorized this checkpoint's commits and push; no PR change or merge is authorized.
+- **Published checkpoint (2026-10-26):** commits `ba8e896cb`, `a0cb0429c`, and `23edb750e` were pushed to
+  `origin/feature/759-skirmish-ai`; the verified remote SHA at this checkpoint was
+  `23edb750e56639f8703d21390e27ce53c0730429`. This handoff update follows that checkpoint in Git history.
 - Packages 1–2 retain earlier evidence (8/8 production, 16/16 economy/technology). The new unexpected-producer-loss case
   exposes an additional recovery gap; do not treat those earlier results as proof of this case.
 - Package 3 remains in progress after the SEQ-01 gate passed. Package 4 pure contracts pass; its first grouped native
