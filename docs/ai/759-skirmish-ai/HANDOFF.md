@@ -15,7 +15,7 @@ Read this file, then [REMAINING-WORK.md](REMAINING-WORK.md) for package acceptan
 
 ## Current checkpoint — 2026-10-26
 
-- Branch `feature/759-skirmish-ai`, source commit `5da21a50d89ea866972cead3b945d7e1a59b4897`; latest CI diagnostics read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad`. Node 24.18.0 / pnpm 11.14.0.
+- Branch `feature/759-skirmish-ai`, source commit `65a367d891886c90b9bd80b84b4cb156ee9df3dd` (committed, not yet pushed); latest CI diagnostics read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad`. Node 24.18.0 / pnpm 11.14.0.
 - Packages 1–2 are validated; two-faction SEQ-01 passes with the adaptive build-space rule.
 - Package 5 current focused evidence: H-14 Skaduwee harmless passes one of its branches. H-10 passes below-capacity,
   at-capacity and resumed-capacity for both factions (6/8 variants); over-capacity remains for CI. Neither family is closed.
@@ -43,13 +43,21 @@ prove current behavior; use CI evidence.
 CI diagnostics on pushed HEAD `86e1806` show `skirmish-runtime-plan`, `skirmish-multiplayer` and `skirmish-runtime`
 skipped because PR #814 is draft. An old STRAT-02 artifact has 0 decisions / 0 ticks and a browser-context timeout.
 PLACE-03's latest capture also fails route clearance and worker/army arrival; its `protectedRoutes` are evaluator-only,
-not AI input. Reconcile the fixture probes with visible orders/objectives before changing site selection.
+not AI input. Its movement controls begin at tick 200 while static probes run from baseline and opening build tick 20.
+Treat this as a fixture/input contract gap, not a permanent ban on iterating the placement owner: make the route observable
+before construction or scope the probe to native movement, then use one changed-source replay. Do not repeat unchanged.
+
+STRAT-09 has one bound pure owner contract; the Package 3 audit passes 40 scenarios / 46 suites / 278 tests with no
+missing bindings. Its changed-source Tivara raid (`tmp/ai-skirmish-matrix/763-package3-strat09-defense-focus/1793011443483-diagnostic_failed.json`)
+reaches 200 decisions / 4,001 ticks but fails native attack/effect against `main-target` and worker survival (all eight
+workers lost). The broad resource-coverage false failure is removed. Nearest-threat prioritization did not repair the
+match; inspect Stage 13 defense target application/worker survival before another native replay.
 
 ## Package cursor and known open work
 
 | Package | Open work |
 | --- | --- |
-| 3 — scouting, combat, access | SCOUT, STRAT-02/03, DOMAIN, RAID, FIGHT and C families. |
+| 3 — scouting, combat, access | STRAT-09 native target/effect and worker-survival failure; SCOUT, STRAT-02/03, DOMAIN, RAID, FIGHT and C families. |
 | 4 — placement, walls, recovery | PLACE-03 route clearance and physical transit; H-11 construction path returns `no_path`; remaining PLACE/EXP/WALL/H cases. |
 | 5 — authority and lifecycle | H-06/07 fixture/evaluator gaps; H-08/09 peer evidence; remaining H-10 over-capacity CI variants; remaining H-14/H-15 branches; H-31/H-32, M11, #819/#823. |
 | 6 — continuous play and difficulty | SEQ-02 and remaining supported SEQ/D cases; D-06 legacy comparison remains unsupported. |
@@ -57,11 +65,12 @@ not AI input. Reconcile the fixture probes with visible orders/objectives before
 
 ### Next action
 
-The SCOUT-02 and DOMAIN-05 source/evaluator repairs are pushed at `5da21a50d`; focused and broad checks pass, but
-SCOUT-02's local native replay exceeded its configured timeout and produced no artifact. PR #814 remains draft; its
+The SCOUT-02 and DOMAIN-05 source/evaluator repairs are pushed at `5da21a50d`; STRAT-09 work is committed at `65a367d89`
+and still needs pushing. PR #814 remains draft; its
 runtime matrix runs only after `ready_for_review`, and the existing
 handoff forbids changing PR status. Do not repeat the local SCOUT-02 match. Continue Package 3 from its next
-evidence-ready, source-actionable case; leave current SCOUT-02/DOMAIN-05 native outcomes for CI. Do not change PLACE-03
-site selection until its fixture stops asserting hidden `protectedRoutes`. Preserve the CI dependency for H-10's two
+evidence-ready source action after addressing STRAT-09's target/effect and worker-survival failure; advance if the next
+hypothesis needs a fixture change or external CI. Leave current SCOUT-02/DOMAIN-05 native outcomes for CI. PLACE-03 can
+be revisited once route/movement inputs are observable, as described above. Preserve the CI dependency for H-10's two
 over-capacity variants and real-peer obligations. Keep CURRENT-EVIDENCE concise; archive only details that aid a later
 causal repair.

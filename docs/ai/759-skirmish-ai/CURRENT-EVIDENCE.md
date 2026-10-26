@@ -3,7 +3,7 @@
 Updated 2026-10-26. This is the active evidence snapshot. Detailed prior run notes are preserved in
 [EVIDENCE-ARCHIVE.md](EVIDENCE-ARCHIVE.md); use HANDOFF.md for the live cursor and next action.
 
-Source checkpoint `5da21a50d89ea866972cead3b945d7e1a59b4897` is pushed; latest CI diagnostics were read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad` (docs-only change afterward).
+Source checkpoint `65a367d891886c90b9bd80b84b4cb156ee9df3dd` is committed locally; latest CI diagnostics were read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad` (runtime jobs skipped on draft PR #814).
 GitHub reports `skirmish-runtime-plan`, `skirmish-multiplayer` and `skirmish-runtime` skipped because PR #814 is draft;
 the runtime matrix starts on `ready_for_review`. PR status is left unchanged per the existing handoff boundary. H-10's two
 over-capacity variants and real-peer obligations still need that matrix evidence.
@@ -19,6 +19,8 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   H-10 below-capacity and at-capacity pass for both factions; resumed-capacity passes for both factions too. Six of eight
   H-10 variants have local evidence. Both over-capacity variants remain for the registered CI matrix.
   H-10 artifacts are listed in HANDOFF.md.
+- Package 3 pure batch: 40 scenarios, 46 suites and 278 tests pass with no missing scenario bindings. STRAT-09 now has a
+  passing owner-level test but its eight native branches remain open.
 
 ## Latest implementation and checks
 
@@ -28,6 +30,12 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   events against its visible authored target. The evaluator no longer demands an unrelated movement-arrival record in
   addition to that physical hit; the retained-artifact check clears the old predicate. This is one branch/artifact, not
   full DOMAIN-05 closure. The exact-damage reader spec passes 2/2.
+- STRAT-09 no longer gives an underpowered core unconditional priority when a ready alternate objective has a clear score
+  lead; broad resource-ledger coverage is also unnecessary for its exact attack/effect oracle. Focused strategy and
+  economy-policy specs pass 23/23; native-context Playwright passes 12/12. The changed-source Tivara raid still fails:
+  200 decisions / 4,001 ticks, no native damage to `main-target`, and all eight workers lost. Threat ordering by protected
+  asset distance did not save workers. Do not repeat unchanged; inspect Stage 13 defense targeting/worker survival and the
+  failure to reach the authored target.
 - The native scouting oracle matches `effect:`-prefixed accepted intents to movement execution IDs.
 - Movement capture normalization now admits up to 2,048 execution groups; caller-history validation admits 4,096
   identities. The latest H-14 capture contained 1,567 movement executions and 1,869 caller identities; route-order
@@ -49,7 +57,7 @@ over-capacity variants and real-peer obligations still need that matrix evidence
 
 | Package | Status |
 | --- | --- |
-| 3 — scouting, combat, access | SCOUT, STRAT-02/03, DOMAIN, RAID, FIGHT and C families remain; use their native evidence and CI rows in the archive/inventory. |
+| 3 — scouting, combat, access | STRAT-09 native comeback/effect and worker-survival predicates fail. SCOUT, STRAT-02/03, DOMAIN, RAID, FIGHT and C families remain. |
 | 4 — placement, walls, recovery | PLACE-03 still has route-clearance and worker/army transit failures. H-11 has one legal construction endpoint returning `no_path` and capture-channel loss. Other PLACE/EXP/WALL/H cases remain. |
 | 5 — authority and lifecycle | H-10 awaits over-capacity CI results. H-14 is one passing branch only. H-06/07 retain fixture/evaluator gaps; H-08/09 require credentialed peers. H-15, H-31/H-32, M11, #819 and #823 remain open. |
 | 6 — continuous play and difficulty | SEQ-02 and remaining supported SEQ/D cases; D-06 legacy difficulty comparison is unsupported and remains an explicit blocker. |

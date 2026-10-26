@@ -5,6 +5,17 @@ contain superseded observations and next actions. Use HANDOFF.md and CURRENT-EVI
 
 ## Latest checkpoint - 2026-10-26
 
+- **STRAT-09 changed-source Tivara raid:** two focused runs reached 200 decisions / 4,001 ticks. The latest fails the
+  comeback attack/effect predicates and `worker_bootstrap`; no native damage reached `main-target`, and all eight workers
+  were lost. Broad resource coverage was correctly removed from the exact scenario oracle. Sorting local threats by
+  protected-asset distance did not stop the losses. Latest artifact:
+  `tmp/ai-skirmish-matrix/763-package3-strat09-defense-focus/1793011443483-diagnostic_failed.json`.
+- **Package 3 pure audit:** 40 scenarios, 46 suites and 278 tests pass with no missing bindings. STRAT-09 has one partial
+  owner contract; its native raid, denial, unrecoverable and path-outage branches remain open.
+- **PLACE-03 changed-source access check:** 150 decisions / 3,001 ticks still fail static route clearance and worker/army
+  arrival. Transit controls begin at tick 200, while probes apply at baseline and opening builds at tick 20. Do not replay
+  unchanged; make the route observable first or bind the probe to native movement.
+
 - **H-10 Tivara below-capacity:** exact native backlog predicates pass at 150 decisions / 3,001 ticks; the AI retains
   eight workers, continues gathering, and wins at the checkpoint. Artifact:
   `tmp/ai-skirmish-matrix/760-package5-h10-tivara-below-capacity-next/1792997974373-diagnostic_passed.json`.
