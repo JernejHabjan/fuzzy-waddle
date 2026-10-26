@@ -92,17 +92,8 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   Playwright suites 76/76; exact-file ESLint completed with no errors; `git diff --check` passes. Two existing non-null
   assertion warnings remain in route specs and two in the gameplay scouting spec.
 
-- STRAT-05 Tivara reinforced run 830 (`tmp/ai-skirmish-matrix/830-strat05-tivara-reinforced-exact/1793050472515-diagnostic_failed.json`)
-  re-evaluates with zero full native-branch failures on current source. The report retains its original failed status;
-  current evaluation proves the branch after two evidence-pipeline corrections: route-order identity retention rises
-  from 512 to 1,024 (621 identities were captured), and accepted move IDs normalize the `effect:` prefix before
-  matching native execution IDs. The corrected capture yields 566 normalized movements and nine physical retreats.
-  Focused Playwright passes 64/64; portal-e2e TypeScript passes; exact ESLint has 0 errors (one existing warning);
-  `git diff --check` passes. This closes only the Tivara reinforced branch. Next: quiet, blocked-retreat, then Skaduwee.
-  See archive for details.
-- STRAT-05 Tivara quiet run 831 (`tmp/ai-skirmish-matrix/831-strat05-tivara-quiet/1793051339095-diagnostic_failed.json`) has zero full branch-evaluator failures on current source replay. Its contact-group took 14 native hits through tick 222; the AI then made eight exact hits on authored `front-target-b` at ticks 468–741. The old quiet oracle required only more damage to the original contact and incorrectly rejected the exhausted target. It now accepts post-400 physical hits on any authored front target; a regression verifies this and still rejects no post-400 effect. The saved report retains its original diagnostic-failed status. Focused evaluator test 1/1, portal-e2e TypeScript and exact ESLint pass. Tivara reinforced and quiet are checked; next run Tivara blocked-retreat.
-- STRAT-05 Tivara blocked-retreat passes changed-fixture run 833 (`tmp/ai-skirmish-matrix/833-strat05-tivara-blocked-retreat-forward-gate/1793052151292-diagnostic_passed.json`): 120 decisions, history closed through tick 2,400, no AI errors, zero evaluator failures. The previous run 832 exposed a closed ring that trapped the opening army and made all authored front targets unreachable before reinforcement contact. The updated world gives the army a reachable forward target while a homeward terrain barrier removes the safe fallback. The branch now requires a bounded plan change and exact damage to a revealed reinforcement rather than a physical retreat. Fixture audit passes 28/28; STRAT-05 evaluator Playwright passes 2/2; portal-e2e TypeScript and exact ESLint pass. Tivara branches 3/3 checked; next run Skaduwee reinforced. Full lineage in archive.
-- STRAT-05 Skaduwee reinforced run 834 (`tmp/ai-skirmish-matrix/834-strat05-skaduwee-reinforced/1793052376237-diagnostic_passed.json`) passes with 120 decisions, history closed through tick 2,400 and no AI errors. Skaduwee quiet run 835 (`tmp/ai-skirmish-matrix/835-strat05-skaduwee-quiet/1793052549345-diagnostic_failed.json`) re-evaluates with zero full branch failures on current source. It records 15 physical contact hits through tick 150, then a hit on authored `enemy-home` at tick 835 before retreating under losses. The oracle now accepts that exact authored-objective continuation; it still fails when no post-400 native effect exists. The old artifact status remains diagnostic-failed. STRAT-05 has five of six branches checked; next is Skaduwee blocked-retreat.
+- STRAT-05 is validated across all six native branches: Tivara and Skaduwee reinforced, quiet and blocked-retreat. Runs 830, 831 and 835 pass the full evaluator on current-source replay; corrected-fixture runs 833, 834 and 836 pass directly. The focused changes fix exact native-evidence matching, valid authored-target continuation and the unreachable blocked-retreat fixture. Count STRAT-05 as 1/22 selected obligations closed; the runtime matrix remains the final regression gate. See EVIDENCE-ARCHIVE for run details.
+
 ## Open work by package
 
 | Package | Status |
@@ -113,7 +104,7 @@ over-capacity variants and real-peer obligations still need that matrix evidence
 | 6 — continuous play and difficulty | SEQ-02 and remaining supported SEQ/D cases; D-06 legacy difficulty comparison is unsupported and remains an explicit blocker. |
 | 7 — debug and closure | DBG cases, #820/#821, final machinery/legacy audit and closure review remain. |
 
-Newly selected native obligations remain 0/22 closed. Registration or a passing single branch does not close a family.
+One of the 22 selected native obligations is closed: STRAT-05 has passing evidence for all six Tivara/Skaduwee reinforced, quiet and blocked-retreat branches, including current-source full-evaluator replay of runs 830, 831 and 835. The other 21 still require complete family/source evidence. The runtime matrix remains the final regression gate.
 Seven real-peer obligations depend on credentialed CI evidence; do not substitute local single-player runs.
 
 ## Evidence rules

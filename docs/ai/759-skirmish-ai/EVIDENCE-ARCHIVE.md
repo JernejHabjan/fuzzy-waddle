@@ -2264,3 +2264,9 @@ Summaries use `node tools/ai/summarize-skirmish-report.mjs --report <path> --fai
 - Skaduwee reinforced run 834 passes with 120 decisions, closed history through tick 2,400 and no AI errors.
 - Quiet run 835 initially failed because the exact target list excluded the authored enemy home. The contact group received 15 valid hits through tick 150; the AI later hit `enemy-home` at tick 835 and withdrew under losses. Current-source full evaluator replay passes. The quiet oracle now accepts exact post-400 damage to authored front targets or enemy-home, and its regression still rejects no continued effect. Original artifact status is retained.
 - Focused strategy evaluator Playwright 2/2, TypeScript, ESLint and `git diff --check` pass. Five STRAT-05 branches are checked; Skaduwee blocked-retreat remains. Source commit: `5480ef0b3`.
+
+## 2026-10-26 — STRAT-05 Skaduwee blocked-retreat and family closure
+
+- Run 836 (`tmp/ai-skirmish-matrix/836-strat05-skaduwee-blocked-retreat/1793052848435-diagnostic_passed.json`) passes with 120 decisions / 2,401 ticks, closed native history and no AI errors.
+- All six branches pass: Tivara/Skaduwee reinforced, quiet and blocked-retreat. Runs 830, 831 and 835 have historical diagnostic-failed JSON status but pass the full current-source evaluator on replay; runs 833, 834 and 836 pass directly. The branch-specific fixture repair and narrow quiet/retreat oracle corrections preserve exact native damage, physical retreat where safe, and a bounded counterforce response where no safe retreat exists.
+- STRAT-05 closes one of 22 selected native obligations. Next case: STRAT-02 Skaduwee quiet. Registered CI remains the grouped regression gate; runtime jobs are skipped while PR #814 is draft.

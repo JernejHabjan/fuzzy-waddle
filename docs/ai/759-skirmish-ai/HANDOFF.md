@@ -14,15 +14,15 @@ Read this file, then [REMAINING-WORK.md](REMAINING-WORK.md) for package acceptan
 
 - Latest local source commit: `5480ef0b3` (`fix(ai): accept authored STRAT-05 home continuation`); it is ready to push with the progress-doc commit. Node 24.18.0 / pnpm 11.14.0.
 - Packages 1–2 are validated; SEQ-01 completes the two-faction victory at the 18,000-tick horizon with adaptive build-space radius.
-- STRAT-05 Tivara reinforced and quiet pass full native branch evaluation on saved current-source replays. Reinforced run 830 now preserves 621 route-order identities (limit 1,024), matches accepted `effect:` IDs to native movement IDs, and yields nine physical retreats. Quiet run 831 records 14 hits on the spent contact through tick 222, then eight hits on authored `front-target-b` at ticks 468–741; its oracle now allows that authored retarget. Tivara blocked-retreat passes changed-fixture run 833 at 120 decisions / tick 2,401 with closed native history and no AI errors. Its former closed terrain ring made the opening target unreachable; the fixed fixture places that target forward of a homeward barrier. The bounded alternative requires objective-plan change plus physical counterforce damage when retreat is unavailable. Skaduwee reinforced passes run 834 at 120 decisions / tick 2,400 with complete native history and no AI errors. Skaduwee quiet run 835 also passes on current-source replay: the contact group took 15 native hits by tick 150, then the AI landed a valid hit on authored `enemy-home` at tick 835 before withdrawing under losses. The quiet oracle includes authored enemy-home retargets; replay clears the only original failure. Five checked branches are not family closure.
+- STRAT-05 is validated across all six registered branches. Tivara reinforced run 830 replays cleanly after preserving 621 route-order identities (limit 1,024), matching accepted `effect:` IDs to native movement IDs, and recognizing nine physical retreats. Tivara quiet run 831 replays cleanly: 14 hits on the spent contact through tick 222, then eight hits on `front-target-b` at ticks 468–741. Tivara blocked-retreat run 833 passes on the corrected world: its opening target is forward of a homeward barrier and its bounded alternative requires a plan change plus physical counterforce damage. Skaduwee reinforced run 834 passes at 120 decisions / tick 2,400 with closed history and no AI errors. Skaduwee quiet run 835 replays cleanly: 15 contact hits by tick 150, then a hit on `enemy-home` at tick 835 before the AI withdraws under losses. Skaduwee blocked-retreat run 836 passes at 120 decisions / tick 2,400 with closed history and no AI errors. Current-source evaluator replays clear all original report failures; full chronology is in the archive. Count one of the 22 selected native obligations as closed.
 - STRAT-03 and STRAT-04 remain open; do not rerun unchanged. STRAT-09 has passing branch evidence; revalidate affected rows in the grouped CI/final gate.
-- H-10 has local evidence for six of eight variants; over-capacity and seven real-peer obligations remain with CI. Newly selected obligations remain 0/22 closed until full family/source gates are satisfied.
+- H-10 has local evidence for six of eight variants; over-capacity and seven real-peer obligations remain with CI. One of the 22 selected native obligations is now closed: STRAT-05. The remaining rows still require their complete source-specific family evidence.
 
 ## Package cursor
 
 | Package | Current state |
 | --- | --- |
-| 3 — scouting, combat, access | Continue STRAT-05 branches, then SCOUT, STRAT-02/03/04, DOMAIN, RAID, FIGHT and C families. Preserve concrete open hypotheses and advance between cases. |
+| 3 — scouting, combat, access | STRAT-05 is validated. Continue with SCOUT, STRAT-02/03/04, DOMAIN, RAID, FIGHT and C families. Preserve concrete open hypotheses and advance between cases. |
 | 4 — placement, walls, recovery | PLACE-03 route/transit evidence; H-11 `no_path`; remaining PLACE/EXP/WALL/H cases. |
 | 5 — authority and lifecycle | H-06/07, H-08/09 peer evidence, H-10 over-capacity CI, H-14/15 remaining branches, H-31/32, M11, #819/#823. |
 | 6 — continuous play and difficulty | SEQ-02 and supported SEQ/D cases. D-06 legacy comparison remains explicitly unsupported. |
@@ -30,6 +30,6 @@ Read this file, then [REMAINING-WORK.md](REMAINING-WORK.md) for package acceptan
 
 ## Next action
 
-Run the final STRAT-05 Skaduwee blocked-retreat branch (`strat-05-skaduwee-blocked-retreat`) once. Do not replay the five checked branches unchanged.
+Run STRAT-02 Skaduwee quiet (`strat-02-skaduwee-quiet`) once as the next unverified current-source branch. Do not replay STRAT-05 unchanged; all six native branches pass. Keep the registered runtime/peer matrix as the final regression gate because PR #814 remains draft.
 
 After each coherent source/evidence batch: update CURRENT-EVIDENCE and this cursor, run focused checks, commit/push task-owned files, and select the next unfinished case. Use EVIDENCE-ARCHIVE for run chronology. Do not stop at validation when another dependency-ready case remains.
