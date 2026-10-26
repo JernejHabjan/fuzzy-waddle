@@ -3,7 +3,7 @@
 Updated 2026-10-26. This is the active evidence snapshot. Detailed prior run notes are preserved in
 [EVIDENCE-ARCHIVE.md](EVIDENCE-ARCHIVE.md); use HANDOFF.md for the live cursor and next action.
 
-Source checkpoint `65a367d891886c90b9bd80b84b4cb156ee9df3dd` is committed locally; latest CI diagnostics were read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad` (runtime jobs skipped on draft PR #814).
+Source checkpoint `65a367d891886c90b9bd80b84b4cb156ee9df3dd` is committed; the latest AI source/evidence checkpoint is being published. Latest CI diagnostics were read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad` (runtime jobs skipped on draft PR #814).
 GitHub reports `skirmish-runtime-plan`, `skirmish-multiplayer` and `skirmish-runtime` skipped because PR #814 is draft;
 the runtime matrix starts on `ready_for_review`. PR status is left unchanged per the existing handoff boundary. H-10's two
 over-capacity variants and real-peer obligations still need that matrix evidence.
@@ -34,8 +34,10 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   lead; broad resource-ledger coverage is also unnecessary for its exact attack/effect oracle. Focused strategy and
   economy-policy specs pass 23/23; native-context Playwright passes 12/12. The changed-source Tivara raid still fails:
   200 decisions / 4,001 ticks, no native damage to `main-target`, and all eight workers lost. Threat ordering by protected
-  asset distance did not save workers. Do not repeat unchanged; inspect Stage 13 defense targeting/worker survival and the
-  failure to reach the authored target.
+  asset distance did not save workers. A Stage 13 targeting guard keeps a defense squad on its committed worker threat
+  (targeting spec 6/6) but does not improve the changed-source raid: artifact `tmp/ai-skirmish-matrix/764-package3-strat09-defense-objective/1793012199028-diagnostic_failed.json`, 200 decisions / 4,001 ticks, all eight workers lost, no effect on `main-target`.
+  Checkpoints show repeated failed Stage 13 movement applications while the attack squad remains in `recover`. Do not
+  replay unchanged; inspect target/order handoff and movement failure causes before choosing the next causal test.
 - The native scouting oracle matches `effect:`-prefixed accepted intents to movement execution IDs.
 - Movement capture normalization now admits up to 2,048 execution groups; caller-history validation admits 4,096
   identities. The latest H-14 capture contained 1,567 movement executions and 1,869 caller identities; route-order

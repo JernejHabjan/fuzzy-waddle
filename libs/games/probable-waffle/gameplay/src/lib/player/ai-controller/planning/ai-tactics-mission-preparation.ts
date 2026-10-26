@@ -121,7 +121,10 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
     committedTarget?.mainBuilding?.status === "known" &&
     committedTarget.mainBuilding.value &&
     (committedTarget.visibility === "visible" || committedTarget.visibility === "last_seen");
-  const immediateThreat = (squad.role === "scout" || (committedTarget && !committedCoreObjective) ? localEnemies : [])
+  const immediateThreat =
+    (squad.role === "scout" || (squad.role === "attack" && committedTarget && !committedCoreObjective)
+      ? localEnemies
+      : [])
     .filter(
       (enemy) =>
         canPursueAiTacticalObjective(members, enemy, observation) &&

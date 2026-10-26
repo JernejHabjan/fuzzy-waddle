@@ -48,10 +48,13 @@ Treat this as a fixture/input contract gap, not a permanent ban on iterating the
 before construction or scope the probe to native movement, then use one changed-source replay. Do not repeat unchanged.
 
 STRAT-09 has one bound pure owner contract; the Package 3 audit passes 40 scenarios / 46 suites / 278 tests with no
-missing bindings. Its changed-source Tivara raid (`tmp/ai-skirmish-matrix/763-package3-strat09-defense-focus/1793011443483-diagnostic_failed.json`)
-reaches 200 decisions / 4,001 ticks but fails native attack/effect against `main-target` and worker survival (all eight
-workers lost). The broad resource-coverage false failure is removed. Nearest-threat prioritization did not repair the
-match; inspect Stage 13 defense target application/worker survival before another native replay.
+missing bindings. Its changed-source Tivara raid (`tmp/ai-skirmish-matrix/764-package3-strat09-defense-objective/1793012199028-diagnostic_failed.json`)
+reaches 200 decisions / 4,001 ticks but still fails native attack/effect against `main-target` and worker survival (all
+eight workers lost). A Stage 13 guard that keeps defense squads on their committed threat passes a focused targeting
+spec, but did not change the match outcome. The report shows repeated failed Stage 13 movement applications and the
+attack squad still in `recover`; do not repeat this match unchanged. Next inspect the Stage 9-to-Stage 13 target/order
+handoff and native movement-failure causes, then use a focused owner test before deciding whether another replay can
+answer a changed hypothesis.
 
 ## Package cursor and known open work
 
@@ -65,8 +68,8 @@ match; inspect Stage 13 defense target application/worker survival before anothe
 
 ### Next action
 
-The SCOUT-02 and DOMAIN-05 source/evaluator repairs are pushed at `5da21a50d`; STRAT-09 work is committed at `65a367d89`
-and still needs pushing. PR #814 remains draft; its
+The SCOUT-02 and DOMAIN-05 source/evaluator repairs are pushed at `5da21a50d`; the latest STRAT-09 source and evidence
+update is committed and pushed at the next checkpoint. PR #814 remains draft; its
 runtime matrix runs only after `ready_for_review`, and the existing
 handoff forbids changing PR status. Do not repeat the local SCOUT-02 match. Continue Package 3 from its next
 evidence-ready source action after addressing STRAT-09's target/effect and worker-survival failure; advance if the next

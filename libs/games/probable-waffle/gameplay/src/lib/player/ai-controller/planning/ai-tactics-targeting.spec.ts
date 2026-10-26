@@ -3,6 +3,28 @@ import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
 import { combatActor, squad, fixtureState, observation, manager } from "./ai-tactics-test-fixtures";
 
 describe("AiTacticsManager", () => {
+  it("keeps a defense squad on its committed worker threat instead of switching to a nearer bystander", () => {
+    const defender = combatActor("guard", "self", 1, "ground", 1000, { damage: 10 });
+    const committedRaider = combatActor("committed-raider", "enemy", 5, "ground", 1000, { damage: 10 });
+    const nearerBystander = combatActor("nearer-bystander", "enemy", 2, "ground", 1000, { damage: 10 });
+    const defense = {
+      ...squad("squad:defense:home", "defense", [defender.actorId]),
+      objectiveId: committedRaider.actorId
+    };
+
+    const proposal = manager.propose(
+      observation([defender, committedRaider, nearerBystander]),
+      fixtureState([defense])
+    );
+
+    expect(proposal.statePatch?.squadUpdates?.[0]).toEqual(
+      expect.objectContaining({ role: "defense", objectiveId: committedRaider.actorId })
+    );
+    expect(
+      proposal.intents.some((intent) => intent.kind === "attack" && intent.targetActorId === nearerBystander.actorId)
+    ).toBe(false);
+  });
+
   it("moves toward a player-visible target until the member has local vision to attack", () => {
     const friend = combatActor("guard", "self", 1, "ground", 1000, { damage: 10 });
     const enemy = combatActor("enemy", "enemy", 20, "ground", 1000, { damage: 10 });
