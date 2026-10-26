@@ -3,7 +3,7 @@
 Updated 2026-10-26. This is the active evidence snapshot. Detailed prior run notes are preserved in
 [EVIDENCE-ARCHIVE.md](EVIDENCE-ARCHIVE.md); use HANDOFF.md for the live cursor and next action.
 
-The STRAT-09 elimination evaluator repair is pushed on `feature/759-skirmish-ai` at `51c789217`; latest CI diagnostics were read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad` (runtime jobs skipped on draft PR #814).
+The STRAT-02 targeted fixture/evaluator repair is pushed on `feature/759-skirmish-ai` at `8d1cfcee1`; latest CI diagnostics were read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad` (runtime jobs skipped on draft PR #814).
 GitHub reports `skirmish-runtime-plan`, `skirmish-multiplayer` and `skirmish-runtime` skipped because PR #814 is draft;
 the runtime matrix starts on `ready_for_review`. PR status is left unchanged per the existing handoff boundary. H-10's two
 over-capacity variants and real-peer obligations still need that matrix evidence.
@@ -60,7 +60,14 @@ over-capacity variants and real-peer obligations still need that matrix evidence
 - SCOUT-01 runs 815–816 also removed a false resource-history gate from hidden-pair comparison. Run 816 remains failed:
   canonical permitted inputs match at tick 20, but authored worker/scout choices differ; Tivara hidden-b's scout route
   ends at another destination after tactical interruption, so it earns no information-trip credit. Keep selected-intent
-  parity and physical arrival strict. Advance to STRAT-02 while that candidate-order / fixture hypothesis is unresolved.
+  parity and physical arrival strict. SCOUT-01 remains open; continue to STRAT-03 while waiting for a focused candidate-order / fixture hypothesis.
+- STRAT-02 run 818 (`tmp/ai-skirmish-matrix/818-strat02-durable-objective/1793046114901-diagnostic_failed.json`)
+  completed Tivara air-raid at 120 decisions / 2,401 ticks: win, six workers, 34 army, 2,602 damage, 11 enemy losses.
+  The durable WatchTower fixture lets the main objective take native damage after tick 400. Raider-targeting reserve
+  members and continued main-force hits satisfy the physical defense/offense predicates. The initial report's only failure
+  was the evaluator requiring a neutral Wood delivery; replay against the same captured facts proves player-owned Food
+  extraction, offered cargo and successful credit after contact. The evaluator now accepts any exact native resource/source
+  ownership combination and owned drop-off. STRAT-02 remains open pending other supported branches and CI evidence.
 - Checks: focused gameplay suites 44/44; scouting-evidence Playwright specs 2/2; movement/scout-evidence/route-order/route-caller
   Playwright suites 76/76; exact-file ESLint completed with no errors; `git diff --check` passes. Two existing non-null
   assertion warnings remain in route specs and two in the gameplay scouting spec.

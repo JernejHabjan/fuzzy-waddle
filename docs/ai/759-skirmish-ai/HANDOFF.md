@@ -15,7 +15,7 @@ Read this file, then [REMAINING-WORK.md](REMAINING-WORK.md) for package acceptan
 
 ## Current checkpoint — 2026-10-26
 
-- Branch `feature/759-skirmish-ai`; latest pushed source checkpoint is `51c789217`; STRAT-09 path-outage repair and evidence are pushed. Latest CI diagnostics read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad`. Node 24.18.0 / pnpm 11.14.0.
+- Branch `feature/759-skirmish-ai`; latest pushed source checkpoint is `8d1cfcee1`; STRAT-02 targeted fixture/evaluator repair is pushed. Latest CI diagnostics read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad`. Node 24.18.0 / pnpm 11.14.0.
 - Packages 1–2 are validated; two-faction SEQ-01 passes with the adaptive build-space rule.
 - Package 5 current focused evidence: H-14 Skaduwee harmless passes one of its branches. H-10 passes below-capacity,
   at-capacity and resumed-capacity for both factions (6/8 variants); over-capacity remains for CI. Neither family is closed.
@@ -25,7 +25,7 @@ Read this file, then [REMAINING-WORK.md](REMAINING-WORK.md) for package acceptan
 ## Latest source work
 
 H-14 now passes its exact scout-trip, income and paid-output predicate. It exposed and fixed native evidence bounds:
-2,048 movement groups and 4,096 caller identities (1,567 / 1,869 observed); the separate 256 route-order bound remains.
+2,048 movement groups, 4,096 caller identities and 512 route-order identities.
 
 SCOUT-02 fixes now preserve/retry native frontier moves through contact, release completed neutral claims, and keep
 tactical withdrawal priority. Checks: focused gameplay 44/44; full gameplay 103 suites / 541 tests; scouting-evidence
@@ -63,6 +63,13 @@ attempts were 8–10 tiles away or inside melee minimum range. The attack select
 objective through its hypothesis ID while the active squad pursues it, without issuing direct attacks through fog.
 Focused gameplay passes 103 suites / 547 tests and `pnpm nx build portal` succeeds (existing bundle budget warning).
 
+STRAT-02 now has one focused Tivara air-raid capture at 120 decisions / 2,401 ticks: win, six workers, 34 army units,
+2,602 damage and 11 enemy losses. Run 818 originally failed only the narrow neutral-Wood service assertion; artifact replay
+with the updated exact source-to-offer-to-credit predicate confirms the capture's player-owned Food deliveries after
+contact. The objective is now a durable, reachable WatchTower for Tivara / FrostForge for Skaduwee. Type-check, native
+fixture audit (26/26), exact ESLint and focused Playwright evidence (19/19) pass. STRAT-02 is still open until its other
+supported branches have evidence in the registered matrix; do not repeat this branch unchanged.
+
 STRAT-09 is now 8/8 branches with passing native evidence. Tivara denial run 805 passes at 200 decisions / 4,001 ticks,
 with 8 workers, 6 army units, 1,810 damage and 5 enemy losses; its target is at (21,30), within Slingshot range.
 Tivara path-outage run 814 passes at the same horizon with 6 workers and 2,061 total damage. Its FrostForge target at
@@ -79,7 +86,7 @@ matches, and its overflow boundary has a focused passing test. Skaduwee denial (
 
 | Package | Open work |
 | --- | --- |
-| 3 — scouting, combat, access | STRAT-09 has passing evidence on all eight branches; current-source path-outage is closed. Revalidate affected branches in the grouped matrix/final gate. SCOUT, STRAT-02/03, DOMAIN, RAID, FIGHT and C families remain. |
+| 3 — scouting, combat, access | STRAT-09 has passing evidence on all eight branches; current-source path-outage is closed. Revalidate affected branches in the grouped matrix/final gate. SCOUT-01/02, STRAT-02/03, DOMAIN, RAID, FIGHT and C families remain. |
 | 4 — placement, walls, recovery | PLACE-03 route clearance and physical transit; H-11 construction path returns `no_path`; remaining PLACE/EXP/WALL/H cases. |
 | 5 — authority and lifecycle | H-06/07 fixture/evaluator gaps; H-08/09 peer evidence; remaining H-10 over-capacity CI variants; remaining H-14/H-15 branches; H-31/H-32, M11, #819/#823. |
 | 6 — continuous play and difficulty | SEQ-02 and remaining supported SEQ/D cases; D-06 legacy comparison remains unsupported. |
@@ -88,11 +95,10 @@ matches, and its overflow boundary has a focused passing test. Skaduwee denial (
 ### Next action
 
 STRAT-09 closes all eight branches; runs 804–805 predate the last selector edit, so revalidate affected branches in the
-grouped matrix/final gate. SCOUT-01 remains open after runs 815–816: the 512 route-order bound and resource-coverage
-exception remove false evidence failures, but hidden-pair intents diverge at tick 20 despite equal canonical inputs,
-and Tivara hidden-b movement reaches an alternate destination rather than completing the selected scout point. Keep the
-physical-arrival and information-learning predicates strict. Advance to STRAT-02 next; revisit SCOUT-01 when candidate
-ordering or a fixture adjustment has a focused hypothesis. Run 816's exact evidence is in the archive.
+grouped matrix/final gate. SCOUT-01 remains open after runs 815–816: hidden-pair intents diverge at tick 20 despite equal
+canonical inputs, and Tivara hidden-b movement reaches an alternate destination rather than completing the selected scout
+point. Keep physical-arrival and information-learning predicates strict. Advance to STRAT-03 next; revisit SCOUT-01 when
+candidate ordering or a fixture adjustment has a focused hypothesis. Run 816's exact evidence is in the archive.
 
 SCOUT-02's changed-source native match timed out; leave it for the existing CI matrix unless its owner repair or harness
 changes. PLACE-03 can be revisited once route/movement inputs are observable. Preserve the CI dependency for H-10's
