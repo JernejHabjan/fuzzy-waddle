@@ -12,9 +12,9 @@ Read this file, then [REMAINING-WORK.md](REMAINING-WORK.md) for package acceptan
 
 ## Current checkpoint — 2026-10-26
 
-- Latest local source commit: `a1345cc2c` (`fix(ai): make STRAT-05 blocked retreat actionable`); it is ready to push with the progress-doc commit. Node 24.18.0 / pnpm 11.14.0.
+- Latest local source commit: `5480ef0b3` (`fix(ai): accept authored STRAT-05 home continuation`); it is ready to push with the progress-doc commit. Node 24.18.0 / pnpm 11.14.0.
 - Packages 1–2 are validated; SEQ-01 completes the two-faction victory at the 18,000-tick horizon with adaptive build-space radius.
-- STRAT-05 Tivara reinforced and quiet pass full native branch evaluation on saved current-source replays. Reinforced run 830 now preserves 621 route-order identities (limit 1,024), matches accepted `effect:` IDs to native movement IDs, and yields nine physical retreats. Quiet run 831 records 14 hits on the spent contact through tick 222, then eight hits on authored `front-target-b` at ticks 468–741; its oracle now allows that authored retarget. Tivara blocked-retreat passes changed-fixture run 833 at 120 decisions / tick 2,401 with closed native history and no AI errors. Its former closed terrain ring made the opening target unreachable; the fixed fixture places that target forward of a homeward barrier. The bounded alternative requires objective-plan change plus physical counterforce damage when retreat is unavailable. Three checked branches are not family closure.
+- STRAT-05 Tivara reinforced and quiet pass full native branch evaluation on saved current-source replays. Reinforced run 830 now preserves 621 route-order identities (limit 1,024), matches accepted `effect:` IDs to native movement IDs, and yields nine physical retreats. Quiet run 831 records 14 hits on the spent contact through tick 222, then eight hits on authored `front-target-b` at ticks 468–741; its oracle now allows that authored retarget. Tivara blocked-retreat passes changed-fixture run 833 at 120 decisions / tick 2,401 with closed native history and no AI errors. Its former closed terrain ring made the opening target unreachable; the fixed fixture places that target forward of a homeward barrier. The bounded alternative requires objective-plan change plus physical counterforce damage when retreat is unavailable. Skaduwee reinforced passes run 834 at 120 decisions / tick 2,400 with complete native history and no AI errors. Skaduwee quiet run 835 also passes on current-source replay: the contact group took 15 native hits by tick 150, then the AI landed a valid hit on authored `enemy-home` at tick 835 before withdrawing under losses. The quiet oracle includes authored enemy-home retargets; replay clears the only original failure. Five checked branches are not family closure.
 - STRAT-03 and STRAT-04 remain open; do not rerun unchanged. STRAT-09 has passing branch evidence; revalidate affected rows in the grouped CI/final gate.
 - H-10 has local evidence for six of eight variants; over-capacity and seven real-peer obligations remain with CI. Newly selected obligations remain 0/22 closed until full family/source gates are satisfied.
 
@@ -30,6 +30,6 @@ Read this file, then [REMAINING-WORK.md](REMAINING-WORK.md) for package acceptan
 
 ## Next action
 
-Run STRAT-05 Skaduwee reinforced (`strat-05-skaduwee-reinforced`) once. Tivara reinforced, quiet and blocked-retreat are checked; do not replay them unchanged. Then run the remaining Skaduwee quiet and blocked-retreat branches.
+Run the final STRAT-05 Skaduwee blocked-retreat branch (`strat-05-skaduwee-blocked-retreat`) once. Do not replay the five checked branches unchanged.
 
 After each coherent source/evidence batch: update CURRENT-EVIDENCE and this cursor, run focused checks, commit/push task-owned files, and select the next unfinished case. Use EVIDENCE-ARCHIVE for run chronology. Do not stop at validation when another dependency-ready case remains.

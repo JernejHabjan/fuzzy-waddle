@@ -2258,3 +2258,9 @@ Summaries use `node tools/ai/summarize-skirmish-report.mjs --report <path> --fai
 - Run 832 showed that the authored blocked-retreat ring enclosed the starting army and separated it from every authored opening target. It had no pre-contact native hits; later hits on reinforcements could not satisfy a genuine offensive-start premise. The scenario therefore did not exercise its stated condition.
 - The fixture now stages one reachable forward objective and blocks the homeward route with a full-width native terrain barrier. For this branch, the evaluator requires a pre-contact hit on an authored front, a bounded post-contact plan change and native damage to a revealed reinforcement; it does not demand a retreat in a no-safe-retreat world.
 - Changed-fixture run 833 passes with 120 decisions / 2,401 ticks, complete native history and no AI errors. Fixture audit 28/28; evaluator Playwright 2/2; typecheck and ESLint pass. Tivara STRAT-05 branches are 3/3 checked. Source commit: `a1345cc2c`.
+
+## 2026-10-26 — STRAT-05 Skaduwee reinforced and quiet
+
+- Skaduwee reinforced run 834 passes with 120 decisions, closed history through tick 2,400 and no AI errors.
+- Quiet run 835 initially failed because the exact target list excluded the authored enemy home. The contact group received 15 valid hits through tick 150; the AI later hit `enemy-home` at tick 835 and withdrew under losses. Current-source full evaluator replay passes. The quiet oracle now accepts exact post-400 damage to authored front targets or enemy-home, and its regression still rejects no continued effect. Original artifact status is retained.
+- Focused strategy evaluator Playwright 2/2, TypeScript, ESLint and `git diff --check` pass. Five STRAT-05 branches are checked; Skaduwee blocked-retreat remains. Source commit: `5480ef0b3`.
