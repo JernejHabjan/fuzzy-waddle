@@ -2175,3 +2175,18 @@ Summaries use `node tools/ai/summarize-skirmish-report.mjs --report <path> --fai
 Continue the unfinished economy/technology package using HANDOFF's current cursor and the four concrete remaining
 recovery/budget controls in REMAINING-WORK. Do not reopen completed technology registration or advance to combat
 while Package 2 remains open. Machinery review/removal remains the last roadmap task.
+
+## 2026-10-26 STRAT-09 capture transport and Skaduwee closure
+
+- Runs 777–783 repeatedly timed out before returning authority captures. Runs 783/784 reached tick 4,000; 784 traced advance, settle, checkpoint, economy, strategy and transport as complete, leaving the final production capture boundary.
+- Run 785 bounded that final `page.evaluate` at 120s. Run 786 proved capture internals completed (reconcile 1ms, snapshot read 2ms, clone 3ms, proof read 403ms, filter 2ms, final clone 4,195ms) with 22,510 owner facts, but the Playwright result transfer stalled. Both are harness failures, no gameplay evidence.
+- Browser gzip + Node inflate was committed as `5f8356a3e`. Run 787 returned the complete record in 12s; its horizon stop at tick 4,000 intentionally failed closed-history checks and exposed 1,995 AI / 257 opponent fact drops.
+- The shared fact cap increased from 24,576 to 32,768 in `fa9faa363`; the focused overflow-boundary Jest spec passes. Full horizon run 788 passes Skaduwee denial at 200 decisions / 4,001 ticks (8 workers, 2,410 damage, 8 enemy losses). Run 789 passes Skaduwee path-outage (8 workers, 2,244 damage, 9 enemy losses).
+- Artifacts: 785 `tmp/ai-skirmish-matrix/785-package3-strat09-skaduwee-denial-production-trace/1793033264306-failed.json`; 786 `tmp/ai-skirmish-matrix/786-package3-strat09-skaduwee-denial-internal-capture-trace/1793034162502-failed.json`; 787 `tmp/ai-skirmish-matrix/787-package3-strat09-skaduwee-denial-compressed-capture/1793034463190-diagnostic_failed.json`; 788 `tmp/ai-skirmish-matrix/788-package3-strat09-skaduwee-denial-fact-budget/1793035029740-diagnostic_passed.json`; 789 `tmp/ai-skirmish-matrix/789-package3-strat09-skaduwee-path-outage/1793035279226-diagnostic_passed.json`.
+
+## STRAT-09 viable branches before capture-budget repair
+
+- Run 769 (Tivara denial) reached 200 decisions / 4,001 ticks; 7 workers survived, but no authored-target damage. Run 771's reverted pressure-window experiment retained the producer objective to tick 400 without damage and ended with 2 workers. Its bounded trace showed Macemen at distance 2 from an InfantryInn with native range 1; tick-20 observation had no tactical/construction cells. Attack request is not impact evidence. Do not replay without a tested approach/target hypothesis.
+- Run 773 (Tivara unrecoverable) and 774 (Skaduwee unrecoverable) pass after the STRAT-09-only worker bootstrap exemption for authored elimination variants.
+- Run 775 (Skaduwee raid) failed authored-main-target attack/effect and worker survival; it attacked nearby `enemy-deposit` and logged failed Stage 13 approaches. Run 776 (Tivara path-outage) failed target attack/effect while retaining 7 workers / 10 military; it selected `enemy-deposit` despite `main-target` ranking first, then switched to enemy home by tick 800.
+- Run 767 (Tivara raid) passed its registered predicates with 8 workers, 10 enemy losses and 1,925 damage; it did not damage authored `main-target`. STRAT-09's latest branch evidence is 5/8 passing, with the three failures above.

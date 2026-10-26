@@ -56,14 +56,16 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   `main-target` ranking first among alternatives, then selected the enemy home as a finish objective by tick 800. This
   supports objective/attack application trouble, not economic collapse. Artifact:
   `tmp/ai-skirmish-matrix/776-package3-strat09-tivara-path-outage/1793021312931-diagnostic_failed.json`. Current STRAT-09
-  branch evidence: 3 passes / 3 failures / 2 unproven of 8; overall closure remains open. Skaduwee runs 777/778/781/782/783
+  branch evidence: 5 passes / 3 failures / 0 unproven of 8; overall closure remains open. Skaduwee runs 777/778/781/782/783
   (denial) and 779 (path outage) timed out before recording decisions/ticks. Runs 783/784 reached tick 4,000 in about 630s;
   784 showed checkpoint, economy, strategy and transport capture complete within 65ms combined. Runs 785/786 confirmed
   the final authority call stalls while transferring its large result: browser-side capture completes, with 22,510 owner
   facts and a 4.2s final clone, but Playwright serialization does not return within 120s. Run 787 showed browser gzip +
   Node inflate returns the full record in 12s. Its diagnostic stop still reported closed-history gaps and fact overflow
   (1,995 AI / 257 opponent facts dropped); the shared cap is raised to 32,768 with a focused overflow-boundary test.
-  Next is a normal 4,001-tick denial capture with the new cap. Details and artifacts are in HANDOFF.md.
+  Run 788 passes Skaduwee denial (200 decisions / 4,001 ticks; 8 workers, 2,410 damage, 8 enemy losses); 789 passes
+  Skaduwee path-outage (same horizon; 8 workers, 2,244 damage, 9 enemy losses). All STRAT-09 branches now have evidence.
+  Next fix the three actual failures from their target selection and approach evidence. Details and artifacts are in HANDOFF.md.
 - The native scouting oracle matches `effect:`-prefixed accepted intents to movement execution IDs.
 - Movement capture normalization now admits up to 2,048 execution groups; caller-history validation admits 4,096
   identities. The latest H-14 capture contained 1,567 movement executions and 1,869 caller identities; route-order
