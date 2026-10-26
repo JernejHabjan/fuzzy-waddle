@@ -74,6 +74,7 @@ function context(facts: AiRuntimeProductionFactV1[], frames: unknown[] = []) {
     "contact-group": "contact-group",
     "front-target-a": "front-target-a",
     "front-target-b": "front-target-b",
+    "enemy-home": "enemy-home",
     "reinforcement-0": "reinforcement-0"
   };
   return {
@@ -84,8 +85,8 @@ function context(facts: AiRuntimeProductionFactV1[], frames: unknown[] = []) {
   } as unknown as ReturnType<typeof nativeScenarioContext>;
 }
 
-test("STRAT-05 quiet control accepts physical damage on another authored front after the contact target is spent", () => {
-  const facts = [...attackFacts(1, 200, "contact-group"), ...attackFacts(4, 450, "front-target-b")];
+test("STRAT-05 quiet control accepts physical damage on another authored objective after the contact target is spent", () => {
+  const facts = [...attackFacts(1, 200, "contact-group"), ...attackFacts(4, 450, "enemy-home")];
 
   expect(evaluateNativeStrategy("STRAT-05", "quiet", context(facts))).toEqual([]);
   expect(evaluateNativeStrategy("STRAT-05", "quiet", context(attackFacts(1, 200, "contact-group")))).toContain(

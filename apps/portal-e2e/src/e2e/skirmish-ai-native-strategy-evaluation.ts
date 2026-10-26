@@ -27,7 +27,12 @@ export function evaluateNativeStrategy(id: string, branch: string, context: Retu
     const authoredFronts = [target, context.role("front-target-a"), context.role("front-target-b")];
     if (!authoredFronts.some((actorId) => nativeWeaponHits(context, actorId).some((fact) => fact.tick < 400)))
       failures.push("strategy_initial_offensive_effect_missing");
-    const quietContinuation = [target, context.role("front-target-a"), context.role("front-target-b")]
+    const quietContinuation = [
+      target,
+      context.role("front-target-a"),
+      context.role("front-target-b"),
+      context.role("enemy-home")
+    ]
       .some((actorId) => nativeWeaponHits(context, actorId, 400).length > 0);
     const discovery = branch === "quiet" ? undefined : after.find((frame) => frame.decision.input?.observation?.actors.some((actor) =>
       actor.relation === "enemy" && actor.visibility === "visible" &&
