@@ -19,7 +19,12 @@ export function nativeStrategicWorld(id, faction, branch) {
   }
   for (let i = 0; i < 4; i++) world.actors.push(actor(`reserve-house-${i}`,
     faction === "Tivara" ? "Olival" : "Emberstone", 2, 42, 30 + i * 4));
-  world.actors.push(actor("main-target", "WorkMill", 1, 16, 30), actor("raid-bait", `${enemy}WorkerMale`, 1, 16, 8));
+  const durableRaidObjective = id === "STRAT-02";
+  const raidObjective = durableRaidObjective
+    ? { name: enemy === "Skaduwee" ? "FrostForge" : "WatchTower", x: 12, y: 30 }
+    : { name: "WorkMill", x: 16, y: 30 };
+  world.actors.push(actor("main-target", raidObjective.name, 1, raidObjective.x, raidObjective.y),
+    actor("raid-bait", `${enemy}WorkerMale`, 1, 16, 8));
   if (id === "STRAT-09" && faction === "Skaduwee" && branch === "raid") {
     world.actors.find((candidate) => candidate.fixtureActorId === "main-target").position = tile(26, 26);
   }

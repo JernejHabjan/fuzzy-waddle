@@ -49,3 +49,20 @@ export function hasNativeSourceDelivery(
   }
   return false;
 }
+
+/** Use for cases where an owner may switch among neutral sources or owned drop-offs during recovery. */
+export function hasNativeSourceDeliveryToAnyDropOff(
+  facts: readonly AiRuntimeProductionFactV1[],
+  contract: Omit<RuntimeSourceDeliveryContract, "sourceActorId" | "depositActorId">
+): boolean {
+  const service = facts.flatMap((fact) => fact.tick >= contract.fromTick && fact.tick <= contract.throughTick &&
+    fact.kind === "spatial_authority" && fact.spatial.kind === "resource_service" ? [fact.spatial] : []);
+  const sources = new Set(service.filter((entry) => entry.phase === "cargo_changed" && entry.change.reason === "added" &&
+    entry.change.resourceType === contract.resourceType && entry.target?.playerNumber === contract.sourceOwner)
+    .map((entry) => entry.target?.actorId).filter((id): id is string => !!id));
+  const dropOffs = new Set(service.filter((entry) => entry.phase === "cargo_offered" &&
+    entry.target?.playerNumber === contract.playerNumber).map((entry) => entry.target?.actorId).filter((id): id is string => !!id));
+  for (const sourceActorId of sources) for (const depositActorId of dropOffs)
+    if (hasNativeSourceDelivery(facts, { ...contract, sourceActorId, depositActorId })) return true;
+  return false;
+}

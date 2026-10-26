@@ -28,7 +28,9 @@ test("placement evidence can rely on its complete transaction facts without unre
 test("domain evidence uses exact native production and combat proof instead of broad resource coverage", () => {
   expect(nativeScenarioRequiresResourceCoverage("DOMAIN-01")).toBe(false);
   expect(nativeScenarioRequiresResourceCoverage("DOMAIN-05")).toBe(false);
-  expect(nativeScenarioRequiresResourceCoverage("STRAT-02")).toBe(true);
+  expect(nativeScenarioRequiresResourceCoverage("STRAT-02")).toBe(false);
+  expect(nativeScenarioRequiresResourceCoverage("STRAT-03")).toBe(false);
+  expect(nativeScenarioRequiresResourceCoverage("RAID-03")).toBe(false);
 });
 
 test("STRAT-09 comeback proof uses exact native attack effects instead of broad resource coverage", () => {

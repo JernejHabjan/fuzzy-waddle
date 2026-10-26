@@ -611,11 +611,11 @@
             },
             {
               "fixtureActorId": "main-target",
-              "actorName": "WorkMill",
+              "actorName": "FrostForge",
               "owner": 1,
               "position": {
-                "x": -416,
-                "y": 752,
+                "x": -544,
+                "y": 688,
                 "z": 0
               }
             },
@@ -1934,11 +1934,11 @@
             },
             {
               "fixtureActorId": "main-target",
-              "actorName": "WorkMill",
+              "actorName": "FrostForge",
               "owner": 1,
               "position": {
-                "x": -416,
-                "y": 752,
+                "x": -544,
+                "y": 688,
                 "z": 0
               }
             },
@@ -3257,11 +3257,11 @@
             },
             {
               "fixtureActorId": "main-target",
-              "actorName": "WorkMill",
+              "actorName": "FrostForge",
               "owner": 1,
               "position": {
-                "x": -416,
-                "y": 752,
+                "x": -544,
+                "y": 688,
                 "z": 0
               }
             },
@@ -4580,11 +4580,11 @@
             },
             {
               "fixtureActorId": "main-target",
-              "actorName": "WorkMill",
+              "actorName": "WatchTower",
               "owner": 1,
               "position": {
-                "x": -416,
-                "y": 752,
+                "x": -544,
+                "y": 688,
                 "z": 0
               }
             },
@@ -5903,11 +5903,11 @@
             },
             {
               "fixtureActorId": "main-target",
-              "actorName": "WorkMill",
+              "actorName": "WatchTower",
               "owner": 1,
               "position": {
-                "x": -416,
-                "y": 752,
+                "x": -544,
+                "y": 688,
                 "z": 0
               }
             },
@@ -7226,11 +7226,11 @@
             },
             {
               "fixtureActorId": "main-target",
-              "actorName": "WorkMill",
+              "actorName": "WatchTower",
               "owner": 1,
               "position": {
-                "x": -416,
-                "y": 752,
+                "x": -544,
+                "y": 688,
                 "z": 0
               }
             },

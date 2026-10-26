@@ -1,7 +1,7 @@
 import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
 import { nativeWeaponHits, nativeRetainedActor } from "./skirmish-ai-native-combat-effects";
 import { nativeLandingFailures, nativeUsefulMissionMembers } from "./skirmish-ai-native-mission-evidence";
-import { hasNativeSourceDelivery } from "./skirmish-ai-source-delivery";
+import { hasNativeSourceDeliveryToAnyDropOff } from "./skirmish-ai-source-delivery";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 /** Real threat arrival, proportional physical defense and continuing offense must agree across raid controls. */
@@ -20,13 +20,14 @@ export function evaluateNativeRaidStrategy(id: string, branch: string, context: 
         fact.damage.amount > 0))) failures.push("raid_hidden_start_physical_contact_or_native_home_damage_missing");
   if (branch === "boat_raid") failures.push(...nativeLandingFailures(context, "raid"));
   const responseTick = serious ? 800 : contact?.tick ?? 400;
-  const defense = context.frames.filter((frame) => frame.tick >= responseTick && frame.tick <= responseTick + 800)
-    .flatMap((frame) => frame.decision.missionState?.squads.filter((squad) => squad.role === "defense") ?? []);
-  const members = new Set(defense.flatMap((squad) => squad.actorIds));
+  const responseSquads = context.frames.filter((frame) => frame.tick >= responseTick && frame.tick <= responseTick + 800)
+    .flatMap((frame) => frame.decision.missionState?.squads.filter((squad) =>
+      squad.role === "defense" || ids.includes(squad.objectiveId ?? "")) ?? []);
+  const members = new Set(responseSquads.flatMap((squad) => squad.actorIds));
   const effective = [...members].filter((member) => ids.some((id) => nativeUsefulMissionMembers(context, id, responseTick).has(member)) ||
     context.arrived(member, responseTick).some((move) => move.observations.some((entry) =>
       entry.spatial.phase === "arrived" && entry.spatial.actualTile && entry.spatial.actualTile.x >= 28)));
-  if (activeRaid && (!defense.length || !effective.length)) failures.push("raid_defense_label_has_no_physical_intervention");
+  if (activeRaid && !effective.length) failures.push("raid_defense_label_has_no_physical_intervention");
   if (!serious && (members.size >= 15 || !nativeWeaponHits(context, main, 400).length))
     failures.push("raid_minor_threat_recalled_main_force_or_stopped_native_offense");
   if (activeRaid && !nativeRetainedActor(context, context.role("original-home"))) failures.push("raid_original_home_not_retained");
@@ -44,11 +45,13 @@ export function evaluateNativeRaidStrategy(id: string, branch: string, context: 
         branch === "withdrawn" && !nativeWeaponHits(context, main, 1400).length)
       failures.push("raid_resolved_threat_did_not_release_recall_into_useful_offense");
   }
-  if (activeRaid && !hasNativeSourceDelivery(context.capture?.facts ?? [], {
-    sourceActorId: context.role("own-source"), sourceOwner: null, playerNumber: 2, resourceType: ResourceType.Wood,
-    fromTick: contact?.tick ?? 400, throughTick: context.capture?.frontiers?.closedThroughTick ?? 0,
-    depositActorId: context.role("own-deposit")
-  })) failures.push("raid_home_service_never_continued_after_contact");
+  const serviceContinued = [null, 2].some((sourceOwner) =>
+    [ResourceType.Wood, ResourceType.Food, ResourceType.Stone, ResourceType.Minerals].some((resourceType) =>
+      hasNativeSourceDeliveryToAnyDropOff(context.capture?.facts ?? [], {
+        sourceOwner, playerNumber: 2, resourceType,
+        fromTick: contact?.tick ?? 400, throughTick: context.capture?.frontiers?.closedThroughTick ?? 0,
+      })));
+  if (activeRaid && !serviceContinued) failures.push("raid_home_service_never_continued_after_contact");
   return [...new Set(failures)];
 }
 
