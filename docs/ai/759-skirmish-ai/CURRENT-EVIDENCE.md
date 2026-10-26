@@ -19,8 +19,8 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   H-10 below-capacity and at-capacity pass for both factions; resumed-capacity passes for both factions too. Six of eight
   H-10 variants have local evidence. Both over-capacity variants remain for the registered CI matrix.
   H-10 artifacts are listed in HANDOFF.md.
-- Package 3 pure batch: 40 scenarios, 46 suites and 278 tests pass with no missing scenario bindings. STRAT-09 now has a
-  passing owner-level test but its eight native branches remain open.
+- Package 3 pure batch: 40 scenarios, 46 suites and 278 tests pass with no missing scenario bindings. STRAT-09 now has
+  passing evidence for all eight native branches; run 814 closes its last branch on current local source.
 
 ## Latest implementation and checks
 
@@ -38,8 +38,12 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   damage to the authored WorkMill; it ends with one worker and one army unit. The fixture places the raid target at (26,26)
   so ranged attackers fight within their legal 3–7 tile distance. Changed-source Tivara denial run 805 also passes all
   predicates at the same horizon, with 8 workers, 6 army units, 1,810 total damage and 5 enemy losses; its target is at
-  (21,30), within the Slingshot's 5-tile range. STRAT-09 is now 7 passes / 1 failure / 0 unproven of 8. Tivara
-  path-outage remains; see HANDOFF.md and the evidence archive. Advance without repeating passing branches.
+  (21,30), within the Slingshot's 5-tile range. Run 814 closes Tivara path-outage: FrostForge at (25,29) receives 34
+  range-compatible native hits after tick 800, is destroyed at tick 994, and the 4,001-tick run ends with six workers.
+  Artifact: `tmp/ai-skirmish-matrix/814-strat09-tivara-path-outage-middle-range/1793042862573-diagnostic_passed.json`.
+  All eight STRAT-09 branches now have passing native evidence. Runs 804–805 predate the final useful-objective selector
+  change; revalidate affected branches in the grouped matrix/final gate instead of repeating unchanged local variants.
+  See HANDOFF.md and the evidence archive; move to the next Package 3 family.
 - The native scouting oracle matches `effect:`-prefixed accepted intents to movement execution IDs.
 - Movement capture normalization now admits up to 2,048 execution groups; caller-history validation admits 4,096
   identities. The latest H-14 capture contained 1,567 movement executions and 1,869 caller identities; route-order
@@ -61,7 +65,7 @@ over-capacity variants and real-peer obligations still need that matrix evidence
 
 | Package | Status |
 | --- | --- |
-| 3 — scouting, combat, access | STRAT-09 is 7/8 native branches passing; Tivara path-outage remains. SCOUT, STRAT-02/03, DOMAIN, RAID, FIGHT and C families remain. |
+| 3 — scouting, combat, access | STRAT-09 has passing evidence for 8/8 branches; current-source path-outage is closed. Revalidate affected branches in the final grouped gate. SCOUT, STRAT-02/03, DOMAIN, RAID, FIGHT and C families remain. |
 | 4 — placement, walls, recovery | PLACE-03 still has route-clearance and worker/army transit failures. H-11 has one legal construction endpoint returning `no_path` and capture-channel loss. Other PLACE/EXP/WALL/H cases remain. |
 | 5 — authority and lifecycle | H-10 awaits over-capacity CI results. H-14 is one passing branch only. H-06/07 retain fixture/evaluator gaps; H-08/09 require credentialed peers. H-15, H-31/H-32, M11, #819 and #823 remain open. |
 | 6 — continuous play and difficulty | SEQ-02 and remaining supported SEQ/D cases; D-06 legacy difficulty comparison is unsupported and remains an explicit blocker. |

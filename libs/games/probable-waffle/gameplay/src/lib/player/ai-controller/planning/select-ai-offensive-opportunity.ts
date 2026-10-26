@@ -19,6 +19,7 @@ const ALTERNATIVE_CORE_SCORE_ADVANTAGE = 200;
 const WORKFORCE_RECOVERY_FLOOR = 6;
 const FAILURE_MEMORY_TICKS = 4000;
 const REMEMBERED_OBJECTIVE_MAX_AGE_TICKS = 400;
+const USEFUL_REMEMBERED_OBJECTIVE_MAX_AGE_TICKS = 1200;
 const NATIVE_PURSUIT_ORDER_MAX_AGE_TICKS = 200;
 const NATIVE_PURSUIT_DESTINATION_RADIUS = 8;
 const NATIVE_PURSUIT_ARRIVAL_RADIUS = 6;
@@ -199,7 +200,9 @@ export function selectAiOffensiveOpportunity(
             `hypothesis:${candidate.opponent.evidenceId}` === mission?.objectiveId) &&
           (candidate.opponent.visibility === "visible" ||
             (context.observation.tick - candidate.opponent.observedTick <= REMEMBERED_OBJECTIVE_MAX_AGE_TICKS &&
-              hasNativePursuitOrder(candidate.opponent))) &&
+              hasNativePursuitOrder(candidate.opponent)) ||
+            (usefulMission &&
+              context.observation.tick - candidate.opponent.observedTick <= USEFUL_REMEMBERED_OBJECTIVE_MAX_AGE_TICKS)) &&
           (candidate.capable >= candidate.required ||
             usefulMission ||
             hasNativeAttackOrder(candidate.opponent.actorId) ||
@@ -219,6 +222,12 @@ export function selectAiOffensiveOpportunity(
         candidate.route.kind === "direct"
     )
     .sort((left, right) => right.score - left.score || left.opponent.actorId.localeCompare(right.opponent.actorId))[0];
+  const retainedRememberedObjective =
+    workingObjective?.opponent.visibility === "last_seen" &&
+    (hasNativePursuitOrder(workingObjective.opponent) ||
+      (usefulMission &&
+        context.observation.tick - workingObjective.opponent.observedTick <=
+          USEFUL_REMEMBERED_OBJECTIVE_MAX_AGE_TICKS));
   const rememberedCore = actionable
     .filter(
       (candidate) =>
@@ -244,6 +253,7 @@ export function selectAiOffensiveOpportunity(
     );
   const competingVisibleCore =
     visibleReachableCore &&
+    !retainedRememberedObjective &&
     !hasMateriallyBetterReadyAlternative &&
     (coreScoutTarget !== undefined || mission?.objectiveId !== visibleReachableCore.opponent.actorId)
       ? visibleReachableCore

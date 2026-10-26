@@ -26,6 +26,11 @@ export function nativeStrategicWorld(id, faction, branch) {
   if (id === "STRAT-09" && faction === "Tivara" && branch === "denial") {
     world.actors.find((candidate) => candidate.fixtureActorId === "main-target").position = tile(21, 30);
   }
+  if (id === "STRAT-09" && faction === "Tivara" && branch === "path_outage") {
+    const mainTarget = world.actors.find((candidate) => candidate.fixtureActorId === "main-target");
+    mainTarget.actorName = "FrostForge";
+    mainTarget.position = tile(25, 29);
+  }
   if (
     id === "STRAT-09" &&
     ((faction === "Skaduwee" && branch === "raid") || (faction === "Tivara" && branch === "path_outage"))

@@ -1868,11 +1868,11 @@
             },
             {
               "fixtureActorId": "main-target",
-              "actorName": "WorkMill",
+              "actorName": "FrostForge",
               "owner": 1,
               "position": {
-                "x": -416,
-                "y": 752,
+                "x": -96,
+                "y": 880,
                 "z": 0
               }
             },

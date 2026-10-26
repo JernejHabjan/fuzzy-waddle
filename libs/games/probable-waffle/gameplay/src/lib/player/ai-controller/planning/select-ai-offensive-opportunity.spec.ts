@@ -282,6 +282,7 @@ describe("fastest credible offense", () => {
       throw new Error("missing_attack_lifecycle");
 
     const rememberedProducer = { ...producerTarget, visibility: "last_seen" as const };
+    const visibleCore = core("enemy-core");
     const pursuingGuards = ["a", "b"].map((id) => ({
       ...guard(id, "self", 0),
       activeOrder: {
@@ -291,7 +292,7 @@ describe("fastest credible offense", () => {
       }
     }));
     const visibleWorker = { ...guard("enemy-worker", "enemy", 0), capabilities: [] };
-    const result = manager.propose(world([...pursuingGuards, rememberedProducer, visibleWorker], 120), {
+    const result = manager.propose(world([...pursuingGuards, rememberedProducer, visibleWorker, visibleCore], 120), {
       ...initial,
       squads: [attack],
       strategy: first.statePatch.strategy,
@@ -313,7 +314,7 @@ describe("fastest credible offense", () => {
         observedTick: 120
       }
     }));
-    const arrived = manager.propose(world([...arrivedGuards, rememberedProducer, visibleWorker], 140), {
+    const arrived = manager.propose(world([...arrivedGuards, rememberedProducer, visibleWorker, visibleCore], 140), {
       ...initial,
       squads: [
         { ...attack, objectiveId: `hypothesis:${rememberedProducer.evidenceId}` as never, state: "engage" }
@@ -327,6 +328,44 @@ describe("fastest credible offense", () => {
     );
     expect(
       arrived.intents.some((intent) => intent.kind === "attack" && intent.targetActorId === producerTarget.actorId)
+    ).toBe(false);
+
+    const usefulMissionGuards = ["a", "b"].map((id) => ({
+      ...guard(id, "self", 10),
+      activeOrder: {
+        status: "known" as const,
+        value: { orderType: OrderType.Attack, targetActorId: "visible-nearby-enemy", targetPosition: null },
+        observedTick: 120
+      }
+    }));
+    const usefulMissionResult = manager.propose(
+      world([...usefulMissionGuards, rememberedProducer, visibleWorker, visibleCore], 140),
+      {
+        ...initial,
+        squads: [
+          {
+            ...attack,
+            objectiveId: `hypothesis:${rememberedProducer.evidenceId}` as never,
+            state: "engage",
+            lifecycle: {
+              ...attack.lifecycle,
+              lastUsefulEffectTick: 100,
+              effectDeadline: { ...attack.lifecycle.effectDeadline, dueTick: 1000 }
+            }
+          }
+        ],
+        strategy: first.statePatch.strategy,
+        skirmish: first.statePatch.skirmish
+      }
+    );
+
+    expect(usefulMissionResult.statePatch?.strategy?.assessment).toEqual(
+      expect.objectContaining({ targetActorId: producerTarget.actorId, selectionSource: "working_objective" })
+    );
+    expect(
+      usefulMissionResult.intents.some(
+        (intent) => intent.kind === "attack" && intent.targetActorId === producerTarget.actorId
+      )
     ).toBe(false);
   });
 

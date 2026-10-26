@@ -28,7 +28,13 @@ test("STRAT-09 target-specific variants separate an equivalent competing drop-of
     assert.deepEqual(variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "enemy-deposit")?.position,
       { x: -640, y: 576, z: 0 });
     assert.deepEqual(variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "main-target")?.position,
-      id === "strat-09-skaduwee-raid" ? { x: 32, y: 848, z: 0 } : { x: -416, y: 752, z: 0 });
+      id === "strat-09-skaduwee-raid"
+        ? { x: 32, y: 848, z: 0 }
+        : { x: -96, y: 880, z: 0 });
+    if (id === "strat-09-tivara-path-outage") {
+      assert.equal(variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "main-target")?.actorName,
+        "FrostForge");
+    }
   }
   const unmodifiedControl = fixture.recipe.variants.find((candidate) => candidate.id === "strat-09-skaduwee-denial");
   assert.deepEqual(unmodifiedControl?.presetWorld.actors.find((actor) => actor.fixtureActorId === "enemy-deposit")?.position,
