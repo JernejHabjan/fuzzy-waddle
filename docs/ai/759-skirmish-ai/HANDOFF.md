@@ -15,7 +15,7 @@ Read this file, then [REMAINING-WORK.md](REMAINING-WORK.md) for package acceptan
 
 ## Current checkpoint — 2026-10-26
 
-- Branch `feature/759-skirmish-ai`; latest pushed source checkpoint is `8d1cfcee1`; STRAT-02 targeted fixture/evaluator repair is pushed. Latest CI diagnostics read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad`. Node 24.18.0 / pnpm 11.14.0.
+- Branch `feature/759-skirmish-ai`; latest pushed source checkpoint is `8a4f89759`; STRAT-02 targeted fixture/evaluator repair is pushed. Latest CI diagnostics read at `86e18064408edc57cc51ee615a6c9bfe0c8927ad`. Node 24.18.0 / pnpm 11.14.0.
 - Packages 1–2 are validated; two-faction SEQ-01 passes with the adaptive build-space rule.
 - Package 5 current focused evidence: H-14 Skaduwee harmless passes one of its branches. H-10 passes below-capacity,
   at-capacity and resumed-capacity for both factions (6/8 variants); over-capacity remains for CI. Neither family is closed.
@@ -67,7 +67,7 @@ STRAT-02 now has one focused Tivara air-raid capture at 120 decisions / 2,401 ti
 2,602 damage and 11 enemy losses. Run 818 originally failed only the narrow neutral-Wood service assertion; artifact replay
 with the updated exact source-to-offer-to-credit predicate confirms the capture's player-owned Food deliveries after
 contact. The objective is now a durable, reachable FrostForge for Tivara / WatchTower for Skaduwee. Type-check, native
-fixture audit (26/26), exact ESLint and focused Playwright evidence (19/19) pass. STRAT-02 is still open until its other
+fixture audit (27/27), exact ESLint and focused Playwright evidence (19/19) pass. STRAT-02 is still open until its other
 supported branches have evidence in the registered matrix; do not repeat this branch unchanged.
 
 STRAT-09 is now 8/8 branches with passing native evidence. Tivara denial run 805 passes at 200 decisions / 4,001 ticks,
