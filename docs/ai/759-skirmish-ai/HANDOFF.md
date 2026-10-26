@@ -90,16 +90,18 @@ workers and 10 military units. At tick 20 it selected `enemy-deposit` as the wor
 ranked first among alternatives; by tick 800 it had changed to the enemy home as a finish objective. This supports an
 objective/attack-application issue rather than economic collapse. Artifact:
 `tmp/ai-skirmish-matrix/776-package3-strat09-tivara-path-outage/1793021312931-diagnostic_failed.json`. STRAT-09 now has
-3 passing and 3 failing native branch evidence out of 8, with 2 branches unproven. Skaduwee denial attempts 777 and 778,
-and Skaduwee path-outage attempt 779, all reached progress 4,000/4,001 then hit their Playwright timeout before evidence
-sealing. Attempt 777 used a 780-second budget; 778 and 779 used 1,080 seconds. All three artifacts contain zero captured
-decisions/ticks, so none are scenario outcomes. Their end-to-end wall durations were 829, 1,124 and 1,128 seconds,
-respectively; comparable Tivara raid and path-outage runs took 696 and 684 seconds. Artifacts:
+3 passing and 3 failing native branch evidence out of 8, with 2 branches unproven. Skaduwee denial attempts 777, 778 and
+781, and path-outage attempts 779, all reached progress 4,000/4,001 then timed out before evidence sealing. Their budgets
+were 780s, 1,080s, 1,080s and 1,380s; wall durations were 829s, 1,124s, 1,128s and 1,434s. They contain zero captured
+decisions/ticks, so none are scenario outcomes. Comparable Tivara raid and path-outage runs took 696s and 684s. Artifacts:
 `tmp/ai-skirmish-matrix/777-package3-strat09-skaduwee-denial/1793022297327-failed.json`,
 `tmp/ai-skirmish-matrix/778-package3-strat09-skaduwee-denial-timeout-fix/1793023500229-failed.json`, and
-`tmp/ai-skirmish-matrix/779-package3-strat09-skaduwee-path-outage/1793024888536-failed.json`. The timeout is now being
-computed from the selected simulation horizon rather than a fixed per-variant duration. Use that budget for one replay of
-each unproven branch; don't count 777–779 as native evidence. Do not repeat 775/776 unchanged.
+`tmp/ai-skirmish-matrix/779-package3-strat09-skaduwee-path-outage/1793024888536-failed.json` and
+`tmp/ai-skirmish-matrix/781-package3-strat09-skaduwee-denial-horizon-budget/1793026466163-failed.json`. The timeout is
+computed from the selected simulation horizon, but even 23 minutes did not seal these Skaduwee runs. An opt-in diagnostic
+mode now captures the 4,000-tick checkpoint without requesting the additional frontier-closing tick; use it once to learn
+whether the world reached terminal state or remains active. Do not repeat 777–781 unchanged or count them as gameplay
+evidence. Keep both branch outcomes open.
 
 ## Package cursor and known open work
 

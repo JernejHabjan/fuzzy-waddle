@@ -115,9 +115,15 @@ export async function runVariant(
         if (profiling) perturbationMs += performance.now() - perturbationStartedAt;
       }
       const advanceStartedAt = performance.now();
+      const diagnosticStopAtCaptureHorizon =
+        process.env.AI_SKIRMISH_DIAGNOSTIC_STOP_AT_CAPTURE_HORIZON === "1" &&
+        closedProductionHorizon !== undefined &&
+        targetTick >= closedProductionHorizon;
       const stopAtTick =
-        closedProductionHorizon !== undefined && targetTick >= closedProductionHorizon
-          ? closedProductionHorizon + 1
+        diagnosticStopAtCaptureHorizon
+          ? closedProductionHorizon
+          : closedProductionHorizon !== undefined && targetTick >= closedProductionHorizon
+            ? closedProductionHorizon + 1
           : targetTick;
       await advanceRuntimeToTick(page, fixture, stopAtTick, index);
       const settleStartedAt = performance.now();
