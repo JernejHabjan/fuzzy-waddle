@@ -90,13 +90,16 @@ workers and 10 military units. At tick 20 it selected `enemy-deposit` as the wor
 ranked first among alternatives; by tick 800 it had changed to the enemy home as a finish objective. This supports an
 objective/attack-application issue rather than economic collapse. Artifact:
 `tmp/ai-skirmish-matrix/776-package3-strat09-tivara-path-outage/1793021312931-diagnostic_failed.json`. STRAT-09 now has
-3 passing and 3 failing native branch evidence out of 8, with 2 branches unrun. Skaduwee denial attempts 777 and 778 both
-reached progress 4,000/4,001, then timed out before the final tick and evidence seal. Attempt 777 used a 780-second
-Playwright budget; 778 used the raised 1,080-second budget and still ended with zero captured decisions/ticks. Artifacts:
-`tmp/ai-skirmish-matrix/777-package3-strat09-skaduwee-denial/1793022297327-failed.json` and
-`tmp/ai-skirmish-matrix/778-package3-strat09-skaduwee-denial-timeout-fix/1793023500229-failed.json`. This is a final-tick
-runtime stall, not a denial result. Do not repeat 777/778 or 775/776 unchanged. Advance to the last open STRAT-09 branch;
-diagnose the 4000-to-4001 transition with a bounded targeted harness change before revisiting denial.
+3 passing and 3 failing native branch evidence out of 8, with 2 branches unproven. Skaduwee denial attempts 777 and 778,
+and Skaduwee path-outage attempt 779, all reached progress 4,000/4,001 then hit their Playwright timeout before evidence
+sealing. Attempt 777 used a 780-second budget; 778 and 779 used 1,080 seconds. All three artifacts contain zero captured
+decisions/ticks, so none are scenario outcomes. Their end-to-end wall durations were 829, 1,124 and 1,128 seconds,
+respectively; comparable Tivara raid and path-outage runs took 696 and 684 seconds. Artifacts:
+`tmp/ai-skirmish-matrix/777-package3-strat09-skaduwee-denial/1793022297327-failed.json`,
+`tmp/ai-skirmish-matrix/778-package3-strat09-skaduwee-denial-timeout-fix/1793023500229-failed.json`, and
+`tmp/ai-skirmish-matrix/779-package3-strat09-skaduwee-path-outage/1793024888536-failed.json`. The timeout is now being
+computed from the selected simulation horizon rather than a fixed per-variant duration. Use that budget for one replay of
+each unproven branch; don't count 777–779 as native evidence. Do not repeat 775/776 unchanged.
 
 ## Package cursor and known open work
 

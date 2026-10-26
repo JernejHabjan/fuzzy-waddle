@@ -1,11 +1,13 @@
 const MIN_RUNTIME_TIMEOUT_MS = 600_000;
 const STARTUP_AND_SEAL_TIMEOUT_MS = 180_000;
-const PER_VARIANT_TIMEOUT_MS = 900_000;
+const PER_TICK_TIMEOUT_MS = 300;
 
-/** @param {number} variantRuns */
-export function skirmishRuntimeTestTimeoutMs(variantRuns) {
-  if (!Number.isSafeInteger(variantRuns) || variantRuns < 0) {
-    throw new Error("invalid_runtime_variant_count");
+/** @param {number} variantRuns @param {number} maximumVariantTicks */
+export function skirmishRuntimeTestTimeoutMs(variantRuns, maximumVariantTicks) {
+  if (!Number.isSafeInteger(variantRuns) || variantRuns < 0 ||
+      !Number.isSafeInteger(maximumVariantTicks) || maximumVariantTicks < 0) {
+    throw new Error("invalid_runtime_timeout_budget");
   }
-  return Math.max(MIN_RUNTIME_TIMEOUT_MS, STARTUP_AND_SEAL_TIMEOUT_MS + variantRuns * PER_VARIANT_TIMEOUT_MS);
+  const perVariantTimeout = Math.max(MIN_RUNTIME_TIMEOUT_MS, maximumVariantTicks * PER_TICK_TIMEOUT_MS);
+  return Math.max(MIN_RUNTIME_TIMEOUT_MS, STARTUP_AND_SEAL_TIMEOUT_MS + variantRuns * perVariantTimeout);
 }

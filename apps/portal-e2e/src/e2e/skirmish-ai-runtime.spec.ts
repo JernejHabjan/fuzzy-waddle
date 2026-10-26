@@ -37,8 +37,28 @@ test("executes selected AI scenarios in real lobby-started Phaser matches", asyn
         .reduce((count, variant) => count + (request.diagnosticSelection ? 1 : (variant.repetitions ?? 1)), 0),
     0
   );
-  // A native 2,400-tick variant takes about nine minutes locally; budget serial variants plus startup and sealing.
-  test.setTimeout(skirmishRuntimeTestTimeoutMs(variantRuns));
+  const selectedVariantHorizons = selectedFixtures.flatMap((fixture) =>
+    fixture.recipe.variants
+      .filter(
+        (variant) =>
+          (variant.scenarioIds === undefined || variant.scenarioIds.some((id) => request.scenarioIds.includes(id))) &&
+          (request.diagnosticSelection === undefined || variant.id === request.diagnosticSelection.variantId)
+      )
+      .map((variant) => {
+        const scenarioIds = request.scenarioIds.filter(
+          (scenarioId) =>
+            fixture.scenarioIds.includes(scenarioId) &&
+            (variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId))
+        );
+        const checkpointTicks = variant.checkpointTicks ?? fixture.recipe.checkpointTicks;
+        return Math.max(
+          ...scenarioIds.map((scenarioId) => fixture.assertions[scenarioId]?.maximumTick ?? checkpointTicks.at(-1) ?? 0)
+        );
+      })
+  );
+  const maximumVariantTicks = Math.max(0, ...selectedVariantHorizons);
+  // Budget each serial variant from its simulation horizon; 4,000-tick matches can exceed 18 minutes locally.
+  test.setTimeout(skirmishRuntimeTestTimeoutMs(variantRuns, maximumVariantTicks));
   const fixtureRuns = new Map<RuntimeFixtureV1, readonly RuntimeVariantResultV1[]>();
   const fixtureErrors = new Map<RuntimeFixtureV1, string[]>();
   const scenarioResults: {
