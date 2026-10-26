@@ -2,6 +2,7 @@ import type { AiPlanId } from "../contracts/ai-core-types";
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import { canTarget } from "./ai-tactics-combat";
+import { distance } from "./ai-tactics-geometry";
 import { intentBase } from "./ai-tactics-orders";
 import { proposeAiTacticalSupport } from "./ai-tactics-support";
 
@@ -28,7 +29,23 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
     updated,
     visibleTarget
   } = input;
-  const preserveSearchOrder = updated.role === "scout" && updated.objectiveId?.startsWith("question:") && localEnemies.length === 0;
+  const searchDestinations = observation.map?.scoutSearchPoints?.map((point) => point.position) ?? [];
+  const hasNativeSearchOrder =
+    searchDestinations.length > 0 &&
+    members.length > 0 &&
+    members.every((member) => {
+      const activeOrder = member.activeOrder?.status === "known" ? member.activeOrder.value : null;
+      if (activeOrder?.orderType !== OrderType.Move) return false;
+      const activeDestination = activeOrder.targetPosition;
+      if (activeDestination)
+        return searchDestinations.some((destination) => distance(activeDestination, destination) <= 4);
+      return updated.tactics?.orderedActorIds.includes(member.actorId) ?? false;
+    });
+  const preserveSearchOrder =
+    updated.role === "scout" &&
+    updated.objectiveId?.startsWith("question:") &&
+    localEnemies.length === 0 &&
+    hasNativeSearchOrder;
   if (!preserveSearchOrder && materiallyChanged && updated.state === "retreat" && retreat) {
     const batch = actorsNeedingOrder.slice(0, profile.maxActorOrdersPerStep);
     if (batch.length > 0)

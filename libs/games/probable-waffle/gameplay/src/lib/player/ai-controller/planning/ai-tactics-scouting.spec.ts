@@ -89,3 +89,58 @@ it("keeps a frontier scout on its information destination after an enemy becomes
   expect(move.logicalPosition.x).toBeGreaterThan(8);
   expect(Math.abs(move.logicalPosition.x - 12)).toBeLessThanOrEqual(4);
 });
+
+it("does not replace a frontier scout's native trip for a harmless contact", () => {
+  const destination = { x: 12, y: 0, z: 0 };
+  const actor = {
+    ...combatActor("scout", "self", 4),
+    activeOrder: {
+      status: "known" as const,
+      observedTick: 140,
+      value: { orderType: OrderType.Move, targetActorId: null, targetPosition: destination }
+    }
+  };
+  const harmlessEnemy = combatActor("harmless-enemy", "enemy", 5, "ground", 1000, { damage: 1 });
+  const mission = { ...squad("squad:scout:primary", "scout", [actor.actorId]), objectiveId: "question:search:a" };
+  const base = observation([actor, harmlessEnemy]);
+  if (!base.map) throw new Error("scout_search_map_missing");
+  const world = {
+    ...base,
+    map: {
+      ...base.map,
+      scoutSearchPoints: [{ pointId: "search:a", accessNodeId: "access:front" as const, position: destination }]
+    }
+  };
+
+  const proposal = manager.propose(world, fixtureState([mission]));
+
+  expect(proposal.intents.filter((intent) => intent.actorIds.includes(actor.actorId))).toEqual([]);
+});
+
+it("leaves a scout's active frontier route to the scouting manager when its next question changes", () => {
+  const actor = {
+    ...combatActor("scout", "self", 4),
+    activeOrder: {
+      status: "known" as const,
+      observedTick: 140,
+      value: { orderType: OrderType.Move, targetActorId: null, targetPosition: { x: 12, y: 0, z: 0 } }
+    }
+  };
+  const mission = { ...squad("squad:scout:primary", "scout", [actor.actorId]), objectiveId: "question:search:b" };
+  const base = observation([actor]);
+  if (!base.map) throw new Error("scout_search_map_missing");
+  const world = {
+    ...base,
+    map: {
+      ...base.map,
+      scoutSearchPoints: [
+        { pointId: "search:a", accessNodeId: "access:front" as const, position: { x: 12, y: 0, z: 0 } },
+        { pointId: "search:b", accessNodeId: "access:front" as const, position: { x: 20, y: 0, z: 0 } }
+      ]
+    }
+  };
+
+  const proposal = manager.propose(world, fixtureState([mission]));
+
+  expect(proposal.intents.filter((intent) => intent.actorIds.includes(actor.actorId))).toEqual([]);
+});

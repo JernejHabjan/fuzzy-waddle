@@ -40,8 +40,9 @@ export function nativeScoutingFairness(context: ReturnType<typeof nativeScenario
 export function nativeScoutTrips(context: ReturnType<typeof nativeScenarioContext>, afterTick = 0) {
   return context.frames.flatMap((frame) => frame.decision.acceptedIntents.flatMap((intent) => {
     if (intent.kind !== "scout" || frame.tick < afterTick) return [];
+    const selectedEffectId = intent.effectId.replace(/^effect:/, "");
     return intent.actorIds.flatMap((actorId) => context.arrived(actorId, frame.tick).flatMap((movement) => {
-      if (movement.observations[0]?.spatial.caller?.order?.commandContext?.execution.effectId !== intent.effectId) return [];
+      if (movement.observations[0]?.spatial.caller?.order?.commandContext?.execution.effectId !== selectedEffectId) return [];
       const arrival = movement.observations.find((entry) => entry.spatial.phase === "arrived");
       if (!arrival) return [];
       const unknown = frame.tacticalBoundary?.searchPoints.filter((point) => !point.visible) ?? [];

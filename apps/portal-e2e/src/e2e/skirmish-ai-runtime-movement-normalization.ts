@@ -7,7 +7,7 @@ import type { RuntimeMovementV1 } from "./skirmish-ai-runtime-movement";
 import { validateRuntimeRouteOrders } from "./skirmish-ai-runtime-route-order-validation";
 import { runtimeRouteOrderFenced } from "./skirmish-ai-runtime-route-order-fence";
 
-export const RUNTIME_MOVEMENT_EXECUTION_LIMIT = 512;
+export const RUNTIME_MOVEMENT_EXECUTION_LIMIT = 2048;
 
 /** Inspect all supplied executions, including contradictory overflow tails, before exposing physical arrival. */
 export function normalizeRuntimeMovement(capture: AiRuntimeProductionCaptureV1) {
