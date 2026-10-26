@@ -289,7 +289,7 @@
       "stages": [6, 9, 14],
       "group": "strategy",
       "fixture": "strat-09-native-runtime.json",
-      "authoredFixture": "stage-14-adaptation.json",
+      "authoredFixture": "strat-09-pure.json",
       "drivers": ["pure", "runtime"]
     },
     {

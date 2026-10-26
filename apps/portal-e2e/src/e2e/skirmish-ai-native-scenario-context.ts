@@ -11,7 +11,21 @@ export function nativeScenarioRequiresResourceCoverage(scenarioId: string): bool
     !scenarioId.startsWith("WALL-") &&
     !scenarioId.startsWith("SCOUT-") &&
     !scenarioId.startsWith("DOMAIN-") &&
-    !["EXP-01", "H-06", "H-07", "H-10", "H-12", "H-13", "H-14", "H-15", "H-22", "H-27", "H-28", "H-30"].includes(scenarioId)
+    ![
+      "EXP-01",
+      "H-06",
+      "H-07",
+      "H-10",
+      "H-12",
+      "H-13",
+      "H-14",
+      "H-15",
+      "H-22",
+      "H-27",
+      "H-28",
+      "H-30",
+      "STRAT-09"
+    ].includes(scenarioId)
   );
 }
 

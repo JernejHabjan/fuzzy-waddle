@@ -31,6 +31,10 @@ test("domain evidence uses exact native production and combat proof instead of b
   expect(nativeScenarioRequiresResourceCoverage("STRAT-02")).toBe(true);
 });
 
+test("STRAT-09 comeback proof uses exact native attack effects instead of broad resource coverage", () => {
+  expect(nativeScenarioRequiresResourceCoverage("STRAT-09")).toBe(false);
+});
+
 test("H-10 backlog recovery uses exact income events instead of the invalidated broad resource ledger", () => {
   expect(nativeScenarioRequiresResourceCoverage("H-10")).toBe(false);
 });

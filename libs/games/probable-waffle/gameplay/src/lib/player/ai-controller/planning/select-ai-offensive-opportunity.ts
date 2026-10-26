@@ -15,6 +15,7 @@ export interface AiOffensiveOpportunity {
 
 const MAX_CANDIDATES = 64;
 const TARGET_HYSTERESIS_PERMILLE = 150;
+const ALTERNATIVE_CORE_SCORE_ADVANTAGE = 200;
 const WORKFORCE_RECOVERY_FLOOR = 6;
 const FAILURE_MEMORY_TICKS = 4000;
 
@@ -199,8 +200,17 @@ export function selectAiOffensiveOpportunity(
       )
     : undefined;
   const coreScoutTarget = scoutingCore ?? rememberedCore;
+  const hasMateriallyBetterReadyAlternative =
+    visibleReachableCore !== undefined &&
+    ranked.some(
+      (candidate) =>
+        candidate !== visibleReachableCore &&
+        candidate.capable >= candidate.required &&
+        candidate.score >= visibleReachableCore.score + ALTERNATIVE_CORE_SCORE_ADVANTAGE
+    );
   const competingVisibleCore =
     visibleReachableCore &&
+    !hasMateriallyBetterReadyAlternative &&
     (coreScoutTarget !== undefined || mission?.objectiveId !== visibleReachableCore.opponent.actorId)
       ? visibleReachableCore
       : undefined;

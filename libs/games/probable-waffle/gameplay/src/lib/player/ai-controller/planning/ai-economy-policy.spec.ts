@@ -7,7 +7,7 @@ import {
   unknownAiValue,
   requireAiTestEntry
 } from "../testing/ai-test-fixtures";
-import { canAffordAiEconomyCost, decideAiEconomyPolicy } from "./ai-economy-policy";
+import { canAffordAiEconomyCost, decideAiEconomyPolicy, observedAiEconomyThreats } from "./ai-economy-policy";
 
 const catalog: AiCapabilityCatalogV1 = {
   schemaVersion: 1,
@@ -77,14 +77,19 @@ function foodSource(actorId: string, capacity: number) {
   };
 }
 
-function visibleRaider(domain: "ground" | "air" = "ground") {
+function visibleRaider(
+  domain: "ground" | "air" = "ground",
+  actorId = "enemy",
+  x = 8,
+  y = 5
+) {
   return {
-    ...createAiTestOwnedActor("enemy"),
+    ...createAiTestOwnedActor(actorId),
     objectName: ObjectNames.Banshee,
     owner: 2,
     relation: "enemy" as const,
     visibility: "visible" as const,
-    logicalPosition: { status: "known" as const, value: { x: 8, y: 5, z: 0 }, observedTick: 20 },
+    logicalPosition: { status: "known" as const, value: { x, y, z: 0 }, observedTick: 20 },
     capabilities: [
       {
         id: `enemy:${domain}`,
@@ -99,6 +104,23 @@ function visibleRaider(domain: "ground" | "air" = "ground") {
 }
 
 describe("decideAiEconomyPolicy", () => {
+  it("prioritizes the visible raider closest to a protected worker or asset", () => {
+    const base = createAiTestObservation();
+    const worker = {
+      ...economyWorker("worker"),
+      logicalPosition: { status: "known" as const, value: { x: 0, y: 0, z: 0 }, observedTick: 20 }
+    };
+    const farther = visibleRaider("ground", "farther", 4, 0);
+    const closest = visibleRaider("ground", "closest", 1, 0);
+    const observation = {
+      ...base,
+      actors: [worker, farther, closest],
+      threatSummary: { ...base.threatSummary, visibleEnemyActorIds: [farther.actorId, closest.actorId] }
+    };
+
+    expect(observedAiEconomyThreats(observation).map((enemy) => enemy.actorId)).toEqual(["closest", "farther"]);
+  });
+
   it("does not freeze the economy for an unarmed nearby enemy producer or drop-off", () => {
     const base = createAiTestObservation();
     const inert = { ...visibleRaider(), capabilities: [], objectName: ObjectNames.InfantryInn };

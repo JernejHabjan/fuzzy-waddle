@@ -6,6 +6,32 @@ import { createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 import { guard, core, producer, world, brain, manager } from "./ai-offensive-opportunity-test-fixtures";
 
 describe("fastest credible offense", () => {
+  it("STRAT-09 chooses an observed exposed producer while a stronger enemy reserve guards its core", () => {
+    const ownForce = Array.from({ length: 4 }, (_, index) => guard(`raider-${index}`, "self", 0));
+    const enemyReserve = Array.from({ length: 6 }, (_, index) => guard(`reserve-${index}`, "enemy", 30 + index));
+    const exposedProducer = {
+      ...producer("enemy-producer"),
+      logicalPosition: { status: "known" as const, value: { x: 1, y: 0, z: 0 }, observedTick: 20 }
+    };
+    const defendedCore = {
+      ...core("enemy-core"),
+      logicalPosition: { status: "known" as const, value: { x: 30, y: 0, z: 0 }, observedTick: 20 }
+    };
+    const result = manager.propose(world([...ownForce, exposedProducer, defendedCore, ...enemyReserve]), brain());
+
+    expect(result.statePatch?.strategy?.assessment).toEqual(
+      expect.objectContaining({
+        choice: "pressure",
+        targetActorId: exposedProducer.actorId,
+        readyForce: 4,
+        requiredForce: 3
+      })
+    );
+    expect(result.intents).toContainEqual(
+      expect.objectContaining({ kind: "attack", targetActorId: exposedProducer.actorId })
+    );
+  });
+
   it("remembers a failed first mission, rebuilds briefly, then permits a stronger follow-up", () => {
     const initial = brain();
     const actors = [guard("a", "self", 0), guard("b", "self", 0), core("enemy-core")];

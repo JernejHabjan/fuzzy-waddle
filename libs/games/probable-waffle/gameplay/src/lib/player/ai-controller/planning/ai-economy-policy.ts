@@ -70,7 +70,7 @@ export function observedAiEconomyThreats(observation: AiObservationV1): AiObserv
       ? [actor.logicalPosition.value]
       : []
   );
-  return visibleEnemies.filter((enemy) => {
+  const threats = visibleEnemies.filter((enemy) => {
     // A visible producer/drop-off is strategic information, not an immediate weapon against nearby workers.
     const armed = enemy.combatProfile?.status === "known" && enemy.combatProfile.value.attacks.length > 0;
     const attackCapability = enemy.capabilities.some(
@@ -89,6 +89,20 @@ export function observedAiEconomyThreats(observation: AiObservationV1): AiObserv
       return distance <= LOCAL_THREAT_DISTANCE;
     });
   });
+  const protectedDistance = (enemy: AiObservedActorV1): number => {
+    if (enemy.logicalPosition.status !== "known") return Number.POSITIVE_INFINITY;
+    const position = enemy.logicalPosition.value;
+    return Math.min(
+      ...protectedPositions.map(
+        (protectedPosition) =>
+          Math.abs(protectedPosition.x - position.x) + Math.abs(protectedPosition.y - position.y)
+      )
+    );
+  };
+  return threats.sort(
+    (left, right) =>
+      protectedDistance(left) - protectedDistance(right) || left.actorId.localeCompare(right.actorId)
+  );
 }
 
 export function hasCredibleAiEconomyThreat(observation: AiObservationV1): boolean {
