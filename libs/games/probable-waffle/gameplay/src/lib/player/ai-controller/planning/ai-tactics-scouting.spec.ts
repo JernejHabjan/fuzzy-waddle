@@ -90,7 +90,7 @@ it("keeps a frontier scout on its information destination after an enemy becomes
   expect(Math.abs(move.logicalPosition.x - 12)).toBeLessThanOrEqual(4);
 });
 
-it("does not replace a frontier scout's native trip for a harmless contact", () => {
+it("keeps a frontier scout's native trip through visible contact unless retreat is needed", () => {
   const destination = { x: 12, y: 0, z: 0 };
   const actor = {
     ...combatActor("scout", "self", 4),
@@ -100,9 +100,9 @@ it("does not replace a frontier scout's native trip for a harmless contact", () 
       value: { orderType: OrderType.Move, targetActorId: null, targetPosition: destination }
     }
   };
-  const harmlessEnemy = combatActor("harmless-enemy", "enemy", 5, "ground", 1000, { damage: 1 });
+  const visibleEnemy = combatActor("visible-enemy", "enemy", 5, "ground", 1000, { damage: 10 });
   const mission = { ...squad("squad:scout:primary", "scout", [actor.actorId]), objectiveId: "question:search:a" };
-  const base = observation([actor, harmlessEnemy]);
+  const base = observation([actor, visibleEnemy]);
   if (!base.map) throw new Error("scout_search_map_missing");
   const world = {
     ...base,
@@ -116,7 +116,6 @@ it("does not replace a frontier scout's native trip for a harmless contact", () 
 
   expect(proposal.intents.filter((intent) => intent.actorIds.includes(actor.actorId))).toEqual([]);
 });
-
 it("leaves a scout's active frontier route to the scouting manager when its next question changes", () => {
   const actor = {
     ...combatActor("scout", "self", 4),

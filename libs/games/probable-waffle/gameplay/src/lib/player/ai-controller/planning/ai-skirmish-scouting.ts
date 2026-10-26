@@ -18,6 +18,8 @@ import {
   withTimeline
 } from "./ai-skirmish-support";
 import { queryAiAccessRouteV1 } from "./ai-access-graph-v1";
+import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { distance } from "./ai-tactics-geometry";
 
 /** Scouting has no transport child owner; only an immediately executable route can admit a member. */
 function canScoutNode(
@@ -185,7 +187,10 @@ function appendFrontierScout(context: AiSkirmishProposalContext): void {
   const continuingActorIds = new Set(activeScout?.actorIds ?? []);
   const assignedActorIds = new Set(
     context.state.squads
-      .filter((squad) => !["completed", "cancelled"].includes(squad.state))
+      .filter((squad) => {
+        const updated = context.nextSquads.find((candidate) => candidate.squadId === squad.squadId);
+        return !["completed", "cancelled"].includes(updated?.state ?? squad.state);
+      })
       .flatMap((squad) => squad.actorIds)
   );
   const eligible = combat.filter(
@@ -209,6 +214,13 @@ function appendFrontierScout(context: AiSkirmishProposalContext): void {
     activeScout !== undefined &&
     activeScout.actorIds.length === scoutMembers.length &&
     scoutMembers.every((actor) => activeScout.actorIds.includes(actor.actorId));
+  const activeSearchRoute = scoutMembers.every((actor) => {
+    const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
+    return order?.orderType === OrderType.Move && !!order.targetPosition && distance(order.targetPosition, scoutPosition) <= 4;
+  });
+  const tacticalWithdrawal = ["protected_retreat", "rampart_withdraw", "land_regroup"].includes(
+    activeScout?.tactics?.script ?? ""
+  );
   const scout: AiSquadStateV1 = {
     squadId: scoutId,
     role: "scout",
@@ -237,7 +249,7 @@ function appendFrontierScout(context: AiSkirmishProposalContext): void {
   };
   scout.actorIds.forEach((actorId) => context.primaryOwnedActors.add(actorId));
   context.nextSquads.push(scout);
-  if (!sameMembers || !activeScout?.tactics)
+  if (!sameMembers || !activeScout?.tactics || (!activeSearchRoute && !tacticalWithdrawal))
     context.intents.push({
       ...intentBase(
         context.state,

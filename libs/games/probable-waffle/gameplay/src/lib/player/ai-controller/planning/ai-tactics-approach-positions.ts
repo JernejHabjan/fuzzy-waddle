@@ -42,6 +42,32 @@ function distance(left: Vector3Simple, right: Vector3Simple): number {
   return Math.abs(left.x - right.x) + Math.abs(left.y - right.y) + Math.abs(left.z - right.z);
 }
 
+function airWeaponRange(member: AiObservedActorV1, target: Vector3Simple): number | undefined {
+  if (!member.capabilities.some((capability) => capability.domains.includes("air"))) return undefined;
+  const profile = member.combatProfile?.status === "known" ? member.combatProfile.value : null;
+  if (!profile?.attacks.length) return undefined;
+  const origin = member.logicalPosition.status === "known" ? member.logicalPosition.value : null;
+  return Math.max(
+    ...profile.attacks.map((attack) => attack.range + (origin && origin.z > target.z ? attack.highGroundRangeBonus : 0))
+  );
+}
+
+function airApproachPosition(member: AiObservedActorV1, target: Vector3Simple, range: number): Vector3Simple | undefined {
+  const origin = member.logicalPosition.status === "known" ? member.logicalPosition.value : null;
+  if (!origin) return undefined;
+  const dx = target.x - origin.x;
+  const dy = target.y - origin.y;
+  const separation = Math.hypot(dx, dy);
+  const desiredRange = Math.max(1, range - 1);
+  if (separation <= desiredRange) return origin;
+  const fraction = (separation - desiredRange) / separation;
+  return {
+    x: Math.round(origin.x + dx * fraction),
+    y: Math.round(origin.y + dy * fraction),
+    z: target.z
+  };
+}
+
 /** Picks distinct observed passable cells near an occupied objective; the building center is never a move order. */
 export function selectAiAttackApproachPositions(
   members: readonly AiObservedActorV1[],
@@ -66,7 +92,11 @@ export function selectAiAttackApproachPositions(
   const used = new Set<string>();
   return members.flatMap((member) => {
     const domains = new Set(member.capabilities.flatMap((capability) => capability.domains));
-    const cell = candidates.find((candidate) => {
+    const range = airWeaponRange(member, target);
+    const candidatesForMember = range === undefined
+      ? candidates
+      : candidates.filter((candidate) => Math.hypot(candidate.position.x - target.x, candidate.position.y - target.y) <= range - 1);
+    const cell = candidatesForMember.find((candidate) => {
       if (used.has(candidate.tileKey)) return false;
       if (
         !(
@@ -86,6 +116,10 @@ export function selectAiAttackApproachPositions(
           effect.influence === "harmful" && distance(effect.position, candidate.position) <= (effect.radius ?? 0) + 1
       );
     });
+    if (!cell && range !== undefined) {
+      const position = airApproachPosition(member, target, range);
+      return position ? [{ actorId: member.actorId, position }] : [];
+    }
     if (!cell) return [];
     used.add(cell.tileKey);
     return [{ actorId: member.actorId, position: cell.position }];

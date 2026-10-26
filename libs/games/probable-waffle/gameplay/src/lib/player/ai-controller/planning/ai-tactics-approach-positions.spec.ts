@@ -1,6 +1,7 @@
 import type { AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observation-v1";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 import { selectAiAttackApproachPositions } from "./ai-tactics-approach-positions";
+import { combatActor } from "./ai-tactics-test-fixtures";
 
 function attacker(actorId: string): AiObservedActorV1 {
   return {
@@ -165,5 +166,19 @@ describe("observed attack approach positions", () => {
     expect(selectAiAttackApproachPositions([member], { x: 20, y: 20, z: 0 }, observation)).toEqual([
       { actorId: "a", position: reachable.position }
     ]);
+  });
+
+  it("moves an air attacker to visible weapon range when the observation has no tactical cells", () => {
+    const base = createAiTestObservation();
+    const airAttacker = combatActor("air", "self", 0, "air", 1000, { damage: 9 });
+    const observation = {
+      ...base,
+      map: { ...base.map!, tacticalCells: [], constructionCells: [] }
+    } satisfies AiObservationV1;
+
+    const positions = selectAiAttackApproachPositions([airAttacker], { x: 10, y: 0, z: 0 }, observation);
+
+    expect(positions).toHaveLength(1);
+    expect(Math.hypot(positions[0]!.position.x - 10, positions[0]!.position.y)).toBeLessThanOrEqual(4);
   });
 });

@@ -41,11 +41,23 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
         return searchDestinations.some((destination) => distance(activeDestination, destination) <= 4);
       return updated.tactics?.orderedActorIds.includes(member.actorId) ?? false;
     });
+  const hasSelectedSearchIntent = intents.some((intent) =>
+    intent.kind === "scout" && members.some((member) => intent.actorIds.includes(member.actorId))
+  );
+  const tacticalWithdrawal = ["protected_retreat", "rampart_withdraw", "land_regroup"].includes(
+    updated.tactics?.script ?? ""
+  );
+  const visibleContact = observation.actors.some(
+    (actor) => actor.relation === "enemy" && actor.visibility === "visible" && actor.logicalPosition.status === "known"
+  );
   const preserveSearchOrder =
     updated.role === "scout" &&
-    updated.objectiveId?.startsWith("question:") &&
-    localEnemies.length === 0 &&
-    hasNativeSearchOrder;
+    !tacticalWithdrawal &&
+    (hasSelectedSearchIntent ||
+      hasNativeSearchOrder ||
+      (updated.objectiveId?.startsWith("question:") && visibleContact && localEnemies.length === 0));
+  const directSearchRoute =
+    updated.role === "scout" && updated.objectiveId?.startsWith("question:") && !tacticalWithdrawal && !preserveSearchOrder;
   if (!preserveSearchOrder && materiallyChanged && updated.state === "retreat" && retreat) {
     const batch = actorsNeedingOrder.slice(0, profile.maxActorOrdersPerStep);
     if (batch.length > 0)
@@ -59,6 +71,15 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
         kind: "move",
         actorIds: batch,
         logicalPosition: retreat
+      });
+  } else if (directSearchRoute && materiallyChanged && updated.state !== "retreat" && anchor) {
+    const batch = actorsNeedingOrder.slice(0, profile.maxActorOrdersPerStep);
+    if (batch.length > 0)
+      intents.push({
+        ...intentBase(observation, { ...updated, actorIds: batch }, `search:${batch[0]}:${anchor.x}:${anchor.y}`, 720),
+        kind: "move",
+        actorIds: batch,
+        logicalPosition: anchor
       });
   } else if (
     !preserveSearchOrder &&

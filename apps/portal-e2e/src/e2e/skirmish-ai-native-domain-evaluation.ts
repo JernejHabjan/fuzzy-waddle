@@ -1,5 +1,5 @@
 import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
-import { nativeWeaponHits, nativeRetainedActor } from "./skirmish-ai-native-combat-effects";
+import { nativePhysicalDamageFromActor, nativeWeaponHits, nativeRetainedActor } from "./skirmish-ai-native-combat-effects";
 import { nativePaidMissionOutputs, nativeLandingFailures } from "./skirmish-ai-native-mission-evidence";
 
 /** Domain investment needs a real catalog capability and a native mission effect, never just a water/air map label. */
@@ -48,8 +48,9 @@ export function evaluateNativeDomain(id: string, branch: string, context: Return
     if (!air.size) failures.push("domain_legal_air_capability_unavailable");
     const outputs = paid.filter(({ objectName }) => air.has(objectName));
     if (branch === "backline" && !outputs.some(({ actor, fact }) =>
-      context.arrived(actor.actorId ?? undefined, fact.tick).length && nativeWeaponHits(context, target, fact.tick).some((hit) =>
-        hit.kind === "native_damage" && hit.damage.initiator?.actorId === actor.actorId)))
+      nativePhysicalDamageFromActor(context, actor.actorId ?? undefined, target, fact.tick).some((hit) =>
+        context.frames.some((frame) => frame.tick <= hit.tick && frame.decision.input?.observation?.actors.some((contact) =>
+          contact.actorId === target && contact.relation === "enemy" && contact.visibility === "visible")))))
       failures.push("domain_paid_air_output_has_no_physical_backline_effect");
     if (branch === "anti_air") {
       const known = context.frames.find((frame) => (frame.decision.input?.observation?.actors.filter((actor) =>
