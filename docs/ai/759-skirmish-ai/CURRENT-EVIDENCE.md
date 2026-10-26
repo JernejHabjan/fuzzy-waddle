@@ -47,7 +47,11 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   exception is limited to STRAT-09 variant IDs ending in `-unrecoverable`; a focused test verifies other STRAT-09
   branches and unrelated scenarios retain the worker requirement. Changed-evaluator native replays pass for Tivara and
   Skaduwee unrecoverable branches at 200 decisions / 4,001 ticks: artifacts 773 and 774. They prove the intended native
-  elimination control, not viable-comeback closure. Current STRAT-09 branch evidence: 3 passes / 1 failure / 4 unrun of 8;
+  elimination control, not viable-comeback closure. Skaduwee raid run 775 failed the authored main-target attack/effect
+  predicates and ended with zero workers (`quit`). At tick 20 it chose a nearby second `WorkMill` (`enemy-deposit` at
+  17,28) over the authored `main-target` at 16,30; its attack-move and later direct attack targeted the deposit, while
+  multiple Stage 13 approach moves failed. Treat this as a fixture/objective and approach lead; do not rerun unchanged.
+  Current STRAT-09 branch evidence: 3 passes / 2 failures / 3 unrun of 8;
   the family and overall native-obligation tally remain open.
 - The native scouting oracle matches `effect:`-prefixed accepted intents to movement execution IDs.
 - Movement capture normalization now admits up to 2,048 execution groups; caller-history validation admits 4,096
