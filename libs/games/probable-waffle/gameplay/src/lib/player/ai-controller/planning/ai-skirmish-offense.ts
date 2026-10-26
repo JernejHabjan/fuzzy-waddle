@@ -11,7 +11,10 @@ import { createAiTransportPlanV1 } from "./ai-transport-manager";
 import { AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS } from "./ai-skirmish-defense";
 import { selectAiOffensiveOpportunity } from "./select-ai-offensive-opportunity";
 import { canSeeTarget } from "./ai-tactics-combat";
-import { selectAiAttackApproachPositions } from "./ai-tactics-approach-positions";
+import {
+  selectAiAttackApproachPositions,
+  targetFootprintRadiusTiles
+} from "./ai-tactics-approach-positions";
 import {
   canTarget,
   domains,
@@ -377,7 +380,12 @@ export function advanceAiSkirmishOffense(
       const opponent = context.opponent;
       const directAttack = choice.attackers.every((actor) => canSeeTarget(actor, opponent, context.catalog));
       const approach = targetPosition
-        ? (selectAiAttackApproachPositions(choice.attackers, targetPosition, context.observation)[0]?.position ??
+        ? (selectAiAttackApproachPositions(
+            choice.attackers,
+            targetPosition,
+            context.observation,
+            targetFootprintRadiusTiles(opponent, context.catalog)
+          )[0]?.position ??
           context.observation.map?.accessGraph?.nodes.find((region) => region.nodeId === targetNode)
             ?.representativePosition)
         : undefined;

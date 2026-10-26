@@ -11,9 +11,18 @@ export function nativeStrategicWorld(id, faction, branch) {
   for (let i = 0; i < count; i++) world.actors.push(actor(`army-${i}`,
     i >= count - 6 ? faction === "Tivara" ? "TivaraSlingshotFemale" : "SkaduweeRangedFemale" : melee(faction), 2,
     i >= count - 6 ? 32 + i % 3 : 25 + i % 4, i >= count - 6 ? 19 + i % 2 : 28 + Math.floor(i / 4)));
+  if (id === "STRAT-09" && ["denial", "raid", "path_outage"].includes(branch)) {
+    for (let i = 0; i < count; i++) {
+      const ownArmy = world.actors.find((candidate) => candidate.fixtureActorId === `army-${i}`);
+      if (ownArmy) ownArmy.position = tile(36 + (i % 3), 20 + Math.floor(i / 3));
+    }
+  }
   for (let i = 0; i < 4; i++) world.actors.push(actor(`reserve-house-${i}`,
     faction === "Tivara" ? "Olival" : "Emberstone", 2, 42, 30 + i * 4));
   world.actors.push(actor("main-target", "WorkMill", 1, 16, 30), actor("raid-bait", `${enemy}WorkerMale`, 1, 16, 8));
+  if (id === "STRAT-09" && faction === "Skaduwee" && branch === "raid") {
+    world.actors.find((candidate) => candidate.fixtureActorId === "main-target").position = tile(26, 26);
+  }
   if (
     id === "STRAT-09" &&
     ((faction === "Skaduwee" && branch === "raid") || (faction === "Tivara" && branch === "path_outage"))

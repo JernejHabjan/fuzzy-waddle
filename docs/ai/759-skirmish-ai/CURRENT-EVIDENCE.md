@@ -30,47 +30,16 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   events against its visible authored target. The evaluator no longer demands an unrelated movement-arrival record in
   addition to that physical hit; the retained-artifact check clears the old predicate. This is one branch/artifact, not
   full DOMAIN-05 closure. The exact-damage reader spec passes 2/2.
-- STRAT-09 now abandons an underpowered, inactive working target when a second observed objective already meets its
-  force requirement. It preserves objectives with a live native attack order or useful effect progress. The gameplay gate passes 103 suites / 546 tests. Changed-source
-  Tivara raid artifact `tmp/ai-skirmish-matrix/767-package3-strat09-feasible-objective/1793014878089-diagnostic_passed.json`
-  passes all registered predicates at 200 decisions / 4,001 ticks, with 10 enemy losses, 1,925 damage and all eight
-  workers alive. It records no damage to authored `main-target` specifically, so this is one predicate-passing raid
-  branch, not target destruction or scenario-family closure. Tivara denial run 768 failed before payload creation; 769
-  completed but failed the native-effect predicate with 7 workers and no damage to `main-target`. Experimental replay 771
-  retained the producer target through tick 400, still had no target damage, and ended with 2 workers; those pressure-window
-  code edits were reverted. Its bounded trace shows melee attack requests against an `InfantryInn` at (16,30) from an
-  actor at (18,31), native distance 2 vs range 1; the tick-20 AI observation exposes no tactical/construction cells.
-  This suggests missing usable approach geometry, but attack-request/committed facts do not establish hit attempts. Resolve
-  the geometry/input contract before another denial replay, while advancing other Package 3 cases. Do not repeat 768–771
-  unchanged. The Tivara unrecoverable run 772 then exposed an evaluator contradiction: its authored events intentionally
-  destroy the final worker and home at tick 800, while the generic runtime rule always required a final worker. The new
-  exception is limited to STRAT-09 variant IDs ending in `-unrecoverable`; a focused test verifies other STRAT-09
-  branches and unrelated scenarios retain the worker requirement. Changed-evaluator native replays pass for Tivara and
-  Skaduwee unrecoverable branches at 200 decisions / 4,001 ticks: artifacts 773 and 774. They prove the intended native
-  elimination control, not viable-comeback closure. Skaduwee raid run 775 failed the authored main-target attack/effect
-  predicates and ended with zero workers (`quit`). At tick 20 it chose a nearby second `WorkMill` (`enemy-deposit` at
-  17,28) over the authored `main-target` at 16,30; its attack-move and later direct attack targeted the deposit, while
-  multiple Stage 13 approach moves failed. Treat this as a fixture/objective and approach lead; do not rerun unchanged.
-  Tivara path-outage run 776 reached 200 decisions / 4,001 ticks and failed the authored-target attack/effect predicates
-  with 7 workers and 10 military units. It selected `enemy-deposit` as the tick-20 working pressure target despite
-  `main-target` ranking first among alternatives, then selected the enemy home as a finish objective by tick 800. This
-  supports objective/attack application trouble, not economic collapse. Artifact:
-  `tmp/ai-skirmish-matrix/776-package3-strat09-tivara-path-outage/1793021312931-diagnostic_failed.json`. Current STRAT-09
-  branch evidence: 5 passes / 3 failures / 0 unproven of 8; overall closure remains open. Skaduwee runs 777/778/781/782/783
-  (denial) and 779 (path outage) timed out before recording decisions/ticks. Runs 783/784 reached tick 4,000 in about 630s;
-  784 showed checkpoint, economy, strategy and transport capture complete within 65ms combined. Runs 785/786 confirmed
-  the final authority call stalls while transferring its large result: browser-side capture completes, with 22,510 owner
-  facts and a 4.2s final clone, but Playwright serialization does not return within 120s. Run 787 showed browser gzip +
-  Node inflate returns the full record in 12s. Its diagnostic stop still reported closed-history gaps and fact overflow
-  (1,995 AI / 257 opponent facts dropped); the shared cap is raised to 32,768 with a focused overflow-boundary test.
-  Run 788 passes Skaduwee denial (200 decisions / 4,001 ticks; 8 workers, 2,410 damage, 8 enemy losses); 789 passes
-  Skaduwee path-outage (same horizon; 8 workers, 2,244 damage, 9 enemy losses). All STRAT-09 branches now have evidence.
-  Fixture runs 790–792 moved Skaduwee raid's duplicate deposit away and kept the attack squad on authored `main-target`
-  through tick 360, but failed both authored-target predicates. Native attackers stayed near x=25 while the target sat at
-  x=16, recorded no damage to it, then auto-targeted a nearby worker and switched to raid bait; run 792 ended with two
-  workers. Selector-only retention experiments were discarded because they did not repair the native behavior. Next
-  investigate the approach/path that leaves the force nine tiles from target; then separately solve the worker retarget
-  and remaining Tivara denial/path-outage cases. Do not repeat 790–792 unchanged. Artifacts and detail: HANDOFF.md.
+- STRAT-09's active attack now retains a recent last-seen objective across the actor-to-`hypothesis:<evidenceId>` transition
+  when current mission members still have a native Move toward its last-known approach or have arrived nearby. This does
+  not issue attacks through fog. Focused gameplay passes 103 suites / 547 tests; `pnpm nx build portal` passes with its
+  existing initial-bundle budget warning. The footprint-aware approach filter excludes cells inside published building
+  footprints. Changed-source Skaduwee raid run 804 passes all native predicates at 200 decisions / 4,001 ticks, including
+  damage to the authored WorkMill; it ends with one worker and one army unit. The fixture places the raid target at (26,26)
+  so the recorded ranged attackers fight within their legal 3–7 tile distance. This closes only the Skaduwee raid branch.
+  STRAT-09 branch evidence is now 6 passes / 2 failures / 0 unproven of 8: Tivara denial and Tivara path-outage remain open.
+  Their older results are summarized in HANDOFF.md and archived evidence; advance between targeted repairs rather than
+  repeating unchanged captures.
 - The native scouting oracle matches `effect:`-prefixed accepted intents to movement execution IDs.
 - Movement capture normalization now admits up to 2,048 execution groups; caller-history validation admits 4,096
   identities. The latest H-14 capture contained 1,567 movement executions and 1,869 caller identities; route-order
@@ -92,7 +61,7 @@ over-capacity variants and real-peer obligations still need that matrix evidence
 
 | Package | Status |
 | --- | --- |
-| 3 — scouting, combat, access | STRAT-09 native comeback/effect and worker-survival predicates fail. SCOUT, STRAT-02/03, DOMAIN, RAID, FIGHT and C families remain. |
+| 3 — scouting, combat, access | STRAT-09 is 6/8 native branches passing; Tivara denial and path-outage remain. SCOUT, STRAT-02/03, DOMAIN, RAID, FIGHT and C families remain. |
 | 4 — placement, walls, recovery | PLACE-03 still has route-clearance and worker/army transit failures. H-11 has one legal construction endpoint returning `no_path` and capture-channel loss. Other PLACE/EXP/WALL/H cases remain. |
 | 5 — authority and lifecycle | H-10 awaits over-capacity CI results. H-14 is one passing branch only. H-06/07 retain fixture/evaluator gaps; H-08/09 require credentialed peers. H-15, H-31/H-32, M11, #819 and #823 remain open. |
 | 6 — continuous play and difficulty | SEQ-02 and remaining supported SEQ/D cases; D-06 legacy difficulty comparison is unsupported and remains an explicit blocker. |

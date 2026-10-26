@@ -52,14 +52,18 @@ evidence on all eight branches: 5 pass, 3 fail. Passing branches are Tivara raid
 denial and Skaduwee path-outage. The changed owner releases an underpowered working target for another feasible observed
 objective while retaining objectives with live attack orders or useful effect progress.
 
-The three remaining failures have distinct leads. Tivara denial (769/771) requested attacks at native distance 2 vs
-range 1, with no public approach-cell set in the tick-20 observation. Skaduwee raid (775/790–792) initially chose a
-duplicate nearby WorkMill; moving only its `enemy-deposit` fixture lets the mission keep `main-target` through tick 360,
-but the force stays about nine tiles away, produces no building damage, then auto-targets a worker and switches to raid
-bait. Tivara path-outage (776) chose `enemy-deposit` despite `main-target` ranking first, then switched to enemy home.
-The next causal step is to inspect why the raid force remains at x≈25 while the target is x=16, then repair the shared
-approach/movement contract or its fixture and replay that branch. Don’t repeat 790–792 unchanged. After that, revisit
-Tivara denial with a legal approach hypothesis, then Tivara path-outage. Exact artifacts are in [EVIDENCE-ARCHIVE.md](EVIDENCE-ARCHIVE.md).
+Skaduwee raid now passes after the fixture puts its authored WorkMill at (26,26), inside the actual ranged units' legal
+3–7 tile firing band. Changed-source run 804 passes all predicates at 200 decisions / 4,001 ticks, with 1 worker, 1 army
+unit, 749 total damage and 2 enemy losses. The root evidence was native range: at the old location the force's attack
+attempts were 8–10 tiles away or inside melee minimum range. The attack selector also now retains a recent remembered
+objective through its hypothesis ID while the active squad pursues it, without issuing direct attacks through fog.
+Focused gameplay passes 103 suites / 547 tests and `pnpm nx build portal` succeeds (existing bundle budget warning).
+
+STRAT-09 is now 6/8 native branches passing. Remaining failures: Tivara denial still needs a legal firing approach
+(older evidence: native distance 2 vs range 1 and no tactical cells in the tick-20 observation); Tivara path-outage still
+needs authored-target selection/effect repair. Advance to Tivara denial with a concrete native geometry hypothesis,
+then path-outage; do not repeat prior fixtures unchanged. Full branch chronology and artifacts 790–804 are in
+[EVIDENCE-ARCHIVE.md](EVIDENCE-ARCHIVE.md).
 
 To make long combat evidence usable, the browser now gzip-compresses full production captures before Playwright transfer;
 the Node side restores the same record. The shared fact cap is 32,768, above the 27k facts required by these 4,000-tick
@@ -69,7 +73,7 @@ matches, and its overflow boundary has a focused passing test. Skaduwee denial (
 
 | Package | Open work |
 | --- | --- |
-| 3 — scouting, combat, access | STRAT-09 has evidence on all branches (5 pass / 3 fail); repair Tivara denial geometry and target selection for Skaduwee raid and Tivara path-outage. SCOUT, STRAT-02/03, DOMAIN, RAID, FIGHT and C families remain. |
+| 3 — scouting, combat, access | STRAT-09 has native evidence on all branches (6 pass / 2 fail); repair Tivara denial and path-outage. SCOUT, STRAT-02/03, DOMAIN, RAID, FIGHT and C families remain. |
 | 4 — placement, walls, recovery | PLACE-03 route clearance and physical transit; H-11 construction path returns `no_path`; remaining PLACE/EXP/WALL/H cases. |
 | 5 — authority and lifecycle | H-06/07 fixture/evaluator gaps; H-08/09 peer evidence; remaining H-10 over-capacity CI variants; remaining H-14/H-15 branches; H-31/H-32, M11, #819/#823. |
 | 6 — continuous play and difficulty | SEQ-02 and remaining supported SEQ/D cases; D-06 legacy comparison remains unsupported. |
@@ -77,12 +81,10 @@ matches, and its overflow boundary has a focused passing test. Skaduwee denial (
 
 ### Next action
 
-The SCOUT-02 and DOMAIN-05 owner repairs are pushed; latest commits include `3b1465edd` (capture tracing),
-`5f8356a3e` (compressed evidence transfer), and `fa9faa363` (combat fact budget). PR #814 remains draft; its runtime
-matrix runs only after `ready_for_review`, and the existing handoff forbids changing PR status. The STRAT-09 fixture
-clarification is being validated; it is not closed. Latest focused runs 791/792 still fail the authored-target
-application/effect predicates. Do not repeat the passing STRAT-09 branches or local SCOUT-02 match. Continue with the
-three target/approach failures using the concrete native evidence above, then advance through other Package 3 cases
-between costly replays. Leave current SCOUT-02/DOMAIN-05 outcomes for CI. PLACE-03 can be revisited once route/movement
-inputs are observable. Preserve the CI dependency for H-10's over-capacity variants and real-peer cases. Keep
-CURRENT-EVIDENCE concise; archive details only when they aid a later causal repair.
+The SCOUT-02 and DOMAIN-05 owner repairs are pushed; latest pushed source before this local checkpoint is `426587f47`.
+The current source/fixture changes have not yet been committed. PR #814 remains draft; its runtime matrix runs only after
+`ready_for_review`, and the existing handoff forbids changing PR status. Run 804 closes only Skaduwee raid. Continue with
+Tivara denial, then path-outage, and advance through other Package 3 cases between costly replays. Leave current SCOUT-02/
+DOMAIN-05 outcomes for CI. PLACE-03 can be revisited once route/movement inputs are observable. Preserve the CI
+dependency for H-10's over-capacity variants and real-peer cases. Keep CURRENT-EVIDENCE concise; archive details only
+when they aid a later causal repair.

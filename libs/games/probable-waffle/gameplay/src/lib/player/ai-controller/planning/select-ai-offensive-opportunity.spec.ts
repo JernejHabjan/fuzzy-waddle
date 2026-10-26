@@ -273,6 +273,63 @@ describe("fastest credible offense", () => {
     expect(result.statePatch?.strategy?.assessment?.targetActorId).toBe("enemy-core");
   });
 
+  it("keeps a fresh native move toward a recently remembered working objective without attacking through fog", () => {
+    const initial = brain();
+    const producerTarget = producer("enemy-producer");
+    const first = manager.propose(world([guard("a", "self", 0), guard("b", "self", 0), producerTarget]), initial);
+    const attack = first.statePatch?.squads?.find((squad) => squad.role === "attack");
+    if (!attack?.lifecycle || !first.statePatch?.strategy || !first.statePatch.skirmish)
+      throw new Error("missing_attack_lifecycle");
+
+    const rememberedProducer = { ...producerTarget, visibility: "last_seen" as const };
+    const pursuingGuards = ["a", "b"].map((id) => ({
+      ...guard(id, "self", 0),
+      activeOrder: {
+        status: "known" as const,
+        value: { orderType: OrderType.Move, targetActorId: null, targetPosition: { x: 1, y: 0, z: 0 } },
+        observedTick: 100
+      }
+    }));
+    const visibleWorker = { ...guard("enemy-worker", "enemy", 0), capabilities: [] };
+    const result = manager.propose(world([...pursuingGuards, rememberedProducer, visibleWorker], 120), {
+      ...initial,
+      squads: [attack],
+      strategy: first.statePatch.strategy,
+      skirmish: first.statePatch.skirmish
+    });
+
+    expect(result.statePatch?.strategy?.assessment).toEqual(
+      expect.objectContaining({ targetActorId: producerTarget.actorId, selectionSource: "working_objective" })
+    );
+    expect(result.intents.some((intent) => intent.kind === "attack" && intent.targetActorId === producerTarget.actorId)).toBe(
+      false
+    );
+
+    const arrivedGuards = ["a", "b"].map((id) => ({
+      ...guard(id, "self", 0),
+      activeOrder: {
+        status: "known" as const,
+        value: { orderType: OrderType.Attack, targetActorId: "visible-nearby-enemy", targetPosition: null },
+        observedTick: 120
+      }
+    }));
+    const arrived = manager.propose(world([...arrivedGuards, rememberedProducer, visibleWorker], 140), {
+      ...initial,
+      squads: [
+        { ...attack, objectiveId: `hypothesis:${rememberedProducer.evidenceId}` as never, state: "engage" }
+      ],
+      strategy: first.statePatch.strategy,
+      skirmish: first.statePatch.skirmish
+    });
+
+    expect(arrived.statePatch?.strategy?.assessment).toEqual(
+      expect.objectContaining({ targetActorId: producerTarget.actorId, selectionSource: "working_objective" })
+    );
+    expect(
+      arrived.intents.some((intent) => intent.kind === "attack" && intent.targetActorId === producerTarget.actorId)
+    ).toBe(false);
+  });
+
   it("releases objective hysteresis when an active attack mission is retreating", () => {
     const guards = [guard("a", "self", 0), guard("b", "self", 0), guard("c", "self", 0)];
     const producerTarget = producer("enemy-producer");

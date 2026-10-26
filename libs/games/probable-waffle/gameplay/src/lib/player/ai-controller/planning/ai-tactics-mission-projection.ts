@@ -1,7 +1,10 @@
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { aiDeadline } from "../contracts/ai-core-types";
 import type { AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
-import { selectAiAttackApproachPositions } from "./ai-tactics-approach-positions";
+import {
+  selectAiAttackApproachPositions,
+  targetFootprintRadiusTiles
+} from "./ai-tactics-approach-positions";
 import { knownPosition, distance, legalForMembers, formationPositions } from "./ai-tactics-geometry";
 import { assignDamage } from "./ai-tactics-combat";
 import { TACTICAL_RECONSIDERATION_TICKS, MISSION_EFFECT_EXTENSION_TICKS } from "./ai-tactics-rules";
@@ -77,7 +80,8 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
           ? selectAiAttackApproachPositions(
               postMembers.filter((actor) => !postedActorIds.has(actor.actorId)),
               anchor,
-              observation
+              observation,
+              targetFootprintRadiusTiles(visibleTarget, input.catalog)
             )
           : formationPositions(
               postMembers.filter((actor) => !postedActorIds.has(actor.actorId)),

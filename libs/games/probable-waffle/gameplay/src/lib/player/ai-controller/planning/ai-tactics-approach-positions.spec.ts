@@ -56,6 +56,22 @@ describe("observed attack approach positions", () => {
         observedBlocked: false
       },
       {
+        tileKey: "10,11",
+        position: { x: 10, y: 11, z: 0 },
+        groundPassable: true,
+        waterPassable: false,
+        elevation: 0,
+        observedBlocked: false
+      },
+      {
+        tileKey: "11,10",
+        position: { x: 11, y: 10, z: 0 },
+        groundPassable: true,
+        waterPassable: false,
+        elevation: 0,
+        observedBlocked: false
+      },
+      {
         tileKey: "9,10",
         position: { x: 9, y: 10, z: 0 },
         groundPassable: false,
@@ -93,7 +109,7 @@ describe("observed attack approach positions", () => {
       }
     } satisfies AiObservationV1;
 
-    const positions = selectAiAttackApproachPositions([attacker("a"), attacker("b")], target, observation);
+    const positions = selectAiAttackApproachPositions([attacker("a"), attacker("b")], target, observation, 1);
     expect(positions).toHaveLength(2);
     expect(positions.map((entry) => entry.position)).toEqual([
       { x: 7, y: 10, z: 0 },

@@ -1,6 +1,7 @@
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import type { AiAccessNodeId } from "../contracts/ai-core-types";
 import type { AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
 
 function hasKnownGroundRoute(
@@ -72,7 +73,8 @@ function airApproachPosition(member: AiObservedActorV1, target: Vector3Simple, r
 export function selectAiAttackApproachPositions(
   members: readonly AiObservedActorV1[],
   target: Vector3Simple,
-  observation: AiObservationV1
+  observation: AiObservationV1,
+  targetFootprintRadiusTiles = 0
 ): NonNullable<AiSquadStateV1["tactics"]>["assignedPositions"] {
   const origin = members[0]?.logicalPosition.status === "known" ? members[0].logicalPosition.value : target;
   const candidates = (observation.map?.tacticalCells ?? observation.map?.constructionCells ?? [])
@@ -80,6 +82,8 @@ export function selectAiAttackApproachPositions(
       (cell) =>
         distance(cell.position, target) <= 16 &&
         (cell.position.x !== target.x || cell.position.y !== target.y) &&
+        (Math.abs(cell.position.x - target.x) > targetFootprintRadiusTiles ||
+          Math.abs(cell.position.y - target.y) > targetFootprintRadiusTiles) &&
         !cell.observedBlocked
     )
     .sort(
@@ -124,4 +128,18 @@ export function selectAiAttackApproachPositions(
     used.add(cell.tileKey);
     return [{ actorId: member.actorId, position: cell.position }];
   });
+}
+
+/** Reads native definition footprint when the objective is a known building; unknown actors use no extra margin. */
+export function targetFootprintRadiusTiles(
+  target: AiObservedActorV1 | null | undefined,
+  catalog: AiCapabilityCatalogV1 | undefined
+): number {
+  if (!target || !catalog) return 0;
+  return Math.max(
+    0,
+    ...catalog.entries
+      .filter((entry) => entry.sourceObjectName === target.objectName)
+      .map((entry) => entry.constructionProfile?.footprintRadiusTiles ?? 0)
+  );
 }

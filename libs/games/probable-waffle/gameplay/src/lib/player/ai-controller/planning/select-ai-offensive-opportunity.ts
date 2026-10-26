@@ -18,6 +18,10 @@ const TARGET_HYSTERESIS_PERMILLE = 150;
 const ALTERNATIVE_CORE_SCORE_ADVANTAGE = 200;
 const WORKFORCE_RECOVERY_FLOOR = 6;
 const FAILURE_MEMORY_TICKS = 4000;
+const REMEMBERED_OBJECTIVE_MAX_AGE_TICKS = 400;
+const NATIVE_PURSUIT_ORDER_MAX_AGE_TICKS = 200;
+const NATIVE_PURSUIT_DESTINATION_RADIUS = 8;
+const NATIVE_PURSUIT_ARRIVAL_RADIUS = 6;
 
 function recentFailedMission(context: AiSkirmishProposalContext): AiStrategyAssessment["recentFailure"] {
   const previous = context.state.strategy.assessment;
@@ -168,16 +172,41 @@ export function selectAiOffensiveOpportunity(
         order.targetActorId === targetActorId
       );
     });
+  const hasNativePursuitOrder = (target: AiObservedActorV1) => {
+    const targetPosition = position(target);
+    if (!targetPosition || target.visibility !== "last_seen") return false;
+    return attackers.some((actor) => {
+      const activeOrder = actor.activeOrder?.status === "known" ? actor.activeOrder : null;
+      const order = activeOrder?.value ?? null;
+      if (!missionMembers.has(actor.actorId)) return false;
+      const followingMove =
+        order?.orderType === OrderType.Move &&
+        order.targetPosition != null &&
+        context.observation.tick - (activeOrder?.observedTick ?? 0) <= NATIVE_PURSUIT_ORDER_MAX_AGE_TICKS &&
+        distance(order.targetPosition, targetPosition) <= NATIVE_PURSUIT_DESTINATION_RADIUS;
+      const actorPosition = position(actor);
+      const arrivedAtObjective =
+        (order?.orderType === OrderType.Move || order?.orderType === OrderType.Attack) &&
+        actorPosition !== undefined &&
+        distance(actorPosition, targetPosition) <= NATIVE_PURSUIT_ARRIVAL_RADIUS;
+      return followingMove || arrivedAtObjective;
+    });
+  };
   const workingObjective = canRetainObjective
     ? actionable.find(
         (candidate) =>
-          candidate.opponent.actorId === mission?.objectiveId &&
-          candidate.opponent.visibility === "visible" &&
+          (candidate.opponent.actorId === mission?.objectiveId ||
+            `hypothesis:${candidate.opponent.evidenceId}` === mission?.objectiveId) &&
+          (candidate.opponent.visibility === "visible" ||
+            (context.observation.tick - candidate.opponent.observedTick <= REMEMBERED_OBJECTIVE_MAX_AGE_TICKS &&
+              hasNativePursuitOrder(candidate.opponent))) &&
           (candidate.capable >= candidate.required ||
             usefulMission ||
             hasNativeAttackOrder(candidate.opponent.actorId) ||
             !readyActionable.some((alternative) => alternative.opponent.actorId !== candidate.opponent.actorId)) &&
-          (usefulMission || hasNativeAttackOrder(candidate.opponent.actorId))
+          (usefulMission ||
+            hasNativeAttackOrder(candidate.opponent.actorId) ||
+            hasNativePursuitOrder(candidate.opponent))
       )
     : undefined;
   const focused = ranked.find((candidate) => candidate.opponent.owner === focusedPlayer);
