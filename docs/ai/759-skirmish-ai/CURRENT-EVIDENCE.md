@@ -3,6 +3,10 @@
 Updated 2026-10-26. This is the active evidence snapshot. Detailed prior run notes are preserved in
 [EVIDENCE-ARCHIVE.md](EVIDENCE-ARCHIVE.md); use HANDOFF.md for the live cursor and next action.
 
+Source checkpoint `5da21a50d89ea866972cead3b945d7e1a59b4897` is committed. GitHub skipped its PR workflow because PR #814 is draft;
+the runtime matrix starts on `ready_for_review`. PR status is left unchanged per the existing handoff boundary. H-10's two
+over-capacity variants and real-peer obligations still need that matrix evidence.
+
 ## Completed gates
 
 - Packages 1–2: production 8/8 and economy/technology 16/16.
@@ -18,12 +22,25 @@ Updated 2026-10-26. This is the active evidence snapshot. Detailed prior run not
 ## Latest implementation and checks
 
 - Stage 9 frontier scouts retain control of their native Move orders across changing search points so Stage 13 does not
-  replace them with tactical positioning orders. A visible harmless contact leaves the selected scout route intact.
+  replace them with tactical positioning orders. This now covers engage/advance states too; retreat still takes priority.
+- DOMAIN-05's changed-source Tivara backline capture contains a paid Alchemist and three exact positive native damage
+  events against its visible authored target. The evaluator no longer demands an unrelated movement-arrival record in
+  addition to that physical hit; the retained-artifact check clears the old predicate. This is one branch/artifact, not
+  full DOMAIN-05 closure. The exact-damage reader spec passes 2/2.
 - The native scouting oracle matches `effect:`-prefixed accepted intents to movement execution IDs.
 - Movement capture normalization now admits up to 2,048 execution groups; caller-history validation admits 4,096
   identities. The latest H-14 capture contained 1,567 movement executions and 1,869 caller identities; route-order
   identities numbered 235, so that independent 256 bound remains unchanged.
-- Checks: gameplay scouting specs 5/5; scouting-evidence Playwright specs 2/2; movement/scout-evidence/route-order/route-caller
+- SCOUT-02's first changed-source replay on `1f96d11b1` still lacked a Stage 9 physical trip: Stage 13 redirected the scout
+  into engage on visible contact, then happened to reach the same coordinate under its own effect ID. That arrival is not
+  credited. A follow-up showed the scout's order was Attack, while Stage 9 incorrectly treated its earlier selection as
+  still dispatched. Stage 9 now retries when the native Move to the frontier is gone. Tactical orders preserve a selected
+  or active scout route, keep direct search movement when they own it, and let tactical withdrawals take priority. A
+  completed neutral claim releases its unit for a new frontier claim immediately. Four focused gameplay suites pass
+  44/44. The changed-source runtime replay exceeded its 13-minute one-variant test budget; the owned runner and
+  Playwright process tree were stopped without a result artifact. SCOUT-02 remains open for CI; do not repeat this local
+  match without a harness fix.
+- Checks: focused gameplay suites 44/44; scouting-evidence Playwright specs 2/2; movement/scout-evidence/route-order/route-caller
   Playwright suites 76/76; exact-file ESLint completed with no errors; `git diff --check` passes. Two existing non-null
   assertion warnings remain in route specs and two in the gameplay scouting spec.
 
