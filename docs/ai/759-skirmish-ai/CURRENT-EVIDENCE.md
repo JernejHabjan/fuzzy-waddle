@@ -65,7 +65,12 @@ over-capacity variants and real-peer obligations still need that matrix evidence
   (1,995 AI / 257 opponent facts dropped); the shared cap is raised to 32,768 with a focused overflow-boundary test.
   Run 788 passes Skaduwee denial (200 decisions / 4,001 ticks; 8 workers, 2,410 damage, 8 enemy losses); 789 passes
   Skaduwee path-outage (same horizon; 8 workers, 2,244 damage, 9 enemy losses). All STRAT-09 branches now have evidence.
-  Next fix the three actual failures from their target selection and approach evidence. Details and artifacts are in HANDOFF.md.
+  Fixture runs 790–792 moved Skaduwee raid's duplicate deposit away and kept the attack squad on authored `main-target`
+  through tick 360, but failed both authored-target predicates. Native attackers stayed near x=25 while the target sat at
+  x=16, recorded no damage to it, then auto-targeted a nearby worker and switched to raid bait; run 792 ended with two
+  workers. Selector-only retention experiments were discarded because they did not repair the native behavior. Next
+  investigate the approach/path that leaves the force nine tiles from target; then separately solve the worker retarget
+  and remaining Tivara denial/path-outage cases. Do not repeat 790–792 unchanged. Artifacts and detail: HANDOFF.md.
 - The native scouting oracle matches `effect:`-prefixed accepted intents to movement execution IDs.
 - Movement capture normalization now admits up to 2,048 execution groups; caller-history validation admits 4,096
   identities. The latest H-14 capture contained 1,567 movement executions and 1,869 caller identities; route-order

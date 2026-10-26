@@ -52,13 +52,14 @@ evidence on all eight branches: 5 pass, 3 fail. Passing branches are Tivara raid
 denial and Skaduwee path-outage. The changed owner releases an underpowered working target for another feasible observed
 objective while retaining objectives with live attack orders or useful effect progress.
 
-The three remaining failures have distinct leads. Tivara denial (769/771) had attack requests at native distance 2 vs
-range 1, with no public approach-cell set in the tick-20 observation. Skaduwee raid (775) chose a second nearby WorkMill
-over authored `main-target`, had failed approach moves and ended with no workers. Tivara path-outage (776) chose
-`enemy-deposit` despite `main-target` ranking first, then switched to the enemy home. These are objective/approach and
-input-contract problems; do not rerun unchanged. The next step is to inspect which legal target/approach evidence the AI
-can observe, repair the shared owner or fixture contract, then replay only the affected branch. Exact run history and
-artifacts are in [EVIDENCE-ARCHIVE.md](EVIDENCE-ARCHIVE.md).
+The three remaining failures have distinct leads. Tivara denial (769/771) requested attacks at native distance 2 vs
+range 1, with no public approach-cell set in the tick-20 observation. Skaduwee raid (775/790–792) initially chose a
+duplicate nearby WorkMill; moving only its `enemy-deposit` fixture lets the mission keep `main-target` through tick 360,
+but the force stays about nine tiles away, produces no building damage, then auto-targets a worker and switches to raid
+bait. Tivara path-outage (776) chose `enemy-deposit` despite `main-target` ranking first, then switched to enemy home.
+The next causal step is to inspect why the raid force remains at x≈25 while the target is x=16, then repair the shared
+approach/movement contract or its fixture and replay that branch. Don’t repeat 790–792 unchanged. After that, revisit
+Tivara denial with a legal approach hypothesis, then Tivara path-outage. Exact artifacts are in [EVIDENCE-ARCHIVE.md](EVIDENCE-ARCHIVE.md).
 
 To make long combat evidence usable, the browser now gzip-compresses full production captures before Playwright transfer;
 the Node side restores the same record. The shared fact cap is 32,768, above the 27k facts required by these 4,000-tick
@@ -76,12 +77,12 @@ matches, and its overflow boundary has a focused passing test. Skaduwee denial (
 
 ### Next action
 
-The SCOUT-02, DOMAIN-05 and STRAT-09 owner repairs are pushed; latest commits include `3b1465edd` (capture tracing),
+The SCOUT-02 and DOMAIN-05 owner repairs are pushed; latest commits include `3b1465edd` (capture tracing),
 `5f8356a3e` (compressed evidence transfer), and `fa9faa363` (combat fact budget). PR #814 remains draft; its runtime
-matrix runs only after `ready_for_review`, and the existing handoff forbids changing PR status. Do not repeat the local
-SCOUT-02 match or passing STRAT-09 branches. Resolve the three STRAT-09 target/approach failures using the concrete
-native evidence above, then advance through other Package 3 cases; revisit a failing case when a source or fixture change
-gives a testable hypothesis. Leave current SCOUT-02/DOMAIN-05 outcomes for CI. PLACE-03 can
-be revisited once route/movement inputs are observable, as described above. Preserve the CI dependency for H-10's two
-over-capacity variants and real-peer obligations. Keep CURRENT-EVIDENCE concise; archive only details that aid a later
-causal repair.
+matrix runs only after `ready_for_review`, and the existing handoff forbids changing PR status. The STRAT-09 fixture
+clarification is being validated; it is not closed. Latest focused runs 791/792 still fail the authored-target
+application/effect predicates. Do not repeat the passing STRAT-09 branches or local SCOUT-02 match. Continue with the
+three target/approach failures using the concrete native evidence above, then advance through other Package 3 cases
+between costly replays. Leave current SCOUT-02/DOMAIN-05 outcomes for CI. PLACE-03 can be revisited once route/movement
+inputs are observable. Preserve the CI dependency for H-10's over-capacity variants and real-peer cases. Keep
+CURRENT-EVIDENCE concise; archive details only when they aid a later causal repair.

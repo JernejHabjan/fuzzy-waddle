@@ -14,6 +14,13 @@ export function nativeStrategicWorld(id, faction, branch) {
   for (let i = 0; i < 4; i++) world.actors.push(actor(`reserve-house-${i}`,
     faction === "Tivara" ? "Olival" : "Emberstone", 2, 42, 30 + i * 4));
   world.actors.push(actor("main-target", "WorkMill", 1, 16, 30), actor("raid-bait", `${enemy}WorkerMale`, 1, 16, 8));
+  if (
+    id === "STRAT-09" &&
+    ((faction === "Skaduwee" && branch === "raid") || (faction === "Tivara" && branch === "path_outage"))
+  ) {
+    const competingDeposit = world.actors.find((candidate) => candidate.fixtureActorId === "enemy-deposit");
+    if (competingDeposit) competingDeposit.position = tile(7, 28);
+  }
   world.actors.find((a) => a.fixtureActorId === "enemy-source").position = tile(16, 34);
   world.actors.find((a) => a.fixtureActorId === "enemy-worker").position = tile(17, 32);
   world.actors.find((a) => a.fixtureActorId === "scout-probe").position = tile(22, 30);

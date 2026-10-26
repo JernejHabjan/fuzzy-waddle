@@ -2190,3 +2190,9 @@ while Package 2 remains open. Machinery review/removal remains the last roadmap 
 - Run 773 (Tivara unrecoverable) and 774 (Skaduwee unrecoverable) pass after the STRAT-09-only worker bootstrap exemption for authored elimination variants.
 - Run 775 (Skaduwee raid) failed authored-main-target attack/effect and worker survival; it attacked nearby `enemy-deposit` and logged failed Stage 13 approaches. Run 776 (Tivara path-outage) failed target attack/effect while retaining 7 workers / 10 military; it selected `enemy-deposit` despite `main-target` ranking first, then switched to enemy home by tick 800.
 - Run 767 (Tivara raid) passed its registered predicates with 8 workers, 10 enemy losses and 1,925 damage; it did not damage authored `main-target`. STRAT-09's latest branch evidence is 5/8 passing, with the three failures above.
+
+## 2026-10-26 Skaduwee raid target-separation follow-up
+
+- The Skaduwee raid fixture moved only its duplicate `enemy-deposit` to tile (7,28), leaving the authored `main-target` fixed at (16,30). A fixture regression test also checks the unaffected Skaduwee denial control.
+- Run 790 (before fixture source binding was corrected) and changed-source runs 791 (`1793036459665-diagnostic_failed.json`) and 792 (`1793036781278-diagnostic_failed.json`) all reach 200 decisions / 4,001 ticks but fail the authored-target attack-application and native-effect predicates. Runs 791/792 keep the target assigned through tick 360, but the force remains near x=25 vs target x=16, records no damage to the WorkMill, and is retargeted to a nearby worker before strategy switches to raid bait. Run 792 ends with two workers; this is not closure.
+- Selector-only mission-retention experiments were reverted: they did not alter the native result. Do not rerun 790–792 unchanged. Next inspect the tactical approach/path and movement execution for the nine-tile gap, then address local auto-targeting and re-evaluate Tivara denial and path-outage.

@@ -20,6 +20,21 @@ test("all native bindings retain their full branches and original acceptance obl
   }
 });
 
+test("STRAT-09 target-specific variants separate an equivalent competing drop-off", () => {
+  const fixture = nativeScenarioFixture("STRAT-09");
+  for (const id of ["strat-09-skaduwee-raid", "strat-09-tivara-path-outage"]) {
+    const variant = fixture.recipe.variants.find((candidate) => candidate.id === id);
+    assert.ok(variant);
+    assert.deepEqual(variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "enemy-deposit")?.position,
+      { x: -640, y: 576, z: 0 });
+    assert.deepEqual(variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "main-target")?.position,
+      { x: -416, y: 752, z: 0 });
+  }
+  const unmodifiedControl = fixture.recipe.variants.find((candidate) => candidate.id === "strat-09-skaduwee-denial");
+  assert.deepEqual(unmodifiedControl?.presetWorld.actors.find((actor) => actor.fixtureActorId === "enemy-deposit")?.position,
+    { x: -320, y: 736, z: 0 });
+});
+
 test("D-03 preserves every difficulty/hidden mutation and the legitimate-contact control", () => {
   const fixture = nativeScenarioFixture("D-03"), contract = fixture.assertions["D-03"].requiredNativeScenario;
   assert.equal(fixture.recipe.variants.length, 30);
