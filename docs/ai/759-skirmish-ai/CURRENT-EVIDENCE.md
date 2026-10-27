@@ -18,6 +18,10 @@ both escape branches fail physical scout survival. SCOUT-04 report `179307423011
 (720 decisions / 14,406 ticks). The original objective-switch-only predicate failed all six; retained evidence shows all
 six contacts entered ranked alternatives within 400 ticks and took later AI-caused native damage.
 
+FIGHT-01 passes all eight native branches in `1793088416093-passed.json` (960 decisions / 19,208 ticks). The captured
+runtime source is `441d72399` with fixture digest `fnv1a32:13bf9dd1`; the outer report was finalized after a documentation-only
+commit. The evaluator follows native attack-commit behavior and excludes irrelevant long-horizon resource coverage.
+
 ## Validated outcomes
 
 - Packages 1–2 are complete: production 8/8; economy/technology 16/16.
@@ -30,7 +34,8 @@ six contacts entered ranked alternatives within 400 ticks and took later AI-caus
 - SCOUT-02 is partial, not closed: both visible controls pass, while the eight withdrawn/hidden branches do not sustain useful information service or keep the authored contact alive through the horizon. Hidden-world permitted-input parity also fails. A focused visible diagnostic with improved opening spacing passes contact/fairness and stale-certainty checks but still misses a physical information trip. Full branch details and runtime provenance are archived.
 - SCOUT-03 is partial, not closed: both trapped branches pass; Tivara and Skaduwee escape branches fail `scouting_surviving_physical_escape_missing`.
 - SCOUT-04 is closed on all six retained branches: contact consideration occurs within 400 ticks and each branch has later AI-caused native damage.
-- Selected native obligations: **5/22 closed** (STRAT-05, STRAT-02, STRAT-03, STRAT-04 and SCOUT-04); 17 remain. Partial branch evidence does not close a family.
+- FIGHT-01 is closed on all eight native branches: favorable combat, changed-risk regrouping, and the quiet continued-fight control pass.
+- Selected native obligations: **6/22 closed** (STRAT-05, STRAT-02, STRAT-03, STRAT-04, SCOUT-04 and FIGHT-01); 16 remain. Partial branch evidence does not close a family.
 - Supported registration remains complete: pure 111/111 and native definitions/runtime recipes 115/115. These are
   authoring coverage, not behavior completion. Overall behavior percentage is unavailable until the existing evidence is
   reconciled across all supported rows.
@@ -39,7 +44,7 @@ six contacts entered ranked alternatives within 400 ticks and took later AI-caus
 
 | Package | Remaining work |
 | --- | --- |
-| 3 — scouting, combat, access | DOMAIN-01/05/06 pass. DOMAIN-02's two negative controls and INTERCEPT pass; COAST pays for a ship but leaves it in reserve, and ESCORT reaches row 32 but fails its paid fleet objective effect. SCOUT-04 passes all six retained branches. SCOUT-03 trapped branches pass; escape branches remain open after `1793082577283` still showed first-sample target visibility and continued enemy sight. SCOUT-01 still diverges in opening intents at tick 20 after the actor-order fix; SCOUT-02 still lacks a physical trip after fixture spacing correction. Next: continue combat/access cases; revisit scouting only after a new cause is identified. RAID-02 remains open although it shares DOMAIN-06's recipe. Seven real-peer obligations remain CI-owned. STRAT-09 needs grouped final recheck after affected changes. |
+| 3 — scouting, combat, access | DOMAIN-01/05/06, SCOUT-04 and FIGHT-01 pass. FIGHT-02/03/04/05 and RAID-01/02 remain open. DOMAIN-02's two negative controls and INTERCEPT pass; COAST pays for a ship but leaves it in reserve, and ESCORT reaches row 32 but fails its paid fleet objective effect. SCOUT-03 trapped branches pass; escape branches remain open after `1793082577283` still showed first-sample target visibility and continued enemy sight. SCOUT-01 still diverges in opening intents at tick 20; SCOUT-02 still lacks a physical trip after fixture spacing correction. Revisit scouting only after a new cause is identified. Seven real-peer obligations remain CI-owned. STRAT-09 needs grouped final recheck after affected changes. |
 | 4 — placement, walls, recovery | PLACE/EXP/WALL and H recovery cases; PLACE-03 transit/clearance and H-11 route/capture remain known failures. |
 | 5 — authority and lifecycle | H-10 over-capacity variants, H-06/07, H-08/09 peer evidence, H-14/15 remaining branches, H-31/32, M11, #819/#823. |
 | 6 — continuous play and difficulty | SEQ-02 and supported SEQ/D cases. D-06 legacy comparison remains explicitly unsupported. |
