@@ -21,7 +21,8 @@ export function nativeDomainWorld(id, faction, branch) {
   }
   // A connected river has a land crossing; the positive naval mission is coastal, never an island-only substitute.
   for (let x = 26; x <= 28; x++) for (let y = 3; y <= 43; y++) {
-    if (y >= 23 && y <= 25) continue;
+    // Keep a two-tile navigable lane beside the one-tile land crossing in the fleet mission world.
+    if (y >= 23 && y <= 25 && (id !== "DOMAIN-02" || x === 26)) continue;
     world.terrainPatches.push({ x, y, terrain: "water", blocked: false });
   }
   world.actors.find((a) => a.fixtureActorId === "scout-probe").position = tile(29, 30);
@@ -32,8 +33,8 @@ export function nativeDomainWorld(id, faction, branch) {
     world.actors.find((a) => a.fixtureActorId === "scout-probe").position = tile(32, 24);
   }
   if (id === "DOMAIN-02") {
-    world.existingActorBindings.push({ fixtureActorId: "third-home", actorName: "Sandhold", owner: 3 });
     if (["intercept", "escort"].includes(branch)) {
+      world.existingActorBindings.push({ fixtureActorId: "third-home", actorName: "Sandhold", owner: 3 });
       target.actorName = "VikingBoat";
       target.owner = 3;
       target.position = tile(26, 35);

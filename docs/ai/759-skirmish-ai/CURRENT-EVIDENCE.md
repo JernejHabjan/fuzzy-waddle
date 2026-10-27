@@ -36,7 +36,7 @@ predicate passes that one retained branch; five captures await re-evaluation.
 
 | Package | Remaining work |
 | --- | --- |
-| 3 — scouting, combat, access | Next DOMAIN-01/02/05/06; then grouped SCOUT-01/02 parity/contact and SCOUT-03 escape repair, plus five SCOUT-04 retained-capture re-evaluations. Seven real-peer obligations remain CI-owned. STRAT-09 needs grouped final recheck after affected changes. |
+| 3 — scouting, combat, access | DOMAIN-01/05/06 pass; repaired DOMAIN-02 needs its five-variant rerun. Group SCOUT-01/02 parity/contact and SCOUT-03 escape repairs, plus five SCOUT-04 captures. RAID-02 remains open although it shares DOMAIN-06's recipe. Seven real-peer obligations remain CI-owned. STRAT-09 needs grouped final recheck after affected changes. |
 | 4 — placement, walls, recovery | PLACE/EXP/WALL and H recovery cases; PLACE-03 transit/clearance and H-11 route/capture remain known failures. |
 | 5 — authority and lifecycle | H-10 over-capacity variants, H-06/07, H-08/09 peer evidence, H-14/15 remaining branches, H-31/32, M11, #819/#823. |
 | 6 — continuous play and difficulty | SEQ-02 and supported SEQ/D cases. D-06 legacy comparison remains explicitly unsupported. |

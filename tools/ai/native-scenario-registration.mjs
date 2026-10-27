@@ -98,7 +98,7 @@ export function nativeScenarioFixture(id) {
         lobbyTeams: [{ playerNumber: 1, team: 1 }, { playerNumber: 2, team: branch === "allied_control" ? 1 : 2 },
           { playerNumber: 3, team: 3 }]
       } : {}),
-      ...(id === "DOMAIN-02" ? {
+      ...(id === "DOMAIN-02" && ["intercept", "escort"].includes(branch) ? {
         additionalAiPlayers: [{ playerNumber: 3, faction: "Tivara", difficulty: "Easy" }]
       } : {}),
       ...(["D-02", "D-06", "H-31", "H-32", "DBG-05"].includes(id) ? {} :

@@ -507,6 +507,26 @@ test("unsupported naval and diplomacy content is explicit rather than silently i
   assert.ok(nativeScenarioFixture("C-06").capabilityLimits.some((limit) => limit.includes("unsupported")));
 });
 
+test("DOMAIN-02 keeps a connected naval lane and limits the third opponent to vessel missions", () => {
+  const fixture = nativeScenarioFixture("DOMAIN-02"), binding = fixture.assertions["DOMAIN-02"].requiredNativeScenario;
+  const variants = fixture.recipe.variants.map((variant) => ({
+    variant,
+    branch: binding.branchByVariant[variant.id]
+  }));
+  for (const { variant, branch } of variants) {
+    const water = new Set(variant.presetWorld.terrainPatches.filter((patch) => patch.terrain === "water")
+      .map((patch) => `${patch.x},${patch.y}`));
+    for (let y = 12; y <= 32; y++) assert.ok(water.has(`28,${y}`), `${branch}: disconnected water at 28,${y}`);
+    if (["intercept", "escort"].includes(branch)) {
+      assert.equal(variant.additionalAiPlayers?.some((player) => player.playerNumber === 3), true);
+      assert.ok(variant.presetWorld.existingActorBindings.some((actor) => actor.fixtureActorId === "third-home"));
+    } else {
+      assert.equal(Boolean(variant.additionalAiPlayers?.some((player) => player.playerNumber === 3)), false);
+      assert.equal(variant.presetWorld.existingActorBindings.some((actor) => actor.fixtureActorId === "third-home"), false);
+    }
+  }
+});
+
 test("recovery bindings preserve actual obstruction, healthy work and finite pending/error inputs", () => {
   for (const [id, branch, mutate] of [
     ["H-01", "persistent", (world) => world.events = []],

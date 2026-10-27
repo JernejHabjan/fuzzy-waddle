@@ -67,13 +67,6 @@
         "aiFaction": "Tivara",
         "humanFaction": "Skaduwee",
         "difficulty": "Normal",
-        "additionalAiPlayers": [
-          {
-            "playerNumber": 3,
-            "faction": "Tivara",
-            "difficulty": "Easy"
-          }
-        ],
         "captureConstruction": true,
         "captureCombat": true,
         "scenarioIds": [
@@ -404,11 +397,6 @@
               "fixtureActorId": "enemy-home",
               "actorName": "FrostForge",
               "owner": 1
-            },
-            {
-              "fixtureActorId": "third-home",
-              "actorName": "Sandhold",
-              "owner": 3
             }
           ],
           "resourceGrants": [],
@@ -792,6 +780,24 @@
             },
             {
               "x": 27,
+              "y": 23,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 24,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 25,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
               "y": 26,
               "terrain": "water",
               "blocked": false
@@ -1015,6 +1021,24 @@
             {
               "x": 28,
               "y": 22,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 23,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 24,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 25,
               "terrain": "water",
               "blocked": false
             },
@@ -1932,6 +1956,24 @@
             },
             {
               "x": 27,
+              "y": 23,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 24,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 25,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
               "y": 26,
               "terrain": "water",
               "blocked": false
@@ -2155,6 +2197,24 @@
             {
               "x": 28,
               "y": 22,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 23,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 24,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 25,
               "terrain": "water",
               "blocked": false
             },
@@ -3072,6 +3132,24 @@
             },
             {
               "x": 27,
+              "y": 23,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 24,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 25,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
               "y": 26,
               "terrain": "water",
               "blocked": false
@@ -3300,6 +3378,24 @@
             },
             {
               "x": 28,
+              "y": 23,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 24,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 25,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
               "y": 26,
               "terrain": "water",
               "blocked": false
@@ -3418,13 +3514,6 @@
         "aiFaction": "Tivara",
         "humanFaction": "Skaduwee",
         "difficulty": "Normal",
-        "additionalAiPlayers": [
-          {
-            "playerNumber": 3,
-            "faction": "Tivara",
-            "difficulty": "Easy"
-          }
-        ],
         "captureConstruction": true,
         "captureCombat": true,
         "scenarioIds": [
@@ -3755,11 +3844,6 @@
               "fixtureActorId": "enemy-home",
               "actorName": "FrostForge",
               "owner": 1
-            },
-            {
-              "fixtureActorId": "third-home",
-              "actorName": "Sandhold",
-              "owner": 3
             }
           ],
           "resourceGrants": [],
@@ -4143,6 +4227,24 @@
             },
             {
               "x": 27,
+              "y": 23,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 24,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 25,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
               "y": 26,
               "terrain": "water",
               "blocked": false
@@ -4366,6 +4468,24 @@
             {
               "x": 28,
               "y": 22,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 23,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 24,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 25,
               "terrain": "water",
               "blocked": false
             },
@@ -4633,13 +4753,6 @@
         "aiFaction": "Skaduwee",
         "humanFaction": "Tivara",
         "difficulty": "Normal",
-        "additionalAiPlayers": [
-          {
-            "playerNumber": 3,
-            "faction": "Tivara",
-            "difficulty": "Easy"
-          }
-        ],
         "captureConstruction": true,
         "captureCombat": true,
         "scenarioIds": [
@@ -4970,11 +5083,6 @@
               "fixtureActorId": "enemy-home",
               "actorName": "Sandhold",
               "owner": 1
-            },
-            {
-              "fixtureActorId": "third-home",
-              "actorName": "Sandhold",
-              "owner": 3
             }
           ],
           "resourceGrants": [],
@@ -5358,6 +5466,24 @@
             },
             {
               "x": 27,
+              "y": 23,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 24,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 25,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
               "y": 26,
               "terrain": "water",
               "blocked": false
@@ -5581,6 +5707,24 @@
             {
               "x": 28,
               "y": 22,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 23,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 24,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 25,
               "terrain": "water",
               "blocked": false
             },
