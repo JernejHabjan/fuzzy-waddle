@@ -12,7 +12,7 @@ Read this file, then [REMAINING-WORK.md](REMAINING-WORK.md) for package acceptan
 
 ## Current checkpoint — 2026-10-27
 
-- Source batch `4ca70b3fd` includes the STRAT-04 closure and SCOUT-01 evidence/order fixes, and is pushed. Node 24.18.0 / pnpm 11.14.0.
+- Source batch `441d72399` is pushed; it adjusts FIGHT-01 native evidence checks and fixture contact spacing. Node 24.18.0 / pnpm 11.14.0.
 - STRAT-04 passes all six registered branches in `1793069202745-passed.json`; root repairs and branch outcomes are archived.
 - Packages 1–2 and SEQ-01 are complete. STRAT-02/03/04/05, STRAT-09 and SCOUT-04 are validated. H-10 still has six of eight local variants; its over-capacity and seven real-peer obligations remain CI-owned. Selected native obligations closed: **5/22**.
 - SCOUT-01 report `1793071681087-failed.json` confirms a physical scouting-information trip in all four branches; only paired hidden-world selected-intent parity remains red. Deterministic visible-position ordering has since been tightened in shared macro, gathering, recovery, and scout selection. The capture predates the last neutral-scout selector adjustment, so the current source still needs a later paired recheck.
@@ -24,6 +24,7 @@ Read this file, then [REMAINING-WORK.md](REMAINING-WORK.md) for package acceptan
 - SCOUT-04 re-evaluation of all six retained variants passes: all six consider the contact within 400 ticks and have later AI-caused native damage. Five respond by +200 ticks; Skaduwee expansion responds at +400. No match replay was needed.
 - DOMAIN-01/05/06 are closed; DOMAIN-05's corrected air-mission predicate also passes both retained backline captures. The original DOMAIN-02 full run exposed a broken river lane and overbroad third-player setup; both were repaired. Full rerun `1793081324411-failed.json` (5 variants, 750 decisions / 15,005 ticks) now passes both negative controls and INTERCEPT, while COAST still buys a VikingBoat that remains in reserve and ESCORT misses the required landing depth. COAST-only diagnostics `1793081611927`, `1793081898599`, and `1793082163870` isolate the reserve-boat behavior; do not repeat unchanged DOMAIN variants. ESCORT now unloads on valid shore but its landing must reach row 30. Raw captures and root-cause details are archived. Set `AI_SKIRMISH_RUNTIME_RESULTS_DIRECTORY` to the D: evidence directory for native runs; C: filled during report writing once.
 - Revised ESCORT diagnostic `1793084615030-diagnostic_failed.json` now satisfies the row-32 landing requirement, but fails `domain_paid_ship_has_no_compatible_native_objective_hit`. ESCORT remains open; its captured landing progress is not full branch closure.
+- FIGHT-01 evaluator and fixture adjustments are committed; the full eight-branch runtime capture is in progress. Previous targeted captures pass for the revised reinforced Tivara and quiet Skaduwee variants; no full-family result yet.
 
 ## Package cursor
 
@@ -37,6 +38,6 @@ Read this file, then [REMAINING-WORK.md](REMAINING-WORK.md) for package acceptan
 
 ## Next action
 
-Next work the open FIGHT/RAID combat evidence while keeping scouting and DOMAIN-02 failures parked at their measured causes. ESCORT now reaches row 32, but the targeted branch still lacks the paid fleet's compatible objective hit; COAST ship deployment remains unresolved. SCOUT-01 still diverges at tick 20 after its opening-order fix, and SCOUT-02 still has no physical trip after spacing correction. SCOUT-04 is closed from all six retained branches; Skaduwee expansion responds at +400 ticks and still requires later AI-caused damage. SCOUT-03's escape branches remain open; revisit after a source-level escape change. Do not repeat unchanged branches. The registered runtime/peer matrix is the final regression gate and PR #814 remains draft.
+Finish the in-progress FIGHT-01 capture, then work FIGHT-02/03 and RAID-01/02 using their authored native recipes. Keep scouting and DOMAIN-02 parked at measured causes until a relevant source or fixture change exists. ESCORT now reaches row 32 but lacks the paid fleet's compatible objective hit; COAST deployment remains unresolved. SCOUT-01 still diverges at tick 20; SCOUT-02 still has no physical trip; SCOUT-03 escape branches need a source-level escape change. SCOUT-04 is closed from six retained branches. Do not repeat unchanged branches. The registered runtime/peer matrix is the final regression gate and PR #814 remains draft.
 
 After each coherent source/evidence batch: update CURRENT-EVIDENCE and this cursor, run focused checks, commit/push task-owned files, and select the next unfinished case. Use EVIDENCE-ARCHIVE for run chronology. Do not stop at validation when another dependency-ready case remains.
