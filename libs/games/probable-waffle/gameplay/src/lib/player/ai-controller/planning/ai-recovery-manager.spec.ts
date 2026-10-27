@@ -293,6 +293,47 @@ describe("AiRecoveryManager", () => {
     );
   });
 
+  it("does not spend a critically wounded ranged defender on a visible blocker", () => {
+    const blocker = actor("proxy", ObjectNames.Olival, 7, 5, "enemy");
+    const woundedRanged: AiObservedActorV1 = {
+      ...actor("ranged", ObjectNames.TivaraMacemanMale, 7, 6),
+      healthPermille: { status: "known", value: 400, observedTick: 100 },
+      combatProfile: {
+        status: "known",
+        observedTick: 100,
+        value: {
+          maxHealth: 100,
+          maxArmour: 0,
+          passiveRegenerationPerSecond: 0,
+          armourPermille: 1000,
+          attacks: [{ damage: 5, cooldownTicks: 20, range: 5, minRange: 2, highGroundRangeBonus: 0,
+            impactDelayTicks: 0, areaRadius: 0, targetDomains: ["ground"] }],
+          healing: null,
+          spells: [],
+          statuses: []
+        }
+      }
+    };
+    const proposal = manager.propose(observation([blocker, woundedRanged]), {
+      ...state(),
+      squads: [{
+        squadId: "squad:defend",
+        role: "defense",
+        domain: "ground",
+        actorIds: ["worker-a", woundedRanged.actorId],
+        objectiveId: null,
+        state: "ready"
+      }]
+    });
+    const attack = proposal.intents.find((intent) => intent.kind === "attack" && intent.targetActorId === blocker.actorId);
+
+    expect(attack?.kind).toBe("attack");
+    if (attack?.kind === "attack") {
+      expect(attack.actorIds).toContain("worker-a");
+      expect(attack.actorIds).not.toContain(woundedRanged.actorId);
+    }
+  });
+
   it("does not order a defender against an incompatible or locally unseen blocker", () => {
     const distantAir = {
       ...actor("air-blocker", ObjectNames.Olival, 30, 5, "enemy"),

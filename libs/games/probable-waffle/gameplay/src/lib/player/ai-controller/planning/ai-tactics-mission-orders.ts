@@ -31,6 +31,12 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
   } = input;
   const protectedIds = new Set(input.criticalRangedActorIds);
   const protectedMembers = members.filter((member) => protectedIds.has(member.actorId));
+  const protectedMembersNeedingMove = retreat ? protectedMembers.filter((member) => {
+    const position = member.logicalPosition.status === "known" ? member.logicalPosition.value : null;
+    const activeOrder = member.activeOrder?.status === "known" ? member.activeOrder.value : null;
+    return !(activeOrder?.orderType === OrderType.Move && activeOrder.targetPosition != null &&
+      position !== null && distance(activeOrder.targetPosition, retreat) <= 1 && distance(position, retreat) > 1);
+  }) : [];
   const damageReservations = allDamageReservations.filter((reservation) => !protectedIds.has(reservation.actorId));
   const targetAwareMembers = allTargetAwareMembers.filter((member) => !protectedIds.has(member.actorId));
   const searchDestinations = observation.map?.scoutSearchPoints?.map((point) => point.position) ?? [];
@@ -87,17 +93,12 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
       });
   } else if (
     !preserveSearchOrder &&
-    (materiallyChanged || protectedMembers.some((member) => actorsNeedingOrder.includes(member.actorId))) &&
+    (materiallyChanged || protectedMembersNeedingMove.length > 0) &&
     (updated.state === "engage" || updated.state === "advance") &&
     visibleTarget &&
-    (damageReservations.length > 0 || protectedMembers.some((member) => actorsNeedingOrder.includes(member.actorId)))
+    (damageReservations.length > 0 || protectedMembersNeedingMove.length > 0)
   ) {
-    if (retreat) for (const member of protectedMembers) {
-      const position = member.logicalPosition.status === "known" ? member.logicalPosition.value : null;
-      const activeOrder = member.activeOrder?.status === "known" ? member.activeOrder.value : null;
-      const movingAway = activeOrder?.orderType === OrderType.Move && activeOrder.targetPosition != null &&
-        position !== null && distance(position, activeOrder.targetPosition) > 1;
-      if (movingAway) continue;
+    for (const member of protectedMembersNeedingMove) {
       intents.push({
         ...intentBase(observation, { ...updated, actorIds: [member.actorId] }, `protected_member:${member.actorId}`, 980),
         kind: "move",

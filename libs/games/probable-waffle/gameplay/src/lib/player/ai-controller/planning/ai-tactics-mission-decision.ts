@@ -54,6 +54,8 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
       !memberPosition
     ) return false;
     const memberDomains = movementDomains(member);
+    const alreadyWithdrawing = member.activeOrder?.status === "known" &&
+      member.activeOrder.value?.orderType === "Move";
     return localEnemies.some((enemy) => {
       const enemyPosition = knownPosition(enemy);
       const enemyCombat = enemy.combatProfile;
@@ -61,8 +63,8 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
       const separation = distance(memberPosition, enemyPosition);
       return enemyCombat.value.attacks.some((attack) =>
         memberDomains.some((domain) => attack.targetDomains.includes(domain)) &&
-        separation >= attack.minRange &&
-        separation <= attack.range + (memberPosition.z > enemyPosition.z ? attack.highGroundRangeBonus : 0)
+        (alreadyWithdrawing || (separation >= attack.minRange &&
+          separation <= attack.range + (memberPosition.z > enemyPosition.z ? attack.highGroundRangeBonus : 0)))
       );
     });
   }).map((member) => member.actorId) : [];

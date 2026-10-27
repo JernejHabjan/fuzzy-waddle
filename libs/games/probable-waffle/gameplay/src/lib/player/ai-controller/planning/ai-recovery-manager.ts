@@ -296,6 +296,11 @@ export class AiRecoveryManager implements AiProposalManagerV1 {
       const capableDefenders = squad.actorIds
         .map((actorId) => self.find((actor) => actor.actorId === actorId))
         .filter((actor): actor is AiObservedActorV1 => actor !== undefined)
+        .filter((actor) =>
+          actor.healthPermille?.status !== "known" || actor.healthPermille.value > 400 ||
+          actor.combatProfile?.status !== "known" ||
+          !actor.combatProfile.value.attacks.some((attack) => attack.minRange > 0)
+        )
         .filter((actor) => canTarget(actor, blocker) && canSee(actor, blocker, catalog));
       if (capableDefenders.length === 0) continue;
       const key = `blocker:${base.baseId}:${blocker.actorId}`;
