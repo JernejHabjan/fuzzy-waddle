@@ -7,4 +7,10 @@ describe("runtime preset setup scheduling", () => {
       healthStarts: [{ fixtureActorId: "ranged-probe", healthPermille: 400, armourPermille: 0 }]
     })).toBe(true);
   });
+
+  it("applies pre-existing research at the paused pre-tick setup boundary", () => {
+    expect(requiresScheduledAiRuntimePresetSetup({
+      completedResearch: [{ playerNumber: 2, researchType: "healingLightSpell" }]
+    })).toBe(true);
+  });
 });

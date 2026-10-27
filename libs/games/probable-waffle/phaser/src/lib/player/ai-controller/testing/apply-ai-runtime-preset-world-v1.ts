@@ -10,6 +10,7 @@ import { installAiRuntimeRouteOutages } from "./ai-runtime-route-outages";
 import { installAiRuntimeReceiptFault } from "./install-ai-runtime-receipt-fault";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
+import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { installAiRuntimeProductionRallies } from "./install-ai-runtime-production-rallies";
 import { installAiRuntimePresetControls } from "./install-ai-runtime-preset-controls";
 import { environment } from "@fuzzy-waddle/environments/environment";
@@ -110,6 +111,15 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
   const completeSetup = () => {
     assertAiRuntimePresetRoster(scene, preset);
     applyAiRuntimeHealthStarts(preset, createdActors);
+    const techTree = getSceneService(scene, TechTreeService);
+    if ((preset.completedResearch?.length ?? 0) > 0) {
+      if (!techTree) throw new Error("runtime_preset_research_service_missing");
+      for (const research of preset.completedResearch ?? []) {
+        if (!scene.players.some((player) => player.playerNumber === research.playerNumber))
+          throw new Error(`runtime_preset_research_player_missing:${research.playerNumber}`);
+        techTree.registerResearchComplete(research.playerNumber, research.researchType);
+      }
+    }
     const placementBaseline = preset.protectedRoutes ? captureAiRuntimePlacementClearance(scene, preset.protectedRoutes) : undefined;
     const { queuedItemCount, initialQueueItems, queueApplications } = applyAiRuntimePresetQueues(
       scene,
@@ -159,6 +169,7 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
       queuedItemCount,
       initialQueueItems,
       queueApplications,
+      ...(preset.completedResearch ? { completedResearch: preset.completedResearch } : {}),
       initialOrderCount: preset.initialOrders?.length ?? 0,
       constructionApplications,
       placementBaseline,

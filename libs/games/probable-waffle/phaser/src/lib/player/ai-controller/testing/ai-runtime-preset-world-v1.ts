@@ -76,6 +76,8 @@ export interface AiRuntimePresetWorldV1 {
     readonly producerFixtureActorId: string;
     readonly researchType: ResearchType;
   }[];
+  /** Explicit pre-existing faction research for scenarios that measure a resulting native ability, not research economy. */
+  readonly completedResearch?: readonly { readonly playerNumber: number; readonly researchType: ResearchType }[];
   readonly initialOrders?: readonly {
     readonly workerFixtureActorId: string;
     readonly sourceFixtureActorId: string;

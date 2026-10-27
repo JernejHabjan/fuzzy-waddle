@@ -463,9 +463,9 @@
             }
           ],
           "terrainPatches": [],
-          "researchQueues": [
+          "completedResearch": [
             {
-              "producerFixtureActorId": "own-research",
+              "playerNumber": 2,
               "researchType": "healingRainSpell"
             }
           ],
@@ -884,9 +884,9 @@
             }
           ],
           "terrainPatches": [],
-          "researchQueues": [
+          "completedResearch": [
             {
-              "producerFixtureActorId": "own-research",
+              "playerNumber": 2,
               "researchType": "healingRainSpell"
             }
           ],
@@ -899,6 +899,11 @@
             {
               "fixtureActorId": "contact-group",
               "healthPermille": 1000,
+              "armourPermille": 0
+            },
+            {
+              "fixtureActorId": "support-probe",
+              "healthPermille": 350,
               "armourPermille": 0
             }
           ]
@@ -1167,8 +1172,8 @@
               "actorName": "SkaduweeWarriorMale",
               "owner": 1,
               "position": {
-                "x": 0,
-                "y": 768,
+                "x": 64,
+                "y": 896,
                 "z": 0
               }
             },
@@ -1305,9 +1310,9 @@
             }
           ],
           "terrainPatches": [],
-          "researchQueues": [
+          "completedResearch": [
             {
-              "producerFixtureActorId": "own-research",
+              "playerNumber": 2,
               "researchType": "firestormSpell"
             }
           ],
@@ -1726,9 +1731,9 @@
             }
           ],
           "terrainPatches": [],
-          "researchQueues": [
+          "completedResearch": [
             {
-              "producerFixtureActorId": "own-research",
+              "playerNumber": 2,
               "researchType": "healingRainSpell"
             }
           ],
@@ -1741,6 +1746,11 @@
             {
               "fixtureActorId": "contact-group",
               "healthPermille": 1000,
+              "armourPermille": 0
+            },
+            {
+              "fixtureActorId": "support-probe",
+              "healthPermille": 350,
               "armourPermille": 0
             }
           ]
@@ -2147,9 +2157,9 @@
             }
           ],
           "terrainPatches": [],
-          "researchQueues": [
+          "completedResearch": [
             {
-              "producerFixtureActorId": "own-research",
+              "playerNumber": 2,
               "researchType": "healingLightSpell"
             }
           ],
@@ -2568,9 +2578,9 @@
             }
           ],
           "terrainPatches": [],
-          "researchQueues": [
+          "completedResearch": [
             {
-              "producerFixtureActorId": "own-research",
+              "playerNumber": 2,
               "researchType": "healingLightSpell"
             }
           ],
@@ -2583,6 +2593,11 @@
             {
               "fixtureActorId": "contact-group",
               "healthPermille": 1000,
+              "armourPermille": 0
+            },
+            {
+              "fixtureActorId": "support-probe",
+              "healthPermille": 350,
               "armourPermille": 0
             }
           ]
@@ -2989,9 +3004,9 @@
             }
           ],
           "terrainPatches": [],
-          "researchQueues": [
+          "completedResearch": [
             {
-              "producerFixtureActorId": "own-research",
+              "playerNumber": 2,
               "researchType": "healingTotemSpell"
             }
           ],
@@ -3004,6 +3019,11 @@
             {
               "fixtureActorId": "contact-group",
               "healthPermille": 1000,
+              "armourPermille": 0
+            },
+            {
+              "fixtureActorId": "support-probe",
+              "healthPermille": 350,
               "armourPermille": 0
             }
           ]
@@ -3410,9 +3430,9 @@
             }
           ],
           "terrainPatches": [],
-          "researchQueues": [
+          "completedResearch": [
             {
-              "producerFixtureActorId": "own-research",
+              "playerNumber": 2,
               "researchType": "healingLightSpell"
             }
           ],
@@ -3425,6 +3445,11 @@
             {
               "fixtureActorId": "contact-group",
               "healthPermille": 1000,
+              "armourPermille": 0
+            },
+            {
+              "fixtureActorId": "support-probe",
+              "healthPermille": 350,
               "armourPermille": 0
             }
           ]

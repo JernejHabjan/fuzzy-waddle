@@ -24,6 +24,8 @@ export interface AiRuntimePresetApplicationV1 {
   }[];
   /** Real admitted commands, queue identities and scoped balances before later explicit resource-start resets. */
   readonly queueApplications: readonly AiRuntimePresetQueueApplicationV1[];
+  /** Actual faction research unlocked at the paused tick-zero boundary for tactical outcome recipes. */
+  readonly completedResearch?: readonly { readonly playerNumber: number; readonly researchType: string }[];
   readonly initialOrderCount: number;
   /** Missing on legacy presets; each new entry binds its exact ordinary shared construction application. */
   readonly constructionApplications?: readonly AiRuntimeConstructionApplicationV1[];

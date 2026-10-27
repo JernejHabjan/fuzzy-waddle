@@ -36,6 +36,7 @@ export function readAiRuntimePresetRoles(value: unknown) {
       "resourceStarts",
       "queues",
       "researchQueues",
+      "completedResearch",
       "initialOrders",
       "controls",
       "productionRallies",

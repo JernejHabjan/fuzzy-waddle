@@ -7,6 +7,7 @@ export function requiresScheduledAiRuntimePresetSetup(
     | "queues"
     | "constructionOrders"
     | "researchQueues"
+    | "completedResearch"
     | "routeOutages"
     | "receiptFault"
     | "recoveryStart"
@@ -19,6 +20,7 @@ export function requiresScheduledAiRuntimePresetSetup(
     (preset.queues?.length ?? 0) +
       (preset.constructionOrders?.length ?? 0) +
       (preset.researchQueues?.length ?? 0) +
+      (preset.completedResearch?.length ?? 0) +
       (preset.routeOutages?.length ?? 0) +
       (preset.receiptFault ? 1 : 0) +
       (preset.recoveryStart ? 1 : 0) +

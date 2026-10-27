@@ -34,9 +34,11 @@ actors although the expected actor ID resolves; the target is no longer damageab
 failure, not a branch verdict. Return after a relevant target/timing change; do not repeat unchanged.
 
 FIGHT-04 report `1793096773518-failed.json` on `a5159d9e9183` ran all eight variants (960 decisions / 19,208 ticks); no
-branch fully passes. Overkill branches lack native useful damage across both required targets. Support branches never
-apply a native effect or start the selected caster’s cooldown; the authored healing research completes only near tick
-2,380, leaving no useful runtime window. Harmful-zone and temporary-support expiry evidence also remain open.
+branch fully passes. Overkill branches lack native useful damage across both required targets. Targeted report
+`1793105967694-diagnostic_failed.json` (120 decisions / 2,401 ticks) seeds HealingRain as completed before tick 0 and
+confirms the support probe is wounded and its intended target is in range, yet no native effect/cooldown occurs. The
+fixture now wounds the healer itself for same-group targeting and moves the harmful-zone target within range, but the
+failure persists. Diagnose cast selection/application before retrying; overkill and temporary-support expiry remain open.
 
 FIGHT-05 report `1793097702563-failed.json` on `d12bd22e8d41` ran seven of eight variants (840 decisions / 16,807 ticks).
 Tivara/Skaduwee wall controls and Skaduwee target-loss/disconnected cases pass. Tivara stun and Skaduwee slow lack

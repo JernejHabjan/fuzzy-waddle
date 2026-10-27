@@ -489,13 +489,31 @@ test("FIGHT-02 starts every valuable ranged probe at its authored damaged health
   }
 });
 
+test("FIGHT-04 support branches start with only their tested native spell already researched", () => {
+  const fixture = nativeScenarioFixture("FIGHT-04"), binding = fixture.assertions["FIGHT-04"].requiredNativeScenario;
+  for (const variant of fixture.recipe.variants) {
+    const branch = binding.branchByVariant[variant.id];
+    if (!["healing", "zone", "support_expiry", "pending_effect"].includes(branch)) continue;
+    const researchType = branch === "zone" ? "firestormSpell" : branch === "support_expiry" ? "healingTotemSpell" :
+      variant.aiFaction === "Tivara" ? "healingRainSpell" : "healingLightSpell";
+    assert.deepEqual(variant.presetWorld.completedResearch, [{ playerNumber: 2, researchType }]);
+    assert.equal(variant.presetWorld.researchQueues, undefined);
+    if (["healing", "support_expiry", "pending_effect"].includes(branch))
+      assert.ok(variant.presetWorld.healthStarts.some((start) => start.fixtureActorId === "support-probe" &&
+        start.healthPermille === 350), `${variant.id}:wounded caster supplies an in-range ally target`);
+    if (branch === "zone")
+      assert.deepEqual(variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "contact-group")?.position,
+        { x: 64, y: 896, z: 0 });
+  }
+});
+
 test("source-controlled worlds reject erased perturbations, fake observations and altered topology", () => {
   for (const [id, branch, mutate] of [
     ["SCOUT-02", "hidden_health", (world) => world.events = []],
     ["SCOUT-02", "hidden_queue", (world) => world.controls = []],
     ["WALL-01", "terrain", (world) => world.terrainPatches = []],
     ["FIGHT-05", "stun", (world) => world.researchQueues = []],
-    ["FIGHT-04", "healing", (world) => world.healthStarts = []],
+    ["FIGHT-04", "healing", (world) => world.completedResearch = []],
     ["STRAT-10", "combined_loss", (world) => world.events = []],
     ["STRAT-07", "breach", (world) => world.events = []],
     ["H-28", "prefix", (world) => world.sourceStocks = []]

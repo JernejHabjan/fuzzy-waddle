@@ -137,13 +137,20 @@ export function tile(x, y, z = 0) { return { x: (x - y) * 32 + 32, y: (x + y) * 
 export function melee(faction) { return faction === "Tivara" ? "TivaraMacemanMale" : "SkaduweeWarriorMale"; }
 export function producer(faction) { return faction === "Tivara" ? "AnkGuard" : "InfantryInn"; }
 
-/** Research enters the actual paid shared queue; the AI must cast and the native effect must really apply/expire. */
+/** Preset the ability as completed; this scenario measures native tactical effects, not research-economy timing. */
 function configureSupportWorld(world, faction, branch) {
   const spell = branch === "zone" ? "firestormSpell" : branch === "support_expiry" ? "healingTotemSpell" :
     faction === "Tivara" ? "healingRainSpell" : "healingLightSpell";
   world.resourceGrants = [{ playerNumber: 2, amounts: { minerals: 1000, wood: 1000, stone: 1000 } }];
-  world.researchQueues = [{ producerFixtureActorId: "own-research", researchType: spell }];
+  world.completedResearch = [{ playerNumber: 2, researchType: spell }];
   world.healthStarts = [{ fixtureActorId: "ranged-probe", healthPermille: 350, armourPermille: 0 },
-    { fixtureActorId: "contact-group", healthPermille: branch === "overkill" ? 100 : 1000, armourPermille: 0 }];
+    { fixtureActorId: "contact-group", healthPermille: branch === "overkill" ? 100 : 1000, armourPermille: 0 },
+    ...(branch === "healing" || branch === "support_expiry" || branch === "pending_effect"
+      ? [{ fixtureActorId: "support-probe", healthPermille: 350, armourPermille: 0 }]
+      : [])];
+  if (branch === "zone") {
+    const target = world.actors.find((actor) => actor.fixtureActorId === "contact-group");
+    if (target) target.position = tile(28, 27);
+  }
 }
 

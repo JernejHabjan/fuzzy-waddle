@@ -40,9 +40,22 @@ export function validAiRuntimePresetWorld(value: unknown): boolean {
       (queue["count"] as number) >= 1 &&
       (queue["count"] as number) <= 5
   );
+  const completedResearch = value["completedResearch"] ?? [];
+  if (!Array.isArray(completedResearch) || completedResearch.length > 32) return false;
+  const researched = new Set<string>();
+  const validCompletedResearch = completedResearch.every((entry) => {
+    if (!isRecord(entry) || !hasOnlyKeys(entry, ["playerNumber", "researchType"])) return false;
+    const playerNumber = entry["playerNumber"];
+    const type = entry["researchType"];
+    if (!Number.isSafeInteger(playerNumber) || !owners.has(playerNumber as number) ||
+        typeof type !== "string" || !researchTypes.has(type)) return false;
+    const identity = `${playerNumber}:${type}`;
+    if (researched.has(identity)) return false;
+    researched.add(identity);
+    return true;
+  });
   const researchQueues = value["researchQueues"] ?? [];
   if (!Array.isArray(researchQueues) || researchQueues.length > 16) return false;
-  const researched = new Set<string>();
   const validResearchQueues = researchQueues.every((queue) => {
     if (!isRecord(queue) || !hasOnlyKeys(queue, ["producerFixtureActorId", "researchType"])) return false;
     const producerId = queue["producerFixtureActorId"];
@@ -95,9 +108,10 @@ export function validAiRuntimePresetWorld(value: unknown): boolean {
     resourceStarts.length +
     queues.length +
     researchQueues.length +
+    completedResearch.length +
     initialOrders.length +
     (Array.isArray(value["constructionOrders"]) ? value["constructionOrders"].length : 0) +
     events.length;
-  return validQueues && validResearchQueues && validOrders && workCount > 0;
+  return validQueues && validCompletedResearch && validResearchQueues && validOrders && workCount > 0;
 }
 

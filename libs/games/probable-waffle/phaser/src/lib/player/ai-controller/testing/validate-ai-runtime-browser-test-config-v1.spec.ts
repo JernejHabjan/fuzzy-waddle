@@ -257,4 +257,32 @@ describe("runtime research seed validation", () => {
       })
     ).toBe(true);
   });
+
+  it("accepts unique pre-existing research for an authored owner", () => {
+    const seeded = {
+      ...config,
+      presetWorld: {
+        ...config.presetWorld,
+        actors: [producer],
+        completedResearch: [{ playerNumber: 2, researchType: "healingLightSpell" }]
+      }
+    };
+    expect(isAiRuntimeBrowserTestConfigV1(seeded)).toBe(true);
+    for (const entry of [
+      { playerNumber: 1, researchType: "healingLightSpell" },
+      { playerNumber: 2, researchType: "invented" },
+      { playerNumber: 2, researchType: "healingLightSpell", extra: true }
+    ]) {
+      expect(isAiRuntimeBrowserTestConfigV1({
+        ...seeded,
+        presetWorld: { ...seeded.presetWorld, completedResearch: [entry] }
+      })).toBe(false);
+    }
+    expect(isAiRuntimeBrowserTestConfigV1({
+      ...seeded,
+      presetWorld: { ...seeded.presetWorld, completedResearch: [
+        ...seeded.presetWorld.completedResearch, ...seeded.presetWorld.completedResearch
+      ] }
+    })).toBe(false);
+  });
 });
