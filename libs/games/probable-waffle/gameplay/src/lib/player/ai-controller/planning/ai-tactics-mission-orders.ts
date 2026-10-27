@@ -95,7 +95,7 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
     if (retreat) for (const member of protectedMembers) {
       const position = member.logicalPosition.status === "known" ? member.logicalPosition.value : null;
       const activeOrder = member.activeOrder?.status === "known" ? member.activeOrder.value : null;
-      const movingAway = activeOrder?.orderType === OrderType.Move && activeOrder.targetPosition !== null &&
+      const movingAway = activeOrder?.orderType === OrderType.Move && activeOrder.targetPosition != null &&
         position !== null && distance(position, activeOrder.targetPosition) > 1;
       if (movingAway) continue;
       intents.push({

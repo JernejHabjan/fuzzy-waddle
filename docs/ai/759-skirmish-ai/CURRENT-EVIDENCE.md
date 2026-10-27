@@ -28,6 +28,9 @@ with its defense squad but dies to repeated pursuit. Removing the aggregate-stre
 outcome. The current behavior keeps healthy squadmates engaging to cover the critical actor, while issuing that actor
 an independent retreat order and excluding it from attack reservations. The focused planner regression and lint pass;
 six-variant recheck remains pending.
+The first six-branch attempt on the peel implementation, `1793092542764-failed.json`, produced no runtime payload because
+the portal build rejected an optional move target; the nullish guard is repaired and the combat-evaluator Playwright spec
+passes 7/7. The native behavior recheck is pending.
 
 ## Validated outcomes
 
