@@ -1691,6 +1691,20 @@
               "requestTick": 800,
               "applicationTick": 800,
               "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 480,
+                  "y": 784,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-reinforce-attack-0",
+              "producerFixtureActorId": "raid-reinforcement-0",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
                 "kind": "attack",
                 "targetFixtureActorId": "original-home"
               }
@@ -1700,6 +1714,20 @@
               "producerFixtureActorId": "raid-reinforcement-1",
               "requestTick": 800,
               "applicationTick": 800,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 512,
+                  "y": 800,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-reinforce-attack-1",
+              "producerFixtureActorId": "raid-reinforcement-1",
+              "requestTick": 1200,
+              "applicationTick": 1200,
               "action": {
                 "kind": "attack",
                 "targetFixtureActorId": "original-home"
@@ -1711,6 +1739,20 @@
               "requestTick": 800,
               "applicationTick": 800,
               "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 544,
+                  "y": 816,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-reinforce-attack-2",
+              "producerFixtureActorId": "raid-reinforcement-2",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
                 "kind": "attack",
                 "targetFixtureActorId": "original-home"
               }
@@ -1720,6 +1762,20 @@
               "producerFixtureActorId": "raid-reinforcement-3",
               "requestTick": 800,
               "applicationTick": 800,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 448,
+                  "y": 800,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-reinforce-attack-3",
+              "producerFixtureActorId": "raid-reinforcement-3",
+              "requestTick": 1200,
+              "applicationTick": 1200,
               "action": {
                 "kind": "attack",
                 "targetFixtureActorId": "original-home"
@@ -1731,8 +1787,12 @@
               "requestTick": 800,
               "applicationTick": 800,
               "action": {
-                "kind": "attack",
-                "targetFixtureActorId": "original-home"
+                "kind": "move",
+                "worldPosition": {
+                  "x": 480,
+                  "y": 816,
+                  "z": 0
+                }
               }
             },
             {
@@ -1741,8 +1801,12 @@
               "requestTick": 800,
               "applicationTick": 800,
               "action": {
-                "kind": "attack",
-                "targetFixtureActorId": "original-home"
+                "kind": "move",
+                "worldPosition": {
+                  "x": 512,
+                  "y": 832,
+                  "z": 0
+                }
               }
             },
             {
@@ -1751,8 +1815,12 @@
               "requestTick": 800,
               "applicationTick": 800,
               "action": {
-                "kind": "attack",
-                "targetFixtureActorId": "original-home"
+                "kind": "move",
+                "worldPosition": {
+                  "x": 416,
+                  "y": 816,
+                  "z": 0
+                }
               }
             },
             {
@@ -1761,8 +1829,12 @@
               "requestTick": 800,
               "applicationTick": 800,
               "action": {
-                "kind": "attack",
-                "targetFixtureActorId": "original-home"
+                "kind": "move",
+                "worldPosition": {
+                  "x": 448,
+                  "y": 832,
+                  "z": 0
+                }
               }
             },
             {
@@ -1771,8 +1843,12 @@
               "requestTick": 800,
               "applicationTick": 800,
               "action": {
-                "kind": "attack",
-                "targetFixtureActorId": "original-home"
+                "kind": "move",
+                "worldPosition": {
+                  "x": 480,
+                  "y": 848,
+                  "z": 0
+                }
               }
             },
             {
@@ -1781,8 +1857,12 @@
               "requestTick": 800,
               "applicationTick": 800,
               "action": {
-                "kind": "attack",
-                "targetFixtureActorId": "original-home"
+                "kind": "move",
+                "worldPosition": {
+                  "x": 384,
+                  "y": 832,
+                  "z": 0
+                }
               }
             },
             {
@@ -1791,8 +1871,12 @@
               "requestTick": 800,
               "applicationTick": 800,
               "action": {
-                "kind": "attack",
-                "targetFixtureActorId": "original-home"
+                "kind": "move",
+                "worldPosition": {
+                  "x": 416,
+                  "y": 848,
+                  "z": 0
+                }
               }
             },
             {
@@ -1801,8 +1885,12 @@
               "requestTick": 800,
               "applicationTick": 800,
               "action": {
-                "kind": "attack",
-                "targetFixtureActorId": "original-home"
+                "kind": "move",
+                "worldPosition": {
+                  "x": 448,
+                  "y": 864,
+                  "z": 0
+                }
               }
             }
           ],
@@ -4678,6 +4766,20 @@
               "requestTick": 800,
               "applicationTick": 800,
               "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 480,
+                  "y": 784,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-reinforce-attack-0",
+              "producerFixtureActorId": "raid-reinforcement-0",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
                 "kind": "attack",
                 "targetFixtureActorId": "original-home"
               }
@@ -4687,6 +4789,20 @@
               "producerFixtureActorId": "raid-reinforcement-1",
               "requestTick": 800,
               "applicationTick": 800,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 512,
+                  "y": 800,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-reinforce-attack-1",
+              "producerFixtureActorId": "raid-reinforcement-1",
+              "requestTick": 1200,
+              "applicationTick": 1200,
               "action": {
                 "kind": "attack",
                 "targetFixtureActorId": "original-home"
@@ -4698,6 +4814,20 @@
               "requestTick": 800,
               "applicationTick": 800,
               "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 544,
+                  "y": 816,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-reinforce-attack-2",
+              "producerFixtureActorId": "raid-reinforcement-2",
+              "requestTick": 1200,
+              "applicationTick": 1200,
+              "action": {
                 "kind": "attack",
                 "targetFixtureActorId": "original-home"
               }
@@ -4707,6 +4837,20 @@
               "producerFixtureActorId": "raid-reinforcement-3",
               "requestTick": 800,
               "applicationTick": 800,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 448,
+                  "y": 800,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "raid-reinforce-attack-3",
+              "producerFixtureActorId": "raid-reinforcement-3",
+              "requestTick": 1200,
+              "applicationTick": 1200,
               "action": {
                 "kind": "attack",
                 "targetFixtureActorId": "original-home"
@@ -4718,8 +4862,12 @@
               "requestTick": 800,
               "applicationTick": 800,
               "action": {
-                "kind": "attack",
-                "targetFixtureActorId": "original-home"
+                "kind": "move",
+                "worldPosition": {
+                  "x": 480,
+                  "y": 816,
+                  "z": 0
+                }
               }
             },
             {
@@ -4728,8 +4876,12 @@
               "requestTick": 800,
               "applicationTick": 800,
               "action": {
-                "kind": "attack",
-                "targetFixtureActorId": "original-home"
+                "kind": "move",
+                "worldPosition": {
+                  "x": 512,
+                  "y": 832,
+                  "z": 0
+                }
               }
             },
             {
@@ -4738,8 +4890,12 @@
               "requestTick": 800,
               "applicationTick": 800,
               "action": {
-                "kind": "attack",
-                "targetFixtureActorId": "original-home"
+                "kind": "move",
+                "worldPosition": {
+                  "x": 416,
+                  "y": 816,
+                  "z": 0
+                }
               }
             },
             {
@@ -4748,8 +4904,12 @@
               "requestTick": 800,
               "applicationTick": 800,
               "action": {
-                "kind": "attack",
-                "targetFixtureActorId": "original-home"
+                "kind": "move",
+                "worldPosition": {
+                  "x": 448,
+                  "y": 832,
+                  "z": 0
+                }
               }
             },
             {
@@ -4758,8 +4918,12 @@
               "requestTick": 800,
               "applicationTick": 800,
               "action": {
-                "kind": "attack",
-                "targetFixtureActorId": "original-home"
+                "kind": "move",
+                "worldPosition": {
+                  "x": 480,
+                  "y": 848,
+                  "z": 0
+                }
               }
             },
             {
@@ -4768,8 +4932,12 @@
               "requestTick": 800,
               "applicationTick": 800,
               "action": {
-                "kind": "attack",
-                "targetFixtureActorId": "original-home"
+                "kind": "move",
+                "worldPosition": {
+                  "x": 384,
+                  "y": 832,
+                  "z": 0
+                }
               }
             },
             {
@@ -4778,8 +4946,12 @@
               "requestTick": 800,
               "applicationTick": 800,
               "action": {
-                "kind": "attack",
-                "targetFixtureActorId": "original-home"
+                "kind": "move",
+                "worldPosition": {
+                  "x": 416,
+                  "y": 848,
+                  "z": 0
+                }
               }
             },
             {
@@ -4788,8 +4960,12 @@
               "requestTick": 800,
               "applicationTick": 800,
               "action": {
-                "kind": "attack",
-                "targetFixtureActorId": "original-home"
+                "kind": "move",
+                "worldPosition": {
+                  "x": 448,
+                  "y": 864,
+                  "z": 0
+                }
               }
             }
           ],

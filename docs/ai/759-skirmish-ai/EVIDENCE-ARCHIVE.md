@@ -1,7 +1,25 @@
 # #759 archived evidence history
 
-Historical snapshots through 2026-10-26. This file preserves detailed diagnostic notes from earlier checkpoints; it may
+Historical snapshots through 2026-10-27. This file preserves detailed diagnostic notes from earlier checkpoints; it may
 contain superseded observations and next actions. Use HANDOFF.md and CURRENT-EVIDENCE.md for the active status.
+
+## 2026-10-27 — STRAT-03 reinforced threat arrival
+
+- The retained run 822 failure was traced to reinforcement Attack orders targeting unseen Sandhold. A movement-first
+  experiment made all 12 raiders visible at tick 1200. Attacking with all 12 at that boundary destroyed Sandhold by
+  tick 1540; delaying the attack to tick 2000 produced no home damage. The captured facts gave a concrete control fix.
+- The evaluator also counted useful defensive damage only against the original four raiders, despite the 12 reinforcement
+  actors being the serious threat. It now measures serious-raid response against both actor groups. The native fixture
+  moves all 12 toward the home at tick 800, then sends four to attack at tick 1200 so the home can take pressure and remain
+  alive while the full wave can provoke physical defense.
+- Final focused Tivara reinforced report:
+  `D:\ai-skirmish-work\matrix\1793060456153-diagnostic_passed.json`. It passes at 150 decisions / 3,001 ticks, ends in
+  a win with six workers and 31 army, retains Sandhold and records all 12 reinforcements observed. The other five STRAT-03
+  branches remain to execute; this does not close the family.
+- Regressions: native fixture audit 30/30; portal-e2e TypeScript check passed; raid strategy Playwright specs 3/3; the
+  focused native run passed. Earlier failed probes are retained at
+  `D:\ai-skirmish-work\matrix\1793059637132-diagnostic_failed.json` and
+  `D:\ai-skirmish-work\matrix\1793059974698-diagnostic_failed.json`.
 
 ## 2026-10-26 — STRAT-03 tactical ownership repair
 

@@ -66,6 +66,26 @@ test("STRAT-02 and STRAT-03 keep the main offensive objective alive beyond raid 
   }
 });
 
+test("STRAT-03 reinforced raiders approach before attacking the fogged original home", () => {
+  const fixture = nativeScenarioFixture("STRAT-03");
+  for (const faction of ["tivara", "skaduwee"]) {
+    const variant = fixture.recipe.variants.find((candidate) =>
+      candidate.id === `strat-03-${faction}-reinforced`);
+    assert.ok(variant);
+    for (let index = 0; index < 12; index++) {
+      const approach = variant.presetWorld.controls.find((control) => control.id === `raid-reinforce-${index}`);
+      const attack = variant.presetWorld.controls.find((control) => control.id === `raid-reinforce-attack-${index}`);
+      assert.equal(approach?.applicationTick, 800);
+      assert.equal(approach?.action.kind, "move");
+      if (index < 4) {
+        assert.equal(attack?.applicationTick, 1200);
+        assert.equal(attack?.action.kind, "attack");
+        assert.equal(attack?.action.targetFixtureActorId, "original-home");
+      } else assert.equal(attack, undefined);
+    }
+  }
+});
+
 test("STRAT-02 boat raid starts out of sight and unloads before its attack orders", () => {
   const fixture = nativeScenarioFixture("STRAT-02");
   const variant = fixture.recipe.variants.find((candidate) => candidate.id === "strat-02-skaduwee-boat-raid");

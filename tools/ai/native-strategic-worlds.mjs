@@ -56,7 +56,12 @@ export function nativeStrategicWorld(id, faction, branch) {
     if (branch === "boat_raid") addNativeBoatRaid(world);
     if (["reinforced", "withdrawn"].includes(branch)) for (let i = 0; i < 12; i++) {
       world.actors.push(actor(`raid-reinforcement-${i}`, melee(enemy), 1, 5 + i % 4, 10 + Math.floor(i / 4)));
-      world.controls.push(control(`raid-reinforce-${i}`, `raid-reinforcement-${i}`, 800,
+      if (id === "STRAT-03" && branch === "reinforced") {
+        world.controls.push(control(`raid-reinforce-${i}`, `raid-reinforcement-${i}`, 800,
+          { kind: "move", worldPosition: tile(31 + i % 3, 17 + Math.floor(i / 3)) }));
+        if (i < 4) world.controls.push(control(`raid-reinforce-attack-${i}`, `raid-reinforcement-${i}`, 1200,
+          { kind: "attack", targetFixtureActorId: "original-home" }));
+      } else world.controls.push(control(`raid-reinforce-${i}`, `raid-reinforcement-${i}`, 800,
         { kind: "attack", targetFixtureActorId: "original-home" }));
     }
     if (branch === "withdrawn") {

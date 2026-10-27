@@ -15,11 +15,19 @@ export function nativeMaximumRaidResponseMembers(
       squad.role === "defense" || raiderIds.has(squad.objectiveId ?? "")).flatMap((squad) => squad.actorIds) ?? []).size));
 }
 
+/** Reinforced defense is judged against the serious wave as well as the original raid party. */
+export function nativeRaidThreatIds(branch: string, raiderIds: readonly string[], reinforcementIds: readonly string[]) {
+  return ["reinforced", "withdrawn"].includes(branch) ? [...raiderIds, ...reinforcementIds] : [...raiderIds];
+}
+
 /** Real threat arrival, proportional physical defense and continuing offense must agree across raid controls. */
 export function evaluateNativeRaidStrategy(id: string, branch: string, context: ReturnType<typeof nativeScenarioContext>) {
   const failures: string[] = [], main = context.role("main-target");
   const ids = Array.from({ length: 4 }, (_, i) => context.role(`raider-${i}`));
   const activeRaid = branch !== "quiet", serious = ["reinforced", "withdrawn"].includes(branch);
+  const reinforcements = Object.entries(context.roles).filter(([role]) => role.startsWith("raid-reinforcement-"))
+    .map(([, id]) => id);
+  const threatIds = nativeRaidThreatIds(branch, ids, reinforcements);
   const contact = context.frames.find((frame) => frame.tick >= 400 && ids.some((id) =>
     frame.decision.input?.observation?.actors.some((actor) => actor.actorId === id && actor.visibility === "visible")));
   const initial = context.frames.find((frame) => frame.tick < 400)?.tacticalBoundary;
@@ -33,20 +41,19 @@ export function evaluateNativeRaidStrategy(id: string, branch: string, context: 
   const responseTick = serious ? 800 : contact?.tick ?? 400;
   const responseSquads = context.frames.filter((frame) => frame.tick >= responseTick && frame.tick <= responseTick + 800)
     .flatMap((frame) => frame.decision.missionState?.squads.filter((squad) =>
-      squad.role === "defense" || ids.includes(squad.objectiveId ?? "")) ?? []);
+      squad.role === "defense" || threatIds.includes(squad.objectiveId ?? "")) ?? []);
   const members = new Set(responseSquads.flatMap((squad) => squad.actorIds));
-  const effective = [...members].filter((member) => ids.some((id) => nativeUsefulMissionMembers(context, id, responseTick).has(member)) ||
+  const effective = [...members].filter((member) => threatIds.some((id) => nativeUsefulMissionMembers(context, id, responseTick).has(member)) ||
     context.arrived(member, responseTick).some((move) => move.observations.some((entry) =>
       entry.spatial.phase === "arrived" && entry.spatial.actualTile && entry.spatial.actualTile.x >= 28)));
   if (activeRaid && !effective.length) failures.push("raid_defense_label_has_no_physical_intervention");
-  const maximumResponseMembers = nativeMaximumRaidResponseMembers(context, responseTick, new Set(ids));
+  const maximumResponseMembers = nativeMaximumRaidResponseMembers(context, responseTick, new Set(threatIds));
   const objectiveResolvedBeforeContact = !!contact && nativeWeaponHits(context, main).some((hit) =>
     hit.kind === "native_damage" && hit.tick < contact.tick && hit.damage.healthAfter === 0);
   if (!serious && (maximumResponseMembers >= 15 || !nativeWeaponHits(context, main, 400).length && !objectiveResolvedBeforeContact))
     failures.push("raid_minor_threat_recalled_main_force_or_stopped_native_offense");
   if (activeRaid && !nativeRetainedActor(context, context.role("original-home"))) failures.push("raid_original_home_not_retained");
   if (serious) {
-    const reinforcements = Object.entries(context.roles).filter(([role]) => role.startsWith("raid-reinforcement-")).map(([, id]) => id);
     const seen = new Set(context.frames.filter((frame) => frame.tick >= 800).flatMap((frame) =>
       frame.tacticalBoundary?.actors.filter((actor) => reinforcements.includes(actor.identity.actorId ?? "") &&
         actor.visible && actor.identity.alive).map((actor) => actor.identity.actorId) ?? []));

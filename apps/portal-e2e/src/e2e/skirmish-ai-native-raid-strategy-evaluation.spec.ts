@@ -2,7 +2,8 @@ import { expect, test } from "@playwright/test";
 import type { AiRuntimeProductionFactV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
 import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
-import { evaluateNativeRaidStrategy, nativeMaximumRaidResponseMembers } from "./skirmish-ai-native-raid-strategy-evaluation";
+import { evaluateNativeRaidStrategy, nativeMaximumRaidResponseMembers, nativeRaidThreatIds } from
+  "./skirmish-ai-native-raid-strategy-evaluation";
 
 const actor = (actorId: string, objectName: string, playerNumber: number) => ({
   actorId,
@@ -117,4 +118,11 @@ test("STRAT-02 bounds peak simultaneous defense instead of the rotating response
   } as unknown as ReturnType<typeof nativeScenarioContext>;
 
   expect(nativeMaximumRaidResponseMembers(context, 440, raiders)).toBe(9);
+});
+
+test("serious raid defense is measured against the reinforcing wave", () => {
+  const raiders = ["raider-0", "raider-1"], reinforcements = ["reinforcement-0", "reinforcement-1"];
+  expect(nativeRaidThreatIds("minor", raiders, reinforcements)).toEqual(raiders);
+  expect(nativeRaidThreatIds("reinforced", raiders, reinforcements)).toEqual([...raiders, ...reinforcements]);
+  expect(nativeRaidThreatIds("withdrawn", raiders, reinforcements)).toEqual([...raiders, ...reinforcements]);
 });
