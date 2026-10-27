@@ -15,11 +15,11 @@ shards, retaining the five explicit content deferrals. Do not maintain another s
 
 ## Progress snapshot
 
-- Updated 2026-10-27: two of 22 selected native obligations are closed (STRAT-05 and all five STRAT-02 branches). The Skaduwee boat branch and the shared RAID-03 Skaduwee boat branch both pass on the latest tested source. Next work remains STRAT-03/04 and the dependent scouting/combat/access packages; see [HANDOFF.md](HANDOFF.md) and [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) for the active cursor and branch evidence.
+- Updated 2026-10-27: seven of 22 selected native obligations are closed. Current branch status and next steps live in [HANDOFF.md](HANDOFF.md) and [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md); this file documents CI resumption rather than duplicating the progress ledger.
 - Scenario registration: pure 111/111 and supported runtime 115/115; five runtime rows are explicitly deferred.
   Registration means runnable setup exists, not that behavior passed.
-- Newly selected native obligations: 2/22 closed. Thirteen single-player rows lack complete native family evidence; seven
-  real-peer rows need multiplayer evidence; D-06's expensive comparison remains deferred/unsupported.
+- Newly selected native obligations: 7/22 closed. Remaining real-peer obligations and the D-06 comparison are tracked
+  in the active handoff and remaining-work inventory.
 - The five-item non-browser audit and repair batch is checked. Its commands and results remain in
   [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md); do not repeat it as preparation.
 - Package 3's two-faction SEQ-01 authoritative victory gate now passes on adaptive placement coverage and the one-retry

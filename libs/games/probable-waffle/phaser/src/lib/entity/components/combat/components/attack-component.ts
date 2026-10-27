@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { type AttackData } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/attack-data";
 import { HealthComponent } from "./health-component";
+import { StatusEffectComponent } from "../../status-effect/status-effect-component";
 import { getActorComponent } from "../../../../data/actor-component";
 import type { Subscription } from "rxjs";
 import { AnimationActorComponent } from "../../animation/animation-actor-component";
@@ -168,6 +169,9 @@ export class AttackComponent {
   }
 
   useAttack(enemy: GameObject) {
+    if (getActorComponent(this.gameObject, StatusEffectComponent)?.isStunned()) {
+      return;
+    }
     if (this.remainingCooldown > 0) {
       return;
     }

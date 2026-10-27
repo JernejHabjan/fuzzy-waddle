@@ -465,6 +465,8 @@ export class SpellCastingSystem {
   private applyEffectsToActor(spellData: SpellData, target: Phaser.GameObjects.GameObject): void {
     const healthComponent = getActorComponent(target, HealthComponent);
     const statusEffectComponent = getActorComponent(target, StatusEffectComponent);
+    const sourceActorId = getActorComponent(this.gameObject, IdComponent)?.id;
+    const source = sourceActorId ? { sourceActorId } : {};
 
     // Apply instant damage
     if (spellData.instantDamage && healthComponent && spellData.damageType !== undefined) {
@@ -485,7 +487,8 @@ export class SpellCastingSystem {
         damagePerTick: spellData.dotDamage,
         tickInterval: spellData.dotTickInterval ?? 1000,
         damageType: spellData.damageType,
-        tintColor: spellData.tintColor
+        tintColor: spellData.tintColor,
+        ...source
       };
       statusEffectComponent.applyEffect(dotEffect);
     }
@@ -498,7 +501,8 @@ export class SpellCastingSystem {
         remainingTime: spellData.hotDuration,
         healPerTick: spellData.hotHeal,
         tickInterval: spellData.hotTickInterval ?? 1000,
-        tintColor: spellData.tintColor
+        tintColor: spellData.tintColor,
+        ...source
       };
       statusEffectComponent.applyEffect(hotEffect);
     }
@@ -509,7 +513,8 @@ export class SpellCastingSystem {
         type: this.getStunEffectType(spellData),
         duration: spellData.stunDuration,
         remainingTime: spellData.stunDuration,
-        tintColor: spellData.tintColor
+        tintColor: spellData.tintColor,
+        ...source
       };
       statusEffectComponent.applyEffect(stunEffect);
     }
@@ -521,7 +526,8 @@ export class SpellCastingSystem {
         duration: spellData.slowDuration,
         remainingTime: spellData.slowDuration,
         movementSpeedModifier: spellData.slowAmount,
-        tintColor: spellData.tintColor
+        tintColor: spellData.tintColor,
+        ...source
       };
       statusEffectComponent.applyEffect(slowEffect);
     }

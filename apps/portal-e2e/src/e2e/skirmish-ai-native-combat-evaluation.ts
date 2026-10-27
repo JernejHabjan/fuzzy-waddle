@@ -87,7 +87,9 @@ export function evaluateNativeCombat(id: string, branch: string, context: Return
       if (!context.frames.some((frame) => frame.tick > effectStartTick && frame.tick <= effectStartTick + 400 &&
         frame.decision.acceptedIntents.some((intent) => (intent.kind === "move" || intent.kind === "attack") &&
           (intent.kind !== "attack" || intent.targetActorId !== target)))) failures.push("combat_bounded_alternative_duty_missing");
-      if (!nativeRetreats(context, effectStartTick).length && !nativeWeaponHits(context, context.roles["front-target-a"], effectStartTick).length)
+      const alternativeHits = nativeWeaponHits(context, undefined, effectStartTick).filter((fact) =>
+        fact.kind === "native_damage" && fact.damage.target.actorId !== target);
+      if (!nativeRetreats(context, effectStartTick).length && !alternativeHits.length)
         failures.push("combat_alternative_duty_has_no_native_effect");
     }
   }

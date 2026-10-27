@@ -1,5 +1,10 @@
 import type Phaser from "phaser";
-import { ProbableWaffleGameCommandTypes, OrderType, type GameCommandInput } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  ProbableWaffleGameCommandTypes,
+  OrderType,
+  SpellTargetType,
+  type GameCommandInput
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import type { UnifiedQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { getActorComponent } from "../../../data/actor-component";
@@ -10,6 +15,7 @@ import { RepresentableComponent } from "../../../entity/components/representable
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { IsoHelper } from "../../../world/tilemap/iso-helper";
 import { NavigationService } from "../../../world/services/navigation.service";
+import { spellDefinitions } from "../../../entity/components/combat/spell-definitions";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import type { AiRuntimePresetControlV1 } from "./ai-runtime-preset-control-v1";
@@ -50,7 +56,9 @@ export function createAiRuntimePresetCommand(
       throw new Error(`runtime_preset_control_spell_target_missing:${control.id}`);
     command = {
       type: ProbableWaffleGameCommandTypes.CastSpell, playerNumber: owner, actorIds: [actorId],
-      spellType: action.spellType, targetObjectId: id, tileVec3: { ...tile, z: 0 }
+      spellType: action.spellType,
+      ...(spellDefinitions[action.spellType]?.targetType === SpellTargetType.Ground ? {} : { targetObjectId: id }),
+      tileVec3: { ...tile, z: 0 }
     };
   } else if (action.kind === "move_to_actor") {
     const target = actors.get(action.targetFixtureActorId);

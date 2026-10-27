@@ -523,12 +523,36 @@ test("FIGHT-05 target-loss starts in attack range and removes the contact after 
     { x: 64, y: 800, z: 0 });
 });
 
+test("FIGHT-05 status controls cast researched spells before combat removes the caster", () => {
+  const fixture = nativeScenarioFixture("FIGHT-05"), binding = fixture.assertions["FIGHT-05"].requiredNativeScenario;
+  for (const variant of fixture.recipe.variants) {
+    const branch = binding.branchByVariant[variant.id];
+    if (!["stun", "slow"].includes(branch)) continue;
+    const spellType = branch === "stun" ? "snowstorm" : "frostNova";
+    const researchType = branch === "stun" ? "snowstormSpell" : "frostNovaSpell";
+    assert.deepEqual(variant.presetWorld.completedResearch, [{ playerNumber: 1, researchType }]);
+    assert.equal(variant.presetWorld.researchQueues, undefined);
+    assert.deepEqual(variant.presetWorld.controls.find((control) => control.id === "native-status"), {
+      id: "native-status", producerFixtureActorId: "enemy-caster", requestTick: 20, applicationTick: 20,
+      action: { kind: "cast", spellType, targetFixtureActorId: "ranged-probe" }
+    });
+  }
+});
+
+test("FIGHT-05 disconnected contact uses its native terrain obstruction without a dead-worker wall control", () => {
+  const fixture = nativeScenarioFixture("FIGHT-05");
+  const variant = fixture.recipe.variants.find((candidate) => candidate.id === "fight-05-tivara-disconnected");
+  assert.ok(variant);
+  assert.equal(variant.presetWorld.controls.some((control) => control.id === "block-route"), false);
+  assert.ok(variant.presetWorld.terrainPatches.some((patch) => patch.blocked));
+});
+
 test("source-controlled worlds reject erased perturbations, fake observations and altered topology", () => {
   for (const [id, branch, mutate] of [
     ["SCOUT-02", "hidden_health", (world) => world.events = []],
     ["SCOUT-02", "hidden_queue", (world) => world.controls = []],
     ["WALL-01", "terrain", (world) => world.terrainPatches = []],
-    ["FIGHT-05", "stun", (world) => world.researchQueues = []],
+    ["FIGHT-05", "stun", (world) => world.completedResearch = []],
     ["FIGHT-04", "healing", (world) => world.completedResearch = []],
     ["STRAT-10", "combined_loss", (world) => world.events = []],
     ["STRAT-07", "breach", (world) => world.events = []],

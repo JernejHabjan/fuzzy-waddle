@@ -44,11 +44,13 @@ Tivara Slingshot prefab now enables its declared SpellCastingSystem. Targeted re
 confirms HealingRain starts its native cooldown, but its native healing effect is still not measured. Do not retry until
 the missing zone effect has a concrete cause. Overkill and temporary-support expiry remain open.
 
-FIGHT-05's original report `1793097702563-failed.json` ran seven of eight variants (840 decisions / 16,807 ticks).
-Focused Tivara target-loss report `1793108112989-diagnostic_passed.json` now passes with native damage before the tick-200
-loss and subsequent alternative duty; the evaluator uses the recorded event tick. Focused Skaduwee slow report
-`1793108253625-diagnostic_failed.json` still lacks native status evidence after the Tivara Slingshot spell-system fix.
-Tivara stun and disconnected alternative duty remain open. Do not replay the unchanged full batch.
+FIGHT-05 now has passing evidence for all eight branches. The original report `1793097702563-failed.json` passed both
+wall branches and Skaduwee target-loss/disconnected; focused current-fixture runs pass Tivara target-loss
+(`1793108112989`), both status cases (Skaduwee slow `1793109580100`, Tivara stun `1793109870717`), both disconnected
+cases (Tivara `1793110238361`, Skaduwee `1793110370152`), and Skaduwee target-loss (`1793110509861`). The status setup
+pre-completes research and casts before the caster dies. Ground spells omit actor target IDs; spell-created statuses
+carry the source actor ID; stunned actors cannot start attacks. Disconnected uses its terrain ring without an unavailable
+tick-400 worker control, and accepts native damage against another reachable target rather than one hard-coded target.
 
 RAID-01's corrected evaluator uses each branch's authored economic target. Separate-reserve raiding passes the Tivara
 workers diagnostic `1793101298256-diagnostic_passed.json` on source `389b48856732` / fixture `fnv1a32:fba3bb14`.
@@ -72,7 +74,8 @@ branch evidence, not the recipe's three-run certification.
 - SCOUT-03 is partial, not closed: both trapped branches pass; Tivara and Skaduwee escape branches fail `scouting_surviving_physical_escape_missing`.
 - SCOUT-04 is closed on all six retained branches: contact consideration occurs within 400 ticks and each branch has later AI-caused native damage.
 - FIGHT-01 is closed on all eight native branches: favorable combat, changed-risk regrouping, and the quiet continued-fight control pass.
-- Selected native obligations: **6/22 closed** (STRAT-05, STRAT-02, STRAT-03, STRAT-04, SCOUT-04 and FIGHT-01); 16 remain. Partial branch evidence does not close a family.
+- FIGHT-05 is closed across eight native branches using retained wall evidence and focused current-fixture runs for target-loss, status and disconnected setups.
+- Selected native obligations: **7/22 closed** (STRAT-05, STRAT-02, STRAT-03, STRAT-04, SCOUT-04, FIGHT-01 and FIGHT-05); 15 remain. Partial branch evidence does not close a family.
 - Supported registration remains complete: pure 111/111 and native definitions/runtime recipes 115/115. These are
   authoring coverage, not behavior completion. Overall behavior percentage is unavailable until the existing evidence is
   reconciled across all supported rows.

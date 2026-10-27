@@ -73,12 +73,14 @@ export function nativeScenarioWorld(id, faction, branch) {
   if (id === "FIGHT-05" && ["stun", "slow"].includes(branch)) {
     const spellType = branch === "stun" ? "snowstorm" : "frostNova";
     const researchType = branch === "stun" ? "snowstormSpell" : "frostNovaSpell";
-    world.researchQueues = [{ producerFixtureActorId: "enemy-research", researchType }];
+    // The opponent's caster dies early in this live fight. Complete research before the first tick so
+    // the scripted native cast can test status application before combat removes its producer.
+    world.completedResearch = [{ playerNumber: 1, researchType }];
     world.resourceGrants = [{ playerNumber: 1, amounts: { minerals: 1000, wood: 1000 } }];
-    world.controls.push({ id: "native-status", producerFixtureActorId: "enemy-caster", requestTick: 1000,
-      applicationTick: 1000, action: { kind: "cast", spellType, targetFixtureActorId: "ranged-probe" } });
+    world.controls.push({ id: "native-status", producerFixtureActorId: "enemy-caster", requestTick: 20,
+      applicationTick: 20, action: { kind: "cast", spellType, targetFixtureActorId: "ranged-probe" } });
   }
-  if (id === "FIGHT-05" && ["wall", "disconnected"].includes(branch)) world.controls.push({
+  if (id === "FIGHT-05" && branch === "wall") world.controls.push({
     id: "block-route", producerFixtureActorId: "enemy-worker", requestTick: 400, applicationTick: 400,
     action: { kind: "construct", actorName: "Wall", worldPosition: tile(27, 27) }
   });

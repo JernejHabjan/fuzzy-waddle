@@ -464,8 +464,8 @@
             {
               "id": "native-status",
               "producerFixtureActorId": "enemy-caster",
-              "requestTick": 1000,
-              "applicationTick": 1000,
+              "requestTick": 20,
+              "applicationTick": 20,
               "action": {
                 "kind": "cast",
                 "spellType": "snowstorm",
@@ -482,9 +482,9 @@
             }
           ],
           "terrainPatches": [],
-          "researchQueues": [
+          "completedResearch": [
             {
-              "producerFixtureActorId": "enemy-research",
+              "playerNumber": 1,
               "researchType": "snowstormSpell"
             }
           ]
@@ -1655,23 +1655,7 @@
               }
             }
           ],
-          "controls": [
-            {
-              "id": "block-route",
-              "producerFixtureActorId": "enemy-worker",
-              "requestTick": 400,
-              "applicationTick": 400,
-              "action": {
-                "kind": "construct",
-                "actorName": "Wall",
-                "worldPosition": {
-                  "x": 32,
-                  "y": 880,
-                  "z": 0
-                }
-              }
-            }
-          ],
+          "controls": [],
           "events": [],
           "initialOrders": [
             {
@@ -2232,8 +2216,8 @@
             {
               "id": "native-status",
               "producerFixtureActorId": "enemy-caster",
-              "requestTick": 1000,
-              "applicationTick": 1000,
+              "requestTick": 20,
+              "applicationTick": 20,
               "action": {
                 "kind": "cast",
                 "spellType": "frostNova",
@@ -2250,9 +2234,9 @@
             }
           ],
           "terrainPatches": [],
-          "researchQueues": [
+          "completedResearch": [
             {
-              "producerFixtureActorId": "enemy-research",
+              "playerNumber": 1,
               "researchType": "frostNovaSpell"
             }
           ]
@@ -3423,23 +3407,7 @@
               }
             }
           ],
-          "controls": [
-            {
-              "id": "block-route",
-              "producerFixtureActorId": "enemy-worker",
-              "requestTick": 400,
-              "applicationTick": 400,
-              "action": {
-                "kind": "construct",
-                "actorName": "Wall",
-                "worldPosition": {
-                  "x": 32,
-                  "y": 880,
-                  "z": 0
-                }
-              }
-            }
-          ],
+          "controls": [],
           "events": [],
           "initialOrders": [
             {
