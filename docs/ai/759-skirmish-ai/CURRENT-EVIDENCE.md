@@ -11,6 +11,8 @@ branches; hidden-pair selected-intent parity remains open. Latest attempted fami
 withdrawn variants fail trip/stale-job/survival predicates, and hidden-world permitted-input parity remains open.
 The focused Tivara visible diagnostic `1793083017398-diagnostic_failed.json` uses an opening contact outside attack range;
 it passes contact/fairness and stale-certainty checks but still lacks a physical information trip.
+Current-source SCOUT-01 recheck `1793084287890-failed.json` still fails only paired selected-intent parity, with its first
+divergence at tick 20 in opening construction/recovery intents.
 SCOUT-03 report `1793073566880-failed.json` ran four variants (400 decisions / 8,004 ticks): trapped branches pass;
 both escape branches fail physical scout survival. SCOUT-04 report `1793074230112-failed.json` ran all six variants
 (720 decisions / 14,406 ticks). The original objective-switch-only predicate failed all six; retained evidence shows all
@@ -37,7 +39,7 @@ six contacts entered ranked alternatives within 400 ticks and took later AI-caus
 
 | Package | Remaining work |
 | --- | --- |
-| 3 — scouting, combat, access | DOMAIN-01/05/06 pass. DOMAIN-02's two negative controls and INTERCEPT pass; COAST pays for a ship but leaves it in reserve, and ESCORT landing depth remains open. SCOUT-04 passes all six retained branches. SCOUT-03 trapped branches pass; escape branches remain open after `1793082577283` still showed first-sample target visibility and continued enemy sight. Next: grouped SCOUT-01/02 behavior, then revisit SCOUT-03 after an escape change. RAID-02 remains open although it shares DOMAIN-06's recipe. Seven real-peer obligations remain CI-owned. STRAT-09 needs grouped final recheck after affected changes. |
+| 3 — scouting, combat, access | DOMAIN-01/05/06 pass. DOMAIN-02's two negative controls and INTERCEPT pass; COAST pays for a ship but leaves it in reserve, and ESCORT landing depth remains open. SCOUT-04 passes all six retained branches. SCOUT-03 trapped branches pass; escape branches remain open after `1793082577283` still showed first-sample target visibility and continued enemy sight. SCOUT-01 still diverges in opening intents at tick 20 after the actor-order fix; SCOUT-02 still lacks a physical trip after fixture spacing correction. Next: check revised ESCORT landing, then continue combat/access cases; revisit scouting only after a new cause is identified. RAID-02 remains open although it shares DOMAIN-06's recipe. Seven real-peer obligations remain CI-owned. STRAT-09 needs grouped final recheck after affected changes. |
 | 4 — placement, walls, recovery | PLACE/EXP/WALL and H recovery cases; PLACE-03 transit/clearance and H-11 route/capture remain known failures. |
 | 5 — authority and lifecycle | H-10 over-capacity variants, H-06/07, H-08/09 peer evidence, H-14/15 remaining branches, H-31/32, M11, #819/#823. |
 | 6 — continuous play and difficulty | SEQ-02 and supported SEQ/D cases. D-06 legacy comparison remains explicitly unsupported. |

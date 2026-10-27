@@ -11,6 +11,7 @@ import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import { proposeAiOpening } from "../planning/ai-opening-proposal";
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "./ai-test-fixtures";
+import { owned } from "../planning/ai-macro-observation";
 
 const openings = [
   { faction: FactionType.Tivara, core: ObjectNames.Sandhold, worker: ObjectNames.TivaraWorker },
@@ -159,4 +160,13 @@ describe("ECO-08 deterministic two-faction bootstrap", () => {
       ).toBe(false);
     });
   }
+
+  it("orders opening workers by visible position before run-local actor IDs", () => {
+    const observation = createAiTestObservation();
+    const later = { ...createAiTestOwnedActor("actor-a"), logicalPosition: { status: "known" as const,
+      value: { x: 8, y: 5, z: 0 }, observedTick: 20 } };
+    const earlier = { ...createAiTestOwnedActor("actor-z"), logicalPosition: { status: "known" as const,
+      value: { x: 2, y: 5, z: 0 }, observedTick: 20 } };
+    expect(owned({ ...observation, actors: [later, earlier] }).map((actor) => actor.actorId)).toEqual(["actor-z", "actor-a"]);
+  });
 });

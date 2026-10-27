@@ -68,13 +68,11 @@ function proposeOpeningCheckpointIntent(
     return null;
   const demandId = `demand:opening:${checkpoint.id}` as AiDemandV1["demandId"];
   const stalledSite = [...constructingActors]
-    .sort((left, right) => left.actorId.localeCompare(right.actorId))
     .find((site) => !hasAssignedBuilder(observation, site.actorId));
   if (stalledSite) {
     const builder = owned(observation)
       .filter(isAvailableBuilder)
       .filter((actor) => !reservedActorIds.has(actor.actorId))
-      .sort((left, right) => left.actorId.localeCompare(right.actorId))
       .find((actor) =>
         catalog.entries.some(
           (entry) => entry.sourceObjectName === actor.objectName && entry.constructs.includes(checkpoint.requiredObject)
