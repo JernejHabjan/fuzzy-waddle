@@ -248,7 +248,11 @@ export class AiObservationPipeline {
     });
 
     const visibleIds = new Set(projectedActors.map((actor) => actor.actorId));
-    const rememberedActors = projectRememberedContacts(this.memory, visibleIds, tick);
+    const memorySizeBeforeProjection = this.memory.size;
+    const rememberedActors = projectRememberedContacts(this.memory, visibleIds, tick, (position) =>
+      policy.mayObserveGroundTile(position)
+    );
+    this.knowledgeRevision += memorySizeBeforeProjection - this.memory.size;
     const actors = [...projectedActors, ...rememberedActors];
     const accessProducts = this.projectAccessProducts(actors, liveById, tick);
     const effects = projectPermittedZones(this.scene, this.player, policy, tick);

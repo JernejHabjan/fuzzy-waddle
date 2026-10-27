@@ -29,15 +29,13 @@ The current source keeps safe firing positions, lets moves finish before replaci
 credible threats to wounded ranged units. Gameplay tests pass 566/566 and the production portal build passes. The
 current-source six-branch gate is left to the existing CI runtime matrix.
 
-FIGHT-03 report `1793095825942-failed.json` on `753e974e686e` ran five of six variants (600 decisions / 12,005 ticks);
-equal-value controls pass. Unequal branches lack two independently useful native fronts and proportional reinforcement.
-The isolated Skaduwee infeasible retry `1793104761329-failed.json` confirms the scheduled tick-600 loss affects zero
-actors although the expected actor ID resolves; the target is no longer damageable by then. This remains a fixture setup
-failure, not a branch verdict. Retained unequal observations show front A's producer disappears before the 400–800
-reinforcement window; the minor worker front is also assessed as too heavily defended for a four-unit raid. A bounded
-surplus split now keeps home defense and the primary force intact, retains committed members, and evaluates secondary
-raids against observed threats. Focused gameplay tests pass 567/567. The fixture still needs viable concurrent fronts
-and a meaningful loss event; FIGHT-03 remains open.
+FIGHT-03's revised unequal/loss fixture has a durable valuable main building, an isolated lower-value producer and six
+additional compatible reinforcements; the loss occurs at tick 400 while the main building exists. Tivara unequal passes
+`1793132191807` (source digest `fnv1a32:7036f815`); Skaduwee infeasible passes `1793132945915` (source digest
+`fnv1a32:6b79f302`); both use fixture `fnv1a32:7db10b2b` and base `1e9d1cc69`. The loss repair clears a remembered main
+building only when its location is visible and it is absent; attack-move missions retain their destination when briefly
+engaging a contact. Gameplay tests pass 567/567, focused observation tests 15/15, fixture checks 42/42 and portal build
+passes. These diagnostics do not close the six-branch family; run the current-source gate in CI.
 
 FIGHT-04 report `1793096773518-failed.json` on `a5159d9e9183` ran all eight variants (960 decisions / 19,208 ticks); no
 branch fully passes. Overkill branches lack native useful damage across both required targets. Targeted report

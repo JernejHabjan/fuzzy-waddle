@@ -489,6 +489,25 @@ test("FIGHT-02 starts every valuable ranged probe at its authored damaged health
   }
 });
 
+test("FIGHT-03 unequal fronts retain a durable primary, isolated contact and matched loss event", () => {
+  const fixture = nativeScenarioFixture("FIGHT-03");
+  for (const variant of fixture.recipe.variants.filter((entry) => /(?:unequal|infeasible)$/.test(entry.id))) {
+    const world = variant.presetWorld;
+    const primary = world.actors.find((actor) => actor.fixtureActorId === "front-target-a");
+    const secondary = world.actors.find((actor) => actor.fixtureActorId === "front-target-b");
+    assert.equal(primary?.actorName, variant.aiFaction === "Tivara" ? "FrostForge" : "Sandhold");
+    assert.equal(secondary?.actorName, variant.aiFaction === "Tivara" ? "InfantryInn" : "AnkGuard");
+    assert.deepEqual(secondary?.position, { x: 160, y: 1296, z: 0 });
+    assert.equal(world.actors.filter((actor) => actor.fixtureActorId.startsWith("front-reinforcement-")).length, 6);
+    if (variant.id.endsWith("infeasible")) {
+      const loss = world.events.find((event) => event.id === "loss-front-target-a");
+      assert.equal(loss?.tick, 400);
+      assert.equal(loss?.fixtureActorId, primary.fixtureActorId);
+      assert.equal(loss?.objectName, primary.actorName);
+    }
+  }
+});
+
 test("FIGHT-04 support branches start with only their tested native spell already researched", () => {
   const fixture = nativeScenarioFixture("FIGHT-04"), binding = fixture.assertions["FIGHT-04"].requiredNativeScenario;
   for (const variant of fixture.recipe.variants) {

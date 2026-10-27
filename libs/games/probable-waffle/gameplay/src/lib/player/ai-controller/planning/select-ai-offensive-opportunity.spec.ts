@@ -403,6 +403,24 @@ describe("fastest credible offense", () => {
     expect(result.statePatch?.strategy?.assessment).toEqual(
       expect.objectContaining({ targetActorId: producerTarget.actorId, selectionSource: "working_objective" })
     );
+
+    const attackMovingGuards = ["a", "b", "c", "d"].map((id) => ({
+      ...guard(id, "self", 10),
+      activeOrder: {
+        status: "known" as const,
+        value: { orderType: OrderType.Attack, targetActorId: "intercepted-enemy", targetPosition: { x: 0, y: 0, z: 0 } },
+        observedTick: 100
+      }
+    }));
+    const attackMoving = manager.propose(world([...attackMovingGuards, producerTarget, visibleCore, ...coreGuards], 120), {
+      ...initial,
+      squads: [attack],
+      strategy: first.statePatch.strategy,
+      skirmish: first.statePatch.skirmish
+    });
+    expect(attackMoving.statePatch?.strategy?.assessment).toEqual(
+      expect.objectContaining({ targetActorId: producerTarget.actorId, selectionSource: "working_objective" })
+    );
   });
 
   it("does not preempt a viable committed objective for a newly ready enemy core", () => {

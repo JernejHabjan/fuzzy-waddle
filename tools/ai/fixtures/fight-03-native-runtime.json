@@ -369,7 +369,7 @@
             },
             {
               "fixtureActorId": "front-target-a",
-              "actorName": "InfantryInn",
+              "actorName": "FrostForge",
               "owner": 1,
               "position": {
                 "x": 160,
@@ -379,11 +379,11 @@
             },
             {
               "fixtureActorId": "front-target-b",
-              "actorName": "SkaduweeWorkerMale",
+              "actorName": "InfantryInn",
               "owner": 1,
               "position": {
-                "x": -416,
-                "y": 880,
+                "x": 160,
+                "y": 1296,
                 "z": 0
               }
             },
@@ -532,8 +532,68 @@
               "actorName": "TivaraMacemanMale",
               "owner": 2,
               "position": {
-                "x": -192,
+                "x": 288,
+                "y": 1168,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-reinforcement-0",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-reinforcement-1",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 32,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-reinforcement-2",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 64,
                 "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-reinforcement-3",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-reinforcement-4",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-reinforcement-5",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 32,
+                "y": 944,
                 "z": 0
               }
             }
@@ -1460,7 +1520,7 @@
             },
             {
               "fixtureActorId": "front-target-a",
-              "actorName": "InfantryInn",
+              "actorName": "FrostForge",
               "owner": 1,
               "position": {
                 "x": 160,
@@ -1470,11 +1530,11 @@
             },
             {
               "fixtureActorId": "front-target-b",
-              "actorName": "SkaduweeWorkerMale",
+              "actorName": "InfantryInn",
               "owner": 1,
               "position": {
-                "x": -416,
-                "y": 880,
+                "x": 160,
+                "y": 1296,
                 "z": 0
               }
             },
@@ -1623,8 +1683,68 @@
               "actorName": "TivaraMacemanMale",
               "owner": 2,
               "position": {
-                "x": -192,
+                "x": 288,
+                "y": 1168,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-reinforcement-0",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-reinforcement-1",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 32,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-reinforcement-2",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 64,
                 "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-reinforcement-3",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-reinforcement-4",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-reinforcement-5",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 32,
+                "y": 944,
                 "z": 0
               }
             }
@@ -1666,10 +1786,10 @@
           "events": [
             {
               "id": "loss-front-target-a",
-              "tick": 600,
+              "tick": 400,
               "kind": "destroy_owned_actor",
               "owner": 1,
-              "objectName": "InfantryInn",
+              "objectName": "FrostForge",
               "fixtureActorId": "front-target-a"
             }
           ],
@@ -1993,7 +2113,7 @@
             },
             {
               "fixtureActorId": "front-target-a",
-              "actorName": "AnkGuard",
+              "actorName": "Sandhold",
               "owner": 1,
               "position": {
                 "x": 160,
@@ -2003,11 +2123,11 @@
             },
             {
               "fixtureActorId": "front-target-b",
-              "actorName": "TivaraWorkerMale",
+              "actorName": "AnkGuard",
               "owner": 1,
               "position": {
-                "x": -416,
-                "y": 880,
+                "x": 160,
+                "y": 1296,
                 "z": 0
               }
             },
@@ -2156,8 +2276,68 @@
               "actorName": "SkaduweeWarriorMale",
               "owner": 2,
               "position": {
-                "x": -192,
+                "x": 288,
+                "y": 1168,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-reinforcement-0",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-reinforcement-1",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 32,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-reinforcement-2",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 64,
                 "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-reinforcement-3",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-reinforcement-4",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-reinforcement-5",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 32,
+                "y": 944,
                 "z": 0
               }
             }
@@ -3084,7 +3264,7 @@
             },
             {
               "fixtureActorId": "front-target-a",
-              "actorName": "AnkGuard",
+              "actorName": "Sandhold",
               "owner": 1,
               "position": {
                 "x": 160,
@@ -3094,11 +3274,11 @@
             },
             {
               "fixtureActorId": "front-target-b",
-              "actorName": "TivaraWorkerMale",
+              "actorName": "AnkGuard",
               "owner": 1,
               "position": {
-                "x": -416,
-                "y": 880,
+                "x": 160,
+                "y": 1296,
                 "z": 0
               }
             },
@@ -3247,8 +3427,68 @@
               "actorName": "SkaduweeWarriorMale",
               "owner": 2,
               "position": {
-                "x": -192,
+                "x": 288,
+                "y": 1168,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-reinforcement-0",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-reinforcement-1",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 32,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-reinforcement-2",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 64,
                 "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-reinforcement-3",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 944,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-reinforcement-4",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 0,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "front-reinforcement-5",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 32,
+                "y": 944,
                 "z": 0
               }
             }
@@ -3290,10 +3530,10 @@
           "events": [
             {
               "id": "loss-front-target-a",
-              "tick": 600,
+              "tick": 400,
               "kind": "destroy_owned_actor",
               "owner": 1,
-              "objectName": "AnkGuard",
+              "objectName": "Sandhold",
               "fixtureActorId": "front-target-a"
             }
           ],

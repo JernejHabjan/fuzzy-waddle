@@ -235,4 +235,25 @@ describe("Stage 4 observation generation guards", () => {
       })?.contacts
     ).toEqual([]);
   });
+
+  it("forgets an absent main building only when its last position is currently visible", () => {
+    const contact = (actorId: string, x: number, mainBuilding: boolean) => ({
+      actorId, objectName: ObjectNames.Sandhold, owner: 2, relation: "enemy",
+      evidenceId: `evidence:contact:${actorId}`, lastSeenTick: 420, confidencePermille: 1000,
+      mainBuilding, position: { x, y: 3, z: 0 }
+    });
+    const state = normalizeAiObservationMemoryState({
+      schemaVersion: 1, generation: 1, committedTick: 500, knowledgeRevision: 1,
+      queryInputRevision: 1, queryContinuationCursor: 0, invalidationDebt: 0,
+      contacts: [contact("empty-core", 2, true), contact("hidden-core", 8, true),
+        contact("moving-contact", 2, false), contact("visible-core", 2, true)]
+    });
+    if (!state) throw new Error("missing_memory_state");
+    const memory = new Map(state.contacts.map((entry) => [entry.actorId, entry]));
+    const remembered = projectRememberedContacts(memory, new Set(["visible-core"]), 500, (tile) => tile.x === 2);
+
+    expect(remembered.map((entry) => entry.actorId)).toEqual(["hidden-core", "moving-contact"]);
+    expect(memory.has("empty-core")).toBe(false);
+    expect(memory.has("visible-core")).toBe(true);
+  });
 });

@@ -215,7 +215,7 @@ export function selectAiOffensiveOpportunity(
       const order = activeOrder?.value ?? null;
       if (!missionMembers.has(actor.actorId)) return false;
       const followingMove =
-        order?.orderType === OrderType.Move &&
+        (order?.orderType === OrderType.Move || order?.orderType === OrderType.Attack) &&
         order.targetPosition != null &&
         context.observation.tick - (activeOrder?.observedTick ?? 0) <= NATIVE_PURSUIT_ORDER_MAX_AGE_TICKS &&
         distance(order.targetPosition, targetPosition) <= NATIVE_PURSUIT_DESTINATION_RADIUS;

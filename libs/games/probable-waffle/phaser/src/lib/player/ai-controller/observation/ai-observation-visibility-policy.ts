@@ -9,6 +9,7 @@ import type { ActorIndexSystem as ActorIndexSystemType } from "../../../world/se
 import type { NavigationService } from "../../../world/services/navigation.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { getGameObjectCurrentTile } from "../../../data/game-object-helper";
+import { DistanceHelper } from "../../../library/distance-helper";
 
 type GameObject = Phaser.GameObjects.GameObject;
 
@@ -88,6 +89,22 @@ export class AiObservationVisibilityPolicy {
       const vision = getActorComponent(source, VisionComponent);
       if (!sourceTile || !vision) return false;
       return Math.floor(Math.hypot(sourceTile.x - tile.x, sourceTile.y - tile.y)) <= vision.range;
+    });
+  }
+
+  /** Uses the same three-dimensional vision distance as observing a ground actor. */
+  mayObserveGroundTile(tile: Vector2Simple): boolean {
+    if (this.informationPolicy !== "skirmish") return true;
+    const index = this.ownerIndex ?? getSceneService(this.scene, ActorIndexSystem);
+    if (!index) return false;
+    return index.getOwnedActors(this.playerNumber).some((source) => {
+      const sourceTile = this.ownerNavigation
+        ? this.ownerNavigation.getCenterTileCoordUnderObject(source)
+        : getGameObjectCurrentTile(source);
+      const vision = getActorComponent(source, VisionComponent);
+      if (!sourceTile || !vision) return false;
+      const distance = Math.hypot(sourceTile.x - tile.x, sourceTile.y - tile.y, DistanceHelper.getFlyingHeightInTiles(source));
+      return Math.floor(distance) <= vision.range;
     });
   }
 }

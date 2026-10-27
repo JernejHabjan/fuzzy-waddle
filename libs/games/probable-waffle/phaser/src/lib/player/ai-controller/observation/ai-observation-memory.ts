@@ -13,11 +13,17 @@ export type RememberedContact = AiObservationMemoryStateData["contacts"][number]
 export function projectRememberedContacts(
   memory: Map<ActorId, RememberedContact>,
   visibleIds: ReadonlySet<ActorId>,
-  tick: number
+  tick: number,
+  mayObserveGroundTile: (position: NonNullable<RememberedContact["position"]>) => boolean = () => false
 ): AiObservedActorV1[] {
   const remembered: AiObservedActorV1[] = [];
   for (const contact of memory.values()) {
     if (visibleIds.has(contact.actorId)) continue;
+    // A stationary main building cannot remain at an empty location the player can currently see.
+    if (contact.mainBuilding === true && contact.position && mayObserveGroundTile(contact.position)) {
+      memory.delete(contact.actorId);
+      continue;
+    }
     const elapsed = Math.max(0, tick - contact.lastSeenTick);
     if (isRememberedContactExpired(contact.lastSeenTick, tick)) {
       memory.delete(contact.actorId);

@@ -109,8 +109,13 @@ export function nativeScenarioActors(id, own, enemy, branch) {
   }
   if (["STRAT-13", "FIGHT-03"].includes(id)) {
     actors.push(actor("front-observer-a", melee(own), 2, 25, 20), actor("front-observer-b", melee(own), 2, 25, 32));
-    if (id === "FIGHT-03" && branch !== "equal")
-      actors.find((entry) => entry.fixtureActorId === "front-target-b").actorName = `${enemy}WorkerMale`;
+    if (id === "FIGHT-03" && branch !== "equal") {
+      actors.find((entry) => entry.fixtureActorId === "front-target-a").actorName = enemy === "Tivara" ? "Sandhold" : "FrostForge";
+      actors.find((entry) => entry.fixtureActorId === "front-target-b").position = tile(42, 38);
+      actors.find((entry) => entry.fixtureActorId === "front-observer-b").position = tile(40, 32);
+      for (const [index, [x, y]] of [[27, 28], [28, 28], [29, 28], [30, 28], [28, 29], [29, 29]].entries())
+        actors.push(actor(`front-reinforcement-${index}`, melee(own), 2, x, y));
+    }
   }
   if (id === "STRAT-11" && branch === "resource") {
     actors.find((entry) => entry.fixtureActorId === "own-source").position = tile(22, 24);

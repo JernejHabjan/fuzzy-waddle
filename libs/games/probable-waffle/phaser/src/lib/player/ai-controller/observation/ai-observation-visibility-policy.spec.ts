@@ -2,6 +2,8 @@ import Phaser from "phaser";
 import { ActorData, ActorDataKey } from "../../../data/actor-data";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { OwnerComponent } from "../../../entity/components/owner-component";
+import { VisionComponent } from "../../../entity/components/vision-component";
+import { RepresentableComponent } from "../../../entity/components/representable-component";
 import { AiObservationVisibilityPolicy } from "./ai-observation-visibility-policy";
 
 function actor(owner: number): Phaser.GameObjects.GameObject {
@@ -60,6 +62,20 @@ describe("Stage 4 AI visibility policy", () => {
     const policy = new AiObservationVisibilityPolicy(captureScene, 1, { getOwnedActors: () => [source] }, navigation);
     expect(policy.mayObserveTile({ x: 0, y: 0 })).toBe(false);
     expect(navigation.getCenterTileCoordUnderObject).toHaveBeenCalledWith(source);
+  });
+
+  it("requires a ground location to be within the source's full three-dimensional vision range", () => {
+    const vision = Object.assign(Object.create(VisionComponent.prototype), { visionDefinition: { range: 5 } });
+    const representable = { flyingHeightPixels: 320 };
+    const source = {
+      getData: (key: string) => key === ActorDataKey
+        ? new ActorData(new Map([[VisionComponent, vision], [RepresentableComponent, representable]]), new Map())
+        : undefined
+    } as unknown as Phaser.GameObjects.GameObject;
+    const navigation = { getCenterTileCoordUnderObject: () => ({ x: 0, y: 0 }) };
+    const policy = new AiObservationVisibilityPolicy(scene("normal"), 1, { getOwnedActors: () => [source] }, navigation);
+    expect(policy.mayObserveGroundTile({ x: 0, y: 0 })).toBe(true);
+    expect(policy.mayObserveGroundTile({ x: 4, y: 0 })).toBe(false);
   });
 
   it("distinguishes allied support from enemy targets", () => {

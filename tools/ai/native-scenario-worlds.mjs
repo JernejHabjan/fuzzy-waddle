@@ -60,7 +60,7 @@ export function nativeScenarioWorld(id, faction, branch) {
   }
   if (["STRAT-13", "FIGHT-03"].includes(id)) {
     if (branch === "escalated" || branch === "unequal") reinforcements(3);
-    if (branch === "infeasible") loss("front-target-a", 600);
+    if (branch === "infeasible") loss("front-target-a", id === "FIGHT-03" ? 400 : 600);
   }
   if (id === "FIGHT-01" && branch === "support_loss") loss("support-probe", 400);
   if (id === "FIGHT-01" && branch === "completed") loss("contact-group", 400);
