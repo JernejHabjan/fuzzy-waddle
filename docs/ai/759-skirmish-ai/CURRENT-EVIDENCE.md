@@ -37,6 +37,11 @@ branch fully passes. Overkill branches lack native useful damage across both req
 apply a native effect or start the selected caster’s cooldown; the authored healing research completes only near tick
 2,380, leaving no useful runtime window. Harmful-zone and temporary-support expiry evidence also remain open.
 
+FIGHT-05 report `1793097702563-failed.json` on `d12bd22e8d41` ran seven of eight variants (840 decisions / 16,807 ticks).
+Tivara/Skaduwee wall controls and Skaduwee target-loss/disconnected cases pass. Tivara stun and Skaduwee slow lack
+native status evidence; Tivara disconnected recovery lacks a native alternative effect; Tivara target-loss fails event
+actor validation. Initial report `1793097001251-failed.json` was a zero-runtime Nx startup error; its retry completed.
+
 ## Validated outcomes
 
 - Packages 1–2 are complete: production 8/8; economy/technology 16/16.
