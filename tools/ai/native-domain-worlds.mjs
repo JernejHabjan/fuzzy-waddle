@@ -19,15 +19,17 @@ export function nativeDomainWorld(id, faction, branch) {
     if (branch === "no_value") target.position = tile(29, 26);
     return world;
   }
-  // A connected river has a land crossing; the positive naval mission is coastal, never an island-only substitute.
-  for (let x = 26; x <= 28; x++) for (let y = 3; y <= 43; y++) {
-    // Keep a two-tile navigable lane beside the one-tile land crossing in the fleet mission world.
-    if (y >= 23 && y <= 25 && (id !== "DOMAIN-02" || x === 26)) continue;
+  // Keep a navigable river beside the land crossing in the ordinary domain fixtures.
+  for (let x = 26; x <= 28; x++) for (let y = 0; y <= 49; y++) {
+    if (id !== "DOMAIN-02" && (y < 3 || y > 43)) continue;
+    // DOMAIN-02's coast objective is intentionally cheaper by water than by the long route around the river.
+    if (y >= 23 && y <= 25 && id !== "DOMAIN-02") continue;
     world.terrainPatches.push({ x, y, terrain: "water", blocked: false });
   }
   world.actors.find((a) => a.fixtureActorId === "scout-probe").position = tile(29, 30);
   target.actorName = "WorkMill";
   target.position = tile(25, branch === "irrelevant" || branch === "unsupported" ? 24 : 35);
+  if (id === "DOMAIN-02" && branch === "coast") target.position = tile(25, 19);
   if (branch === "irrelevant" || branch === "unsupported") {
     target.position = tile(32, 25);
     world.actors.find((a) => a.fixtureActorId === "scout-probe").position = tile(32, 24);
@@ -46,12 +48,13 @@ export function nativeDomainWorld(id, faction, branch) {
       if (x === 4 || x === 10 || y === 4 || y === 10)
         world.terrainPatches.push({ x, y, terrain: "grass", blocked: true });
   }
-  if (branch === "escort" || branch === "intercept") {
+  if (branch === "escort") {
     world.actors.push(actor("escort-carrier", "CommonBoat", 2, 28, 12), actor("escort-worker", `${faction}WorkerMale`, 2, 29, 12));
     world.controls.push(control("escort-board", "escort-worker", 100, { kind: "board", targetFixtureActorId: "escort-carrier" }),
-      control("escort-sail", "escort-carrier", 600, { kind: "move", worldPosition: tile(28, 32) }),
-      control("escort-unload", "escort-carrier", 1200, { kind: "unload", worldPosition: tile(29, 32) }),
-      control("escort-attack", "contact-group", 800, { kind: "attack", targetFixtureActorId: "escort-carrier" }));
+      control("escort-sail", "escort-carrier", 500, { kind: "move", worldPosition: tile(29, 32) }),
+      control("escort-unload", "escort-carrier", 800, { kind: "unload", worldPosition: tile(30, 33) }),
+      control("escort-retreat", "escort-carrier", 860, { kind: "move", worldPosition: tile(28, 12) }),
+      control("escort-attack", "contact-group", 900, { kind: "attack", targetFixtureActorId: "escort-carrier" }));
   }
   return world;
 }

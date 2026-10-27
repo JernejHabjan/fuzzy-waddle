@@ -68,6 +68,20 @@ function targetValue(actor: AiObservedActorV1): number {
   return canFight(actor) ? 280 : 360;
 }
 
+function nearbyWaterThreatBonus(context: AiSkirmishProposalContext, actor: AiObservedActorV1): number {
+  if (!domains(actor).includes("water") || !canFight(actor) || !position(actor)) return 0;
+  const attacks = actor.combatProfile?.status === "known" ? actor.combatProfile.value.attacks : [];
+  const threatensGround = attacks.some((attack) => attack.targetDomains.includes("ground"));
+  if (!threatensGround) return 0;
+  const nearbyFriendly = context.observation.actors.some((friendly) => {
+    const friendlyPosition = position(friendly);
+    return friendly.relation === "self" && friendlyPosition !== undefined &&
+      attacks.some((attack) => domains(friendly).some((domain) => attack.targetDomains.includes(domain))) &&
+      distance(position(actor)!, friendlyPosition) <= 8;
+  });
+  return nearbyFriendly ? 1200 : 0;
+}
+
 function threatNear(
   context: AiSkirmishProposalContext,
   target: AiObservedActorV1,
@@ -123,8 +137,10 @@ export function selectAiOffensiveOpportunity(
         context.observation.tick - recentFailure.observedTick <= FAILURE_MEMORY_TICKS
           ? Math.min(4, recentFailure.repeatedFailures * 2 + Math.floor(recentFailure.losses / 4))
           : 0;
-      const required =
-        Math.max(producers >= 2 ? 8 : isCore(opponent) ? 2 : 3, Math.ceil(threats * 1.5) + 1) + failurePenalty;
+      const navalMission = route.kind === "direct" && route.domain === "water";
+      const required = navalMission
+        ? Math.max(1, Math.ceil(Math.max(0, threats - 1) * 1.5) + 1) + failurePenalty
+        : Math.max(producers >= 2 ? 8 : isCore(opponent) ? 2 : 3, Math.ceil(threats * 1.5) + 1) + failurePenalty;
       const travel =
         position(compatibleAttackers[0]) && position(opponent)
           ? distance(position(compatibleAttackers[0])!, position(opponent)!)
@@ -133,7 +149,8 @@ export function selectAiOffensiveOpportunity(
         opponent.visibility === "last_seen" ? Math.min(400, context.observation.tick - opponent.observedTick) : 0;
       const routeCost = route.kind === "direct" ? 0 : 180;
       const score =
-        targetValue(opponent) - Math.min(400, travel * 8) - threats * 100 - producers * 70 - stale - routeCost;
+        targetValue(opponent) + nearbyWaterThreatBonus(context, opponent) - Math.min(400, travel * 8) -
+        threats * 100 - producers * 70 - stale - routeCost;
       return [
         { opponent, attackers: compatibleAttackers, route, score, capable, required, threats, producers, travel }
       ];
@@ -266,6 +283,15 @@ export function selectAiOffensiveOpportunity(
         candidate.capable >= candidate.required &&
         candidate.score >= visibleReachableCore.score + ALTERNATIVE_CORE_SCORE_ADVANTAGE
     );
+  const urgentWaterThreat = ranked.find(
+    (candidate) =>
+      candidate.route.kind === "direct" &&
+      candidate.route.domain === "water" &&
+      domains(candidate.opponent).includes("water") &&
+      nearbyWaterThreatBonus(context, candidate.opponent) > 0 &&
+      candidate.capable >= candidate.required &&
+      (workingObjective === undefined || candidate.score >= workingObjective.score + ALTERNATIVE_CORE_SCORE_ADVANTAGE)
+  );
   const competingVisibleCore =
     visibleReachableCore &&
     !retainedRememberedObjective &&
@@ -277,6 +303,7 @@ export function selectAiOffensiveOpportunity(
       ? visibleReachableCore
       : undefined;
   const selected =
+    urgentWaterThreat ??
     competingVisibleCore ??
     scoutingCore ??
     rememberedCore ??

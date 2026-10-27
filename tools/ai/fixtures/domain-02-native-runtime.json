@@ -321,8 +321,8 @@
               "actorName": "WorkMill",
               "owner": 1,
               "position": {
-                "x": -288,
-                "y": 976,
+                "x": 224,
+                "y": 720,
                 "z": 0
               }
             },
@@ -432,6 +432,24 @@
           "terrainPatches": [
             {
               "x": 26,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 2,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
               "y": 3,
               "terrain": "water",
               "blocked": false
@@ -552,6 +570,24 @@
             },
             {
               "x": 26,
+              "y": 23,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 24,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 25,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
               "y": 26,
               "terrain": "water",
               "blocked": false
@@ -655,6 +691,60 @@
             {
               "x": 26,
               "y": 43,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 49,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 2,
               "terrain": "water",
               "blocked": false
             },
@@ -905,6 +995,60 @@
               "blocked": false
             },
             {
+              "x": 27,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 49,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 2,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
               "x": 28,
               "y": 3,
               "terrain": "water",
@@ -1147,6 +1291,42 @@
             {
               "x": 28,
               "y": 43,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 49,
               "terrain": "water",
               "blocked": false
             }
@@ -1487,26 +1667,6 @@
                 "y": 1312,
                 "z": 0
               }
-            },
-            {
-              "fixtureActorId": "escort-carrier",
-              "actorName": "CommonBoat",
-              "owner": 2,
-              "position": {
-                "x": 544,
-                "y": 656,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "escort-worker",
-              "actorName": "TivaraWorkerMale",
-              "owner": 2,
-              "position": {
-                "x": 576,
-                "y": 672,
-                "z": 0
-              }
             }
           ],
           "existingActorBindings": [
@@ -1547,56 +1707,7 @@
               }
             }
           ],
-          "controls": [
-            {
-              "id": "escort-board",
-              "producerFixtureActorId": "escort-worker",
-              "requestTick": 100,
-              "applicationTick": 100,
-              "action": {
-                "kind": "board",
-                "targetFixtureActorId": "escort-carrier"
-              }
-            },
-            {
-              "id": "escort-sail",
-              "producerFixtureActorId": "escort-carrier",
-              "requestTick": 600,
-              "applicationTick": 600,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": -96,
-                  "y": 976,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "escort-unload",
-              "producerFixtureActorId": "escort-carrier",
-              "requestTick": 1200,
-              "applicationTick": 1200,
-              "action": {
-                "kind": "unload",
-                "worldPosition": {
-                  "x": -64,
-                  "y": 992,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "escort-attack",
-              "producerFixtureActorId": "contact-group",
-              "requestTick": 800,
-              "applicationTick": 800,
-              "action": {
-                "kind": "attack",
-                "targetFixtureActorId": "escort-carrier"
-              }
-            }
-          ],
+          "controls": [],
           "events": [],
           "initialOrders": [
             {
@@ -1608,6 +1719,24 @@
           "terrainPatches": [
             {
               "x": 26,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 2,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
               "y": 3,
               "terrain": "water",
               "blocked": false
@@ -1728,6 +1857,24 @@
             },
             {
               "x": 26,
+              "y": 23,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 24,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 25,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
               "y": 26,
               "terrain": "water",
               "blocked": false
@@ -1831,6 +1978,60 @@
             {
               "x": 26,
               "y": 43,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 49,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 2,
               "terrain": "water",
               "blocked": false
             },
@@ -2081,6 +2282,60 @@
               "blocked": false
             },
             {
+              "x": 27,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 49,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 2,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
               "x": 28,
               "y": 3,
               "terrain": "water",
@@ -2323,6 +2578,42 @@
             {
               "x": 28,
               "y": 43,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 49,
               "terrain": "water",
               "blocked": false
             }
@@ -2737,24 +3028,10 @@
             {
               "id": "escort-sail",
               "producerFixtureActorId": "escort-carrier",
-              "requestTick": 600,
-              "applicationTick": 600,
+              "requestTick": 500,
+              "applicationTick": 500,
               "action": {
                 "kind": "move",
-                "worldPosition": {
-                  "x": -96,
-                  "y": 976,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "escort-unload",
-              "producerFixtureActorId": "escort-carrier",
-              "requestTick": 1200,
-              "applicationTick": 1200,
-              "action": {
-                "kind": "unload",
                 "worldPosition": {
                   "x": -64,
                   "y": 992,
@@ -2763,10 +3040,38 @@
               }
             },
             {
-              "id": "escort-attack",
-              "producerFixtureActorId": "contact-group",
+              "id": "escort-unload",
+              "producerFixtureActorId": "escort-carrier",
               "requestTick": 800,
               "applicationTick": 800,
+              "action": {
+                "kind": "unload",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 1024,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "escort-retreat",
+              "producerFixtureActorId": "escort-carrier",
+              "requestTick": 860,
+              "applicationTick": 860,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 544,
+                  "y": 656,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "escort-attack",
+              "producerFixtureActorId": "contact-group",
+              "requestTick": 900,
+              "applicationTick": 900,
               "action": {
                 "kind": "attack",
                 "targetFixtureActorId": "escort-carrier"
@@ -2784,6 +3089,24 @@
           "terrainPatches": [
             {
               "x": 26,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 2,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
               "y": 3,
               "terrain": "water",
               "blocked": false
@@ -2904,6 +3227,24 @@
             },
             {
               "x": 26,
+              "y": 23,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 24,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 25,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
               "y": 26,
               "terrain": "water",
               "blocked": false
@@ -3007,6 +3348,60 @@
             {
               "x": 26,
               "y": 43,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 49,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 2,
               "terrain": "water",
               "blocked": false
             },
@@ -3257,6 +3652,60 @@
               "blocked": false
             },
             {
+              "x": 27,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 49,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 2,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
               "x": 28,
               "y": 3,
               "terrain": "water",
@@ -3499,6 +3948,42 @@
             {
               "x": 28,
               "y": 43,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 49,
               "terrain": "water",
               "blocked": false
             }
@@ -3879,6 +4364,24 @@
           "terrainPatches": [
             {
               "x": 26,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 2,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
               "y": 3,
               "terrain": "water",
               "blocked": false
@@ -3999,6 +4502,24 @@
             },
             {
               "x": 26,
+              "y": 23,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 24,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 25,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
               "y": 26,
               "terrain": "water",
               "blocked": false
@@ -4102,6 +4623,60 @@
             {
               "x": 26,
               "y": 43,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 49,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 2,
               "terrain": "water",
               "blocked": false
             },
@@ -4352,6 +4927,60 @@
               "blocked": false
             },
             {
+              "x": 27,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 49,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 2,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
               "x": 28,
               "y": 3,
               "terrain": "water",
@@ -4594,6 +5223,42 @@
             {
               "x": 28,
               "y": 43,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 49,
               "terrain": "water",
               "blocked": false
             },
@@ -5118,6 +5783,24 @@
           "terrainPatches": [
             {
               "x": 26,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 2,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
               "y": 3,
               "terrain": "water",
               "blocked": false
@@ -5238,6 +5921,24 @@
             },
             {
               "x": 26,
+              "y": 23,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 24,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 25,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
               "y": 26,
               "terrain": "water",
               "blocked": false
@@ -5341,6 +6042,60 @@
             {
               "x": 26,
               "y": 43,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 26,
+              "y": 49,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 2,
               "terrain": "water",
               "blocked": false
             },
@@ -5591,6 +6346,60 @@
               "blocked": false
             },
             {
+              "x": 27,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 27,
+              "y": 49,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 2,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
               "x": 28,
               "y": 3,
               "terrain": "water",
@@ -5833,6 +6642,42 @@
             {
               "x": 28,
               "y": 43,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 28,
+              "y": 49,
               "terrain": "water",
               "blocked": false
             }

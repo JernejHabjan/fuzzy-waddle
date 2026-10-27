@@ -74,7 +74,7 @@ export function evaluateNativeDomain(id: string, branch: string, context: Return
       if (branch === "intercept" && !context.frames.some((frame) => frame.tacticalBoundary?.actors.some((actor) =>
         actor.identity.actorId === target && actor.identity.canonicalObjectName === "VikingBoat" && actor.visible)))
         failures.push("domain_hostile_ship_not_actually_seen");
-      if (["escort", "intercept"].includes(branch)) {
+      if (branch === "escort") {
         failures.push(...nativeLandingFailures(context, "escort"));
         if (!nativeRetainedActor(context, context.roles["escort-carrier"])) failures.push("domain_native_escorted_carrier_lost");
       }

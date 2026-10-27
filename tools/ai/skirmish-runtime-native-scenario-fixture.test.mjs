@@ -507,7 +507,7 @@ test("unsupported naval and diplomacy content is explicit rather than silently i
   assert.ok(nativeScenarioFixture("C-06").capabilityLimits.some((limit) => limit.includes("unsupported")));
 });
 
-test("DOMAIN-02 keeps a connected naval lane and limits the third opponent to vessel missions", () => {
+test("DOMAIN-02 makes positive coast access naval and limits transport controls to escort", () => {
   const fixture = nativeScenarioFixture("DOMAIN-02"), binding = fixture.assertions["DOMAIN-02"].requiredNativeScenario;
   const variants = fixture.recipe.variants.map((variant) => ({
     variant,
@@ -517,6 +517,20 @@ test("DOMAIN-02 keeps a connected naval lane and limits the third opponent to ve
     const water = new Set(variant.presetWorld.terrainPatches.filter((patch) => patch.terrain === "water")
       .map((patch) => `${patch.x},${patch.y}`));
     for (let y = 12; y <= 32; y++) assert.ok(water.has(`28,${y}`), `${branch}: disconnected water at 28,${y}`);
+    for (let x = 26; x <= 28; x++) for (let y = 23; y <= 25; y++)
+      assert.ok(water.has(`${x},${y}`), `${branch}: naval river crossing unexpectedly has land at ${x},${y}`);
+    if (branch === "coast") {
+      const objective = variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "contact-group");
+      assert.equal(objective.actorName, "WorkMill");
+      assert.deepEqual(objective.position, { x: 224, y: 720, z: 0 });
+      for (let y = 0; y <= 49; y++) assert.ok(water.has(`28,${y}`), `coast: land route crosses at 28,${y}`);
+    }
+    assert.equal(variant.presetWorld.actors.some((actor) => actor.fixtureActorId === "escort-carrier"), branch === "escort");
+    assert.equal(variant.presetWorld.controls.some((control) => control.id === "escort-unload"), branch === "escort");
+    if (branch === "escort") {
+      assert.equal(variant.presetWorld.controls.find((control) => control.id === "escort-unload").applicationTick, 800);
+      assert.ok(variant.presetWorld.controls.some((control) => control.id === "escort-retreat"));
+    }
     if (["intercept", "escort"].includes(branch)) {
       assert.equal(variant.additionalAiPlayers?.some((player) => player.playerNumber === 3), true);
       assert.ok(variant.presetWorld.existingActorBindings.some((actor) => actor.fixtureActorId === "third-home"));
