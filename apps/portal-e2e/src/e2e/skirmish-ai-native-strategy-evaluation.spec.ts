@@ -75,6 +75,7 @@ function context(facts: AiRuntimeProductionFactV1[], frames: unknown[] = []) {
     "front-target-a": "front-target-a",
     "front-target-b": "front-target-b",
     "enemy-home": "enemy-home",
+    "noise-scout": "noise-scout",
     "reinforcement-0": "reinforcement-0"
   };
   return {
@@ -84,6 +85,89 @@ function context(facts: AiRuntimeProductionFactV1[], frames: unknown[] = []) {
     role: (name: keyof typeof roles) => roles[name]
   } as unknown as ReturnType<typeof nativeScenarioContext>;
 }
+
+test("STRAT-04 counts progress on the committed objective and permits effect-backed deadline extension", () => {
+  const mission = (dueTick: number, lastUsefulEffectTick: number | null) => ({
+    squadId: "squad:attack:primary",
+    role: "attack",
+    state: "engage",
+    objectiveId: "front-target-b",
+    actorIds: ["attacker"],
+    lifecycle: {
+      createdTick: 20,
+      lastUsefulEffectTick,
+      effectDeadline: { dueTick }
+    }
+  });
+  const frames = [
+    {
+      tick: 399,
+      decision: { strategy: { goalId: "goal:attack" }, missionState: { squads: [mission(2420, null)] },
+        input: { observation: { actors: [] } } }
+    },
+    {
+      tick: 400,
+      decision: { strategy: { goalId: "goal:attack" }, missionState: { squads: [mission(2420, null)] },
+        input: { observation: { actors: [{ actorId: "noise-scout", visibility: "visible" }] } } }
+    },
+    {
+      tick: 440,
+      decision: { strategy: { goalId: "goal:attack" }, missionState: { squads: [mission(2820, 400)] },
+        input: { observation: { actors: [{ actorId: "noise-scout", visibility: "visible" }] } } }
+    }
+  ];
+  const effects = attackFacts(1, 380, "front-target-b");
+
+  expect(evaluateNativeStrategy("STRAT-04", "noise", context(effects, frames))).toEqual([]);
+});
+
+test("STRAT-04 preserves the attack mission across contact aliases and legitimate target progression", () => {
+  const mission = (objectiveId: string, dueTick: number, lastUsefulEffectTick: number | null) => ({
+    squadId: "squad:attack:primary",
+    role: "attack",
+    state: "engage",
+    objectiveId,
+    actorIds: ["attacker"],
+    lifecycle: {
+      createdTick: 20,
+      lastUsefulEffectTick,
+      effectDeadline: { dueTick }
+    }
+  });
+  const frames = [
+    {
+      tick: 399,
+      decision: { strategy: { goalId: "goal:attack" }, missionState: { squads: [mission("front-target-b", 2420, null)] },
+        input: { observation: { actors: [] } } }
+    },
+    {
+      tick: 400,
+      decision: { strategy: { goalId: "goal:attack" }, missionState: { squads: [mission("hypothesis:evidence:contact:front-target-b", 2420, null)] },
+        input: { observation: { actors: [{ actorId: "noise-scout", visibility: "visible" }] } } }
+    },
+    {
+      tick: 840,
+      decision: { strategy: { goalId: "goal:attack" }, missionState: { squads: [mission("front-target-b", 2420, null)] },
+        input: { observation: { actors: [] } } }
+    },
+    {
+      tick: 900,
+      decision: { strategy: { goalId: "goal:attack" }, missionState: { squads: [mission("enemy-home", 2820, 850)] },
+        input: { observation: { actors: [] } } }
+    },
+    {
+      tick: 1200,
+      decision: { strategy: { goalId: "goal:attack" }, missionState: { squads: [mission("enemy-home", 2820, 850)] },
+        input: { observation: { actors: [] } } }
+    }
+  ];
+  const effects = [...attackFacts(1, 410, "front-target-b"), ...attackFacts(2, 840, "enemy-home")];
+
+  expect(evaluateNativeStrategy("STRAT-04", "noise", context(effects, frames))).toEqual([]);
+  expect(evaluateNativeStrategy("STRAT-04", "noise", context(attackFacts(1, 410, "noise-scout"), frames))).toContain(
+    "strategy_minor_noise_reset_commitment_or_stopped_useful_offense"
+  );
+});
 
 test("STRAT-05 quiet control accepts physical damage on another authored objective after the contact target is spent", () => {
   const facts = [...attackFacts(1, 200, "contact-group"), ...attackFacts(4, 450, "enemy-home")];

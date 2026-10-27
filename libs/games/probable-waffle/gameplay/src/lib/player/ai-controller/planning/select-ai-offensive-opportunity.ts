@@ -210,11 +210,9 @@ export function selectAiOffensiveOpportunity(
               context.observation.tick - candidate.opponent.observedTick <= USEFUL_REMEMBERED_OBJECTIVE_MAX_AGE_TICKS)) &&
           (candidate.capable >= candidate.required ||
             usefulMission ||
-            committedMission ||
             hasNativeAttackOrder(candidate.opponent.actorId) ||
             !readyActionable.some((alternative) => alternative.opponent.actorId !== candidate.opponent.actorId)) &&
           (usefulMission ||
-            committedMission ||
             hasNativeAttackOrder(candidate.opponent.actorId) ||
             hasFreshNativePursuitOrder(candidate.opponent))
       )
@@ -237,6 +235,8 @@ export function selectAiOffensiveOpportunity(
           USEFUL_REMEMBERED_OBJECTIVE_MAX_AGE_TICKS));
   const retainedNativePursuit =
     workingObjective !== undefined && hasFreshNativePursuitOrder(workingObjective.opponent);
+  const retainedCommittedMission =
+    workingObjective !== undefined && committedMission && workingObjective.capable >= workingObjective.required;
   const retainedViableMission =
     workingObjective !== undefined &&
     committedMission &&
@@ -270,6 +270,7 @@ export function selectAiOffensiveOpportunity(
     visibleReachableCore &&
     !retainedRememberedObjective &&
     !retainedNativePursuit &&
+    !retainedCommittedMission &&
     !retainedViableMission &&
     !hasMateriallyBetterReadyAlternative &&
     (coreScoutTarget !== undefined || mission?.objectiveId !== visibleReachableCore.opponent.actorId)

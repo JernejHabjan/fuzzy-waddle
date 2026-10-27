@@ -405,6 +405,35 @@ describe("fastest credible offense", () => {
     );
   });
 
+  it("does not preempt a viable committed objective for a newly ready enemy core", () => {
+    const initial = brain();
+    const attackers = Array.from({ length: 8 }, (_, index) => guard(`committed-${index}`, "self", 0));
+    const producerTarget = producer("committed-producer");
+    const first = manager.propose(world([...attackers, producerTarget]), initial);
+    const attack = first.statePatch?.squads?.find((squad) => squad.role === "attack");
+    if (!attack?.lifecycle || !first.statePatch?.strategy || !first.statePatch.skirmish)
+      throw new Error("missing_committed_attack_mission");
+    const progressingAttack = {
+      ...attack,
+      lifecycle: {
+        ...attack.lifecycle,
+        lastUsefulEffectTick: 80,
+        effectDeadline: { ...attack.lifecycle.effectDeadline, dueTick: 1000 }
+      }
+    };
+
+    const result = manager.propose(world([...attackers, producerTarget, core("enemy-core")], 120), {
+      ...initial,
+      squads: [progressingAttack],
+      strategy: first.statePatch.strategy,
+      skirmish: first.statePatch.skirmish
+    });
+
+    expect(result.statePatch?.strategy?.assessment).toEqual(
+      expect.objectContaining({ targetActorId: producerTarget.actorId, selectionSource: "working_objective" })
+    );
+  });
+
   it("releases objective hysteresis when an active attack mission is retreating", () => {
     const guards = [guard("a", "self", 0), guard("b", "self", 0), guard("c", "self", 0)];
     const producerTarget = producer("enemy-producer");

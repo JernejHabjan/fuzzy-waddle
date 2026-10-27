@@ -67,7 +67,8 @@ export function nativeScenarioActors(id, own, enemy, branch) {
   }
   if (id === "H-27" && branch === "uncovered")
     actors.find((entry) => entry.fixtureActorId === "contact-group").position = tile(28, 21);
-  if (["STRAT-04", "STRAT-05", "STRAT-12", "STRAT-13", "FIGHT-01", "FIGHT-03"].includes(id)) {
+  if ((id === "STRAT-04" ? branch === "real_threat" :
+    ["STRAT-05", "STRAT-12", "STRAT-13", "FIGHT-01", "FIGHT-03"].includes(id))) {
     for (let i = 0; i < 12; i++) actors.push(actor(`reinforcement-${i}`, melee(enemy), 1, 4 + i % 4, 8 + Math.floor(i / 4)));
   }
   if (["STRAT-07", "RAID-01"].includes(id) && ["defended", "protected"].includes(branch))

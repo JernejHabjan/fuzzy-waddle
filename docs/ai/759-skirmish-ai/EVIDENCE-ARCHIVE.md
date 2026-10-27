@@ -3,6 +3,28 @@
 Historical snapshots through 2026-10-27. This file preserves detailed diagnostic notes from earlier checkpoints; it may
 contain superseded observations and next actions. Use HANDOFF.md and CURRENT-EVIDENCE.md for the active status.
 
+## 2026-10-27 — STRAT-04 target retention and current failure boundary
+
+- Root repairs: retain a viable committed target against core-score preemption; remove the reinforcement wave from quiet/noise controls; make harmless local contacts insufficient to divert the attack squad; and measure the same goal/squad across contact aliases and legitimate target transitions.
+- Native report `1793068423891-failed.json` captured five branches. Current-revision Tivara-noise diagnostic `1793068012264-diagnostic_passed.json` passes. The family report marked Tivara quiet due to the old deadline-boundary oracle and Tivara real-threat failed to start with Windows `ERR_NO_BUFFER_SPACE`; do not treat it as a complete family.
+- Re-evaluating the retained quiet/noise captures with the current oracle confirms the first useful-effect time may precede its observing decision by one cadence. The oracle now binds exact attack-squad members to native physical damage on authored strategic targets and allows the bounded observation boundary; harmless-scout damage never qualifies.
+- Focused gameplay planner specs pass 45/45; STRAT-04 native evaluator Playwright tests pass 4/4; native fixture audit passes 32/32; portal-e2e TypeScript check and `git diff --check` pass. A full six-branch run on the finalized source/fixture is still required to close STRAT-04.
+
+## 2026-10-27 — STRAT-04 six-branch closure
+
+- Passing report: `D:\ai-skirmish-work\matrix\1793069202745-passed.json`; source base `2210ab7fe09d`, dirty-source digest
+  `fnv1a32:d22008af`, fixture digest `fnv1a32:4e15b8c2`. All six branches pass at 100 decisions / 2,001 ticks each.
+  Tivara quiet/noise/real-threat end with 8/8/6 workers and 12/12/9 army; Skaduwee ends with 8 workers and 12 army in
+  each branch. The earlier full attempt `1793068423891-failed.json` was incomplete (5/6) after a browser
+  `ERR_NO_BUFFER_SPACE`; the complete retry closed the family.
+- Repairs: the selector no longer lets a newly ready core preempt a viable committed target. The quiet/noise fixture
+  omits the counterforce wave; only real-threat branches include it. Attack squads ignore a harmless local scout as an
+  immediate threat, allowing local defense to respond without refreshing the main mission from scout damage. The native
+  evaluator tracks stable strategic goal/squad identity across contact aliases and target progression, and proves
+  mission-member physical damage against authored strategic targets with the observing-boundary window.
+- Checks: planner specs 45/45; evaluator Playwright specs 4/4; fixture audit 32/32; portal-e2e TypeScript check and
+  `git diff --check` pass. Scoped ESLint has zero errors and 11 existing non-null assertion warnings.
+
 ## 2026-10-27 — STRAT-03 six-branch closure
 
 - All six STRAT-03 branches pass at 150 decisions / 3,001 ticks. Final Skaduwee reports:

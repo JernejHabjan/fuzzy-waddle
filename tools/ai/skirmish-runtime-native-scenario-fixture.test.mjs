@@ -105,6 +105,26 @@ test("STRAT-03 Tivara withdrawn stages, threatens and then withdraws the serious
   }
 });
 
+test("STRAT-04 harmless-noise branches contain no counterforce wave; real-threat branches stage it", () => {
+  const fixture = nativeScenarioFixture("STRAT-04");
+  for (const faction of ["tivara", "skaduwee"]) {
+    for (const branch of ["quiet", "noise"]) {
+      const variant = fixture.recipe.variants.find((candidate) => candidate.id === `strat-04-${faction}-${branch}`);
+      assert.ok(variant);
+      assert.equal(variant.presetWorld.actors.filter((actor) => actor.fixtureActorId.startsWith("reinforcement-")).length, 0);
+      if (branch === "noise") {
+        assert.equal(variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "noise-scout")?.actorName,
+          faction === "tivara" ? "SkaduweeWorkerMale" : "TivaraWorkerMale");
+        assert.equal(variant.presetWorld.controls.filter((control) => control.producerFixtureActorId === "noise-scout").length, 4);
+      }
+    }
+    const threat = fixture.recipe.variants.find((candidate) => candidate.id === `strat-04-${faction}-real-threat`);
+    assert.ok(threat);
+    assert.equal(threat.presetWorld.actors.filter((actor) => actor.fixtureActorId.startsWith("reinforcement-")).length, 12);
+    assert.equal(threat.presetWorld.controls.filter((control) => control.id.startsWith("move-reinforcement-")).length, 12);
+  }
+});
+
 test("STRAT-02 boat raid starts out of sight and unloads before its attack orders", () => {
   const fixture = nativeScenarioFixture("STRAT-02");
   const variant = fixture.recipe.variants.find((candidate) => candidate.id === "strat-02-skaduwee-boat-raid");

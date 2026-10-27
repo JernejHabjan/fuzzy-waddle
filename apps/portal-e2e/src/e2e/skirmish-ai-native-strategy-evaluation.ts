@@ -1,6 +1,6 @@
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
-import { nativeRetreats, nativeWeaponHits } from "./skirmish-ai-native-combat-effects";
+import { nativePhysicalDamageFromActor, nativeRetreats, nativeWeaponHits } from "./skirmish-ai-native-combat-effects";
 import { evaluateNativeFronts } from "./skirmish-ai-native-combat-evaluation";
 import { hasNativeSourceDelivery } from "./skirmish-ai-source-delivery";
 
@@ -13,10 +13,43 @@ export function evaluateNativeStrategy(id: string, branch: string, context: Retu
   if (id === "STRAT-04") {
     if (!mainMission?.lifecycle || !before?.decision.strategy?.goalId) failures.push("strategy_committed_mission_premise_missing");
     if (branch !== "real_threat") {
-      if (!offensiveEffect || !after.some((frame) => frame.decision.missionState?.squads.some((squad) =>
-        squad.squadId === mainMission?.squadId && squad.objectiveId === mainMission.objectiveId &&
-        squad.lifecycle?.createdTick === mainMission.lifecycle?.createdTick &&
-        squad.lifecycle?.effectDeadline.dueTick === mainMission.lifecycle?.effectDeadline.dueTick)))
+      const missionFrames = context.frames.filter((frame) => frame.tick >= 400 && frame.tick <= 1200);
+      const missionTargets = new Set([
+        context.role("front-target-a"), context.role("front-target-b"), context.role("enemy-worker"),
+        context.role("enemy-producer"), context.role("enemy-deposit"), context.role("enemy-home")
+      ]);
+      const missionActors = new Set(mainMission?.actorIds ?? []);
+      for (const frame of [...(before ? [before] : []), ...missionFrames]) {
+        const squad = frame.decision.missionState?.squads.find((candidate) =>
+          candidate.squadId === mainMission?.squadId && candidate.lifecycle?.createdTick === mainMission.lifecycle?.createdTick);
+        for (const actorId of squad?.actorIds ?? []) missionActors.add(actorId);
+        const objectiveId = squad?.objectiveId;
+        const actorId = objectiveId?.startsWith("hypothesis:evidence:contact:")
+          ? objectiveId.slice("hypothesis:evidence:contact:".length)
+          : objectiveId;
+        if (actorId && actorId !== context.role("noise-scout")) missionTargets.add(actorId);
+      }
+      // Useful effects are recorded on the next decision boundary; keep the preceding native hit in the boundary window.
+      const missionEffects = [...missionTargets].flatMap((targetId) => [...missionActors].flatMap((actorId) =>
+        nativePhysicalDamageFromActor(context, actorId, targetId, 360)));
+      let previousDeadline = mainMission?.lifecycle?.effectDeadline.dueTick ?? 0;
+      let previousUsefulEffect = mainMission?.lifecycle?.lastUsefulEffectTick ?? null;
+      const stableMission = missionFrames.every((frame) => {
+        const current = frame.decision.missionState?.squads.find((squad) =>
+          squad.squadId === mainMission?.squadId && squad.lifecycle?.createdTick === mainMission.lifecycle?.createdTick);
+        if (!current || frame.decision.strategy?.goalId !== before?.decision.strategy?.goalId ||
+          ["retreat", "retreating", "recover", "recovering", "completed", "cancelled"].includes(current.state))
+          return false;
+        const deadline = current.lifecycle?.effectDeadline.dueTick ?? previousDeadline;
+        const usefulEffect = current.lifecycle?.lastUsefulEffectTick ?? null;
+        const deadlineExtended = deadline > previousDeadline;
+        const extensionHasNativeEffect = usefulEffect !== null && usefulEffect !== previousUsefulEffect &&
+          missionEffects.some((effect) => Math.abs(effect.tick - usefulEffect) <= 20 && effect.tick <= frame.tick);
+        previousDeadline = deadline;
+        previousUsefulEffect = usefulEffect;
+        return !deadlineExtended || extensionHasNativeEffect;
+      });
+      if (!missionEffects.length || !stableMission)
         failures.push("strategy_minor_noise_reset_commitment_or_stopped_useful_offense");
       if (branch === "noise" && !after.some((frame) => frame.decision.input?.observation?.actors.some((actor) =>
         actor.actorId === context.role("noise-scout") && actor.visibility === "visible")))

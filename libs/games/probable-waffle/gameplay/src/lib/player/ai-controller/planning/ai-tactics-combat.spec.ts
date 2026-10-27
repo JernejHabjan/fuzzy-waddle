@@ -103,6 +103,30 @@ describe("AiTacticsManager", () => {
     );
   });
 
+  it("keeps a committed attack focused when a harmless local contact appears", () => {
+    const attackers = Array.from({ length: 4 }, (_, index) =>
+      combatActor(`attacker-${index}`, "self", 0, "ground", 1000, { damage: 40 })
+    );
+    const objective = combatActor("front-objective", "enemy", 20, "ground", 1000, { damage: 1 });
+    const harmlessScout = combatActor("harmless-scout", "enemy", 3, "ground", 1000, { damage: 1 });
+    const mission = {
+      ...squad("squad:attack", "attack", attackers.map((attacker) => attacker.actorId)),
+      objectiveId: objective.actorId
+    };
+
+    const result = manager.propose(observation([...attackers, objective, harmlessScout]), fixtureState([mission]));
+
+    expect(result.statePatch?.squadUpdates?.[0]).toEqual(
+      expect.objectContaining({
+        objectiveId: objective.actorId,
+        tactics: expect.objectContaining({ targetActorId: objective.actorId })
+      })
+    );
+    expect(result.intents.some((intent) => intent.kind === "attack" && intent.targetActorId === harmlessScout.actorId)).toBe(
+      false
+    );
+  });
+
   it("keeps a last-seen core hypothesis as the approach target when a different core is visible", () => {
     const attackers = Array.from({ length: 4 }, (_, index) =>
       combatActor(`attacker-${index}`, "self", 0, "ground", 1000, { damage: 40 })

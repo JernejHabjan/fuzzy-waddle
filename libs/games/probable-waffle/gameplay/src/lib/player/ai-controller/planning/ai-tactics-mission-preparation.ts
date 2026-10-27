@@ -131,7 +131,7 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
         enemy.combatProfile?.status === "known" &&
         (squad.role === "scout"
           ? isCredibleScoutThreat(enemy)
-          : enemy.combatProfile.value.attacks.some((attack) => attack.damage > 0))
+          : isCredibleScoutThreat(enemy))
     )
     .flatMap((enemy) => {
       const enemyPosition = knownPosition(enemy);
