@@ -28,6 +28,8 @@ test("placement evidence can rely on its complete transaction facts without unre
 test("exact native transaction, strategy and combat proof do not require unrelated broad resource coverage", () => {
   expect(nativeScenarioRequiresResourceCoverage("DOMAIN-01")).toBe(false);
   expect(nativeScenarioRequiresResourceCoverage("DOMAIN-05")).toBe(false);
+  for (const id of ["FIGHT-01", "FIGHT-02", "FIGHT-03", "FIGHT-04", "FIGHT-05"])
+    expect(nativeScenarioRequiresResourceCoverage(id)).toBe(false);
   expect(nativeScenarioRequiresResourceCoverage("STRAT-02")).toBe(false);
   expect(nativeScenarioRequiresResourceCoverage("STRAT-03")).toBe(false);
   expect(nativeScenarioRequiresResourceCoverage("STRAT-04")).toBe(false);
