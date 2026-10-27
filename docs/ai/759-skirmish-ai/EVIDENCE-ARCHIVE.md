@@ -3,6 +3,28 @@
 Historical snapshots through 2026-10-27. This file preserves detailed diagnostic notes from earlier checkpoints; it may
 contain superseded observations and next actions. Use HANDOFF.md and CURRENT-EVIDENCE.md for the active status.
 
+## 2026-10-27 — STRAT-03 six-branch closure
+
+- All six STRAT-03 branches pass at 150 decisions / 3,001 ticks. Final Skaduwee reports:
+  - Reinforced: `D:\ai-skirmish-work\matrix\1793063499775-diagnostic_passed.json`; quit, six workers, 20 army,
+    4,158 damage, 18 enemy losses.
+  - Minor: `D:\ai-skirmish-work\matrix\1793063709972-diagnostic_passed.json`; win, six workers, 34 army,
+    2,893 damage, 11 enemy losses.
+  - Withdrawn: `D:\ai-skirmish-work\matrix\1793063963811-diagnostic_passed.json`; win, six workers, 28 army,
+    4,653 damage, 22 enemy losses.
+- Tivara reports: reinforced `1793060456153` (win; six workers, 31 army; 12 reinforcements observed and scaled
+  defense); minor `1793062560642` (win; six workers, 34 army); withdrawn `1793063152379` (expected quit; eight
+  workers, 27 army, 3,880 damage, 18 enemy losses, post-recall hit on enemy core). The minor report predates a
+  withdrawn-only evaluator helper; that helper is exercised by the withdrawn report.
+- Repairs: minor can destroy its authored main objective through native engine damage before attack-distance
+  projections catch up, so the narrow kill path now requires exact native damage-to-zero plus a prior committed attack
+  on that same target by that actor. Tivara withdrawn stages reinforcements before four apply pressure and leave at
+  tick 1400; the evaluator accepts useful native offense on the enemy core when the main objective is already gone.
+  Skaduwee reinforced limits direct attackers to one to preserve its home while all 12 reinforcements stage.
+- Focused checks after the evaluator/fixture edits: native fixture audit 31/31, portal-e2e TypeScript check, scoped ESLint,
+  raid evaluator Playwright 4/4, and `git diff --check` passed. First Skaduwee reinforced attempt emitted only an
+  incomplete runtime request with no payload/report; a single retry produced the passing report above.
+
 ## 2026-10-27 — STRAT-03 reinforced threat arrival
 
 - The retained run 822 failure was traced to reinforcement Attack orders targeting unseen Sandhold. A movement-first

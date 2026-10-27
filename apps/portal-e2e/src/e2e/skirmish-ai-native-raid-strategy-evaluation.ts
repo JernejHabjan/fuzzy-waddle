@@ -20,6 +20,25 @@ export function nativeRaidThreatIds(branch: string, raiderIds: readonly string[]
   return ["reinforced", "withdrawn"].includes(branch) ? [...raiderIds, ...reinforcementIds] : [...raiderIds];
 }
 
+/** An exact engine-reported objective kill is complete when its native attack was committed before the damage. */
+export function nativeObjectiveDestroyedByContact(context: ReturnType<typeof nativeScenarioContext>, targetId: string,
+  contactTick: number) {
+  return context.facts.some((damage) => damage.kind === "native_damage" && damage.tick < contactTick &&
+    damage.damage.target.actorId === targetId && damage.damage.initiator?.playerNumber === 2 &&
+    !!damage.damage.initiator.actorId && damage.damage.amount > 0 && damage.damage.healthAfter === 0 &&
+    damage.damage.damageTick === damage.tick && damage.damage.sceneActive && damage.damage.targetInCaptureScene &&
+    damage.damage.initiatorInCaptureScene && !damage.damage.snapshotRestoreInProgress &&
+    context.facts.some((attack) => attack.kind === "native_combat" && attack.operation.kind === "attack_committed" &&
+      attack.operation.actor.actorId === damage.damage.initiator?.actorId &&
+      attack.operation.target.actorId === targetId && attack.sequence < damage.sequence && attack.tick <= damage.tick));
+}
+
+/** A resolved raid releases offense onto the original objective or, if it is gone, the enemy core. */
+export function nativeRaidOffenseAfterRecall(context: ReturnType<typeof nativeScenarioContext>, mainTargetId: string,
+  enemyHomeId: string, afterTick: number) {
+  return [mainTargetId, enemyHomeId].some((targetId) => nativeWeaponHits(context, targetId, afterTick).length > 0);
+}
+
 /** Real threat arrival, proportional physical defense and continuing offense must agree across raid controls. */
 export function evaluateNativeRaidStrategy(id: string, branch: string, context: ReturnType<typeof nativeScenarioContext>) {
   const failures: string[] = [], main = context.role("main-target");
@@ -48,8 +67,9 @@ export function evaluateNativeRaidStrategy(id: string, branch: string, context: 
       entry.spatial.phase === "arrived" && entry.spatial.actualTile && entry.spatial.actualTile.x >= 28)));
   if (activeRaid && !effective.length) failures.push("raid_defense_label_has_no_physical_intervention");
   const maximumResponseMembers = nativeMaximumRaidResponseMembers(context, responseTick, new Set(threatIds));
-  const objectiveResolvedBeforeContact = !!contact && nativeWeaponHits(context, main).some((hit) =>
-    hit.kind === "native_damage" && hit.tick < contact.tick && hit.damage.healthAfter === 0);
+  const objectiveResolvedBeforeContact = !!contact && (nativeWeaponHits(context, main).some((hit) =>
+    hit.kind === "native_damage" && hit.tick < contact.tick && hit.damage.healthAfter === 0) ||
+    nativeObjectiveDestroyedByContact(context, main, contact.tick));
   if (!serious && (maximumResponseMembers >= 15 || !nativeWeaponHits(context, main, 400).length && !objectiveResolvedBeforeContact))
     failures.push("raid_minor_threat_recalled_main_force_or_stopped_native_offense");
   if (activeRaid && !nativeRetainedActor(context, context.role("original-home"))) failures.push("raid_original_home_not_retained");
@@ -63,7 +83,7 @@ export function evaluateNativeRaidStrategy(id: string, branch: string, context: 
     if (!injury.length) failures.push("raid_serious_native_asset_danger_missing");
     if (branch === "withdrawn" && !context.frames.some((frame) => frame.tick > 1400 &&
       frame.decision.missionState?.squads.some((squad) => squad.role === "attack" && squad.actorIds.length)) ||
-        branch === "withdrawn" && !nativeWeaponHits(context, main, 1400).length)
+        branch === "withdrawn" && !nativeRaidOffenseAfterRecall(context, main, context.role("enemy-home"), 1400))
       failures.push("raid_resolved_threat_did_not_release_recall_into_useful_offense");
   }
   const serviceContinued = [null, 2].some((sourceOwner) =>

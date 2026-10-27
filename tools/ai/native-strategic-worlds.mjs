@@ -56,10 +56,11 @@ export function nativeStrategicWorld(id, faction, branch) {
     if (branch === "boat_raid") addNativeBoatRaid(world);
     if (["reinforced", "withdrawn"].includes(branch)) for (let i = 0; i < 12; i++) {
       world.actors.push(actor(`raid-reinforcement-${i}`, melee(enemy), 1, 5 + i % 4, 10 + Math.floor(i / 4)));
-      if (id === "STRAT-03" && branch === "reinforced") {
+      if (id === "STRAT-03" && (branch === "reinforced" || faction === "Tivara" && branch === "withdrawn")) {
         world.controls.push(control(`raid-reinforce-${i}`, `raid-reinforcement-${i}`, 800,
           { kind: "move", worldPosition: tile(31 + i % 3, 17 + Math.floor(i / 3)) }));
-        if (i < 4) world.controls.push(control(`raid-reinforce-attack-${i}`, `raid-reinforcement-${i}`, 1200,
+        const directAttackers = faction === "Skaduwee" ? 1 : 4;
+        if (i < directAttackers) world.controls.push(control(`raid-reinforce-attack-${i}`, `raid-reinforcement-${i}`, 1200,
           { kind: "attack", targetFixtureActorId: "original-home" }));
       } else world.controls.push(control(`raid-reinforce-${i}`, `raid-reinforcement-${i}`, 800,
         { kind: "attack", targetFixtureActorId: "original-home" }));
@@ -67,7 +68,8 @@ export function nativeStrategicWorld(id, faction, branch) {
     if (branch === "withdrawn") {
       for (let i = 0; i < 4; i++) world.controls.push(control(`raid-leave-${i}`, `raider-${i}`, 1200,
         { kind: "move", worldPosition: tile(5 + i, 5) }));
-      for (let i = 0; i < 12; i++) world.controls.push(control(`reinforcement-leave-${i}`, `raid-reinforcement-${i}`, 1200,
+      const reinforcementLeaveTick = id === "STRAT-03" && faction === "Tivara" ? 1400 : 1200;
+      for (let i = 0; i < 12; i++) world.controls.push(control(`reinforcement-leave-${i}`, `raid-reinforcement-${i}`, reinforcementLeaveTick,
         { kind: "move", worldPosition: tile(5 + i % 4, 10 + Math.floor(i / 4)) }));
     }
   }

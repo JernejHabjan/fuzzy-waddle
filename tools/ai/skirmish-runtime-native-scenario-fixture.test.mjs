@@ -72,17 +72,36 @@ test("STRAT-03 reinforced raiders approach before attacking the fogged original 
     const variant = fixture.recipe.variants.find((candidate) =>
       candidate.id === `strat-03-${faction}-reinforced`);
     assert.ok(variant);
+    const directAttackers = faction === "skaduwee" ? 1 : 4;
     for (let index = 0; index < 12; index++) {
       const approach = variant.presetWorld.controls.find((control) => control.id === `raid-reinforce-${index}`);
       const attack = variant.presetWorld.controls.find((control) => control.id === `raid-reinforce-attack-${index}`);
       assert.equal(approach?.applicationTick, 800);
       assert.equal(approach?.action.kind, "move");
-      if (index < 4) {
+      if (index < directAttackers) {
         assert.equal(attack?.applicationTick, 1200);
         assert.equal(attack?.action.kind, "attack");
         assert.equal(attack?.action.targetFixtureActorId, "original-home");
       } else assert.equal(attack, undefined);
     }
+  }
+});
+
+test("STRAT-03 Tivara withdrawn stages, threatens and then withdraws the serious raid wave", () => {
+  const fixture = nativeScenarioFixture("STRAT-03");
+  const variant = fixture.recipe.variants.find((candidate) => candidate.id === "strat-03-tivara-withdrawn");
+  assert.ok(variant);
+  for (let index = 0; index < 12; index++) {
+    const approach = variant.presetWorld.controls.find((control) => control.id === `raid-reinforce-${index}`);
+    const attack = variant.presetWorld.controls.find((control) => control.id === `raid-reinforce-attack-${index}`);
+    const leave = variant.presetWorld.controls.find((control) => control.id === `reinforcement-leave-${index}`);
+    assert.equal(approach?.applicationTick, 800);
+    assert.equal(approach?.action.kind, "move");
+    if (index < 4) {
+      assert.equal(attack?.applicationTick, 1200);
+      assert.equal(attack?.action.kind, "attack");
+    } else assert.equal(attack, undefined);
+    assert.equal(leave?.applicationTick, 1400);
   }
 });
 
