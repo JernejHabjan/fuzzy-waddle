@@ -753,8 +753,8 @@
               "actorName": "SkaduweeWarriorMale",
               "owner": 1,
               "position": {
-                "x": 0,
-                "y": 768,
+                "x": 64,
+                "y": 800,
                 "z": 0
               }
             },
@@ -866,7 +866,7 @@
           "events": [
             {
               "id": "loss-contact-group",
-              "tick": 400,
+              "tick": 200,
               "kind": "destroy_owned_actor",
               "owner": 1,
               "objectName": "SkaduweeWarriorMale",
@@ -2521,8 +2521,8 @@
               "actorName": "TivaraMacemanMale",
               "owner": 1,
               "position": {
-                "x": 0,
-                "y": 768,
+                "x": 64,
+                "y": 800,
                 "z": 0
               }
             },
@@ -2634,7 +2634,7 @@
           "events": [
             {
               "id": "loss-contact-group",
-              "tick": 400,
+              "tick": 200,
               "kind": "destroy_owned_actor",
               "owner": 1,
               "objectName": "TivaraMacemanMale",

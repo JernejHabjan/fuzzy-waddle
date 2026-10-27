@@ -63,8 +63,8 @@ export function nativeScenarioWorld(id, faction, branch) {
     if (branch === "infeasible") loss("front-target-a", 600);
   }
   if (id === "FIGHT-01" && branch === "support_loss") loss("support-probe", 400);
-  if (id === "FIGHT-01" && branch === "completed" || id === "FIGHT-05" && branch === "target_loss")
-    loss("contact-group", 400);
+  if (id === "FIGHT-01" && branch === "completed") loss("contact-group", 400);
+  if (id === "FIGHT-05" && branch === "target_loss") loss("contact-group", 200);
   if (id === "FIGHT-02") {
     world.healthStarts = [{ fixtureActorId: "ranged-probe", healthPermille: 400, armourPermille: 0 }];
     attack("contact-group", "ranged-probe", 200);

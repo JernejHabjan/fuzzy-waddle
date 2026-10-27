@@ -41,6 +41,10 @@ export function nativeScenarioActors(id, own, enemy, branch) {
     // Start the favorable contact within one decision's travel of the authored army.
     actors.find((entry) => entry.fixtureActorId === "contact-group").position = tile(27, 25);
   }
+  if (id === "FIGHT-05" && branch === "target_loss") {
+    // Let native AI damage the original target before the scheduled loss event.
+    actors.find((entry) => entry.fixtureActorId === "contact-group").position = tile(25, 24);
+  }
   if (id === "SCOUT-01") {
     // Keep the opposing base roster outside the player's opening vision. Otherwise this
     // hidden-start case immediately becomes an attack scenario and never exercises scouting.

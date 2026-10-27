@@ -3,13 +3,21 @@ import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-contex
 import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
 import type { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { nativePhysicalDamageFromActor, nativeRetreats, nativeWeaponHits } from "./skirmish-ai-native-combat-effects";
-import { evaluateNativeCombat, nativeRaidTargetRole } from "./skirmish-ai-native-combat-evaluation";
+import { evaluateNativeCombat, nativeRaidTargetRole, nativeTargetLossTick } from "./skirmish-ai-native-combat-evaluation";
 
 it.describe("RAID-01 native target roles", () => {
   it("checks the authored economic target for each raid branch", () => {
     expect(["workers", "expansion", "unfinished", "protected"].map(nativeRaidTargetRole)).toEqual([
       "enemy-worker", "enemy-deposit", "enemy-producer", "contact-group"
     ]);
+  });
+});
+
+it.describe("FIGHT-05 target-loss timing", () => {
+  it("uses the applied native loss event tick instead of assuming tick 400", () => {
+    const context = { result: { perturbations: [{ id: "loss-contact-group", tick: 200, affectedActorId: "target" }] } };
+    expect(nativeTargetLossTick(context as ReturnType<typeof nativeScenarioContext>, "target")).toBe(200);
+    expect(nativeTargetLossTick(context as ReturnType<typeof nativeScenarioContext>, "other-target")).toBeUndefined();
   });
 });
 

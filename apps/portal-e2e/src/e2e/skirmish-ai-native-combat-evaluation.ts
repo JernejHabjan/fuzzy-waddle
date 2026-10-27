@@ -74,24 +74,29 @@ export function evaluateNativeCombat(id: string, branch: string, context: Return
           failures.push("combat_no_useful_recovery_after_native_status_expiry");
       }
     } else {
-      const loss = context.result.perturbations.find((event) => event.id === "loss-contact-group" && event.tick === 400 &&
-        event.affectedActorId === target);
-      if (branch === "target_loss" && !loss) failures.push("combat_original_target_loss_not_applied");
-      if (branch === "target_loss" && context.frames.some((frame) => frame.tick > 440 &&
+      const lossTick = branch === "target_loss" ? nativeTargetLossTick(context, target) : undefined;
+      if (branch === "target_loss" && lossTick === undefined) failures.push("combat_original_target_loss_not_applied");
+      const effectStartTick = lossTick ?? 400;
+      if (branch === "target_loss" && context.frames.some((frame) => frame.tick > effectStartTick + 40 &&
         frame.decision.acceptedIntents.some((intent) => intent.kind === "attack" && intent.targetActorId === target)))
         failures.push("combat_dead_target_still_commanded");
       if (branch === "wall" && !context.facts.some((fact) => fact.kind === "spatial_authority" &&
         fact.spatial.kind === "placement" && fact.tick === 400 && fact.spatial.legal &&
         fact.spatial.command.execution?.source === "human" && fact.spatial.site.canonicalObjectName === "Wall"))
         failures.push("combat_real_shared_wall_blocker_missing");
-      if (!context.frames.some((frame) => frame.tick > 400 && frame.tick <= 800 &&
+      if (!context.frames.some((frame) => frame.tick > effectStartTick && frame.tick <= effectStartTick + 400 &&
         frame.decision.acceptedIntents.some((intent) => (intent.kind === "move" || intent.kind === "attack") &&
           (intent.kind !== "attack" || intent.targetActorId !== target)))) failures.push("combat_bounded_alternative_duty_missing");
-      if (!nativeRetreats(context, 400).length && !nativeWeaponHits(context, context.roles["front-target-a"], 400).length)
+      if (!nativeRetreats(context, effectStartTick).length && !nativeWeaponHits(context, context.roles["front-target-a"], effectStartTick).length)
         failures.push("combat_alternative_duty_has_no_native_effect");
     }
   }
   return [...new Set(failures)];
+}
+
+export function nativeTargetLossTick(context: ReturnType<typeof nativeScenarioContext>, targetId: string): number | undefined {
+  return context.result.perturbations.find((event) => event.id === "loss-contact-group" &&
+    event.affectedActorId === targetId)?.tick;
 }
 
 /** Independent targets need disjoint useful groups; weighted response is measured in real members and real hits. */

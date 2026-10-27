@@ -44,10 +44,11 @@ Tivara Slingshot prefab now enables its declared SpellCastingSystem. Targeted re
 confirms HealingRain starts its native cooldown, but its native healing effect is still not measured. Do not retry until
 the missing zone effect has a concrete cause. Overkill and temporary-support expiry remain open.
 
-FIGHT-05 report `1793097702563-failed.json` on `d12bd22e8d41` ran seven of eight variants (840 decisions / 16,807 ticks).
-Tivara/Skaduwee wall controls and Skaduwee target-loss/disconnected cases pass. Tivara stun and Skaduwee slow lack
-native status evidence; Tivara disconnected recovery lacks a native alternative effect; Tivara target-loss fails event
-actor validation. Initial report `1793097001251-failed.json` was a zero-runtime Nx startup error; its retry completed.
+FIGHT-05's original report `1793097702563-failed.json` ran seven of eight variants (840 decisions / 16,807 ticks).
+Focused Tivara target-loss report `1793108112989-diagnostic_passed.json` now passes with native damage before the tick-200
+loss and subsequent alternative duty; the evaluator uses the recorded event tick. Focused Skaduwee slow report
+`1793108253625-diagnostic_failed.json` still lacks native status evidence after the Tivara Slingshot spell-system fix.
+Tivara stun and disconnected alternative duty remain open. Do not replay the unchanged full batch.
 
 RAID-01's corrected evaluator uses each branch's authored economic target. Separate-reserve raiding passes the Tivara
 workers diagnostic `1793101298256-diagnostic_passed.json` on source `389b48856732` / fixture `fnv1a32:fba3bb14`.

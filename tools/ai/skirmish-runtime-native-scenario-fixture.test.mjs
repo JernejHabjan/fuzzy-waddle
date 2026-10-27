@@ -507,6 +507,22 @@ test("FIGHT-04 support branches start with only their tested native spell alread
   }
 });
 
+test("FIGHT-05 target-loss starts in attack range and removes the contact after native damage begins", () => {
+  const fixture = nativeScenarioFixture("FIGHT-05");
+  const variant = fixture.recipe.variants.find((candidate) => candidate.id === "fight-05-tivara-target-loss");
+  assert.ok(variant);
+  assert.deepEqual(variant.presetWorld.events.find((event) => event.id === "loss-contact-group"), {
+    id: "loss-contact-group",
+    tick: 200,
+    kind: "destroy_owned_actor",
+    owner: 1,
+    objectName: "SkaduweeWarriorMale",
+    fixtureActorId: "contact-group"
+  });
+  assert.deepEqual(variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "contact-group")?.position,
+    { x: 64, y: 800, z: 0 });
+});
+
 test("source-controlled worlds reject erased perturbations, fake observations and altered topology", () => {
   for (const [id, branch, mutate] of [
     ["SCOUT-02", "hidden_health", (world) => world.events = []],
