@@ -10,6 +10,11 @@ contain superseded observations and next actions. Use HANDOFF.md and CURRENT-EVI
 - Parity diagnosis found runtime-ID-dependent choices in neutral scouting, frontier scout pawn selection, macro-owned actor order, gathering, and recovery. These now sort by visible position/type before an ID tie-break. The last native capture includes the macro/gathering/recovery fixes but predates the final neutral-pawn adjustment; return to this pair after the next scouting family rather than rerunning the unchanged four-branch batch.
 - Focused gameplay tests pass 104 suites / 554 tests; gameplay lint passes. Touched scouting-evaluator ESLint passes. Portal-e2e project lint reports three existing module-boundary errors outside the touched files. SCOUT-01 remains open until parity passes.
 
+## 2026-10-27 — SCOUT-02 ten-variant result
+
+- Report `D:\ai-skirmish-work\matrix\1793073090904-failed.json`: all ten variants completed (1,200 decisions / 24,010 ticks, 1,146,062 ms). Both visible controls pass. The eight withdrawn/hidden variants fail native scouting-trip evidence and stale-information-job service; their withdrawn contact also fails the alive-at-horizon requirement. Hidden-queue branches additionally fail stale-certainty reduction. The paired hidden-world permitted-input comparison fails.
+- Treat this as an open behavior/setup gap; do not rerun the unchanged ten-variant matrix. Continue with SCOUT-03/04 and DOMAIN, then address the shared scouting/contact-survival and pair-input causes together. Source revision `4ca70b3fd`; fixture digest `fnv1a32:520b29a6`.
+
 ## 2026-10-27 — STRAT-04 target retention and current failure boundary
 
 - Root repairs: retain a viable committed target against core-score preemption; remove the reinforcement wave from quiet/noise controls; make harmless local contacts insufficient to divert the attack squad; and measure the same goal/squad across contact aliases and legitimate target transitions.
