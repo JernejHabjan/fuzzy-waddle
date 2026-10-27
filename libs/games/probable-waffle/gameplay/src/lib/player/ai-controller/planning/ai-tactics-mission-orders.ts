@@ -14,7 +14,7 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
     actorsNeedingOrder,
     anchor,
     assignedPositions,
-    damageReservations,
+    damageReservations: allDamageReservations,
     intents,
     localEnemies,
     materiallyChanged,
@@ -25,10 +25,14 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
     recoveryPhase,
     retreat,
     support,
-    targetAwareMembers,
+    targetAwareMembers: allTargetAwareMembers,
     updated,
     visibleTarget
   } = input;
+  const protectedIds = new Set(input.criticalRangedActorIds);
+  const protectedMembers = members.filter((member) => protectedIds.has(member.actorId));
+  const damageReservations = allDamageReservations.filter((reservation) => !protectedIds.has(reservation.actorId));
+  const targetAwareMembers = allTargetAwareMembers.filter((member) => !protectedIds.has(member.actorId));
   const searchDestinations = observation.map?.scoutSearchPoints?.map((point) => point.position) ?? [];
   const hasNativeSearchOrder =
     searchDestinations.length > 0 &&
@@ -83,11 +87,24 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
       });
   } else if (
     !preserveSearchOrder &&
-    materiallyChanged &&
+    (materiallyChanged || protectedMembers.some((member) => actorsNeedingOrder.includes(member.actorId))) &&
     (updated.state === "engage" || updated.state === "advance") &&
     visibleTarget &&
-    damageReservations.length > 0
+    (damageReservations.length > 0 || protectedMembers.some((member) => actorsNeedingOrder.includes(member.actorId)))
   ) {
+    if (retreat) for (const member of protectedMembers) {
+      const position = member.logicalPosition.status === "known" ? member.logicalPosition.value : null;
+      const activeOrder = member.activeOrder?.status === "known" ? member.activeOrder.value : null;
+      const movingAway = activeOrder?.orderType === OrderType.Move && activeOrder.targetPosition !== null &&
+        position !== null && distance(position, activeOrder.targetPosition) > 1;
+      if (movingAway) continue;
+      intents.push({
+        ...intentBase(observation, { ...updated, actorIds: [member.actorId] }, `protected_member:${member.actorId}`, 980),
+        kind: "move",
+        actorIds: [member.actorId],
+        logicalPosition: retreat
+      });
+    }
     for (const reservation of damageReservations) {
       if (reservation.effectId && previousDamageEffectIds.has(reservation.effectId)) continue;
       const attacker = actorById.get(reservation.actorId);
@@ -113,7 +130,7 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
     // Fighting members and distant reinforcements need independent orders in the same decision.
     const awareIds = new Set(targetAwareMembers.map((actor) => actor.actorId));
     for (const assignment of assignedPositions.filter(
-      (entry) => actorsNeedingOrder.includes(entry.actorId) && !awareIds.has(entry.actorId)
+      (entry) => actorsNeedingOrder.includes(entry.actorId) && !awareIds.has(entry.actorId) && !protectedIds.has(entry.actorId)
     )) {
       intents.push({
         ...intentBase(

@@ -130,7 +130,7 @@ describe("AiTacticsManager", () => {
     expect(proposal.statePatch?.squadUpdates?.[0]?.state).toBe("engage");
   });
 
-  it("retreats a critically wounded ranged member from a nearby attacker despite committed pressure", () => {
+  it("peels a critically wounded ranged member while healthy squadmates protect it", () => {
     const ranged = combatActor("ranged", "self", 1, "ground", 400, { damage: 10 });
     const supportingAttackers = [
       combatActor("support-a", "self", 8, "ground", 1000, { damage: 100 }),
@@ -188,10 +188,14 @@ describe("AiTacticsManager", () => {
     };
     const proposal = manager.propose(observation([ranged, ...supportingAttackers, nearby, objective]), pressureState);
 
-    expect(proposal.statePatch?.squadUpdates?.[0]?.state).toBe("retreat");
+    expect(proposal.statePatch?.squadUpdates?.[0]?.state).toBe("engage");
     expect(proposal.intents).toContainEqual(
       expect.objectContaining({ kind: "move", actorIds: expect.arrayContaining([ranged.actorId]) })
     );
+    expect(proposal.intents.filter((intent) => intent.kind === "attack")
+      .flatMap((intent) => intent.actorIds)).not.toContain(ranged.actorId);
+    expect(proposal.intents.some((intent) => intent.kind === "attack" &&
+      supportingAttackers.some((actor) => intent.actorIds.includes(actor.actorId)))).toBe(true);
   });
 
   it("keeps new reinforcements on offense when only a static enemy building is near home", () => {

@@ -23,10 +23,11 @@ runtime source is `441d72399` with fixture digest `fnv1a32:13bf9dd1`; the outer 
 commit. The evaluator follows native attack-commit behavior and excludes irrelevant long-horizon resource coverage.
 FIGHT-02 report `1793090025574-failed.json` completed all six variants (600 decisions / 12,006 ticks) on `869e6b320`;
 all now have the required 40% starting health. `1793091374936-failed.json` on `73b2e9acb` passes the cancellation and
-useful-damage oracles but leaves three physical-preservation failures. Raw history confirms the ranged actor dies to
-repeated enemy damage while the squad remains engaged. The first tactical correction still depended on aggregate
-strength; it now prioritizes retreat for any <=40% ranged member in a compatible enemy weapon's actual min/max range.
-The favorable-squad regression passes; six-variant recheck on this correction remains pending.
+useful-damage oracles but leaves three physical-preservation failures. Raw history confirms the ranged actor retreats
+with its defense squad but dies to repeated pursuit. Removing the aggregate-strength gate did not change the native
+outcome. The current behavior keeps healthy squadmates engaging to cover the critical actor, while issuing that actor
+an independent retreat order and excluding it from attack reservations. The focused planner regression and lint pass;
+six-variant recheck remains pending.
 
 ## Validated outcomes
 
@@ -50,7 +51,7 @@ The favorable-squad regression passes; six-variant recheck on this correction re
 
 | Package | Remaining work |
 | --- | --- |
-| 3 — scouting, combat, access | DOMAIN-01/05/06, SCOUT-04 and FIGHT-01 pass. FIGHT-02 outcome oracles pass; the per-member critical-retreat correction awaits six-variant recheck. FIGHT-03/04/05 and RAID-01/02 remain open. DOMAIN-02's two negative controls and INTERCEPT pass; COAST pays for a ship but leaves it in reserve, and ESCORT reaches row 32 but fails its paid fleet objective effect. SCOUT-03 escape branches and SCOUT-01/02 parity/job service remain open at measured causes. Seven real-peer obligations remain CI-owned. STRAT-09 needs grouped final recheck after affected changes. |
+| 3 — scouting, combat, access | DOMAIN-01/05/06, SCOUT-04 and FIGHT-01 pass. FIGHT-02 outcome oracles pass; separate retreat/cover orders await six-variant recheck. FIGHT-03/04/05 and RAID-01/02 remain open. DOMAIN-02's two negative controls and INTERCEPT pass; COAST pays for a ship but leaves it in reserve, and ESCORT reaches row 32 but fails its paid fleet objective effect. SCOUT-03 escape branches and SCOUT-01/02 parity/job service remain open at measured causes. Seven real-peer obligations remain CI-owned. STRAT-09 needs grouped final recheck after affected changes. |
 | 4 — placement, walls, recovery | PLACE/EXP/WALL and H recovery cases; PLACE-03 transit/clearance and H-11 route/capture remain known failures. |
 | 5 — authority and lifecycle | H-10 over-capacity variants, H-06/07, H-08/09 peer evidence, H-14/15 remaining branches, H-31/32, M11, #819/#823. |
 | 6 — continuous play and difficulty | SEQ-02 and supported SEQ/D cases. D-06 legacy comparison remains explicitly unsupported. |

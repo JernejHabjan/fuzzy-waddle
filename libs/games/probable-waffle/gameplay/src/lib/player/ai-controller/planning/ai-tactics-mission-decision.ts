@@ -42,7 +42,7 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
     (estimate.predictedFriendlyLossPermille > 0 &&
       members.filter((actor) => actor.healthPermille?.status === "known" && actor.healthPermille.value <= 250).length >=
         Math.max(1, Math.ceil(members.length / 3)));
-  const criticalRangedThreat = members.some((member) => {
+  const criticalRangedActorIds = retreat ? members.filter((member) => {
     const memberHealth = member.healthPermille;
     const memberCombat = member.combatProfile;
     const memberPosition = knownPosition(member);
@@ -65,7 +65,8 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
         separation <= attack.range + (memberPosition.z > enemyPosition.z ? attack.highGroundRangeBonus : 0)
       );
     });
-  });
+  }).map((member) => member.actorId) : [];
+  const criticalRangedThreat = criticalRangedActorIds.length > 0;
   const awaitingLaunch = ["forming", "assemble", "rally", "ready", "advance", "moving"].includes(squad.state);
   const forcedDecision =
     awaitingLaunch && (squad.lifecycle?.assemblyDeadline.dueTick ?? observation.tick) <= observation.tick;
@@ -135,7 +136,11 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
             ? quietState
             : "recover"
           : criticalRangedThreat
-            ? "retreat"
+            ? members.some((member) => !criticalRangedActorIds.includes(member.actorId) &&
+                member.combatProfile?.status === "known" && member.combatProfile.value.attacks.length > 0) &&
+              localEnemies.length > 0
+              ? "engage"
+              : "retreat"
           : committedPressure
             ? localEnemies.length > 0
               ? "engage"
@@ -151,6 +156,7 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
                   ? "regroup"
                   : quietState;
   const holdRetreat =
+    !criticalRangedThreat &&
     !committedPressure &&
     recoveringFromRetreat &&
     squad.tactics !== undefined &&
@@ -213,6 +219,7 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
     missionExpired,
     missionRecoveryExhausted,
     emptyRecoveryExhausted,
+    criticalRangedActorIds,
     holdRetreat,
     quietState,
     nextState,
