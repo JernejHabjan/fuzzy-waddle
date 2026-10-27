@@ -449,6 +449,19 @@ test("DBG-05 retains every hostile import branch and real-peer authorization req
   assert.equal(validNativeScenarioFixture(fixture, "DBG-05"), false);
 });
 
+test("SCOUT-03 escape starts with a hidden contact and a real discoverer", () => {
+  const fixture = nativeScenarioFixture("SCOUT-03"), binding = fixture.assertions["SCOUT-03"].requiredNativeScenario;
+  for (const variant of fixture.recipe.variants) {
+    const branch = binding.branchByVariant[variant.id];
+    if (branch !== "escape") continue;
+    assert.deepEqual(variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "contact-group")?.position,
+      { x: -224, y: 656, z: 0 });
+    assert.deepEqual(variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "scout-probe")?.position,
+      { x: 64, y: 800, z: 0 });
+    assert.ok(variant.presetWorld.controls.some((control) => control.id === "attack-contact-group-200"));
+  }
+});
+
 test("source-controlled worlds reject erased perturbations, fake observations and altered topology", () => {
   for (const [id, branch, mutate] of [
     ["SCOUT-02", "hidden_health", (world) => world.events = []],

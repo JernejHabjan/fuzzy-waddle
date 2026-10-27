@@ -106,6 +106,10 @@ export function nativeScenarioActors(id, own, enemy, branch) {
     actors.find((entry) => entry.fixtureActorId === "scout-probe").position = tile(5, 5);
   if (id === "SCOUT-03" && branch === "trapped" || id === "FIGHT-05" && branch === "disconnected")
     actors.find((entry) => entry.fixtureActorId === "contact-group").position = tile(28, 25);
+  if (id === "SCOUT-03" && branch === "escape") {
+    actors.find((entry) => entry.fixtureActorId === "scout-probe").position = tile(25, 24);
+    actors.find((entry) => entry.fixtureActorId === "contact-group").position = tile(16, 24);
+  }
   if (id === "PLACE-01" && branch === "constrained")
     actors.find((entry) => entry.fixtureActorId === "worker-transit").position = tile(34, 30);
   return actors;
