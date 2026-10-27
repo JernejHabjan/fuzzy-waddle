@@ -132,7 +132,11 @@ describe("AiTacticsManager", () => {
 
   it("retreats a critically wounded ranged member from a nearby attacker despite committed pressure", () => {
     const ranged = combatActor("ranged", "self", 1, "ground", 400, { damage: 10 });
-    const nearbyBase = combatActor("nearby", "enemy", 2, "ground", 1000, { damage: 100 });
+    const supportingAttackers = [
+      combatActor("support-a", "self", 8, "ground", 1000, { damage: 100 }),
+      combatActor("support-b", "self", 9, "ground", 1000, { damage: 100 })
+    ];
+    const nearbyBase = combatActor("nearby", "enemy", 2, "ground", 1000, { damage: 1 });
     const nearbyProfile = requireValue(
       nearbyBase.combatProfile.status === "known" ? nearbyBase.combatProfile.value : undefined,
       "missing_known_nearby_profile"
@@ -149,7 +153,10 @@ describe("AiTacticsManager", () => {
       }
     };
     const objective = combatActor("objective", "enemy", 12, "ground", 1000, { damage: 0 });
-    const attackSquad = { ...squad("squad:attack", "attack", [ranged.actorId]), objectiveId: objective.actorId };
+    const attackSquad = {
+      ...squad("squad:attack", "attack", [ranged.actorId, ...supportingAttackers.map((actor) => actor.actorId)]),
+      objectiveId: objective.actorId
+    };
     const initial = fixtureState([attackSquad]);
     const pressureState: AiBrainStateV1 = {
       ...initial,
@@ -162,8 +169,8 @@ describe("AiTacticsManager", () => {
           choice: "pressure",
           reason: "credible_force_and_route",
           targetActorId: objective.actorId,
-          readyForce: 1,
-          requiredForce: 1,
+          readyForce: 3,
+          requiredForce: 3,
           visibleThreatCount: 1,
           confidencePermille: 1000,
           expectedEffectTick: 200,
@@ -179,10 +186,12 @@ describe("AiTacticsManager", () => {
         ]
       }
     };
-    const proposal = manager.propose(observation([ranged, nearby, objective]), pressureState);
+    const proposal = manager.propose(observation([ranged, ...supportingAttackers, nearby, objective]), pressureState);
 
     expect(proposal.statePatch?.squadUpdates?.[0]?.state).toBe("retreat");
-    expect(proposal.intents).toContainEqual(expect.objectContaining({ kind: "move", actorIds: [ranged.actorId] }));
+    expect(proposal.intents).toContainEqual(
+      expect.objectContaining({ kind: "move", actorIds: expect.arrayContaining([ranged.actorId]) })
+    );
   });
 
   it("keeps new reinforcements on offense when only a static enemy building is near home", () => {

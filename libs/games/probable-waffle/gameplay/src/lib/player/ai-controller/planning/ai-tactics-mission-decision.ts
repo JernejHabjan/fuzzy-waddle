@@ -58,10 +58,11 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
       const enemyPosition = knownPosition(enemy);
       const enemyCombat = enemy.combatProfile;
       if (!enemyPosition || enemyCombat?.status !== "known") return false;
+      const separation = distance(memberPosition, enemyPosition);
       return enemyCombat.value.attacks.some((attack) =>
         memberDomains.some((domain) => attack.targetDomains.includes(domain)) &&
-        distance(memberPosition, enemyPosition) <=
-          attack.range + (memberPosition.z > enemyPosition.z ? attack.highGroundRangeBonus : 0)
+        separation >= attack.minRange &&
+        separation <= attack.range + (memberPosition.z > enemyPosition.z ? attack.highGroundRangeBonus : 0)
       );
     });
   });
@@ -133,7 +134,7 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
           ? squad.state === "recover" || squad.state === "recovering"
             ? quietState
             : "recover"
-          : criticalRangedThreat && retreat
+          : criticalRangedThreat
             ? "retreat"
           : committedPressure
             ? localEnemies.length > 0
