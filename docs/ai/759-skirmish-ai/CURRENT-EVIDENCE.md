@@ -21,18 +21,11 @@ six contacts entered ranked alternatives within 400 ticks and took later AI-caus
 FIGHT-01 passes all eight native branches in `1793088416093-passed.json` (960 decisions / 19,208 ticks). The captured
 runtime source is `441d72399` with fixture digest `fnv1a32:13bf9dd1`; the outer report was finalized after a documentation-only
 commit. The evaluator follows native attack-commit behavior and excludes irrelevant long-horizon resource coverage.
-FIGHT-02 report `1793090025574-failed.json` completed all six variants (600 decisions / 12,006 ticks) on `869e6b320`;
-all now have the required 40% starting health. `1793091374936-failed.json` on `73b2e9acb` passes the cancellation and
-useful-damage oracles but leaves three physical-preservation failures. Raw history confirms the ranged actor retreats
-with its defense squad but dies to repeated pursuit. Removing the aggregate-strength gate did not change the native
-outcome. The current behavior keeps healthy squadmates engaging to cover the critical actor, while issuing that actor
-an independent retreat order and excluding it from attack reservations. The focused planner regression and lint pass;
-six-variant recheck remains pending.
-`1793093081792-failed.json` on `35ac73cd4` completes all six branches (600 decisions / 12,006 ticks): three pass and three
-fail only physical preservation. Raw decisions show the recovery blocker manager cancels retreat with a new attack, and
-tactics resumes attack after a retreating actor briefly leaves exact weapon range. Recovery now excludes critically
-wounded ranged actors from blocker attacks; tactical protection persists while a compatible enemy remains nearby.
-Focused tactical/recovery tests pass 26/26; six-branch recheck pending.
+FIGHT-02 has verified 40% health starts. Latest report `1793094794130-failed.json` on `c970a4537` passes four of six
+branches; both no-heal actors fire, then die while alternating between retreat and offensive-position orders. The prior
+`ce576d014` capture passed five branches but omitted a Skaduwee shot. Focused tactics/recovery tests pass 26/26 and lint
+is clean. FIGHT-02 stays open; do not replay unchanged. Next repair must hold the endangered ranged unit at a safe
+firing position. Earlier run history is archived.
 
 ## Validated outcomes
 
