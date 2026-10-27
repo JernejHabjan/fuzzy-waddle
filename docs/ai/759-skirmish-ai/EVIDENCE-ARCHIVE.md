@@ -30,6 +30,11 @@ contain superseded observations and next actions. Use HANDOFF.md and CURRENT-EVI
 
 - Report `D:\ai-skirmish-work\matrix\1793073566880-failed.json`: four variants, 400 decisions / 8,004 ticks. Both trapped branches pass; the Tivara and Skaduwee escape branches alone fail `scouting_surviving_physical_escape_missing`. The family remains open; take SCOUT-04 next, then investigate scout survival and fallback behavior with the other scouting failures.
 
+## 2026-10-27 — SCOUT-02 opening-range diagnostic
+
+- Moved the authored scout/contact pair to seven tiles apart while retaining the contact in the opening sightline, then regenerated the recipe and added a fixture regression. Fixture audit passes 35/35.
+- Targeted Tivara visible report `D:\ai-skirmish-work\matrix\1793083017398-diagnostic_failed.json` still fails only `scouting_useful_physical_information_trip_missing`; contact/fairness and stale-certainty predicates pass. This removes the opening attack-range confound but does not close scout-job service. Continue to SCOUT-04 capture re-evaluation and grouped scout source fixes without repeating this branch unchanged.
+
 ## 2026-10-27 — STRAT-04 target retention and current failure boundary
 
 - Root repairs: retain a viable committed target against core-score preemption; remove the reinforcement wave from quiet/noise controls; make harmless local contacts insufficient to divert the attack squad; and measure the same goal/squad across contact aliases and legitimate target transitions.

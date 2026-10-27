@@ -31,6 +31,12 @@ export function nativeScenarioActors(id, own, enemy, branch) {
     actor("front-target-a", producer(enemy), 1, 20, 16), actor("front-target-b", producer(enemy), 1, 20, 34),
     actor("noise-scout", `${enemy}WorkerMale`, 1, 16, 8)
   ];
+  if (id === "SCOUT-02") {
+    // Keep the opening contact in scout vision without starting the probe inside its
+    // attack radius; this case measures stale information service after withdrawal.
+    actors.find((entry) => entry.fixtureActorId === "scout-probe").position = tile(35, 24);
+    actors.find((entry) => entry.fixtureActorId === "contact-group").position = tile(28, 24);
+  }
   if (id === "SCOUT-01") {
     // Keep the opposing base roster outside the player's opening vision. Otherwise this
     // hidden-start case immediately becomes an attack scenario and never exercises scouting.

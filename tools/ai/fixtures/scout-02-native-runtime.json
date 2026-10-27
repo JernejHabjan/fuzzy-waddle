@@ -212,8 +212,8 @@
               "actorName": "TivaraMacemanMale",
               "owner": 2,
               "position": {
-                "x": 128,
-                "y": 832,
+                "x": 384,
+                "y": 960,
                 "z": 0
               }
             },
@@ -242,8 +242,8 @@
               "actorName": "SkaduweeOwl",
               "owner": 1,
               "position": {
-                "x": 0,
-                "y": 768,
+                "x": 160,
+                "y": 848,
                 "z": 0
               }
             },
@@ -531,8 +531,8 @@
               "actorName": "TivaraMacemanMale",
               "owner": 2,
               "position": {
-                "x": 128,
-                "y": 832,
+                "x": 384,
+                "y": 960,
                 "z": 0
               }
             },
@@ -561,8 +561,8 @@
               "actorName": "SkaduweeOwl",
               "owner": 1,
               "position": {
-                "x": 0,
-                "y": 768,
+                "x": 160,
+                "y": 848,
                 "z": 0
               }
             },
@@ -835,8 +835,8 @@
               "actorName": "TivaraMacemanMale",
               "owner": 2,
               "position": {
-                "x": 128,
-                "y": 832,
+                "x": 384,
+                "y": 960,
                 "z": 0
               }
             },
@@ -865,8 +865,8 @@
               "actorName": "SkaduweeOwl",
               "owner": 1,
               "position": {
-                "x": 0,
-                "y": 768,
+                "x": 160,
+                "y": 848,
                 "z": 0
               }
             },
@@ -1154,8 +1154,8 @@
               "actorName": "TivaraMacemanMale",
               "owner": 2,
               "position": {
-                "x": 128,
-                "y": 832,
+                "x": 384,
+                "y": 960,
                 "z": 0
               }
             },
@@ -1184,8 +1184,8 @@
               "actorName": "SkaduweeOwl",
               "owner": 1,
               "position": {
-                "x": 0,
-                "y": 768,
+                "x": 160,
+                "y": 848,
                 "z": 0
               }
             },
@@ -1483,8 +1483,8 @@
               "actorName": "TivaraMacemanMale",
               "owner": 2,
               "position": {
-                "x": 128,
-                "y": 832,
+                "x": 384,
+                "y": 960,
                 "z": 0
               }
             },
@@ -1513,8 +1513,8 @@
               "actorName": "SkaduweeOwl",
               "owner": 1,
               "position": {
-                "x": 0,
-                "y": 768,
+                "x": 160,
+                "y": 848,
                 "z": 0
               }
             },
@@ -1812,8 +1812,8 @@
               "actorName": "SkaduweeWarriorMale",
               "owner": 2,
               "position": {
-                "x": 128,
-                "y": 832,
+                "x": 384,
+                "y": 960,
                 "z": 0
               }
             },
@@ -1842,8 +1842,8 @@
               "actorName": "TivaraAlchemist",
               "owner": 1,
               "position": {
-                "x": 0,
-                "y": 768,
+                "x": 160,
+                "y": 848,
                 "z": 0
               }
             },
@@ -2131,8 +2131,8 @@
               "actorName": "SkaduweeWarriorMale",
               "owner": 2,
               "position": {
-                "x": 128,
-                "y": 832,
+                "x": 384,
+                "y": 960,
                 "z": 0
               }
             },
@@ -2161,8 +2161,8 @@
               "actorName": "TivaraAlchemist",
               "owner": 1,
               "position": {
-                "x": 0,
-                "y": 768,
+                "x": 160,
+                "y": 848,
                 "z": 0
               }
             },
@@ -2435,8 +2435,8 @@
               "actorName": "SkaduweeWarriorMale",
               "owner": 2,
               "position": {
-                "x": 128,
-                "y": 832,
+                "x": 384,
+                "y": 960,
                 "z": 0
               }
             },
@@ -2465,8 +2465,8 @@
               "actorName": "TivaraAlchemist",
               "owner": 1,
               "position": {
-                "x": 0,
-                "y": 768,
+                "x": 160,
+                "y": 848,
                 "z": 0
               }
             },
@@ -2754,8 +2754,8 @@
               "actorName": "SkaduweeWarriorMale",
               "owner": 2,
               "position": {
-                "x": 128,
-                "y": 832,
+                "x": 384,
+                "y": 960,
                 "z": 0
               }
             },
@@ -2784,8 +2784,8 @@
               "actorName": "TivaraAlchemist",
               "owner": 1,
               "position": {
-                "x": 0,
-                "y": 768,
+                "x": 160,
+                "y": 848,
                 "z": 0
               }
             },
@@ -3083,8 +3083,8 @@
               "actorName": "SkaduweeWarriorMale",
               "owner": 2,
               "position": {
-                "x": 128,
-                "y": 832,
+                "x": 384,
+                "y": 960,
                 "z": 0
               }
             },
@@ -3113,8 +3113,8 @@
               "actorName": "TivaraAlchemist",
               "owner": 1,
               "position": {
-                "x": 0,
-                "y": 768,
+                "x": 160,
+                "y": 848,
                 "z": 0
               }
             },

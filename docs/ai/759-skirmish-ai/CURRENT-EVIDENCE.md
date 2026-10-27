@@ -9,6 +9,8 @@ Latest closed family: STRAT-04 report `1793069202745-passed.json`, base `2210ab7
 branches; hidden-pair selected-intent parity remains open. Latest attempted family is SCOUT-02 report
 `1793073090904-failed.json` (ten variants, 1,200 decisions / 24,010 ticks): both visible controls pass; hidden and
 withdrawn variants fail trip/stale-job/survival predicates, and hidden-world permitted-input parity remains open.
+The focused Tivara visible diagnostic `1793083017398-diagnostic_failed.json` uses an opening contact outside attack range;
+it passes contact/fairness and stale-certainty checks but still lacks a physical information trip.
 SCOUT-03 report `1793073566880-failed.json` ran four variants (400 decisions / 8,004 ticks): trapped branches pass;
 both escape branches fail physical scout survival. SCOUT-04 report `1793074230112-failed.json` ran all six variants
 (720 decisions / 14,406 ticks). The original objective-switch-only predicate failed all six; retained producer evidence
@@ -24,7 +26,7 @@ predicate passes that one retained branch; five captures await re-evaluation.
 - STRAT-03 passes all six branches at 150 decisions / 3,001 ticks: both minor branches and Skaduwee withdrawn win; both reinforced branches and Tivara withdrawn meet their expected branch outcomes. All branches retain their home and satisfy the native defense/offense predicates. Reports and source provenance are archived.
 - STRAT-04 passes all six branches at 100 decisions / 2,001 ticks each. Quiet and harmless-noise controls preserve the committed goal and produce native damage through the attack squad; the real-threat controls adapt physically. Report and source provenance are archived.
 - SCOUT-01 is partial, not closed: the latest report has no per-branch trip failures, but `scouting_hidden_world_altered_selected_intents` remains. Current source now orders macro workers, gathering sources/workers, recovery actors, and scout candidates by visible geometry before run-local IDs; recheck parity after the related scouting batch.
-- SCOUT-02 is partial, not closed: both visible controls pass, while the eight withdrawn/hidden branches do not sustain useful information service or keep the authored contact alive through the horizon. Hidden-world permitted-input parity also fails. The full branch details and runtime provenance are archived.
+- SCOUT-02 is partial, not closed: both visible controls pass, while the eight withdrawn/hidden branches do not sustain useful information service or keep the authored contact alive through the horizon. Hidden-world permitted-input parity also fails. A focused visible diagnostic with improved opening spacing passes contact/fairness and stale-certainty checks but still misses a physical information trip. Full branch details and runtime provenance are archived.
 - SCOUT-03 is partial, not closed: both trapped branches pass; Tivara and Skaduwee escape branches fail `scouting_surviving_physical_escape_missing`.
 - SCOUT-04 is partial, not closed: one retained branch passes the corrected non-preemptive objective-response predicate; five require re-evaluation. The other scouting behavior gaps remain grouped for repair.
 - Selected native obligations: **4/22 closed** (STRAT-05, STRAT-02, STRAT-03 and STRAT-04); 18 remain. Partial branch evidence does not close a family.

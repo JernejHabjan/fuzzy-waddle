@@ -462,6 +462,16 @@ test("SCOUT-03 escape starts with a hidden contact and a real discoverer", () =>
   }
 });
 
+test("SCOUT-02 opens with visible contact outside the probe's attack radius", () => {
+  const fixture = nativeScenarioFixture("SCOUT-02");
+  for (const variant of fixture.recipe.variants) {
+    const probe = variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "scout-probe");
+    const contact = variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "contact-group");
+    assert.deepEqual(probe?.position, { x: 384, y: 960, z: 0 });
+    assert.deepEqual(contact?.position, { x: 160, y: 848, z: 0 });
+  }
+});
+
 test("source-controlled worlds reject erased perturbations, fake observations and altered topology", () => {
   for (const [id, branch, mutate] of [
     ["SCOUT-02", "hidden_health", (world) => world.events = []],
