@@ -142,7 +142,7 @@ export function proposeAiTacticalSupport(
           observation,
           { ...squad, actorIds: [healer.actorId] },
           `cast:${spell.spellType}:${target.actorId}`,
-          880
+          960
         ),
         effectId: effectId as AiIntentV1["effectId"],
         preconditions: [{ kind: "plan_active", planId: `plan:${squad.squadId}` as AiPlanId }],

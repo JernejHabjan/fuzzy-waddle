@@ -101,7 +101,8 @@ export const tivaraSlingshotFemaleDefinition = {
   },
   systems: {
     movement: { enabled: true },
-    action: { enabled: true }
+    action: { enabled: true },
+    spellCasting: { enabled: true }
   },
   meta: {
     maxLevel: 3,

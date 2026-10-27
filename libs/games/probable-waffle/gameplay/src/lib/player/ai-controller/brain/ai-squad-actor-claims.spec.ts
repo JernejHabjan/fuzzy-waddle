@@ -65,6 +65,65 @@ describe("squad actor leases permit tactical correction without stealing ownersh
     ]);
   });
 
+  it("allows a squad's useful cast to replace its own provisional attack lease", () => {
+    const f = fixture();
+    const cast: AiIntentV1 = {
+      ...f.intent,
+      kind: "cast",
+      intentId: "intent:support-cast",
+      effectId: "effect:support-cast",
+      utility: 960,
+      actorId: "guard",
+      spellType: "healingRain",
+      targetActorId: null,
+      targetPosition: { x: 1, y: 1, z: 0 },
+      claims: [{ claimId: "claim:support-caster", kind: "actor", actorId: "guard" }],
+      reasonCode: "tactical_support_cast"
+    };
+    expect(arbitrateAiIntents(f.observation, f.state, [cast], [], f.profile, undefined).accepted).toEqual([cast]);
+  });
+
+  it("prioritizes a useful squad cast over its broad same-tick defense attack", () => {
+    const f = fixture();
+    const cast: AiIntentV1 = {
+      ...f.intent,
+      kind: "cast",
+      intentId: "intent:support-cast",
+      effectId: "effect:support-cast",
+      utility: 960,
+      actorId: "guard",
+      spellType: "healingRain",
+      targetActorId: null,
+      targetPosition: { x: 1, y: 1, z: 0 },
+      claims: [{ claimId: "claim:support-caster", kind: "actor", actorId: "guard" }],
+      reasonCode: "tactical_support_cast"
+    };
+    const legacyDefenseAttack: AiIntentV1 = {
+      ...f.intent,
+      kind: "attack",
+      intentId: "intent:legacy-defense-attack",
+      effectId: "effect:legacy-defense-attack",
+      utility: 940,
+      actorIds: ["guard"],
+      targetActorId: "enemy",
+      targetPosition: null,
+      claims: [{ claimId: "claim:legacy-defense", kind: "actor", actorId: "guard" }],
+      reasonCode: "legacy_defense_attack"
+    };
+    const result = arbitrateAiIntents(
+      f.observation,
+      f.state,
+      [legacyDefenseAttack, cast],
+      [],
+      f.profile,
+      undefined
+    );
+    expect(result.accepted).toEqual([cast]);
+    expect(result.decisions).toContainEqual(
+      expect.objectContaining({ intent: legacyDefenseAttack, reason: "claim_conflict" })
+    );
+  });
+
   it("keeps another plan's actor lease exclusive", () => {
     const f = fixture();
     const state = {
@@ -102,5 +161,30 @@ describe("squad actor leases permit tactical correction without stealing ownersh
         undefined
       ).accepted
     ).toEqual([]);
+  });
+
+  it("lets a tactical cast interrupt the same squad's dispatched actor order", () => {
+    const f = fixture();
+    const dispatched = {
+      ...f.state,
+      reservations: f.state.reservations.map((r) => ({
+        ...r,
+        state: { kind: "dispatched" as const, commandId: "old-command" }
+      }))
+    };
+    const cast: AiIntentV1 = {
+      ...f.intent,
+      kind: "cast",
+      intentId: "intent:support-cast",
+      effectId: "effect:support-cast",
+      actorId: "guard",
+      spellType: "healingRain",
+      targetActorId: null,
+      targetPosition: { x: 1, y: 1, z: 0 },
+      claims: [{ claimId: "claim:support-caster", kind: "actor", actorId: "guard" }],
+      reasonCode: "tactical_support_cast"
+    };
+    expect(arbitrateAiIntents(f.observation, dispatched, [cast], [], f.profile, undefined).accepted).toEqual([cast]);
+    expect(arbitrateAiIntents(f.observation, dispatched, [f.intent], [], f.profile, undefined).accepted).toEqual([]);
   });
 });

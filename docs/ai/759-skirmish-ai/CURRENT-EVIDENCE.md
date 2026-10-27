@@ -38,7 +38,11 @@ branch fully passes. Overkill branches lack native useful damage across both req
 `1793105967694-diagnostic_failed.json` (120 decisions / 2,401 ticks) seeds HealingRain as completed before tick 0 and
 confirms the support probe is wounded and its intended target is in range, yet no native effect/cooldown occurs. The
 fixture now wounds the healer itself for same-group targeting and moves the harmful-zone target within range, but the
-failure persists. Diagnose cast selection/application before retrying; overkill and temporary-support expiry remain open.
+capture showed the tactical cast was blocked by the broad same-tick Stage 9 defense attack. The arbiter now prioritizes
+useful tactical casts over that attack, permits the same squad's cast to interrupt its dispatched actor order, and the
+Tivara Slingshot prefab now enables its declared SpellCastingSystem. Targeted report `1793107119988-diagnostic_failed.json`
+confirms HealingRain starts its native cooldown, but its native healing effect is still not measured. Do not retry until
+the missing zone effect has a concrete cause. Overkill and temporary-support expiry remain open.
 
 FIGHT-05 report `1793097702563-failed.json` on `d12bd22e8d41` ran seven of eight variants (840 decisions / 16,807 ticks).
 Tivara/Skaduwee wall controls and Skaduwee target-loss/disconnected cases pass. Tivara stun and Skaduwee slow lack
