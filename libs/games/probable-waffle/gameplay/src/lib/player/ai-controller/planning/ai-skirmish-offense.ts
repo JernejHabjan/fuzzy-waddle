@@ -13,10 +13,7 @@ import { AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS } from "./ai-skirmish-defense";
 import { selectAiOffensiveOpportunity } from "./select-ai-offensive-opportunity";
 import { retainAiSquadTacticsForActors } from "./ai-skirmish-tactics-ownership";
 import { canSeeTarget } from "./ai-tactics-combat";
-import {
-  selectAiAttackApproachPositions,
-  targetFootprintRadiusTiles
-} from "./ai-tactics-approach-positions";
+import { selectAiAttackApproachPositions, targetFootprintRadiusTiles } from "./ai-tactics-approach-positions";
 import {
   canTarget,
   distance,
@@ -101,12 +98,18 @@ function hasNearbyEnemyProducer(
   target: AiSkirmishProposalContext["visibleEnemies"][number]
 ): boolean {
   const targetPosition = position(target);
-  return targetPosition !== undefined && context.visibleEnemies.some((enemy) => {
-    const enemyPosition = position(enemy);
-    return enemy.actorId !== target.actorId && enemyPosition !== undefined &&
-      distance(targetPosition, enemyPosition) <= 18 &&
-      enemy.capabilities.some((capability) => capability.family === "produce");
-  });
+  return (
+    targetPosition !== undefined &&
+    context.visibleEnemies.some((enemy) => {
+      const enemyPosition = position(enemy);
+      return (
+        enemy.actorId !== target.actorId &&
+        enemyPosition !== undefined &&
+        distance(targetPosition, enemyPosition) <= 18 &&
+        enemy.capabilities.some((capability) => capability.family === "produce")
+      );
+    })
+  );
 }
 
 function actorClaims(actorIds: readonly string[]): AiIntentV1["claims"] {
@@ -123,7 +126,11 @@ function createAttackSquad(
   attackers: readonly AiSkirmishProposalContext["combat"][number][],
   route: ReturnType<typeof queryAiAccessRouteV1> | undefined,
   sourceNode: ReturnType<typeof node>,
-  mission?: { readonly squadId?: AiSquadId; readonly existing?: AiSquadStateV1; readonly assessment?: AiStrategyAssessment }
+  mission?: {
+    readonly squadId?: AiSquadId;
+    readonly existing?: AiSquadStateV1;
+    readonly assessment?: AiStrategyAssessment;
+  }
 ): AiSquadStateV1 {
   const activeAttack = mission?.existing ?? (mission?.squadId ? undefined : context.activeAttack);
   const assessment = mission?.assessment ?? context.assessment;
@@ -131,8 +138,7 @@ function createAttackSquad(
     activeAttack?.lifecycle?.assemblyDeadline.dueTick !== undefined &&
     activeAttack.lifecycle.assemblyDeadline.dueTick <= context.observation.tick;
   const fullEngagement = (assessment?.readyForce ?? 0) >= (assessment?.requiredForce ?? 2);
-  const severeCounterforce =
-    (assessment?.visibleThreatCount ?? 0) >= Math.max(3, (assessment?.readyForce ?? 0) * 2);
+  const severeCounterforce = (assessment?.visibleThreatCount ?? 0) >= Math.max(3, (assessment?.readyForce ?? 0) * 2);
   const requiredForce = assessment?.requiredForce ?? 2;
   const minimumTimedForce = requiredForce <= 3 ? 1 : Math.ceil(requiredForce * 0.75);
   const timedEngagement =
@@ -145,9 +151,7 @@ function createAttackSquad(
     (assessment?.readyForce ?? 0) >= minimumTimedForce;
   const isReachable = route?.kind === "direct" || route?.kind === "air_or_naval_objective";
   const attackState: AiSquadStateV1["state"] =
-    isReachable && assessment?.choice !== "recover" && (fullEngagement || timedEngagement)
-      ? "moving"
-      : "forming";
+    isReachable && assessment?.choice !== "recover" && (fullEngagement || timedEngagement) ? "moving" : "forming";
   const attackId = mission?.squadId ?? activeAttack?.squadId ?? ("squad:attack:primary" as AiSquadId);
   context.attackPlanId = `plan:${attackId}` as AiPlanId;
   const actorIds = attackers.map((actor) => actor.actorId);
@@ -264,9 +268,11 @@ export function advanceAiSkirmishOffense(
       )
     : [];
   const missionMembers = new Set(missionSquads.flatMap((squad) => squad.actorIds));
-  const activeRaidSquads = context.state.squads.filter((squad) =>
-    squad.role === "attack" && squad.squadId.startsWith("squad:attack:raid:") &&
-    !["completed", "cancelled"].includes(squad.state)
+  const activeRaidSquads = context.state.squads.filter(
+    (squad) =>
+      squad.role === "attack" &&
+      squad.squadId.startsWith("squad:attack:raid:") &&
+      !["completed", "cancelled"].includes(squad.state)
   );
   const activeRaidMembers = new Set(activeRaidSquads.flatMap((squad) => squad.actorIds));
   const missionProgressing =
@@ -290,12 +296,12 @@ export function advanceAiSkirmishOffense(
   appendReserve(context, committedAttackers);
   context.nextSquads.push(...activeRaidSquads);
   activeRaidMembers.forEach((actorId) => context.primaryOwnedActors.add(actorId));
-  const activeMissionCount = context.state.squads.filter((squad) =>
-    squad.role === "attack" && !["completed", "cancelled"].includes(squad.state)
+  const activeMissionCount = context.state.squads.filter(
+    (squad) => squad.role === "attack" && !["completed", "cancelled"].includes(squad.state)
   ).length;
   const activeFrontierScoutIds = new Set(
     context.activeScout?.objectiveId?.startsWith("question:") ||
-      (context.activeScout?.objectiveId?.startsWith("neutral:") && context.activeScout.state === "moving")
+    (context.activeScout?.objectiveId?.startsWith("neutral:") && context.activeScout.state === "moving")
       ? context.activeScout.actorIds
       : []
   );
@@ -312,8 +318,12 @@ export function advanceAiSkirmishOffense(
     const available = new Set(attackers.map((actor) => actor.actorId));
     context.nextSquads.push(
       ...missionSquads
-        .map((squad) => retainSquadTacticsForActors(squad,
-          squad.actorIds.filter((actorId) => available.has(actorId))))
+        .map((squad) =>
+          retainSquadTacticsForActors(
+            squad,
+            squad.actorIds.filter((actorId) => available.has(actorId))
+          )
+        )
         .filter((squad) => squad.actorIds.length > 0)
     );
     context.opponent = liveTarget;
@@ -325,45 +335,77 @@ export function advanceAiSkirmishOffense(
   const targetNode = node(context.opponent);
   const route = choice.route;
   if (choice.assessment.choice === "recover" || choice.assessment.choice === "scout") return undefined;
-  const attack = createAttackSquad(context, context.opponent, choice.attackers, route, sourceNode);
+  let primaryAttackers = [...choice.attackers];
+  let attack = createAttackSquad(context, context.opponent, primaryAttackers, route, sourceNode);
   const reserveSquad = context.nextSquads.find((squad) => squad.role === "reserve");
   const reserveActors = reserveSquad
     ? context.combat.filter((actor) => reserveSquad.actorIds.includes(actor.actorId))
     : [];
+  const primaryMinimum = Math.max(choice.assessment.requiredForce, Math.ceil(primaryAttackers.length * 0.6));
+  const surplusCount = Math.max(0, Math.min(4, primaryAttackers.length - primaryMinimum));
+  const surplusActors =
+    surplusCount > 0 ? primaryAttackers.filter((actor) => !missionMembers.has(actor.actorId)).slice(-surplusCount) : [];
+  const raidCandidates = [...reserveActors, ...surplusActors];
   const primaryMissionCount = activeMissionCount + (context.activeAttack ? 0 : 1);
   const raidTargetContext = {
     ...context,
     activeAttack: undefined,
-    visibleEnemies: context.visibleEnemies.filter((actor) =>
-      actor.actorId !== context.opponent?.actorId && hasEconomicRaidValue(actor) &&
-      !(actor.capabilities.some((capability) => capability.family === "produce") && hasNearbyEnemyProducer(context, actor))
-    ),
     rememberedEnemies: []
   };
-  const raidChoice =
+  const raidSelectionEnabled =
     attack.state === "moving" &&
-    !context.localThreat &&
+    (!context.localThreat ||
+      context.nextSquads.some((squad) => squad.role === "defense" && squad.actorIds.length > 0)) &&
     activeRaidSquads.length === 0 &&
-    reserveActors.length > 0 &&
-    primaryMissionCount < profile.voluntaryOffensiveMissionLimit + 1
-      ? selectAiOffensiveOpportunity(raidTargetContext, reserveActors)
+    raidCandidates.length > 0 &&
+    primaryMissionCount < profile.voluntaryOffensiveMissionLimit + 1;
+  const chooseRaid = (candidates: typeof raidCandidates) =>
+    selectAiOffensiveOpportunity(raidTargetContext, candidates, {
+      raid: true,
+      candidateFilter: (actor) =>
+        actor.actorId !== context.opponent?.actorId &&
+        hasEconomicRaidValue(actor) &&
+        !(
+          actor.capabilities.some((capability) => capability.family === "produce") &&
+          hasNearbyEnemyProducer(context, actor)
+        )
+    });
+  const canLaunchRaid = (choice: ReturnType<typeof chooseRaid> | undefined) =>
+    choice !== undefined &&
+    choice.assessment.choice !== "recover" &&
+    choice.assessment.choice !== "scout" &&
+    choice.route?.kind === "direct" &&
+    choice.assessment.requiredForce <= 4 &&
+    choice.assessment.readyForce >= choice.assessment.requiredForce;
+  const reserveChoice = raidSelectionEnabled && reserveActors.length > 0 ? chooseRaid(reserveActors) : undefined;
+  const raidChoice = canLaunchRaid(reserveChoice)
+    ? reserveChoice
+    : raidSelectionEnabled
+      ? chooseRaid(raidCandidates)
       : undefined;
-  const raidAttackers = raidChoice?.assessment.choice !== "recover" && raidChoice?.assessment.choice !== "scout" &&
-    raidChoice?.route?.kind === "direct" && raidChoice.assessment.readyForce >= raidChoice.assessment.requiredForce
+  const raidAttackers =
+    canLaunchRaid(raidChoice) && raidChoice
       ? raidChoice.attackers.slice(0, Math.min(4, raidChoice.assessment.readyForce))
       : [];
   const raidTarget = raidAttackers.length >= 1 ? raidChoice?.opponent : undefined;
   const raidSourceNode = raidAttackers.length > 0 ? node(raidAttackers[0]!) : undefined;
-  const raidSquad = raidTarget && raidChoice?.route && raidSourceNode
-    ? createAttackSquad(
-        { ...context, activeAttack: undefined, assessment: raidChoice.assessment },
-        raidTarget,
-        raidAttackers,
-        raidChoice.route,
-        raidSourceNode,
-        { squadId: `squad:attack:raid:${raidTarget.actorId}` as AiSquadId, assessment: raidChoice.assessment }
-      )
-    : undefined;
+  const raidSquad =
+    raidTarget && raidChoice?.route && raidSourceNode
+      ? createAttackSquad(
+          { ...context, activeAttack: undefined, assessment: raidChoice.assessment },
+          raidTarget,
+          raidAttackers,
+          raidChoice.route,
+          raidSourceNode,
+          { squadId: `squad:attack:raid:${raidTarget.actorId}` as AiSquadId, assessment: raidChoice.assessment }
+        )
+      : undefined;
+  if (raidSquad) {
+    const raidIds = new Set(raidSquad.actorIds);
+    primaryAttackers = primaryAttackers.filter((actor) => !raidIds.has(actor.actorId));
+    attack = createAttackSquad(context, context.opponent, primaryAttackers, route, sourceNode);
+    raidSquad.actorIds.forEach((actorId) => context.primaryOwnedActors.add(actorId));
+  }
   context.attackPlanId = `plan:${attack.squadId}` as AiPlanId;
   if (raidSquad && reserveSquad) {
     const retainedReserveIds = reserveSquad.actorIds.filter((actorId) => !raidSquad.actorIds.includes(actorId));
@@ -371,7 +413,6 @@ export function advanceAiSkirmishOffense(
     if (retainedReserveIds.length > 0)
       context.nextSquads[reserveIndex] = retainSquadTacticsForActors(reserveSquad, retainedReserveIds);
     else context.nextSquads.splice(reserveIndex, 1);
-    raidSquad.actorIds.forEach((actorId) => context.primaryOwnedActors.add(actorId));
   }
   const targetPosition = position(context.opponent);
   const rememberedCore =
@@ -383,9 +424,9 @@ export function advanceAiSkirmishOffense(
   const continuingCoreScout = existingScout?.objectiveId === coreScoutObjective;
   const scoutActor =
     rememberedCore && attack.state === "forming"
-      ? (choice.attackers.find((actor) => continuingCoreScout && existingScout.actorIds.includes(actor.actorId)) ??
-        choice.attackers.find((actor) => domains(actor).includes("air")) ??
-        choice.attackers[0])
+      ? (primaryAttackers.find((actor) => continuingCoreScout && existingScout.actorIds.includes(actor.actorId)) ??
+        primaryAttackers.find((actor) => domains(actor).includes("air")) ??
+        primaryAttackers[0])
       : undefined;
   const coreScout = scoutActor
     ? {
@@ -458,7 +499,7 @@ export function advanceAiSkirmishOffense(
     );
   }
   if ((route?.kind === "water_transport" || route?.kind === "air_transport") && sourceNode && targetNode)
-    return transportProposal(context, attack, choice.attackers, route, sourceNode, targetNode);
+    return transportProposal(context, attack, primaryAttackers, route, sourceNode, targetNode);
   const launchRecorded = context.state.skirmish.timeline.some(
     (event) =>
       event.kind === "mission" &&
@@ -473,12 +514,12 @@ export function advanceAiSkirmishOffense(
     context.state.squads.filter((squad) => squad.role === "attack" && squad.state !== "completed").length <
       profile.voluntaryOffensiveMissionLimit + 1
   ) {
-    if (context.opponent.visibility === "visible" && canTarget(choice.attackers[0]!, context.opponent)) {
+    if (context.opponent.visibility === "visible" && canTarget(primaryAttackers[0]!, context.opponent)) {
       const opponent = context.opponent;
-      const directAttack = choice.attackers.every((actor) => canSeeTarget(actor, opponent, context.catalog));
+      const directAttack = primaryAttackers.every((actor) => canSeeTarget(actor, opponent, context.catalog));
       const approach = targetPosition
         ? (selectAiAttackApproachPositions(
-            choice.attackers,
+            primaryAttackers,
             targetPosition,
             context.observation,
             targetFootprintRadiusTiles(opponent, context.catalog)
@@ -546,14 +587,27 @@ export function advanceAiSkirmishOffense(
         : undefined;
       if (directRaidAttack || raidApproach) {
         context.intents.push({
-          ...intentBase(context.state, raidPlanId, context.observation.tick, `raid:${raidTarget.actorId}`, "army_threat", 750),
+          ...intentBase(
+            context.state,
+            raidPlanId,
+            context.observation.tick,
+            `raid:${raidTarget.actorId}`,
+            "army_threat",
+            750
+          ),
           kind: "attack",
           actorIds: raidSquad.actorIds,
           claims: actorClaims(raidSquad.actorIds),
           targetActorId: directRaidAttack ? raidTarget.actorId : null,
           targetPosition: directRaidAttack ? null : (raidApproach ?? null)
         });
-        context.skirmish = withTimeline(context.skirmish, context.observation.tick, "mission", raidId, `launch:${raidChoice.route.kind}`);
+        context.skirmish = withTimeline(
+          context.skirmish,
+          context.observation.tick,
+          "mission",
+          raidId,
+          `launch:${raidChoice.route.kind}`
+        );
       }
     }
   }

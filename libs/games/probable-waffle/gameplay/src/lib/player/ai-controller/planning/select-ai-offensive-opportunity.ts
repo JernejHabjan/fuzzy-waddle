@@ -75,9 +75,12 @@ function nearbyWaterThreatBonus(context: AiSkirmishProposalContext, actor: AiObs
   if (!threatensGround) return 0;
   const nearbyFriendly = context.observation.actors.some((friendly) => {
     const friendlyPosition = position(friendly);
-    return friendly.relation === "self" && friendlyPosition !== undefined &&
+    return (
+      friendly.relation === "self" &&
+      friendlyPosition !== undefined &&
       attacks.some((attack) => domains(friendly).some((domain) => attack.targetDomains.includes(domain))) &&
-      distance(position(actor)!, friendlyPosition) <= 8;
+      distance(position(actor)!, friendlyPosition) <= 8
+    );
   });
   return nearbyFriendly ? 1200 : 0;
 }
@@ -120,10 +123,13 @@ function productionNear(context: AiSkirmishProposalContext, target: AiObservedAc
 /** Deterministically ranks only observed or remembered, reachable and targetable objectives. */
 export function selectAiOffensiveOpportunity(
   context: AiSkirmishProposalContext,
-  attackers: readonly AiObservedActorV1[]
+  attackers: readonly AiObservedActorV1[],
+  options: { readonly candidateFilter?: (actor: AiObservedActorV1) => boolean; readonly raid?: boolean } = {}
 ): AiOffensiveOpportunity {
   const recentFailure = recentFailedMission(context);
-  const contacts = [...context.visibleEnemies, ...context.rememberedEnemies].slice(0, MAX_CANDIDATES);
+  const contacts = [...context.visibleEnemies, ...context.rememberedEnemies]
+    .filter(options.candidateFilter ?? (() => true))
+    .slice(0, MAX_CANDIDATES);
   const candidates = contacts
     .flatMap((opponent) => {
       const viable = selectAiOffensiveForce(context, opponent, attackers);
@@ -140,7 +146,8 @@ export function selectAiOffensiveOpportunity(
       const navalMission = route.kind === "direct" && route.domain === "water";
       const required = navalMission
         ? Math.max(1, Math.ceil(Math.max(0, threats - 1) * 1.5) + 1) + failurePenalty
-        : Math.max(producers >= 2 ? 8 : isCore(opponent) ? 2 : 3, Math.ceil(threats * 1.5) + 1) + failurePenalty;
+        : Math.max(producers >= 2 && !options.raid ? 8 : isCore(opponent) ? 2 : 3, Math.ceil(threats * 1.5) + 1) +
+          failurePenalty;
       const travel =
         position(compatibleAttackers[0]) && position(opponent)
           ? distance(position(compatibleAttackers[0])!, position(opponent)!)
@@ -149,8 +156,13 @@ export function selectAiOffensiveOpportunity(
         opponent.visibility === "last_seen" ? Math.min(400, context.observation.tick - opponent.observedTick) : 0;
       const routeCost = route.kind === "direct" ? 0 : 180;
       const score =
-        targetValue(opponent) + nearbyWaterThreatBonus(context, opponent) - Math.min(400, travel * 8) -
-        threats * 100 - producers * 70 - stale - routeCost;
+        targetValue(opponent) +
+        nearbyWaterThreatBonus(context, opponent) -
+        Math.min(400, travel * 8) -
+        threats * 100 -
+        producers * 70 -
+        stale -
+        routeCost;
       return [
         { opponent, attackers: compatibleAttackers, route, score, capable, required, threats, producers, travel }
       ];
@@ -224,7 +236,8 @@ export function selectAiOffensiveOpportunity(
             (context.observation.tick - candidate.opponent.observedTick <= REMEMBERED_OBJECTIVE_MAX_AGE_TICKS &&
               hasFreshNativePursuitOrder(candidate.opponent)) ||
             (usefulMission &&
-              context.observation.tick - candidate.opponent.observedTick <= USEFUL_REMEMBERED_OBJECTIVE_MAX_AGE_TICKS)) &&
+              context.observation.tick - candidate.opponent.observedTick <=
+                USEFUL_REMEMBERED_OBJECTIVE_MAX_AGE_TICKS)) &&
           (candidate.capable >= candidate.required ||
             usefulMission ||
             hasNativeAttackOrder(candidate.opponent.actorId) ||
@@ -239,9 +252,7 @@ export function selectAiOffensiveOpportunity(
   const visibleReachableCore = actionable
     .filter(
       (candidate) =>
-        candidate.opponent.visibility === "visible" &&
-        isCore(candidate.opponent) &&
-        candidate.route.kind === "direct"
+        candidate.opponent.visibility === "visible" && isCore(candidate.opponent) && candidate.route.kind === "direct"
     )
     .sort((left, right) => right.score - left.score || left.opponent.actorId.localeCompare(right.opponent.actorId))[0];
   const retainedRememberedObjective =
@@ -250,8 +261,7 @@ export function selectAiOffensiveOpportunity(
       (usefulMission &&
         context.observation.tick - workingObjective.opponent.observedTick <=
           USEFUL_REMEMBERED_OBJECTIVE_MAX_AGE_TICKS));
-  const retainedNativePursuit =
-    workingObjective !== undefined && hasFreshNativePursuitOrder(workingObjective.opponent);
+  const retainedNativePursuit = workingObjective !== undefined && hasFreshNativePursuitOrder(workingObjective.opponent);
   const retainedCommittedMission =
     workingObjective !== undefined && committedMission && workingObjective.capable >= workingObjective.required;
   const retainedViableMission =
@@ -261,17 +271,12 @@ export function selectAiOffensiveOpportunity(
     visibleReachableCore !== undefined &&
     visibleReachableCore.capable < visibleReachableCore.required;
   const rememberedCore = actionable
-    .filter(
-      (candidate) =>
-        candidate.opponent.visibility === "last_seen" &&
-        isCore(candidate.opponent)
-    )
+    .filter((candidate) => candidate.opponent.visibility === "last_seen" && isCore(candidate.opponent))
     .sort((left, right) => right.score - left.score || left.opponent.actorId.localeCompare(right.opponent.actorId))[0];
   const scoutingCore = context.activeScout
     ? actionable.find(
         (candidate) =>
-          isCore(candidate.opponent) &&
-          context.activeScout?.objectiveId === `core:${candidate.opponent.evidenceId}`
+          isCore(candidate.opponent) && context.activeScout?.objectiveId === `core:${candidate.opponent.evidenceId}`
       )
     : undefined;
   const coreScoutTarget = scoutingCore ?? rememberedCore;

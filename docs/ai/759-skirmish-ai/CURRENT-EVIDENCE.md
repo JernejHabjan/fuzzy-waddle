@@ -33,7 +33,11 @@ FIGHT-03 report `1793095825942-failed.json` on `753e974e686e` ran five of six va
 equal-value controls pass. Unequal branches lack two independently useful native fronts and proportional reinforcement.
 The isolated Skaduwee infeasible retry `1793104761329-failed.json` confirms the scheduled tick-600 loss affects zero
 actors although the expected actor ID resolves; the target is no longer damageable by then. This remains a fixture setup
-failure, not a branch verdict. Return after a relevant target/timing change; do not repeat unchanged.
+failure, not a branch verdict. Retained unequal observations show front A's producer disappears before the 400–800
+reinforcement window; the minor worker front is also assessed as too heavily defended for a four-unit raid. A bounded
+surplus split now keeps home defense and the primary force intact, retains committed members, and evaluates secondary
+raids against observed threats. Focused gameplay tests pass 567/567. The fixture still needs viable concurrent fronts
+and a meaningful loss event; FIGHT-03 remains open.
 
 FIGHT-04 report `1793096773518-failed.json` on `a5159d9e9183` ran all eight variants (960 decisions / 19,208 ticks); no
 branch fully passes. Overkill branches lack native useful damage across both required targets. Targeted report
@@ -54,8 +58,9 @@ pre-completes research and casts before the caster dies. Ground spells omit acto
 carry the source actor ID; stunned actors cannot start attacks. Disconnected uses its terrain ring without an unavailable
 tick-400 worker control, and accepts native damage against another reachable target rather than one hard-coded target.
 
-RAID-01's corrected evaluator uses each branch's authored economic target. Separate-reserve raiding passes the Tivara
-workers diagnostic `1793101298256-diagnostic_passed.json` on source `389b48856732` / fixture `fnv1a32:fba3bb14`.
+RAID-01's corrected evaluator uses each branch's authored economic target. Tivara workers diagnostic
+`1793131490146-diagnostic_passed.json` passes after the FIGHT-03 allocation changes (base `a2ea0a990`, dirty digest
+`fnv1a32:fbaa668e`, fixture `fnv1a32:fba3bb14`); the reserve-first raid and primary pressure both produce native effects.
 Full eight-variant attempt `dca87acce` was interrupted after >34 minutes without runtime payload, so it yields no branch
 verdict. The earlier selected report `1793076386234-failed.json` contains no RAID-02 row; that focused native variant still
 needs an actual runtime capture. One RAID-02 repetition now passes on `d14166375288`: report

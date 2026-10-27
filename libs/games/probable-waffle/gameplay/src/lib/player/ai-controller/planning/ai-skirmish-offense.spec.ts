@@ -166,10 +166,13 @@ describe("AiSkirmishManager offense target selection", () => {
 
     const neutralProposal = new AiSkirmishManager(profile, () => catalog).propose(world, {
       ...state,
-      squads: state.squads.filter((squad) => squad.squadId !== "squad:scout:neutral").map((squad) =>
-        squad.squadId === "squad:scout:primary"
-          ? { ...squad, squadId: "squad:scout:neutral", objectiveId: "neutral:nearby" }
-          : squad)
+      squads: state.squads
+        .filter((squad) => squad.squadId !== "squad:scout:neutral")
+        .map((squad) =>
+          squad.squadId === "squad:scout:primary"
+            ? { ...squad, squadId: "squad:scout:neutral", objectiveId: "neutral:nearby" }
+            : squad
+        )
     });
     const neutralAttack = neutralProposal.statePatch?.squads?.find((squad) => squad.role === "attack");
     expect(neutralAttack?.actorIds).not.toContain(scout.actorId);
@@ -241,45 +244,177 @@ describe("AiSkirmishManager offense target selection", () => {
       relation: "enemy" as const,
       visibility: "visible" as const,
       housingCost: { status: "known" as const, value: 0, observedTick: 20 },
-      capabilities: [{
-        id: "enemy-worker:gather",
-        family: "gather" as const,
-        level: 1,
-        domains: ["ground" as const],
-        targetDomains: [],
-        capacity: { status: "known" as const, value: 1, observedTick: 20 }
-      }]
+      capabilities: [
+        {
+          id: "enemy-worker:gather",
+          family: "gather" as const,
+          level: 1,
+          domains: ["ground" as const],
+          targetDomains: [],
+          capacity: { status: "known" as const, value: 1, observedTick: 20 }
+        }
+      ]
     };
     const observation = createAiTestObservation();
-    const proposal = new AiSkirmishManager(profile, () => catalog).propose({
+    const proposal = new AiSkirmishManager(profile, () => catalog).propose(
+      {
+        ...observation,
+        tick: 20,
+        actors: [...army, enemyMain, enemyWorker],
+        map: {
+          bounds: { status: "known", value: { width: 2, height: 1 }, observedTick: 20 },
+          staticRevision: 1,
+          frontierAccessNodeIds: [enemyNode],
+          scoutCoverageAccessNodeIds: [],
+          dynamicObstacleActorIds: [],
+          regionGeneration: { generation: 1, status: "ready", continuationCursor: 0 },
+          accessGraph: graph.graph
+        }
+      },
+      createAiBrainStateV1({
+        playerNumber: 1,
+        faction: FactionType.Tivara,
+        profile,
+        tick: 0,
+        archetypeId: "balanced"
+      })
+    );
+
+    const attackSquads = proposal.statePatch?.squads?.filter((squad) => squad.role === "attack") ?? [];
+    expect(attackSquads).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ objectiveId: "enemy-main" }),
+        expect.objectContaining({ objectiveId: "enemy-worker", actorIds: expect.arrayContaining([expect.any(String)]) })
+      ])
+    );
+    const raid = attackSquads.find((squad) => squad.squadId.startsWith("squad:attack:raid:"));
+    expect(raid?.actorIds).toHaveLength(3);
+  });
+
+  it("keeps home defenders while splitting only surplus attackers onto a second front", () => {
+    const army = Array.from({ length: 20 }, (_, index) => actor(`army-${index}`, homeNode, 0));
+    const home = {
+      ...actor("home", homeNode, 0),
+      housingCost: { status: "known" as const, value: 0, observedTick: 20 },
+      capabilities: [],
+      mainBuilding: { status: "known" as const, value: true, observedTick: 20 }
+    };
+    const threat = {
+      ...actor("home-threat", homeNode, 0),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const
+    };
+    const enemyMain = {
+      ...actor("enemy-main", enemyNode, 1),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const,
+      housingCost: { status: "known" as const, value: 0, observedTick: 20 },
+      capabilities: [],
+      mainBuilding: { status: "known" as const, value: true, observedTick: 20 }
+    };
+    const enemyWorker = {
+      ...actor("enemy-worker", enemyNode, 1),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const,
+      housingCost: { status: "known" as const, value: 0, observedTick: 20 },
+      capabilities: [
+        {
+          id: "enemy-worker:gather",
+          family: "gather" as const,
+          level: 1,
+          domains: ["ground" as const],
+          targetDomains: [],
+          capacity: { status: "known" as const, value: 1, observedTick: 20 }
+        }
+      ]
+    };
+    const observation = createAiTestObservation();
+    const world = {
       ...observation,
       tick: 20,
-      actors: [...army, enemyMain, enemyWorker],
+      actors: [...army, home, threat, enemyMain, enemyWorker],
       map: {
-        bounds: { status: "known", value: { width: 2, height: 1 }, observedTick: 20 },
+        bounds: { status: "known" as const, value: { width: 2, height: 1 }, observedTick: 20 },
         staticRevision: 1,
         frontierAccessNodeIds: [enemyNode],
         scoutCoverageAccessNodeIds: [],
         dynamicObstacleActorIds: [],
-        regionGeneration: { generation: 1, status: "ready", continuationCursor: 0 },
+        regionGeneration: { generation: 1, status: "ready" as const, continuationCursor: 0 },
         accessGraph: graph.graph
       }
-    }, createAiBrainStateV1({
+    };
+    const initial = createAiBrainStateV1({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
       tick: 0,
       archetypeId: "balanced"
-    }));
+    });
+    const manager = new AiSkirmishManager(profile, () => catalog);
+    const proposal = manager.propose(world, initial);
 
-    const attackSquads = proposal.statePatch?.squads?.filter((squad) => squad.role === "attack") ?? [];
-    expect(attackSquads).toEqual(expect.arrayContaining([
-      expect.objectContaining({ objectiveId: "enemy-main" }),
-      expect.objectContaining({ objectiveId: "enemy-worker", actorIds: expect.arrayContaining([expect.any(String)]) })
-    ]));
-    const raid = attackSquads.find((squad) => squad.squadId.startsWith("squad:attack:raid:"));
-    expect(raid?.actorIds.length).toBeGreaterThan(0);
-    expect(raid?.actorIds.length).toBeLessThanOrEqual(4);
+    const squads = proposal.statePatch?.squads ?? [];
+    const defense = squads.find((entry) => entry.role === "defense");
+    const primary = squads.find((entry) => entry.squadId === "squad:attack:primary");
+    const raid = squads.find((entry) => entry.squadId.startsWith("squad:attack:raid:"));
+    expect(defense?.actorIds.length).toBeGreaterThan(0);
+    expect(primary?.objectiveId).toBe("enemy-main");
+    expect(raid?.objectiveId).toBe("enemy-worker");
+    if (!defense || !primary || !raid) throw new Error("missing_expected_fronts");
+    const allMembers = [defense, primary, raid].flatMap((entry) => entry?.actorIds ?? []);
+    expect(new Set(allMembers).size).toBe(allMembers.length);
+    expect(primary.actorIds.length).toBeGreaterThan(raid.actorIds.length);
+
+    const committedPrimary = { ...primary, actorIds: [...primary.actorIds, ...raid.actorIds] };
+    const continued = manager.propose(world, { ...initial, squads: [defense, committedPrimary] });
+    expect(continued.statePatch?.squads?.some((entry) => entry.squadId.startsWith("squad:attack:raid:"))).toBe(false);
+
+    const understrength = manager.propose(
+      { ...world, actors: [...army.slice(0, 8), home, threat, enemyMain, enemyWorker] },
+      initial
+    );
+    expect(understrength.statePatch?.squads?.some((entry) => entry.squadId.startsWith("squad:attack:raid:"))).toBe(
+      false
+    );
+
+    const enemyProducer = (id: string) => ({
+      ...actor(id, enemyNode, 1),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const,
+      housingCost: { status: "known" as const, value: 0, observedTick: 20 },
+      capabilities: [
+        {
+          id: `${id}:produce`,
+          family: "produce" as const,
+          level: 1,
+          domains: ["ground" as const],
+          targetDomains: [],
+          capacity: { status: "known" as const, value: 1, observedTick: 20 }
+        }
+      ]
+    });
+    const producers = [enemyProducer("producer-a"), enemyProducer("producer-b")];
+    const nearProducers = manager.propose({ ...world, actors: [...world.actors, ...producers] }, initial);
+    expect(
+      nearProducers.statePatch?.squads?.some(
+        (entry) => entry.squadId.startsWith("squad:attack:raid:") && entry.objectiveId === "enemy-worker"
+      )
+    ).toBe(true);
+
+    const defenders = Array.from({ length: 4 }, (_, index) => ({
+      ...actor(`enemy-defender-${index}`, enemyNode, 1),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const
+    }));
+    const defendedTarget = manager.propose({ ...world, actors: [...world.actors, ...defenders] }, initial);
+    expect(defendedTarget.statePatch?.squads?.some((entry) => entry.squadId.startsWith("squad:attack:raid:"))).toBe(
+      false
+    );
   });
 
   it("assigns only anti-air combat actors to defend a protected base from an air raider", () => {
@@ -368,7 +503,11 @@ describe("AiSkirmishManager offense target selection", () => {
       owner: 2,
       relation: "enemy" as const,
       visibility: "visible" as const,
-      activeOrder: { status: "known" as const, value: { orderType: OrderType.Attack, targetActorId: "home" }, observedTick: 20 }
+      activeOrder: {
+        status: "known" as const,
+        value: { orderType: OrderType.Attack, targetActorId: "home" },
+        observedTick: 20
+      }
     };
     const enemyMain = {
       ...actor("enemy-main", enemyNode, 8),
@@ -381,7 +520,11 @@ describe("AiSkirmishManager offense target selection", () => {
     };
     const observation = createAiTestObservation();
     const baseState = createAiBrainStateV1({
-      playerNumber: 1, faction: FactionType.Tivara, profile, tick: 0, archetypeId: "balanced"
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
     });
     const tactics = {
       taskForceId: "task-force:1",
@@ -407,44 +550,49 @@ describe("AiSkirmishManager offense target selection", () => {
     };
     const state: AiBrainStateV1 = {
       ...baseState,
-      squads: [{
-        squadId: "squad:attack:primary",
-        role: "attack",
-        domain: "ground",
-        actorIds: members.map((member) => member.actorId),
-        objectiveId: "enemy-main",
-        state: "engaged",
-        lifecycle: {
-          targetPlayerNumber: 2,
-          targetRegionId: enemyNode,
-          protectedBaseId: null,
-          rallyNodeId: homeNode,
-          retreatNodeId: homeNode,
-          createdTick: 0,
-          assemblyDeadline: { clock: "simulation", unit: "tick", dueTick: 1000, persistence: "save" },
-          effectDeadline: { clock: "simulation", unit: "tick", dueTick: 1000, persistence: "save" },
-          lastUsefulEffectTick: 20,
-          recoveryAttempt: 0,
-          terminalReason: null
-        },
-        tactics
-      }]
+      squads: [
+        {
+          squadId: "squad:attack:primary",
+          role: "attack",
+          domain: "ground",
+          actorIds: members.map((member) => member.actorId),
+          objectiveId: "enemy-main",
+          state: "engaged",
+          lifecycle: {
+            targetPlayerNumber: 2,
+            targetRegionId: enemyNode,
+            protectedBaseId: null,
+            rallyNodeId: homeNode,
+            retreatNodeId: homeNode,
+            createdTick: 0,
+            assemblyDeadline: { clock: "simulation", unit: "tick", dueTick: 1000, persistence: "save" },
+            effectDeadline: { clock: "simulation", unit: "tick", dueTick: 1000, persistence: "save" },
+            lastUsefulEffectTick: 20,
+            recoveryAttempt: 0,
+            terminalReason: null
+          },
+          tactics
+        }
+      ]
     };
-    const proposal = new AiSkirmishManager(profile, () => catalog).propose({
-      ...observation,
-      tick: 20,
-      actors: [home, ...members, raider, enemyMain],
-      threatSummary: { ...observation.threatSummary, visibleEnemyActorIds: [raider.actorId] },
-      map: {
-        bounds: { status: "known", value: { width: 10, height: 1 }, observedTick: 20 },
-        staticRevision: 1,
-        frontierAccessNodeIds: [enemyNode],
-        scoutCoverageAccessNodeIds: [],
-        dynamicObstacleActorIds: [],
-        regionGeneration: { generation: 1, status: "ready", continuationCursor: 0 },
-        accessGraph: graph.graph
-      }
-    }, state);
+    const proposal = new AiSkirmishManager(profile, () => catalog).propose(
+      {
+        ...observation,
+        tick: 20,
+        actors: [home, ...members, raider, enemyMain],
+        threatSummary: { ...observation.threatSummary, visibleEnemyActorIds: [raider.actorId] },
+        map: {
+          bounds: { status: "known", value: { width: 10, height: 1 }, observedTick: 20 },
+          staticRevision: 1,
+          frontierAccessNodeIds: [enemyNode],
+          scoutCoverageAccessNodeIds: [],
+          dynamicObstacleActorIds: [],
+          regionGeneration: { generation: 1, status: "ready", continuationCursor: 0 },
+          accessGraph: graph.graph
+        }
+      },
+      state
+    );
     const attack = proposal.statePatch?.squads?.find((squad) => squad.role === "attack");
     expect(attack).toBeDefined();
     expect(attack?.tactics?.orderedActorIds.every((actorId) => attack.actorIds.includes(actorId))).toBe(true);
