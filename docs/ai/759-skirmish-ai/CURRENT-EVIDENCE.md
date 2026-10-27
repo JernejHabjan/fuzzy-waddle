@@ -29,8 +29,9 @@ firing position. Earlier run history is archived.
 
 FIGHT-03 report `1793095825942-failed.json` on `753e974e686e` ran five of six variants (600 decisions / 12,005 ticks);
 equal-value controls pass. Unequal branches lack two independently useful native fronts and proportional reinforcement.
-The Skaduwee infeasible branch stops at `runtime_preset_event_target_mismatch:loss-front-target-a`. Return after a
-relevant target/event setup change; do not repeat this capture unchanged.
+The isolated Skaduwee infeasible retry `1793104761329-failed.json` confirms the scheduled tick-600 loss affects zero
+actors although the expected actor ID resolves; the target is no longer damageable by then. This remains a fixture setup
+failure, not a branch verdict. Return after a relevant target/timing change; do not repeat unchanged.
 
 FIGHT-04 report `1793096773518-failed.json` on `a5159d9e9183` ran all eight variants (960 decisions / 19,208 ticks); no
 branch fully passes. Overkill branches lack native useful damage across both required targets. Support branches never

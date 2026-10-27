@@ -30,6 +30,9 @@ export function assertRuntimePresetEvents(
       continue;
     }
     const event = expected.find((event) => event.id === result.id);
+    const expectedActorId = event?.fixtureActorId
+      ? application.createdActorIds[event.fixtureActorId] ?? "missing"
+      : "unbound";
     if (
       !event ||
       result.tick !== event.tick ||
@@ -39,7 +42,11 @@ export function assertRuntimePresetEvents(
         (!application.createdActorIds[event.fixtureActorId] ||
           result.affectedActorId !== application.createdActorIds[event.fixtureActorId]))
     ) {
-      throw new Error(`runtime_preset_event_target_mismatch:${result.id}`);
+      throw new Error(
+        `runtime_preset_event_target_mismatch:${result.id}:tick=${result.tick}/${event?.tick ?? "missing"}:` +
+          `subject=${result.subjectName}/${event?.objectName ?? "missing"}:affected=${result.affectedActors}:` +
+          `actor=${result.affectedActorId ?? "missing"}/${expectedActorId}`
+      );
     }
   }
 }

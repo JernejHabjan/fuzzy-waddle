@@ -1,5 +1,10 @@
 # #759 archived evidence history
 
+## 2026-10-27 — FIGHT-03 isolated event-target diagnosis
+
+- `1793104480991-failed.json` isolated `fight-03-skaduwee-infeasible` but had no runtime branch result because its tick-600 `loss-front-target-a` event failed validation.
+- Added expected/observed event fields to the mismatch diagnostic and verified its focused Playwright spec (4/4). Retry `1793104761329-failed.json` resolved the authored fixture actor ID (`sim-38ff03ea`) but the event affected zero actors. The target was no longer damageable at tick 600; this is a setup failure, not FIGHT-03 outcome evidence. The unequal-front failures remain open; change target/timing before retry.
+
 ## 2026-10-27 — RAID-01 worker target-role correction
 
 - An eight-variant full attempt was manually interrupted before it emitted a report. It has no outcome status and must not be cited as a failed or stalled runtime run.

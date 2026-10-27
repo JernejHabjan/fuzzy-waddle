@@ -83,6 +83,17 @@ test("rejects missing, duplicate, foreign, late, failed and substituted loss res
   );
 });
 
+test("includes expected and observed actor details when a pinned event misses its target", () => {
+  expect(() =>
+    assertRuntimePresetEvents(variant, {
+      ...application,
+      eventResults: [
+        { id: "producer-loss", tick: 100, affectedActors: 0, subjectName: "AnkGuard", affectedActorId: null }
+      ]
+    })
+  ).toThrow("runtime_preset_event_target_mismatch:producer-loss:tick=100/100:subject=AnkGuard/AnkGuard:affected=0:actor=missing/native-original");
+});
+
 test("a route outage must actually intercept an original actor within its fixed interval", () => {
   const fault: RuntimeVariantV1 = { ...variant, presetWorld: {
     fixtureId: "route-fault", actors: [{ fixtureActorId: "mover", actorName: "TivaraMacemanMale", owner: 2,
