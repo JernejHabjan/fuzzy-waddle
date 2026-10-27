@@ -27,6 +27,11 @@ branches; both no-heal actors fire, then die while alternating between retreat a
 is clean. FIGHT-02 stays open; do not replay unchanged. Next repair must hold the endangered ranged unit at a safe
 firing position. Earlier run history is archived.
 
+FIGHT-03 report `1793095825942-failed.json` on `753e974e686e` ran five of six variants (600 decisions / 12,005 ticks);
+equal-value controls pass. Unequal branches lack two independently useful native fronts and proportional reinforcement.
+The Skaduwee infeasible branch stops at `runtime_preset_event_target_mismatch:loss-front-target-a`. Return after a
+relevant target/event setup change; do not repeat this capture unchanged.
+
 ## Validated outcomes
 
 - Packages 1–2 are complete: production 8/8; economy/technology 16/16.
