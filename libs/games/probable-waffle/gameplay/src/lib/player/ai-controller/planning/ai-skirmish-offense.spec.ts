@@ -224,6 +224,64 @@ describe("AiSkirmishManager offense target selection", () => {
     );
   });
 
+  it("assigns a limited reserve squad to an exposed economic raid while the main force keeps its objective", () => {
+    const army = Array.from({ length: 12 }, (_, index) => actor(`army-${index}`, homeNode, 0));
+    const enemyMain = {
+      ...actor("enemy-main", enemyNode, 1),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const,
+      housingCost: { status: "known" as const, value: 0, observedTick: 20 },
+      capabilities: [],
+      mainBuilding: { status: "known" as const, value: true, observedTick: 20 }
+    };
+    const enemyWorker = {
+      ...actor("enemy-worker", enemyNode, 1),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const,
+      housingCost: { status: "known" as const, value: 0, observedTick: 20 },
+      capabilities: [{
+        id: "enemy-worker:gather",
+        family: "gather" as const,
+        level: 1,
+        domains: ["ground" as const],
+        targetDomains: [],
+        capacity: { status: "known" as const, value: 1, observedTick: 20 }
+      }]
+    };
+    const observation = createAiTestObservation();
+    const proposal = new AiSkirmishManager(profile, () => catalog).propose({
+      ...observation,
+      tick: 20,
+      actors: [...army, enemyMain, enemyWorker],
+      map: {
+        bounds: { status: "known", value: { width: 2, height: 1 }, observedTick: 20 },
+        staticRevision: 1,
+        frontierAccessNodeIds: [enemyNode],
+        scoutCoverageAccessNodeIds: [],
+        dynamicObstacleActorIds: [],
+        regionGeneration: { generation: 1, status: "ready", continuationCursor: 0 },
+        accessGraph: graph.graph
+      }
+    }, createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    }));
+
+    const attackSquads = proposal.statePatch?.squads?.filter((squad) => squad.role === "attack") ?? [];
+    expect(attackSquads).toEqual(expect.arrayContaining([
+      expect.objectContaining({ objectiveId: "enemy-main" }),
+      expect.objectContaining({ objectiveId: "enemy-worker", actorIds: expect.arrayContaining([expect.any(String)]) })
+    ]));
+    const raid = attackSquads.find((squad) => squad.squadId.startsWith("squad:attack:raid:"));
+    expect(raid?.actorIds.length).toBeGreaterThan(0);
+    expect(raid?.actorIds.length).toBeLessThanOrEqual(4);
+  });
+
   it("assigns only anti-air combat actors to defend a protected base from an air raider", () => {
     const main = {
       ...actor("main", homeNode, 0),
