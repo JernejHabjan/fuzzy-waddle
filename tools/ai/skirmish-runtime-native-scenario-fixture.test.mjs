@@ -480,6 +480,15 @@ test("FIGHT-01 starts its favorable contact close to the authored army", () => {
   }
 });
 
+test("FIGHT-02 starts every valuable ranged probe at its authored damaged health", () => {
+  const fixture = nativeScenarioFixture("FIGHT-02");
+  for (const variant of fixture.recipe.variants) {
+    assert.deepEqual(variant.presetWorld.healthStarts, [
+      { fixtureActorId: "ranged-probe", healthPermille: 400, armourPermille: 0 }
+    ]);
+  }
+});
+
 test("source-controlled worlds reject erased perturbations, fake observations and altered topology", () => {
   for (const [id, branch, mutate] of [
     ["SCOUT-02", "hidden_health", (world) => world.events = []],

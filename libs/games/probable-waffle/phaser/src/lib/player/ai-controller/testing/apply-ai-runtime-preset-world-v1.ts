@@ -4,6 +4,7 @@ import { applyAiRuntimeConstructionOrders } from "./apply-ai-runtime-constructio
 import { captureAiRuntimePlacementClearance } from "./capture-ai-runtime-placement-clearance";
 import { applyAiRuntimeSourceStocks } from "./ai-runtime-source-stocks";
 import { applyAiRuntimeHealthStarts } from "./ai-runtime-health-starts";
+import { requiresScheduledAiRuntimePresetSetup } from "./ai-runtime-preset-setup-requirement";
 import { applyAiRuntimeTerrainPatches } from "./ai-runtime-terrain-patches";
 import { installAiRuntimeRouteOutages } from "./ai-runtime-route-outages";
 import { installAiRuntimeReceiptFault } from "./install-ai-runtime-receipt-fault";
@@ -106,9 +107,9 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
     emitResource(scene, "resource.added", grant.amounts as Partial<PlayerStateResources>, grant.playerNumber);
   }
   applyAiRuntimeSourceStocks(preset, createdActors);
-  applyAiRuntimeHealthStarts(preset, createdActors);
   const completeSetup = () => {
     assertAiRuntimePresetRoster(scene, preset);
+    applyAiRuntimeHealthStarts(preset, createdActors);
     const placementBaseline = preset.protectedRoutes ? captureAiRuntimePlacementClearance(scene, preset.protectedRoutes) : undefined;
     const { queuedItemCount, initialQueueItems, queueApplications } = applyAiRuntimePresetQueues(
       scene,
@@ -169,17 +170,7 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
     installAiRuntimeReceiptFault(scene, preset);
     installAiRuntimeProductionRallies(scene, preset, createdActors);
   };
-  if (
-    (preset.queues?.length ?? 0) +
-      (preset.constructionOrders?.length ?? 0) +
-      (preset.researchQueues?.length ?? 0) +
-      (preset.routeOutages?.length ?? 0) +
-      (preset.receiptFault ? 1 : 0) +
-      (preset.recoveryStart ? 1 : 0) +
-      (preset.controls?.length ?? 0) +
-      (preset.productionRallies?.length ?? 0) >
-    0
-  ) {
+  if (requiresScheduledAiRuntimePresetSetup(preset)) {
     scheduleAiRuntimePresetSetup(scene, completeSetup);
   } else {
     completeSetup();
