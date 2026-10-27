@@ -45,6 +45,11 @@ contain superseded observations and next actions. Use HANDOFF.md and CURRENT-EVI
 - Report `D:\ai-skirmish-work\matrix\1793084287890-failed.json`: all four branches complete; physical trip evidence passes, while hidden-pair selected-intent parity still fails. The first intent divergence remains at tick 20 in opening construction/recovery choices.
 - Opening proposal had re-sorted geometry-ordered owned actors and stalled sites by run-local ID. Those overrides were removed and gameplay tests pass (104 suites / 557 tests), but the native parity result is unchanged. Keep parity open; inspect hidden-pair initial input/state provenance before another runtime attempt.
 
+## 2026-10-27 — DOMAIN-02 ESCORT landing-depth diagnostic
+
+- Targeted report `D:\ai-skirmish-work\matrix\1793084615030-diagnostic_failed.json` confirms the revised escort unload reaches row 32, satisfying the row-30 minimum. It still fails `domain_paid_ship_has_no_compatible_native_objective_hit`; the paid naval force is not tied to a compatible observed target through an attack squad.
+- DOMAIN-02 stays open along with COAST's reserve-ship failure. Do not replay either unchanged; continue with the other combat/access cases before returning to a source-level naval assignment repair.
+
 ## 2026-10-27 — STRAT-04 target retention and current failure boundary
 
 - Root repairs: retain a viable committed target against core-score preemption; remove the reinforcement wave from quiet/noise controls; make harmless local contacts insufficient to divert the attack squad; and measure the same goal/squad across contact aliases and legitimate target transitions.
