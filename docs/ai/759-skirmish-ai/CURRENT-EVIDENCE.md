@@ -46,7 +46,10 @@ RAID-01's corrected evaluator uses each branch's authored economic target. Separ
 workers diagnostic `1793101298256-diagnostic_passed.json` on source `389b48856732` / fixture `fnv1a32:fba3bb14`.
 Full eight-variant attempt `dca87acce` was interrupted after >34 minutes without runtime payload, so it yields no branch
 verdict. The earlier selected report `1793076386234-failed.json` contains no RAID-02 row; that focused native variant still
-needs an actual runtime capture.
+needs an actual runtime capture. One RAID-02 repetition now passes on `d14166375288`: report
+`1793104113441-diagnostic_passed.json` records the variant as PASS at its 12,000-tick checkpoint, with a match win,
+three raid attackers, 2,875 damage, and the evaluator's post-raid redirection predicate satisfied. This is targeted
+branch evidence, not the recipe's three-run certification.
 
 ## Validated outcomes
 
