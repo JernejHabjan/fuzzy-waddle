@@ -35,7 +35,7 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
     const position = member.logicalPosition.status === "known" ? member.logicalPosition.value : null;
     const activeOrder = member.activeOrder?.status === "known" ? member.activeOrder.value : null;
     return !(activeOrder?.orderType === OrderType.Move && activeOrder.targetPosition != null &&
-      position !== null && distance(activeOrder.targetPosition, retreat) <= 1 && distance(position, retreat) > 1);
+      position !== null && distance(activeOrder.targetPosition, position) > 1);
   }) : [];
   const damageReservations = allDamageReservations.filter((reservation) => !protectedIds.has(reservation.actorId));
   const targetAwareMembers = allTargetAwareMembers.filter((member) => !protectedIds.has(member.actorId));

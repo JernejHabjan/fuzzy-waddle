@@ -202,7 +202,7 @@ describe("AiTacticsManager", () => {
       activeOrder: {
         status: "known" as const,
         observedTick: 100,
-        value: { orderType: OrderType.Move, targetActorId: null, targetPosition: { x: 0, y: 0, z: 0 } }
+        value: { orderType: OrderType.Move, targetActorId: null, targetPosition: { x: 10, y: 0, z: 0 } }
       }
     };
     const distantAttacker = {
@@ -215,6 +215,25 @@ describe("AiTacticsManager", () => {
     );
     expect(withdrawal.intents.filter((intent) => intent.kind === "attack")
       .flatMap((intent) => intent.actorIds)).not.toContain(ranged.actorId);
+
+    const arrivedRanged = {
+      ...withdrawingRanged,
+      logicalPosition: { status: "known" as const, value: { x: 10, y: 0, z: 0 }, observedTick: 120 }
+    };
+    const harmlessObjective = {
+      ...objective,
+      combatProfile: {
+        ...objective.combatProfile,
+        value: { ...requireValue(objective.combatProfile.status === "known" ? objective.combatProfile.value : undefined,
+          "missing_objective_combat_profile"), attacks: [] }
+      }
+    };
+    const afterWithdrawal = manager.propose(
+      observation([arrivedRanged, ...supportingAttackers, distantAttacker, harmlessObjective], 120),
+      pressureState
+    );
+    expect(afterWithdrawal.intents.filter((intent) => intent.kind === "attack")
+      .flatMap((intent) => intent.actorIds)).toContain(ranged.actorId);
   });
 
   it("keeps new reinforcements on offense when only a static enemy building is near home", () => {

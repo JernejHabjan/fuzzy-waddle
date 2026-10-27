@@ -54,8 +54,11 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
       !memberPosition
     ) return false;
     const memberDomains = movementDomains(member);
-    const alreadyWithdrawing = member.activeOrder?.status === "known" &&
-      member.activeOrder.value?.orderType === "Move";
+    const activeMove = member.activeOrder?.status === "known" && member.activeOrder.value?.orderType === "Move"
+      ? member.activeOrder.value
+      : null;
+    const alreadyWithdrawing = activeMove?.targetPosition != null &&
+      distance(memberPosition, activeMove.targetPosition) > 1;
     return localEnemies.some((enemy) => {
       const enemyPosition = knownPosition(enemy);
       const enemyCombat = enemy.combatProfile;
