@@ -21,11 +21,13 @@ six contacts entered ranked alternatives within 400 ticks and took later AI-caus
 FIGHT-01 passes all eight native branches in `1793088416093-passed.json` (960 decisions / 19,208 ticks). The captured
 runtime source is `441d72399` with fixture digest `fnv1a32:13bf9dd1`; the outer report was finalized after a documentation-only
 commit. The evaluator follows native attack-commit behavior and excludes irrelevant long-horizon resource coverage.
-FIGHT-02 has verified 40% health starts. Latest report `1793094794130-failed.json` on `c970a4537` passes four of six
-branches; both no-heal actors fire, then die while alternating between retreat and offensive-position orders. The prior
-`ce576d014` capture passed five branches but omitted a Skaduwee shot. Focused tactics/recovery tests pass 26/26 and lint
-is clean. FIGHT-02 stays open; do not replay unchanged. Next repair must hold the endangered ranged unit at a safe
-firing position. Earlier run history is archived.
+FIGHT-02 has verified 40% health starts. Full intermediate report `1793116679167-failed.json` ran all six branches;
+three passed and three lacked a useful shot. Subsequent tactical changes produced passing targeted reports for Tivara
+safe-shot (`1793129389033`), Skaduwee no-heal (`1793129537049`) and Skaduwee escape (`1793130261723`). The first two
+predate the final movement-completion and threat-selection changes, so these captures do not close the full family.
+The current source keeps safe firing positions, lets moves finish before replacing them, and directs nearby allies at
+credible threats to wounded ranged units. Gameplay tests pass 566/566 and the production portal build passes. The
+current-source six-branch gate is left to the existing CI runtime matrix.
 
 FIGHT-03 report `1793095825942-failed.json` on `753e974e686e` ran five of six variants (600 decisions / 12,005 ticks);
 equal-value controls pass. Unequal branches lack two independently useful native fronts and proportional reinforcement.

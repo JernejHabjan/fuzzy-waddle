@@ -24,21 +24,62 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
     profile,
     recoveryPhase,
     retreat,
+    safeFiringPositions,
     support,
     targetAwareMembers: allTargetAwareMembers,
     updated,
     visibleTarget
   } = input;
   const protectedIds = new Set(input.criticalRangedActorIds);
+  const safeFiringPositionByActor = new Map(
+    safeFiringPositions.map((assignment) => [assignment.actorId, assignment.position])
+  );
+  const safeFiringActorIds = new Set(safeFiringPositionByActor.keys());
+  const safeFiringMoveIds = new Set(
+    safeFiringPositions.flatMap((assignment) => {
+      const member = members.find((candidate) => candidate.actorId === assignment.actorId);
+      const position = member?.logicalPosition.status === "known" ? member.logicalPosition.value : null;
+      return position && distance(position, assignment.position) > 1 ? [assignment.actorId] : [];
+    })
+  );
+  const completingSafeMoveIds = new Set(
+    safeFiringPositions.flatMap((assignment) => {
+      const member = members.find((candidate) => candidate.actorId === assignment.actorId);
+      const order = member?.activeOrder?.status === "known" ? member.activeOrder.value : null;
+      return order?.orderType === OrderType.Move &&
+        order.targetPosition &&
+        distance(order.targetPosition, assignment.position) <= 1
+        ? [assignment.actorId]
+        : [];
+    })
+  );
+  const safeFiringMovesNeeded = actorsNeedingOrder.some((actorId) => safeFiringMoveIds.has(actorId));
   const protectedMembers = members.filter((member) => protectedIds.has(member.actorId));
-  const protectedMembersNeedingMove = retreat ? protectedMembers.filter((member) => {
-    const position = member.logicalPosition.status === "known" ? member.logicalPosition.value : null;
-    const activeOrder = member.activeOrder?.status === "known" ? member.activeOrder.value : null;
-    return !(activeOrder?.orderType === OrderType.Move && activeOrder.targetPosition != null &&
-      position !== null && distance(activeOrder.targetPosition, position) > 1);
-  }) : [];
-  const damageReservations = allDamageReservations.filter((reservation) => !protectedIds.has(reservation.actorId));
-  const targetAwareMembers = allTargetAwareMembers.filter((member) => !protectedIds.has(member.actorId));
+  const protectedMembersNeedingMove = retreat
+    ? protectedMembers.filter((member) => {
+        if (safeFiringActorIds.has(member.actorId)) return false;
+        const position = member.logicalPosition.status === "known" ? member.logicalPosition.value : null;
+        const activeOrder = member.activeOrder?.status === "known" ? member.activeOrder.value : null;
+        return !(
+          activeOrder?.orderType === OrderType.Move &&
+          activeOrder.targetPosition != null &&
+          position !== null &&
+          distance(activeOrder.targetPosition, position) > 1
+        );
+      })
+    : [];
+  const damageReservations = allDamageReservations.filter(
+    (reservation) =>
+      !protectedIds.has(reservation.actorId) &&
+      !safeFiringMoveIds.has(reservation.actorId) &&
+      !completingSafeMoveIds.has(reservation.actorId)
+  );
+  const targetAwareMembers = allTargetAwareMembers.filter(
+    (member) =>
+      !protectedIds.has(member.actorId) &&
+      !safeFiringMoveIds.has(member.actorId) &&
+      !completingSafeMoveIds.has(member.actorId)
+  );
   const searchDestinations = observation.map?.scoutSearchPoints?.map((point) => point.position) ?? [];
   const hasNativeSearchOrder =
     searchDestinations.length > 0 &&
@@ -51,8 +92,8 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
         return searchDestinations.some((destination) => distance(activeDestination, destination) <= 4);
       return updated.tactics?.orderedActorIds.includes(member.actorId) ?? false;
     });
-  const hasSelectedSearchIntent = intents.some((intent) =>
-    intent.kind === "scout" && members.some((member) => intent.actorIds.includes(member.actorId))
+  const hasSelectedSearchIntent = intents.some(
+    (intent) => intent.kind === "scout" && members.some((member) => intent.actorIds.includes(member.actorId))
   );
   const tacticalWithdrawal = ["protected_retreat", "rampart_withdraw", "land_regroup"].includes(
     updated.tactics?.script ?? ""
@@ -67,20 +108,31 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
       hasNativeSearchOrder ||
       (updated.objectiveId?.startsWith("question:") && visibleContact && localEnemies.length === 0));
   const directSearchRoute =
-    updated.role === "scout" && updated.objectiveId?.startsWith("question:") && !tacticalWithdrawal && !preserveSearchOrder;
+    updated.role === "scout" &&
+    updated.objectiveId?.startsWith("question:") &&
+    !tacticalWithdrawal &&
+    !preserveSearchOrder;
   if (!preserveSearchOrder && materiallyChanged && updated.state === "retreat" && retreat) {
     const batch = actorsNeedingOrder.slice(0, profile.maxActorOrdersPerStep);
-    if (batch.length > 0)
+    const retreatBatch = batch.filter((actorId) => !safeFiringActorIds.has(actorId));
+    if (retreatBatch.length > 0)
       intents.push({
         ...intentBase(
           observation,
-          { ...updated, actorIds: batch },
-          `protected_retreat:${batch[0]}:${batch[batch.length - 1]}`,
+          { ...updated, actorIds: retreatBatch },
+          `protected_retreat:${retreatBatch[0]}:${retreatBatch[retreatBatch.length - 1]}`,
           980
         ),
         kind: "move",
-        actorIds: batch,
+        actorIds: retreatBatch,
         logicalPosition: retreat
+      });
+    for (const actorId of batch.filter((id) => safeFiringActorIds.has(id)))
+      intents.push({
+        ...intentBase(observation, { ...updated, actorIds: [actorId] }, `safe_firing_position:${actorId}`, 980),
+        kind: "move",
+        actorIds: [actorId],
+        logicalPosition: safeFiringPositionByActor.get(actorId)!
       });
   } else if (directSearchRoute && materiallyChanged && updated.state !== "retreat" && anchor) {
     const batch = actorsNeedingOrder.slice(0, profile.maxActorOrdersPerStep);
@@ -96,15 +148,35 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
     (materiallyChanged || protectedMembersNeedingMove.length > 0) &&
     (updated.state === "engage" || updated.state === "advance") &&
     visibleTarget &&
-    (damageReservations.length > 0 || protectedMembersNeedingMove.length > 0)
+    (damageReservations.length > 0 || protectedMembersNeedingMove.length > 0 || safeFiringMovesNeeded)
   ) {
+    for (const assignment of safeFiringPositions.filter(
+      (entry) => safeFiringMoveIds.has(entry.actorId) && actorsNeedingOrder.includes(entry.actorId)
+    )) {
+      intents.push({
+        ...intentBase(
+          observation,
+          { ...updated, actorIds: [assignment.actorId] },
+          `safe_firing_position:${assignment.actorId}`,
+          980
+        ),
+        kind: "move",
+        actorIds: [assignment.actorId],
+        logicalPosition: assignment.position
+      });
+    }
     for (const member of protectedMembersNeedingMove) {
       if (!retreat) continue;
       intents.push({
-        ...intentBase(observation, { ...updated, actorIds: [member.actorId] }, `protected_member:${member.actorId}`, 980),
+        ...intentBase(
+          observation,
+          { ...updated, actorIds: [member.actorId] },
+          `protected_member:${member.actorId}`,
+          980
+        ),
         kind: "move",
         actorIds: [member.actorId],
-        logicalPosition: retreat
+        logicalPosition: safeFiringPositionByActor.get(member.actorId) ?? retreat
       });
     }
     for (const reservation of damageReservations) {
@@ -132,7 +204,11 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
     // Fighting members and distant reinforcements need independent orders in the same decision.
     const awareIds = new Set(targetAwareMembers.map((actor) => actor.actorId));
     for (const assignment of assignedPositions.filter(
-      (entry) => actorsNeedingOrder.includes(entry.actorId) && !awareIds.has(entry.actorId) && !protectedIds.has(entry.actorId)
+      (entry) =>
+        actorsNeedingOrder.includes(entry.actorId) &&
+        !awareIds.has(entry.actorId) &&
+        !protectedIds.has(entry.actorId) &&
+        !safeFiringActorIds.has(entry.actorId)
     )) {
       intents.push({
         ...intentBase(
@@ -146,9 +222,16 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
         logicalPosition: assignment.position
       });
     }
-  } else if (!preserveSearchOrder && materiallyChanged && anchor && !["completed", "cancelled"].includes(updated.state)) {
+  } else if (
+    !preserveSearchOrder &&
+    materiallyChanged &&
+    anchor &&
+    !["completed", "cancelled"].includes(updated.state)
+  ) {
     if (assignedPositions.length > 0) {
-      for (const assignment of assignedPositions.filter((entry) => actorsNeedingOrder.includes(entry.actorId))) {
+      for (const assignment of assignedPositions.filter(
+        (entry) => actorsNeedingOrder.includes(entry.actorId) && !safeFiringActorIds.has(entry.actorId)
+      )) {
         const positioned = { ...updated, actorIds: [assignment.actorId] };
         intents.push({
           ...intentBase(

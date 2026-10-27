@@ -91,7 +91,11 @@ describe("AiTacticsManager", () => {
     const target = combatActor("target", "enemy", 5, "ground", 1000, { damage: 0 });
     const defenders = [3, 4, 6].map((x) => combatActor(`defender-${x}`, "enemy", x, "ground", 1000, { damage: 100 }));
     const committedSquad = {
-      ...squad("squad:attack", "attack", attackers.map((actor) => actor.actorId)),
+      ...squad(
+        "squad:attack",
+        "attack",
+        attackers.map((actor) => actor.actorId)
+      ),
       objectiveId: target.actorId,
       state: "retreat" as const
     };
@@ -186,16 +190,71 @@ describe("AiTacticsManager", () => {
         ]
       }
     };
-    const proposal = manager.propose(observation([ranged, ...supportingAttackers, nearby, objective]), pressureState);
+    const firingTile = {
+      tileKey: "7,0",
+      position: { x: 7, y: 0, z: 0 },
+      groundPassable: true,
+      waterPassable: false,
+      elevation: 0,
+      observedBlocked: false
+    };
+    const combatObservation = (actors: readonly (typeof ranged)[], tick = 100) => {
+      const base = observation(actors, tick);
+      return { ...base, map: { ...base.map!, tacticalCells: [firingTile] } };
+    };
+    const proposal = manager.propose(
+      combatObservation([ranged, ...supportingAttackers, nearby, objective]),
+      pressureState
+    );
 
     expect(proposal.statePatch?.squadUpdates?.[0]?.state).toBe("engage");
     expect(proposal.intents).toContainEqual(
-      expect.objectContaining({ kind: "move", actorIds: expect.arrayContaining([ranged.actorId]) })
+      expect.objectContaining({
+        kind: "move",
+        actorIds: expect.arrayContaining([ranged.actorId]),
+        logicalPosition: firingTile.position
+      })
     );
-    expect(proposal.intents.filter((intent) => intent.kind === "attack")
-      .flatMap((intent) => intent.actorIds)).not.toContain(ranged.actorId);
-    expect(proposal.intents.some((intent) => intent.kind === "attack" &&
-      supportingAttackers.some((actor) => intent.actorIds.includes(actor.actorId)))).toBe(true);
+    expect(
+      proposal.intents.filter((intent) => intent.kind === "move" && intent.actorIds.includes(ranged.actorId))
+    ).toHaveLength(1);
+    expect(
+      proposal.intents.filter((intent) => intent.kind === "attack").flatMap((intent) => intent.actorIds)
+    ).not.toContain(ranged.actorId);
+    expect(
+      proposal.intents.some(
+        (intent) =>
+          intent.kind === "attack" && supportingAttackers.some((actor) => intent.actorIds.includes(actor.actorId))
+      )
+    ).toBe(true);
+    expect(
+      proposal.intents.some(
+        (intent) =>
+          intent.kind === "attack" &&
+          supportingAttackers.some((actor) => intent.actorIds.includes(actor.actorId)) &&
+          intent.targetActorId === nearby.actorId
+      )
+    ).toBe(true);
+
+    const separateSquads = {
+      ...pressureState,
+      squads: [
+        squad("squad:defense", "defense", [ranged.actorId]),
+        { ...attackSquad, actorIds: supportingAttackers.map((actor) => actor.actorId) }
+      ]
+    };
+    const crossSquadProtection = manager.propose(
+      combatObservation([ranged, ...supportingAttackers, nearby, objective]),
+      separateSquads
+    );
+    expect(
+      crossSquadProtection.intents.some(
+        (intent) =>
+          intent.kind === "attack" &&
+          supportingAttackers.some((actor) => intent.actorIds.includes(actor.actorId)) &&
+          intent.targetActorId === nearby.actorId
+      )
+    ).toBe(true);
 
     const withdrawingRanged = {
       ...ranged,
@@ -207,33 +266,60 @@ describe("AiTacticsManager", () => {
     };
     const distantAttacker = {
       ...nearby,
-      logicalPosition: { status: "known" as const, value: { x: 4, y: 0, z: 0 }, observedTick: 100 }
+      logicalPosition: { status: "known" as const, value: { x: 3, y: 0, z: 0 }, observedTick: 100 }
     };
     const withdrawal = manager.propose(
-      observation([withdrawingRanged, ...supportingAttackers, distantAttacker, objective]),
+      combatObservation([withdrawingRanged, ...supportingAttackers, distantAttacker, objective]),
       pressureState
     );
-    expect(withdrawal.intents.filter((intent) => intent.kind === "attack")
-      .flatMap((intent) => intent.actorIds)).not.toContain(ranged.actorId);
+    expect(
+      withdrawal.intents.filter((intent) => intent.kind === "attack").flatMap((intent) => intent.actorIds)
+    ).not.toContain(ranged.actorId);
 
     const arrivedRanged = {
       ...withdrawingRanged,
-      logicalPosition: { status: "known" as const, value: { x: 10, y: 0, z: 0 }, observedTick: 120 }
+      logicalPosition: { status: "known" as const, value: firingTile.position, observedTick: 120 },
+      activeOrder: {
+        status: "known" as const,
+        observedTick: 120,
+        value: { orderType: OrderType.Move, targetActorId: null, targetPosition: firingTile.position }
+      }
     };
     const harmlessObjective = {
       ...objective,
       combatProfile: {
         ...objective.combatProfile,
-        value: { ...requireValue(objective.combatProfile.status === "known" ? objective.combatProfile.value : undefined,
-          "missing_objective_combat_profile"), attacks: [] }
+        value: {
+          ...requireValue(
+            objective.combatProfile.status === "known" ? objective.combatProfile.value : undefined,
+            "missing_objective_combat_profile"
+          ),
+          attacks: []
+        }
       }
     };
     const afterWithdrawal = manager.propose(
-      observation([arrivedRanged, ...supportingAttackers, distantAttacker, harmlessObjective], 120),
+      combatObservation([arrivedRanged, ...supportingAttackers, distantAttacker, harmlessObjective], 120),
       pressureState
     );
-    expect(afterWithdrawal.intents.filter((intent) => intent.kind === "attack")
-      .flatMap((intent) => intent.actorIds)).toContain(ranged.actorId);
+    expect(
+      afterWithdrawal.intents.filter((intent) => intent.kind === "attack").flatMap((intent) => intent.actorIds)
+    ).not.toContain(ranged.actorId);
+    expect(
+      afterWithdrawal.intents.filter((intent) => intent.kind === "move").flatMap((intent) => intent.actorIds)
+    ).not.toContain(ranged.actorId);
+
+    const completedRanged = {
+      ...arrivedRanged,
+      activeOrder: { status: "known" as const, observedTick: 140, value: null }
+    };
+    const afterMoveCompletes = manager.propose(
+      combatObservation([completedRanged, ...supportingAttackers, distantAttacker, harmlessObjective], 140),
+      pressureState
+    );
+    expect(
+      afterMoveCompletes.intents.filter((intent) => intent.kind === "attack").flatMap((intent) => intent.actorIds)
+    ).toContain(ranged.actorId);
   });
 
   it("keeps new reinforcements on offense when only a static enemy building is near home", () => {

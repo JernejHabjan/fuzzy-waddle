@@ -63,7 +63,22 @@ export function reconcileAiDecisionReservations(
 ) {
   const terminalCommands = new Set<string>(outcomes.filter(isTerminal).map((outcome) => outcome.identity.commandId));
   return reconcileAiCommandReservations(state.reservations, outcomes).filter((reservation) => {
-    if (reservation.state.kind === "provisional") return reservation.state.expiresAt.dueTick > tick;
+    if (reservation.state.kind === "provisional") {
+      const actorId = reservation.subjectKey?.startsWith("actor:")
+        ? reservation.subjectKey.slice("actor:".length)
+        : null;
+      if (actorId && reservation.ownerPlanId.startsWith("plan:squad:")) {
+        const ownerSquadId = reservation.ownerPlanId.slice("plan:".length);
+        const ownerSquad = state.squads.find((squad) => squad.squadId === ownerSquadId);
+        if (
+          !ownerSquad ||
+          ["completed", "cancelled"].includes(ownerSquad.state) ||
+          !ownerSquad.actorIds.includes(actorId)
+        )
+          return false;
+      }
+      return reservation.state.expiresAt.dueTick > tick;
+    }
     if (reservation.state.kind === "dispatched") return !terminalCommands.has(reservation.state.commandId);
     return true;
   });
@@ -112,7 +127,11 @@ export function planAiDecisions(
       status: "recovering"
     });
   }
-  const cyclicPlan = selectAiCycleVictim({ ...previous, reservations, pendingOutcomes: [...previous.pendingOutcomes, ...outcomes] });
+  const cyclicPlan = selectAiCycleVictim({
+    ...previous,
+    reservations,
+    pendingOutcomes: [...previous.pendingOutcomes, ...outcomes]
+  });
   const preDecisions: AiIntentDecisionV1[] = [];
   if (cyclicPlan) {
     const reversible = reservations

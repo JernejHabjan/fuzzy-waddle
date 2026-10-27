@@ -1,6 +1,6 @@
 import type { AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observation-v1";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
-import { selectAiAttackApproachPositions } from "./ai-tactics-approach-positions";
+import { selectAiAttackApproachPositions, selectAiSafeFiringPositions } from "./ai-tactics-approach-positions";
 import { combatActor } from "./ai-tactics-test-fixtures";
 
 function attacker(actorId: string): AiObservedActorV1 {
@@ -196,5 +196,85 @@ describe("observed attack approach positions", () => {
 
     expect(positions).toHaveLength(1);
     expect(Math.hypot(positions[0]!.position.x - 10, positions[0]!.position.y)).toBeLessThanOrEqual(4);
+  });
+
+  it("selects a legal firing tile with room beyond observed enemy weapon ranges", () => {
+    const base = createAiTestObservation();
+    const member = combatActor("wounded-ranged", "self", 1, "ground", 400);
+    const enemyBase = combatActor("nearby-enemy", "enemy", 2, "ground", 1000);
+    const enemyProfile = enemyBase.combatProfile.status === "known" ? enemyBase.combatProfile.value : undefined;
+    const enemy = {
+      ...enemyBase,
+      combatProfile: {
+        ...enemyBase.combatProfile,
+        value: {
+          ...enemyProfile!,
+          attacks: enemyProfile!.attacks.map((attack) => ({ ...attack, range: 1, minRange: 0 }))
+        }
+      }
+    };
+    const target = combatActor("objective", "enemy", 12, "ground", 1000, { damage: 0 });
+    const firingTile = {
+      tileKey: "7,0",
+      position: { x: 7, y: 0, z: 0 },
+      groundPassable: true,
+      waterPassable: false,
+      elevation: 0,
+      observedBlocked: false
+    };
+    const saferFiringTile = { ...firingTile, tileKey: "9,0", position: { x: 9, y: 0, z: 0 } };
+    const observation = {
+      ...base,
+      actors: [member, enemy, target],
+      map: { ...base.map!, tacticalCells: [firingTile, saferFiringTile] }
+    } satisfies AiObservationV1;
+
+    expect(selectAiSafeFiringPositions([member], [enemy, target], target, observation)).toEqual([
+      { actorId: member.actorId, position: firingTile.position }
+    ]);
+    expect(
+      selectAiSafeFiringPositions(
+        [{ ...member, healthPermille: { status: "known", value: 401, observedTick: 100 } }],
+        [
+          {
+            ...enemy,
+            logicalPosition: { status: "known", value: firingTile.position, observedTick: 100 },
+            combatProfile: {
+              ...enemy.combatProfile,
+              value: {
+                ...enemyProfile!,
+                attacks: enemyProfile!.attacks.map((attack) => ({ ...attack, range: 5, minRange: 0 }))
+              }
+            }
+          }
+        ],
+        target,
+        observation
+      )
+    ).toEqual([]);
+  });
+
+  it("moves a nearly defeated ranged actor to the farthest legal standoff tile", () => {
+    const base = createAiTestObservation();
+    const member = combatActor("critical-ranged", "self", 1, "ground", 300);
+    const enemy = combatActor("pursuer", "enemy", 2, "ground", 1000);
+    const target = combatActor("objective", "enemy", 5, "ground", 1000, { damage: 0 });
+    const retreatTile = {
+      tileKey: "12,0",
+      position: { x: 12, y: 0, z: 0 },
+      groundPassable: true,
+      waterPassable: false,
+      elevation: 0,
+      observedBlocked: false
+    };
+    const observation = {
+      ...base,
+      actors: [member, enemy, target],
+      map: { ...base.map!, tacticalCells: [retreatTile] }
+    } satisfies AiObservationV1;
+
+    expect(selectAiSafeFiringPositions([member], [enemy, target], target, observation)).toEqual([
+      { actorId: member.actorId, position: retreatTile.position }
+    ]);
   });
 });

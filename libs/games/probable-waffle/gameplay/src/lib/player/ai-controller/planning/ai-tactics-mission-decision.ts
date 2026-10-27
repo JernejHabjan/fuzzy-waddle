@@ -6,6 +6,7 @@ import {
   AI_TACTICS_RETREAT_RELEASE_RATIO_PERMILLE,
   TACTICAL_RECONSIDERATION_TICKS
 } from "./ai-tactics-rules";
+import { selectAiSafeFiringPositions } from "./ai-tactics-approach-positions";
 
 import type { prepareAiTacticalSquad } from "./ai-tactics-mission-preparation";
 /** Chooses bounded mission state and recovery. */
@@ -42,35 +43,43 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
     (estimate.predictedFriendlyLossPermille > 0 &&
       members.filter((actor) => actor.healthPermille?.status === "known" && actor.healthPermille.value <= 250).length >=
         Math.max(1, Math.ceil(members.length / 3)));
-  const criticalRangedActorIds = retreat ? members.filter((member) => {
-    const memberHealth = member.healthPermille;
-    const memberCombat = member.combatProfile;
-    const memberPosition = knownPosition(member);
-    if (
-      memberHealth?.status !== "known" ||
-      memberHealth.value > 400 ||
-      memberCombat?.status !== "known" ||
-      !memberCombat.value.attacks.some((attack) => attack.minRange > 0) ||
-      !memberPosition
-    ) return false;
-    const memberDomains = movementDomains(member);
-    const activeMove = member.activeOrder?.status === "known" && member.activeOrder.value?.orderType === "Move"
-      ? member.activeOrder.value
-      : null;
-    const alreadyWithdrawing = activeMove?.targetPosition != null &&
-      distance(memberPosition, activeMove.targetPosition) > 1;
-    return localEnemies.some((enemy) => {
-      const enemyPosition = knownPosition(enemy);
-      const enemyCombat = enemy.combatProfile;
-      if (!enemyPosition || enemyCombat?.status !== "known") return false;
-      const separation = distance(memberPosition, enemyPosition);
-      return enemyCombat.value.attacks.some((attack) =>
-        memberDomains.some((domain) => attack.targetDomains.includes(domain)) &&
-        (alreadyWithdrawing || (separation >= attack.minRange &&
-          separation <= attack.range + (memberPosition.z > enemyPosition.z ? attack.highGroundRangeBonus : 0)))
-      );
-    });
-  }).map((member) => member.actorId) : [];
+  const safeFiringPositions = selectAiSafeFiringPositions(members, localEnemies, visibleTarget, observation);
+  const criticalRangedActorIds = members
+    .filter((member) => {
+      const memberHealth = member.healthPermille;
+      const memberCombat = member.combatProfile;
+      const memberPosition = knownPosition(member);
+      if (
+        memberHealth?.status !== "known" ||
+        memberHealth.value > 400 ||
+        memberCombat?.status !== "known" ||
+        !memberCombat.value.attacks.some((attack) => attack.minRange > 0) ||
+        !memberPosition
+      )
+        return false;
+      const memberDomains = movementDomains(member);
+      const activeMove =
+        member.activeOrder?.status === "known" && member.activeOrder.value?.orderType === "Move"
+          ? member.activeOrder.value
+          : null;
+      const alreadyWithdrawing =
+        activeMove?.targetPosition != null && distance(memberPosition, activeMove.targetPosition) > 1;
+      return localEnemies.some((enemy) => {
+        const enemyPosition = knownPosition(enemy);
+        const enemyCombat = enemy.combatProfile;
+        if (!enemyPosition || enemyCombat?.status !== "known") return false;
+        const separation = distance(memberPosition, enemyPosition);
+        return enemyCombat.value.attacks.some(
+          (attack) =>
+            attack.damage > 0 &&
+            memberDomains.some((domain) => attack.targetDomains.includes(domain)) &&
+            (alreadyWithdrawing ||
+              (separation >= attack.minRange &&
+                separation <= attack.range + (memberPosition.z > enemyPosition.z ? attack.highGroundRangeBonus : 0)))
+        );
+      });
+    })
+    .map((member) => member.actorId);
   const criticalRangedThreat = criticalRangedActorIds.length > 0;
   const awaitingLaunch = ["forming", "assemble", "rally", "ready", "advance", "moving"].includes(squad.state);
   const forcedDecision =
@@ -141,25 +150,31 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
             ? quietState
             : "recover"
           : criticalRangedThreat
-            ? members.some((member) => !criticalRangedActorIds.includes(member.actorId) &&
-                member.combatProfile?.status === "known" && member.combatProfile.value.attacks.length > 0) &&
-              localEnemies.length > 0
+            ? members.some(
+                (member) =>
+                  !criticalRangedActorIds.includes(member.actorId) &&
+                  member.combatProfile?.status === "known" &&
+                  member.combatProfile.value.attacks.length > 0
+              ) && localEnemies.length > 0
               ? "engage"
               : "retreat"
-          : committedPressure
-            ? localEnemies.length > 0
-              ? "engage"
-              : "advance"
-          : (unfavorable || topologyLost || (recoveringFromRetreat && localEnemies.length > 0 && !favorableRecovery)) &&
-              retreat
-            ? "retreat"
-            : awaitingStrategicLaunch
-              ? "assemble"
-              : localEnemies.length > 0 && ((recoveringFromRetreat ? favorableRecovery : favorable) || forcedDecision)
+            : committedPressure
+              ? localEnemies.length > 0
                 ? "engage"
-                : localEnemies.length > 0
-                  ? "regroup"
-                  : quietState;
+                : "advance"
+              : (unfavorable ||
+                    topologyLost ||
+                    (recoveringFromRetreat && localEnemies.length > 0 && !favorableRecovery)) &&
+                  retreat
+                ? "retreat"
+                : awaitingStrategicLaunch
+                  ? "assemble"
+                  : localEnemies.length > 0 &&
+                      ((recoveringFromRetreat ? favorableRecovery : favorable) || forcedDecision)
+                    ? "engage"
+                    : localEnemies.length > 0
+                      ? "regroup"
+                      : quietState;
   const holdRetreat =
     !criticalRangedThreat &&
     !committedPressure &&
@@ -225,6 +240,7 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
     missionRecoveryExhausted,
     emptyRecoveryExhausted,
     criticalRangedActorIds,
+    safeFiringPositions,
     holdRetreat,
     quietState,
     nextState,

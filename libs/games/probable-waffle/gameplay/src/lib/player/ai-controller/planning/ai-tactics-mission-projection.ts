@@ -1,11 +1,8 @@
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { aiDeadline } from "../contracts/ai-core-types";
 import type { AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
-import {
-  selectAiAttackApproachPositions,
-  targetFootprintRadiusTiles
-} from "./ai-tactics-approach-positions";
-import { knownPosition, distance, legalForMembers, formationPositions } from "./ai-tactics-geometry";
+import { selectAiAttackApproachPositions, targetFootprintRadiusTiles } from "./ai-tactics-approach-positions";
+import { knownPosition, distance, legalForMembers, formationPositions, movementDomains } from "./ai-tactics-geometry";
 import { assignDamage } from "./ai-tactics-combat";
 import { TACTICAL_RECONSIDERATION_TICKS, MISSION_EFFECT_EXTENSION_TICKS } from "./ai-tactics-rules";
 
@@ -59,9 +56,9 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
     ? (retainedRetreatAssignments[0]?.position ?? retreat ?? origin)
     : squad.role === "scout"
       ? (aiTacticalScoutDestination(observation, squad) ?? knownPosition(target) ?? origin)
-    : nextState === "regroup"
-      ? origin
-      : (rampartPositions[0] ?? knownPosition(target) ?? aiTacticalScoutDestination(observation, squad) ?? origin);
+      : nextState === "regroup"
+        ? origin
+        : (rampartPositions[0] ?? knownPosition(target) ?? aiTacticalScoutDestination(observation, squad) ?? origin);
   const mobileReserveCount = reachableDefenderPosts.length > 0 ? Math.max(1, Math.ceil(members.length * 0.25)) : 0;
   const mobileReserveActorIds = members
     .slice(Math.max(0, members.length - mobileReserveCount))
@@ -72,7 +69,7 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
     return legalForMembers(position, observation, [actor]) ? [{ actorId: actor.actorId, position }] : [];
   });
   const postedActorIds = new Set(postAssignments.map((assignment) => assignment.actorId));
-  const assignedPositions = retainedRetreatAssignments.length
+  const formationAssignments = retainedRetreatAssignments.length
     ? retainedRetreatAssignments
     : [
         ...postAssignments,
@@ -89,17 +86,63 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
               observation
             ))
       ];
+  const safeFiringActorIds = new Set(input.safeFiringPositions.map((assignment) => assignment.actorId));
+  const assignedPositions = [
+    ...formationAssignments.filter((assignment) => !safeFiringActorIds.has(assignment.actorId)),
+    ...input.safeFiringPositions
+  ];
   const finalState: AiSquadStateV1["state"] = oscillationCount >= 2 && nextState === "engage" ? "regroup" : nextState;
   const previousDamageEffectIds = new Set(
     (squad.tactics?.damageReservations ?? [])
       .map((reservation) => reservation.effectId)
       .filter((effectId): effectId is string => effectId !== undefined)
   );
+  const threatenedRangedActors = observation.actors.filter(
+    (actor) =>
+      actor.relation === "self" &&
+      actor.visibility === "owned" &&
+      actor.healthPermille?.status === "known" &&
+      actor.healthPermille.value <= 400 &&
+      actor.combatProfile?.status === "known" &&
+      actor.combatProfile.value.attacks.some((attack) => attack.minRange > 0)
+  );
+  const threatsToProtected = localEnemies
+    .flatMap((enemy) => {
+      const enemyPosition = knownPosition(enemy);
+      const attacks = enemy.combatProfile?.status === "known" ? enemy.combatProfile.value.attacks : [];
+      if (!enemyPosition) return [];
+      const separations = threatenedRangedActors.flatMap((actor) => {
+        const position = knownPosition(actor);
+        const domains = movementDomains(actor);
+        if (!position) return [];
+        const separation = distance(position, enemyPosition);
+        return attacks.some(
+          (attack) =>
+            attack.damage > 0 &&
+            domains.some((domain) => attack.targetDomains.includes(domain)) &&
+            separation <= attack.range + (enemyPosition.z > position.z ? attack.highGroundRangeBonus : 0) + 4
+        )
+          ? [separation]
+          : [];
+      });
+      return separations.length ? [{ enemy, distance: Math.min(...separations) }] : [];
+    })
+    .sort((left, right) => left.distance - right.distance || left.enemy.actorId.localeCompare(right.enemy.actorId));
+  const prioritizedEnemies = threatsToProtected
+    .map(({ enemy }) => enemy)
+    .filter((enemy) => enemy.actorId !== visibleTarget?.actorId);
+  const prioritizedEnemyIds = new Set(prioritizedEnemies.map((enemy) => enemy.actorId));
   const damageReservations =
     visibleTarget && targetAwareMembers.length > 0 && (finalState === "engage" || finalState === "advance")
       ? assignDamage(
           targetAwareMembers.slice(0, profile.maxActorOrdersPerStep),
-          [visibleTarget, ...localEnemies.filter((enemy) => enemy.actorId !== visibleTarget.actorId)],
+          [
+            ...prioritizedEnemies,
+            visibleTarget,
+            ...localEnemies.filter(
+              (enemy) => enemy.actorId !== visibleTarget.actorId && !prioritizedEnemyIds.has(enemy.actorId)
+            )
+          ],
           observation.tick,
           squad.squadId,
           squad.tactics?.damageReservations ?? [],
@@ -122,6 +165,29 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
         (squad.role !== "attack" || recoveryPhase || !observation.map?.tacticalCells?.length)
           ? anchor
           : undefined);
+      const safeFiringPosition = input.safeFiringPositions.find((candidate) => candidate.actorId === actor.actorId);
+      if (
+        safeFiringPosition &&
+        visibleTarget &&
+        targetAwareMembers.some((member) => member.actorId === actor.actorId)
+      ) {
+        const actorPosition = knownPosition(actor);
+        const arrived = actorPosition !== null && distance(actorPosition, safeFiringPosition.position) <= 1;
+        if (
+          arrived &&
+          activeOrder?.orderType === OrderType.Move &&
+          activeOrder.targetPosition &&
+          distance(activeOrder.targetPosition, safeFiringPosition.position) <= 1
+        )
+          return false;
+        if (
+          !arrived &&
+          (activeOrder?.orderType !== OrderType.Move ||
+            !activeOrder.targetPosition ||
+            distance(activeOrder.targetPosition, safeFiringPosition.position) > 1)
+        )
+          return true;
+      }
       // Attack-move is the legal approach before this member sees the mission's player-visible target.
       if (
         visibleTarget &&

@@ -8,8 +8,8 @@ validated evidence. This is the existing execution inventory, not another design
 
 Runtime scenarios are already automated in the pull-request CI matrix; routine execution does not need a second-PC
 probe or a hand-maintained scenario command. [CI-RESUME.md](CI-RESUME.md) records the matrix path. Its deferred-row
-selector defect is fixed; it emits 103 dynamic shards. Registration is complete, but no newly selected native
-obligation is closed.
+selector defect is fixed; it emits 103 dynamic shards. Registration is complete; the current native-obligation count
+is maintained in the handoff.
 The registration snapshot below describes the prior authoring state, not current verification authorization.
 The subsequent five-item non-browser batch is checked: typing/lint/pure controls, resource/deposit audit,
 construction recovery, combat rules and fail-closed readers. See HANDOFF's current cursor and CURRENT-EVIDENCE.
@@ -69,7 +69,7 @@ it does not pretend that every existing gameplay implementation has been audited
 **Continuation contract:** “continue” means implement the next unfinished step selected by HANDOFF's cursor.
 Resume an unfinished package; otherwise advance to the next dependency-ready package below. Do not restart design,
 ask for routine reconfirmation or reconstruct order from chat. Update the cursor and selected outcome states after
-each coherent batch, commit/push and pause at the agreed boundary. A newer explicit user instruction takes precedence.
+each coherent batch, commit/push when authorized and continue to the next dependency-ready work. A newer explicit user instruction takes precedence.
 
 These are seven grouped work packages, not seven promised sessions. A package can contain several shared-owner repairs.
 Do not create another stage for each helper, test or failing seed. No additional scenario IDs, observer architecture,

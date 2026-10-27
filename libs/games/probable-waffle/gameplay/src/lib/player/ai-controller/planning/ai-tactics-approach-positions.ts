@@ -3,6 +3,7 @@ import type { AiAccessNodeId } from "../contracts/ai-core-types";
 import type { AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import { knownPosition, legalForMembers, movementDomains } from "./ai-tactics-geometry";
 
 function hasKnownGroundRoute(
   sourceNodeId: AiAccessNodeId,
@@ -53,7 +54,11 @@ function airWeaponRange(member: AiObservedActorV1, target: Vector3Simple): numbe
   );
 }
 
-function airApproachPosition(member: AiObservedActorV1, target: Vector3Simple, range: number): Vector3Simple | undefined {
+function airApproachPosition(
+  member: AiObservedActorV1,
+  target: Vector3Simple,
+  range: number
+): Vector3Simple | undefined {
   const origin = member.logicalPosition.status === "known" ? member.logicalPosition.value : null;
   if (!origin) return undefined;
   const dx = target.x - origin.x;
@@ -97,9 +102,12 @@ export function selectAiAttackApproachPositions(
   return members.flatMap((member) => {
     const domains = new Set(member.capabilities.flatMap((capability) => capability.domains));
     const range = airWeaponRange(member, target);
-    const candidatesForMember = range === undefined
-      ? candidates
-      : candidates.filter((candidate) => Math.hypot(candidate.position.x - target.x, candidate.position.y - target.y) <= range - 1);
+    const candidatesForMember =
+      range === undefined
+        ? candidates
+        : candidates.filter(
+            (candidate) => Math.hypot(candidate.position.x - target.x, candidate.position.y - target.y) <= range - 1
+          );
     const cell = candidatesForMember.find((candidate) => {
       if (used.has(candidate.tileKey)) return false;
       if (
@@ -110,7 +118,11 @@ export function selectAiAttackApproachPositions(
         )
       )
         return false;
-      if (domains.has("ground") && member.accessNodeId.status === "known" && observation.map?.accessGraph?.status === "ready") {
+      if (
+        domains.has("ground") &&
+        member.accessNodeId.status === "known" &&
+        observation.map?.accessGraph?.status === "ready"
+      ) {
         if (!candidate.groundAccessNodeId) return false;
         if (hasKnownGroundRoute(member.accessNodeId.value, candidate.groundAccessNodeId, observation) !== true)
           return false;
@@ -127,6 +139,164 @@ export function selectAiAttackApproachPositions(
     if (!cell) return [];
     used.add(cell.tileKey);
     return [{ actorId: member.actorId, position: cell.position }];
+  });
+}
+
+/** Selects a safe firing position, or a retreat for an isolated critical ranged unit. */
+export function selectAiSafeFiringPositions(
+  members: readonly AiObservedActorV1[],
+  enemies: readonly AiObservedActorV1[],
+  target: AiObservedActorV1 | null | undefined,
+  observation: AiObservationV1
+): NonNullable<AiSquadStateV1["tactics"]>["assignedPositions"] {
+  const targetPosition = knownPosition(target ?? undefined);
+  if (!target || !targetPosition) return [];
+  const cells = observation.map?.tacticalCells ?? observation.map?.constructionCells ?? [];
+  const used = new Set<string>();
+  const criticalMemberCount = members.filter(
+    (member) => member.healthPermille?.status === "known" && member.healthPermille.value <= 300
+  ).length;
+  return members.flatMap((member) => {
+    const health = member.healthPermille;
+    const profile = member.combatProfile?.status === "known" ? member.combatProfile.value : null;
+    const origin = knownPosition(member);
+    if (health?.status !== "known" || health.value > 400 || !profile || !origin || !enemies.length) return [];
+    const domains = movementDomains(member);
+    const attacks = profile.attacks.filter(
+      (attack) =>
+        attack.damage > 0 &&
+        attack.minRange > 0 &&
+        movementDomains(target).some((domain) => attack.targetDomains.includes(domain))
+    );
+    if (!attacks.length) return [];
+
+    const candidates = [
+      { position: origin, tileKey: `${origin.x},${origin.y}` },
+      ...cells.map((cell) => ({ position: cell.position, tileKey: cell.tileKey }))
+    ]
+      .filter((candidate) => legalForMembers(candidate.position, observation, [member]))
+      .sort(
+        (left, right) =>
+          distance(left.position, origin) - distance(right.position, origin) ||
+          left.tileKey.localeCompare(right.tileKey)
+      );
+    const selected = candidates
+      .flatMap((candidate) => {
+        if (used.has(candidate.tileKey)) return [];
+        const targetDistance = distance(candidate.position, targetPosition);
+        const canFire = attacks.some(
+          (attack) =>
+            targetDistance >= attack.minRange &&
+            targetDistance <= attack.range + (candidate.position.z > targetPosition.z ? attack.highGroundRangeBonus : 0)
+        );
+        if (!canFire) return [];
+        const threatDistances: number[] = [];
+        const safe = enemies.every((enemy) => {
+          const enemyPosition = knownPosition(enemy);
+          const enemyProfile = enemy.combatProfile?.status === "known" ? enemy.combatProfile.value : null;
+          if (!enemyPosition || !enemyProfile) return false;
+          const separation = distance(candidate.position, enemyPosition);
+          const relevantAttacks = enemyProfile.attacks.filter(
+            (attack) => attack.damage > 0 && domains.some((domain) => attack.targetDomains.includes(domain))
+          );
+          if (relevantAttacks.length) threatDistances.push(separation);
+          return !relevantAttacks.some(
+            (attack) =>
+              separation >= attack.minRange &&
+              separation <=
+                attack.range + (enemyPosition.z > candidate.position.z ? attack.highGroundRangeBonus : 0) + 2
+          );
+        });
+        if (!safe) return [];
+        return [
+          {
+            ...candidate,
+            nearestThreatDistance: threatDistances.length ? Math.min(...threatDistances) : Number.POSITIVE_INFINITY,
+            travelDistance: distance(candidate.position, origin)
+          }
+        ];
+      })
+      .sort(
+        (left, right) =>
+          left.travelDistance - right.travelDistance ||
+          right.nearestThreatDistance - left.nearestThreatDistance ||
+          left.tileKey.localeCompare(right.tileKey)
+      );
+    const bestPosition = selected[0];
+    if (!bestPosition && health.value <= 300 && criticalMemberCount <= Math.max(1, Math.floor(members.length / 2))) {
+      const knownThreats = enemies.flatMap((enemy) => {
+        const enemyPosition = knownPosition(enemy);
+        const enemyProfile = enemy.combatProfile?.status === "known" ? enemy.combatProfile.value : null;
+        const attacks =
+          enemyProfile?.attacks.filter(
+            (attack) => attack.damage > 0 && domains.some((domain) => attack.targetDomains.includes(domain))
+          ) ?? [];
+        return enemyPosition && attacks.length ? [{ position: enemyPosition }] : [];
+      });
+      if (knownThreats.length) {
+        const retreat = candidates
+          .filter((candidate) => !used.has(candidate.tileKey))
+          .map((candidate) => ({
+            ...candidate,
+            nearestThreatDistance: Math.min(
+              ...knownThreats.map((threat) => distance(candidate.position, threat.position))
+            )
+          }))
+          .sort(
+            (left, right) =>
+              right.nearestThreatDistance - left.nearestThreatDistance ||
+              distance(left.position, origin) - distance(right.position, origin) ||
+              left.tileKey.localeCompare(right.tileKey)
+          )[0];
+        if (retreat) {
+          used.add(retreat.tileKey);
+          return [{ actorId: member.actorId, position: retreat.position }];
+        }
+      }
+    }
+    if (!bestPosition) {
+      if (health.value > 100) return [];
+      const knownThreats = enemies.flatMap((enemy) => {
+        const enemyPosition = knownPosition(enemy);
+        const enemyProfile = enemy.combatProfile?.status === "known" ? enemy.combatProfile.value : null;
+        const attacks =
+          enemyProfile?.attacks.filter(
+            (attack) => attack.damage > 0 && domains.some((domain) => attack.targetDomains.includes(domain))
+          ) ?? [];
+        return enemyPosition && attacks.length ? [{ position: enemyPosition, attacks }] : [];
+      });
+      if (!knownThreats.length) return [];
+      const nearestThreatDistance = (position: Vector3Simple) =>
+        Math.min(...knownThreats.map((threat) => distance(position, threat.position)));
+      const currentThreatDistance = nearestThreatDistance(origin);
+      const currentlyInWeaponRange = knownThreats.some((threat) => {
+        const separation = distance(origin, threat.position);
+        return threat.attacks.some(
+          (attack) =>
+            separation >= attack.minRange &&
+            separation <= attack.range + (threat.position.z > origin.z ? attack.highGroundRangeBonus : 0)
+        );
+      });
+      if (!currentlyInWeaponRange) return [];
+      const fallback = candidates
+        .filter((candidate) => !used.has(candidate.tileKey) && distance(candidate.position, origin) > 1)
+        .map((candidate) => ({
+          ...candidate,
+          nearestThreatDistance: nearestThreatDistance(candidate.position)
+        }))
+        .filter((candidate) => candidate.nearestThreatDistance > currentThreatDistance)
+        .sort(
+          (left, right) =>
+            right.nearestThreatDistance - left.nearestThreatDistance ||
+            distance(left.position, origin) - distance(right.position, origin) ||
+            left.tileKey.localeCompare(right.tileKey)
+        )[0];
+      if (!fallback) return [];
+      used.add(fallback.tileKey);
+      return [{ actorId: member.actorId, position: fallback.position }];
+    }
+    used.add(bestPosition.tileKey);
+    return [{ actorId: member.actorId, position: bestPosition.position }];
   });
 }
 
