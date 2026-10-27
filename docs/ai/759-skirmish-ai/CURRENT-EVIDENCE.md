@@ -42,6 +42,12 @@ Tivara/Skaduwee wall controls and Skaduwee target-loss/disconnected cases pass. 
 native status evidence; Tivara disconnected recovery lacks a native alternative effect; Tivara target-loss fails event
 actor validation. Initial report `1793097001251-failed.json` was a zero-runtime Nx startup error; its retry completed.
 
+RAID-01 worker diagnostic `1793099954116-diagnostic_failed.json` ran one variant on `e58cce38f117` / fixture
+`fnv1a32:fba3bb14`. The prior oracle used the wrong target role; corrected branch mappings are covered by focused checks.
+The native capture has nine worker hits from four attackers, but no limited squad was assigned to that target, so RAID-01
+remains open for genuine target-specific harassment. The interrupted full-matrix attempt produced no report and is not
+evidence.
+
 ## Validated outcomes
 
 - Packages 1–2 are complete: production 8/8; economy/technology 16/16.

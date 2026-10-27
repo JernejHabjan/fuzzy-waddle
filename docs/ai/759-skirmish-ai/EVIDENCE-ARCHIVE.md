@@ -1,5 +1,12 @@
 # #759 archived evidence history
 
+## 2026-10-27 — RAID-01 worker target-role correction
+
+- An eight-variant full attempt was manually interrupted before it emitted a report. It has no outcome status and must not be cited as a failed or stalled runtime run.
+- Diagnostic `1793099954116-diagnostic_failed.json` captured only `raid-01-tivara-workers` on source `e58cce38f1170279753c5da2205efc7f383ce60e` and fixture `fnv1a32:fba3bb14` (120 decisions / 2,401 ticks). The previous generic evaluator incorrectly treated `contact-group` (WorkMill) as the worker branch target. The fixture's authored target is `enemy-worker`.
+- The opposing native capture records nine physical hits to `enemy-worker` from four attackers. AI mission snapshots still assign the primary attack elsewhere, with no <=4-member attack squad targeting the worker. These hits are collateral from the main force and do not satisfy the committed limited-raid requirement. The evaluator now checks the branch-specific worker/deposit/producer/control role; behavior remains open.
+- The focused evaluator Playwright spec passes 8/8. Scoped portal-e2e lint reports three existing module-boundary errors in unrelated files; direct ESLint on both changed files passes. No native replay has been run after this evaluator correction.
+
 Historical snapshots through 2026-10-27. This file preserves detailed diagnostic notes from earlier checkpoints; it may
 contain superseded observations and next actions. Use HANDOFF.md and CURRENT-EVIDENCE.md for the active status.
 
