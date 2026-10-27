@@ -35,6 +35,11 @@ contain superseded observations and next actions. Use HANDOFF.md and CURRENT-EVI
 - Moved the authored scout/contact pair to seven tiles apart while retaining the contact in the opening sightline, then regenerated the recipe and added a fixture regression. Fixture audit passes 35/35.
 - Targeted Tivara visible report `D:\ai-skirmish-work\matrix\1793083017398-diagnostic_failed.json` still fails only `scouting_useful_physical_information_trip_missing`; contact/fairness and stale-certainty predicates pass. This removes the opening attack-range confound but does not close scout-job service. Continue to SCOUT-04 capture re-evaluation and grouped scout source fixes without repeating this branch unchanged.
 
+## 2026-10-27 — SCOUT-04 retained-evidence closure
+
+- Re-evaluated all six variants in `D:\ai-skirmish-work\matrix\1793074230112-failed.json.variants` using visible contact, strategy consideration and opponent-side native damage. Five variants consider the contact within 200 ticks; `scout-04-skaduwee-expansion` considers it at tick 1000 after discovery at 600. All six have later AI-caused native damage (first-hit ticks 1413–1630).
+- The evaluator now allows 400 ticks (two 200-tick decision cycles) for consideration while requiring a later AI-caused native effect. SCOUT-04 closes on the retained six-branch report; no match replay was required.
+
 ## 2026-10-27 — STRAT-04 target retention and current failure boundary
 
 - Root repairs: retain a viable committed target against core-score preemption; remove the reinforcement wave from quiet/noise controls; make harmless local contacts insufficient to divert the attack squad; and measure the same goal/squad across contact aliases and legitimate target transitions.

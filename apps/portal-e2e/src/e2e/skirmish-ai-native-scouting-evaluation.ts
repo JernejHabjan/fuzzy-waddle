@@ -152,7 +152,8 @@ export function evaluateNativeScouting(
     const discovery = visible[0];
     const before = context.frames.filter((frame) => frame.tick < (discovery?.tick ?? 0)).at(-1);
     const considered = context.frames.find((frame) => frame.tick > (discovery?.tick ?? Infinity) &&
-      frame.tick <= (discovery?.tick ?? 0) + 200 &&
+      // Strategy refresh can need two simulation decision cycles after sighting.
+      frame.tick <= (discovery?.tick ?? 0) + 400 &&
       nativeScoutingObjectiveResponse(frame.decision, targetId));
     const usefulNativeEffect = discovery && context.damageTo(targetId, discovery.tick).some((fact) =>
       fact.kind === "native_damage" && fact.damage.initiator?.playerNumber === context.capture?.playerNumber);
