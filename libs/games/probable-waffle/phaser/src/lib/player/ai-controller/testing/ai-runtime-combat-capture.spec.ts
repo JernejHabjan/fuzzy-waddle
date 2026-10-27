@@ -96,4 +96,14 @@ describe("explicit native combat observer", () => {
     expect(f.operations.map((operation) => operation.kind)).toEqual(["attack_requested"]);
     f.capture.dispose();
   });
+
+  it("does not record an attack request or commit during cooldown", () => {
+    const f = fixture();
+    f.attack.remainingCooldown = 500;
+    f.attack.useAttack.mockImplementation(() => "cooldown-return");
+    f.capture.watch(f.source);
+    expect(f.attack.useAttack(f.target)).toBe("cooldown-return");
+    expect(f.operations).toEqual([]);
+    f.capture.dispose();
+  });
 });

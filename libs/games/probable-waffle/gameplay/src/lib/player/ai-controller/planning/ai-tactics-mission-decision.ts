@@ -1,5 +1,5 @@
 import type { AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
-import { movementDomains } from "./ai-tactics-geometry";
+import { distance, knownPosition, movementDomains } from "./ai-tactics-geometry";
 import {
   AI_TACTICS_ATTACK_RATIO_PERMILLE,
   AI_TACTICS_RETREAT_RATIO_PERMILLE,
@@ -42,6 +42,29 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
     (estimate.predictedFriendlyLossPermille > 0 &&
       members.filter((actor) => actor.healthPermille?.status === "known" && actor.healthPermille.value <= 250).length >=
         Math.max(1, Math.ceil(members.length / 3)));
+  const criticalRangedThreat = members.some((member) => {
+    const memberHealth = member.healthPermille;
+    const memberCombat = member.combatProfile;
+    const memberPosition = knownPosition(member);
+    if (
+      memberHealth?.status !== "known" ||
+      memberHealth.value > 400 ||
+      memberCombat?.status !== "known" ||
+      !memberCombat.value.attacks.some((attack) => attack.minRange > 0) ||
+      !memberPosition
+    ) return false;
+    const memberDomains = movementDomains(member);
+    return localEnemies.some((enemy) => {
+      const enemyPosition = knownPosition(enemy);
+      const enemyCombat = enemy.combatProfile;
+      if (!enemyPosition || enemyCombat?.status !== "known") return false;
+      return enemyCombat.value.attacks.some((attack) =>
+        memberDomains.some((domain) => attack.targetDomains.includes(domain)) &&
+        distance(memberPosition, enemyPosition) <=
+          attack.range + (memberPosition.z > enemyPosition.z ? attack.highGroundRangeBonus : 0)
+      );
+    });
+  });
   const awaitingLaunch = ["forming", "assemble", "rally", "ready", "advance", "moving"].includes(squad.state);
   const forcedDecision =
     awaitingLaunch && (squad.lifecycle?.assemblyDeadline.dueTick ?? observation.tick) <= observation.tick;
@@ -110,6 +133,8 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
           ? squad.state === "recover" || squad.state === "recovering"
             ? quietState
             : "recover"
+          : criticalRangedThreat && retreat
+            ? "retreat"
           : committedPressure
             ? localEnemies.length > 0
               ? "engage"

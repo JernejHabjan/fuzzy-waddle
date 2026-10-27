@@ -130,6 +130,61 @@ describe("AiTacticsManager", () => {
     expect(proposal.statePatch?.squadUpdates?.[0]?.state).toBe("engage");
   });
 
+  it("retreats a critically wounded ranged member from a nearby attacker despite committed pressure", () => {
+    const ranged = combatActor("ranged", "self", 1, "ground", 400, { damage: 10 });
+    const nearbyBase = combatActor("nearby", "enemy", 2, "ground", 1000, { damage: 100 });
+    const nearbyProfile = requireValue(
+      nearbyBase.combatProfile.status === "known" ? nearbyBase.combatProfile.value : undefined,
+      "missing_known_nearby_profile"
+    );
+    const nearby = {
+      ...nearbyBase,
+      combatProfile: {
+        status: "known" as const,
+        observedTick: nearbyBase.combatProfile.observedTick,
+        value: {
+          ...nearbyProfile,
+          attacks: nearbyProfile.attacks.map((attack) => ({ ...attack, range: 1, minRange: 0 }))
+        }
+      }
+    };
+    const objective = combatActor("objective", "enemy", 12, "ground", 1000, { damage: 0 });
+    const attackSquad = { ...squad("squad:attack", "attack", [ranged.actorId]), objectiveId: objective.actorId };
+    const initial = fixtureState([attackSquad]);
+    const pressureState: AiBrainStateV1 = {
+      ...initial,
+      strategy: {
+        ...initial.strategy,
+        stance: "pressure",
+        objectiveId: objective.actorId,
+        commitmentDeadline: { ...initial.strategy.commitmentDeadline, dueTick: 300 },
+        assessment: {
+          choice: "pressure",
+          reason: "credible_force_and_route",
+          targetActorId: objective.actorId,
+          readyForce: 1,
+          requiredForce: 1,
+          visibleThreatCount: 1,
+          confidencePermille: 1000,
+          expectedEffectTick: 200,
+          reconsiderTick: 200,
+          alternatives: []
+        }
+      },
+      skirmish: {
+        ...initial.skirmish,
+        timeline: [
+          ...initial.skirmish.timeline,
+          { eventId: "launch", tick: 0, kind: "mission", subjectId: attackSquad.squadId, detail: "launch:direct" }
+        ]
+      }
+    };
+    const proposal = manager.propose(observation([ranged, nearby, objective]), pressureState);
+
+    expect(proposal.statePatch?.squadUpdates?.[0]?.state).toBe("retreat");
+    expect(proposal.intents).toContainEqual(expect.objectContaining({ kind: "move", actorIds: [ranged.actorId] }));
+  });
+
   it("keeps new reinforcements on offense when only a static enemy building is near home", () => {
     const defender = combatActor("defender", "self", 1);
     const attacker = combatActor("attacker", "self", 2);

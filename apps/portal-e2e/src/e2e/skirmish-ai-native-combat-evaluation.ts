@@ -1,6 +1,6 @@
 import { StatusEffectType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
-import { nativeRetainedActor, nativeRetreats, nativeWeaponHits } from "./skirmish-ai-native-combat-effects";
+import { nativePhysicalDamageFromActor, nativeRetainedActor, nativeRetreats, nativeWeaponHits } from "./skirmish-ai-native-combat-effects";
 
 /** Tactical outcomes require native operations and physical recovery, not stance/script strings alone. */
 export function evaluateNativeCombat(id: string, branch: string, context: ReturnType<typeof nativeScenarioContext>): string[] {
@@ -24,11 +24,15 @@ export function evaluateNativeCombat(id: string, branch: string, context: Return
         initial.health > initial.combat.value.maxHealth * 0.45) failures.push("combat_damaged_ranged_premise_missing");
     if (!nativeRetainedActor(context, ranged) || !context.arrived(ranged, 200).length)
       failures.push("combat_valuable_actor_not_physically_preserved");
-    if (!nativeWeaponHits(context, undefined, 200).some((fact) =>
-      fact.kind === "native_damage" && fact.damage.initiator?.actorId === ranged)) failures.push("combat_preserved_actor_no_useful_shot");
-    const starts = operations.filter(({ value }) => value.kind === "attack_requested" && value.actor.actorId === ranged);
-    const hits = nativeWeaponHits(context).filter((fact) => fact.kind === "native_damage" && fact.damage.initiator?.actorId === ranged);
-    if (starts.length > hits.length * 3 + 2) failures.push("combat_excessive_cancelled_windups");
+    if (!nativePhysicalDamageFromActor(context, ranged, undefined).length)
+      failures.push("combat_preserved_actor_no_useful_shot");
+    const requests = operations.filter(({ value }) => value.kind === "attack_requested" && value.actor.actorId === ranged);
+    const committed = new Set(operations.flatMap(({ fact, value }) => value.kind === "attack_committed"
+      ? [`${value.actor.actorId}:${value.target.actorId}:${fact.tick}:${value.weapon.weaponType}:${value.weapon.damage}`]
+      : []));
+    const unmatched = requests.filter(({ fact, value }) =>
+      !committed.has(`${value.actor.actorId}:${value.target.actorId}:${fact.tick}:${value.weapon.weaponType}:${value.weapon.damage}`));
+    if (unmatched.length > 2) failures.push("combat_excessive_cancelled_windups");
   }
   if (id === "FIGHT-03") failures.push(...evaluateNativeFronts(branch, context));
   if (id === "RAID-01") {

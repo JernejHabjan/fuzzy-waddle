@@ -1,19 +1,19 @@
 import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
 
-/** Exact, positive native damage by a selected actor; the engine event is the physical outcome authority. */
+/** Exact, positive native damage by a selected actor, optionally scoped to one target. */
 export function nativePhysicalDamageFromActor(
   context: ReturnType<typeof nativeScenarioContext>,
   actorId: string | undefined,
   targetId: string | undefined,
   fromTick = 0
 ) {
-  if (!actorId || !targetId) return [];
+  if (!actorId) return [];
   return context.facts.filter((fact) =>
     fact.kind === "native_damage" &&
     fact.tick >= fromTick &&
     fact.damage.initiator?.playerNumber === 2 &&
     fact.damage.initiator.actorId === actorId &&
-    fact.damage.target.actorId === targetId &&
+    (!targetId || fact.damage.target.actorId === targetId) &&
     fact.damage.amount > 0 &&
     fact.damage.damageTick === fact.tick &&
     fact.damage.sceneActive &&

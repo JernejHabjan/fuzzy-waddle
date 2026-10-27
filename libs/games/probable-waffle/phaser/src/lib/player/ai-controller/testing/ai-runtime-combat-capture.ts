@@ -47,10 +47,12 @@ export class AiRuntimeCombatCapture {
       const wrapper: typeof original = (target) => {
         if (this.disposed || owned.closed) return original.call(attack, target);
         const sampled = this.sampleAttack(actor, attack, target);
+        const cooldownBefore = attack.remainingCooldown;
         if (sampled) this.record({ ...sampled, kind: "attack_requested" });
         const result = original.call(attack, target);
         try {
-          if (sampled && attack.remainingCooldown > 0) this.record({ ...sampled, kind: "attack_committed" });
+          if (sampled && cooldownBefore <= 0 && attack.remainingCooldown > 0)
+            this.record({ ...sampled, kind: "attack_committed" });
         } catch { this.lose("combat_attack_return_reader_failed"); }
         return result;
       };

@@ -3,6 +3,7 @@ import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-contex
 import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
 import type { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { nativePhysicalDamageFromActor, nativeRetreats, nativeWeaponHits } from "./skirmish-ai-native-combat-effects";
+import { evaluateNativeCombat } from "./skirmish-ai-native-combat-evaluation";
 
 const damage = (overrides: Partial<Extract<AiRuntimeProductionFactV1, { kind: "native_damage" }>> = {}) => ({
   sequence: 1,
@@ -30,6 +31,7 @@ it.describe("native physical damage attribution", () => {
     const context = { facts: [actual] } as ReturnType<typeof nativeScenarioContext>;
 
     expect(nativePhysicalDamageFromActor(context, "air-output", "backline", 40)).toEqual([actual]);
+    expect(nativePhysicalDamageFromActor(context, "air-output")).toEqual([actual]);
     expect(nativePhysicalDamageFromActor(context, "other-output", "backline")).toEqual([]);
     expect(nativePhysicalDamageFromActor(context, "air-output", "other-target")).toEqual([]);
     expect(nativePhysicalDamageFromActor(context, "air-output", "backline", 41)).toEqual([]);
@@ -49,6 +51,76 @@ it.describe("native physical damage attribution", () => {
     } as ReturnType<typeof nativeScenarioContext>;
 
     expect(nativePhysicalDamageFromActor(context, "air-output", "backline")).toEqual([]);
+  });
+});
+
+function fight02Context(uncommittedRequests = 0): ReturnType<typeof nativeScenarioContext> {
+  const rangedId = "ranged-probe", targetId = "contact";
+  const weapon = {
+    weaponType: "test-bow", canTargetAir: false, damage: 5, damageType: 0, cooldown: 1000,
+    minRange: 1, range: 5, highGroundRangeBonus: 0, projectile: null, delays: { fire: 0, hit: 200 }
+  };
+  const facts: unknown[] = Array.from({ length: 4 }, (_, index) => {
+    const tick = 10 + index * 30;
+    const operation = {
+      actor: { actorId: rangedId, playerNumber: 2, alive: true, indexed: true },
+      actorTile: { x: 2, y: 2 }, clockTick: tick, sceneActive: true,
+      snapshotRestoreInProgress: false, gaps: [],
+      target: { actorId: targetId, objectName: "Target", playerNumber: 1 },
+      targetTile: { x: 5, y: 2 }, weapon, distance: 3, highGroundRangeBonus: 0, targetFlying: false, stunned: false
+    };
+    return [
+      { sequence: index * 2 + 1, tick, kind: "native_combat", operation: { ...operation, kind: "attack_requested" } },
+      { sequence: index * 2 + 2, tick, kind: "native_combat", operation: { ...operation, kind: "attack_committed" } }
+    ];
+  }).flat();
+  for (let index = 0; index < uncommittedRequests; index += 1) {
+    const tick = 200 + index * 30;
+    facts.push({
+      sequence: 20 + index, tick, kind: "native_combat",
+      operation: {
+        actor: { actorId: rangedId, playerNumber: 2, alive: true, indexed: true },
+        actorTile: { x: 2, y: 2 }, clockTick: tick, sceneActive: true,
+        snapshotRestoreInProgress: false, gaps: [],
+        target: { actorId: targetId, objectName: "Target", playerNumber: 1 },
+        targetTile: { x: 5, y: 2 }, weapon, distance: 3, highGroundRangeBonus: 0,
+        targetFlying: false, stunned: false, kind: "attack_requested"
+      }
+    });
+  }
+  facts.push({
+    sequence: 9, tick: 14, playerNumber: 2, kind: "native_damage",
+    damage: {
+      initiator: { actorId: rangedId, playerNumber: 2 },
+      target: { actorId: targetId, objectName: "Target", playerNumber: 1 },
+      targetInCaptureScene: true, initiatorInCaptureScene: true, amount: 5, damageType: 0,
+      healthAfter: 95, armourAfter: 0, damageTick: 14, sceneActive: true, snapshotRestoreInProgress: false
+    }
+  });
+  return {
+    roles: { "ranged-probe": rangedId },
+    facts,
+    frames: [{ tick: 20, decision: { input: { capabilityCatalog: { entries: [] } } },
+      tacticalBoundary: { actors: [{ identity: { actorId: rangedId }, health: 40,
+        combat: { status: "known", value: { maxHealth: 100 } } }] } }],
+    capture: { frontiers: { intervals: [{ actors: [{ identity: {
+      actorId: rangedId, active: true, alive: true, indexed: true, finished: true
+    } }] }] } },
+    arrived: () => [{}]
+  } as unknown as ReturnType<typeof nativeScenarioContext>;
+}
+
+it.describe("FIGHT-02 native attack outcomes", () => {
+  it("does not infer cancelled windups from a low ratio of committed attacks to hits", () => {
+    expect(evaluateNativeCombat("FIGHT-02", "escape", fight02Context()))
+      .not.toContain("combat_excessive_cancelled_windups");
+    expect(evaluateNativeCombat("FIGHT-02", "escape", fight02Context()))
+      .not.toContain("combat_preserved_actor_no_useful_shot");
+  });
+
+  it("detects repeated ranged attack requests with no matching native commit", () => {
+    expect(evaluateNativeCombat("FIGHT-02", "escape", fight02Context(3)))
+      .toContain("combat_excessive_cancelled_windups");
   });
 });
 
