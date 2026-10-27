@@ -99,6 +99,7 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
     (damageReservations.length > 0 || protectedMembersNeedingMove.length > 0)
   ) {
     for (const member of protectedMembersNeedingMove) {
+      if (!retreat) continue;
       intents.push({
         ...intentBase(observation, { ...updated, actorIds: [member.actorId] }, `protected_member:${member.actorId}`, 980),
         kind: "move",
