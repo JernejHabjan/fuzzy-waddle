@@ -34,7 +34,8 @@ test("exact native transaction, strategy and combat proof do not require unrelat
   expect(nativeScenarioRequiresResourceCoverage("STRAT-03")).toBe(false);
   expect(nativeScenarioRequiresResourceCoverage("STRAT-04")).toBe(false);
   expect(nativeScenarioRequiresResourceCoverage("STRAT-05")).toBe(false);
-  expect(nativeScenarioRequiresResourceCoverage("RAID-03")).toBe(false);
+  for (const id of ["RAID-01", "RAID-02", "RAID-03"])
+    expect(nativeScenarioRequiresResourceCoverage(id)).toBe(false);
 });
 
 test("STRAT-09 comeback proof uses exact native attack effects instead of broad resource coverage", () => {

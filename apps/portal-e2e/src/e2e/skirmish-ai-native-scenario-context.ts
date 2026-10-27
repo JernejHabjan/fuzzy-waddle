@@ -12,7 +12,7 @@ export function nativeScenarioRequiresResourceCoverage(scenarioId: string): bool
     !scenarioId.startsWith("SCOUT-") &&
     !scenarioId.startsWith("DOMAIN-") &&
     !scenarioId.startsWith("FIGHT-") &&
-    !["STRAT-02", "STRAT-03", "STRAT-04", "STRAT-05", "RAID-03"].includes(scenarioId) &&
+    !["STRAT-02", "STRAT-03", "STRAT-04", "STRAT-05", "RAID-01", "RAID-02", "RAID-03"].includes(scenarioId) &&
     ![
       "EXP-01",
       "H-06",
