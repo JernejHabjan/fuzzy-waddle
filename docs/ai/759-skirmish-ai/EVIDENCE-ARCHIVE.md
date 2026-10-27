@@ -3,6 +3,13 @@
 Historical snapshots through 2026-10-27. This file preserves detailed diagnostic notes from earlier checkpoints; it may
 contain superseded observations and next actions. Use HANDOFF.md and CURRENT-EVIDENCE.md for the active status.
 
+## 2026-10-27 — SCOUT-01 trip evidence and parity follow-up
+
+- Final attempted report `D:\ai-skirmish-work\matrix\1793071681087-failed.json`: four branches, 400 decisions / 8,004 ticks. Native physical scouting trips and newly visible search points pass for all branches; only `scouting_hidden_world_altered_selected_intents` remains. Earlier reports `1793070522688-failed.json` and `1793071092440-failed.json` also failed trip joining.
+- Fixed the physical-evidence join to accept either the exact selected scout effect or the generated Stage-13 search mission for the same actor; it still requires original-destination arrival and newly visible geography. Evaluator spec passes 2/2.
+- Parity diagnosis found runtime-ID-dependent choices in neutral scouting, frontier scout pawn selection, macro-owned actor order, gathering, and recovery. These now sort by visible position/type before an ID tie-break. The last native capture includes the macro/gathering/recovery fixes but predates the final neutral-pawn adjustment; return to this pair after the next scouting family rather than rerunning the unchanged four-branch batch.
+- Focused gameplay tests pass 104 suites / 554 tests; gameplay lint passes. Touched scouting-evaluator ESLint passes. Portal-e2e project lint reports three existing module-boundary errors outside the touched files. SCOUT-01 remains open until parity passes.
+
 ## 2026-10-27 — STRAT-04 target retention and current failure boundary
 
 - Root repairs: retain a viable committed target against core-score preemption; remove the reinforcement wave from quiet/noise controls; make harmless local contacts insufficient to divert the attack squad; and measure the same goal/squad across contact aliases and legitimate target transitions.

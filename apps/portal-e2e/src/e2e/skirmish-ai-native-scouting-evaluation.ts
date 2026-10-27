@@ -39,10 +39,18 @@ export function nativeScoutingFairness(context: ReturnType<typeof nativeScenario
 /** Physical original-destination arrival, selected scout effect and genuinely newly visible geography are all required. */
 export function nativeScoutTrips(context: ReturnType<typeof nativeScenarioContext>, afterTick = 0) {
   return context.frames.flatMap((frame) => frame.decision.acceptedIntents.flatMap((intent) => {
-    if (intent.kind !== "scout" || frame.tick < afterTick) return [];
-    const selectedEffectId = intent.effectId.replace(/^effect:/, "");
+    if (intent.kind !== "scout" || !intent.planId || frame.tick < afterTick) return [];
     return intent.actorIds.flatMap((actorId) => context.arrived(actorId, frame.tick).flatMap((movement) => {
-      if (movement.observations[0]?.spatial.caller?.order?.commandContext?.execution.effectId !== selectedEffectId) return [];
+      const executionEffectId = movement.observations[0]?.spatial.caller?.order?.commandContext?.execution.effectId;
+      const squadId = intent.planId.replace(/^plan:/, "");
+      const selectedEffectId = intent.effectId.replace(/^effect:/, "");
+      if (executionEffectId !== selectedEffectId &&
+          !executionEffectId?.startsWith(`stage13:${squadId}:search:${actorId}:`)) return [];
+      const latestSelection = context.frames.flatMap((candidate) => candidate.decision.acceptedIntents
+        .filter((candidateIntent) => candidateIntent.kind === "scout" && candidateIntent.planId === intent.planId &&
+          candidateIntent.actorIds.includes(actorId) && candidate.tick <= movement.started.tick)
+        .map(() => candidate.tick)).at(-1);
+      if (latestSelection !== frame.tick) return [];
       const arrival = movement.observations.find((entry) => entry.spatial.phase === "arrived");
       if (!arrival) return [];
       const unknown = frame.tacticalBoundary?.searchPoints.filter((point) => !point.visible) ?? [];

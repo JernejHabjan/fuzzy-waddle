@@ -12,16 +12,16 @@ Read this file, then [REMAINING-WORK.md](REMAINING-WORK.md) for package acceptan
 
 ## Current checkpoint — 2026-10-27
 
-- Base `2210ab7fe09d`; current STRAT-04 source/fixture changes are uncommitted. Node 24.18.0 / pnpm 11.14.0.
-- STRAT-04 passes all six registered branches in report `1793069202745-passed.json`: 600 decisions / 12,006 ticks; source base `2210ab7fe09d`, dirty-source digest `fnv1a32:d22008af`, fixture digest `fnv1a32:4e15b8c2`. Root repairs and branch outcomes are archived.
+- HEAD `9a5ee98b7` includes the STRAT-04 closure and is pushed. Node 24.18.0 / pnpm 11.14.0.
+- STRAT-04 passes all six registered branches in `1793069202745-passed.json`; root repairs and branch outcomes are archived.
 - Packages 1–2 and SEQ-01 are complete. STRAT-02/03/04/05 and STRAT-09 are validated. H-10 still has six of eight local variants; its over-capacity and seven real-peer obligations remain CI-owned. Selected native obligations closed: **4/22**.
-- Packages 1–2 and SEQ-01 are complete. STRAT-02/03/05 and STRAT-09 remain validated. H-10 still has six of eight local variants; its over-capacity and seven real-peer obligations remain CI-owned. Selected native obligations closed: **3/22**.
+- SCOUT-01 report `1793071681087-failed.json` confirms a physical scouting-information trip in all four branches; only paired hidden-world selected-intent parity remains red. Deterministic visible-position ordering has since been tightened in shared macro, gathering, recovery, and scout selection. The capture predates the last neutral-scout selector adjustment, so the current source still needs a later paired recheck.
 
 ## Package cursor
 
 | Package | Current state |
 | --- | --- |
-| 3 — scouting, combat, access | STRAT-04 is validated. Next run SCOUT-01, then SCOUT/DOMAIN and remaining RAID/FIGHT/C cases. STRAT-09 needs grouped final recheck after affected changes. |
+| 3 — scouting, combat, access | SCOUT-01 trip evidence is present; hidden-pair parity remains open. Next run SCOUT-02, continue other scouting/domain cases, then return to SCOUT-01 parity after this related batch. STRAT-09 needs grouped final recheck after affected changes. |
 | 4 — placement, walls, recovery | PLACE-03 route/transit evidence; H-11 `no_path`; remaining PLACE/EXP/WALL/H cases. |
 | 5 — authority and lifecycle | H-06/07, H-08/09 peer evidence, H-10 over-capacity CI, H-14/15 remaining branches, H-31/32, M11, #819/#823. |
 | 6 — continuous play and difficulty | SEQ-02 and supported SEQ/D cases. D-06 legacy comparison remains explicitly unsupported. |
@@ -29,6 +29,6 @@ Read this file, then [REMAINING-WORK.md](REMAINING-WORK.md) for package acceptan
 
 ## Next action
 
-Next execute SCOUT-01's complete registered family, repair only concrete native failures, and advance through dependency-ready Package 3 cases. The registered runtime/peer matrix is the final regression gate and PR #814 remains draft.
+Next execute SCOUT-02's complete registered family and advance through dependency-ready Package 3 cases. Keep SCOUT-01's parity issue queued for a targeted return after related scouting work; do not repeat its full matrix without another relevant source change. The registered runtime/peer matrix is the final regression gate and PR #814 remains draft.
 
 After each coherent source/evidence batch: update CURRENT-EVIDENCE and this cursor, run focused checks, commit/push task-owned files, and select the next unfinished case. Use EVIDENCE-ARCHIVE for run chronology. Do not stop at validation when another dependency-ready case remains.

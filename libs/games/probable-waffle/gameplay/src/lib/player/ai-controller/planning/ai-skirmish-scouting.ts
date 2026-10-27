@@ -42,6 +42,18 @@ function canScoutNode(
   );
 }
 
+function compareScoutActors(left: AiSkirmishProposalContext["combat"][number], right: AiSkirmishProposalContext["combat"][number]): number {
+  const leftPosition = position(left);
+  const rightPosition = position(right);
+  if (leftPosition && rightPosition) {
+    return leftPosition.y - rightPosition.y || leftPosition.x - rightPosition.x || leftPosition.z - rightPosition.z ||
+      left.objectName.localeCompare(right.objectName) || left.actorId.localeCompare(right.actorId);
+  }
+  if (leftPosition) return -1;
+  if (rightPosition) return 1;
+  return left.objectName.localeCompare(right.objectName) || left.actorId.localeCompare(right.actorId);
+}
+
 function appendNeutralClaim(context: AiSkirmishProposalContext): void {
   if (context.opponent) return;
   const previous = context.state.squads.find((squad) => squad.squadId === "squad:scout:neutral");
@@ -98,13 +110,20 @@ function appendNeutralClaim(context: AiSkirmishProposalContext): void {
         actor.resourceState.value.available.status === "known" &&
         actor.resourceState.value.available.value > 0
     )
-    .sort((left, right) => left.actorId.localeCompare(right.actorId));
+    .sort((left, right) => {
+      const leftPosition = position(left)!;
+      const rightPosition = position(right)!;
+      return leftPosition.y - rightPosition.y || leftPosition.x - rightPosition.x ||
+        left.objectName.localeCompare(right.objectName) || left.actorId.localeCompare(right.actorId);
+    });
   const neutral = candidates.find((actor) => {
     const targetNode = node(actor);
     return targetNode !== undefined && context.combat.some((member) => canScoutNode(context, member, targetNode));
   });
   const targetNode = node(neutral);
-  const member = targetNode ? context.combat.find((actor) => canScoutNode(context, actor, targetNode)) : undefined;
+  const member = targetNode
+    ? context.combat.slice().sort(compareScoutActors).find((actor) => canScoutNode(context, actor, targetNode))
+    : undefined;
   const destination = context.observation.map?.accessGraph?.nodes.find((entry) => entry.nodeId === targetNode);
   if (!neutral || !member || !destination) return;
   const claimantId = "squad:scout:neutral" as AiSquadId;
@@ -198,7 +217,7 @@ function appendFrontierScout(context: AiSkirmishProposalContext): void {
       !context.primaryOwnedActors.has(actor.actorId) &&
       (!assignedActorIds.has(actor.actorId) || continuingActorIds.has(actor.actorId)) &&
       canScoutNode(context, actor, target.nodeId)
-  );
+  ).sort(compareScoutActors);
   const scoutId = activeScout?.squadId ?? ("squad:scout:primary" as AiSquadId);
   const scoutPlanId = `plan:${scoutId}` as AiPlanId;
   const continuingScout = activeScout?.objectiveId === currentQuestion.questionId;

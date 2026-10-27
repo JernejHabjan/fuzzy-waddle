@@ -14,9 +14,9 @@ function state() {
   });
 }
 
-function neutral(): AiObservedActorV1 {
+function neutral(actorId = "resource", accessNode = enemyNode, x = 22): AiObservedActorV1 {
   return {
-    ...unit("resource", enemyNode, 22),
+    ...unit(actorId, accessNode, x),
     objectName: ObjectNames.Tree6,
     owner: null,
     relation: "neutral",
@@ -115,6 +115,20 @@ describe("AI scouting admission", () => {
     );
   });
 
+  it("selects neutral scout goals by stable visible position instead of runtime actor ID", () => {
+    const proposal = manager.propose(observation(20, [
+      unit("guard", homeNode, 0),
+      neutral("a-runtime-id", enemyNode, 22),
+      neutral("z-runtime-id", homeNode, 11)
+    ], []), state());
+
+    expect(proposal.intents).toContainEqual(expect.objectContaining({
+      kind: "move",
+      logicalPosition: { x: 0, y: 0, z: 0 },
+      reasonCode: "stage9:neutral:z-runtime-id"
+    }));
+  });
+
   it("does not claim scenery or exhausted resources", () => {
     const resource = neutral();
     if (resource.resourceState.status !== "known") throw new Error("fixture resource missing");
@@ -183,6 +197,15 @@ describe("AI scouting admission", () => {
         (intent) => !intent.claims.some((claim) => claim.kind === "actor" && claim.actorId === "a-isolated")
       )
     ).toBe(true);
+  });
+
+  it("selects a frontier scout by visible position rather than runtime actor ID", () => {
+    const proposal = manager.propose(observation(20, [
+      unit("a-far", enemyNode, 1),
+      unit("z-near", homeNode, 0)
+    ]), state());
+
+    expect(proposal.intents).toContainEqual(expect.objectContaining({ kind: "scout", actorIds: ["z-near"] }));
   });
 
   it("gives frontier scouts actor claims so arbitration cannot also assign another mission", () => {

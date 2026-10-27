@@ -26,6 +26,18 @@ function position(actor: AiObservedActorV1 | undefined): Vector3Simple | null {
   return actor?.logicalPosition.status === "known" ? actor.logicalPosition.value : null;
 }
 
+function compareVisibleActors(left: AiObservedActorV1, right: AiObservedActorV1): number {
+  const leftPosition = position(left);
+  const rightPosition = position(right);
+  if (leftPosition && rightPosition) {
+    return leftPosition.y - rightPosition.y || leftPosition.x - rightPosition.x || leftPosition.z - rightPosition.z ||
+      left.objectName.localeCompare(right.objectName) || left.actorId.localeCompare(right.actorId);
+  }
+  if (leftPosition) return -1;
+  if (rightPosition) return 1;
+  return left.objectName.localeCompare(right.objectName) || left.actorId.localeCompare(right.actorId);
+}
+
 function distance(left: Vector3Simple, right: Vector3Simple): number {
   return Math.abs(left.x - right.x) + Math.abs(left.y - right.y) + Math.abs(left.z - right.z);
 }
@@ -91,7 +103,7 @@ function sourceActors(observation: AiObservationV1): AiObservedActorV1[] {
         actor.resourceState.value.available.value > 0
     )
     .filter((actor) => position(actor) !== null)
-    .sort((a, b) => a.actorId.localeCompare(b.actorId));
+    .sort(compareVisibleActors);
 }
 
 function isTerminalOutcomeFor(outcomes: AiBrainStateV1["pendingOutcomes"], effectId: string): boolean {
@@ -215,7 +227,7 @@ export class AiRecoveryManager implements AiProposalManagerV1 {
           actor.resourceState.value.carried.status === "known" &&
           actor.resourceState.value.carried.value > 0
         )
-    );
+    ).sort(compareVisibleActors);
     if (lowIncome && source && workers.length > 0) {
       const key = `economy:source:${source.actorId}`;
       const old = prior.get(key);
@@ -333,7 +345,7 @@ export class AiRecoveryManager implements AiProposalManagerV1 {
     const damaged = self
       .filter((actor) => actor.healthPermille?.status === "known" && actor.healthPermille.value < 700)
       .filter((actor) => actor.constructionProgress?.status === "known" && actor.constructionProgress.value >= 100)
-      .sort((a, b) => a.actorId.localeCompare(b.actorId))[0];
+      .sort(compareVisibleActors)[0];
     const repairerLimit =
       damaged?.mainBuilding?.status === "known" && damaged.mainBuilding.value
         ? Math.max(1, Math.min(2, workers.length))
