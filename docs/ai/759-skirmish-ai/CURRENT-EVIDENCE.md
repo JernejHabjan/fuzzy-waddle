@@ -32,6 +32,11 @@ equal-value controls pass. Unequal branches lack two independently useful native
 The Skaduwee infeasible branch stops at `runtime_preset_event_target_mismatch:loss-front-target-a`. Return after a
 relevant target/event setup change; do not repeat this capture unchanged.
 
+FIGHT-04 report `1793096773518-failed.json` on `a5159d9e9183` ran all eight variants (960 decisions / 19,208 ticks); no
+branch fully passes. Overkill branches lack native useful damage across both required targets. Support branches never
+apply a native effect or start the selected caster’s cooldown; the authored healing research completes only near tick
+2,380, leaving no useful runtime window. Harmful-zone and temporary-support expiry evidence also remain open.
+
 ## Validated outcomes
 
 - Packages 1–2 are complete: production 8/8; economy/technology 16/16.
