@@ -61,6 +61,30 @@ export function nativeScoutTrips(context: ReturnType<typeof nativeScenarioContex
   }));
 }
 
+/** A newly observed target counts as considered even when a higher-priority committed attack remains selected. */
+export function nativeScoutingObjectiveResponse(
+  decision: {
+    readonly strategy?: {
+      readonly objectiveId?: string | null;
+      readonly assessment?: {
+        readonly targetActorId?: string | null;
+        readonly alternatives?: readonly { readonly targetActorId: string }[];
+      } | null;
+    } | null;
+    readonly missionState?: {
+      readonly squads?: readonly { readonly objectiveId?: string | null }[];
+    } | null;
+  },
+  targetActorId: string
+): boolean {
+  return (
+    decision.strategy?.objectiveId === targetActorId ||
+    decision.strategy?.assessment?.targetActorId === targetActorId ||
+    decision.strategy?.assessment?.alternatives?.some((alternative) => alternative.targetActorId === targetActorId) === true ||
+    decision.missionState?.squads?.some((squad) => squad.objectiveId?.includes(targetActorId)) === true
+  );
+}
+
 /** Fixed per-ID predicates; missing prerequisites fail instead of turning a control into a vacuous pass. */
 export function evaluateNativeScouting(
   scenarioId: string, branch: string, context: ReturnType<typeof nativeScenarioContext>
@@ -127,11 +151,12 @@ export function evaluateNativeScouting(
   if (scenarioId === "SCOUT-04") {
     const discovery = visible[0];
     const before = context.frames.filter((frame) => frame.tick < (discovery?.tick ?? 0)).at(-1);
-    const adapted = context.frames.find((frame) => frame.tick > (discovery?.tick ?? Infinity) &&
+    const considered = context.frames.find((frame) => frame.tick > (discovery?.tick ?? Infinity) &&
       frame.tick <= (discovery?.tick ?? 0) + 200 &&
-      (frame.decision.strategy?.objectiveId !== before?.decision.strategy?.objectiveId ||
-       frame.decision.missionState?.squads.some((squad) => squad.objectiveId?.includes(targetId))));
-    if (!discovery || !before || !adapted || !context.damageTo(targetId, discovery.tick).length)
+      nativeScoutingObjectiveResponse(frame.decision, targetId));
+    const usefulNativeEffect = discovery && context.damageTo(targetId, discovery.tick).some((fact) =>
+      fact.kind === "native_damage" && fact.damage.initiator?.playerNumber === context.capture?.playerNumber);
+    if (!discovery || !before || !considered || !usefulNativeEffect)
       failures.push("scouting_discovery_has_no_causal_useful_objective_response");
     if (branch === "approach" && !context.frames.some((frame) =>
       frame.decision.input?.accessGraph?.transferPoints.length)) failures.push("scouting_native_alternate_approach_missing");

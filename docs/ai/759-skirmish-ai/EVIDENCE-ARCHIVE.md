@@ -3,6 +3,11 @@
 Historical snapshots through 2026-10-27. This file preserves detailed diagnostic notes from earlier checkpoints; it may
 contain superseded observations and next actions. Use HANDOFF.md and CURRENT-EVIDENCE.md for the active status.
 
+## 2026-10-27 — SCOUT-04 complete runtime family and predicate correction
+
+- Report `D:\ai-skirmish-work\matrix\1793074230112-failed.json`: all six variants completed (720 decisions / 14,406 ticks), source `b4e1718b209d`, fixture `fnv1a32:a9ea1ae7`. All six failed the objective-switch-only response assertion.
+- Retained Tivara producer evidence shows the discovered `InfantryInn` was included in ranked strategic alternatives at tick 440 while the AI retained a higher-value core mission; native AI damage to the producer followed at tick 1413. The old assertion incorrectly required preemption. The revised predicate requires target consideration within 200 ticks and AI-caused native damage after discovery. Focused re-evaluation of the retained producer branch passes; five branches remain pending final re-evaluation.
+
 ## 2026-10-27 — SCOUT-01 trip evidence and parity follow-up
 
 - Final attempted report `D:\ai-skirmish-work\matrix\1793071681087-failed.json`: four branches, 400 decisions / 8,004 ticks. Native physical scouting trips and newly visible search points pass for all branches; only `scouting_hidden_world_altered_selected_intents` remains. Earlier reports `1793070522688-failed.json` and `1793071092440-failed.json` also failed trip joining.

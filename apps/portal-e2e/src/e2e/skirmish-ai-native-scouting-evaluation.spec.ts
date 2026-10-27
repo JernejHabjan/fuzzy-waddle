@@ -1,5 +1,5 @@
 import { test as it, expect } from "@playwright/test";
-import { nativeScoutTrips } from "./skirmish-ai-native-scouting-evaluation";
+import { nativeScoutTrips, nativeScoutingObjectiveResponse } from "./skirmish-ai-native-scouting-evaluation";
 
 function contextFor(executionEffectId: string) {
   const movement = {
@@ -38,4 +38,27 @@ it("joins selected scout missions to their native movement and new information",
 
 it("does not join a native arrival from a different scout mission", () => {
   expect(nativeScoutTrips(contextFor("stage13:other-mission"))).toHaveLength(0);
+});
+
+it("counts a newly discovered candidate without preempting a committed strategic objective", () => {
+  expect(
+    nativeScoutingObjectiveResponse(
+      {
+        strategy: {
+          objectiveId: "committed-core",
+          assessment: { targetActorId: "committed-core", alternatives: [{ targetActorId: "new-producer" }] }
+        }
+      },
+      "new-producer"
+    )
+  ).toBe(true);
+});
+
+it("does not treat an unrelated objective change as a response to discovery", () => {
+  expect(
+    nativeScoutingObjectiveResponse(
+      { strategy: { objectiveId: "unrelated-core", assessment: { targetActorId: "unrelated-core", alternatives: [] } } },
+      "new-producer"
+    )
+  ).toBe(false);
 });
