@@ -3,7 +3,7 @@ import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-contex
 import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
 import type { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { nativePhysicalDamageFromActor, nativeRetreats, nativeWeaponHits } from "./skirmish-ai-native-combat-effects";
-import { evaluateNativeCombat, nativeRaidTargetRole, nativeTargetLossTick } from "./skirmish-ai-native-combat-evaluation";
+import { evaluateNativeCombat, nativeRaidTargetRole, nativeSummonExpired, nativeTargetLossTick } from "./skirmish-ai-native-combat-evaluation";
 
 it.describe("RAID-01 native target roles", () => {
   it("checks the authored economic target for each raid branch", () => {
@@ -18,6 +18,31 @@ it.describe("FIGHT-05 target-loss timing", () => {
     const context = { result: { perturbations: [{ id: "loss-contact-group", tick: 200, affectedActorId: "target" }] } };
     expect(nativeTargetLossTick(context as ReturnType<typeof nativeScenarioContext>, "target")).toBe(200);
     expect(nativeTargetLossTick(context as ReturnType<typeof nativeScenarioContext>, "other-target")).toBeUndefined();
+  });
+});
+
+it.describe("temporary native support expiry", () => {
+  it("requires the same owned summon to register and later unregister", () => {
+    const registered = { kind: "actor_registered", tick: 10, actor: { actorId: "totem-a", objectName: "HealingTotem", playerNumber: 2 } };
+    const removed = { kind: "actor_unregistered", tick: 410, actorId: "totem-a" };
+    expect(nativeSummonExpired([registered, removed] as never, "HealingTotem", 2)).toBe(true);
+    expect(nativeSummonExpired([registered, { ...removed, actorId: "totem-b" }] as never, "HealingTotem", 2)).toBe(false);
+    expect(nativeSummonExpired([registered, { ...removed, tick: 10 }] as never, "HealingTotem", 2)).toBe(false);
+  });
+
+  it("accepts a real totem summon and expiry as the expiry branch effect", () => {
+    const registered = { sequence: 1, tick: 10, playerNumber: 2, kind: "actor_registered",
+      actor: { actorId: "totem-a", objectName: "HealingTotem", playerNumber: 2 } };
+    const cooldown = { sequence: 2, tick: 10, playerNumber: 2, kind: "native_combat",
+      operation: { kind: "spell_cooldown_started", actor: { actorId: "caster", playerNumber: 2 }, clockTick: 10,
+        sceneActive: true, snapshotRestoreInProgress: false, gaps: [], spellType: "healingTotem" } };
+    const removed = { sequence: 3, tick: 410, playerNumber: 2, kind: "actor_unregistered", actorId: "totem-a",
+      objectName: "HealingTotem", actor: { actorId: "totem-a", objectName: "HealingTotem", playerNumber: 2 } };
+    const context = { facts: [registered, cooldown, removed], frames: [], roles: { "support-probe": "caster" } };
+    expect(evaluateNativeCombat("FIGHT-04", "support_expiry", context as never)).toEqual([]);
+    expect(evaluateNativeCombat("FIGHT-04", "support_expiry", {
+      ...context, facts: [registered, cooldown]
+    } as never)).toContain("combat_support_has_no_native_applied_effect");
   });
 });
 

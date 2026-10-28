@@ -10,6 +10,9 @@ import { QueueComponent } from "../../entity/components/queue/queue-component";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
+import { SpellComponent } from "../../entity/components/combat/components/spell-component";
+import { SpellTargetType } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { SpellData } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/spell-data";
 
 import type { AiDecisionIdentity } from "./ai-decision-identity";
 
@@ -168,19 +171,30 @@ function dispatchCombatOrControlIntent(
     return;
   }
   if (intent.kind === "cast") {
-    if (actorIndex.getActorById(intent.actorId) && intent.targetPosition)
+    const actor = actorIndex.getActorById(intent.actorId);
+    const spell = actor ? getActorComponent(actor, SpellComponent)?.getSpellData(intent.spellType) : undefined;
+    const targetObjectId = spell ? castTargetObjectId(spell, intent.targetActorId) : undefined;
+    if (actor && intent.targetPosition && spell)
       dispatch({
         type: "CAST_SPELL",
         playerNumber,
         actorIds: [intent.actorId],
         spellType: intent.spellType,
-        ...(intent.targetActorId ? { targetObjectId: intent.targetActorId } : {}),
+        ...(targetObjectId ? { targetObjectId } : {}),
         tileVec3: intent.targetPosition
       });
     return;
   }
   if (intent.kind === "concede")
     dispatch({ type: "CONCEDE", playerNumber, actorIds: [], reason: intent.reason });
+}
+
+/** Ground spells use their selected tile even when the tactical target is an actor standing there. */
+export function castTargetObjectId(
+  spell: Pick<SpellData, "targetType">,
+  targetActorId: string | null | undefined
+): string | undefined {
+  return spell.targetType === SpellTargetType.Actor ? targetActorId ?? undefined : undefined;
 }
 
 /** Translates accepted macro and transport intents through the shared player command authority. */

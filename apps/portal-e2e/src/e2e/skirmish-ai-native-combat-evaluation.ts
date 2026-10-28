@@ -149,7 +149,8 @@ function evaluateNativeSupport(branch: string, context: ReturnType<typeof native
       value.actor.playerNumber === 2 && value.beforeHealth !== null && value.afterHealth !== null &&
       value.afterHealth > value.beforeHealth || value.kind === "health_healed" && value.actor.playerNumber === 2 &&
       value.afterHealth > value.beforeHealth);
-    if (!applied.length) failures.push("combat_support_has_no_native_applied_effect");
+    const summonedAndExpired = branch === "support_expiry" && nativeSummonExpired(context.facts, "HealingTotem", 2);
+    if (!applied.length && !summonedAndExpired) failures.push("combat_support_has_no_native_applied_effect");
     if (!operations.some(({ value }) => value.kind === "spell_cooldown_started" &&
       value.actor.actorId === context.roles["support-probe"])) failures.push("combat_selected_caster_never_started_native_spell");
     for (const frame of context.frames) {
@@ -166,4 +167,15 @@ function evaluateNativeSupport(branch: string, context: ReturnType<typeof native
       fact.objectName.toLowerCase().includes("totem"))) failures.push("combat_temporary_support_native_expiry_missing");
   }
   return failures;
+}
+
+export function nativeSummonExpired(
+  facts: ReturnType<typeof nativeScenarioContext>["facts"],
+  objectName: string,
+  playerNumber: number
+): boolean {
+  return facts.some((registered) => registered.kind === "actor_registered" &&
+    registered.actor.objectName === objectName && registered.actor.playerNumber === playerNumber &&
+    facts.some((removed) => removed.kind === "actor_unregistered" && removed.actorId === registered.actor.actorId &&
+      removed.tick > registered.tick));
 }

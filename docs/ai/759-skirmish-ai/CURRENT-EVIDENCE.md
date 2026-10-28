@@ -92,3 +92,10 @@ branch evidence, not the recipe's three-run certification.
 CI already runs the registered runtime and peer matrix. Use local native runs only to answer a concrete question after an
 affected change; do not repeat unchanged passing evidence. PR #814 remains draft and unchanged. The handoff records the
 next branch and publication status.
+
+FIGHT-04 Skaduwee support-expiry capture `1793164132277-diagnostic_failed.json` (base `c1900957e`, source
+`fnv1a32:9942104d`, fixture `fnv1a32:4c6933e5`) shows Healing Totem casts now dispatch as ground-target spells, start
+the caster cooldown, register owned totems and later unregister the same actor IDs. The prior generic heal predicate was
+not appropriate for this summon-expiry branch. It now accepts only matched owned summon registration/removal after the
+cast; healing branches still require observed healing. Re-evaluation passes the expiry obligation. Oracle spec 11/11.
+FIGHT-04 overkill and other support branches remain open; this diagnostic does not close the family.
