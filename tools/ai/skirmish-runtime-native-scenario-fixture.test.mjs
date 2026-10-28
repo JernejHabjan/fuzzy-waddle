@@ -95,7 +95,7 @@ test("RAID-01 worker target is in the opening melee raid's native range for both
     const variant = fixture.recipe.variants.find((candidate) => candidate.id === `raid-01-${faction}-workers`);
     assert.ok(variant);
     const actors = new Map(variant.presetWorld.actors.map((actor) => [actor.fixtureActorId, actor]));
-    assert.deepEqual(actors.get("enemy-worker")?.position, { x: -64, y: 832, z: 0 });
+    assert.deepEqual(actors.get("enemy-worker")?.position, { x: -64, y: 800, z: 0 });
     assert.deepEqual(actors.get("enemy-deposit")?.position, { x: -736, y: 784, z: 0 });
     assert.deepEqual(actors.get("contact-group")?.position, { x: 0, y: 768, z: 0 });
   }

@@ -122,8 +122,8 @@ export function nativeScenarioActors(id, own, enemy, branch) {
   }
   if (id === "RAID-01" && branch === "workers") {
     // The Skaduwee melee raid committed native hits at distance 2 against a range-1 worker.
-    // Move it one tile toward the raiders while keeping it close to its contact-group drop-off.
-    actors.find((entry) => entry.fixtureActorId === "enemy-worker").position = tile(24, 27);
+    // Move it one tile toward the raiders while keeping it adjacent to its contact-group drop-off.
+    actors.find((entry) => entry.fixtureActorId === "enemy-worker").position = tile(23, 26);
   }
   if (id === "RAID-01" && branch === "expansion") {
     // Keep a passive decoy near the enemy base so a combat contact cannot divert the remote-expansion raid.
