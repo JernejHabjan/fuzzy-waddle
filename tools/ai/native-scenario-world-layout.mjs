@@ -99,6 +99,11 @@ export function nativeScenarioActors(id, own, enemy, branch) {
     if (branch === "no_heal") return actors.filter((entry) => entry.fixtureActorId !== "support-probe");
   }
   if (id === "FIGHT-04") actors.push(actor("own-research", producer(own), 2, 40, 26));
+  if (id === "FIGHT-04" && branch === "overkill") {
+    // Keep both required attack targets inside the opening army's real weapon envelope.
+    actors.find((entry) => entry.fixtureActorId === "contact-group").position = tile(28, 25);
+    actors.find((entry) => entry.fixtureActorId === "front-target-a").position = tile(26, 27);
+  }
   if (id === "FIGHT-05" && ["stun", "slow"].includes(branch)) actors.push(
     actor("enemy-research", producer(enemy), 1, 12, 22),
     actor("enemy-caster", caster(enemy), 1, 26, 27));

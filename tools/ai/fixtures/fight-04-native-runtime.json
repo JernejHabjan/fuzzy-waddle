@@ -325,8 +325,8 @@
               "actorName": "SkaduweeWarriorMale",
               "owner": 1,
               "position": {
-                "x": 0,
-                "y": 768,
+                "x": 128,
+                "y": 864,
                 "z": 0
               }
             },
@@ -375,8 +375,8 @@
               "actorName": "InfantryInn",
               "owner": 1,
               "position": {
-                "x": 160,
-                "y": 592,
+                "x": 0,
+                "y": 864,
                 "z": 0
               }
             },
@@ -2019,8 +2019,8 @@
               "actorName": "TivaraMacemanMale",
               "owner": 1,
               "position": {
-                "x": 0,
-                "y": 768,
+                "x": 128,
+                "y": 864,
                 "z": 0
               }
             },
@@ -2069,8 +2069,8 @@
               "actorName": "AnkGuard",
               "owner": 1,
               "position": {
-                "x": 160,
-                "y": 592,
+                "x": 0,
+                "y": 864,
                 "z": 0
               }
             },

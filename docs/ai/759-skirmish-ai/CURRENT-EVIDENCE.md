@@ -99,3 +99,9 @@ the caster cooldown, register owned totems and later unregister the same actor I
 not appropriate for this summon-expiry branch. It now accepts only matched owned summon registration/removal after the
 cast; healing branches still require observed healing. Re-evaluation passes the expiry obligation. Oracle spec 11/11.
 FIGHT-04 overkill and other support branches remain open; this diagnostic does not close the family.
+
+FIGHT-04 Tivara overkill passes targeted report `1793164782342-diagnostic_passed.json` (base `cb88c92f2`, source
+`fnv1a32:b537c884`, fixture `fnv1a32:7a4545ff`). The old setup put contact and alternative targets beyond useful
+weapon reach, so attack starts never produced damage. The overkill fixture now starts both required targets close to the
+opening force. Native damage reaches the low-health contact and the valuable alternative. Fixture suite 42/42 and
+generated catalog check pass. This is one targeted branch; Skaduwee overkill and five support branches remain open.

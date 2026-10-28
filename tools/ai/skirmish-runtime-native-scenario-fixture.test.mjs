@@ -512,6 +512,13 @@ test("FIGHT-04 support branches start with only their tested native spell alread
   const fixture = nativeScenarioFixture("FIGHT-04"), binding = fixture.assertions["FIGHT-04"].requiredNativeScenario;
   for (const variant of fixture.recipe.variants) {
     const branch = binding.branchByVariant[variant.id];
+    if (branch === "overkill") {
+      assert.deepEqual(variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "contact-group")?.position,
+        { x: 128, y: 864, z: 0 });
+      assert.deepEqual(variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "front-target-a")?.position,
+        { x: 0, y: 864, z: 0 });
+      continue;
+    }
     if (!["healing", "zone", "support_expiry", "pending_effect"].includes(branch)) continue;
     const researchType = branch === "zone" ? "firestormSpell" : branch === "support_expiry" ? "healingTotemSpell" :
       variant.aiFaction === "Tivara" ? "healingRainSpell" : "healingLightSpell";
