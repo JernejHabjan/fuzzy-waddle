@@ -2611,6 +2611,12 @@ Summaries use `node tools/ai/summarize-skirmish-report.mjs --report <path> --fai
 - Targeted native fixture suite passes 44/44; scoped ESLint passes. Next is one current-source `raid-01-tivara-unfinished` retry, capped at 30 minutes. No replay of the passed workers/expansion branches.
 - Retry `1793221894502-diagnostic_passed.json` passes at 120 decisions / 2,401 ticks, source `c2d4dcf0149d4ac03df512830c69a62e9624a3e4`, fixture `fnv1a32:f40ea582`. Native preset capture confirms `InfantryInn` was created through the normal constructor command with the bound builder. Next is the Tivara protected branch.
 
+# 2026-10-28 — RAID-01 Tivara protected fixture repair
+
+- Report `1793222077163-diagnostic_failed.json` completed 120 decisions / 2,401 ticks but failed the main-front native-pressure predicate. Capture review shows the primary force first selected the harmless worker decoy and later the distant enemy home; no hit landed on either declared front. The protected WorkMill remained guarded by the eight authored defenders.
+- Changed the protected fixture so the noise decoy is a passive Wall and its two independent main fronts sit within the opening force's reachable field. Kept the protected WorkMill and all eight defenders unchanged. This focuses the control on declining the defended raid while keeping the main force useful on its own front.
+- Regenerated RAID-01 JSON; both-faction structural checks pass 45/45 and scoped ESLint passes. Next rerun only the changed Tivara protected branch, capped at 30 minutes.
+
 # 2026-10-28 — SCOUT-02 scout lease and route diagnosis
 
 - Current-source withdrawn diagnostic `1793209192962-diagnostic_failed.json` (candidate `ee893cf7d3ff`, fixture `fnv1a32:0b7b07f6`, 120 decisions / 2,401 ticks) reproduced the physical trip and stale-job service failures. Scout intents were rejected as `claim_conflict` after the first accepted move. Actor-claim renewal allowed same-plan scout intents to replace that plan's provisional actor lease; focused gameplay tests passed and the full suite passed 572/572.

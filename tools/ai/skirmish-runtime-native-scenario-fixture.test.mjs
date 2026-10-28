@@ -75,6 +75,20 @@ test("RAID-01 unfinished producer clears the enemy deposit while keeping a nearb
   }
 });
 
+test("RAID-01 protected control keeps the raid defended and a separate main objective in opening reach", () => {
+  const fixture = nativeScenarioFixture("RAID-01");
+  for (const faction of ["tivara", "skaduwee"]) {
+    const variant = fixture.recipe.variants.find((candidate) => candidate.id === `raid-01-${faction}-protected`);
+    assert.ok(variant);
+    const actors = new Map(variant.presetWorld.actors.map((actor) => [actor.fixtureActorId, actor]));
+    assert.equal(actors.get("contact-group")?.actorName, "WorkMill");
+    assert.equal(variant.presetWorld.actors.filter((actor) => actor.fixtureActorId.startsWith("target-defense-")).length, 8);
+    assert.equal(actors.get("noise-scout")?.actorName, "Wall");
+    assert.deepEqual(actors.get("front-target-a")?.position, { x: 352, y: 752, z: 0 });
+    assert.deepEqual(actors.get("front-target-b")?.position, { x: -96, y: 976, z: 0 });
+  }
+});
+
 test("STRAT-05 blocked-retreat keeps a forward target on the attack side of the homeward barrier", () => {
   const fixture = nativeScenarioFixture("STRAT-05");
   const variant = fixture.recipe.variants.find((candidate) => candidate.id === "strat-05-tivara-blocked-retreat");

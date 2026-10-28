@@ -88,6 +88,13 @@ export function nativeScenarioActors(id, own, enemy, branch) {
   }
   if (["STRAT-07", "RAID-01"].includes(id) && ["defended", "protected"].includes(branch))
     for (let i = 0; i < 8; i++) actors.push(actor(`target-defense-${i}`, melee(enemy), 1, 21 + i % 3, 23 + Math.floor(i / 3)));
+  if (id === "RAID-01" && branch === "protected") {
+    // Keep this negative raid control focused on the defended economy target while a separate
+    // main objective remains immediately useful to the opening force.
+    actors.find((entry) => entry.fixtureActorId === "noise-scout").actorName = "Wall";
+    actors.find((entry) => entry.fixtureActorId === "front-target-a").position = tile(28, 18);
+    actors.find((entry) => entry.fixtureActorId === "front-target-b").position = tile(28, 32);
+  }
   if (id === "STRAT-07" && branch === "breach")
     actors.push(actor("opportunity-wall", "Wall", 1, 27, 24));
   if (id === "FIGHT-02") {
