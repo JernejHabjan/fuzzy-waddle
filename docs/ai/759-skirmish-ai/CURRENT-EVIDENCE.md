@@ -68,11 +68,10 @@ Skaduwee unfinished passes its both-faction setup check. Current-source diagnost
 Skaduwee protected diagnostic `1793224250744-diagnostic_failed.json` found seven of eight defenders overlapping the WorkMill footprint. Moving all eight to distinct clear approach tiles made them visible from tick 20 and prevented raid selection. Synchronized-fixture run `1793224685412-diagnostic_failed.json` fails only the main-pressure oracle: the primary selected the enemy core and caused 33 native damage events at ticks 2110–2399, while only authored front targets were accepted. The evaluator now accepts the enemy core as main-force continuation; the focused evaluator regression passes 4/4, RAID-01 fixture checks pass, gameplay offense suite passes 572/572, and scoped ESLint passes. Recheck only Skaduwee protected.
 Skaduwee protected final diagnostic `1793224976887-diagnostic_passed.json` passes (120 decisions / 2,401 ticks; candidate `098a99865`, fixture `fnv1a32:164d5d1c`), with no dedicated raid and 33 primary native hits against the enemy core from ticks 2110–2399. All eight RAID-01 branches have targeted passing evidence; combined registered matrix remains CI-owned. Next is RAID-02 repetition 2.
 
-RAID-02's earlier selected report `1793076386234-failed.json` contains no RAID-02 row; that focused native variant still
-needs an actual runtime capture. One RAID-02 repetition now passes on `d14166375288`: report
-`1793104113441-diagnostic_passed.json` records the variant as PASS at its 12,000-tick checkpoint, with a match win,
-three raid attackers, 2,875 damage, and the evaluator's post-raid redirection predicate satisfied. This is targeted
-branch evidence, not the recipe's three-run certification.
+RAID-02 repetition 1 passes on source `d14166375288` in `1793104113441-diagnostic_passed.json`, with three raid attackers,
+2,875 damage and post-raid redirection. Repetition 2 passes current-source in `1793225177965-diagnostic_passed.json`
+(source `cfcb52cd2`, fixture `fnv1a32:ba424ce1`, 600 decisions / 12,000 ticks, match win, 38.24 delivered income,
+no AI errors). Repetition 3 remains for the recipe's three-run certification.
 
 ## Validated outcomes
 
