@@ -2,6 +2,7 @@ import { test as it, expect } from "@playwright/test";
 import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
 import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
 import type { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
+import { StatusEffectType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { nativePhysicalDamageFromActor, nativeRetreats, nativeWeaponHits } from "./skirmish-ai-native-combat-effects";
 import { evaluateNativeCombat, nativeRaidTargetRole, nativeSummonExpired, nativeTargetLossTick } from "./skirmish-ai-native-combat-evaluation";
 
@@ -43,6 +44,43 @@ it.describe("temporary native support expiry", () => {
     expect(evaluateNativeCombat("FIGHT-04", "support_expiry", {
       ...context, facts: [registered, cooldown]
     } as never)).toContain("combat_support_has_no_native_applied_effect");
+  });
+});
+
+it.describe("harmful persistent native zones", () => {
+  const contextFor = (includeZone = true, includeDamage = true) => {
+    const cooldown = {
+      sequence: 1, tick: 10, playerNumber: 2, kind: "native_combat",
+      operation: { kind: "spell_cooldown_started", actor: { actorId: "caster", playerNumber: 2 },
+        clockTick: 10, sceneActive: true, snapshotRestoreInProgress: false, gaps: [], spellType: "firestorm" }
+    };
+    const damage = {
+      sequence: 2, tick: 30, playerNumber: 1, kind: "native_combat",
+      operation: { kind: "status_applied", actor: { actorId: "enemy", playerNumber: 1 }, clockTick: 30,
+        sceneActive: true, snapshotRestoreInProgress: false, gaps: [],
+        effect: { type: StatusEffectType.Burning, damagePerTick: 5 } }
+    };
+    const frame = {
+      tick: 20,
+      decision: { input: { effects: includeZone ? [{ effectId: "zone:firestorm", owner: 2, relation: "self",
+        position: { x: 5, y: 5, z: 0 }, targetDomains: ["ground"], expiresAt: { status: "known", value: 170 },
+        radius: 4, influence: "mixed" }] : [] }, missionState: { support: [] } }
+    };
+    return {
+      capture: { playerNumber: 2 }, opponent: { playerNumber: 1 }, roles: { "support-probe": "caster" },
+      facts: includeDamage ? [cooldown, damage] : [cooldown], frames: [frame]
+    };
+  };
+
+  it("accepts an owned observed zone with a native damaging status on the opposing faction", () => {
+    expect(evaluateNativeCombat("FIGHT-04", "zone", contextFor() as never)).toEqual([]);
+  });
+
+  it("rejects a zone without captured opposing damage or an observed owned zone", () => {
+    expect(evaluateNativeCombat("FIGHT-04", "zone", contextFor(true, false) as never))
+      .toContain("combat_actual_harmful_zone_never_observed");
+    expect(evaluateNativeCombat("FIGHT-04", "zone", contextFor(false, true) as never))
+      .toContain("combat_support_has_no_native_applied_effect");
   });
 });
 

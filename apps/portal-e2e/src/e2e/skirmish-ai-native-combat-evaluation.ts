@@ -150,7 +150,9 @@ function evaluateNativeSupport(branch: string, context: ReturnType<typeof native
       value.afterHealth > value.beforeHealth || value.kind === "health_healed" && value.actor.playerNumber === 2 &&
       value.afterHealth > value.beforeHealth);
     const summonedAndExpired = branch === "support_expiry" && nativeSummonExpired(context.facts, "HealingTotem", 2);
-    if (!applied.length && !summonedAndExpired) failures.push("combat_support_has_no_native_applied_effect");
+    const harmfulZoneApplied = branch === "zone" && nativeHarmfulZoneApplied(context);
+    if (!applied.length && !summonedAndExpired && !harmfulZoneApplied)
+      failures.push("combat_support_has_no_native_applied_effect");
     if (!operations.some(({ value }) => value.kind === "spell_cooldown_started" &&
       value.actor.actorId === context.roles["support-probe"])) failures.push("combat_selected_caster_never_started_native_spell");
     for (const frame of context.frames) {
@@ -160,13 +162,30 @@ function evaluateNativeSupport(branch: string, context: ReturnType<typeof native
       const effects = active.flatMap((plan) => plan.effectId ? [plan.effectId] : []);
       if (new Set(effects).size !== effects.length) failures.push("combat_pending_support_effect_reserved_twice");
     }
-    if (branch === "zone" && !context.frames.some((frame) => frame.decision.input?.effects?.some((zone) =>
-      zone.influence === "harmful" && zone.expiresAt.status === "known" && zone.expiresAt.value > frame.tick)))
+    if (branch === "zone" && !harmfulZoneApplied)
       failures.push("combat_actual_harmful_zone_never_observed");
     if (branch === "support_expiry" && !context.facts.some((fact) => fact.kind === "actor_unregistered" &&
       fact.objectName.toLowerCase().includes("totem"))) failures.push("combat_temporary_support_native_expiry_missing");
   }
   return failures;
+}
+
+/** A self-owned enemy-only zone is neutral to its caster, while its native damage status appears on the opponent. */
+function nativeHarmfulZoneApplied(context: ReturnType<typeof nativeScenarioContext>): boolean {
+  const casterId = context.roles["support-probe"];
+  const casterPlayer = context.capture?.playerNumber;
+  const opponentPlayer = context.opponent?.playerNumber;
+  const cast = context.facts.find((fact) => fact.kind === "native_combat" &&
+    fact.operation.kind === "spell_cooldown_started" && fact.operation.actor.actorId === casterId &&
+    fact.operation.spellType === "firestorm");
+  if (!cast || casterPlayer === undefined || opponentPlayer === undefined) return false;
+  const observedZone = context.frames.some((frame) => frame.decision.input?.effects?.some((effect) =>
+    effect.owner === casterPlayer && effect.relation === "self" && effect.influence !== "beneficial" &&
+    (effect.radius ?? 0) > 0 && effect.expiresAt.status === "known" && effect.expiresAt.value > frame.tick));
+  const damagedOpponent = context.facts.some((fact) => fact.tick >= cast.tick && fact.kind === "native_combat" &&
+    fact.operation.kind === "status_applied" && fact.operation.actor.playerNumber === opponentPlayer &&
+    fact.operation.effect.type === StatusEffectType.Burning && (fact.operation.effect.damagePerTick ?? 0) > 0);
+  return observedZone && damagedOpponent;
 }
 
 export function nativeSummonExpired(

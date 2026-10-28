@@ -43,7 +43,7 @@ real health increases. The other targeted passes are Skaduwee HealingLight `1793
 `fnv1a32:3e29588c`, fixture `fnv1a32:7a4545ff`), Skaduwee summon expiry `1793164132277`, and both reachable-target
 overkills `1793164782342` / `1793164999565`. HealingLight used `Actor` targeting but autocast previously recognized
 only dedicated enemy/ally/self target types; autocast now derives its relation from Actor spell flags and selects the
-wounded friendly. Focused Jest 2/2 and scoped ESLint pass. Tivara harmful-zone, both pending-effect branches, and the
+wounded friendly. Focused Jest 2/2 and scoped ESLint pass. Tivara zone `1793166186099` also passes: the prior predicate rejected its actual enemy Burning statuses because zone effects intentionally omit caster source IDs and a self-owned enemy-only zone is reported as mixed from the caster view. The oracle now requires both an observed owned zone and native Burning on the opponent; focused Playwright checks pass 13/13. Both pending-effect branches and the
 eight-branch current-source CI gate remain open.
 
 FIGHT-05 now has passing evidence for all eight branches. The original report `1793097702563-failed.json` passed both
@@ -96,20 +96,3 @@ branch evidence, not the recipe's three-run certification.
 CI already runs the registered runtime and peer matrix. Use local native runs only to answer a concrete question after an
 affected change; do not repeat unchanged passing evidence. PR #814 remains draft and unchanged. The handoff records the
 next branch and publication status.
-
-FIGHT-04 Skaduwee support-expiry capture `1793164132277-diagnostic_failed.json` (base `c1900957e`, source
-`fnv1a32:9942104d`, fixture `fnv1a32:4c6933e5`) shows Healing Totem casts now dispatch as ground-target spells, start
-the caster cooldown, register owned totems and later unregister the same actor IDs. The prior generic heal predicate was
-not appropriate for this summon-expiry branch. It now accepts only matched owned summon registration/removal after the
-cast; healing branches still require observed healing. Re-evaluation passes the expiry obligation. Oracle spec 11/11.
-
-FIGHT-04 Tivara overkill passes targeted report `1793164782342-diagnostic_passed.json` (base `cb88c92f2`, source
-`fnv1a32:b537c884`, fixture `fnv1a32:7a4545ff`). The old setup put contact and alternative targets beyond useful
-weapon reach, so attack starts never produced damage. The overkill fixture now starts both required targets close to the
-opening force. Native damage reaches the low-health contact and the valuable alternative. Fixture suite 42/42 and
-generated catalog check pass. This is one targeted branch; Skaduwee overkill and five support branches remain open.
-
-FIGHT-04 Skaduwee overkill passes `1793164999565-diagnostic_passed.json` (base `4eba71d74`, fixture
-`fnv1a32:7a4545ff`). Reach-correct shared fixture now passes both overkill factions; Tivara report
-`1793164782342-diagnostic_passed.json`. Four FIGHT-04 branches remain: Skaduwee healing, Tivara harmful zone, and both
-pending-effect variants. The eight-variant current-source CI gate remains open.
