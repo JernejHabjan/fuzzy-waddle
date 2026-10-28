@@ -89,6 +89,18 @@ test("RAID-01 protected control keeps the raid defended and a separate main obje
   }
 });
 
+test("RAID-01 worker target is in the opening melee raid's native range for both factions", () => {
+  const fixture = nativeScenarioFixture("RAID-01");
+  for (const faction of ["tivara", "skaduwee"]) {
+    const variant = fixture.recipe.variants.find((candidate) => candidate.id === `raid-01-${faction}-workers`);
+    assert.ok(variant);
+    const actors = new Map(variant.presetWorld.actors.map((actor) => [actor.fixtureActorId, actor]));
+    assert.deepEqual(actors.get("enemy-worker")?.position, { x: -64, y: 832, z: 0 });
+    assert.deepEqual(actors.get("enemy-deposit")?.position, { x: -736, y: 784, z: 0 });
+    assert.deepEqual(actors.get("contact-group")?.position, { x: 0, y: 768, z: 0 });
+  }
+});
+
 test("STRAT-05 blocked-retreat keeps a forward target on the attack side of the homeward barrier", () => {
   const fixture = nativeScenarioFixture("STRAT-05");
   const variant = fixture.recipe.variants.find((candidate) => candidate.id === "strat-05-tivara-blocked-retreat");

@@ -362,8 +362,8 @@
               "actorName": "SkaduweeWorkerMale",
               "owner": 1,
               "position": {
-                "x": -96,
-                "y": 816,
+                "x": -64,
+                "y": 832,
                 "z": 0
               }
             },
@@ -1970,8 +1970,8 @@
               "actorName": "TivaraWorkerMale",
               "owner": 1,
               "position": {
-                "x": -96,
-                "y": 816,
+                "x": -64,
+                "y": 832,
                 "z": 0
               }
             },
