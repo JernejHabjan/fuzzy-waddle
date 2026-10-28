@@ -86,6 +86,12 @@ test("RAID-01 protected control keeps the raid defended and a separate main obje
     assert.equal(actors.get("noise-scout")?.actorName, "Wall");
     assert.deepEqual(actors.get("front-target-a")?.position, { x: 352, y: 752, z: 0 });
     assert.deepEqual(actors.get("front-target-b")?.position, { x: -96, y: 976, z: 0 });
+    const defenses = variant.presetWorld.actors.filter((actor) => actor.fixtureActorId.startsWith("target-defense-"));
+    assert.deepEqual(defenses.map(({ position }) => position), Array.from({ length: 8 }, (_, index) => {
+      const x = 27, y = 21 + index;
+      return { x: (x - y) * 32 + 32, y: (x + y) * 16 + 16, z: 0 };
+    }));
+    assert.equal(new Set(defenses.map(({ position }) => `${position.x}:${position.y}`)).size, 8);
   }
 });
 

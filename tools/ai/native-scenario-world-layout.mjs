@@ -90,7 +90,11 @@ export function nativeScenarioActors(id, own, enemy, branch) {
     for (let i = 0; i < 8; i++) actors.push(actor(`target-defense-${i}`, melee(enemy), 1, 21 + i % 3, 23 + Math.floor(i / 3)));
   if (id === "RAID-01" && branch === "protected") {
     // Keep this negative raid control focused on the defended economy target while a separate
-    // main objective remains immediately useful to the opening force.
+    // main objective remains immediately useful to the opening force. Put defenders on clear
+    // approach tiles; stacking them inside the WorkMill footprint hid most of the local defense.
+    const defensePositions = Array.from({ length: 8 }, (_, index) => [27, 21 + index]);
+    for (const [index, [x, y]] of defensePositions.entries())
+      actors.find((entry) => entry.fixtureActorId === `target-defense-${index}`).position = tile(x, y);
     actors.find((entry) => entry.fixtureActorId === "noise-scout").actorName = "Wall";
     actors.find((entry) => entry.fixtureActorId === "front-target-a").position = tile(28, 18);
     actors.find((entry) => entry.fixtureActorId === "front-target-b").position = tile(28, 32);
