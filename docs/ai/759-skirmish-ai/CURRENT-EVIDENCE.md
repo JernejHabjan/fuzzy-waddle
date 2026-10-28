@@ -43,8 +43,7 @@ real health increases. The other targeted passes are Skaduwee HealingLight `1793
 `fnv1a32:3e29588c`, fixture `fnv1a32:7a4545ff`), Skaduwee summon expiry `1793164132277`, and both reachable-target
 overkills `1793164782342` / `1793164999565`. HealingLight used `Actor` targeting but autocast previously recognized
 only dedicated enemy/ally/self target types; autocast now derives its relation from Actor spell flags and selects the
-wounded friendly. Focused Jest 2/2 and scoped ESLint pass. Tivara zone `1793166186099` also passes: the prior predicate rejected its actual enemy Burning statuses because zone effects intentionally omit caster source IDs and a self-owned enemy-only zone is reported as mixed from the caster view. The oracle now requires both an observed owned zone and native Burning on the opponent; focused Playwright checks pass 13/13. Both pending-effect branches and the
-both pending-effect branches pass (`1793166382249`, `1793166557067`), giving targeted evidence across all eight variants. The combined current-source CI gate remains open.
+wounded friendly. Focused Jest 2/2 and scoped ESLint pass. Tivara zone `1793166186099` also passes: the prior predicate rejected its actual enemy Burning statuses because zone effects intentionally omit caster source IDs and a self-owned enemy-only zone is reported as mixed from the caster view. The oracle now requires both an observed owned zone and native Burning on the opponent; focused Playwright checks pass 13/13. Both pending-effect branches pass (`1793166382249`, `1793166557067`). Combined current-source report `1793167558976-passed.json` passes all eight branches (960 decisions / 19,208 ticks) on source `98ef5f546` and fixture `fnv1a32:7a4545ff`. GitHub skipped the PR matrix because #814 is draft; the local combined runtime confirms the family.
 
 FIGHT-05 now has passing evidence for all eight branches. The original report `1793097702563-failed.json` passed both
 wall branches and Skaduwee target-loss/disconnected; focused current-fixture runs pass Tivara target-loss
@@ -77,8 +76,8 @@ branch evidence, not the recipe's three-run certification.
 - SCOUT-03 is partial, not closed: both trapped branches pass; Tivara and Skaduwee escape branches fail `scouting_surviving_physical_escape_missing`.
 - SCOUT-04 is closed on all six retained branches: contact consideration occurs within 400 ticks and each branch has later AI-caused native damage.
 - FIGHT-01 is closed on all eight native branches: favorable combat, changed-risk regrouping, and the quiet continued-fight control pass.
-- FIGHT-05 is closed across eight native branches using retained wall evidence and focused current-fixture runs for target-loss, status and disconnected setups.
-- Selected native obligations: **7/22 closed** (STRAT-05, STRAT-02, STRAT-03, STRAT-04, SCOUT-04, FIGHT-01 and FIGHT-05); 15 remain. Partial branch evidence does not close a family.
+- FIGHT-04 and FIGHT-05 are closed across all eight native branches each; FIGHT-04 combined report `1793167558976-passed.json` passes 960 decisions / 19,208 ticks on current source. FIGHT-05 uses retained wall evidence and focused current-fixture runs for target-loss, status and disconnected setups.
+- Selected native obligations: **8/22 closed** (STRAT-05, STRAT-02, STRAT-03, STRAT-04, SCOUT-04, FIGHT-01, FIGHT-04 and FIGHT-05); 14 remain. Partial branch evidence does not close a family.
 - Supported registration remains complete: pure 111/111 and native definitions/runtime recipes 115/115. These are
   authoring coverage, not behavior completion. Overall behavior percentage is unavailable until the existing evidence is
   reconciled across all supported rows.
@@ -87,7 +86,7 @@ branch evidence, not the recipe's three-run certification.
 
 | Package | Remaining work |
 | --- | --- |
-| 3 — scouting, combat, access | DOMAIN-01/05/06, SCOUT-04 and FIGHT-01 pass. FIGHT-02 outcome oracles pass; recovery exclusion and retreat-order hysteresis await six-variant recheck. FIGHT-03/04/05 and RAID-01/02 remain open. DOMAIN-02's two negative controls and INTERCEPT pass; COAST pays for a ship but leaves it in reserve, and ESCORT reaches row 32 but fails its paid fleet objective effect. SCOUT-03 escape branches and SCOUT-01/02 parity/job service remain open at measured causes. Seven real-peer obligations remain CI-owned. STRAT-09 needs grouped final recheck after affected changes. |
+| 3 — scouting, combat, access | DOMAIN-01/05/06, SCOUT-04 and FIGHT-01 pass. FIGHT-02 outcome oracles pass; recovery exclusion and retreat-order hysteresis await six-variant recheck. FIGHT-03/05 and RAID-01/02 remain open; FIGHT-04 passes its full eight-branch current-source matrix locally. DOMAIN-02's two negative controls and INTERCEPT pass; COAST pays for a ship but leaves it in reserve, and ESCORT reaches row 32 but fails its paid fleet objective effect. SCOUT-03 escape branches and SCOUT-01/02 parity/job service remain open at measured causes. Seven real-peer obligations remain CI-owned. STRAT-09 needs grouped final recheck after affected changes. |
 | 4 — placement, walls, recovery | PLACE/EXP/WALL and H recovery cases; PLACE-03 transit/clearance and H-11 route/capture remain known failures. |
 | 5 — authority and lifecycle | H-10 over-capacity variants, H-06/07, H-08/09 peer evidence, H-14/15 remaining branches, H-31/32, M11, #819/#823. |
 | 6 — continuous play and difficulty | SEQ-02 and supported SEQ/D cases. D-06 legacy comparison remains explicitly unsupported. |

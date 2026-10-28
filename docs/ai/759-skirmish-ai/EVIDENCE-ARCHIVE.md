@@ -2564,3 +2564,7 @@ Summaries use `node tools/ai/summarize-skirmish-report.mjs --report <path> --fai
 
 - Tivara `fight-04-tivara-pending-effect` passes report `1793166382249-diagnostic_passed.json`; Skaduwee `fight-04-skaduwee-pending-effect` passes `1793166557067-diagnostic_passed.json`. Both use candidate `2de293de7732` and fixture `fnv1a32:7a4545ff`.
 - Together with the six earlier targeted passes, every FIGHT-04 variant has now passed a focused native run. No unchanged branch replay is needed; the combined current-source eight-variant CI runtime matrix remains the family-level gate.
+# 2026-10-28 — FIGHT-04 combined current-source matrix
+
+- Combined native report `1793167558976-passed.json` passes all eight branches (960 decisions / 19,208 ticks) on candidate `98ef5f5463e5` and fixture `fnv1a32:7a4545ff`. This includes the focused branch changes and corrected zone oracle in one current-source family run.
+- PR #814 is draft; GitHub reported the pull-request runtime jobs skipped. Its state was left unchanged per handoff direction. The combined local runtime matrix supplies the family-level result; CI will provide the automatic regression gate when the PR is ready for review.
