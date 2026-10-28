@@ -2546,3 +2546,7 @@ Summaries use `node tools/ai/summarize-skirmish-report.mjs --report <path> --fai
 
 - The prior full report had no player-two native damage. Runtime attack starts were occurring at distance 6–10, outside the melee/ranged weapons' useful reach; target allocation could not be judged from those starts.
 - FIGHT-04 overkill fixture now moves the low-health contact and valuable front target into the opening force's reach. Current targeted report `1793164782342-diagnostic_passed.json` (base `cb88c92f2`, source `fnv1a32:b537c884`, fixture `fnv1a32:7a4545ff`) passes with actual native damage on both bound targets. Fixture checks 42/42; catalog is current. Remaining FIGHT-04 branches and the full CI gate stay open.
+
+# 2026-10-28 — FIGHT-04 Skaduwee overkill
+
+- Reach-correct overkill fixture passes Skaduwee report `1793164999565-diagnostic_passed.json` on base `4eba71d74`, fixture `fnv1a32:7a4545ff`. Both faction variants now have targeted native damage on the required low-health contact and valuable alternative. This closes neither the remaining four support variants nor the eight-variant CI gate.

@@ -105,3 +105,8 @@ FIGHT-04 Tivara overkill passes targeted report `1793164782342-diagnostic_passed
 weapon reach, so attack starts never produced damage. The overkill fixture now starts both required targets close to the
 opening force. Native damage reaches the low-health contact and the valuable alternative. Fixture suite 42/42 and
 generated catalog check pass. This is one targeted branch; Skaduwee overkill and five support branches remain open.
+
+FIGHT-04 Skaduwee overkill passes `1793164999565-diagnostic_passed.json` (base `4eba71d74`, fixture
+`fnv1a32:7a4545ff`). Reach-correct shared fixture now passes both overkill factions; Tivara report
+`1793164782342-diagnostic_passed.json`. Four FIGHT-04 branches remain: Skaduwee healing, Tivara harmful zone, and both
+pending-effect variants. The eight-variant current-source CI gate remains open.
