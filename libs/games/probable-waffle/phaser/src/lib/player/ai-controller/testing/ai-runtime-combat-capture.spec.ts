@@ -3,6 +3,7 @@ import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getActorComponent } from "../../../data/actor-component";
 import { AttackComponent } from "../../../entity/components/combat/components/attack-component";
+import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { weaponDefinitions } from "../../../entity/components/combat/weapon-definitions";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
@@ -105,5 +106,24 @@ describe("explicit native combat observer", () => {
     expect(f.attack.useAttack(f.target)).toBe("cooldown-return");
     expect(f.operations).toEqual([]);
     f.capture.dispose();
+  });
+
+  it("records real health increases from direct spell or status healing and restores the hook", () => {
+    const f = fixture();
+    const health = {
+      healthComponentData: { health: 40 },
+      heal: jest.fn((amount: number) => { health.healthComponentData.health = Math.min(50, health.healthComponentData.health + amount); })
+    };
+    jest.mocked(getActorComponent).mockImplementation((actor, component) =>
+      (actor === f.source && component === HealthComponent ? health : undefined) as never);
+    const original = health.heal;
+    f.capture.watch(f.source);
+    health.heal(5);
+    expect(f.operations).toEqual([expect.objectContaining({ kind: "health_healed", beforeHealth: 40, afterHealth: 45 })]);
+    health.heal(5);
+    health.heal(5);
+    expect(f.operations).toHaveLength(2);
+    f.capture.dispose();
+    expect(health.heal).toBe(original);
   });
 });

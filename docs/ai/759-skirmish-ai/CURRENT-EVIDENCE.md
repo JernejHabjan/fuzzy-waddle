@@ -37,16 +37,10 @@ building only when its location is visible and it is absent; attack-move mission
 engaging a contact. Gameplay tests pass 567/567, focused observation tests 15/15, fixture checks 42/42 and portal build
 passes. These diagnostics do not close the six-branch family; run the current-source gate in CI.
 
-FIGHT-04 report `1793096773518-failed.json` on `a5159d9e9183` ran all eight variants (960 decisions / 19,208 ticks); no
-branch fully passes. Overkill branches lack native useful damage across both required targets. Targeted report
-`1793105967694-diagnostic_failed.json` (120 decisions / 2,401 ticks) seeds HealingRain as completed before tick 0 and
-confirms the support probe is wounded and its intended target is in range, yet no native effect/cooldown occurs. The
-fixture now wounds the healer itself for same-group targeting and moves the harmful-zone target within range, but the
-capture showed the tactical cast was blocked by the broad same-tick Stage 9 defense attack. The arbiter now prioritizes
-useful tactical casts over that attack, permits the same squad's cast to interrupt its dispatched actor order, and the
-Tivara Slingshot prefab now enables its declared SpellCastingSystem. Targeted report `1793107119988-diagnostic_failed.json`
-confirms HealingRain starts its native cooldown, but its native healing effect is still not measured. Do not retry until
-the missing zone effect has a concrete cause. Overkill and temporary-support expiry remain open.
+FIGHT-04 Tivara healing passes targeted report `1793133499341-diagnostic_passed.json` (base `b05fefff3`, source
+`fnv1a32:816f98f7`, fixture `fnv1a32:4c6933e5`). Periodic status refresh preserves the tick clock, and combat capture
+now records actual health increases from direct spell/status healing. Focused tests pass 8/8. The full family, including
+overkill and temporary-support expiry, remains open; do not infer other branch outcomes from this diagnostic.
 
 FIGHT-05 now has passing evidence for all eight branches. The original report `1793097702563-failed.json` passed both
 wall branches and Skaduwee target-loss/disconnected; focused current-fixture runs pass Tivara target-loss

@@ -17,6 +17,7 @@ export type AiRuntimeCombatOperationV1 = {
       readonly highGroundRangeBonus: number; readonly targetFlying: boolean; readonly stunned: boolean }
   | { readonly kind: "heal_returned"; readonly target: AiRuntimeCreatedActorV1;
       readonly beforeHealth: number | null; readonly afterHealth: number | null }
+  | { readonly kind: "health_healed"; readonly beforeHealth: number; readonly afterHealth: number }
   | { readonly kind: "status_applied"; readonly effect: StatusEffectData }
   | { readonly kind: "status_removed"; readonly effectType: StatusEffectType }
   | { readonly kind: "spell_cooldown_started"; readonly spellType: string }

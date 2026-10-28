@@ -147,6 +147,7 @@ function evaluateNativeSupport(branch: string, context: ReturnType<typeof native
     const applied = operations.filter(({ value }) => value.kind === "status_applied" &&
       value.effect.sourceActorId === context.roles["support-probe"] || value.kind === "heal_returned" &&
       value.actor.playerNumber === 2 && value.beforeHealth !== null && value.afterHealth !== null &&
+      value.afterHealth > value.beforeHealth || value.kind === "health_healed" && value.actor.playerNumber === 2 &&
       value.afterHealth > value.beforeHealth);
     if (!applied.length) failures.push("combat_support_has_no_native_applied_effect");
     if (!operations.some(({ value }) => value.kind === "spell_cooldown_started" &&

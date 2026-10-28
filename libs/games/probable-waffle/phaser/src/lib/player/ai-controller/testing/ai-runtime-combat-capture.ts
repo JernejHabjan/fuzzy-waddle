@@ -59,6 +59,28 @@ export class AiRuntimeCombatCapture {
       attack.useAttack = wrapper;
       cleanup.add(() => { if (attack.useAttack === wrapper) attack.useAttack = original; });
     }
+    const health = getActorComponent(actor, HealthComponent);
+    if (health && !installed.has(health)) {
+      installed.add(health);
+      const original = health.heal;
+      const owned = cleanup;
+      const wrapper: typeof original = (amount) => {
+        if (this.disposed || owned.closed) return original.call(health, amount);
+        let beforeHealth: number | undefined;
+        try { beforeHealth = health.healthComponentData.health; }
+        catch { this.lose("combat_heal_start_reader_failed"); }
+        const result = original.call(health, amount);
+        try {
+          const afterHealth = health.healthComponentData.health;
+          if (beforeHealth !== undefined && afterHealth > beforeHealth) this.project(() => ({
+            ...this.boundary(actor), kind: "health_healed", beforeHealth, afterHealth
+          }));
+        } catch { this.lose("combat_heal_return_reader_failed"); }
+        return result;
+      };
+      health.heal = wrapper;
+      cleanup.add(() => { if (health.heal === wrapper) health.heal = original; });
+    }
     const healing = getActorComponent(actor, HealingComponent);
     if (healing && !installed.has(healing)) {
       installed.add(healing);
