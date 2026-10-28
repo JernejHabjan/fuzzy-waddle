@@ -67,7 +67,11 @@ export function evaluateNativeCombat(id: string, branch: string, context: Return
       squad.role === "attack" && squad.squadId.startsWith("squad:attack:raid:") &&
       squad.tactics?.targetActorId === raidTarget && squad.actorIds.length > 0)))
       failures.push("raid_protected_control_selected_for_harassment");
-    const mainTargets = new Set([context.roles["front-target-a"], context.roles["front-target-b"]]);
+    // A faction's real core can become visible after the authored fronts are selected; it is a useful
+    // continuation of the main assault and should not be rejected by this protected-raid control.
+    const mainTargets = new Set([
+      context.roles["front-target-a"], context.roles["front-target-b"], context.roles["enemy-home"]
+    ]);
     const mainMissions = context.frames.flatMap((frame) => {
       const squads = frame.decision.missionState?.squads ?? [];
       const frameRaidActorIds = new Set(squads.filter((squad) =>

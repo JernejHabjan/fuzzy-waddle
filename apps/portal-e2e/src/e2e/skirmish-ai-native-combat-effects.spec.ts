@@ -43,11 +43,16 @@ it.describe("RAID-01 native target roles", () => {
         "raid_protected_control_selected_for_harassment"
       );
   });
+
+  it("accepts continuing primary pressure when the enemy core supersedes the authored front", () => {
+    expect(evaluateNativeCombat("RAID-01", "protected",
+      raidContext("squad:attack:primary", "contact", true, undefined, "enemy-home") as never)).toEqual([]);
+  });
 });
 
 function raidContext(raidSquadId: string, raidTargetId: "worker" | "contact" | "expansion", includeWorkerDropOff = true,
   servingDeposit: "contact" | "deposit" = raidTargetId === "expansion" ? "deposit" : "contact",
-  mainTarget = "main-objective") {
+  mainTarget: "main-objective" | "main-objective-b" | "enemy-home" = "main-objective") {
   const weapon = {
     weaponType: "test-sword", minRange: 0, range: 1, damage: 5, damageType: 0, cooldown: 1000,
     delays: { fire: 0, hit: 50 }, projectile: null, canTargetAir: false
@@ -73,7 +78,8 @@ function raidContext(raidSquadId: string, raidTargetId: "worker" | "contact" | "
   };
   const raiderId = "raider";
   const targetId = raidTargetId === "worker" ? "worker" : raidTargetId === "expansion" ? "deposit" : "contact";
-  const mainTargetId = mainTarget === "main-objective-b" ? "main-objective-b" : "main-objective";
+  const mainTargetId = mainTarget === "main-objective-b" ? "main-objective-b" :
+    mainTarget === "enemy-home" ? "enemy-home" : "main-objective";
   const workerDropOff = includeWorkerDropOff ? [{ sequence: 7, tick: 40, playerNumber: 1, kind: "spatial_authority",
     spatial: { clockTick: 40, snapshotRestoreInProgress: false, sceneActive: true, gaps: [], kind: "service_attempt",
       attemptId: 2, operation: "drop_off", phase: "resolved", amount: 10,
@@ -81,7 +87,7 @@ function raidContext(raidSquadId: string, raidTargetId: "worker" | "contact" | "
       target: { actorId: servingDeposit, playerNumber: 1, alive: true, indexed: true },
       sourceInCaptureScene: true, targetInCaptureScene: true, lifetimeValid: true } }] : [];
   return {
-    roles: { "enemy-worker": "worker", "contact-group": "contact", "enemy-deposit": "deposit",
+    roles: { "enemy-worker": "worker", "contact-group": "contact", "enemy-deposit": "deposit", "enemy-home": "enemy-home",
       "front-target-a": "main-objective", "front-target-b": "main-objective-b" },
     facts: [...hit(raiderId, targetId, raidTargetId === "worker" ? "SkaduweeWorkerMale" : "WorkMill", 10, 1),
       ...hit("main-army", mainTargetId, "Sandhold", 20, 4), ...workerDropOff],
