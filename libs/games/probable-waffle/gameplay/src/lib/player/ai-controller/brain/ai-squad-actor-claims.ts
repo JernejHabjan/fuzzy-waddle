@@ -9,7 +9,7 @@ export function canRenewAiSquadActorClaim(
   state: AiBrainStateV1,
   observation: AiObservationV1
 ): boolean {
-  if (claim.kind !== "actor" || !["move", "attack", "stop", "cast"].includes(intent.kind)) return false;
+  if (claim.kind !== "actor" || !["move", "attack", "stop", "cast", "scout"].includes(intent.kind)) return false;
   if (
     !observation.actors.some(
       (actor) => actor.actorId === claim.actorId && actor.relation === "self" && actor.visibility === "owned"

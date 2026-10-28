@@ -65,6 +65,20 @@ describe("squad actor leases permit tactical correction without stealing ownersh
     ]);
   });
 
+  it("lets a scout mission renew its own provisional actor lease", () => {
+    const f = fixture();
+    const scout: AiIntentV1 = {
+      ...f.intent,
+      kind: "scout",
+      intentId: "intent:scout",
+      effectId: "effect:scout",
+      lane: "scouting",
+      utility: 700,
+      reasonCode: "frontier_scout"
+    };
+    expect(arbitrateAiIntents(f.observation, f.state, [scout], [], f.profile, undefined).accepted).toEqual([scout]);
+  });
+
   it("allows a squad's useful cast to replace its own provisional attack lease", () => {
     const f = fixture();
     const cast: AiIntentV1 = {

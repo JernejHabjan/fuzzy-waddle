@@ -205,15 +205,31 @@ export function nextQuestion(
   knowledge: AiKnowledgeStateV1
 ): AiKnowledgeStateV1["questions"][number] | undefined {
   if (observation.map?.scoutSearchPoints) {
-    const point = [...observation.map.scoutSearchPoints]
-      .sort((left, right) => left.pointId.localeCompare(right.pointId))
-      .find(
-        (point) =>
-          !point.observed &&
+    const recon = observation.actors.filter(
+      (actor) =>
+        actor.relation === "self" &&
+        actor.visibility === "owned" &&
+        canFight(actor) &&
+        position(actor) !== undefined
+    );
+    const point = observation.map.scoutSearchPoints
+      .filter(
+        (candidate) =>
+          !candidate.observed &&
           !knowledge.questions.some(
-            (question) => question.kind === `explore:${point.pointId}` && question.state === "answered"
+            (question) => question.kind === `explore:${candidate.pointId}` && question.state === "answered"
           )
-      );
+      )
+      .map((candidate) => ({
+        candidate,
+        distance: recon.reduce(
+          (best, actor) => Math.min(best, distance(position(actor)!, candidate.position)),
+          Number.POSITIVE_INFINITY
+        )
+      }))
+      .sort(
+        (left, right) => left.distance - right.distance || left.candidate.pointId.localeCompare(right.candidate.pointId)
+      )[0]?.candidate;
     if (!point) return undefined;
     const questionId = `question:${point.pointId}` as AiKnowledgeStateV1["questions"][number]["questionId"];
     return (
