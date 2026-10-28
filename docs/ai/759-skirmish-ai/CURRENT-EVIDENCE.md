@@ -68,10 +68,11 @@ Skaduwee unfinished passes its both-faction setup check. Current-source diagnost
 Skaduwee protected diagnostic `1793224250744-diagnostic_failed.json` found seven of eight defenders overlapping the WorkMill footprint. Moving all eight to distinct clear approach tiles made them visible from tick 20 and prevented raid selection. Synchronized-fixture run `1793224685412-diagnostic_failed.json` fails only the main-pressure oracle: the primary selected the enemy core and caused 33 native damage events at ticks 2110–2399, while only authored front targets were accepted. The evaluator now accepts the enemy core as main-force continuation; the focused evaluator regression passes 4/4, RAID-01 fixture checks pass, gameplay offense suite passes 572/572, and scoped ESLint passes. Recheck only Skaduwee protected.
 Skaduwee protected final diagnostic `1793224976887-diagnostic_passed.json` passes (120 decisions / 2,401 ticks; candidate `098a99865`, fixture `fnv1a32:164d5d1c`), with no dedicated raid and 33 primary native hits against the enemy core from ticks 2110–2399. All eight RAID-01 branches have targeted passing evidence; combined registered matrix remains CI-owned. Next is RAID-02 repetition 2.
 
-RAID-02 repetition 1 passes on source `d14166375288` in `1793104113441-diagnostic_passed.json`, with three raid attackers,
-2,875 damage and post-raid redirection. Repetition 2 passes current-source in `1793225177965-diagnostic_passed.json`
-(source `cfcb52cd2`, fixture `fnv1a32:ba424ce1`, 600 decisions / 12,000 ticks, match win, 38.24 delivered income,
-no AI errors). Repetition 3 remains for the recipe's three-run certification.
+RAID-02 repetitions 2 and 3 pass current source: `1793225177965-diagnostic_passed.json` (source `cfcb52cd2`) and
+`1793225333930-diagnostic_passed.json` (source `11f8e1c4f`), each with fixture `fnv1a32:ba424ce1`, 600 decisions /
+12,000 ticks, match win, delivered income and post-raid redirection; repetition 3 retains three raiders. Repetition 1
+passes on older source `d14166375288` (`1793104113441-diagnostic_passed.json`), but offensive-selection and tactics
+code changed since; recheck repetition 1 only on current source before closing the recipe.
 
 ## Validated outcomes
 
