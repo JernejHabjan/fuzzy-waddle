@@ -199,7 +199,7 @@
             },
             {
               "fixtureActorId": "army-4",
-              "actorName": "TivaraMacemanMale",
+              "actorName": "TivaraSlingshotFemale",
               "owner": 2,
               "position": {
                 "x": 128,
@@ -362,8 +362,8 @@
               "actorName": "SkaduweeWorkerMale",
               "owner": 1,
               "position": {
-                "x": -64,
-                "y": 800,
+                "x": -96,
+                "y": 816,
                 "z": 0
               }
             },
@@ -1807,7 +1807,7 @@
             },
             {
               "fixtureActorId": "army-4",
-              "actorName": "SkaduweeWarriorMale",
+              "actorName": "SkaduweeRangedFemale",
               "owner": 2,
               "position": {
                 "x": 128,
@@ -1970,8 +1970,8 @@
               "actorName": "TivaraWorkerMale",
               "owner": 1,
               "position": {
-                "x": -64,
-                "y": 800,
+                "x": -96,
+                "y": 816,
                 "z": 0
               }
             },
