@@ -3,7 +3,7 @@ import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-contex
 import { nativePhysicalDamageFromActor, nativeRetainedActor, nativeRetreats, nativeWeaponHits } from "./skirmish-ai-native-combat-effects";
 
 export function nativeRaidTargetRole(branch: string): string {
-  return branch === "workers" ? "enemy-worker" : branch === "expansion" ? "enemy-deposit" : "contact-group";
+  return branch === "expansion" ? "enemy-deposit" : "contact-group";
 }
 
 /** Tactical outcomes require native operations and physical recovery, not stance/script strings alone. */
@@ -41,6 +41,13 @@ export function evaluateNativeCombat(id: string, branch: string, context: Return
   if (id === "FIGHT-03") failures.push(...evaluateNativeFronts(branch, context));
   if (id === "RAID-01") {
     const raidTarget = context.roles[nativeRaidTargetRole(branch)];
+    const workerUsesRaidTarget = branch !== "workers" || context.facts.some((fact) =>
+      fact.kind === "spatial_authority" && fact.spatial.kind === "service_attempt" &&
+      fact.spatial.operation === "drop_off" && fact.spatial.phase === "resolved" &&
+      fact.spatial.source.actorId === context.roles["enemy-worker"] && fact.spatial.target.actorId === raidTarget &&
+      fact.spatial.amount !== null && fact.spatial.amount > 0 && fact.spatial.sourceInCaptureScene &&
+      fact.spatial.targetInCaptureScene && fact.spatial.lifetimeValid && fact.spatial.sceneActive &&
+      fact.spatial.clockTick === fact.tick && !fact.spatial.snapshotRestoreInProgress && !fact.spatial.gaps.length);
     const raidMissions = context.frames.flatMap((frame) => (frame.decision.missionState?.squads ?? [])
       .filter((squad) => squad.role === "attack" && squad.squadId.startsWith("squad:attack:raid:") &&
         squad.actorIds.length > 0 && squad.actorIds.length <= 4 && squad.tactics?.targetActorId === raidTarget)
@@ -50,7 +57,7 @@ export function evaluateNativeCombat(id: string, branch: string, context: Return
       return actorId !== undefined && raidMissions.some(({ tick, squad }) =>
         fact.tick >= tick && squad.actorIds.includes(actorId));
     });
-    if (branch !== "protected" && (!raidMissions.length || !raidHits.length ||
+    if (branch !== "protected" && (!workerUsesRaidTarget || !raidMissions.length || !raidHits.length ||
         !raidMissions.some(({ tick, squad }) =>
           squad.actorIds.some((actorId) => context.arrived(actorId, tick).length))))
       failures.push("raid_limited_suitable_squad_has_no_native_harassment");

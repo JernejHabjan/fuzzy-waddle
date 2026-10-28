@@ -22,6 +22,12 @@
 - Static review found the RAID-01 oracle counted any attack squad of up to four actors as the limited raid, even if it was the primary mission. It also did not reject a small raid on the protected control and mapped the unfinished construction site's `contact-group` ID to a separate built `enemy-producer`. The oracle now requires `squad:attack:raid:` membership, attributes useful damage to raid actors, checks disjoint main-objective squad pressure, rejects any protected-target raid, and maps unfinished to `contact-group`. Focused oracle tests pass 15/15; scoped ESLint passes. This corrects acceptance evidence only; native behavior remains unverified on current source.
 - Review of the four branch setups and current offense policy found no supported gameplay edit without branch evidence. Next: rerun only the Tivara workers diagnostic with the corrected oracle; any behavior failure must be repaired before another native invocation. Every local runtime invocation is capped at 30 minutes; combined family coverage remains CI-owned.
 
+## 2026-10-28 — RAID-01 workers oracle/evidence repair
+
+- Follow-up capture `1793218547975-diagnostic_failed.json` on candidate `6dbc06a9c588` exposed that the `workers` branch's dedicated raid targeted `contact-group`, while the evaluator required the worker pawn. Bounded inspection of native spatial facts confirmed the enemy worker's resolved `drop_off` targets that same WorkMill and credits its resources; dedicated raid member `army-4` physically damaged it. This is valid worker-economy harassment, not a gameplay failure.
+- Updated the workers target to the serving `contact-group` only when native capture proves a positive, resolved worker drop-off to that exact target with valid scene/lifetime boundaries. The focused test covers missing service evidence and valid evidence. Playwright oracle spec passes 15/15; changed-file ESLint passes.
+- Current-source Tivara workers diagnostic `1793219068120-diagnostic_passed.json` passes at 120 decisions / 2,401 ticks, fixture `fnv1a32:fba3bb14`; one branch is validated, not the family. Continue with one registered RAID-01 branch per invocation, each capped at 30 minutes. No AI behavior policy was changed.
+
 Historical snapshots through 2026-10-27. This file preserves detailed diagnostic notes from earlier checkpoints; it may
 contain superseded observations and next actions. Use HANDOFF.md and CURRENT-EVIDENCE.md for the active status.
 
