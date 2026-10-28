@@ -44,6 +44,22 @@ test("STRAT-09 target-specific variants separate an equivalent competing drop-of
     { x: -256, y: 832, z: 0 });
 });
 
+test("RAID-01 remote expansion fixture staffs the actual raid deposit", () => {
+  const fixture = nativeScenarioFixture("RAID-01");
+  for (const [faction, expectedContact] of [["tivara", "SkaduweeWarriorMale"], ["skaduwee", "TivaraMacemanMale"]]) {
+    const variant = fixture.recipe.variants.find((candidate) => candidate.id === `raid-01-${faction}-expansion`);
+    assert.ok(variant);
+    const actors = new Map(variant.presetWorld.actors.map((actor) => [actor.fixtureActorId, actor]));
+    assert.equal(actors.get("contact-group")?.actorName, "Wall");
+    assert.deepEqual(actors.get("enemy-deposit")?.position, { x: -736, y: 784, z: 0 });
+    assert.deepEqual(actors.get("enemy-worker")?.position, { x: -736, y: 848, z: 0 });
+    assert.deepEqual(actors.get("enemy-source")?.position, { x: -832, y: 896, z: 0 });
+    assert.equal(actors.get("noise-scout")?.actorName, expectedContact);
+    assert.ok(variant.presetWorld.initialOrders.some((order) => order.workerFixtureActorId === "enemy-worker" &&
+      order.sourceFixtureActorId === "enemy-source" && order.kind === "gather"));
+  }
+});
+
 test("STRAT-05 blocked-retreat keeps a forward target on the attack side of the homeward barrier", () => {
   const fixture = nativeScenarioFixture("STRAT-05");
   const variant = fixture.recipe.variants.find((candidate) => candidate.id === "strat-05-tivara-blocked-retreat");

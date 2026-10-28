@@ -41,21 +41,23 @@ export function evaluateNativeCombat(id: string, branch: string, context: Return
   if (id === "FIGHT-03") failures.push(...evaluateNativeFronts(branch, context));
   if (id === "RAID-01") {
     const raidTarget = context.roles[nativeRaidTargetRole(branch)];
-    const workerUsesRaidTarget = branch !== "workers" || context.facts.some((fact) =>
+    const worker = context.roles["enemy-worker"];
+    const workerUsesRaidTarget = !["workers", "expansion"].includes(branch) || context.facts.some((fact) =>
       fact.kind === "spatial_authority" && fact.spatial.kind === "service_attempt" &&
       fact.spatial.operation === "drop_off" && fact.spatial.phase === "resolved" &&
-      fact.spatial.source.actorId === context.roles["enemy-worker"] && fact.spatial.target.actorId === raidTarget &&
+      fact.spatial.source.actorId === worker && fact.spatial.target.actorId === raidTarget &&
       fact.spatial.amount !== null && fact.spatial.amount > 0 && fact.spatial.sourceInCaptureScene &&
       fact.spatial.targetInCaptureScene && fact.spatial.lifetimeValid && fact.spatial.sceneActive &&
       fact.spatial.clockTick === fact.tick && !fact.spatial.snapshotRestoreInProgress && !fact.spatial.gaps.length);
+    const allowedRaidTargets = new Set(workerUsesRaidTarget ? [raidTarget, worker] : [raidTarget]);
     const raidMissions = context.frames.flatMap((frame) => (frame.decision.missionState?.squads ?? [])
       .filter((squad) => squad.role === "attack" && squad.squadId.startsWith("squad:attack:raid:") &&
-        squad.actorIds.length > 0 && squad.actorIds.length <= 4 && squad.tactics?.targetActorId === raidTarget)
+        squad.actorIds.length > 0 && squad.actorIds.length <= 4 && allowedRaidTargets.has(squad.tactics?.targetActorId ?? ""))
       .map((squad) => ({ tick: frame.tick, squad })));
-    const raidHits = nativeWeaponHits(context, raidTarget).filter((fact) => {
+    const raidHits = nativeWeaponHits(context).filter((fact) => {
       const actorId = fact.damage.initiator?.actorId;
       return actorId !== undefined && raidMissions.some(({ tick, squad }) =>
-        fact.tick >= tick && squad.actorIds.includes(actorId));
+        fact.tick >= tick && squad.actorIds.includes(actorId) && squad.tactics?.targetActorId === fact.damage.target.actorId);
     });
     if (branch !== "protected" && (!workerUsesRaidTarget || !raidMissions.length || !raidHits.length ||
         !raidMissions.some(({ tick, squad }) =>
@@ -65,7 +67,7 @@ export function evaluateNativeCombat(id: string, branch: string, context: Return
       squad.role === "attack" && squad.squadId.startsWith("squad:attack:raid:") &&
       squad.tactics?.targetActorId === raidTarget && squad.actorIds.length > 0)))
       failures.push("raid_protected_control_selected_for_harassment");
-    const other = context.roles["front-target-a"];
+    const mainTargets = new Set([context.roles["front-target-a"], context.roles["front-target-b"]]);
     const mainMissions = context.frames.flatMap((frame) => {
       const squads = frame.decision.missionState?.squads ?? [];
       const frameRaidActorIds = new Set(squads.filter((squad) =>
@@ -73,13 +75,14 @@ export function evaluateNativeCombat(id: string, branch: string, context: Return
         squad.tactics?.targetActorId === raidTarget).flatMap((squad) => squad.actorIds));
       return squads.filter((squad) => squad.role === "attack" &&
         !squad.squadId.startsWith("squad:attack:raid:") && squad.actorIds.length > 0 &&
-        squad.tactics?.targetActorId === other && squad.actorIds.every((actorId) => !frameRaidActorIds.has(actorId)))
+        mainTargets.has(squad.tactics?.targetActorId ?? "") &&
+        squad.actorIds.every((actorId) => !frameRaidActorIds.has(actorId)))
         .map((squad) => ({ tick: frame.tick, squad }));
     });
-    const mainObjectiveHits = nativeWeaponHits(context, other).filter((fact) => {
+    const mainObjectiveHits = nativeWeaponHits(context).filter((fact) => {
       const actorId = fact.damage.initiator?.actorId;
       return actorId !== undefined && mainMissions.some(({ tick, squad }) =>
-        fact.tick >= tick && squad.actorIds.includes(actorId));
+        fact.tick >= tick && squad.actorIds.includes(actorId) && squad.tactics?.targetActorId === fact.damage.target.actorId);
     });
     if (!mainObjectiveHits.length) failures.push("raid_main_objective_has_no_continuing_native_pressure");
   }

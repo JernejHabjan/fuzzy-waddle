@@ -53,12 +53,15 @@ carry the source actor ID; stunned actors cannot start attacks. Disconnected use
 tick-400 worker control, and accepts native damage against another reachable target rather than one hard-coded target.
 
 RAID-01's current-source Tivara workers diagnostic `1793219068120-diagnostic_passed.json` passes (120 decisions / 2,401
-ticks; fixture `fnv1a32:fba3bb14`). Captured native evidence shows the designated enemy worker successfully returning
-resources to the nearby `contact-group` WorkMill, and the dedicated raid squad damages that same serving deposit while
-the primary squad maintains separate objective pressure. The old worker-pawn target oracle was therefore incorrect;
-the evaluator now requires a positive native worker drop-off to the exact raided WorkMill. Its focused spec passes 15/15
-and scoped ESLint passes. The earlier current-source eight-variant run still has no verdict and will not be repeated.
-Next use one bounded registered RAID-01 branch at a time; repair any demonstrated behavior issue before another run.
+ticks; fixture `fnv1a32:fba3bb14`). Captured native evidence joins the worker's successful drop-off to the raided
+`contact-group` WorkMill; the dedicated raid causes physical damage while a distinct primary squad pressures its own
+objective. Expansion diagnostics `1793219248061` and `1793219575377` exposed setup problems: the remote deposit was
+unserved, its worker overlapped the WorkMill footprint and could not move, an idle worker decoy attracted the raid, and
+the main squad hit `front-target-b` while the oracle demanded `front-target-a`. A follow-up showed a combat decoy diverted the raid into defense/intercept at tick 160. The fixture now puts an active worker
+outside the remote deposit footprint, keeps a nearby gather source, removes the idle-worker economic decoy, and turns
+the nearby contact into a passive Wall. The oracle accepts native raid damage to that verified serving worker or deposit,
+and recognizes either authored main front when the assigned primary squad causes native damage. Fixture structure passes
+both factions; native fixture checks pass 43/43, focused oracle checks 15/15 and changed-file ESLint passes. Current-source Tivara expansion diagnostic `1793220139730-diagnostic_passed.json` passes at 120 decisions / 2,401 ticks (dirty digest `fnv1a32:2f14f2ca`, fixture `fnv1a32:d127defe`). Workers and expansion are partial branch evidence, not RAID-01 closure. Next is a single Tivara unfinished-site branch; do not repeat passed branches.
 RAID-02's earlier selected report `1793076386234-failed.json` contains no RAID-02 row; that focused native variant still
 needs an actual runtime capture. One RAID-02 repetition now passes on `d14166375288`: report
 `1793104113441-diagnostic_passed.json` records the variant as PASS at its 12,000-tick checkpoint, with a match win,

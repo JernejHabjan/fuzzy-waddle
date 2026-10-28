@@ -9,7 +9,8 @@ export function nativeScenarioActors(id, own, enemy, branch) {
   const scouting = id.startsWith("SCOUT-") || id === "H-22", placement = id.startsWith("PLACE-");
   const wall = id.startsWith("WALL-") || ["H-27", "H-28"].includes(id);
   const hidden = id === "SCOUT-01" || id === "SCOUT-04";
-  const target = id === "SCOUT-02" ? enemy === "Tivara" ? "TivaraAlchemist" : "SkaduweeOwl" :
+  const target = id === "RAID-01" && branch === "expansion" ? melee(enemy) :
+    id === "SCOUT-02" ? enemy === "Tivara" ? "TivaraAlchemist" : "SkaduweeOwl" :
     id === "SCOUT-04" && branch === "producer" ? producer(enemy) :
     id === "SCOUT-04" || ["STRAT-07", "STRAT-12", "RAID-01"].includes(id) ? "WorkMill" : melee(enemy);
   const actors = [
@@ -111,6 +112,14 @@ export function nativeScenarioActors(id, own, enemy, branch) {
     actors.find((entry) => entry.fixtureActorId === "enemy-worker").position = tile(23, 27);
     actors.find((entry) => entry.fixtureActorId === "enemy-source").position = tile(22, 28);
     actors.find((entry) => entry.fixtureActorId === "enemy-deposit").position = tile(12, 36);
+  }
+  if (id === "RAID-01" && branch === "expansion") {
+    // Keep a passive decoy near the enemy base so a combat contact cannot divert the remote-expansion raid.
+    actors.find((entry) => entry.fixtureActorId === "contact-group").actorName = "Wall";
+    actors.find((entry) => entry.fixtureActorId === "contact-group").position = tile(12, 20);
+    actors.find((entry) => entry.fixtureActorId === "enemy-worker").position = tile(14, 38);
+    actors.find((entry) => entry.fixtureActorId === "enemy-source").position = tile(14, 41);
+    actors.find((entry) => entry.fixtureActorId === "noise-scout").actorName = melee(enemy);
   }
   if (["STRAT-13", "FIGHT-03"].includes(id)) {
     if (id === "FIGHT-03") {

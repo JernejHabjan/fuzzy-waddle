@@ -25,6 +25,16 @@ it.describe("RAID-01 native target roles", () => {
       );
     expect(evaluateNativeCombat("RAID-01", "workers",
       raidContext("squad:attack:raid:deposit", "contact") as never)).toEqual([]);
+    expect(evaluateNativeCombat("RAID-01", "expansion",
+      raidContext("squad:attack:raid:expansion", "expansion", false) as never)).toContain(
+        "raid_limited_suitable_squad_has_no_native_harassment"
+      );
+    expect(evaluateNativeCombat("RAID-01", "expansion",
+      raidContext("squad:attack:raid:expansion", "expansion") as never)).toEqual([]);
+    expect(evaluateNativeCombat("RAID-01", "expansion",
+      raidContext("squad:attack:raid:worker", "worker", true, "deposit") as never)).toEqual([]);
+    expect(evaluateNativeCombat("RAID-01", "workers",
+      raidContext("squad:attack:raid:deposit", "contact", true, undefined, "main-objective-b") as never)).toEqual([]);
   });
 
   it("rejects any dedicated raid against the protected control target", () => {
@@ -35,7 +45,9 @@ it.describe("RAID-01 native target roles", () => {
   });
 });
 
-function raidContext(raidSquadId: string, raidTargetId: "worker" | "contact", includeWorkerDropOff = true) {
+function raidContext(raidSquadId: string, raidTargetId: "worker" | "contact" | "expansion", includeWorkerDropOff = true,
+  servingDeposit: "contact" | "deposit" = raidTargetId === "expansion" ? "deposit" : "contact",
+  mainTarget = "main-objective") {
   const weapon = {
     weaponType: "test-sword", minRange: 0, range: 1, damage: 5, damageType: 0, cooldown: 1000,
     delays: { fire: 0, hit: 50 }, projectile: null, canTargetAir: false
@@ -60,20 +72,22 @@ function raidContext(raidSquadId: string, raidTargetId: "worker" | "contact", in
     }];
   };
   const raiderId = "raider";
+  const targetId = raidTargetId === "worker" ? "worker" : raidTargetId === "expansion" ? "deposit" : "contact";
+  const mainTargetId = mainTarget === "main-objective-b" ? "main-objective-b" : "main-objective";
   const workerDropOff = includeWorkerDropOff ? [{ sequence: 7, tick: 40, playerNumber: 1, kind: "spatial_authority",
     spatial: { clockTick: 40, snapshotRestoreInProgress: false, sceneActive: true, gaps: [], kind: "service_attempt",
       attemptId: 2, operation: "drop_off", phase: "resolved", amount: 10,
       source: { actorId: "worker", playerNumber: 1, alive: true, indexed: true },
-      target: { actorId: "contact", playerNumber: 1, alive: true, indexed: true },
+      target: { actorId: servingDeposit, playerNumber: 1, alive: true, indexed: true },
       sourceInCaptureScene: true, targetInCaptureScene: true, lifetimeValid: true } }] : [];
   return {
-    roles: { "enemy-worker": "worker", "contact-group": "contact", "front-target-a": "main-objective" },
-    facts: [...(raidTargetId === "worker" ? hit(raiderId, "worker", "SkaduweeWorkerMale", 10, 1) :
-      hit(raiderId, "contact", "WorkMill", 10, 1)),
-      ...hit("main-army", "main-objective", "Sandhold", 20, 4), ...workerDropOff],
+    roles: { "enemy-worker": "worker", "contact-group": "contact", "enemy-deposit": "deposit",
+      "front-target-a": "main-objective", "front-target-b": "main-objective-b" },
+    facts: [...hit(raiderId, targetId, raidTargetId === "worker" ? "SkaduweeWorkerMale" : "WorkMill", 10, 1),
+      ...hit("main-army", mainTargetId, "Sandhold", 20, 4), ...workerDropOff],
     frames: [{ tick: 10, decision: { input: { capabilityCatalog: { entries: [] } }, missionState: { squads: [
-      { squadId: raidSquadId, role: "attack", actorIds: [raiderId], tactics: { targetActorId: raidTargetId } },
-      { squadId: "squad:attack:primary", role: "attack", actorIds: ["main-army"], tactics: { targetActorId: "main-objective" } }
+      { squadId: raidSquadId, role: "attack", actorIds: [raiderId], tactics: { targetActorId: targetId } },
+      { squadId: "squad:attack:primary", role: "attack", actorIds: ["main-army"], tactics: { targetActorId: mainTargetId } }
     ] } } }],
     arrived: (actorId: string) => actorId === raiderId ? [{}] : []
   };
