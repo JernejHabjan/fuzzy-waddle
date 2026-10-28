@@ -1,6 +1,6 @@
 # #759 current evidence
 
-Updated 2026-10-27. This is the compact active snapshot; detailed run history belongs in
+Updated 2026-10-28. This is the compact active snapshot; detailed run history belongs in
 [EVIDENCE-ARCHIVE.md](EVIDENCE-ARCHIVE.md). [HANDOFF.md](HANDOFF.md) owns the live cursor and next action.
 
 Latest closed family: STRAT-04 report `1793069202745-passed.json`, base `2210ab7fe09d`, dirty-source digest
@@ -44,7 +44,7 @@ real health increases. The other targeted passes are Skaduwee HealingLight `1793
 overkills `1793164782342` / `1793164999565`. HealingLight used `Actor` targeting but autocast previously recognized
 only dedicated enemy/ally/self target types; autocast now derives its relation from Actor spell flags and selects the
 wounded friendly. Focused Jest 2/2 and scoped ESLint pass. Tivara zone `1793166186099` also passes: the prior predicate rejected its actual enemy Burning statuses because zone effects intentionally omit caster source IDs and a self-owned enemy-only zone is reported as mixed from the caster view. The oracle now requires both an observed owned zone and native Burning on the opponent; focused Playwright checks pass 13/13. Both pending-effect branches and the
-eight-branch current-source CI gate remain open.
+both pending-effect branches pass (`1793166382249`, `1793166557067`), giving targeted evidence across all eight variants. The combined current-source CI gate remains open.
 
 FIGHT-05 now has passing evidence for all eight branches. The original report `1793097702563-failed.json` passed both
 wall branches and Skaduwee target-loss/disconnected; focused current-fixture runs pass Tivara target-loss
