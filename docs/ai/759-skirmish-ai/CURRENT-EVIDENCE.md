@@ -37,10 +37,14 @@ building only when its location is visible and it is absent; attack-move mission
 engaging a contact. Gameplay tests pass 567/567, focused observation tests 15/15, fixture checks 42/42 and portal build
 passes. These diagnostics do not close the six-branch family; run the current-source gate in CI.
 
-FIGHT-04 Tivara healing passes targeted report `1793133499341-diagnostic_passed.json` (base `b05fefff3`, source
-`fnv1a32:816f98f7`, fixture `fnv1a32:4c6933e5`). Periodic status refresh preserves the tick clock, and combat capture
-now records actual health increases from direct spell/status healing. Focused tests pass 8/8. The full family, including
-overkill and temporary-support expiry, remains open; do not infer other branch outcomes from this diagnostic.
+FIGHT-04 Tivara HealingRain passes targeted report `1793133499341-diagnostic_passed.json` (source
+`fnv1a32:816f98f7`, fixture `fnv1a32:4c6933e5`); periodic status refresh preserves its tick clock and capture records
+real health increases. The other targeted passes are Skaduwee HealingLight `1793165477609` (source
+`fnv1a32:3e29588c`, fixture `fnv1a32:7a4545ff`), Skaduwee summon expiry `1793164132277`, and both reachable-target
+overkills `1793164782342` / `1793164999565`. HealingLight used `Actor` targeting but autocast previously recognized
+only dedicated enemy/ally/self target types; autocast now derives its relation from Actor spell flags and selects the
+wounded friendly. Focused Jest 2/2 and scoped ESLint pass. Tivara harmful-zone, both pending-effect branches, and the
+eight-branch current-source CI gate remain open.
 
 FIGHT-05 now has passing evidence for all eight branches. The original report `1793097702563-failed.json` passed both
 wall branches and Skaduwee target-loss/disconnected; focused current-fixture runs pass Tivara target-loss
@@ -98,7 +102,6 @@ FIGHT-04 Skaduwee support-expiry capture `1793164132277-diagnostic_failed.json` 
 the caster cooldown, register owned totems and later unregister the same actor IDs. The prior generic heal predicate was
 not appropriate for this summon-expiry branch. It now accepts only matched owned summon registration/removal after the
 cast; healing branches still require observed healing. Re-evaluation passes the expiry obligation. Oracle spec 11/11.
-FIGHT-04 overkill and other support branches remain open; this diagnostic does not close the family.
 
 FIGHT-04 Tivara overkill passes targeted report `1793164782342-diagnostic_passed.json` (base `cb88c92f2`, source
 `fnv1a32:b537c884`, fixture `fnv1a32:7a4545ff`). The old setup put contact and alternative targets beyond useful

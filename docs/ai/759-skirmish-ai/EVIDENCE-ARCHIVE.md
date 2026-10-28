@@ -2550,3 +2550,8 @@ Summaries use `node tools/ai/summarize-skirmish-report.mjs --report <path> --fai
 # 2026-10-28 — FIGHT-04 Skaduwee overkill
 
 - Reach-correct overkill fixture passes Skaduwee report `1793164999565-diagnostic_passed.json` on base `4eba71d74`, fixture `fnv1a32:7a4545ff`. Both faction variants now have targeted native damage on the required low-health contact and valuable alternative. This closes neither the remaining four support variants nor the eight-variant CI gate.
+
+# 2026-10-28 — FIGHT-04 Skaduwee HealingLight
+
+- Native report `1793165174612-diagnostic_failed.json` (base `2a4368ab4`, fixture `fnv1a32:7a4545ff`) showed the caster had HealingLight researched, ready and autocast-enabled, but generated no cast proposal. `HealingLight` targets `Actor` and sets ally/self flags; `PawnAgentSpells` only handled dedicated Ground/EnemyUnit, FriendlyUnit and Self target types, so this spell could never be selected for autocast.
+- Autocast now maps Actor target flags to enemy/ally/self selection and uses the wounded visible ally for HealingLight. Targeted rerun `1793165477609-diagnostic_passed.json` passes on source digest `fnv1a32:3e29588c` and fixture `fnv1a32:7a4545ff`. Focused Jest passes 2/2 and scoped ESLint is clean. Three support variants remain: Tivara harmful zone and both pending-effect variants; full eight-branch CI gate remains open.

@@ -5,6 +5,7 @@ import { VisionComponent } from "../../entity/components/vision-component";
 import { getActorSystem } from "../../data/actor-system";
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { SpellTargetType } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { SpellData } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/spell-data";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { SpellComponent } from "../../entity/components/combat/components/spell-component";
 import { SpellCastingSystem } from "../../entity/systems/spell-casting.system";
@@ -43,7 +44,7 @@ export class PawnAgentSpells {
       const spellData = spellDefinitions[spellType];
       if (!spellData) continue;
 
-      if (this.hasValidAutocastTarget(spellData.targetType)) {
+      if (this.hasValidAutocastTarget(spellData)) {
         return true;
       }
     }
@@ -51,23 +52,28 @@ export class PawnAgentSpells {
     return false;
   }
 
-  private hasValidAutocastTarget(targetType: SpellTargetType): boolean {
+  private hasValidAutocastTarget(spellData: SpellData): boolean {
     const visionComponent = getActorComponent(this.gameObject, VisionComponent);
     if (!visionComponent) return false;
 
-    switch (targetType) {
-      case SpellTargetType.Ground:
-      case SpellTargetType.EnemyUnit:
+    switch (autocastTargetRelation(spellData)) {
+      case "enemy":
         // For offensive spells, need visible enemy
         return visionComponent.getVisibleEnemies().length > 0;
-      case SpellTargetType.FriendlyUnit:
-      case SpellTargetType.Self:
+      case "ally":
         // For healing spells, need visible damaged friendly
+        {
         const visibleFriendlies = visionComponent.getVisibleFriendlies();
         return visibleFriendlies.some((friendly) => {
           const healthComponent = getActorComponent(friendly, HealthComponent);
           return healthComponent && !healthComponent.healthIsFull && healthComponent.alive;
         });
+        }
+      case "self":
+        {
+        const healthComponent = getActorComponent(this.gameObject, HealthComponent);
+        return !!healthComponent && !healthComponent.healthIsFull && healthComponent.alive;
+        }
       default:
         return false;
     }
@@ -96,10 +102,10 @@ export class PawnAgentSpells {
       let targetObjectId: string | undefined;
       const navigationService = getSceneService(this.gameObject.scene, NavigationService);
 
-      switch (spellData.targetType) {
-        case SpellTargetType.EnemyUnit:
-        case SpellTargetType.Ground:
+      switch (autocastTargetRelation(spellData)) {
+        case "enemy":
           // For offensive spells, target closest enemy position
+          {
           const enemy = visionComponent.getClosestVisibleEnemy();
           if (enemy) {
             const enemyTile = navigationService?.getCenterTileCoordUnderObject(enemy);
@@ -107,8 +113,10 @@ export class PawnAgentSpells {
             targetObjectId = getActorComponent(enemy, IdComponent)?.id;
           }
           break;
-        case SpellTargetType.FriendlyUnit:
+          }
+        case "ally":
           // Find damaged friendly
+          {
           const friendlies = visionComponent.getVisibleFriendlies();
           for (const friendly of friendlies) {
             const healthComponent = getActorComponent(friendly, HealthComponent);
@@ -120,11 +128,14 @@ export class PawnAgentSpells {
             }
           }
           break;
-        case SpellTargetType.Self:
+          }
+        case "self":
+          {
           const selfTile = navigationService?.getCenterTileCoordUnderObject(this.gameObject);
           if (selfTile) targetPosition = { ...selfTile, z: 0 };
           targetObjectId = getActorComponent(this.gameObject, IdComponent)?.id;
           break;
+          }
       }
 
       if (!targetPosition) continue;
@@ -150,4 +161,26 @@ export class PawnAgentSpells {
     return State.FAILED;
   }
 
+}
+
+export function autocastTargetRelation(
+  spellData: Pick<SpellData, "targetType" | "targetAllies" | "targetEnemies" | "targetSelf">
+): "enemy" | "ally" | "self" | null {
+  if (spellData.targetType === SpellTargetType.Actor) {
+    if (spellData.targetEnemies) return "enemy";
+    if (spellData.targetAllies) return "ally";
+    if (spellData.targetSelf) return "self";
+    return null;
+  }
+  switch (spellData.targetType) {
+    case SpellTargetType.Ground:
+    case SpellTargetType.EnemyUnit:
+      return "enemy";
+    case SpellTargetType.FriendlyUnit:
+      return "ally";
+    case SpellTargetType.Self:
+      return "self";
+    default:
+      return null;
+  }
 }
