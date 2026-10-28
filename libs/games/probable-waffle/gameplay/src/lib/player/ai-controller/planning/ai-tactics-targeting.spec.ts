@@ -3,6 +3,95 @@ import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
 import { combatActor, squad, fixtureState, observation, manager } from "./ai-tactics-test-fixtures";
 
 describe("AiTacticsManager", () => {
+  it("withdraws a scout from a sustained low-damage attacker when a legal retreat exists", () => {
+    const scout = combatActor("scout", "self", 0, "ground", 750, { damage: 6 });
+    const pursuer = combatActor("pursuer", "enemy", 3, "ground", 1000, { damage: 6 });
+    if (pursuer.combatProfile?.status !== "known") throw new Error("Expected known pursuer combat profile");
+    const durablePursuer = {
+      ...pursuer,
+      combatProfile: { ...pursuer.combatProfile, value: { ...pursuer.combatProfile.value, maxHealth: 150 } }
+    };
+    const scoutSquad = squad("squad:scout", "scout", [scout.actorId]);
+
+    const proposal = manager.propose(observation([scout, durablePursuer]), fixtureState([scoutSquad]));
+
+    expect(proposal.statePatch?.squadUpdates?.[0]).toEqual(
+      expect.objectContaining({
+        role: "scout",
+        state: "retreat",
+        tactics: expect.objectContaining({ script: "protected_retreat" })
+      })
+    );
+    expect(proposal.intents).toContainEqual(expect.objectContaining({ kind: "move", actorIds: [scout.actorId] }));
+  });
+
+  it("does not issue a scout retreat toward an unobserved or unreachable tile", () => {
+    const scout = combatActor("scout", "self", 0, "ground", 750, { damage: 6 });
+    const pursuer = combatActor("pursuer", "enemy", 3, "ground", 1000, { damage: 6 });
+    const scoutSquad = squad("squad:scout", "scout", [scout.actorId]);
+    const withoutPassableRetreat = observation([scout, pursuer]);
+    const map = withoutPassableRetreat.map;
+    if (!map) throw new Error("Expected test map");
+
+    const proposal = manager.propose(
+      { ...withoutPassableRetreat, map: { ...map, constructionCells: [] } },
+      fixtureState([scoutSquad])
+    );
+
+    expect(proposal.statePatch?.squadUpdates?.[0]?.state).not.toBe("retreat");
+    expect(proposal.intents.some((intent) => intent.reasonCode.includes("protected_retreat"))).toBe(false);
+  });
+
+  it("keeps a scout's escape destination stable while a visible pursuer moves", () => {
+    const scout = combatActor("scout", "self", 3, "ground", 750, { damage: 6 });
+    const pursuer = combatActor("pursuer", "enemy", 4, "ground", 1000, { damage: 6 });
+    const base = observation([scout, pursuer]);
+    if (!base.map) throw new Error("Expected test map");
+    const cells = Array.from({ length: 101 }, (_, x) => ({
+      tileKey: `${x},0`,
+      position: { x, y: 0, z: 0 },
+      groundPassable: true,
+      waterPassable: false,
+      elevation: 0,
+      observedBlocked: false
+    }));
+    const world = {
+      ...base,
+      map: { ...base.map, bounds: { ...base.map.bounds, value: { width: 128, height: 32 } }, constructionCells: cells }
+    };
+    const first = manager.propose(world, fixtureState([squad("squad:scout", "scout", [scout.actorId])]));
+    const updated = first.statePatch?.squadUpdates?.[0];
+    expect(updated?.state).toBe("retreat");
+    if (!updated) throw new Error("Expected updated scout squad");
+    const originalDestination = updated.tactics?.assignedPositions[0]?.position;
+    expect(originalDestination).toEqual({ x: 100, y: 0, z: 0 });
+    const scoutAfterProgress = {
+      ...scout,
+      logicalPosition: { status: "known" as const, value: { x: 90, y: 0, z: 0 }, observedTick: 120 }
+    };
+
+    const second = manager.propose(
+      {
+        ...world,
+        tick: 120,
+        actors: [
+          scoutAfterProgress,
+          { ...pursuer, logicalPosition: { status: "known", value: { x: 98, y: 0, z: 0 }, observedTick: 120 } }
+        ]
+      },
+      fixtureState([
+        {
+          ...updated,
+          tactics: { ...updated.tactics, script: "land_regroup" }
+        }
+      ])
+    );
+
+    expect(second.intents).toContainEqual(
+      expect.objectContaining({ kind: "move", actorIds: [scout.actorId], logicalPosition: originalDestination })
+    );
+  });
+
   it("keeps a defense squad on its committed worker threat instead of switching to a nearer bystander", () => {
     const defender = combatActor("guard", "self", 1, "ground", 1000, { damage: 10 });
     const committedRaider = combatActor("committed-raider", "enemy", 5, "ground", 1000, { damage: 10 });

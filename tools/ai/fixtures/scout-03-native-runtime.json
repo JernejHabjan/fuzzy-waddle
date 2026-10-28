@@ -208,7 +208,7 @@
             },
             {
               "fixtureActorId": "scout-probe",
-              "actorName": "TivaraMacemanMale",
+              "actorName": "TivaraAlchemist",
               "owner": 2,
               "position": {
                 "x": 64,
@@ -238,11 +238,11 @@
             },
             {
               "fixtureActorId": "contact-group",
-              "actorName": "SkaduweeWarriorMale",
+              "actorName": "SkaduweeRangedFemale",
               "owner": 1,
               "position": {
-                "x": -224,
-                "y": 656,
+                "x": -480,
+                "y": 528,
                 "z": 0
               }
             },
@@ -983,7 +983,7 @@
             },
             {
               "fixtureActorId": "scout-probe",
-              "actorName": "SkaduweeWarriorMale",
+              "actorName": "SkaduweeOwl",
               "owner": 2,
               "position": {
                 "x": 64,
@@ -1013,11 +1013,11 @@
             },
             {
               "fixtureActorId": "contact-group",
-              "actorName": "TivaraMacemanMale",
+              "actorName": "TivaraSlingshotFemale",
               "owner": 1,
               "position": {
-                "x": -224,
-                "y": 656,
+                "x": -480,
+                "y": 528,
                 "z": 0
               }
             },

@@ -87,11 +87,14 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
             ))
       ];
   const safeFiringActorIds = new Set(input.safeFiringPositions.map((assignment) => assignment.actorId));
-  const assignedPositions = [
-    ...formationAssignments.filter((assignment) => !safeFiringActorIds.has(assignment.actorId)),
-    ...input.safeFiringPositions
-  ];
   const finalState: AiSquadStateV1["state"] = oscillationCount >= 2 && nextState === "engage" ? "regroup" : nextState;
+  const assignedPositions =
+    finalState === "retreat" && retreat && squad.role === "scout"
+      ? members.map((member) => ({ actorId: member.actorId, position: retreat }))
+      : [
+          ...formationAssignments.filter((assignment) => !safeFiringActorIds.has(assignment.actorId)),
+          ...input.safeFiringPositions
+        ];
   const previousDamageEffectIds = new Set(
     (squad.tactics?.damageReservations ?? [])
       .map((reservation) => reservation.effectId)

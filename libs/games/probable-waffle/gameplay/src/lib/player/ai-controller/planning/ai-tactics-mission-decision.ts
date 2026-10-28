@@ -43,6 +43,10 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
     (estimate.predictedFriendlyLossPermille > 0 &&
       members.filter((actor) => actor.healthPermille?.status === "known" && actor.healthPermille.value <= 250).length >=
         Math.max(1, Math.ceil(members.length / 3)));
+  const scoutUnderFire = members.some(
+    (member) => member.healthPermille?.status === "known" && member.healthPermille.value < 1000
+  );
+  const scoutNeedsSafeWithdrawal = squad.role === "scout" && scoutUnderFire && localEnemies.length > 0 && retreat !== null;
   const safeFiringPositions = selectAiSafeFiringPositions(members, localEnemies, visibleTarget, observation);
   const criticalRangedActorIds = members
     .filter((member) => {
@@ -149,7 +153,9 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
           ? squad.state === "recover" || squad.state === "recovering"
             ? quietState
             : "recover"
-          : criticalRangedThreat
+          : scoutNeedsSafeWithdrawal
+            ? "retreat"
+            : criticalRangedThreat
             ? members.some(
                 (member) =>
                   !criticalRangedActorIds.includes(member.actorId) &&

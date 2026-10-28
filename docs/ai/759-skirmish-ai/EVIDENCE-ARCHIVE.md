@@ -2568,3 +2568,9 @@ Summaries use `node tools/ai/summarize-skirmish-report.mjs --report <path> --fai
 
 - Combined native report `1793167558976-passed.json` passes all eight branches (960 decisions / 19,208 ticks) on candidate `98ef5f5463e5` and fixture `fnv1a32:7a4545ff`. This includes the focused branch changes and corrected zone oracle in one current-source family run.
 - PR #814 is draft; GitHub reported the pull-request runtime jobs skipped. Its state was left unchanged per handoff direction. The combined local runtime matrix supplies the family-level result; CI will provide the automatic regression gate when the PR is ready for review.
+
+# 2026-10-28 — SCOUT-03 physical escape closure
+
+- Captures `1793173019665` / `1793173516436` confirmed the original setup paired equal-speed ground melee units on open terrain. A compiler-only attempt (`1793174009106`) produced no runtime payload. Replacing them with the fast flying scouts and slower anti-air ranged pursuers first exposed that contact remained inside opening vision (`1793174185685`); the contact was then moved outside initial sight.
+- Paired current-source escape diagnostics `1793174367357` (Tivara) and `1793174530861` (Skaduwee) pass. Full report `1793174968627-passed.json` passes both escape and both trapped branches (400 decisions / 8,004 ticks; source `fnv1a32:05a85282`, fixture `fnv1a32:ebc75582`). The shared scout controller assesses attacker damage against scout durability, chooses retreat cells by threat separation and retains a legal retreat waypoint across recovery script changes. The native trip oracle accepts a verified stop at the selected original destination when same-tick replacement closes the movement call.
+- Gameplay suite passes 571/571; native scenario fixture checks pass 42/42; portal development build passes. SCOUT-03 is closed and selected native obligations increase to 9/22. SCOUT-01 parity and SCOUT-02 information-job service remain open.

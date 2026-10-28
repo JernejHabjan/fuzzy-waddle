@@ -24,6 +24,24 @@ describe("combat and scouting scenario contracts", () => {
     expect(safeRetreatPosition(unsafe, state, [scout])).toBeNull();
   });
 
+  it("SCOUT-03 chooses a legal retreat cell that increases distance from visible threats", () => {
+    const scout = combatActor("scout", "self", 3);
+    const enemy = combatActor("pursuer", "enemy", 4, "ground", 1000, { damage: 6 });
+    const world = observation([scout, enemy]);
+    if (!world.map) throw new Error("missing_map");
+    const cells = Array.from({ length: 101 }, (_, x) => ({
+      tileKey: `${x},0`,
+      position: { x, y: 0, z: 0 },
+      groundPassable: true,
+      waterPassable: false,
+      elevation: 0,
+      observedBlocked: false
+    }));
+    const map = { ...world.map, bounds: { ...world.map.bounds, value: { width: 128, height: 32 } }, constructionCells: cells };
+
+    expect(safeRetreatPosition({ ...world, map }, fixtureState([]), [scout])).toEqual({ x: 100, y: 0, z: 0 });
+  });
+
   it("STRAT-13 keeps separate compatible fronts with distinct actors and objectives", () => {
     const a = combatActor("front-a", "self", 1, "ground", 1000, { damage: 100 });
     const b = combatActor("front-b", "self", 20, "ground", 1000, { damage: 100 });

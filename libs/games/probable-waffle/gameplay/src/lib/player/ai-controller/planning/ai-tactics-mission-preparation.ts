@@ -1,7 +1,7 @@
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
 import type { AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
-import { knownPosition, distance, safeRetreatPosition } from "./ai-tactics-geometry";
+import { knownPosition, distance, legalForMembers, safeRetreatPosition } from "./ai-tactics-geometry";
 import { canTarget, canSeeTarget, isEconomicActor, estimateAiEngagementV1, objectiveScore } from "./ai-tactics-combat";
 import {
   AI_TACTICS_TARGET_SWITCH_IMPROVEMENT_PERMILLE,
@@ -14,10 +14,27 @@ import {
 import type { AiTacticsContext } from "./ai-tactics-context";
 import { canPursueAiTacticalObjective } from "./ai-tactics-objective-eligibility";
 
-function isCredibleScoutThreat(enemy: AiObservedActorV1): boolean {
-  if (enemy.combatProfile?.status !== "known") return true;
-  const maxHealth = Math.max(1, enemy.combatProfile.value.maxHealth);
-  return enemy.combatProfile.value.attacks.some((attack) => attack.damage * 20 >= maxHealth);
+function isCredibleThreatToMembers(enemy: AiObservedActorV1, members: readonly AiObservedActorV1[]): boolean {
+  const enemyProfile = enemy.combatProfile;
+  if (enemyProfile?.status !== "known") return true;
+  return members.some((member) => {
+    const memberProfile = member.combatProfile;
+    if (memberProfile?.status !== "known") return true;
+    const maxHealth = Math.max(
+      1,
+      (memberProfile.value.maxHealth * (member.healthPermille?.status === "known" ? member.healthPermille.value : 1000)) /
+        1000
+    );
+    // Treat an attacker as relevant when it could remove a quarter of this member's health in 20 seconds.
+    return enemyProfile.value.attacks.some(
+      (attack) =>
+        attack.damage > 0 &&
+        attack.targetDomains.some((domain) =>
+          member.capabilities.some((capability) => capability.domains.includes(domain))
+        ) &&
+        (attack.damage * 400) / Math.max(1, attack.cooldownTicks) >= maxHealth / 4
+    );
+  });
 }
 
 /** Prepares current members and permitted combat facts. */
@@ -79,7 +96,7 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
     .slice(0, MAX_LOCAL_ENEMIES);
   // Recon units keep searching through harmless contacts; only a credible attacker should interrupt scouting.
   const localEnemies = squad.role === "scout"
-    ? nearbyEnemies.filter(isCredibleScoutThreat)
+    ? nearbyEnemies.filter((enemy) => isCredibleThreatToMembers(enemy, members))
     : nearbyEnemies;
   const sourceNodeId = members[0]?.accessNodeId.status === "known" ? members[0].accessNodeId.value : null;
   const alternatives = visibleEnemies
@@ -129,9 +146,7 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
       (enemy) =>
         canPursueAiTacticalObjective(members, enemy, observation) &&
         enemy.combatProfile?.status === "known" &&
-        (squad.role === "scout"
-          ? isCredibleScoutThreat(enemy)
-          : isCredibleScoutThreat(enemy))
+        isCredibleThreatToMembers(enemy, members)
     )
     .flatMap((enemy) => {
       const enemyPosition = knownPosition(enemy);
@@ -198,7 +213,15 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
     engagementEnemies,
     profile.maxLocalEngagementPairsPerStep
   );
-  const retreat = safeRetreatPosition(observation, state, members);
+  const retainedRetreat =
+    squad.role === "scout" &&
+    ["retreat", "recover"].includes(squad.state)
+      ? squad.tactics?.assignedPositions.find((assignment) => {
+          const member = members.find((candidate) => candidate.actorId === assignment.actorId);
+          return member && legalForMembers(assignment.position, observation, [member]);
+        })?.position
+      : undefined;
+  const retreat = retainedRetreat ?? safeRetreatPosition(observation, state, members);
   return {
     ...context,
     squad,

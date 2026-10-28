@@ -131,8 +131,14 @@ export function nativeScenarioActors(id, own, enemy, branch) {
   if (id === "SCOUT-03" && branch === "trapped" || id === "FIGHT-05" && branch === "disconnected")
     actors.find((entry) => entry.fixtureActorId === "contact-group").position = tile(28, 25);
   if (id === "SCOUT-03" && branch === "escape") {
+    // Exercise an actual scouting escape: the faction's fast flyer outruns the slower ranged
+    // anti-air pursuer. Ground melee units move at the same pace and cannot leave its sight on
+    // the open test map, making that setup an impossible escape premise.
+    actors.find((entry) => entry.fixtureActorId === "scout-probe").actorName =
+      own === "Tivara" ? "TivaraAlchemist" : "SkaduweeOwl";
+    actors.find((entry) => entry.fixtureActorId === "contact-group").actorName = ranged(enemy);
     actors.find((entry) => entry.fixtureActorId === "scout-probe").position = tile(25, 24);
-    actors.find((entry) => entry.fixtureActorId === "contact-group").position = tile(16, 24);
+    actors.find((entry) => entry.fixtureActorId === "contact-group").position = tile(8, 24);
   }
   if (id === "PLACE-01" && branch === "constrained")
     actors.find((entry) => entry.fixtureActorId === "worker-transit").position = tile(34, 30);

@@ -455,9 +455,13 @@ test("SCOUT-03 escape starts with a hidden contact and a real discoverer", () =>
     const branch = binding.branchByVariant[variant.id];
     if (branch !== "escape") continue;
     assert.deepEqual(variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "contact-group")?.position,
-      { x: -224, y: 656, z: 0 });
+      { x: -480, y: 528, z: 0 });
     assert.deepEqual(variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "scout-probe")?.position,
       { x: 64, y: 800, z: 0 });
+    const ownScout = variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "scout-probe");
+    const pursuer = variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "contact-group");
+    assert.equal(ownScout?.actorName, variant.aiFaction === "Tivara" ? "TivaraAlchemist" : "SkaduweeOwl");
+    assert.equal(pursuer?.actorName, variant.aiFaction === "Tivara" ? "SkaduweeRangedFemale" : "TivaraSlingshotFemale");
     assert.ok(variant.presetWorld.controls.some((control) => control.id === "attack-contact-group-200"));
   }
 });

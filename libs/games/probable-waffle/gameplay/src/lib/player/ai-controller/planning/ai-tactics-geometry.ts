@@ -57,7 +57,24 @@ export function safeRetreatPosition(
       .slice(0, MAX_RETREAT_CANDIDATES),
     anchor
   ]);
-  return candidates.find((candidate) => legalForMembers(candidate, observation, members)) ?? null;
+  const legalCandidates = candidates.filter((candidate) => legalForMembers(candidate, observation, members));
+  const visibleThreats = observation.actors.flatMap((actor) => {
+    const position = actor.relation === "enemy" && actor.visibility === "visible" ? knownPosition(actor) : null;
+    return position ? [position] : [];
+  });
+  if (visibleThreats.length === 0) return legalCandidates[0] ?? null;
+  const nearestThreat = (candidate: Vector3Simple) =>
+    Math.min(...visibleThreats.map((threat) => distance(candidate, threat)));
+  const nearestAnchor = (candidate: Vector3Simple) => Math.min(...anchors.map((anchor) => distance(candidate, anchor)));
+  return (
+    legalCandidates.sort(
+      (left, right) =>
+        nearestThreat(right) - nearestThreat(left) ||
+        nearestAnchor(left) - nearestAnchor(right) ||
+        left.x - right.x ||
+        left.y - right.y
+    )[0] ?? null
+  );
 }
 
 export function formationPositions(

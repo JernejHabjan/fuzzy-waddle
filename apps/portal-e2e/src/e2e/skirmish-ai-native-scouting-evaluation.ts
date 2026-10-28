@@ -40,25 +40,73 @@ export function nativeScoutingFairness(context: ReturnType<typeof nativeScenario
 export function nativeScoutTrips(context: ReturnType<typeof nativeScenarioContext>, afterTick = 0) {
   return context.frames.flatMap((frame) => frame.decision.acceptedIntents.flatMap((intent) => {
     if (intent.kind !== "scout" || !intent.planId || frame.tick < afterTick) return [];
-    return intent.actorIds.flatMap((actorId) => context.arrived(actorId, frame.tick).flatMap((movement) => {
-      const executionEffectId = movement.observations[0]?.spatial.caller?.order?.commandContext?.execution.effectId;
+    return intent.actorIds.flatMap((actorId) => {
       const squadId = intent.planId.replace(/^plan:/, "");
       const selectedEffectId = intent.effectId.replace(/^effect:/, "");
-      if (executionEffectId !== selectedEffectId &&
-          !executionEffectId?.startsWith(`stage13:${squadId}:search:${actorId}:`)) return [];
-      const latestSelection = context.frames.flatMap((candidate) => candidate.decision.acceptedIntents
-        .filter((candidateIntent) => candidateIntent.kind === "scout" && candidateIntent.planId === intent.planId &&
-          candidateIntent.actorIds.includes(actorId) && candidate.tick <= movement.started.tick)
-        .map(() => candidate.tick)).at(-1);
-      if (latestSelection !== frame.tick) return [];
-      const arrival = movement.observations.find((entry) => entry.spatial.phase === "arrived");
-      if (!arrival) return [];
-      const unknown = frame.tacticalBoundary?.searchPoints.filter((point) => !point.visible) ?? [];
-      const learned = context.frames.some((later) => later.tick >= arrival.tick && later.tick <= arrival.tick + 40 &&
-        later.tacticalBoundary?.searchPoints.some((point) => point.visible && unknown.some((old) => old.pointId === point.pointId)));
-      return learned ? [{ actorId, selectedTick: frame.tick, arrivalTick: arrival.tick, intent, movement }] : [];
-    }));
+      const movements = [
+        ...context.arrived(actorId, frame.tick).flatMap((movement) => {
+          const executionEffectId = movement.observations[0]?.spatial.caller?.order?.commandContext?.execution.effectId;
+          if (
+            executionEffectId !== selectedEffectId &&
+            !executionEffectId?.startsWith(`stage13:${squadId}:search:${actorId}:`)
+          )
+            return [];
+          const arrival = movement.observations.find((entry) => entry.spatial.phase === "arrived");
+          return arrival ? [{ startedTick: movement.started.tick, arrivalTick: arrival.tick, movement }] : [];
+        }),
+        ...nativeScoutMovesStoppedAtDestination(context, actorId, frame.tick).flatMap((movement) => {
+          const executionEffectId = movement.executionEffectId;
+          return executionEffectId === selectedEffectId ||
+            executionEffectId?.startsWith(`stage13:${squadId}:search:${actorId}:`)
+            ? [{ startedTick: movement.startedTick, arrivalTick: movement.arrivalTick, movement }]
+            : [];
+        })
+      ];
+      return movements.flatMap((movement) => {
+        const latestSelection = context.frames.flatMap((candidate) => candidate.decision.acceptedIntents
+          .filter((candidateIntent) => candidateIntent.kind === "scout" && candidateIntent.planId === intent.planId &&
+            candidateIntent.actorIds.includes(actorId) && candidate.tick <= movement.startedTick)
+          .map(() => candidate.tick)).at(-1);
+        if (latestSelection !== frame.tick) return [];
+        const unknown = frame.tacticalBoundary?.searchPoints.filter((point) => !point.visible) ?? [];
+        const learned = context.frames.some((later) => later.tick >= frame.tick && later.tick <= movement.arrivalTick + 40 &&
+          later.tacticalBoundary?.searchPoints.some((point) => point.visible && unknown.some((old) => old.pointId === point.pointId)));
+        return learned ? [{ actorId, selectedTick: frame.tick, arrivalTick: movement.arrivalTick, intent, movement }] : [];
+      });
+    });
   }));
+}
+
+/** Counts a physically verified stop on the original destination when a same-tick replacement closes the order first. */
+function nativeScoutMovesStoppedAtDestination(
+  context: ReturnType<typeof nativeScenarioContext>,
+  actorId: string,
+  afterTick: number
+) {
+  const groups = new Map<number, typeof context.capture.facts>();
+  for (const fact of context.capture?.facts ?? []) {
+    if (fact.kind !== "spatial_authority" || fact.spatial.kind !== "movement" || fact.tick < afterTick ||
+      fact.spatial.source.actorId !== actorId) continue;
+    const group = groups.get(fact.spatial.executionId) ?? [];
+    group.push(fact);
+    groups.set(fact.spatial.executionId, group);
+  }
+  return [...groups.values()].flatMap((facts) => {
+    const started = facts.find((fact) => fact.spatial.phase === "started");
+    const stopped = facts.find((fact) => fact.spatial.phase === "stopped");
+    if (!started || started.kind !== "spatial_authority" || started.spatial.kind !== "movement" ||
+      !stopped || stopped.kind !== "spatial_authority" || stopped.spatial.kind !== "movement" ||
+      started.spatial.gaps.length || stopped.spatial.gaps.length ||
+      started.spatial.caller?.order?.commandContext?.execution.source !== "ai" ||
+      !started.spatial.originalDestination ||
+      JSON.stringify(started.spatial.originalDestination) !== JSON.stringify(stopped.spatial.actualTile)) return [];
+    return [{
+      startedTick: started.tick,
+      arrivalTick: stopped.tick,
+      executionEffectId: started.spatial.caller.order.commandContext.execution.effectId,
+      movement: { started, stopped }
+    }];
+  });
 }
 
 /** A newly observed target counts as considered even when a higher-priority committed attack remains selected. */

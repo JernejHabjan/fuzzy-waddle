@@ -1,7 +1,7 @@
 import { test as it, expect } from "@playwright/test";
 import { nativeScoutTrips, nativeScoutingObjectiveResponse } from "./skirmish-ai-native-scouting-evaluation";
 
-function contextFor(executionEffectId: string) {
+function contextFor(executionEffectId: string, discoveryTick = 120) {
   const movement = {
     started: { tick: 50 },
     observations: [
@@ -23,7 +23,7 @@ function contextFor(executionEffectId: string) {
         tacticalBoundary: { searchPoints: [{ pointId: "frontier", visible: false }] }
       },
       {
-        tick: 120,
+        tick: discoveryTick,
         decision: { acceptedIntents: [] },
         tacticalBoundary: { searchPoints: [{ pointId: "frontier", visible: true }] }
       }
@@ -38,6 +38,37 @@ it("joins selected scout missions to their native movement and new information",
 
 it("does not join a native arrival from a different scout mission", () => {
   expect(nativeScoutTrips(contextFor("stage13:other-mission"))).toHaveLength(0);
+});
+
+it("counts new geography revealed while the scout is on its physically completed trip", () => {
+  expect(nativeScoutTrips(contextFor("stage13:squad:scout:primary:search:scout:1:1:50", 80))).toHaveLength(1);
+});
+
+it("counts a route that is stopped at its original destination by a same-tick replacement", () => {
+  const executionEffectId = "stage9:scout:question";
+  const movementFact = (phase: "started" | "stopped", tick: number, actualTile: { x: number; y: number }) => ({
+    kind: "spatial_authority",
+    tick,
+    spatial: {
+      kind: "movement",
+      executionId: 7,
+      phase,
+      source: { actorId: "scout" },
+      caller: { order: { commandContext: { execution: { effectId: executionEffectId, source: "ai" } } } },
+      gaps: [],
+      originalDestination: { x: 3, y: 3 },
+      actualTile
+    }
+  });
+  const context = {
+    ...contextFor(executionEffectId),
+    capture: {
+      facts: [movementFact("started", 50, { x: 24, y: 25 }), movementFact("stopped", 100, { x: 3, y: 3 })]
+    },
+    arrived: () => []
+  } as unknown as Parameters<typeof nativeScoutTrips>[0];
+
+  expect(nativeScoutTrips(context)).toHaveLength(1);
 });
 
 it("counts a newly discovered candidate without preempting a committed strategic objective", () => {
