@@ -2575,6 +2575,10 @@ Summaries use `node tools/ai/summarize-skirmish-report.mjs --report <path> --fai
 - Paired current-source escape diagnostics `1793174367357` (Tivara) and `1793174530861` (Skaduwee) pass. Full report `1793174968627-passed.json` passes both escape and both trapped branches (400 decisions / 8,004 ticks; source `fnv1a32:05a85282`, fixture `fnv1a32:ebc75582`). The shared scout controller assesses attacker damage against scout durability, chooses retreat cells by threat separation and retains a legal retreat waypoint across recovery script changes. The native trip oracle accepts a verified stop at the selected original destination when same-tick replacement closes the movement call.
 - Gameplay suite passes 571/571; native scenario fixture checks pass 42/42; portal development build passes. SCOUT-03 is closed and selected native obligations increase to 9/22. SCOUT-01 parity and SCOUT-02 information-job service remain open.
 
+# 2026-10-28 — FIGHT-02 current-source family closure
+
+- Combined report `1793210845150-passed.json` closes all six FIGHT-02 branches (600 decisions / 12,006 ticks) on source `564c499c7ae9` and fixture `fnv1a32:119a13f6`. Tivara and Skaduwee safe-shot, no-heal, and escape branches all pass, including final movement-completion and threat-selection behavior. The prior intermediate full run and focused repairs remain historical; no replay is needed.
+
 # 2026-10-28 — SCOUT-02 scout lease and route diagnosis
 
 - Current-source withdrawn diagnostic `1793209192962-diagnostic_failed.json` (candidate `ee893cf7d3ff`, fixture `fnv1a32:0b7b07f6`, 120 decisions / 2,401 ticks) reproduced the physical trip and stale-job service failures. Scout intents were rejected as `claim_conflict` after the first accepted move. Actor-claim renewal allowed same-plan scout intents to replace that plan's provisional actor lease; focused gameplay tests passed and the full suite passed 572/572.

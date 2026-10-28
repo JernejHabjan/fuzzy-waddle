@@ -24,13 +24,9 @@ six contacts entered ranked alternatives within 400 ticks and took later AI-caus
 FIGHT-01 passes all eight native branches in `1793088416093-passed.json` (960 decisions / 19,208 ticks). The captured
 runtime source is `441d72399` with fixture digest `fnv1a32:13bf9dd1`; the outer report was finalized after a documentation-only
 commit. The evaluator follows native attack-commit behavior and excludes irrelevant long-horizon resource coverage.
-FIGHT-02 has verified 40% health starts. Full intermediate report `1793116679167-failed.json` ran all six branches;
-three passed and three lacked a useful shot. Subsequent tactical changes produced passing targeted reports for Tivara
-safe-shot (`1793129389033`), Skaduwee no-heal (`1793129537049`) and Skaduwee escape (`1793130261723`). The first two
-predate the final movement-completion and threat-selection changes, so these captures do not close the full family.
-The current source keeps safe firing positions, lets moves finish before replacing them, and directs nearby allies at
-credible threats to wounded ranged units. Gameplay tests pass 566/566 and the production portal build passes. The
-current-source six-branch gate is left to the existing CI runtime matrix.
+FIGHT-02 has verified 40% health starts. Current-source report `1793210845150-passed.json` closes all six branches
+(600 decisions / 12,006 ticks) on source `564c499c7` and fixture `fnv1a32:119a13f6`. Safe firing positions, movement
+completion, and directing nearby allies at credible threats to wounded ranged units all hold across both factions.
 
 FIGHT-03's revised unequal/loss fixture has a durable valuable main building, an isolated lower-value producer and six
 additional compatible reinforcements; the loss occurs at tick 400 while the main building exists. Tivara unequal passes
@@ -90,7 +86,7 @@ branch evidence, not the recipe's three-run certification.
 
 | Package | Remaining work |
 | --- | --- |
-| 3 — scouting, combat, access | DOMAIN-01/05/06, SCOUT-03/04, FIGHT-01/05 pass. FIGHT-02 outcome oracles pass; recovery exclusion and retreat-order hysteresis await six-variant recheck. FIGHT-03 and RAID-01/02 remain open; FIGHT-04 passes its full eight-branch current-source matrix locally. DOMAIN-02's two negative controls and INTERCEPT pass; COAST pays for a ship but leaves it in reserve, and ESCORT reaches row 32 but fails its paid fleet objective effect. SCOUT-01 parity and SCOUT-02 parity/job service remain. Seven real-peer obligations remain CI-owned. STRAT-09 needs grouped final recheck after affected changes. |
+| 3 — scouting, combat, access | DOMAIN-01/05/06, SCOUT-03/04, FIGHT-01/02/05 pass. FIGHT-03 and RAID-01/02 remain open; FIGHT-04 passes its full eight-branch current-source matrix locally. DOMAIN-02's two negative controls and INTERCEPT pass; COAST pays for a ship but leaves it in reserve, and ESCORT reaches row 32 but fails its paid fleet objective effect. SCOUT-01 parity and SCOUT-02 native trip/service remain. Seven real-peer obligations remain CI-owned. STRAT-09 needs grouped final recheck after affected changes. |
 | 4 — placement, walls, recovery | PLACE/EXP/WALL and H recovery cases; PLACE-03 transit/clearance and H-11 route/capture remain known failures. |
 | 5 — authority and lifecycle | H-10 over-capacity variants, H-06/07, H-08/09 peer evidence, H-14/15 remaining branches, H-31/32, M11, #819/#823. |
 | 6 — continuous play and difficulty | SEQ-02 and supported SEQ/D cases. D-06 legacy comparison remains explicitly unsupported. |
