@@ -2609,6 +2609,7 @@ Summaries use `node tools/ai/summarize-skirmish-report.mjs --report <path> --fai
 - Attempt `1793221495087-failed.json` reached 0 decisions / 0 ticks. It is not a behavior verdict: the unfinished producer at tile (19,27) overlapped the enemy WorkMill at (17,28), causing native construction setup to reject `contact-group`.
 - Moved the unfinished branch's WorkMill to the known clear tile (12,36), leaving the bound builder near its site. Added both-faction fixture assertions, regenerated the RAID-01 runtime fixture, and included native outcome reason/detail in future construction setup errors.
 - Targeted native fixture suite passes 44/44; scoped ESLint passes. Next is one current-source `raid-01-tivara-unfinished` retry, capped at 30 minutes. No replay of the passed workers/expansion branches.
+- Retry `1793221894502-diagnostic_passed.json` passes at 120 decisions / 2,401 ticks, source `c2d4dcf0149d4ac03df512830c69a62e9624a3e4`, fixture `fnv1a32:f40ea582`. Native preset capture confirms `InfantryInn` was created through the normal constructor command with the bound builder. Next is the Tivara protected branch.
 
 # 2026-10-28 — SCOUT-02 scout lease and route diagnosis
 
