@@ -2583,6 +2583,7 @@ Summaries use `node tools/ai/summarize-skirmish-report.mjs --report <path> --fai
 
 - Full report `1793211612520-failed.json` (five of six variants, 600 decisions / 12,005 ticks; fixture `fnv1a32:7db10b2b`) shows both unequal valuable fronts were nearly destroyed by tick 399, and Tivara infeasible's loss event then addressed an already missing actor. Skaduwee equal routed its bounded raid squad to an unrelated WorkMill/noise contact instead of the second authored front.
 - Fixture update moves non-equal valuable fronts farther from the initial army while keeping them observed, confines equal fronts to separated observed sites, and removes unrelated economy/noise targets from FIGHT-03. It regenerates `fight-03-native-runtime.json`; fixture structural tests pass 42/42. Current-fixture focused passes: Tivara infeasible `1793212061756`, Skaduwee equal `1793212437251`, Tivara unequal `1793212603730`, Skaduwee unequal `1793212773341` (fixture `fnv1a32:dd74d4f1`). The current six-branch family run remains.
+- Combined current-source report `1793213533338-passed.json` closes all six branches (720 decisions / 14,406 ticks) on candidate `c66712f4b0ed` and fixture `fnv1a32:dd74d4f1`. The corrected event boundary survives in both infeasible branches, both unequal escalation controls pass, and both equal controls register independent physically useful fronts.
 
 # 2026-10-28 — SCOUT-02 scout lease and route diagnosis
 

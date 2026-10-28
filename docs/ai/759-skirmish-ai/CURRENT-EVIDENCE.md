@@ -30,12 +30,11 @@ completion, and directing nearby allies at credible threats to wounded ranged un
 
 FIGHT-03's revised unequal/loss fixture has a durable valuable main building, an isolated lower-value producer and six
 additional compatible reinforcements. Full current-source report `1793211612520-failed.json` found the valuable
-building died just before the authored tick-400 loss/escalation event, making its control invalid; equal fronts also
-competed with unrelated economic/noise targets. The refreshed fixture preserves the valuable front to the event,
-keeps equal fronts separated and observed, and removes unrelated economic/noise distractors. Fixture checks pass
-42/42. Targeted current-fixture Tivara infeasible, Skaduwee equal, and both unequal branches pass reports
-`1793212061756`, `1793212437251`, `1793212603730`, and `1793212773341` on `fnv1a32:dd74d4f1`; the six-branch family
-still needs one current-fixture run.
+building died just before the authored tick-400 loss/escalation event and equal fronts competed with unrelated
+targets. The refreshed fixture preserves the valuable front to the event, keeps equal fronts separated and observed,
+and removes unrelated economy/noise targets. Fixture checks pass 42/42. Targeted branches pass reports
+`1793212061756`, `1793212437251`, `1793212603730`, and `1793212773341`; current-source family report
+`1793213533338-passed.json` closes all six branches (720 decisions / 14,406 ticks) on fixture `fnv1a32:dd74d4f1`.
 
 FIGHT-04 Tivara HealingRain passes targeted report `1793133499341-diagnostic_passed.json` (source
 `fnv1a32:816f98f7`, fixture `fnv1a32:4c6933e5`); periodic status refresh preserves its tick clock and capture records
@@ -77,6 +76,7 @@ branch evidence, not the recipe's three-run certification.
 - SCOUT-03 is closed on all four current-source branches: both trapped and both physical escape branches pass.
 - SCOUT-04 is closed on all six retained branches: contact consideration occurs within 400 ticks and each branch has later AI-caused native damage.
 - FIGHT-01 is closed on all eight native branches: favorable combat, changed-risk regrouping, and the quiet continued-fight control pass.
+- FIGHT-02 and FIGHT-03 are closed on all six current-source branches each. FIGHT-03 combined report `1793213533338-passed.json` uses the corrected two-front and tick-400 loss fixture.
 - FIGHT-04 and FIGHT-05 are closed across all eight native branches each; FIGHT-04 combined report `1793167558976-passed.json` passes 960 decisions / 19,208 ticks on current source. FIGHT-05 uses retained wall evidence and focused current-fixture runs for target-loss, status and disconnected setups.
 - Selected native obligations: **9/22 closed** (STRAT-05, STRAT-02, STRAT-03, STRAT-04, SCOUT-03, SCOUT-04, FIGHT-01, FIGHT-04 and FIGHT-05); 13 remain. Partial branch evidence does not close a family.
 - Supported registration remains complete: pure 111/111 and native definitions/runtime recipes 115/115. These are
