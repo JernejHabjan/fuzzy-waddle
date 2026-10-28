@@ -66,13 +66,13 @@ Skaduwee workers reports `1793222587736`, `1793223149911`, and `1793223401387` e
 Skaduwee expansion's both-faction fixture invariants pass (focused RAID-01 fixture tests 4/4). Current-source diagnostic `1793223863135-diagnostic_passed.json` passes (120 decisions / 2,401 ticks; candidate `09c758a03`, fixture `fnv1a32:a2f2b6ec`, 123s runtime, no AI errors). Next is `raid-01-skaduwee-unfinished`.
 Skaduwee unfinished passes its both-faction setup check. Current-source diagnostic `1793224074051-diagnostic_passed.json` passes (120 decisions / 2,401 ticks; candidate `3d2a56fb6`, fixture `fnv1a32:a2f2b6ec`, 134s runtime, no AI errors). Next is `raid-01-skaduwee-protected`.
 Skaduwee protected diagnostic `1793224250744-diagnostic_failed.json` found seven of eight defenders overlapping the WorkMill footprint. Moving all eight to distinct clear approach tiles made them visible from tick 20 and prevented raid selection. Synchronized-fixture run `1793224685412-diagnostic_failed.json` fails only the main-pressure oracle: the primary selected the enemy core and caused 33 native damage events at ticks 2110–2399, while only authored front targets were accepted. The evaluator now accepts the enemy core as main-force continuation; the focused evaluator regression passes 4/4, RAID-01 fixture checks pass, gameplay offense suite passes 572/572, and scoped ESLint passes. Recheck only Skaduwee protected.
-Skaduwee protected final diagnostic `1793224976887-diagnostic_passed.json` passes (120 decisions / 2,401 ticks; candidate `098a99865`, fixture `fnv1a32:164d5d1c`), with no dedicated raid and 33 primary native hits against the enemy core from ticks 2110–2399. All eight RAID-01 branches have targeted passing evidence; combined registered matrix remains CI-owned. Next is RAID-02 repetition 2.
+Skaduwee protected final diagnostic `1793224976887-diagnostic_passed.json` passes (120 decisions / 2,401 ticks; candidate `098a99865`, fixture `fnv1a32:164d5d1c`), with no dedicated raid and 33 primary native hits against the enemy core from ticks 2110–2399. All eight RAID-01 branches have targeted passing evidence; combined registered matrix remains CI-owned.
 
-RAID-02 repetitions 2 and 3 pass current source: `1793225177965-diagnostic_passed.json` (source `cfcb52cd2`) and
-`1793225333930-diagnostic_passed.json` (source `11f8e1c4f`), each with fixture `fnv1a32:ba424ce1`, 600 decisions /
-12,000 ticks, match win, delivered income and post-raid redirection; repetition 3 retains three raiders. Repetition 1
-passes on older source `d14166375288` (`1793104113441-diagnostic_passed.json`), but offensive-selection and tactics
-code changed since; recheck repetition 1 only on current source before closing the recipe.
+All three RAID-02 repetitions pass current source: `1793225531829-diagnostic_passed.json` (1),
+`1793225177965-diagnostic_passed.json` (2), and `1793225333930-diagnostic_passed.json` (3); each uses fixture
+`fnv1a32:ba424ce1`, reaches 600 decisions / 12,000 ticks, wins, delivers income and passes post-raid redirection.
+Repetition 3 retains three raiders. The original repetition-1 report `1793104113441` was superseded because offensive
+selection and tactics changed; the current-source recheck passes at candidate `0ede4fd46`.
 
 ## Validated outcomes
 
@@ -90,7 +90,7 @@ code changed since; recheck repetition 1 only on current source before closing t
 - FIGHT-01 is closed on all eight native branches: favorable combat, changed-risk regrouping, and the quiet continued-fight control pass.
 - FIGHT-02 and FIGHT-03 are closed on all six current-source branches each. FIGHT-03 combined report `1793213533338-passed.json` uses the corrected two-front and tick-400 loss fixture.
 - FIGHT-04 and FIGHT-05 are closed across all eight native branches each; FIGHT-04 combined report `1793167558976-passed.json` passes 960 decisions / 19,208 ticks on current source. FIGHT-05 uses retained wall evidence and focused current-fixture runs for target-loss, status and disconnected setups.
-- Selected native obligations: **9/22 closed** (STRAT-05, STRAT-02, STRAT-03, STRAT-04, SCOUT-03, SCOUT-04, FIGHT-01, FIGHT-04 and FIGHT-05); 13 remain. Partial branch evidence does not close a family.
+- Selected native obligations: **10/22 closed** (STRAT-05, STRAT-02, STRAT-03, STRAT-04, SCOUT-03, SCOUT-04, FIGHT-01, FIGHT-04, FIGHT-05 and RAID-02); 12 remain. RAID-01's eight targeted branch passes await its CI-owned combined registered matrix. Partial branch evidence does not close a family.
 - Supported registration remains complete: pure 111/111 and native definitions/runtime recipes 115/115. These are
   authoring coverage, not behavior completion. Overall behavior percentage is unavailable until the existing evidence is
   reconciled across all supported rows.
@@ -99,7 +99,7 @@ code changed since; recheck repetition 1 only on current source before closing t
 
 | Package | Remaining work |
 | --- | --- |
-| 3 — scouting, combat, access | DOMAIN-01/05/06, SCOUT-03/04, FIGHT-01/02/05 pass. FIGHT-03 and RAID-01/02 remain open; FIGHT-04 passes its full eight-branch current-source matrix locally. DOMAIN-02's two negative controls and INTERCEPT pass; COAST pays for a ship but leaves it in reserve, and ESCORT reaches row 32 but fails its paid fleet objective effect. SCOUT-01 parity and SCOUT-02 native trip/service remain. Seven real-peer obligations remain CI-owned. STRAT-09 needs grouped final recheck after affected changes. |
+| 3 — scouting, combat, access | DOMAIN-01/05/06, SCOUT-03/04, FIGHT-01/02/03/04/05 and RAID-02 pass. All RAID-01 targeted branches pass; its combined registered matrix remains CI-owned. DOMAIN-02's two negative controls and INTERCEPT pass; COAST pays for a ship but leaves it in reserve, and ESCORT reaches row 32 but fails its paid fleet objective effect. SCOUT-01 hidden-pair parity and SCOUT-02 native trip/service remain. Seven real-peer obligations remain CI-owned. STRAT-09 needs grouped final recheck after affected changes. |
 | 4 — placement, walls, recovery | PLACE/EXP/WALL and H recovery cases; PLACE-03 transit/clearance and H-11 route/capture remain known failures. |
 | 5 — authority and lifecycle | H-10 over-capacity variants, H-06/07, H-08/09 peer evidence, H-14/15 remaining branches, H-31/32, M11, #819/#823. |
 | 6 — continuous play and difficulty | SEQ-02 and supported SEQ/D cases. D-06 legacy comparison remains explicitly unsupported. |
