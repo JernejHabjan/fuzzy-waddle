@@ -1100,8 +1100,8 @@
               "actorName": "WorkMill",
               "owner": 1,
               "position": {
-                "x": -320,
-                "y": 736,
+                "x": -736,
+                "y": 784,
                 "z": 0
               }
             },
@@ -2708,8 +2708,8 @@
               "actorName": "WorkMill",
               "owner": 1,
               "position": {
-                "x": -320,
-                "y": 736,
+                "x": -736,
+                "y": 784,
                 "z": 0
               }
             },

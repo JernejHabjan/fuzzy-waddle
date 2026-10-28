@@ -121,6 +121,10 @@ export function nativeScenarioActors(id, own, enemy, branch) {
     actors.find((entry) => entry.fixtureActorId === "enemy-source").position = tile(14, 41);
     actors.find((entry) => entry.fixtureActorId === "noise-scout").actorName = melee(enemy);
   }
+  if (id === "RAID-01" && branch === "unfinished") {
+    // Keep the seeded producer's footprint clear while its real builder remains adjacent.
+    actors.find((entry) => entry.fixtureActorId === "enemy-deposit").position = tile(12, 36);
+  }
   if (["STRAT-13", "FIGHT-03"].includes(id)) {
     if (id === "FIGHT-03") {
       // This case measures only its two authored fronts; unrelated economy targets would consume the bounded raid slot.

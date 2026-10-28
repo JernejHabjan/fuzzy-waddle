@@ -60,6 +60,21 @@ test("RAID-01 remote expansion fixture staffs the actual raid deposit", () => {
   }
 });
 
+test("RAID-01 unfinished producer clears the enemy deposit while keeping a nearby builder", () => {
+  const fixture = nativeScenarioFixture("RAID-01");
+  for (const faction of ["tivara", "skaduwee"]) {
+    const variant = fixture.recipe.variants.find((candidate) => candidate.id === `raid-01-${faction}-unfinished`);
+    assert.ok(variant);
+    const actors = new Map(variant.presetWorld.actors.map((actor) => [actor.fixtureActorId, actor]));
+    const site = variant.presetWorld.constructionOrders.find((order) => order.fixtureActorId === "contact-group");
+    assert.deepEqual(site?.position, { x: -224, y: 752, z: 0 });
+    assert.deepEqual(actors.get("enemy-deposit")?.position, { x: -736, y: 784, z: 0 });
+    assert.deepEqual(actors.get("enemy-worker")?.position, { x: -352, y: 784, z: 0 });
+    assert.deepEqual(actors.get("enemy-source")?.position, { x: -448, y: 800, z: 0 });
+    assert.deepEqual(site?.builderFixtureActorIds, ["enemy-worker"]);
+  }
+});
+
 test("STRAT-05 blocked-retreat keeps a forward target on the attack side of the homeward barrier", () => {
   const fixture = nativeScenarioFixture("STRAT-05");
   const variant = fixture.recipe.variants.find((candidate) => candidate.id === "strat-05-tivara-blocked-retreat");

@@ -76,7 +76,10 @@ export function applyAiRuntimeConstructionOrders(
         !getActorComponent(site, ConstructionSiteComponent) ||
         getActorComponent(site, OwnerComponent)?.getOwner() !== owner ||
         applied.some((outcome) => outcome.kind === "failed" || outcome.kind === "rejected")) {
-      throw new Error(`runtime_construction_not_applied:${order.fixtureActorId}`);
+      const rejection = applied.find((outcome) => outcome.kind === "failed" || outcome.kind === "rejected");
+      const reason = rejection ? `${rejection.kind}:${rejection.reason}${rejection.detail ? `:${rejection.detail}` : ""}`
+        : "missing_or_ambiguous_site";
+      throw new Error(`runtime_construction_not_applied:${order.fixtureActorId}:${reason}`);
     }
     const siteActorId = getActorComponent(site, IdComponent)?.id;
     if (!siteActorId || beforeIds.has(siteActorId) || Object.values(actorIds).includes(siteActorId) ||

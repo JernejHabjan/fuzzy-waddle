@@ -2604,6 +2604,12 @@ Summaries use `node tools/ai/summarize-skirmish-report.mjs --report <path> --fai
 - Fixture update moves non-equal valuable fronts farther from the initial army while keeping them observed, confines equal fronts to separated observed sites, and removes unrelated economy/noise targets from FIGHT-03. It regenerates `fight-03-native-runtime.json`; fixture structural tests pass 42/42. Current-fixture focused passes: Tivara infeasible `1793212061756`, Skaduwee equal `1793212437251`, Tivara unequal `1793212603730`, Skaduwee unequal `1793212773341` (fixture `fnv1a32:dd74d4f1`). The current six-branch family run remains.
 - Combined current-source report `1793213533338-passed.json` closes all six branches (720 decisions / 14,406 ticks) on candidate `c66712f4b0ed` and fixture `fnv1a32:dd74d4f1`. The corrected event boundary survives in both infeasible branches, both unequal escalation controls pass, and both equal controls register independent physically useful fronts.
 
+# 2026-10-28 — RAID-01 unfinished-site setup repair
+
+- Attempt `1793221495087-failed.json` reached 0 decisions / 0 ticks. It is not a behavior verdict: the unfinished producer at tile (19,27) overlapped the enemy WorkMill at (17,28), causing native construction setup to reject `contact-group`.
+- Moved the unfinished branch's WorkMill to the known clear tile (12,36), leaving the bound builder near its site. Added both-faction fixture assertions, regenerated the RAID-01 runtime fixture, and included native outcome reason/detail in future construction setup errors.
+- Targeted native fixture suite passes 44/44; scoped ESLint passes. Next is one current-source `raid-01-tivara-unfinished` retry, capped at 30 minutes. No replay of the passed workers/expansion branches.
+
 # 2026-10-28 — SCOUT-02 scout lease and route diagnosis
 
 - Current-source withdrawn diagnostic `1793209192962-diagnostic_failed.json` (candidate `ee893cf7d3ff`, fixture `fnv1a32:0b7b07f6`, 120 decisions / 2,401 ticks) reproduced the physical trip and stale-job service failures. Scout intents were rejected as `claim_conflict` after the first accepted move. Actor-claim renewal allowed same-plan scout intents to replace that plan's provisional actor lease; focused gameplay tests passed and the full suite passed 572/572.
