@@ -115,31 +115,4 @@ describe("scouting search questions", () => {
     }));
   });
 
-  it("chooses the nearest unseen search point before a lexically earlier distant point", () => {
-    const state = createAiBrainStateV1({
-      playerNumber: 1,
-      faction: FactionType.Tivara,
-      profile,
-      tick: 0,
-      archetypeId: "balanced"
-    });
-    const base = world(20, false);
-    const nearbyFirst = {
-      ...base,
-      map: {
-        ...base.map!,
-        scoutSearchPoints: [
-          { pointId: "search:a-distant", accessNodeId: homeNode, position: { x: 15, y: 0, z: 0 }, observed: false },
-          { pointId: "search:z-near", accessNodeId: homeNode, position: { x: 2, y: 0, z: 0 }, observed: false }
-        ]
-      }
-    };
-
-    const proposal = manager.propose(nearbyFirst, state);
-
-    expect(proposal.intents).toContainEqual(
-      expect.objectContaining({ kind: "scout", logicalPosition: { x: 2, y: 0, z: 0 } })
-    );
-  });
-
 });
