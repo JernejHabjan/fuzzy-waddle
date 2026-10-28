@@ -56,7 +56,15 @@ RAID-01's corrected evaluator uses each branch's authored economic target. Tivar
 `1793131490146-diagnostic_passed.json` passes after the FIGHT-03 allocation changes (base `a2ea0a990`, dirty digest
 `fnv1a32:fbaa668e`, fixture `fnv1a32:fba3bb14`); the reserve-first raid and primary pressure both produce native effects.
 Full eight-variant attempt `dca87acce` was interrupted after >34 minutes without runtime payload, so it yields no branch
-verdict. The earlier selected report `1793076386234-failed.json` contains no RAID-02 row; that focused native variant still
+verdict. The later current-source eight-variant attempt ran about 70 minutes and was stopped when the user set a
+30-minute local cap; it also produced no runtime payload or branch verdict. Static audit found the oracle accepted any
+small attack squad as a raid, did not reject a small raid against the protected control, and mapped the unfinished
+construction site to a separate built producer. The evaluator now requires a dedicated raid squad, attributes damage to
+its members, checks disjoint main-objective pressure, rejects every protected-target raid, and maps unfinished to the
+authored construction role. Its focused spec passes 15/15 and scoped ESLint passes. The current offense/fixture review
+did not justify a gameplay change without branch evidence. Next run only the current-source Tivara workers diagnostic;
+fix any observed behavior failure before another native invocation. CI owns the combined family gate. The earlier selected report
+`1793076386234-failed.json` contains no RAID-02 row; that focused native variant still
 needs an actual runtime capture. One RAID-02 repetition now passes on `d14166375288`: report
 `1793104113441-diagnostic_passed.json` records the variant as PASS at its 12,000-tick checkpoint, with a match win,
 three raid attackers, 2,875 damage, and the evaluator's post-raid redirection predicate satisfied. This is targeted

@@ -16,6 +16,12 @@
 - Full RAID-01 attempt on `dca87acce` was interrupted after more than 34 minutes with only `runtime.json.request.json` and no runtime payload or report. It provides no branch verdict and will not be repeated unchanged. The separate selected report `1793076386234-failed.json` contains DOMAIN-01/02/05/06 only; despite using the shared fixture, it has no RAID-02 execution or result.
 - Targeted RAID-02 report `1793104113441-diagnostic_passed.json` on `d14166375288` completes one repetition (600 decisions / 12,000 ticks, about 100 seconds). The row passes at the checkpoint with match result `win`, raid=3, and the post-raid redirection assertion. This is one branch diagnostic; the authored three-run recipe remains incomplete.
 
+## 2026-10-28 — RAID-01 bounded-run policy and oracle correction
+
+- Current-source eight-variant attempt used request directory `run-pFsVn9`; after about 70 minutes the user set a 30-minute maximum per local runtime invocation, so the process was stopped. The directory contains only `runtime.json.request.json`; there is no runtime payload/report and no branch verdict. Do not repeat the combined family locally.
+- Static review found the RAID-01 oracle counted any attack squad of up to four actors as the limited raid, even if it was the primary mission. It also did not reject a small raid on the protected control and mapped the unfinished construction site's `contact-group` ID to a separate built `enemy-producer`. The oracle now requires `squad:attack:raid:` membership, attributes useful damage to raid actors, checks disjoint main-objective squad pressure, rejects any protected-target raid, and maps unfinished to `contact-group`. Focused oracle tests pass 15/15; scoped ESLint passes. This corrects acceptance evidence only; native behavior remains unverified on current source.
+- Review of the four branch setups and current offense policy found no supported gameplay edit without branch evidence. Next: rerun only the Tivara workers diagnostic with the corrected oracle; any behavior failure must be repaired before another native invocation. Every local runtime invocation is capped at 30 minutes; combined family coverage remains CI-owned.
+
 Historical snapshots through 2026-10-27. This file preserves detailed diagnostic notes from earlier checkpoints; it may
 contain superseded observations and next actions. Use HANDOFF.md and CURRENT-EVIDENCE.md for the active status.
 

@@ -9,10 +9,64 @@ import { evaluateNativeCombat, nativeRaidTargetRole, nativeSummonExpired, native
 it.describe("RAID-01 native target roles", () => {
   it("checks the authored economic target for each raid branch", () => {
     expect(["workers", "expansion", "unfinished", "protected"].map(nativeRaidTargetRole)).toEqual([
-      "enemy-worker", "enemy-deposit", "enemy-producer", "contact-group"
+      "enemy-worker", "enemy-deposit", "contact-group", "contact-group"
     ]);
   });
+
+  it("requires a dedicated raid squad to earn limited-harassment evidence", () => {
+    const context = raidContext("squad:attack:primary", "worker");
+
+    expect(evaluateNativeCombat("RAID-01", "workers", context as never)).toContain(
+      "raid_limited_suitable_squad_has_no_native_harassment"
+    );
+    expect(evaluateNativeCombat("RAID-01", "workers", raidContext("squad:attack:raid:worker", "worker") as never))
+      .toEqual([]);
+  });
+
+  it("rejects any dedicated raid against the protected control target", () => {
+    expect(evaluateNativeCombat("RAID-01", "protected",
+      raidContext("squad:attack:raid:contact", "contact") as never)).toContain(
+        "raid_protected_control_selected_for_harassment"
+      );
+  });
 });
+
+function raidContext(raidSquadId: string, raidTargetId: "worker" | "contact") {
+  const weapon = {
+    weaponType: "test-sword", minRange: 0, range: 1, damage: 5, damageType: 0, cooldown: 1000,
+    delays: { fire: 0, hit: 50 }, projectile: null, canTargetAir: false
+  };
+  const hit = (actorId: string, targetId: string, targetName: string, tick: number, sequence: number) => {
+    const attack = (kind: "attack_requested" | "attack_committed") => ({
+      sequence: sequence + (kind === "attack_committed" ? 1 : 0), tick, playerNumber: 2, kind: "native_combat",
+      operation: {
+        kind, actor: { actorId, playerNumber: 2, alive: true, indexed: true },
+        target: { actorId: targetId, objectName: targetName, playerNumber: 1 },
+        weapon, distance: 1, highGroundRangeBonus: 0, targetFlying: false, stunned: false,
+        clockTick: tick, sceneActive: true, snapshotRestoreInProgress: false, gaps: []
+      }
+    });
+    return [attack("attack_requested"), attack("attack_committed"), {
+      sequence: sequence + 2, tick: tick + 1, playerNumber: 1, kind: "native_damage",
+      damage: {
+        initiator: { actorId, playerNumber: 2 }, target: { actorId: targetId, objectName: targetName, playerNumber: 1 },
+        targetInCaptureScene: true, initiatorInCaptureScene: true, amount: 5, damageType: 0,
+        healthAfter: 95, armourAfter: 0, damageTick: tick + 1, sceneActive: true, snapshotRestoreInProgress: false
+      }
+    }];
+  };
+  const raiderId = "raider";
+  return {
+    roles: { "enemy-worker": "worker", "contact-group": "contact", "front-target-a": "main-objective" },
+    facts: [...hit(raiderId, "worker", "SkaduweeWorkerMale", 10, 1),
+      ...hit("main-army", "main-objective", "Sandhold", 20, 4)],
+    frames: [{ tick: 10, decision: { input: { capabilityCatalog: { entries: [] } }, missionState: { squads: [
+      { squadId: raidSquadId, role: "attack", actorIds: [raiderId], tactics: { targetActorId: raidTargetId } },
+      { squadId: "squad:attack:primary", role: "attack", actorIds: ["main-army"], tactics: { targetActorId: "main-objective" } }
+    ] } } }],
+    arrived: (actorId: string) => actorId === raiderId ? [{}] : []
+  };
+}
 
 it.describe("FIGHT-05 target-loss timing", () => {
   it("uses the applied native loss event tick instead of assuming tick 400", () => {
