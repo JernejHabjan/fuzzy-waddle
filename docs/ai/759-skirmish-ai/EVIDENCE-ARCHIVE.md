@@ -2579,6 +2579,11 @@ Summaries use `node tools/ai/summarize-skirmish-report.mjs --report <path> --fai
 
 - Combined report `1793210845150-passed.json` closes all six FIGHT-02 branches (600 decisions / 12,006 ticks) on source `564c499c7ae9` and fixture `fnv1a32:119a13f6`. Tivara and Skaduwee safe-shot, no-heal, and escape branches all pass, including final movement-completion and threat-selection behavior. The prior intermediate full run and focused repairs remain historical; no replay is needed.
 
+# 2026-10-28 — FIGHT-03 current-source fixture repair
+
+- Full report `1793211612520-failed.json` (five of six variants, 600 decisions / 12,005 ticks; fixture `fnv1a32:7db10b2b`) shows both unequal valuable fronts were nearly destroyed by tick 399, and Tivara infeasible's loss event then addressed an already missing actor. Skaduwee equal routed its bounded raid squad to an unrelated WorkMill/noise contact instead of the second authored front.
+- Fixture update moves non-equal valuable fronts farther from the initial army while keeping them observed, confines equal fronts to separated observed sites, and removes unrelated economy/noise targets from FIGHT-03. It regenerates `fight-03-native-runtime.json`; fixture structural tests pass 42/42. Current-fixture focused passes: Tivara infeasible `1793212061756`, Skaduwee equal `1793212437251`, Tivara unequal `1793212603730`, Skaduwee unequal `1793212773341` (fixture `fnv1a32:dd74d4f1`). The current six-branch family run remains.
+
 # 2026-10-28 — SCOUT-02 scout lease and route diagnosis
 
 - Current-source withdrawn diagnostic `1793209192962-diagnostic_failed.json` (candidate `ee893cf7d3ff`, fixture `fnv1a32:0b7b07f6`, 120 decisions / 2,401 ticks) reproduced the physical trip and stale-job service failures. Scout intents were rejected as `claim_conflict` after the first accepted move. Actor-claim renewal allowed same-plan scout intents to replace that plan's provisional actor lease; focused gameplay tests passed and the full suite passed 572/572.

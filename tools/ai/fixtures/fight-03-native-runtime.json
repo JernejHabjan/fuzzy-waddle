@@ -338,42 +338,12 @@
               }
             },
             {
-              "fixtureActorId": "enemy-deposit",
-              "actorName": "WorkMill",
-              "owner": 1,
-              "position": {
-                "x": -320,
-                "y": 736,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "enemy-source",
-              "actorName": "Tree1",
-              "owner": null,
-              "position": {
-                "x": -448,
-                "y": 800,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "enemy-worker",
-              "actorName": "SkaduweeWorkerMale",
-              "owner": 1,
-              "position": {
-                "x": -352,
-                "y": 784,
-                "z": 0
-              }
-            },
-            {
               "fixtureActorId": "front-target-a",
               "actorName": "FrostForge",
               "owner": 1,
               "position": {
-                "x": 160,
-                "y": 592,
+                "x": 512,
+                "y": 416,
                 "z": 0
               }
             },
@@ -384,16 +354,6 @@
               "position": {
                 "x": 160,
                 "y": 1296,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "noise-scout",
-              "actorName": "SkaduweeWorkerMale",
-              "owner": 1,
-              "position": {
-                "x": 288,
-                "y": 400,
                 "z": 0
               }
             },
@@ -522,8 +482,8 @@
               "actorName": "TivaraMacemanMale",
               "owner": 2,
               "position": {
-                "x": 192,
-                "y": 736,
+                "x": 416,
+                "y": 528,
                 "z": 0
               }
             },
@@ -676,13 +636,7 @@
             }
           ],
           "events": [],
-          "initialOrders": [
-            {
-              "workerFixtureActorId": "enemy-worker",
-              "sourceFixtureActorId": "enemy-source",
-              "kind": "gather"
-            }
-          ],
+          "initialOrders": [],
           "terrainPatches": []
         }
       },
@@ -965,42 +919,12 @@
               }
             },
             {
-              "fixtureActorId": "enemy-deposit",
-              "actorName": "WorkMill",
-              "owner": 1,
-              "position": {
-                "x": -320,
-                "y": 736,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "enemy-source",
-              "actorName": "Tree1",
-              "owner": null,
-              "position": {
-                "x": -448,
-                "y": 800,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "enemy-worker",
-              "actorName": "SkaduweeWorkerMale",
-              "owner": 1,
-              "position": {
-                "x": -352,
-                "y": 784,
-                "z": 0
-              }
-            },
-            {
               "fixtureActorId": "front-target-a",
               "actorName": "InfantryInn",
               "owner": 1,
               "position": {
                 "x": 160,
-                "y": 592,
+                "y": 656,
                 "z": 0
               }
             },
@@ -1009,18 +933,8 @@
               "actorName": "InfantryInn",
               "owner": 1,
               "position": {
-                "x": -416,
+                "x": -288,
                 "y": 880,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "noise-scout",
-              "actorName": "SkaduweeWorkerMale",
-              "owner": 1,
-              "position": {
-                "x": 288,
-                "y": 400,
                 "z": 0
               }
             },
@@ -1200,13 +1114,7 @@
           ],
           "controls": [],
           "events": [],
-          "initialOrders": [
-            {
-              "workerFixtureActorId": "enemy-worker",
-              "sourceFixtureActorId": "enemy-source",
-              "kind": "gather"
-            }
-          ],
+          "initialOrders": [],
           "terrainPatches": []
         }
       },
@@ -1489,42 +1397,12 @@
               }
             },
             {
-              "fixtureActorId": "enemy-deposit",
-              "actorName": "WorkMill",
-              "owner": 1,
-              "position": {
-                "x": -320,
-                "y": 736,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "enemy-source",
-              "actorName": "Tree1",
-              "owner": null,
-              "position": {
-                "x": -448,
-                "y": 800,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "enemy-worker",
-              "actorName": "SkaduweeWorkerMale",
-              "owner": 1,
-              "position": {
-                "x": -352,
-                "y": 784,
-                "z": 0
-              }
-            },
-            {
               "fixtureActorId": "front-target-a",
               "actorName": "FrostForge",
               "owner": 1,
               "position": {
-                "x": 160,
-                "y": 592,
+                "x": 512,
+                "y": 416,
                 "z": 0
               }
             },
@@ -1535,16 +1413,6 @@
               "position": {
                 "x": 160,
                 "y": 1296,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "noise-scout",
-              "actorName": "SkaduweeWorkerMale",
-              "owner": 1,
-              "position": {
-                "x": 288,
-                "y": 400,
                 "z": 0
               }
             },
@@ -1673,8 +1541,8 @@
               "actorName": "TivaraMacemanMale",
               "owner": 2,
               "position": {
-                "x": 192,
-                "y": 736,
+                "x": 416,
+                "y": 528,
                 "z": 0
               }
             },
@@ -1793,13 +1661,7 @@
               "fixtureActorId": "front-target-a"
             }
           ],
-          "initialOrders": [
-            {
-              "workerFixtureActorId": "enemy-worker",
-              "sourceFixtureActorId": "enemy-source",
-              "kind": "gather"
-            }
-          ],
+          "initialOrders": [],
           "terrainPatches": []
         }
       },
@@ -2082,42 +1944,12 @@
               }
             },
             {
-              "fixtureActorId": "enemy-deposit",
-              "actorName": "WorkMill",
-              "owner": 1,
-              "position": {
-                "x": -320,
-                "y": 736,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "enemy-source",
-              "actorName": "Tree1",
-              "owner": null,
-              "position": {
-                "x": -448,
-                "y": 800,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "enemy-worker",
-              "actorName": "TivaraWorkerMale",
-              "owner": 1,
-              "position": {
-                "x": -352,
-                "y": 784,
-                "z": 0
-              }
-            },
-            {
               "fixtureActorId": "front-target-a",
               "actorName": "Sandhold",
               "owner": 1,
               "position": {
-                "x": 160,
-                "y": 592,
+                "x": 512,
+                "y": 416,
                 "z": 0
               }
             },
@@ -2128,16 +1960,6 @@
               "position": {
                 "x": 160,
                 "y": 1296,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "noise-scout",
-              "actorName": "TivaraWorkerMale",
-              "owner": 1,
-              "position": {
-                "x": 288,
-                "y": 400,
                 "z": 0
               }
             },
@@ -2266,8 +2088,8 @@
               "actorName": "SkaduweeWarriorMale",
               "owner": 2,
               "position": {
-                "x": 192,
-                "y": 736,
+                "x": 416,
+                "y": 528,
                 "z": 0
               }
             },
@@ -2420,13 +2242,7 @@
             }
           ],
           "events": [],
-          "initialOrders": [
-            {
-              "workerFixtureActorId": "enemy-worker",
-              "sourceFixtureActorId": "enemy-source",
-              "kind": "gather"
-            }
-          ],
+          "initialOrders": [],
           "terrainPatches": []
         }
       },
@@ -2709,42 +2525,12 @@
               }
             },
             {
-              "fixtureActorId": "enemy-deposit",
-              "actorName": "WorkMill",
-              "owner": 1,
-              "position": {
-                "x": -320,
-                "y": 736,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "enemy-source",
-              "actorName": "Tree1",
-              "owner": null,
-              "position": {
-                "x": -448,
-                "y": 800,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "enemy-worker",
-              "actorName": "TivaraWorkerMale",
-              "owner": 1,
-              "position": {
-                "x": -352,
-                "y": 784,
-                "z": 0
-              }
-            },
-            {
               "fixtureActorId": "front-target-a",
               "actorName": "AnkGuard",
               "owner": 1,
               "position": {
                 "x": 160,
-                "y": 592,
+                "y": 656,
                 "z": 0
               }
             },
@@ -2753,18 +2539,8 @@
               "actorName": "AnkGuard",
               "owner": 1,
               "position": {
-                "x": -416,
+                "x": -288,
                 "y": 880,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "noise-scout",
-              "actorName": "TivaraWorkerMale",
-              "owner": 1,
-              "position": {
-                "x": 288,
-                "y": 400,
                 "z": 0
               }
             },
@@ -2944,13 +2720,7 @@
           ],
           "controls": [],
           "events": [],
-          "initialOrders": [
-            {
-              "workerFixtureActorId": "enemy-worker",
-              "sourceFixtureActorId": "enemy-source",
-              "kind": "gather"
-            }
-          ],
+          "initialOrders": [],
           "terrainPatches": []
         }
       },
@@ -3233,42 +3003,12 @@
               }
             },
             {
-              "fixtureActorId": "enemy-deposit",
-              "actorName": "WorkMill",
-              "owner": 1,
-              "position": {
-                "x": -320,
-                "y": 736,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "enemy-source",
-              "actorName": "Tree1",
-              "owner": null,
-              "position": {
-                "x": -448,
-                "y": 800,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "enemy-worker",
-              "actorName": "TivaraWorkerMale",
-              "owner": 1,
-              "position": {
-                "x": -352,
-                "y": 784,
-                "z": 0
-              }
-            },
-            {
               "fixtureActorId": "front-target-a",
               "actorName": "Sandhold",
               "owner": 1,
               "position": {
-                "x": 160,
-                "y": 592,
+                "x": 512,
+                "y": 416,
                 "z": 0
               }
             },
@@ -3279,16 +3019,6 @@
               "position": {
                 "x": 160,
                 "y": 1296,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "noise-scout",
-              "actorName": "TivaraWorkerMale",
-              "owner": 1,
-              "position": {
-                "x": 288,
-                "y": 400,
                 "z": 0
               }
             },
@@ -3417,8 +3147,8 @@
               "actorName": "SkaduweeWarriorMale",
               "owner": 2,
               "position": {
-                "x": 192,
-                "y": 736,
+                "x": 416,
+                "y": 528,
                 "z": 0
               }
             },
@@ -3537,13 +3267,7 @@
               "fixtureActorId": "front-target-a"
             }
           ],
-          "initialOrders": [
-            {
-              "workerFixtureActorId": "enemy-worker",
-              "sourceFixtureActorId": "enemy-source",
-              "kind": "gather"
-            }
-          ],
+          "initialOrders": [],
           "terrainPatches": []
         }
       }

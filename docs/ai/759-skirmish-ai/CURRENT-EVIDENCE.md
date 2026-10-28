@@ -29,12 +29,13 @@ FIGHT-02 has verified 40% health starts. Current-source report `1793210845150-pa
 completion, and directing nearby allies at credible threats to wounded ranged units all hold across both factions.
 
 FIGHT-03's revised unequal/loss fixture has a durable valuable main building, an isolated lower-value producer and six
-additional compatible reinforcements; the loss occurs at tick 400 while the main building exists. Tivara unequal passes
-`1793132191807` (source digest `fnv1a32:7036f815`); Skaduwee infeasible passes `1793132945915` (source digest
-`fnv1a32:6b79f302`); both use fixture `fnv1a32:7db10b2b` and base `1e9d1cc69`. The loss repair clears a remembered main
-building only when its location is visible and it is absent; attack-move missions retain their destination when briefly
-engaging a contact. Gameplay tests pass 567/567, focused observation tests 15/15, fixture checks 42/42 and portal build
-passes. These diagnostics do not close the six-branch family; run the current-source gate in CI.
+additional compatible reinforcements. Full current-source report `1793211612520-failed.json` found the valuable
+building died just before the authored tick-400 loss/escalation event, making its control invalid; equal fronts also
+competed with unrelated economic/noise targets. The refreshed fixture preserves the valuable front to the event,
+keeps equal fronts separated and observed, and removes unrelated economic/noise distractors. Fixture checks pass
+42/42. Targeted current-fixture Tivara infeasible, Skaduwee equal, and both unequal branches pass reports
+`1793212061756`, `1793212437251`, `1793212603730`, and `1793212773341` on `fnv1a32:dd74d4f1`; the six-branch family
+still needs one current-fixture run.
 
 FIGHT-04 Tivara HealingRain passes targeted report `1793133499341-diagnostic_passed.json` (source
 `fnv1a32:816f98f7`, fixture `fnv1a32:4c6933e5`); periodic status refresh preserves its tick clock and capture records
