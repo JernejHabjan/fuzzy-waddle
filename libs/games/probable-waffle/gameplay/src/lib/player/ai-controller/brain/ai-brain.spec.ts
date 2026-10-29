@@ -240,7 +240,7 @@ describe("PureAiBrain", () => {
   it.each([
     { tick: 19, expiry: 20, accepted: false },
     { tick: 20, expiry: 20, accepted: true }
-  ])("retains resource escrow until provisional expiry despite a lower live balance: %j", ({ tick, expiry, accepted }) => {
+  ])("retains provisional resource escrow until its deadline across a contracted balance: %j", ({ tick, expiry, accepted }) => {
     const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
     const state = createAiBrainStateV1({
       playerNumber: 1,
