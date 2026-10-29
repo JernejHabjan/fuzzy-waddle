@@ -49,6 +49,39 @@ describe("AiCommandReconciliation", () => {
     });
   });
 
+  it("does not let a duplicate admission rewrite the original actor set or forget observed application", () => {
+    const outcomes = new Subject<GameCommandOutcome>();
+    const bus = {
+      commandOutcome$: outcomes.asObservable(),
+      getAuthorityState: () => ({
+        schemaVersion: 1 as const,
+        authorityEpoch: 0,
+        nextSequenceByPlayer: {},
+        processedCommandIds: [],
+        outcomes: []
+      })
+    } as unknown as CommandBusService;
+    const reconciliation = new AiCommandReconciliation(2, bus);
+
+    outcomes.next(outcome("dispatched", 4));
+    outcomes.next(outcome("applied", 4, ["actor-a"]));
+    // A malformed duplicate with the same identity must not replace the admitted command's addressed actors.
+    outcomes.next(outcome("dispatched", 4, ["actor-a"]));
+    outcomes.next(outcome("completed", 4, ["actor-a"]));
+
+    expect(reconciliation.getState().pendingCommandIds).toEqual(["2:0:4:game"]);
+    expect(reconciliation.getState().pendingCommands?.[0]).toMatchObject({
+      applicationObserved: true,
+      terminalActorIds: ["actor-a"]
+    });
+    outcomes.next(outcome("completed", 4, ["actor-b"]));
+    expect(reconciliation.getState()).toMatchObject({
+      processedSequenceWatermark: 4,
+      pendingCommandIds: [],
+      health: "healthy"
+    });
+  });
+
   it("turns a missing terminal outcome into a bounded technical fault", () => {
     const outcomes = new Subject<GameCommandOutcome>();
     const emitted: GameCommandOutcome[] = [];

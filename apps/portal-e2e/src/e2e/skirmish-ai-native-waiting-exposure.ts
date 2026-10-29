@@ -5,15 +5,20 @@ import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-contex
 export function nativeWaitingExposureFailures(context: ReturnType<typeof nativeScenarioContext>) {
   const failures: string[] = [];
   for (const frame of context.frames) {
+    const waitingReservations = frame.decision.reservations.filter((reservation) =>
+      reservation.state.kind === "provisional" && reservation.createdTick < frame.tick &&
+      !!reservation.subjectKey?.startsWith("resource:")
+    );
+    // No older provisional cash claim means there is no waiting exposure to bound. This includes the first
+    // selected decision, whose pre-selection ownership snapshot is intentionally unavailable until it is observed.
+    if (!waitingReservations.length) continue;
     const resources = frame.decision.input?.resources, before = frame.unspentClaimsBeforeSelection;
     if (!resources || !before?.resources || before.gaps.length) {
       failures.push("resources_waiting_exposure_original_cash_or_ownership_missing");
       continue;
     }
     const waiting = new Map<ResourceType, number>();
-    for (const reservation of frame.decision.reservations) {
-      if (reservation.state.kind !== "provisional" || reservation.createdTick >= frame.tick ||
-          !reservation.subjectKey?.startsWith("resource:")) continue;
+    for (const reservation of waitingReservations) {
       const selected = context.frames.filter((entry) => entry.sequence < frame.sequence &&
         entry.tick === reservation.createdTick).flatMap((entry) =>
         entry.decision.acceptedIntents).find((intent) => intent.planId === reservation.ownerPlanId &&

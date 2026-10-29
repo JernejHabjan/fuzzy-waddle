@@ -203,6 +203,9 @@ export class AiCommandReconciliation {
       entry.sequence === outcome.sequence && entry.reason === outcome.reason &&
       JSON.stringify(entry.actorIds) === JSON.stringify(outcome.actorIds) &&
       JSON.stringify(entry.worldLinkIds) === JSON.stringify(outcome.worldLinkIds))) return;
+    // A repeated admission is not new progress. A malformed duplicate cannot replace the original actor set or
+    // reset application/terminal progress by reusing the same command identity with different data.
+    if (outcome.kind === "dispatched" && this.pending.has(outcome.commandId)) return;
     this.recentOutcomes.push(structuredClone(outcome));
     if (this.recentOutcomes.length > AiCommandReconciliation.MAX_RECENT_OUTCOMES) {
       this.recentOutcomes.splice(0, this.recentOutcomes.length - AiCommandReconciliation.MAX_RECENT_OUTCOMES);

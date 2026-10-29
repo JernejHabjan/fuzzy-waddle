@@ -28,7 +28,14 @@ Do not reconstruct the old seven-package roadmap from chat or historical records
   required physical transit evidence.
 - Next: continue independent packet C1/C2 ownership work; return to A1/A2/A3 after the route premise has a
   focused answer. Skaduwee native WALL-01 not yet run.
-- H-13's interrupted run finished: report 1793296020629-failed.json. Do not restart it.
+- H-13's interrupted run finished: report 1793296020629-failed.json. Each variant's only missing ownership frame is
+  its first selected decision, where no older provisional claim exists; later snapshots are complete. The native
+  waiting-exposure evaluator now skips frames with no older claims, with focused positive and negative checks. Do
+  not restart H-13 until Tivara income attribution and the new-base branch are diagnosed.
+- C1 source review found a duplicate `dispatched` outcome could overwrite the pending actor set and clear application
+  progress if its identity was reused with altered actor IDs. Reconciliation now ignores repeated admission while
+  pending. A red/green regression covers two-actor terminal progress; focused reconciliation/adapter tests pass 12/12
+  and the pure reservation test passes 1/1.
 - Astra preparation inspected source and reports; no gameplay changes or new tests/matches.
 - No new chats, agents, model switching or scheduled automation.
 
@@ -38,7 +45,7 @@ Do not reconstruct the old seven-package roadmap from chat or historical records
 | --- | --- | --- |
 | A placement/walls/recovery | in_progress | Three-tile route opening has focused support; WALL-01 remains unproven after two runs. Continue placement/recovery and diagnose captured route with a smaller repro before any wall retry. |
 | B expansion/mission continuity | ready after shared A analysis; independent diagnosis allowed | Explain EXP-02 home loss and H-14 frontier replacement. |
-| C resource/command ownership | in_progress | Inspect exactly-once reservation/application outcomes and H-13's missing original-cash/ownership premise; avoid unchanged matrix reruns. |
+| C resource/command ownership | in_progress | Duplicate-admission reset is fixed with focused coverage; retained H-06/07 native cases cover both factions. Continue stale reservation/capacity review and diagnose H-13 Tivara income attribution and paid-base exercise before one bounded native confirmation. |
 | D essential SP lifecycle | ready; independent fallback | Inspect H-31 continuation and H-32 SP dispatch restrictions. |
 | E ordinary play/closure | waits for A–D | Reconcile relevant evidence and run only affected release outcomes. |
 
