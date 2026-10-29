@@ -39,7 +39,10 @@ export function runtimeControlTransitFailures(
     return [`native_transit_control_not_applied:${controlId}`];
   }
   const normalized = normalizeRuntimeMovement(capture);
-  if (normalized.failures.length) return [`native_transit_capture_invalid:${controlId}`];
+  if (normalized.failures.length) return [
+    `native_transit_capture_invalid:${controlId}`,
+    `native_transit_capture_invalid_detail:${normalized.failures.join(",")}`
+  ];
   const attempts = normalized.movements.filter((movement) => {
     const start = movement.observations[0];
     // Shared application can begin synchronously before dispatchDeterministic returns its receipt.

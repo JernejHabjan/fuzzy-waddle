@@ -49,7 +49,7 @@ export function expansionWorld(faction: "Tivara" | "Skaduwee", branch: Expansion
               owner: 2, position: { x: -64, y: 1264, z: 0 } }] : []),
             ...(pressure ? EXPANSION_HOME_RAIDER_ROLES.map((fixtureActorId, index) => ({ fixtureActorId,
               actorName: tivara ? "SkaduweeWarriorMale" : "TivaraMacemanMale",
-              owner: 1, position: { x: 640 + index * 64, y: 1024, z: 0 } })) : [])
+              owner: 1, position: index === 3 ? { x: 768, y: 960, z: 0 } : { x: 640 + index * 64, y: 1024, z: 0 } })) : [])
           ],
           resourceGrants: [], resourceStarts: [{ playerNumber: 2,
             amounts: { food: 1200, wood: 1600, stone: 800, minerals: 800 } }],
@@ -62,8 +62,9 @@ export function expansionWorld(faction: "Tivara" | "Skaduwee", branch: Expansion
             })),
             ...(branch === "pressure_withdrawn" ? EXPANSION_HOME_RAIDER_ROLES.map((producerFixtureActorId, index) => ({
               id: index ? `withdraw-home-pressure-${index}` : "withdraw-home-pressure", producerFixtureActorId,
-              requestTick: 200, applicationTick: 200,
-              action: { kind: "move" as const, worldPosition: { x: -448 + index * 64, y: 256, z: 0 } }
+              // Let the original attack cause serious home damage before the pressure is withdrawn.
+              requestTick: 500, applicationTick: 500,
+              action: { kind: "move" as const, worldPosition: { x: -320 + index * 64, y: 256, z: 0 } }
             })) : [])
           ] : []
         }

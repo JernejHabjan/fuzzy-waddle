@@ -5,7 +5,7 @@ import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v
 import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
 import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
-import { canAffordAiEconomyCost, hasCredibleAiEconomyThreat } from "./ai-economy-policy";
+import { canAffordAiEconomyCost, hasCredibleAiHomeThreat } from "./ai-economy-policy";
 import { createAiResourceCostClaims } from "./ai-resource-cost-claims";
 import { aiEconomySiteSafety } from "./ai-economy-site-safety";
 import { node, routeCapability } from "./ai-skirmish-support";
@@ -85,7 +85,7 @@ export class AiResourceServiceManager implements AiProposalManagerV1 {
         reasons: ["catalog_not_ready"]
       };
     }
-    if (hasCredibleAiEconomyThreat(observation)) {
+    if (hasCredibleAiHomeThreat(observation)) {
       return {
         managerId: this.managerId,
         lane: "optional_infrastructure_tech",

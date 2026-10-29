@@ -1,4 +1,4 @@
-import { ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observation-v1";
 
@@ -107,6 +107,31 @@ export function observedAiEconomyThreats(observation: AiObservationV1): AiObserv
 
 export function hasCredibleAiEconomyThreat(observation: AiObservationV1): boolean {
   return observedAiEconomyThreats(observation).length > 0;
+}
+
+/** Defers optional infrastructure only for credible pressure near a known main building. */
+export function hasCredibleAiHomeThreat(observation: AiObservationV1): boolean {
+  const mainBuildings = observation.actors.filter(
+    (actor) =>
+      actor.relation === "self" &&
+      actor.visibility === "owned" &&
+      actor.mainBuilding?.status === "known" &&
+      actor.mainBuilding.value &&
+      actor.logicalPosition.status === "known"
+  );
+  // Without a known home location, retain the conservative existing behavior.
+  if (mainBuildings.length === 0) return hasCredibleAiEconomyThreat(observation);
+
+  return observedAiEconomyThreats(observation).some((threat) => {
+    if (threat.logicalPosition.status !== "known") return false;
+    return mainBuildings.some((building) => {
+      if (building.logicalPosition.status !== "known") return false;
+      const distance =
+        Math.abs(building.logicalPosition.value.x - threat.logicalPosition.value.x) +
+        Math.abs(building.logicalPosition.value.y - threat.logicalPosition.value.y);
+      return distance <= LOCAL_THREAT_DISTANCE;
+    });
+  });
 }
 
 /** Only defenders near the exposed economy with a weapon for the observed movement domain can cover the threat. */

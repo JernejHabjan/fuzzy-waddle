@@ -6,7 +6,7 @@ import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
 import { expansionWorld } from "./skirmish-ai-expansion-world";
 import { evaluateExpansionPressurePairs } from "./skirmish-ai-expansion-pressure-pairs";
 import { nativeDamageMatches } from "./skirmish-ai-native-damage";
-import { expansionPressureResolution } from "./skirmish-ai-expansion-pressure-resolution";
+import { expansionPressureResolution, nativeRetreatPrecedesLoss } from "./skirmish-ai-expansion-pressure-resolution";
 import type { AiRuntimeProductionCaptureV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
 import type { AiRuntimeProductionFactV1 } from
@@ -39,6 +39,10 @@ test("the full matrix declaration and standalone owner factories describe the sa
     const branch = contract?.branchByVariant[variant.id];
     if (!branch) throw new Error("authored expansion branch missing");
     expect(variant.presetWorld).toEqual(expansionWorld(variant.aiFaction, branch).recipe.variants[0]?.presetWorld);
+    if (branch === "pressure_withdrawn") {
+      expect(variant.presetWorld.controls.filter((control) => control.id.startsWith("withdraw-home-pressure"))
+        .every((control) => control.requestTick === 500 && control.applicationTick === 500)).toBe(true);
+    }
   }
   const failures = evaluateExpansionPressurePairs(fixture, []);
   expect(failures.filter((failure) => failure.startsWith("expansion_pressure_variant_missing:"))).toHaveLength(8);
@@ -58,6 +62,12 @@ test("combat recovery requires the original native death plus AI-owned lethal da
   expect(expansionPressureResolution(capture([loss, hit]), ["original-raider", "surviving-raider"], true).resolvedTick)
     .toBeUndefined();
   expect(expansionPressureResolution(capture([loss, hit]), [], true).resolvedTick).toBeUndefined();
+});
+
+test("a later attacker death does not erase a previously completed physical retreat", () => {
+  expect(nativeRetreatPrecedesLoss(894, 1689)).toBe(true);
+  expect(nativeRetreatPrecedesLoss(1689, 894)).toBe(false);
+  expect(nativeRetreatPrecedesLoss(894, undefined)).toBe(true);
 });
 
 test("foreign/restored damage, unrelated ownership and missing health cannot supply a native combat verdict", () => {

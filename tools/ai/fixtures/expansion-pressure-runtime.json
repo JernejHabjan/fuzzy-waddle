@@ -1136,36 +1136,8 @@
             {
               "id": "withdraw-home-pressure",
               "producerFixtureActorId": "home-raider",
-              "requestTick": 200,
-              "applicationTick": 200,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": -448,
-                  "y": 256,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "withdraw-home-pressure-1",
-              "producerFixtureActorId": "home-raider-1",
-              "requestTick": 200,
-              "applicationTick": 200,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": -384,
-                  "y": 256,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "withdraw-home-pressure-2",
-              "producerFixtureActorId": "home-raider-2",
-              "requestTick": 200,
-              "applicationTick": 200,
+              "requestTick": 500,
+              "applicationTick": 500,
               "action": {
                 "kind": "move",
                 "worldPosition": {
@@ -1176,14 +1148,42 @@
               }
             },
             {
-              "id": "withdraw-home-pressure-3",
-              "producerFixtureActorId": "home-raider-3",
-              "requestTick": 200,
-              "applicationTick": 200,
+              "id": "withdraw-home-pressure-1",
+              "producerFixtureActorId": "home-raider-1",
+              "requestTick": 500,
+              "applicationTick": 500,
               "action": {
                 "kind": "move",
                 "worldPosition": {
                   "x": -256,
+                  "y": 256,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "withdraw-home-pressure-2",
+              "producerFixtureActorId": "home-raider-2",
+              "requestTick": 500,
+              "applicationTick": 500,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -192,
+                  "y": 256,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "withdraw-home-pressure-3",
+              "producerFixtureActorId": "home-raider-3",
+              "requestTick": 500,
+              "applicationTick": 500,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -128,
                   "y": 256,
                   "z": 0
                 }
@@ -2673,36 +2673,8 @@
             {
               "id": "withdraw-home-pressure",
               "producerFixtureActorId": "home-raider",
-              "requestTick": 200,
-              "applicationTick": 200,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": -448,
-                  "y": 256,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "withdraw-home-pressure-1",
-              "producerFixtureActorId": "home-raider-1",
-              "requestTick": 200,
-              "applicationTick": 200,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": -384,
-                  "y": 256,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "withdraw-home-pressure-2",
-              "producerFixtureActorId": "home-raider-2",
-              "requestTick": 200,
-              "applicationTick": 200,
+              "requestTick": 500,
+              "applicationTick": 500,
               "action": {
                 "kind": "move",
                 "worldPosition": {
@@ -2713,14 +2685,42 @@
               }
             },
             {
-              "id": "withdraw-home-pressure-3",
-              "producerFixtureActorId": "home-raider-3",
-              "requestTick": 200,
-              "applicationTick": 200,
+              "id": "withdraw-home-pressure-1",
+              "producerFixtureActorId": "home-raider-1",
+              "requestTick": 500,
+              "applicationTick": 500,
               "action": {
                 "kind": "move",
                 "worldPosition": {
                   "x": -256,
+                  "y": 256,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "withdraw-home-pressure-2",
+              "producerFixtureActorId": "home-raider-2",
+              "requestTick": 500,
+              "applicationTick": 500,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -192,
+                  "y": 256,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "withdraw-home-pressure-3",
+              "producerFixtureActorId": "home-raider-3",
+              "requestTick": 500,
+              "applicationTick": 500,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -128,
                   "y": 256,
                   "z": 0
                 }

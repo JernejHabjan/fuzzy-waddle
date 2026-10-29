@@ -295,8 +295,27 @@ describe("AiResourceServiceManager", () => {
       }
     };
     const observation = world(20, [enemyTower]);
-    const input = {
+    const input: AiObservationV1 = {
       ...observation,
+      actors: observation.actors.map((observed) => {
+        if (observed.actorId === "main") {
+          return { ...observed, mainBuilding: { status: "known" as const, value: true, observedTick: 20 } };
+        }
+        if (observed.actorId === "worker-0") {
+          return {
+            ...observed,
+            capabilities: [{
+              id: "worker-0:gather",
+              family: "gather" as const,
+              level: 1,
+              domains: ["ground" as const],
+              targetDomains: [],
+              capacity: { status: "known" as const, value: 1, observedTick: 20 }
+            }]
+          };
+        }
+        return observed;
+      }),
       threatSummary: {
         ...observation.threatSummary,
         observedTick: 20,

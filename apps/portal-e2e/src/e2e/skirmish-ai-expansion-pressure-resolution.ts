@@ -20,6 +20,27 @@ export function expansionPressureResolution(
     const nativeKill = loss && human.facts.find((fact) => nativeDamageMatches(fact, raiderId, 2) &&
       fact.tick === loss.tick && fact.damage.healthAfter === 0 && !fact.damage.target.alive
     );
+    if (!combatOnly) {
+      const controlId = index ? `withdraw-home-pressure-${index}` : "withdraw-home-pressure";
+      const withdrawal = human.facts.find((fact) => fact.kind === "preset_control" &&
+        fact.control.id === controlId && fact.control.phase === "applied");
+      const commandId = withdrawal?.kind === "preset_control"
+        ? withdrawal.control.command?.execution?.commandId
+        : undefined;
+      if (commandId && !runtimeControlTransitFailures(human, controlId, 3000, "arrive").length) {
+        const arrival = normalizeRuntimeMovement(human).movements.find((movement) =>
+          movement.callerAttributed && !movement.gaps.length && movement.arrival === "original_destination" &&
+          movement.returned === "true" && movement.started.spatial.kind === "movement" &&
+          movement.started.spatial.caller?.order?.commandContext?.execution.commandId === commandId
+        );
+        const event = arrival?.observations.find((entry) => entry.spatial.phase === "arrived");
+        if (event && nativeRetreatPrecedesLoss(event.tick, loss?.tick)) {
+          observedRetreat = true;
+          resolved.push({ tick: event.tick, sequence: event.sequence });
+          continue;
+        }
+      }
+    }
     if (combatOnly) {
       if (!loss || !nativeKill) failures.push(`expansion_original_attacker_not_killed_by_native_ai_combat:${raiderId}`);
       else resolved.push({ tick: loss.tick, sequence: nativeKill.sequence });
@@ -58,4 +79,9 @@ export function expansionPressureResolution(
   const last = resolved.length === raiderIds.length && !failures.length
     ? resolved.sort((left, right) => left.tick - right.tick || left.sequence - right.sequence).at(-1) : undefined;
   return { resolvedTick: last?.tick, resolvedSequence: last?.sequence, failures };
+}
+
+/** A later native death must not erase an already completed physical retreat from the evidence. */
+export function nativeRetreatPrecedesLoss(arrivalTick: number, lossTick: number | undefined): boolean {
+  return lossTick === undefined || arrivalTick <= lossTick;
 }

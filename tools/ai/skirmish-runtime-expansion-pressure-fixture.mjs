@@ -57,9 +57,9 @@ export function validExpansionPressureRecipe(recipe, assertion, scenarioId) {
         if (mode === "pressure_withdrawn") {
           const withdrawalId = index ? `withdraw-home-pressure-${index}` : "withdraw-home-pressure";
           const withdrawal = controls.find((control) => control.id === withdrawalId);
-          if (!withdrawal || withdrawal.producerFixtureActorId !== role || withdrawal.requestTick !== 200 ||
-              withdrawal.applicationTick !== 200 || withdrawal.action?.kind !== "move" ||
-              !isDeepStrictEqual(withdrawal.action.worldPosition, { x: -448 + index * 64, y: 256, z: 0 })) return false;
+          if (!withdrawal || withdrawal.producerFixtureActorId !== role || withdrawal.requestTick !== 500 ||
+              withdrawal.applicationTick !== 500 || withdrawal.action?.kind !== "move" ||
+              !isDeepStrictEqual(withdrawal.action.worldPosition, { x: -320 + index * 64, y: 256, z: 0 })) return false;
         }
       }
     }
