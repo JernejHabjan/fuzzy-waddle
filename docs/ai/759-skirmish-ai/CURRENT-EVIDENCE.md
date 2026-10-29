@@ -16,13 +16,13 @@ An aggregate old scenario count is not this iteration's completion percentage.
 
 | ID | State | Evidence / next gap |
 | --- | --- | --- |
-| A1 useful safe placement | pending | PLACE-03 retained; PLACE-01/02 route/service gaps below. |
-| A2 useful passable walls | pending | WALL-01 native rejects clearance; no new placement. |
+| A1 useful safe placement | in_progress | PLACE-01 failed field-vs-reserved-route and alignment predicates in 1793293034206; its fixture declares evaluator-only routes and issues physical move probes only at tick 1 while later prefixes are checked through tick 2400. Verify that routes remain a current owned-order premise; never expose oracle-only data to AI. Alignment is outside A1 acceptance and needs contract review before any evaluator change. PLACE-03 remains retained. |
+| A2 useful passable walls | in_progress | Manager regression failed before the layout fix: one-tile gate allowed a wall at (9,9) across owned Move (8,9)->(10,9) while whole-area connectivity passed. Layout now leaves center plus one tile on each side clear; five focused manager/recovery/continuation/placement suites pass (41 tests). Native attempts 1793297656059 and 1793297881648 both win but show no AI wall and retreat route failures. First used an overbroad current-order guard that suppressed all walls; guard has been removed. Second artifact predates that removal, so does not validate current source. Stop WALL-01 retries; inspect captured cause with a smaller reproduction first. Skaduwee native not run. |
 | A3 construction recovery | pending | H-11/PLACE-03 retained; wall/access loss recovery still needs mapping. |
 | B1 safe expansion/recovery | pending | EXP-01 branches pass; EXP-02 Skaduwee home loss remains. |
 | B2 sustained fair scouting | pending | SCOUT-01/03/04 retained; H-14 physical trip missing. |
 | B3 combat continuity | pending | STRAT/FIGHT/RAID passes retained; invalidate only affected outcomes. |
-| C1 exactly-once ownership | pending | H-06/07 retained; SP late/cancel evidence needs mapping. |
+| C1 exactly-once ownership | in_progress | H-06/07 retained; map the SP late/cancel lifecycle through reservation, application and terminal release. |
 | C2 reservation/capacity/budget | pending | H-10 capacity passes; H-13 failed all eight premises. |
 | C3 shared guard safety | pending | Focused owner review/regressions required for changes. |
 | D1 SP save continuation | pending | Pure continuation exists; native H-31 evidence needs checking. |

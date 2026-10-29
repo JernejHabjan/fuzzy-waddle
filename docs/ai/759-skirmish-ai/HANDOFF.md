@@ -1,7 +1,7 @@
 # #759 single-player iteration — start here
 
 Updated 2026-10-29. User approved Astra preparation, then one model switch/compact and "go".
-Preparation complete; gameplay execution has NOT started. Read this and the selected packet in
+Preparation complete; gameplay execution has started under the active goal. Read this and the selected packet in
 [REMAINING-WORK.md](REMAINING-WORK.md), which owns scope, acceptance, loop and goal text.
 Do not reconstruct the old seven-package roadmap from chat or historical records.
 
@@ -10,10 +10,24 @@ Do not reconstruct the old seven-package roadmap from chat or historical records
 - Workspace: C:\Git\Jernej\fuzzy-waddle; branch: feature/759-skirmish-ai.
 - Gameplay baseline: 3555fb04e21c; preceding gameplay batch: b9274bdd15d7.
 - Worker recommendation: Luna High, Standard speed. Sol Medium can execute the same plan. No automatic switches.
-- Goal tool reported no goal during preparation. On "go", create the goal from REMAINING-WORK if absent,
-  then execute continuously. Reuse a matching goal; never falsely complete an unrelated old goal.
-- First action: check Git and any surviving owned runtime process; run existing doctor/context once;
-  read packet A and the placement evidence. Reproduce the retained access disagreement before any match.
+- Goal created on 2026-10-29 from REMAINING-WORK after user said "go".
+- Startup Git clean; no owned AI runtime process was identified. `agent:doctor` and `agent:context` each
+  returned `unavailable_repository_runtime`; direct Node 24/pnpm/Nx work. Diagnosis: the wrapper spawns
+  Windows `pnpm.CMD` without a shell. Do not change that unrelated wrapper in this packet.
+- Packet A: a focused manager regression showed the one-tile gate placed a wall at (9,9) across an owned
+  Move route (8,9)->(10,9), even though whole-area connectivity passed. A three-tile opening now keeps that
+  route free while retaining the useful wall plan. Five focused manager/recovery/continuation/placement suites
+  pass (41 tests).
+- Native WALL-01 Tivara reruns 1793297656059 and 1793297881648 both ended in victory but built no native AI
+  wall and retained retreat-route clearance failures. The first added overbroad active-order rejection; it was
+  removed after the run confirmed it suppresses all wall construction. The second still included that guard.
+  Do not repeat WALL-01 unchanged; diagnose its recorded route/decision with a smaller reproduction first.
+- PLACE-01 routes are evaluator-only `protectedRoutes`; physical move probes run at tick 1, while clearance is
+  checked through tick 2400. AI can observe only current owned orders. Its field-alignment predicate is outside
+  A1's usefulness contract. Reconcile the route premise without exposing oracle-only data to AI or relaxing
+  required physical transit evidence.
+- Next: continue independent packet C1/C2 ownership work; return to A1/A2/A3 after the route premise has a
+  focused answer. Skaduwee native WALL-01 not yet run.
 - H-13's interrupted run finished: report 1793296020629-failed.json. Do not restart it.
 - Astra preparation inspected source and reports; no gameplay changes or new tests/matches.
 - No new chats, agents, model switching or scheduled automation.
@@ -22,9 +36,9 @@ Do not reconstruct the old seven-package roadmap from chat or historical records
 
 | Packet | State | Next action |
 | --- | --- | --- |
-| A placement/walls/recovery | ready | Reproduce observed route versus native PLACE/WALL clearance disagreement. |
+| A placement/walls/recovery | in_progress | Three-tile route opening has focused support; WALL-01 remains unproven after two runs. Continue placement/recovery and diagnose captured route with a smaller repro before any wall retry. |
 | B expansion/mission continuity | ready after shared A analysis; independent diagnosis allowed | Explain EXP-02 home loss and H-14 frontier replacement. |
-| C resource/command ownership | ready; independent fallback | Diagnose H-13 missing original-cash/ownership premise. |
+| C resource/command ownership | in_progress | Inspect exactly-once reservation/application outcomes and H-13's missing original-cash/ownership premise; avoid unchanged matrix reruns. |
 | D essential SP lifecycle | ready; independent fallback | Inspect H-31 continuation and H-32 SP dispatch restrictions. |
 | E ordinary play/closure | waits for A–D | Reconcile relevant evidence and run only affected release outcomes. |
 

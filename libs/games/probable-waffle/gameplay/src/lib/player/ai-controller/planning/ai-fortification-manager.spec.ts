@@ -1,5 +1,5 @@
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
 import { aiDeadline } from "../contracts/ai-core-types";
 import { arbitrateAiIntents } from "../brain/ai-intent-arbiter";
@@ -73,6 +73,28 @@ describe("AiFortificationManager", () => {
     expect(proposal.statePatch?.fortifications?.[0]?.graph?.nodes.filter((node) => node.kind === "stair")).toHaveLength(
       2
     );
+  });
+
+  it("keeps a native-width opening on an owned unit's active route", () => {
+    const transit = {
+      ...actor("transit", ObjectNames.TivaraWorker, 8, 9),
+      activeOrder: {
+        status: "known" as const,
+        value: {
+          orderType: OrderType.Move,
+          targetActorId: null,
+          targetPosition: { x: 10, y: 9, z: 0 }
+        },
+        observedTick: 100
+      }
+    };
+    const proposal = manager.propose(observation([transit]), threatenedState());
+
+    const nodes = proposal.statePatch?.fortifications?.[0]?.graph?.nodes ?? [];
+    const occupied = new Set(nodes.filter((node) => node.kind !== "gate_slot").flatMap((node) => node.footprintTileKeys));
+
+    expect(nodes.some((node) => node.kind === "wall")).toBe(true);
+    expect(["9,9", "9,10", "9,11"].every((tile) => !occupied.has(tile))).toBe(true);
   });
 
   it("WALL-05 rejects a front that would consume a known shore staging lane", () => {

@@ -100,10 +100,11 @@ export function createFortificationLayout(
     if (positiveAnchor === null && isAnchor(offset)) positiveAnchor = offset;
   }
   if (negativeAnchor === null || positiveAnchor === null) return null;
+  // Keep one clear tile on each side of the intentional opening for native worker/army movement.
   const offsets = Array.from(
     { length: positiveAnchor - negativeAnchor - 1 },
     (_, index) => negativeAnchor + index + 1
-  ).filter((offset) => offset !== 0);
+  ).filter((offset) => Math.abs(offset) > 1);
   if (offsets.length < 4 || offsets.length > AI_FORTIFICATION_GRAPH_CAPS.walls + AI_FORTIFICATION_GRAPH_CAPS.towers)
     return null;
   if (offsets.some((offset) => !byKey.get(tileKey(atOffset(offset)))?.groundPassable)) return null;
