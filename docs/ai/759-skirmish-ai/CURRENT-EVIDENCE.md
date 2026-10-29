@@ -5,6 +5,16 @@ Updated 2026-10-29. This is the compact active snapshot; detailed run history be
 
 ## Active placement checkpoint
 
+WALL-01 Tivara terrain variant `1793278942800` runs 3,001 ticks / 115s and loses only the expected wall proof gates:
+no paid completed AI fortification, no persistent fortification graph/effect, and worker/army transit incomplete. The
+capture contains a real hostile attack and later clears the sustainable-food macro floor, but never records a
+fortification plan; no Wall/WatchTower/Stairs placement occurs. At tick 20 the native base is (33,19), the nearest
+visible threat is (24,25), and the current plan geometry selects a wall line centered at (29,19). The retained map has
+terrain anchors only on the positive side of that line (offsets +3,+5,+7); `createFortificationLayout` requires anchors
+on both sides and correctly returns no layout. The current water patch is not positioned to bound this approach. Repair
+the WALL-01 fixture's connected choke/setup or change candidate search only if a valid alternative is demonstrated;
+do not weaken the native gates or replay this branch unchanged.
+
 PLACE-03's owned-vision lookup skips inactive or foreign-scene actors from the owner index. Static protected-route
 clearance excludes mobile actors while retaining buildings and terrain, and army/retreat corridors use one-tile
 margin. The native move probes run before the first AI refresh; a caller-attributed stop exactly on the requested tile
