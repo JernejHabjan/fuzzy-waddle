@@ -66,6 +66,7 @@ export function finalizeAiSkirmishProposal(context: AiSkirmishProposalContext): 
   return {
     managerId: "stage9.skirmish",
     lane: "army_threat",
+    evaluatedLanes: ["scouting"],
     evaluated: true,
     intents: context.intents,
     reasons: [

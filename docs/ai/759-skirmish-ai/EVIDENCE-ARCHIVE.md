@@ -1,5 +1,19 @@
 # #759 archived evidence history
 
+## 2026-10-29 — PLACE-01 alignment and route-visibility evidence
+
+- Focused food-infrastructure and placement-access tests pass 26/26 after Field selection began preferring an aligned, safe candidate when one is available.
+- Current-source `1793293034206-diagnostic_failed.json` (150 decisions / 2,401 ticks; 93s; dirty digest `fnv1a32:7383758e`) reproduces only the same two PLACE-01 predicates as `1793286593628`: a Field at `(31,24)` overlaps declared baseline service/retreat routes, and the new Fields have no aligned pair. The four Field placements and delivered-food result are unchanged.
+- Native placement capture at `(31,24)` records the declared baseline route at tick 1460 even though it reroutes through `(30,24)` around the field only in the placement-time clearance sample. The probe orders from tick 1 are absent from the later AI observation, and no aligned candidate was serviceable/reachable in the current world. Do not rerun until route visibility or room is changed; continue with independent PLACE-02/WALL/recovery cases.
+
+## 2026-10-29 — EXP-02 home-pressure follow-up
+
+- `1793291757838-diagnostic_passed.json` (Tivara home pressure; 150 decisions / 3,001 ticks; 82s) passes after `AiResourceServiceManager` defers optional resource-service intents under credible visible home pressure. The fourth authored attacker was moved into visibility range for its native control in all six pressure/recovery branches.
+- `1793291863732-diagnostic_failed.json` (Skaduwee home pressure; 150 decisions / 3,001 ticks; 96s) first failed paid completion and original-home retention. Its decision trace showed the defense squad retreating to `(21,7)` while its home was `(33,19)`: `base:home` in the squad lifecycle did not match the live `base:main:<actor>` base id, so the generic retreat selector optimized enemy distance over home proximity.
+- Added local safe-retreat selection within 12 tiles of the matching protected base, with an active anchored-base fallback for the `base:home` placeholder. Focused geometry/targeting/tactics tests pass 26/26; scoped ESLint has zero errors (existing non-null warnings). A follow-up runtime, `1793292392061-diagnostic_failed.json`, confirmed this fallback had not yet applied because the placeholder id did not resolve; paid completion and original-home loss remained.
+- The fallback now resolves `base:home` to the active anchored base. `1793292575217-diagnostic_failed.json` clears paid-completion and improves combat damage/losses, but the original home still dies near tick 918; at tick 900 its native health is 16/1000 and three Macemen remain in the immediate fight. No further retry until the combat/defense mismatch or scenario strength is repaired.
+- An attempted Nx Jest path-filter invocation ran the whole gameplay suite and found one failure in `ai-skirmish-defense-sizing.spec.ts` (603/604 passed); direct focused Jest invocations pass. The failure is outside the modified retreat geometry and should be assessed separately before claiming a full gameplay suite pass.
+
 ## 2026-10-29 — EXP-01 builder ownership and weapon-range evidence
 
 - `1793276632715-diagnostic_failed.json` contained repeated Sandhold/WorkMill proposals rejected as `claim_conflict` against workers' applied Gather actor claims. The live workers remained cargo-free gatherers; the claims could not be renewed by construction. The arbiter now allows only the observed safe Gather-to-construct transition, and an accepted actor lease removes old actor claims while retaining effect ownership. Focused gameplay tests pass 22/22 and scoped ESLint has no errors.
@@ -2678,3 +2692,9 @@ Summaries use `node tools/ai/summarize-skirmish-report.mjs --report <path> --fai
 - Skaduwee expansion capture `1793289530995` showed a second form: WorkMill construction and delivery succeeded, but a pending Sandhold proposal survived and later placed a FrostForge beside the already-served resource. The evaluator correctly rejected the extra service because Tree1 never delivered into that FrostForge.
 - Base expansion now filters remote resources served by an owned compatible drop-off and removes an unbuilt proposal when a newly built service covers its target. Focused base/resource manager suites pass 12/12; scoped ESLint has no errors.
 - Repaired Tivara served `1793289156686`, Skaduwee served `1793289329519`, Tivara expansion `1793291316198`, and refined-rule Skaduwee expansion `1793291167000` pass. Other targeted passes: Tivara unsafe `1793288496081`, busy worker `1793290454747`; Skaduwee unsafe `1793290264900`, busy worker `1793290668937`. Together with the paired expand/served/busy controls, EXP-01 has 8/8 targeted branch passes. The combined CI family gate remains pending.
+
+# 2026-10-29 — H-14 priority lane and setup diagnostics
+
+- Initial Tivara harmless-noise diagnostic `1793293499607` found that Stage 9's mixed skirmish proposal emitted accepted scouting intents while its batch declared only `army_threat`; the lane ledger therefore recorded scouting as unconsidered. Proposal batches can now declare all lanes evaluated in the pass, and the planner counts them independently of command service. Focused planner/skirmish checks pass 15/15.
+- Diagnostic `1793293771871` cleared that lane-ledger failure and exposed two setup issues. Native movement from the authored scout-probe could not cross the water barrier, and the starting army had no paid production demand. H-14 fixtures now provide a reachable approach and a two-unit initial army; fixture contract passes 51/51.
+- Current-source run `1793294021197` clears the paid-output gap (six produced units) but still fails the physical scouting trip. Trace shows the primary frontier scout's destination changes before a native trip completes. Keep H-14 open; no other H-14/H-15 branches were run and there is no full-family pass claim.

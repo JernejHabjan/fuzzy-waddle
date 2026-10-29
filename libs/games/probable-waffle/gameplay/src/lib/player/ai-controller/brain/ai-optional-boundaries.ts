@@ -33,6 +33,9 @@ function assertBatch(batch: AiManagerProposalV1, owner: string, state: AiBrainSt
       !Array.isArray(batch.reasons) || batch.reasons.some((reason) => typeof reason !== "string") ||
       typeof batch.evaluated !== "boolean" || !["essential_economy", "supply_production", "scouting",
         "army_threat", "optional_infrastructure_tech"].includes(batch.lane)) throw new Error("invalid_optional_batch");
+  if (batch.evaluatedLanes !== undefined && (!Array.isArray(batch.evaluatedLanes) ||
+      batch.evaluatedLanes.some((lane) => !["essential_economy", "supply_production", "scouting",
+        "army_threat", "optional_infrastructure_tech"].includes(lane)))) throw new Error("invalid_optional_lanes");
   for (const intent of batch.intents) {
     if (!Number.isSafeInteger(intent.utility) || intent.utility < 0 || intent.utility > 1000 ||
         !Number.isSafeInteger(intent.urgencyClass) || intent.urgencyClass < 0 ||

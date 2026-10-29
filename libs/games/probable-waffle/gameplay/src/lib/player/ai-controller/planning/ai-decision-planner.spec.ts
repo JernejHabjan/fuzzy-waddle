@@ -133,3 +133,31 @@ it("records proposal consideration without falsely claiming that a command was s
   expect(lane?.lastConsideredTick).toBe(20);
   expect(lane?.lastServicedTick).toBe(0);
 });
+
+it("records every lane evaluated by a multi-lane proposer", () => {
+  const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+  const state = createAiBrainStateV1({
+    playerNumber: 1,
+    faction: FactionType.Tivara,
+    profile,
+    tick: 0,
+    archetypeId: "balanced"
+  });
+  const result = planAiDecisions(
+    createAiTestObservation(),
+    state,
+    [],
+    [{
+      managerId: "skirmish",
+      lane: "army_threat",
+      evaluatedLanes: ["scouting"],
+      evaluated: true,
+      intents: [],
+      reasons: []
+    }],
+    profile
+  );
+
+  expect(result.state.lanes.find((lane) => lane.lane === "scouting")?.lastConsideredTick).toBe(20);
+  expect(result.state.lanes.find((lane) => lane.lane === "army_threat")?.lastConsideredTick).toBe(20);
+});

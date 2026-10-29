@@ -122,15 +122,32 @@ export function proposeAiFieldCapacity(args: {
       return distance <= 6;
     });
   };
-  const position = selectConstructionPosition(
+  const acceptsFieldSite = (cell: NonNullable<NonNullable<AiObservationV1["map"]>["constructionCells"]>[number]) =>
+    safety.positionSafe(cell.position) && fieldHasLocalFoodService(cell);
+  const existingFieldPositions = readyFoodSources.flatMap((field) =>
+    field.logicalPosition.status === "known" ? [field.logicalPosition.value] : []
+  );
+  const alignedPosition = existingFieldPositions.length > 0
+    ? selectConstructionPosition(
+        observation,
+        builder,
+        state.scheduler.decisionSequence,
+        ordinal,
+        selectedConstructionTileKeys,
+        foodSourceEntry.constructionProfile?.footprintRadiusTiles ?? 0,
+        (cell) => acceptsFieldSite(cell) && existingFieldPositions.some((field) =>
+          field.x === cell.position.x || field.y === cell.position.y
+        )
+      )
+    : undefined;
+  const position = alignedPosition ?? selectConstructionPosition(
     observation,
     builder,
     state.scheduler.decisionSequence,
     ordinal,
     selectedConstructionTileKeys,
     foodSourceEntry.constructionProfile?.footprintRadiusTiles ?? 0,
-    (cell) => safety.positionSafe(cell.position) &&
-      fieldHasLocalFoodService(cell)
+    acceptsFieldSite
   );
   if (!position) return { demand, intent: null };
   const next = nextIds(state, `food-capacity:${ObjectNames.Field}`, ordinal);

@@ -57,6 +57,7 @@ describe("AiSkirmishManager", () => {
     expect(proposal.statePatch?.knowledge?.questions).toContainEqual(
       expect.objectContaining({ kind: `safe_route:${enemyNode}`, state: "open" })
     );
+    expect(proposal.evaluatedLanes).toContain("scouting");
   });
 
   it("advances an existing scout to the next uncovered frontier and closes the prior question", () => {

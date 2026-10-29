@@ -3,6 +3,15 @@
 Updated 2026-10-29. This is the compact active snapshot; detailed run history belongs in
 [EVIDENCE-ARCHIVE.md](EVIDENCE-ARCHIVE.md). [HANDOFF.md](HANDOFF.md) owns the live cursor and next action.
 
+## Active expansion checkpoint
+
+EXP-02 home pressure now suppresses optional resource-service investment. Tivara's targeted pressure branch passes
+(`1793291757838`). Skaduwee's targeted run `1793292575217` clears paid-completion after home-local retreat targeting was
+fixed, but the original FrostForge still dies near tick 918 under four persistent Macemen. Focused tactical tests pass
+26/26 and scoped lint has no errors. Keep the Skaduwee home-loss failure open and do not replay unchanged. Continue with
+PLACE-01 route visibility/alignment, then return with a diagnosed defense fix or justified pressure rebalance before
+checking withdrawal and combat-resolution recovery.
+
 ## Active placement checkpoint
 
 WALL-01's corrected fixture uses opposite blocked-grass anchors and enough stone, with preplaced perimeter structures
@@ -44,14 +53,16 @@ source-to-deposit evidence covers its recovery requirement, so its generic lifet
 Do not replay H-11 or PLACE-03 unchanged; PLACE-03 protected-route clearance and physical worker/army transit are closed.
 
 PLACE-01 Tivara room remains open. Field proposals use known ground-graph reachability, a six-tile food-service radius,
-and staffing/construction gates. Focused placement/economy tests pass 25/25; scoped lint passes. Captures `1793286157382`
+staffing/construction gates, and prefer alignment with an existing Field when a safe aligned candidate exists. Focused
+food-infrastructure/placement tests pass 26/26; scoped lint has no errors. Captures `1793286157382`
 and `1793286376111` showed that native Gather orders can be absent from the next AI observation; the same-decision
 pending labor signal is now retained alongside the persistent unstaffed check. Route-aware selector capture
-`1793286593628` (2,401 ticks / 94s) creates four Fields total and three Granaries; the new AI Field receives native
-food delivery. Remaining predicates are reserved-route overlap at `(31,24)` and no aligned second AI Field. The
-worker-service, production and retreat paths are tick-1 baseline probes absent from the later AI observation. Do not
-replay unchanged; expose those corridors during construction or repair the shared observation contract, then recheck
-route preservation and aligned expansion. Continue to independent EXP/WALL/recovery cases meanwhile.
+`1793286593628` and current-source recheck `1793293034206` (2,401 ticks / 93s) create four Fields total and three
+Granaries; the new AI Field receives native food delivery. Remaining predicates are reserved-route overlap at `(31,24)`
+and no aligned Field pair; the alignment preference found no eligible aligned site in this fixture. The worker-service,
+production and retreat paths are tick-1 baseline probes absent from AI observations at later construction. Do not replay
+unchanged; expose those routes during construction or provide safe aligned room at a stable batch boundary, then recheck.
+Continue to PLACE-02/WALL/recovery in the meantime.
 
 PLACE-02 safe remains open. The map now reports visible stationary colliders as travel blockers, excludes mobile bodies,
 projects ground access regions on construction cells, and rejects a site with no observed approach in the builder's
@@ -182,6 +193,16 @@ H-10's Tivara and Skaduwee over-capacity variants pass on current source (`17932
 150 decisions / 3,001 ticks each). The evaluator now recognizes extraction, transfer and credit for any neutral resource
 lane after backlog release; its former FOOD-only requirement rejected the fixture's actual stone/mineral work. Seven
 peer obligations and the combined CI family gate remain open.
+
+H-14 is still open. The first native branch, Tivara harmless noise, exposed that Stage 9 emits scouting and threat work
+from one proposal batch while the lane ledger only counted the batch's primary `army_threat` lane. The planner now
+records explicitly evaluated lanes; focused planner/manager checks pass 15/15. A second run clears the false
+`scouting`-lane failure but reveals a fixture gap: the scout route crossed a water barrier and no paid army output was
+produced. The fixture now starts with a real two-unit army deficit and moves the scouting actor to the open side of the
+barrier. Current-source report `1793294021197` produces six paid units and clears the route obstruction, but still has
+no completed native scouting trip: the selected frontier scout keeps changing destinations while it is in transit.
+Do not replay H-14 unchanged. Stabilize a physically useful frontier trip or fix the relevant active-scout ownership;
+the other five H-14 branches and H-15 remain unrun.
 
 | Package | Remaining work |
 | --- | --- |

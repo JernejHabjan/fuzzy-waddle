@@ -176,66 +176,6 @@
               }
             },
             {
-              "fixtureActorId": "army-2",
-              "actorName": "TivaraMacemanMale",
-              "owner": 2,
-              "position": {
-                "x": 224,
-                "y": 912,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-3",
-              "actorName": "TivaraMacemanMale",
-              "owner": 2,
-              "position": {
-                "x": 256,
-                "y": 928,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-4",
-              "actorName": "TivaraMacemanMale",
-              "owner": 2,
-              "position": {
-                "x": 128,
-                "y": 896,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-5",
-              "actorName": "TivaraMacemanMale",
-              "owner": 2,
-              "position": {
-                "x": 160,
-                "y": 912,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-6",
-              "actorName": "TivaraSlingshotFemale",
-              "owner": 2,
-              "position": {
-                "x": 192,
-                "y": 928,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-7",
-              "actorName": "TivaraSlingshotFemale",
-              "owner": 2,
-              "position": {
-                "x": 224,
-                "y": 944,
-                "z": 0
-              }
-            },
-            {
               "fixtureActorId": "ready-producer",
               "actorName": "AnkGuard",
               "owner": 2,
@@ -290,8 +230,8 @@
               "actorName": "TivaraMacemanMale",
               "owner": 2,
               "position": {
-                "x": 608,
-                "y": 624,
+                "x": 224,
+                "y": 752,
                 "z": 0
               }
             },
@@ -785,66 +725,6 @@
               }
             },
             {
-              "fixtureActorId": "army-2",
-              "actorName": "TivaraMacemanMale",
-              "owner": 2,
-              "position": {
-                "x": 224,
-                "y": 912,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-3",
-              "actorName": "TivaraMacemanMale",
-              "owner": 2,
-              "position": {
-                "x": 256,
-                "y": 928,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-4",
-              "actorName": "TivaraMacemanMale",
-              "owner": 2,
-              "position": {
-                "x": 128,
-                "y": 896,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-5",
-              "actorName": "TivaraMacemanMale",
-              "owner": 2,
-              "position": {
-                "x": 160,
-                "y": 912,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-6",
-              "actorName": "TivaraSlingshotFemale",
-              "owner": 2,
-              "position": {
-                "x": 192,
-                "y": 928,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-7",
-              "actorName": "TivaraSlingshotFemale",
-              "owner": 2,
-              "position": {
-                "x": 224,
-                "y": 944,
-                "z": 0
-              }
-            },
-            {
               "fixtureActorId": "ready-producer",
               "actorName": "AnkGuard",
               "owner": 2,
@@ -899,8 +779,8 @@
               "actorName": "TivaraMacemanMale",
               "owner": 2,
               "position": {
-                "x": 608,
-                "y": 624,
+                "x": 224,
+                "y": 752,
                 "z": 0
               }
             },
@@ -1403,66 +1283,6 @@
               }
             },
             {
-              "fixtureActorId": "army-2",
-              "actorName": "TivaraMacemanMale",
-              "owner": 2,
-              "position": {
-                "x": 224,
-                "y": 912,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-3",
-              "actorName": "TivaraMacemanMale",
-              "owner": 2,
-              "position": {
-                "x": 256,
-                "y": 928,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-4",
-              "actorName": "TivaraMacemanMale",
-              "owner": 2,
-              "position": {
-                "x": 128,
-                "y": 896,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-5",
-              "actorName": "TivaraMacemanMale",
-              "owner": 2,
-              "position": {
-                "x": 160,
-                "y": 912,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-6",
-              "actorName": "TivaraSlingshotFemale",
-              "owner": 2,
-              "position": {
-                "x": 192,
-                "y": 928,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-7",
-              "actorName": "TivaraSlingshotFemale",
-              "owner": 2,
-              "position": {
-                "x": 224,
-                "y": 944,
-                "z": 0
-              }
-            },
-            {
               "fixtureActorId": "ready-producer",
               "actorName": "AnkGuard",
               "owner": 2,
@@ -1517,8 +1337,8 @@
               "actorName": "TivaraMacemanMale",
               "owner": 2,
               "position": {
-                "x": 608,
-                "y": 624,
+                "x": 224,
+                "y": 752,
                 "z": 0
               }
             },
@@ -2012,66 +1832,6 @@
               }
             },
             {
-              "fixtureActorId": "army-2",
-              "actorName": "SkaduweeWarriorMale",
-              "owner": 2,
-              "position": {
-                "x": 224,
-                "y": 912,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-3",
-              "actorName": "SkaduweeWarriorMale",
-              "owner": 2,
-              "position": {
-                "x": 256,
-                "y": 928,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-4",
-              "actorName": "SkaduweeWarriorMale",
-              "owner": 2,
-              "position": {
-                "x": 128,
-                "y": 896,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-5",
-              "actorName": "SkaduweeWarriorMale",
-              "owner": 2,
-              "position": {
-                "x": 160,
-                "y": 912,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-6",
-              "actorName": "SkaduweeRangedFemale",
-              "owner": 2,
-              "position": {
-                "x": 192,
-                "y": 928,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-7",
-              "actorName": "SkaduweeRangedFemale",
-              "owner": 2,
-              "position": {
-                "x": 224,
-                "y": 944,
-                "z": 0
-              }
-            },
-            {
               "fixtureActorId": "ready-producer",
               "actorName": "InfantryInn",
               "owner": 2,
@@ -2126,8 +1886,8 @@
               "actorName": "SkaduweeWarriorMale",
               "owner": 2,
               "position": {
-                "x": 608,
-                "y": 624,
+                "x": 224,
+                "y": 752,
                 "z": 0
               }
             },
@@ -2621,66 +2381,6 @@
               }
             },
             {
-              "fixtureActorId": "army-2",
-              "actorName": "SkaduweeWarriorMale",
-              "owner": 2,
-              "position": {
-                "x": 224,
-                "y": 912,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-3",
-              "actorName": "SkaduweeWarriorMale",
-              "owner": 2,
-              "position": {
-                "x": 256,
-                "y": 928,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-4",
-              "actorName": "SkaduweeWarriorMale",
-              "owner": 2,
-              "position": {
-                "x": 128,
-                "y": 896,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-5",
-              "actorName": "SkaduweeWarriorMale",
-              "owner": 2,
-              "position": {
-                "x": 160,
-                "y": 912,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-6",
-              "actorName": "SkaduweeRangedFemale",
-              "owner": 2,
-              "position": {
-                "x": 192,
-                "y": 928,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-7",
-              "actorName": "SkaduweeRangedFemale",
-              "owner": 2,
-              "position": {
-                "x": 224,
-                "y": 944,
-                "z": 0
-              }
-            },
-            {
               "fixtureActorId": "ready-producer",
               "actorName": "InfantryInn",
               "owner": 2,
@@ -2735,8 +2435,8 @@
               "actorName": "SkaduweeWarriorMale",
               "owner": 2,
               "position": {
-                "x": 608,
-                "y": 624,
+                "x": 224,
+                "y": 752,
                 "z": 0
               }
             },
@@ -3239,66 +2939,6 @@
               }
             },
             {
-              "fixtureActorId": "army-2",
-              "actorName": "SkaduweeWarriorMale",
-              "owner": 2,
-              "position": {
-                "x": 224,
-                "y": 912,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-3",
-              "actorName": "SkaduweeWarriorMale",
-              "owner": 2,
-              "position": {
-                "x": 256,
-                "y": 928,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-4",
-              "actorName": "SkaduweeWarriorMale",
-              "owner": 2,
-              "position": {
-                "x": 128,
-                "y": 896,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-5",
-              "actorName": "SkaduweeWarriorMale",
-              "owner": 2,
-              "position": {
-                "x": 160,
-                "y": 912,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-6",
-              "actorName": "SkaduweeRangedFemale",
-              "owner": 2,
-              "position": {
-                "x": 192,
-                "y": 928,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-7",
-              "actorName": "SkaduweeRangedFemale",
-              "owner": 2,
-              "position": {
-                "x": 224,
-                "y": 944,
-                "z": 0
-              }
-            },
-            {
               "fixtureActorId": "ready-producer",
               "actorName": "InfantryInn",
               "owner": 2,
@@ -3353,8 +2993,8 @@
               "actorName": "SkaduweeWarriorMale",
               "owner": 2,
               "position": {
-                "x": 608,
-                "y": 624,
+                "x": 224,
+                "y": 752,
                 "z": 0
               }
             },

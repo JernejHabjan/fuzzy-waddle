@@ -267,6 +267,47 @@ describe("AI food infrastructure", () => {
     );
   });
 
+  it("prefers a safe Field site aligned with the existing food row when one is available", () => {
+    const base = observation(2, 8);
+    const field = {
+      ...createAiTestOwnedActor("ready-field"),
+      objectName: ObjectNames.Field,
+      logicalPosition: { status: "known" as const, value: { x: 10, y: 10, z: 0 }, observedTick: 200 }
+    };
+    const granary = {
+      ...createAiTestOwnedActor("ready-granary"),
+      objectName: ObjectNames.Granary,
+      logicalPosition: { status: "known" as const, value: { x: 9, y: 10, z: 0 }, observedTick: 200 }
+    };
+    const assignedWorker = base.actors[0];
+    if (!assignedWorker) throw new Error("worker_missing");
+    const world = {
+      ...base,
+      actors: [
+        ...base.actors.map((actor) => actor.actorId === assignedWorker.actorId
+          ? { ...actor, activeOrder: { status: "known" as const, value: { orderType: OrderType.Gather, targetActorId: field.actorId }, observedTick: 200 } }
+          : actor),
+        granary,
+        field
+      ],
+      map: {
+        ...base.map!,
+        constructionCells: base.map!.constructionCells!.map((cell) => cell.tileKey === "10,10"
+          ? { ...cell, observedBlocked: true }
+          : cell)
+      }
+    };
+    const proposal = new AiMacroManager(() => catalog).propose(world, state());
+    const nextField = proposal.intents.find(
+      (intent) => intent.kind === "construct" && intent.objectName === ObjectNames.Field
+    );
+
+    expect(nextField?.kind).toBe("construct");
+    if (nextField?.kind !== "construct") return;
+    expect(nextField.logicalPosition.x === field.logicalPosition.value.x ||
+      nextField.logicalPosition.y === field.logicalPosition.value.y).toBe(true);
+  });
+
   it("staffs an existing Field before opening another Field construction", () => {
     const field = { ...createAiTestOwnedActor("field-ready"), objectName: ObjectNames.Field };
     const proposal = new AiMacroManager(() => catalog).propose(

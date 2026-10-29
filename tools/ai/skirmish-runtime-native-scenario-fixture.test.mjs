@@ -420,6 +420,21 @@ test("authority and priority bindings reject erased consumer faults and altered 
   }
 });
 
+test("H-14 keeps a reachable scouting route and affordable production demand beside harmless noise", () => {
+  const fixture = nativeScenarioFixture("H-14");
+  for (const variant of fixture.recipe.variants) {
+    const world = variant.presetWorld;
+    assert.deepEqual(world.actors.find((actor) => actor.fixtureActorId === "scout-probe").position, {
+      x: 224,
+      y: 752,
+      z: 0
+    });
+    assert.equal(world.actors.filter((actor) => /^army-\d+$/.test(actor.fixtureActorId)).length, 2);
+    assert.ok(world.actors.some((actor) => actor.fixtureActorId === "ready-producer"));
+    assert.ok(world.actors.some((actor) => actor.fixtureActorId === "harmless-scout"));
+  }
+});
+
 test("H-06/H-07 keep the receipt fault active through their first native production demand", () => {
   for (const id of ["H-06", "H-07"]) {
     const fixture = nativeScenarioFixture(id),

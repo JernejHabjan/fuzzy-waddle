@@ -646,8 +646,8 @@
               "actorName": "SkaduweeWarriorMale",
               "owner": 1,
               "position": {
-                "x": 832,
-                "y": 1024,
+                "x": 768,
+                "y": 960,
                 "z": 0
               }
             }
@@ -1036,8 +1036,8 @@
               "actorName": "SkaduweeWarriorMale",
               "owner": 1,
               "position": {
-                "x": 832,
-                "y": 1024,
+                "x": 768,
+                "y": 960,
                 "z": 0
               }
             }
@@ -1482,8 +1482,8 @@
               "actorName": "SkaduweeWarriorMale",
               "owner": 1,
               "position": {
-                "x": 832,
-                "y": 1024,
+                "x": 768,
+                "y": 960,
                 "z": 0
               }
             }
@@ -2183,8 +2183,8 @@
               "actorName": "TivaraMacemanMale",
               "owner": 1,
               "position": {
-                "x": 832,
-                "y": 1024,
+                "x": 768,
+                "y": 960,
                 "z": 0
               }
             }
@@ -2573,8 +2573,8 @@
               "actorName": "TivaraMacemanMale",
               "owner": 1,
               "position": {
-                "x": 832,
-                "y": 1024,
+                "x": 768,
+                "y": 960,
                 "z": 0
               }
             }
@@ -3019,8 +3019,8 @@
               "actorName": "TivaraMacemanMale",
               "owner": 1,
               "position": {
-                "x": 832,
-                "y": 1024,
+                "x": 768,
+                "y": 960,
                 "z": 0
               }
             }

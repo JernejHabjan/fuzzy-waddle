@@ -96,7 +96,11 @@ export function planAiDecisions(
   profile: AiProfileConfigV1
 ): AiDecisionPlanningResult {
   const sortedBatches = [...batches].sort((left, right) => left.managerId.localeCompare(right.managerId));
-  const considered = new Set(sortedBatches.filter((batch) => batch.evaluated).map((batch) => batch.lane));
+  const considered = new Set(
+    sortedBatches
+      .filter((batch) => batch.evaluated)
+      .flatMap((batch) => [batch.lane, ...(batch.evaluatedLanes ?? [])])
+  );
   const lanes = LANE_ORDER.map((lane) => {
     const existing = previous.lanes.find((entry) => entry.lane === lane);
     const wasConsidered = considered.has(lane);

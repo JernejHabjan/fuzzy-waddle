@@ -56,8 +56,10 @@ export function nativeAuthorityWorld(id, faction, branch) {
       fixtureActorId: "ready-house" });
   }
   if (id === "H-14") {
+    // Keep a genuine army production deficit and put the scout on the open side of the authored water barrier.
+    world.actors = world.actors.filter((entry) => !/^army-[2-7]$/.test(entry.fixtureActorId));
     world.actors.push(actor("harmless-scout", `${enemy}WorkerMale`, 1, 15, 10));
-    world.actors.find((a) => a.fixtureActorId === "scout-probe").position = tile(28, 10);
+    world.actors.find((a) => a.fixtureActorId === "scout-probe").position = tile(26, 20);
     for (const tick of [200, 600, 1000]) {
       world.controls.push(control(`noise-show-${tick}`, "harmless-scout", tick,
         { kind: "move", worldPosition: tile(22, 10) }), control(`noise-leave-${tick}`, "harmless-scout", tick + 200,

@@ -21,6 +21,8 @@ import type { AiPlanId } from "../contracts/ai-core-types";
 export interface AiManagerProposalV1 {
   readonly managerId: string;
   readonly lane: AiServiceLaneV1;
+  /** Additional lanes this manager actually evaluated in the same deterministic proposal pass. */
+  readonly evaluatedLanes?: readonly AiServiceLaneV1[];
   readonly evaluated: boolean;
   readonly intents: readonly AiIntentV1[];
   readonly reasons: readonly string[];

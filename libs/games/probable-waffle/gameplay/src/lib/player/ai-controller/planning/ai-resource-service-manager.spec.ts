@@ -214,6 +214,55 @@ describe("AiResourceServiceManager", () => {
     expect(proposal(control).intents).toHaveLength(0);
   });
 
+  it("defers an optional remote service while credible visible threats pressure the home economy", () => {
+    const attackers = ["raider-a", "raider-b"].map((id, index) => ({
+      ...actor(id, ObjectNames.SkaduweeWarriorMale, 3 + index, 5),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const,
+      observedTick: 20,
+      combatProfile: {
+        status: "known" as const,
+        observedTick: 20,
+        value: {
+          maxHealth: 100,
+          maxArmour: 0,
+          passiveRegenerationPerSecond: 0,
+          armourPermille: 0,
+          attacks: [{
+            damage: 10,
+            cooldownTicks: 20,
+            remainingCooldownTicks: null,
+            range: 5,
+            minRange: 0,
+            highGroundRangeBonus: 0,
+            impactDelayTicks: 0,
+            areaRadius: 0,
+            targetDomains: ["ground"] as const
+          }],
+          healing: null,
+          spells: [],
+          statuses: []
+        }
+      }
+    } satisfies AiObservedActorV1));
+    const observation = world(20, attackers);
+    const pressured: AiObservationV1 = {
+      ...observation,
+      actors: observation.actors.map((observed) => observed.actorId === "main"
+        ? { ...observed, mainBuilding: { status: "known" as const, value: true, observedTick: 20 } }
+        : observed),
+      threatSummary: {
+        observedTick: observation.tick,
+        visibleEnemyActorIds: attackers.map((attacker) => attacker.actorId),
+        rememberedEnemyActorIds: [],
+        observedCapabilityFamilies: ["attack"]
+      }
+    };
+
+    expect(proposal(pressured).intents).toHaveLength(0);
+  });
+
   it("does not place a new resource service inside a currently observed weapon footprint", () => {
     const enemyTower = {
       ...actor("enemy-tower", ObjectNames.WatchTower, 15, 5),

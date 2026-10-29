@@ -240,7 +240,12 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
           return member && legalForMembers(assignment.position, observation, [member]);
         })?.position
       : undefined;
-  const retreat = retainedRetreat ?? safeRetreatPosition(observation, state, members);
+  const retreat = retainedRetreat ?? safeRetreatPosition(
+    observation,
+    state,
+    members,
+    squad.role === "defense" ? squad.lifecycle?.protectedBaseId : undefined
+  );
   return {
     ...context,
     squad,

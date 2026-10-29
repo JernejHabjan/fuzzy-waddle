@@ -43,7 +43,8 @@ export function legalForMembers(
 export function safeRetreatPosition(
   observation: AiObservationV1,
   state: AiBrainStateV1,
-  members: readonly AiObservedActorV1[]
+  members: readonly AiObservedActorV1[],
+  protectedBaseId?: string | null
 ): Vector3Simple | null {
   const anchors = state.bases
     .filter((base) => base.active && base.anchorPosition)
@@ -57,7 +58,18 @@ export function safeRetreatPosition(
       .slice(0, MAX_RETREAT_CANDIDATES),
     anchor
   ]);
-  const legalCandidates = candidates.filter((candidate) => legalForMembers(candidate, observation, members));
+  const allLegalCandidates = candidates.filter((candidate) => legalForMembers(candidate, observation, members));
+  const protectedBase = protectedBaseId
+    ? state.bases.find((base) => base.baseId === protectedBaseId && base.active) ??
+      (protectedBaseId === "base:home"
+        ? state.bases.find((base) => base.active && base.anchorActorId !== null)
+        : undefined)
+    : undefined;
+  const protectedBasePosition = protectedBase?.anchorPosition;
+  const localDefenseCandidates = protectedBasePosition
+    ? allLegalCandidates.filter((candidate) => distance(candidate, protectedBasePosition) <= 12)
+    : [];
+  const legalCandidates = localDefenseCandidates.length > 0 ? localDefenseCandidates : allLegalCandidates;
   const visibleThreats = observation.actors.flatMap((actor) => {
     const position = actor.relation === "enemy" && actor.visibility === "visible" ? knownPosition(actor) : null;
     return position ? [position] : [];
@@ -70,7 +82,9 @@ export function safeRetreatPosition(
     legalCandidates.sort(
       (left, right) =>
         nearestThreat(right) - nearestThreat(left) ||
-        nearestAnchor(left) - nearestAnchor(right) ||
+        (protectedBasePosition
+          ? distance(left, protectedBasePosition) - distance(right, protectedBasePosition)
+          : nearestAnchor(left) - nearestAnchor(right)) ||
         left.x - right.x ||
         left.y - right.y
     )[0] ?? null

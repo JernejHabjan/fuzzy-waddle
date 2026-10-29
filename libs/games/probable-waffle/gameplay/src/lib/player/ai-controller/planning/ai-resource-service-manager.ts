@@ -5,7 +5,7 @@ import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v
 import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
 import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
-import { canAffordAiEconomyCost } from "./ai-economy-policy";
+import { canAffordAiEconomyCost, hasCredibleAiEconomyThreat } from "./ai-economy-policy";
 import { createAiResourceCostClaims } from "./ai-resource-cost-claims";
 import { aiEconomySiteSafety } from "./ai-economy-site-safety";
 import { node, routeCapability } from "./ai-skirmish-support";
@@ -83,6 +83,15 @@ export class AiResourceServiceManager implements AiProposalManagerV1 {
         evaluated: false,
         intents: [],
         reasons: ["catalog_not_ready"]
+      };
+    }
+    if (hasCredibleAiEconomyThreat(observation)) {
+      return {
+        managerId: this.managerId,
+        lane: "optional_infrastructure_tech",
+        evaluated: true,
+        intents: [],
+        reasons: ["resource_service:deferred_home_pressure"]
       };
     }
     const owned = observation.actors.filter((actor) => actor.relation === "self" && actor.visibility === "owned");
