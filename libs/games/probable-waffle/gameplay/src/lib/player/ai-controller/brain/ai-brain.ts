@@ -171,6 +171,11 @@ export class PureAiBrain implements AiBrainV1 {
         )
     );
     const acceptedEffectIds = new Set(accepted.map((intent) => intent.effectId));
+    const retaskedActorKeys = new Set(
+      accepted.flatMap((intent) =>
+        intent.claims.filter((claim) => claim.kind === "actor").map((claim) => aiClaimKey(claim))
+      )
+    );
     const releasedTransportClaims = aiTransportReleasedClaimIds(projectedState);
     const previousSupportIds = new Set(previousState.support.map((plan) => plan.planId));
     const previousDamageEffectIds = new Set(
@@ -227,6 +232,7 @@ export class PureAiBrain implements AiBrainV1 {
           (existing) =>
             !releasedRecoveryClaims.has(existing.claimId) &&
             !releasedTransportClaims.has(existing.claimId) &&
+            !retaskedActorKeys.has(existing.subjectKey ?? "") &&
             !acceptedReservations.some(
               (acceptedReservation) =>
                 acceptedReservation.ownerPlanId === existing.ownerPlanId &&

@@ -1,4 +1,4 @@
-import type { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { OrderType, type ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
 import type {
   AiIntentClaimV1,
@@ -81,6 +81,38 @@ function preconditionSatisfied(
         (precondition.planId === "plan:mode:concession" && state.skirmish.mode.state === "conceding")
       );
   }
+}
+
+/** A worker's applied gather lease may be replaced by construction when the live order confirms it is safe to retask. */
+function canRetaskGathererForConstruction(
+  intent: AiIntentV1,
+  claim: AiIntentClaimV1,
+  state: AiBrainStateV1,
+  observation: AiObservationV1
+): boolean {
+  if (intent.kind !== "construct" || claim.kind !== "actor") return false;
+  const actor = observation.actors.find(
+    (candidate) =>
+      candidate.actorId === claim.actorId && candidate.relation === "self" && candidate.visibility === "owned"
+  );
+  if (
+    actor?.activeOrder?.status !== "known" ||
+    actor.activeOrder.value?.orderType !== OrderType.Gather ||
+    actor.resourceTransferInFlight ||
+    (actor.carriedResourceAmount ?? 0) > 0 ||
+    (actor.pendingOrder?.status === "known" &&
+      actor.pendingOrder.value !== null &&
+      (actor.pendingOrder.value.orderType !== OrderType.Gather ||
+        actor.pendingOrder.value.targetActorId !== actor.activeOrder.value.targetActorId))
+  )
+    return false;
+  const actorReservations = state.reservations.filter(
+    (reservation) => reservation.subjectKey === `actor:${claim.actorId}`
+  );
+  return (
+    actorReservations.length > 0 &&
+    actorReservations.every((reservation) => reservation.state.kind === "applied_spending")
+  );
 }
 
 /** Stable exclusive-claim identity shared by admission and provisional reservation. */
@@ -194,7 +226,8 @@ export function arbitrateAiIntents(
         (claimedThisStep.has(aiClaimKey(claim)) ||
           claimedThisStep.has(claim.claimId) ||
           ((existingClaims.has(aiClaimKey(claim)) || existingClaims.has(claim.claimId)) &&
-            !canRenewAiSquadActorClaim(intent, claim, state, observation)))
+            !canRenewAiSquadActorClaim(intent, claim, state, observation) &&
+            !canRetaskGathererForConstruction(intent, claim, state, observation)))
     );
     if (exclusiveConflict) {
       decisions.push({ outcome: "rejected", intent, reason: "claim_conflict", detail: aiClaimKey(exclusiveConflict) });

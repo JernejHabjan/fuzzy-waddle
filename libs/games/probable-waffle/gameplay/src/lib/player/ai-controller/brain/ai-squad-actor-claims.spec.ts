@@ -1,4 +1,9 @@
-import { FactionType, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  FactionType,
+  ObjectNames,
+  OrderType,
+  ProbableWaffleAiDifficulty
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { aiDeadline } from "../contracts/ai-core-types";
 import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
@@ -124,14 +129,7 @@ describe("squad actor leases permit tactical correction without stealing ownersh
       claims: [{ claimId: "claim:legacy-defense", kind: "actor", actorId: "guard" }],
       reasonCode: "legacy_defense_attack"
     };
-    const result = arbitrateAiIntents(
-      f.observation,
-      f.state,
-      [legacyDefenseAttack, cast],
-      [],
-      f.profile,
-      undefined
-    );
+    const result = arbitrateAiIntents(f.observation, f.state, [legacyDefenseAttack, cast], [], f.profile, undefined);
     expect(result.accepted).toEqual([cast]);
     expect(result.decisions).toContainEqual(
       expect.objectContaining({ intent: legacyDefenseAttack, reason: "claim_conflict" })
@@ -145,6 +143,123 @@ describe("squad actor leases permit tactical correction without stealing ownersh
       reservations: f.state.reservations.map((r) => ({ ...r, ownerPlanId: "plan:opening" as const }))
     };
     expect(arbitrateAiIntents(f.observation, state, [f.intent], [], f.profile, undefined).accepted).toEqual([]);
+  });
+
+  it("lets construction retask an owned gatherer with an applied actor lease", () => {
+    const f = fixture();
+    const worker = {
+      ...createAiTestOwnedActor("guard"),
+      activeOrder: {
+        status: "known" as const,
+        observedTick: 20,
+        value: { orderType: OrderType.Gather, targetActorId: "wood-source" }
+      },
+      carriedResourceAmount: 0,
+      resourceTransferInFlight: false
+    };
+    const state = {
+      ...f.state,
+      reservations: f.state.reservations.map((reservation) => ({
+        ...reservation,
+        ownerPlanId: "plan:opening" as const,
+        state: { kind: "applied_spending" as const, appliedTick: 1 }
+      }))
+    };
+    const construct: AiIntentV1 = {
+      ...f.intent,
+      kind: "construct",
+      intentId: "intent:retask-builder",
+      effectId: "effect:retask-builder",
+      planId: "plan:opening",
+      objectName: ObjectNames.Field,
+      builderIds: ["guard"],
+      logicalPosition: { x: 6, y: 5, z: 0 },
+      siteKey: "field:6,5",
+      claims: [{ claimId: "claim:retask-builder", kind: "actor", actorId: "guard" }]
+    };
+
+    expect(
+      arbitrateAiIntents({ ...f.observation, actors: [worker] }, state, [construct], [], f.profile, undefined).accepted
+    ).toEqual([construct]);
+  });
+
+  it("does not let construction retask a builder or gatherer with unresolved work", () => {
+    const f = fixture();
+    const construct: AiIntentV1 = {
+      ...f.intent,
+      kind: "construct",
+      intentId: "intent:retask-builder",
+      effectId: "effect:retask-builder",
+      planId: "plan:opening",
+      objectName: ObjectNames.Field,
+      builderIds: ["guard"],
+      logicalPosition: { x: 6, y: 5, z: 0 },
+      siteKey: "field:6,5",
+      claims: [{ claimId: "claim:retask-builder", kind: "actor", actorId: "guard" }]
+    };
+    const applied = f.state.reservations.map((reservation) => ({
+      ...reservation,
+      ownerPlanId: "plan:opening" as const,
+      state: { kind: "applied_spending" as const, appliedTick: 1 }
+    }));
+    const gathering = {
+      ...createAiTestOwnedActor("guard"),
+      activeOrder: {
+        status: "known" as const,
+        observedTick: 20,
+        value: { orderType: OrderType.Gather, targetActorId: "wood-source" }
+      }
+    };
+    const building = {
+      ...gathering,
+      activeOrder: {
+        status: "known" as const,
+        observedTick: 20,
+        value: { orderType: OrderType.Build, targetActorId: "site" }
+      }
+    };
+    const queuedElsewhere = {
+      ...gathering,
+      pendingOrder: {
+        status: "known" as const,
+        observedTick: 20,
+        value: { orderType: OrderType.Move, targetActorId: null }
+      }
+    };
+    const dispatched = applied.map((reservation) => ({
+      ...reservation,
+      state: { kind: "dispatched" as const, commandId: "old-gather-command" }
+    }));
+    expect(
+      arbitrateAiIntents(
+        { ...f.observation, actors: [gathering] },
+        { ...f.state, reservations: dispatched },
+        [construct],
+        [],
+        f.profile,
+        undefined
+      ).accepted
+    ).toEqual([]);
+    expect(
+      arbitrateAiIntents(
+        { ...f.observation, actors: [building] },
+        { ...f.state, reservations: applied },
+        [construct],
+        [],
+        f.profile,
+        undefined
+      ).accepted
+    ).toEqual([]);
+    expect(
+      arbitrateAiIntents(
+        { ...f.observation, actors: [queuedElsewhere] },
+        { ...f.state, reservations: applied },
+        [construct],
+        [],
+        f.profile,
+        undefined
+      ).accepted
+    ).toEqual([]);
   });
 
   it("admits only one command for that actor in the same decision", () => {
