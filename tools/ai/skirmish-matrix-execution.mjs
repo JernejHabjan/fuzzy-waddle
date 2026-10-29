@@ -240,7 +240,7 @@ function invokeRuntimeHarness(input, context) {
     process.env.AI_SKIRMISH_RUNTIME_RESULTS_DIRECTORY || join(workspaceRoot, "tmp/ai-skirmish-runtime-results")
   );
   const sourceRevision = input.candidate ?? readHead();
-  const requiresMultiplayer = fixtures.some((fixture) => fixture.recipe.requiresMultiplayer === true);
+  const requiresMultiplayer = requiresMultiplayerForRuntime(fixtures, input.diagnosticSelection);
   const requestPath = `${resultArtifact}.request.json`;
   const requestDigest = writeRuntimeRequest(requestPath, {
     schemaVersion: 1,
@@ -330,3 +330,8 @@ function invokeRuntimeHarness(input, context) {
 }
 
 export { pnpmInvocation } from "./command-invocation.mjs";
+
+export function requiresMultiplayerForRuntime(fixtures, diagnosticSelection) {
+  return diagnosticSelection?.requiresMultiplayer ??
+    fixtures.some((fixture) => fixture.recipe.requiresMultiplayer === true);
+}

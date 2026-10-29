@@ -59,6 +59,7 @@
         "aiFaction": "Tivara",
         "humanFaction": "Skaduwee",
         "difficulty": "Normal",
+        "requiresMultiplayer": false,
         "scenarioIds": [
           "H-32"
         ],
@@ -310,6 +311,7 @@
         "aiFaction": "Tivara",
         "humanFaction": "Skaduwee",
         "difficulty": "Normal",
+        "requiresMultiplayer": false,
         "scenarioIds": [
           "H-32"
         ],
@@ -986,6 +988,7 @@
         "aiFaction": "Tivara",
         "humanFaction": "Skaduwee",
         "difficulty": "Normal",
+        "requiresMultiplayer": false,
         "scenarioIds": [
           "H-32"
         ],
@@ -1343,6 +1346,7 @@
         "aiFaction": "Tivara",
         "humanFaction": "Skaduwee",
         "difficulty": "Normal",
+        "requiresMultiplayer": true,
         "scenarioIds": [
           "H-32"
         ],
@@ -1596,6 +1600,7 @@
         "aiFaction": "Skaduwee",
         "humanFaction": "Tivara",
         "difficulty": "Normal",
+        "requiresMultiplayer": false,
         "scenarioIds": [
           "H-32"
         ],
@@ -1847,6 +1852,7 @@
         "aiFaction": "Skaduwee",
         "humanFaction": "Tivara",
         "difficulty": "Normal",
+        "requiresMultiplayer": false,
         "scenarioIds": [
           "H-32"
         ],
@@ -2523,6 +2529,7 @@
         "aiFaction": "Skaduwee",
         "humanFaction": "Tivara",
         "difficulty": "Normal",
+        "requiresMultiplayer": false,
         "scenarioIds": [
           "H-32"
         ],
@@ -2880,6 +2887,7 @@
         "aiFaction": "Skaduwee",
         "humanFaction": "Tivara",
         "difficulty": "Normal",
+        "requiresMultiplayer": true,
         "scenarioIds": [
           "H-32"
         ],

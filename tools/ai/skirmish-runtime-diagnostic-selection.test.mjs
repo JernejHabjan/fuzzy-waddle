@@ -17,6 +17,24 @@ test("selects exactly one authored repetition for a scenario", () => {
   });
 });
 
+test("uses an authored variant multiplayer override for a focused single-player control", () => {
+  const fixture = {
+    recipe: {
+      requiresMultiplayer: true,
+      variants: [
+        { id: "sp", scenarioIds: ["H-32"], requiresMultiplayer: false },
+        { id: "peer", scenarioIds: ["H-32"], requiresMultiplayer: true }
+      ]
+    }
+  };
+  assert.deepEqual(selectDiagnosticVariant({ variant: "sp", repetition: "1" }, "H-32", "runtime", fixture), {
+    scenarioId: "H-32", variantId: "sp", repetition: 1, requiresMultiplayer: false
+  });
+  assert.deepEqual(selectDiagnosticVariant({ variant: "peer", repetition: "1" }, "H-32", "runtime", fixture), {
+    scenarioId: "H-32", variantId: "peer", repetition: 1, requiresMultiplayer: true
+  });
+});
+
 test("rejects irrelevant variants and repetitions beyond the authored count", () => {
   assert.throws(() => selectDiagnosticVariant({ variant: "control", repetition: "1" },
     "PRO-05", "runtime", fixture), /diagnostic_variant_missing_or_ambiguous/);

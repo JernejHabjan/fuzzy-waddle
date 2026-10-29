@@ -66,10 +66,6 @@ export async function retainNativeSceneWork(
         .map((event) => `${event.id}@${event.tick}`).join(",") ?? "missing";
       throw new Error(`retained_native_query_not_pending:tick=${clock.currentTick}:events=${observed}:settled=${pathSettled}`);
     }
-    if (!pathWasPending) {
-      removeSceneProbes();
-      shutdownObserver.unsubscribe();
-    }
     const originalPaidCommandId = item?.commandContext?.execution.commandId ?? null;
     realm.__nativeRetainedWork = async () => {
       const completionResults: (string | null)[] = [];
@@ -96,8 +92,11 @@ export async function retainNativeSceneWork(
       // Redeliver through the actual old emitter. Shutdown must have removed every original subscriber.
       clock.tick$.next(clock.currentTick + 1);
       const result = { oldSceneInactive: !scene.sys.isActive(), oldTickObservers: clock.tick$.observers.length,
+        oldTickSubjectStopped: clock.tick$.isStopped, oldSceneShutdownObserved: sceneShutdownObserved,
         originalPaidCommandId, completionResults, pathWasPending, pathCancelled: pending !== null && path === null,
         sameRealm: true };
+      shutdownObserver.unsubscribe();
+      removeSceneProbes();
       delete realm.__nativeRetainedWork;
       return result;
     };

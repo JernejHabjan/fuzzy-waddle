@@ -1,6 +1,7 @@
 import { test as it, expect } from "@playwright/test";
 import { nativeSaveProofFailures } from "./skirmish-ai-native-save-evaluation";
 import type { NativeSaveProof } from "./skirmish-ai-native-save-proof";
+import { nativeDebugProjectionDifferencePaths, nativeDebugProjectionDifferences } from "./skirmish-ai-native-world-projection-diff";
 
 const boundary = (tick: number): NativeSaveProof["saved"] => ({
   owner: { tick, activeMapScenes: 1, handlerCount: 1, controllerCount: 1, nativePlayerCount: 1,
@@ -19,7 +20,16 @@ const base: NativeSaveProof = { branch: "before_apply", sourceRevision: "a".repe
   premises: { tick: 19, paidTrainingItems: 0, paidResearchItems: 0, unfinishedOriginalSite: false,
     heldAppliedReceipts: 0, captureDropped: false, captureGaps: [] },
   controlTraceCount: 20, resumedTraceCount: 20, controlTraceDigest: "actual-trace", resumedTraceDigest: "actual-trace",
-  traceOverflow: false, firstTraceDifference: null };
+  traceOverflow: false, restoreWorldDifferences: [], firstTraceInputDifferences: [], firstTraceDifference: null };
+
+it("bounds native world mismatch diagnostics to stable field paths", () => {
+  expect(nativeDebugProjectionDifferencePaths({ actors: [{ owner: 1 }, { x: 2 }] },
+    { actors: [{ owner: 2 }, { x: 2 }, { x: 3 }] })).toEqual(["$world.actors.length", "$world.actors[0].owner"]);
+  expect(nativeDebugProjectionDifferencePaths({ a: 1, b: 2 }, { a: 2, b: 3 }, 1)).toEqual(["$world.a"]);
+  expect(nativeDebugProjectionDifferences({ value: "same" }, { value: "changed" })).toEqual([
+    { path: "$world.value", before: "same", after: "changed" }
+  ]);
+});
 
 it("requires a real same-realm restore, one native owner and full queue/brain/cadence continuation", () => {
   expect(nativeSaveProofFailures("before_apply", base)).toEqual([]);

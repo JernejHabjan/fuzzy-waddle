@@ -171,6 +171,14 @@ describe("health facade and presentation", () => {
     expect(f.scene.events.listenerCount(Phaser.Scenes.Events.UPDATE)).toBe(0);
   });
 
+  it("preserves saved health and armor applied before deferred scene initialization", () => {
+    const f = fixture();
+    f.health.setData({ health: 60, armour: 4 });
+    ready(f);
+    expect(f.health.getData()).toEqual({ health: 60, armour: 4 });
+    f.actor.emit(Phaser.GameObjects.Events.DESTROY);
+  });
+
   it("keeps construction, vision, frame and container visibility gates and cleans up subscriptions/timers", () => {
     const construction = { isFinished: false, constructionStateChanged: new Subject<void>() };
     const vision = { visibilityByCurrentPlayer: true };

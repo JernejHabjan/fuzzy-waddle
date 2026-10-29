@@ -10,6 +10,7 @@ import { captureAiDecisionBundleV1, compareAiDecisionBundlesV1, replayAiDecision
 import { digestCanonicalAiValue } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/canonical-ai-serialization";
 import { nativeReproBrain } from "./skirmish-ai-native-repro-brain";
 import type { NativeDebugComparisonProof } from "./skirmish-ai-native-debug-comparison-proof";
+export { nativeDebugProjectionDifferencePaths } from "./skirmish-ai-native-world-projection-diff";
 
 /** One actual first selected boundary; the listener removes itself before another large payload could be retained. */
 export async function armNativeDebugComparison(page: Page) {
@@ -27,7 +28,6 @@ export async function armNativeDebugComparison(page: Page) {
     });
   });
 }
-
 /** Pure comparison uses actual native input but never applies a hypothetical result to the paused original scene. */
 export async function captureNativeDebugComparison(
   page: Page, branch: string, sourceRevision: string, dirtySourceDigest: string | null
@@ -74,9 +74,13 @@ export async function captureNativeDebugComparison(
     firstDifferenceExpected: whatIf?.firstDifference?.expected ?? comparison.firstDifference?.expected ?? null,
     firstDifferenceActual: whatIf?.firstDifference?.actual ?? comparison.firstDifference?.actual ?? null };
 }
-
 /** Full canonical world by default. Late-delivery probes compare physical effects plus separate controller/epoch proofs. */
 export async function nativeDebugWorldDigest(page: Page, physicalEffectsOnly = false) {
+  return digestCanonicalAiValue(await captureNativeDebugWorldProjection(page, physicalEffectsOnly));
+}
+
+/** Full projection stays in the test process for bounded field-level diagnostics; it is never written to artifacts. */
+export async function captureNativeDebugWorldProjection(page: Page, physicalEffectsOnly = false) {
   const projection = await page.evaluate(() => {
     const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: AiRuntimeBrowserTestHostV1;
       __fuzzyWaddleAiMultiplayerBrowserTestV1?: Pick<AiRuntimeBrowserTestHostV1, "game"> };
@@ -90,5 +94,5 @@ export async function nativeDebugWorldDigest(page: Page, physicalEffectsOnly = f
   });
   const { commandAuthority: _authority, aiControllers: _controllers, ...physicalSystems } = projection.systems;
   const compared = physicalEffectsOnly ? { ...projection, systems: physicalSystems } : projection;
-  return digestCanonicalAiValue(JSON.parse(JSON.stringify(compared)));
+  return JSON.parse(JSON.stringify(compared)) as unknown;
 }

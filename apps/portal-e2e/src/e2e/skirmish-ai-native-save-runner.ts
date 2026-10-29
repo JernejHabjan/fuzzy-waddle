@@ -10,6 +10,7 @@ import { armNativeDecisionTrace } from "./skirmish-ai-native-decision-trace";
 import { replayNativeSavedContinuation } from "./skirmish-ai-native-save-continuation";
 import { captureRuntimeProductionAuthority } from "./skirmish-ai-runtime-production-capture";
 import { nativeSavePremises } from "./skirmish-ai-native-save-premises";
+import { captureNativeDebugWorldProjection } from "./skirmish-ai-native-debug-comparison";
 import type { AiRuntimeBrowserTestHostV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host-v1";
 
@@ -31,9 +32,11 @@ export async function runNativeSaveVariant(
   let save: Awaited<ReturnType<typeof saveNativeMatch>> | undefined;
   let saved: Awaited<ReturnType<typeof captureNativeContinuationBoundary>> | undefined;
   let premises: NativeSaveProof["premises"] | undefined;
+  let savedWorldProjection: unknown;
   let nativeSave: NativeSaveProof | undefined;
   const captureSaveBoundary = async (page: Page) => {
     saved = await captureNativeContinuationBoundary(page, player);
+    savedWorldProjection = await captureNativeDebugWorldProjection(page);
     const capture = await captureRuntimeProductionAuthority(page, player);
     const siteId = await page.evaluate(() => (window as unknown as {
       __fuzzyWaddleAiRuntimeBrowserTestV1?: AiRuntimeBrowserTestHostV1
@@ -55,7 +58,7 @@ export async function runNativeSaveVariant(
       if (!save || !saved || !premises) throw new Error("native_save_exact_original_boundary_missing");
       await beforeReplay?.(page);
       nativeSave = await replayNativeSavedContinuation(page, player, branch, request.sourceRevision,
-        request.fixtureDigest, save, saved, premises, branch === "pause_speed" ? 2 : 1);
+        request.fixtureDigest, save, saved, premises, branch === "pause_speed" ? 2 : 1, savedWorldProjection);
       await afterContinuation?.(page, nativeSave);
     }, undefined, async (page, _index, targetTick) => {
       if (branch !== "before_apply" || targetTick !== saveTick) return false;

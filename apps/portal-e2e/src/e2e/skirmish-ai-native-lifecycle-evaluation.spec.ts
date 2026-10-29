@@ -7,7 +7,8 @@ const owner = { activeMapScenes: 1, handlerCount: 1, controllerCount: 1, nativeP
 const proof: NativeLifecycleProof = { branch: "normal", sourceRevision: "a".repeat(40), fixtureDigest: "fnv1a32:01234567",
   original: owner, nextInitial: { ...owner, tick: 0, seed: 2, matchId: "next", decisionSequence: 0 },
   nextActive: { ...owner, seed: 2, matchId: "next" }, nativeBeforeLateWork: "actual-world", nativeAfterLateWork: "actual-world",
-  nextAiErrors: [], retained: { oldSceneInactive: true, oldTickObservers: 0, originalPaidCommandId: null,
+  nextAiErrors: [], retained: { oldSceneInactive: true, oldSceneShutdownObserved: true, oldTickSubjectStopped: true,
+    oldTickObservers: 0, originalPaidCommandId: null,
     completionResults: [], pathWasPending: false, pathCancelled: false, sameRealm: true } };
 
 it("requires original ownership, genuine same-realm delivery and continued new-match decisions", () => {

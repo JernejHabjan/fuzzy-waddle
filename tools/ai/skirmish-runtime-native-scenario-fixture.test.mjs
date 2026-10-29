@@ -655,6 +655,13 @@ test("H-32 binds real relay promotion, one retained realm and independent pendin
   assert.equal(fixture.recipe.requiresMultiplayer, true);
   assert.equal(fixture.recipe.variants.length, 8);
   for (const faction of ["Tivara", "Skaduwee"]) {
+    for (const branch of ["normal", "pending_path", "paid_queue"]) {
+      const variant = fixture.recipe.variants.find((entry) =>
+        entry.aiFaction === faction &&
+        fixture.assertions["H-32"].requiredNativeScenario.branchByVariant[entry.id] === branch
+      );
+      assert.equal(variant.requiresMultiplayer, false);
+    }
     const pending = fixture.recipe.variants.find(
       (variant) =>
         variant.aiFaction === faction &&
@@ -670,6 +677,7 @@ test("H-32 binds real relay promotion, one retained realm and independent pendin
     );
     assert.equal(host.presetWorld, undefined);
     assert.equal(host.executionKind, "focused_natural");
+    assert.equal(host.requiresMultiplayer, true);
     assert.ok(host.nextMatchPresetWorld);
   }
   for (const mutate of [

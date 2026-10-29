@@ -19,7 +19,8 @@ export function nativeLifecycleProofFailures(branch: string, proof: NativeLifecy
     failures.push("native_lifecycle_new_match_identity_or_clock_invalid");
   if (proof.nextActive.tick < 200 || (proof.nextActive.decisionSequence ?? 0) <= (proof.nextInitial.decisionSequence ?? 0))
     failures.push("native_lifecycle_new_controller_did_not_progress");
-  if (!proof.retained.sameRealm || !proof.retained.oldSceneInactive || proof.retained.oldTickObservers !== 0 ||
+  if (!proof.retained.sameRealm || !proof.retained.oldSceneInactive || !proof.retained.oldSceneShutdownObserved ||
+      !proof.retained.oldTickSubjectStopped || proof.retained.oldTickObservers !== 0 ||
       !proof.nativeBeforeLateWork || proof.nativeBeforeLateWork !== proof.nativeAfterLateWork)
     failures.push("native_lifecycle_old_work_escaped_shutdown_fence");
   if (proof.nextAiErrors.length) failures.push("native_lifecycle_new_match_ai_errors");

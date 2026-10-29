@@ -35,8 +35,10 @@ Do not reconstruct the old seven-package roadmap from chat or historical records
   H-11/PLACE-03 physical applicability; current H-11 awaits a usable native run.
 - A3 focused fortification-recovery tests pass, but retained H-11 and PLACE-03 physical evidence predates later
   construction-access changes. H-11 attempt 1793309763525 showed a Vite TypeScript overlay caused by incorrect
-  known-value narrowing in the home-threat helper; the source error is fixed, but H-11 still needs a current native
-  check. PLACE-03 applicability also needs review before any targeted rerun.
+  known-value narrowing in the home-threat helper; fixed. Current-source Tivara run 1793313593915 reached 4001 ticks
+  but built no Granary/Field or delivered food despite recording food demand; its sole worker stayed idle. Root cause
+  is unproved; inspect placement/access eligibility before changing priority or replaying. PLACE-03 applicability
+  also needs review.
 - B1 withdrawal recovery now has current native evidence for both factions on fixture `fnv1a32:48f86832` and
   source `e792827ab66d` (dirty `fnv1a32:cc22f882`): Skaduwee 1793313251345 and Tivara 1793313388623 each reach
   3001 ticks/150 decisions and pass. The fixture uses a legal 240-stock Tree11; recovery is measured after a
@@ -63,7 +65,7 @@ Do not reconstruct the old seven-package roadmap from chat or historical records
 
 | Packet | State | Next action |
 | --- | --- | --- |
-| A placement/walls/recovery | in_progress | A3 terminal failure retries are bounded with focused evidence. H-11 attempt 1793309763525 was a TypeScript startup overlay, now fixed; current-source native H-11 still needed. PLACE-03 applicability needs review. PLACE-01 premise and WALL-01 Node capture limit remain unresolved; do not replay unchanged. |
+| A placement/walls/recovery | in_progress | A3 terminal retries are bounded. H-11 current-source 1793313593915 reached 4001 ticks but left one worker idle without Granary/Field despite food demand; diagnose placement/access before a targeted rerun. PLACE-03 applicability needs review. PLACE-01 premise and WALL-01 Node capture limit remain unresolved; do not replay unchanged. |
 | B expansion/mission continuity | in_progress | EXP-02 withdrawal recovery passes for Skaduwee 1793313251345 and Tivara 1793313388623 on the same source/fixture. Existing Skaduwee home_pressure and both H-14 harmless passes remain. Continue B2 scouting and B3 combat; no unchanged EXP-02 withdrawal reruns. |
 | C resource/command ownership | validated | C1 duplicate admission preserves actor/application progress; C2 expired provisional escrow and contracted-balance gating have focused coverage, H-10 retains both-faction capacity evidence, and H-13 has current native base-control confirmation for both factions. C3 epoch/identity/dispatch guards reviewed; focused Phaser tests pass 20/20. Full gameplay tests pass 105 suites/611 tests. |
 | D essential SP lifecycle | ready; independent fallback | Inspect H-31 continuation and H-32 SP dispatch restrictions. |

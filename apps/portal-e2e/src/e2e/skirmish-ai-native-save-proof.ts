@@ -21,6 +21,8 @@ export interface NativeSaveProof {
   readonly controlTraceDigest: string;
   readonly resumedTraceDigest: string;
   readonly traceOverflow: boolean;
+  readonly restoreWorldDifferences: readonly import("./skirmish-ai-native-world-projection-diff").NativeDebugProjectionDifference[];
+  readonly firstTraceInputDifferences: readonly import("./skirmish-ai-native-world-projection-diff").NativeDebugProjectionDifference[];
   readonly firstTraceDifference: { readonly index: number;
     readonly control: Awaited<ReturnType<typeof closeNativeDecisionTrace>>["records"][number] | null;
     readonly resumed: Awaited<ReturnType<typeof closeNativeDecisionTrace>>["records"][number] | null } | null;

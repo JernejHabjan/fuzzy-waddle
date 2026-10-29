@@ -101,6 +101,7 @@ export function nativeScenarioFixture(id) {
       ...(id === "DOMAIN-02" && ["intercept", "escort"].includes(branch) ? {
         additionalAiPlayers: [{ playerNumber: 3, faction: "Tivara", difficulty: "Easy" }]
       } : {}),
+      ...(id === "H-32" ? { requiresMultiplayer: branch === "host_replacement" } : {}),
       ...(["D-02", "D-06", "H-31", "H-32", "DBG-05"].includes(id) ? {} :
         { captureConstruction: true, captureCombat: true }), scenarioIds: [id],
       ...(id === "DBG-05" ? { checkpointTicks: [20] } : {}),

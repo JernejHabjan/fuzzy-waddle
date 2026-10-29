@@ -8,5 +8,12 @@ export function selectDiagnosticVariant(options, scenarioId, mode, fixture) {
     (variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId))) ?? [];
   if (variants.length !== 1) throw new Error(`diagnostic_variant_missing_or_ambiguous:${options.variant}`);
   if (repetition > (variants[0].repetitions ?? 1)) throw new Error("diagnostic_repetition_out_of_range");
-  return { scenarioId, variantId: options.variant, repetition };
+  return {
+    scenarioId,
+    variantId: options.variant,
+    repetition,
+    ...(typeof variants[0].requiresMultiplayer === "boolean"
+      ? { requiresMultiplayer: variants[0].requiresMultiplayer }
+      : {})
+  };
 }

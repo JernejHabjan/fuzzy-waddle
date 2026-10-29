@@ -44,6 +44,9 @@ export class HealthComponent {
   /** Authoritative mutable state; presentation reads this reference rather than a snapshot. */
   healthComponentData: HealthComponentData;
   private readonly presentation: HealthPresentation;
+  private initialized = false;
+  private preInitializationHealth?: number;
+  private preInitializationArmour?: number;
 
   private destroyAfterMs = 30000;
 
@@ -94,7 +97,10 @@ export class HealthComponent {
   }
 
   private init() {
-    // Initialization replaces definition/state directly; matching values still close the prior history.
+    // Keep data applied before scene initialization (notably save-loaded current health) when
+    // progression changes the maximum; fresh actors already carry the base maximum here.
+    const currentHealth = this.preInitializationHealth;
+    const currentArmour = this.preInitializationArmour;
     fenceSceneResourceHistory(this.gameObject.scene, "resource_actor_health_change");
     const maximumHealth = applyCampaignProgressionModifiers(
       this.gameObject,
@@ -107,8 +113,11 @@ export class HealthComponent {
       this.healthDefinition.maxArmour ?? 0
     );
     this.healthDefinition = { ...this.healthDefinition, maxHealth: maximumHealth, maxArmour: maximumArmour };
-    this.healthComponentData.health = maximumHealth;
-    this.healthComponentData.armour = maximumArmour;
+    this.healthComponentData.health = currentHealth === undefined ? maximumHealth :
+      Math.max(0, Math.min(currentHealth, maximumHealth));
+    this.healthComponentData.armour = currentArmour === undefined ? maximumArmour :
+      Math.max(0, Math.min(currentArmour, maximumArmour));
+    this.initialized = true;
     this.presentation.initializeArmorFromData();
     this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
     this.audioActorComponent = getActorComponent(this.gameObject, AudioActorComponent);
@@ -292,9 +301,11 @@ export class HealthComponent {
 
   setData(data: Partial<HealthComponentData>) {
     if (data.health !== undefined) {
+      if (!this.initialized) this.preInitializationHealth = data.health;
       this.setHealthValue(data.health, false);
     }
     if (data.armour !== undefined) {
+      if (!this.initialized) this.preInitializationArmour = data.armour;
       this.setArmorValue(data.armour, false);
       this.presentation.syncArmorUiComponent();
     }
