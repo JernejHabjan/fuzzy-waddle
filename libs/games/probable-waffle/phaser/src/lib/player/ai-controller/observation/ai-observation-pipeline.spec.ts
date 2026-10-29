@@ -16,6 +16,8 @@ import {
 } from "./ai-observation-pipeline";
 import { projectRememberedContacts } from "./ai-observation-memory";
 import { compareAccessProductCandidates } from "./ai-observation-access-product";
+import { AiObservationPipeline } from "./ai-observation-pipeline";
+import type Phaser from "phaser";
 
 const unknown = { status: "unknown", reason: "not_observed" } as const;
 
@@ -45,6 +47,27 @@ describe("bounded access product ordering", () => {
     expect(fromWorldA.map(({ source }) => source.logicalPosition)).toEqual(
       fromWorldB.map(({ source }) => source.logicalPosition)
     );
+  });
+});
+
+describe("observation actor eligibility", () => {
+  it("excludes inactive and foreign-scene actor-index entries", () => {
+    const scene = {} as Phaser.Scene;
+    const pipeline = Object.assign(Object.create(AiObservationPipeline.prototype), { scene }) as {
+      isEligibleActor(actor: Phaser.GameObjects.GameObject): boolean;
+    };
+
+    expect(
+      pipeline.isEligibleActor({
+        scene,
+        active: true,
+        getData: () => undefined
+      } as unknown as Phaser.GameObjects.GameObject)
+    ).toBe(true);
+    expect(pipeline.isEligibleActor({ scene: {}, active: true } as unknown as Phaser.GameObjects.GameObject)).toBe(
+      false
+    );
+    expect(pipeline.isEligibleActor({ scene, active: false } as unknown as Phaser.GameObjects.GameObject)).toBe(false);
   });
 });
 
@@ -269,15 +292,30 @@ describe("Stage 4 observation generation guards", () => {
 
   it("forgets an absent main building only when its last position is currently visible", () => {
     const contact = (actorId: string, x: number, mainBuilding: boolean) => ({
-      actorId, objectName: ObjectNames.Sandhold, owner: 2, relation: "enemy",
-      evidenceId: `evidence:contact:${actorId}`, lastSeenTick: 420, confidencePermille: 1000,
-      mainBuilding, position: { x, y: 3, z: 0 }
+      actorId,
+      objectName: ObjectNames.Sandhold,
+      owner: 2,
+      relation: "enemy",
+      evidenceId: `evidence:contact:${actorId}`,
+      lastSeenTick: 420,
+      confidencePermille: 1000,
+      mainBuilding,
+      position: { x, y: 3, z: 0 }
     });
     const state = normalizeAiObservationMemoryState({
-      schemaVersion: 1, generation: 1, committedTick: 500, knowledgeRevision: 1,
-      queryInputRevision: 1, queryContinuationCursor: 0, invalidationDebt: 0,
-      contacts: [contact("empty-core", 2, true), contact("hidden-core", 8, true),
-        contact("moving-contact", 2, false), contact("visible-core", 2, true)]
+      schemaVersion: 1,
+      generation: 1,
+      committedTick: 500,
+      knowledgeRevision: 1,
+      queryInputRevision: 1,
+      queryContinuationCursor: 0,
+      invalidationDebt: 0,
+      contacts: [
+        contact("empty-core", 2, true),
+        contact("hidden-core", 8, true),
+        contact("moving-contact", 2, false),
+        contact("visible-core", 2, true)
+      ]
     });
     if (!state) throw new Error("missing_memory_state");
     const memory = new Map(state.contacts.map((entry) => [entry.actorId, entry]));

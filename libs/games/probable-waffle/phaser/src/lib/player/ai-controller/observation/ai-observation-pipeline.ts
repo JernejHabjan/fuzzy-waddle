@@ -14,7 +14,7 @@ import {
   type AiObservationV1
 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { getActorComponent } from "../../../data/actor-component";
-import { getGameObjectCurrentTile, isSceneActive } from "../../../data/game-object-helper";
+import { isSceneActive } from "../../../data/game-object-helper";
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { QueueComponent } from "../../../entity/components/queue/queue-component";
@@ -77,6 +77,8 @@ export class AiObservationPipeline {
   private latestObservation?: AiObservationV1;
   private latestCatalog?: AiCapabilityCatalogV1;
   private lastCommitError: string | null = null;
+  private lastCommitErrorStage: string | null = null;
+  private lastCommitErrorCode: string | null = null;
   private navigationInvalidationListener?: () => void;
   private readonly accessGraphAdapter: AiAccessGraphAdapter;
 
@@ -106,8 +108,9 @@ export class AiObservationPipeline {
     }
     const generation = ++this.requestedGeneration;
     const policy = new AiObservationVisibilityPolicy(this.scene, this.player.playerNumber);
+    const captureDiagnostics = { stage: "actor_index" };
     try {
-      const captured = this.capture(generation, tick, policy);
+      const captured = this.capture(generation, tick, policy, captureDiagnostics);
       // This guard is deliberately after capture: a future async query implementation
       // may never publish an older snapshot over a newer decision boundary.
       if (!isCurrentObservationGeneration(this.requestedGeneration, generation) || !isSceneActive(this.scene)) {
@@ -120,9 +123,13 @@ export class AiObservationPipeline {
       this.committedGeneration = generation;
       this.committedTick = tick;
       this.lastCommitError = null;
+      this.lastCommitErrorStage = null;
+      this.lastCommitErrorCode = null;
       return this.latestObservation;
     } catch (error) {
       this.lastCommitError = error instanceof Error ? error.message : String(error);
+      this.lastCommitErrorStage = captureDiagnostics.stage;
+      this.lastCommitErrorCode = safeAiCaptureErrorCode(error);
       return this.latestObservation;
     }
   }
@@ -133,6 +140,16 @@ export class AiObservationPipeline {
 
   getCapabilityCatalog(): AiCapabilityCatalogV1 | undefined {
     return this.latestCatalog;
+  }
+
+  /** Returns only a bounded internal capture phase, never a live-world error detail. */
+  getLastCommitErrorStage(): string | null {
+    return this.lastCommitErrorStage;
+  }
+
+  /** Returns a bounded error category without projecting exception text into AI telemetry. */
+  getLastCommitErrorCode(): string | null {
+    return this.lastCommitErrorCode;
   }
 
   getDebugSnapshot(): AiObservationDebugSnapshot {
@@ -191,7 +208,8 @@ export class AiObservationPipeline {
   private capture(
     generation: number,
     tick: number,
-    policy: AiObservationVisibilityPolicy
+    policy: AiObservationVisibilityPolicy,
+    diagnostics: { stage: string }
   ): { observation: AiObservationV1; catalog: AiCapabilityCatalogV1 } {
     const playerNumber = this.player.playerNumber!;
     const index = getSceneService(this.scene, ActorIndexSystem);
@@ -203,6 +221,7 @@ export class AiObservationPipeline {
     const catalogEntries = new Map<string, AiCapabilityCatalogEntryV1>();
 
     for (const actor of liveActors) {
+      diagnostics.stage = "actor_projection";
       const actorId = getActorComponent(actor, IdComponent)?.id;
       if (!actorId) continue;
       const owner = getActorComponent(actor, OwnerComponent)?.getOwner();
@@ -233,15 +252,18 @@ export class AiObservationPipeline {
       }
     }
 
+    diagnostics.stage = "catalog";
     projectAvailableCatalogEntries(this.scene, this.player, playerNumber, catalogEntries);
 
+    diagnostics.stage = "permitted_topology";
     const permittedTopology = permittedAiObservationTopology(this.scene, projectedActors, liveById);
+    diagnostics.stage = "access_graph";
     const accessGraph = this.accessGraphAdapter.advanceGraph(tick, this.knowledgeRevision, permittedTopology);
+    diagnostics.stage = "access_node_projection";
     projectedActors = projectedActors.map((actor) => {
-      const liveActor = liveById.get(actor.actorId);
-      if (!liveActor) return actor;
+      if (actor.logicalPosition.status !== "known") return actor;
       const nodeId = this.accessGraphAdapter.resolveNodeId(
-        getGameObjectCurrentTile(liveActor),
+        actor.logicalPosition.value,
         actor.capabilities.flatMap((capability) => capability.domains).filter(uniqueDomain)
       );
       return { ...actor, accessNodeId: nodeId ? knownValue(nodeId, tick) : unknownValue("query_pending") };
@@ -254,7 +276,9 @@ export class AiObservationPipeline {
     );
     this.knowledgeRevision += memorySizeBeforeProjection - this.memory.size;
     const actors = [...projectedActors, ...rememberedActors];
+    diagnostics.stage = "access_products";
     const accessProducts = this.projectAccessProducts(actors, liveById, tick);
+    diagnostics.stage = "effects";
     const effects = projectPermittedZones(this.scene, this.player, policy, tick);
     const ownedBuilderTypes = new Set(
       projectedActors.filter((actor) => actor.relation === "self").map((actor) => actor.objectName)
@@ -267,6 +291,7 @@ export class AiObservationPipeline {
     const largestBuildableFootprintRadius = [...catalogEntries.values()]
       .filter((entry) => buildableNames.has(entry.sourceObjectName) && entry.constructionProfile)
       .reduce((largest, entry) => Math.max(largest, entry.constructionProfile?.footprintRadiusTiles ?? 0), 0);
+    diagnostics.stage = "map";
     const map = projectAiObservationMap(
       this.scene,
       this.requestedGeneration,
@@ -280,6 +305,7 @@ export class AiObservationPipeline {
       (tile) => this.accessGraphAdapter.resolveNodeId(tile, ["ground"]),
       largestBuildableFootprintRadius
     );
+    diagnostics.stage = "resources_and_obligations";
     const finishResourceRead = beginAiResourceInputRead(this.scene, this.player);
     const obligations = projectAiProductionObligations(
       liveActors
@@ -303,6 +329,7 @@ export class AiObservationPipeline {
         };
       });
 
+    diagnostics.stage = "finalize_observation";
     const captured = {
       observation: {
         schemaVersion: 1,
@@ -333,6 +360,7 @@ export class AiObservationPipeline {
   }
 
   private isEligibleActor(actor: Phaser.GameObjects.GameObject): boolean {
+    if (!actor.active || actor.scene !== this.scene) return false;
     const health = getActorComponent(actor, HealthComponent);
     return !health?.killed;
   }
@@ -386,6 +414,23 @@ export class AiObservationPipeline {
       this.navigationInvalidationListener = undefined;
     }
   }
+}
+
+function safeAiCaptureErrorCode(error: unknown): string {
+  if (error instanceof TypeError) {
+    const property = error.message.match(/^Cannot read properties of (?:undefined|null) \(reading '([A-Za-z0-9_]{1,40})'\)$/)?.[1];
+    return property ? `missing_${property}` : "type_error";
+  }
+  if (error instanceof Error && error.message === "Scene is not of type ProbableWaffleSceneData") {
+    const callers = (error.stack ?? "")
+      .split("\n")
+      .slice(1)
+      .map((line) => line.match(/\bat ([A-Za-z0-9_.$<>-]+) \(/)?.[1])
+      .filter((name): name is string => name !== undefined)
+      .slice(0, 3);
+    return `invalid_scene_context${callers.length ? `_${callers.join("_")}` : ""}`;
+  }
+  return error instanceof Error ? "capture_error" : "unknown_error";
 }
 
 function compareByActorId(left: Phaser.GameObjects.GameObject, right: Phaser.GameObjects.GameObject): number {

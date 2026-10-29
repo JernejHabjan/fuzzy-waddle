@@ -2,9 +2,7 @@
   "schemaVersion": 1,
   "evidenceKind": "runtime",
   "driver": "runtime",
-  "scenarioIds": [
-    "PLACE-01"
-  ],
+  "scenarioIds": ["PLACE-01"],
   "status": "authored_not_executed",
   "purpose": "Efficient aligned field layout in safe economic space, valid tending/deposit access; no valuable central/corridor occupation when a suitable alternative exists",
   "acceptance": {
@@ -43,21 +41,7 @@
     "aiPlayerNumber": 2,
     "simulationTimeScale": 1,
     "fixedStepFrames": true,
-    "checkpointTicks": [
-      20,
-      100,
-      199,
-      200,
-      399,
-      400,
-      600,
-      800,
-      1000,
-      1200,
-      1600,
-      2000,
-      2400
-    ],
+    "checkpointTicks": [20, 100, 199, 200, 399, 400, 600, 800, 1000, 1200, 1600, 2000, 2400],
     "variants": [
       {
         "id": "place-01-tivara-room",
@@ -70,9 +54,7 @@
         "difficulty": "Normal",
         "captureConstruction": true,
         "captureCombat": true,
-        "scenarioIds": [
-          "PLACE-01"
-        ],
+        "scenarioIds": ["PLACE-01"],
         "presetWorld": {
           "fixtureId": "place-01-tivara-room",
           "requireFactionRoster": true,
@@ -453,169 +435,29 @@
           ],
           "controls": [
             {
-              "id": "move-worker-transit-200",
+              "id": "move-worker-transit-1",
               "producerFixtureActorId": "worker-transit",
-              "requestTick": 200,
-              "applicationTick": 200,
+              "requestTick": 1,
+              "applicationTick": 1,
               "action": {
                 "kind": "move",
                 "worldPosition": {
-                  "x": 320,
-                  "y": 896,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-army-transit-200",
-              "producerFixtureActorId": "army-transit",
-              "requestTick": 200,
-              "applicationTick": 200,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 576,
-                  "y": 1088,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-worker-transit-600",
-              "producerFixtureActorId": "worker-transit",
-              "requestTick": 600,
-              "applicationTick": 600,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": -64,
+                  "x": 0,
                   "y": 960,
                   "z": 0
                 }
               }
             },
             {
-              "id": "move-army-transit-600",
+              "id": "move-army-transit-1",
               "producerFixtureActorId": "army-transit",
-              "requestTick": 600,
-              "applicationTick": 600,
+              "requestTick": 1,
+              "applicationTick": 1,
               "action": {
                 "kind": "move",
                 "worldPosition": {
-                  "x": 96,
-                  "y": 848,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-worker-transit-1000",
-              "producerFixtureActorId": "worker-transit",
-              "requestTick": 1000,
-              "applicationTick": 1000,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 320,
-                  "y": 896,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-army-transit-1000",
-              "producerFixtureActorId": "army-transit",
-              "requestTick": 1000,
-              "applicationTick": 1000,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 576,
-                  "y": 1088,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-worker-transit-1400",
-              "producerFixtureActorId": "worker-transit",
-              "requestTick": 1400,
-              "applicationTick": 1400,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": -64,
-                  "y": 960,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-army-transit-1400",
-              "producerFixtureActorId": "army-transit",
-              "requestTick": 1400,
-              "applicationTick": 1400,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 96,
-                  "y": 848,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-worker-transit-1800",
-              "producerFixtureActorId": "worker-transit",
-              "requestTick": 1800,
-              "applicationTick": 1800,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 320,
-                  "y": 896,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-army-transit-1800",
-              "producerFixtureActorId": "army-transit",
-              "requestTick": 1800,
-              "applicationTick": 1800,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 576,
-                  "y": 1088,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-worker-transit-2200",
-              "producerFixtureActorId": "worker-transit",
-              "requestTick": 2200,
-              "applicationTick": 2200,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": -64,
-                  "y": 960,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-army-transit-2200",
-              "producerFixtureActorId": "army-transit",
-              "requestTick": 2200,
-              "applicationTick": 2200,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 96,
-                  "y": 848,
+                  "x": 128,
+                  "y": 864,
                   "z": 0
                 }
               }
@@ -648,7 +490,7 @@
                 "x": 96,
                 "y": 848
               },
-              "tileMargin": 1
+              "tileMargin": 0
             },
             {
               "id": "retreat",
@@ -661,7 +503,7 @@
                 "x": 288,
                 "y": 944
               },
-              "tileMargin": 1
+              "tileMargin": 0
             }
           ],
           "terrainPatches": []
@@ -678,9 +520,7 @@
         "difficulty": "Normal",
         "captureConstruction": true,
         "captureCombat": true,
-        "scenarioIds": [
-          "PLACE-01"
-        ],
+        "scenarioIds": ["PLACE-01"],
         "presetWorld": {
           "fixtureId": "place-01-tivara-constrained",
           "requireFactionRoster": true,
@@ -1061,169 +901,29 @@
           ],
           "controls": [
             {
-              "id": "move-worker-transit-200",
+              "id": "move-worker-transit-1",
               "producerFixtureActorId": "worker-transit",
-              "requestTick": 200,
-              "applicationTick": 200,
+              "requestTick": 1,
+              "applicationTick": 1,
               "action": {
                 "kind": "move",
                 "worldPosition": {
-                  "x": 320,
-                  "y": 896,
+                  "x": 0,
+                  "y": 960,
                   "z": 0
                 }
               }
             },
             {
-              "id": "move-army-transit-200",
+              "id": "move-army-transit-1",
               "producerFixtureActorId": "army-transit",
-              "requestTick": 200,
-              "applicationTick": 200,
+              "requestTick": 1,
+              "applicationTick": 1,
               "action": {
                 "kind": "move",
                 "worldPosition": {
-                  "x": 576,
-                  "y": 1088,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-worker-transit-600",
-              "producerFixtureActorId": "worker-transit",
-              "requestTick": 600,
-              "applicationTick": 600,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 160,
-                  "y": 1040,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-army-transit-600",
-              "producerFixtureActorId": "army-transit",
-              "requestTick": 600,
-              "applicationTick": 600,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 96,
-                  "y": 848,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-worker-transit-1000",
-              "producerFixtureActorId": "worker-transit",
-              "requestTick": 1000,
-              "applicationTick": 1000,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 320,
-                  "y": 896,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-army-transit-1000",
-              "producerFixtureActorId": "army-transit",
-              "requestTick": 1000,
-              "applicationTick": 1000,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 576,
-                  "y": 1088,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-worker-transit-1400",
-              "producerFixtureActorId": "worker-transit",
-              "requestTick": 1400,
-              "applicationTick": 1400,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 160,
-                  "y": 1040,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-army-transit-1400",
-              "producerFixtureActorId": "army-transit",
-              "requestTick": 1400,
-              "applicationTick": 1400,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 96,
-                  "y": 848,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-worker-transit-1800",
-              "producerFixtureActorId": "worker-transit",
-              "requestTick": 1800,
-              "applicationTick": 1800,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 320,
-                  "y": 896,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-army-transit-1800",
-              "producerFixtureActorId": "army-transit",
-              "requestTick": 1800,
-              "applicationTick": 1800,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 576,
-                  "y": 1088,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-worker-transit-2200",
-              "producerFixtureActorId": "worker-transit",
-              "requestTick": 2200,
-              "applicationTick": 2200,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 160,
-                  "y": 1040,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-army-transit-2200",
-              "producerFixtureActorId": "army-transit",
-              "requestTick": 2200,
-              "applicationTick": 2200,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 96,
-                  "y": 848,
+                  "x": 128,
+                  "y": 864,
                   "z": 0
                 }
               }
@@ -1256,7 +956,7 @@
                 "x": 96,
                 "y": 848
               },
-              "tileMargin": 1
+              "tileMargin": 0
             },
             {
               "id": "retreat",
@@ -1269,7 +969,7 @@
                 "x": 288,
                 "y": 944
               },
-              "tileMargin": 1
+              "tileMargin": 0
             }
           ],
           "terrainPatches": [
@@ -15850,9 +15550,7 @@
         "difficulty": "Normal",
         "captureConstruction": true,
         "captureCombat": true,
-        "scenarioIds": [
-          "PLACE-01"
-        ],
+        "scenarioIds": ["PLACE-01"],
         "presetWorld": {
           "fixtureId": "place-01-skaduwee-room",
           "requireFactionRoster": true,
@@ -16233,169 +15931,29 @@
           ],
           "controls": [
             {
-              "id": "move-worker-transit-200",
+              "id": "move-worker-transit-1",
               "producerFixtureActorId": "worker-transit",
-              "requestTick": 200,
-              "applicationTick": 200,
+              "requestTick": 1,
+              "applicationTick": 1,
               "action": {
                 "kind": "move",
                 "worldPosition": {
-                  "x": 320,
-                  "y": 896,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-army-transit-200",
-              "producerFixtureActorId": "army-transit",
-              "requestTick": 200,
-              "applicationTick": 200,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 576,
-                  "y": 1088,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-worker-transit-600",
-              "producerFixtureActorId": "worker-transit",
-              "requestTick": 600,
-              "applicationTick": 600,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": -64,
+                  "x": 0,
                   "y": 960,
                   "z": 0
                 }
               }
             },
             {
-              "id": "move-army-transit-600",
+              "id": "move-army-transit-1",
               "producerFixtureActorId": "army-transit",
-              "requestTick": 600,
-              "applicationTick": 600,
+              "requestTick": 1,
+              "applicationTick": 1,
               "action": {
                 "kind": "move",
                 "worldPosition": {
-                  "x": 96,
-                  "y": 848,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-worker-transit-1000",
-              "producerFixtureActorId": "worker-transit",
-              "requestTick": 1000,
-              "applicationTick": 1000,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 320,
-                  "y": 896,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-army-transit-1000",
-              "producerFixtureActorId": "army-transit",
-              "requestTick": 1000,
-              "applicationTick": 1000,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 576,
-                  "y": 1088,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-worker-transit-1400",
-              "producerFixtureActorId": "worker-transit",
-              "requestTick": 1400,
-              "applicationTick": 1400,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": -64,
-                  "y": 960,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-army-transit-1400",
-              "producerFixtureActorId": "army-transit",
-              "requestTick": 1400,
-              "applicationTick": 1400,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 96,
-                  "y": 848,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-worker-transit-1800",
-              "producerFixtureActorId": "worker-transit",
-              "requestTick": 1800,
-              "applicationTick": 1800,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 320,
-                  "y": 896,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-army-transit-1800",
-              "producerFixtureActorId": "army-transit",
-              "requestTick": 1800,
-              "applicationTick": 1800,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 576,
-                  "y": 1088,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-worker-transit-2200",
-              "producerFixtureActorId": "worker-transit",
-              "requestTick": 2200,
-              "applicationTick": 2200,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": -64,
-                  "y": 960,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-army-transit-2200",
-              "producerFixtureActorId": "army-transit",
-              "requestTick": 2200,
-              "applicationTick": 2200,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 96,
-                  "y": 848,
+                  "x": 128,
+                  "y": 864,
                   "z": 0
                 }
               }
@@ -16428,7 +15986,7 @@
                 "x": 96,
                 "y": 848
               },
-              "tileMargin": 1
+              "tileMargin": 0
             },
             {
               "id": "retreat",
@@ -16441,7 +15999,7 @@
                 "x": 288,
                 "y": 944
               },
-              "tileMargin": 1
+              "tileMargin": 0
             }
           ],
           "terrainPatches": []
@@ -16458,9 +16016,7 @@
         "difficulty": "Normal",
         "captureConstruction": true,
         "captureCombat": true,
-        "scenarioIds": [
-          "PLACE-01"
-        ],
+        "scenarioIds": ["PLACE-01"],
         "presetWorld": {
           "fixtureId": "place-01-skaduwee-constrained",
           "requireFactionRoster": true,
@@ -16841,169 +16397,29 @@
           ],
           "controls": [
             {
-              "id": "move-worker-transit-200",
+              "id": "move-worker-transit-1",
               "producerFixtureActorId": "worker-transit",
-              "requestTick": 200,
-              "applicationTick": 200,
+              "requestTick": 1,
+              "applicationTick": 1,
               "action": {
                 "kind": "move",
                 "worldPosition": {
-                  "x": 320,
-                  "y": 896,
+                  "x": 0,
+                  "y": 960,
                   "z": 0
                 }
               }
             },
             {
-              "id": "move-army-transit-200",
+              "id": "move-army-transit-1",
               "producerFixtureActorId": "army-transit",
-              "requestTick": 200,
-              "applicationTick": 200,
+              "requestTick": 1,
+              "applicationTick": 1,
               "action": {
                 "kind": "move",
                 "worldPosition": {
-                  "x": 576,
-                  "y": 1088,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-worker-transit-600",
-              "producerFixtureActorId": "worker-transit",
-              "requestTick": 600,
-              "applicationTick": 600,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 160,
-                  "y": 1040,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-army-transit-600",
-              "producerFixtureActorId": "army-transit",
-              "requestTick": 600,
-              "applicationTick": 600,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 96,
-                  "y": 848,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-worker-transit-1000",
-              "producerFixtureActorId": "worker-transit",
-              "requestTick": 1000,
-              "applicationTick": 1000,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 320,
-                  "y": 896,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-army-transit-1000",
-              "producerFixtureActorId": "army-transit",
-              "requestTick": 1000,
-              "applicationTick": 1000,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 576,
-                  "y": 1088,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-worker-transit-1400",
-              "producerFixtureActorId": "worker-transit",
-              "requestTick": 1400,
-              "applicationTick": 1400,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 160,
-                  "y": 1040,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-army-transit-1400",
-              "producerFixtureActorId": "army-transit",
-              "requestTick": 1400,
-              "applicationTick": 1400,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 96,
-                  "y": 848,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-worker-transit-1800",
-              "producerFixtureActorId": "worker-transit",
-              "requestTick": 1800,
-              "applicationTick": 1800,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 320,
-                  "y": 896,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-army-transit-1800",
-              "producerFixtureActorId": "army-transit",
-              "requestTick": 1800,
-              "applicationTick": 1800,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 576,
-                  "y": 1088,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-worker-transit-2200",
-              "producerFixtureActorId": "worker-transit",
-              "requestTick": 2200,
-              "applicationTick": 2200,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 160,
-                  "y": 1040,
-                  "z": 0
-                }
-              }
-            },
-            {
-              "id": "move-army-transit-2200",
-              "producerFixtureActorId": "army-transit",
-              "requestTick": 2200,
-              "applicationTick": 2200,
-              "action": {
-                "kind": "move",
-                "worldPosition": {
-                  "x": 96,
-                  "y": 848,
+                  "x": 128,
+                  "y": 864,
                   "z": 0
                 }
               }
@@ -17036,7 +16452,7 @@
                 "x": 96,
                 "y": 848
               },
-              "tileMargin": 1
+              "tileMargin": 0
             },
             {
               "id": "retreat",
@@ -17049,7 +16465,7 @@
                 "x": 288,
                 "y": 944
               },
-              "tileMargin": 1
+              "tileMargin": 0
             }
           ],
           "terrainPatches": [
@@ -31626,10 +31042,7 @@
       "maximumTick": 2400,
       "minimumDecisions": 1,
       "minimumAppliedCommands": 1,
-      "requiredAiFactions": [
-        "Tivara",
-        "Skaduwee"
-      ],
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
       "requiredNativeScenario": {
         "schemaVersion": 1,
         "scenarioId": "PLACE-01",

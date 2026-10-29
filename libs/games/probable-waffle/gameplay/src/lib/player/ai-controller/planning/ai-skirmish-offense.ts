@@ -11,7 +11,7 @@ import type { AiRouteResultV1 } from "../contracts/ai-access-graph-v1";
 import type { AiSkirmishProposalContext } from "./ai-skirmish-proposal-context";
 import { createAiTransportPlanV1 } from "./ai-transport-manager";
 import { AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS } from "./ai-skirmish-defense";
-import { selectAiNavalShoreFiringPosition } from "./select-ai-offensive-force";
+import { selectAiNavalFiringPosition } from "./select-ai-offensive-force";
 import { selectAiOffensiveOpportunity } from "./select-ai-offensive-opportunity";
 import { retainAiSquadTacticsForActors } from "./ai-skirmish-tactics-ownership";
 import { canSeeTarget } from "./ai-tactics-combat";
@@ -111,6 +111,14 @@ function hasNearbyEnemyProducer(
         enemy.capabilities.some((capability) => capability.family === "produce")
       );
     })
+  );
+}
+
+function isNavalCombatTarget(actor: AiSkirmishProposalContext["visibleEnemies"][number]): boolean {
+  return (
+    domains(actor).includes("water") &&
+    actor.combatProfile?.status === "known" &&
+    actor.combatProfile.value.attacks.some((attack) => attack.damage > 0)
   );
 }
 
@@ -380,6 +388,8 @@ export function advanceAiSkirmishOffense(
   );
   const raidCandidates = [...reserveActors, ...surplusActors, ...navalRaidCandidates];
   const primaryMissionCount = activeMissionCount + (context.activeAttack ? 0 : 1);
+  const navalCombatRaidAvailable =
+    navalRaidCandidates.length > 0 && context.visibleEnemies.some(isNavalCombatTarget);
   const raidTargetContext = {
     ...context,
     activeAttack: undefined,
@@ -390,9 +400,9 @@ export function advanceAiSkirmishOffense(
     rememberedEnemies: context.opponent ? [context.opponent] : []
   };
   const raidSelectionEnabled =
-    attack.state === "moving" &&
-    (!context.localThreat ||
-      context.nextSquads.some((squad) => squad.role === "defense" && squad.actorIds.length > 0)) &&
+    (navalCombatRaidAvailable ||
+      (attack.state === "moving" &&
+        (!context.localThreat || context.nextSquads.some((squad) => squad.role === "defense" && squad.actorIds.length > 0)))) &&
     activeRaidSquads.length === 0 &&
     raidCandidates.length > 0 &&
     primaryMissionCount < profile.voluntaryOffensiveMissionLimit + 1;
@@ -426,13 +436,17 @@ export function advanceAiSkirmishOffense(
     raidSelectionEnabled && navalRaidCandidates.length > 0
       ? selectAiOffensiveOpportunity(navalRaidTargetContext, navalRaidCandidates, {
           raid: true,
-          candidateFilter: (actor) =>
-            actor.actorId === context.opponent?.actorId ||
-            (hasEconomicRaidValue(actor) &&
-              !(
-                actor.capabilities.some((capability) => capability.family === "produce") &&
-                hasNearbyEnemyProducer(context, actor)
-              ))
+          candidateFilter: (actor) => {
+            if (navalCombatRaidAvailable) return isNavalCombatTarget(actor);
+            return (
+              actor.actorId === context.opponent?.actorId ||
+              (hasEconomicRaidValue(actor) &&
+                !(
+                  actor.capabilities.some((capability) => capability.family === "produce") &&
+                  hasNearbyEnemyProducer(context, actor)
+                ))
+            );
+          }
         })
       : undefined;
   const preferredNavalChoice =
@@ -582,7 +596,7 @@ export function advanceAiSkirmishOffense(
         ((route.kind === "air_or_naval_objective" && route.domain === "water") ||
           (route.kind === "direct" && route.domain === "water")) &&
         firingNodeId
-        ? selectAiNavalShoreFiringPosition(context, opponent, firingNodeId)
+        ? selectAiNavalFiringPosition(context, opponent, firingNodeId)
         : undefined;
       const approach = navalApproach ?? (targetPosition
         ? (selectAiAttackApproachPositions(
@@ -686,7 +700,7 @@ export function advanceAiSkirmishOffense(
           : raidChoice.route.destinationNodeId;
       const navalFiringPosition =
         raidChoice.route.domain === "water"
-          ? selectAiNavalShoreFiringPosition(context, raidTarget, firingNodeId)
+          ? selectAiNavalFiringPosition(context, raidTarget, firingNodeId)
           : undefined;
       const raidApproach =
         navalFiringPosition ??

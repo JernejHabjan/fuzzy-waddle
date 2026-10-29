@@ -92,8 +92,27 @@ function threatNear(
 ): number {
   const targetPosition = position(target);
   if (!targetPosition) return 0;
+  const navalObjective = domains(target).includes("water");
   return context.visibleEnemies.filter((enemy) => {
     const enemyPosition = position(enemy);
+    if (navalObjective) {
+      if (enemyPosition === undefined || distance(targetPosition, enemyPosition) > 18) return false;
+      if (enemy.actorId === target.actorId && canFight(enemy) && attackers.some((actor) => canTarget(enemy, actor)))
+        return true;
+      const attacks = enemy.combatProfile?.status === "known" ? enemy.combatProfile.value.attacks : [];
+      return attackers.some((attacker) => {
+        const attackerPosition = position(attacker);
+        if (!attackerPosition) return false;
+        const separation = distance(attackerPosition, enemyPosition);
+        return attacks.some(
+          (attack) =>
+            attack.damage > 0 &&
+            attack.targetDomains.includes("water") &&
+            separation >= attack.minRange &&
+            separation <= attack.range + (enemyPosition.z > attackerPosition.z ? attack.highGroundRangeBonus : 0)
+        );
+      });
+    }
     return (
       enemyPosition !== undefined &&
       distance(targetPosition, enemyPosition) <= 18 &&

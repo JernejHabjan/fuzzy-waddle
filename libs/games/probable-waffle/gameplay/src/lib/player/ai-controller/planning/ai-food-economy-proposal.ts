@@ -155,7 +155,7 @@ export function proposeAiFoodEconomy(args: {
       state,
       catalog,
       self,
-      readyFoodSources,
+      readyFoodSources.slice(0, desiredFoodSources),
       prerequisite.objectName,
       reservedActorIds,
       intents,

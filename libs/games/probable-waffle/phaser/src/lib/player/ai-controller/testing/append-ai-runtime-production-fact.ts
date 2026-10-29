@@ -1,8 +1,8 @@
 import type { AiRuntimeProductionFactV1 } from "./ai-runtime-production-fact-v1";
 import type { AiRuntimeProductionBoundaryState } from "./ai-runtime-production-boundary-state";
 
-/** Bounded aggregate budget covers the 27k-fact 4,000-tick combat capture with headroom. */
-export const AI_RUNTIME_MAX_FACTS = 32768;
+/** Bounded aggregate budget covers the 33,823-fact native escort capture with 3k facts of headroom. */
+export const AI_RUNTIME_MAX_FACTS = 36_864;
 
 /** Single root budget for all channels. Loss precedes fallible diagnostics; sequence ownership remains with the capture. */
 export function appendAiRuntimeProductionFact(

@@ -85,6 +85,25 @@ test("native cancellation can return true while remaining stopped", () => {
   expect(result.movements[0]).toMatchObject({ arrival: "stopped", returned: "true" });
 });
 
+test("an order replacement after physical endpoint contact preserves arrival evidence", () => {
+  const f = fixture(false, true);
+  const facts = f.capture.facts.map((fact): AiRuntimeProductionFactV1 => {
+    if (fact.kind !== "spatial_authority" || fact.spatial.kind !== "movement") return fact;
+    const value = fact.spatial;
+    return {
+      ...fact,
+      spatial: {
+        ...value,
+        actualTile: value.phase === "stopped" ? value.originalDestination : value.actualTile,
+        phase: value.phase === "returned_true" ? "returned_false" : value.phase
+      }
+    };
+  });
+  const result = normalizeRuntimeProductionCausality({ ...f.capture, facts });
+  expect(result.failures).toEqual([]);
+  expect(result.movements[0]).toMatchObject({ callerAttributed: true, arrival: "original_destination", returned: "false" });
+});
+
 for (const missing of ["caller", "admission", "terminal", "clock", "actual_tile", "return"] as const) {
   test(`missing ${missing} cannot be backfilled from route success`, () => {
     const f = fixture();

@@ -142,7 +142,13 @@ export function normalizeRuntimeMovement(capture: AiRuntimeProductionCaptureV1) 
             : null;
     if (!returnedFact) localGaps.add("production_movement_return_missing");
     let arrival: RuntimeMovementV1["arrival"] = "unavailable";
-    if (physical?.spatial.phase === "stopped") arrival = "stopped";
+    if (physical?.spatial.phase === "stopped") {
+      arrival = ready && !fenced && !physical.spatial.fallback && physical.spatial.actualTile &&
+        physical.spatial.originalDestination &&
+        isDeepStrictEqual(physical.spatial.actualTile, physical.spatial.originalDestination)
+        ? "original_destination"
+        : "stopped";
+    }
     else if (
       physical &&
       ready &&

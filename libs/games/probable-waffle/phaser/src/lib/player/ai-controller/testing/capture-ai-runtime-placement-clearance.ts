@@ -5,8 +5,10 @@ import { NavigationObjectGrid } from "../../../world/services/navigation-object-
 import { TerrainGridBuilder } from "../../../world/services/terrain-grid-builder";
 import { getSceneComponent, getSceneService } from "../../../world/services/scene-component-helpers";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
+import { ActorTranslateComponent } from "../../../entity/components/movement/actor-translate-component";
 import { TilemapComponent } from "../../../world/tilemap/tilemap.component";
 import { IsoHelper } from "../../../world/tilemap/iso-helper";
+import { getActorComponent } from "../../../data/actor-component";
 import type { AiRuntimeProtectedRouteV1 } from "./ai-runtime-protected-route-v1";
 import type { AiRuntimePlacementClearanceV1 } from "./ai-runtime-placement-clearance-v1";
 import { findAiRuntimeClearancePath } from "./find-ai-runtime-clearance-path";
@@ -29,7 +31,10 @@ export function captureAiRuntimePlacementClearance(
       return missing("placement_clearance_world_unavailable_or_overflow");
     }
     const ground = TerrainGridBuilder.buildGroundGrid(map.data);
-    const objects = new NavigationObjectGrid(scene, map.tilemap, false).build(ground);
+    const objects = new NavigationObjectGrid(scene, map.tilemap, false).build(
+      ground,
+      (actor) => actor.active && actor.scene === scene && !getActorComponent(actor, ActorTranslateComponent)
+    );
     const grid = ground.map((row, y) => row.map((tile, x) => objects[y]?.[x] ?? tile));
     const graph = new HeightNavigationGraphBuilder(scene, map.tilemap).build(grid);
     return { ...boundary, gaps: [], routes: declarations.map((declaration) => {

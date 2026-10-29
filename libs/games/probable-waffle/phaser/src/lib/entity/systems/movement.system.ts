@@ -114,7 +114,8 @@ export class MovementSystem {
   async moveToLocationByFollowingStaticPath(
     tileVec3: Vector3Simple,
     pathMoveConfig?: PathMoveConfig,
-    queryContext?: MovementQueryContext
+    queryContext?: MovementQueryContext,
+    allowReachableApproach = false
   ): Promise<boolean> {
     if (!isGameObjectActiveInActiveScene(this.gameObject)) {
       MovementCompletionObservation.begin(
@@ -165,11 +166,11 @@ export class MovementSystem {
       const currentTile = getGameObjectCurrentTile(this.gameObject);
       if (currentTile?.x === tileVec3.x && currentTile.y === tileVec3.y) path = [{ ...currentTile }];
     }
-    if ((!path || !path.length) && this.isLocationNavigable(tileVec3)) {
-      completion?.returned(false);
-      return false;
-    }
     if (!path || !path.length) {
+      if (!allowReachableApproach && this.isLocationNavigable(tileVec3)) {
+        completion?.returned(false);
+        return false;
+      }
       try {
         path = await this.findReachableApproachPath(tileVec3, queryContext);
       } catch (error) {
@@ -435,7 +436,7 @@ export class MovementSystem {
     queryContext?: MovementQueryContext
   ): Promise<Vector2Simple[] | null> {
     const navigation = this.runtime.navigationService;
-    if (!navigation || this.isLocationNavigable(destination)) return null;
+    if (!navigation) return null;
     const terrainType =
       this.runtime.actorTranslateComponent?.actorTranslateDefinition.movementTerrainType ?? MovementTerrainType.Ground;
     const candidates: Vector2Simple[] = [];

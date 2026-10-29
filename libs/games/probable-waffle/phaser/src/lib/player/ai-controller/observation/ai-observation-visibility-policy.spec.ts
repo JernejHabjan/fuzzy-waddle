@@ -6,9 +6,11 @@ import { VisionComponent } from "../../../entity/components/vision-component";
 import { RepresentableComponent } from "../../../entity/components/representable-component";
 import { AiObservationVisibilityPolicy } from "./ai-observation-visibility-policy";
 
-function actor(owner: number): Phaser.GameObjects.GameObject {
+function actor(owner: number, scene?: Phaser.Scene): Phaser.GameObjects.GameObject {
   const ownerComponent = Object.assign(Object.create(OwnerComponent.prototype), { getOwner: () => owner });
   return {
+    active: true,
+    scene,
     getData: (key: string) =>
       key === ActorDataKey ? new ActorData(new Map([[OwnerComponent, ownerComponent]]), new Map()) : undefined
   } as unknown as Phaser.GameObjects.GameObject;
@@ -57,23 +59,42 @@ describe("Stage 4 AI visibility policy", () => {
     const captureScene = { baseGameData: { gameInstance: { players: [
       { playerNumber: 1, playerController: { data: { playerDefinition: { campaignFogPolicy: "normal" } } } }
     ] } } } as unknown as Phaser.Scene;
-    const source = actor(1);
+    const source = actor(1, captureScene);
     const navigation = { getCenterTileCoordUnderObject: jest.fn(() => ({ x: 0, y: 0 })) };
     const policy = new AiObservationVisibilityPolicy(captureScene, 1, { getOwnedActors: () => [source] }, navigation);
     expect(policy.mayObserveTile({ x: 0, y: 0 })).toBe(false);
     expect(navigation.getCenterTileCoordUnderObject).toHaveBeenCalledWith(source);
   });
 
+  it("ignores stale owned vision sources from a different scene", () => {
+    const captureScene = scene("normal");
+    const isActorVisible = jest.fn(() => true);
+    const vision = Object.assign(Object.create(VisionComponent.prototype), { isActorVisible });
+    const source = {
+      active: true,
+      scene: {},
+      getData: (key: string) =>
+        key === ActorDataKey ? new ActorData(new Map([[VisionComponent, vision]]), new Map()) : undefined
+    } as unknown as Phaser.GameObjects.GameObject;
+    const policy = new AiObservationVisibilityPolicy(captureScene, 1, { getOwnedActors: () => [source] });
+
+    expect(policy.mayObserve(actor(2, captureScene))).toBe(false);
+    expect(isActorVisible).not.toHaveBeenCalled();
+  });
+
   it("requires a ground location to be within the source's full three-dimensional vision range", () => {
+    const captureScene = scene("normal");
     const vision = Object.assign(Object.create(VisionComponent.prototype), { visionDefinition: { range: 5 } });
     const representable = { flyingHeightPixels: 320 };
     const source = {
+      active: true,
+      scene: captureScene,
       getData: (key: string) => key === ActorDataKey
         ? new ActorData(new Map([[VisionComponent, vision], [RepresentableComponent, representable]]), new Map())
         : undefined
     } as unknown as Phaser.GameObjects.GameObject;
     const navigation = { getCenterTileCoordUnderObject: () => ({ x: 0, y: 0 }) };
-    const policy = new AiObservationVisibilityPolicy(scene("normal"), 1, { getOwnedActors: () => [source] }, navigation);
+    const policy = new AiObservationVisibilityPolicy(captureScene, 1, { getOwnedActors: () => [source] }, navigation);
     expect(policy.mayObserveGroundTile({ x: 0, y: 0 })).toBe(true);
     expect(policy.mayObserveGroundTile({ x: 4, y: 0 })).toBe(false);
   });

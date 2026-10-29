@@ -78,6 +78,50 @@ export function selectAiNavalShoreFiringPosition(
     )[0]?.carrierPosition;
 }
 
+function selectAiNavalWaterFiringPosition(
+  context: AiSkirmishProposalContext,
+  opponent: AiObservedActorV1
+) {
+  const targetPosition = position(opponent);
+  if (!targetPosition) return undefined;
+  const attackers = context.combat.filter((actor) => domains(actor).includes("water") && canTarget(actor, opponent));
+  const candidates = (context.observation.map?.tacticalCells ?? [])
+    .filter((cell) => cell.waterPassable && !cell.observedBlocked && distance(cell.position, targetPosition) > 0)
+    .filter((cell) =>
+      attackers.some((actor) => {
+        const attacks = actor.combatProfile?.status === "known" ? actor.combatProfile.value.attacks : [];
+        const targetDomains = domains(opponent);
+        const separation = distance(cell.position, targetPosition);
+        return attacks.some(
+          (attack) =>
+            attack.damage > 0 &&
+            targetDomains.some((domain) => attack.targetDomains.includes(domain)) &&
+            separation >= attack.minRange &&
+            separation <= attack.range + (cell.position.z > targetPosition.z ? attack.highGroundRangeBonus : 0)
+        );
+      })
+    );
+  const distanceFromNavalForce = (candidate: (typeof candidates)[number]) =>
+    Math.min(...attackers.map((actor) => distance(position(actor) ?? candidate.position, candidate.position)));
+  return candidates
+    .sort(
+      (left, right) =>
+        distanceFromNavalForce(left) - distanceFromNavalForce(right) ||
+        distance(left.position, targetPosition) - distance(right.position, targetPosition) ||
+        left.tileKey.localeCompare(right.tileKey)
+    )[0]?.position;
+}
+
+export function selectAiNavalFiringPosition(
+  context: AiSkirmishProposalContext,
+  opponent: AiObservedActorV1,
+  waterNodeId: string
+) {
+  return domains(opponent).includes("water")
+    ? selectAiNavalWaterFiringPosition(context, opponent)
+    : selectAiNavalShoreFiringPosition(context, opponent, waterNodeId);
+}
+
 /** Route each origin/domain separately: one reachable unit cannot certify unreachable reinforcements.
  * Independently direct cohorts can share a mission; transport passengers retain a single executable route.
  */

@@ -27,10 +27,18 @@ function fixture() {
     return { tick };
   });
   const refresh = jest.fn(async (tick: number) => refreshNow(tick));
+  const observationPipeline = {
+    refresh,
+    refreshNow,
+    getObservation: () => undefined,
+    getDebugSnapshot: () => ({ lastCommitError: null }),
+    getLastCommitErrorStage: () => null,
+    getLastCommitErrorCode: () => null
+  };
   Reflect.set(agent, "scene", {});
   Reflect.set(agent, "worldStateSnapshotManager", world);
   Reflect.set(agent, "targetingManager", targeting);
-  Reflect.set(agent, "observationPipeline", { refresh, refreshNow, getObservation: () => undefined });
+  Reflect.set(agent, "observationPipeline", observationPipeline);
   Reflect.set(agent, "economyManager", {
     update: () => {
       events.push("economy");
@@ -46,7 +54,7 @@ function fixture() {
     events.push("prerequisites");
   });
   jest.mocked(getSceneService).mockReturnValue(clock as never);
-  return { agent, clock, events, world, targeting, refreshNow };
+  return { agent, clock, events, world, targeting, refreshNow, observationPipeline };
 }
 
 afterEach(() => jest.resetAllMocks());
@@ -73,4 +81,15 @@ it("rejects a retained old observation when the current capture fails", () => {
   const f = fixture();
   f.refreshNow.mockReturnValue({ tick: 39 });
   expect(() => f.agent.preparePureDecision(2000)).toThrow("ai_current_decision_observation_unavailable");
+});
+
+it("classifies capture failures without exposing the underlying capture error", () => {
+  const f = fixture();
+  f.refreshNow.mockReturnValue(undefined);
+  f.observationPipeline.getDebugSnapshot = () => ({ lastCommitError: "hidden internal detail" });
+  f.observationPipeline.getLastCommitErrorStage = () => "actor_projection";
+  f.observationPipeline.getLastCommitErrorCode = () => "missing_scene";
+  expect(() => f.agent.preparePureDecision(2000)).toThrow(
+    "ai_current_decision_observation_unavailable:capture_failed:actor_projection:missing_scene"
+  );
 });

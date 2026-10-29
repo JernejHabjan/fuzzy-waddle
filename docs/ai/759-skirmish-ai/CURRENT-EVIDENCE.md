@@ -5,15 +5,12 @@ Updated 2026-10-29. This is the compact active snapshot; detailed run history be
 
 ## Active placement checkpoint
 
-WALL-01 Tivara terrain variant `1793278942800` runs 3,001 ticks / 115s and loses only the expected wall proof gates:
-no paid completed AI fortification, no persistent fortification graph/effect, and worker/army transit incomplete. The
-capture contains a real hostile attack and later clears the sustainable-food macro floor, but never records a
-fortification plan; no Wall/WatchTower/Stairs placement occurs. At tick 20 the native base is (33,19), the nearest
-visible threat is (24,25), and the current plan geometry selects a wall line centered at (29,19). The retained map has
-terrain anchors only on the positive side of that line (offsets +3,+5,+7); `createFortificationLayout` requires anchors
-on both sides and correctly returns no layout. The current water patch is not positioned to bound this approach. Repair
-the WALL-01 fixture's connected choke/setup or change candidate search only if a valid alternative is demonstrated;
-do not weaken the native gates or replay this branch unchanged.
+WALL-01's corrected fixture uses opposite blocked-grass anchors and enough stone, with preplaced perimeter structures
+removed. The retained tick-200 snapshot now creates a valid 10-node plan; a targeted regression confirms stationary
+building footprints are not treated as traversable route endpoints. Current-source Tivara terrain diagnostic
+`1793281961347` runs 3,001 ticks / 162s but still places no fortification. Native clearance rejects production/army and
+retreat paths, and worker/army physical transit remains incomplete. Keep the case open; diagnose the obstructed lane
+before another native attempt. Do not weaken the route or passage gates.
 
 PLACE-03's owned-vision lookup skips inactive or foreign-scene actors from the owner index. Static protected-route
 clearance excludes mobile actors while retaining buildings and terrain, and army/retreat corridors use one-tile
@@ -174,7 +171,8 @@ selection and tactics changed; the current-source recheck passes at candidate `0
 - FIGHT-01 is closed on all eight native branches: favorable combat, changed-risk regrouping, and the quiet continued-fight control pass.
 - FIGHT-02 and FIGHT-03 are closed on all six current-source branches each. FIGHT-03 combined report `1793213533338-passed.json` uses the corrected two-front and tick-400 loss fixture.
 - FIGHT-04 and FIGHT-05 are closed across all eight native branches each; FIGHT-04 combined report `1793167558976-passed.json` passes 960 decisions / 19,208 ticks on current source. FIGHT-05 uses retained wall evidence and focused current-fixture runs for target-loss, status and disconnected setups.
-- Selected native obligations: **10/22 closed** (STRAT-05, STRAT-02, STRAT-03, STRAT-04, SCOUT-03, SCOUT-04, FIGHT-01, FIGHT-04, FIGHT-05 and RAID-02); 12 remain. RAID-01's eight targeted branch passes await its CI-owned combined registered matrix. Partial branch evidence does not close a family.
+- Selected native obligations: **12/22 closed** (STRAT-05, STRAT-02, STRAT-03, STRAT-04, SCOUT-03, SCOUT-04, FIGHT-01, FIGHT-04, FIGHT-05, RAID-02, H-06 and H-07); 10 remain. RAID-01's eight targeted branch passes await its CI-owned combined registered matrix. Partial branch evidence does not close a family.
+- H-06/H-07 close on report `1793283838864-passed.json`: all ten current-source native branches pass across both factions (1,080 decisions / 21,610 ticks; source `fnv1a32:2e877c87`, fixture `fnv1a32:dabe5f2a`). The first attempt proved the original roster never reached the required production-receipt boundary; H-06/H-07 fixtures now start with two army units so an actual paid training effect can be held. Static fixture contract passes 50/50.
 - Supported registration remains complete: pure 111/111 and native definitions/runtime recipes 115/115. These are
   authoring coverage, not behavior completion. Overall behavior percentage is unavailable until the existing evidence is
   reconciled across all supported rows.
@@ -185,7 +183,7 @@ selection and tactics changed; the current-source recheck passes at candidate `0
 | --- | --- |
 | 3 — scouting, combat, access | DOMAIN-01/05/06, DOMAIN-02 COAST and its two controls, INTERCEPT, SCOUT-01/03/04, FIGHT-01/02/03/04/05 and RAID-02 pass. All RAID-01 targeted branches pass; its combined registered matrix remains CI-owned. ESCORT's paid-fleet objective effect and SCOUT-02 native trip/service remain. Seven real-peer obligations remain CI-owned. STRAT-09 needs grouped final recheck after affected changes. |
 | 4 — placement, walls, recovery | H-11 and all eight PLACE-03 branches pass. PLACE-01/02, EXP-01/02, WALL-01–05 and remaining H-01–05/H-27–28 branches still need scoped semantic/evidence closure. |
-| 5 — authority and lifecycle | H-10 over-capacity variants, H-06/07, H-08/09 peer evidence, H-14/15 remaining branches, H-31/32, M11, #819/#823. Peer CI is skipped on draft PR #814; local peer runner cannot start without Docker Engine. |
+| 5 — authority and lifecycle | H-06/07 pass. H-10 over-capacity variants, H-08/09 peer evidence, H-14/15 remaining branches, H-31/32, M11, #819/#823. Peer CI is skipped on draft PR #814; local peer runner cannot start without Docker Engine. |
 | 6 — continuous play and difficulty | SEQ-02 and supported SEQ/D cases. D-06 legacy comparison remains explicitly unsupported. |
 | 7 — debug and closure | DBG cases, #820/#821, machinery/legacy review, omission audit and final closure audit. |
 

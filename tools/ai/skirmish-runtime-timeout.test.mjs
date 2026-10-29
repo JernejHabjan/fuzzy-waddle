@@ -2,12 +2,13 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { skirmishRuntimeTestTimeoutMs } from "../../apps/portal-e2e/src/e2e/skirmish-ai-runtime-timeout.mjs";
 
-test("one selected native variant gets a bounded thirteen-minute test window", () => {
-  assert.equal(skirmishRuntimeTestTimeoutMs(1), 13 * 60_000);
+test("one selected native variant gets a horizon-based test window", () => {
+  assert.equal(skirmishRuntimeTestTimeoutMs(1, 2_000), 180_000 + 2_000 * 450);
 });
 
-test("serial runtime variants add ten minutes each after startup and sealing", () => {
-  assert.equal(skirmishRuntimeTestTimeoutMs(3), 33 * 60_000);
+test("runtime test windows never exceed thirty minutes", () => {
+  assert.equal(skirmishRuntimeTestTimeoutMs(3, 20_000), 30 * 60_000);
+  assert.equal(skirmishRuntimeTestTimeoutMs(100, 120_000), 30 * 60_000);
 });
 
 test("the base timeout covers startup when no variants are selected", () => {
@@ -15,6 +16,7 @@ test("the base timeout covers startup when no variants are selected", () => {
 });
 
 test("runtime timeout rejects invalid variant counts", () => {
-  assert.throws(() => skirmishRuntimeTestTimeoutMs(-1), /invalid_runtime_variant_count/);
-  assert.throws(() => skirmishRuntimeTestTimeoutMs(1.5), /invalid_runtime_variant_count/);
+  assert.throws(() => skirmishRuntimeTestTimeoutMs(-1), /invalid_runtime_timeout_budget/);
+  assert.throws(() => skirmishRuntimeTestTimeoutMs(1.5), /invalid_runtime_timeout_budget/);
+  assert.throws(() => skirmishRuntimeTestTimeoutMs(1, -1), /invalid_runtime_timeout_budget/);
 });

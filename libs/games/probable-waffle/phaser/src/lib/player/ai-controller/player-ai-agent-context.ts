@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { ProbableWafflePlayer } from "@fuzzy-waddle/probable-waffle-protocol";
 import { environment } from "@fuzzy-waddle/environments/environment";
+import { isSceneActive } from "../../data/game-object-helper";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { DebuggingService } from "../../world/services/DebuggingService";
 import { Subscription } from "rxjs";
@@ -179,7 +180,21 @@ export abstract class PlayerAiAgentContext {
     this.scoutingManager.updateVisionSampling(now);
     const observation = this.observationPipeline.refreshNow(tick);
     if (!observation || observation === previous || observation.tick !== tick) {
-      throw new Error("ai_current_decision_observation_unavailable");
+      const debug = this.observationPipeline.getDebugSnapshot();
+      const reason = debug.lastCommitError
+        ? `capture_failed:${this.observationPipeline.getLastCommitErrorStage() ?? "unknown_stage"}:${this.observationPipeline.getLastCommitErrorCode() ?? "unknown_error"}`
+        : !observation
+          ? "no_observation"
+          : observation.tick !== tick
+            ? "committed_tick_mismatch"
+            : observation === previous && this.player.playerNumber === undefined
+              ? "player_identity_unavailable"
+              : observation === previous && !this.player.factionType
+                ? "player_faction_unavailable"
+                : observation === previous && !isSceneActive(this.scene)
+                  ? "scene_inactive"
+                  : "snapshot_reused";
+      throw new Error(`ai_current_decision_observation_unavailable:${reason}`);
     }
   }
 

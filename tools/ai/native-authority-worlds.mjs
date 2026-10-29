@@ -8,6 +8,14 @@ export function nativeAuthorityWorld(id, faction, branch) {
   const actor = (role, name, owner, x, y) => ({ fixtureActorId: role, actorName: name, owner, position: tile(x, y) });
   world.actors = world.actors.filter((a) =>
     !["contact-group", "noise-scout", "front-target-a", "front-target-b"].includes(a.fixtureActorId));
+  if (["H-06", "H-07"].includes(id)) {
+    // These cases need a real paid unit whose receipt can be withheld. The shared
+    // eight-unit opening already satisfies the Skaduwee force target, so it only
+    // researches and never reaches the authored production-receipt boundary.
+    world.actors = world.actors.filter(
+      (actor) => !actor.fixtureActorId.startsWith("army-") || ["army-0", "army-1"].includes(actor.fixtureActorId)
+    );
+  }
   world.actors.push(actor("authority-target", "WorkMill", 1, 19, 27));
   world.initialOrders.push({ workerFixtureActorId: "worker-1", sourceFixtureActorId: "own-source", kind: "gather" });
   for (let i = 0; i < 4; i++) world.actors.push(actor(`authority-house-${i}`,

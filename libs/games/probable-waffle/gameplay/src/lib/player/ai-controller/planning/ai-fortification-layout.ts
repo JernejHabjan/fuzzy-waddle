@@ -228,6 +228,9 @@ export function createFortificationLayout(
     )
     .map(positionOf)
     .filter((position): position is Vector3Simple => position !== null)
+    // Stationary actor centers can occupy large native footprints; only traversable actor tiles represent paths.
+    // The gate, protected side, and exterior are validated separately regardless of current occupancy.
+    .filter((position) => byKey.get(tileKey(position))?.groundPassable)
     .filter((position) => Math.abs(position.x - anchor.x) + Math.abs(position.y - anchor.y) <= 12);
   const protectedPosition = atOffset(0, -1);
   const exteriorPosition = atOffset(0, 1);

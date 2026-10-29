@@ -54,6 +54,27 @@ describe("AiFortificationManager", () => {
     );
   });
 
+  it("does not mistake a stationary building footprint for a traversable route that must reach the gate", () => {
+    const source = observation();
+    const proposal = manager.propose(
+      {
+        ...source,
+        map: {
+          ...source.map!,
+          constructionCells: source.map!.constructionCells!.map((cell) =>
+            cell.tileKey === "5,10" ? { ...cell, groundPassable: false, observedBlocked: true } : cell
+          )
+        }
+      },
+      threatenedState()
+    );
+
+    expect(proposal.statePatch?.fortifications).toHaveLength(1);
+    expect(proposal.statePatch?.fortifications?.[0]?.graph?.nodes.filter((node) => node.kind === "stair")).toHaveLength(
+      2
+    );
+  });
+
   it("WALL-05 rejects a front that would consume a known shore staging lane", () => {
     const current = observation();
     const proposal = manager.propose(

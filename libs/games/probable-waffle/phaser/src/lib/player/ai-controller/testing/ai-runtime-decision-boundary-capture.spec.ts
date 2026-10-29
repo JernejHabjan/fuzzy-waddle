@@ -188,13 +188,13 @@ describe("AiRuntimeProductionCapture decision boundaries", () => {
     fixture.changes.next({ property: "resource.added", data: { playerNumber: 2, playerStateData: { resources: {} } } });
     const cash = requireAiTestEntry(fixture.capture.capture(2).facts, 0);
     expect(cash.kind === "resources_applied" && cash.balanceMatches).toBe(false);
+    for (let index = 0; index < 256; index += 1) fixture.capture.capture(2);
+    expect(fixture.capture.capture(2).droppedSnapshotCount).toBeGreaterThan(0);
     for (let index = 0; index < AI_RUNTIME_MAX_FACTS + 1; index += 1)
       fixture.outcomes.next(outcome("dispatched", `request:${index}`));
     const bounded = fixture.capture.capture(2);
     expect(bounded.facts).toHaveLength(AI_RUNTIME_MAX_FACTS);
     expect(bounded.droppedFactCount).toBe(2);
-    for (let index = 0; index < 256; index += 1) fixture.capture.capture(2);
-    expect(fixture.capture.capture(2).droppedSnapshotCount).toBeGreaterThan(0);
     fixture.ticks.currentTick = 1;
     fixture.controller.isDecisionBoundarySettled.mockReturnValue(false);
     expect(() => fixture.capture.capture(2)).toThrow("production_capture_boundary_unsettled");

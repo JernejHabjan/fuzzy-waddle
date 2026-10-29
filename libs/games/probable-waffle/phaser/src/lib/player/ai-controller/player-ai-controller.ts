@@ -13,6 +13,7 @@ import { PlayerAiControllerMdsl } from "@fuzzy-waddle/probable-waffle-gameplay/p
 import { TelemetrySink } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/telemetry";
 import { AI_CONFIG } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/ai-config";
 import { getSimulationNow } from "./ai-time";
+import { isSceneActive } from "../../data/game-object-helper";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { SimulationTickService } from "../../world/services/simulation-tick.service";
 import type { Subscription } from "rxjs";
@@ -105,6 +106,7 @@ export class PlayerAiController {
   }
 
   private async updateFrameNonDeterministicFallback(_: number, delta: number) {
+    if (!isSceneActive(this.scene)) return;
     const deltaWithTimeScale = delta * this.scene.time.timeScale;
 
     if (!PlayerAiController.AI_ENABLED || !this.enabled || !this.authorityActive) return;
@@ -115,6 +117,7 @@ export class PlayerAiController {
   }
 
   private async updateOnSimulationTick(): Promise<void> {
+    if (!isSceneActive(this.scene)) return;
     if (!PlayerAiController.AI_ENABLED || !this.enabled || !this.authorityActive) return;
     this.elapsedTime += SimulationTickService.TICK_INTERVAL_MS;
     if (this.elapsedTime >= this.stepInterval) {

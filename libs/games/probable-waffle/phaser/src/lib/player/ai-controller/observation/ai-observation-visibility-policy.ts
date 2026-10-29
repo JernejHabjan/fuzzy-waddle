@@ -72,6 +72,7 @@ export class AiObservationVisibilityPolicy {
     const index = this.ownerIndex ?? getSceneService(this.scene, ActorIndexSystem);
     if (!index) return false;
     return index.getOwnedActors(this.playerNumber).some((source) => {
+      if (!source.active || source.scene !== this.scene) return false;
       const vision = getActorComponent(source, VisionComponent);
       return vision?.isActorVisible(actor) ?? false;
     });
@@ -83,6 +84,7 @@ export class AiObservationVisibilityPolicy {
     const index = this.ownerIndex ?? getSceneService(this.scene, ActorIndexSystem);
     if (!index) return false;
     return index.getOwnedActors(this.playerNumber).some((source) => {
+      if (!source.active || source.scene !== this.scene) return false;
       const sourceTile = this.ownerNavigation
         ? this.ownerNavigation.getCenterTileCoordUnderObject(source)
         : getGameObjectCurrentTile(source);
@@ -98,6 +100,7 @@ export class AiObservationVisibilityPolicy {
     const index = this.ownerIndex ?? getSceneService(this.scene, ActorIndexSystem);
     if (!index) return false;
     return index.getOwnedActors(this.playerNumber).some((source) => {
+      if (!source.active || source.scene !== this.scene) return false;
       const sourceTile = this.ownerNavigation
         ? this.ownerNavigation.getCenterTileCoordUnderObject(source)
         : getGameObjectCurrentTile(source);

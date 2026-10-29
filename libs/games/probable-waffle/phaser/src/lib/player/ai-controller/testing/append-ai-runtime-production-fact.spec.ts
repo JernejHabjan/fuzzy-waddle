@@ -25,8 +25,8 @@ describe("runtime production fact budget", () => {
       );
     }
 
-    expect(AI_RUNTIME_MAX_FACTS).toBe(32768);
-    expect(facts).toHaveLength(32768);
+    expect(AI_RUNTIME_MAX_FACTS).toBe(36_864);
+    expect(facts).toHaveLength(36_864);
     expect(losses).toBe(1);
     expect(dropped).toBe(1);
   });

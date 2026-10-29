@@ -1,4 +1,10 @@
 import { PlayerAiController } from "./player-ai-controller";
+import { isSceneActive } from "../../data/game-object-helper";
+
+jest.mock("../../data/game-object-helper", () => ({ isSceneActive: jest.fn(() => true) }));
+jest.mock("../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+
+afterEach(() => jest.mocked(isSceneActive).mockReturnValue(true));
 
 function fixture(pure: boolean) {
   const controller = Object.create(PlayerAiController.prototype) as PlayerAiController;
@@ -52,6 +58,14 @@ it("retains asynchronous legacy preparation", async () => {
   await pending;
   expect(f.decisions).toEqual([41]);
   expect(f.preparePureDecision).not.toHaveBeenCalled();
+});
+
+it("does not schedule a decision while its scene is inactive", async () => {
+  const f = fixture(true);
+  jest.mocked(isSceneActive).mockReturnValue(false);
+  await (f.controller as unknown as { updateOnSimulationTick(): Promise<void> }).updateOnSimulationTick();
+  expect(f.preparePureDecision).not.toHaveBeenCalled();
+  expect(f.decisions).toEqual([]);
 });
 
 it.each(["disabled", "authority_lost", "capture_failed"])(

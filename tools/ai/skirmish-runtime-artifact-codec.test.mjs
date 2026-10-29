@@ -127,3 +127,27 @@ test("large variant sets are externalized into bounded files and reconstructed b
     rmSync(directory, { recursive: true, force: true });
   }
 });
+
+test("streams an oversized single native variant to external storage", () => {
+  const directory = mkdtempSync(join(tmpdir(), "runtime-large-variant-codec-"));
+  const path = join(directory, "runtime.json");
+  try {
+    const report = groupedReport();
+    report.scenarios = [report.scenarios[0]];
+    report.scenarios[0].variants[0].checkpoints[0].gameResult = "defeat";
+    report.scenarios[0].variants[0].checkpoints[0].scoreMetrics = { damage_dealt: 17 };
+    const largeEvidence = `${"x".repeat(16_383)}😀${"y".repeat(9 * 1024 * 1024)}`;
+    report.scenarios[0].variants[0].largeEvidence = largeEvidence;
+
+    const encoded = encodeRuntimeArtifact(report, path);
+    assert.equal(encoded.artifactEncoding, "external-runtime-variants-v1");
+    assert.equal(encoded.artifactVariantFiles.length, 1);
+    assert.equal(encoded.artifactVariantSummaries[0].checkpoints[0].gameResult, "defeat");
+    writeFileSync(path, JSON.stringify(encoded));
+    assert.match(summarizeReport(JSON.parse(readFileSync(path, "utf8")), { path }), /result=defeat/);
+    const decoded = readRuntimeResult(path, identity);
+    assert.equal(decoded.scenarios[0].variants[0].largeEvidence, largeEvidence);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});

@@ -221,6 +221,7 @@ function resolveRuntimeVariant(runtime, artifactPath, reference) {
     !runtime.artifactVariantFiles?.[reference]
   )
     return {};
+  if (runtime.artifactVariantSummaries?.[reference]) return runtime.artifactVariantSummaries[reference];
   return JSON.parse(readFileSync(`${artifactPath}.variants/${runtime.artifactVariantFiles[reference]}`, "utf8"));
 }
 

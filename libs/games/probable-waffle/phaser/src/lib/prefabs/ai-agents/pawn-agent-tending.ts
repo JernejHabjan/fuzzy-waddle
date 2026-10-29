@@ -11,7 +11,7 @@ import { AnimationActorComponent } from "../../entity/components/animation/anima
 import { TendableComponent } from "../../entity/components/tendable/tendable-component";
 import { isCropResourceSource } from "../../entity/components/tendable/growth-stage.interface";
 import { AnimationType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-type";
-import { getGameObjectTileInRadius } from "../../data/game-object-helper";
+import { getGameObjectTileInNavigableRadius } from "../../data/game-object-helper";
 
 /** Owns crop tending actions, presentation and post-construction Gather admission.
  * Actor-local collaborators own no subscriptions, timers or saved state; the controller owns their lifetime.
@@ -70,14 +70,19 @@ export class PawnAgentTending {
     const movementSystem = getActorSystem(this.gameObject, MovementSystem);
     if (!movementSystem) return State.FAILED;
     try {
-      // Use spatial (non-pathfinding) tile lookup — field's own tile may be blocked by its collider
-      const randomTile = getGameObjectTileInRadius(target, 2);
+      // Random nearby tiles can be blocked; choose a reachable ground tile before starting movement.
+      const randomTile = await getGameObjectTileInNavigableRadius(target, 2);
       if (!randomTile) return State.FAILED;
-      const success = await movementSystem.moveToLocationByFollowingStaticPath({
-        x: randomTile.x,
-        y: randomTile.y,
-        z: 0
-      }, undefined, MovementQueryObservation.capture(this.gameObject, this.blackboard, currentOrder, "tending_movement"));
+      const success = await movementSystem.moveToLocationByFollowingStaticPath(
+        {
+          x: randomTile.x,
+          y: randomTile.y,
+          z: 0
+        },
+        undefined,
+        MovementQueryObservation.capture(this.gameObject, this.blackboard, currentOrder, "tending_movement"),
+        true
+      );
       return success ? State.SUCCEEDED : State.FAILED;
     } catch {
       return State.FAILED;
@@ -111,5 +116,4 @@ export class PawnAgentTending {
     this.blackboard.addOrder(new OrderData(OrderType.Gather, { targetGameObject: target }));
     return State.SUCCEEDED;
   }
-
 }

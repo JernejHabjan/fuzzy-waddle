@@ -661,6 +661,247 @@ describe("AiSkirmishManager offense target selection", () => {
         logicalPosition: navalFiringPosition
       })
     );
+
+    const hostileBoat: AiObservedActorV1 = {
+      ...distantVisibleBoat,
+      actorId: "visible-hostile-naval-boat",
+      owner: 2,
+      relation: "enemy",
+      visibility: "visible",
+      logicalPosition: { status: "known", value: { x: 5, y: 12, z: 0 }, observedTick: 20 },
+      visibleEnemyActorIds: []
+    };
+    const navalCombatBoat = { ...boat, visibleEnemyActorIds: [hostileBoat.actorId] };
+    const navalCombatBoat2 = {
+      ...navalCombatBoat,
+      actorId: "naval-boat-2",
+      logicalPosition: { status: "known" as const, value: { x: 6, y: 1, z: 0 }, observedTick: 20 }
+    };
+    const outOfRangeShoreThreats = Array.from({ length: 3 }, (_, index) => ({
+      ...actor(`shore-threat-${index}`, homeNode, 0),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const,
+      logicalPosition: {
+        status: "known" as const,
+        value: { x: 6 + index, y: 12, z: 0 },
+        observedTick: 20
+      },
+      combatProfile: {
+        status: "known" as const,
+        observedTick: 20,
+        value: {
+          maxHealth: 100,
+          maxArmour: 0,
+          passiveRegenerationPerSecond: 0,
+          armourPermille: 0,
+          attacks: [
+            {
+              damage: 5,
+              cooldownTicks: 20,
+              remainingCooldownTicks: 0,
+              range: 1,
+              minRange: 0,
+              highGroundRangeBonus: 0,
+              impactDelayTicks: 0,
+              areaRadius: 0,
+              targetDomains: ["water"]
+            }
+          ],
+          healing: null,
+          spells: [],
+          statuses: []
+        }
+      }
+    }));
+    const waterFiringTile = {
+      tileKey: "5,5",
+      position: { x: 5, y: 5, z: 0 },
+      groundPassable: false,
+      waterPassable: true,
+      elevation: 0,
+      observedBlocked: false
+    };
+    const visibleNavalCombat = new AiSkirmishManager(profile, () => mixedCatalog).propose(
+      {
+        ...observation,
+        tick: 20,
+        actors: [...army, navalCombatBoat, navalCombatBoat2, coastalWorkmill, hostileBoat, ...outOfRangeShoreThreats],
+        map: {
+          bounds: { status: "known", value: { width: 20, height: 20 }, observedTick: 20 },
+          staticRevision: 1,
+          frontierAccessNodeIds: [coastalNode],
+          scoutCoverageAccessNodeIds: [],
+          dynamicObstacleActorIds: [],
+          regionGeneration: { generation: 1, status: "ready", continuationCursor: 0 },
+          accessGraph,
+          tacticalCells: [waterFiringTile]
+        }
+      },
+      createAiBrainStateV1({
+        playerNumber: 1,
+        faction: FactionType.Tivara,
+        profile,
+        tick: 0,
+        archetypeId: "balanced"
+      })
+    );
+    expect(visibleNavalCombat.statePatch?.squads).toContainEqual(
+      expect.objectContaining({
+        role: "attack",
+        domain: "water",
+        objectiveId: hostileBoat.actorId,
+        actorIds: expect.arrayContaining([navalCombatBoat.actorId, navalCombatBoat2.actorId])
+      })
+    );
+    expect(visibleNavalCombat.intents).toContainEqual(
+      expect.objectContaining({
+        kind: "move",
+        actorIds: expect.arrayContaining([navalCombatBoat.actorId, navalCombatBoat2.actorId]),
+        logicalPosition: waterFiringTile.position
+      })
+    );
+
+    const reservedFleet = [navalCombatBoat];
+    const continuingGroundCore = {
+      ...coastalWorkmill,
+      visibility: "visible" as const,
+      observedTick: 540,
+      accessNodeId: { status: "known" as const, value: coastalNode, observedTick: 540 },
+      mainBuilding: { status: "known" as const, value: true, observedTick: 540 },
+      capabilities: []
+    };
+    const retainedGroundAttack = {
+      squadId: "squad:attack:primary" as const,
+      role: "attack" as const,
+      domain: "ground" as const,
+      actorIds: army.map((member) => member.actorId),
+      objectiveId: continuingGroundCore.actorId,
+      state: "engaged" as const,
+      lifecycle: {
+        targetPlayerNumber: 2,
+        targetRegionId: coastalNode,
+        protectedBaseId: null,
+        rallyNodeId: homeNode,
+        retreatNodeId: homeNode,
+        createdTick: 0,
+        assemblyDeadline: {
+          clock: "simulation" as const,
+          unit: "tick" as const,
+          dueTick: 1220,
+          persistence: "save" as const
+        },
+        effectDeadline: {
+          clock: "simulation" as const,
+          unit: "tick" as const,
+          dueTick: 2420,
+          persistence: "save" as const
+        },
+        lastUsefulEffectTick: null,
+        recoveryAttempt: 0,
+        terminalReason: null
+      }
+    };
+    const retainedWaterReserve = {
+      ...retainedGroundAttack,
+      squadId: "squad:reserve:home:domain:water" as const,
+      role: "reserve" as const,
+      domain: "water" as const,
+      actorIds: reservedFleet.map((member) => member.actorId),
+      objectiveId: continuingGroundCore.actorId,
+      state: "reserve" as const,
+      tactics: {
+        taskForceId: "task-force:local",
+        script: "naval_control" as const,
+        targetActorId: coastalWorkmill.actorId,
+        targetScore: 613,
+        engagementRatioPermille: 2000,
+        confidencePermille: 1000,
+        predictedFriendlyLossPermille: 0,
+        predictedEnemyLossPermille: 1000,
+        lastObservedMemberCount: reservedFleet.length,
+        observedLossCount: 2,
+        lastTransitionTick: 540,
+        nextReconsiderTick: 580,
+        oscillationCount: 1,
+        orderSignature: "reserve:naval_control:coastal-workmill:visible:28,7,0",
+        orderedActorIds: reservedFleet.map((member) => member.actorId),
+        assignedPositions: [],
+        damageReservations: [],
+        protectedRouteNodeIds: [homeNode, homeNode],
+        mobileReserveActorIds: [],
+        objectiveAlternatives: []
+      }
+    };
+    const continuingState = {
+      ...createAiBrainStateV1({
+        playerNumber: 1,
+        faction: FactionType.Tivara,
+        profile,
+        tick: 0,
+        archetypeId: "balanced"
+      }),
+      squads: [{ ...retainedGroundAttack, state: "retreat" as const }, retainedWaterReserve]
+    };
+    const continuingAccessGraph = {
+      ...accessGraph,
+      links: [
+        ...accessGraph.links,
+        {
+          linkId: "test:continuing-core-route:outbound",
+          fromNodeId: homeGroundNode,
+          toNodeId: coastalNode,
+          domain: "ground" as const,
+          clearance: 2,
+          distanceCost: 3,
+          knowledge: "known_static" as const,
+          directional: true
+        },
+        {
+          linkId: "test:continuing-core-route:inbound",
+          fromNodeId: coastalNode,
+          toNodeId: homeGroundNode,
+          domain: "ground" as const,
+          clearance: 2,
+          distanceCost: 3,
+          knowledge: "known_static" as const,
+          directional: true
+        }
+      ]
+    };
+    const continuingNavalCombat = new AiSkirmishManager(profile, () => mixedCatalog).propose(
+      {
+        ...observation,
+        tick: 540,
+        actors: [...army, ...reservedFleet, continuingGroundCore, hostileBoat, ...outOfRangeShoreThreats],
+        map: {
+          bounds: { status: "known", value: { width: 20, height: 20 }, observedTick: 540 },
+          staticRevision: 1,
+          frontierAccessNodeIds: [coastalNode],
+          scoutCoverageAccessNodeIds: [],
+          dynamicObstacleActorIds: [],
+          regionGeneration: { generation: 1, status: "ready", continuationCursor: 0 },
+          accessGraph: continuingAccessGraph,
+          tacticalCells: [waterFiringTile]
+        }
+      },
+      continuingState
+    );
+    expect(continuingNavalCombat.statePatch?.squads).toContainEqual(
+      expect.objectContaining({
+        squadId: "squad:attack:primary",
+        objectiveId: continuingGroundCore.actorId
+      })
+    );
+    expect(continuingNavalCombat.statePatch?.squads).toContainEqual(
+      expect.objectContaining({
+        squadId: `squad:attack:raid:${hostileBoat.actorId}`,
+        role: "attack",
+        domain: "water",
+        objectiveId: hostileBoat.actorId,
+        actorIds: expect.arrayContaining(reservedFleet.map((member) => member.actorId))
+      })
+    );
   });
 
   it("keeps home defenders while splitting only surplus attackers onto a second front", () => {

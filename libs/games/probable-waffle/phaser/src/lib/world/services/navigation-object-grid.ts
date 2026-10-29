@@ -14,14 +14,17 @@ export class NavigationObjectGrid {
   ) {}
 
   /**
-   * Undefined by default
-   * 0 for navigable
-   * 1 for blocked
+   * Projects colliders and native navigable footprints over terrain. Callers may omit transient colliders when
+   * measuring persistent route clearance; ordinary navigation keeps every collider by default.
+   * Undefined preserves terrain, 0 marks navigable, and 1 marks blocked.
    */
-  build(tilemapGrid: number[][]): (number | undefined)[][] {
+  build(
+    tilemapGrid: number[][],
+    includeCollider: (actor: Phaser.GameObjects.GameObject) => boolean = () => true
+  ): (number | undefined)[][] {
     const emptyGrid: (number | undefined)[][] = tilemapGrid.map((row) => row.map(() => undefined));
 
-    const tileIndexesUnderColliders = this.getTileIndexesUnderColliders();
+    const tileIndexesUnderColliders = this.getTileIndexesUnderColliders(includeCollider);
     const actualTilesUnderColliders = tileIndexesUnderColliders.map((tileIndex) =>
       this.tilemap.getTileAt(tileIndex.x, tileIndex.y)
     );
@@ -53,9 +56,12 @@ export class NavigationObjectGrid {
   /**
    * Returns all tile indexes under colliders
    */
-  private getTileIndexesUnderColliders(): Vector2Simple[] {
+  private getTileIndexesUnderColliders(
+    includeCollider: (actor: Phaser.GameObjects.GameObject) => boolean
+  ): Vector2Simple[] {
     const colliders: Vector2Simple[] = [];
     this.scene.children.each((child) => {
+      if (!includeCollider(child)) return;
       const colliderComponent = getActorComponent(child, ColliderComponent);
       if (!colliderComponent) return;
       if (!colliderComponent.colliderDefinition?.enabled) return;

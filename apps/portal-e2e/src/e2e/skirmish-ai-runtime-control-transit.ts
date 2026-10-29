@@ -48,9 +48,11 @@ export function runtimeControlTransitFailures(
       start.spatial.caller?.order?.commandContext?.execution.commandId === command.execution?.commandId;
   });
   const arrived = attempts.some((movement) => movement.callerAttributed && !movement.gaps.length &&
-    movement.arrival === "original_destination" && movement.returned === "true" && movement.observations.some((entry) =>
-      entry.spatial.phase === "arrived" && entry.tick <= latestTick &&
-      entry.spatial.actualTile?.x === command.tileVec3.x && entry.spatial.actualTile?.y === command.tileVec3.y
+    movement.arrival === "original_destination" && movement.observations.some((entry) =>
+      (entry.spatial.phase === "arrived" && movement.returned === "true" ||
+        entry.spatial.phase === "stopped" && movement.returned === "false") &&
+      entry.tick <= latestTick && entry.spatial.actualTile?.x === command.tileVec3.x &&
+      entry.spatial.actualTile?.y === command.tileVec3.y
     )
   );
   if (expected === "arrive") return arrived ? [] : [`native_transit_original_endpoint_missing:${controlId}`];
