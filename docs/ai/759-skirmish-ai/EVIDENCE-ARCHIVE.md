@@ -1,5 +1,10 @@
 # #759 archived evidence history
 
+## 2026-10-29 — EXP-01 builder ownership and weapon-range evidence
+
+- `1793276632715-diagnostic_failed.json` contained repeated Sandhold/WorkMill proposals rejected as `claim_conflict` against workers' applied Gather actor claims. The live workers remained cargo-free gatherers; the claims could not be renewed by construction. The arbiter now allows only the observed safe Gather-to-construct transition, and an accepted actor lease removes old actor claims while retaining effect ownership. Focused gameplay tests pass 22/22 and scoped ESLint has no errors.
+- Follow-up `1793277296485-diagnostic_failed.json` accepts and starts WorkMill placements at ticks 100/260 and a Sandhold at tick 240. It reports no exact native worker delivery to the new WorkMill. Its alleged enemy-range placement is false: the WatchTower and Sandhold are at equal elevation, so the native high-ground bonus is inactive. Placement and expansion evaluators now share native damage/domain/minimum-range/elevation checks; focused Playwright tests pass 2/2. Reuse this capture; do not rerun until a concrete service-path change is made.
+
 ## 2026-10-29 — DOMAIN-02 COAST paid naval effect closure
 
 - Diagnostic `1793237263373-diagnostic_failed.json` showed the boat had a valid native path toward its firing tile, but the tactical squad repeatedly replaced it with an assembly/rally move, cancelling both owners' orders. The tactics projection now preserves a water attacker's active Move when its destination is compatible and within native weapon range of the visible target. A focused manager regression covers this order-ownership invariant.

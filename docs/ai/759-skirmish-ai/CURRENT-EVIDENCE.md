@@ -47,6 +47,17 @@ show the controls are preempted by AI orders before physical arrival. The fixtur
 represented by active AI orders. Do not replay unchanged; continue to other EXP/WALL/recovery cases while keeping this
 placement blocker open for a route-visible setup or source-side repair.
 
+EXP-01 trace `1793276632715` showed expansion and WorkMill proposals repeatedly lost their builder to an `applied_spending`
+Gather actor lease that stayed after the worker's live order changed. The arbiter now permits a construction retask only
+from an owned, cargo-free gatherer with no transfer, a matching active/pending Gather order, and only applied actor claims;
+accepting the new actor claim releases older actor claims while preserving prior effect claims. Focused gameplay tests
+pass 22/22, including dispatched/build/queued-order protections. Follow-up native trace `1793277296485` starts two
+WorkMills and one Sandhold. The evaluator's weapon-range failure was false: it always added the WatchTower's two-tile
+high-ground bonus, although tower and placement had equal elevation. Both PLACE-02 and EXP-01 checks now apply native
+damage, minimum-range, target-domain and elevation rules; focused Playwright checks pass 2/2. The retained trace still
+has no completed native worker delivery into the new WorkMill, so EXP-01 remains open. Do not replay unchanged; diagnose
+the service path from the saved capture before another runtime.
+
 Latest closed family: SCOUT-03 report `1793174968627-passed.json` (four variants, 400 decisions / 8,004 ticks), source
 digest `fnv1a32:05a85282`, fixture digest `fnv1a32:ebc75582`. Previous closed family: STRAT-04 report
 `1793069202745-passed.json`, base `2210ab7fe09d`, dirty-source digest `fnv1a32:d22008af`, fixture digest `fnv1a32:4e15b8c2`.

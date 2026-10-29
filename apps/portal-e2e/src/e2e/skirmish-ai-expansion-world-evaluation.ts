@@ -7,6 +7,7 @@ import { runtimeClosedHistoryFailures } from "./skirmish-ai-runtime-closed-histo
 import { hasNativeSourceDelivery } from "./skirmish-ai-source-delivery";
 import { expansionServiceFailures } from "./skirmish-ai-expansion-service-evaluation";
 import { expansionPressureFailures } from "./skirmish-ai-expansion-pressure-evaluation";
+import { isWithinObservedGroundWeaponRange } from "./skirmish-ai-native-weapon-range";
 
 /** Native land owner outcomes, including fair premises, real paid construction and useful delivered service. */
 export function evaluateExpansionWorld(
@@ -84,9 +85,16 @@ export function evaluateExpansionWorld(
     const nativeTower = human.frontiers?.intervals.find((interval) =>
       interval.closedFromTick <= fact.tick && interval.closedThroughTick >= fact.tick
     )?.actors.find((actor) => actor.identity.actorId === towerId && actor.identity.active && actor.identity.alive);
-    const range = Math.max(...towerProfile.attacks.filter((attack) => attack.targetDomains.includes("ground"))
-      .map((attack) => attack.range + attack.highGroundRangeBonus));
-    if (nativeTower && value.footprint.some((tile) => Math.hypot(tile.x - towerPosition.x, tile.y - towerPosition.y) <= range + 1)) {
+    if (
+      nativeTower &&
+      value.footprint.some((tile) =>
+        isWithinObservedGroundWeaponRange(
+          towerPosition,
+          { x: tile.x, y: tile.y, z: value.command.tileVec3.z },
+          towerProfile.attacks
+        )
+      )
+    ) {
       failures.push("expansion_committed_inside_live_observed_enemy_weapon_range");
     }
     if (distance(value.command.tileVec3) > 12) continue;

@@ -4,6 +4,7 @@ import {
   ProbableWaffleAiDifficulty,
   ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
+import { HIGH_GROUND_THRESHOLD } from "../../../entity/components/combat/high-ground-constants";
 import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "../testing/ai-test-fixtures";
@@ -11,6 +12,8 @@ import { completedOpeningState, catalog as macroCatalog } from "./ai-macro-test-
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
 import { AiBaseManager } from "./ai-base-manager";
 import { findAiExpansionBuilder } from "./ai-expansion-site";
+import { aiEconomySiteSafety } from "./ai-economy-site-safety";
+import { observedAiProducerThreats, isAiProducerPositionExposed } from "./ai-producer-safety";
 
 function fixture() {
   const tick = 600;
@@ -114,6 +117,88 @@ describe("expansion placement and worker ownership", () => {
     expect(constructs).toHaveLength(1);
     expect(constructs[0]?.logicalPosition).not.toEqual({ x: 24, y: 3, z: 0 });
     expect(constructs[0]?.builderIds).toEqual(["worker"]);
+  });
+
+  it("EXP-01 rejects an expansion footprint inside a current visible weapon threat", () => {
+    const f = fixture();
+    const catalog = {
+      ...f.catalog,
+      entries: f.catalog.entries.map((entry) =>
+        entry.sourceObjectName === ObjectNames.Sandhold
+          ? {
+              ...entry,
+              constructionProfile: { ...entry.constructionProfile!, footprintRadiusTiles: 2 }
+            }
+          : entry
+      )
+    };
+    const tower: AiObservedActorV1 = {
+      ...createAiTestOwnedActor("enemy-tower"),
+      objectName: ObjectNames.WatchTower,
+      owner: 2,
+      relation: "enemy",
+      visibility: "visible",
+      observedTick: f.observation.tick,
+      logicalPosition: {
+        status: "known",
+        value: { x: 13, y: 3, z: HIGH_GROUND_THRESHOLD },
+        observedTick: f.observation.tick
+      },
+      combatProfile: {
+        status: "known",
+        observedTick: f.observation.tick,
+        value: {
+          maxHealth: 1000,
+          maxArmour: 0,
+          passiveRegenerationPerSecond: 0,
+          armourPermille: 0,
+          attacks: [
+            {
+              damage: 20,
+              cooldownTicks: 28,
+              remainingCooldownTicks: null,
+              range: 7,
+              minRange: 0,
+              highGroundRangeBonus: 2,
+              impactDelayTicks: 10,
+              areaRadius: 0,
+              targetDomains: ["ground"]
+            }
+          ],
+          healing: null,
+          spells: [],
+          statuses: []
+        }
+      }
+    };
+    const observation: AiObservationV1 = {
+      ...f.observation,
+      actors: [...f.observation.actors, tower],
+      threatSummary: {
+        observedTick: f.observation.tick,
+        visibleEnemyActorIds: [tower.actorId],
+        rememberedEnemyActorIds: [],
+        observedCapabilityFamilies: ["attack"]
+      }
+    };
+    expect(
+      catalog.entries.find((entry) => entry.sourceObjectName === ObjectNames.Sandhold)?.constructionProfile
+        ?.footprintRadiusTiles
+    ).toBe(2);
+    expect(observedAiProducerThreats(observation)).toHaveLength(1);
+    expect(isAiProducerPositionExposed({ x: 22, y: 3, z: 0 }, observedAiProducerThreats(observation))).toBe(true);
+    expect(aiEconomySiteSafety(observation).positionSafe({ x: 22, y: 3, z: 0 })).toBe(false);
+
+    expect(
+      findAiExpansionBuilder({
+        observation,
+        state: f.state,
+        catalog,
+        objectName: ObjectNames.Sandhold,
+        position: { x: 24, y: 3, z: 0 },
+        accessNodeId: null
+      })
+    ).toBeUndefined();
   });
 
   it.each(["cargo", "delivery", "construction", "transfer"])(

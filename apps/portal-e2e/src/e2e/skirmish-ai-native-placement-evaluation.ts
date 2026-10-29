@@ -4,6 +4,7 @@ import { nativeCompletedPlacements, nativeInitialFieldSites } from "./skirmish-a
 import { evaluateRuntimePlacementPrefixes } from "./skirmish-ai-placement-prefix-evaluation";
 import { evaluateFieldPlacementWorld } from "./skirmish-ai-field-placement-evaluation";
 import { runtimeControlTransitFailures } from "./skirmish-ai-runtime-control-transit";
+import { isWithinObservedGroundWeaponRange } from "./skirmish-ai-native-weapon-range";
 
 /** Every build prefix uses fresh native clearance; physical transit and useful production/income remain separate checks. */
 export function evaluateNativePlacement(
@@ -24,8 +25,8 @@ export function evaluateNativePlacement(
         if (actor.logicalPosition.status !== "known" || actor.combatProfile?.status !== "known") return false;
         const position = actor.logicalPosition.value;
         return field.value.footprint?.some((tile) => actor.combatProfile?.status === "known" &&
-          actor.combatProfile.value.attacks.some((attack) => attack.targetDomains.includes("ground") &&
-            Math.hypot(tile.x - position.x, tile.y - position.y) <= attack.range + attack.highGroundRangeBonus));
+          isWithinObservedGroundWeaponRange(position, { x: tile.x, y: tile.y, z: field.value.command.tileVec3.z },
+            actor.combatProfile.value.attacks));
       });
       if (exposed) failures.push("placement_field_inside_observed_native_enemy_weapon_coverage");
     }
