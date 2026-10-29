@@ -4,6 +4,7 @@ import type { AiObservedActorV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { getActorComponent } from "../../../data/actor-component";
 import { getTileCoordsUnderObject } from "../../../library/tile-under-object";
 import { ActorTranslateComponent } from "../../../entity/components/movement/actor-translate-component";
+import { ColliderComponent } from "../../../entity/components/movement/collider-component";
 
 /** Shared placement rejects all overlapping bodies, including actors that do not block static navigation.
  * Project only the already admitted fair actors; hidden and last-seen live positions must never enter this set.
@@ -33,7 +34,9 @@ export function observedStaticConstructionOccupancy(
   for (const actor of actors) {
     if (actor.visibility !== "owned" && actor.visibility !== "visible") continue;
     const live = liveById.get(actor.actorId);
-    if (!live || getActorComponent(live, ActorTranslateComponent)) continue;
+    if (!live) continue;
+    const collider = getActorComponent(live, ColliderComponent);
+    if (!collider?.colliderDefinition?.enabled || getActorComponent(live, ActorTranslateComponent)) continue;
     for (const tile of getTileCoordsUnderObject(tilemap, live)) occupied.add(`${tile.x},${tile.y}`);
   }
   return occupied;

@@ -3,10 +3,13 @@ import type Phaser from "phaser";
 import { createAiTestOwnedActor } from
   "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import { getTileCoordsUnderObject } from "../../../library/tile-under-object";
+import { getActorComponent } from "../../../data/actor-component";
 import { ActorTranslateComponent } from "../../../entity/components/movement/actor-translate-component";
+import { ColliderComponent } from "../../../entity/components/movement/collider-component";
 import { observedConstructionOccupancy, observedStaticConstructionOccupancy } from "./observed-construction-occupancy";
 
 jest.mock("../../../library/tile-under-object", () => ({ getTileCoordsUnderObject: jest.fn() }));
+jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 
 it("uses all current fair bodies without consulting hidden or last-seen live actors", () => {
   const owned = createAiTestOwnedActor("own"),
@@ -50,6 +53,12 @@ it("keeps moving units out of static route blockers while retaining stationary v
   jest.mocked(getTileCoordsUnderObject).mockImplementation((_map, actor) =>
     actor.name === building.actorId ? [{ x: 2, y: 1 }] : [{ x: 2, y: 3 }]
   );
+  jest.mocked(getActorComponent).mockImplementation((actor, componentClass) => {
+    if (componentClass === ColliderComponent) return { colliderDefinition: { enabled: true } } as never;
+    if (componentClass === ActorTranslateComponent && (actor as Phaser.GameObjects.GameObject).name === mover.actorId)
+      return { name: "mover" } as never;
+    return undefined;
+  });
 
   expect([...observedStaticConstructionOccupancy({} as Phaser.Tilemaps.Tilemap, [building, mover], live)]).toEqual([
     "2,1"
