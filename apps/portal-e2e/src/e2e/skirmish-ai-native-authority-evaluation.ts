@@ -1,7 +1,7 @@
 import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
 import { nativePaidMissionOutputs } from "./skirmish-ai-native-mission-evidence";
 import { nativeRecoveryIncome } from "./skirmish-ai-native-recovery-evidence";
-import { hasNativeSourceDelivery } from "./skirmish-ai-source-delivery";
+import { hasNativeSourceDeliveryToAnyDropOff } from "./skirmish-ai-source-delivery";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/contracts/ai-intent-v1";
 
@@ -167,7 +167,7 @@ export function evaluateNativeAuthority(id: string, branch: string, context: Ret
       failures.push("authority_living_output_control_not_alive_at_horizon");
   }
   if (id === "H-10") failures.push(...backlogFailures(branch, context, commands));
-  if (id === "H-10" ? !nativeFoodIncomeAfterRelease(context, 1801) :
+  if (id === "H-10" ? !nativeResourceIncomeAfterRelease(context, 1801) :
       !["H-06", "H-07"].includes(id) && !nativeRecoveryIncome(context))
     failures.push("authority_unrelated_native_income_did_not_continue");
   return [...new Set(failures)];
@@ -222,7 +222,7 @@ export function backlogFailures(
       frame.tick > releaseTick &&
       terminalHeld.every((id) => !frame.decision.missionState?.authority.pendingCommandIds.includes(id))
   );
-  if (!after || !nativeFoodIncomeAfterRelease(context, releaseTick))
+  if (!after || !nativeResourceIncomeAfterRelease(context, releaseTick))
     failures.push("authority_backlog_did_not_drain_and_resume_native_work");
   if (during.some((frame) => frame.decision.acceptedIntents.some((intent) => intent.kind === "concede")))
     failures.push("authority_transport_failure_caused_strategic_concession");
@@ -267,29 +267,15 @@ export function nativeIntentOperation(intent: AiIntentV1) {
   }
 }
 
-/** H-10 resumes ordinary food harvesting; prove extraction, cargo transfer and credit on one native source. */
-function nativeFoodIncomeAfterRelease(context: ReturnType<typeof nativeScenarioContext>, fromTick: number) {
+/** H-10 resumes its unrelated safe economy work; prove real extraction, transfer and credit in any resource lane. */
+function nativeResourceIncomeAfterRelease(context: ReturnType<typeof nativeScenarioContext>, fromTick: number) {
   const facts = context.capture?.facts ?? [];
   const throughTick = context.frames.at(-1)?.tick ?? 0;
-  const sources = new Set(
-    facts.flatMap((fact) =>
-      fact.kind === "spatial_authority" &&
-      fact.spatial.kind === "resource_service" &&
-      fact.tick >= fromTick &&
-      fact.spatial.phase === "cargo_changed" &&
-      fact.spatial.change.resourceType === ResourceType.Food &&
-      fact.spatial.target?.playerNumber === 2 &&
-      fact.spatial.target.actorId
-        ? [fact.spatial.target.actorId]
-        : []
-    )
-  );
-  return [...sources].some((sourceActorId) =>
-    hasNativeSourceDelivery(facts, {
-      sourceActorId,
-      sourceOwner: 2,
+  return [ResourceType.Food, ResourceType.Wood, ResourceType.Stone, ResourceType.Minerals].some((resourceType) =>
+    hasNativeSourceDeliveryToAnyDropOff(facts, {
+      sourceOwner: null,
       playerNumber: 2,
-      resourceType: ResourceType.Food,
+      resourceType,
       fromTick,
       throughTick
     })

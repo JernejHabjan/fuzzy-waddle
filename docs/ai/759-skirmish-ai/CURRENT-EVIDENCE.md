@@ -176,11 +176,16 @@ selection and tactics changed; the current-source recheck passes at candidate `0
 
 ## Active gaps
 
+H-10's Tivara and Skaduwee over-capacity variants pass on current source (`1793288095255` and `1793288214889`,
+150 decisions / 3,001 ticks each). The evaluator now recognizes extraction, transfer and credit for any neutral resource
+lane after backlog release; its former FOOD-only requirement rejected the fixture's actual stone/mineral work. Seven
+peer obligations and the combined CI family gate remain open.
+
 | Package | Remaining work |
 | --- | --- |
 | 3 — scouting, combat, access | DOMAIN-01/05/06, DOMAIN-02 COAST and its two controls, INTERCEPT, SCOUT-01/03/04, FIGHT-01/02/03/04/05 and RAID-02 pass. All RAID-01 targeted branches pass; its combined registered matrix remains CI-owned. ESCORT's paid-fleet objective effect and SCOUT-02 native trip/service remain. Seven real-peer obligations remain CI-owned. STRAT-09 needs grouped final recheck after affected changes. |
 | 4 — placement, walls, recovery | H-11 and all eight PLACE-03 branches pass. PLACE-01/02, EXP-01/02, WALL-01–05 and remaining H-01–05/H-27–28 branches still need scoped semantic/evidence closure. |
-| 5 — authority and lifecycle | H-06/07 pass. H-10 over-capacity variants, H-08/09 peer evidence, H-14/15 remaining branches, H-31/32, M11, #819/#823. Peer CI is skipped on draft PR #814; local peer runner cannot start without Docker Engine. |
+| 5 — authority and lifecycle | H-06/07 and both H-10 over-capacity native variants pass. H-08/09 peer evidence, H-14/15 remaining branches, H-31/32, M11, #819/#823. Peer CI is skipped on draft PR #814; local peer runner cannot start without Docker Engine. |
 | 6 — continuous play and difficulty | SEQ-02 and supported SEQ/D cases. D-06 legacy comparison remains explicitly unsupported. |
 | 7 — debug and closure | DBG cases, #820/#821, machinery/legacy review, omission audit and final closure audit. |
 

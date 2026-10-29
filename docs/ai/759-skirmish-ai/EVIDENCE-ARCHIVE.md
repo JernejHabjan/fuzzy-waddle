@@ -2665,3 +2665,9 @@ Summaries use `node tools/ai/summarize-skirmish-report.mjs --report <path> --fai
 
 - Current-source branch `1793286911792-diagnostic_failed.json` passed EXP-01 Tivara expansion outcomes except live weapon-range placement. Capture review traced the unsafe WorkMill proposal to `AiResourceServiceManager.selectSite`, which checked footprint passability but not a currently observed enemy weapon footprint.
 - The manager now applies shared observed weapon safety across every footprint tile. Its focused planner suite passes 5/5 and scoped lint passes. Repaired Tivara reachable branch `1793287202414-diagnostic_passed.json` passes (200 decisions / 4,001 ticks, 143s; source `fnv1a32:e5e70cc4`, fixture `fnv1a32:69133634`), including delivered resource service. Seven sibling branches and the combined family matrix remain.
+
+# 2026-10-29 — H-10 over-capacity evaluator correction
+
+- Initial Tivara capture `1793287760310-diagnostic_failed.json` reported backlog recovery and unrelated income failures. Its trace showed the backlog drained after release and real neutral stone/mineral extraction, transfer and native credit; the oracle incorrectly required FOOD specifically.
+- H-10 recovery now accepts any proven neutral resource lane while preserving extraction-to-credit causality. The generic delivery helper has a synthetic stone regression; Playwright source-delivery spec passes 8/8 and scoped lint passes.
+- Current-source Tivara `1793288095255-diagnostic_passed.json` and Skaduwee `1793288214889-diagnostic_passed.json` each pass 150 decisions / 3,001 ticks (fixture `fnv1a32:5338c3ea`; candidate `2d89cde62427`). Seven real-peer obligations and the registered CI family gate remain open.

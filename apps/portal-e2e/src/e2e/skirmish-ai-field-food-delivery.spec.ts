@@ -57,6 +57,44 @@ test.describe("new-field delivered-food attribution", () => {
     expect(hasNativeSourceDeliveryToAnyDropOff(neutral, { sourceOwner: null, playerNumber: 2,
       resourceType: ResourceType.Wood, fromTick: 10, throughTick: 30 })).toBe(false);
   });
+  test("generic authority recovery accepts a proven stone delivery without requiring food", () => {
+    const stone = stream().map((fact) => {
+      if (fact.kind !== "spatial_authority" || fact.spatial.kind !== "resource_service") return fact;
+      if (fact.spatial.phase === "cargo_changed") return {
+        ...fact,
+        spatial: {
+          ...fact.spatial,
+          target: fact.spatial.target ? { ...fact.spatial.target, playerNumber: null } : fact.spatial.target,
+          change: { ...fact.spatial.change, resourceType: ResourceType.Stone },
+          before: { amount: 0, resourceType: ResourceType.Stone },
+          after: { amount: 5, resourceType: ResourceType.Stone }
+        }
+      };
+      if (fact.spatial.phase === "cargo_offered") return {
+        ...fact,
+        spatial: { ...fact.spatial, cargo: { ...fact.spatial.cargo, resourceType: ResourceType.Stone } }
+      };
+      if (fact.spatial.phase === "resource_credit") return {
+        ...fact,
+        spatial: {
+          ...fact.spatial,
+          resourceType: ResourceType.Stone,
+          before: { food: 0, wood: 10, stone: 10, minerals: 10 },
+          after: { food: 0, wood: 10, stone: 15, minerals: 10 },
+          callbackAmounts: { stone: 5 }
+        }
+      };
+      return fact;
+    });
+
+    expect(hasNativeSourceDeliveryToAnyDropOff(stone, {
+      sourceOwner: null,
+      playerNumber: 2,
+      resourceType: ResourceType.Stone,
+      fromTick: 10,
+      throughTick: 30
+    })).toBe(true);
+  });
   test("H-30 can credit any authored worker while preserving exact source and deposit causality", () => {
     const roles = { "worker-4": "worker", "worker-1": "inactive-worker", "own-source": "wood-source" };
     const context = { capture: { facts: stream(), playerNumber: 2 }, frames: [{ tick: 30 }], roles } as
