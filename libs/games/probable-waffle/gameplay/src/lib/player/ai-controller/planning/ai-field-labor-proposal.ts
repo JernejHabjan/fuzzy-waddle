@@ -8,32 +8,23 @@ import { nextIds } from "./ai-macro-effect-identity";
 import { claimedActorIds, compareAiActorsByVisibleGeometry } from "./ai-macro-observation";
 import { aiEconomySiteSafety } from "./ai-economy-site-safety";
 
-/** Assigns one free farmer without stealing cargo or a Field's returning worker. */
-export function proposeAiFieldLabor(
+function nextUnstaffedFoodSource(
   observation: AiObservationV1,
-  state: AiBrainStateV1,
-  catalog: AiCapabilityCatalogV1,
   self: readonly AiObservationV1["actors"][number][],
   readyFoodSources: readonly AiObservationV1["actors"][number][],
   foodPrerequisiteObject: ObjectNames | undefined,
-  reservedActorIds: ReadonlySet<string>,
-  priorIntents: readonly AiIntentV1[],
-  ordinal: number
-): AiIntentV1 | null {
+  catalog: AiCapabilityCatalogV1
+) {
   const staffedFoodSourceIds = new Set(
     self.flatMap((actor) => {
       const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
       return order?.orderType === OrderType.Gather && order.targetActorId ? [order.targetActorId] : [];
     })
   );
-  // A returning food worker will automatically resume its Field after delivery. Its transient order does not
-  // expose the source identity, so reserve one otherwise-unstaffed Field per returner instead of assigning twice.
   const returningWorkerCount = self.filter((actor) => {
     const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
     if (order?.orderType !== OrderType.ReturnResources) return false;
     if (actor.resourceState.status === "known") return actor.resourceState.value.resourceType === ResourceType.Food;
-    // Main buildings can accept food too. With unavailable cargo/source identity, preserve the returning assignment
-    // until it resumes rather than staffing its apparently empty Field with a worker needed by another resource.
     return self.some(
       (target) =>
         target.actorId === order.targetActorId &&
@@ -49,7 +40,44 @@ export function proposeAiFieldLabor(
     .filter(aiEconomySiteSafety(observation).actorSafe)
     .sort(compareAiActorsByVisibleGeometry)
     .filter((source) => !staffedFoodSourceIds.has(source.actorId));
-  const unstaffedFoodSource = unstaffedFoodSources[returningWorkerCount];
+  return unstaffedFoodSources[returningWorkerCount];
+}
+
+export function hasUnstaffedAiFoodSource(
+  observation: AiObservationV1,
+  self: readonly AiObservationV1["actors"][number][],
+  readyFoodSources: readonly AiObservationV1["actors"][number][],
+  foodPrerequisiteObject: ObjectNames | undefined,
+  catalog: AiCapabilityCatalogV1
+): boolean {
+  return nextUnstaffedFoodSource(
+    observation,
+    self,
+    readyFoodSources,
+    foodPrerequisiteObject,
+    catalog
+  ) !== undefined;
+}
+
+/** Assigns one free farmer without stealing cargo or a Field's returning worker. */
+export function proposeAiFieldLabor(
+  observation: AiObservationV1,
+  state: AiBrainStateV1,
+  catalog: AiCapabilityCatalogV1,
+  self: readonly AiObservationV1["actors"][number][],
+  readyFoodSources: readonly AiObservationV1["actors"][number][],
+  foodPrerequisiteObject: ObjectNames | undefined,
+  reservedActorIds: ReadonlySet<string>,
+  priorIntents: readonly AiIntentV1[],
+  ordinal: number
+): AiIntentV1 | null {
+  const unstaffedFoodSource = nextUnstaffedFoodSource(
+    observation,
+    self,
+    readyFoodSources,
+    foodPrerequisiteObject,
+    catalog
+  );
   if (!unstaffedFoodSource) return null;
   const alreadyClaimed = claimedActorIds(priorIntents);
   const worker = self

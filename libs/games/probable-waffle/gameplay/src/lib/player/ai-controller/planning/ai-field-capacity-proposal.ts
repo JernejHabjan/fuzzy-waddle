@@ -5,6 +5,7 @@ import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
 import { selectConstructionPosition } from "./ai-construction-site-selector";
+import { reachableAiAccessNodeIdsV1 } from "./ai-access-graph-v1";
 import { canAffordAiEconomyCost } from "./ai-economy-policy";
 import { nextIds } from "./ai-macro-effect-identity";
 import { claimedActorIds, compareAiActorsByVisibleGeometry, isAvailableBuilder } from "./ai-macro-observation";
@@ -22,6 +23,8 @@ export function proposeAiFieldCapacity(args: {
   readonly readyFoodSources: readonly AiObservationV1["actors"][number][];
   readonly constructingFoodSources: readonly AiObservationV1["actors"][number][];
   readonly acceptedFoodSourceEffectIds: readonly AiIntentV1["effectId"][];
+  readonly pendingFoodLabor: boolean;
+  readonly hasUnstaffedReadyFoodSource: boolean;
   readonly foodPrerequisiteObject: ObjectNames | undefined;
   readonly readyFoodPrerequisites: readonly AiObservationV1["actors"][number][];
   readonly reservedActorIds: ReadonlySet<string>;
@@ -40,6 +43,8 @@ export function proposeAiFieldCapacity(args: {
     readyFoodSources,
     constructingFoodSources,
     acceptedFoodSourceEffectIds,
+    pendingFoodLabor,
+    hasUnstaffedReadyFoodSource,
     foodPrerequisiteObject,
     readyFoodPrerequisites,
     reservedActorIds,
@@ -68,6 +73,10 @@ export function proposeAiFieldCapacity(args: {
   const cost = foodSourceEntry.constructionProfile?.resourceCost ?? {};
   if (
     committed >= desiredFoodSources ||
+    pendingFoodLabor ||
+    hasUnstaffedReadyFoodSource ||
+    constructingFoodSources.length > 0 ||
+    acceptedFoodSourceEffectIds.length > 0 ||
     (foodPrerequisiteObject && readyFoodPrerequisites.length === 0) ||
     !canAffordAiEconomyCost(observation, cost, readyFoodSources.length > 0 ? args.resourceReserve : undefined)
   )
@@ -88,16 +97,31 @@ export function proposeAiFieldCapacity(args: {
     })[0];
   if (!builder) return { demand, intent: null };
   const safety = aiEconomySiteSafety(observation);
-  const foodDropOffAccessNodeIds = new Set(
-    self.flatMap((actor) => {
+  const foodDropOffs = self.flatMap((actor) => {
       const accessNodeId = actor.accessNodeId.status === "known" ? actor.accessNodeId.value : null;
+      const position = actor.logicalPosition.status === "known" ? actor.logicalPosition.value : null;
       return accessNodeId && catalog.entries.some(
         (entry) => entry.sourceObjectName === actor.objectName && entry.acceptsResources?.includes(ResourceType.Food)
-      ) ? [accessNodeId] : [];
-    })
-  );
+      ) ? [{ accessNodeId, position }] : [];
+  });
+  const foodDropOffAccessNodeIds = new Set(foodDropOffs.map((dropOff) => dropOff.accessNodeId));
   const enforceFoodDropOffRegion = observation.map?.regionGeneration?.status === "ready" &&
     foodDropOffAccessNodeIds.size > 0;
+  const foodDropOffRoutes = foodDropOffs.map((dropOff) => ({
+    ...dropOff,
+    reachableNodeIds: enforceFoodDropOffRegion && observation.map?.accessGraph?.status === "ready"
+      ? reachableAiAccessNodeIdsV1(observation.map.accessGraph, [dropOff.accessNodeId], "ground", 1)
+      : new Set([dropOff.accessNodeId])
+  }));
+  const fieldHasLocalFoodService = (cell: NonNullable<NonNullable<AiObservationV1["map"]>['constructionCells']>[number]) => {
+    if (!enforceFoodDropOffRegion) return true;
+    if (!cell.groundAccessNodeId) return false;
+    return foodDropOffRoutes.some((dropOff) => {
+      if (!dropOff.position || !dropOff.reachableNodeIds.has(cell.groundAccessNodeId!)) return false;
+      const distance = Math.abs(cell.position.x - dropOff.position.x) + Math.abs(cell.position.y - dropOff.position.y);
+      return distance <= 6;
+    });
+  };
   const position = selectConstructionPosition(
     observation,
     builder,
@@ -106,7 +130,7 @@ export function proposeAiFieldCapacity(args: {
     selectedConstructionTileKeys,
     foodSourceEntry.constructionProfile?.footprintRadiusTiles ?? 0,
     (cell) => safety.positionSafe(cell.position) &&
-      (!enforceFoodDropOffRegion || (!!cell.groundAccessNodeId && foodDropOffAccessNodeIds.has(cell.groundAccessNodeId)))
+      fieldHasLocalFoodService(cell)
   );
   if (!position) return { demand, intent: null };
   const next = nextIds(state, `food-capacity:${ObjectNames.Field}`, ordinal);

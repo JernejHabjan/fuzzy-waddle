@@ -6,7 +6,7 @@ import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
 import { decideAiEconomyPolicy } from "./ai-economy-policy";
 import { proposeAiFieldCapacity } from "./ai-field-capacity-proposal";
-import { proposeAiFieldLabor } from "./ai-field-labor-proposal";
+import { hasUnstaffedAiFoodSource, proposeAiFieldLabor } from "./ai-field-labor-proposal";
 import { proposeAiFoodPrerequisite } from "./ai-food-prerequisite-proposal";
 import { unresolvedReservedEffectIds } from "./ai-macro-effect-identity";
 import { compareAiActorsByVisibleGeometry, isFinishedActor } from "./ai-macro-observation";
@@ -126,6 +126,32 @@ export function proposeAiFoodEconomy(args: {
     intents.push(prerequisite.intent);
     ordinal += 1;
   }
+  const laborIntent = desiredFoodSources > 0 && foodSourceEntry
+    ? proposeAiFieldLabor(
+        observation,
+        state,
+        catalog,
+        self,
+        readyFoodSources.slice(0, desiredFoodSources),
+        prerequisite.objectName,
+        reservedActorIds,
+        intents,
+        ordinal
+      )
+    : null;
+  const hasUnstaffedReadyFoodSource = desiredFoodSources > 0 && foodSourceEntry
+    ? hasUnstaffedAiFoodSource(
+        observation,
+        self,
+        readyFoodSources.slice(0, desiredFoodSources),
+        prerequisite.objectName,
+        catalog
+      )
+    : false;
+  if (laborIntent) {
+    intents.push(laborIntent);
+    ordinal += 1;
+  }
   const fieldCapacity = proposeAiFieldCapacity({
     observation,
     state,
@@ -136,6 +162,8 @@ export function proposeAiFoodEconomy(args: {
     readyFoodSources,
     constructingFoodSources,
     acceptedFoodSourceEffectIds,
+    pendingFoodLabor: laborIntent !== null,
+    hasUnstaffedReadyFoodSource,
     foodPrerequisiteObject: prerequisite.objectName,
     readyFoodPrerequisites: prerequisite.ready,
     reservedActorIds,
@@ -148,23 +176,6 @@ export function proposeAiFoodEconomy(args: {
   if (fieldCapacity.intent) {
     intents.push(fieldCapacity.intent);
     ordinal += 1;
-  }
-  if (desiredFoodSources > 0 && foodSourceEntry) {
-    const laborIntent = proposeAiFieldLabor(
-      observation,
-      state,
-      catalog,
-      self,
-      readyFoodSources.slice(0, desiredFoodSources),
-      prerequisite.objectName,
-      reservedActorIds,
-      intents,
-      ordinal
-    );
-    if (laborIntent) {
-      intents.push(laborIntent);
-      ordinal += 1;
-    }
   }
   return { policy, ordinal };
 }

@@ -1,4 +1,5 @@
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
+import { reachableAiAccessNodeIdsV1 } from "./ai-access-graph-v1";
 import { constructionAccessPolicy } from "./ai-construction-access";
 
 /** Selects an observed buildable footprint and reserves its tiles for this decision. */
@@ -20,6 +21,9 @@ export function selectConstructionPosition(
       builder.accessNodeId.status === "known"
     ? builder.accessNodeId.value
     : undefined;
+  const builderReachableAccessNodeIds = builderAccessNodeId && observation.map?.accessGraph?.status === "ready"
+    ? reachableAiAccessNodeIdsV1(observation.map.accessGraph, [builderAccessNodeId], "ground", 1)
+    : undefined;
   const preservesAccess = constructionAccessPolicy(observation, builder, selectedTileKeys, footprintRadiusTiles);
   const footprintKeys = (x: number, y: number) => {
     const keys: string[] = [];
@@ -39,7 +43,10 @@ export function selectConstructionPosition(
         const approach = byKey.get(`${x + offsetX},${y + offsetY}`);
         if (!approach?.groundAccessNodeId) continue;
         hasKnownApproach = true;
-        if (approach.groundAccessNodeId === builderAccessNodeId) return true;
+        if (
+          approach.groundAccessNodeId === builderAccessNodeId ||
+          builderReachableAccessNodeIds?.has(approach.groundAccessNodeId)
+        ) return true;
       }
     }
     return !hasKnownApproach;

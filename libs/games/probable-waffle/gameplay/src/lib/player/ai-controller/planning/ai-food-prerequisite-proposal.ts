@@ -4,11 +4,12 @@ import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
 import { selectConstructionPosition } from "./ai-construction-site-selector";
+import { reachableAiAccessNodeIdsV1 } from "./ai-access-graph-v1";
 import { canAffordAiEconomyCost } from "./ai-economy-policy";
 import { nextIds, unresolvedReservedEffectIds } from "./ai-macro-effect-identity";
 import { claimedActorIds, isAvailableBuilder, isFinishedActor } from "./ai-macro-observation";
 import { createAiResourceCostClaims } from "./ai-resource-cost-claims";
-import type { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { ObjectNames, type ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 /** Keeps food drop-off throughput proportional to demanded Field capacity. */
 export function proposeAiFoodPrerequisite(
@@ -73,13 +74,40 @@ export function proposeAiFoodPrerequisite(
     )
     .sort((left, right) => left.actorId.localeCompare(right.actorId))[0];
   if (!builder) return { objectName, ready, demand, intent: null };
+  const fieldServiceRadius = 10;
+  const readyFieldService = self
+    .filter((actor) => actor.objectName === ObjectNames.Field && isFinishedActor(actor))
+    .flatMap((field) => {
+    const accessNodeId = field.accessNodeId.status === "known" ? field.accessNodeId.value : null;
+    const position = field.logicalPosition.status === "known" ? field.logicalPosition.value : null;
+    return accessNodeId && position ? [{ accessNodeId, position }] : [];
+  });
+  const enforceFieldService = readyFieldService.length > 0 &&
+    observation.map?.regionGeneration?.status === "ready" &&
+    observation.map.accessGraph?.status === "ready";
+  const reachableFieldService = enforceFieldService
+    ? readyFieldService.map((field) => ({
+        ...field,
+        reachableNodeIds: reachableAiAccessNodeIdsV1(
+          observation.map!.accessGraph!,
+          [field.accessNodeId],
+          "ground",
+          1
+        )
+      }))
+    : [];
   const position = selectConstructionPosition(
     observation,
     builder,
     state.scheduler.decisionSequence,
     ordinal,
     selectedConstructionTileKeys,
-    entry.constructionProfile?.footprintRadiusTiles ?? 0
+    entry.constructionProfile?.footprintRadiusTiles ?? 0,
+    (cell) => !enforceFieldService || reachableFieldService.some((field) => {
+      if (!cell.groundAccessNodeId || !field.reachableNodeIds.has(cell.groundAccessNodeId)) return false;
+      const distance = Math.abs(cell.position.x - field.position.x) + Math.abs(cell.position.y - field.position.y);
+      return distance <= fieldServiceRadius;
+    })
   );
   if (!position) return { objectName, ready, demand, intent: null };
   const next = nextIds(state, `food-prerequisite:${objectName}`, ordinal);

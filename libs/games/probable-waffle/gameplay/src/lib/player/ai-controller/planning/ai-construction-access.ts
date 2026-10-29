@@ -82,6 +82,41 @@ export function constructionAccessPolicy(
   const orderEndpointKeys = new Set<string>();
   const orderOriginKeys = new Set<string>();
   const workerClearanceKeys = new Set<string>();
+  const orderedRouteKeys = new Set<string>();
+  const findObservedRoute = (from: string, to: string): readonly string[] => {
+    if (!cells.has(from) || !cells.has(to)) return [];
+    const queue = [from];
+    const previous = new Map<string, string | null>([[from, null]]);
+    for (let cursor = 0; cursor < queue.length; cursor += 1) {
+      const currentKey = queue[cursor];
+      if (!currentKey) continue;
+      if (currentKey === to) {
+        const path: string[] = [];
+        let key: string | null = to;
+        while (key) {
+          path.push(key);
+          key = previous.get(key) ?? null;
+        }
+        return path;
+      }
+      const current = cells.get(currentKey);
+      if (!current) continue;
+      for (const [dx, dy] of [[-1, 0], [1, 0], [0, -1], [0, 1]] as const) {
+        const nextKey = `${current.position.x + dx},${current.position.y + dy}`;
+        const next = cells.get(nextKey);
+        if (
+          previous.has(nextKey) ||
+          !next?.groundPassable ||
+          (staticBlocked.has(nextKey) && nextKey !== to) ||
+          next.elevation !== current.elevation
+        )
+          continue;
+        previous.set(nextKey, currentKey);
+        queue.push(nextKey);
+      }
+    }
+    return [];
+  };
   for (const actor of observation.actors) {
     if (actor.visibility !== "owned") continue;
     if (
@@ -98,29 +133,45 @@ export function constructionAccessPolicy(
     for (const orderValue of [actor.activeOrder, actor.pendingOrder]) {
       if (orderValue?.status !== "known" || !orderValue.value) continue;
       const order = orderValue.value;
-      if (!["Move", "Gather", "ReturnResources"].includes(order.orderType)) continue;
-      if (actor.logicalPosition.status === "known") {
-        const position = actor.logicalPosition.value;
-        orderOriginKeys.add(`${Math.round(position.x)},${Math.round(position.y)}`);
-      }
+      if (!["Move", "Attack", "Gather", "ReturnResources"].includes(order.orderType)) continue;
+      const origin = actor.logicalPosition.status === "known" ? actor.logicalPosition.value : null;
+      const originKey = origin ? `${Math.round(origin.x)},${Math.round(origin.y)}` : null;
+      if (originKey) orderOriginKeys.add(originKey);
       const target = order.targetPosition
         ? order.targetPosition
         : order.targetActorId
           ? actorsById.get(order.targetActorId)?.logicalPosition
           : undefined;
       if (target && "status" in target) {
-        if (target.status === "known")
-          orderEndpointKeys.add(`${Math.round(target.value.x)},${Math.round(target.value.y)}`);
-      } else if (target) orderEndpointKeys.add(`${Math.round(target.x)},${Math.round(target.y)}`);
+        if (target.status === "known") {
+          const endpoint = `${Math.round(target.value.x)},${Math.round(target.value.y)}`;
+          orderEndpointKeys.add(endpoint);
+          if (originKey)
+            for (const key of findObservedRoute(originKey, endpoint)) orderedRouteKeys.add(key);
+        }
+      } else if (target) {
+        const endpoint = `${Math.round(target.x)},${Math.round(target.y)}`;
+        orderEndpointKeys.add(endpoint);
+        if (originKey)
+          for (const key of findObservedRoute(originKey, endpoint)) orderedRouteKeys.add(key);
+      }
     }
   }
   const orderSpaceKeys = [...new Set([...orderOriginKeys, ...orderEndpointKeys])].filter(
     (key) => before.has(key) && !baselineBlocked.has(key)
   );
+  const protectedOrderRouteKeys = new Set(
+    [...orderedRouteKeys].filter((key) => before.has(key) && !baselineBlocked.has(key))
+  );
   return (footprint) => {
     if (
       !footprint.some((key) => before.has(key)) ||
-      footprint.some((key) => shoreKeys.has(key) || orderEndpointKeys.has(key) || workerClearanceKeys.has(key))
+      footprint.some((key) =>
+        shoreKeys.has(key) ||
+        orderEndpointKeys.has(key) ||
+        workerClearanceKeys.has(key) ||
+        protectedOrderRouteKeys.has(key)
+      )
     )
       return false;
     const blocked = clearanceBlocked(new Set([...staticBlocked, ...reserved, ...footprint]));

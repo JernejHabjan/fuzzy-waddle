@@ -46,6 +46,63 @@ function rooms() {
 }
 
 describe("observed construction access scenarios", () => {
+  it("preserves the observed route between a worker and its current service target", () => {
+    const positions: [number, number][] = [];
+    for (let y = 0; y <= 5; y += 1) for (let x = 0; x <= 8; x += 1) positions.push([x, y]);
+    const { observation, builder } = fixture(positions);
+    const mover = {
+      ...createAiTestOwnedActor("service-worker"),
+      logicalPosition: { status: "known" as const, value: { x: 2, y: 2, z: 0 }, observedTick: 200 },
+      activeOrder: {
+        status: "known" as const,
+        value: { orderType: OrderType.Gather, targetActorId: null, targetPosition: { x: 7, y: 2, z: 0 } },
+        observedTick: 200
+      }
+    };
+    const selected = selectConstructionPosition(
+      { ...observation, actors: [builder, mover] },
+      builder,
+      1,
+      0,
+      new Set(),
+      0,
+      (cell) => cell.tileKey === "4,2" || cell.tileKey === "8,5"
+    );
+
+    expect(selected).toEqual({ x: 8, y: 5, z: 0 });
+  });
+
+  it("preserves the observed route of an attacker toward its current target", () => {
+    const positions: [number, number][] = [];
+    for (let y = 0; y <= 5; y += 1) for (let x = 0; x <= 8; x += 1) positions.push([x, y]);
+    const { observation, builder } = fixture(positions);
+    const target = {
+      ...createAiTestOwnedActor("enemy-target"),
+      relation: "enemy" as const,
+      logicalPosition: { status: "known" as const, value: { x: 7, y: 2, z: 0 }, observedTick: 200 }
+    };
+    const attacker = {
+      ...createAiTestOwnedActor("attacker"),
+      logicalPosition: { status: "known" as const, value: { x: 2, y: 2, z: 0 }, observedTick: 200 },
+      activeOrder: {
+        status: "known" as const,
+        value: { orderType: OrderType.Attack, targetActorId: target.actorId },
+        observedTick: 200
+      }
+    };
+    const selected = selectConstructionPosition(
+      { ...observation, actors: [builder, attacker, target] },
+      builder,
+      1,
+      0,
+      new Set(),
+      0,
+      (cell) => cell.tileKey === "4,2" || cell.tileKey === "8,5"
+    );
+
+    expect(selected).toEqual({ x: 8, y: 5, z: 0 });
+  });
+
   it("PLACE-03 preserves a single-tile work/army corridor and selects a useful alternative", () => {
     const { observation, builder } = fixture(rooms());
     const selected = selectConstructionPosition(
@@ -130,6 +187,68 @@ describe("observed construction access scenarios", () => {
       (cell) => cell.tileKey === "6,4"
     );
     expect(selected).toBeUndefined();
+  });
+
+  it("PLACE-01 accepts a construction approach in a known linked ground region", () => {
+    const positions: [number, number][] = [];
+    for (let y = 0; y < 9; y += 1) for (let x = 0; x < 9; x += 1) positions.push([x, y]);
+    const { observation, builder } = fixture(positions);
+    builder.accessNodeId = { status: "known", value: "access:region:ground:home" as never, observedTick: 200 };
+    const home = "access:region:ground:home" as never;
+    const outpost = "access:region:ground:outpost" as never;
+    const constructionCells = observation.map?.constructionCells?.map((cell) => ({
+      ...cell,
+      groundAccessNodeId: cell.position.x < 3 ? home : outpost
+    }));
+    const selected = selectConstructionPosition(
+      {
+        ...observation,
+        map: {
+          ...observation.map!,
+          constructionCells,
+          regionGeneration: { generation: 1, status: "ready", continuationCursor: 0 },
+          accessGraph: {
+            schemaVersion: 1,
+            generation: 1,
+            status: "ready",
+            staticRevision: 1,
+            dynamicRevision: 1,
+            threatRevision: 1,
+            builtTick: 200,
+            continuationCursor: 0,
+            nodes: [home, outpost].map((nodeId) => ({
+              nodeId,
+              domain: "ground" as const,
+              elevation: 0,
+              knowledge: "known_static" as const,
+              representativePosition: { x: nodeId === home ? 1 : 5, y: 4, z: 0 },
+              tileCount: 1,
+              clearance: 1
+            })),
+            links: [{
+              linkId: "test:home-to-outpost",
+              fromNodeId: home,
+              toNodeId: outpost,
+              domain: "ground" as const,
+              clearance: 1,
+              distanceCost: 1,
+              knowledge: "known_static" as const,
+              directional: true
+            }],
+            transferPoints: [],
+            unknownNodeIds: []
+          }
+        }
+      },
+      builder,
+      1,
+      0,
+      new Set(),
+      0,
+      (cell) => cell.tileKey === "6,4"
+    );
+
+    expect(selected).toEqual({ x: 6, y: 4, z: 0 });
   });
 
   it("keeps an owned unit's active movement destination free even when the whole ground area stays connected", () => {

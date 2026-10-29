@@ -43,16 +43,15 @@ marked non-navigable; moving it to the proved Granary approach restores construc
 source-to-deposit evidence covers its recovery requirement, so its generic lifetime resource-coverage gate was redundant.
 Do not replay H-11 or PLACE-03 unchanged; PLACE-03 protected-route clearance and physical worker/army transit are closed.
 
-PLACE-01 Tivara room remains open. `1793273725059`, `1793274055574`, and `1793274485701` pass tick-1 probes and per-build
-clearance but still miss food from five Fields and flag one baseline-path overlap. Nearest-worker pairing reduced misses
-from ten to five; same-access-region preference and reachable-approach fallback did not change the final predicates.
-Movement captures confirm some worker/Field pairs have no route. Focused planner/movement tests pass. Do not replay
-unchanged. New Field proposals now require a construction cell in the observed food drop-off access region when the
-region map is current; three focused planner/access suites pass 23/23. Changed-source variant `1793278645255` runs
-2,401 ticks in 74s but proposes or places no Fields and fails `multiple_new_completed_fields_missing`; this does not
-exercise delivery or the new region predicate. Its captured decision inputs contain no map cells, and renewable-food
-demand stays open, so diagnose the upstream proposal/setup boundary from this retained run before another PLACE-01
-attempt. Continue to WALL/recovery independently; do not repeat the eight-variant family.
+PLACE-01 Tivara room remains open. Field proposals use known ground-graph reachability, a six-tile food-service radius,
+and staffing/construction gates. Focused placement/economy tests pass 25/25; scoped lint passes. Captures `1793286157382`
+and `1793286376111` showed that native Gather orders can be absent from the next AI observation; the same-decision
+pending labor signal is now retained alongside the persistent unstaffed check. Route-aware selector capture
+`1793286593628` (2,401 ticks / 94s) creates four Fields total and three Granaries; the new AI Field receives native
+food delivery. Remaining predicates are reserved-route overlap at `(31,24)` and no aligned second AI Field. The
+worker-service, production and retreat paths are tick-1 baseline probes absent from the later AI observation. Do not
+replay unchanged; expose those corridors during construction or repair the shared observation contract, then recheck
+route preservation and aligned expansion. Continue to independent EXP/WALL/recovery cases meanwhile.
 
 PLACE-02 safe remains open. The map now reports visible stationary colliders as travel blockers, excludes mobile bodies,
 projects ground access regions on construction cells, and rejects a site with no observed approach in the builder's

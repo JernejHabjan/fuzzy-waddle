@@ -286,6 +286,41 @@ function findDomainRoute(
   return undefined;
 }
 
+/** Returns known same-domain regions reachable through links with sufficient clearance. */
+export function reachableAiAccessNodeIdsV1(
+  graph: AiAccessGraphV1,
+  sourceNodeIds: readonly AiAccessNodeId[],
+  domain: AiAccessRegionV1["domain"],
+  requiredClearance: number
+): ReadonlySet<AiAccessNodeId> {
+  if (graph.status !== "ready") return new Set();
+  const nodes = new Map(
+    graph.nodes
+      .filter((node) => node.domain === domain && node.knowledge !== "unknown" && node.clearance >= requiredClearance)
+      .map((node) => [node.nodeId, node] as const)
+  );
+  const queue = sourceNodeIds.filter((nodeId) => nodes.has(nodeId));
+  const reachable = new Set(queue);
+  for (let cursor = 0; cursor < queue.length; cursor += 1) {
+    const current = queue[cursor];
+    if (!current) continue;
+    for (const link of graph.links) {
+      if (
+        link.domain !== domain ||
+        link.knowledge === "unknown" ||
+        link.clearance < requiredClearance ||
+        (link.fromNodeId !== current && (link.directional || link.toNodeId !== current))
+      )
+        continue;
+      const next = link.fromNodeId === current ? link.toNodeId : link.fromNodeId;
+      if (!nodes.has(next) || reachable.has(next)) continue;
+      reachable.add(next);
+      queue.push(next);
+    }
+  }
+  return reachable;
+}
+
 /** Selects a typed feasible route without consulting mutable runtime state. */
 export function queryAiAccessRouteV1(graph: AiAccessGraphV1, request: AiRouteRequestV1): AiRouteResultV1 {
   const base = {

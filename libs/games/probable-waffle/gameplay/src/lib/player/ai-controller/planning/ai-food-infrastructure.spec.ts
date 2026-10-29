@@ -1,6 +1,7 @@
 import {
   FactionType,
   ObjectNames,
+  OrderType,
   ProbableWaffleAiDifficulty,
   ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
@@ -9,6 +10,7 @@ import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
+import { buildAiAccessGraphV1 } from "./ai-access-graph-v1";
 import { AiMacroManager } from "./ai-macro-manager";
 
 const constructionCells = Array.from({ length: 36 }, (_, index) => {
@@ -153,17 +155,29 @@ describe("AI food infrastructure", () => {
       ]
     };
     const base = observation(2, 8);
+    const readyField = { ...createAiTestOwnedActor("ready-field"), objectName: ObjectNames.Field };
+    const assignedWorker = base.actors[0];
+    if (!assignedWorker) throw new Error("worker_missing");
     const world = {
       ...base,
       actors: [
-        ...base.actors,
+        ...base.actors.map((actor) => actor.actorId === assignedWorker.actorId
+          ? {
+              ...actor,
+              activeOrder: {
+                status: "known" as const,
+                value: { orderType: OrderType.Gather, targetActorId: readyField.actorId },
+                observedTick: 200
+              }
+            }
+          : actor),
         {
           ...createAiTestOwnedActor("home"),
           objectName: ObjectNames.Sandhold,
           housingCost: { status: "known" as const, value: 0, observedTick: 200 },
           housingCapacity: { status: "known" as const, value: 8, observedTick: 200 }
         },
-        { ...createAiTestOwnedActor("ready-field"), objectName: ObjectNames.Field }
+        readyField
       ],
       resources: base.resources.map((resource) =>
         resource.resourceType === ResourceType.Wood
@@ -183,7 +197,14 @@ describe("AI food infrastructure", () => {
       expanded.intents.some((intent) => intent.kind === "construct" && intent.objectName === ObjectNames.Field)
     ).toBe(wood >= 160);
     const bootstrap = macro.propose(
-      { ...world, actors: world.actors.filter((actor) => actor.objectName !== ObjectNames.Field) },
+      {
+        ...world,
+        actors: world.actors
+          .filter((actor) => actor.objectName !== ObjectNames.Field)
+          .map((actor) => actor.actorId === assignedWorker.actorId
+            ? { ...actor, activeOrder: { status: "known" as const, value: null, observedTick: 200 } }
+            : actor)
+      },
       state()
     );
     expect(
@@ -246,7 +267,7 @@ describe("AI food infrastructure", () => {
     );
   });
 
-  it("prioritizes staffing an existing Field over constructing the next Field", () => {
+  it("staffs an existing Field before opening another Field construction", () => {
     const field = { ...createAiTestOwnedActor("field-ready"), objectName: ObjectNames.Field };
     const proposal = new AiMacroManager(() => catalog).propose(
       { ...observation(1), actors: [...observation(1).actors, field] },
@@ -260,30 +281,89 @@ describe("AI food infrastructure", () => {
     );
 
     expect(labor).toEqual(expect.objectContaining({ kind: "assign_gatherers" }));
-    expect(construction).toEqual(expect.objectContaining({ kind: "construct" }));
-    expect(construction?.claims).toContainEqual(
-      expect.objectContaining({ kind: "resource", resourceType: ResourceType.Wood, amount: 60 })
-    );
+    expect(construction).toBeUndefined();
     expect(labor?.utility).toBeGreaterThan(construction?.utility ?? 0);
   });
 
-  it("keeps new Fields in the observed food drop-off access region", () => {
+  it("opens another Field only after the existing Field already has a food worker", () => {
+    const base = observation(1, 10);
+    const field = { ...createAiTestOwnedActor("field-ready"), objectName: ObjectNames.Field };
+    const staffed = {
+      ...base,
+      actors: [
+        ...base.actors.map((actor, index) => index === 0
+          ? {
+              ...actor,
+              activeOrder: {
+                status: "known" as const,
+                value: { orderType: OrderType.Gather, targetActorId: field.actorId },
+                observedTick: 200
+              }
+            }
+          : actor),
+        field
+      ]
+    };
+    const proposal = new AiMacroManager(() => catalog).propose(staffed, state());
+
+    expect(proposal.intents).not.toContainEqual(expect.objectContaining({ kind: "assign_gatherers" }));
+    expect(proposal.intents).toContainEqual(expect.objectContaining({ kind: "construct", objectName: ObjectNames.Field }));
+  });
+
+  it("keeps new Fields in a known ground region reachable from a food drop-off", () => {
     const base = observation(1);
     const baseMap = base.map;
     if (!baseMap) throw new Error("test_map_missing");
+    const access = buildAiAccessGraphV1({
+      generation: 1,
+      staticRevision: 1,
+      dynamicRevision: 1,
+      threatRevision: 1,
+      builtTick: 200,
+      continuationCursor: 0,
+      includeAirRegion: false,
+      cells: [
+        { x: 0, y: 0, ground: true, water: false, elevation: 0, groundNeighborKeys: ["1,0"], knowledge: "known_static", clearance: 1 },
+        { x: 1, y: 0, ground: true, water: false, elevation: 0, groundNeighborKeys: ["0,0"], knowledge: "known_static", clearance: 1 },
+        { x: 4, y: 0, ground: true, water: false, elevation: 0, groundNeighborKeys: [], knowledge: "known_static", clearance: 1 }
+      ]
+    });
+    const dropOffNodeId = access.groundNodeByTileKey.get("0,0");
+    const connectedFieldNodeId = access.groundNodeByTileKey.get("1,0");
+    const disconnectedNodeId = access.groundNodeByTileKey.get("4,0");
+    if (!dropOffNodeId || !connectedFieldNodeId || !disconnectedNodeId) throw new Error("test_access_nodes_missing");
     const cells = constructionCells.map((cell) => ({
       ...cell,
-      groundAccessNodeId: (cell.position.x < 11 ? "access:remote" : "access:main") as never
+      groundAccessNodeId: (cell.position.x < 11 ? disconnectedNodeId : connectedFieldNodeId) as never
     }));
     const world = {
       ...base,
       actors: base.actors.map((actor) => ({
         ...actor,
-        accessNodeId: { status: "known" as const, value: "access:main" as never, observedTick: 200 }
+        accessNodeId: { status: "known" as const, value: dropOffNodeId, observedTick: 200 },
+        ...(actor.objectName === ObjectNames.Granary
+          ? { logicalPosition: { status: "known" as const, value: { x: 12, y: 10, z: 0 }, observedTick: 200 } }
+          : {})
       })),
       map: {
         ...baseMap,
         constructionCells: cells,
+        accessGraph: {
+          ...access.graph,
+          links: [
+            ...access.graph.links,
+            {
+              linkId: "test:one-way-from-remote",
+              fromNodeId: disconnectedNodeId,
+              toNodeId: dropOffNodeId,
+              domain: "ground" as const,
+              clearance: 1,
+              distanceCost: 1,
+              knowledge: "known_static" as const,
+              directional: true
+            }
+          ]
+        },
         regionGeneration: { generation: 1, status: "ready" as const, continuationCursor: 0 }
       }
     };
@@ -297,7 +377,24 @@ describe("AI food infrastructure", () => {
     );
 
     expect(field).toBeDefined();
-    expect(selectedCell?.groundAccessNodeId).toBe("access:main");
+    expect(selectedCell?.groundAccessNodeId).toBe(connectedFieldNodeId);
+    expect(selectedCell?.groundAccessNodeId).not.toBe(disconnectedNodeId);
+
+    const farWorld = {
+      ...world,
+      map: {
+        ...world.map,
+        constructionCells: cells.map((cell) => ({
+          ...cell,
+          tileKey: `${cell.position.x + 20},${cell.position.y + 20}`,
+          position: { ...cell.position, x: cell.position.x + 20, y: cell.position.y + 20 }
+        }))
+      }
+    };
+    const farProposal = new AiMacroManager(() => catalog).propose(farWorld, state());
+    expect(farProposal.intents).not.toContainEqual(
+      expect.objectContaining({ kind: "construct", objectName: ObjectNames.Field })
+    );
   });
 
   it("retries Field capacity after a rejected effect instead of counting it forever", () => {
