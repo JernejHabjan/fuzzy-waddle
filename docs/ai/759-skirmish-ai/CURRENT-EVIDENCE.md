@@ -34,7 +34,12 @@ PLACE-01 Tivara room remains open. `1793273725059`, `1793274055574`, and `179327
 clearance but still miss food from five Fields and flag one baseline-path overlap. Nearest-worker pairing reduced misses
 from ten to five; same-access-region preference and reachable-approach fallback did not change the final predicates.
 Movement captures confirm some worker/Field pairs have no route. Focused planner/movement tests pass. Do not replay
-unchanged; return after addressing accessible Field placement and the visibility of the authored route contract.
+unchanged. New Field proposals now require a construction cell in the observed food drop-off access region when the
+region map is current; three focused planner/access suites pass 23/23. Changed-source variant `1793278645255` runs
+2,401 ticks in 74s but proposes or places no Fields and fails `multiple_new_completed_fields_missing`; this does not
+exercise delivery or the new region predicate. Its captured decision inputs contain no map cells, and renewable-food
+demand stays open, so diagnose the upstream proposal/setup boundary from this retained run before another PLACE-01
+attempt. Continue to WALL/recovery independently; do not repeat the eight-variant family.
 
 PLACE-02 safe remains open. The map now reports visible stationary colliders as travel blockers, excludes mobile bodies,
 projects ground access regions on construction cells, and rejects a site with no observed approach in the builder's

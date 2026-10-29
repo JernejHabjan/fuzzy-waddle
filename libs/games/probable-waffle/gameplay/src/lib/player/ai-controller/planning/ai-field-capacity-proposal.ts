@@ -1,4 +1,4 @@
-import { ObjectNames, type ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiIntentV1 } from "../contracts/ai-intent-v1";
@@ -88,6 +88,16 @@ export function proposeAiFieldCapacity(args: {
     })[0];
   if (!builder) return { demand, intent: null };
   const safety = aiEconomySiteSafety(observation);
+  const foodDropOffAccessNodeIds = new Set(
+    self.flatMap((actor) => {
+      const accessNodeId = actor.accessNodeId.status === "known" ? actor.accessNodeId.value : null;
+      return accessNodeId && catalog.entries.some(
+        (entry) => entry.sourceObjectName === actor.objectName && entry.acceptsResources?.includes(ResourceType.Food)
+      ) ? [accessNodeId] : [];
+    })
+  );
+  const enforceFoodDropOffRegion = observation.map?.regionGeneration?.status === "ready" &&
+    foodDropOffAccessNodeIds.size > 0;
   const position = selectConstructionPosition(
     observation,
     builder,
@@ -95,7 +105,8 @@ export function proposeAiFieldCapacity(args: {
     ordinal,
     selectedConstructionTileKeys,
     foodSourceEntry.constructionProfile?.footprintRadiusTiles ?? 0,
-    (cell) => safety.positionSafe(cell.position)
+    (cell) => safety.positionSafe(cell.position) &&
+      (!enforceFoodDropOffRegion || (!!cell.groundAccessNodeId && foodDropOffAccessNodeIds.has(cell.groundAccessNodeId)))
   );
   if (!position) return { demand, intent: null };
   const next = nextIds(state, `food-capacity:${ObjectNames.Field}`, ordinal);

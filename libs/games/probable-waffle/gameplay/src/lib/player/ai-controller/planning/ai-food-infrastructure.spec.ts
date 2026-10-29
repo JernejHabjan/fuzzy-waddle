@@ -58,6 +58,7 @@ const catalog: AiCapabilityCatalogV1 = {
       housingCapacity: null,
       housingCost: null,
       cargoCapacity: 2,
+      acceptsResources: [ResourceType.Food],
       constructionProfile: {
         resourceCost: { [ResourceType.Wood]: 80 },
         requiredObjectNames: [],
@@ -264,6 +265,39 @@ describe("AI food infrastructure", () => {
       expect.objectContaining({ kind: "resource", resourceType: ResourceType.Wood, amount: 60 })
     );
     expect(labor?.utility).toBeGreaterThan(construction?.utility ?? 0);
+  });
+
+  it("keeps new Fields in the observed food drop-off access region", () => {
+    const base = observation(1);
+    const baseMap = base.map;
+    if (!baseMap) throw new Error("test_map_missing");
+    const cells = constructionCells.map((cell) => ({
+      ...cell,
+      groundAccessNodeId: (cell.position.x < 11 ? "access:remote" : "access:main") as never
+    }));
+    const world = {
+      ...base,
+      actors: base.actors.map((actor) => ({
+        ...actor,
+        accessNodeId: { status: "known" as const, value: "access:main" as never, observedTick: 200 }
+      })),
+      map: {
+        ...baseMap,
+        constructionCells: cells,
+        regionGeneration: { generation: 1, status: "ready" as const, continuationCursor: 0 }
+      }
+    };
+
+    const proposal = new AiMacroManager(() => catalog).propose(world, state());
+    const field = proposal.intents.find(
+      (intent) => intent.kind === "construct" && intent.objectName === ObjectNames.Field
+    );
+    const selectedCell = cells.find((cell) =>
+      field?.kind === "construct" && cell.tileKey === `${field.logicalPosition.x},${field.logicalPosition.y}`
+    );
+
+    expect(field).toBeDefined();
+    expect(selectedCell?.groundAccessNodeId).toBe("access:main");
   });
 
   it("retries Field capacity after a rejected effect instead of counting it forever", () => {

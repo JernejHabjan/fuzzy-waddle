@@ -16,7 +16,7 @@ export function selectConstructionPosition(
   const origin = builder.logicalPosition.value;
   const cells = observation.map?.constructionCells ?? [];
   const byKey = new Map(cells.map((cell) => [cell.tileKey, cell]));
-  const builderAccessNodeId = observation.map?.regionGeneration.status === "ready" &&
+  const builderAccessNodeId = observation.map?.regionGeneration?.status === "ready" &&
       builder.accessNodeId.status === "known"
     ? builder.accessNodeId.value
     : undefined;
