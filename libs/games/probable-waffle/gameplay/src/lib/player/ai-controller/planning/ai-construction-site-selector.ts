@@ -16,7 +16,11 @@ export function selectConstructionPosition(
   const origin = builder.logicalPosition.value;
   const cells = observation.map?.constructionCells ?? [];
   const byKey = new Map(cells.map((cell) => [cell.tileKey, cell]));
-  const preservesAccess = constructionAccessPolicy(observation, builder, selectedTileKeys);
+  const builderAccessNodeId = observation.map?.regionGeneration.status === "ready" &&
+      builder.accessNodeId.status === "known"
+    ? builder.accessNodeId.value
+    : undefined;
+  const preservesAccess = constructionAccessPolicy(observation, builder, selectedTileKeys, footprintRadiusTiles);
   const footprintKeys = (x: number, y: number) => {
     const keys: string[] = [];
     for (let offsetY = -footprintRadiusTiles; offsetY <= footprintRadiusTiles; offsetY += 1) {
@@ -26,8 +30,23 @@ export function selectConstructionPosition(
     }
     return keys;
   };
+  const hasBuilderReachableApproach = (x: number, y: number) => {
+    if (!builderAccessNodeId) return true;
+    let hasKnownApproach = false;
+    for (let offsetY = -footprintRadiusTiles - 1; offsetY <= footprintRadiusTiles + 1; offsetY += 1) {
+      for (let offsetX = -footprintRadiusTiles - 1; offsetX <= footprintRadiusTiles + 1; offsetX += 1) {
+        if (Math.abs(offsetX) <= footprintRadiusTiles && Math.abs(offsetY) <= footprintRadiusTiles) continue;
+        const approach = byKey.get(`${x + offsetX},${y + offsetY}`);
+        if (!approach?.groundAccessNodeId) continue;
+        hasKnownApproach = true;
+        if (approach.groundAccessNodeId === builderAccessNodeId) return true;
+      }
+    }
+    return !hasKnownApproach;
+  };
   const candidates = cells
     .filter((cell) => {
+      if (!hasBuilderReachableApproach(cell.position.x, cell.position.y)) return false;
       const keys = footprintKeys(cell.position.x, cell.position.y);
       return keys.every((key) => {
         const footprintCell = byKey.get(key);

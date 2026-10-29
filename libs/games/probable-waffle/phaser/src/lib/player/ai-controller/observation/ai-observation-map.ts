@@ -109,6 +109,7 @@ export function projectAiObservationMap(
       if (cached) return cached;
       const observedNavigable = permittedTopology.navigableTileKeys.has(tileKey);
       const terrainBlocked = permittedTopology.blockedTileKeys.has(tileKey);
+      const groundAccessNodeId = resolveGroundNodeId({ x, y });
       const cell = {
         tileKey,
         position: { x, y, z: 0 },
@@ -116,7 +117,8 @@ export function projectAiObservationMap(
         waterPassable: navigation.isTileNavigable({ x, y }, MovementTerrainType.Water),
         elevation: observedNavigable ? (navigation.getNavigableHeightAtTile({ x, y }) ?? 0) : 0,
         observedBlocked: terrainBlocked || occupied.has(tileKey),
-        staticBlocked: staticallyOccupied.has(tileKey)
+        staticBlocked: staticallyOccupied.has(tileKey),
+        ...(groundAccessNodeId ? { groundAccessNodeId } : {})
       };
       cellCache.set(tileKey, cell);
       return cell;

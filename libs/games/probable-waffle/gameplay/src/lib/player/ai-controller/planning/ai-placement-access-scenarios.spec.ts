@@ -108,6 +108,30 @@ describe("observed construction access scenarios", () => {
     expect(selected).toBeUndefined();
   });
 
+  it("does not select a site whose observed approach is in another ground access region", () => {
+    const positions: [number, number][] = [];
+    for (let y = 0; y < 9; y += 1) for (let x = 0; x < 9; x += 1) positions.push([x, y]);
+    const { observation, builder } = fixture(positions);
+    builder.accessNodeId = { status: "known", value: "access:region:ground:home" as never, observedTick: 200 };
+    const constructionCells = observation.map?.constructionCells?.map((cell) => ({
+      ...cell,
+      groundAccessNodeId: cell.position.x < 3 ? ("access:region:ground:home" as never) : ("access:region:ground:outpost" as never)
+    }));
+    const selected = selectConstructionPosition(
+      {
+        ...observation,
+        map: { ...observation.map!, constructionCells, regionGeneration: { generation: 1, status: "ready", continuationCursor: 0 } }
+      },
+      builder,
+      1,
+      0,
+      new Set(),
+      1,
+      (cell) => cell.tileKey === "6,4"
+    );
+    expect(selected).toBeUndefined();
+  });
+
   it("keeps an owned unit's active movement destination free even when the whole ground area stays connected", () => {
     const { observation, builder } = fixture(rooms());
     const mover = {

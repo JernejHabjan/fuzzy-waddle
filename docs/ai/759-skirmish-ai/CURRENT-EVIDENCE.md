@@ -36,15 +36,16 @@ from ten to five; same-access-region preference and reachable-approach fallback 
 Movement captures confirm some worker/Field pairs have no route. Focused planner/movement tests pass. Do not replay
 unchanged; return after addressing accessible Field placement and the visibility of the authored route contract.
 
-PLACE-02 Tivara safe `1793274245140` and wide-clearance recheck `1793274795985` failed: eight Fields lacked delivered
-food, army transit was incomplete, and retreat clearance failed. The map now reports visible stationary colliders as
-travel blockers while excluding mobile bodies; construction planning also protects active-order origins and endpoints
-from a new footprint's clearance envelope. Focused placement/expansion coverage passes 21/21, scoped lint has no
-errors. Current safe-branch report `1793275965066-diagnostic_failed.json` (2,401 ticks / 109s, candidate
-`48120236755201aa71adabe174b6c1e15438af81`, dirty source `fnv1a32:10664012`, fixture `fnv1a32:2970391f`) has no
-blocked native retreat/production-army path and reduces unserved new Fields from eight to two. The strict reserved-path
-overlap remains, two Fields lack food, and both scripted physical transit checks remain incomplete. Do not replay
-unchanged. Next address the Field placement/delivery mismatch, then continue EXP/WALL/recovery.
+PLACE-02 safe remains open. The map now reports visible stationary colliders as travel blockers, excludes mobile bodies,
+projects ground access regions on construction cells, and rejects a site with no observed approach in the builder's
+region. Active-order origins/endpoints also remain clear of new construction envelopes. Focused placement/expansion tests
+pass 22/22 and observation tests pass 15/15; scoped lint has no errors. Current run `1793276362949-diagnostic_failed.json`
+(2,401 ticks / 95s, candidate `2d6bcf205aea0293327caa18da7d3da9fa4c3543`, dirty source `fnv1a32:0b4c2177`, fixture
+`fnv1a32:2970391f`) reduces unserved new Fields from two to one, but fixed army-route clearance fails again after a
+Granary and later Fields are placed. Strict reserve-path overlap and both physical-transit controls remain open; captures
+show the controls are preempted by AI orders before physical arrival. The fixture's protected route is not continuously
+represented by active AI orders. Do not replay unchanged; continue to other EXP/WALL/recovery cases while keeping this
+placement blocker open for a route-visible setup or source-side repair.
 
 Latest closed family: SCOUT-03 report `1793174968627-passed.json` (four variants, 400 decisions / 8,004 ticks), source
 digest `fnv1a32:05a85282`, fixture digest `fnv1a32:ebc75582`. Previous closed family: STRAT-04 report
