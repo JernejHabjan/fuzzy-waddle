@@ -1,6 +1,7 @@
 import { FactionType, ProbableWaffleAiDifficulty, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiManagerProposalV1, AiProposalManagerV1 } from "../planning/ai-manager-proposal";
+import { aiDeadline } from "../contracts/ai-core-types";
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
 import { createAiBrainStateV1 } from "./create-ai-brain-state-v1";
 import { PureAiBrain } from "./ai-brain";
@@ -234,6 +235,50 @@ describe("PureAiBrain", () => {
     expect(result.decisions).toContainEqual(
       expect.objectContaining({ outcome: "rejected", reason: "resource_conflict", detail: ResourceType.Wood })
     );
+  });
+
+  it.each([
+    { tick: 19, expiry: 20, accepted: false },
+    { tick: 20, expiry: 20, accepted: true }
+  ])("retains resource escrow until provisional expiry despite a lower live balance: %j", ({ tick, expiry, accepted }) => {
+    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const oldReservation = {
+      claimId: "claim:old:wood" as const,
+      subjectKey: "resource:wood",
+      resourceAmount: 60,
+      ownerPlanId: "plan:opening" as const,
+      state: { kind: "provisional" as const, expiresAt: aiDeadline(expiry) },
+      prerequisites: [] as const,
+      createdTick: 0
+    };
+    const oldEffect = {
+      claimId: "claim:old:effect" as const,
+      subjectKey: "effect:effect:old",
+      ownerPlanId: "plan:opening" as const,
+      state: { kind: "provisional" as const, expiresAt: aiDeadline(expiry) },
+      prerequisites: [] as const,
+      createdTick: 0
+    };
+    const observation = createAiTestObservation();
+    const contracted = {
+      ...observation,
+      tick,
+      resources: observation.resources.map((resource) => resource.resourceType === ResourceType.Wood
+        ? { ...resource, stockpile: 120, reservedUnspent: 20, obligationsDue: 10 }
+        : resource)
+    };
+    const result = new PureAiBrain(profile, [new DummyManager([stopIntent("after-capacity-change", 900, "worker-1", 50)])])
+      .step(contracted, { ...state, reservations: [oldReservation, oldEffect] }, []);
+
+    expect(result.acceptedIntents.length > 0).toBe(accepted);
+    expect(result.nextState.reservations.some((reservation) => reservation.claimId === oldReservation.claimId)).toBe(!accepted);
   });
 
   it("explains accepted and rejected intents with deterministic claim arbitration", () => {

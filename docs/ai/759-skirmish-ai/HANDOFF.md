@@ -50,7 +50,7 @@ Do not reconstruct the old seven-package roadmap from chat or historical records
 | --- | --- | --- |
 | A placement/walls/recovery | in_progress | Three-tile route opening has focused support; WALL-01 remains unproven after two runs. Continue placement/recovery and diagnose captured route with a smaller repro before any wall retry. |
 | B expansion/mission continuity | ready after shared A analysis; independent diagnosis allowed | Explain EXP-02 home loss and H-14 frontier replacement. |
-| C resource/command ownership | in_progress | Duplicate-admission reset is fixed with focused coverage; retained H-06/07 native cases cover both factions. H-13 source attribution now accepts exact own/neutral deliveries; Tivara paid+finished base in 1793300103293 and Skaduwee diagnostic passed in 1793300480186. Continue C2 stale-reservation/capacity review. |
+| C resource/command ownership | in_progress | Duplicate-admission reset is fixed with focused coverage; retained H-06/07 native cases cover both factions. H-13 source attribution now accepts exact own/neutral deliveries; Tivara paid+finished base in 1793300103293 and Skaduwee diagnostic passed in 1793300480186. C2 now has a balance-contraction boundary regression: live escrow blocks optional spending and releases at its exact provisional deadline. Full gameplay tests pass 105 suites/609 tests. Continue C3 shared-guard review. |
 | D essential SP lifecycle | ready; independent fallback | Inspect H-31 continuation and H-32 SP dispatch restrictions. |
 | E ordinary play/closure | waits for A–D | Reconcile relevant evidence and run only affected release outcomes. |
 

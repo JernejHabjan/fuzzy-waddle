@@ -42,7 +42,8 @@ function combatant(
 function defenseContextFor(
   raiderCount: number,
   distantFirstDefender = false,
-  exactEmptyVision = false
+  exactEmptyVision = false,
+  defenderCount = 8
 ): AiSkirmishProposalContext {
   const home: AiObservedActorV1 = {
     ...createAiTestOwnedActor("main"),
@@ -51,7 +52,7 @@ function defenseContextFor(
     housingCost: { status: "known", value: 0, observedTick: 20 },
     logicalPosition: { status: "known", value: { x: 0, y: 0, z: 0 }, observedTick: 20 }
   };
-  const defenders = Array.from({ length: 8 }, (_, index) =>
+  const defenders = Array.from({ length: defenderCount }, (_, index) =>
     combatant(`guard-${index}`, "self", distantFirstDefender && index === 0 ? 20 : 1, exactEmptyVision ? [] : undefined)
   );
   const raiders = Array.from({ length: raiderCount }, (_, index) => combatant(`raider-${index}`, "enemy", 3 + index));
@@ -97,8 +98,8 @@ describe("AI local defense sizing", () => {
     );
   });
 
-  it("moves defenders toward a visible threat when they are outside their own vision range", () => {
-    const context = defenseContextFor(1, true);
+  it("moves a distant defender to sight while retaining the nearby force needed for a safe attack", () => {
+    const context = defenseContextFor(1, true, false, 2);
     const attack = context.intents.find((intent) => intent.kind === "attack");
     const intercept = context.intents.find((intent) => intent.kind === "move");
 
