@@ -30,7 +30,7 @@ function fixture() {
     { resourceType: ResourceType.Wood, amount: 200, horizonTick: 620, confidencePermille: 800 }
   ] } };
   const propose = () => proposeAiGeneralGathering(observation, state, catalog, [worker], [], new Set(), 0);
-  return { observation, state, propose };
+  return { observation, state, catalog, propose };
 }
 
 describe("consumed gathering selection", () => {
@@ -42,6 +42,19 @@ describe("consumed gathering selection", () => {
     if (!intent) throw new Error("gathering_fixture_missing");
     expect(readAiGatheringSelection(intent)?.resourceInputRead).toEqual(marker);
     expect(intent).not.toHaveProperty("resourceInputRead");
+  });
+  it("uses a stable local identity for otherwise equivalent workers", () => {
+    const f = fixture();
+    const original = f.observation.actors[0];
+    const first = { ...original, actorId: "worker-z", logicalPosition: { status: "known" as const,
+      value: { x: 4, y: 5, z: 0 }, observedTick: f.observation.tick } };
+    const second = { ...original, actorId: "worker-a", logicalPosition: first.logicalPosition };
+    const source = { ...f.observation.actors[1], resourceState: { ...f.observation.actors[1].resourceState,
+      value: { ...f.observation.actors[1].resourceState.value,
+        serviceCapacity: { status: "known" as const, value: 1, observedTick: f.observation.tick } } } };
+    const intent = proposeAiGeneralGathering({ ...f.observation, actors: [first, second, source] }, f.state,
+      f.catalog, [first, second], [], new Set(), 0);
+    expect(intent?.actorIds).toEqual(["worker-a"]);
   });
   it("retains the winning duplicate-resource entry before later forecast/ledger mutation", () => {
     const f = fixture(), intent = f.propose();

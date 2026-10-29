@@ -7,7 +7,7 @@ import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
 import { selectConstructionPosition } from "./ai-construction-site-selector";
 import { canAffordAiEconomyCost } from "./ai-economy-policy";
 import { nextIds } from "./ai-macro-effect-identity";
-import { claimedActorIds, isAvailableBuilder } from "./ai-macro-observation";
+import { claimedActorIds, compareAiActorsByVisibleGeometry, isAvailableBuilder } from "./ai-macro-observation";
 import { createAiResourceCostClaims } from "./ai-resource-cost-claims";
 import { aiEconomySiteSafety } from "./ai-economy-site-safety";
 
@@ -84,7 +84,7 @@ export function proposeAiFieldCapacity(args: {
     .sort((left, right) => {
       const leftIdle = left.activeOrder?.status === "known" && left.activeOrder.value === null ? 0 : 1;
       const rightIdle = right.activeOrder?.status === "known" && right.activeOrder.value === null ? 0 : 1;
-      return leftIdle - rightIdle || left.actorId.localeCompare(right.actorId);
+      return leftIdle - rightIdle || compareAiActorsByVisibleGeometry(left, right);
     })[0];
   if (!builder) return { demand, intent: null };
   const safety = aiEconomySiteSafety(observation);

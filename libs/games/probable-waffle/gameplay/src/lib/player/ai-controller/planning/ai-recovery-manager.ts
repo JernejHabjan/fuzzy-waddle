@@ -6,6 +6,7 @@ import { aiDeadline } from "../contracts/ai-core-types";
 import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
 import { aiEconomySiteSafety } from "./ai-economy-site-safety";
+import { compareAiActorsByVisibleGeometry } from "./ai-macro-observation";
 import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
 
 /** The H1 default is shared by every Stage-12 domain; it is a backoff floor, never a deadline reset. */
@@ -19,7 +20,7 @@ type RecoveryRecord = AiRecoveryStateV1["records"][number];
 function owned(observation: AiObservationV1): AiObservedActorV1[] {
   return observation.actors
     .filter((actor) => actor.relation === "self" && actor.visibility === "owned")
-    .sort((a, b) => a.actorId.localeCompare(b.actorId));
+    .sort(compareAiActorsByVisibleGeometry);
 }
 
 function position(actor: AiObservedActorV1 | undefined): Vector3Simple | null {

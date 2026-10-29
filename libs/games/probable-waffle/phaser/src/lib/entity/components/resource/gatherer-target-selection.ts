@@ -146,30 +146,18 @@ export class GathererTargetSelection {
     return closestResourceSource;
   }
 
-  /**
-   * Deterministic tie-break for equal-distance candidates.
-   * Without this, Set/list iteration order differences can desync resource target selection.
-   */
+  /** Uses visible geometry before run-local IDs when equally distant resources or drop-offs compete. */
   private compareActorTieBreaker(left: GameObject, right: GameObject): number {
-    const leftId = getActorComponent(left, IdComponent)?.id;
-    const rightId = getActorComponent(right, IdComponent)?.id;
-    if (leftId && rightId && leftId !== rightId) {
-      return leftId.localeCompare(rightId);
-    }
     const leftTransform = getGameObjectLogicalTransform(left);
     const rightTransform = getGameObjectLogicalTransform(right);
-    const leftKey = [
-      left.name,
-      Math.round(leftTransform?.x ?? 0),
-      Math.round(leftTransform?.y ?? 0),
-      Math.round(leftTransform?.z ?? 0)
-    ].join(":");
-    const rightKey = [
-      right.name,
-      Math.round(rightTransform?.x ?? 0),
-      Math.round(rightTransform?.y ?? 0),
-      Math.round(rightTransform?.z ?? 0)
-    ].join(":");
-    return leftKey.localeCompare(rightKey);
+    const geometryOrder =
+      Math.round(leftTransform?.x ?? 0) - Math.round(rightTransform?.x ?? 0) ||
+      Math.round(leftTransform?.y ?? 0) - Math.round(rightTransform?.y ?? 0) ||
+      Math.round(leftTransform?.z ?? 0) - Math.round(rightTransform?.z ?? 0) ||
+      left.name.localeCompare(right.name);
+    if (geometryOrder !== 0) return geometryOrder;
+    return (getActorComponent(left, IdComponent)?.id ?? "").localeCompare(
+      getActorComponent(right, IdComponent)?.id ?? ""
+    );
   }
 }

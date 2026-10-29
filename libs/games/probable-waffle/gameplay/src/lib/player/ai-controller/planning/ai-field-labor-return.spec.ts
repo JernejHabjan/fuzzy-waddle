@@ -87,4 +87,59 @@ describe("Field labor during native food returns", () => {
   it("does not confuse known wood delivery with a returning farmer", () => {
     expect(fixture(ResourceType.Wood).propose()).toMatchObject({ sourceActorId: "field", actorIds: ["wood-worker"] });
   });
+  it("selects the geometrically first idle farmer before a run-local ID tie-break", () => {
+    const f = fixture(ResourceType.Wood);
+    const near = {
+      ...createAiTestOwnedActor("z-worker"),
+      logicalPosition: { status: "known" as const, value: { x: 34, y: 22, z: 0 }, observedTick: 20 }
+    };
+    const far = {
+      ...createAiTestOwnedActor("a-worker"),
+      logicalPosition: { status: "known" as const, value: { x: 35, y: 22, z: 0 }, observedTick: 20 }
+    };
+    const self = [
+      ...f.self.map((actor) => actor.actorId === "wood-worker"
+        ? { ...actor, logicalPosition: { status: "known" as const, value: { x: 40, y: 22, z: 0 }, observedTick: 20 } }
+        : actor),
+      near,
+      far
+    ];
+    const proposal = proposeAiFieldLabor(
+      { ...createAiTestObservation(), actors: self },
+      completedOpeningState(),
+      catalog,
+      self,
+      [self.find((actor) => actor.objectName === ObjectNames.Field)!],
+      ObjectNames.Granary,
+      new Set(),
+      [],
+      0
+    );
+
+    expect(proposal?.actorIds).toEqual(["z-worker"]);
+  });
+  it("selects the geometrically first unstaffed Field when source IDs are reversed", () => {
+    const f = fixture(ResourceType.Wood);
+    const near = { ...f.self.find((actor) => actor.actorId === "field")! };
+    near.actorId = "z-field";
+    const far = {
+      ...createAiTestOwnedActor("a-field"),
+      objectName: ObjectNames.Field,
+      logicalPosition: { status: "known" as const, value: { x: 20, y: 20, z: 0 }, observedTick: 20 }
+    };
+    const self = [...f.self.filter((actor) => actor.actorId !== "field"), near, far];
+    const proposal = proposeAiFieldLabor(
+      { ...createAiTestObservation(), actors: self },
+      completedOpeningState(),
+      catalog,
+      self,
+      [far, near],
+      ObjectNames.Granary,
+      new Set(),
+      [],
+      0
+    );
+
+    expect(proposal?.sourceActorId).toBe("z-field");
+  });
 });

@@ -29,7 +29,7 @@ import type { AiObservationDebugSnapshot } from "./ai-observation-debug-snapshot
 import { projectAiObservedActor } from "./ai-observation-actor-projector";
 import { projectCatalogEntry, projectAvailableCatalogEntries } from "./ai-observation-catalog";
 import { permittedAiObservationTopology, projectAiObservationMap } from "./ai-observation-map";
-import { projectAccessProduct } from "./ai-observation-access-product";
+import { compareAccessProductCandidates, projectAccessProduct } from "./ai-observation-access-product";
 import {
   countUnknownFacts,
   projectModeGoals,
@@ -365,9 +365,7 @@ export class AiObservationPipeline {
     );
     const candidates = owned
       .flatMap((source) => contacts.map((target) => ({ source, target })))
-      .sort((left, right) =>
-        `${left.source.actorId}:${left.target.actorId}`.localeCompare(`${right.source.actorId}:${right.target.actorId}`)
-      );
+      .sort(compareAccessProductCandidates);
     if (candidates.length === 0) return [];
     const scheduled = selectBoundedObservationWork(
       candidates,

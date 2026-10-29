@@ -5,7 +5,7 @@ import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
 import { nextIds } from "./ai-macro-effect-identity";
-import { claimedActorIds } from "./ai-macro-observation";
+import { claimedActorIds, compareAiActorsByVisibleGeometry } from "./ai-macro-observation";
 import { aiEconomySiteSafety } from "./ai-economy-site-safety";
 
 /** Assigns one free farmer without stealing cargo or a Field's returning worker. */
@@ -49,6 +49,7 @@ export function proposeAiFieldLabor(
     returningWorkerCount === 0
       ? readyFoodSources
           .filter(aiEconomySiteSafety(observation).actorSafe)
+          .sort(compareAiActorsByVisibleGeometry)
           .find((source) => !staffedFoodSourceIds.has(source.actorId))
       : undefined;
   if (!unstaffedFoodSource) return null;
@@ -84,7 +85,7 @@ export function proposeAiFieldLabor(
     .sort((left, right) => {
       const leftIdle = left.activeOrder?.status === "known" && left.activeOrder.value === null ? 0 : 1;
       const rightIdle = right.activeOrder?.status === "known" && right.activeOrder.value === null ? 0 : 1;
-      return leftIdle - rightIdle || left.actorId.localeCompare(right.actorId);
+      return leftIdle - rightIdle || compareAiActorsByVisibleGeometry(left, right);
     })[0];
   if (!worker) return null;
   const next = nextIds(state, "food-labor", ordinal);

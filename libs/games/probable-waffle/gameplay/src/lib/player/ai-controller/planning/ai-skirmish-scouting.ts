@@ -54,7 +54,7 @@ function compareScoutActors(left: AiSkirmishProposalContext["combat"][number], r
   return left.objectName.localeCompare(right.objectName) || left.actorId.localeCompare(right.actorId);
 }
 
-function appendNeutralClaim(context: AiSkirmishProposalContext): void {
+function appendNeutralClaim(context: AiSkirmishProposalContext, allowNewClaim = true): void {
   if (context.opponent) return;
   const previous = context.state.squads.find((squad) => squad.squadId === "squad:scout:neutral");
   if (previous) {
@@ -102,6 +102,7 @@ function appendNeutralClaim(context: AiSkirmishProposalContext): void {
       members.forEach((actor) => context.primaryOwnedActors.add(actor.actorId));
     return;
   }
+  if (!allowNewClaim) return;
   const candidates = context.observation.actors
     .filter((actor) => actor.relation === "neutral" && actor.visibility === "visible" && position(actor) !== undefined)
     .filter(
@@ -290,6 +291,10 @@ function appendFrontierScout(context: AiSkirmishProposalContext): void {
 }
 
 export function advanceAiSkirmishScouting(context: AiSkirmishProposalContext): void {
-  appendNeutralClaim(context);
+  // The primary hidden-information question has higher value than optional scenery/resource scouting.
+  // Claim its best reachable scout first; the neutral visit can use a different remaining unit.
+  const hasNeutralMission = context.state.squads.some((squad) => squad.squadId === "squad:scout:neutral");
+  appendNeutralClaim(context, false);
   appendFrontierScout(context);
+  if (!hasNeutralMission) appendNeutralClaim(context);
 }

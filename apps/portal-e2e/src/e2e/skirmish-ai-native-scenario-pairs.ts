@@ -89,12 +89,12 @@ function hiddenParity(
   for (const frame of left.frames) {
     const other = right.frames.find((candidate) => candidate.tick === frame.tick);
     if (!other) return ["scouting_hidden_pair_decision_boundary_missing"];
-    if (JSON.stringify(canonical(frame.decision.input?.observation?.actors.filter((actor) => actor.visibility === "visible"), left, "actors")) !==
-        JSON.stringify(canonical(other.decision.input?.observation?.actors.filter((actor) => actor.visibility === "visible"), right, "actors"))) break;
-    if (JSON.stringify(canonical(permitted(frame), left)) !== JSON.stringify(canonical(permitted(other), right)))
+    if (JSON.stringify(canonicalNativePairValue(frame.decision.input?.observation?.actors.filter((actor) => actor.visibility === "visible"), left, "actors")) !==
+        JSON.stringify(canonicalNativePairValue(other.decision.input?.observation?.actors.filter((actor) => actor.visibility === "visible"), right, "actors"))) break;
+    if (JSON.stringify(canonicalNativePairValue(permitted(frame), left)) !== JSON.stringify(canonicalNativePairValue(permitted(other), right)))
       return ["scouting_hidden_world_altered_permitted_inputs"];
-    if (JSON.stringify(canonical(frame.decision.acceptedIntents, left)) !==
-        JSON.stringify(canonical(other.decision.acceptedIntents, right)))
+    if (JSON.stringify(canonicalNativePairValue(frame.decision.acceptedIntents, left, "acceptedIntents")) !==
+        JSON.stringify(canonicalNativePairValue(other.decision.acceptedIntents, right, "acceptedIntents")))
       return ["scouting_hidden_world_altered_selected_intents"];
     compared++;
   }
@@ -108,26 +108,34 @@ function permitted(frame: ReturnType<typeof nativeScenarioContext>["frames"][num
     effects: input?.effects, modeGoals: input?.modeGoals, capabilityCatalog: input?.capabilityCatalog, accessGraph: input?.accessGraph };
 }
 
-/** Simulation IDs and discovery ordering are run-local; compare the observable world by authored role and position. */
-function canonical(value: unknown, context: ReturnType<typeof nativeScenarioContext>, parentKey = ""): unknown {
+/** Simulation and fixture IDs are run-local; compare the observable world by authored role and position. */
+export function canonicalNativePairValue(
+  value: unknown, context: ReturnType<typeof nativeScenarioContext>, parentKey = ""
+): unknown {
   const aliases = new Map<string, string>();
-  for (const [role, actorId] of Object.entries(context.roles)) aliases.set(actorId, `role:${role}`);
-  const initial = context.frames[0]?.decision.input?.observation?.actors ?? [];
+  for (const [role, actorId] of Object.entries(context.roles)) {
+    if (!/^worker-\d+$/.test(role)) aliases.set(actorId, `role:${role}`);
+  }
+  const observedActors = context.frames.flatMap((frame) => frame.decision.input?.observation?.actors ?? []);
   const fallback = new Map<string, string[]>();
-  const actorKey = (actor: (typeof initial)[number]) => JSON.stringify([
+  const actorKey = (actor: (typeof observedActors)[number]) => JSON.stringify([
     actor.relation, actor.owner, actor.objectName, actor.logicalPosition.status === "known"
       ? actor.logicalPosition.value : null
   ]);
-  for (const actor of initial) {
+  const seen = new Set<string>();
+  for (const actor of observedActors) {
     if (aliases.has(actor.actorId)) continue;
+    if (seen.has(actor.actorId)) continue;
+    seen.add(actor.actorId);
     const group = fallback.get(actorKey(actor)) ?? [];
     group.push(actor.actorId);
     fallback.set(actorKey(actor), group);
   }
-  for (const [key, ids] of fallback) ids.sort().forEach((id, index) => aliases.set(id, `actor:${key}:${index}`));
+  for (const [key, ids] of fallback) ids.forEach((id) => aliases.set(id, `actor:${key}`));
   const unordered = new Set([
-    "actors", "actorIds", "targetActorIds", "dynamicObstacleActorIds", "frontierAccessNodeIds", "unknownNodeIds",
-    "nodes", "links", "transferPoints", "scoutSearchPoints"
+    "actors", "actorIds", "targetActorIds", "acceptedIntents", "claims", "dynamicObstacleActorIds", "frontierAccessNodeIds", "unknownNodeIds",
+    "nodes", "links", "transferPoints", "scoutSearchPoints", "accessProducts", "visibleEnemyActorIds",
+    "rememberedEnemyActorIds", "observedCapabilityFamilies"
   ]);
   const normalize = (entry: unknown, key: string): unknown => {
     if (Array.isArray(entry)) {
@@ -140,7 +148,9 @@ function canonical(value: unknown, context: ReturnType<typeof nativeScenarioCont
         !(key === "regionGeneration" && field === "generation")
       ).sort(([left], [right]) => left.localeCompare(right)).map(([field, item]) => [field, normalize(item, field)]));
     }
-    if (typeof entry === "string") return entry.replace(/sim-[a-f\d]+/g, (id) => aliases.get(id) ?? id);
+    if (typeof entry === "string") return entry
+      .replace(/sim-[a-f\d]+/g, (id) => aliases.get(id) ?? id)
+      .replace(/runtime-fixture-[^:,\s"]+/g, "runtime-fixture");
     return entry;
   };
   return normalize(value, parentKey);

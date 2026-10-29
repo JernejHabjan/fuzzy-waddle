@@ -4,21 +4,26 @@ import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import type { OpeningCheckpoint } from "./ai-opening-catalog";
 
-/** Macro selection must use visible geometry before a run-local actor ID tie-break. */
+/** Prefer public geometry and use a stable local identity as the final within-run tie-break. */
+export function compareAiActorsByVisibleGeometry(
+  left: AiObservationV1["actors"][number],
+  right: AiObservationV1["actors"][number]
+): number {
+  const leftPosition = left.logicalPosition.status === "known" ? left.logicalPosition.value : null;
+  const rightPosition = right.logicalPosition.status === "known" ? right.logicalPosition.value : null;
+  if (leftPosition && rightPosition) {
+    return leftPosition.y - rightPosition.y || leftPosition.x - rightPosition.x || leftPosition.z - rightPosition.z ||
+      left.objectName.localeCompare(right.objectName) || left.actorId.localeCompare(right.actorId);
+  }
+  if (leftPosition) return -1;
+  if (rightPosition) return 1;
+  return left.objectName.localeCompare(right.objectName) || left.actorId.localeCompare(right.actorId);
+}
+
 export function owned(observation: AiObservationV1) {
   return observation.actors
     .filter((actor) => actor.relation === "self" && actor.visibility === "owned")
-    .sort((left, right) => {
-      const leftPosition = left.logicalPosition.status === "known" ? left.logicalPosition.value : null;
-      const rightPosition = right.logicalPosition.status === "known" ? right.logicalPosition.value : null;
-      if (leftPosition && rightPosition) {
-        return leftPosition.y - rightPosition.y || leftPosition.x - rightPosition.x || leftPosition.z - rightPosition.z ||
-          left.objectName.localeCompare(right.objectName) || left.actorId.localeCompare(right.actorId);
-      }
-      if (leftPosition) return -1;
-      if (rightPosition) return 1;
-      return left.objectName.localeCompare(right.objectName) || left.actorId.localeCompare(right.actorId);
-    });
+    .sort(compareAiActorsByVisibleGeometry);
 }
 
 export function checkpointActors(

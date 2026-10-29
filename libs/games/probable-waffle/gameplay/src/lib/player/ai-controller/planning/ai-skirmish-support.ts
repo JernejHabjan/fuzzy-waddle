@@ -55,7 +55,16 @@ export function ownedCombat(observation: AiObservationV1, catalog: AiCapabilityC
       (actor) =>
         !catalog.entries.some((entry) => entry.sourceObjectName === actor.objectName && entry.gathers.length > 0)
     )
-    .sort((left, right) => left.actorId.localeCompare(right.actorId));
+    .sort((left, right) => {
+      const leftPosition = position(left);
+      const rightPosition = position(right);
+      return (
+        (leftPosition?.x ?? Number.POSITIVE_INFINITY) - (rightPosition?.x ?? Number.POSITIVE_INFINITY) ||
+        (leftPosition?.y ?? Number.POSITIVE_INFINITY) - (rightPosition?.y ?? Number.POSITIVE_INFINITY) ||
+        (leftPosition?.z ?? Number.POSITIVE_INFINITY) - (rightPosition?.z ?? Number.POSITIVE_INFINITY) ||
+        left.actorId.localeCompare(right.actorId)
+      );
+    });
 }
 
 export function hostileContacts(observation: AiObservationV1): AiObservedActorV1[] {

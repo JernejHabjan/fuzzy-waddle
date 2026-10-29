@@ -15,6 +15,29 @@ import {
 } from "./ai-tactics-test-fixtures";
 
 describe("AiTacticsManager", () => {
+  it("breaks equal-distance immediate-threat ties by visible geometry", () => {
+    const attackers = [
+      combatActor("attacker-a", "self", 10, "ground", 1000, { damage: 100 }),
+      combatActor("attacker-b", "self", 10, "ground", 1000, { damage: 100 }),
+      combatActor("attacker-c", "self", 10, "ground", 1000, { damage: 100 })
+    ];
+    const westThreat = combatActor("z-west", "enemy", 8, "ground", 1000, { damage: 100 });
+    const eastThreat = combatActor("a-east", "enemy", 12, "ground", 1000, { damage: 100 });
+    const objective = combatActor("objective", "enemy", 20, "ground", 1000, { damage: 0 });
+    const attackSquad = {
+      ...squad("squad:attack", "attack", attackers.map((actor) => actor.actorId)),
+      objectiveId: objective.actorId
+    };
+    const initial = fixtureState([attackSquad]);
+    const proposal = manager.propose(
+      observation([...attackers, eastThreat, westThreat, objective]),
+      initial
+    );
+    const selected = proposal.intents.find((intent) => intent.kind === "attack");
+
+    expect(selected?.targetActorId).toBe(westThreat.actorId);
+  });
+
   it("H-30 advances a quiet mission through assembly, rally and advance without skipping a boundary", () => {
     const guard = combatActor("guard", "self", 1);
     const initial = fixtureState([{ ...squad("squad:attack", "attack", ["guard"]), state: "forming" }]);

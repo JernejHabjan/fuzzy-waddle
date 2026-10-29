@@ -118,6 +118,38 @@ describe("observed attack approach positions", () => {
     expect(positions.every((entry) => entry.position.x !== target.x)).toBe(true);
   });
 
+  it("assigns attack slots by visible member geometry, independent of input actor order", () => {
+    const base = createAiTestObservation();
+    const cells = [
+      { tileKey: "9,10", position: { x: 9, y: 10, z: 0 } },
+      { tileKey: "10,9", position: { x: 10, y: 9, z: 0 } },
+      { tileKey: "11,10", position: { x: 11, y: 10, z: 0 } },
+      { tileKey: "10,11", position: { x: 10, y: 11, z: 0 } }
+    ].map((cell) => ({
+      ...cell,
+      groundPassable: true,
+      waterPassable: false,
+      elevation: 0,
+      observedBlocked: false
+    }));
+    const observation = {
+      ...base,
+      map: { ...base.map!, constructionCells: cells, tacticalCells: cells }
+    } satisfies AiObservationV1;
+    const members = [
+      { ...attacker("a-east"), logicalPosition: { status: "known" as const, value: { x: 12, y: 10, z: 0 }, observedTick: 100 } },
+      { ...attacker("z-west"), logicalPosition: { status: "known" as const, value: { x: 8, y: 10, z: 0 }, observedTick: 100 } }
+    ];
+    const target = { x: 10, y: 10, z: 0 };
+
+    const first = selectAiAttackApproachPositions(members, target, observation);
+    const reversed = selectAiAttackApproachPositions([...members].reverse(), target, observation);
+
+    expect(first).toEqual(reversed);
+    expect(first.map((assignment) => assignment.actorId)).toEqual(["z-west", "a-east"]);
+    expect(new Set(first.map((assignment) => `${assignment.position.x},${assignment.position.y}`)).size).toBe(2);
+  });
+
   it("skips a nearer assault cell when the actor's known ground region cannot reach it", () => {
     const base = createAiTestObservation();
     const member = {

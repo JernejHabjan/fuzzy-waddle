@@ -88,7 +88,16 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
         actor.containedInActorId == null &&
         !isEconomicActor(actor, catalog)
     )
-    .sort((left, right) => left.actorId.localeCompare(right.actorId));
+    .sort((left, right) => {
+      const leftPosition = knownPosition(left);
+      const rightPosition = knownPosition(right);
+      return (
+        (leftPosition?.x ?? Number.POSITIVE_INFINITY) - (rightPosition?.x ?? Number.POSITIVE_INFINITY) ||
+        (leftPosition?.y ?? Number.POSITIVE_INFINITY) - (rightPosition?.y ?? Number.POSITIVE_INFINITY) ||
+        (leftPosition?.z ?? Number.POSITIVE_INFINITY) - (rightPosition?.z ?? Number.POSITIVE_INFINITY) ||
+        left.actorId.localeCompare(right.actorId)
+      );
+    });
   members.forEach((actor) => claimedActors.add(actor.actorId));
   const origin = knownPosition(members[0]);
   const nearbyEnemies = visibleEnemies
@@ -161,7 +170,17 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
     })
     .filter(({ nearest }) => nearest <= 8)
     .sort(
-      (left, right) => left.nearest - right.nearest || left.enemy.actorId.localeCompare(right.enemy.actorId)
+      (left, right) => {
+        const leftPosition = knownPosition(left.enemy);
+        const rightPosition = knownPosition(right.enemy);
+        return (
+          left.nearest - right.nearest ||
+          (leftPosition?.x ?? Number.POSITIVE_INFINITY) - (rightPosition?.x ?? Number.POSITIVE_INFINITY) ||
+          (leftPosition?.y ?? Number.POSITIVE_INFINITY) - (rightPosition?.y ?? Number.POSITIVE_INFINITY) ||
+          (leftPosition?.z ?? Number.POSITIVE_INFINITY) - (rightPosition?.z ?? Number.POSITIVE_INFINITY) ||
+          left.enemy.actorId.localeCompare(right.enemy.actorId)
+        );
+      }
     )[0]?.enemy;
   const retainPrevious = Boolean(
     previousTarget &&

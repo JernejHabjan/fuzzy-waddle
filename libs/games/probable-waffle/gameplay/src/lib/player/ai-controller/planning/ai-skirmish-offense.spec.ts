@@ -2,7 +2,8 @@ import {
   FactionType,
   ObjectNames,
   OrderType,
-  ProbableWaffleAiDifficulty
+  ProbableWaffleAiDifficulty,
+  ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
@@ -12,6 +13,7 @@ import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 import { buildAiAccessGraphV1 } from "./ai-access-graph-v1";
 import { AiSkirmishManager } from "./ai-skirmish-manager";
+import { ownedCombat } from "./ai-skirmish-support";
 
 const graph = buildAiAccessGraphV1({
   generation: 1,
@@ -92,6 +94,71 @@ function actor(actorId: string, nodeId: typeof homeNode, x: number): AiObservedA
 }
 
 describe("AiSkirmishManager offense target selection", () => {
+  it("orders combat force by visible geometry instead of run-local actor IDs", () => {
+    const west = actor("z-west", homeNode, 8);
+    const east = actor("a-east", homeNode, 12);
+    const observation = createAiTestObservation();
+
+    expect(ownedCombat({ ...observation, actors: [east, west] }, catalog).map((member) => member.actorId)).toEqual([
+      "z-west",
+      "a-east"
+    ]);
+    expect(ownedCombat({ ...observation, actors: [west, east] }, catalog).map((member) => member.actorId)).toEqual([
+      "z-west",
+      "a-east"
+    ]);
+  });
+
+  it("reserves the best positioned scout for the primary information question before neutral scouting", () => {
+    const frontierCandidate = actor("frontier-candidate", homeNode, 0);
+    const neutralCandidate = actor("neutral-candidate", homeNode, 1);
+    const resource: AiObservedActorV1 = {
+      ...createAiTestOwnedActor("neutral-resource"),
+      objectName: ObjectNames.Tree6,
+      owner: null,
+      relation: "neutral",
+      visibility: "visible",
+      logicalPosition: { status: "known", value: { x: 1, y: 0, z: 0 }, observedTick: 20 },
+      accessNodeId: { status: "known", value: enemyNode, observedTick: 20 },
+      capabilities: [],
+      resourceState: {
+        status: "known",
+        observedTick: 20,
+        value: {
+          resourceType: ResourceType.Wood,
+          available: { status: "known", value: 180, observedTick: 20 },
+          carried: { status: "unknown", reason: "not_supported" },
+          growthReadyTick: { status: "unknown", reason: "not_supported" },
+          serviceCapacity: { status: "unknown", reason: "not_supported" }
+        }
+      }
+    };
+    const base = createAiTestObservation();
+    const world = {
+      ...base,
+      tick: 20,
+      actors: [frontierCandidate, neutralCandidate, resource],
+      map: {
+        bounds: { status: "known" as const, value: { width: 2, height: 1 }, observedTick: 20 },
+        staticRevision: 1,
+        frontierAccessNodeIds: [enemyNode],
+        scoutCoverageAccessNodeIds: [],
+        scoutSearchPoints: [{ pointId: "search:front", accessNodeId: enemyNode,
+          position: { x: 1, y: 0, z: 0 }, observed: false }],
+        dynamicObstacleActorIds: [],
+        regionGeneration: { generation: 1, status: "ready" as const, continuationCursor: 0 },
+        accessGraph: graph.graph
+      }
+    };
+    const initial = createAiBrainStateV1({ playerNumber: 1, faction: FactionType.Tivara, profile,
+      tick: 0, archetypeId: "balanced" });
+    const proposal = new AiSkirmishManager(profile, () => catalog).propose(world, initial);
+    expect(proposal.statePatch?.squads?.find((squad) => squad.squadId === "squad:scout:primary")?.actorIds)
+      .toEqual([frontierCandidate.actorId]);
+    expect(proposal.statePatch?.squads?.find((squad) => squad.squadId === "squad:scout:neutral")?.actorIds)
+      .toEqual([neutralCandidate.actorId]);
+  });
+
   it("keeps an active frontier scout out of a newly formed attack force", () => {
     const scout = actor("frontier-scout", homeNode, 0);
     const guard = actor("guard", homeNode, 0);

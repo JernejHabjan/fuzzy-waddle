@@ -9,7 +9,7 @@ import { proposeAiFieldCapacity } from "./ai-field-capacity-proposal";
 import { proposeAiFieldLabor } from "./ai-field-labor-proposal";
 import { proposeAiFoodPrerequisite } from "./ai-food-prerequisite-proposal";
 import { unresolvedReservedEffectIds } from "./ai-macro-effect-identity";
-import { isFinishedActor } from "./ai-macro-observation";
+import { compareAiActorsByVisibleGeometry, isFinishedActor } from "./ai-macro-observation";
 import { projectAiResourceForecasts } from "./ai-resource-forecast";
 import { proposeAiWorkerRecovery } from "./ai-worker-recovery";
 import { renewableFoodReserve } from "./ai-renewable-food-reserve";
@@ -53,10 +53,10 @@ export function proposeAiFoodEconomy(args: {
   const foodSourceEntry = catalog.entries.find((entry) => entry.sourceObjectName === ObjectNames.Field);
   const readyFoodSources = self
     .filter((actor) => actor.objectName === ObjectNames.Field && isFinishedActor(actor))
-    .sort((left, right) => left.actorId.localeCompare(right.actorId));
+    .sort(compareAiActorsByVisibleGeometry);
   const constructingFoodSources = self
     .filter((actor) => actor.objectName === ObjectNames.Field && !isFinishedActor(actor))
-    .sort((left, right) => left.actorId.localeCompare(right.actorId));
+    .sort(compareAiActorsByVisibleGeometry);
   const acceptedFoodSourceEffectIds = unresolvedReservedEffectIds(state, "effect:food-capacity:Field:effect:");
   const openingForecast = projectAiResourceForecasts(
     observation,

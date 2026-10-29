@@ -1,6 +1,7 @@
 import {
   canonicalizeAiObservationV1,
   digestCanonicalAiValue,
+  type AiObservedActorV1,
   type AiObservationV1
 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { FactionType, ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
@@ -14,8 +15,38 @@ import {
   selectBoundedObservationWork
 } from "./ai-observation-pipeline";
 import { projectRememberedContacts } from "./ai-observation-memory";
+import { compareAccessProductCandidates } from "./ai-observation-access-product";
 
 const unknown = { status: "unknown", reason: "not_observed" } as const;
+
+function accessActor(actorId: string, x: number, y: number): AiObservedActorV1 {
+  return {
+    actorId,
+    objectName: ObjectNames.TivaraWorker,
+    owner: 2,
+    relation: "self",
+    visibility: "owned",
+    logicalPosition: { status: "known", value: { x, y, z: 0 }, observedTick: 220 }
+  } as AiObservedActorV1;
+}
+
+describe("bounded access product ordering", () => {
+  it("orders candidates by visible position when actor IDs reverse across worlds", () => {
+    const target = accessActor("target", 1, 1);
+    const fromWorldA = [
+      { source: accessActor("sim-a", 33, 16), target },
+      { source: accessActor("sim-z", 33, 14), target }
+    ].sort(compareAccessProductCandidates);
+    const fromWorldB = [
+      { source: accessActor("sim-z", 33, 16), target },
+      { source: accessActor("sim-a", 33, 14), target }
+    ].sort(compareAccessProductCandidates);
+
+    expect(fromWorldA.map(({ source }) => source.logicalPosition)).toEqual(
+      fromWorldB.map(({ source }) => source.logicalPosition)
+    );
+  });
+});
 
 function observation(): AiObservationV1 {
   return {

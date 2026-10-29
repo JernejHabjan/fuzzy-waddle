@@ -81,7 +81,23 @@ export function selectAiAttackApproachPositions(
   observation: AiObservationV1,
   targetFootprintRadiusTiles = 0
 ): NonNullable<AiSquadStateV1["tactics"]>["assignedPositions"] {
-  const origin = members[0]?.logicalPosition.status === "known" ? members[0].logicalPosition.value : target;
+  const positionedMembers = members
+    .map((member) => ({ member, position: knownPosition(member) }))
+    .sort(
+      (left, right) =>
+        (left.position?.x ?? Number.POSITIVE_INFINITY) - (right.position?.x ?? Number.POSITIVE_INFINITY) ||
+        (left.position?.y ?? Number.POSITIVE_INFINITY) - (right.position?.y ?? Number.POSITIVE_INFINITY) ||
+        (left.position?.z ?? Number.POSITIVE_INFINITY) - (right.position?.z ?? Number.POSITIVE_INFINITY) ||
+        left.member.actorId.localeCompare(right.member.actorId)
+    );
+  const positions = positionedMembers.flatMap(({ position }) => position ? [position] : []);
+  const origin = positions.length
+    ? {
+        x: positions.reduce((sum, position) => sum + position.x, 0) / positions.length,
+        y: positions.reduce((sum, position) => sum + position.y, 0) / positions.length,
+        z: positions.reduce((sum, position) => sum + position.z, 0) / positions.length
+      }
+    : target;
   const candidates = (observation.map?.tacticalCells ?? observation.map?.constructionCells ?? [])
     .filter(
       (cell) =>
@@ -99,7 +115,7 @@ export function selectAiAttackApproachPositions(
         left.tileKey.localeCompare(right.tileKey)
     );
   const used = new Set<string>();
-  return members.flatMap((member) => {
+  return positionedMembers.flatMap(({ member }) => {
     const domains = new Set(member.capabilities.flatMap((capability) => capability.domains));
     const range = airWeaponRange(member, target);
     const candidatesForMember =

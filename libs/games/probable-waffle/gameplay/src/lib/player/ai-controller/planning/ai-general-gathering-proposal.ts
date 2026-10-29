@@ -8,22 +8,10 @@ import { aiResourceForecastDeficit, selectAiForecastEntry } from "./ai-resource-
 import { rememberAiGatheringSelection } from "./ai-gathering-selection-observation";
 import { selectAiSurplusLaborTransfer } from "./ai-surplus-labor-transfer";
 import { readAiResourceInputRead } from "./ai-resource-input-observation";
-import { claimedActorIds } from "./ai-macro-observation";
+import { claimedActorIds, compareAiActorsByVisibleGeometry } from "./ai-macro-observation";
 import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
 import { housingFundingResourceTypes, selectAiHousingFundingWorker } from "./ai-housing-funding";
 import { aiEconomySiteSafety } from "./ai-economy-site-safety";
-
-function compareVisibleActors(left: AiObservationV1["actors"][number], right: AiObservationV1["actors"][number]): number {
-  const leftPosition = left.logicalPosition.status === "known" ? left.logicalPosition.value : null;
-  const rightPosition = right.logicalPosition.status === "known" ? right.logicalPosition.value : null;
-  if (leftPosition && rightPosition) {
-    return leftPosition.y - rightPosition.y || leftPosition.x - rightPosition.x || leftPosition.z - rightPosition.z ||
-      left.objectName.localeCompare(right.objectName) || left.actorId.localeCompare(right.actorId);
-  }
-  if (leftPosition) return -1;
-  if (rightPosition) return 1;
-  return left.objectName.localeCompare(right.objectName) || left.actorId.localeCompare(right.actorId);
-}
 
 /** Proposes a non-Field gathering assignment from aggregate forecasts or the native stockpile fallback. */
 export function proposeAiGeneralGathering(
@@ -45,7 +33,7 @@ export function proposeAiGeneralGathering(
     .filter((actor) => !reservedActorIds.has(actor.actorId))
     .filter((actor) => !actor.resourceTransferInFlight && (actor.carriedResourceAmount ?? 0) === 0)
     .filter((actor) => actor.activeOrder?.status === "known" && actor.activeOrder.value === null)
-    .sort(compareVisibleActors);
+    .sort(compareAiActorsByVisibleGeometry);
   const gatherSources = observation.actors
     .filter(aiEconomySiteSafety(observation).actorSafe)
     .filter(
@@ -57,7 +45,7 @@ export function proposeAiGeneralGathering(
         actor.resourceState.value.available.status === "known" &&
         actor.resourceState.value.available.value > 0
     )
-    .sort(compareVisibleActors);
+    .sort(compareAiActorsByVisibleGeometry);
   const sourceResourceTypes = new Set(
     gatherSources.map((actor) =>
       actor.resourceState.status === "known" ? actor.resourceState.value.resourceType : ResourceType.Wood

@@ -36,7 +36,7 @@ export function nativeScoutingFairness(context: ReturnType<typeof nativeScenario
   return [...new Set(failures)];
 }
 
-/** Physical original-destination arrival, selected scout effect and genuinely newly visible geography are all required. */
+/** Physical progress toward the selected sample, its scout effect and new search information are all required. */
 export function nativeScoutTrips(context: ReturnType<typeof nativeScenarioContext>, afterTick = 0) {
   return context.frames.flatMap((frame) => frame.decision.acceptedIntents.flatMap((intent) => {
     if (intent.kind !== "scout" || !intent.planId || frame.tick < afterTick) return [];
@@ -52,24 +52,44 @@ export function nativeScoutTrips(context: ReturnType<typeof nativeScenarioContex
           )
             return [];
           const arrival = movement.observations.find((entry) => entry.spatial.phase === "arrived");
-          return arrival ? [{ startedTick: movement.started.tick, arrivalTick: arrival.tick, movement }] : [];
+          return arrival ? [{
+            executionId: movement.observations[0]?.spatial.executionId,
+            startedTick: movement.started.tick,
+            arrivalTick: arrival.tick,
+            movement
+          }] : [];
         }),
         ...nativeScoutMovesStoppedAtDestination(context, actorId, frame.tick).flatMap((movement) => {
           const executionEffectId = movement.executionEffectId;
           return executionEffectId === selectedEffectId ||
             executionEffectId?.startsWith(`stage13:${squadId}:search:${actorId}:`)
-            ? [{ startedTick: movement.startedTick, arrivalTick: movement.arrivalTick, movement }]
+            ? [{ executionId: movement.executionId, startedTick: movement.startedTick,
+                arrivalTick: movement.arrivalTick, movement }]
+            : [];
+        }),
+        ...nativeScoutMovesWithPhysicalProgress(context, actorId, frame.tick).flatMap((movement) => {
+          const executionEffectId = movement.executionEffectId;
+          return executionEffectId === selectedEffectId ||
+            executionEffectId?.startsWith(`stage13:${squadId}:search:${actorId}:`)
+            ? [{ executionId: movement.executionId, startedTick: movement.startedTick,
+                arrivalTick: movement.progressTick, movement }]
             : [];
         })
       ];
-      return movements.flatMap((movement) => {
+      const uniqueMovements = new Map<number, (typeof movements)[number]>();
+      for (const movement of movements) {
+        if (movement.executionId !== undefined && !uniqueMovements.has(movement.executionId))
+          uniqueMovements.set(movement.executionId, movement);
+      }
+      return [...uniqueMovements.values()].flatMap((movement) => {
         const latestSelection = context.frames.flatMap((candidate) => candidate.decision.acceptedIntents
           .filter((candidateIntent) => candidateIntent.kind === "scout" && candidateIntent.planId === intent.planId &&
             candidateIntent.actorIds.includes(actorId) && candidate.tick <= movement.startedTick)
           .map(() => candidate.tick)).at(-1);
         if (latestSelection !== frame.tick) return [];
         const unknown = frame.tacticalBoundary?.searchPoints.filter((point) => !point.visible) ?? [];
-        const learned = context.frames.some((later) => later.tick >= frame.tick && later.tick <= movement.arrivalTick + 40 &&
+        const learned = context.frames.some((later) => later.tick >= movement.startedTick &&
+          later.tick <= movement.arrivalTick + 40 &&
           later.tacticalBoundary?.searchPoints.some((point) => point.visible && unknown.some((old) => old.pointId === point.pointId)));
         return learned ? [{ actorId, selectedTick: frame.tick, arrivalTick: movement.arrivalTick, intent, movement }] : [];
       });
@@ -101,10 +121,46 @@ function nativeScoutMovesStoppedAtDestination(
       !started.spatial.originalDestination ||
       JSON.stringify(started.spatial.originalDestination) !== JSON.stringify(stopped.spatial.actualTile)) return [];
     return [{
+      executionId: started.spatial.executionId,
       startedTick: started.tick,
       arrivalTick: stopped.tick,
       executionEffectId: started.spatial.caller.order.commandContext.execution.effectId,
       movement: { started, stopped }
+    }];
+  });
+}
+
+/** A scout may reveal a search cell while traversing toward its representative tile before native pathing stops. */
+function nativeScoutMovesWithPhysicalProgress(
+  context: ReturnType<typeof nativeScenarioContext>,
+  actorId: string,
+  afterTick: number
+) {
+  const groups = new Map<number, typeof context.capture.facts>();
+  for (const fact of context.capture?.facts ?? []) {
+    if (fact.kind !== "spatial_authority" || fact.spatial.kind !== "movement" || fact.tick < afterTick ||
+      fact.spatial.source.actorId !== actorId) continue;
+    const group = groups.get(fact.spatial.executionId) ?? [];
+    group.push(fact);
+    groups.set(fact.spatial.executionId, group);
+  }
+  return [...groups.values()].flatMap((facts) => {
+    const started = facts.find((fact) => fact.kind === "spatial_authority" && fact.spatial.phase === "started");
+    if (!started || started.kind !== "spatial_authority" || started.spatial.kind !== "movement" ||
+      started.spatial.gaps.length || started.spatial.caller?.order?.commandContext?.execution.source !== "ai" ||
+      !started.spatial.originalDestination || !started.spatial.actualTile) return [];
+    const progress = facts.find((fact) => fact.kind === "spatial_authority" &&
+      (fact.spatial.phase === "stopped" || fact.spatial.phase === "returned_false") && fact.spatial.actualTile &&
+      (fact.spatial.actualTile.x !== started.spatial.actualTile?.x ||
+        fact.spatial.actualTile.y !== started.spatial.actualTile?.y));
+    if (!progress || progress.tick <= started.tick || progress.kind !== "spatial_authority" ||
+      progress.spatial.kind !== "movement" ||
+      progress.spatial.gaps.length) return [];
+    return [{
+      executionId: started.spatial.executionId,
+      startedTick: started.tick,
+      progressTick: progress.tick,
+      executionEffectId: started.spatial.caller.order.commandContext.execution.effectId
     }];
   });
 }

@@ -1,20 +1,24 @@
 # #759 current evidence
 
-Updated 2026-10-28. This is the compact active snapshot; detailed run history belongs in
+Updated 2026-10-29. This is the compact active snapshot; detailed run history belongs in
 [EVIDENCE-ARCHIVE.md](EVIDENCE-ARCHIVE.md). [HANDOFF.md](HANDOFF.md) owns the live cursor and next action.
 
 Latest closed family: SCOUT-03 report `1793174968627-passed.json` (four variants, 400 decisions / 8,004 ticks), source
 digest `fnv1a32:05a85282`, fixture digest `fnv1a32:ebc75582`. Previous closed family: STRAT-04 report
 `1793069202745-passed.json`, base `2210ab7fe09d`, dirty-source digest `fnv1a32:d22008af`, fixture digest `fnv1a32:4e15b8c2`.
-Latest attempted open families: SCOUT-01 report
-`1793071681087-failed.json` (four variants, 400 decisions / 8,004 ticks): physical information trips pass in all
-branches; hidden-pair selected-intent parity remains open. Latest attempted family is SCOUT-02 report
-`1793073090904-failed.json` (ten variants, 1,200 decisions / 24,010 ticks): both visible controls pass; hidden and
-withdrawn variants fail trip/stale-job/survival predicates, and hidden-world permitted-input parity remains open.
-The focused Tivara visible diagnostic `1793083017398-diagnostic_failed.json` uses an opening contact outside attack range;
-it passes contact/fairness and stale-certainty checks but still lacks a physical information trip.
-Current-source SCOUT-01 recheck `1793084287890-failed.json` still fails only paired selected-intent parity, with its first
-divergence at tick 20 in opening construction/recovery intents.
+SCOUT-01 closes on current source in `1793232028064-passed.json` (four variants, 400 decisions / 8,004 ticks;
+7.5m; candidate `2f4b6e54e323189bc6135d0d964d27138188e588`, dirty source `fnv1a32:ce97eb16`, fixture
+`fnv1a32:ed43adfd`). All four physical scouting trips and hidden-world selected-intent parity pass. The final
+divergence was native gatherer drop-off tie-breaking by run-local actor ID, which sent equal-distance workers to
+different drains and changed later positions/orders. Geometry/name now precede ID; the focused Phaser regression
+passes 7/7. Do not replay unchanged.
+
+SCOUT-02 report `1793073090904-failed.json` (ten variants, 1,200 decisions / 24,010 ticks): both visible controls pass;
+hidden and withdrawn variants fail trip/stale-job/survival predicates, and hidden-world permitted-input parity remains
+open. The focused Tivara visible diagnostic `1793083017398-diagnostic_failed.json` passes contact/fairness and
+stale-certainty checks but lacks a physical information trip. Current withdrawn diagnostics `1793209460328` and
+`1793209831885` show accepted scout intents whose native moves fail before physical movement; resume SCOUT-02 only with
+a concrete navigation diagnosis.
 SCOUT-03 report `1793174968627-passed.json` closes all four branches on one current source and fixture. Its escape setup
 uses fast flying scouts versus slower compatible anti-air pursuers, with the contact hidden at opening; a retained legal
 retreat waypoint prevents route oscillation. SCOUT-04 report `1793074230112-failed.json` ran all six variants
@@ -82,9 +86,9 @@ selection and tactics changed; the current-source recheck passes at candidate `0
   eight branches. One shared RAID-03 boat branch passes. Detailed artifacts and source provenance are archived.
 - STRAT-03 passes all six branches at 150 decisions / 3,001 ticks: both minor branches and Skaduwee withdrawn win; both reinforced branches and Tivara withdrawn meet their expected branch outcomes. All branches retain their home and satisfy the native defense/offense predicates. Reports and source provenance are archived.
 - STRAT-04 passes all six branches at 100 decisions / 2,001 ticks each. Quiet and harmless-noise controls preserve the committed goal and produce native damage through the attack squad; the real-threat controls adapt physically. Report and source provenance are archived.
-- SCOUT-01 is partial, not closed: the latest report has no per-branch trip failures, but `scouting_hidden_world_altered_selected_intents` remains. Current source now orders macro workers, gathering sources/workers, recovery actors, and scout candidates by visible geometry before run-local IDs; recheck parity after the related scouting batch.
+- SCOUT-01 is closed on current source: all four native variants pass physical-trip and hidden-world selected-intent parity in `1793232028064-passed.json`. The drop-off tie-break regression passes; no unchanged replay is needed.
 - SCOUT-02 is partial, not closed: both visible controls pass, while the eight withdrawn/hidden branches do not sustain useful information service or keep the authored contact alive through the horizon. Hidden-world permitted-input parity also fails. A focused visible diagnostic with improved opening spacing passes contact/fairness and stale-certainty checks but still misses a physical information trip. Full branch details and runtime provenance are archived.
-- Current-source withdrawn diagnostics `1793209460328` and `1793209831885` confirm scout intents are accepted after same-plan provisional lease renewal was enabled, but native movement still ends in `Move - Movement Failed`; no physical trip or stale-job service is recorded. Nearest-unseen-point ranking did not help and was reverted after current-source SCOUT-01 regressed all four trip predicates. SCOUT-02 remains open pending a concrete native navigation diagnosis and resulting trip.
+- Current-source withdrawn diagnostics `1793209460328` and `1793209831885` confirm scout intents are accepted after same-plan provisional lease renewal was enabled, but native movement still ends in `Move - Movement Failed`; no physical trip or stale-job service is recorded. Nearest-unseen-point ranking did not help and was reverted; later SCOUT-01 source now passes after independent parity repairs. SCOUT-02 remains open pending a concrete native navigation diagnosis and resulting trip.
 - SCOUT-03 is closed on all four current-source branches: both trapped and both physical escape branches pass.
 - SCOUT-04 is closed on all six retained branches: contact consideration occurs within 400 ticks and each branch has later AI-caused native damage.
 - FIGHT-01 is closed on all eight native branches: favorable combat, changed-risk regrouping, and the quiet continued-fight control pass.
@@ -99,7 +103,7 @@ selection and tactics changed; the current-source recheck passes at candidate `0
 
 | Package | Remaining work |
 | --- | --- |
-| 3 — scouting, combat, access | DOMAIN-01/05/06, SCOUT-03/04, FIGHT-01/02/03/04/05 and RAID-02 pass. All RAID-01 targeted branches pass; its combined registered matrix remains CI-owned. DOMAIN-02's two negative controls and INTERCEPT pass; COAST pays for a ship but leaves it in reserve, and ESCORT reaches row 32 but fails its paid fleet objective effect. SCOUT-01 hidden-pair parity and SCOUT-02 native trip/service remain. Seven real-peer obligations remain CI-owned. STRAT-09 needs grouped final recheck after affected changes. |
+| 3 — scouting, combat, access | DOMAIN-01/05/06, SCOUT-01/03/04, FIGHT-01/02/03/04/05 and RAID-02 pass. All RAID-01 targeted branches pass; its combined registered matrix remains CI-owned. DOMAIN-02's two negative controls and INTERCEPT pass; COAST pays for a ship but leaves it in reserve, and ESCORT reaches row 32 but fails its paid fleet objective effect. SCOUT-02 native trip/service remains. Seven real-peer obligations remain CI-owned. STRAT-09 needs grouped final recheck after affected changes. |
 | 4 — placement, walls, recovery | PLACE/EXP/WALL and H recovery cases; PLACE-03 transit/clearance and H-11 route/capture remain known failures. |
 | 5 — authority and lifecycle | H-10 over-capacity variants, H-06/07, H-08/09 peer evidence, H-14/15 remaining branches, H-31/32, M11, #819/#823. |
 | 6 — continuous play and difficulty | SEQ-02 and supported SEQ/D cases. D-06 legacy comparison remains explicitly unsupported. |

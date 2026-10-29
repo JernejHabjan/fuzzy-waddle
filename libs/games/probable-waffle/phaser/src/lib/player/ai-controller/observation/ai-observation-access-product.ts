@@ -8,6 +8,29 @@ import { uniqueDomain } from "./ai-observation-values";
 
 type GameObject = Phaser.GameObjects.GameObject;
 
+type AiAccessCandidate = {
+  readonly source: AiObservedActorV1;
+  readonly target: AiObservedActorV1;
+};
+
+function compareObservedGeometry(left: AiObservedActorV1, right: AiObservedActorV1): number {
+  const leftPosition = left.logicalPosition.status === "known" ? left.logicalPosition.value : null;
+  const rightPosition = right.logicalPosition.status === "known" ? right.logicalPosition.value : null;
+  if (leftPosition && rightPosition) {
+    return leftPosition.y - rightPosition.y || leftPosition.x - rightPosition.x ||
+      leftPosition.z - rightPosition.z || left.objectName.localeCompare(right.objectName) ||
+      left.actorId.localeCompare(right.actorId);
+  }
+  if (leftPosition) return -1;
+  if (rightPosition) return 1;
+  return left.objectName.localeCompare(right.objectName) || left.actorId.localeCompare(right.actorId);
+}
+
+/** Keep the bounded query window tied to public geometry, not run-local identity order. */
+export function compareAccessProductCandidates(left: AiAccessCandidate, right: AiAccessCandidate): number {
+  return compareObservedGeometry(left.source, right.source) || compareObservedGeometry(left.target, right.target);
+}
+
 export function projectAccessProduct(
   scene: Phaser.Scene,
   queryInputRevision: number,

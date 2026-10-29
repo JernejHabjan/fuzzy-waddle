@@ -7,6 +7,7 @@ function contextFor(executionEffectId: string, discoveryTick = 120) {
     observations: [
       {
         spatial: {
+          executionId: 7,
           caller: { order: { commandContext: { execution: { effectId: executionEffectId } } } }
         }
       },
@@ -44,6 +45,10 @@ it("counts new geography revealed while the scout is on its physically completed
   expect(nativeScoutTrips(contextFor("stage13:squad:scout:primary:search:scout:1:1:50", 80))).toHaveLength(1);
 });
 
+it("does not credit information revealed before the selected scout begins moving", () => {
+  expect(nativeScoutTrips(contextFor("stage13:squad:scout:primary:search:scout:1:1:50", 40))).toHaveLength(0);
+});
+
 it("counts a route that is stopped at its original destination by a same-tick replacement", () => {
   const executionEffectId = "stage9:scout:question";
   const movementFact = (phase: "started" | "stopped", tick: number, actualTile: { x: number; y: number }) => ({
@@ -69,6 +74,61 @@ it("counts a route that is stopped at its original destination by a same-tick re
   } as unknown as Parameters<typeof nativeScoutTrips>[0];
 
   expect(nativeScoutTrips(context)).toHaveLength(1);
+});
+
+it("counts new search information revealed during verified physical progress toward the selected point", () => {
+  const executionEffectId = "stage9:scout:question";
+  const movementFact = (phase: "started" | "returned_false", tick: number, actualTile: { x: number; y: number }) => ({
+    kind: "spatial_authority",
+    tick,
+    spatial: {
+      kind: "movement",
+      executionId: 8,
+      phase,
+      source: { actorId: "scout" },
+      caller: { order: { commandContext: { execution: { effectId: executionEffectId, source: "ai" } } } },
+      gaps: [],
+      originalDestination: { x: 3, y: 3 },
+      actualTile
+    }
+  });
+  const base = contextFor(executionEffectId, 120);
+  const context = {
+    ...base,
+    capture: { facts: [
+      movementFact("started", 50, { x: 24, y: 25 }),
+      movementFact("returned_false", 80, { x: 12, y: 3 })
+    ] },
+    arrived: () => []
+  } as unknown as Parameters<typeof nativeScoutTrips>[0];
+
+  expect(nativeScoutTrips(context)).toHaveLength(1);
+});
+
+it("does not count failed scout movement that made no physical progress", () => {
+  const executionEffectId = "stage9:scout:question";
+  const movementFact = (phase: "started" | "returned_false", tick: number) => ({
+    kind: "spatial_authority",
+    tick,
+    spatial: {
+      kind: "movement",
+      executionId: 9,
+      phase,
+      source: { actorId: "scout" },
+      caller: { order: { commandContext: { execution: { effectId: executionEffectId, source: "ai" } } } },
+      gaps: [],
+      originalDestination: { x: 3, y: 3 },
+      actualTile: { x: 24, y: 25 }
+    }
+  });
+  const base = contextFor(executionEffectId, 120);
+  const context = {
+    ...base,
+    capture: { facts: [movementFact("started", 50), movementFact("returned_false", 80)] },
+    arrived: () => []
+  } as unknown as Parameters<typeof nativeScoutTrips>[0];
+
+  expect(nativeScoutTrips(context)).toHaveLength(0);
 });
 
 it("counts a newly discovered candidate without preempting a committed strategic objective", () => {
