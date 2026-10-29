@@ -27,6 +27,57 @@ function targetAccessNode(context: AiSkirmishProposalContext, opponent: AiObserv
     )[0]?.nodeId;
 }
 
+function routeDomain(route: ReturnType<typeof queryAiAccessRouteV1>): "air" | "ground" | "water" | undefined {
+  return route.kind === "direct" || route.kind === "air_or_naval_objective" ? route.domain : undefined;
+}
+
+function navalTargetFiringRange(attackers: readonly AiObservedActorV1[], opponent: AiObservedActorV1): number {
+  const targetDomains = domains(opponent);
+  return Math.max(
+    0,
+    ...attackers.flatMap((actor) =>
+      domains(actor).includes("water") && actor.combatProfile?.status === "known"
+        ? actor.combatProfile.value.attacks
+            .filter(
+              (attack) =>
+                targetDomains.length === 0 ||
+                targetDomains.some((targetDomain) => attack.targetDomains.includes(targetDomain))
+            )
+            .map((attack) => attack.range)
+        : []
+    )
+  );
+}
+
+export function selectAiNavalShoreFiringPosition(
+  context: AiSkirmishProposalContext,
+  opponent: AiObservedActorV1,
+  waterNodeId: string
+) {
+  const graph = context.observation.map?.accessGraph;
+  if (!graph) return undefined;
+  const targetPosition = position(opponent);
+  const targetNodeId = node(opponent);
+  const firingRange = navalTargetFiringRange(context.combat, opponent);
+  return graph.transferPoints
+    .filter(
+      (transfer) =>
+        transfer.kind === "shore" &&
+        transfer.toNodeId === waterNodeId &&
+        transfer.knowledge !== "unknown" &&
+        (transfer.fromNodeId === targetNodeId ||
+          (opponent.visibility === "last_seen" &&
+            targetPosition !== undefined &&
+            distance(transfer.passengerPosition, targetPosition) <= firingRange))
+    )
+    .sort(
+      (left, right) =>
+        (targetPosition ? distance(left.passengerPosition, targetPosition) : 0) -
+          (targetPosition ? distance(right.passengerPosition, targetPosition) : 0) ||
+        left.transferId.localeCompare(right.transferId)
+    )[0]?.carrierPosition;
+}
+
 /** Route each origin/domain separately: one reachable unit cannot certify unreachable reinforcements.
  * Independently direct cohorts can share a mission; transport passengers retain a single executable route.
  */
@@ -38,6 +89,7 @@ export function selectAiOffensiveForce(
   const graph = context.observation.map?.accessGraph;
   const targetNode = targetAccessNode(context, opponent);
   if (!graph || !targetNode) return undefined;
+  const targetPosition = position(opponent);
   const groups = new Map<string, AiObservedActorV1[]>();
   for (const actor of attackers) {
     if (!canTarget(actor, opponent) || !node(actor)) continue;
@@ -49,13 +101,17 @@ export function selectAiOffensiveForce(
     const sourceNode = node(leader);
     if (!leader || !sourceNode) return [];
     const opponentDomains = domains(opponent);
+    const firingRange = navalTargetFiringRange(group, opponent);
     const navalShoreFiringNodes =
       domains(leader).includes("water") && (opponentDomains.length === 0 || opponentDomains.includes("ground"))
         ? graph.transferPoints
             .filter(
               (transfer) =>
                 transfer.kind === "shore" &&
-                transfer.fromNodeId === targetNode &&
+                (transfer.fromNodeId === targetNode ||
+                  (opponent.visibility === "last_seen" &&
+                    targetPosition !== undefined &&
+                    distance(transfer.passengerPosition, targetPosition) <= firingRange)) &&
                 transfer.knowledge !== "unknown" &&
                 graph.nodes.some((candidate) => candidate.nodeId === transfer.toNodeId && candidate.domain === "water")
             )
@@ -77,13 +133,22 @@ export function selectAiOffensiveForce(
     ];
   });
   // Ground anti-air can intercept overhead. A water objective still needs an executable naval/transport route.
-  const direct = attempts.filter(
-    (attempt) =>
-      attempt.route.kind === "direct" ||
-      (attempt.route.kind === "air_or_naval_objective" &&
-        (attempt.route.domain === "air" ||
-          (attempt.route.domain === "water" && attempt.group.some((actor) => domains(actor).includes("water")))))
-  );
+  const direct = attempts
+    .filter(
+      (attempt) =>
+        attempt.route.kind === "direct" ||
+        (attempt.route.kind === "air_or_naval_objective" &&
+          (attempt.route.domain === "air" ||
+            (attempt.route.domain === "water" && attempt.group.some((actor) => domains(actor).includes("water")))))
+    )
+    .filter(
+      (attempt) =>
+        !(
+          (domains(opponent).length === 0 || domains(opponent).includes("ground")) &&
+          routeDomain(attempt.route) === "water" &&
+          attempts.some((other) => other.route.kind === "direct" && routeDomain(other.route) === "ground")
+        )
+    );
   const first = direct[0];
   if (first) {
     return {

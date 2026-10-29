@@ -1,6 +1,8 @@
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { aiDeadline } from "../contracts/ai-core-types";
 import type { AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
+import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
 import { selectAiAttackApproachPositions, targetFootprintRadiusTiles } from "./ai-tactics-approach-positions";
 import { knownPosition, distance, legalForMembers, formationPositions, movementDomains } from "./ai-tactics-geometry";
 import { assignDamage } from "./ai-tactics-combat";
@@ -8,6 +10,28 @@ import { TACTICAL_RECONSIDERATION_TICKS, MISSION_EFFECT_EXTENSION_TICKS } from "
 
 import type { decideAiTacticalSquad } from "./ai-tactics-mission-decision";
 import { aiTacticalScoutDestination } from "./ai-tactics-scout-destination";
+
+function hasNavalFiringMove(
+  actor: AiObservedActorV1,
+  target: AiObservedActorV1 | undefined,
+  catalog: AiCapabilityCatalogV1 | undefined
+): boolean {
+  const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
+  const targetPosition = knownPosition(target);
+  const orderPosition = order?.orderType === OrderType.Move ? order.targetPosition : null;
+  const attacks = actor.combatProfile?.status === "known" ? actor.combatProfile.value.attacks : [];
+  if (!target || !orderPosition || !targetPosition || !movementDomains(actor).includes("water")) return false;
+  const targetDomains = movementDomains(target);
+  const separation = distance(orderPosition, targetPosition);
+  const footprint = targetFootprintRadiusTiles(target, catalog);
+  return attacks.some(
+    (attack) =>
+      attack.damage > 0 &&
+      targetDomains.some((domain) => attack.targetDomains.includes(domain)) &&
+      separation >= attack.minRange &&
+      separation <= attack.range + (orderPosition.z > targetPosition.z ? attack.highGroundRangeBonus : 0) + footprint
+  );
+}
 /** Projects formation, reservations and tactical state. */
 export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTacticalSquad>) {
   const {
@@ -161,6 +185,9 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
     .filter((actor) => {
       const activeOrder = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
       const assignment = assignedPositions.find((candidate) => candidate.actorId === actor.actorId);
+      // Preserve the skirmish planner's shore firing approach; a rally move would cancel its native path.
+      if (squad.role === "attack" && squad.domain === "water" && hasNavalFiringMove(actor, visibleTarget, input.catalog))
+        return false;
       const desiredPosition =
         assignment?.position ??
         (assignedPositions.length === 0 &&

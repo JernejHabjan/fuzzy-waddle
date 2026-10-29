@@ -29,7 +29,13 @@ export function nativeDomainWorld(id, faction, branch) {
   world.actors.find((a) => a.fixtureActorId === "scout-probe").position = tile(29, 30);
   target.actorName = "WorkMill";
   target.position = tile(25, branch === "irrelevant" || branch === "unsupported" ? 24 : 35);
-  if (id === "DOMAIN-02" && branch === "coast") target.position = tile(25, 19);
+  // Isolate a shore-connected target pocket so opening ground forces cannot kill it before the ship arrives.
+  if (id === "DOMAIN-02" && branch === "coast") {
+    target.position = tile(25, 7);
+    world.actors.find((a) => a.fixtureActorId === "scout-probe").position = tile(20, 30);
+    for (const x of [23, 32]) for (let y = 0; y <= 49; y++)
+      world.terrainPatches.push({ x, y, terrain: "grass", blocked: true });
+  }
   if (branch === "irrelevant" || branch === "unsupported") {
     target.position = tile(32, 25);
     world.actors.find((a) => a.fixtureActorId === "scout-probe").position = tile(32, 24);

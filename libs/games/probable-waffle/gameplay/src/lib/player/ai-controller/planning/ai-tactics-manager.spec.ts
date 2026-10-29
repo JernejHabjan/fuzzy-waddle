@@ -56,6 +56,33 @@ describe("AiTacticsManager", () => {
     expect([assembled.state, rallied.state, advanced.state]).toEqual(["assemble", "rally", "advance"]);
   });
 
+  it("preserves a naval firing approach instead of replacing it with a rally move", () => {
+    const boat = {
+      ...combatActor("boat", "self", 10, "water"),
+      activeOrder: {
+        status: "known" as const,
+        observedTick: 100,
+        value: {
+          orderType: OrderType.Move,
+          targetPosition: { x: 15, y: 0, z: 0 }
+        }
+      }
+    };
+    const target = combatActor("coast-target", "enemy", 20, "ground", 1000, { damage: 0 });
+    const attackSquad = {
+      ...squad("squad:attack:naval", "attack", [boat.actorId]),
+      domain: "water" as const,
+      objectiveId: target.actorId,
+      state: "assemble" as const
+    };
+
+    const proposal = manager.propose(observation([boat, target]), fixtureState([attackSquad]));
+
+    expect(
+      proposal.intents.some((intent) => intent.kind === "move" && intent.actorIds.includes(boat.actorId))
+    ).toBe(false);
+  });
+
   it("releases an armed gatherer from a tactical squad instead of interrupting its economy work", () => {
     const workerCatalog: AiCapabilityCatalogV1 = {
       schemaVersion: 1,

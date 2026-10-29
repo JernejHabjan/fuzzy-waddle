@@ -713,9 +713,18 @@ test("DOMAIN-02 makes positive coast access naval and limits transport controls 
       assert.ok(water.has(`${x},${y}`), `${branch}: naval river crossing unexpectedly has land at ${x},${y}`);
     if (branch === "coast") {
       const objective = variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "contact-group");
+      const scout = variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "scout-probe");
       assert.equal(objective.actorName, "WorkMill");
-      assert.deepEqual(objective.position, { x: 224, y: 720, z: 0 });
-      for (let y = 0; y <= 49; y++) assert.ok(water.has(`28,${y}`), `coast: land route crosses at 28,${y}`);
+      assert.deepEqual(objective.position, { x: 608, y: 528, z: 0 });
+      assert.deepEqual(scout.position, { x: -288, y: 816, z: 0 });
+      assert.ok(water.has("26,7"), "coast objective remains shore-adjacent to the naval channel");
+      const blocked = new Set(variant.presetWorld.terrainPatches.filter((patch) => patch.blocked).map((patch) =>
+        `${patch.x},${patch.y}`));
+      for (let y = 0; y <= 49; y++) {
+        assert.ok(blocked.has(`23,${y}`), `coast: western ground barrier has a gap at 23,${y}`);
+        assert.ok(blocked.has(`32,${y}`), `coast: eastern ground barrier has a gap at 32,${y}`);
+        assert.ok(water.has(`28,${y}`), `coast: water channel has a gap at 28,${y}`);
+      }
     }
     assert.equal(variant.presetWorld.actors.some((actor) => actor.fixtureActorId === "escort-carrier"), branch === "escort");
     assert.equal(variant.presetWorld.controls.some((control) => control.id === "escort-unload"), branch === "escort");

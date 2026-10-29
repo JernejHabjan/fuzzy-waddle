@@ -7,9 +7,11 @@ import { aiDeadline, type AiClaimId, type AiPlanId, type AiSquadId } from "../co
 import type { AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiStrategyAssessment } from "../contracts/ai-strategy-assessment";
 import { queryAiAccessRouteV1 } from "./ai-access-graph-v1";
+import type { AiRouteResultV1 } from "../contracts/ai-access-graph-v1";
 import type { AiSkirmishProposalContext } from "./ai-skirmish-proposal-context";
 import { createAiTransportPlanV1 } from "./ai-transport-manager";
 import { AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS } from "./ai-skirmish-defense";
+import { selectAiNavalShoreFiringPosition } from "./select-ai-offensive-force";
 import { selectAiOffensiveOpportunity } from "./select-ai-offensive-opportunity";
 import { retainAiSquadTacticsForActors } from "./ai-skirmish-tactics-ownership";
 import { canSeeTarget } from "./ai-tactics-combat";
@@ -110,6 +112,33 @@ function hasNearbyEnemyProducer(
       );
     })
   );
+}
+
+function canFireAtTargetFromCurrentPosition(
+  attacker: AiSkirmishProposalContext["combat"][number],
+  target: AiSkirmishProposalContext["visibleEnemies"][number],
+  context: AiSkirmishProposalContext
+): boolean {
+  const attackerPosition = position(attacker);
+  const targetPosition = position(target);
+  const attacks = attacker.combatProfile?.status === "known" ? attacker.combatProfile.value.attacks : [];
+  if (!attackerPosition || !targetPosition) return false;
+  const targetDomains = domains(target);
+  const separation = distance(attackerPosition, targetPosition);
+  const footprint = targetFootprintRadiusTiles(target, context.catalog);
+  return attacks.some(
+    (attack) =>
+      attack.damage > 0 &&
+      targetDomains.some((targetDomain) => attack.targetDomains.includes(targetDomain)) &&
+      separation >= attack.minRange &&
+      separation <=
+        attack.range + (attackerPosition.z > targetPosition.z ? attack.highGroundRangeBonus : 0) + footprint
+  );
+}
+
+function isMovingTo(actor: AiSkirmishProposalContext["combat"][number], target: NonNullable<ReturnType<typeof position>>): boolean {
+  const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
+  return order?.orderType === OrderType.Move && !!order.targetPosition && distance(order.targetPosition, target) <= 1;
 }
 
 function actorClaims(actorIds: readonly string[]): AiIntentV1["claims"] {
@@ -345,12 +374,20 @@ export function advanceAiSkirmishOffense(
   const surplusCount = Math.max(0, Math.min(4, primaryAttackers.length - primaryMinimum));
   const surplusActors =
     surplusCount > 0 ? primaryAttackers.filter((actor) => !missionMembers.has(actor.actorId)).slice(-surplusCount) : [];
-  const raidCandidates = [...reserveActors, ...surplusActors];
+  const primaryAttackerIds = new Set(primaryAttackers.map((actor) => actor.actorId));
+  const navalRaidCandidates = attackers.filter(
+    (actor) => domains(actor).includes("water") && !primaryAttackerIds.has(actor.actorId)
+  );
+  const raidCandidates = [...reserveActors, ...surplusActors, ...navalRaidCandidates];
   const primaryMissionCount = activeMissionCount + (context.activeAttack ? 0 : 1);
   const raidTargetContext = {
     ...context,
     activeAttack: undefined,
     rememberedEnemies: []
+  };
+  const navalRaidTargetContext = {
+    ...raidTargetContext,
+    rememberedEnemies: context.opponent ? [context.opponent] : []
   };
   const raidSelectionEnabled =
     attack.state === "moving" &&
@@ -370,23 +407,41 @@ export function advanceAiSkirmishOffense(
           hasNearbyEnemyProducer(context, actor)
         )
     });
-  const canLaunchRaid = (choice: ReturnType<typeof chooseRaid> | undefined) =>
-    choice !== undefined &&
-    choice.assessment.choice !== "recover" &&
-    choice.assessment.choice !== "scout" &&
-    choice.route?.kind === "direct" &&
-    choice.assessment.requiredForce <= 4 &&
-    choice.assessment.readyForce >= choice.assessment.requiredForce;
+  type RaidChoice = ReturnType<typeof chooseRaid>;
+  type MaybeRaidChoice = RaidChoice | undefined;
+  type ExecutableRaidRoute = Extract<AiRouteResultV1, { readonly kind: "direct" | "air_or_naval_objective" }>;
+  const canLaunchRaid = (choice: MaybeRaidChoice): choice is RaidChoice & { readonly route: ExecutableRaidRoute } => {
+    const route = choice?.route;
+    return (
+      choice !== undefined &&
+      choice.assessment.choice !== "recover" &&
+      choice.assessment.choice !== "scout" &&
+      (route?.kind === "direct" || (route?.kind === "air_or_naval_objective" && route.domain === "water")) &&
+      choice.assessment.requiredForce <= 4 &&
+      choice.assessment.readyForce >= choice.assessment.requiredForce
+    );
+  };
   const reserveChoice = raidSelectionEnabled && reserveActors.length > 0 ? chooseRaid(reserveActors) : undefined;
-  const raidChoice = canLaunchRaid(reserveChoice)
-    ? reserveChoice
-    : raidSelectionEnabled
-      ? chooseRaid(raidCandidates)
+  const navalChoice =
+    raidSelectionEnabled && navalRaidCandidates.length > 0
+      ? selectAiOffensiveOpportunity(navalRaidTargetContext, navalRaidCandidates, {
+          raid: true,
+          candidateFilter: (actor) =>
+            actor.actorId === context.opponent?.actorId ||
+            (hasEconomicRaidValue(actor) &&
+              !(
+                actor.capabilities.some((capability) => capability.family === "produce") &&
+                hasNearbyEnemyProducer(context, actor)
+              ))
+        })
       : undefined;
-  const raidAttackers =
-    canLaunchRaid(raidChoice) && raidChoice
-      ? raidChoice.attackers.slice(0, Math.min(4, raidChoice.assessment.readyForce))
-      : [];
+  const preferredNavalChoice =
+    canLaunchRaid(navalChoice) && navalChoice.route.domain === "water" ? navalChoice : undefined;
+  const preferredReserveChoice = canLaunchRaid(reserveChoice) ? reserveChoice : undefined;
+  const raidChoiceCandidate =
+    preferredNavalChoice ?? preferredReserveChoice ?? (raidSelectionEnabled ? chooseRaid(raidCandidates) : undefined);
+  const raidChoice = canLaunchRaid(raidChoiceCandidate) ? raidChoiceCandidate : undefined;
+  const raidAttackers = raidChoice?.attackers.slice(0, Math.min(4, raidChoice.assessment.readyForce)) ?? [];
   const raidTarget = raidAttackers.length >= 1 ? raidChoice?.opponent : undefined;
   const raidSourceNode = raidAttackers.length > 0 ? node(raidAttackers[0]!) : undefined;
   const raidSquad =
@@ -516,8 +571,20 @@ export function advanceAiSkirmishOffense(
   ) {
     if (context.opponent.visibility === "visible" && canTarget(primaryAttackers[0]!, context.opponent)) {
       const opponent = context.opponent;
-      const directAttack = primaryAttackers.every((actor) => canSeeTarget(actor, opponent, context.catalog));
-      const approach = targetPosition
+      const directAttack = primaryAttackers.every(
+        (actor) =>
+          canSeeTarget(actor, opponent, context.catalog) &&
+          (!domains(actor).includes("water") || canFireAtTargetFromCurrentPosition(actor, opponent, context))
+      );
+      const firingNodeId = route.kind === "air_or_naval_objective" ? route.firingNodeId :
+        route.kind === "direct" ? route.firingNodeId ?? route.destinationNodeId : undefined;
+      const navalApproach =
+        ((route.kind === "air_or_naval_objective" && route.domain === "water") ||
+          (route.kind === "direct" && route.domain === "water")) &&
+        firingNodeId
+        ? selectAiNavalShoreFiringPosition(context, opponent, firingNodeId)
+        : undefined;
+      const approach = navalApproach ?? (targetPosition
         ? (selectAiAttackApproachPositions(
             primaryAttackers,
             targetPosition,
@@ -526,24 +593,55 @@ export function advanceAiSkirmishOffense(
           )[0]?.position ??
           context.observation.map?.accessGraph?.nodes.find((region) => region.nodeId === targetNode)
             ?.representativePosition)
-        : undefined;
+        : undefined);
       if (!directAttack && !approach) return undefined;
-      context.intents.push({
-        ...intentBase(
-          context.state,
-          context.attackPlanId,
+      const needsNavalAdvance =
+        navalApproach !== undefined &&
+        primaryAttackers.some(
+          (actor) => domains(actor).includes("water") && !canFireAtTargetFromCurrentPosition(actor, opponent, context)
+        );
+      if (needsNavalAdvance && navalApproach) {
+        const actorIds = primaryAttackers.filter((actor) => !isMovingTo(actor, navalApproach)).map((actor) => actor.actorId);
+        if (actorIds.length > 0)
+          context.intents.push({
+            ...intentBase(
+              context.state,
+              context.attackPlanId,
+              context.observation.tick,
+              `approach:${context.opponent.actorId}`,
+              "army_threat",
+              760
+            ),
+            kind: "move",
+            actorIds,
+            claims: actorClaims(actorIds),
+            logicalPosition: navalApproach
+          });
+      } else {
+        context.intents.push({
+          ...intentBase(
+            context.state,
+            context.attackPlanId,
+            context.observation.tick,
+            `attack:${context.opponent.actorId}`,
+            "army_threat",
+            760
+          ),
+          kind: "attack",
+          actorIds: attack.actorIds,
+          claims: actorClaims(attack.actorIds),
+          targetActorId: directAttack ? context.opponent.actorId : null,
+          targetPosition: directAttack ? null : (approach ?? null)
+        });
+        context.skirmish = withTimeline(
+          context.skirmish,
           context.observation.tick,
-          `attack:${context.opponent.actorId}`,
-          "army_threat",
-          760
-        ),
-        kind: "attack",
-        actorIds: attack.actorIds,
-        claims: actorClaims(attack.actorIds),
-        targetActorId: directAttack ? context.opponent.actorId : null,
-        targetPosition: directAttack ? null : (approach ?? null)
-      });
-    } else if (targetPosition)
+          "mission",
+          attackId,
+          `launch:${route.kind}`
+        );
+      }
+    } else if (targetPosition) {
       context.intents.push({
         ...intentBase(
           context.state,
@@ -558,56 +656,97 @@ export function advanceAiSkirmishOffense(
         claims: actorClaims(attack.actorIds),
         logicalPosition: targetPosition
       });
-    context.skirmish = withTimeline(
-      context.skirmish,
-      context.observation.tick,
-      "mission",
-      attackId,
-      `launch:${route.kind}`
-    );
+      context.skirmish = withTimeline(
+        context.skirmish,
+        context.observation.tick,
+        "mission",
+        attackId,
+        `launch:${route.kind}`
+      );
+    }
   }
-  if (raidSquad && raidTarget && raidChoice?.route?.kind === "direct" && raidSquad.state === "moving") {
+  if (raidSquad && raidTarget && raidChoice && raidSquad.state === "moving") {
     const raidId = raidSquad.squadId;
     const raidPlanId = `plan:${raidId}` as AiPlanId;
     const raidTargetPosition = position(raidTarget);
     const raidLaunchRecorded = context.state.skirmish.timeline.some(
       (event) => event.kind === "mission" && event.subjectId === raidId && event.detail.startsWith("launch:")
     );
-    if (!raidLaunchRecorded && raidTarget.visibility === "visible" && canTarget(raidAttackers[0]!, raidTarget)) {
-      const directRaidAttack = raidAttackers.every((actor) => canSeeTarget(actor, raidTarget, context.catalog));
-      const raidApproach = raidTargetPosition
-        ? (selectAiAttackApproachPositions(
-            raidAttackers,
-            raidTargetPosition,
-            context.observation,
-            targetFootprintRadiusTiles(raidTarget, context.catalog)
-          )[0]?.position ??
-          context.observation.map?.accessGraph?.nodes.find((candidate) => candidate.nodeId === node(raidTarget))
-            ?.representativePosition)
-        : undefined;
-      if (directRaidAttack || raidApproach) {
-        context.intents.push({
-          ...intentBase(
-            context.state,
-            raidPlanId,
-            context.observation.tick,
-            `raid:${raidTarget.actorId}`,
-            "army_threat",
-            750
-          ),
-          kind: "attack",
-          actorIds: raidSquad.actorIds,
-          claims: actorClaims(raidSquad.actorIds),
-          targetActorId: directRaidAttack ? raidTarget.actorId : null,
-          targetPosition: directRaidAttack ? null : (raidApproach ?? null)
-        });
-        context.skirmish = withTimeline(
-          context.skirmish,
-          context.observation.tick,
-          "mission",
-          raidId,
-          `launch:${raidChoice.route.kind}`
+    if (!raidLaunchRecorded && canTarget(raidAttackers[0]!, raidTarget)) {
+      const directRaidAttack =
+        raidTarget.visibility === "visible" &&
+        raidAttackers.every(
+          (actor) =>
+            canSeeTarget(actor, raidTarget, context.catalog) &&
+            (!domains(actor).includes("water") || canFireAtTargetFromCurrentPosition(actor, raidTarget, context))
         );
+      const firingNodeId =
+        raidChoice.route.kind === "air_or_naval_objective"
+          ? raidChoice.route.firingNodeId
+          : raidChoice.route.destinationNodeId;
+      const navalFiringPosition =
+        raidChoice.route.domain === "water"
+          ? selectAiNavalShoreFiringPosition(context, raidTarget, firingNodeId)
+          : undefined;
+      const raidApproach =
+        navalFiringPosition ??
+        (raidTargetPosition
+          ? (selectAiAttackApproachPositions(
+              raidAttackers,
+              raidTargetPosition,
+              context.observation,
+              targetFootprintRadiusTiles(raidTarget, context.catalog)
+            )[0]?.position ??
+            context.observation.map?.accessGraph?.nodes.find((candidate) => candidate.nodeId === node(raidTarget))
+              ?.representativePosition)
+          : undefined);
+      if (directRaidAttack || raidApproach) {
+        const needsNavalAdvance =
+          navalFiringPosition !== undefined &&
+          raidAttackers.some(
+            (actor) => domains(actor).includes("water") && !canFireAtTargetFromCurrentPosition(actor, raidTarget, context)
+          );
+        if (needsNavalAdvance && navalFiringPosition) {
+          const actorIds = raidAttackers.filter((actor) => !isMovingTo(actor, navalFiringPosition)).map((actor) => actor.actorId);
+          if (actorIds.length > 0)
+            context.intents.push({
+              ...intentBase(
+                context.state,
+                raidPlanId,
+                context.observation.tick,
+                `approach:${raidTarget.actorId}`,
+                "army_threat",
+                750
+              ),
+              kind: "move",
+              actorIds,
+              claims: actorClaims(actorIds),
+              logicalPosition: navalFiringPosition
+            });
+        } else {
+          context.intents.push({
+            ...intentBase(
+              context.state,
+              raidPlanId,
+              context.observation.tick,
+              `raid:${raidTarget.actorId}`,
+              "army_threat",
+              750
+            ),
+            kind: "attack",
+            actorIds: raidSquad.actorIds,
+            claims: actorClaims(raidSquad.actorIds),
+            targetActorId: directRaidAttack ? raidTarget.actorId : null,
+            targetPosition: directRaidAttack ? null : (raidApproach ?? null)
+          });
+          context.skirmish = withTimeline(
+            context.skirmish,
+            context.observation.tick,
+            "mission",
+            raidId,
+            `launch:${raidChoice.route.kind}`
+          );
+        }
       }
     }
   }

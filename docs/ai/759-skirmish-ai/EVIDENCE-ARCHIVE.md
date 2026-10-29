@@ -1,5 +1,10 @@
 # #759 archived evidence history
 
+## 2026-10-29 — DOMAIN-02 COAST paid naval effect closure
+
+- Diagnostic `1793237263373-diagnostic_failed.json` showed the boat had a valid native path toward its firing tile, but the tactical squad repeatedly replaced it with an assembly/rally move, cancelling both owners' orders. The tactics projection now preserves a water attacker's active Move when its destination is compatible and within native weapon range of the visible target. A focused manager regression covers this order-ownership invariant.
+- Current-source diagnostic `1793237720842-diagnostic_passed.json` passes (150 decisions / 3,001 ticks, 129s; dirty source `fnv1a32:7f19c784`, fixture `fnv1a32:d0955369`). Native checkpoints show the VikingBoat at (26,5) with an Attack order at tick 800; the paid-ship objective-hit oracle passes. Five planner suites pass 53/53, native fixture contract 46/46, scoped ESLint has no errors, portal build and `git diff --check` pass. COAST closes; ESCORT's paid-fleet objective effect is next.
+
 ## 2026-10-27 — FIGHT-03 isolated event-target diagnosis
 
 - `1793104480991-failed.json` isolated `fight-03-skaduwee-infeasible` but had no runtime branch result because its tick-600 `loss-front-target-a` event failed validation.

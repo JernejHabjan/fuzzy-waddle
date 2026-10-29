@@ -143,7 +143,10 @@ export function selectAiOffensiveOpportunity(
         context.observation.tick - recentFailure.observedTick <= FAILURE_MEMORY_TICKS
           ? Math.min(4, recentFailure.repeatedFailures * 2 + Math.floor(recentFailure.losses / 4))
           : 0;
-      const navalMission = route.kind === "direct" && route.domain === "water";
+      const navalMission =
+        (route.kind === "direct" || route.kind === "air_or_naval_objective") &&
+        route.domain === "water" &&
+        compatibleAttackers.some((actor) => domains(actor).includes("water"));
       const required = navalMission
         ? Math.max(1, Math.ceil(Math.max(0, threats - 1) * 1.5) + 1) + failurePenalty
         : Math.max(producers >= 2 && !options.raid ? 8 : isCore(opponent) ? 2 : 3, Math.ceil(threats * 1.5) + 1) +

@@ -143,20 +143,28 @@ describe("AiSkirmishManager offense target selection", () => {
         staticRevision: 1,
         frontierAccessNodeIds: [enemyNode],
         scoutCoverageAccessNodeIds: [],
-        scoutSearchPoints: [{ pointId: "search:front", accessNodeId: enemyNode,
-          position: { x: 1, y: 0, z: 0 }, observed: false }],
+        scoutSearchPoints: [
+          { pointId: "search:front", accessNodeId: enemyNode, position: { x: 1, y: 0, z: 0 }, observed: false }
+        ],
         dynamicObstacleActorIds: [],
         regionGeneration: { generation: 1, status: "ready" as const, continuationCursor: 0 },
         accessGraph: graph.graph
       }
     };
-    const initial = createAiBrainStateV1({ playerNumber: 1, faction: FactionType.Tivara, profile,
-      tick: 0, archetypeId: "balanced" });
+    const initial = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
     const proposal = new AiSkirmishManager(profile, () => catalog).propose(world, initial);
-    expect(proposal.statePatch?.squads?.find((squad) => squad.squadId === "squad:scout:primary")?.actorIds)
-      .toEqual([frontierCandidate.actorId]);
-    expect(proposal.statePatch?.squads?.find((squad) => squad.squadId === "squad:scout:neutral")?.actorIds)
-      .toEqual([neutralCandidate.actorId]);
+    expect(proposal.statePatch?.squads?.find((squad) => squad.squadId === "squad:scout:primary")?.actorIds).toEqual([
+      frontierCandidate.actorId
+    ]);
+    expect(proposal.statePatch?.squads?.find((squad) => squad.squadId === "squad:scout:neutral")?.actorIds).toEqual([
+      neutralCandidate.actorId
+    ]);
   });
 
   it("keeps an active frontier scout out of a newly formed attack force", () => {
@@ -356,6 +364,303 @@ describe("AiSkirmishManager offense target selection", () => {
     );
     const raid = attackSquads.find((squad) => squad.squadId.startsWith("squad:attack:raid:"));
     expect(raid?.actorIds).toHaveLength(3);
+  });
+
+  it("sends an idle naval attacker to a remembered coast target on a separate front", () => {
+    const coastalGraph = buildAiAccessGraphV1({
+      generation: 1,
+      staticRevision: 1,
+      dynamicRevision: 1,
+      threatRevision: 0,
+      builtTick: 20,
+      continuationCursor: 0,
+      includeAirRegion: true,
+      cells: [
+        {
+          x: 0,
+          y: 0,
+          ground: true,
+          water: false,
+          elevation: 0,
+          groundNeighborKeys: ["1,0"],
+          knowledge: "known_static",
+          clearance: 2
+        },
+        {
+          x: 1,
+          y: 0,
+          ground: true,
+          water: false,
+          elevation: 0,
+          groundNeighborKeys: ["0,0", "2,0"],
+          knowledge: "known_static",
+          clearance: 2
+        },
+        {
+          x: 2,
+          y: 0,
+          ground: true,
+          water: false,
+          elevation: 0,
+          groundNeighborKeys: ["1,0", "3,0"],
+          knowledge: "known_static",
+          clearance: 2
+        },
+        {
+          x: 3,
+          y: 0,
+          ground: true,
+          water: false,
+          elevation: 0,
+          groundNeighborKeys: ["2,0", "4,0"],
+          knowledge: "known_static",
+          clearance: 2
+        },
+        {
+          x: 4,
+          y: 0,
+          ground: true,
+          water: false,
+          elevation: 0,
+          groundNeighborKeys: ["3,0", "5,0"],
+          knowledge: "known_static",
+          clearance: 2
+        },
+        {
+          x: 5,
+          y: 0,
+          ground: true,
+          water: false,
+          elevation: 0,
+          groundNeighborKeys: ["4,0"],
+          knowledge: "known_static",
+          clearance: 2
+        },
+        {
+          x: 5,
+          y: 1,
+          ground: false,
+          water: true,
+          elevation: 0,
+          groundNeighborKeys: [],
+          knowledge: "known_static",
+          clearance: 2
+        },
+        {
+          x: 3,
+          y: 2,
+          ground: true,
+          water: false,
+          elevation: 0,
+          groundNeighborKeys: [],
+          knowledge: "known_static",
+          clearance: 2
+        }
+      ]
+    });
+    const navalNode = coastalGraph.waterNodeByTileKey.get("5,1");
+    const coastalNode = coastalGraph.groundNodeByTileKey.get("3,0");
+    const misleadingNode = coastalGraph.groundNodeByTileKey.get("3,2");
+    const homeGroundNode = coastalGraph.groundNodeByTileKey.get("0,0");
+    if (!navalNode || !coastalNode || !misleadingNode || !homeGroundNode)
+      throw new Error("test_coastal_mission_access_nodes_missing");
+    const accessGraph = {
+      ...coastalGraph.graph,
+      nodes: coastalGraph.graph.nodes.map((node) =>
+        node.nodeId === navalNode ? { ...node, representativePosition: { x: 5, y: 0, z: 0 } } : node
+      ),
+      links: [
+        ...coastalGraph.graph.links,
+        {
+          linkId: "test:misleading-ground-route:outbound",
+          fromNodeId: homeGroundNode,
+          toNodeId: misleadingNode,
+          domain: "ground" as const,
+          clearance: 2,
+          distanceCost: 1,
+          knowledge: "known_static" as const,
+          directional: true
+        },
+        {
+          linkId: "test:misleading-ground-route:inbound",
+          fromNodeId: misleadingNode,
+          toNodeId: homeGroundNode,
+          domain: "ground" as const,
+          clearance: 2,
+          distanceCost: 1,
+          knowledge: "known_static" as const,
+          directional: true
+        }
+      ]
+    };
+    const navalFiringPosition = accessGraph.transferPoints.find(
+      (transfer) => transfer.kind === "shore" && transfer.toNodeId === navalNode && transfer.passengerPosition.x === 5
+    )?.carrierPosition;
+    const army = Array.from({ length: 12 }, (_, index) => actor(`army-${index}`, homeNode, 0));
+    const boat: AiObservedActorV1 = {
+      ...createAiTestOwnedActor("naval-boat"),
+      objectName: ObjectNames.VikingBoat,
+      housingCost: { status: "known", value: 1, observedTick: 20 },
+      logicalPosition: { status: "known", value: { x: 5, y: 1, z: 0 }, observedTick: 20 },
+      accessNodeId: { status: "known", value: navalNode, observedTick: 20 },
+      combatProfile: {
+        status: "known",
+        observedTick: 20,
+        value: {
+          maxHealth: 240,
+          maxArmour: 30,
+          passiveRegenerationPerSecond: 0,
+          armourPermille: 0,
+          attacks: [
+            {
+              damage: 12,
+              cooldownTicks: 60,
+              remainingCooldownTicks: 0,
+              range: 7,
+              minRange: 2,
+              highGroundRangeBonus: 1,
+              impactDelayTicks: 0,
+              areaRadius: 0,
+              targetDomains: ["ground", "water"]
+            }
+          ],
+          healing: null,
+          spells: [],
+          statuses: []
+        }
+      },
+      capabilities: [
+        {
+          id: "naval-boat:attack",
+          family: "naval",
+          level: 1,
+          domains: ["water"],
+          targetDomains: ["ground", "water"],
+          capacity: { status: "known", value: 0, observedTick: 20 }
+        }
+      ]
+    };
+    const coastalWorkmill = {
+      ...actor("coastal-workmill", coastalNode, 2),
+      objectName: ObjectNames.WorkMill,
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "last_seen" as const,
+      logicalPosition: { status: "known" as const, value: { x: 3, y: 0, z: 0 }, observedTick: 20 },
+      accessNodeId: { status: "unknown" as const, reason: "query_pending" as const },
+      housingCost: { status: "known" as const, value: 0, observedTick: 20 },
+      capabilities: []
+    };
+    const mixedCatalog: AiCapabilityCatalogV1 = {
+      ...catalog,
+      entries: [
+        ...catalog.entries,
+        {
+          capabilityId: "viking-boat",
+          family: "naval",
+          sourceObjectName: ObjectNames.VikingBoat,
+          effectiveLevel: 1,
+          movementDomains: ["water"],
+          targetDomains: ["ground", "water"],
+          produces: [],
+          constructs: [],
+          researches: [],
+          gathers: [],
+          housingCapacity: null,
+          housingCost: 1,
+          cargoCapacity: null
+        }
+      ]
+    };
+    const observation = createAiTestObservation();
+    const proposal = new AiSkirmishManager(profile, () => mixedCatalog).propose(
+      {
+        ...observation,
+        tick: 20,
+        actors: [...army, boat, coastalWorkmill],
+        map: {
+          bounds: { status: "known", value: { width: 6, height: 3 }, observedTick: 20 },
+          staticRevision: 1,
+          frontierAccessNodeIds: [coastalNode],
+          scoutCoverageAccessNodeIds: [],
+          dynamicObstacleActorIds: [],
+          regionGeneration: { generation: 1, status: "ready", continuationCursor: 0 },
+          accessGraph
+        }
+      },
+      createAiBrainStateV1({
+        playerNumber: 1,
+        faction: FactionType.Tivara,
+        profile,
+        tick: 0,
+        archetypeId: "balanced"
+      })
+    );
+
+    expect(proposal.statePatch?.squads).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          role: "attack",
+          domain: "ground",
+          objectiveId: "hypothesis:" + coastalWorkmill.evidenceId
+        }),
+        expect.objectContaining({
+          role: "attack",
+          domain: "water",
+          objectiveId: "hypothesis:" + coastalWorkmill.evidenceId,
+          actorIds: [boat.actorId]
+        })
+      ])
+    );
+    expect(proposal.intents).toContainEqual(
+      expect.objectContaining({
+        kind: "move",
+        actorIds: [boat.actorId],
+        logicalPosition: navalFiringPosition
+      })
+    );
+
+    const distantVisibleBoat: AiObservedActorV1 = {
+      ...boat,
+      actorId: "distant-visible-naval-boat",
+      logicalPosition: { status: "known", value: { x: 5, y: 12, z: 0 }, observedTick: 20 },
+      visibleEnemyActorIds: [coastalWorkmill.actorId]
+    };
+    const visibleCoastalWorkmill = {
+      ...coastalWorkmill,
+      visibility: "visible" as const,
+      accessNodeId: { status: "known" as const, value: coastalNode, observedTick: 20 }
+    };
+    const distantVisibleProposal = new AiSkirmishManager(profile, () => mixedCatalog).propose(
+      {
+        ...observation,
+        tick: 20,
+        actors: [distantVisibleBoat, visibleCoastalWorkmill],
+        map: {
+          bounds: { status: "known", value: { width: 20, height: 20 }, observedTick: 20 },
+          staticRevision: 1,
+          frontierAccessNodeIds: [coastalNode],
+          scoutCoverageAccessNodeIds: [],
+          dynamicObstacleActorIds: [],
+          regionGeneration: { generation: 1, status: "ready", continuationCursor: 0 },
+          accessGraph
+        }
+      },
+      createAiBrainStateV1({
+        playerNumber: 1,
+        faction: FactionType.Tivara,
+        profile,
+        tick: 0,
+        archetypeId: "balanced"
+      })
+    );
+    expect(distantVisibleProposal.intents).toContainEqual(
+      expect.objectContaining({
+        kind: "move",
+        actorIds: [distantVisibleBoat.actorId],
+        logicalPosition: navalFiringPosition
+      })
+    );
   });
 
   it("keeps home defenders while splitting only surplus attackers onto a second front", () => {

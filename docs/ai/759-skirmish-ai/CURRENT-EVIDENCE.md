@@ -13,6 +13,8 @@ divergence was native gatherer drop-off tie-breaking by run-local actor ID, whic
 different drains and changed later positions/orders. Geometry/name now precede ID; the focused Phaser regression
 passes 7/7. Do not replay unchanged.
 
+DOMAIN-02 COAST closes on current source. `1793237263373` exposed the remaining cause: the shore approach had a valid native path, but tactics replaced it with its assembly/rally move, cancelling both orders in turn. The tactics projection now preserves a water attacker's active move when its destination is a compatible firing position. Regression coverage passes; current-source diagnostic `1793237720842-diagnostic_passed.json` passes at 150 decisions / 3,001 ticks in 129s (dirty source `fnv1a32:7f19c784`, fixture `fnv1a32:d0955369`). The boat reaches (26,5), attacks the visible target, and the native oracle accepts its objective damage. Four older attempts document fixture/route issues; do not replay unchanged. Next is ESCORT's paid-fleet objective effect.
+
 SCOUT-02 report `1793073090904-failed.json` (ten variants, 1,200 decisions / 24,010 ticks): both visible controls pass;
 hidden and withdrawn variants fail trip/stale-job/survival predicates, and hidden-world permitted-input parity remains
 open. The focused Tivara visible diagnostic `1793083017398-diagnostic_failed.json` passes contact/fairness and
@@ -103,7 +105,7 @@ selection and tactics changed; the current-source recheck passes at candidate `0
 
 | Package | Remaining work |
 | --- | --- |
-| 3 — scouting, combat, access | DOMAIN-01/05/06, SCOUT-01/03/04, FIGHT-01/02/03/04/05 and RAID-02 pass. All RAID-01 targeted branches pass; its combined registered matrix remains CI-owned. DOMAIN-02's two negative controls and INTERCEPT pass; COAST pays for a ship but leaves it in reserve, and ESCORT reaches row 32 but fails its paid fleet objective effect. SCOUT-02 native trip/service remains. Seven real-peer obligations remain CI-owned. STRAT-09 needs grouped final recheck after affected changes. |
+| 3 — scouting, combat, access | DOMAIN-01/05/06, DOMAIN-02 COAST and its two controls, INTERCEPT, SCOUT-01/03/04, FIGHT-01/02/03/04/05 and RAID-02 pass. All RAID-01 targeted branches pass; its combined registered matrix remains CI-owned. ESCORT's paid-fleet objective effect and SCOUT-02 native trip/service remain. Seven real-peer obligations remain CI-owned. STRAT-09 needs grouped final recheck after affected changes. |
 | 4 — placement, walls, recovery | PLACE/EXP/WALL and H recovery cases; PLACE-03 transit/clearance and H-11 route/capture remain known failures. |
 | 5 — authority and lifecycle | H-10 over-capacity variants, H-06/07, H-08/09 peer evidence, H-14/15 remaining branches, H-31/32, M11, #819/#823. |
 | 6 — continuous play and difficulty | SEQ-02 and supported SEQ/D cases. D-06 legacy comparison remains explicitly unsupported. |
