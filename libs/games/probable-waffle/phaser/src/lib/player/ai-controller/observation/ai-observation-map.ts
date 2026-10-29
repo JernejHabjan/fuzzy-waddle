@@ -2,7 +2,6 @@ import Phaser from "phaser";
 import type { ActorId, Vector2Simple, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import type { AiAccessNodeId, AiObservedActorV1, AiObservationV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { getActorComponent } from "../../../data/actor-component";
-import { getGameObjectCurrentTile } from "../../../data/game-object-helper";
 import { getTileCoordsUnderObject } from "../../../library/tile-under-object";
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import { ColliderComponent } from "../../../entity/components/movement/collider-component";
@@ -14,7 +13,7 @@ import { NavigationService } from "../../../world/services/navigation.service";
 import { getSceneComponent, getSceneService } from "../../../world/services/scene-component-helpers";
 import { TilemapComponent } from "../../../world/tilemap/tilemap.component";
 import { knownValue, unknownValue } from "./ai-observation-values";
-import { observedConstructionOccupancy } from "./observed-construction-occupancy";
+import { observedConstructionOccupancy, observedStaticConstructionOccupancy } from "./observed-construction-occupancy";
 
 type GameObject = Phaser.GameObjects.GameObject;
 
@@ -101,6 +100,7 @@ export function projectAiObservationMap(
   const included = new Set<string>();
   if (tilemap && navigation) {
     const occupied = observedConstructionOccupancy(tilemap, actors, liveById);
+    const staticallyOccupied = observedStaticConstructionOccupancy(tilemap, actors, liveById);
     const cellCache = new Map<string, NonNullable<NonNullable<AiObservationV1["map"]>["constructionCells"]>[number]>();
     const cellAt = (x: number, y: number) => {
       if (x < 0 || y < 0 || x >= tilemap.width || y >= tilemap.height) return undefined;
@@ -115,7 +115,8 @@ export function projectAiObservationMap(
         groundPassable: !terrainBlocked && navigation.isTileGridWithoutBlockingObjectsNavigable({ x, y }),
         waterPassable: navigation.isTileNavigable({ x, y }, MovementTerrainType.Water),
         elevation: observedNavigable ? (navigation.getNavigableHeightAtTile({ x, y }) ?? 0) : 0,
-        observedBlocked: terrainBlocked || occupied.has(tileKey)
+        observedBlocked: terrainBlocked || occupied.has(tileKey),
+        staticBlocked: staticallyOccupied.has(tileKey)
       };
       cellCache.set(tileKey, cell);
       return cell;
@@ -278,6 +279,7 @@ export function permittedAiObservationTopology(
   const navigableTileKeys = new Set<string>();
   if (tilemap) {
     scene.children.each((child) => {
+      if (!child.active || child.scene !== scene) return;
       if (!getActorComponent(child, NavigableComponent) || getActorComponent(child, OwnerComponent)) return;
       const footprint = getTileCoordsUnderObject(tilemap, child);
       if (footprint.length === 0) return;
@@ -297,12 +299,12 @@ export function permittedAiObservationTopology(
     .filter((actor) => actor.visibility !== "last_seen")
     .flatMap((actor) => {
       const liveActor = liveById.get(actor.actorId);
-      if (!liveActor) return [];
+      if (!liveActor || !liveActor.active || liveActor.scene !== scene) return [];
       const collider = getActorComponent(liveActor, ColliderComponent)?.colliderDefinition?.enabled === true;
       const navigableComponent = getActorComponent(liveActor, NavigableComponent);
       const navigable = navigableComponent !== undefined;
       if (!collider && !navigable) return [];
-      const tile = getGameObjectCurrentTile(liveActor);
+      const tile = actor.logicalPosition.status === "known" ? actor.logicalPosition.value : undefined;
       if (tilemap) {
         for (const occupiedTile of getTileCoordsUnderObject(tilemap, liveActor)) {
           const key = `${occupiedTile.x},${occupiedTile.y}`;

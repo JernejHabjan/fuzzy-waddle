@@ -71,6 +71,43 @@ describe("observed construction access scenarios", () => {
     ).toBeUndefined();
   });
 
+  it("keeps a native-width transit route open when a large footprint would leave only a one-tile slit", () => {
+    const positions: [number, number][] = [];
+    for (let y = 0; y < 3; y += 1) for (let x = 0; x < 12; x += 1) positions.push([x, y]);
+    const { observation, builder } = fixture(positions);
+    builder.logicalPosition = { status: "known", value: { x: 1, y: 1, z: 0 }, observedTick: 200 };
+    const selected = selectConstructionPosition(
+      observation,
+      builder,
+      1,
+      0,
+      new Set(),
+      1,
+      (cell) => cell.tileKey === "6,1"
+    );
+    expect(selected).toBeUndefined();
+  });
+
+  it("preserves construction access around visible stationary buildings", () => {
+    const positions: [number, number][] = [];
+    for (let y = 0; y < 5; y += 1) for (let x = 0; x < 5; x += 1) positions.push([x, y]);
+    const { observation, builder } = fixture(positions);
+    const constructionCells = observation.map?.constructionCells?.map((cell) => ({
+      ...cell,
+      staticBlocked: cell.position.x === 2 && cell.position.y !== 2
+    }));
+    const selected = selectConstructionPosition(
+      { ...observation, map: { ...observation.map!, constructionCells } },
+      builder,
+      1,
+      0,
+      new Set(),
+      0,
+      (cell) => cell.tileKey === "2,2"
+    );
+    expect(selected).toBeUndefined();
+  });
+
   it("keeps an owned unit's active movement destination free even when the whole ground area stays connected", () => {
     const { observation, builder } = fixture(rooms());
     const mover = {
@@ -100,10 +137,16 @@ describe("observed construction access scenarios", () => {
     const worker = {
       ...createAiTestOwnedActor("service-worker"),
       logicalPosition: { status: "known" as const, value: { x: 4, y: 4, z: 0 }, observedTick: 200 },
-      capabilities: [{
-        id: "gather", family: "gather", level: 1, domains: ["ground" as const], targetDomains: ["ground" as const],
-        capacity: { status: "known" as const, value: 1, observedTick: 200 }
-      }]
+      capabilities: [
+        {
+          id: "gather",
+          family: "gather",
+          level: 1,
+          domains: ["ground" as const],
+          targetDomains: ["ground" as const],
+          capacity: { status: "known" as const, value: 1, observedTick: 200 }
+        }
+      ]
     };
     const selected = selectConstructionPosition(
       { ...observation, actors: [builder, worker] },

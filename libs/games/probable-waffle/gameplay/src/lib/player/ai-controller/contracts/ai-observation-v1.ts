@@ -257,6 +257,8 @@ export interface AiObservedMapV1 {
     readonly waterPassable: boolean;
     readonly elevation: number;
     readonly observedBlocked: boolean;
+    /** Visible stationary blockers used when checking whether construction preserves ground access. */
+    readonly staticBlocked?: boolean;
     readonly groundAccessNodeId?: AiAccessNodeId;
   }[];
   readonly tacticalCells?: readonly {

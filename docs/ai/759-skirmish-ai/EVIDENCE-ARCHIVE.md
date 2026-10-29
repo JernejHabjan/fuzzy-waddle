@@ -2636,3 +2636,8 @@ Summaries use `node tools/ai/summarize-skirmish-report.mjs --report <path> --fai
 
 - Changed-fixture report 1793222384126-diagnostic_passed.json passes at 120 decisions / 2,401 ticks, source 930efcee63e420290be3df92972d92dc470cacf1, fixture nv1a32:c13e93fc. The protected raid remains defended and the main force creates native pressure on a separate front. All four Tivara branches now pass; next is Skaduwee workers.
 
+# 2026-10-29 — PLACE-02 stationary-route visibility
+
+- Retained capture `1793274795985` showed native retreat clearance failing after the second Field while the planning flood treated existing buildings as passable. The observation now separates visible stationary blockers from mobile bodies; placement connectivity includes the stationary blockers. Focused gameplay/Phaser tests pass (37 tests), scoped lint has no errors.
+- One current-source PLACE-02 safe run, `1793275382806-diagnostic_failed.json` (2,401 ticks / 117s; candidate `d60b070f58b53668bcc42ea3f1ea65d8d13da379`, dirty source `fnv1a32:159da01b`, fixture `fnv1a32:2970391f`), no longer reports blocked retreat or production-army paths. It still reports a reserved-path footprint overlap, five Fields without delivered food, and incomplete army transit. No unchanged retry.
+

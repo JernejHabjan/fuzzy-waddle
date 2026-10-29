@@ -3,6 +3,21 @@
 Updated 2026-10-29. This is the compact active snapshot; detailed run history belongs in
 [EVIDENCE-ARCHIVE.md](EVIDENCE-ARCHIVE.md). [HANDOFF.md](HANDOFF.md) owns the live cursor and next action.
 
+## Active placement checkpoint
+
+PLACE-03's owned-vision lookup skips inactive or foreign-scene actors from the owner index. Static protected-route
+clearance excludes mobile actors while retaining buildings and terrain, and army/retreat corridors use one-tile
+margin. The native move probes run before the first AI refresh; a caller-attributed stop exactly on the requested tile
+counts as physical arrival even when the replacement order makes the movement callback return false. Focused Phaser,
+movement-reader, fixture, and lint checks pass. All eight current-source branches pass: Tivara/Skaduwee layout
+(`1793271744227`, `1793271939462`), concurrent transit (`1793271356103`, `1793271551642`), completion
+(`1793269763307`, `1793269950849`), and loss (`1793270079707`, `1793270290082`), totaling 1,200 decisions / 24,008
+ticks across independently bounded runs. The layout routes use the authored alternate open lane; concurrent branches
+target the observed physical endpoint. Earlier failures exposed stale vision sources, static clearance treating mobile
+actors as blockers, overly wide one-tile routes, same-tick order replacement at endpoint contact, and a retreat route
+crossed by a valid Granary footprint. PLACE-03 is closed; do not rerun unchanged. The eight-variant invocation still
+exceeds the 30-minute cap and is not needed. Continue with registered PLACE-01, then PLACE-02/EXP/WALL and recovery.
+
 Resource admission now records each accepted resource claim amount and subtracts unresolved provisional/dispatched claims
 before authorizing another spend; legacy pending claims without an amount fail closed. Applied spending is accounted for
 through the observed balance. Focused production-authority, brain, planner and reservation-reconciliation checks pass 22/22;
@@ -13,7 +28,22 @@ H-11 closes on current source and generated fixture in `1793256850909-passed.jso
 `fnv1a32:09357cfe`, fixture digest `fnv1a32:76ff1345`). The cause was an authored worker start tile that native navigation
 marked non-navigable; moving it to the proved Granary approach restores construction and delivery. H-11's exact native
 source-to-deposit evidence covers its recovery requirement, so its generic lifetime resource-coverage gate was redundant.
-Do not replay H-11 unchanged. PLACE-03 protected-route clearance and physical worker/army transit remain open.
+Do not replay H-11 or PLACE-03 unchanged; PLACE-03 protected-route clearance and physical worker/army transit are closed.
+
+PLACE-01 Tivara room remains open. `1793273725059`, `1793274055574`, and `1793274485701` pass tick-1 probes and per-build
+clearance but still miss food from five Fields and flag one baseline-path overlap. Nearest-worker pairing reduced misses
+from ten to five; same-access-region preference and reachable-approach fallback did not change the final predicates.
+Movement captures confirm some worker/Field pairs have no route. Focused planner/movement tests pass. Do not replay
+unchanged; return after addressing accessible Field placement and the visibility of the authored route contract.
+
+PLACE-02 Tivara safe `1793274245140` and wide-clearance recheck `1793274795985` failed: eight Fields lacked delivered
+food, army transit was incomplete, and the retreat route became blocked after the second Field (tick 60, site `34,27`).
+Observation now distinguishes visible stationary blockers from moving bodies, and construction connectivity includes
+stationary blockers. Focused coverage passes; the current safe-branch run `1793275382806` (2,401 ticks / 117s, source
+`d60b070f58b53668bcc42ea3f1ea65d8d13da379`, dirty source `fnv1a32:159da01b`, fixture `fnv1a32:2970391f`) no longer
+reports a blocked retreat or production-army route. Five new Fields still lack native food delivery; a Field still
+overlaps the declared reserve path, and physical army transit is incomplete. Do not replay unchanged. Next isolate the
+remaining Field placement/delivery and transit predicates, then continue EXP/WALL/recovery.
 
 Latest closed family: SCOUT-03 report `1793174968627-passed.json` (four variants, 400 decisions / 8,004 ticks), source
 digest `fnv1a32:05a85282`, fixture digest `fnv1a32:ebc75582`. Previous closed family: STRAT-04 report
@@ -120,7 +150,7 @@ selection and tactics changed; the current-source recheck passes at candidate `0
 | Package | Remaining work |
 | --- | --- |
 | 3 — scouting, combat, access | DOMAIN-01/05/06, DOMAIN-02 COAST and its two controls, INTERCEPT, SCOUT-01/03/04, FIGHT-01/02/03/04/05 and RAID-02 pass. All RAID-01 targeted branches pass; its combined registered matrix remains CI-owned. ESCORT's paid-fleet objective effect and SCOUT-02 native trip/service remain. Seven real-peer obligations remain CI-owned. STRAT-09 needs grouped final recheck after affected changes. |
-| 4 — placement, walls, recovery | H-11 passes all six variants. PLACE-03 route/transit remains open; continue with its protected-route clearance and physical transit failures. Other PLACE/EXP/WALL/H cases remain in the registered CI matrix. |
+| 4 — placement, walls, recovery | H-11 and all eight PLACE-03 branches pass. PLACE-01/02, EXP-01/02, WALL-01–05 and remaining H-01–05/H-27–28 branches still need scoped semantic/evidence closure. |
 | 5 — authority and lifecycle | H-10 over-capacity variants, H-06/07, H-08/09 peer evidence, H-14/15 remaining branches, H-31/32, M11, #819/#823. |
 | 6 — continuous play and difficulty | SEQ-02 and supported SEQ/D cases. D-06 legacy comparison remains explicitly unsupported. |
 | 7 — debug and closure | DBG cases, #820/#821, machinery/legacy review, omission audit and final closure audit. |

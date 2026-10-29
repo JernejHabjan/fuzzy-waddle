@@ -3,7 +3,8 @@ import type Phaser from "phaser";
 import { createAiTestOwnedActor } from
   "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import { getTileCoordsUnderObject } from "../../../library/tile-under-object";
-import { observedConstructionOccupancy } from "./observed-construction-occupancy";
+import { ActorTranslateComponent } from "../../../entity/components/movement/actor-translate-component";
+import { observedConstructionOccupancy, observedStaticConstructionOccupancy } from "./observed-construction-occupancy";
 
 jest.mock("../../../library/tile-under-object", () => ({ getTileCoordsUnderObject: jest.fn() }));
 
@@ -29,4 +30,28 @@ it("uses all current fair bodies without consulting hidden or last-seen live act
     "3,4"
   ]);
   expect(jest.mocked(getTileCoordsUnderObject).mock.calls.map((call) => call[1].name)).toEqual(["own", "seen"]);
+});
+
+it("keeps moving units out of static route blockers while retaining stationary visible bodies", () => {
+  const building = createAiTestOwnedActor("building");
+  const mover = createAiTestOwnedActor("mover");
+  const buildingObject = {
+    name: building.actorId,
+    getData: () => undefined
+  } as unknown as Phaser.GameObjects.GameObject;
+  const moverObject = {
+    name: mover.actorId,
+    getData: () => ({ components: new Map([[ActorTranslateComponent, {}]]) })
+  } as unknown as Phaser.GameObjects.GameObject;
+  const live = new Map([
+    [building.actorId, buildingObject],
+    [mover.actorId, moverObject]
+  ]);
+  jest.mocked(getTileCoordsUnderObject).mockImplementation((_map, actor) =>
+    actor.name === building.actorId ? [{ x: 2, y: 1 }] : [{ x: 2, y: 3 }]
+  );
+
+  expect([...observedStaticConstructionOccupancy({} as Phaser.Tilemaps.Tilemap, [building, mover], live)]).toEqual([
+    "2,1"
+  ]);
 });
