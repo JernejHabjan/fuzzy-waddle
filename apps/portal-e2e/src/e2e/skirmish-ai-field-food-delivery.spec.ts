@@ -49,6 +49,10 @@ test.describe("new-field delivered-food attribution", () => {
     expect(hasNativeSourceDelivery(neutral, { ...contract, sourceOwner: null })).toBe(true);
   });
   test("native service may switch neutral sources or owned drop-offs while preserving extraction-to-credit proof", () => {
+    expect(hasNativeSourceDeliveryToAnyDropOff(stream(), { sourceOwner: 2, playerNumber: 2,
+      resourceType: ResourceType.Food, fromTick: 10, throughTick: 30 })).toBe(true);
+    expect(hasNativeSourceDeliveryToAnyDropOff(stream(), { sourceOwner: null, playerNumber: 2,
+      resourceType: ResourceType.Food, fromTick: 10, throughTick: 30 })).toBe(false);
     const neutral = stream().map((fact) => fact.kind !== "spatial_authority" || fact.spatial.kind !== "resource_service" ||
       fact.spatial.phase !== "cargo_changed" || !fact.spatial.target ? fact : { ...fact,
         spatial: { ...fact.spatial, target: { ...fact.spatial.target, playerNumber: null } } });

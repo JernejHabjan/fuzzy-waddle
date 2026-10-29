@@ -47,8 +47,10 @@ export function nativeAuthorityWorld(id, faction, branch) {
     if (branch === "new_identity") {
       world.resourceStarts.find((start) => start.playerNumber === 2).amounts =
         { food: 120, wood: 1800, stone: 1800, minerals: 40 };
+      const baseBuilder = world.actors.find((entry) => entry.fixtureActorId === "worker-7");
+      if (baseBuilder) baseBuilder.position = tile(44, 16);
       world.controls.push(control("ordinary-new-base", "worker-7", 200,
-        { kind: "construct", actorName: faction === "Tivara" ? "Sandhold" : "FrostForge", worldPosition: tile(45, 14) }));
+        { kind: "construct", actorName: faction === "Tivara" ? "Sandhold" : "FrostForge", worldPosition: tile(45, 20) }));
     }
     if (branch === "essential") world.resourceStarts.find((start) => start.playerNumber === 2).amounts.food = 0;
     if (branch === "essential") world.events.push({ id: "loss-essential-house", tick: 200,

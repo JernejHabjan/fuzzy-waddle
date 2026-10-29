@@ -5,6 +5,8 @@ import { nativeCompletedPlacements } from "./skirmish-ai-native-construction-evi
 import { nativeWeaponHits } from "./skirmish-ai-native-combat-effects";
 import { nativeScoutTrips } from "./skirmish-ai-native-scouting-evaluation";
 import { nativeWaitingExposureFailures } from "./skirmish-ai-native-waiting-exposure";
+import { hasNativeSourceDeliveryToAnyDropOff } from "./skirmish-ai-source-delivery";
+import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 /** Physical useful work, original ownership and actual scarce balances decide resource/priority outcomes. */
 export function evaluateNativeResourcePriority(id: string, branch: string, context: ReturnType<typeof nativeScenarioContext>) {
@@ -28,10 +30,18 @@ function optionalBudgetFailures(branch: string, context: ReturnType<typeof nativ
   if (!context.frames.some((frame) => frame.decision.decisions.some((decision) =>
     decision.intent.lane === "optional_infrastructure_tech" && decision.intent.claims.some((claim) => claim.kind === "resource"))))
     failures.push("resources_optional_project_budget_was_never_exercised");
-  if (!nativeRecoveryIncome(context)) failures.push("resources_optional_budget_starved_delivered_income");
+  if (![null, 2].some((sourceOwner) => Object.values(ResourceType).some((resourceType) =>
+    hasNativeSourceDeliveryToAnyDropOff(context.capture?.facts ?? [], {
+      sourceOwner,
+      playerNumber: 2,
+      resourceType,
+      fromTick: 0,
+      throughTick: context.frames.at(-1)?.tick ?? 0
+    })
+  ))) failures.push("resources_optional_budget_starved_delivered_income");
   const placements = nativeCompletedPlacements(context), outputs = nativePaidMissionOutputs(context);
   if (!placements.length && !outputs.length) failures.push("resources_optional_budget_prevented_all_useful_paid_work");
-  if (branch === "new_identity" && (active.at(-1) ?? 0) <= (active[0] ?? 0))
+  if (branch === "new_identity" && !nativePaidNewBaseIdentity(context))
     failures.push("resources_normal_paid_new_base_identity_was_not_exercised");
   if (branch === "essential" && !context.result.perturbations.some((event) => event.id === "loss-essential-house"))
     failures.push("resources_native_essential_loss_control_missing");
@@ -43,6 +53,37 @@ function optionalBudgetFailures(branch: string, context: ReturnType<typeof nativ
         claim.amount > 0 && (before?.find((cash) => cash.resourceType === claim.resourceType)?.stockpile ?? Infinity) < 4 * claim.amount));
   })) failures.push("resources_executable_optional_below_four_times_cost_was_not_natively_completed");
   return failures;
+}
+
+/** The new-identity branch closes only after its exact shared command is charged and the site finishes. */
+function nativePaidNewBaseIdentity(context: ReturnType<typeof nativeScenarioContext>): boolean {
+  const facts = context.capture?.facts ?? [];
+  const controls = facts.filter((fact) =>
+    fact.kind === "preset_control" && fact.control.id === "ordinary-new-base" && fact.control.phase === "applied"
+  );
+  const command = controls.length === 1 && controls[0]?.kind === "preset_control" ? controls[0].control.command : null;
+  const commandId = command?.execution?.commandId;
+  if (!command || command.type !== "CONSTRUCT" || !commandId || command.execution?.source !== "human") return false;
+  const placements = facts.filter((fact) => fact.kind === "spatial_authority" && fact.spatial.kind === "placement" &&
+    fact.spatial.command.execution?.commandId === commandId && fact.spatial.command.actorName === command.actorName &&
+    fact.spatial.legal && fact.spatial.site.actorId && fact.spatial.site.playerNumber === 2 && fact.spatial.gaps.length === 0);
+  const placement = placements.length === 1 && placements[0]?.kind === "spatial_authority" ? placements[0].spatial : undefined;
+  const siteId = placement?.kind === "placement" ? placement.site.actorId : undefined;
+  if (!siteId) return false;
+  const applied = facts.filter((fact) => fact.kind === "outcome" && fact.outcome.kind === "applied" &&
+    fact.outcome.commandId === commandId && fact.outcome.playerNumber === 2 && fact.outcome.worldLinkIds.length === 1 &&
+    fact.outcome.worldLinkIds[0] === siteId);
+  const charges = facts.filter((fact) => fact.kind === "construction_authority" && fact.construction.kind === "resource" &&
+    fact.construction.operation === "start_charge" && fact.construction.site.actorId === siteId &&
+    fact.construction.status === "returned" && fact.construction.ownerArgument === 2 &&
+    fact.construction.callbackCount === 1 && fact.construction.balanceMatches && !fact.construction.nestedEmission &&
+    fact.construction.sceneActive && !fact.construction.snapshotRestoreInProgress);
+  const completions = facts.filter((fact) => fact.kind === "construction_authority" && fact.construction.kind === "lifecycle" &&
+    fact.construction.transition === "finished" && fact.construction.site.actorId === siteId &&
+    fact.construction.clockTick === fact.tick && fact.construction.sceneActive && !fact.construction.snapshotRestoreInProgress);
+  return applied.length === 1 && charges.length === 1 && completions.length === 1 &&
+    !!context.capture?.frontiers?.intervals.at(-1)?.actors.some(({ identity }) => identity.actorId === siteId &&
+      identity.alive && identity.active && identity.indexed && identity.finished);
 }
 
 /** Consideration is not service. Only truly compatible dated proposals need bounded native command service. */

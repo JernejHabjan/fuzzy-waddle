@@ -30,8 +30,13 @@ Do not reconstruct the old seven-package roadmap from chat or historical records
   focused answer. Skaduwee native WALL-01 not yet run.
 - H-13's interrupted run finished: report 1793296020629-failed.json. Each variant's only missing ownership frame is
   its first selected decision, where no older provisional claim exists; later snapshots are complete. The native
-  waiting-exposure evaluator now skips frames with no older claims, with focused positive and negative checks. Do
-  not restart H-13 until Tivara income attribution and the new-base branch are diagnosed.
+  waiting-exposure evaluator now skips frames with no older claims, with focused positive and negative checks.
+  Follow-up Tivara `new_identity` capture 1793300103293-diagnostic_failed is a checker false negative: native events
+  show owned-Field food extraction, exact cargo offers and successful credits, plus a legal paid Sandhold that
+  finished at tick 1405. The evaluator now accepts exact native delivery from owned or neutral sources; do not
+  replay Tivara unchanged. Skaduwee `new_identity` diagnostic 1793300480186-diagnostic_passed (154s, fixture
+  `fnv1a32:1ce3d633`) closes the shared base fixture on the other faction. Continue C2 stale-reservation/capacity
+  review; do not rerun the full H-13 matrix solely to re-score the corrected checks.
 - C1 source review found a duplicate `dispatched` outcome could overwrite the pending actor set and clear application
   progress if its identity was reused with altered actor IDs. Reconciliation now ignores repeated admission while
   pending. A red/green regression covers two-actor terminal progress; focused reconciliation/adapter tests pass 12/12
@@ -45,7 +50,7 @@ Do not reconstruct the old seven-package roadmap from chat or historical records
 | --- | --- | --- |
 | A placement/walls/recovery | in_progress | Three-tile route opening has focused support; WALL-01 remains unproven after two runs. Continue placement/recovery and diagnose captured route with a smaller repro before any wall retry. |
 | B expansion/mission continuity | ready after shared A analysis; independent diagnosis allowed | Explain EXP-02 home loss and H-14 frontier replacement. |
-| C resource/command ownership | in_progress | Duplicate-admission reset is fixed with focused coverage; retained H-06/07 native cases cover both factions. Continue stale reservation/capacity review and diagnose H-13 Tivara income attribution and paid-base exercise before one bounded native confirmation. |
+| C resource/command ownership | in_progress | Duplicate-admission reset is fixed with focused coverage; retained H-06/07 native cases cover both factions. H-13 source attribution now accepts exact own/neutral deliveries; Tivara paid+finished base in 1793300103293 and Skaduwee diagnostic passed in 1793300480186. Continue C2 stale-reservation/capacity review. |
 | D essential SP lifecycle | ready; independent fallback | Inspect H-31 continuation and H-32 SP dispatch restrictions. |
 | E ordinary play/closure | waits for A–D | Reconcile relevant evidence and run only affected release outcomes. |
 
