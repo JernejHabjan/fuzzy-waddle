@@ -111,7 +111,7 @@ function laneFailures(branch: string, context: ReturnType<typeof nativeScenarioC
         failures.push(`priorities_compatible_lane_not_natively_serviced:${lane}`);
     }
   }
-  if (!nativeRecoveryIncome(context) || branch !== "scarcity" &&
+  if (!nativePriorityIncome(context) || branch !== "scarcity" &&
       (!nativeScoutTrips(context).length || !nativePaidMissionOutputs(context).length))
     failures.push("priorities_noise_control_has_no_physical_economy_scouting_or_paid_output");
   if (branch === "scarcity" && !frames.some((frame) => frame.decision.missionState?.blockers.some((blocker) =>
@@ -119,6 +119,21 @@ function laneFailures(branch: string, context: ReturnType<typeof nativeScenarioC
   if (frames.filter((frame) => frame.tick >= 2000).every((frame) =>
     frame.decision.economyProduction.posture?.status === "emergency")) failures.push("priorities_harmless_emergency_never_decayed");
   return failures;
+}
+
+/** The harmless control may recover through any real neutral source, not only the fixture's nominal wood source. */
+function nativePriorityIncome(context: ReturnType<typeof nativeScenarioContext>): boolean {
+  if (nativeRecoveryIncome(context)) return true;
+  const throughTick = context.frames.at(-1)?.tick ?? 0;
+  return Object.values(ResourceType).some((resourceType) => hasNativeSourceDeliveryToAnyDropOff(
+    context.capture?.facts ?? [], {
+      sourceOwner: null,
+      playerNumber: 2,
+      resourceType,
+      fromTick: 0,
+      throughTick
+    }
+  ));
 }
 
 /** A real emergency must retain fresh generations and resolve actual delayed ownership while defending physical assets. */
