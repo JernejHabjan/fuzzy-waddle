@@ -130,6 +130,31 @@ describe("observed construction access scenarios", () => {
     expect(selected).toEqual({ x: 5, y: 1, z: 0 });
   });
 
+  it("keeps an active mover's current route tile outside a large build's clearance envelope", () => {
+    const positions: [number, number][] = [];
+    for (let y = 0; y < 8; y += 1) for (let x = 0; x < 8; x += 1) positions.push([x, y]);
+    const { observation, builder } = fixture(positions);
+    const mover = {
+      ...createAiTestOwnedActor("mover"),
+      logicalPosition: { status: "known" as const, value: { x: 2, y: 1, z: 0 }, observedTick: 200 },
+      activeOrder: {
+        status: "known" as const,
+        value: { orderType: OrderType.Move, targetActorId: null, targetPosition: { x: 6, y: 1, z: 0 } },
+        observedTick: 200
+      }
+    };
+    const selected = selectConstructionPosition(
+      { ...observation, actors: [builder, mover] },
+      builder,
+      1,
+      0,
+      new Set(),
+      1,
+      (cell) => cell.tileKey === "2,3"
+    );
+    expect(selected).toBeUndefined();
+  });
+
   it("preserves one-tile maneuvering clearance around other owned workers", () => {
     const positions: [number, number][] = [];
     for (let y = 0; y < 9; y += 1) for (let x = 0; x < 9; x += 1) positions.push([x, y]);

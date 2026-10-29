@@ -69,7 +69,8 @@ export function constructionAccessPolicy(
   const staticBlocked = new Set(
     [...cells.values()].filter((cell) => cell.staticBlocked === true).map((cell) => cell.tileKey)
   );
-  const before = flood(clearanceBlocked(staticBlocked));
+  const baselineBlocked = clearanceBlocked(staticBlocked);
+  const before = flood(baselineBlocked);
   if (before.size === 0) return () => false;
   const shoreKeys = new Set(
     (observation.map?.accessGraph?.transferPoints ?? [])
@@ -79,6 +80,7 @@ export function constructionAccessPolicy(
   );
   const actorsById = new Map(observation.actors.map((actor) => [actor.actorId, actor]));
   const orderEndpointKeys = new Set<string>();
+  const orderOriginKeys = new Set<string>();
   const workerClearanceKeys = new Set<string>();
   for (const actor of observation.actors) {
     if (actor.visibility !== "owned") continue;
@@ -97,6 +99,10 @@ export function constructionAccessPolicy(
       if (orderValue?.status !== "known" || !orderValue.value) continue;
       const order = orderValue.value;
       if (!["Move", "Gather", "ReturnResources"].includes(order.orderType)) continue;
+      if (actor.logicalPosition.status === "known") {
+        const position = actor.logicalPosition.value;
+        orderOriginKeys.add(`${Math.round(position.x)},${Math.round(position.y)}`);
+      }
       const target = order.targetPosition
         ? order.targetPosition
         : order.targetActorId
@@ -108,6 +114,9 @@ export function constructionAccessPolicy(
       } else if (target) orderEndpointKeys.add(`${Math.round(target.x)},${Math.round(target.y)}`);
     }
   }
+  const orderSpaceKeys = [...new Set([...orderOriginKeys, ...orderEndpointKeys])].filter(
+    (key) => before.has(key) && !baselineBlocked.has(key)
+  );
   return (footprint) => {
     if (
       !footprint.some((key) => before.has(key)) ||
@@ -116,6 +125,7 @@ export function constructionAccessPolicy(
       return false;
     const blocked = clearanceBlocked(new Set([...staticBlocked, ...reserved, ...footprint]));
     if (blocked.has(start)) return false;
+    if (orderSpaceKeys.some((key) => blocked.has(key))) return false;
     const after = flood(blocked);
     for (const key of before) if (!blocked.has(key) && !after.has(key)) return false;
     return after.size > 0;

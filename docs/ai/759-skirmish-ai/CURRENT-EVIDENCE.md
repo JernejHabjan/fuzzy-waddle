@@ -37,13 +37,14 @@ Movement captures confirm some worker/Field pairs have no route. Focused planner
 unchanged; return after addressing accessible Field placement and the visibility of the authored route contract.
 
 PLACE-02 Tivara safe `1793274245140` and wide-clearance recheck `1793274795985` failed: eight Fields lacked delivered
-food, army transit was incomplete, and the retreat route became blocked after the second Field (tick 60, site `34,27`).
-Observation now distinguishes visible stationary blockers from moving bodies, and construction connectivity includes
-stationary blockers. Focused coverage passes; the current safe-branch run `1793275382806` (2,401 ticks / 117s, source
-`d60b070f58b53668bcc42ea3f1ea65d8d13da379`, dirty source `fnv1a32:159da01b`, fixture `fnv1a32:2970391f`) no longer
-reports a blocked retreat or production-army route. Five new Fields still lack native food delivery; a Field still
-overlaps the declared reserve path, and physical army transit is incomplete. Do not replay unchanged. Next isolate the
-remaining Field placement/delivery and transit predicates, then continue EXP/WALL/recovery.
+food, army transit was incomplete, and retreat clearance failed. The map now reports visible stationary colliders as
+travel blockers while excluding mobile bodies; construction planning also protects active-order origins and endpoints
+from a new footprint's clearance envelope. Focused placement/expansion coverage passes 21/21, scoped lint has no
+errors. Current safe-branch report `1793275965066-diagnostic_failed.json` (2,401 ticks / 109s, candidate
+`48120236755201aa71adabe174b6c1e15438af81`, dirty source `fnv1a32:10664012`, fixture `fnv1a32:2970391f`) has no
+blocked native retreat/production-army path and reduces unserved new Fields from eight to two. The strict reserved-path
+overlap remains, two Fields lack food, and both scripted physical transit checks remain incomplete. Do not replay
+unchanged. Next address the Field placement/delivery mismatch, then continue EXP/WALL/recovery.
 
 Latest closed family: SCOUT-03 report `1793174968627-passed.json` (four variants, 400 decisions / 8,004 ticks), source
 digest `fnv1a32:05a85282`, fixture digest `fnv1a32:ebc75582`. Previous closed family: STRAT-04 report
