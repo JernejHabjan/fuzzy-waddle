@@ -235,8 +235,12 @@ contain superseded observations and next actions. Use HANDOFF.md and CURRENT-EVI
 - **H-11 Tivara one-worker recheck:** the changed source still gets `no_path` from builder `(33,21)` to legal outside
   endpoint `(31,22)` beside its Granary at tick 20; no construction or income follows. It reaches 200 decisions / 4,001
   ticks, but the sole scenario failure is `native_capture_channel_lost`, so it is not closure evidence. Artifact:
-  `tmp/ai-skirmish-matrix/760-package4-h11-current-navigation/1792971090725-diagnostic_failed.json`. Park until route
-  connectivity and capture-channel causes change.
+  `tmp/ai-skirmish-matrix/760-package4-h11-current-navigation/1792971090725-diagnostic_failed.json`. This diagnosis
+  was later resolved: the worker began on non-navigable tile `(33,21)`. The generated H-11 fixture now starts its worker
+  at the proved approach `(31,22)`; all six registered variants pass in current-source report
+  `1793256850909-passed.json` (1,200 decisions / 24,006 ticks, source `806d51b377f16368bde5fd0b516f307c7196c9dd`,
+  dirty digest `fnv1a32:09357cfe`, fixture digest `fnv1a32:76ff1345`). H-11-specific native delivery evidence proves its
+  resource chain, so the redundant generic resource-lifetime capture requirement was removed for this exact scenario.
 - **PLACE-03 Tivara concurrent:** the 150-decision changed-source run found its first Granary footprint covers the
   worker-service clearance route's first tile, then subsequent prefixes inherit the blocked route; worker/army physical
   transit also remains incomplete. The observation showed nearby owned workers, while placement only protected exact

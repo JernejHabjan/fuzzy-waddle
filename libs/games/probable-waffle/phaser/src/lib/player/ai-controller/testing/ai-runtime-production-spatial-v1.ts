@@ -22,24 +22,45 @@ export type AiRuntimeProductionSpatialV1 = {
   | AiRuntimeMovementV1
   | AiRuntimeServiceAttemptV1
   | AiRuntimeResourceServiceV1
-  | { readonly kind: "placement"; readonly command: ConstructCommand; readonly site: AiRuntimeCreatedActorV1;
-    readonly footprint: readonly Vector2Simple[] | null; readonly legal: boolean;
-    /** Legacy captures omit pricing; omission cannot be filled from a later definition or checkpoint. */
-    readonly catalog?: AiRuntimeConstructionCatalogV1;
-    /** Optional fresh static geometry at this exact footprint boundary; no transit/spawn/usefulness claim. */
-    readonly clearance?: AiRuntimePlacementClearanceV1 }
-  | { readonly kind: "spawn"; readonly producer: AiRuntimeCreatedActorV1;
-    readonly item: AiRuntimeProductionQueueV1["lanes"][number]["items"][number]; readonly waterUnit: boolean;
-    readonly tile: Vector2Simple | null; readonly position: Vector3Simple | null }
-  | { readonly kind: "builder_path"; readonly queryId: number; readonly phase: "requested" | "resolved" | "rejected" | "threw";
-    /** Legacy captures omit this; later observations cannot backfill either query boundary. */
-    readonly navigation?: AiRuntimeNavigationBoundaryV1;
-    /** Exact synchronous native lookup, detached at terminal. Legacy/no-query/ambiguous ownership remains omitted. */
-    readonly nativeQuery?: NavigationNativeQuery;
-    readonly source: AiRuntimeCreatedActorV1; readonly target: AiRuntimeCreatedActorV1;
-    readonly sourceTile: Vector2Simple | null; readonly targetTile: Vector2Simple | null;
-    /** Actual shared caller radius; null means the native default was used. */
-    readonly radiusTiles: number | null;
-    /** Complete returned path including empty success; null means no path or bounded capture loss. */
-    readonly path: readonly Vector2Simple[] | null; readonly result: "path" | "no_path" | null }
+  | {
+      readonly kind: "placement";
+      readonly command: ConstructCommand;
+      readonly site: AiRuntimeCreatedActorV1;
+      readonly footprint: readonly Vector2Simple[] | null;
+      readonly legal: boolean;
+      /** Legacy captures omit pricing; omission cannot be filled from a later definition or checkpoint. */
+      readonly catalog?: AiRuntimeConstructionCatalogV1;
+      /** Optional fresh static geometry at this exact footprint boundary; no transit/spawn/usefulness claim. */
+      readonly clearance?: AiRuntimePlacementClearanceV1;
+    }
+  | {
+      readonly kind: "spawn";
+      readonly producer: AiRuntimeCreatedActorV1;
+      readonly item: AiRuntimeProductionQueueV1["lanes"][number]["items"][number];
+      readonly waterUnit: boolean;
+      readonly tile: Vector2Simple | null;
+      readonly position: Vector3Simple | null;
+    }
+  | {
+      readonly kind: "builder_path";
+      readonly queryId: number;
+      readonly phase: "requested" | "resolved" | "rejected" | "threw";
+      /** Legacy captures omit this; later observations cannot backfill either query boundary. */
+      readonly navigation?: AiRuntimeNavigationBoundaryV1;
+      /** Exact synchronous native lookup, detached at terminal. Legacy/no-query/ambiguous ownership remains omitted. */
+      readonly nativeQuery?: NavigationNativeQuery;
+      readonly source: AiRuntimeCreatedActorV1;
+      readonly target: AiRuntimeCreatedActorV1;
+      readonly sourceTile: Vector2Simple | null;
+      readonly targetTile: Vector2Simple | null;
+      /** Actual shared caller radius; null means the native default was used. */
+      readonly radiusTiles: number | null;
+      /** Complete returned path including empty success; null means no path or bounded capture loss. */
+      readonly path: readonly Vector2Simple[] | null;
+      readonly result: "path" | "no_path" | null;
+      /** Bounded height-graph diagnostic sampled only for a native no-path result. */
+      readonly sourceNavigable?: boolean | null;
+      readonly targetNavigable?: boolean | null;
+      readonly heightGraphReachable?: boolean | null;
+    }
 );

@@ -18,6 +18,7 @@ export function nativeScenarioRequiresResourceCoverage(scenarioId: string): bool
       "H-06",
       "H-07",
       "H-10",
+      "H-11",
       "H-12",
       "H-13",
       "H-14",

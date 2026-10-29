@@ -79,6 +79,8 @@ export function nativeAuthorityWorld(id, faction, branch) {
   if (id === "H-11") {
     world.recoveryStart = branch;
     world.initialOrders = [];
+    const worker = world.actors.find((actor) => actor.fixtureActorId === "worker-1");
+    if (worker) worker.position = tile(31, 22);
     world.actors = world.actors.filter((actor) => actor.fixtureActorId !== "ready-granary" &&
       !actor.fixtureActorId.startsWith("army-") && actor.fixtureActorId !== "scout-probe" &&
       (!actor.fixtureActorId.startsWith("worker-") || branch !== "bootstrap" && actor.fixtureActorId === "worker-1"));

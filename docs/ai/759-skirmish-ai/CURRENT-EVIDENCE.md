@@ -3,6 +3,18 @@
 Updated 2026-10-29. This is the compact active snapshot; detailed run history belongs in
 [EVIDENCE-ARCHIVE.md](EVIDENCE-ARCHIVE.md). [HANDOFF.md](HANDOFF.md) owns the live cursor and next action.
 
+Resource admission now records each accepted resource claim amount and subtracts unresolved provisional/dispatched claims
+before authorizing another spend; legacy pending claims without an amount fail closed. Applied spending is accounted for
+through the observed balance. Focused production-authority, brain, planner and reservation-reconciliation checks pass 22/22;
+no native scenario evidence is claimed yet.
+
+H-11 closes on current source and generated fixture in `1793256850909-passed.json`: all six registered variants pass
+(1,200 decisions / 24,006 ticks; source `806d51b377f16368bde5fd0b516f307c7196c9dd`, dirty digest
+`fnv1a32:09357cfe`, fixture digest `fnv1a32:76ff1345`). The cause was an authored worker start tile that native navigation
+marked non-navigable; moving it to the proved Granary approach restores construction and delivery. H-11's exact native
+source-to-deposit evidence covers its recovery requirement, so its generic lifetime resource-coverage gate was redundant.
+Do not replay H-11 unchanged. PLACE-03 protected-route clearance and physical worker/army transit remain open.
+
 Latest closed family: SCOUT-03 report `1793174968627-passed.json` (four variants, 400 decisions / 8,004 ticks), source
 digest `fnv1a32:05a85282`, fixture digest `fnv1a32:ebc75582`. Previous closed family: STRAT-04 report
 `1793069202745-passed.json`, base `2210ab7fe09d`, dirty-source digest `fnv1a32:d22008af`, fixture digest `fnv1a32:4e15b8c2`.
@@ -14,6 +26,8 @@ different drains and changed later positions/orders. Geometry/name now precede I
 passes 7/7. Do not replay unchanged.
 
 DOMAIN-02 COAST closes on current source. `1793237263373` exposed the remaining cause: the shore approach had a valid native path, but tactics replaced it with its assembly/rally move, cancelling both orders in turn. The tactics projection now preserves a water attacker's active move when its destination is a compatible firing position. Regression coverage passes; current-source diagnostic `1793237720842-diagnostic_passed.json` passes at 150 decisions / 3,001 ticks in 129s (dirty source `fnv1a32:7f19c784`, fixture `fnv1a32:d0955369`). The boat reaches (26,5), attacks the visible target, and the native oracle accepts its objective damage. Four older attempts document fixture/route issues; do not replay unchanged. Next is ESCORT's paid-fleet objective effect.
+
+ESCORT diagnostic `1793242080163-diagnostic_failed.json` is still failing only `domain_paid_ship_has_no_compatible_native_objective_hit` after 3,001 ticks (7m39s), despite the shore-threat counterforce adjustment. Its captured decision keeps the paid ship in water reserve and issues another rally while the hostile ship is visible. The shore-threat explanation was not sufficient and is no longer treated as a confirmed cause. The planner regression was tightened: it now preserves a ground-core primary mission and requires a separate naval raid from a one-ship reserve; focused offense suite passes 9/9. No further runtime retry until the remaining difference between the captured decision and the focused planner case is identified and repaired. Runtime invocations remain capped at 30m.
 
 SCOUT-02 report `1793073090904-failed.json` (ten variants, 1,200 decisions / 24,010 ticks): both visible controls pass;
 hidden and withdrawn variants fail trip/stale-job/survival predicates, and hidden-world permitted-input parity remains
@@ -106,7 +120,7 @@ selection and tactics changed; the current-source recheck passes at candidate `0
 | Package | Remaining work |
 | --- | --- |
 | 3 — scouting, combat, access | DOMAIN-01/05/06, DOMAIN-02 COAST and its two controls, INTERCEPT, SCOUT-01/03/04, FIGHT-01/02/03/04/05 and RAID-02 pass. All RAID-01 targeted branches pass; its combined registered matrix remains CI-owned. ESCORT's paid-fleet objective effect and SCOUT-02 native trip/service remain. Seven real-peer obligations remain CI-owned. STRAT-09 needs grouped final recheck after affected changes. |
-| 4 — placement, walls, recovery | PLACE/EXP/WALL and H recovery cases; PLACE-03 transit/clearance and H-11 route/capture remain known failures. |
+| 4 — placement, walls, recovery | H-11 passes all six variants. PLACE-03 route/transit remains open; continue with its protected-route clearance and physical transit failures. Other PLACE/EXP/WALL/H cases remain in the registered CI matrix. |
 | 5 — authority and lifecycle | H-10 over-capacity variants, H-06/07, H-08/09 peer evidence, H-14/15 remaining branches, H-31/32, M11, #819/#823. |
 | 6 — continuous play and difficulty | SEQ-02 and supported SEQ/D cases. D-06 legacy comparison remains explicitly unsupported. |
 | 7 — debug and closure | DBG cases, #820/#821, machinery/legacy review, omission audit and final closure audit. |

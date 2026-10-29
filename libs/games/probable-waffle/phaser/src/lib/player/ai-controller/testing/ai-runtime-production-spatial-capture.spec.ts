@@ -293,6 +293,21 @@ describe("production spatial capture", () => {
     }
   });
 
+  it("records a bounded native height-graph diagnosis for no-path builder queries", async () => {
+    const f = fixture();
+    const returned = f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius(f.source, f.target);
+    f.settle(null);
+    await returned;
+    expect(requireAiTestEntry(f.records, 1)).toMatchObject({
+      result: "no_path",
+      sourceNavigable: false,
+      targetNavigable: false,
+      heightGraphReachable: false
+    });
+    expect(f.readGraph).toHaveBeenCalled();
+    f.capture.dispose();
+  });
+
   it("fences late results and restores only its own wrapper", async () => {
     const f = fixture();
     const pending = f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius(f.source, f.target);
