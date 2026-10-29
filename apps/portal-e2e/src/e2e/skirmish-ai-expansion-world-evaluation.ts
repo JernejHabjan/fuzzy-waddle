@@ -4,7 +4,7 @@ import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-resul
 import type { ExpansionBranch } from "./skirmish-ai-expansion-branch";
 import { runtimeClosedHistoryFailures } from "./skirmish-ai-runtime-closed-history";
 import { hasNativeSourceDelivery } from "./skirmish-ai-source-delivery";
-import { expansionServiceFailures } from "./skirmish-ai-expansion-service-evaluation";
+import { expansionEffectMatchesExecution, expansionServiceFailures } from "./skirmish-ai-expansion-service-evaluation";
 import { expansionPressureFailures } from "./skirmish-ai-expansion-pressure-evaluation";
 import { isWithinObservedGroundWeaponRange } from "./skirmish-ai-native-weapon-range";
 
@@ -261,12 +261,4 @@ export function hasCurrentVisibleTowerObservation(
   return !input.gaps.length && !input.snapshotRestoreInProgress && input.observation?.tick === tick &&
     input.observation.actors.some((actor) => actor.actorId === towerId && actor.visibility === "visible" &&
       actor.logicalPosition.status === "known" && actor.combatProfile?.status === "known");
-}
-
-/** Native command lineage strips the protocol's `effect:` label when stamping the shared command. */
-export function expansionEffectMatchesExecution(
-  intentEffectId: string,
-  execution: { readonly effectId?: string } | undefined
-): boolean {
-  return !!execution?.effectId && intentEffectId.replace(/^effect:/, "") === execution.effectId;
 }

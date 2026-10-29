@@ -56,11 +56,31 @@ export async function prepareRuntimeVariant(
     }, sameRealm);
   await configureLobby(page, fixture, variant, sameRealm);
   await installRuntimeAccessor(page);
-  await page.waitForFunction(
-    (playerNumber) => !!window.__fuzzyWaddleAiRuntimePartsV1?.(playerNumber),
-    fixture.recipe.aiPlayerNumber,
-    { timeout: 120_000 }
-  );
+  const browserErrors: string[] = [];
+  const collectConsoleError = (message: import("@playwright/test").ConsoleMessage) => {
+    if (message.type() === "error") browserErrors.push(message.text());
+  };
+  const collectPageError = (error: Error) => browserErrors.push(error.message);
+  page.on("console", collectConsoleError);
+  page.on("pageerror", collectPageError);
+  try {
+    await page.waitForFunction(
+      (playerNumber) => !!window.__fuzzyWaddleAiRuntimePartsV1?.(playerNumber),
+      fixture.recipe.aiPlayerNumber,
+      { timeout: 120_000 }
+    );
+  } catch (error) {
+    const browserState = await page.evaluate(() => ({
+      url: location.href,
+      title: document.title,
+      body: document.body.innerText.slice(0, 1200)
+    })).catch(() => null);
+    throw new Error(`runtime_accessor_not_ready:${error instanceof Error ? error.message : String(error)}; ` +
+      `browserState=${JSON.stringify(browserState)}; browserErrors=${JSON.stringify(browserErrors.slice(-20))}`);
+  } finally {
+    page.off("console", collectConsoleError);
+    page.off("pageerror", collectPageError);
+  }
   await debugProbe?.(page, -1);
   if (variant.presetWorld?.constructionOrders?.length) {
     await page.waitForFunction((count) => {

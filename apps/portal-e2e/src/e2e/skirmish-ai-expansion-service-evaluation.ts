@@ -3,6 +3,14 @@ import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-resul
 import { hasNativeSourceDelivery } from "./skirmish-ai-source-delivery";
 import { normalizeRuntimeMovement } from "./skirmish-ai-runtime-movement-normalization";
 
+/** Native command lineage strips the protocol's `effect:` label when stamping the shared command. */
+export function expansionEffectMatchesExecution(
+  intentEffectId: string,
+  execution: { readonly effectId?: string } | undefined
+): boolean {
+  return !!execution?.effectId && intentEffectId.replace(/^effect:/, "") === execution.effectId;
+}
+
 /**
  * Bind a paid expansion to its original builder's native arrival and exact economic-worker delivery into that building.
  */

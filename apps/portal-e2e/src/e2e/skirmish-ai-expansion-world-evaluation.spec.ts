@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
-import { expansionEffectMatchesExecution, hasCurrentVisibleTowerObservation } from "./skirmish-ai-expansion-world-evaluation";
+import { hasCurrentVisibleTowerObservation } from "./skirmish-ai-expansion-world-evaluation";
 import { isNativeBuilderAssignedToSite } from "./skirmish-ai-expansion-service-evaluation";
+import { expansionEffectMatchesExecution } from "./skirmish-ai-expansion-service-evaluation";
 
 test("matches the accepted expansion effect to its native command lineage", () => {
   expect(expansionEffectMatchesExecution("effect:expansion:1", { effectId: "expansion:1" })).toBe(true);

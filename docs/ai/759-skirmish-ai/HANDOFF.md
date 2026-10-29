@@ -33,11 +33,16 @@ Do not reconstruct the old seven-package roadmap from chat or historical records
   the fortification plan now becomes terminal and releases further intents. Red/green focused recovery spec
   passes; recovery/manager/continuation suites pass 25/25. Later construction-access changes invalidate the old
   H-11/PLACE-03 physical applicability; current H-11 awaits a usable native run.
-- A3 focused fortification-recovery tests pass, but its retained H-11 evidence predates later construction-access
-  changes. Current-source Tivara H-11 one-worker check 1793309763525 hit the 30-minute Playwright timeout with
-  zero decisions/ticks; Skaduwee EXP-02 recovery check 1793307799025 hit its horizon-based timeout with zero ticks.
-  These are runtime timeouts, not gameplay results. Diagnose runtime progress before another native retry. PLACE-03's
-  older physical evidence is also invalidated by later shared placement/access changes.
+- A3 focused fortification-recovery tests pass, but retained H-11 and PLACE-03 physical evidence predates later
+  construction-access changes. H-11 attempt 1793309763525 showed a Vite TypeScript overlay caused by incorrect
+  known-value narrowing in the home-threat helper; the source error is fixed, but H-11 still needs a current native
+  check. PLACE-03 applicability also needs review before any targeted rerun.
+- B1 withdrawal recovery now has current native evidence for both factions on fixture `fnv1a32:48f86832` and
+  source `e792827ab66d` (dirty `fnv1a32:cc22f882`): Skaduwee 1793313251345 and Tivara 1793313388623 each reach
+  3001 ticks/150 decisions and pass. The fixture uses a legal 240-stock Tree11; recovery is measured after a
+  first sample of a subsequently confirmed two-sample clear home-danger window, with native retreat completion
+  independently required. Continue B2/B3;
+  do not replay these withdrawal variants unchanged.
 - H-13's interrupted run finished: report 1793296020629-failed.json. Each variant's only missing ownership frame is
   its first selected decision, where no older provisional claim exists; later snapshots are complete. The native
   waiting-exposure evaluator now skips frames with no older claims, with focused positive and negative checks.
@@ -58,8 +63,8 @@ Do not reconstruct the old seven-package roadmap from chat or historical records
 
 | Packet | State | Next action |
 | --- | --- | --- |
-| A placement/walls/recovery | in_progress | A3 terminal failure retries are bounded with focused evidence. Reconcile H-11/PLACE-03 applicability after shared construction-access changes; H-11 current-source check timed out before ticks (1793309763525). PLACE-01 premise and WALL-01 Node capture limit remain unresolved; do not replay unchanged. |
-| B expansion/mission continuity | in_progress | Skaduwee EXP-02 home_pressure passes (1793304761105); H-14 harmless passes for both factions (1793303409673, 1793305015091). Resource-service deferral now keys on known-home pressure while preserving per-site safety. Recovery replay 1793307799025 timed out before ticks; diagnose the runtime path, then resume B1/B3 without unchanged replay. |
+| A placement/walls/recovery | in_progress | A3 terminal failure retries are bounded with focused evidence. H-11 attempt 1793309763525 was a TypeScript startup overlay, now fixed; current-source native H-11 still needed. PLACE-03 applicability needs review. PLACE-01 premise and WALL-01 Node capture limit remain unresolved; do not replay unchanged. |
+| B expansion/mission continuity | in_progress | EXP-02 withdrawal recovery passes for Skaduwee 1793313251345 and Tivara 1793313388623 on the same source/fixture. Existing Skaduwee home_pressure and both H-14 harmless passes remain. Continue B2 scouting and B3 combat; no unchanged EXP-02 withdrawal reruns. |
 | C resource/command ownership | validated | C1 duplicate admission preserves actor/application progress; C2 expired provisional escrow and contracted-balance gating have focused coverage, H-10 retains both-faction capacity evidence, and H-13 has current native base-control confirmation for both factions. C3 epoch/identity/dispatch guards reviewed; focused Phaser tests pass 20/20. Full gameplay tests pass 105 suites/611 tests. |
 | D essential SP lifecycle | ready; independent fallback | Inspect H-31 continuation and H-32 SP dispatch restrictions. |
 | E ordinary play/closure | waits for A–D | Reconcile relevant evidence and run only affected release outcomes. |

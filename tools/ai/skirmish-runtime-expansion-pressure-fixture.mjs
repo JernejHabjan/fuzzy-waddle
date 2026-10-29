@@ -36,9 +36,11 @@ export function validExpansionPressureRecipe(recipe, assertion, scenarioId) {
           (preset.initialOrders?.length ?? 0) !== 0) return false;
       if (!["expand", "combat_resolved"].includes(mode) && (variant.role !== "standalone" || variant.pairId !== undefined)) return false;
       const actors = preset.actors.filter((actor) => raiderRoles.includes(actor.fixtureActorId));
-      if (mode === "expand" ? actors.length !== 0 : actors.length !== 4 ||
+      const safeSourceStocks = (preset.sourceStocks ?? []).filter((source) => source.fixtureActorId === "safe-source");
+      if ((mode === "expand" ? actors.length !== 0 : actors.length !== 4 ||
           !raiderRoles.every((role) => actors.some((actor) => actor.fixtureActorId === role && actor.owner === 1 &&
-            actor.actorName === (faction === "Tivara" ? "SkaduweeWarriorMale" : "TivaraMacemanMale")))) return false;
+            actor.actorName === (faction === "Tivara" ? "SkaduweeWarriorMale" : "TivaraMacemanMale")))) ||
+          safeSourceStocks.length !== 1 || safeSourceStocks[0].amount !== 240) return false;
       if (mode !== "expand") {
         if (attackActors && !isDeepStrictEqual(actors, attackActors)) return false;
         attackActors = actors;
@@ -57,8 +59,8 @@ export function validExpansionPressureRecipe(recipe, assertion, scenarioId) {
         if (mode === "pressure_withdrawn") {
           const withdrawalId = index ? `withdraw-home-pressure-${index}` : "withdraw-home-pressure";
           const withdrawal = controls.find((control) => control.id === withdrawalId);
-          if (!withdrawal || withdrawal.producerFixtureActorId !== role || withdrawal.requestTick !== 500 ||
-              withdrawal.applicationTick !== 500 || withdrawal.action?.kind !== "move" ||
+          if (!withdrawal || withdrawal.producerFixtureActorId !== role || withdrawal.requestTick !== 440 ||
+              withdrawal.applicationTick !== 440 || withdrawal.action?.kind !== "move" ||
               !isDeepStrictEqual(withdrawal.action.worldPosition, { x: -320 + index * 64, y: 256, z: 0 })) return false;
         }
       }

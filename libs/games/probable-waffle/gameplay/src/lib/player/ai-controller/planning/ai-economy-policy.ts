@@ -111,24 +111,26 @@ export function hasCredibleAiEconomyThreat(observation: AiObservationV1): boolea
 
 /** Defers optional infrastructure only for credible pressure near a known main building. */
 export function hasCredibleAiHomeThreat(observation: AiObservationV1): boolean {
-  const mainBuildings = observation.actors.filter(
-    (actor) =>
-      actor.relation === "self" &&
-      actor.visibility === "owned" &&
-      actor.mainBuilding?.status === "known" &&
-      actor.mainBuilding.value &&
-      actor.logicalPosition.status === "known"
-  );
+  const mainBuildingPositions = observation.actors.flatMap((actor) => {
+    if (
+      actor.relation !== "self" ||
+      actor.visibility !== "owned" ||
+      actor.mainBuilding?.status !== "known" ||
+      !actor.mainBuilding.value ||
+      actor.logicalPosition.status !== "known"
+    )
+      return [];
+    return [actor.logicalPosition.value];
+  });
   // Without a known home location, retain the conservative existing behavior.
-  if (mainBuildings.length === 0) return hasCredibleAiEconomyThreat(observation);
+  if (mainBuildingPositions.length === 0) return hasCredibleAiEconomyThreat(observation);
 
   return observedAiEconomyThreats(observation).some((threat) => {
     if (threat.logicalPosition.status !== "known") return false;
-    return mainBuildings.some((building) => {
-      if (building.logicalPosition.status !== "known") return false;
+    const threatPosition = threat.logicalPosition.value;
+    return mainBuildingPositions.some((position) => {
       const distance =
-        Math.abs(building.logicalPosition.value.x - threat.logicalPosition.value.x) +
-        Math.abs(building.logicalPosition.value.y - threat.logicalPosition.value.y);
+        Math.abs(position.x - threatPosition.x) + Math.abs(position.y - threatPosition.y);
       return distance <= LOCAL_THREAT_DISTANCE;
     });
   });

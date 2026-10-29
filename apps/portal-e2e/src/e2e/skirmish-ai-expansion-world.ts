@@ -38,7 +38,7 @@ export function expansionWorld(faction: "Tivara" | "Skaduwee", branch: Expansion
               position: { x: 960, y: 960, z: 0 } },
             { fixtureActorId: "ready-granary", actorName: "Granary", owner: 2, position: { x: 0, y: 1200, z: 0 } },
             { fixtureActorId: "ready-field", actorName: "Field", owner: 2, position: { x: 800, y: 640, z: 0 } },
-            { fixtureActorId: "safe-source", actorName: "Tree1", owner: null, position: { x: -192, y: 1152, z: 0 } },
+            { fixtureActorId: "safe-source", actorName: "Tree11", owner: null, position: { x: -192, y: 1152, z: 0 } },
             { fixtureActorId: "unsafe-source", actorName: "Tree9", owner: null, position: { x: -768, y: 1056, z: 0 } },
             { fixtureActorId: "safe-observer", actorName: tivara ? "TivaraMacemanMale" : "SkaduweeWarriorMale", owner: 2,
               position: { x: -96, y: 1120, z: 0 } },
@@ -54,7 +54,7 @@ export function expansionWorld(faction: "Tivara" | "Skaduwee", branch: Expansion
           resourceGrants: [], resourceStarts: [{ playerNumber: 2,
             amounts: { food: 1200, wood: 1600, stone: 800, minerals: 800 } }],
           sourceStocks: [...inheritedBindings.map((binding) => ({ fixtureActorId: binding.fixtureActorId, amount: 0 })),
-            { fixtureActorId: "ready-field", amount: 0 }],
+            { fixtureActorId: "ready-field", amount: 0 }, { fixtureActorId: "safe-source", amount: 240 }],
           controls: pressure ? [
             ...EXPANSION_HOME_RAIDER_ROLES.map((producerFixtureActorId, index) => ({
               id: index ? `attack-original-home-${index}` : "attack-original-home", producerFixtureActorId,
@@ -63,7 +63,7 @@ export function expansionWorld(faction: "Tivara" | "Skaduwee", branch: Expansion
             ...(branch === "pressure_withdrawn" ? EXPANSION_HOME_RAIDER_ROLES.map((producerFixtureActorId, index) => ({
               id: index ? `withdraw-home-pressure-${index}` : "withdraw-home-pressure", producerFixtureActorId,
               // Let the original attack cause serious home damage before the pressure is withdrawn.
-              requestTick: 500, applicationTick: 500,
+              requestTick: 440, applicationTick: 440,
               action: { kind: "move" as const, worldPosition: { x: -320 + index * 64, y: 256, z: 0 } }
             })) : [])
           ] : []
