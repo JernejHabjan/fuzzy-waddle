@@ -69,8 +69,9 @@ export function constructionAccessPolicy(
   const staticBlocked = new Set(
     [...cells.values()].filter((cell) => cell.staticBlocked === true).map((cell) => cell.tileKey)
   );
-  const baselineBlocked = clearanceBlocked(staticBlocked);
-  const before = flood(baselineBlocked);
+  // Existing static paths are already authoritative; applying a proposed building's clearance
+  // envelope around every old obstacle can make a builder standing beside a wall appear stranded.
+  const before = flood(staticBlocked);
   if (before.size === 0) return () => false;
   const shoreKeys = new Set(
     (observation.map?.accessGraph?.transferPoints ?? [])
@@ -158,10 +159,10 @@ export function constructionAccessPolicy(
     }
   }
   const orderSpaceKeys = [...new Set([...orderOriginKeys, ...orderEndpointKeys])].filter(
-    (key) => before.has(key) && !baselineBlocked.has(key)
+    (key) => before.has(key)
   );
   const protectedOrderRouteKeys = new Set(
-    [...orderedRouteKeys].filter((key) => before.has(key) && !baselineBlocked.has(key))
+    [...orderedRouteKeys].filter((key) => before.has(key))
   );
   return (footprint) => {
     if (
@@ -174,7 +175,10 @@ export function constructionAccessPolicy(
       )
     )
       return false;
-    const blocked = clearanceBlocked(new Set([...staticBlocked, ...reserved, ...footprint]));
+    const blocked = new Set([
+      ...staticBlocked,
+      ...clearanceBlocked(new Set([...reserved, ...footprint]))
+    ]);
     if (blocked.has(start)) return false;
     if (orderSpaceKeys.some((key) => blocked.has(key))) return false;
     const after = flood(blocked);

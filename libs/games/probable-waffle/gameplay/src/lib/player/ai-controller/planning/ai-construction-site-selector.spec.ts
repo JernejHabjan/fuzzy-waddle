@@ -28,6 +28,26 @@ describe("construction travel ordering", () => {
     expect([...reachableAiConstructionTiles(observation, builder)]).toEqual(["0,0", "1,0", "2,0"]);
     expect(selectConstructionPosition(observation, builder, 0, 0, new Set())).toEqual({ x: 2, y: 0, z: 0 });
   });
+  it("allows a builder beside an existing wall to reach a large-building site", () => {
+    const base = createAiProductionPolicyFixture().observation,
+      worker = createAiTestOwnedActor("builder");
+    if (!base.map) throw new Error("construction_fixture_map_missing");
+    const builder = {
+      ...worker,
+      logicalPosition: { status: "known" as const, value: { x: 1, y: 1, z: 0 }, observedTick: 0 }
+    };
+    const cells = Array.from({ length: 9 }, (_, y) => Array.from({ length: 9 }, (_, x) => ({
+      tileKey: `${x},${y}`,
+      position: { x, y, z: 0 },
+      groundPassable: true,
+      waterPassable: false,
+      elevation: 0,
+      observedBlocked: x === 2 && y === 1,
+      staticBlocked: x === 2 && y === 1
+    }))).flat();
+    const observation = { ...base, map: { ...base.map, constructionCells: cells } };
+    expect(selectConstructionPosition(observation, builder, 0, 0, new Set(), 1)).toEqual({ x: 1, y: 4, z: 0 });
+  });
   it("keeps the nearest legal site regardless of decision sequence, then reserves the next footprint", () => {
     const builder = {
       ...createAiTestOwnedActor("builder"),
