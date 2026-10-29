@@ -426,6 +426,26 @@
                 "y": 848,
                 "z": 0
               }
+            },
+            {
+              "fixtureActorId": "fortification-house-1",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 576,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "fortification-house-2",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 672,
+                "y": 976,
+                "z": 0
+              }
             }
           ],
           "existingActorBindings": [
@@ -2906,6 +2926,26 @@
               "position": {
                 "x": 96,
                 "y": 848,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "fortification-house-1",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 576,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "fortification-house-2",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 672,
+                "y": 976,
                 "z": 0
               }
             }

@@ -902,6 +902,14 @@ test("WALL-01 terrain chokes provide opposite cliff anchors and fund the bounded
     assert.ok(aiStart);
     // Eight wall-line nodes plus two stairs cost at most 700 stone; the standard 20% ceiling can fund that prefix.
     assert.ok(aiStart.amounts.stone >= 3500, `${variant.id}: insufficient stone for the bounded 700-stone graph`);
+    const housing = variant.presetWorld.actors.filter((actor) =>
+      ["ready-house", "fortification-house-1", "fortification-house-2"].includes(actor.fixtureActorId)
+    );
+    assert.equal(housing.length, 3, `${variant.id}: essential housing buffer must not suppress optional fortification`);
+    assert.deepEqual(
+      housing.map(({ fixtureActorId }) => fixtureActorId).sort(),
+      ["fortification-house-1", "fortification-house-2", "ready-house"]
+    );
   }
 });
 

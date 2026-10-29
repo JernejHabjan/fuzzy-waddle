@@ -128,6 +128,15 @@ export function nativeScenarioActors(id, own, enemy, branch) {
     if (branch === "multiple_bases")
       actors.push(actor("second-home", own === "Tivara" ? "Sandhold" : "FrostForge", 2, 38, 36));
   }
+  if (id === "WALL-01" && branch === "terrain") {
+    // WALL-01 isolates the optional fortification plan. Start with its essential housing
+    // buffer met so the manager is not correctly held behind unmet supply demand.
+    const housing = own === "Tivara" ? "Olival" : "Emberstone";
+    actors.push(
+      actor("fortification-house-1", housing, 2, 37, 20),
+      actor("fortification-house-2", housing, 2, 40, 20)
+    );
+  }
   if (id === "H-27" && branch === "uncovered")
     actors.find((entry) => entry.fixtureActorId === "contact-group").position = tile(28, 21);
   if (

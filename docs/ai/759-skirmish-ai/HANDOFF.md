@@ -18,16 +18,19 @@ Do not reconstruct the old seven-package roadmap from chat or historical records
   Move route (8,9)->(10,9), even though whole-area connectivity passed. A three-tile opening now keeps that
   route free while retaining the useful wall plan. Five focused manager/recovery/continuation/placement suites
   pass (41 tests).
-- Native WALL-01 Tivara reruns 1793297656059 and 1793297881648 both ended in victory but built no native AI
-  wall and retained retreat-route clearance failures. The first added overbroad active-order rejection; it was
-  removed after the run confirmed it suppresses all wall construction. The second still included that guard.
-  Do not repeat WALL-01 unchanged; diagnose its recorded route/decision with a smaller reproduction first.
-- PLACE-01 routes are evaluator-only `protectedRoutes`; physical move probes run at tick 1, while clearance is
-  checked through tick 2400. AI can observe only current owned orders. Its field-alignment predicate is outside
-  A1's usefulness contract. Reconcile the route premise without exposing oracle-only data to AI or relaxing
-  required physical transit evidence.
-- Next: continue independent packet C1/C2 ownership work; return to A1/A2/A3 after the route premise has a
-  focused answer. Skaduwee native WALL-01 not yet run.
+- PLACE-01 repeated-control diagnostic 1793301306256 (temporary fixture digest `fnv1a32:7c33d7ef`) showed
+  the combat probe was replaced by an Attack order at tick 20; the first worker move ended at fallback tile
+  (31,24), not its requested endpoint (31,22), and a fourth Field completed at tick 2341 with only 59 ticks
+  left for delivery. Temporary probes were restored. Do not replay that schedule; rebuild a passive physical
+  route premise or resolve the source/coordinate mismatch with a smaller reproduction.
+- WALL-01's old Tivara runs 1793297656059/1793297881648 built no wall. Decision capture showed housing demand
+  2/4, correctly gating optional fortification. Both terrain variants now add two named starting houses; static
+  fixture coverage passes. Captures 1793301901609 and 1793302187843 failed browser whole-capture stringification.
+  The exporter now streams JSON into gzip and its 12k-fact browser regression passes, but retry 1793302528839
+  exceeded Node's maximum string length while decompressing (> `0x1fffffe8`). Stop full WALL-01 retries until
+  the Node-side capture is bounded or incrementally parsed; no wall-native evidence is claimed.
+- Continue independent A3 recovery and B diagnosis while the PLACE-01 and WALL-01 fixture/capture issues are
+  unresolved. C1–C3 remain validated; do not repeat their tests without an invalidating change.
 - H-13's interrupted run finished: report 1793296020629-failed.json. Each variant's only missing ownership frame is
   its first selected decision, where no older provisional claim exists; later snapshots are complete. The native
   waiting-exposure evaluator now skips frames with no older claims, with focused positive and negative checks.
@@ -48,9 +51,9 @@ Do not reconstruct the old seven-package roadmap from chat or historical records
 
 | Packet | State | Next action |
 | --- | --- | --- |
-| A placement/walls/recovery | in_progress | Three-tile route opening has focused support; WALL-01 remains unproven after two runs. Continue placement/recovery and diagnose captured route with a smaller repro before any wall retry. |
+| A placement/walls/recovery | in_progress | Focus A3 recovery/B independently. PLACE-01 repeated-probe schedule was invalid; WALL-01 satisfies no native claim because the 4/4 housing setup now exceeds Node's 512 MiB string parser. Do not rerun either unchanged. |
 | B expansion/mission continuity | ready after shared A analysis; independent diagnosis allowed | Explain EXP-02 home loss and H-14 frontier replacement. |
-| C resource/command ownership | validated | C1 duplicate admission preserves actor/application progress; C2 expired provisional escrow and contracted-balance gating have focused coverage, H-10 retains both-faction capacity evidence, and H-13 has current native base-control confirmation for both factions. C3 epoch/identity/dispatch guards reviewed; focused Phaser tests pass 20/20. Full gameplay tests pass 105 suites/609 tests. Move to A placement/wall/recovery next. |
+| C resource/command ownership | validated | C1 duplicate admission preserves actor/application progress; C2 expired provisional escrow and contracted-balance gating have focused coverage, H-10 retains both-faction capacity evidence, and H-13 has current native base-control confirmation for both factions. C3 epoch/identity/dispatch guards reviewed; focused Phaser tests pass 20/20. Full gameplay tests pass 105 suites/609 tests. |
 | D essential SP lifecycle | ready; independent fallback | Inspect H-31 continuation and H-32 SP dispatch restrictions. |
 | E ordinary play/closure | waits for A–D | Reconcile relevant evidence and run only affected release outcomes. |
 

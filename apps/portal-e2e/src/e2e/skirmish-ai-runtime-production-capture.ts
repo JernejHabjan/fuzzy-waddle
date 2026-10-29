@@ -22,7 +22,58 @@ export async function captureRuntimeProductionAuthority(
       if (!capture) throw new Error("runtime_production_capture_unavailable");
       const record = capture.capture(owner, horizon);
       const detached = omitLedger ? { ...record, recipientResourceFacts: undefined } : record;
-      const stream = new Blob([JSON.stringify(detached)]).stream().pipeThrough(new CompressionStream("gzip"));
+      const serialize = function* (value: unknown, arrayItem = false): Generator<string> {
+        if (value === null || value === undefined || typeof value === "function" || typeof value === "symbol") {
+          if (value === null || arrayItem) yield "null";
+          return;
+        }
+        if (Array.isArray(value)) {
+          yield "[";
+          for (let index = 0; index < value.length; index++) {
+            if (index) yield ",";
+            yield* serialize(value[index], true);
+          }
+          yield "]";
+          return;
+        }
+        if (typeof value === "object") {
+          yield "{";
+          let first = true;
+          for (const key of Object.keys(value)) {
+            const item = (value as Record<string, unknown>)[key];
+            if (item === undefined || typeof item === "function" || typeof item === "symbol") continue;
+            if (!first) yield ",";
+            first = false;
+            yield `${JSON.stringify(key)}:`;
+            yield* serialize(item);
+          }
+          yield "}";
+          return;
+        }
+        yield JSON.stringify(value) ?? "null";
+      };
+      const encoder = new TextEncoder();
+      let iterator: Generator<string> | undefined;
+      const json = new ReadableStream<Uint8Array>({
+        start() {
+          iterator = serialize(detached);
+        },
+        pull(controller) {
+          if (!iterator) throw new Error("runtime_production_capture_stream_unavailable");
+          let text = "";
+          while (text.length < 16_384) {
+            const next = iterator.next();
+            if (next.done) {
+              if (text) controller.enqueue(encoder.encode(text));
+              controller.close();
+              return;
+            }
+            text += next.value;
+          }
+          controller.enqueue(encoder.encode(text));
+        }
+      });
+      const stream = json.pipeThrough(new CompressionStream("gzip"));
       const bytes = new Uint8Array(await new Response(stream).arrayBuffer());
       let binary = "";
       for (let offset = 0; offset < bytes.length; offset += 0x8000)
