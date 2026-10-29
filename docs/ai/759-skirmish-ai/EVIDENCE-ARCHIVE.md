@@ -1,5 +1,9 @@
 # #759 archived evidence history
 
+Historical lookup only. Current scope and execution order are in REMAINING-WORK.md and HANDOFF.md.
+Past next-action paragraphs and gate requirements are historical, not active instructions. Read only a selected
+artifact's section; do not append routine session journals. Git retains prior active-document versions.
+
 ## 2026-10-29 — PLACE-01 alignment and route-visibility evidence
 
 - Focused food-infrastructure and placement-access tests pass 26/26 after Field selection began preferring an aligned, safe candidate when one is available.

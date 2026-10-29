@@ -1,39 +1,25 @@
-# #759 CI runtime resume
+# #759 CI follow-up (deferred)
 
-Read [HANDOFF.md](HANDOFF.md) first. Routine native runtime scenarios are already automated by
-`.github/workflows/pull-request-checks.yml`; do not run the former cross-PC D-03 startup probe.
+Updated 2026-10-29. CI activation and real-peer evidence are excluded from the first single-player iteration.
+Read HANDOFF.md and REMAINING-WORK.md for current work. This file is not an active queue.
 
-## Current CI path
+## Existing implementation
 
-The pull-request workflow runs `tools/ai/select-skirmish-ci-shards.mjs`, derives shards from the scenario manifest,
-runs each shard with the native matrix runner on Ubuntu/Playwright, and retains the report artifacts. Its separate
-real-peer job starts local Supabase before multiplayer execution.
+.github/workflows/pull-request-checks.yml defines:
+- skirmish-runtime-plan: tools/ai/select-skirmish-ci-shards.mjs derives supported manifest shards.
+- skirmish-runtime: runs native matrix shards, retains artifacts, max-parallel 2 and job timeout 60 minutes.
+- skirmish-multiplayer: starts Supabase and runs the real-peer harness, timeout 35 minutes.
 
-The selector accepted only deferred issue 822, while H-21 is correctly marked as a user deferral under issue 759.
-That contract and its focused control are repaired. The selector now succeeds and dynamically emits 103 runtime
-shards, retaining the five explicit content deferrals. Do not maintain another scenario list in workflow YAML.
+All three jobs require github.event.pull_request.draft == false. PR #814 is draft and must remain unchanged.
+Configured automation is therefore not evidence that current branch checks have executed.
+The selector includes supported runtime rows; it is not a changed-owner test selector.
+No other-PC probe is needed. Do not manually duplicate the scenario catalogue in workflow YAML.
 
-## Progress snapshot
+## Later activation work
 
-- Updated 2026-10-27: seven of 22 selected native obligations are closed. Current branch status and next steps live in [HANDOFF.md](HANDOFF.md) and [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md); this file documents CI resumption rather than duplicating the progress ledger.
-- Scenario registration: pure 111/111 and supported runtime 115/115; five runtime rows are explicitly deferred.
-  Registration means runnable setup exists, not that behavior passed.
-- Newly selected native obligations: 7/22 closed. Remaining real-peer obligations and the D-06 comparison are tracked
-  in the active handoff and remaining-work inventory.
-- The five-item non-browser audit and repair batch is checked. Its commands and results remain in
-  [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md); do not repeat it as preparation.
-- Package 3's two-faction SEQ-01 authoritative victory gate now passes on adaptive placement coverage and the one-retry
-  tactical mission fix. See the latest evidence and Package 3 continuation cursor in [HANDOFF.md](HANDOFF.md).
-
-## Next
-
-Use the matrix or bounded local diagnostics and retained reports to triage failures. Fix the earliest shared causal
-failure, run affected controls, then rerun relevant shards. Keep real-peer outcomes distinct from single-player
-save/replay behavior.
-
-The remaining outcome order and finish conditions are in [REMAINING-WORK.md](REMAINING-WORK.md): current scouting,
-combat and access; placement/recovery; authority, multiplayer and lifecycle; continuous play and difficulty; then
-debug, legacy closure and the final machinery review. The user's 2026-10-24 instruction to finish the AI work
-supersedes the earlier pause on full victory and broad gates; run them after their dependencies. Resolve D-06 baseline
-compatibility before calibration. Five content rows remain explicitly deferred and are excluded from the supported
-runtime denominator.
+After the single-player iteration, choose an explicitly authorized CI route (for example a manual workflow)
+without changing PR state implicitly. Separate fast affected checks/small smoke coverage from extended native
+runs; use existing manifest fixtures. Preserve real-peer requirements and report missing infrastructure honestly.
+Run existing reconnect/host-transfer/stale-command cases and retain their own evidence; SP cannot certify them.
+Resolve unsupported D-06 baseline comparison as a separate scope decision before calibration.
+Do not activate or redesign these workflows during the current iteration.

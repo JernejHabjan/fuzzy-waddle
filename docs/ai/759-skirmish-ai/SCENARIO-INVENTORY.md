@@ -1,5 +1,9 @@
 # #759 scenario inventory
 
+Historical full-roadmap reference. The 2026-10-29 single-player iteration is controlled by
+[REMAINING-WORK.md](REMAINING-WORK.md); this catalogue does not add release gates or execution steps.
+Preserve scenario contracts, but do not interpret historical statuses or next actions as current instructions.
+
 Registration updated2026-10-22; Publication base6fbae050665f0ef10a13b2b3596c047451205f68 plus task-owned D-06 source; verify containing commit/remote.
 [Execution plan](REMAINING-WORK.md) and [handoff](HANDOFF.md) own order/current status. Open only the selected family.
 

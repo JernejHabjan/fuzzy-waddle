@@ -1,210 +1,211 @@
-# #759 remaining work inventory
+# #759 single-player execution contract
 
-Inventory snapshot:2026-10-22; active CI status:2026-10-24. Publication base6fbae050665f0ef10a13b2b3596c047451205f68 plus task-owned D-06 source; verify containing commit/remote.
-[HANDOFF.md](HANDOFF.md) owns the next action; [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) distinguishes authored and
-validated evidence. This is the existing execution inventory, not another design project. Read only the selected package.
+Approved direction: 2026-10-29. Replaces the old seven-package execution queue for this iteration.
+Lane: user-authorized implementation. Preparation is documentation only.
+Worker: Luna High recommended; Sol Medium supported. No automatic switches or agents.
 
-## Active checkpoint policy (2026-10-24)
+## Goal and finish line
 
-Runtime scenarios are already automated in the pull-request CI matrix; routine execution does not need a second-PC
-probe or a hand-maintained scenario command. [CI-RESUME.md](CI-RESUME.md) records the matrix path. Its deferred-row
-selector defect is fixed; it emits 103 dynamic shards. Registration is complete; the current native-obligation count
-is maintained in the handoff.
-The registration snapshot below describes the prior authoring state, not current verification authorization.
-The subsequent five-item non-browser batch is checked: typing/lint/pure controls, resource/deposit audit,
-construction recovery, combat rules and fail-closed readers. See HANDOFF's current cursor and CURRENT-EVIDENCE.
-Do not repeat that batch as unfinished preparation. The current-source two-faction SEQ-01 victory gate now passes on the
-adaptive site-observation implementation. Continue from HANDOFF's Package 3 cursor through remaining registered outcomes,
-then advance to Packages 4–7. Do not rerun unchanged passing full scenarios locally; grouped CI runtime shards already
-cover registered cases.
+On "go", use this objective with create_goal if absent; do not invent a token budget:
 
-## What the inventory establishes
+> Complete the single-player Skirmish AI iteration in docs/ai/759-skirmish-ai/REMAINING-WORK.md,
+> acceptance A1–A3, B1–B3, C1–C3, D1–D2 and E1–E3. Implement and verify useful placement/walls/recovery,
+> safe expansion, sustained fair scouting/combat, exactly-once resource/command ownership and essential SP
+> continuation; preserve economy/production and both-faction victory. Follow the bounded repair loop,
+> retain valid evidence, cap each local runtime invocation at 30 minutes, maintain three compact active
+> records, and commit/push coherent task-owned batches. Defer multiplayer, CI activation, exhaustive
+> calibration/debug certification, SCOUT-02/ESCORT and optional content. Do not change PR #814.
+> Finish only when every iteration acceptance item has sufficient evidence and closure review is complete.
+> Report genuine blockers without claiming completion.
 
-The original concrete plan contains121 named scenarios. Pure registration is111/111. Supported runtime registration
-is115/115 (100%);0 active specifications remain without native binding. Five runtime rows are explicitly deferred:
-four #822 island-content rows and H-21 larger-unit clearance by user2026-10-21. Definitions115/115 all have bindings.
-This continuous batch has authored22 new registrations, with84 factory bindings/588 variants and
-21 retained partial owner worlds unrun. H-23 now includes user-authorized native island establishment; its small
-water-enclosed diagnostic preset does not silently close the four broader #822 content rows.
-**Registration authoring is complete; native evidence remains open and should be collected through the required CI matrix.**
-D-06 owns the frozen calibration driver; calibration is a completion gate after core behavior closes and its baseline compatibility issue is resolved.
-Its six descriptors are dispatch groups, not six games. The pinned legacy difficulty/opening comparison is unsupported;
-this remains an explicit acceptance failure, never a passing legacy comparison or a request for more registrations.
-H-32 now binds actual same-realm UI transitions, retained paid/path work and real host replacement, authored unrun.
-DBG-05 binds actual runtime-artifact import UI, bounded hostile inputs and real peer import/capture denial, authored unrun.
-H-31 binds eight native SP save/continuation worlds, real paid/uncertain work and exact next-decision traces, authored unrun.
-D-02 binds18 variants across all policies/factions, separate SP codec continuation and real MP reconnect/checkpoint-backed
-host transfer. Actual stored AI state is restored on promotion; no lossless abrupt-failover claim without a checkpoint.
-H-08 binds native timeout/cancel/late-receipt controls and real old-epoch command/receipt delivery in both orders;
-cancellation requires native acknowledgment and one correct original refund, not merely a dispatched request.
-H-09 binds six actual retention/codec/peer variants; native inputs and completions cross the real dedup limit while
-unresolved paid ownership survives. Full continuation comparisons now include food alongside the other resources.
-SEQ-08 binds eight complete source chains: actual SP original/replayed autonomous finish and independent real MP
-reconnect/promotion/late events/finish. Each uses ordinary same-realm second-match UI; no forced result or MP saves.
-DBG-01/03 bind twelve native incident/physical-replay/step/live-read controls. Actual codec records and complete inputs
-stay local; incomplete ranges and version/config mismatches are refused. Live bookmarks/history cannot step or pause MP.
-User correction2026-10-21: save/load coverage belongs to single-player. Multiplayer coverage uses actual host transfer,
-reconnect and stale-event fencing. H-31 is SP; D-02/SEQ-08 use separate supported legs. No MP save/load feature is planned.
-Counts describe registration, not passing gameplay, unique physical maps, sessions or time remaining.
-Each row needs complete source-specific native outcome evidence before validation; an authored reader is not that evidence.
+This is a playable supported single-player iteration, NOT certification of every #759 roadmap promise.
+Keep manifest expectations intact. Selected diagnostic passes cannot certify an entire scenario family.
+No new architecture/catalogue/telemetry project, broad legacy removal, or statistically proven difficulty ordering.
+Easy/Normal/Hard retain legal configuration. SCOUT-02/ESCORT remain known limitations; repair a shared cause
+if required here, but do not reopen their exhaustive certification. Shared multiplayer guards must stay safe.
 
-Earlier descriptions such as “full acceptance open” concealed three different kinds of work. Use these states:
+## Autonomous loop
 
-- **Missing registration:** no required fixture/recipe is connected in the manifest. Inspect existing controls;
-  register equivalent coverage or author the missing setup and semantic assertions.
-- **Authored specification:** runtimeRecipeDraft defines setup, actions, physical assertions, branches and explicit
-  binding blockers; fixture remains null. No execution/passing claim. Implement the named bindings before registration.
-- **Registered, evidence pending:** the setup exists; run its ID-specific assertions and record source/fixture provenance.
-  A reference to an ID or an unrelated passing suite is insufficient.
-- **Known failure:** retained execution identifies a failing outcome. Fix its causal owner and rerun affected cases.
-- **Checked subset:** some explicit branches pass, but that does not certify their entire scenario family.
-- **Validated:** every applicable required branch has passing evidence for the relevant source and fixture inputs.
-- **Deferred content:** outside the current land-content gate; retain the explicit reason, never count it as passed.
+1. Read HANDOFF and selected packet/evidence. Check Git, source and goal state. Initially run
+   pnpm agent:doctor and pnpm agent:context -- --issue 759 once. Generated older roadmap text does not override this contract.
+2. Select first unfinished dependency-ready packet. Track its numbered acceptance internally. Inspect implementations,
+   callers, observations, application/cleanup and adjacent tests before editing. Preserve unrelated changes.
+3. Identify the earliest disagreement: observation -> decision -> reservation -> command -> physical effect -> cleanup.
+   Classify it as gameplay, fixture premise, evaluator or infrastructure. Label hypotheses as hypotheses.
+4. Implement a coherent owner slice. Add meaningful focused regression/negative/recovery controls where needed.
+   Prefer retained decision replay or pure/Phaser checks for diagnosis.
+5. Before runtime verify legal starts, capabilities, range, resources, demand, visible/reachable routes, horizon,
+   oracle prerequisites and generated-fixture consistency. Do not tune balance merely to rescue a test.
+6. Run focused checks and review consumers. Obtain one native confirmation when physical evidence is absent or invalidated.
+   Extend to the other faction when content differs. Retain valid existing evidence; no unchanged full-family replays.
+7. Record evidence/provenance, update cursor, commit/push exact task-owned files, then continue automatically.
+   A failed push is a publication problem, not a reason to repeat implementation. No force push or PR changes.
 
-Missing registration does not mean missing production code. The row-level snapshot establishes coverage gaps;
-it does not pretend that every existing gameplay implementation has been audited for completeness.
+### Failed attempts
 
-## Finite execution queue
+- Every runtime retry names the changed cause and predicted observation. Unchanged reruns require a specific
+  nondeterminism/infrastructure question; reassurance is insufficient. Zero ticks is not gameplay evidence.
+- After two unsuccessful repair/check cycles on one cause, stop full-match retries. Compare captured inputs
+  with the regression, inspect one downstream owner and make a smaller reproduction.
+- If that bounded reassessment cannot justify a repair, record cause, attempts, smallest reproduction, artifact
+  and missing decision; mark the packet blocked and advance independent work. Revisit only with new evidence
+  or a relevant dependency fix. Do not cycle through unchanged blockers.
+- Choose routine implementation details independently. Ask only for actual scope/product changes, unavailable
+  external access or irreversible actions. Do not weaken assertions or waive acceptance to finish.
+- When no ready work remains, provide one grouped blocker report. Follow goal-tool status rules; a packet blocker
+  alone is not permission to mark the tool goal blocked. Do not create retry/polling automations.
+- Scope is finite, but a new demonstrated defect violating an acceptance item remains required.
 
-**Continuation contract:** “continue” means implement the next unfinished step selected by HANDOFF's cursor.
-Resume an unfinished package; otherwise advance to the next dependency-ready package below. Do not restart design,
-ask for routine reconfirmation or reconstruct order from chat. Update the cursor and selected outcome states after
-each coherent batch, commit/push when authorized and continue to the next dependency-ready work. A newer explicit user instruction takes precedence.
+## Source anchors
 
-These are seven grouped work packages, not seven promised sessions. A package can contain several shared-owner repairs.
-Do not create another stage for each helper, test or failing seed. No additional scenario IDs, observer architecture,
-profiling suite or finer M13 journal is scheduled. A genuinely new requirement needs an explicit scope decision.
+Repo-relative abbreviations:
+G = libs/games/probable-waffle/gameplay/src/lib/player/ai-controller
+P = libs/games/probable-waffle/phaser/src/lib
+E = apps/portal-e2e/src/e2e
 
-| Order         | Package and existing IDs                                                                      | Concrete work                                                                                                                                                                          | Finish condition                                                                                                                                               |
-| ------------- | --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1 — validated | Production: PRO-01–07, H-17                                                                   | Validated delivery/prebuild/recovery/contention and H-17 coverage; retained evidence below                                                                                             | All applicable production predicates pass, including the 16 paired authority worlds; no invented useful arrivals or weakened deadlines                         |
-| 2 — validated | Economy and technology: ECO-01–08, H-16/H-18, TECH-01–06                                      | Close missing aggregate-budget/depleted-source controls; prove delivered income, worker allocation, food/supply recovery, research/counterproduction and stopping unnecessary spending | Registered pure/runtime cases pass their exact outcomes; both factions establish renewable income from the normal 200-resource start                           |
-| 3 — current   | Scouting, attack and access: SCOUT, STRAT, DOMAIN, RAID, FIGHT, C families plus their H cases | Complete registered pure cases and missing native recipes for fair scouting, reachable targets, force size, attack/retreat and counters; repair actual failures                 | Supported land cases pass and SEQ-01 reaches the authoritative victory result for both factions; another launched attack is not completion                     |
-| 4             | Placement, fortification and recovery: PLACE, EXP, WALL, H-01–05/H-27–28                      | Complete remaining semantic branches and native placement/expansion/wall/recovery recipes; repair owners only where a scenario exposes a defect                                                   | Legal useful construction and bounded recovery pass; healthy long work survives, impossible work releases actors/claims                                        |
-| 5             | Resource authority, multiplayer and lifecycle: H-06–15/H-30–32, M11, #819/#823                | Close exactly-once/resource-capacity gaps; run real two-client authority/reconnect/host-transfer controls; cover interrupted save/load/replay and second-match cleanup                 | No duplicate payment/effect, stale capacity or split authority; matching peer/replay state and clean next match across required boundaries                     |
-| 6             | Continuous play and difficulty: supported SEQ and D families, #817                            | Recheck SEQ-02 after shared changes; implement missing legal-start match/difficulty cases and isolated baseline comparison; run required paired seeds and soaks                        | Required terminal/recovery outcomes, supported difficulty ordering and bounded long-play state pass; mere survival is not victory                              |
-| 7             | Debug coverage and closure: DBG, #820/#821, machinery review                                  | Complete remaining debug semantic branches and native registrations; finish necessary cleanup, audit legacy callers/parity, remove proven obsolete code and unnecessary diagnostics                                  | Supported manifest rows have complete evidence on the resulting inputs, invalid startup cannot dispatch, legacy consumers are resolved, review/audits complete |
+Semantic discovery was attempted in preparation; jbcontext requires login. Use these known anchors and local rg;
+do not repeatedly try authentication. Verify paths/imports before changes; anchors are not a substitute for reading code.
 
-Packages 2–4 can share implementation/context with package 1 where the same owner is already being repaired.
-Local lifecycle preparation need not wait for combat; real socket cases depend on the multiplayer harness.
-Final legacy removal depends on parity evidence. Execute settled independent cases in family batches, not one chat per ID.
+## A — placement, walls and construction recovery
 
-**Batching policy (user, 2026-10-13):** before touching an owner, collect its known related failures, missing mappings
-and applicable negative/recovery controls across packages. Design and implement that coherent slice together; reuse
-the same fixtures and source context. Do not revisit economy, movement, queues or recovery in separate sessions when
-their dependencies permit one batch. Package numbers organize outcomes, not mandatory separate turns or model switches.
-Retain scoped evidence, then run affected checks and the grouped gate at a stable boundary. Separate work only for a
-real dependency, unresolved design decision or agreed pause boundary, and state the reason in the report.
+Dependency: none; start here.
+Read G/planning/ai-construction-access.ts, ai-construction-site-selector.ts, ai-field-capacity-proposal.ts,
+ai-fortification-connectivity.ts, ai-fortification-layout.ts, ai-fortification-recovery.ts and adjacent specs;
+P/player/ai-controller/observation/ai-observation-map.ts and selected PLACE/WALL evaluators under E.
+Source inspection: construction access protects active/pending order routes; fortification uses a separate flood.
+Retained fixture baseline routes may have ended by later construction. First reproduce this contract disagreement.
 
-**Machinery review is last (user, 2026-10-13):** complete required gameplay/scenario, multiplayer/lifecycle,
-calibration, debug and legacy work first. Within package 7, the final implementation/review task is the combined
-keep/simplify/remove decision for diagnostic machinery. Earlier scoped verdicts are historical evidence, not an active
-cleanup queue. Do not schedule interim machinery-removal batches. Recheck evidence affected by final simplification,
-then perform closure audits and publication; do not start another expansion cycle.
+Direction: use captured cells/actors to compare proposed footprint and native clearance. Protect meaningful owned
+service/spawn/transit access using permitted observations and existing lifecycle state. Do not feed oracle-only
+protectedRoutes to AI or reserve every historical route forever. If ongoing transit is the fixture premise,
+repair its ordinary orders and negative control. Native physical clearance remains authoritative.
 
-## Required batch report and progress percentages
+- A1: Useful Fields/buildings are builder-reachable, paid/completed and deliver intended service. Constrained sites
+  fail safely and important worker/army/spawn routes remain physically usable.
+- A2: AI builds useful walls when warranted, preserves an opening/worker/army passage and usable defensive access,
+  and declines redundant/no-value/infeasible layouts.
+- A3: Builder/site/entrance loss causes bounded repair, alternative work or release; healthy advancing work remains
+  owned. No repeated payment, orphaned builders or permanent retry loop.
 
-Use the authoritative [batch report format](HANDOFF.md#batch-report-and-progress) for every implementation batch
-and every requested done/next summary. Explain changed behavior and its purpose in plain language, with evidence
-status, concrete grouped follow-up, publication status and model/effort recommendation. Progress includes the current
-package/selected IDs, exact counts and metric labels, source/evidence date, and newly closed or still-failing/missing items.
+Evidence: retain PLACE-03/H-11. PLACE-01/02 and WALL-01/02 supply physical placement/transit.
+WALL-03/04/05 and H-01–05/H-27–28 are defense/recovery references, not a mandatory full native Cartesian sweep.
+Minimum native: both factions' useful placement and wall effect; one constrained/no-value control; one breach/builder-loss
+recovery, with focused controls for remaining A1–A3 branches. Start from retained PLACE-01/WALL-01, not a fresh run.
+Checks: placement-access/food-infrastructure, fortification manager/recovery/continuation, changed observation/evaluator specs.
 
-Use separate percentages for fixture registration and validated behavior. Calculate from the existing manifest and
-retained complete evidence, not commit counts, elapsed sessions, helper counts or guesses. Five explicitly deferred runtime
-rows are excluded from the supported runtime denominator and reported separately. Partial branch passes do not validate
-an entire scenario. Invalidate only outcomes affected by later source/fixture changes, with a reason.
+## B — expansion, scouting and combat continuity
 
-| Measured coverage at this snapshot    | Completed                                   | Remaining          | What the number means                                                                                              |
-| ------------------------------------- | ------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------ |
-| Pure fixture registration             | 111/111 = **100%**                          | 0/111 = **0%** | Required pure scenarios with registered fixtures; not behavior completion                                          |
-| Supported native definitions           | 115/115 = **100%**                          | 0/115 = **0%** | 115 scenario bindings; definitions only, not validated gameplay |
-| Supported runtime recipe registration | 115/115 = **100%**                          | 0/115 = **0%** | Runtime recipes connected; five explicitly deferred rows excluded; not behavior completion                              |
-| Scenario behavior validation          | Not yet reconciled across the full manifest | Not yet measurable | Existing subset passes and failures are recorded, but no truthful overall completion percentage can yet be derived |
+Dependency: consume A's access decisions; independent home-defense/scouting diagnosis can proceed while A is blocked.
+Read G/planning/ai-resource-service-manager.ts, ai-economy-policy.ts, ai-tactics-geometry.ts,
+ai-skirmish-scouting.ts, ai-tactics-mission-orders.ts, ai-tactics-mission-projection.ts and adjacent specs.
+Source retains some native scout/naval moves. H-14 still changes frontier questions before arrival.
+Skaduwee EXP-02 loses home despite the local-retreat fix; cause remains unproven.
 
-During each selected package, reconcile its existing complete evidence into the row status and report its exact
-validated/required percentage as well as the registration figures. Reuse existing reports; do not build another metrics
-system or rerun unchanged passing controls merely to populate the inventory. Until a complete evidence tally exists,
-explicitly report overall behavior percentage as unavailable alongside the numeric coverage measures. Never present
-the registration percentage as the percentage of AI implementation completed or of engineering time remaining.
+- B1: Expansion buys useful service, avoids known weapon range/duplicate service, protects home under credible pressure,
+  and resumes useful economy after withdrawal/combat resolution.
+- B2: Basic frontier scouting completes useful physical information trips without hidden-state access or perpetual
+  retargeting. Real danger/invalidity may preempt; income and paid production continue alongside scouting.
+- B3: Land attacks/retreats stay executable and react to threats without harmless noise repeatedly cancelling progress.
+  Both factions remain capable of authoritative victory (E).
 
-## Production closure and immediate economy/technology batch
+Direction: inspect damage, defense arrival, visibility and order replacement before adjusting EXP-02 pressure.
+For H-14 compare question age/expiry, physical route progress and competing actor claims. Preserve viable commitments
+with evidence-based preemption, not unconditional locks.
+Checks: resource-service, tactical geometry/scouting/admission, offense/planner regressions implicated by changes.
+Native minimum: Skaduwee home_pressure; one economic recovery branch per faction; H-14 harmless physical trip per faction.
+Retain relevant EXP-01/STRAT/FIGHT/RAID evidence; invalidate only affected invariants. SCOUT-02/ESCORT stay deferred.
 
-**Package 1 validated, 2026-10-15: 8/8 required scenario outcomes (100%), 0/8 remaining (0%); no unavailable setups.**
-All eight IDs have passing pure assertions. The 31 distinct native outcomes comprise four capacity worlds (PRO-01/02),
-eight composition worlds (PRO-04), three replacement repetitions (PRO-05), and the 16 retained PRO-03/06/07 authority
-worlds. H-17 reuses the four future-demand worlds with additional completed-producer/no-new-empty-capacity assertions;
-its blocked-spawn branch also has native queue/spawner and pure lease-reconciliation controls. The original grouped
-command failed on the old PRO-04 setup; its unaffected PRO-01/02/05 predicates pass. Only PRO-04's setup changed,
-and the corrected eight-world command passes. [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md) records that evidence union.
+## C — resource and command ownership
 
-**Package2 retained outcomes:16/16 (100%),0/16 remaining; latest affected-source recheck in progress.**
+Dependency: none; incorporate ownership changes from A/B.
+Read G/planning/reconcile-ai-command-reservations.ts, ai-resource-cost-claims.ts and their imports/specs;
+locate the current ai-intent-arbiter.ts under G. Read P/player/ai-controller/ai-command-reconciliation.ts,
+P/entity/components/construction payment/lifecycle and P/entity/components/queue continuation/mutation owners.
+Current reconciliation matches an effect and releases its claim bundle on terminal outcomes. Never blindly expire
+dispatched/paid ownership because a receipt is late.
 
-The paid-supply replacement now completes at863 before the unchanged1200 deadline. Invalid worker starts inside the
-main-building footprint were corrected in both paired worlds. Construction cancellation/late callback ownership and
-post-opening unfinished-site reassignment have focused controls. Native ECO-06 proves alternate drop-off/source
-recovery; native no-drain controls prove stop/assignment release with cargo preservation.
+- C1: Duplicate/late/out-of-order outcomes cannot charge/refund/apply twice. Valid unresolved paid work survives;
+  terminal work releases claims.
+- C2: Stale provisional reservations and capacity changes release/reallocate safely; multi-base optional commitments
+  cannot starve essential income, supply or production.
+- C3: Shared command identity/epoch guards stay safe; changes include rejection/duplicate/recovery controls.
 
-**Historical source checkpoint — superseded registration counts, 2026-10-20.**
+H-13 report 1793296020629-failed.json is current evidence. All eight variants lack original-cash/ownership premise;
+four Tivara variants also fail delivered-income checks and new-identity misses paid-base exercise.
+Compare evaluator claim timing with real reservation/application before changing either. Do not dump full captures.
+Retain H-06/07, H-10 over-capacity and H-15 passes. Use H-12/13 focused budget/cycle controls and SP H-08
+timeout/cancellation where needed. Minimum native: one late/cancel exactly-once case per faction and one
+many-base/essential-budget case per faction. Other permutations use meaningful focused tests; peer branches are deferred.
 
-All four IDs below now have complete authored native bindings; none of those new bindings has run.
-The paragraphs below retain source provenance only. The top snapshot and HANDOFF own current work.
+## D — essential SP save/load and next match
 
-- Preserve admitted ownership/original execution identity across host transfer and retention pressure; distinguish
-  duplicate diagnostics from terminal application, explicitly retire actual unsent epoch input and restore saved unsent
-  batches above the saved clock without bypassing server echo. These changes prevent duplicate/lost work.
-- Fence disposed bus/transport/save callbacks and delayed communicator setup/cleanup across matches. Client context,
-  event subscriptions and lobby work are split from the save facade, resolving the previous oversized-file source issue.
-- One real-relay H-08 host-promotion/original-AI application control is authored, unrun. Full four-ID native registrations
-  remain0/4; selected13 stays9/13 (69.2%). Source/codec/headless controls do not replace missing native premises.
-- Next: complete timeout/cancellation and acknowledged compaction drivers alongside actual paired codec/scene reload;
-  then same-realm UI next-match and host replacement. Reuse current source/probes, rather than another preparation pass.
-- Runtime93/116 (80.2%),23 remaining (19.8%); pure111/111. No verification ran; CURRENT-EVIDENCE records separate audits.
-  Machinery review remains last; verify containing commit and remote on resume.
+Dependency: C's command/claim contract; source inspection can happen earlier.
+Read G/brain/ai-saved-continuation.spec.ts and migration/serialization imports;
+P/data/actor-manager-ai-save.spec.ts, save-game-lifecycle.spec.ts;
+P/entity/components/queue/queue-continuation.spec.ts;
+P/world/services/recovery/serialize-actor-queue-state.spec.ts; H-31/H-32 recipes and their real drivers.
+Pure continuation preserves claims/deadlines/RNG but does not prove native save/load.
 
-## Other concrete gaps already established
+- D1: Real SP save/load preserves paid construction/queue work, claims, recovery age and AI continuation;
+  no recharge, duplicate completion or fresh-opening reset; useful work continues after restore.
+- D2: A second SP match in the same app has one active controller per AI player; old callbacks cannot mutate it
+  and the new AI performs useful work.
 
-- **Full victory:** latest published evidence has Tivara victory and an unresolved Skaduwee finish (1/2 factions).
-  Both-faction reruns were user-deferred, then brought back into scope by the 2026-10-24 instruction to finish the AI
-  work. Use the unchanged legal-start recipe and fix the earliest causal failure; no additional diagnostic architecture
-  is scheduled.
-- **Raid recovery:** historical SEQ-02 passed both factions. Current shared-source acceptance needs a rerun; do not
-  describe this as wholly unimplemented or carry forward an older failure as its latest result.
-- **Resource authority/M11:** complete usefulness is still unavailable for required arbitrary replacement, net-zero
-  mutation/undo and between-read changes. Enumerate the existing Stage32/36 authority obligations and their controls before
-  editing; map each to an existing observed boundary or record the specific missing boundary. Do not introduce finer
-  dependency graphs, FIFO lot tracking or continuous journals by default.
-- **Multiplayer:** two-browser relay/hash/reconnect and host-promotion controls exist, but full interrupted-commitment
-  transfer, snapshot catch-up, combat/terminal and leave/re-entry proofs remain. A single-browser match cannot close them.
-- **Save/lifecycle:** required phases include delivery, construction, training/research, squad missions, transport,
-  fortification and recovery. Before/during/after-apply save boundaries need exactly-once continuation or cleanup.
-  Plans also identify interrupted awaited-planner disposal fencing as a gap to inspect against current source.
-- **Calibration:** isolated pinned-baseline execution, D-06 comparisons and long soaks are now authored but lack release evidence.
-  The immutable legacy difficulty/opening policy comparison is explicitly unsupported, not a passing result.
-  Existing plan calls for 20 paired seeds plus a disjoint holdout and at least three 60-minute simulation soaks;
-  expand samples only when uncertainty changes a decision. These are explicit workload commitments, not new stages.
-- **Legacy:** unresolved identity/faction still has a legacy-controller fallback according to the owning plan.
-  Audit actual callers, migrate necessary save compatibility, remove proven unused branches and make invalid configuration
-  observable without dispatch. Do not delete before parity.
+Minimum: H-31 during-active native continuation for both factions, focused before/apply/after and duplicate controls;
+one H-32 paid-queue or pending-path SP second-match branch plus complementary cleanup controls.
+H-32 has top-level requiresMultiplayer:true although normal/pending-path/paid-queue are SP. Inspect dispatch first.
+A small branch-specific selection repair is allowed if needed; keep host-replacement fail-closed on real peers.
+Do not start Docker or substitute a fake peer. If execution requires new harness architecture, record the blocker
+and continue independent work; D remains required. Advanced replay/workbench certification is deferred.
 
-## Rules that stop circular execution
+## E — representative play and closure
 
-1. Every batch selects existing IDs and names a concrete gap: missing registration, unrun assertion or reproduced failure.
-   Inspect existing implementation/tests first. Link reusable controls instead of rewriting them.
-2. Every failed run updates the selected item's cause, owning source and next repair. Rerun only after a relevant source,
-   setup or evidence-processing change; a diagnostic rerun must answer a named unresolved question.
-3. Keep the required outcome fixed. A coherent fixture correction must explain its trigger/control; do not lower an oracle
-   to make a run green. New tooling requires a demonstrated inability to obtain the needed evidence from existing tools.
-4. Report selected IDs, outcomes newly closed, remaining failures/missing mappings and next package. Commit count,
-   helper count and broad unit-test totals are not project completion metrics.
-5. Keep verification at coherent batch boundaries. Use affected controls while repairing and one grouped gate when stable.
-   Brief diagnostic sanity is already complete; no dedicated profiling gate is left.
-6. The finish line is the original supported land scope plus multiplayer/lifecycle/calibration and justified retirement.
-   Runtime island cases DOMAIN-03/04, H-29 and SEQ-05 remain content-deferred; required pure contracts are not waived.
-   M13 remains unscheduled.
-7. Do not promise a month/day/session estimate from registration counts. After the first coherent remaining package,
-   use observed repair/authoring throughput to estimate the remaining finite queue, with assumptions stated.
+Dependency: A–D before closure; evidence reconciliation can happen earlier.
 
-## On-demand scenario inventory
+- E1: Both factions reach authoritative victory from existing legal starts, with delivered income, useful paid output
+  and native combat effects; both recover from the existing home-raid workload. No forced win or AI grants.
+- E2: No unresolved demonstrated iteration blocker. Review stalls/failed commands, wasted building, idle paid troops
+  and repeated goal replacement in the representative matches. Winning alone is insufficient.
+- E3: Relevant focused tests, scoped lint and owning type/build checks pass. Final diff review, Omission Audit and
+  separate Final Closure Audit map A1–E3 to evidence. Task-owned work is committed/pushed; handoff accurately
+  states completion and limitations, without claiming full #759/CI/multiplayer certification.
 
-The [121-row scenario inventory](SCENARIO-INVENTORY.md) holds family coverage counts, setups, outcomes and source links.
-Read only the selected family, not the whole appendix at startup. The existing manifest remains authoritative.
+Small release pack: continuous-land-runtime.json has tivara-land-loop, skaduwee-land-loop, tivara-home-raid,
+skaduwee-home-raid. Inspect each variant's scenarioIds/repetitions before choosing SEQ-01/SEQ-02.
+Four outcomes, not repeated full families. Retain earlier passes only if relevant dependencies are unchanged;
+shared placement/tactical changes generally require affected final land runs. Record evidence applicability.
+Inspect bounded timelines; use existing replay/UI tools for ambiguous physical behavior, not a new recording system.
+This pack proves its legal-start workload, not general map/opponent strength. No tournament/statistical calibration.
+Fix concrete in-scope defects via the bounded loop; do not expand scope merely to improve a score.
+
+## Commands and evidence
+
+Use Node 24 and repository pnpm. Check owning project config before invocation; no unrelated installations.
+Focused Jest template (replace actual spec path; Phaser has its own phaser/jest.config.cts):
+
+    pnpm exec jest --config libs/games/probable-waffle/gameplay/jest.config.cts --runInBand --runTestsByPath <spec-path>
+
+Native example AFTER a causal repair, not a startup command (repetition is mandatory):
+
+    node tools/ai/run-skirmish-matrix.mjs --scenario WALL-01 --mode runtime --working-tree --variant wall-01-tivara-terrain --repetition 1
+    node tools/ai/summarize-skirmish-report.mjs --report <report-path> --scenario WALL-01 --failures-only --details
+
+Read real variant IDs from manifest-linked fixtures. Generated recipes require checking the authoring source and
+its existing node tests. Re-evaluate retained captures when only a justified evaluator correction changed.
+Keep original physical provenance. Diagnostic passes stay diagnostic; do not relabel legacy family status.
+One foreground runtime at a time. Enforce wall-clock <=30 minutes including startup; select single variants when
+family duration is unknown. Preserve partial evidence and stop only the owned process at the cap.
+Use bounded waits and concise progress updates. Do not poll full logs or repeatedly inventory processes.
+Final checks cover changed owners/consumers; never automatically run the full historical matrix.
+
+## Documentation and publication
+
+Three active records only: HANDOFF cursor (<=100 lines), this contract (target <=300), CURRENT-EVIDENCE (target <=150).
+Budgets are pruning guides, not permission to discard unresolved evidence. No session/scenario Markdown or new dashboard.
+Update in place; raw logs stay in ignored artifacts and replaced history in Git. Archive/inventory are historical lookup.
+After each packet and every three batches remove duplicate/stale narration. Retain source/fixture/report references,
+diagnosis, unresolved question and next action. No routine archive appends.
+Report packet, player-visible change, evidence, blocker and next action; no CPU/memory reports.
+Commit/push coherent task-owned changes under prior authorization; PR #814 stays unchanged.
+On completion preserve durable guidance in owning docs, reduce temporary records to closure/follow-up references,
+and clearly distinguish this iteration from the deferred broader roadmap.
