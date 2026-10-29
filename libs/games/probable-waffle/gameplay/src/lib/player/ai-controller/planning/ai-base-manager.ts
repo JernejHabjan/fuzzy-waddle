@@ -9,10 +9,12 @@ import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-prop
 import { createAiResourceCostClaims } from "./ai-resource-cost-claims";
 import { findAiExpansionBuilder } from "./ai-expansion-site";
 import { hasCredibleAiEconomyThreat } from "./ai-economy-policy";
+import { AI_RESOURCE_SERVICE_RADIUS } from "./ai-resource-service-manager";
 
 /** Sustained saturated local service before an expansion becomes a candidate. */
 export const AI_EXPANSION_SATURATION_TICKS = 600;
 const BASE_MEMBER_RADIUS = 12;
+const EXPANSION_SITE_RADIUS = 10;
 
 function selfOwned(observation: AiObservationV1): AiObservedActorV1[] {
   return observation.actors.filter((actor) => actor.relation === "self" && actor.visibility === "owned");
@@ -49,6 +51,39 @@ function resourceActors(observation: AiObservationV1): AiObservedActorV1[] {
     )
     .filter((actor) => position(actor) !== null)
     .sort((left, right) => left.actorId.localeCompare(right.actorId));
+}
+
+function hasOwnedResourceService(
+  resource: AiObservedActorV1,
+  owned: readonly AiObservedActorV1[],
+  catalog: AiCapabilityCatalogV1
+): boolean {
+  if (resource.resourceState.status !== "known") return false;
+  const resourcePosition = position(resource);
+  if (!resourcePosition) return false;
+  const resourceType = resource.resourceState.value.resourceType;
+  return owned.some((service) => {
+    const servicePosition = position(service);
+    return !!servicePosition &&
+      distance(servicePosition, resourcePosition) <= AI_RESOURCE_SERVICE_RADIUS &&
+      catalog.entries.some((entry) =>
+        entry.sourceObjectName === service.objectName && entry.acceptsResources?.includes(resourceType)
+      );
+  });
+}
+
+function hasUnservedResourceNearExpansionSite(
+  site: Vector3Simple,
+  resources: readonly AiObservedActorV1[],
+  owned: readonly AiObservedActorV1[],
+  catalog: AiCapabilityCatalogV1
+): boolean {
+  return resources.some((resource) => {
+    const resourcePosition = position(resource);
+    return !!resourcePosition &&
+      distance(site, resourcePosition) <= EXPANSION_SITE_RADIUS &&
+      !hasOwnedResourceService(resource, owned, catalog);
+  });
 }
 
 function siteCandidates(anchor: Vector3Simple, profile: AiProfileConfigV1): Vector3Simple[] {
@@ -144,8 +179,14 @@ export class AiBaseManager implements AiProposalManagerV1 {
     )) {
       bases.push({ ...prior, active: false, lifecycle: prior.lifecycle === "evacuating" ? "evacuating" : "lost" });
     }
+    const currentResources = resourceActors(observation);
     for (const prior of state.bases.filter((base) => base.anchorActorId === null)) {
       if (bases.some((base) => base.baseId === prior.baseId)) continue;
+      if (
+        prior.lifecycle === "proposed" &&
+        prior.anchorPosition &&
+        !hasUnservedResourceNearExpansionSite(prior.anchorPosition, currentResources, owned, catalog)
+      ) continue;
       // Stage 12 transfers a rejected site's backoff history to the next Stage 10
       // decision by clearing its reservation. The primary base now owns that global
       // history, so the terminal shell must not accumulate as a fake reserved base.
@@ -202,8 +243,9 @@ export class AiBaseManager implements AiProposalManagerV1 {
         : deliveredIncome === 0 && observation.tick >= AI_EXPANSION_SATURATION_TICKS
           ? "worker_capacity"
           : null;
-    const distantResources = resourceActors(observation)
+    const distantResources = currentResources
       .filter((resource) => distance(primary.anchorPosition!, position(resource)!) > BASE_MEMBER_RADIUS)
+      .filter((resource) => !hasOwnedResourceService(resource, owned, catalog))
       .sort(
         (left, right) =>
           distance(primary.anchorPosition!, position(left)!) - distance(primary.anchorPosition!, position(right)!) ||

@@ -64,14 +64,16 @@ show the controls are preempted by AI orders before physical arrival. The fixtur
 represented by active AI orders. Do not replay unchanged; continue to other EXP/WALL/recovery cases while keeping this
 placement blocker open for a route-visible setup or source-side repair.
 
-EXP-01's original trace `1793277296485` established paid expansion sites after safe Gather-to-build actor lease
-transfer, but delivery into the selected new WorkMill was missing. Current-selector trace `1793286911792` showed native
-delivery but exposed a source defect: `AiResourceServiceManager` selected a WorkMill at `(18,45)` inside a visible
-WatchTower's ground range. Resource-service placement now applies shared observed weapon safety to every footprint tile;
-its focused suite passes 5/5 and scoped lint passes. Current-source branch `1793287202414-diagnostic_passed.json`
-passes reachable Tivara expansion (200 decisions / 4,001 ticks, 143s; source `fnv1a32:e5e70cc4`, fixture
-`fnv1a32:69133634`), including delivered service and no live-range placement. Seven sibling branches and the family
-CI gate remain open; do not replay this branch unchanged.
+EXP-01 now has passing targeted native evidence for all eight branches across both factions. The original trace
+`1793277296485` lacked delivery into the selected new WorkMill; `1793286911792` then exposed a real tower-range
+placement defect, fixed by applying shared weapon safety to every footprint tile. Later served-control capture
+`1793288640116` showed the base manager reserving an illegal second Sandhold around a Tree1 already serviced by a
+WorkMill. It also revealed that a pending proposal survived after its newly built WorkMill began serving the same
+resource; the manager now excludes currently served sources and retires such stale proposals. Focused base/resource
+manager specs pass 12/12 and scoped lint has no errors. Branch reports: Tivara expand `1793291316198`, unsafe
+`1793288496081`, served `1793289156686`, busy-worker `1793290454747`; Skaduwee expand `1793291167000`, unsafe
+`1793290264900`, served `1793289329519`, busy-worker `1793290668937`. The combined CI family gate remains pending; do
+not replay passing branches without another relevant change.
 
 Latest closed family: SCOUT-03 report `1793174968627-passed.json` (four variants, 400 decisions / 8,004 ticks), source
 digest `fnv1a32:05a85282`, fixture digest `fnv1a32:ebc75582`. Previous closed family: STRAT-04 report
@@ -184,7 +186,7 @@ peer obligations and the combined CI family gate remain open.
 | Package | Remaining work |
 | --- | --- |
 | 3 — scouting, combat, access | DOMAIN-01/05/06, DOMAIN-02 COAST and its two controls, INTERCEPT, SCOUT-01/03/04, FIGHT-01/02/03/04/05 and RAID-02 pass. All RAID-01 targeted branches pass; its combined registered matrix remains CI-owned. ESCORT's paid-fleet objective effect and SCOUT-02 native trip/service remain. Seven real-peer obligations remain CI-owned. STRAT-09 needs grouped final recheck after affected changes. |
-| 4 — placement, walls, recovery | H-11 and all eight PLACE-03 branches pass. PLACE-01/02, EXP-01/02, WALL-01–05 and remaining H-01–05/H-27–28 branches still need scoped semantic/evidence closure. |
+| 4 — placement, walls, recovery | H-11 and all eight PLACE-03 branches pass; EXP-01's eight targeted branches pass. PLACE-01/02, EXP-02, WALL-01–05 and remaining H-01–05/H-27–28 branches still need scoped semantic/evidence closure. |
 | 5 — authority and lifecycle | H-06/07 and both H-10 over-capacity native variants pass. H-08/09 peer evidence, H-14/15 remaining branches, H-31/32, M11, #819/#823. Peer CI is skipped on draft PR #814; local peer runner cannot start without Docker Engine. |
 | 6 — continuous play and difficulty | SEQ-02 and supported SEQ/D cases. D-06 legacy comparison remains explicitly unsupported. |
 | 7 — debug and closure | DBG cases, #820/#821, machinery/legacy review, omission audit and final closure audit. |

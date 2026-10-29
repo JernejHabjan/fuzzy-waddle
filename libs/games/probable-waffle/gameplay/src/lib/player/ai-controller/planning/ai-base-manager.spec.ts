@@ -34,7 +34,7 @@ const catalog: AiCapabilityCatalogV1 = {
     },
     {
       capabilityId: "main",
-      family: "building",
+      family: "drop_off",
       sourceObjectName: ObjectNames.Sandhold,
       effectiveLevel: 1,
       movementDomains: [],
@@ -43,6 +43,7 @@ const catalog: AiCapabilityCatalogV1 = {
       constructs: [],
       researches: [],
       gathers: [],
+      acceptsResources: [ResourceType.Wood],
       housingCapacity: null,
       housingCost: null,
       cargoCapacity: null,
@@ -54,6 +55,22 @@ const catalog: AiCapabilityCatalogV1 = {
         enterHeight: null,
         exitHeight: null
       }
+    },
+    {
+      capabilityId: "mill",
+      family: "drop_off",
+      sourceObjectName: ObjectNames.WorkMill,
+      effectiveLevel: 1,
+      movementDomains: [],
+      targetDomains: [],
+      produces: [],
+      constructs: [],
+      researches: [],
+      gathers: [],
+      acceptsResources: [ResourceType.Wood],
+      housingCapacity: null,
+      housingCost: null,
+      cargoCapacity: null
     }
   ]
 };
@@ -171,6 +188,109 @@ describe("AiBaseManager", () => {
 
     expect(first.statePatch?.bases?.filter((base) => base.baseId.startsWith("base:expansion:"))).toHaveLength(1);
     expect(second.statePatch?.bases?.filter((base) => base.baseId.startsWith("base:expansion:"))).toHaveLength(1);
+  });
+
+  it("does not reserve a new base around a remote resource already served by an owned drop-off", () => {
+    const state = withCompletedOpening(
+      createAiBrainStateV1({
+        playerNumber: 1,
+        faction: FactionType.Tivara,
+        profile,
+        tick: 0,
+        archetypeId: "balanced"
+      })
+    );
+    const distantResource = {
+      ...actor("wood-remote", ObjectNames.Tree1, 50),
+      owner: null,
+      relation: "neutral" as const,
+      visibility: "visible" as const,
+      resourceState: {
+        status: "known" as const,
+        value: {
+          resourceType: ResourceType.Wood,
+          available: { status: "known" as const, value: 200, observedTick: 600 },
+          carried: { status: "unknown" as const, reason: "not_supported" as const },
+          growthReadyTick: { status: "unknown" as const, reason: "not_supported" as const },
+          serviceCapacity: { status: "known" as const, value: 4, observedTick: 600 }
+        },
+        observedTick: 600
+      }
+    } satisfies AiObservedActorV1;
+    const proposal = manager.propose(
+      observation(
+        600,
+        [
+          actor("sandhold", ObjectNames.Sandhold, 4, true),
+          actor("worker", ObjectNames.TivaraWorker, 5),
+          actor("workmill", ObjectNames.WorkMill, 49),
+          distantResource
+        ],
+        0
+      ),
+      state
+    );
+
+    expect(proposal.intents.filter((intent) => intent.kind === "construct")).toHaveLength(0);
+    expect(proposal.statePatch?.bases?.some((base) => base.baseId.startsWith("base:expansion:"))).toBe(false);
+  });
+
+  it("releases a pending base proposal after a newly built drop-off starts serving its resource", () => {
+    const initial = withCompletedOpening(
+      createAiBrainStateV1({
+        playerNumber: 1,
+        faction: FactionType.Tivara,
+        profile,
+        tick: 0,
+        archetypeId: "balanced"
+      })
+    );
+    const remote = {
+      ...actor("wood-remote", ObjectNames.Tree1, 50),
+      owner: null,
+      relation: "neutral" as const,
+      visibility: "visible" as const,
+      resourceState: {
+        status: "known" as const,
+        value: {
+          resourceType: ResourceType.Wood,
+          available: { status: "known" as const, value: 200, observedTick: 620 },
+          carried: { status: "unknown" as const, reason: "not_supported" as const },
+          growthReadyTick: { status: "unknown" as const, reason: "not_supported" as const },
+          serviceCapacity: { status: "known" as const, value: 4, observedTick: 620 }
+        },
+        observedTick: 620
+      }
+    } satisfies AiObservedActorV1;
+    const pending = {
+      baseId: "base:expansion:wood-remote",
+      anchorActorId: null,
+      memberActorIds: [],
+      active: false,
+      lifecycle: "proposed",
+      accessNodeId: null,
+      anchorPosition: { x: 50, y: 0, z: 0 },
+      reservedSiteKey: "base:main:sandhold:50:0:0",
+      rejectedSiteKeys: [],
+      expansion: {
+        trigger: "resource_life",
+        requestedAtTick: 600,
+        transportPlanId: null,
+        evacuationRouteNodeId: null
+      }
+    } as const;
+    const proposal = manager.propose(
+      observation(620, [
+        actor("sandhold", ObjectNames.Sandhold, 4, true),
+        actor("worker", ObjectNames.TivaraWorker, 5),
+        actor("workmill", ObjectNames.WorkMill, 49),
+        remote
+      ], 0),
+      { ...initial, bases: [pending] }
+    );
+
+    expect(proposal.intents.filter((intent) => intent.kind === "construct")).toHaveLength(0);
+    expect(proposal.statePatch?.bases?.some((base) => base.baseId === pending.baseId)).toBe(false);
   });
 });
 

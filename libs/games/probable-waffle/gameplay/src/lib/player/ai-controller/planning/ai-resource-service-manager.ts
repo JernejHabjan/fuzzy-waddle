@@ -11,7 +11,7 @@ import { aiEconomySiteSafety } from "./ai-economy-site-safety";
 import { node, routeCapability } from "./ai-skirmish-support";
 import { queryAiAccessRouteV1 } from "./ai-access-graph-v1";
 
-const SERVICE_RADIUS = 10;
+export const AI_RESOURCE_SERVICE_RADIUS = 10;
 const SITE_RADIUS = 6;
 const MAX_PENDING_TICKS = 1200;
 
@@ -125,7 +125,10 @@ export class AiResourceServiceManager implements AiProposalManagerV1 {
         Number.POSITIVE_INFINITY,
         ...services.map((service) => distance(position(service)!, sourcePosition))
       );
-      if (nearestServiceDistance <= SERVICE_RADIUS || pendingSite(state, source.actorId, observation.tick)) continue;
+      if (
+        nearestServiceDistance <= AI_RESOURCE_SERVICE_RADIUS ||
+        pendingSite(state, source.actorId, observation.tick)
+      ) continue;
       const serviceEntry = catalog.entries
         .filter((entry) => entry.acceptsResources?.includes(type) && entry.constructionProfile)
         .filter((entry) =>
@@ -148,7 +151,7 @@ export class AiResourceServiceManager implements AiProposalManagerV1 {
           (actor) =>
             actor.objectName === serviceEntry.sourceObjectName &&
             !ready(actor) &&
-            distance(position(actor)!, sourcePosition) <= SERVICE_RADIUS
+            distance(position(actor)!, sourcePosition) <= AI_RESOURCE_SERVICE_RADIUS
         )
       )
         continue;
