@@ -33,6 +33,12 @@ before authorizing another spend; legacy pending claims without an amount fail c
 through the observed balance. Focused production-authority, brain, planner and reservation-reconciliation checks pass 22/22;
 no native scenario evidence is claimed yet.
 
+Field labor accounts for returning gatherers whose transient return order hides the source identity: it reserves one
+otherwise-unstaffed Field per returner and assigns available workers to later Fields, preferring the Field's observed
+access region and nearest eligible worker. The focused current-source regression passes 7/7 and scoped lint is clean.
+This closes only the Field labor assignment duplication slice; exactly-once effects and capacity/lifecycle ownership
+remain open.
+
 H-11 closes on current source and generated fixture in `1793256850909-passed.json`: all six registered variants pass
 (1,200 decisions / 24,006 ticks; source `806d51b377f16368bde5fd0b516f307c7196c9dd`, dirty digest
 `fnv1a32:09357cfe`, fixture digest `fnv1a32:76ff1345`). The cause was an authored worker start tile that native navigation

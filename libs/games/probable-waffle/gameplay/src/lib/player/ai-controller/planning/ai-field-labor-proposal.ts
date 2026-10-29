@@ -27,7 +27,7 @@ export function proposeAiFieldLabor(
     })
   );
   // A returning food worker will automatically resume its Field after delivery. Its transient order does not
-  // expose the source identity, so defer new Field assignments until all such workers resume gathering.
+  // expose the source identity, so reserve one otherwise-unstaffed Field per returner instead of assigning twice.
   const returningWorkerCount = self.filter((actor) => {
     const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
     if (order?.orderType !== OrderType.ReturnResources) return false;
@@ -45,13 +45,11 @@ export function proposeAiFieldLabor(
           ))
     );
   }).length;
-  const unstaffedFoodSource =
-    returningWorkerCount === 0
-      ? readyFoodSources
-          .filter(aiEconomySiteSafety(observation).actorSafe)
-          .sort(compareAiActorsByVisibleGeometry)
-          .find((source) => !staffedFoodSourceIds.has(source.actorId))
-      : undefined;
+  const unstaffedFoodSources = readyFoodSources
+    .filter(aiEconomySiteSafety(observation).actorSafe)
+    .sort(compareAiActorsByVisibleGeometry)
+    .filter((source) => !staffedFoodSourceIds.has(source.actorId));
+  const unstaffedFoodSource = unstaffedFoodSources[returningWorkerCount];
   if (!unstaffedFoodSource) return null;
   const alreadyClaimed = claimedActorIds(priorIntents);
   const worker = self
@@ -83,9 +81,26 @@ export function proposeAiFieldLabor(
       );
     })
     .sort((left, right) => {
+      const sourcePosition =
+        unstaffedFoodSource.logicalPosition.status === "known" ? unstaffedFoodSource.logicalPosition.value : null;
+      const sourceAccessNode =
+        unstaffedFoodSource.accessNodeId.status === "known" ? unstaffedFoodSource.accessNodeId.value : null;
+      const leftPosition = left.logicalPosition.status === "known" ? left.logicalPosition.value : null;
+      const rightPosition = right.logicalPosition.status === "known" ? right.logicalPosition.value : null;
+      const leftAccessNode = left.accessNodeId.status === "known" ? left.accessNodeId.value : null;
+      const rightAccessNode = right.accessNodeId.status === "known" ? right.accessNodeId.value : null;
+      const leftAccessPenalty = sourceAccessNode && leftAccessNode === sourceAccessNode ? 0 : 1;
+      const rightAccessPenalty = sourceAccessNode && rightAccessNode === sourceAccessNode ? 0 : 1;
+      const leftDistance = sourcePosition && leftPosition
+        ? Math.abs(leftPosition.x - sourcePosition.x) + Math.abs(leftPosition.y - sourcePosition.y)
+        : Number.POSITIVE_INFINITY;
+      const rightDistance = sourcePosition && rightPosition
+        ? Math.abs(rightPosition.x - sourcePosition.x) + Math.abs(rightPosition.y - sourcePosition.y)
+        : Number.POSITIVE_INFINITY;
       const leftIdle = left.activeOrder?.status === "known" && left.activeOrder.value === null ? 0 : 1;
       const rightIdle = right.activeOrder?.status === "known" && right.activeOrder.value === null ? 0 : 1;
-      return leftIdle - rightIdle || compareAiActorsByVisibleGeometry(left, right);
+      return leftAccessPenalty - rightAccessPenalty || leftDistance - rightDistance || leftIdle - rightIdle ||
+        compareAiActorsByVisibleGeometry(left, right);
     })[0];
   if (!worker) return null;
   const next = nextIds(state, "food-labor", ordinal);

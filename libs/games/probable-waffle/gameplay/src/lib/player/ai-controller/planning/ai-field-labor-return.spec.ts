@@ -4,7 +4,7 @@ import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from 
 import { catalog, completedOpeningState } from "./ai-macro-test-fixtures";
 import { proposeAiFieldLabor } from "./ai-field-labor-proposal";
 
-function fixture(resource: ResourceType | null, targetObjectName = ObjectNames.Sandhold) {
+function fixture(resource: ResourceType | null, fieldCount = 1, targetObjectName = ObjectNames.Sandhold) {
   const observation = createAiTestObservation();
   const returned: { -readonly [K in keyof AiObservedActorV1]: AiObservedActorV1[K] } = {
     ...createAiTestOwnedActor("returning"),
@@ -36,9 +36,12 @@ function fixture(resource: ResourceType | null, targetObjectName = ObjectNames.S
       value: { orderType: OrderType.Gather, targetActorId: "tree" }
     }
   } satisfies AiObservedActorV1;
-  const field = { ...createAiTestOwnedActor("field"), objectName: ObjectNames.Field };
+  const fields = Array.from({ length: fieldCount }, (_, index) => ({
+    ...createAiTestOwnedActor(index === 0 ? "field" : `field-${index + 1}`),
+    objectName: ObjectNames.Field
+  }));
   const drain = { ...createAiTestOwnedActor("dropoff"), objectName: targetObjectName };
-  const self = [returned, woodWorker, field, drain];
+  const self = [returned, woodWorker, ...fields, drain];
   const nativeDropoffs = {
     ...catalog,
     entries: catalog.entries.map((entry) =>
@@ -53,13 +56,19 @@ function fixture(resource: ResourceType | null, targetObjectName = ObjectNames.S
       completedOpeningState(),
       nativeDropoffs,
       self,
-      [field],
+      fields,
       ObjectNames.Granary,
       new Set(),
       [],
       0
     );
   return { propose, self, farmer: returned };
+}
+
+function requiredActor(actors: readonly AiObservedActorV1[], actorId: string): AiObservedActorV1 {
+  const actor = actors.find((candidate) => candidate.actorId === actorId);
+  if (!actor) throw new Error(`Missing expected actor ${actorId}`);
+  return actor;
 }
 
 describe("Field labor during native food returns", () => {
@@ -77,9 +86,17 @@ describe("Field labor during native food returns", () => {
     farmer.activeOrder = { status: "known", observedTick: 20, value: null };
     expect(f.propose()).toMatchObject({ sourceActorId: "field", actorIds: ["wood-worker"] });
     if (farmer.resourceState.status !== "known") throw new Error("Missing farmer cargo");
-    farmer.resourceState = { ...farmer.resourceState, value: { ...farmer.resourceState.value,
-      carried: { status: "known", value: 0, observedTick: 20 } } };
+    farmer.resourceState = {
+      ...farmer.resourceState,
+      value: { ...farmer.resourceState.value, carried: { status: "known", value: 0, observedTick: 20 } }
+    };
     expect(f.propose()).toMatchObject({ sourceActorId: "field", actorIds: ["returning"] });
+  });
+  it("assigns another Field while reserving the ambiguous returning farmer's source", () => {
+    expect(fixture(ResourceType.Food, 2).propose()).toMatchObject({
+      sourceActorId: "field-2",
+      actorIds: ["wood-worker"]
+    });
   });
   it("defers another farmer when cargo identity is unavailable at a food-capable dropoff", () => {
     expect(fixture(null).propose()).toBeNull();
@@ -87,20 +104,25 @@ describe("Field labor during native food returns", () => {
   it("does not confuse known wood delivery with a returning farmer", () => {
     expect(fixture(ResourceType.Wood).propose()).toMatchObject({ sourceActorId: "field", actorIds: ["wood-worker"] });
   });
-  it("selects the geometrically first idle farmer before a run-local ID tie-break", () => {
+  it("assigns a Field to its closest eligible farmer before using stable geometry tie-breaks", () => {
     const f = fixture(ResourceType.Wood);
+    const field = {
+      ...requiredActor(f.self, "field"),
+      logicalPosition: { status: "known" as const, value: { x: 30, y: 22, z: 0 }, observedTick: 20 }
+    };
     const near = {
       ...createAiTestOwnedActor("z-worker"),
-      logicalPosition: { status: "known" as const, value: { x: 34, y: 22, z: 0 }, observedTick: 20 }
+      logicalPosition: { status: "known" as const, value: { x: 31, y: 22, z: 0 }, observedTick: 20 }
     };
     const far = {
       ...createAiTestOwnedActor("a-worker"),
-      logicalPosition: { status: "known" as const, value: { x: 35, y: 22, z: 0 }, observedTick: 20 }
+      logicalPosition: { status: "known" as const, value: { x: 50, y: 22, z: 0 }, observedTick: 20 }
     };
     const self = [
-      ...f.self.map((actor) => actor.actorId === "wood-worker"
-        ? { ...actor, logicalPosition: { status: "known" as const, value: { x: 40, y: 22, z: 0 }, observedTick: 20 } }
-        : actor),
+      ...f.self.map((actor) =>
+        actor.actorId === "field" ? field : actor.actorId === "wood-worker"
+          ? { ...actor, logicalPosition: { status: "known" as const, value: { x: 45, y: 22, z: 0 }, observedTick: 20 } }
+          : actor),
       near,
       far
     ];
@@ -109,7 +131,7 @@ describe("Field labor during native food returns", () => {
       completedOpeningState(),
       catalog,
       self,
-      [self.find((actor) => actor.objectName === ObjectNames.Field)!],
+      [field],
       ObjectNames.Granary,
       new Set(),
       [],
@@ -118,9 +140,41 @@ describe("Field labor during native food returns", () => {
 
     expect(proposal?.actorIds).toEqual(["z-worker"]);
   });
+  it("prefers a farmer in the Field's observed access region over a closer disconnected-region worker", () => {
+    const f = fixture(ResourceType.Wood);
+    const field = {
+      ...requiredActor(f.self, "field"),
+      logicalPosition: { status: "known" as const, value: { x: 30, y: 22, z: 0 }, observedTick: 20 },
+      accessNodeId: { status: "known" as const, value: "access:field-region", observedTick: 20 }
+    };
+    const near = {
+      ...createAiTestOwnedActor("z-near"),
+      logicalPosition: { status: "known" as const, value: { x: 31, y: 22, z: 0 }, observedTick: 20 },
+      accessNodeId: { status: "known" as const, value: "access:other-region", observedTick: 20 }
+    };
+    const reachable = {
+      ...createAiTestOwnedActor("a-reachable"),
+      logicalPosition: { status: "known" as const, value: { x: 38, y: 22, z: 0 }, observedTick: 20 },
+      accessNodeId: { status: "known" as const, value: "access:field-region", observedTick: 20 }
+    };
+    const self = [...f.self.filter((actor) => actor.actorId !== "field"), field, near, reachable];
+    const proposal = proposeAiFieldLabor(
+      { ...createAiTestObservation(), actors: self },
+      completedOpeningState(),
+      catalog,
+      self,
+      [field],
+      ObjectNames.Granary,
+      new Set(),
+      [],
+      0
+    );
+
+    expect(proposal?.actorIds).toEqual(["a-reachable"]);
+  });
   it("selects the geometrically first unstaffed Field when source IDs are reversed", () => {
     const f = fixture(ResourceType.Wood);
-    const near = { ...f.self.find((actor) => actor.actorId === "field")! };
+    const near = { ...requiredActor(f.self, "field") };
     near.actorId = "z-field";
     const far = {
       ...createAiTestOwnedActor("a-field"),
