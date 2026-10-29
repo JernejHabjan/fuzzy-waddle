@@ -33,6 +33,8 @@ export interface AiReservationV1 {
   readonly claimId: AiClaimId;
   /** Stable physical subject key for cross-decision exclusivity; absent only on migrated pre-Stage-6 saves. */
   readonly subjectKey?: string;
+  /** Resource escrow held while an admitted effect is provisional or dispatched. */
+  readonly resourceAmount?: number;
   readonly ownerPlanId: AiPlanId;
   readonly state: AiReservationStateV1;
   readonly prerequisites: readonly AiPrerequisiteEdgeV1[];

@@ -101,12 +101,22 @@ export class PureAiBrain implements AiBrainV1 {
       ...previousState,
       reservations: reconcileAiDecisionReservations(previousState, orderedOutcomes, observation.tick)
     };
-    const collected = collectAiProposals(this.managers, observation, proposalState,
-      this.profile.decisionIntervalTicks, this.profile.maxIntentProposalsPerStep, this.boundaryHooks);
+    const collected = collectAiProposals(
+      this.managers,
+      observation,
+      proposalState,
+      this.profile.decisionIntervalTicks,
+      this.profile.maxIntentProposalsPerStep,
+      this.boundaryHooks
+    );
     const proposalBatches = collected.batches;
-    const planning = planAiDecisions(observation,
+    const planning = planAiDecisions(
+      observation,
       { ...proposalState, scheduler: { ...proposalState.scheduler, boundaryFaults: collected.faults } },
-      orderedOutcomes, proposalBatches, this.profile);
+      orderedOutcomes,
+      proposalBatches,
+      this.profile
+    );
     // A proposer may own a persisted projection (opening/demand state) but never
     // mutates the previous brain directly. Stable manager order makes competing
     // narrow projections deterministic; Stage 7 is currently the sole owner.
@@ -134,6 +144,7 @@ export class PureAiBrain implements AiBrainV1 {
       intent.claims.map((claim) => ({
         claimId: claim.claimId,
         subjectKey: aiClaimKey(claim),
+        ...(claim.kind === "resource" ? { resourceAmount: claim.amount } : {}),
         ownerPlanId: intent.planId,
         state: {
           kind: "provisional" as const,
@@ -148,9 +159,16 @@ export class PureAiBrain implements AiBrainV1 {
       projectedState.recovery.records
         .filter((record) => record.state === "abandoned")
         // Saved release lists are advisory: reconciliation may since have paid/dispatched a claim or changed its owner.
-        .flatMap((record) => projectedState.reservations.filter((claim) => claim.ownerPlanId === record.planId &&
-          (claim.state.kind === "forecast" || claim.state.kind === "provisional") &&
-          record.releasedClaimIds.includes(claim.claimId)).map((claim) => claim.claimId))
+        .flatMap((record) =>
+          projectedState.reservations
+            .filter(
+              (claim) =>
+                claim.ownerPlanId === record.planId &&
+                (claim.state.kind === "forecast" || claim.state.kind === "provisional") &&
+                record.releasedClaimIds.includes(claim.claimId)
+            )
+            .map((claim) => claim.claimId)
+        )
     );
     const acceptedEffectIds = new Set(accepted.map((intent) => intent.effectId));
     const releasedTransportClaims = aiTransportReleasedClaimIds(projectedState);
@@ -166,8 +184,9 @@ export class PureAiBrain implements AiBrainV1 {
     const normalizedSquads = normalizePrimarySquadOwnership(projectedState.squads);
     const nextState: AiBrainStateV1 = {
       ...projectedState,
-      lanes: projectedState.lanes.map((lane) => accepted.some((intent) => intent.lane === lane.lane)
-        ? { ...lane, lastServicedTick: observation.tick } : lane),
+      lanes: projectedState.lanes.map((lane) =>
+        accepted.some((intent) => intent.lane === lane.lane) ? { ...lane, lastServicedTick: observation.tick } : lane
+      ),
       support: projectedState.support.filter(
         (plan) =>
           previousSupportIds.has(plan.planId) ||
@@ -218,8 +237,20 @@ export class PureAiBrain implements AiBrainV1 {
         ...acceptedReservations
       ].sort((left, right) => left.claimId.localeCompare(right.claimId))
     };
-    const debug = projectAiDebugSafely(observation, nextState, decisions, proposalBatches,
-      this.profile.decisionIntervalTicks, this.boundaryHooks?.projectDebug);
-    return { nextState: debug.state, acceptedIntents: accepted, decisions, trace: decisions, debugSnapshot: debug.snapshot };
+    const debug = projectAiDebugSafely(
+      observation,
+      nextState,
+      decisions,
+      proposalBatches,
+      this.profile.decisionIntervalTicks,
+      this.boundaryHooks?.projectDebug
+    );
+    return {
+      nextState: debug.state,
+      acceptedIntents: accepted,
+      decisions,
+      trace: decisions,
+      debugSnapshot: debug.snapshot
+    };
   }
 }

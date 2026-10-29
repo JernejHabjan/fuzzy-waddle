@@ -38,7 +38,7 @@ function preconditionSatisfied(
       const resource = observation.resources.find((entry) => entry.resourceType === precondition.resourceType);
       return (
         resource !== undefined &&
-        resource.stockpile - resource.reservedUnspent - resource.obligationsDue >= precondition.amount
+        availableResource(observation, state, precondition.resourceType) >= precondition.amount
       );
     }
     case "supply_at_least": {
@@ -113,9 +113,31 @@ function validateIntentNumbers(intent: AiIntentV1): boolean {
   });
 }
 
-function availableResource(observation: AiObservationV1, resourceType: ResourceType): number {
+function pendingResourceClaims(state: AiBrainStateV1, resourceType: ResourceType): number {
+  let total = 0;
+  for (const reservation of state.reservations) {
+    if (
+      reservation.subjectKey !== `resource:${resourceType}` ||
+      (reservation.state.kind !== "provisional" && reservation.state.kind !== "dispatched")
+    )
+      continue;
+    // Old saves have no amount for these leases. Fail closed until their owner reconciles or the lease expires.
+    if (
+      !Number.isFinite(reservation.resourceAmount) ||
+      reservation.resourceAmount === undefined ||
+      reservation.resourceAmount < 0
+    )
+      return Number.MAX_SAFE_INTEGER;
+    total += reservation.resourceAmount;
+  }
+  return total;
+}
+
+function availableResource(observation: AiObservationV1, state: AiBrainStateV1, resourceType: ResourceType): number {
   const entry = observation.resources.find((resource) => resource.resourceType === resourceType);
-  return entry ? entry.stockpile - entry.reservedUnspent - entry.obligationsDue : 0;
+  return entry
+    ? entry.stockpile - entry.reservedUnspent - entry.obligationsDue - pendingResourceClaims(state, resourceType)
+    : 0;
 }
 
 /** Applies preconditions, exclusive claims, shared stockpile and current strategic spending posture in that order. */
@@ -182,7 +204,7 @@ export function arbitrateAiIntents(
       (claim) =>
         claim.kind === "resource" &&
         (resourceClaims.get(claim.resourceType) ?? 0) + claim.amount >
-          availableResource(observation, claim.resourceType) -
+          availableResource(observation, state, claim.resourceType) -
             aiIslandResourceReserve(observation, state, intent, accepted, claim.resourceType)
     );
     if (resourceConflict?.kind === "resource") {
@@ -203,12 +225,12 @@ export function arbitrateAiIntents(
           candidate.claims.every((claim) =>
             claim.kind === "resource"
               ? (resourceClaims.get(claim.resourceType) ?? 0) + claim.amount <=
-                availableResource(observation, claim.resourceType)
+                availableResource(observation, state, claim.resourceType)
               : !claimedThisStep.has(aiClaimKey(claim)) && !existingClaims.has(aiClaimKey(claim))
           )
       ),
       spendingBudget,
-      (resourceType) => Math.max(0, availableResource(observation, resourceType)),
+      (resourceType) => Math.max(0, availableResource(observation, state, resourceType)),
       resourceClaims,
       categorySpend
     );

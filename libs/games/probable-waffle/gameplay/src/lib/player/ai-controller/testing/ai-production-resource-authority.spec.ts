@@ -54,7 +54,8 @@ function admit(
   stockpile: number,
   reservedUnspent = 0,
   obligationsDue = 0,
-  proposed = [intent("produce"), intent("research", 1)]
+  proposed = [intent("produce"), intent("research", 1)],
+  currentState = state
 ) {
   const observation = createAiTestObservation();
   return arbitrateAiIntents(
@@ -62,7 +63,7 @@ function admit(
       ...observation,
       resources: observation.resources.map((resource) => ({ ...resource, stockpile, reservedUnspent, obligationsDue }))
     },
-    state,
+    currentState,
     proposed,
     [],
     profile,
@@ -117,5 +118,50 @@ describe("production resource authority admission layer", () => {
     expect(
       new Set(Array.from({ length: 3 }, () => digestCanonicalAiValue(admit(34, 0, 0, [intent("produce")])))).size
     ).toBe(1);
+  });
+
+  it("holds dispatched resource claims until application is observed, without double-counting paid spending", () => {
+    const pending = {
+      ...state,
+      reservations: [
+        {
+          claimId: "claim:pending:wood",
+          subjectKey: "resource:wood",
+          resourceAmount: 35,
+          ownerPlanId: state.opening.plan.planId,
+          state: { kind: "dispatched" as const, commandId: "1:0:0:game" },
+          prerequisites: [],
+          createdTick: 20
+        }
+      ]
+    };
+    expect(admit(50, 0, 0, [intent("produce")]).accepted).toHaveLength(1);
+    expect(admit(50, 0, 0, [intent("produce")], pending).accepted).toHaveLength(0);
+
+    const applied = {
+      ...pending,
+      reservations: pending.reservations.map((reservation) => ({
+        ...reservation,
+        state: { kind: "applied_spending" as const, appliedTick: 21 }
+      }))
+    };
+    expect(admit(50, 0, 0, [intent("produce")], applied).accepted).toHaveLength(1);
+  });
+
+  it("fails closed on a migrated pending resource lease whose amount was not saved", () => {
+    const legacyPending = {
+      ...state,
+      reservations: [
+        {
+          claimId: "claim:legacy:wood",
+          subjectKey: "resource:wood",
+          ownerPlanId: state.opening.plan.planId,
+          state: { kind: "dispatched" as const, commandId: "1:0:0:legacy" },
+          prerequisites: [],
+          createdTick: 20
+        }
+      ]
+    };
+    expect(admit(500, 0, 0, [intent("produce")], legacyPending).accepted).toHaveLength(0);
   });
 });

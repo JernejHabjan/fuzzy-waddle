@@ -136,16 +136,28 @@ class AdaptationLedgerManager implements AiProposalManagerV1 {
 describe("PureAiBrain", () => {
   it("records accepted command service separately from evaluated but rejected lanes", () => {
     const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainStateV1({ playerNumber: 1, faction: FactionType.Tivara,
-      profile, tick: 0, archetypeId: "balanced" });
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
     const observation = createAiTestObservation();
-    const result = new PureAiBrain(profile, [new DummyManager([stopIntent("service", 900, "worker-1", 0)])])
-      .step(observation, state, []);
+    const result = new PureAiBrain(profile, [new DummyManager([stopIntent("service", 900, "worker-1", 0)])]).step(
+      observation,
+      state,
+      []
+    );
     expect(result.acceptedIntents).toHaveLength(1);
-    expect(result.nextState.lanes.find((entry) => entry.lane === "essential_economy")?.lastServicedTick)
-      .toBe(observation.tick);
-    const blocked = new PureAiBrain(profile, [new DummyManager([stopIntent("blocked", 900, "absent", 100000)])])
-      .step(observation, state, []);
+    expect(result.nextState.lanes.find((entry) => entry.lane === "essential_economy")?.lastServicedTick).toBe(
+      observation.tick
+    );
+    const blocked = new PureAiBrain(profile, [new DummyManager([stopIntent("blocked", 900, "absent", 100000)])]).step(
+      observation,
+      state,
+      []
+    );
     expect(blocked.acceptedIntents).toHaveLength(0);
     expect(blocked.nextState.lanes.find((entry) => entry.lane === "essential_economy")?.lastServicedTick).toBe(0);
   });
@@ -272,7 +284,9 @@ describe("PureAiBrain", () => {
     const result = new PureAiBrain(profile, [new DummyManager([invalid])]).step(createAiTestObservation(), state, []);
     expect(result.decisions).toEqual([]);
     expect(result.acceptedIntents).toEqual([]);
-    expect(result.nextState.scheduler.boundaryFaults).toEqual([expect.objectContaining({ owner: "dummy", failures: 1 })]);
+    expect(result.nextState.scheduler.boundaryFaults).toEqual([
+      expect.objectContaining({ owner: "dummy", failures: 1 })
+    ]);
   });
 
   it("does not reacquire a live physical claim from the same plan on the next decision", () => {
@@ -291,6 +305,9 @@ describe("PureAiBrain", () => {
     const second = brain.step(createAiTestObservation(), first.nextState, []);
 
     expect(first.acceptedIntents).toHaveLength(1);
+    expect(first.nextState.reservations).toContainEqual(
+      expect.objectContaining({ subjectKey: "resource:wood", resourceAmount: 1 })
+    );
     expect(second.acceptedIntents).toHaveLength(0);
     expect(second.decisions).toContainEqual(expect.objectContaining({ outcome: "rejected", reason: "claim_conflict" }));
   });
