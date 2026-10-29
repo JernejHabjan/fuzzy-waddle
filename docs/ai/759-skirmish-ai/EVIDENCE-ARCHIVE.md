@@ -2698,3 +2698,8 @@ Summaries use `node tools/ai/summarize-skirmish-report.mjs --report <path> --fai
 - Initial Tivara harmless-noise diagnostic `1793293499607` found that Stage 9's mixed skirmish proposal emitted accepted scouting intents while its batch declared only `army_threat`; the lane ledger therefore recorded scouting as unconsidered. Proposal batches can now declare all lanes evaluated in the pass, and the planner counts them independently of command service. Focused planner/skirmish checks pass 15/15.
 - Diagnostic `1793293771871` cleared that lane-ledger failure and exposed two setup issues. Native movement from the authored scout-probe could not cross the water barrier, and the starting army had no paid production demand. H-14 fixtures now provide a reachable approach and a two-unit initial army; fixture contract passes 51/51.
 - Current-source run `1793294021197` clears the paid-output gap (six produced units) but still fails the physical scouting trip. Trace shows the primary frontier scout's destination changes before a native trip completes. Keep H-14 open; no other H-14/H-15 branches were run and there is no full-family pass claim.
+
+# 2026-10-29 — H-15 survival and reconciliation
+
+- Initial Tivara lethal branch `1793294314358` passes on current source.
+- Full report `1793294898547-passed.json` closes all six current-source branches across Tivara and Skaduwee: lethal attack, resolved threat, and distant equal-strength control (720 decisions / 14,406 ticks). Lethal branches retain native attack effects, survival service and the original delayed receipt through terminal reconciliation; resolved and distant controls satisfy their distinct posture requirements. No H-15 replay is needed.
