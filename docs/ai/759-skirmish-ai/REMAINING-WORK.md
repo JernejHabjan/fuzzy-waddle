@@ -98,11 +98,11 @@ Checks: placement-access/food-infrastructure, fortification manager/recovery/con
 Dependency: consume A's access decisions; independent home-defense/scouting diagnosis can proceed while A is blocked.
 Read G/planning/ai-resource-service-manager.ts, ai-economy-policy.ts, ai-tactics-geometry.ts,
 ai-skirmish-scouting.ts, ai-tactics-mission-orders.ts, ai-tactics-mission-projection.ts and adjacent specs.
-Source retains some native scout/naval moves. H-14 Tivara harmless-control now passes; its earlier composite failure
+Source retains some native scout/naval moves. H-14 harmless-control now passes for both factions; its earlier composite failure
 was a false negative that required delivery from one nominal wood-source actor despite native neutral stone/mineral
-delivery. Confirm the Skaduwee harmless-control branch before treating the H-14 minimum as complete. Skaduwee
-EXP-02 home_pressure passes after constraining the full defense formation to the protected 12-tile radius and
-correcting two evaluator evidence bindings (current tower visibility and the assigned native builder order).
+delivery. Skaduwee EXP-02 home_pressure also passes after constraining the full defense formation to the protected
+12-tile radius and correcting two evaluator evidence bindings (current tower visibility and the assigned native
+builder order). Retain both-faction H-14 and Skaduwee pressure evidence; continue to other B acceptance branches.
 
 - B1: Expansion buys useful service, avoids known weapon range/duplicate service, protects home under credible pressure,
   and resumes useful economy after withdrawal/combat resolution.
