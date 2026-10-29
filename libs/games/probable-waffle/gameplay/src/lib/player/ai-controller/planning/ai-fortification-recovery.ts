@@ -67,11 +67,17 @@ function reconcileNode(
     };
   }
   if (outcome.kind === "rejected" || outcome.kind === "failed" || outcome.kind === "cancelled") {
+    const attempt = current.attempt + 1;
     return {
       ...current,
-      lifecycle: current.lifecycle === "destroyed" ? "destroyed" : "planned",
+      lifecycle:
+        attempt > MAX_BREACH_RECOVERY_ATTEMPTS
+          ? "abandoned"
+          : current.lifecycle === "destroyed"
+            ? "destroyed"
+            : "planned",
       completedActorId: null,
-      attempt: current.attempt + 1,
+      attempt,
       effectId: null,
       retryAfterTick: observation.tick + BREACH_RETRY_TICKS
     };
@@ -131,8 +137,12 @@ export function reconcileFortificationPlan(
         plan.graph.breach.recoveryAttempts,
         ...nodes.filter((current) => current.lifecycle === "destroyed").map((current) => current.attempt)
       )
-    : plan.graph.breach.recoveryAttempts;
-  const abandoned = recoveryAttempts > MAX_BREACH_RECOVERY_ATTEMPTS;
+    : Math.max(
+        plan.graph.breach.recoveryAttempts,
+        ...nodes.filter((current) => current.lifecycle === "abandoned").map((current) => current.attempt)
+      );
+  const abandoned =
+    recoveryAttempts > MAX_BREACH_RECOVERY_ATTEMPTS || nodes.some((current) => current.lifecycle === "abandoned");
   const completedNodeIds = nodes
     .filter((current) => current.lifecycle === "finished")
     .map((current) => current.nodeId)

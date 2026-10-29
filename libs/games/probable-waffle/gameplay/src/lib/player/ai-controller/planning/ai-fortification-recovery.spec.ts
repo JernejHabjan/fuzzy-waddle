@@ -1,6 +1,7 @@
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import { aiDeadline } from "../contracts/ai-core-types";
 import { arbitrateAiIntents } from "../brain/ai-intent-arbiter";
 import { AiFortificationManager } from "./ai-fortification-manager";
@@ -70,6 +71,64 @@ describe("fortification recovery ownership", () => {
     );
     expect(replacement?.effectId).toBe(`effect:fortification:${plan.planId}:${root.nodeId}:2`);
     expect(replacement?.effectId).not.toBe(root.effectId);
+  });
+  it("releases a fortification after two timed repair attempts fail instead of retrying forever", () => {
+    const failed = (intent: Extract<AiIntentV1, { kind: "construct" }>, tick: number, sequence: number) => ({
+      kind: "failed" as const,
+      tick,
+      reason: "native_site_unreachable",
+      identity: {
+        matchId: "match",
+        authorityEpoch: 0,
+        playerNumber: 2,
+        sequence,
+        commandId: `command:${sequence}`,
+        effectId: intent.effectId,
+        intentId: intent.intentId
+      }
+    });
+    const initial = manager.propose(observation(), threatenedState());
+    const initialPlan = initial.statePatch?.fortifications?.[0];
+    const firstBuild = initial.intents.find((intent) => intent.kind === "construct");
+    if (!initialPlan || firstBuild?.kind !== "construct" || !initialPlan.graph)
+      throw new Error("missing_initial_build");
+    const root = initialPlan.graph.nodes.find((node) => node.nodeId === firstBuild.siteKey.replace("fortification:", ""));
+    if (!root) throw new Error("missing_build_node");
+
+    const firstFailure = manager.propose(observation([], 100), {
+      ...threatenedState(),
+      fortifications: [initialPlan],
+      pendingOutcomes: [failed(firstBuild, 100, 0)]
+    });
+    const firstRetry = manager.propose(observation([], 200), {
+      ...threatenedState(),
+      fortifications: firstFailure.statePatch?.fortifications ?? []
+    });
+    const secondBuild = firstRetry.intents.find(
+      (intent) => intent.kind === "construct" && intent.siteKey.includes(root.nodeId)
+    );
+    if (secondBuild?.kind !== "construct") throw new Error("missing_first_repair_attempt");
+    const secondFailure = manager.propose(observation([], 300), {
+      ...threatenedState(),
+      fortifications: firstRetry.statePatch?.fortifications ?? [],
+      pendingOutcomes: [failed(secondBuild, 300, 1)]
+    });
+    const secondRetry = manager.propose(observation([], 400), {
+      ...threatenedState(),
+      fortifications: secondFailure.statePatch?.fortifications ?? []
+    });
+    const thirdBuild = secondRetry.intents.find(
+      (intent) => intent.kind === "construct" && intent.siteKey.includes(root.nodeId)
+    );
+    if (thirdBuild?.kind !== "construct") throw new Error("missing_second_repair_attempt");
+    const terminal = manager.propose(observation([], 500), {
+      ...threatenedState(),
+      fortifications: secondRetry.statePatch?.fortifications ?? [],
+      pendingOutcomes: [failed(thirdBuild, 500, 2)]
+    });
+
+    expect(terminal.statePatch?.fortifications?.[0]?.lifecycle).toBe("abandoned");
+    expect(terminal.intents).toEqual([]);
   });
   it("keeps an abandoned low-value perimeter terminal on subsequent decisions", () => {
     const plan = manager.propose(observation(), threatenedState()).statePatch?.fortifications?.[0];

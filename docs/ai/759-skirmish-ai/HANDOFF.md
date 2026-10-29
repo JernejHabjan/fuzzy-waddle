@@ -29,6 +29,10 @@ Do not reconstruct the old seven-package roadmap from chat or historical records
   The exporter now streams JSON into gzip and its 12k-fact browser regression passes, but retry 1793302528839
   exceeded Node's maximum string length while decompressing (> `0x1fffffe8`). Stop full WALL-01 retries until
   the Node-side capture is bounded or incrementally parsed; no wall-native evidence is claimed.
+- A3 recovery review found terminal construction failures could retry forever. After two timed repairs fail,
+  the fortification plan now becomes terminal and releases further intents. Red/green focused recovery spec
+  passes; recovery/manager/continuation suites pass 25/25. Retained H-11/PLACE-03 native recovery applicability
+  remains to be checked before A3 closure.
 - Continue independent A3 recovery and B diagnosis while the PLACE-01 and WALL-01 fixture/capture issues are
   unresolved. C1–C3 remain validated; do not repeat their tests without an invalidating change.
 - H-13's interrupted run finished: report 1793296020629-failed.json. Each variant's only missing ownership frame is
@@ -51,7 +55,7 @@ Do not reconstruct the old seven-package roadmap from chat or historical records
 
 | Packet | State | Next action |
 | --- | --- | --- |
-| A placement/walls/recovery | in_progress | Focus A3 recovery/B independently. PLACE-01 repeated-probe schedule was invalid; WALL-01 satisfies no native claim because the 4/4 housing setup now exceeds Node's 512 MiB string parser. Do not rerun either unchanged. |
+| A placement/walls/recovery | in_progress | A3 terminal failure retries are bounded with focused evidence; check H-11/PLACE-03 applicability. Advance B independently. PLACE-01 probe premise and WALL-01 Node capture limit remain unresolved; do not replay either unchanged. |
 | B expansion/mission continuity | ready after shared A analysis; independent diagnosis allowed | Explain EXP-02 home loss and H-14 frontier replacement. |
 | C resource/command ownership | validated | C1 duplicate admission preserves actor/application progress; C2 expired provisional escrow and contracted-balance gating have focused coverage, H-10 retains both-faction capacity evidence, and H-13 has current native base-control confirmation for both factions. C3 epoch/identity/dispatch guards reviewed; focused Phaser tests pass 20/20. Full gameplay tests pass 105 suites/609 tests. |
 | D essential SP lifecycle | ready; independent fallback | Inspect H-31 continuation and H-32 SP dispatch restrictions. |
