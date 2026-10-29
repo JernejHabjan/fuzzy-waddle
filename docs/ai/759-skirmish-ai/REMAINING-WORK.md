@@ -100,8 +100,9 @@ Read G/planning/ai-resource-service-manager.ts, ai-economy-policy.ts, ai-tactics
 ai-skirmish-scouting.ts, ai-tactics-mission-orders.ts, ai-tactics-mission-projection.ts and adjacent specs.
 Source retains some native scout/naval moves. H-14 Tivara harmless-control now passes; its earlier composite failure
 was a false negative that required delivery from one nominal wood-source actor despite native neutral stone/mineral
-delivery. Confirm the Skaduwee harmless-control branch before treating the H-14 minimum as complete.
-Skaduwee EXP-02 loses home despite the local-retreat fix; cause remains unproven.
+delivery. Confirm the Skaduwee harmless-control branch before treating the H-14 minimum as complete. Skaduwee
+EXP-02 home_pressure passes after constraining the full defense formation to the protected 12-tile radius and
+correcting two evaluator evidence bindings (current tower visibility and the assigned native builder order).
 
 - B1: Expansion buys useful service, avoids known weapon range/duplicate service, protects home under credible pressure,
   and resumes useful economy after withdrawal/combat resolution.
@@ -110,8 +111,8 @@ Skaduwee EXP-02 loses home despite the local-retreat fix; cause remains unproven
 - B3: Land attacks/retreats stay executable and react to threats without harmless noise repeatedly cancelling progress.
   Both factions remain capable of authoritative victory (E).
 
-Direction: inspect damage, defense arrival, visibility and order replacement before adjusting EXP-02 pressure.
-For H-14 compare question age/expiry, physical route progress and competing actor claims. Preserve viable commitments
+Direction: retain EXP-02's home-defense regression and passing native evidence; do not replay it unchanged. For H-14
+compare question age/expiry, physical route progress and competing actor claims. Preserve viable commitments
 with evidence-based preemption, not unconditional locks.
 Checks: resource-service, tactical geometry/scouting/admission, offense/planner regressions implicated by changes.
 Native minimum: Skaduwee home_pressure; one economic recovery branch per faction; H-14 harmless physical trip per faction.

@@ -136,16 +136,32 @@ export function evaluateExpansionWorld(
       failures.push("expansion_native_placement_boundary_invalid");
       continue;
     }
+    const placementObservation = selected.fact.decision.input;
+    const observedTower = placementObservation?.observation?.actors.find(
+      (actor) => actor.actorId === towerId && actor.visibility === "visible" && actor.logicalPosition.status === "known"
+    );
+    const placementThreatIsCurrent = !!placementObservation && !!towerId && hasCurrentVisibleTowerObservation(
+      placementObservation, selected.fact.tick, towerId
+    );
+    const observedTowerPosition = observedTower?.logicalPosition.status === "known"
+      ? observedTower.logicalPosition.value
+      : undefined;
+    const observedTowerAttacks = observedTower?.combatProfile?.status === "known"
+      ? observedTower.combatProfile.value.attacks
+      : undefined;
     const nativeTower = human.frontiers?.intervals
       .find((interval) => interval.closedFromTick <= fact.tick && interval.closedThroughTick >= fact.tick)
       ?.actors.find((actor) => actor.identity.actorId === towerId && actor.identity.active && actor.identity.alive);
     if (
+      placementThreatIsCurrent &&
+      observedTowerPosition &&
+      observedTowerAttacks &&
       nativeTower &&
       value.footprint.some((tile) =>
         isWithinObservedGroundWeaponRange(
-          towerPosition,
+          observedTowerPosition,
           { x: tile.x, y: tile.y, z: value.command.tileVec3.z },
-          towerProfile.attacks
+          observedTowerAttacks
         )
       )
     ) {
@@ -222,6 +238,29 @@ export function evaluateExpansionWorld(
   }
   failures.push(...expansionPressureFailures(branch, result, human));
   return [...new Set(failures)];
+}
+
+/** A placement safety verdict may only use a tower present in this command's current fair observation. */
+export function hasCurrentVisibleTowerObservation(
+  input: {
+    readonly gaps: readonly unknown[];
+    readonly snapshotRestoreInProgress: boolean;
+    readonly observation?: {
+      readonly tick: number;
+      readonly actors: readonly {
+        readonly actorId: string;
+        readonly visibility: string;
+        readonly logicalPosition: { readonly status: string };
+        readonly combatProfile?: { readonly status: string };
+      }[];
+    } | null;
+  },
+  tick: number,
+  towerId: string
+): boolean {
+  return !input.gaps.length && !input.snapshotRestoreInProgress && input.observation?.tick === tick &&
+    input.observation.actors.some((actor) => actor.actorId === towerId && actor.visibility === "visible" &&
+      actor.logicalPosition.status === "known" && actor.combatProfile?.status === "known");
 }
 
 /** Native command lineage strips the protocol's `effect:` label when stamping the shared command. */

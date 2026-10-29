@@ -66,8 +66,11 @@ export function safeRetreatPosition(
         : undefined)
     : undefined;
   const protectedBasePosition = protectedBase?.anchorPosition;
+  const formationFootprint = formationSpacing(members) * 2;
+  // Keep the whole retreat formation inside the base's local defense radius, not just its anchor tile.
+  const localDefenseRadius = Math.max(0, 12 - formationFootprint);
   const localDefenseCandidates = protectedBasePosition
-    ? allLegalCandidates.filter((candidate) => distance(candidate, protectedBasePosition) <= 12)
+    ? allLegalCandidates.filter((candidate) => distance(candidate, protectedBasePosition) <= localDefenseRadius)
     : [];
   const legalCandidates = localDefenseCandidates.length > 0 ? localDefenseCandidates : allLegalCandidates;
   const visibleThreats = observation.actors.flatMap((actor) => {
@@ -97,14 +100,7 @@ export function formationPositions(
   observation: AiObservationV1
 ): NonNullable<AiSquadStateV1["tactics"]>["assignedPositions"] {
   if (!anchor) return [];
-  const spacing = Math.max(
-    1,
-    ...members.map((actor) =>
-      actor.combatProfile?.status === "known"
-        ? Math.ceil(Math.max(0, ...actor.combatProfile.value.attacks.map((attack) => attack.minRange))) + 1
-        : 1
-    )
-  );
+  const spacing = formationSpacing(members);
   const offsets = [
     { x: spacing, y: 0 },
     { x: -spacing, y: 0 },
@@ -120,4 +116,15 @@ export function formationPositions(
     const candidate = { x: anchor.x + offset.x, y: anchor.y + offset.y, z: anchor.z };
     return legalForMembers(candidate, observation, [actor]) ? [{ actorId: actor.actorId, position: candidate }] : [];
   });
+}
+
+function formationSpacing(members: readonly AiObservedActorV1[]): number {
+  return Math.max(
+    1,
+    ...members.map((actor) =>
+      actor.combatProfile?.status === "known"
+        ? Math.ceil(Math.max(0, ...actor.combatProfile.value.attacks.map((attack) => attack.minRange))) + 1
+        : 1
+    )
+  );
 }
