@@ -64,16 +64,14 @@ show the controls are preempted by AI orders before physical arrival. The fixtur
 represented by active AI orders. Do not replay unchanged; continue to other EXP/WALL/recovery cases while keeping this
 placement blocker open for a route-visible setup or source-side repair.
 
-EXP-01 trace `1793276632715` showed expansion and WorkMill proposals repeatedly lost their builder to an `applied_spending`
-Gather actor lease that stayed after the worker's live order changed. The arbiter now permits a construction retask only
-from an owned, cargo-free gatherer with no transfer, a matching active/pending Gather order, and only applied actor claims;
-accepting the new actor claim releases older actor claims while preserving prior effect claims. Focused gameplay tests
-pass 22/22, including dispatched/build/queued-order protections. Follow-up native trace `1793277296485` starts two
-WorkMills and one Sandhold. The evaluator's weapon-range failure was false: it always added the WatchTower's two-tile
-high-ground bonus, although tower and placement had equal elevation. Both PLACE-02 and EXP-01 checks now apply native
-damage, minimum-range, target-domain and elevation rules; focused Playwright checks pass 2/2. The retained trace still
-has no completed native worker delivery into the new WorkMill, so EXP-01 remains open. Do not replay unchanged; diagnose
-the service path from the saved capture before another runtime.
+EXP-01's original trace `1793277296485` established paid expansion sites after safe Gather-to-build actor lease
+transfer, but delivery into the selected new WorkMill was missing. Current-selector trace `1793286911792` showed native
+delivery but exposed a source defect: `AiResourceServiceManager` selected a WorkMill at `(18,45)` inside a visible
+WatchTower's ground range. Resource-service placement now applies shared observed weapon safety to every footprint tile;
+its focused suite passes 5/5 and scoped lint passes. Current-source branch `1793287202414-diagnostic_passed.json`
+passes reachable Tivara expansion (200 decisions / 4,001 ticks, 143s; source `fnv1a32:e5e70cc4`, fixture
+`fnv1a32:69133634`), including delivered service and no live-range placement. Seven sibling branches and the family
+CI gate remain open; do not replay this branch unchanged.
 
 Latest closed family: SCOUT-03 report `1793174968627-passed.json` (four variants, 400 decisions / 8,004 ticks), source
 digest `fnv1a32:05a85282`, fixture digest `fnv1a32:ebc75582`. Previous closed family: STRAT-04 report

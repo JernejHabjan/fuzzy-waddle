@@ -214,6 +214,55 @@ describe("AiResourceServiceManager", () => {
     expect(proposal(control).intents).toHaveLength(0);
   });
 
+  it("does not place a new resource service inside a currently observed weapon footprint", () => {
+    const enemyTower = {
+      ...actor("enemy-tower", ObjectNames.WatchTower, 15, 5),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const,
+      combatProfile: {
+        status: "known" as const,
+        observedTick: 20,
+        value: {
+          maxHealth: 1000,
+          maxArmour: 0,
+          passiveRegenerationPerSecond: 0,
+          armourPermille: 0,
+          attacks: [{
+            damage: 20,
+            cooldownTicks: 28,
+            remainingCooldownTicks: null,
+            range: 7,
+            minRange: 0,
+            highGroundRangeBonus: 0,
+            impactDelayTicks: 10,
+            areaRadius: 0,
+            targetDomains: ["ground" as const]
+          }],
+          healing: null,
+          spells: [],
+          statuses: []
+        }
+      }
+    };
+    const observation = world(20, [enemyTower]);
+    const input = {
+      ...observation,
+      threatSummary: {
+        ...observation.threatSummary,
+        observedTick: 20,
+        visibleEnemyActorIds: [enemyTower.actorId],
+        observedCapabilityFamilies: ["attack"]
+      }
+    };
+    const intent = proposal(input).intents[0];
+
+    expect(intent).toEqual(expect.objectContaining({ kind: "construct", objectName: ObjectNames.WorkMill }));
+    if (intent?.kind === "construct") {
+      expect(intent.logicalPosition).toEqual({ x: 24, y: 5, z: 0 });
+    }
+  });
+
   it("ECO-06 partial: carried wood is not spendable and a nearly depleted tree does not trigger mill churn", () => {
     const baseline = world(20);
     const observation: AiObservationV1 = {

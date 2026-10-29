@@ -7,6 +7,7 @@ import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observa
 import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
 import { canAffordAiEconomyCost } from "./ai-economy-policy";
 import { createAiResourceCostClaims } from "./ai-resource-cost-claims";
+import { aiEconomySiteSafety } from "./ai-economy-site-safety";
 import { node, routeCapability } from "./ai-skirmish-support";
 import { queryAiAccessRouteV1 } from "./ai-access-graph-v1";
 
@@ -40,7 +41,8 @@ function selectSite(
   sourcePosition: Vector3Simple,
   nearestServiceDistance: number,
   footprintRadius: number,
-  rejectedAttempts: number
+  rejectedAttempts: number,
+  positionSafe: (position: Vector3Simple) => boolean
 ): Vector3Simple | null {
   const cells = observation.map?.constructionCells ?? [];
   const byKey = new Map(cells.map((cell) => [cell.tileKey, cell]));
@@ -53,7 +55,7 @@ function selectSite(
       for (let y = -footprintRadius; y <= footprintRadius; y += 1) {
         for (let x = -footprintRadius; x <= footprintRadius; x += 1) {
           const footprint = byKey.get(`${cell.position.x + x},${cell.position.y + y}`);
-          if (!footprint?.groundPassable || footprint.observedBlocked) return false;
+          if (!footprint?.groundPassable || footprint.observedBlocked || !positionSafe(footprint.position)) return false;
         }
       }
       return true;
@@ -194,7 +196,8 @@ export class AiResourceServiceManager implements AiProposalManagerV1 {
         sourcePosition,
         nearestServiceDistance,
         serviceEntry.constructionProfile!.footprintRadiusTiles,
-        rejectedAttempts
+        rejectedAttempts,
+        aiEconomySiteSafety(observation).positionSafe
       );
       if (!site) continue;
       const suffix = `${source.actorId}:${state.scheduler.decisionSequence}`;
