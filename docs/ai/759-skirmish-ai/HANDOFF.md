@@ -1,6 +1,6 @@
 # #759 single-player iteration — start here
 
-Updated 2026-10-29. User approved Astra preparation, then one model switch/compact and "go".
+Updated 2026-10-30. User approved Astra preparation, then one model switch/compact and "go".
 Preparation complete; gameplay execution has started under the active goal. Read this and the selected packet in
 [REMAINING-WORK.md](REMAINING-WORK.md), which owns scope, acceptance, loop and goal text.
 Do not reconstruct the old seven-package roadmap from chat or historical records.
@@ -60,7 +60,7 @@ Do not reconstruct the old seven-package roadmap from chat or historical records
   progress if its identity was reused with altered actor IDs. Reconciliation now ignores repeated admission while
   pending. A red/green regression covers two-actor terminal progress; focused reconciliation/adapter tests pass 12/12
   and the pure reservation test passes 1/1.
-- D diagnostic batch `4b98966c7` is pushed. H-31's post-health-fix diagnostic 1793315665949 still diverges after
+- D diagnostic batch `4b98966c7` and A3 fix `5355fd47b` are pushed. H-31's post-health-fix diagnostic 1793315665949 still diverges after
   save/restore: health now matches, but the observation/access graph changes (136→134 links) and the first AI input
   differs. H-32 Tivara normal and paid-queue diagnostics 1793314086840/1793314126658 pass; Skaduwee normal
   1793314649303 fails the old-scene shutdown fence (61 old tick observers, no stopped tick subject/shutdown event).
@@ -72,7 +72,7 @@ Do not reconstruct the old seven-package roadmap from chat or historical records
 
 | Packet | State | Next action |
 | --- | --- | --- |
-| A placement/walls/recovery | in_progress | A3 site-selection deadlock is fixed and current Tivara H-11 1793316324413 passes food recovery (51 delivered income, three produced, four workers). Next review PLACE-03 applicability and establish PLACE-01's actual transit premise; WALL-01 remains blocked on Node-side bounded capture. No unchanged retries. |
+| A placement/walls/recovery | in_progress | A3 fix is pushed; H-11 one-worker and PLACE-03 layout/concurrent pass for both factions; Tivara completion and loss also pass (1793318260099: 17 workers, 11 army, 410.48 income, 7 produced). Skaduwee completion 1793317870460 blocks `(41,24)` with a Granary, but no matching active route order exists in captured AI input; premise unresolved, not a product verdict. Builder-loss setup timed out before AI execution (loading-screen screenshot); no behavior verdict and no unchanged retry. Next inspect the fixture setup failure and establish a valid active-route completion premise. WALL-01 Node capture remains open. |
 | B expansion/mission continuity | in_progress | EXP-02 withdrawal recovery passes for Skaduwee 1793313251345 and Tivara 1793313388623 on the same source/fixture. Existing Skaduwee home_pressure and both H-14 harmless passes remain. Continue B2 scouting and B3 combat; no unchanged EXP-02 withdrawal reruns. |
 | C resource/command ownership | validated | C1 duplicate admission preserves actor/application progress; C2 expired provisional escrow and contracted-balance gating have focused coverage, H-10 retains both-faction capacity evidence, and H-13 has current native base-control confirmation for both factions. C3 epoch/identity/dispatch guards reviewed; focused Phaser tests pass 20/20. Full gameplay tests pass 105 suites/611 tests. |
 | D essential SP lifecycle | in_progress | H-32 SP branch dispatch is fixed and covered by 58 focused static tests; Tivara normal/paid queue pass, Skaduwee shutdown fence fails. H-31 health restore is fixed, but observation/access graph still diverges. Advance to independent B work while these causes remain bounded; do not replay unchanged. |
