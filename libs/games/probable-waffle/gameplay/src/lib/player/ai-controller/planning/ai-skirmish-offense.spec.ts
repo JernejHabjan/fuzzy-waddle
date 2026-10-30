@@ -267,18 +267,6 @@ describe("AiSkirmishManager offense target selection", () => {
       expect.objectContaining({ actorIds: [defender.actorId], logicalPosition: { x: 0, y: 0, z: 0 } })
     ]);
 
-    const reserve = actor("reserve", homeNode, 1);
-    const twoUnitWorld = { ...world, actors: [defender, reserve, home, enemy, resource] };
-    const recalledAtTwo = new AiSkirmishManager(profile, () => catalog).propose(twoUnitWorld, {
-      ...initial,
-      squads: [activeNeutralMission]
-    });
-    expect(
-      recalledAtTwo.statePatch?.squads?.find((squad) => squad.squadId === "squad:scout:neutral")
-    ).toEqual(expect.objectContaining({ state: "cancelled", actorIds: [] }));
-    expect(recalledAtTwo.intents.filter((intent) => intent.kind === "move")).toEqual([
-      expect.objectContaining({ actorIds: [defender.actorId], logicalPosition: { x: 0, y: 0, z: 0 } })
-    ]);
   });
 
   it("keeps an active frontier scout out of a newly formed attack force", () => {

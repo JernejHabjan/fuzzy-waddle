@@ -87,9 +87,9 @@ function recallScout(context: AiSkirmishProposalContext, scout: AiSquadStateV1):
   });
 }
 
-function shouldRecallForHomeThreat(context: AiSkirmishProposalContext, maximumCombatForce = 1): boolean {
+function shouldRecallForHomeThreat(context: AiSkirmishProposalContext): boolean {
   const home = context.home;
-  if (context.combat.length > maximumCombatForce || !home) return false;
+  if (context.combat.length > 1 || !home) return false;
   return [...context.visibleEnemies, ...context.rememberedEnemies].some((enemy) => {
     const enemyPosition = position(enemy);
     return enemyPosition !== undefined && distance(home, enemyPosition) <= SCOUT_HOME_RECALL_DISTANCE;
@@ -112,9 +112,7 @@ function appendNeutralClaim(context: AiSkirmishProposalContext, allowNewClaim = 
     const expired =
       previous.lifecycle !== undefined && previous.lifecycle.effectDeadline.dueTick <= context.observation.tick;
     const terminal = previous.state === "completed" || previous.state === "cancelled";
-    // Neutral resource visits are optional and use the same two-unit floor as
-    // neutral scout admission. Frontier missions retain their separate contact policy.
-    if (!terminal && shouldRecallForHomeThreat(context, 2)) {
+    if (!terminal && shouldRecallForHomeThreat(context)) {
       recallScout(context, previous);
       return;
     }

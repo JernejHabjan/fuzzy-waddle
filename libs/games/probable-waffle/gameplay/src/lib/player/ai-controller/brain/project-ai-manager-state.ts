@@ -26,6 +26,10 @@ export function projectAiManagerState(
     if (patch.squads !== undefined) primaryProjectionSeen = true;
     const currentSquadIds = new Set(state.squads.map((squad) => squad.squadId));
     const applicableSquadUpdates = squadUpdates?.filter((update) => {
+      const currentSquad = state.squads.find((squad) => squad.squadId === update.squadId);
+      // A narrow tactical snapshot was computed from the pre-projection state;
+      // it must not revive a mission the strategic owner just cancelled/completed.
+      if (currentSquad && ["completed", "cancelled"].includes(currentSquad.state)) return false;
       const parentSquadId = update.squadId.includes(":domain:")
         ? (update.squadId.slice(0, update.squadId.indexOf(":domain:")) as typeof update.squadId)
         : null;
