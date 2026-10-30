@@ -83,14 +83,58 @@ export async function prepareRuntimeVariant(
   }
   await debugProbe?.(page, -1);
   if (variant.presetWorld?.constructionOrders?.length) {
-    await page.waitForFunction((count) => {
-      const host = (window as unknown as {
-        __fuzzyWaddleAiRuntimeBrowserTestV1?: { presetApplication?: AiRuntimePresetApplicationV1 };
-      }).__fuzzyWaddleAiRuntimeBrowserTestV1;
-      return host?.presetApplication?.constructionApplications?.length === count;
-    },
-      variant.presetWorld.constructionOrders.length, { timeout: 30_000 }
-    );
+    const constructionErrors: string[] = [];
+    const collectConstructionError = (message: import("@playwright/test").ConsoleMessage) => {
+      if (message.type() === "error") constructionErrors.push(message.text());
+    };
+    const collectConstructionPageError = (error: Error) => constructionErrors.push(error.message);
+    page.on("console", collectConstructionError);
+    page.on("pageerror", collectConstructionPageError);
+    try {
+      await page.waitForFunction((count) => {
+        const host = (window as unknown as {
+          __fuzzyWaddleAiRuntimeBrowserTestV1?: { presetApplication?: AiRuntimePresetApplicationV1 };
+        }).__fuzzyWaddleAiRuntimeBrowserTestV1;
+        return host?.presetApplication?.constructionApplications?.length === count;
+      },
+        variant.presetWorld.constructionOrders.length, { timeout: 30_000 }
+      );
+    } catch (error) {
+      const setupState = await page.evaluate(() => {
+        const host = (window as unknown as {
+          __fuzzyWaddleAiRuntimeBrowserTestV1?: {
+            game?: { scene?: { getScenes(active: boolean): {
+              scene: { key: string; sys?: { settings?: { status?: string } } };
+              getSceneGameData?: () => {
+                initializers?: { sceneInitialized?: { value?: boolean } };
+                services?: { currentTick?: number; isPaused?: boolean }[];
+              };
+            }[] } };
+            presetApplication?: { fixtureId: string; constructionApplications?: unknown[] };
+          };
+        }).__fuzzyWaddleAiRuntimeBrowserTestV1;
+        return {
+          presetApplication: host?.presetApplication ?? null,
+          scenes: host?.game?.scene?.getScenes(true).map((candidate) => {
+            const graph = candidate.getSceneGameData?.();
+            const ticks = graph?.services?.find((service) => typeof service.currentTick === "number");
+            return {
+              key: candidate.scene.key,
+              status: candidate.scene.sys?.settings?.status ?? null,
+              initialized: graph?.initializers?.sceneInitialized?.value ?? null,
+              tick: ticks?.currentTick ?? null,
+              paused: ticks?.isPaused ?? null
+            };
+          }) ?? [],
+          body: document.body.innerText.slice(0, 600)
+        };
+      }).catch(() => null);
+      throw new Error(`runtime_preset_construction_not_ready:${error instanceof Error ? error.message : String(error)}; ` +
+        `setupState=${JSON.stringify(setupState)}; browserErrors=${JSON.stringify([...browserErrors, ...constructionErrors].slice(-12))}`);
+    } finally {
+      page.off("console", collectConstructionError);
+      page.off("pageerror", collectConstructionPageError);
+    }
   }
   if (variant.presetWorld?.queues?.length || variant.presetWorld?.researchQueues?.length) {
     const expected =

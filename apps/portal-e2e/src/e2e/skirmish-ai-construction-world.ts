@@ -36,14 +36,10 @@ export function constructionRecoveryWorld(branch: "builder_loss" | "intact" | "c
               position: { x: 0, y: 1200, z: 0 } }
           ],
           resourceGrants: [{ playerNumber: 2, amounts: { food: 1000, wood: 1000, stone: 1000, minerals: 1000 } }],
-          protectedRoutes: [
-            { id: "worker-service", playerNumber: 2, from: { x: 608, y: 736 }, to: { x: 704, y: 672 }, tileMargin: 0 },
-            { id: "producer-approach", playerNumber: 2, from: { x: 800, y: 944 }, to: { x: 1056, y: 1088 }, tileMargin: 0 },
-            { id: "army-retreat", playerNumber: 2, from: { x: 1024, y: 800 }, to: { x: 608, y: 704 }, tileMargin: 1 }
-          ],
+          // Route-preservation assertions live in the dedicated PLACE-03 layout controls; this case isolates recovery.
           constructionOrders: [{
             fixtureActorId: "unfinished-producer", actorName: ObjectNames.AnkGuard,
-            builderFixtureActorIds: ["original-builder"], position: { x: 800, y: 848, z: 0 }
+            builderFixtureActorIds: ["original-builder"], position: { x: 1056, y: 848, z: 0 }
           }],
           events: branch === "intact" ? [] : [{
             id: "construction-interruption", tick: CONSTRUCTION_INTERRUPTION_TICK,

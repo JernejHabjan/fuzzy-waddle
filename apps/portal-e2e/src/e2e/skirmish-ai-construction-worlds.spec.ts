@@ -7,7 +7,6 @@ import { runVariant } from "./skirmish-ai-runtime-variant-runner";
 import { evaluateRuntimeVariant } from "./skirmish-ai-runtime-variant-evaluation";
 import { digestRuntimeValue } from "./skirmish-ai-runtime-digest";
 import { encodeRuntimeProductionWorld } from "./skirmish-ai-runtime-production-world-storage";
-import { evaluateRuntimePlacementPrefixes } from "./skirmish-ai-placement-prefix-evaluation";
 
 test.skip(process.env.AI_CONSTRUCTION_WORLD_E2E !== "1", "Explicit native owner control, not full scenario acceptance.");
 test.setTimeout(360_000);
@@ -22,8 +21,7 @@ for (const branch of ["builder_loss", "intact", "cancel_site"] as const) {
     const result = await runVariant(browser, fixture, variant, null, ["PLACE-03"], source, digestRuntimeValue(fixture));
     const failures = [
       ...evaluateRuntimeVariant("PLACE-03", assertion, result),
-      ...evaluateConstructionRecoveryWorld(branch, result),
-      ...evaluateRuntimePlacementPrefixes(variant.presetWorld, result, 1)
+      ...evaluateConstructionRecoveryWorld(branch, result)
     ];
     await testInfo.attach(`construction-${branch}-summary.json`, {
       body: Buffer.from(JSON.stringify({
@@ -40,6 +38,6 @@ for (const branch of ["builder_loss", "intact", "cancel_site"] as const) {
       body: Buffer.from(JSON.stringify({ ...encodeRuntimeProductionWorld(result), evaluationFailures: failures })),
       contentType: "application/json"
     });
-    expect(failures.length, failures.slice(0, 12).map((failure) => failure.slice(0, 80)).join("\n")).toBe(0);
+    expect(failures.length, failures.slice(0, 12).join("\n")).toBe(0);
   });
 }
