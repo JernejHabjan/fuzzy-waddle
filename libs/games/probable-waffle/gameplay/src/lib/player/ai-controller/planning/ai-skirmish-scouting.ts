@@ -21,6 +21,8 @@ import { queryAiAccessRouteV1 } from "./ai-access-graph-v1";
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { distance } from "./ai-tactics-geometry";
 
+const SCOUT_HOME_RECALL_DISTANCE = 32;
+
 /** Scouting has no transport child owner; only an immediately executable route can admit a member. */
 function canScoutNode(
   context: AiSkirmishProposalContext,
@@ -54,6 +56,46 @@ function compareScoutActors(left: AiSkirmishProposalContext["combat"][number], r
   return left.objectName.localeCompare(right.objectName) || left.actorId.localeCompare(right.actorId);
 }
 
+function recallScout(context: AiSkirmishProposalContext, scout: AiSquadStateV1): void {
+  const members = context.combat.filter(
+    (actor) => scout.actorIds.includes(actor.actorId) && !context.primaryOwnedActors.has(actor.actorId)
+  );
+  const homePosition = context.observation.map?.accessGraph?.nodes.find(
+    (entry) => entry.nodeId === context.homeAccess
+  )?.representativePosition;
+  context.nextSquads.push({
+    ...scout,
+    actorIds: [],
+    state: "cancelled",
+    ...(scout.lifecycle
+      ? { lifecycle: { ...scout.lifecycle, terminalReason: "known_opponent_low_force" } }
+      : {})
+  });
+  if (members.length === 0 || !homePosition) return;
+  members.forEach((actor) => context.primaryOwnedActors.add(actor.actorId));
+  const planId = `plan:${scout.squadId}` as AiPlanId;
+  context.intents.push({
+    ...intentBase(context.state, planId, context.observation.tick, `scout:recall:${scout.squadId}`, "army_threat", 960),
+    kind: "move",
+    actorIds: members.map((actor) => actor.actorId),
+    claims: members.map((actor) => ({
+      claimId: `claim:scout:recall:${scout.squadId}:${actor.actorId}` as AiClaimId,
+      kind: "actor" as const,
+      actorId: actor.actorId
+    })),
+    logicalPosition: homePosition
+  });
+}
+
+function shouldRecallForHomeThreat(context: AiSkirmishProposalContext): boolean {
+  const home = context.home;
+  if (context.combat.length > 1 || !home) return false;
+  return [...context.visibleEnemies, ...context.rememberedEnemies].some((enemy) => {
+    const enemyPosition = position(enemy);
+    return enemyPosition !== undefined && distance(home, enemyPosition) <= SCOUT_HOME_RECALL_DISTANCE;
+  });
+}
+
 function appendNeutralClaim(context: AiSkirmishProposalContext, allowNewClaim = true): void {
   if (context.opponent) return;
   const knownOpponent = context.visibleEnemies.length > 0 || context.rememberedEnemies.length > 0;
@@ -69,13 +111,14 @@ function appendNeutralClaim(context: AiSkirmishProposalContext, allowNewClaim = 
       ) === true;
     const expired =
       previous.lifecycle !== undefined && previous.lifecycle.effectDeadline.dueTick <= context.observation.tick;
-    const preempted = knownOpponent && context.combat.length <= 2;
     const terminal = previous.state === "completed" || previous.state === "cancelled";
+    if (!terminal && shouldRecallForHomeThreat(context)) {
+      recallScout(context, previous);
+      return;
+    }
     const state = terminal
       ? previous.state
-      : preempted
-        ? "cancelled"
-        : covered
+      : covered
         ? "completed"
         : expired || members.length === 0
           ? "cancelled"
@@ -91,9 +134,7 @@ function appendNeutralClaim(context: AiSkirmishProposalContext, allowNewClaim = 
               ...previous.lifecycle,
               terminalReason: terminal
                 ? previous.lifecycle.terminalReason
-                : preempted
-                  ? "known_opponent_low_force"
-                  : covered
+                : covered
                   ? "region_observed"
                   : expired
                     ? "scout_deadline"
@@ -191,12 +232,16 @@ function appendNeutralClaim(context: AiSkirmishProposalContext, allowNewClaim = 
 function appendFrontierScout(context: AiSkirmishProposalContext): void {
   const { currentQuestion, combat, observation } = context;
   const activeScout = context.activeScout?.squadId === "squad:scout:neutral" ? undefined : context.activeScout;
+  const knownOpponent = context.visibleEnemies.length > 0 || context.rememberedEnemies.length > 0;
+  if (shouldRecallForHomeThreat(context)) {
+    if (activeScout) recallScout(context, activeScout);
+    return;
+  }
   if (!currentQuestion || !combat[0] || !observation.map?.accessGraph) return;
   const exposedVisibleCore = context.visibleEnemies.some(
     (actor) => actor.mainBuilding?.status === "known" && actor.mainBuilding.value
   );
   if (exposedVisibleCore && !activeScout) return;
-  const knownOpponent = context.visibleEnemies.length > 0 || context.rememberedEnemies.length > 0;
   if (knownOpponent && combat.length <= 2 && !activeScout) return;
   const searchPoint = currentQuestion.kind.startsWith("explore:")
     ? observation.map.scoutSearchPoints?.find(

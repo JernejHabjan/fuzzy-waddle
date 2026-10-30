@@ -170,10 +170,17 @@ describe("AiSkirmishManager offense target selection", () => {
   it("keeps a lone defender home when an enemy is already observed", () => {
     const defender = actor("defender", homeNode, 0);
     const enemy = {
-      ...actor("enemy", enemyNode, 1),
+      ...actor("enemy", enemyNode, 20),
       owner: 2,
       relation: "enemy" as const,
       visibility: "visible" as const
+    };
+    const home: AiObservedActorV1 = {
+      ...createAiTestOwnedActor("home"),
+      objectName: ObjectNames.Sandhold,
+      logicalPosition: { status: "known", value: { x: 0, y: 0, z: 0 }, observedTick: 20 },
+      accessNodeId: { status: "known", value: homeNode, observedTick: 20 },
+      mainBuilding: { status: "known", value: true, observedTick: 20 }
     };
     const resource: AiObservedActorV1 = {
       ...createAiTestOwnedActor("neutral-resource"),
@@ -200,7 +207,7 @@ describe("AiSkirmishManager offense target selection", () => {
     const world = {
       ...base,
       tick: 20,
-      actors: [defender, enemy, resource],
+      actors: [defender, home, enemy, resource],
       map: {
         ...base.map!,
         frontierAccessNodeIds: [enemyNode],
@@ -236,7 +243,29 @@ describe("AiSkirmishManager offense target selection", () => {
     expect(preempted.statePatch?.squads?.find((squad) => squad.squadId === "squad:scout:neutral")).toEqual(
       expect.objectContaining({ state: "cancelled", actorIds: [] })
     );
-    expect(preempted.intents.filter((intent) => intent.kind === "move" || intent.kind === "scout")).toEqual([]);
+    expect(preempted.intents.filter((intent) => intent.kind === "move")).toEqual([
+      expect.objectContaining({ actorIds: [defender.actorId], logicalPosition: { x: 0, y: 0, z: 0 } })
+    ]);
+    expect(preempted.intents.filter((intent) => intent.kind === "scout")).toEqual([]);
+
+    const activeFrontierMission = {
+      squadId: "squad:scout:primary" as const,
+      role: "scout" as const,
+      domain: "ground" as const,
+      actorIds: [defender.actorId],
+      objectiveId: "question:search:ground:8:0:0",
+      state: "retreat" as const
+    };
+    const recalled = new AiSkirmishManager(profile, () => catalog).propose(world, {
+      ...initial,
+      squads: [activeFrontierMission]
+    });
+    expect(recalled.statePatch?.squads?.find((squad) => squad.squadId === "squad:scout:primary")).toEqual(
+      expect.objectContaining({ state: "cancelled", actorIds: [] })
+    );
+    expect(recalled.intents.filter((intent) => intent.kind === "move")).toEqual([
+      expect.objectContaining({ actorIds: [defender.actorId], logicalPosition: { x: 0, y: 0, z: 0 } })
+    ]);
   });
 
   it("keeps an active frontier scout out of a newly formed attack force", () => {
