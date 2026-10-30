@@ -38,7 +38,7 @@ export async function replayNativeSavedContinuation(
     }
   }
   const firstTraceInputDifferences = controlTrace.firstInput && resumedTrace.firstInput ?
-    nativeDebugProjectionDifferences(controlTrace.firstInput, resumedTrace.firstInput) : [];
+    nativeDebugProjectionDifferences(controlTrace.firstInput, resumedTrace.firstInput, 80) : [];
   return { sourceRevision, fixtureDigest, branch, premises, sameRealm: reloaded.sameRealm, saveId: reloaded.saveId,
     saveRevision: reloaded.revision, resumedSimulationTimeScale, saved, restored, control, resumed,
     controlTraceCount: controlTrace.records.length, resumedTraceCount: resumedTrace.records.length,
