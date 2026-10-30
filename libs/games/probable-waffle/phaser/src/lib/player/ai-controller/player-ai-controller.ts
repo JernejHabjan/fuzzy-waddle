@@ -16,7 +16,7 @@ import { getSimulationNow } from "./ai-time";
 import { isSceneActive } from "../../data/game-object-helper";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { SimulationTickService } from "../../world/services/simulation-tick.service";
-import type { Subscription } from "rxjs";
+import { take, type Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { AiCommandReconciliation } from "./ai-command-reconciliation";
@@ -102,7 +102,13 @@ export class PlayerAiController {
       // Runtime multiplayer must use simulation ticks for deterministic AI cadence.
       scene.events.on(Phaser.Scenes.Events.UPDATE, this.updateFrameNonDeterministicFallback, this);
     }
-    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.onShutdown, this);
+    this.bindSceneShutdown();
+  }
+
+  private bindSceneShutdown(): void {
+    // BaseScene emits onShutdown for both Phaser SHUTDOWN and DESTROY paths,
+    // including a scene removed directly instead of stopped first.
+    this.scene.onShutdown.pipe(take(1)).subscribe(() => this.onShutdown());
   }
 
   private async updateFrameNonDeterministicFallback(_: number, delta: number) {

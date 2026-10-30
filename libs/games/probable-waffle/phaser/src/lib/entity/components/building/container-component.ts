@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import { HealthComponent } from "../combat/components/health-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { VisionComponent } from "../vision-component";
-import { getGameObjectVisibility, isWaterUnit } from "../../../data/game-object-helper";
+import { getGameObjectVisibility, isSceneActive, isWaterUnit } from "../../../data/game-object-helper";
 import { type ContainerComponentData, ProbableWaffleGameCommandTypes } from "@fuzzy-waddle/probable-waffle-protocol";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
@@ -190,6 +190,9 @@ export class ContainerComponent {
   }
 
   private repositionNearContainer(gameObject: Phaser.GameObjects.GameObject) {
+    // A container can unload its passengers while Phaser destroys the scene. At that point tile-to-world
+    // conversion may already have lost the scene camera, so only reposition during live gameplay.
+    if (!isSceneActive(this.gameObject.scene)) return;
     const navigationService = getSceneService(this.gameObject.scene, NavigationService);
     if (!navigationService) return;
     const spawnTile = navigationService.getSpawnPointAroundGameObject(this.gameObject);

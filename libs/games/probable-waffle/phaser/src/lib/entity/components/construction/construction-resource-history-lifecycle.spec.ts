@@ -177,6 +177,21 @@ describe("construction lifecycle resource history (authored; final gate pending)
 });
 
 describe("construction restore and cleanup resource history", () => {
+  it("unsubscribes its shutdown handler through the captured scene after actor detachment", () => {
+    const f = constructionHistoryFixture();
+    f.component.setData({ state: ConstructionStateEnum.Constructing, remainingConstructionTime: 500 });
+    Reflect.set(f.object, "scene", undefined);
+
+    expect(() => f.scene.events.emit(Phaser.Scenes.Events.SHUTDOWN)).not.toThrow();
+    expect(() => f.component.update()).not.toThrow();
+    expect(f.component.getData()).toMatchObject({
+      state: ConstructionStateEnum.Constructing,
+      remainingConstructionTime: 500
+    });
+    expect(refundConstructionPayment).not.toHaveBeenCalled();
+    f.journal.dispose();
+  });
+
   it("fences empty/matching/partial restore before resolution and native notifications without changing saved fields", () => {
     const f = constructionHistoryFixture(),
       old: unknown[] = [],

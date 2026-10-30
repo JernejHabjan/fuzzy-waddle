@@ -25,8 +25,10 @@ import { AssignProductionErrorCode } from
 
 export class QueueCommandSystem {
   private commandBusSubscription?: Subscription;
+  private readonly scene: Phaser.Scene;
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
+    this.scene = gameObject.scene;
     this.listenToCommandBusEvents();
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
@@ -164,6 +166,6 @@ export class QueueCommandSystem {
     this.commandBusSubscription?.unsubscribe();
     this.gameObject.off(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     this.gameObject.off(HealthComponent.KilledEvent, this.destroy, this);
-    this.gameObject.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+    this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
   }
 }

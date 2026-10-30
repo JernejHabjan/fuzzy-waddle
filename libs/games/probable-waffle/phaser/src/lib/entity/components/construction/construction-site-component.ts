@@ -29,6 +29,7 @@ import { fenceSceneResourceHistory } from "../../../data/scene-resource-observat
 export { buildsWithoutAssignedWorkers, constructionVitalityIncrement } from "./construction-progress";
 
 export class ConstructionSiteComponent {
+  private readonly scene: Phaser.Scene;
   public progressPercentage = 0;
   public constructionProgressPercentageChanged: BehaviorSubject<number> = new BehaviorSubject<number>(
     this.progressPercentage
@@ -57,6 +58,7 @@ export class ConstructionSiteComponent {
     private readonly gameObject: Phaser.GameObjects.GameObject,
     private readonly constructionSiteDefinition: ConstructionSiteDefinition
   ) {
+    this.scene = gameObject.scene;
     this.builders = new ConstructionWorkerMembership(gameObject.scene);
     this.repairers = new ConstructionWorkerMembership(gameObject.scene);
     this.constructionProgressUiComponent = new ConstructionProgressUiComponent(this.gameObject);
@@ -438,7 +440,7 @@ export class ConstructionSiteComponent {
       this.simulationTickSub?.unsubscribe();
       this.gameObject.off(Phaser.GameObjects.Events.DESTROY, this.onDestroy, this);
       this.gameObject.off(HealthComponent.KilledEvent, this.onDestroy, this);
-      this.gameObject.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.onSceneShutdown, this);
+      this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.onSceneShutdown, this);
     }
   }
 
@@ -449,7 +451,7 @@ export class ConstructionSiteComponent {
     this.simulationTickSub?.unsubscribe();
     this.gameObject.off(Phaser.GameObjects.Events.DESTROY, this.onDestroy, this);
     this.gameObject.off(HealthComponent.KilledEvent, this.onDestroy, this);
-    this.gameObject.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.onSceneShutdown, this);
+    this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.onSceneShutdown, this);
   }
 
   private tryResolveAssignedActorReferences(): void {

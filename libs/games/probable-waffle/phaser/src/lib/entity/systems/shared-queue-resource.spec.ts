@@ -404,6 +404,8 @@ describe("paid queue callback and shutdown fences", () => {
   it("removes queue, production and command subscriptions at scene shutdown before actor destruction", () => {
     const f = setup(false);
     f.commands.next(purchase());
+    // Phaser may detach a game object before invoking every shutdown listener.
+    Reflect.set(f.actor, "scene", undefined);
     f.scene.events.emit(Phaser.Scenes.Events.SHUTDOWN);
     expect(f.commands.observed).toBe(false);
     expect(f.tick$.observed).toBe(false);

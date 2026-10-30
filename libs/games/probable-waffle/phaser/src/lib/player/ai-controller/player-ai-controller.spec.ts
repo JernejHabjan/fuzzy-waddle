@@ -7,6 +7,7 @@ import { CommandBusService } from "../../world/services/multiplayer/command-bus.
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { PlayerAiController } from "./player-ai-controller";
 import type Phaser from "phaser";
+import { Subject } from "rxjs";
 import { installAiResourceInputObserver } from "./observation/ai-resource-input-observation";
 import { rememberAiResourceInputRead } from
   "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-resource-input-observation";
@@ -58,7 +59,8 @@ describe("PlayerAiController pure planner integration", () => {
   it("cannot reactivate a disposed controller through late host toggles, restore or queued steps", async () => {
     const controller = Object.create(PlayerAiController.prototype) as PlayerAiController;
     const reconciliation = { destroy: jest.fn() }, off = jest.fn(), unsubscribe = jest.fn();
-    Reflect.set(controller, "scene", { events: { off } });
+    const shutdown = new Subject<void>();
+    Reflect.set(controller, "scene", { events: { off }, onShutdown: shutdown.asObservable() });
     Reflect.set(controller, "player", { playerNumber: 1 });
     Reflect.set(controller, "commandReconciliation", reconciliation);
     Reflect.set(controller, "tickSubscription", { unsubscribe });
@@ -66,13 +68,15 @@ describe("PlayerAiController pure planner integration", () => {
     Reflect.set(controller, "authorityActive", true);
     Reflect.set(controller, "stepQueued", true);
     const step = jest.fn(); Reflect.set(controller, "stepDecisionPlanner", step);
-    const lifecycle = controller as unknown as { onShutdown(): void; runScheduledStep(): Promise<void> };
-    lifecycle.onShutdown(); lifecycle.onShutdown();
+    const lifecycle = controller as unknown as { bindSceneShutdown(): void; runScheduledStep(): Promise<void> };
+    lifecycle.bindSceneShutdown();
+    shutdown.next(); shutdown.next();
     controller.setAuthorityActive(true); controller.setEnabled(true);
     await lifecycle.runScheduledStep();
     expect(step).not.toHaveBeenCalled();
     expect(reconciliation.destroy).toHaveBeenCalledTimes(1);
     expect(unsubscribe).toHaveBeenCalledTimes(1);
+    expect(shutdown.observers).toHaveLength(0);
     expect(Reflect.get(controller, "stepQueued")).toBe(false);
     expect(() => controller.setBrainState({})).toThrow("ai_controller_disposed");
     expect(() => controller.setSaveState({} as Parameters<PlayerAiController["setSaveState"]>[0]))

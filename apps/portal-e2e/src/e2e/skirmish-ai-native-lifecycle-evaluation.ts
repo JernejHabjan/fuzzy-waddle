@@ -23,6 +23,10 @@ export function nativeLifecycleProofFailures(branch: string, proof: NativeLifecy
       !proof.retained.oldTickSubjectStopped || proof.retained.oldTickObservers !== 0 ||
       !proof.nativeBeforeLateWork || proof.nativeBeforeLateWork !== proof.nativeAfterLateWork)
     failures.push("native_lifecycle_old_work_escaped_shutdown_fence");
+  if (!proof.retained.shutdownCallObserved || proof.retained.shutdownErrorMessage !== null ||
+      proof.retained.shutdownListenerCountAfterCall < 0 ||
+      proof.retained.shutdownListenerCountAfterCall >= proof.retained.shutdownListenerCountAtCall)
+    failures.push("native_lifecycle_scene_shutdown_incomplete");
   if (proof.nextAiErrors.length) failures.push("native_lifecycle_new_match_ai_errors");
   if (branch === "paid_queue" && (!proof.retained.originalPaidCommandId ||
       proof.retained.completionResults.length !== 2 || proof.retained.completionResults.some((result) => result !== null)))

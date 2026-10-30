@@ -46,6 +46,7 @@ import type { ProductionGameObject as GameObject } from "./production-game-objec
 import { spawnProductionActor } from "./production-spawner";
 
 export class ProductionComponent {
+  private readonly scene: Phaser.Scene;
   private readonly rallyPoint: RallyPoint;
   private ownerComponent?: OwnerComponent;
   private navigationService!: NavigationService;
@@ -59,6 +60,7 @@ export class ProductionComponent {
     private readonly gameObject: GameObject,
     public readonly productionDefinition: ProductionDefinition
   ) {
+    this.scene = gameObject.scene;
     this.rallyPoint = new RallyPoint(this.gameObject.scene);
     this.listenToMoveEvents();
     onObjectReady(gameObject, this.initOnObjectReady, this);
@@ -409,7 +411,7 @@ export class ProductionComponent {
     this.rallyPoint.destroy();
     this.gameObject.off(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     this.gameObject.off(HealthComponent.KilledEvent, this.destroy, this);
-    this.gameObject.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+    this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     this.productionProgressSubject.complete();
     this.queueChangeSubject.complete();
   }

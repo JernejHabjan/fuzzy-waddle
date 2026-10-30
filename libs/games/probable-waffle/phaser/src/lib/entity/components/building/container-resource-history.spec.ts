@@ -4,7 +4,7 @@ import { subscribeSceneResourceLoss } from "../../../data/scene-resource-observa
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
-import { getGameObjectVisibility, isWaterUnit } from "../../../data/game-object-helper";
+import { getGameObjectVisibility, isSceneActive, isWaterUnit } from "../../../data/game-object-helper";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { ContainerComponent } from "./container-component";
 
@@ -12,6 +12,7 @@ jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn()
 jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 jest.mock("../../../data/game-object-helper", () => ({
   getGameObjectVisibility: jest.fn(() => undefined),
+  isSceneActive: jest.fn(() => true),
   isWaterUnit: jest.fn(() => false)
 }));
 jest.mock("../../../world/services/ActorIndexSystem", () => ({ ActorIndexSystem: class {} }));
@@ -21,6 +22,7 @@ describe("container resource history boundary (authored; final gate pending)", (
     jest.resetAllMocks();
     jest.mocked(getSceneService).mockReturnValue(undefined);
     jest.mocked(getGameObjectVisibility).mockReturnValue(null);
+    jest.mocked(isSceneActive).mockReturnValue(true);
     jest.mocked(isWaterUnit).mockReturnValue(false);
   });
 
@@ -122,6 +124,26 @@ describe("container resource history boundary (authored; final gate pending)", (
     expect(container.getContainedGameObjects()).toEqual([second]);
     expect(losses).toEqual(["resource_container_change", "resource_container_change", "resource_container_change"]);
     release();
+  });
+
+  it("clears passengers without querying destroyed navigation during scene shutdown", () => {
+    const scene = { scene: { scene: {}, isActive: () => false } } as unknown as Phaser.Scene;
+    const containerObject = { scene, once: jest.fn(), emit: jest.fn() } as unknown as Phaser.GameObjects.GameObject;
+    const passenger = { scene, emit: jest.fn() } as unknown as Phaser.GameObjects.GameObject;
+    const navigation = { getSpawnPointAroundGameObject: jest.fn(() => ({ x: 3, y: 4 })) };
+    jest.mocked(getSceneService).mockImplementation((_scene, token) =>
+      token === NavigationService ? (navigation as never) : undefined
+    );
+    jest.mocked(getActorComponent).mockReturnValue(undefined);
+    jest.mocked(getGameObjectVisibility).mockReturnValue(null);
+    jest.mocked(isSceneActive).mockReturnValue(false);
+    const container = new ContainerComponent(containerObject, { capacity: 1 } as never);
+    container.loadGameObject(passenger);
+
+    container.unloadGameObject(passenger);
+
+    expect(container.getContainedGameObjects()).toEqual([]);
+    expect(navigation.getSpawnPointAroundGameObject).not.toHaveBeenCalled();
   });
 
   it.each([

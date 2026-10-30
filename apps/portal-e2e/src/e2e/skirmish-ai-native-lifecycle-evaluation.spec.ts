@@ -8,7 +8,8 @@ const proof: NativeLifecycleProof = { branch: "normal", sourceRevision: "a".repe
   original: owner, nextInitial: { ...owner, tick: 0, seed: 2, matchId: "next", decisionSequence: 0 },
   nextActive: { ...owner, seed: 2, matchId: "next" }, nativeBeforeLateWork: "actual-world", nativeAfterLateWork: "actual-world",
   nextAiErrors: [], retained: { oldSceneInactive: true, oldSceneShutdownObserved: true, oldTickSubjectStopped: true,
-    oldTickObservers: 0, originalPaidCommandId: null,
+    oldTickObservers: 0, shutdownCallObserved: true, shutdownListenerCountAtCall: 10,
+    shutdownListenerCountAfterCall: 2, shutdownErrorMessage: null, originalPaidCommandId: null,
     completionResults: [], pathWasPending: false, pathCancelled: false, sameRealm: true } };
 
 it("requires original ownership, genuine same-realm delivery and continued new-match decisions", () => {
@@ -20,6 +21,8 @@ it("requires original ownership, genuine same-realm delivery and continued new-m
     { ...proof, retained: { ...proof.retained, oldTickObservers: 1 } },
     { ...proof, retained: { ...proof.retained, sameRealm: false } },
     { ...proof, retained: { ...proof.retained, oldSceneInactive: false } },
+    { ...proof, retained: { ...proof.retained, shutdownErrorMessage: "listener threw" } },
+    { ...proof, retained: { ...proof.retained, shutdownCallObserved: false } },
     { ...proof, nextAiErrors: ["late controller error"] }])
     expect(nativeLifecycleProofFailures("normal", changed).length).toBeGreaterThan(0);
 });

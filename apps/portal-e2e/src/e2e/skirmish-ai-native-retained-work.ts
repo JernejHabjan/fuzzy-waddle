@@ -19,6 +19,8 @@ export async function retainNativeSceneWork(
       __nativeRetainedWork?: () => Promise<{
         oldSceneInactive: boolean; oldSceneStatus: string; oldSceneSleeping: boolean; oldSceneRegistered: boolean;
         sameSceneEmitter: boolean; sameSystemsEmitter: boolean;
+        shutdownCallObserved: boolean; shutdownListenerCountAtCall: number; shutdownListenerCountAfterCall: number;
+        shutdownErrorMessage: string | null;
         oldTickObservers: number; oldTickSubjectStopped: boolean; oldSceneShutdownObserved: boolean;
         originalPaidCommandId: string | null; completionResults: (string | null)[];
         pathWasPending: boolean; pathCancelled: boolean; sameRealm: boolean
@@ -44,8 +46,23 @@ export async function retainNativeSceneWork(
     }
     if (requirePaidQueue && (!production || !item?.productionData)) throw new Error("retained_original_paid_queue_missing");
     let pathSettled = false, sceneShutdownObserved = false, sceneDestroyObserved = false, sceneSleepObserved = false;
+    let shutdownCallObserved = false, shutdownListenerCountAtCall = -1, shutdownListenerCountAfterCall = -1;
+    let shutdownErrorMessage: string | null = null;
     const sceneEvents = scene.events;
     const systemsEvents = scene.sys.events;
+    const originalShutdown = scene.sys.shutdown;
+    scene.sys.shutdown = function (data) {
+      shutdownCallObserved = true;
+      shutdownListenerCountAtCall = systemsEvents.listenerCount("shutdown");
+      try {
+        return originalShutdown.call(this, data);
+      } catch (error) {
+        shutdownErrorMessage = error instanceof Error ? error.message : String(error);
+        throw error;
+      } finally {
+        shutdownListenerCountAfterCall = systemsEvents.listenerCount("shutdown");
+      }
+    };
     const onShutdownProbe = () => { sceneShutdownObserved = true; };
     const onDestroyProbe = () => { sceneDestroyObserved = true; };
     const onSleepProbe = () => { sceneSleepObserved = true; };
@@ -100,11 +117,14 @@ export async function retainNativeSceneWork(
         oldSceneStatus: scene.sys.settings.status, oldSceneSleeping: scene.sys.isSleeping(),
         oldSceneRegistered: originalGame.scene.getScenes(false).includes(scene),
         sameSceneEmitter: scene.events === sceneEvents, sameSystemsEmitter: scene.sys.events === systemsEvents,
+        shutdownCallObserved, shutdownListenerCountAtCall, shutdownListenerCountAfterCall,
+        shutdownErrorMessage,
         oldTickSubjectStopped: clock.tick$.isStopped, oldSceneShutdownObserved: sceneShutdownObserved,
         originalPaidCommandId, completionResults, pathWasPending, pathCancelled: pending !== null && path === null,
         sameRealm: true };
       shutdownObserver.unsubscribe();
       removeSceneProbes();
+      scene.sys.shutdown = originalShutdown;
       delete realm.__nativeRetainedWork;
       return result;
     };
@@ -117,6 +137,8 @@ export async function deliverRetainedNativeSceneWork(page: Page) {
     const realm = window as unknown as { __nativeRetainedWork?: () => Promise<{
       oldSceneInactive: boolean; oldSceneStatus: string; oldSceneSleeping: boolean; oldSceneRegistered: boolean;
       sameSceneEmitter: boolean; sameSystemsEmitter: boolean;
+      shutdownCallObserved: boolean; shutdownListenerCountAtCall: number; shutdownListenerCountAfterCall: number;
+      shutdownErrorMessage: string | null;
       oldTickObservers: number; oldTickSubjectStopped: boolean; oldSceneShutdownObserved: boolean;
       originalPaidCommandId: string | null;
       completionResults: (string | null)[]; pathWasPending: boolean; pathCancelled: boolean; sameRealm: boolean }> };
