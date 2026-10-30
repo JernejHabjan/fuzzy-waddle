@@ -16,13 +16,18 @@ export async function retainNativeSceneWork(
   return page.evaluate(async ({ playerNumber, requirePaidQueue, pathActorId }) => {
     const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: AiRuntimeBrowserTestHostV1;
       __fuzzyWaddleAiMultiplayerBrowserTestV1?: Pick<AiRuntimeBrowserTestHostV1, "game">;
-      __nativeRetainedWork?: () => Promise<{ oldSceneInactive: boolean; oldTickObservers: number;
+      __nativeRetainedWork?: () => Promise<{
+        oldSceneInactive: boolean; oldSceneStatus: string; oldSceneSleeping: boolean; oldSceneRegistered: boolean;
+        sameSceneEmitter: boolean; sameSystemsEmitter: boolean;
+        oldTickObservers: number; oldTickSubjectStopped: boolean; oldSceneShutdownObserved: boolean;
         originalPaidCommandId: string | null; completionResults: (string | null)[];
-        pathWasPending: boolean; pathCancelled: boolean; sameRealm: boolean }> };
+        pathWasPending: boolean; pathCancelled: boolean; sameRealm: boolean
+      }> };
     const host = realm.__fuzzyWaddleAiRuntimeBrowserTestV1 ?? realm.__fuzzyWaddleAiMultiplayerBrowserTestV1;
     const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
       ProbableWaffleScene | undefined;
-    if (!scene) throw new Error("retained_native_scene_missing");
+    if (!host || !scene) throw new Error("retained_native_scene_missing");
+    const originalGame = host.game;
     const services: readonly object[] = scene.getSceneGameData().services;
     const index = services.find((entry): entry is ActorIndexSystem => "getOwnedActors" in entry && "getActorById" in entry);
     const clock = services.find((entry): entry is SimulationTickService => "currentTick" in entry && "tick$" in entry);
@@ -92,6 +97,9 @@ export async function retainNativeSceneWork(
       // Redeliver through the actual old emitter. Shutdown must have removed every original subscriber.
       clock.tick$.next(clock.currentTick + 1);
       const result = { oldSceneInactive: !scene.sys.isActive(), oldTickObservers: clock.tick$.observers.length,
+        oldSceneStatus: scene.sys.settings.status, oldSceneSleeping: scene.sys.isSleeping(),
+        oldSceneRegistered: originalGame.scene.getScenes(false).includes(scene),
+        sameSceneEmitter: scene.events === sceneEvents, sameSystemsEmitter: scene.sys.events === systemsEvents,
         oldTickSubjectStopped: clock.tick$.isStopped, oldSceneShutdownObserved: sceneShutdownObserved,
         originalPaidCommandId, completionResults, pathWasPending, pathCancelled: pending !== null && path === null,
         sameRealm: true };
@@ -107,7 +115,10 @@ export async function retainNativeSceneWork(
 export async function deliverRetainedNativeSceneWork(page: Page) {
   return page.evaluate(async () => {
     const realm = window as unknown as { __nativeRetainedWork?: () => Promise<{
-      oldSceneInactive: boolean; oldTickObservers: number; originalPaidCommandId: string | null;
+      oldSceneInactive: boolean; oldSceneStatus: string; oldSceneSleeping: boolean; oldSceneRegistered: boolean;
+      sameSceneEmitter: boolean; sameSystemsEmitter: boolean;
+      oldTickObservers: number; oldTickSubjectStopped: boolean; oldSceneShutdownObserved: boolean;
+      originalPaidCommandId: string | null;
       completionResults: (string | null)[]; pathWasPending: boolean; pathCancelled: boolean; sameRealm: boolean }> };
     if (!realm.__nativeRetainedWork) throw new Error("retained_native_work_missing_after_transition");
     return realm.__nativeRetainedWork();
