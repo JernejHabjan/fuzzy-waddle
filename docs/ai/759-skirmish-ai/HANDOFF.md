@@ -14,10 +14,11 @@ Do not reconstruct the old seven-package roadmap from chat or historical records
 - Tooling: `agent:doctor` and `agent:context` return `unavailable_repository_runtime`; use direct Node 24/pnpm/Nx.
   The wrapper's Windows `pnpm.CMD` shell issue is unrelated; leave it alone.
 - A3 adjacent-wall clearance fix and H-11 passes for both factions are in CURRENT-EVIDENCE. The focused
-  builder-loss recovery control now passes on `76bec1347` after moving its invalid seeded site.
+  builder-loss recovery control passes on `76bec1347` after moving its invalid seeded site.
 - PLACE-03 layout/concurrent passes are recorded for both factions; Tivara completion/loss also pass. Skaduwee
-  completion still needs a real active-route premise. WALL-01 has no native result because capture exceeds Node's
-  string limit; resume only after implementing bounded/incremental Node-side capture.
+  completion still needs a real active-route premise. WALL-01 capture infrastructure now handles the large result;
+  Tivara terrain passes as branch `1793320599420`. Paired wall comparison, Skaduwee effect and a no-value control
+  remain open; do not replay this branch unchanged.
 - B1 withdrawal recovery passes for both factions. C is validated. D remains partial with known H-31/H-32 causes;
   don't replay unchanged. Detailed IDs, limitations and retained evidence live in CURRENT-EVIDENCE.
 - No multiplayer/CI, exhaustive calibration or optional content in this iteration; do not touch PR #814.
@@ -25,7 +26,7 @@ Do not reconstruct the old seven-package roadmap from chat or historical records
 
 | Packet | State | Next action |
 | --- | --- | --- |
-| A placement/walls/recovery | in_progress | H-11 and PLACE-03 layout/concurrent pass for both factions; Tivara completion/loss pass; focused builder-loss native control now passes (site starts, builder lost at 80, replacement completes same site through tick 1200). Skaduwee completion 1793317870460 still blocks `(41,24)` with an oracle-only route absent from captured AI input; establish a valid active-order premise before scoring. PLACE-03 Skaduwee loss remains open. WALL-01 is blocked on bounded Node capture. Next move to independent B scouting/combat work while deriving a real completion route. |
+| A placement/walls/recovery | in_progress | H-11 and PLACE-03 layout/concurrent pass for both factions; Tivara completion/loss and focused builder-loss control pass. Skaduwee PLACE-03 completion `1793317870460` lacks a real active-route premise; Skaduwee loss remains open. WALL-01 Tivara terrain passes (`1793320599420`, 3001 ticks/win) after streamed capture and fixture transit repair; still need Skaduwee wall, no-value control, and terrain/freestanding comparison. Continue B work while deriving a valid Skaduwee route. |
 | B expansion/mission continuity | in_progress | EXP-02 withdrawal recovery passes for Skaduwee 1793313251345 and Tivara 1793313388623 on the same source/fixture. Existing Skaduwee home_pressure and both H-14 harmless passes remain. Continue B2 scouting and B3 combat; no unchanged EXP-02 withdrawal reruns. |
 | C resource/command ownership | validated | C1 duplicate admission preserves actor/application progress; C2 expired provisional escrow and contracted-balance gating have focused coverage, H-10 retains both-faction capacity evidence, and H-13 has current native base-control confirmation for both factions. C3 epoch/identity/dispatch guards reviewed; focused Phaser tests pass 20/20. Full gameplay tests pass 105 suites/611 tests. |
 | D essential SP lifecycle | in_progress | H-32 SP branch dispatch is fixed and covered by 58 focused static tests; Tivara normal/paid queue pass, Skaduwee shutdown fence fails. H-31 health restore is fixed, but observation/access graph still diverges. Advance to independent B work while these causes remain bounded; do not replay unchanged. |
