@@ -167,6 +167,78 @@ describe("AiSkirmishManager offense target selection", () => {
     ]);
   });
 
+  it("keeps a lone defender home when an enemy is already observed", () => {
+    const defender = actor("defender", homeNode, 0);
+    const enemy = {
+      ...actor("enemy", enemyNode, 1),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const
+    };
+    const resource: AiObservedActorV1 = {
+      ...createAiTestOwnedActor("neutral-resource"),
+      objectName: ObjectNames.Tree6,
+      owner: null,
+      relation: "neutral",
+      visibility: "visible",
+      logicalPosition: { status: "known", value: { x: 1, y: 0, z: 0 }, observedTick: 20 },
+      accessNodeId: { status: "known", value: enemyNode, observedTick: 20 },
+      capabilities: [],
+      resourceState: {
+        status: "known",
+        observedTick: 20,
+        value: {
+          resourceType: ResourceType.Wood,
+          available: { status: "known", value: 180, observedTick: 20 },
+          carried: { status: "unknown", reason: "not_supported" },
+          growthReadyTick: { status: "unknown", reason: "not_supported" },
+          serviceCapacity: { status: "unknown", reason: "not_supported" }
+        }
+      }
+    };
+    const base = createAiTestObservation();
+    const world = {
+      ...base,
+      tick: 20,
+      actors: [defender, enemy, resource],
+      map: {
+        ...base.map!,
+        frontierAccessNodeIds: [enemyNode],
+        scoutCoverageAccessNodeIds: [],
+        accessGraph: graph.graph
+      }
+    };
+    const initial = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+
+    const proposal = new AiSkirmishManager(profile, () => catalog).propose(world, initial);
+
+    expect(proposal.statePatch?.squads?.find((squad) => squad.squadId === "squad:scout:neutral")).toBeUndefined();
+    expect(proposal.intents.filter((intent) => intent.kind === "move" || intent.kind === "scout")).toEqual([]);
+
+    const activeNeutralMission = {
+      squadId: "squad:scout:neutral" as const,
+      role: "scout" as const,
+      domain: "ground" as const,
+      actorIds: [defender.actorId],
+      objectiveId: `neutral:${resource.actorId}`,
+      state: "moving" as const
+    };
+    const preempted = new AiSkirmishManager(profile, () => catalog).propose(world, {
+      ...initial,
+      squads: [activeNeutralMission]
+    });
+    expect(preempted.statePatch?.squads?.find((squad) => squad.squadId === "squad:scout:neutral")).toEqual(
+      expect.objectContaining({ state: "cancelled", actorIds: [] })
+    );
+    expect(preempted.intents.filter((intent) => intent.kind === "move" || intent.kind === "scout")).toEqual([]);
+  });
+
   it("keeps an active frontier scout out of a newly formed attack force", () => {
     const scout = actor("frontier-scout", homeNode, 0);
     const guard = actor("guard", homeNode, 0);

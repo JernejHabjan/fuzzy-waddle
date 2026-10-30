@@ -56,6 +56,7 @@ function compareScoutActors(left: AiSkirmishProposalContext["combat"][number], r
 
 function appendNeutralClaim(context: AiSkirmishProposalContext, allowNewClaim = true): void {
   if (context.opponent) return;
+  const knownOpponent = context.visibleEnemies.length > 0 || context.rememberedEnemies.length > 0;
   const previous = context.state.squads.find((squad) => squad.squadId === "squad:scout:neutral");
   if (previous) {
     const members = context.combat.filter(
@@ -68,10 +69,13 @@ function appendNeutralClaim(context: AiSkirmishProposalContext, allowNewClaim = 
       ) === true;
     const expired =
       previous.lifecycle !== undefined && previous.lifecycle.effectDeadline.dueTick <= context.observation.tick;
+    const preempted = knownOpponent && context.combat.length <= 2;
     const terminal = previous.state === "completed" || previous.state === "cancelled";
     const state = terminal
       ? previous.state
-      : covered
+      : preempted
+        ? "cancelled"
+        : covered
         ? "completed"
         : expired || members.length === 0
           ? "cancelled"
@@ -87,7 +91,9 @@ function appendNeutralClaim(context: AiSkirmishProposalContext, allowNewClaim = 
               ...previous.lifecycle,
               terminalReason: terminal
                 ? previous.lifecycle.terminalReason
-                : covered
+                : preempted
+                  ? "known_opponent_low_force"
+                  : covered
                   ? "region_observed"
                   : expired
                     ? "scout_deadline"
@@ -102,7 +108,7 @@ function appendNeutralClaim(context: AiSkirmishProposalContext, allowNewClaim = 
       members.forEach((actor) => context.primaryOwnedActors.add(actor.actorId));
     return;
   }
-  if (!allowNewClaim) return;
+  if (!allowNewClaim || (knownOpponent && context.combat.length <= 2)) return;
   const candidates = context.observation.actors
     .filter((actor) => actor.relation === "neutral" && actor.visibility === "visible" && position(actor) !== undefined)
     .filter(
