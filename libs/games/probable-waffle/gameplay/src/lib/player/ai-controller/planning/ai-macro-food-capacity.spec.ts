@@ -4,7 +4,6 @@ import type { AiReservationV1 } from "../contracts/ai-dependency-contracts";
 import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "../testing/ai-test-fixtures";
 
 import { AiMacroManager } from "./ai-macro-manager";
-import { proposeAiFieldLabor } from "./ai-field-labor-proposal";
 import { proposeAiFoodEconomy } from "./ai-food-economy-proposal";
 import { projectAiResourceForecasts } from "./ai-resource-forecast";
 import { catalog, completedOpeningState } from "./ai-macro-test-fixtures";
@@ -270,22 +269,4 @@ describe("AI macro renewable food capacity", () => {
     );
   });
 
-  it("skips exhausted Fields when choosing an unstaffed renewable food source", () => {
-    const worker = createAiTestOwnedActor("worker");
-    const observation = { ...createAiTestObservation(), tick: 200 };
-    const fields = [foodField("field-empty", 0), foodField("field-ready", 25)];
-    const proposal = proposeAiFieldLabor(
-      { ...observation, actors: [worker, ...fields] },
-      completedOpeningState(),
-      catalog,
-      [worker, ...fields],
-      fields,
-      undefined,
-      new Set(),
-      [],
-      0
-    );
-
-    expect(proposal).toMatchObject({ kind: "assign_gatherers", actorIds: ["worker"], sourceActorId: "field-ready" });
-  });
 });

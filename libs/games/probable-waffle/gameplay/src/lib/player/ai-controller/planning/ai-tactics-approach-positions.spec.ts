@@ -137,8 +137,14 @@ describe("observed attack approach positions", () => {
       map: { ...base.map!, constructionCells: cells, tacticalCells: cells }
     } satisfies AiObservationV1;
     const members = [
-      { ...attacker("a-east"), logicalPosition: { status: "known" as const, value: { x: 12, y: 10, z: 0 }, observedTick: 100 } },
-      { ...attacker("z-west"), logicalPosition: { status: "known" as const, value: { x: 8, y: 10, z: 0 }, observedTick: 100 } }
+      {
+        ...attacker("a-east"),
+        logicalPosition: { status: "known" as const, value: { x: 12, y: 10, z: 0 }, observedTick: 100 }
+      },
+      {
+        ...attacker("z-west"),
+        logicalPosition: { status: "known" as const, value: { x: 8, y: 10, z: 0 }, observedTick: 100 }
+      }
     ];
     const target = { x: 10, y: 10, z: 0 };
 
@@ -214,6 +220,34 @@ describe("observed attack approach positions", () => {
     expect(selectAiAttackApproachPositions([member], { x: 20, y: 20, z: 0 }, observation)).toEqual([
       { actorId: "a", position: reachable.position }
     ]);
+  });
+
+  it("replaces an attack slot that failed its native move", () => {
+    const base = createAiTestObservation();
+    const first = {
+      tileKey: "19,20",
+      position: { x: 19, y: 20, z: 0 },
+      groundPassable: true,
+      waterPassable: false,
+      elevation: 0,
+      observedBlocked: false
+    };
+    const next = { ...first, tileKey: "20,19", position: { x: 20, y: 19, z: 0 } };
+    const map = base.map ?? ({} as NonNullable<AiObservationV1["map"]>);
+    const observation = {
+      ...base,
+      map: { ...map, tacticalCells: [first, next] }
+    } satisfies AiObservationV1;
+
+    expect(
+      selectAiAttackApproachPositions(
+        [attacker("a")],
+        { x: 20, y: 20, z: 0 },
+        observation,
+        0,
+        new Map([["a", "19,20"]])
+      )
+    ).toEqual([{ actorId: "a", position: next.position }]);
   });
 
   it("moves an air attacker to visible weapon range when the observation has no tactical cells", () => {

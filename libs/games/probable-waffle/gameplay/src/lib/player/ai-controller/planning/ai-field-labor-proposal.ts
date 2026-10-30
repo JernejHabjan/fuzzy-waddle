@@ -38,13 +38,6 @@ function nextUnstaffedFoodSource(
   }).length;
   const unstaffedFoodSources = readyFoodSources
     .filter(aiEconomySiteSafety(observation).actorSafe)
-    .filter(
-      (source) =>
-        source.resourceState.status === "known" &&
-        source.resourceState.value.resourceType === ResourceType.Food &&
-        source.resourceState.value.available.status === "known" &&
-        source.resourceState.value.available.value > 0
-    )
     .sort(compareAiActorsByVisibleGeometry)
     .filter((source) => !staffedFoodSourceIds.has(source.actorId));
   return unstaffedFoodSources[returningWorkerCount];

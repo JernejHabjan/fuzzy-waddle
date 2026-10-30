@@ -79,7 +79,8 @@ export function selectAiAttackApproachPositions(
   members: readonly AiObservedActorV1[],
   target: Vector3Simple,
   observation: AiObservationV1,
-  targetFootprintRadiusTiles = 0
+  targetFootprintRadiusTiles = 0,
+  rejectedPositionByActor: ReadonlyMap<string, string> = new Map()
 ): NonNullable<AiSquadStateV1["tactics"]>["assignedPositions"] {
   const positionedMembers = members
     .map((member) => ({ member, position: knownPosition(member) }))
@@ -90,7 +91,7 @@ export function selectAiAttackApproachPositions(
         (left.position?.z ?? Number.POSITIVE_INFINITY) - (right.position?.z ?? Number.POSITIVE_INFINITY) ||
         left.member.actorId.localeCompare(right.member.actorId)
     );
-  const positions = positionedMembers.flatMap(({ position }) => position ? [position] : []);
+  const positions = positionedMembers.flatMap(({ position }) => (position ? [position] : []));
   const origin = positions.length
     ? {
         x: positions.reduce((sum, position) => sum + position.x, 0) / positions.length,
@@ -126,6 +127,7 @@ export function selectAiAttackApproachPositions(
           );
     const cell = candidatesForMember.find((candidate) => {
       if (used.has(candidate.tileKey)) return false;
+      if (rejectedPositionByActor.get(member.actorId) === candidate.tileKey) return false;
       if (
         !(
           domains.has("air") ||

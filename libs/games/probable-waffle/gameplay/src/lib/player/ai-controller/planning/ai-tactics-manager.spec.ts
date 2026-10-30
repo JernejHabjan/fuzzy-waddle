@@ -25,14 +25,15 @@ describe("AiTacticsManager", () => {
     const eastThreat = combatActor("a-east", "enemy", 12, "ground", 1000, { damage: 100 });
     const objective = combatActor("objective", "enemy", 20, "ground", 1000, { damage: 0 });
     const attackSquad = {
-      ...squad("squad:attack", "attack", attackers.map((actor) => actor.actorId)),
+      ...squad(
+        "squad:attack",
+        "attack",
+        attackers.map((actor) => actor.actorId)
+      ),
       objectiveId: objective.actorId
     };
     const initial = fixtureState([attackSquad]);
-    const proposal = manager.propose(
-      observation([...attackers, eastThreat, westThreat, objective]),
-      initial
-    );
+    const proposal = manager.propose(observation([...attackers, eastThreat, westThreat, objective]), initial);
     const selected = proposal.intents.find((intent) => intent.kind === "attack");
 
     expect(selected?.targetActorId).toBe(westThreat.actorId);
@@ -78,9 +79,79 @@ describe("AiTacticsManager", () => {
 
     const proposal = manager.propose(observation([boat, target]), fixtureState([attackSquad]));
 
-    expect(
-      proposal.intents.some((intent) => intent.kind === "move" && intent.actorIds.includes(boat.actorId))
-    ).toBe(false);
+    expect(proposal.intents.some((intent) => intent.kind === "move" && intent.actorIds.includes(boat.actorId))).toBe(
+      false
+    );
+  });
+
+  it("changes attack approach slot after the prior native move failed", () => {
+    const guard = combatActor("guard", "self", 0);
+    const target = combatActor("target", "enemy", 20, "ground", 1000, { damage: 0 });
+    const firstPosition = { x: 19, y: 0, z: 0 };
+    const squadWithFailedSlot = {
+      ...squad("squad:attack", "attack", [guard.actorId]),
+      state: "engage" as const,
+      objectiveId: target.actorId,
+      tactics: {
+        taskForceId: "task-force:attack",
+        script: "advance_focus" as const,
+        targetActorId: target.actorId,
+        targetScore: 100,
+        engagementRatioPermille: 1000,
+        confidencePermille: 1000,
+        predictedFriendlyLossPermille: 0,
+        predictedEnemyLossPermille: 100,
+        lastObservedMemberCount: 1,
+        observedLossCount: 0,
+        lastTransitionTick: 80,
+        nextReconsiderTick: 120,
+        oscillationCount: 0,
+        orderSignature: null,
+        orderedActorIds: [],
+        assignedPositions: [{ actorId: guard.actorId, position: firstPosition }],
+        damageReservations: [],
+        protectedRouteNodeIds: [],
+        mobileReserveActorIds: [],
+        objectiveAlternatives: []
+      }
+    };
+    const current = fixtureState([squadWithFailedSlot]);
+    const failedOutcome: AiBrainStateV1["pendingOutcomes"][number] = {
+      kind: "failed",
+      identity: {
+        matchId: "match:test" as never,
+        authorityEpoch: 1,
+        playerNumber: 1,
+        sequence: 1,
+        commandId: "command:failed-move" as never,
+        intentId: "intent:failed-move" as never,
+        effectId: "effect:stage13:squad:attack:position:guard:80" as never
+      },
+      tick: 80,
+      reason: "application_failed"
+    };
+    const baseObservation = observation([guard, target], 100);
+    const cells = [firstPosition, { x: 20, y: 1, z: 0 }, { x: 21, y: 0, z: 0 }].map((position) => ({
+      tileKey: `${position.x},${position.y}`,
+      position,
+      groundPassable: true,
+      waterPassable: false,
+      elevation: 0,
+      observedBlocked: false
+    }));
+
+    const map = baseObservation.map ?? ({} as NonNullable<typeof baseObservation.map>);
+    const proposal = manager.propose(
+      {
+        ...baseObservation,
+        map: { ...map, tacticalCells: cells }
+      },
+      { ...current, pendingOutcomes: [failedOutcome] }
+    );
+
+    expect(proposal.statePatch?.squadUpdates?.[0]?.tactics?.assignedPositions).not.toContainEqual(
+      expect.objectContaining({ actorId: guard.actorId, position: firstPosition })
+    );
   });
 
   it("releases an armed gatherer from a tactical squad instead of interrupting its economy work", () => {

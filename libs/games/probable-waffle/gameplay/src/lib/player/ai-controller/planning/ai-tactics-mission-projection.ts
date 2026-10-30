@@ -6,7 +6,11 @@ import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
 import { selectAiAttackApproachPositions, targetFootprintRadiusTiles } from "./ai-tactics-approach-positions";
 import { knownPosition, distance, legalForMembers, formationPositions, movementDomains } from "./ai-tactics-geometry";
 import { assignDamage } from "./ai-tactics-combat";
-import { TACTICAL_RECONSIDERATION_TICKS, MISSION_EFFECT_EXTENSION_TICKS } from "./ai-tactics-rules";
+import {
+  MISSION_EFFECT_EXTENSION_TICKS,
+  TACTICAL_FAILED_POSITION_RETRY_TICKS,
+  TACTICAL_RECONSIDERATION_TICKS
+} from "./ai-tactics-rules";
 
 import type { decideAiTacticalSquad } from "./ai-tactics-mission-decision";
 import { aiTacticalScoutDestination } from "./ai-tactics-scout-destination";
@@ -102,7 +106,22 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
               postMembers.filter((actor) => !postedActorIds.has(actor.actorId)),
               anchor,
               observation,
-              targetFootprintRadiusTiles(visibleTarget, input.catalog)
+              targetFootprintRadiusTiles(visibleTarget, input.catalog),
+              new Map(
+                (squad.tactics?.assignedPositions ?? [])
+                  .filter((assignment) =>
+                    state.pendingOutcomes.some(
+                      (outcome) =>
+                        outcome.kind === "failed" &&
+                        outcome.identity.effectId.startsWith(
+                          `effect:stage13:${squad.squadId}:position:${assignment.actorId}:`
+                        ) &&
+                        observation.tick >= outcome.tick &&
+                        observation.tick - outcome.tick <= TACTICAL_FAILED_POSITION_RETRY_TICKS
+                    )
+                  )
+                  .map((assignment) => [assignment.actorId, `${assignment.position.x},${assignment.position.y}`])
+              )
             )
           : formationPositions(
               postMembers.filter((actor) => !postedActorIds.has(actor.actorId)),
@@ -186,7 +205,11 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
       const activeOrder = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
       const assignment = assignedPositions.find((candidate) => candidate.actorId === actor.actorId);
       // Preserve the skirmish planner's shore firing approach; a rally move would cancel its native path.
-      if (squad.role === "attack" && squad.domain === "water" && hasNavalFiringMove(actor, visibleTarget, input.catalog))
+      if (
+        squad.role === "attack" &&
+        squad.domain === "water" &&
+        hasNavalFiringMove(actor, visibleTarget, input.catalog)
+      )
         return false;
       const desiredPosition =
         assignment?.position ??
