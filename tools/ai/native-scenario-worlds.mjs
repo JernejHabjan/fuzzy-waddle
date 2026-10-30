@@ -179,9 +179,10 @@ export function nativeScenarioWorld(id, faction, branch) {
         tileMargin: ["PLACE-01", "PLACE-03"].includes(id) ? 0 : 1
       }
     ];
-    const transitTicks = ["PLACE-01", "PLACE-03"].includes(id) ? [1] : [200, 600, 1000, 1400, 1800, 2200];
+    const earlyTransitProbe = ["PLACE-01", "PLACE-03", "WALL-01"].includes(id);
+    const transitTicks = earlyTransitProbe ? [1] : [200, 600, 1000, 1400, 1800, 2200];
     for (const [index, tick] of transitTicks.entries()) {
-      if (["PLACE-01", "PLACE-03"].includes(id)) {
+      if (earlyTransitProbe) {
         // These short, on-route probes must finish before the AI's next order refresh.
         move("worker-transit", tick, 29, 30);
         move("army-transit", tick, 28, branch === "concurrent" ? 24 : 25);

@@ -886,11 +886,21 @@ test("FIGHT-05 disconnected contact uses its native terrain obstruction without 
   assert.ok(variant.presetWorld.terrainPatches.some((patch) => patch.blocked));
 });
 
-test("WALL-01 terrain chokes provide opposite cliff anchors and fund the bounded graph", () => {
+test("WALL-01 probes the protected route early and terrain chokes fund the bounded graph", () => {
   const fixture = nativeScenarioFixture("WALL-01");
-  const variants = fixture.recipe.variants.filter((variant) => variant.id.includes("terrain"));
-  assert.equal(variants.length, 2);
-  for (const variant of variants) {
+  assert.equal(fixture.recipe.variants.length, 6);
+  for (const variant of fixture.recipe.variants) {
+    const transits = variant.presetWorld.controls.filter((control) =>
+      ["worker-transit", "army-transit"].includes(control.producerFixtureActorId)
+    );
+    assert.equal(transits.length, 2);
+    assert.ok(transits.every((control) => control.requestTick === 1 && control.applicationTick === 1));
+    assert.deepEqual(
+      transits.find((control) => control.producerFixtureActorId === "army-transit")?.action.worldPosition,
+      { x: 128, y: 864, z: 0 }
+    );
+  }
+  for (const variant of fixture.recipe.variants.filter((candidate) => candidate.id.includes("terrain"))) {
     assert.equal(
       variant.presetWorld.actors.some((actor) =>
         ["perimeter-stair", "perimeter-wall", "perimeter-wall-2"].includes(actor.fixtureActorId)
