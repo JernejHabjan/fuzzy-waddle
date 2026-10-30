@@ -3,7 +3,7 @@ import { join } from "node:path";
 
 const encoding = "shared-runtime-variants-v1";
 const externalEncoding = "external-runtime-variants-v1";
-const maxVariantBytes = 768 * 1024 * 1024;
+const maxVariantBytes = 1024 * 1024 * 1024;
 const maxInlineVariantBytes = 8 * 1024 * 1024;
 
 function isRecord(value) {

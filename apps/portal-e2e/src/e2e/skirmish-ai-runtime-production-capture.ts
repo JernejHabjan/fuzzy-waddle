@@ -1,5 +1,7 @@
-import { gunzipSync } from "node:zlib";
+import { Readable } from "node:stream";
+import { createGunzip } from "node:zlib";
 import type { Page } from "@playwright/test";
+import { parseChunked } from "@discoveryjs/json-ext";
 // prettier-ignore
 import type { AiRuntimeProductionCaptureV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
@@ -82,5 +84,7 @@ export async function captureRuntimeProductionAuthority(
     },
     { owner: playerNumber, horizon: latestTick, omitLedger: omitSharedLedger }
   );
-  return JSON.parse(gunzipSync(Buffer.from(compressed, "base64")).toString("utf8")) as AiRuntimeProductionCaptureV1;
+  const compressedBytes = Buffer.from(compressed, "base64");
+  const capture = await parseChunked(Readable.from([compressedBytes]).pipe(createGunzip()));
+  return capture as AiRuntimeProductionCaptureV1;
 }
