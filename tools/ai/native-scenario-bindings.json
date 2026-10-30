@@ -3597,14 +3597,15 @@
         ],
         "actions": [
           "Save at safe completed boundaries before/during/after command application",
-          "Reload through real save codec and resume identical subsequent logical inputs beside an uninterrupted control"
+          "Reload through real save codec and resume beside an uninterrupted control; preserve the exact restore boundary and first resumed decision"
         ],
         "measurements": [
           "Complete saved AI debt/age/deadlines/claims/epoch/RNG and shared queue lane/item/command identity",
-          "Full canonical state plus exact committed decisions at equivalent ticks"
+          "Exact canonical state at restore and first-decision boundaries; continued cadence, debt, claims and decision count while native physical outcomes may change later observations"
         ],
         "required": [
           "Restored continuation preserves cumulative failure and exactly-once paid work",
+          "AI makes the same first post-restore decision, continues without resetting, and produces useful work",
           "Hash comparison includes sharedQueue metadata rather than only legacy queue projections"
         ],
         "forbidden": [

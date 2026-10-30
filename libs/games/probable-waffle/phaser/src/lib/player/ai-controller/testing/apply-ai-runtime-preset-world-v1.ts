@@ -10,6 +10,7 @@ import { installAiRuntimeRouteOutages } from "./ai-runtime-route-outages";
 import { installAiRuntimeReceiptFault } from "./install-ai-runtime-receipt-fault";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
+import { NavigationService } from "../../../world/services/navigation.service";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { installAiRuntimeProductionRallies } from "./install-ai-runtime-production-rallies";
 import { installAiRuntimePresetControls } from "./install-ai-runtime-preset-controls";
@@ -40,8 +41,16 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
   if (environment.production) return;
   installAiRuntimeProductionCapture(scene);
   mountAiRuntimeBundleImport(scene);
-  // A save already owns its actors, balances and queues; replaying fixture setup would corrupt continuation.
-  if (scene.baseGameData.gameInstance.gameInstanceMetadata.data.startOptions.loadFromSave) return;
+  // A save owns actors, balances and queues. Restore only authored fixture terrain, which is map geometry and
+  // intentionally is not part of the game save payload; skip actor-sensitive footprint filtering on reload.
+  if (scene.baseGameData.gameInstance.gameInstanceMetadata.data.startOptions.loadFromSave) {
+    const savedPreset = readAiRuntimeBrowserTestConfigV1()?.presetWorld;
+    if (savedPreset?.terrainPatches?.length) {
+      applyAiRuntimeTerrainPatches(scene.tilemap, { terrainPatches: savedPreset.terrainPatches });
+      scene.events.emit(NavigationService.UpdateNavigationEvent);
+    }
+    return;
+  }
   const preset = readAiRuntimeBrowserTestConfigV1()?.presetWorld;
   if (!preset) return;
   assertAiRuntimePresetRoster(scene, preset);

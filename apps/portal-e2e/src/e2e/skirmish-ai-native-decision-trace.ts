@@ -9,9 +9,21 @@ export async function armNativeDecisionTrace(page: Page, playerNumber: number) {
   await page.evaluate((playerNumber) => {
     type TraceEntry = { tick: number; sequence: number; inputDigest: string; resultDigest: string;
       profileDigest: string; catalogDigest: string; observationDigest: string; priorStateDigest: string; outcomesDigest: string };
-    type DecisionInput = { observation: AiRuntimeDecisionRepro["payload"]["observation"];
-      priorState: AiRuntimeDecisionRepro["payload"]["priorState"] };
-    type Handle = { read(): { overflow: boolean; records: TraceEntry[]; firstInput?: DecisionInput }; dispose(): void };
+    type DecisionInput = {
+      profile: AiRuntimeDecisionRepro["profile"];
+      catalog: AiRuntimeDecisionRepro["catalog"];
+      observation: AiRuntimeDecisionRepro["payload"]["observation"];
+      priorState: AiRuntimeDecisionRepro["payload"]["priorState"];
+      outcomes: AiRuntimeDecisionRepro["payload"]["outcomes"];
+    };
+    type FirstInput = {
+      observation: AiRuntimeDecisionRepro["payload"]["observation"];
+      priorState: AiRuntimeDecisionRepro["payload"]["priorState"];
+    };
+    type Handle = {
+      read(): { overflow: boolean; records: TraceEntry[]; firstInput?: FirstInput; retainedInputs: DecisionInput[] };
+      dispose(): void;
+    };
     const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: AiRuntimeBrowserTestHostV1;
       __nativeDecisionTrace?: Handle };
     realm.__nativeDecisionTrace?.dispose();
@@ -19,7 +31,8 @@ export async function armNativeDecisionTrace(page: Page, playerNumber: number) {
       .find((entry) => entry.scene.key.startsWith("Map"));
     if (!scene) throw new Error("native_decision_trace_scene_missing");
     const records: TraceEntry[] = [];
-    let firstInput: DecisionInput | undefined;
+    const retainedInputs: DecisionInput[] = [];
+    let firstInput: FirstInput | undefined;
     let overflow = false;
     const canonical = (value: unknown): unknown => {
       if (Array.isArray(value)) return value.map(canonical);
@@ -41,12 +54,14 @@ export async function armNativeDecisionTrace(page: Page, playerNumber: number) {
       const input = { profile: capture.profile, catalog: capture.catalog, observation: capture.payload.observation,
         priorState: capture.payload.priorState, outcomes: capture.payload.outcomes };
       firstInput ??= structuredClone({ observation: input.observation, priorState: input.priorState });
+      if (retainedInputs.length < 4) retainedInputs.push(structuredClone(input));
       records.push({ tick: capture.payload.observation.tick, sequence: result.nextState.scheduler.decisionSequence,
         inputDigest: digest(input), profileDigest: digest(input.profile), catalogDigest: digest(input.catalog),
         observationDigest: digest(input.observation), priorStateDigest: digest(input.priorState), outcomesDigest: digest(input.outcomes),
         resultDigest: digest({ nextState: result.nextState, acceptedIntents: result.acceptedIntents }) });
     };
-    const handle: Handle = { read: () => ({ overflow, records: records.map((entry) => ({ ...entry })), firstInput }), dispose: () => {
+    const handle: Handle = { read: () => ({ overflow, records: records.map((entry) => ({ ...entry })), firstInput,
+      retainedInputs: retainedInputs.map((entry) => structuredClone(entry)) }), dispose: () => {
       scene.events.off("ai-runtime-decision-repro", receive);
       scene.events.off("shutdown", handle.dispose);
       if (realm.__nativeDecisionTrace === handle) delete realm.__nativeDecisionTrace;
@@ -63,7 +78,11 @@ export async function closeNativeDecisionTrace(page: Page) {
       read(): { overflow: boolean; records: { tick: number; sequence: number; inputDigest: string; resultDigest: string;
         profileDigest: string; catalogDigest: string; observationDigest: string; priorStateDigest: string; outcomesDigest: string }[];
         firstInput?: { observation: AiRuntimeDecisionRepro["payload"]["observation"];
-          priorState: AiRuntimeDecisionRepro["payload"]["priorState"] } };
+          priorState: AiRuntimeDecisionRepro["payload"]["priorState"] };
+        retainedInputs: { profile: AiRuntimeDecisionRepro["profile"]; catalog: AiRuntimeDecisionRepro["catalog"];
+          observation: AiRuntimeDecisionRepro["payload"]["observation"];
+          priorState: AiRuntimeDecisionRepro["payload"]["priorState"];
+          outcomes: AiRuntimeDecisionRepro["payload"]["outcomes"] }[] };
       dispose(): void } };
     if (!realm.__nativeDecisionTrace) throw new Error("native_decision_trace_owner_missing");
     const result = realm.__nativeDecisionTrace.read();

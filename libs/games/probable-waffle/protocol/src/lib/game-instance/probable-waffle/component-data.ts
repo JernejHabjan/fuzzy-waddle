@@ -24,8 +24,8 @@ export interface VisionComponentData {
 
 /**
  * Defines the structured attack component data contract for this module. Its declared surface makes remaining
- * cooldown, current attack index explicit to every consumer. Use this shared shape rather than an ad-hoc
- * object so adapters, persistence, and callers remain compatible.
+ * cooldown, current attack index and restartable pending impact explicit to every consumer. Use this shared
+ * shape rather than an ad-hoc object so adapters, persistence, and callers remain compatible.
  */
 export interface AttackComponentData {
   /**
@@ -38,6 +38,12 @@ export interface AttackComponentData {
    * defined by {@link AttackComponentData} and must remain consistent across producers and consumers.
    */
   currentAttackIndex?: number;
+  /** Restartable gameplay phase for a launched non-projectile attack whose impact is still pending. */
+  pendingHit?: {
+    targetActorId: ActorId;
+    attackIndex: number;
+    dueTick: number;
+  };
 }
 
 /**

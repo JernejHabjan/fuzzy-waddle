@@ -11,6 +11,10 @@ import { replayNativeSavedContinuation } from "./skirmish-ai-native-save-continu
 import { captureRuntimeProductionAuthority } from "./skirmish-ai-runtime-production-capture";
 import { nativeSavePremises } from "./skirmish-ai-native-save-premises";
 import { captureNativeDebugWorldProjection } from "./skirmish-ai-native-debug-comparison";
+import {
+  captureNativeSaveNavigationDiagnostics,
+  type NativeSaveNavigationDiagnostics
+} from "./skirmish-ai-native-save-navigation-diagnostics";
 import type { AiRuntimeBrowserTestHostV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host-v1";
 
 /** Seal the original autonomous SP interval, rewind the real encrypted save and repeat the same logical ticks. */
@@ -48,10 +52,12 @@ export async function runNativeSaveVariant(
   let saved: Awaited<ReturnType<typeof captureNativeContinuationBoundary>> | undefined;
   let premises: NativeSaveProof["premises"] | undefined;
   let savedWorldProjection: unknown;
+  let savedNavigationDiagnostics: NativeSaveNavigationDiagnostics | undefined;
   let nativeSave: NativeSaveProof | undefined;
   const captureSaveBoundary = async (page: Page) => {
     saved = await captureNativeContinuationBoundary(page, player);
     savedWorldProjection = await captureNativeDebugWorldProjection(page);
+    savedNavigationDiagnostics = await captureNativeSaveNavigationDiagnostics(page);
     const capture = await captureRuntimeProductionAuthority(page, player);
     const setup = await page.evaluate((playerNumber) => {
       const host = (
@@ -124,7 +130,8 @@ export async function runNativeSaveVariant(
         saved,
         premises,
         branch === "pause_speed" ? 2 : 1,
-        savedWorldProjection
+        savedWorldProjection,
+        savedNavigationDiagnostics
       );
       await afterContinuation?.(page, nativeSave);
     },

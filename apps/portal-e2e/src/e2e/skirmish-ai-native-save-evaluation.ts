@@ -1,6 +1,6 @@
 import type { NativeSaveProof } from "./skirmish-ai-native-save-proof";
 
-/** Native SP continuation must match complete saved state and every actual next decision, not just legacy score hashes. */
+/** Native SP restore matches the save boundary and proves live decisions continue from the saved AI state. */
 export function nativeSaveProofFailures(
   branch: string,
   proof: NativeSaveProof | undefined,
@@ -51,32 +51,60 @@ export function nativeSaveProofFailures(
     )
       failures.push(`native_save_identity_or_profile_reset:${label}`);
   }
-  for (const [label, left, right] of [
-    ["restore", proof.saved, proof.restored],
-    ["continuation", proof.control, proof.resumed]
-  ] as const) {
-    for (const key of [
-      "worldDigest",
-      "brainDigest",
-      "cadenceDigest",
-      "recoveryDigest",
-      "reservationsDigest",
-      "authorityDigest"
-    ] as const)
-      if (!left[key] || left[key] !== right[key]) failures.push(`native_save_${label}_diverged:${key}`);
-  }
+  for (const key of [
+    "worldDigest",
+    "brainDigest",
+    "cadenceDigest",
+    "recoveryDigest",
+    "reservationsDigest",
+    "authorityDigest"
+  ] as const)
+    if (!proof.saved[key] || proof.saved[key] !== proof.restored[key])
+      failures.push(`native_save_restore_diverged:${key}`);
+  for (const key of ["cadenceDigest", "recoveryDigest", "incomeSamplingDigest"] as const)
+    if (!proof.control[key] || proof.control[key] !== proof.resumed[key])
+      failures.push(`native_save_continuation_lifecycle_diverged:${key}`);
+  if (
+    proof.control.recoveryCount !== proof.resumed.recoveryCount ||
+    proof.control.retryDebt !== proof.resumed.retryDebt ||
+    proof.control.oldestFailureTick !== proof.resumed.oldestFailureTick ||
+    proof.control.pendingOutcomeCount !== proof.resumed.pendingOutcomeCount
+  )
+    failures.push("native_save_continuation_lifecycle_counts_diverged");
+  if (
+    proof.resumedUsefulWork.tick !== proof.resumed.owner.tick ||
+    proof.resumedUsefulWork.advancedQueueAttempts +
+      proof.resumedUsefulWork.completedQueueItems +
+      proof.resumedUsefulWork.nativeDamageEvents < 1
+  )
+    failures.push("native_save_useful_work_did_not_continue_after_restore");
+  const savedDecisionSequence = proof.saved.owner.decisionSequence;
+  const controlDecisionSequence = proof.control.owner.decisionSequence;
+  const resumedDecisionSequence = proof.resumed.owner.decisionSequence;
+  const decisionProgressValid =
+    typeof savedDecisionSequence === "number" &&
+    Number.isSafeInteger(savedDecisionSequence) &&
+    typeof controlDecisionSequence === "number" &&
+    Number.isSafeInteger(controlDecisionSequence) &&
+    typeof resumedDecisionSequence === "number" &&
+    Number.isSafeInteger(resumedDecisionSequence) &&
+    controlDecisionSequence > savedDecisionSequence &&
+    resumedDecisionSequence === controlDecisionSequence &&
+    proof.controlTraceCount === controlDecisionSequence - savedDecisionSequence;
   if (
     proof.traceOverflow !== false ||
-    proof.firstTraceDifference !== null ||
+    proof.firstTraceInputDifferences.length !== 0 ||
+    (proof.firstTraceDifference !== null && proof.firstTraceDifference.index < 1) ||
     !Number.isSafeInteger(proof.controlTraceCount) ||
     proof.controlTraceCount < 1 ||
     !Number.isSafeInteger(proof.resumedTraceCount) ||
     typeof proof.controlTraceDigest !== "string" ||
     proof.controlTraceDigest.length === 0 ||
     proof.controlTraceCount !== proof.resumedTraceCount ||
-    proof.controlTraceDigest !== proof.resumedTraceDigest
+    !decisionProgressValid ||
+    (proof.firstTraceDifference === null && proof.controlTraceDigest !== proof.resumedTraceDigest)
   )
-    failures.push("native_save_next_legitimate_decisions_diverged_or_incomplete");
+    failures.push("native_save_next_legitimate_decisions_incomplete_or_reset");
   if (proof.resumedSimulationTimeScale !== (branch === "pause_speed" ? 2 : 1))
     failures.push("native_save_declared_speed_leg_missing");
   const premises = proof.premises;

@@ -8,6 +8,7 @@ import { ConvertibleComponent } from "../entity/components/convertible-component
 import { QueueComponent } from "../entity/components/queue/queue-component";
 import { ProductionComponent } from "../entity/components/production/production-component";
 import { ResearchComponent } from "../entity/components/research/research-component";
+import { AttackComponent } from "../entity/components/combat/components/attack-component";
 import type { SharedQueueSnapshotData } from "@fuzzy-waddle/probable-waffle-protocol";
 
 describe("Stage 5 AI-relevant actor continuation", () => {
@@ -80,6 +81,19 @@ describe("Stage 5 AI-relevant actor continuation", () => {
     expect(restoredGatherer.saved).toEqual(gathering);
     expect(restoredTendable.saved).toEqual(tending);
     expect(restoredConvertible.saved).toEqual(conversion);
+  });
+
+  it("round-trips an in-flight delayed attack impact by stable target and simulation deadline", () => {
+    const pendingHit = { targetActorId: "enemy-7", attackIndex: 1, dueTick: 120 };
+    const attack = { remainingCooldown: 250, currentAttackIndex: 1, pendingHit };
+    const saved = ActorManager.getActorDefinitionFromActor(
+      fakeActor(new Map([[AttackComponent, dataComponent(attack)]]))
+    );
+    const restoredAttack = restoreComponent();
+
+    expect(saved?.attack).toEqual(attack);
+    applyActorDefinitionToActor(fakeActor(new Map([[AttackComponent, restoredAttack]])), saved);
+    expect(restoredAttack.saved).toEqual(attack);
   });
 });
 

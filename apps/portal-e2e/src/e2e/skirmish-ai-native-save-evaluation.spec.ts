@@ -70,6 +70,9 @@ const base: NativeSaveProof = {
   traceOverflow: false,
   restoreWorldDifferences: [],
   firstTraceInputDifferences: [],
+  firstDivergentTraceInputDifferences: [],
+  firstDivergentActors: [],
+  resumedUsefulWork: { tick: 401, advancedQueueAttempts: 1, completedQueueItems: 0, nativeDamageEvents: 0 },
   firstTraceDifference: null
 };
 
@@ -97,6 +100,7 @@ it("requires a real same-realm restore, one native owner and full queue/brain/ca
     { ...base, restored: { ...base.restored, worldDigest: "legacy-only-hash" } },
     { ...base, restored: { ...base.restored, cadenceDigest: "restarted-cadence" } },
     { ...base, resumed: { ...base.resumed, recoveryDigest: "reset-age" } },
+    { ...base, restored: { ...base.restored, reservationsDigest: "lost-claims" } },
     { ...base, restored: { ...base.restored, owner: { ...base.restored.owner, controllerCount: 2 } } },
     { ...base, premises: { ...base.premises, captureDropped: true } }
   ])
@@ -125,8 +129,10 @@ it("requires exact native setup payment identity and no post-charge refund for a
     proof: NativeSaveProof = {
       ...base,
       branch: "during_active",
-      saved: boundary(tick),
+    saved: { ...boundary(tick), owner: { ...boundary(tick).owner, decisionSequence: 5 } },
       restored: boundary(tick),
+    controlTraceCount: 15,
+    resumedTraceCount: 15,
       premises: {
         ...base.premises,
         tick,
@@ -168,4 +174,48 @@ it("refuses matching erased trace digests and fabricated decision counts", () =>
       }).length
     ).toBeGreaterThan(0);
   }
+});
+
+it("requires the first resumed decision to match but allows later decisions to follow changed physical state", () => {
+  const laterDecision = {
+    tick: 40,
+    sequence: 2,
+    inputDigest: "input",
+    profileDigest: "profile",
+    catalogDigest: "catalog",
+    observationDigest: "observation",
+    priorStateDigest: "prior",
+    outcomesDigest: "outcomes",
+    resultDigest: "result"
+  };
+  const laterDecisionDifference = {
+    index: 1,
+    control: laterDecision,
+    resumed: { ...laterDecision, inputDigest: "changed" }
+  };
+  const proof: NativeSaveProof = {
+    ...base,
+    firstTraceDifference: laterDecisionDifference,
+    controlTraceDigest: "control-tail",
+    resumedTraceDigest: "resumed-tail",
+    control: { ...base.control, worldDigest: "control-world", brainDigest: "control-brain", authorityDigest: "control-authority" },
+    resumed: { ...base.resumed, worldDigest: "resumed-world", brainDigest: "resumed-brain", authorityDigest: "resumed-authority" }
+  };
+
+  expect(nativeSaveProofFailures("before_apply", proof)).toEqual([]);
+  expect(
+    nativeSaveProofFailures("before_apply", { ...proof, firstTraceDifference: { ...laterDecisionDifference, index: 0 } })
+  ).toContain("native_save_next_legitimate_decisions_incomplete_or_reset");
+  expect(
+    nativeSaveProofFailures("before_apply", {
+      ...proof,
+      resumed: { ...proof.resumed, recoveryDigest: "reset-recovery" }
+    })
+  ).toContain("native_save_continuation_lifecycle_diverged:recoveryDigest");
+  expect(
+    nativeSaveProofFailures("before_apply", {
+      ...proof,
+      resumedUsefulWork: { ...proof.resumedUsefulWork, advancedQueueAttempts: 0 }
+    })
+  ).toContain("native_save_useful_work_did_not_continue_after_restore");
 });

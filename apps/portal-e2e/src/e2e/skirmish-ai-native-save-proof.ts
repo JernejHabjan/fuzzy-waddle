@@ -23,7 +23,38 @@ export interface NativeSaveProof {
   readonly traceOverflow: boolean;
   readonly restoreWorldDifferences: readonly import("./skirmish-ai-native-world-projection-diff").NativeDebugProjectionDifference[];
   readonly firstTraceInputDifferences: readonly import("./skirmish-ai-native-world-projection-diff").NativeDebugProjectionDifference[];
+  readonly firstDivergentTraceInputDifferences: readonly import("./skirmish-ai-native-world-projection-diff").NativeDebugProjectionDifference[];
+  readonly firstDivergentActors: readonly {
+    readonly index: number;
+    readonly control: unknown;
+    readonly resumed: unknown;
+  }[];
+  readonly resumedUsefulWork: {
+    readonly tick: number;
+    readonly advancedQueueAttempts: number;
+    readonly completedQueueItems: number;
+    readonly nativeDamageEvents: number;
+  };
   readonly firstTraceDifference: { readonly index: number;
     readonly control: Awaited<ReturnType<typeof closeNativeDecisionTrace>>["records"][number] | null;
     readonly resumed: Awaited<ReturnType<typeof closeNativeDecisionTrace>>["records"][number] | null } | null;
+  readonly navigationDiagnostics?: {
+    readonly saved: import("./skirmish-ai-native-save-navigation-diagnostics").NativeSaveNavigationSummary;
+    readonly restored: import("./skirmish-ai-native-save-navigation-diagnostics").NativeSaveNavigationSummary;
+    readonly randomCalls: readonly import("./skirmish-ai-native-save-navigation-diagnostics").NativeSaveRandomCall[];
+    readonly changedCells: readonly {
+      readonly x: number;
+      readonly y: number;
+      readonly terrainBefore: number;
+      readonly terrainAfter: number;
+      readonly objectBefore: number | null;
+      readonly objectAfter: number | null;
+      readonly navigationBefore: number;
+      readonly navigationAfter: number;
+    }[];
+    readonly affectedColliders: {
+      readonly saved: readonly import("./skirmish-ai-native-save-navigation-diagnostics").NativeSaveColliderFootprint[];
+      readonly restored: readonly import("./skirmish-ai-native-save-navigation-diagnostics").NativeSaveColliderFootprint[];
+    };
+  };
 }

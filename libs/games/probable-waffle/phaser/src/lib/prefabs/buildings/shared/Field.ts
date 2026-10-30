@@ -11,10 +11,10 @@ import type { TendablePhase } from "../../../entity/components/tendable/tendable
 import { setActorData } from "../../../data/actor-data";
 import { onObjectReady } from "../../../data/game-object-helper";
 import { getActorComponent } from "../../../data/actor-component";
-import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { ResourceSourceComponent } from "../../../entity/components/resource/resource-source-component";
 import type { Subscription } from "rxjs";
-import { RandomService } from "../../../world/services/random.service";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
+import { getFieldCropVariantIndex } from "./field-crop-variant";
 import CropsWheat from "../../outside/crops/wheat/CropsWheat";
 import CropsBeans from "../../outside/crops/beans/CropsBeans";
 import CropsCabbage from "../../outside/crops/cabbage/CropsCabbage";
@@ -135,8 +135,6 @@ export default class Field extends Phaser.GameObjects.Container implements CropR
       ],
       []
     );
-    // Pick random crop type once at construction time
-    this.selectedCropTypeIndex = this.getDeterministicCropTypeIndex();
     // Subscribe to resource changes after actor data (and ResourceSourceComponent) is ready
     onObjectReady(this, this.subscribeToResourceChanges, this);
   }
@@ -171,10 +169,10 @@ export default class Field extends Phaser.GameObjects.Container implements CropR
   };
 
   private handleTendablePhase = (phase: TendablePhase | null) => {
+    this.selectedCropTypeIndex = this.getStableCropTypeIndex();
     if (phase === null || phase === 0) {
-      // Bare soil or not yet ready — destroy any crop instances and pick new type
+      // Bare soil or not yet ready; clear crop instances and reset their growth stage.
       this.destroyCropInstances();
-      this.selectedCropTypeIndex = this.getDeterministicCropTypeIndex();
       this.currentGrowthStageIndex = 0;
       return;
     }
@@ -207,13 +205,10 @@ export default class Field extends Phaser.GameObjects.Container implements CropR
     this.cropInstances = [];
   }
 
-  private getDeterministicCropTypeIndex(): number {
-    // Use seeded scene RNG so crop type picks stay identical across multiplayer peers.
-    const randomService = getSceneService(this.scene, RandomService);
-    if (!randomService) {
-      return Phaser.Math.Between(0, Field.CROP_CONSTRUCTORS.length - 1);
-    }
-    return randomService.between(0, Field.CROP_CONSTRUCTORS.length - 1);
+  private getStableCropTypeIndex(): number {
+    // Cosmetic crop choice must survive save/load without advancing the shared gameplay RNG.
+    const stableKey = getActorComponent(this, IdComponent)?.id ?? `${Math.round(this.x)}:${Math.round(this.y)}`;
+    return getFieldCropVariantIndex(stableKey, Field.CROP_CONSTRUCTORS.length);
   }
 
   /** Returns the harvest animation for the current crop type, or null if no crops are spawned. */
