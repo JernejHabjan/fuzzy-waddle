@@ -1,5 +1,6 @@
 const MIN_RUNTIME_TIMEOUT_MS = 600_000;
-const MAX_RUNTIME_TIMEOUT_MS = 30 * 60_000;
+// Leave two minutes for runner startup/teardown so wall time stays within the 30-minute task cap.
+const MAX_RUNTIME_TIMEOUT_MS = 28 * 60_000;
 const STARTUP_AND_SEAL_TIMEOUT_MS = 180_000;
 const PER_TICK_TIMEOUT_MS = 450;
 

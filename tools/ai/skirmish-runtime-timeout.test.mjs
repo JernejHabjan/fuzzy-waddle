@@ -6,9 +6,12 @@ test("one selected native variant gets a horizon-based test window", () => {
   assert.equal(skirmishRuntimeTestTimeoutMs(1, 2_000), 180_000 + 2_000 * 450);
 });
 
-test("runtime test windows never exceed thirty minutes", () => {
-  assert.equal(skirmishRuntimeTestTimeoutMs(3, 20_000), 30 * 60_000);
-  assert.equal(skirmishRuntimeTestTimeoutMs(100, 120_000), 30 * 60_000);
+test("runtime test windows leave teardown margin inside the thirty-minute wall cap", () => {
+  const maximumTestWindow = 28 * 60_000;
+  const teardownMargin = 2 * 60_000;
+  assert.equal(skirmishRuntimeTestTimeoutMs(3, 20_000), maximumTestWindow);
+  assert.equal(skirmishRuntimeTestTimeoutMs(100, 120_000), maximumTestWindow);
+  assert.ok(maximumTestWindow + teardownMargin <= 30 * 60_000);
 });
 
 test("the base timeout covers startup when no variants are selected", () => {
