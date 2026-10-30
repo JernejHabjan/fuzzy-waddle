@@ -16,10 +16,9 @@ Do not reconstruct the old seven-package roadmap from chat or historical records
 - A3 adjacent-wall clearance fix and H-11 passes for both factions are in CURRENT-EVIDENCE. The focused
   builder-loss recovery control passes on `76bec1347` after moving its invalid seeded site.
 - PLACE-03 layout/concurrent passes are recorded for both factions; Tivara completion/loss also pass. Skaduwee
-  completion still needs a real active-route premise. WALL-01 Tivara terrain passes (`1793320599420`); Skaduwee
-  no-value passes. Layout search and threat-backed construction priority address captured Skaduwee rejection/worker
-  claim causes. First confirmation timed out at zero ticks on a dev-page TS inference error; the fix passes all
-  105 gameplay suites/616 tests, scoped lint and portal production build. One corrected Skaduwee confirmation runs.
+  completion still needs a real active-route premise. WALL-01 terrain/effect now passes for both factions
+  (`1793320599420`, `1793327749131`); Skaduwee no-value passes (`1793321331730`). Layout and threat-priority fixes
+  are pushed (`90c39211`); the final arbitration follow-up passes gameplay tests, scoped lint and portal build.
 - B1 withdrawal recovery passes for both factions. C is validated. D remains partial with known H-31/H-32 causes;
   don't replay unchanged. Detailed IDs, limitations and retained evidence live in CURRENT-EVIDENCE.
 - No multiplayer/CI, exhaustive calibration or optional content in this iteration; do not touch PR #814.
@@ -27,7 +26,7 @@ Do not reconstruct the old seven-package roadmap from chat or historical records
 
 | Packet | State | Next action |
 | --- | --- | --- |
-| A placement/walls/recovery | in_progress | H-11 and PLACE-03 layout/concurrent pass for both factions; Tivara completion/loss and focused builder-loss control pass. Skaduwee PLACE-03 completion `1793317870460` lacks a real active-route premise; loss remains open. WALL-01 Tivara terrain `1793320599420` and Skaduwee no-value `1793321331730` pass. Skaduwee terrain `1793320854256` exposed plan/layout and worker-claim priority gaps. Fixes pass gameplay suites/lint/build. Runtime `1793326685678` yielded zero ticks on the surfaced TS compile error; corrected native confirmation runs now. Wall effect and paired terrain/freestanding comparison remain. |
+| A placement/walls/recovery | in_progress | H-11 and PLACE-03 layout/concurrent pass for both factions; Tivara completion/loss and focused builder-loss control pass. Skaduwee PLACE-03 completion `1793317870460` lacks a real active-route premise; loss remains open. WALL-01 useful terrain/effect passes for Tivara `1793320599420` and Skaduwee `1793327749131`; Skaduwee no-value `1793321331730` passes. Skaduwee layout/worker-claim fixes are pushed in `90c39211` plus a tested follow-up. Runtime `1793326685678` was zero-tick infrastructure failure; `1793327162186` isolated the urgency-0 gather conflict; final run passes at 3001 ticks. Remaining: Skaduwee PLACE-03 completion/loss and paired terrain/freestanding comparison. |
 | B expansion/mission continuity | in_progress | EXP-02 withdrawal recovery passes for Skaduwee 1793313251345 and Tivara 1793313388623 on the same source/fixture. Existing Skaduwee home_pressure and both H-14 harmless passes remain. Continue B2 scouting and B3 combat; no unchanged EXP-02 withdrawal reruns. |
 | C resource/command ownership | validated | C1 duplicate admission preserves actor/application progress; C2 expired provisional escrow and contracted-balance gating have focused coverage, H-10 retains both-faction capacity evidence, and H-13 has current native base-control confirmation for both factions. C3 epoch/identity/dispatch guards reviewed; focused Phaser tests pass 20/20. Full gameplay tests pass 105 suites/611 tests. |
 | D essential SP lifecycle | in_progress | H-32 SP dispatch is covered by 58 focused static tests; Tivara normal/paid queue pass. Skaduwee normal follow-up `1793322642534` shows old Map at Phaser SHUTDOWN status 8 with 61 old tick observers and no observed shutdown callback, while the new controller progresses and the late-work world digest is unchanged. Diagnose teardown/observer cleanup in a smaller source lifecycle reproduction; no unchanged H-32 retry. H-31 actor health restore is fixed, but observation/access graph still diverges. Advance to independent work while bounded causes remain. |

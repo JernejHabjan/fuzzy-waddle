@@ -2,6 +2,7 @@ import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
 import { ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
 import { aiDeadline } from "../contracts/ai-core-types";
+import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import { arbitrateAiIntents } from "../brain/ai-intent-arbiter";
 import { AiFortificationManager } from "./ai-fortification-manager";
 import { profile, catalog, actor, observation, threatenedState } from "./ai-fortification-test-fixture";
@@ -19,7 +20,7 @@ describe("AiFortificationManager", () => {
     expect(graph?.incrementalConnectivity).toBe("preserved");
     expect(graph?.nodes.filter((node) => node.kind === "gate_slot")).toHaveLength(1);
     expect(first.intents.every((intent) => intent.kind !== "construct" || intent.objectName !== null)).toBe(true);
-    expect(first.intents.find((intent) => intent.kind === "construct")?.urgencyClass).toBe(3);
+    expect(first.intents.find((intent) => intent.kind === "construct")?.urgencyClass).toBe(0);
   });
 
   it("keeps fortification at optional priority when a defensive profile has no live threat", () => {
@@ -32,6 +33,45 @@ describe("AiFortificationManager", () => {
     const proposal = manager.propose(observation(), unpressured);
 
     expect(proposal.intents.find((intent) => intent.kind === "construct")?.urgencyClass).toBe(4);
+  });
+
+  it("admits threatened construction before a competing essential gather claim on its builder", () => {
+    const proposal = manager.propose(observation(), threatenedState());
+    const construct = proposal.intents.find((intent) => intent.kind === "construct");
+    if (construct?.kind !== "construct" || construct.builderIds[0] === undefined)
+      throw new Error("missing_threatened_construction_intent");
+    const gather: AiIntentV1 = {
+      intentId: "intent:gather:competing-builder",
+      effectId: "effect:gather:competing-builder",
+      kind: "assign_gatherers",
+      planId: threatenedState().opening.plan.planId,
+      demandId: null,
+      lane: "essential_economy",
+      proposedTick: observation().tick,
+      urgencyClass: 0,
+      utility: 980,
+      preconditions: [{ kind: "actor_exists", actorId: construct.builderIds[0] }],
+      claims: [{ claimId: "claim:gather:competing-builder", kind: "actor", actorId: construct.builderIds[0] }],
+      reasonCode: "test:essential_gather",
+      actorIds: construct.builderIds,
+      resourceType: ResourceType.Minerals,
+      sourceActorId: null
+    };
+    const arbitration = arbitrateAiIntents(
+      observation(),
+      threatenedState(),
+      [gather, construct],
+      [],
+      profile,
+      undefined
+    );
+
+    expect(construct.urgencyClass).toBe(0);
+    expect(construct.utility).toBeGreaterThan(gather.utility);
+    expect(arbitration.accepted).toContain(construct);
+    expect(arbitration.decisions.find((decision) => decision.intent.intentId === gather.intentId)?.reason).toBe(
+      "claim_conflict"
+    );
   });
 
   it("finds the same measured choke when the main-building anchor is one tile farther away", () => {

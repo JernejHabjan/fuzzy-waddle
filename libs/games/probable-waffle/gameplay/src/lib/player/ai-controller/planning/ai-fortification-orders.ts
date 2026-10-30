@@ -94,8 +94,10 @@ export function createFortificationIntents(
         demandId: null,
         lane: "optional_infrastructure_tech" as const,
         proposedTick: observation.tick,
-        urgencyClass: current.lifecycle === "destroyed" ? 1 : activeThreat ? 3 : 4,
-        utility: Math.min(900, 500 + current.marginalCoverage * 10 + (current.lifecycle === "destroyed" ? 200 : 0)),
+        urgencyClass: current.lifecycle === "destroyed" ? 1 : activeThreat ? 0 : 4,
+        utility: activeThreat && current.lifecycle !== "destroyed"
+          ? 985
+          : Math.min(900, 500 + current.marginalCoverage * 10 + (current.lifecycle === "destroyed" ? 200 : 0)),
         preconditions: [
           { kind: "actor_exists" as const, actorId: builder.actorId },
           ...resourceClaims.map((claim) => ({
