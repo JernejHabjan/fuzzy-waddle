@@ -2,9 +2,7 @@
   "schemaVersion": 1,
   "evidenceKind": "runtime",
   "driver": "runtime",
-  "scenarioIds": [
-    "DBG-03"
-  ],
+  "scenarioIds": ["DBG-03"],
   "status": "authored_not_executed",
   "purpose": "Offline tick/decision step and named breakpoint stop at safe reproducible boundaries; live history/bookmark never pauses/mutates multiplayer",
   "acceptance": {
@@ -43,10 +41,7 @@
     "simulationTimeScale": 1,
     "requiresMultiplayer": true,
     "fixedStepFrames": true,
-    "checkpointTicks": [
-      599,
-      800
-    ],
+    "checkpointTicks": [599, 800],
     "variants": [
       {
         "id": "dbg-03-tivara-safe-steps",
@@ -59,13 +54,8 @@
         "difficulty": "Normal",
         "captureConstruction": true,
         "captureCombat": true,
-        "scenarioIds": [
-          "DBG-03"
-        ],
-        "checkpointTicks": [
-          599,
-          800
-        ],
+        "scenarioIds": ["DBG-03"],
+        "checkpointTicks": [599, 800],
         "presetWorld": {
           "fixtureId": "dbg-03-tivara-safe-steps",
           "requireFactionRoster": true,
@@ -75,8 +65,8 @@
               "actorName": "TivaraWorkerMale",
               "owner": 2,
               "position": {
-                "x": 384,
-                "y": 864,
+                "x": -1152,
+                "y": 704,
                 "z": 0
               }
             },
@@ -423,7 +413,17 @@
               "owner": 1
             }
           ],
-          "resourceGrants": [],
+          "resourceGrants": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 6000,
+                "wood": 6000,
+                "stone": 3000,
+                "minerals": 3000
+              }
+            }
+          ],
           "resourceStarts": [
             {
               "playerNumber": 1,
@@ -432,15 +432,6 @@
                 "wood": 1600,
                 "stone": 800,
                 "minerals": 800
-              }
-            },
-            {
-              "playerNumber": 2,
-              "amounts": {
-                "food": 6000,
-                "wood": 6000,
-                "stone": 3000,
-                "minerals": 3000
               }
             }
           ],
@@ -567,13 +558,11 @@
           "constructionOrders": [
             {
               "fixtureActorId": "save-paid-site",
-              "actorName": "Sandhold",
-              "builderFixtureActorIds": [
-                "worker-0"
-              ],
+              "actorName": "Olival",
+              "builderFixtureActorIds": ["worker-0"],
               "position": {
-                "x": 1024,
-                "y": 960,
+                "x": -1088,
+                "y": 736,
                 "z": 0
               }
             }
@@ -591,13 +580,8 @@
         "difficulty": "Normal",
         "captureConstruction": true,
         "captureCombat": true,
-        "scenarioIds": [
-          "DBG-03"
-        ],
-        "checkpointTicks": [
-          599,
-          800
-        ],
+        "scenarioIds": ["DBG-03"],
+        "checkpointTicks": [599, 800],
         "presetWorld": {
           "fixtureId": "dbg-03-tivara-live-history-bookmark",
           "requireFactionRoster": true,
@@ -607,8 +591,8 @@
               "actorName": "TivaraWorkerMale",
               "owner": 2,
               "position": {
-                "x": 384,
-                "y": 864,
+                "x": -1152,
+                "y": 704,
                 "z": 0
               }
             },
@@ -955,7 +939,17 @@
               "owner": 1
             }
           ],
-          "resourceGrants": [],
+          "resourceGrants": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 6000,
+                "wood": 6000,
+                "stone": 3000,
+                "minerals": 3000
+              }
+            }
+          ],
           "resourceStarts": [
             {
               "playerNumber": 1,
@@ -964,15 +958,6 @@
                 "wood": 1600,
                 "stone": 800,
                 "minerals": 800
-              }
-            },
-            {
-              "playerNumber": 2,
-              "amounts": {
-                "food": 6000,
-                "wood": 6000,
-                "stone": 3000,
-                "minerals": 3000
               }
             }
           ],
@@ -1099,13 +1084,11 @@
           "constructionOrders": [
             {
               "fixtureActorId": "save-paid-site",
-              "actorName": "Sandhold",
-              "builderFixtureActorIds": [
-                "worker-0"
-              ],
+              "actorName": "Olival",
+              "builderFixtureActorIds": ["worker-0"],
               "position": {
-                "x": 1024,
-                "y": 960,
+                "x": -1088,
+                "y": 736,
                 "z": 0
               }
             }
@@ -1123,13 +1106,8 @@
         "difficulty": "Normal",
         "captureConstruction": true,
         "captureCombat": true,
-        "scenarioIds": [
-          "DBG-03"
-        ],
-        "checkpointTicks": [
-          599,
-          800
-        ],
+        "scenarioIds": ["DBG-03"],
+        "checkpointTicks": [599, 800],
         "presetWorld": {
           "fixtureId": "dbg-03-skaduwee-safe-steps",
           "requireFactionRoster": true,
@@ -1139,8 +1117,8 @@
               "actorName": "SkaduweeWorkerMale",
               "owner": 2,
               "position": {
-                "x": 384,
-                "y": 864,
+                "x": -1152,
+                "y": 704,
                 "z": 0
               }
             },
@@ -1487,7 +1465,17 @@
               "owner": 1
             }
           ],
-          "resourceGrants": [],
+          "resourceGrants": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 6000,
+                "wood": 6000,
+                "stone": 3000,
+                "minerals": 3000
+              }
+            }
+          ],
           "resourceStarts": [
             {
               "playerNumber": 1,
@@ -1496,15 +1484,6 @@
                 "wood": 1600,
                 "stone": 800,
                 "minerals": 800
-              }
-            },
-            {
-              "playerNumber": 2,
-              "amounts": {
-                "food": 6000,
-                "wood": 6000,
-                "stone": 3000,
-                "minerals": 3000
               }
             }
           ],
@@ -1631,13 +1610,11 @@
           "constructionOrders": [
             {
               "fixtureActorId": "save-paid-site",
-              "actorName": "FrostForge",
-              "builderFixtureActorIds": [
-                "worker-0"
-              ],
+              "actorName": "Emberstone",
+              "builderFixtureActorIds": ["worker-0"],
               "position": {
-                "x": 1024,
-                "y": 960,
+                "x": -1088,
+                "y": 736,
                 "z": 0
               }
             }
@@ -1655,13 +1632,8 @@
         "difficulty": "Normal",
         "captureConstruction": true,
         "captureCombat": true,
-        "scenarioIds": [
-          "DBG-03"
-        ],
-        "checkpointTicks": [
-          599,
-          800
-        ],
+        "scenarioIds": ["DBG-03"],
+        "checkpointTicks": [599, 800],
         "presetWorld": {
           "fixtureId": "dbg-03-skaduwee-live-history-bookmark",
           "requireFactionRoster": true,
@@ -1671,8 +1643,8 @@
               "actorName": "SkaduweeWorkerMale",
               "owner": 2,
               "position": {
-                "x": 384,
-                "y": 864,
+                "x": -1152,
+                "y": 704,
                 "z": 0
               }
             },
@@ -2019,7 +1991,17 @@
               "owner": 1
             }
           ],
-          "resourceGrants": [],
+          "resourceGrants": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 6000,
+                "wood": 6000,
+                "stone": 3000,
+                "minerals": 3000
+              }
+            }
+          ],
           "resourceStarts": [
             {
               "playerNumber": 1,
@@ -2028,15 +2010,6 @@
                 "wood": 1600,
                 "stone": 800,
                 "minerals": 800
-              }
-            },
-            {
-              "playerNumber": 2,
-              "amounts": {
-                "food": 6000,
-                "wood": 6000,
-                "stone": 3000,
-                "minerals": 3000
               }
             }
           ],
@@ -2163,13 +2136,11 @@
           "constructionOrders": [
             {
               "fixtureActorId": "save-paid-site",
-              "actorName": "FrostForge",
-              "builderFixtureActorIds": [
-                "worker-0"
-              ],
+              "actorName": "Emberstone",
+              "builderFixtureActorIds": ["worker-0"],
               "position": {
-                "x": 1024,
-                "y": 960,
+                "x": -1088,
+                "y": 736,
                 "z": 0
               }
             }
@@ -2183,10 +2154,7 @@
       "maximumTick": 2400,
       "minimumDecisions": 1,
       "minimumAppliedCommands": 1,
-      "requiredAiFactions": [
-        "Tivara",
-        "Skaduwee"
-      ],
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
       "requiredNativeScenario": {
         "schemaVersion": 1,
         "scenarioId": "DBG-03",

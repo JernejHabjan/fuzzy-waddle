@@ -71,6 +71,33 @@ describe("observation actor eligibility", () => {
   });
 });
 
+describe("observation restore invalidations", () => {
+  it("ignores navigation registration events until the restored controller takes its first live capture", () => {
+    const listeners: (() => void)[] = [];
+    const scene = {
+      events: {
+        on: jest.fn((_event: string, listener: () => void) => listeners.push(listener)),
+        once: jest.fn()
+      }
+    } as unknown as Phaser.Scene;
+    const pipeline = new AiObservationPipeline(scene, { playerNumber: 2 } as never);
+    pipeline.setState({
+      schemaVersion: 1,
+      generation: 7,
+      committedTick: 120,
+      knowledgeRevision: 4,
+      queryInputRevision: 26,
+      queryContinuationCursor: 2,
+      invalidationDebt: 3,
+      contacts: []
+    });
+
+    listeners[0]();
+
+    expect(pipeline.getState()).toMatchObject({ queryInputRevision: 26, invalidationDebt: 3 });
+  });
+});
+
 function observation(): AiObservationV1 {
   return {
     schemaVersion: 1,

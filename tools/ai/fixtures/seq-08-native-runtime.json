@@ -2,9 +2,7 @@
   "schemaVersion": 1,
   "evidenceKind": "runtime",
   "driver": "runtime",
-  "scenarioIds": [
-    "SEQ-08"
-  ],
+  "scenarioIds": ["SEQ-08"],
   "status": "authored_not_executed",
   "purpose": "Exact saved continuation for equivalent logical inputs, applied-once effects, no duplicated brain/claims/results, clean new match",
   "acceptance": {
@@ -44,13 +42,7 @@
     "simulationTimeScale": 1,
     "requiresMultiplayer": true,
     "fixedStepFrames": true,
-    "checkpointTicks": [
-      19,
-      119,
-      199,
-      400,
-      18000
-    ],
+    "checkpointTicks": [19, 119, 199, 400, 18000],
     "variants": [
       {
         "id": "seq-08-tivara-before-apply",
@@ -63,13 +55,8 @@
         "difficulty": "Normal",
         "captureConstruction": true,
         "captureCombat": true,
-        "scenarioIds": [
-          "SEQ-08"
-        ],
-        "checkpointTicks": [
-          19,
-          400
-        ],
+        "scenarioIds": ["SEQ-08"],
+        "checkpointTicks": [19, 400],
         "presetWorld": {
           "fixtureId": "seq-08-tivara-before-apply",
           "requireFactionRoster": true,
@@ -457,13 +444,8 @@
         "difficulty": "Normal",
         "captureConstruction": true,
         "captureCombat": true,
-        "scenarioIds": [
-          "SEQ-08"
-        ],
-        "checkpointTicks": [
-          199,
-          400
-        ],
+        "scenarioIds": ["SEQ-08"],
+        "checkpointTicks": [199, 400],
         "presetWorld": {
           "fixtureId": "seq-08-tivara-applied-pending",
           "requireFactionRoster": true,
@@ -860,13 +842,8 @@
         "difficulty": "Normal",
         "captureConstruction": true,
         "captureCombat": true,
-        "scenarioIds": [
-          "SEQ-08"
-        ],
-        "checkpointTicks": [
-          119,
-          400
-        ],
+        "scenarioIds": ["SEQ-08"],
+        "checkpointTicks": [119, 400],
         "presetWorld": {
           "fixtureId": "seq-08-tivara-during-active",
           "requireFactionRoster": true,
@@ -876,8 +853,8 @@
               "actorName": "TivaraWorkerMale",
               "owner": 2,
               "position": {
-                "x": 384,
-                "y": 864,
+                "x": -1152,
+                "y": 704,
                 "z": 0
               }
             },
@@ -1214,7 +1191,17 @@
               "owner": 1
             }
           ],
-          "resourceGrants": [],
+          "resourceGrants": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 6000,
+                "wood": 6000,
+                "stone": 3000,
+                "minerals": 3000
+              }
+            }
+          ],
           "resourceStarts": [
             {
               "playerNumber": 1,
@@ -1223,15 +1210,6 @@
                 "wood": 1600,
                 "stone": 800,
                 "minerals": 800
-              }
-            },
-            {
-              "playerNumber": 2,
-              "amounts": {
-                "food": 6000,
-                "wood": 6000,
-                "stone": 3000,
-                "minerals": 3000
               }
             }
           ],
@@ -1267,13 +1245,11 @@
           "constructionOrders": [
             {
               "fixtureActorId": "save-paid-site",
-              "actorName": "Sandhold",
-              "builderFixtureActorIds": [
-                "worker-0"
-              ],
+              "actorName": "Olival",
+              "builderFixtureActorIds": ["worker-0"],
               "position": {
-                "x": 1024,
-                "y": 960,
+                "x": -1088,
+                "y": 736,
                 "z": 0
               }
             }
@@ -1291,13 +1267,8 @@
         "difficulty": "Normal",
         "captureConstruction": true,
         "captureCombat": true,
-        "scenarioIds": [
-          "SEQ-08"
-        ],
-        "checkpointTicks": [
-          19,
-          400
-        ],
+        "scenarioIds": ["SEQ-08"],
+        "checkpointTicks": [19, 400],
         "presetWorld": {
           "fixtureId": "seq-08-tivara-host-transfer",
           "requireFactionRoster": true,
@@ -1685,13 +1656,8 @@
         "difficulty": "Normal",
         "captureConstruction": true,
         "captureCombat": true,
-        "scenarioIds": [
-          "SEQ-08"
-        ],
-        "checkpointTicks": [
-          19,
-          400
-        ],
+        "scenarioIds": ["SEQ-08"],
+        "checkpointTicks": [19, 400],
         "presetWorld": {
           "fixtureId": "seq-08-skaduwee-before-apply",
           "requireFactionRoster": true,
@@ -2079,13 +2045,8 @@
         "difficulty": "Normal",
         "captureConstruction": true,
         "captureCombat": true,
-        "scenarioIds": [
-          "SEQ-08"
-        ],
-        "checkpointTicks": [
-          199,
-          400
-        ],
+        "scenarioIds": ["SEQ-08"],
+        "checkpointTicks": [199, 400],
         "presetWorld": {
           "fixtureId": "seq-08-skaduwee-applied-pending",
           "requireFactionRoster": true,
@@ -2482,13 +2443,8 @@
         "difficulty": "Normal",
         "captureConstruction": true,
         "captureCombat": true,
-        "scenarioIds": [
-          "SEQ-08"
-        ],
-        "checkpointTicks": [
-          119,
-          400
-        ],
+        "scenarioIds": ["SEQ-08"],
+        "checkpointTicks": [119, 400],
         "presetWorld": {
           "fixtureId": "seq-08-skaduwee-during-active",
           "requireFactionRoster": true,
@@ -2498,8 +2454,8 @@
               "actorName": "SkaduweeWorkerMale",
               "owner": 2,
               "position": {
-                "x": 384,
-                "y": 864,
+                "x": -1152,
+                "y": 704,
                 "z": 0
               }
             },
@@ -2836,7 +2792,17 @@
               "owner": 1
             }
           ],
-          "resourceGrants": [],
+          "resourceGrants": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 6000,
+                "wood": 6000,
+                "stone": 3000,
+                "minerals": 3000
+              }
+            }
+          ],
           "resourceStarts": [
             {
               "playerNumber": 1,
@@ -2845,15 +2811,6 @@
                 "wood": 1600,
                 "stone": 800,
                 "minerals": 800
-              }
-            },
-            {
-              "playerNumber": 2,
-              "amounts": {
-                "food": 6000,
-                "wood": 6000,
-                "stone": 3000,
-                "minerals": 3000
               }
             }
           ],
@@ -2889,13 +2846,11 @@
           "constructionOrders": [
             {
               "fixtureActorId": "save-paid-site",
-              "actorName": "FrostForge",
-              "builderFixtureActorIds": [
-                "worker-0"
-              ],
+              "actorName": "Emberstone",
+              "builderFixtureActorIds": ["worker-0"],
               "position": {
-                "x": 1024,
-                "y": 960,
+                "x": -1088,
+                "y": 736,
                 "z": 0
               }
             }
@@ -2913,13 +2868,8 @@
         "difficulty": "Normal",
         "captureConstruction": true,
         "captureCombat": true,
-        "scenarioIds": [
-          "SEQ-08"
-        ],
-        "checkpointTicks": [
-          19,
-          400
-        ],
+        "scenarioIds": ["SEQ-08"],
+        "checkpointTicks": [19, 400],
         "presetWorld": {
           "fixtureId": "seq-08-skaduwee-host-transfer",
           "requireFactionRoster": true,
@@ -3303,10 +3253,7 @@
       "maximumTick": 18000,
       "minimumDecisions": 1,
       "minimumAppliedCommands": 1,
-      "requiredAiFactions": [
-        "Tivara",
-        "Skaduwee"
-      ],
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
       "requiredNativeScenario": {
         "schemaVersion": 1,
         "scenarioId": "SEQ-08",

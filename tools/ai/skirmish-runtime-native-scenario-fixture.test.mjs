@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import { nativeScenarioBindings, nativeScenarioFixture } from "./native-scenario-registration.mjs";
+import { tile } from "./native-scenario-worlds.mjs";
 import { validNativeScenarioFixture } from "./skirmish-runtime-native-scenario-fixture.mjs";
 
 test("all native bindings retain their full branches and original acceptance obligations", () => {
@@ -619,6 +620,31 @@ test("H-31 binds autonomous single-player codec continuation without unsupported
       assert.equal(world.queues[0].count, 4);
       assert.equal(world.researchQueues.length, 1);
       assert.equal(world.constructionOrders.length, 1);
+      assert.ok(
+        world.resourceGrants.some(
+          (entry) =>
+            entry.playerNumber === 2 &&
+            entry.amounts.food >= 6000 &&
+            entry.amounts.wood >= 6000 &&
+            entry.amounts.stone >= 3000 &&
+            entry.amounts.minerals >= 3000
+        )
+      );
+      assert.equal(
+        world.resourceStarts.some((entry) => entry.playerNumber === 2),
+        false,
+        "paid work must not be refunded by a post-charge exact-balance reset"
+      );
+      assert.deepEqual(
+        world.constructionOrders[0].position,
+        tile(5, 40),
+        "the active-site save premise must avoid every scenario actor footprint"
+      );
+      assert.deepEqual(
+        world.actors.find((actor) => actor.fixtureActorId === "worker-0").position,
+        tile(3, 40),
+        "the paid active-site premise must stage its assigned builder on an adjacent legal tile"
+      );
     }
     if (branch === "applied_pending") assert.equal(world.receiptFault.throughTick, variant.checkpointTicks[0]);
   }
@@ -673,9 +699,10 @@ test("H-32 binds real relay promotion, one retained realm and independent pendin
   assert.equal(fixture.recipe.variants.length, 8);
   for (const faction of ["Tivara", "Skaduwee"]) {
     for (const branch of ["normal", "pending_path", "paid_queue"]) {
-      const variant = fixture.recipe.variants.find((entry) =>
-        entry.aiFaction === faction &&
-        fixture.assertions["H-32"].requiredNativeScenario.branchByVariant[entry.id] === branch
+      const variant = fixture.recipe.variants.find(
+        (entry) =>
+          entry.aiFaction === faction &&
+          fixture.assertions["H-32"].requiredNativeScenario.branchByVariant[entry.id] === branch
       );
       assert.equal(variant.requiresMultiplayer, false);
     }
@@ -925,9 +952,7 @@ test("WALL-01 probes the protected route early and terrain chokes fund the bound
       false
     );
     const blocked = new Set(
-      variant.presetWorld.terrainPatches
-        .filter((patch) => patch.blocked)
-        .map((patch) => `${patch.x},${patch.y}`)
+      variant.presetWorld.terrainPatches.filter((patch) => patch.blocked).map((patch) => `${patch.x},${patch.y}`)
     );
     assert.ok(blocked.has("29,12"), `${variant.id}: missing north cliff anchor`);
     assert.ok(blocked.has("29,22"), `${variant.id}: missing south cliff anchor`);
@@ -941,10 +966,11 @@ test("WALL-01 probes the protected route early and terrain chokes fund the bound
       ["ready-house", "fortification-house-1", "fortification-house-2"].includes(actor.fixtureActorId)
     );
     assert.equal(housing.length, 3, `${variant.id}: essential housing buffer must not suppress optional fortification`);
-    assert.deepEqual(
-      housing.map(({ fixtureActorId }) => fixtureActorId).sort(),
-      ["fortification-house-1", "fortification-house-2", "ready-house"]
-    );
+    assert.deepEqual(housing.map(({ fixtureActorId }) => fixtureActorId).sort(), [
+      "fortification-house-1",
+      "fortification-house-2",
+      "ready-house"
+    ]);
   }
 });
 

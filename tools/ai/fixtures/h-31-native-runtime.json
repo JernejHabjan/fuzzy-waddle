@@ -2,9 +2,7 @@
   "schemaVersion": 1,
   "evidenceKind": "runtime",
   "driver": "runtime",
-  "scenarioIds": [
-    "H-31"
-  ],
+  "scenarioIds": ["H-31"],
   "status": "authored_not_executed",
   "purpose": "Failure age, debt, claims, epoch and next legitimate decisions preserved; no reset exploit",
   "acceptance": {
@@ -41,14 +39,7 @@
     "aiPlayerNumber": 2,
     "simulationTimeScale": 1,
     "fixedStepFrames": true,
-    "checkpointTicks": [
-      19,
-      119,
-      199,
-      400,
-      599,
-      800
-    ],
+    "checkpointTicks": [19, 119, 199, 400, 599, 800],
     "variants": [
       {
         "id": "h-31-tivara-before-apply",
@@ -59,14 +50,9 @@
         "aiFaction": "Tivara",
         "humanFaction": "Skaduwee",
         "difficulty": "Normal",
-        "scenarioIds": [
-          "H-31"
-        ],
+        "scenarioIds": ["H-31"],
         "captureConstruction": true,
-        "checkpointTicks": [
-          19,
-          400
-        ],
+        "checkpointTicks": [19, 400],
         "presetWorld": {
           "fixtureId": "h-31-tivara-before-apply",
           "requireFactionRoster": true,
@@ -553,14 +539,9 @@
         "aiFaction": "Tivara",
         "humanFaction": "Skaduwee",
         "difficulty": "Normal",
-        "scenarioIds": [
-          "H-31"
-        ],
+        "scenarioIds": ["H-31"],
         "captureConstruction": true,
-        "checkpointTicks": [
-          199,
-          400
-        ],
+        "checkpointTicks": [199, 400],
         "presetWorld": {
           "fixtureId": "h-31-tivara-applied-pending",
           "requireFactionRoster": true,
@@ -1056,14 +1037,9 @@
         "aiFaction": "Tivara",
         "humanFaction": "Skaduwee",
         "difficulty": "Normal",
-        "scenarioIds": [
-          "H-31"
-        ],
+        "scenarioIds": ["H-31"],
         "captureConstruction": true,
-        "checkpointTicks": [
-          119,
-          400
-        ],
+        "checkpointTicks": [119, 400],
         "presetWorld": {
           "fixtureId": "h-31-tivara-during-active",
           "requireFactionRoster": true,
@@ -1073,8 +1049,8 @@
               "actorName": "TivaraWorkerMale",
               "owner": 2,
               "position": {
-                "x": 384,
-                "y": 864,
+                "x": -1152,
+                "y": 704,
                 "z": 0
               }
             },
@@ -1421,7 +1397,17 @@
               "owner": 1
             }
           ],
-          "resourceGrants": [],
+          "resourceGrants": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 6000,
+                "wood": 6000,
+                "stone": 3000,
+                "minerals": 3000
+              }
+            }
+          ],
           "resourceStarts": [
             {
               "playerNumber": 1,
@@ -1430,15 +1416,6 @@
                 "wood": 1600,
                 "stone": 800,
                 "minerals": 800
-              }
-            },
-            {
-              "playerNumber": 2,
-              "amounts": {
-                "food": 6000,
-                "wood": 6000,
-                "stone": 3000,
-                "minerals": 3000
               }
             }
           ],
@@ -1565,13 +1542,11 @@
           "constructionOrders": [
             {
               "fixtureActorId": "save-paid-site",
-              "actorName": "Sandhold",
-              "builderFixtureActorIds": [
-                "worker-0"
-              ],
+              "actorName": "Olival",
+              "builderFixtureActorIds": ["worker-0"],
               "position": {
-                "x": 1024,
-                "y": 960,
+                "x": -1088,
+                "y": 736,
                 "z": 0
               }
             }
@@ -1587,14 +1562,9 @@
         "aiFaction": "Tivara",
         "humanFaction": "Skaduwee",
         "difficulty": "Normal",
-        "scenarioIds": [
-          "H-31"
-        ],
+        "scenarioIds": ["H-31"],
         "captureConstruction": true,
-        "checkpointTicks": [
-          599,
-          800
-        ],
+        "checkpointTicks": [599, 800],
         "presetWorld": {
           "fixtureId": "h-31-tivara-pause-speed",
           "requireFactionRoster": true,
@@ -2081,14 +2051,9 @@
         "aiFaction": "Skaduwee",
         "humanFaction": "Tivara",
         "difficulty": "Normal",
-        "scenarioIds": [
-          "H-31"
-        ],
+        "scenarioIds": ["H-31"],
         "captureConstruction": true,
-        "checkpointTicks": [
-          19,
-          400
-        ],
+        "checkpointTicks": [19, 400],
         "presetWorld": {
           "fixtureId": "h-31-skaduwee-before-apply",
           "requireFactionRoster": true,
@@ -2575,14 +2540,9 @@
         "aiFaction": "Skaduwee",
         "humanFaction": "Tivara",
         "difficulty": "Normal",
-        "scenarioIds": [
-          "H-31"
-        ],
+        "scenarioIds": ["H-31"],
         "captureConstruction": true,
-        "checkpointTicks": [
-          199,
-          400
-        ],
+        "checkpointTicks": [199, 400],
         "presetWorld": {
           "fixtureId": "h-31-skaduwee-applied-pending",
           "requireFactionRoster": true,
@@ -3078,14 +3038,9 @@
         "aiFaction": "Skaduwee",
         "humanFaction": "Tivara",
         "difficulty": "Normal",
-        "scenarioIds": [
-          "H-31"
-        ],
+        "scenarioIds": ["H-31"],
         "captureConstruction": true,
-        "checkpointTicks": [
-          119,
-          400
-        ],
+        "checkpointTicks": [119, 400],
         "presetWorld": {
           "fixtureId": "h-31-skaduwee-during-active",
           "requireFactionRoster": true,
@@ -3095,8 +3050,8 @@
               "actorName": "SkaduweeWorkerMale",
               "owner": 2,
               "position": {
-                "x": 384,
-                "y": 864,
+                "x": -1152,
+                "y": 704,
                 "z": 0
               }
             },
@@ -3443,7 +3398,17 @@
               "owner": 1
             }
           ],
-          "resourceGrants": [],
+          "resourceGrants": [
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 6000,
+                "wood": 6000,
+                "stone": 3000,
+                "minerals": 3000
+              }
+            }
+          ],
           "resourceStarts": [
             {
               "playerNumber": 1,
@@ -3452,15 +3417,6 @@
                 "wood": 1600,
                 "stone": 800,
                 "minerals": 800
-              }
-            },
-            {
-              "playerNumber": 2,
-              "amounts": {
-                "food": 6000,
-                "wood": 6000,
-                "stone": 3000,
-                "minerals": 3000
               }
             }
           ],
@@ -3587,13 +3543,11 @@
           "constructionOrders": [
             {
               "fixtureActorId": "save-paid-site",
-              "actorName": "FrostForge",
-              "builderFixtureActorIds": [
-                "worker-0"
-              ],
+              "actorName": "Emberstone",
+              "builderFixtureActorIds": ["worker-0"],
               "position": {
-                "x": 1024,
-                "y": 960,
+                "x": -1088,
+                "y": 736,
                 "z": 0
               }
             }
@@ -3609,14 +3563,9 @@
         "aiFaction": "Skaduwee",
         "humanFaction": "Tivara",
         "difficulty": "Normal",
-        "scenarioIds": [
-          "H-31"
-        ],
+        "scenarioIds": ["H-31"],
         "captureConstruction": true,
-        "checkpointTicks": [
-          599,
-          800
-        ],
+        "checkpointTicks": [599, 800],
         "presetWorld": {
           "fixtureId": "h-31-skaduwee-pause-speed",
           "requireFactionRoster": true,
@@ -4101,10 +4050,7 @@
       "maximumTick": 4000,
       "minimumDecisions": 1,
       "minimumAppliedCommands": 1,
-      "requiredAiFactions": [
-        "Tivara",
-        "Skaduwee"
-      ],
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
       "requiredNativeScenario": {
         "schemaVersion": 1,
         "scenarioId": "H-31",

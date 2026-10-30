@@ -80,6 +80,7 @@ export class AiObservationPipeline {
   private lastCommitErrorStage: string | null = null;
   private lastCommitErrorCode: string | null = null;
   private navigationInvalidationListener?: () => void;
+  private ignoreNavigationChangesUntilCapture = false;
   private readonly accessGraphAdapter: AiAccessGraphAdapter;
 
   constructor(
@@ -89,6 +90,7 @@ export class AiObservationPipeline {
   ) {
     this.accessGraphAdapter = new AiAccessGraphAdapter(scene);
     this.navigationInvalidationListener = () => {
+      if (this.ignoreNavigationChangesUntilCapture) return;
       this.queryInputRevision += 1;
       this.invalidationDebt = accumulateObservationInvalidationDebt(this.invalidationDebt);
     };
@@ -107,6 +109,7 @@ export class AiObservationPipeline {
       return this.latestObservation;
     }
     const generation = ++this.requestedGeneration;
+    this.ignoreNavigationChangesUntilCapture = false;
     const policy = new AiObservationVisibilityPolicy(this.scene, this.player.playerNumber);
     const captureDiagnostics = { stage: "actor_index" };
     try {
@@ -201,6 +204,9 @@ export class AiObservationPipeline {
     this.queryInputRevision = normalized.queryInputRevision;
     this.queryContinuationCursor = normalized.queryContinuationCursor;
     this.invalidationDebt = Math.min(MAX_INVALIDATION_DEBT, normalized.invalidationDebt);
+    // Save loading can finish registering restored navigable actors after the controller state is applied.
+    // The first capture reads the complete live topology, so those load-only notifications are redundant.
+    this.ignoreNavigationChangesUntilCapture = true;
     this.memory.clear();
     for (const contact of normalized.contacts) this.memory.set(contact.actorId, cloneRememberedContact(contact));
   }
@@ -418,7 +424,9 @@ export class AiObservationPipeline {
 
 function safeAiCaptureErrorCode(error: unknown): string {
   if (error instanceof TypeError) {
-    const property = error.message.match(/^Cannot read properties of (?:undefined|null) \(reading '([A-Za-z0-9_]{1,40})'\)$/)?.[1];
+    const property = error.message.match(
+      /^Cannot read properties of (?:undefined|null) \(reading '([A-Za-z0-9_]{1,40})'\)$/
+    )?.[1];
     return property ? `missing_${property}` : "type_error";
   }
   if (error instanceof Error && error.message === "Scene is not of type ProbableWaffleSceneData") {

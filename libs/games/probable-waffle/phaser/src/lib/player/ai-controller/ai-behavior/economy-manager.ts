@@ -45,13 +45,30 @@ export class EconomyManager {
     return { schemaVersion: 1, sampledAt: this.sampledAt, pending: { ...this.pending } };
   }
 
-  setState(state: AIBehaviorTreeStateData["deliveredIncomeSampling"]): void {
-    const now = getSimulationNow(this.scene);
-    if (!state || state.schemaVersion !== 1 || !Number.isFinite(state.sampledAt) || state.sampledAt < 0 ||
-        state.sampledAt > now || !state.pending || Object.values(ResourceType).some((type) =>
-          !Number.isFinite(state.pending[type]) || state.pending[type] < 0 ||
-          !Number.isFinite(this.blackboard.economy.incomeInstant[type]) || this.blackboard.economy.incomeInstant[type] < 0 ||
-          !Number.isFinite(this.blackboard.economy.incomeSmoothed[type]) || this.blackboard.economy.incomeSmoothed[type] < 0)) {
+  setState(
+    state: AIBehaviorTreeStateData["deliveredIncomeSampling"],
+    restoredNow = getSimulationNow(this.scene)
+  ): void {
+    const now = restoredNow;
+    if (
+      !Number.isFinite(now) ||
+      now < 0 ||
+      !state ||
+      state.schemaVersion !== 1 ||
+      !Number.isFinite(state.sampledAt) ||
+      state.sampledAt < 0 ||
+      state.sampledAt > now ||
+      !state.pending ||
+      Object.values(ResourceType).some(
+        (type) =>
+          !Number.isFinite(state.pending[type]) ||
+          state.pending[type] < 0 ||
+          !Number.isFinite(this.blackboard.economy.incomeInstant[type]) ||
+          this.blackboard.economy.incomeInstant[type] < 0 ||
+          !Number.isFinite(this.blackboard.economy.incomeSmoothed[type]) ||
+          this.blackboard.economy.incomeSmoothed[type] < 0
+      )
+    ) {
       this.reset();
       return;
     }

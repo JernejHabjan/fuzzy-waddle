@@ -89,8 +89,19 @@ export class StateHashProjection {
           ? this.stableSerialize({ roleId: actor.scenario.roleId, tags: actor.scenario.tags })
           : "";
         const actorDigest = [
-          id, go.name, Math.round(health), Math.round(armour), lx, ly, lz, owner,
-          queueState, economyState, combatState, orderState, scenarioState
+          id,
+          go.name,
+          Math.round(health),
+          Math.round(armour),
+          lx,
+          ly,
+          lz,
+          owner,
+          queueState,
+          economyState,
+          combatState,
+          orderState,
+          scenarioState
         ].join(":");
         const aiState = {
           gatherer: actor.gatherer ?? null,
@@ -127,24 +138,47 @@ export class StateHashProjection {
     const gameState = (scene as ProbableWaffleScene).baseGameData.gameInstance.gameState?.data;
     const handler = getSceneSystem(scene, AiPlayerHandler);
     const aiControllers = (scene as ProbableWaffleScene).players
-      .map((player) => [String(player.playerNumber ?? -1), player.playerNumber === undefined
-        ? player.playerState.data.aiBehaviorTreeState
-        : handler?.getAiPlayerController(player.playerNumber)?.getSaveState() ?? player.playerState.data.aiBehaviorTreeState] as const)
+      .map(
+        (player) =>
+          [
+            String(player.playerNumber ?? -1),
+            player.playerNumber === undefined
+              ? player.playerState.data.aiBehaviorTreeState
+              : (handler?.getAiPlayerController(player.playerNumber)?.getSaveState() ??
+                player.playerState.data.aiBehaviorTreeState)
+          ] as const
+      )
       .map(([player, state]) => [player, projectAiControllerContinuation(state)] as const)
       .filter((entry) => entry[1] !== undefined)
       .sort(([left], [right]) => left.localeCompare(right));
     return {
       aiControllers: this.stableSerialize(this.toStableSerializable(Object.fromEntries(aiControllers))),
-      playerResources: this.stableSerialize(this.toStableSerializable(Object.fromEntries(
-        (scene as ProbableWaffleScene).players.map((player) => [String(player.playerNumber ?? -1), player.playerState.data.resources ?? {}])
-      ))),
-      simulationTick: String(getSceneService(scene, SimulationTickService)?.currentTick ?? gameState?.simulationTick ?? 0),
-      aoeZones: this.stableSerialize(this.toStableSerializable(getSceneService(scene, AoeZoneManager)?.getData() ??
-        gameState?.aoeZones ?? [])),
-      commandAuthority: this.stableSerialize(this.toStableSerializable(getSceneService(scene, CommandBusService)?.getAuthorityState() ??
-        gameState?.commandAuthority ?? null)),
-      summonExpiries: this.stableSerialize(this.toStableSerializable(getSceneService(scene, SummonExpiryService)?.getData() ??
-        gameState?.summonExpiries ?? []))
+      playerResources: this.stableSerialize(
+        this.toStableSerializable(
+          Object.fromEntries(
+            (scene as ProbableWaffleScene).players.map((player) => [
+              String(player.playerNumber ?? -1),
+              player.playerState.data.resources ?? {}
+            ])
+          )
+        )
+      ),
+      simulationTick: String(
+        getSceneService(scene, SimulationTickService)?.currentTick ?? gameState?.simulationTick ?? 0
+      ),
+      aoeZones: this.stableSerialize(
+        this.toStableSerializable(getSceneService(scene, AoeZoneManager)?.getData() ?? gameState?.aoeZones ?? [])
+      ),
+      commandAuthority: this.stableSerialize(
+        this.toStableSerializable(
+          getSceneService(scene, CommandBusService)?.getAuthorityState() ?? gameState?.commandAuthority ?? null
+        )
+      ),
+      summonExpiries: this.stableSerialize(
+        this.toStableSerializable(
+          getSceneService(scene, SummonExpiryService)?.getData() ?? gameState?.summonExpiries ?? []
+        )
+      )
     };
   }
 
@@ -157,6 +191,7 @@ export class StateHashProjection {
       const record = value as Readonly<Record<string, unknown>>;
       return Object.fromEntries(
         Object.keys(record)
+          .filter((key) => record[key] !== undefined)
           .sort()
           .map((key) => [key, this.toStableSerializable(record[key])])
       );
@@ -321,7 +356,6 @@ export class StateHashProjection {
       .sort(([left], [right]) => Number(left) - Number(right))
       .map(([playerNumber, researches]) => `${playerNumber}:${[...(researches ?? [])].sort().join(",")}`);
   }
-
 }
 
 /**

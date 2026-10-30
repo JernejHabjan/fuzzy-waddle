@@ -56,6 +56,11 @@ export class AiAccessGraphAdapter {
       this.pendingRevision = revision;
       this.pendingCursor = 0;
       this.pendingCells = [];
+      // A cached graph belongs to the prior topology revision. Keeping it visible as "pending"
+      // lets live continuation read stale routes while a freshly loaded adapter has none.
+      this.cached = undefined;
+      this.cachedRevision = -1;
+      this.searchPoints = [];
     }
     const totalCells = tilemap.width * tilemap.height;
     const end = Math.min(totalCells, this.pendingCursor + AiAccessGraphAdapter.CELL_BUDGET_PER_OBSERVATION);
@@ -83,9 +88,7 @@ export class AiAccessGraphAdapter {
       this.pendingCells = [];
       return this.cached.graph;
     }
-    return this.cached
-      ? { ...this.cached.graph, status: "pending", continuationCursor: this.pendingCursor, threatRevision }
-      : undefined;
+    return undefined;
   }
 
   resolveNodeId(tile: Vector2Simple | undefined, domains: readonly AiDomainV1[]): AiAccessNodeId | undefined {

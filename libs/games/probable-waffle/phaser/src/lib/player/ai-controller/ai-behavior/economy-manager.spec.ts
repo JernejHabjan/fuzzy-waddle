@@ -83,12 +83,22 @@ describe("native delivered-income accounting", () => {
     expect(saved.pending.wood).toBe(10);
     expect(restored.manager.getState().pending.wood).toBe(0);
   });
+  it("validates saved receipt sampling against the saved tick while the new scene clock is still at zero", () => {
+    const f = fixture(),
+      saved = { ...f.manager.getState(), sampledAt: 5000, pending: { food: 0, wood: 12, stone: 0, minerals: 0 } };
+    f.manager.setState(saved, 5950);
+    expect(f.manager.getState()).toEqual(saved);
+    f.manager.setState({ ...saved, sampledAt: 6000 }, 5950);
+    expect(f.manager.getState()).toMatchObject({ sampledAt: 0, pending: { wood: 0 } });
+  });
   it("rejects future sampling clocks and invalid receipt amounts instead of minting income", () => {
     const f = fixture();
     const valid = f.manager.getState();
-    for (const saved of [{ ...valid, sampledAt: 50000 },
+    for (const saved of [
+      { ...valid, sampledAt: 50000 },
       { ...valid, pending: { ...valid.pending, wood: -1 } },
-      { ...valid, pending: { ...valid.pending, wood: Number.NaN } }]) {
+      { ...valid, pending: { ...valid.pending, wood: Number.NaN } }
+    ]) {
       f.deliver(100);
       f.blackboard.economy.incomeSmoothed.wood = 900;
       f.manager.setState(saved);

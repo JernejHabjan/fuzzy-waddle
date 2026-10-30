@@ -36,8 +36,7 @@ import { dispatchAiBrainResult } from "./dispatch-ai-brain-result";
 import { captureAiDecisionInput } from "./capture-ai-decision-input";
 import { beginAiResourceDecision, fenceAiResourceNeed } from "./observation/ai-resource-input-observation";
 import type { AiDecisionInputV1 } from "./ai-decision-input-v1";
-import { createAiProductionBrain } from
-  "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-production-brain";
+import { createAiProductionBrain } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-production-brain";
 import { publishAiRuntimeDecisionRepro } from "./testing/ai-runtime-decision-repro";
 
 export class PlayerAiController {
@@ -73,13 +72,20 @@ export class PlayerAiController {
         AI_CONFIG.controllerStepIntervalMs / SimulationTickService.TICK_INTERVAL_MS) *
       SimulationTickService.TICK_INTERVAL_MS;
     this.pureBrain = this.profile
-      ? createAiProductionBrain(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog(),
-        createAiRuntimeBrainHooks(scene, player.playerNumber))
+      ? createAiProductionBrain(
+          this.profile,
+          () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog(),
+          createAiRuntimeBrainHooks(scene, player.playerNumber)
+        )
       : undefined;
     this.blackboard = new PlayerAiBlackboard(scene);
     const commandBus = getSceneService(scene, CommandBusService);
     if (commandBus && player.playerNumber !== undefined) {
-      this.commandReconciliation = new AiCommandReconciliation(player.playerNumber, commandBus, this.profile?.decisionIntervalTicks);
+      this.commandReconciliation = new AiCommandReconciliation(
+        player.playerNumber,
+        commandBus,
+        this.profile?.decisionIntervalTicks
+      );
     }
     this.playerAiControllerAgent = new PlayerAiControllerAgent(this.scene, this.player, this.blackboard);
     this.playerAiControllerAgent.setPurePlannerOwnsCommands(this.pureBrain !== undefined);
@@ -234,7 +240,16 @@ export class PlayerAiController {
     if (state.blackboard) {
       this.blackboard.setData(state.blackboard, this.scene);
     }
-    this.playerAiControllerAgent.restoreDeliveredIncomeSampling(state.deliveredIncomeSampling);
+    const clockTick = getSceneService(this.scene, SimulationTickService)?.currentTick ?? 0;
+    const saveTick = this.scene.baseGameData.gameInstance.gameState?.data.simulationTick;
+    const restoredTick = Math.max(
+      clockTick,
+      typeof saveTick === "number" && Number.isSafeInteger(saveTick) && saveTick >= 0 ? saveTick : 0
+    );
+    this.playerAiControllerAgent.restoreDeliveredIncomeSampling(
+      state.deliveredIncomeSampling,
+      restoredTick * SimulationTickService.TICK_INTERVAL_MS
+    );
     if (state.commandReconciliation) {
       const tick = getSceneService(this.scene, SimulationTickService)?.currentTick ?? 0;
       this.commandReconciliation?.setState(state.commandReconciliation, tick);
@@ -371,8 +386,15 @@ export class PlayerAiController {
       this.brainState = { ...this.brainState, authority: { ...this.brainState.authority, health: "technical_fault" } };
       throw error;
     }
-    publishAiRuntimeDecisionRepro(this.scene, this.profile, this.getCommittedCapabilityCatalog(),
-      observation, previous, bridge?.outcomes ?? [], result);
+    publishAiRuntimeDecisionRepro(
+      this.scene,
+      this.profile,
+      this.getCommittedCapabilityCatalog(),
+      observation,
+      previous,
+      bridge?.outcomes ?? [],
+      result
+    );
     this.dispatchAcceptedIntents(result.acceptedIntents, {
       result,
       authority: bridge?.authority ?? result.nextState.authority,

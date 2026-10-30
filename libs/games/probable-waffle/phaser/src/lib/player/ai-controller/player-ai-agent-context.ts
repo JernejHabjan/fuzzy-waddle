@@ -219,8 +219,8 @@ export abstract class PlayerAiAgentContext {
   }
 
   /** Preserve confirmed sampling in new saves; legacy stockpile estimates still restart safely. */
-  restoreDeliveredIncomeSampling(state: Parameters<EconomyManager["setState"]>[0]): void {
-    this.economyManager.setState(state);
+  restoreDeliveredIncomeSampling(state: Parameters<EconomyManager["setState"]>[0], restoredNow?: number): void {
+    this.economyManager.setState(state, restoredNow);
   }
 
   getDeliveredIncomeSamplingState() {
