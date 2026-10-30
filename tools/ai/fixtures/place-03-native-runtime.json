@@ -1411,15 +1411,15 @@
               "tileMargin": 0
             },
             {
-              "id": "production-army",
+              "id": "army-transit",
               "playerNumber": 2,
               "from": {
-                "x": 576,
-                "y": 1088
-              },
-              "to": {
                 "x": 96,
                 "y": 848
+              },
+              "to": {
+                "x": 128,
+                "y": 864
               },
               "tileMargin": 0
             },
@@ -3294,15 +3294,15 @@
               "tileMargin": 0
             },
             {
-              "id": "production-army",
+              "id": "army-transit",
               "playerNumber": 2,
               "from": {
-                "x": 576,
-                "y": 1088
-              },
-              "to": {
                 "x": 96,
                 "y": 848
+              },
+              "to": {
+                "x": 128,
+                "y": 864
               },
               "tileMargin": 0
             },

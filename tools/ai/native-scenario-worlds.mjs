@@ -165,10 +165,10 @@ export function nativeScenarioWorld(id, faction, branch) {
         tileMargin: 0
       },
       {
-        id: "production-army",
+        id: id === "PLACE-03" && branch === "completion" ? "army-transit" : "production-army",
         playerNumber: 2,
-        from: tile(42, 25),
-        to: tile(27, 25),
+        from: id === "PLACE-03" && branch === "completion" ? tile(27, 25) : tile(42, 25),
+        to: id === "PLACE-03" && branch === "completion" ? tile(28, 25) : tile(27, 25),
         tileMargin: ["PLACE-01", "PLACE-03"].includes(id) ? 0 : 1
       },
       {

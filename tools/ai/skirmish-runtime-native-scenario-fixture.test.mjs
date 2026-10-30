@@ -66,6 +66,23 @@ test("PLACE-03 protected routes preserve one-tile transit rather than requiring 
   }
 });
 
+test("PLACE-03 completion binds its army-clearance route to the real transit order", () => {
+  const fixture = nativeScenarioFixture("PLACE-03");
+  for (const variant of fixture.recipe.variants.filter((candidate) => candidate.id.endsWith("-completion"))) {
+    const route = variant.presetWorld.protectedRoutes.find((candidate) => candidate.id === "army-transit");
+    const actor = variant.presetWorld.actors.find((candidate) => candidate.fixtureActorId === "army-transit");
+    const order = variant.presetWorld.controls.find((candidate) => candidate.producerFixtureActorId === "army-transit");
+
+    assert.ok(route);
+    assert.ok(actor);
+    assert.ok(order);
+    assert.equal(order.requestTick, 1);
+    assert.deepEqual(route.from, { x: actor.position.x, y: actor.position.y });
+    assert.equal(order.action.kind, "move");
+    assert.deepEqual(route.to, { x: order.action.worldPosition.x, y: order.action.worldPosition.y });
+  }
+});
+
 test("PLACE-01 uses one-tile clearance and early physical transit probes", () => {
   const fixture = nativeScenarioFixture("PLACE-01");
   for (const variant of fixture.recipe.variants) {
