@@ -60,10 +60,10 @@ export function safeRetreatPosition(
   ]);
   const allLegalCandidates = candidates.filter((candidate) => legalForMembers(candidate, observation, members));
   const protectedBase = protectedBaseId
-    ? state.bases.find((base) => base.baseId === protectedBaseId && base.active) ??
+    ? (state.bases.find((base) => base.baseId === protectedBaseId && base.active) ??
       (protectedBaseId === "base:home"
         ? state.bases.find((base) => base.active && base.anchorActorId !== null)
-        : undefined)
+        : undefined))
     : undefined;
   const protectedBasePosition = protectedBase?.anchorPosition;
   const formationFootprint = formationSpacing(members) * 2;
@@ -97,7 +97,8 @@ export function safeRetreatPosition(
 export function formationPositions(
   members: readonly AiObservedActorV1[],
   anchor: Vector3Simple | null,
-  observation: AiObservationV1
+  observation: AiObservationV1,
+  rejectedPositionByActor: ReadonlyMap<string, string> = new Map()
 ): NonNullable<AiSquadStateV1["tactics"]>["assignedPositions"] {
   if (!anchor) return [];
   const spacing = formationSpacing(members);
@@ -111,10 +112,24 @@ export function formationPositions(
     { x: spacing, y: -spacing },
     { x: -spacing, y: -spacing }
   ];
+  const used = new Set<string>();
   return members.slice(0, offsets.length).flatMap((actor, index) => {
-    const offset = offsets[index]!;
-    const candidate = { x: anchor.x + offset.x, y: anchor.y + offset.y, z: anchor.z };
-    return legalForMembers(candidate, observation, [actor]) ? [{ actorId: actor.actorId, position: candidate }] : [];
+    const rejectedPosition = rejectedPositionByActor.get(actor.actorId);
+    const fallbackOffset = offsets[index];
+    const candidateOffsets = rejectedPosition ? offsets.slice(index) : fallbackOffset ? [fallbackOffset] : [];
+    const candidate = candidateOffsets
+      .map((offset) => ({
+        x: anchor.x + offset.x,
+        y: anchor.y + offset.y,
+        z: anchor.z
+      }))
+      .find((position) => {
+        const key = `${position.x},${position.y}`;
+        return !used.has(key) && rejectedPosition !== key && legalForMembers(position, observation, [actor]);
+      });
+    if (!candidate) return [];
+    used.add(`${candidate.x},${candidate.y}`);
+    return [{ actorId: actor.actorId, position: candidate }];
   });
 }
 

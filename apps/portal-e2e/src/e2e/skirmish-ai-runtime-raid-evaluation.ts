@@ -29,9 +29,14 @@ export function evaluateRuntimeRaidRecovery(
       );
     const recovered =
       raid !== undefined &&
-      final.deliveredIncome > 0 &&
-      final.strategyStance !== "defend" &&
-      (hasAiVictory || final.squads.some((squad) => squad.role === "attack" && squad.actorCount > 0));
+      variant.checkpoints.some(
+        (checkpoint) =>
+          checkpoint.tick >= raid.tick &&
+          checkpoint.tick <= final.tick &&
+          checkpoint.deliveredIncome > 0 &&
+          checkpoint.strategyStance !== "defend" &&
+          (hasAiVictory || checkpoint.squads.some((squad) => squad.role === "attack" && squad.actorCount > 0))
+      );
     if (!raid || raid.dispatchedActors <= 0) failures.push(`${variant.variantId}:raid_not_dispatched`);
     if (!defenseSeen && !interceptedOutsideHome) failures.push(`${variant.variantId}:raid_defense_not_observed`);
     if (!recovered) failures.push(`${variant.variantId}:raid_recovery_not_observed`);

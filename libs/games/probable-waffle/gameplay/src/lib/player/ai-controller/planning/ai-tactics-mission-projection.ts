@@ -69,6 +69,19 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
   const rampartPositions = reachableDefenderPosts.flatMap(
     (post) => fortificationPlan?.graph?.nodes.find((node) => node.nodeId === post.nodeId)?.position ?? []
   );
+  const failedPositionByActor = new Map(
+    (squad.tactics?.assignedPositions ?? [])
+      .filter((assignment) =>
+        state.pendingOutcomes.some(
+          (outcome) =>
+            outcome.kind === "failed" &&
+            outcome.identity.effectId.startsWith(`effect:stage13:${squad.squadId}:position:${assignment.actorId}:`) &&
+            observation.tick >= outcome.tick &&
+            observation.tick - outcome.tick <= TACTICAL_FAILED_POSITION_RETRY_TICKS
+        )
+      )
+      .map((assignment) => [assignment.actorId, `${assignment.position.x},${assignment.position.y}`])
+  );
   const recoveryPhase =
     nextState === "retreat" ||
     nextState === "recover" ||
@@ -76,8 +89,10 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
     nextState === "rally" ||
     nextState === "reserve";
   const retainedRetreatAssignments = input.holdRetreat
-    ? (squad.tactics?.assignedPositions ?? []).filter((assignment) =>
-        members.some((member) => member.actorId === assignment.actorId)
+    ? (squad.tactics?.assignedPositions ?? []).filter(
+        (assignment) =>
+          members.some((member) => member.actorId === assignment.actorId) &&
+          failedPositionByActor.get(assignment.actorId) !== `${assignment.position.x},${assignment.position.y}`
       )
     : [];
   const anchor = recoveryPhase
@@ -107,26 +122,13 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
               anchor,
               observation,
               targetFootprintRadiusTiles(visibleTarget, input.catalog),
-              new Map(
-                (squad.tactics?.assignedPositions ?? [])
-                  .filter((assignment) =>
-                    state.pendingOutcomes.some(
-                      (outcome) =>
-                        outcome.kind === "failed" &&
-                        outcome.identity.effectId.startsWith(
-                          `effect:stage13:${squad.squadId}:position:${assignment.actorId}:`
-                        ) &&
-                        observation.tick >= outcome.tick &&
-                        observation.tick - outcome.tick <= TACTICAL_FAILED_POSITION_RETRY_TICKS
-                    )
-                  )
-                  .map((assignment) => [assignment.actorId, `${assignment.position.x},${assignment.position.y}`])
-              )
+              failedPositionByActor
             )
           : formationPositions(
               postMembers.filter((actor) => !postedActorIds.has(actor.actorId)),
               anchor,
-              observation
+              observation,
+              failedPositionByActor
             ))
       ];
   const safeFiringActorIds = new Set(input.safeFiringPositions.map((assignment) => assignment.actorId));

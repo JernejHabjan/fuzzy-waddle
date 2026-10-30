@@ -154,6 +154,82 @@ describe("AiTacticsManager", () => {
     );
   });
 
+  it("replaces a failed slot even while holding a retreat", () => {
+    const guard = combatActor("guard", "self", 1, "ground", 1000, { damage: 100 });
+    const firstPosition = { x: 3, y: 0, z: 0 };
+    const retreatingSquad = {
+      ...squad("squad:attack", "attack", [guard.actorId]),
+      state: "retreat" as const,
+      tactics: {
+        taskForceId: "task-force:attack",
+        script: "protected_retreat" as const,
+        targetActorId: null,
+        targetScore: 0,
+        engagementRatioPermille: 0,
+        confidencePermille: 1000,
+        predictedFriendlyLossPermille: 0,
+        predictedEnemyLossPermille: 0,
+        lastObservedMemberCount: 1,
+        observedLossCount: 0,
+        lastTransitionTick: 80,
+        nextReconsiderTick: 200,
+        oscillationCount: 0,
+        orderSignature: null,
+        orderedActorIds: [],
+        assignedPositions: [{ actorId: guard.actorId, position: firstPosition }],
+        damageReservations: [],
+        protectedRouteNodeIds: [],
+        mobileReserveActorIds: [],
+        objectiveAlternatives: []
+      }
+    };
+    const current = fixtureState([retreatingSquad]);
+    const failedOutcome: AiBrainStateV1["pendingOutcomes"][number] = {
+      kind: "failed",
+      identity: {
+        matchId: "match:test" as never,
+        authorityEpoch: 1,
+        playerNumber: 1,
+        sequence: 1,
+        commandId: "command:failed-retreat-move" as never,
+        intentId: "intent:failed-retreat-move" as never,
+        effectId: "effect:stage13:squad:attack:position:guard:80" as never
+      },
+      tick: 80,
+      reason: "application_failed"
+    };
+    const baseObservation = observation([guard], 100);
+    const cells = [
+      { x: -3, y: 0 },
+      { x: 0, y: 0 },
+      { x: 0, y: 3 },
+      { x: 0, y: -3 },
+      { x: 3, y: 0 }
+    ].map(({ x, y }) => ({
+      tileKey: `${x},${y}`,
+      position: { x, y, z: 0 },
+      groundPassable: true,
+      waterPassable: false,
+      elevation: 0,
+      observedBlocked: false
+    }));
+    const proposal = manager.propose(
+      {
+        ...baseObservation,
+        map: { ...(baseObservation.map ?? {}), constructionCells: cells }
+      },
+      { ...current, pendingOutcomes: [failedOutcome] }
+    );
+
+    expect(proposal.statePatch?.squadUpdates?.[0]?.state).toBe("retreat");
+    expect(proposal.statePatch?.squadUpdates?.[0]?.tactics?.assignedPositions).toContainEqual(
+      expect.objectContaining({ actorId: guard.actorId, position: { x: -3, y: 0, z: 0 } })
+    );
+    expect(proposal.statePatch?.squadUpdates?.[0]?.tactics?.assignedPositions).not.toContainEqual(
+      expect.objectContaining({ actorId: guard.actorId, position: firstPosition })
+    );
+  });
+
   it("releases an armed gatherer from a tactical squad instead of interrupting its economy work", () => {
     const workerCatalog: AiCapabilityCatalogV1 = {
       schemaVersion: 1,
