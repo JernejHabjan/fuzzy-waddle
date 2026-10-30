@@ -122,7 +122,7 @@ it("transfers a gatherer actor lease to accepted construction but retains the pr
   expect(result.nextState.reservations.map((reservation) => reservation.claimId)).toContain(oldEffectClaimId);
 });
 
-it("transfers an applied wood-gather lease to food-field labor when the worker is unloaded", () => {
+it("transfers an applied wood-gather lease to an empty Field so crop growth can resume", () => {
   const f = createAiProductionPolicyFixture();
   const workerId = "worker-0";
   const actorClaimId = "claim:old-gatherer" as const;
@@ -152,7 +152,7 @@ it("transfers an applied wood-gather lease to food-field labor when the worker i
           observedTick: f.observation.tick,
           value: {
             resourceType: ResourceType.Food,
-            available: { status: "known" as const, value: 30, observedTick: f.observation.tick },
+            available: { status: "known" as const, value: 0, observedTick: f.observation.tick },
             carried: unknownAiValue,
             growthReadyTick: unknownAiValue,
             serviceCapacity: { status: "known" as const, value: 1, observedTick: f.observation.tick }
@@ -207,7 +207,13 @@ it("transfers an applied wood-gather lease to food-field labor when the worker i
   };
   const manager = {
     managerId: "food-retask-test",
-    propose: () => ({ managerId: "food-retask-test", lane: intent.lane, evaluated: true, intents: [intent], reasons: [] })
+    propose: () => ({
+      managerId: "food-retask-test",
+      lane: intent.lane,
+      evaluated: true,
+      intents: [intent],
+      reasons: []
+    })
   };
 
   const result = new PureAiBrain(f.profile, [manager]).step(observation, previous, []);
@@ -215,4 +221,17 @@ it("transfers an applied wood-gather lease to food-field labor when the worker i
   expect(result.acceptedIntents).toContainEqual(intent);
   expect(result.nextState.reservations.map((reservation) => reservation.claimId)).not.toContain(actorClaimId);
   expect(result.nextState.reservations.map((reservation) => reservation.claimId)).toContain(oldEffectClaimId);
+
+  const depletedFiniteSourceObservation = {
+    ...observation,
+    actors: observation.actors.map((actor) =>
+      actor.actorId === "field-source" ? { ...actor, objectName: ObjectNames.CropsWheat } : actor
+    )
+  };
+  const finiteSourceResult = new PureAiBrain(f.profile, [manager]).step(depletedFiniteSourceObservation, previous, []);
+
+  expect(finiteSourceResult.acceptedIntents).not.toContainEqual(intent);
+  expect(finiteSourceResult.decisions).toContainEqual(
+    expect.objectContaining({ intent, outcome: "rejected", reason: "claim_conflict" })
+  );
 });

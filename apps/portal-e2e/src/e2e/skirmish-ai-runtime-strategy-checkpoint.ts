@@ -24,8 +24,7 @@ export async function captureRuntimeStrategyCheckpoint(
       const militaryNames = new Set(
         catalog.entries
           .filter(
-            (entry) =>
-              entry.gathers.length === 0 && entry.targetDomains.length > 0 && entry.movementDomains.length > 0
+            (entry) => entry.gathers.length === 0 && entry.targetDomains.length > 0 && entry.movementDomains.length > 0
           )
           .map((entry) => entry.sourceObjectName)
       );
@@ -83,13 +82,49 @@ export async function captureRuntimeStrategyCheckpoint(
               `${right.objectName}:${JSON.stringify(right.position)}`
             )
           ),
-        decisionFacts: (parts.controller.getBrainDebugSnapshot()?.decisions ?? []).map((decision) => ({
-          outcome: decision.outcome,
-          reason: decision.reason,
-          kind: decision.intent.kind,
-          reasonCode: decision.intent.reasonCode,
-          objectName: "objectName" in decision.intent ? decision.intent.objectName : null
-        })),
+        decisionFacts: (parts.controller.getBrainDebugSnapshot()?.decisions ?? []).map((decision) => {
+          const foodLabor =
+            decision.intent.kind === "assign_gatherers" && decision.intent.reasonCode.startsWith("food_labor:")
+              ? decision.intent
+              : undefined;
+          const worker = foodLabor
+            ? observation.actors.find((actor) => actor.actorId === foodLabor.actorIds[0])
+            : undefined;
+          const source = foodLabor
+            ? observation.actors.find((actor) => actor.actorId === foodLabor.sourceActorId)
+            : undefined;
+          const sourceAvailability =
+            source?.resourceState.status === "known" ? source.resourceState.value.available : undefined;
+          return {
+            outcome: decision.outcome,
+            reason: decision.reason,
+            detail: "detail" in decision ? (decision.detail ?? null) : null,
+            kind: decision.intent.kind,
+            reasonCode: decision.intent.reasonCode,
+            objectName: "objectName" in decision.intent ? decision.intent.objectName : null,
+            ...(foodLabor && worker
+              ? {
+                  foodLaborRetask: {
+                    workerId: worker.actorId,
+                    activeOrderType:
+                      worker.activeOrder?.status === "known" ? (worker.activeOrder.value?.orderType ?? null) : null,
+                    activeTargetActorId:
+                      worker.activeOrder?.status === "known" ? (worker.activeOrder.value?.targetActorId ?? null) : null,
+                    pendingOrderType:
+                      worker.pendingOrder?.status === "known" ? (worker.pendingOrder.value?.orderType ?? null) : null,
+                    pendingTargetActorId:
+                      worker.pendingOrder?.status === "known"
+                        ? (worker.pendingOrder.value?.targetActorId ?? null)
+                        : null,
+                    carriedResourceAmount: worker.carriedResourceAmount ?? null,
+                    resourceTransferInFlight: worker.resourceTransferInFlight ?? false,
+                    sourceAvailabilityStatus: sourceAvailability?.status ?? "unknown",
+                    sourceAvailable: sourceAvailability?.status === "known" ? sourceAvailability.value : null
+                  }
+                }
+              : {})
+          };
+        }),
         demands: state.economyProduction.demands
           .map((demand) => ({
             demandId: demand.demandId,

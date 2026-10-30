@@ -1,4 +1,4 @@
-import { OrderType, type ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { ObjectNames, OrderType, type ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
 import type {
   AiIntentClaimV1,
@@ -114,8 +114,9 @@ function canRetaskGatherer(
       target.resourceState.status !== "known" ||
       target.resourceState.value.resourceType !== intent.resourceType ||
       target.resourceState.value.available.status !== "known" ||
-      target.resourceState.value.available.value <= 0
-    ) return false;
+      (target.resourceState.value.available.value <= 0 && target.objectName !== ObjectNames.Field)
+    )
+      return false;
   }
   const actorReservations = state.reservations.filter(
     (reservation) => reservation.subjectKey === `actor:${claim.actorId}`

@@ -133,9 +133,21 @@ export interface RuntimeCheckpointV1 {
   readonly decisionFacts: readonly {
     readonly outcome: string;
     readonly reason: string;
+    readonly detail?: string | null;
     readonly kind: string;
     readonly reasonCode: string;
     readonly objectName: string | null;
+    readonly foodLaborRetask?: {
+      readonly workerId: string;
+      readonly activeOrderType: string | null;
+      readonly activeTargetActorId: string | null;
+      readonly pendingOrderType: string | null;
+      readonly pendingTargetActorId: string | null;
+      readonly carriedResourceAmount: number | null;
+      readonly resourceTransferInFlight: boolean;
+      readonly sourceAvailabilityStatus: string;
+      readonly sourceAvailable: number | null;
+    };
   }[];
   readonly demands: readonly {
     readonly demandId: string;
