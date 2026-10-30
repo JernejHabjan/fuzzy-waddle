@@ -149,7 +149,7 @@ function appendNeutralClaim(context: AiSkirmishProposalContext, allowNewClaim = 
       members.forEach((actor) => context.primaryOwnedActors.add(actor.actorId));
     return;
   }
-  if (!allowNewClaim || (knownOpponent && context.combat.length <= 2)) return;
+  if (!allowNewClaim || context.combat.length <= 1 || (knownOpponent && context.combat.length <= 2)) return;
   const candidates = context.observation.actors
     .filter((actor) => actor.relation === "neutral" && actor.visibility === "visible" && position(actor) !== undefined)
     .filter(
@@ -237,6 +237,8 @@ function appendFrontierScout(context: AiSkirmishProposalContext): void {
     if (activeScout) recallScout(context, activeScout);
     return;
   }
+  // Keep the only combat unit near the base until a second unit can cover the frontier return path.
+  if (!activeScout && combat.length <= 1) return;
   if (!currentQuestion || !combat[0] || !observation.map?.accessGraph) return;
   const exposedVisibleCore = context.visibleEnemies.some(
     (actor) => actor.mainBuilding?.status === "known" && actor.mainBuilding.value

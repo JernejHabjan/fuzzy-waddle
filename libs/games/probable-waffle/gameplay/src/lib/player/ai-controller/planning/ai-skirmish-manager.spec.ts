@@ -72,7 +72,10 @@ describe("AiSkirmishManager", () => {
       archetypeId: "balanced"
     });
     const defended = { ...state, strategy: { ...state.strategy, stance: "defend" as const, objectiveId: "gone" } };
-    const proposal = manager.propose(observation(2000, [unit("guard", homeNode, 0)]), defended);
+    const proposal = manager.propose(
+      observation(2000, [unit("guard", homeNode, 0), unit("reserve", homeNode, 1)]),
+      defended
+    );
     expect(proposal.statePatch?.strategy).toMatchObject({ stance: "stabilize", objectiveId: null, goalId: null });
     expect(proposal.intents.some((intent) => intent.kind === "scout")).toBe(true);
   });
@@ -106,7 +109,10 @@ describe("AiSkirmishManager", () => {
       tick: 0,
       archetypeId: "balanced"
     });
-    const proposal = manager.propose(observation(20, [unit("guard-1", homeNode, 0)]), state);
+    const proposal = manager.propose(
+      observation(20, [unit("guard-1", homeNode, 0), unit("guard-2", homeNode, 1)]),
+      state
+    );
 
     expect(proposal.intents).toContainEqual(
       expect.objectContaining({ kind: "scout", logicalPosition: { x: 1, y: 0, z: 0 } })
@@ -117,6 +123,20 @@ describe("AiSkirmishManager", () => {
     expect(proposal.evaluatedLanes).toContain("scouting");
   });
 
+  it("keeps the last combat unit near home instead of sending it on a frontier trip", () => {
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const proposal = manager.propose(observation(20, [unit("last-guard", homeNode, 0)]), state);
+
+    expect(proposal.intents.some((intent) => intent.kind === "scout")).toBe(false);
+    expect(proposal.statePatch?.squads?.some((squad) => squad.role === "scout")).toBe(false);
+  });
+
   it("advances an existing scout to the next uncovered frontier and closes the prior question", () => {
     const state = createAiBrainStateV1({
       playerNumber: 1,
@@ -125,10 +145,18 @@ describe("AiSkirmishManager", () => {
       tick: 0,
       archetypeId: "balanced"
     });
-    const first = manager.propose(observation(20, [unit("guard-1", homeNode, 0)]), state);
+    const first = manager.propose(
+      observation(20, [unit("guard-1", homeNode, 0), unit("guard-2", homeNode, 1)]),
+      state
+    );
     const priorScout = first.statePatch!.squads!.find((squad) => squad.role === "scout")!;
     const continued = manager.propose(
-      observation(40, [unit("guard-1", enemyNode, 1)], [enemyNode, homeNode], [enemyNode]),
+      observation(
+        40,
+        [unit("guard-1", enemyNode, 1), unit("guard-2", homeNode, 0)],
+        [enemyNode, homeNode],
+        [enemyNode]
+      ),
       {
         ...state,
         knowledge: first.statePatch!.knowledge!,
