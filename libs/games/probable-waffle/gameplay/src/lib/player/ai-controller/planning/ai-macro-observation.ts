@@ -92,7 +92,7 @@ export function isAvailableBuilder(actor: AiObservationV1["actors"][number]): bo
   )
     return false;
   const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value?.orderType : undefined;
-  return order !== OrderType.Build && order !== OrderType.ReturnResources;
+  return order !== OrderType.Build && order !== OrderType.ReturnResources && order !== OrderType.Repair;
 }
 
 export function hasAssignedBuilder(observation: AiObservationV1, siteActorId: string): boolean {

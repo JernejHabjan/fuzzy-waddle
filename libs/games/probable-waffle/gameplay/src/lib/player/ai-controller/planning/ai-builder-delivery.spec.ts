@@ -36,6 +36,19 @@ describe("AI builder delivery ownership", () => {
     ).toBe(false);
   });
 
+  it("keeps a repairing worker assigned to repair instead of borrowing it for construction", () => {
+    expect(
+      isAvailableBuilder({
+        ...createAiTestOwnedActor("repairer"),
+        activeOrder: {
+          status: "known",
+          value: { orderType: OrderType.Repair, targetActorId: "damaged-building" },
+          observedTick: 200
+        }
+      })
+    ).toBe(false);
+  });
+
   it.each([1, 5, 10])("preserves %i carried resources while a gather cycle awaits delivery", (amount) => {
     expect(isAvailableBuilder(carryingWorker(amount))).toBe(false);
   });

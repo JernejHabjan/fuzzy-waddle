@@ -190,6 +190,18 @@ describe("AiResourceServiceManager", () => {
     expect(proposal(world(20, [actor("near-mill", ObjectNames.WorkMill, 19, 7)])).intents).toHaveLength(0);
   });
 
+  it("does not reserve a service footprint occupied by a currently observed actor", () => {
+    const baseline = proposal(world(20)).intents[0];
+    expect(baseline?.kind).toBe("construct");
+    if (baseline?.kind !== "construct") throw new Error("fixture service proposal missing");
+
+    const occupiedSite = actor("occupant", ObjectNames.TivaraWorker, baseline.logicalPosition.x, baseline.logicalPosition.y);
+    const next = proposal(world(20, [occupiedSite])).intents[0];
+
+    expect(next).toEqual(expect.objectContaining({ kind: "construct", objectName: ObjectNames.WorkMill }));
+    if (next?.kind === "construct") expect(next.logicalPosition).not.toEqual(baseline.logicalPosition);
+  });
+
   it("ECO-02: permits a useful second WorkMill for a remote forest but declines an already-served control", () => {
     const firstMill = actor("first-mill", ObjectNames.WorkMill, 10, 6);
     const subject = world(30, [firstMill, tree("forest-a", 10)]);

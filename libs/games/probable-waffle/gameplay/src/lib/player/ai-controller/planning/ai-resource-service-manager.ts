@@ -46,6 +46,12 @@ function selectSite(
 ): Vector3Simple | null {
   const cells = observation.map?.constructionCells ?? [];
   const byKey = new Map(cells.map((cell) => [cell.tileKey, cell]));
+  const occupied = new Set(
+    observation.actors.flatMap((actor) => {
+      const actorPosition = actor.visibility !== "last_seen" ? position(actor) : null;
+      return actorPosition ? [`${actorPosition.x},${actorPosition.y}`] : [];
+    })
+  );
   const candidates = cells
     .filter((cell) => {
       const travel = distance(cell.position, sourcePosition);
@@ -55,7 +61,12 @@ function selectSite(
       for (let y = -footprintRadius; y <= footprintRadius; y += 1) {
         for (let x = -footprintRadius; x <= footprintRadius; x += 1) {
           const footprint = byKey.get(`${cell.position.x + x},${cell.position.y + y}`);
-          if (!footprint?.groundPassable || footprint.observedBlocked || !positionSafe(footprint.position)) return false;
+          if (
+            !footprint?.groundPassable ||
+            footprint.observedBlocked ||
+            occupied.has(footprint.tileKey) ||
+            !positionSafe(footprint.position)
+          ) return false;
         }
       }
       return true;
