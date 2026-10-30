@@ -38,7 +38,18 @@ function fixture(resource: ResourceType | null, fieldCount = 1, targetObjectName
   } satisfies AiObservedActorV1;
   const fields = Array.from({ length: fieldCount }, (_, index) => ({
     ...createAiTestOwnedActor(index === 0 ? "field" : `field-${index + 1}`),
-    objectName: ObjectNames.Field
+    objectName: ObjectNames.Field,
+    resourceState: {
+      status: "known" as const,
+      observedTick: observation.tick,
+      value: {
+        resourceType: ResourceType.Food,
+        available: { status: "known" as const, value: 100, observedTick: observation.tick },
+        carried: unknownAiValue,
+        growthReadyTick: unknownAiValue,
+        serviceCapacity: { status: "known" as const, value: 1, observedTick: observation.tick }
+      }
+    }
   }));
   const drain = { ...createAiTestOwnedActor("dropoff"), objectName: targetObjectName };
   const self = [returned, woodWorker, ...fields, drain];

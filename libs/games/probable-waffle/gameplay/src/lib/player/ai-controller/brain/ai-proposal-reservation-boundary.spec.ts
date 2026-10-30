@@ -1,8 +1,9 @@
 import type { AiReservationV1 } from "../contracts/ai-dependency-contracts";
 import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import { aiDeadline } from "../contracts/ai-core-types";
-import { ObjectNames, OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { createAiProductionPolicyFixture } from "../testing/ai-production-policy-fixture";
+import { createAiTestOwnedActor, unknownAiValue } from "../testing/ai-test-fixtures";
 import { AiMacroManager } from "../planning/ai-macro-manager";
 import { PureAiBrain } from "./ai-brain";
 
@@ -117,6 +118,101 @@ it("transfers a gatherer actor lease to accepted construction but retains the pr
 
   expect(result.acceptedIntents).toContainEqual(intent);
   expect(result.nextState.reservations.map((reservation) => reservation.claimId)).toContain("claim:new-builder");
+  expect(result.nextState.reservations.map((reservation) => reservation.claimId)).not.toContain(actorClaimId);
+  expect(result.nextState.reservations.map((reservation) => reservation.claimId)).toContain(oldEffectClaimId);
+});
+
+it("transfers an applied wood-gather lease to food-field labor when the worker is unloaded", () => {
+  const f = createAiProductionPolicyFixture();
+  const workerId = "worker-0";
+  const actorClaimId = "claim:old-gatherer" as const;
+  const oldEffectClaimId = "claim:old-gatherer:effect" as const;
+  const observation = {
+    ...f.observation,
+    actors: [
+      ...f.observation.actors.map((actor) =>
+        actor.actorId === workerId
+          ? {
+              ...actor,
+              activeOrder: {
+                status: "known" as const,
+                observedTick: f.observation.tick,
+                value: { orderType: OrderType.Gather, targetActorId: "wood-source" }
+              },
+              carriedResourceAmount: 0,
+              resourceTransferInFlight: false
+            }
+          : actor
+      ),
+      {
+        ...createAiTestOwnedActor("field-source"),
+        objectName: ObjectNames.Field,
+        resourceState: {
+          status: "known" as const,
+          observedTick: f.observation.tick,
+          value: {
+            resourceType: ResourceType.Food,
+            available: { status: "known" as const, value: 30, observedTick: f.observation.tick },
+            carried: unknownAiValue,
+            growthReadyTick: unknownAiValue,
+            serviceCapacity: { status: "known" as const, value: 1, observedTick: f.observation.tick }
+          }
+        }
+      }
+    ]
+  };
+  const intent: AiIntentV1 = {
+    kind: "assign_gatherers",
+    intentId: "intent:retask-food-labor",
+    effectId: "effect:retask-food-labor",
+    planId: "plan:opening",
+    demandId: "demand:economy:sustainable-food",
+    lane: "essential_economy",
+    proposedTick: observation.tick,
+    urgencyClass: 1,
+    utility: 900,
+    preconditions: [
+      { kind: "actor_exists", actorId: workerId },
+      { kind: "actor_exists", actorId: "field-source" }
+    ],
+    claims: [
+      { claimId: "claim:new-food-labor", kind: "actor", actorId: workerId },
+      { claimId: "claim:new-food-effect", kind: "effect", effectId: "effect:retask-food-labor" }
+    ],
+    reasonCode: "food_labor:source=field-source",
+    actorIds: [workerId],
+    resourceType: ResourceType.Food,
+    sourceActorId: "field-source"
+  };
+  const previous = {
+    ...f.state,
+    reservations: [
+      {
+        claimId: actorClaimId,
+        subjectKey: `actor:${workerId}`,
+        ownerPlanId: "plan:opening",
+        state: { kind: "applied_spending" as const, appliedTick: observation.tick - 1 },
+        prerequisites: [],
+        createdTick: observation.tick - 10
+      },
+      {
+        claimId: oldEffectClaimId,
+        subjectKey: "effect:effect:old-gatherer",
+        ownerPlanId: "plan:opening",
+        state: { kind: "applied_spending" as const, appliedTick: observation.tick - 1 },
+        prerequisites: [],
+        createdTick: observation.tick - 10
+      }
+    ] satisfies AiReservationV1[]
+  };
+  const manager = {
+    managerId: "food-retask-test",
+    propose: () => ({ managerId: "food-retask-test", lane: intent.lane, evaluated: true, intents: [intent], reasons: [] })
+  };
+
+  const result = new PureAiBrain(f.profile, [manager]).step(observation, previous, []);
+
+  expect(result.acceptedIntents).toContainEqual(intent);
   expect(result.nextState.reservations.map((reservation) => reservation.claimId)).not.toContain(actorClaimId);
   expect(result.nextState.reservations.map((reservation) => reservation.claimId)).toContain(oldEffectClaimId);
 });

@@ -72,10 +72,7 @@ describe("AiSkirmishManager", () => {
       archetypeId: "balanced"
     });
     const defended = { ...state, strategy: { ...state.strategy, stance: "defend" as const, objectiveId: "gone" } };
-    const proposal = manager.propose(
-      observation(2000, [unit("guard", homeNode, 0), unit("reserve", homeNode, 1)]),
-      defended
-    );
+    const proposal = manager.propose(observation(2000, [unit("guard", homeNode, 0), unit("reserve", homeNode, 1)]), defended);
     expect(proposal.statePatch?.strategy).toMatchObject({ stance: "stabilize", objectiveId: null, goalId: null });
     expect(proposal.intents.some((intent) => intent.kind === "scout")).toBe(true);
   });
@@ -151,12 +148,7 @@ describe("AiSkirmishManager", () => {
     );
     const priorScout = first.statePatch!.squads!.find((squad) => squad.role === "scout")!;
     const continued = manager.propose(
-      observation(
-        40,
-        [unit("guard-1", enemyNode, 1), unit("guard-2", homeNode, 0)],
-        [enemyNode, homeNode],
-        [enemyNode]
-      ),
+      observation(40, [unit("guard-1", enemyNode, 1), unit("guard-2", homeNode, 0)], [enemyNode, homeNode], [enemyNode]),
       {
         ...state,
         knowledge: first.statePatch!.knowledge!,

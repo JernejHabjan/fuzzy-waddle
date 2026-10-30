@@ -2,7 +2,7 @@ import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
 import { aiDeadline, type AiAccessNodeId } from "../contracts/ai-core-types";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiBrainStateV1, AiSkirmishStateV1, AiThreatIncidentV1 } from "../contracts/ai-brain-state-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
 import type { AiSkirmishProposalContext } from "./ai-skirmish-proposal-context";
 import { observedAiEconomyThreats } from "./ai-economy-policy";
 import {

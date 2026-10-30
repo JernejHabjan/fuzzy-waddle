@@ -36,23 +36,27 @@ function neutral(actorId = "resource", accessNode = enemyNode, x = 22): AiObserv
   };
 }
 
+function guards() {
+  return [unit("guard", homeNode, 0), unit("z-reserve", homeNode, 1)];
+}
+
 describe("AI scouting admission", () => {
   it("retains an admitted neutral mission without reissuing or renewing it", () => {
     const initial = state();
-    const first = manager.propose(observation(20, [unit("guard", homeNode, 0), neutral()], []), initial);
+    const first = manager.propose(observation(20, [...guards(), neutral()], []), initial);
     const squads = first.statePatch?.squads;
     if (!squads?.length) throw new Error("fixture neutral mission missing");
-    const next = manager.propose(observation(40, [unit("guard", homeNode, 0), neutral()]), { ...initial, squads });
+    const next = manager.propose(observation(40, [...guards(), neutral()], []), { ...initial, squads });
     expect(next.intents).toEqual([]);
     expect(next.statePatch?.squads).toEqual(squads);
   });
 
   it("retires an expired neutral mission and does not recreate it on the next decision", () => {
     const initial = state();
-    const first = manager.propose(observation(20, [unit("guard", homeNode, 0), neutral()], []), initial);
+    const first = manager.propose(observation(20, [...guards(), neutral()], []), initial);
     const squads = first.statePatch?.squads;
     if (!squads?.length) throw new Error("fixture neutral mission missing");
-    const expired = manager.propose(observation(821, [unit("guard", homeNode, 0), neutral()], []), {
+    const expired = manager.propose(observation(821, [...guards(), neutral()], []), {
       ...initial,
       squads
     });
@@ -60,7 +64,7 @@ describe("AI scouting admission", () => {
     const retired = expired.statePatch?.squads;
     if (!retired) throw new Error("fixture retirement missing");
     expect(
-      manager.propose(observation(840, [unit("guard", homeNode, 0), neutral()], []), {
+      manager.propose(observation(840, [...guards(), neutral()], []), {
         ...initial,
         squads: retired
       }).intents
@@ -69,10 +73,10 @@ describe("AI scouting admission", () => {
 
   it("completes a neutral information mission from observed coverage and releases its pawn to frontier scouting", () => {
     const initial = state();
-    const first = manager.propose(observation(20, [unit("guard", homeNode, 0), neutral()], []), initial);
+    const first = manager.propose(observation(20, [...guards(), neutral()], []), initial);
     const squads = first.statePatch?.squads;
     if (!squads?.length) throw new Error("fixture neutral mission missing");
-    const next = manager.propose(observation(40, [unit("guard", enemyNode, 1), neutral()], [homeNode], [enemyNode]), {
+    const next = manager.propose(observation(40, [unit("guard", enemyNode, 1), unit("z-reserve", homeNode, 0), neutral()], [homeNode], [enemyNode]), {
       ...initial,
       squads
     });
@@ -82,7 +86,7 @@ describe("AI scouting admission", () => {
         state: "completed"
       })
     );
-    expect(next.intents).toContainEqual(expect.objectContaining({ kind: "scout", actorIds: ["guard"] }));
+    expect(next.intents).toContainEqual(expect.objectContaining({ kind: "scout", actorIds: ["z-reserve"] }));
   });
 
   it("does not move onto a visible resource while its access is unknown", () => {
@@ -90,7 +94,7 @@ describe("AI scouting admission", () => {
       observation(
         20,
         [
-          unit("guard", homeNode, 0),
+          ...guards(),
           {
             ...neutral(),
             accessNodeId: unknownAiValue
@@ -105,7 +109,7 @@ describe("AI scouting admission", () => {
   });
 
   it("visits the reachable region representative rather than the occupied resource tile", () => {
-    const proposal = manager.propose(observation(20, [unit("guard", homeNode, 0), neutral()], []), state());
+    const proposal = manager.propose(observation(20, [...guards(), neutral()], []), state());
     expect(proposal.intents).toContainEqual(
       expect.objectContaining({
         kind: "move",
@@ -117,7 +121,7 @@ describe("AI scouting admission", () => {
 
   it("selects neutral scout goals by stable visible position instead of runtime actor ID", () => {
     const proposal = manager.propose(observation(20, [
-      unit("guard", homeNode, 0),
+      ...guards(),
       neutral("a-runtime-id", enemyNode, 22),
       neutral("z-runtime-id", homeNode, 11)
     ], []), state());
@@ -145,14 +149,15 @@ describe("AI scouting admission", () => {
         }
       }
     ]) {
-      expect(manager.propose(observation(20, [unit("guard", homeNode, 0), actor], []), state()).intents).toEqual([]);
+      expect(manager.propose(observation(20, [...guards(), actor], []), state()).intents).toEqual([]);
     }
   });
 
   it("does not assign one pawn to both neutral and frontier missions", () => {
-    const proposal = manager.propose(observation(20, [unit("guard", homeNode, 0), neutral()]), state());
-    expect(proposal.statePatch?.squads).toHaveLength(1);
-    expect(proposal.intents).toHaveLength(1);
+    const proposal = manager.propose(observation(20, [...guards(), neutral()]), state());
+    const assignments = proposal.statePatch?.squads?.flatMap((squad) => squad.actorIds) ?? [];
+    expect(new Set(assignments).size).toBe(assignments.length);
+    expect(proposal.statePatch?.squads).toHaveLength(2);
   });
 
   it("waits for a ready access graph before assigning frontier scouts", () => {
@@ -209,7 +214,7 @@ describe("AI scouting admission", () => {
   });
 
   it("gives frontier scouts actor claims so arbitration cannot also assign another mission", () => {
-    const proposal = manager.propose(observation(20, [unit("guard", homeNode, 0)]), state());
+    const proposal = manager.propose(observation(20, guards()), state());
     expect(proposal.intents).toContainEqual(
       expect.objectContaining({ kind: "scout", claims: [expect.objectContaining({ kind: "actor", actorId: "guard" })] })
     );

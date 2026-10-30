@@ -38,6 +38,13 @@ function nextUnstaffedFoodSource(
   }).length;
   const unstaffedFoodSources = readyFoodSources
     .filter(aiEconomySiteSafety(observation).actorSafe)
+    .filter(
+      (source) =>
+        source.resourceState.status === "known" &&
+        source.resourceState.value.resourceType === ResourceType.Food &&
+        source.resourceState.value.available.status === "known" &&
+        source.resourceState.value.available.value > 0
+    )
     .sort(compareAiActorsByVisibleGeometry)
     .filter((source) => !staffedFoodSourceIds.has(source.actorId));
   return unstaffedFoodSources[returningWorkerCount];
@@ -139,8 +146,10 @@ export function proposeAiFieldLabor(
     demandId: "demand:economy:sustainable-food" as AiDemandV1["demandId"],
     lane: "essential_economy",
     proposedTick: observation.tick,
-    urgencyClass: 1,
-    utility: 900,
+    // Keep at least one worker on renewable food before general gathering
+    // claims the same unloaded actor for wood. The arbiter sorts urgency first.
+    urgencyClass: 0,
+    utility: 985,
     preconditions: [
       { kind: "actor_exists", actorId: worker.actorId },
       { kind: "actor_exists", actorId: unstaffedFoodSource.actorId }

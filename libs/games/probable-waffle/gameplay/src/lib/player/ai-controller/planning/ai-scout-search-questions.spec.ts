@@ -24,7 +24,7 @@ const access = buildAiAccessGraphV1({
 });
 
 function world(tick: number, firstSeen: boolean) {
-  const base = observation(tick, [unit("scout", homeNode, 0)], [], []);
+  const base = observation(tick, [unit("scout", homeNode, 0), unit("z-reserve", homeNode, 0)], [], []);
   return {
     ...base,
     map: {

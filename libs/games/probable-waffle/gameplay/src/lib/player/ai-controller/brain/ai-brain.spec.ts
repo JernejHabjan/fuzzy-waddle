@@ -171,7 +171,7 @@ describe("PureAiBrain", () => {
       tick: 0,
       archetypeId: "balanced"
     });
-    const input = scoutObservation(20, [scoutUnit("scout", homeNode, 0)]);
+    const input = scoutObservation(20, [scoutUnit("scout", homeNode, 0), scoutUnit("z-reserve", homeNode, 0)]);
     const brain = new PureAiBrain(profile, [new AiSkirmishManager(profile, () => scoutCatalog)]);
     const first = brain.step(input, state, []);
     const paired = brain.step(structuredClone(input), structuredClone(state), []);
@@ -181,6 +181,7 @@ describe("PureAiBrain", () => {
     const revealed = brain.step(
       scoutObservation(20, [
         scoutUnit("scout", homeNode, 0),
+        scoutUnit("z-reserve", homeNode, 0),
         { ...scoutUnit("enemy", enemyNode, 22), owner: 2, relation: "enemy", visibility: "visible" }
       ]),
       state,

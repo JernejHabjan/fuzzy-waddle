@@ -237,7 +237,7 @@ function appendFrontierScout(context: AiSkirmishProposalContext): void {
     if (activeScout) recallScout(context, activeScout);
     return;
   }
-  // Keep the only combat unit near the base until a second unit can cover the frontier return path.
+  // Keep one defender home until another combat unit can cover it during a frontier trip.
   if (!activeScout && combat.length <= 1) return;
   if (!currentQuestion || !combat[0] || !observation.map?.accessGraph) return;
   const exposedVisibleCore = context.visibleEnemies.some(

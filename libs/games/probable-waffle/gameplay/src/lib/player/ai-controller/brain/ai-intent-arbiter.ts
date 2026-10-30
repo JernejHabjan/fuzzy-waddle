@@ -11,6 +11,7 @@ import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
 import { aiSpendingBudgetConflict, type AiSpendingBudget } from "./ai-spending-budget";
 import { aiIslandResourceReserve } from "./ai-island-resource-reserve";
 import { canRenewAiSquadActorClaim } from "./ai-squad-actor-claims";
+import { isSafeAiGathererRetask } from "../planning/ai-gatherer-retask";
 
 /** One deterministic admission pass across proposals from all managers. */
 export interface AiIntentArbitrationResult {
@@ -83,29 +84,39 @@ function preconditionSatisfied(
   }
 }
 
-/** A worker's applied gather lease may be replaced by construction when the live order confirms it is safe to retask. */
-function canRetaskGathererForConstruction(
+/** A worker's applied gather lease may transfer to safe construction or a new gathering target. */
+function canRetaskGatherer(
   intent: AiIntentV1,
   claim: AiIntentClaimV1,
   state: AiBrainStateV1,
   observation: AiObservationV1
 ): boolean {
-  if (intent.kind !== "construct" || claim.kind !== "actor") return false;
+  if ((intent.kind !== "construct" && intent.kind !== "assign_gatherers") || claim.kind !== "actor") return false;
   const actor = observation.actors.find(
     (candidate) =>
       candidate.actorId === claim.actorId && candidate.relation === "self" && candidate.visibility === "owned"
   );
   if (
-    actor?.activeOrder?.status !== "known" ||
-    actor.activeOrder.value?.orderType !== OrderType.Gather ||
-    actor.resourceTransferInFlight ||
-    (actor.carriedResourceAmount ?? 0) > 0 ||
-    (actor.pendingOrder?.status === "known" &&
-      actor.pendingOrder.value !== null &&
-      (actor.pendingOrder.value.orderType !== OrderType.Gather ||
-        actor.pendingOrder.value.targetActorId !== actor.activeOrder.value.targetActorId))
+    !actor ||
+    !isSafeAiGathererRetask(actor) ||
+    actor.activeOrder?.status !== "known" ||
+    actor.activeOrder.value?.orderType !== OrderType.Gather
   )
     return false;
+  if (intent.kind === "assign_gatherers") {
+    const target = observation.actors.find((candidate) => candidate.actorId === intent.sourceActorId);
+    if (
+      !intent.actorIds.includes(claim.actorId) ||
+      actor.activeOrder.value.targetActorId === intent.sourceActorId ||
+      !target ||
+      target.relation === "enemy" ||
+      target.visibility === "last_seen" ||
+      target.resourceState.status !== "known" ||
+      target.resourceState.value.resourceType !== intent.resourceType ||
+      target.resourceState.value.available.status !== "known" ||
+      target.resourceState.value.available.value <= 0
+    ) return false;
+  }
   const actorReservations = state.reservations.filter(
     (reservation) => reservation.subjectKey === `actor:${claim.actorId}`
   );
@@ -227,7 +238,7 @@ export function arbitrateAiIntents(
           claimedThisStep.has(claim.claimId) ||
           ((existingClaims.has(aiClaimKey(claim)) || existingClaims.has(claim.claimId)) &&
             !canRenewAiSquadActorClaim(intent, claim, state, observation) &&
-            !canRetaskGathererForConstruction(intent, claim, state, observation)))
+            !canRetaskGatherer(intent, claim, state, observation)))
     );
     if (exclusiveConflict) {
       decisions.push({ outcome: "rejected", intent, reason: "claim_conflict", detail: aiClaimKey(exclusiveConflict) });

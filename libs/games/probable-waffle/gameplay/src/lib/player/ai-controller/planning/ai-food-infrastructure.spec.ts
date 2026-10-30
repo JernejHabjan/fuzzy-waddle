@@ -9,7 +9,7 @@ import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
-import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
+import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "../testing/ai-test-fixtures";
 import { buildAiAccessGraphV1 } from "./ai-access-graph-v1";
 import { AiMacroManager } from "./ai-macro-manager";
 
@@ -309,7 +309,21 @@ describe("AI food infrastructure", () => {
   });
 
   it("staffs an existing Field before opening another Field construction", () => {
-    const field = { ...createAiTestOwnedActor("field-ready"), objectName: ObjectNames.Field };
+    const field = {
+      ...createAiTestOwnedActor("field-ready"),
+      objectName: ObjectNames.Field,
+      resourceState: {
+        status: "known" as const,
+        observedTick: 200,
+        value: {
+          resourceType: ResourceType.Food,
+          available: { status: "known" as const, value: 100, observedTick: 200 },
+          carried: unknownAiValue,
+          growthReadyTick: unknownAiValue,
+          serviceCapacity: { status: "known" as const, value: 1, observedTick: 200 }
+        }
+      }
+    };
     const proposal = new AiMacroManager(() => catalog).propose(
       { ...observation(1), actors: [...observation(1).actors, field] },
       state()

@@ -18,6 +18,7 @@ import {
 import { factionOpenings, OPENING_SUPPLY_BUFFER } from "./ai-opening-catalog";
 import { calculateAiHousingDemand } from "./ai-housing-demand";
 import { canAffordAiEconomyCost } from "./ai-economy-policy";
+import { isSafeAiGathererRetask } from "./ai-gatherer-retask";
 
 /** Two workers unlock renewable food without exhausting the common 200-food start. */
 const MINIMUM_OPENING_WORKERS = 2;
@@ -228,6 +229,19 @@ export function proposeAiOpening(observation: AiObservationV1, state: AiBrainSta
       .filter((subjectKey): subjectKey is string => subjectKey?.startsWith("actor:") === true)
       .map((subjectKey) => subjectKey.slice("actor:".length))
   );
+  // Applied gather leases remain durable until a replacement command is accepted. Expose only
+  // unloaded, currently gathering workers to proposal owners; the arbiter still authorizes the handoff.
+  for (const actorId of reservedActorIds) {
+    const actorReservations = state.reservations.filter((reservation) => reservation.subjectKey === `actor:${actorId}`);
+    const actor = observation.actors.find((candidate) => candidate.actorId === actorId);
+    if (
+      actor &&
+      actorReservations.length > 0 &&
+      actorReservations.every((reservation) => reservation.state.kind === "applied_spending") &&
+      isSafeAiGathererRetask(actor)
+    )
+      reservedActorIds.delete(actorId);
+  }
   let ordinal = 0;
   const checkpointStatus = captureOpeningStatus(observation, state, catalog);
   const activeCheckpointId = checkpointStatus.find(({ fulfilled }) => !fulfilled)?.checkpoint.id;
