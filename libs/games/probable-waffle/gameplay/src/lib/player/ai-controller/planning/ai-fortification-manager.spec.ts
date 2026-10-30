@@ -19,6 +19,98 @@ describe("AiFortificationManager", () => {
     expect(graph?.incrementalConnectivity).toBe("preserved");
     expect(graph?.nodes.filter((node) => node.kind === "gate_slot")).toHaveLength(1);
     expect(first.intents.every((intent) => intent.kind !== "construct" || intent.objectName !== null)).toBe(true);
+    expect(first.intents.find((intent) => intent.kind === "construct")?.urgencyClass).toBe(3);
+  });
+
+  it("keeps fortification at optional priority when a defensive profile has no live threat", () => {
+    const state = threatenedState();
+    const unpressured = {
+      ...state,
+      opening: { ...state.opening, archetypeId: "opening:1:safe" },
+      skirmish: { ...state.skirmish, incidents: [] }
+    };
+    const proposal = manager.propose(observation(), unpressured);
+
+    expect(proposal.intents.find((intent) => intent.kind === "construct")?.urgencyClass).toBe(4);
+  });
+
+  it("finds the same measured choke when the main-building anchor is one tile farther away", () => {
+    const state = threatenedState();
+    const shifted = {
+      ...state,
+      bases: state.bases.map((base) => ({ ...base, anchorPosition: { x: 4, y: 10, z: 0 } }))
+    };
+
+    const proposal = manager.propose(observation(), shifted);
+    const graph = proposal.statePatch?.fortifications?.[0]?.graph;
+
+    expect(graph?.terrainAnchorTileKeys).toEqual(["9,6", "9,14"]);
+    expect(graph?.wholeConnectivity).toBe("preserved");
+  });
+
+  it("moves the opening off a blocked center tile while keeping the measured choke", () => {
+    const source = observation();
+    const sourceMap = source.map;
+    if (!sourceMap) throw new Error("fortification_test_map_missing");
+    const blockedCenter = {
+      ...source,
+      map: {
+        ...sourceMap,
+        constructionCells: (sourceMap.constructionCells ?? []).map((cell) => {
+          const isAnchor = cell.tileKey === "9,10" || cell.tileKey === "9,18";
+          return { ...cell, groundPassable: !isAnchor, observedBlocked: isAnchor };
+        })
+      }
+    };
+    const proposal = manager.propose(blockedCenter, threatenedState());
+    const graph = proposal.statePatch?.fortifications?.[0]?.graph;
+
+    expect(graph?.nodes.find((node) => node.kind === "gate_slot")?.position).toEqual({ x: 9, y: 11, z: 0 });
+    expect(graph?.wholeConnectivity).toBe("preserved");
+  });
+
+  it("uses an adjacent terrain anchor and places wide towers inside the clear footprint", () => {
+    const source = observation();
+    const sourceMap = source.map;
+    if (!sourceMap) throw new Error("fortification_test_map_missing");
+    const terrainBounded = {
+      ...source,
+      map: {
+        ...sourceMap,
+        constructionCells: (sourceMap.constructionCells ?? []).map((cell) => {
+          if (cell.tileKey === "9,4" || cell.tileKey === "9,11")
+            return { ...cell, groundPassable: false, observedBlocked: true };
+          return { ...cell, groundPassable: true, observedBlocked: false };
+        })
+      }
+    };
+    const wideCatalog = {
+      ...catalog,
+      entries: catalog.entries.map((entry) =>
+        entry.sourceObjectName === ObjectNames.WatchTower && entry.constructionProfile
+          ? {
+              ...entry,
+              constructionProfile: { ...entry.constructionProfile, footprintRadiusTiles: 1 }
+            }
+          : entry
+      )
+    };
+    const wideManager = new AiFortificationManager(profile, () => wideCatalog);
+    const proposal = wideManager.propose(terrainBounded, threatenedState());
+    const graph = proposal.statePatch?.fortifications?.[0]?.graph;
+    const towers = graph?.nodes.filter((node) => node.kind === "tower") ?? [];
+
+    expect(graph?.terrainAnchorTileKeys).toEqual(["9,4", "9,11"]);
+    expect(graph?.nodes.some((node) => node.kind === "wall")).toBe(true);
+    expect(towers.map((tower) => tower.position)).toEqual([{ x: 9, y: 8, z: 0 }]);
+    expect(
+      towers.every((tower) =>
+        tower.footprintTileKeys.every((key) =>
+          (sourceMap.constructionCells ?? []).find((cell) => cell.tileKey === key)?.groundPassable
+        )
+      )
+    ).toBe(true);
+    expect(graph?.wholeConnectivity).toBe("preserved");
   });
 
   it("H-27 rejects an unanchored open-field wall that has no measured choke value", () => {

@@ -6,7 +6,7 @@ import type { AiCapabilityCatalogEntryV1, AiCapabilityCatalogV1 } from "../contr
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
 
-import { AI_FORTIFICATION_GRAPH_CAPS, tileKey, positionOf, constructionEntry } from "./ai-fortification-support";
+import { AI_FORTIFICATION_GRAPH_CAPS, tileKey, positionOf, constructionEntry, type ConstructionCell } from "./ai-fortification-support";
 import { fortificationPreservesConnectivityV1 } from "./ai-fortification-connectivity";
 type Axis = "x" | "y";
 function node(
@@ -54,6 +54,20 @@ function node(
   };
 }
 
+function hasClearFootprint(
+  position: Vector3Simple,
+  footprintRadius: number,
+  cells: ReadonlyMap<string, ConstructionCell>
+): boolean {
+  for (let y = position.y - footprintRadius; y <= position.y + footprintRadius; y += 1) {
+    for (let x = position.x - footprintRadius; x <= position.x + footprintRadius; x += 1) {
+      const cell = cells.get(tileKey({ x, y }));
+      if (!cell?.groundPassable || cell.observedBlocked) return false;
+    }
+  }
+  return true;
+}
+
 /** Builds and checks the bounded choke layout before any resource commitment. */
 export function createFortificationLayout(
   observation: AiObservationV1,
@@ -73,11 +87,12 @@ export function createFortificationLayout(
   const frontAxis: Axis = Math.abs(dx) >= Math.abs(dy) ? "x" : "y";
   const crossAxis: Axis = frontAxis === "x" ? "y" : "x";
   const direction = (frontAxis === "x" ? dx : dy) >= 0 ? 1 : -1;
-  const center = {
+  const centerAt = (frontDistance: number, crossOffset = 0) => ({
     ...anchor,
-    [frontAxis]: Math.round(anchor[frontAxis]) + 4 * direction,
-    [crossAxis]: Math.round(anchor[crossAxis])
-  };
+    [frontAxis]: Math.round(anchor[frontAxis]) + frontDistance * direction,
+    [crossAxis]: Math.round(anchor[crossAxis]) + crossOffset
+  });
+  let center = centerAt(4);
   const atOffset = (offset: number, frontOffset = 0): Vector3Simple => ({
     ...center,
     [frontAxis]: center[frontAxis] + frontOffset * direction,
@@ -95,19 +110,46 @@ export function createFortificationLayout(
   };
   let negativeAnchor: number | null = null;
   let positiveAnchor: number | null = null;
-  for (let offset = 1; offset <= 8; offset += 1) {
-    if (negativeAnchor === null && isAnchor(-offset)) negativeAnchor = -offset;
-    if (positiveAnchor === null && isAnchor(offset)) positiveAnchor = offset;
+  let offsets: number[] | null = null;
+  // Relocate only a few tiles along the same front; don't replace the measured approach with a remote choke.
+  const crossOffsets = [0, -1, 1, -2, 2];
+  for (const frontDistance of [4, 5, 3, 6, 7, 8]) {
+    for (const crossOffset of crossOffsets) {
+      center = centerAt(frontDistance, crossOffset);
+      const openingCell = byKey.get(tileKey(center));
+      if (!openingCell?.groundPassable || openingCell.waterPassable || openingCell.observedBlocked) continue;
+      let candidateNegative: number | null = null;
+      let candidatePositive: number | null = null;
+      for (let offset = 1; offset <= 8; offset += 1) {
+        if (candidateNegative === null && isAnchor(-offset)) candidateNegative = -offset;
+        if (candidatePositive === null && isAnchor(offset)) candidatePositive = offset;
+      }
+      if (candidateNegative === null || candidatePositive === null) continue;
+      // Keep one clear tile on each side of the intentional opening for native worker/army movement.
+      const firstCandidateOffset = candidateNegative + 1;
+      const candidateOffsets = Array.from(
+        { length: candidatePositive - candidateNegative - 1 },
+        (_, index) => firstCandidateOffset + index
+      ).filter((offset) => Math.abs(offset) > 1);
+      if (
+        candidateOffsets.length < 4 ||
+        candidateOffsets.length > AI_FORTIFICATION_GRAPH_CAPS.walls + AI_FORTIFICATION_GRAPH_CAPS.towers ||
+        candidateOffsets.some((offset) => !byKey.get(tileKey(atOffset(offset)))?.groundPassable) ||
+        candidateOffsets.filter((offset) =>
+          hasClearFootprint(atOffset(offset), towerEntry.constructionProfile?.footprintRadiusTiles ?? 0, byKey)
+        ).length < 1 ||
+        (!candidateOffsets.some((offset) => offset < 0) && candidateNegative !== -1) ||
+        (!candidateOffsets.some((offset) => offset > 0) && candidatePositive !== 1)
+      )
+        continue;
+      negativeAnchor = candidateNegative;
+      positiveAnchor = candidatePositive;
+      offsets = candidateOffsets;
+      break;
+    }
+    if (offsets !== null) break;
   }
-  if (negativeAnchor === null || positiveAnchor === null) return null;
-  // Keep one clear tile on each side of the intentional opening for native worker/army movement.
-  const offsets = Array.from(
-    { length: positiveAnchor - negativeAnchor - 1 },
-    (_, index) => negativeAnchor + index + 1
-  ).filter((offset) => Math.abs(offset) > 1);
-  if (offsets.length < 4 || offsets.length > AI_FORTIFICATION_GRAPH_CAPS.walls + AI_FORTIFICATION_GRAPH_CAPS.towers)
-    return null;
-  if (offsets.some((offset) => !byKey.get(tileKey(atOffset(offset)))?.groundPassable)) return null;
+  if (negativeAnchor === null || positiveAnchor === null || offsets === null) return null;
 
   const gateEntry = gateObjectName ? constructionEntry(catalog, gateObjectName) : null;
   if (gateObjectName && !gateEntry?.constructionProfile) return null;
@@ -126,17 +168,47 @@ export function createFortificationLayout(
   const positiveOffsets = offsets.filter((offset) => offset > 0);
   const firstOffset = offsets[0];
   const lastOffset = offsets.at(-1);
-  if (!negativeOffsets.length || !positiveOffsets.length || firstOffset === undefined || lastOffset === undefined)
+  if (
+    (!negativeOffsets.length && negativeAnchor !== -1) ||
+    (!positiveOffsets.length && positiveAnchor !== 1) ||
+    firstOffset === undefined ||
+    lastOffset === undefined
+  )
     return null;
-  const towerOffsets = [firstOffset, lastOffset];
+  const clearTowerOffsets = offsets.filter((offset) =>
+    hasClearFootprint(atOffset(offset), towerEntry.constructionProfile?.footprintRadiusTiles ?? 0, byKey)
+  );
+  const towerFootprintRadius = towerEntry.constructionProfile?.footprintRadiusTiles ?? 0;
+  let towerPair: [number, number] | null = null;
+  for (const first of clearTowerOffsets) {
+    const second = [...clearTowerOffsets]
+      .reverse()
+      .find((candidate) => Math.abs(candidate - first) > towerFootprintRadius * 2);
+    if (second !== undefined) {
+      towerPair = [first, second];
+      break;
+    }
+  }
+  const singleTowerOffset = [...clearTowerOffsets].sort(
+    (left, right) =>
+      offsets.filter((offset) => offset !== left && Math.abs(offset - left) <= towerFootprintRadius).length -
+        offsets.filter((offset) => offset !== right && Math.abs(offset - right) <= towerFootprintRadius).length ||
+      left - right
+  )[0];
+  const towerOffsets: number[] = towerPair ? [...towerPair] : singleTowerOffset === undefined ? [] : [singleTowerOffset];
   const covered = new Set<string>();
   const nodes: AiFortificationNodeStateV1[] = [gate];
   for (const side of [negativeOffsets, positiveOffsets] as const) {
     let dependency: string | null = null;
-    const rootOffset = side[0];
+    const sideNodeOffsets = side.filter(
+      (offset) =>
+        towerOffsets.includes(offset) ||
+        !towerOffsets.some((towerOffset) => Math.abs(towerOffset - offset) <= towerFootprintRadius)
+    );
+    const rootOffset = sideNodeOffsets[0];
     if (rootOffset === undefined) continue;
     const componentId = rootOffset < 0 ? "left" : "right";
-    for (const offset of side) {
+    for (const offset of sideNodeOffsets) {
       const isTower = towerOffsets.includes(offset);
       const position = atOffset(offset);
       const range = towerEntry.constructionProfile?.visionRange ?? 0;
@@ -159,7 +231,11 @@ export function createFortificationLayout(
       nodes.push(current);
       dependency = current.nodeId;
     }
-    const stairPosition = atOffset(rootOffset, -1);
+    const rootFootprintRadius = towerOffsets.includes(rootOffset)
+      ? towerFootprintRadius
+      : wallEntry.constructionProfile?.footprintRadiusTiles ?? 0;
+    const stairFootprintRadius = stairEntry.constructionProfile?.footprintRadiusTiles ?? 0;
+    const stairPosition = atOffset(rootOffset, -(rootFootprintRadius + stairFootprintRadius + 1));
     if (byKey.get(tileKey(stairPosition))?.groundPassable) {
       const rootPosition = atOffset(rootOffset);
       const rootNodeId =

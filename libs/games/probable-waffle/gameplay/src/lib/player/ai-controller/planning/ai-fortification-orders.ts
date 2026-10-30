@@ -50,6 +50,12 @@ export function createFortificationIntents(
         : []
     )
   );
+  const activeThreat = state.skirmish.incidents.some(
+    (incident) =>
+      (incident.baseId === null || incident.baseId === graph.baseId) &&
+      incident.expiresAt.dueTick > observation.tick &&
+      incident.severity >= 100
+  );
   return candidates.flatMap((current, index): AiIntentV1[] => {
     const objectName = current.objectName;
     if (objectName === null) return [];
@@ -88,7 +94,7 @@ export function createFortificationIntents(
         demandId: null,
         lane: "optional_infrastructure_tech" as const,
         proposedTick: observation.tick,
-        urgencyClass: current.lifecycle === "destroyed" ? 1 : 4,
+        urgencyClass: current.lifecycle === "destroyed" ? 1 : activeThreat ? 3 : 4,
         utility: Math.min(900, 500 + current.marginalCoverage * 10 + (current.lifecycle === "destroyed" ? 200 : 0)),
         preconditions: [
           { kind: "actor_exists" as const, actorId: builder.actorId },
