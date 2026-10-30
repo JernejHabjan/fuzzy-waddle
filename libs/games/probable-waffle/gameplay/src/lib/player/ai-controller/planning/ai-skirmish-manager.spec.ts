@@ -1,11 +1,68 @@
 import { FactionType, OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
+import { createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 
 import { AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS } from "./ai-skirmish-manager";
 import { homeNode, enemyNode, unit, observation, profile, manager } from "./ai-skirmish-test-fixtures";
 import { nextQuestion } from "./ai-skirmish-support";
 
 describe("AiSkirmishManager", () => {
+  it("keeps the home building threat ahead of a separate worker-side threat", () => {
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const home = {
+      ...unit("home", homeNode, 0),
+      mainBuilding: { status: "known" as const, value: true, observedTick: 20 }
+    };
+    const worker = {
+      ...createAiTestOwnedActor("worker"),
+      logicalPosition: { status: "known" as const, value: { x: 10, y: 10, z: 0 }, observedTick: 20 },
+      capabilities: [{
+        id: "worker:gather",
+        family: "gather",
+        level: 1,
+        domains: ["ground" as const],
+        targetDomains: [],
+        capacity: { status: "known" as const, value: 1, observedTick: 20 }
+      }]
+    };
+    const homeRaider = {
+      ...unit("z-home-raider", enemyNode, 1),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const
+    };
+    const workerRaider = {
+      ...unit("a-worker-raider", enemyNode, 11),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const,
+      logicalPosition: { status: "known" as const, value: { x: 10, y: 11, z: 0 }, observedTick: 20 }
+    };
+    const input = observation(20, [home, worker, homeRaider, workerRaider]);
+    const proposal = manager.propose({
+      ...input,
+      threatSummary: {
+        ...input.threatSummary,
+        visibleEnemyActorIds: [homeRaider.actorId, workerRaider.actorId]
+      }
+    }, state);
+
+    expect(proposal.intents).toContainEqual(expect.objectContaining({
+      kind: "attack",
+      targetActorId: homeRaider.actorId
+    }));
+    expect(proposal.intents).not.toContainEqual(expect.objectContaining({
+      kind: "attack",
+      targetActorId: workerRaider.actorId
+    }));
+  });
+
   it("releases a vanished defensive objective instead of freezing the next economy in defend", () => {
     const state = createAiBrainStateV1({
       playerNumber: 1,

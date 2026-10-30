@@ -113,7 +113,36 @@ export function createAiSkirmishProposalContext(
       .flatMap((base) => [base.anchorActorId, ...base.memberActorIds])
       .filter((actorId): actorId is ActorId => actorId !== null)
   ]);
+  const homeThreat = homeBaseActor && home
+    ? visibleEnemies
+        .filter((candidate) => {
+          const candidatePosition = position(candidate);
+          if (!candidatePosition) return false;
+          const ordersHomeAttack =
+            candidate.activeOrder?.status === "known" &&
+            candidate.activeOrder.value?.targetActorId === homeBaseActor.actorId;
+          const mobileThreat = candidate.housingCost.status === "known" && candidate.housingCost.value > 0;
+          return ordersHomeAttack || (mobileThreat && distance(home, candidatePosition) <= 12);
+        })
+        .sort((left, right) => {
+          const targetsHome = (candidate: AiObservedActorV1) =>
+            candidate.activeOrder?.status === "known" &&
+            candidate.activeOrder.value?.targetActorId === homeBaseActor.actorId
+              ? 0
+              : 1;
+          const distanceToHome = (candidate: AiObservedActorV1) => {
+            const candidatePosition = position(candidate);
+            return candidatePosition ? distance(home, candidatePosition) : Number.POSITIVE_INFINITY;
+          };
+          return (
+            targetsHome(left) - targetsHome(right) ||
+            distanceToHome(left) - distanceToHome(right) ||
+            left.actorId.localeCompare(right.actorId)
+          );
+        })[0]
+    : undefined;
   const localThreat =
+    homeThreat ??
     observedAiEconomyThreats(observation)[0] ??
     (home
       ? visibleEnemies.find((candidate) => {
