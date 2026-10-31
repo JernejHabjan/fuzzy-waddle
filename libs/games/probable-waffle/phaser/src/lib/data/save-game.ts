@@ -13,10 +13,13 @@ import { SimulationTickService } from "../world/services/simulation-tick.service
 import { evaluateCampaignSaveEligibility } from "./campaign-save-eligibility";
 import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
 import { RandomService } from "../world/services/random.service";
+import { CommandBusService } from "../world/services/multiplayer/command-bus.service";
+import { SummonExpiryService } from "../entity/systems/summon-expiry.service";
 
 export class SaveGame {
   private saveGameSubscription: Subscription;
   private saveInProgress = false;
+  private disposed = false;
 
   constructor(private scene: GameProbableWaffleScene) {
     this.saveGameSubscription = scene.communicator.allScenes
@@ -41,7 +44,7 @@ export class SaveGame {
    */
   private async onSaveGame(request: Pick<SaveGamePayload, "kind" | "checkpointId"> = { kind: "manual" }) {
     const kind = request.kind ?? "manual";
-    if (this.saveInProgress) return;
+    if (this.disposed || this.saveInProgress) return;
     if (kind === "autosave" && !request.checkpointId && !this.canAutosave()) return;
     const tickService = getSceneService(this.scene, SimulationTickService);
     const eligibility = evaluateCampaignSaveEligibility({
@@ -76,12 +79,19 @@ export class SaveGame {
       this.saveResearchState();
 
       this.saveRandomState();
+      this.saveCommandAuthority();
+      const gameState = this.scene.baseGameData.gameInstance.gameState;
+      if (gameState && tickService) gameState.data.simulationTick = tickService.currentTick;
 
+      // Thumbnail capture and the save-name dialog may span many ticks. Never combine old actors with later live banks/AI.
+      const gameInstanceData = structuredClone(this.scene.baseGameData.gameInstance.data);
       const thumbnail = await this.takeScreenshot();
+      if (this.disposed) return;
       this.scene.communicator.utilityEvents.emit({
         name: "save-game",
         data: {
           thumbnail,
+          gameInstanceData,
           kind,
           ...(request.checkpointId ? { checkpointId: request.checkpointId } : {})
         } satisfies SaveGamePayload
@@ -176,6 +186,18 @@ export class SaveGame {
     if (gameState && randomService) gameState.data.randomState = randomService.getState();
   }
 
+  private saveCommandAuthority(): void {
+    const gameState = this.scene.baseGameData.gameInstance.gameState;
+    if (!gameState) return;
+    const commandBus = getSceneService(this.scene, CommandBusService);
+    const summonExpiries = getSceneService(this.scene, SummonExpiryService);
+    if (commandBus) {
+      gameState.data.commandAuthority = commandBus.getAuthorityState();
+      gameState.data.pendingCommandBatches = commandBus.getPendingCommandBatches();
+    }
+    if (summonExpiries) gameState.data.summonExpiries = summonExpiries.getData();
+  }
+
   private async takeScreenshot() {
     return new Promise<string>((resolve) => {
       this.scene.game.renderer.snapshot(
@@ -192,6 +214,7 @@ export class SaveGame {
   }
 
   private destroy() {
+    this.disposed = true;
     this.saveGameSubscription.unsubscribe();
     this.scene.input.keyboard?.off("keydown", this.handleQuickSaveShortcut, this);
   }

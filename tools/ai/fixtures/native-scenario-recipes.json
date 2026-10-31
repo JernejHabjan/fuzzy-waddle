@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "recipe_authoring",
+  "status": "authored_not_executed",
+  "purpose": "All remaining supported native scenario authoring contracts, without execution or false executable registration.",
+  "executionPolicy": "Inert authoring data. runtimeRecipeDraft never supplies row.fixture. Every executionBlocker must be implemented/reviewed before promotion to an executable runtime fixture; authored is not executed or passed.",
+  "defaults": {
+    "aiPlayerNumber": 2,
+    "opponentPlayerNumber": 1,
+    "simulationTickMilliseconds": 50,
+    "fixedStepFrames": true,
+    "simulationTimeScale": 1,
+    "factions": [
+      "Tivara",
+      "Skaduwee"
+    ],
+    "difficulty": "Normal",
+    "seed": 759900,
+    "repetitions": 1,
+    "variantPolicy": "Fresh world per branch/faction. Paired controls share seed, deterministic instance identity, logical tick and all inputs except the explicitly declared changed variable. Require equal permitted digests/intents only for hidden-state fairness pairs, not risk, workforce or other deliberately different observed-state controls. D cases override difficulty; multiplayer uses real clients; calibration preserves its own sample matrix.",
+    "actorPolicy": "Resolve legal faction-owned capabilities, prices, footprints, durations, source/drain types and weapon domains from pwActorDefinitions/TechTreeService. Bind unique actual inherited actors. Choose concrete passable out-of-footprint positions only after a checked physical map setup; no name-only capability guesses.",
+    "inputPolicy": "All preset creation/balances/queues precede first observation. Later events use ordinary opponent/shared commands or pinned native losses. Never inject AI plans, contacts, paid completion, earned income or success flags.",
+    "timingPolicy": "maximumTick is an authored outer ceiling, not a measured pass. At binding freeze original per-phase travel/build/train/impact bounds independently before AI decisions and add exact before/after milestones. A missing event or exhausted ceiling fails, never passes vacuously or renews from a planner retry estimate.",
+    "assertionsPolicy": "All required branches need independent native assertions plus forbidden predicates. Missing/truncated setup, input, history, action or oracle is unavailable/failed, never success. Planner explanations and dispatch alone are not applied useful effects.",
+    "cleanupPolicy": "Dispose scoped fault interceptors, listeners, scene and browser contexts in finally paths. Lifecycle cases intentionally retain one app realm across matches. Never turn these authoring controls on in ordinary gameplay.",
+    "reportPolicy": "Keep raw proof local/ignored. Deterministic code evaluates assertions. Model input is only the bounded existing summary (maximum 8192 UTF-8 bytes), with explicit omitted counts and narrow causal projections when needed.",
+    "reviewStatus": "Source and contract review only; no gameplay recipe, test, lint, type check, formatter or dedicated validation command executed. Catalog generation is authoring only.",
+    "lifecyclePolicy": "User correction 2026-10-21: save/load is single-player coverage. Multiplayer coverage uses real host transfer, reconnect and stale-command fencing. Do not invent coordinated multiplayer save/load or require a save-to-multiplayer transition."
+  },
+  "worlds": {
+    "open": {
+      "mapLabel": "AI Open Economy (test only)",
+      "topology": "tools/ai/fixtures/test-map-topology.json",
+      "precondition": "Actual two spawns, fog, passable ground, build/service room and source access; concrete case bindings still required."
+    },
+    "bridge": {
+      "mapLabel": "River Crossing",
+      "topology": "mutable_product_map",
+      "precondition": "Bind actual verified bridge, alternate corridors and ground/height clearance. Freeze source/map/asset digests per execution; frozen bridge test map remains unimplemented."
+    },
+    "fortified": {
+      "mapLabel": null,
+      "topology": "required_fortified_approach_not_authored",
+      "precondition": "Concrete map selection is blocked until actual wall/stair/height/cliff/shore/opening topology is authored or verified. Do not select a nonexistent frozen map label."
+    },
+    "naval": {
+      "mapLabel": "River Crossing",
+      "topology": "mutable_product_map",
+      "precondition": "Verify actual connected navigable water, coast/landing service and content-backed capabilities. No required island-only objective; island cases stay deferred."
+    },
+    "multiplayer": {
+      "mapLabel": "AI Multiplayer (test only)",
+      "topology": "tools/ai/fixtures/test-map-topology.json",
+      "precondition": "Use existing real relay/reconnect/host-transfer harness and at least two independent clients. Native matrix single-browser variant is insufficient."
+    },
+    "multi_opponent": {
+      "mapLabel": null,
+      "topology": "supported_multiplayer_roster_binding_required",
+      "precondition": "Select a real supported three-or-more-player map/lobby path. Current two-slot matrix recipe cannot manufacture extra owners."
+    },
+    "calibration": {
+      "mapLabel": null,
+      "mapLabels": [
+        "River Crossing",
+        "Ember Enclave"
+      ],
+      "topology": "existing_difficulty_calibration_matrix",
+      "precondition": "Preserve difficulty-calibration-v1.json paired seeds, holdout, factions, opponents and map matrix. Pin both builds, profile versions and exact map/content digests. Frozen-map migration requires a separate explicit fixture change; soak ceiling is separate from each short-match ceiling."
+    },
+    "workbench": {
+      "mapLabel": "AI Open Economy (test only)",
+      "topology": "tools/ai/fixtures/test-map-topology.json",
+      "precondition": "Real developer-authorized incident/import/replay surfaces, isolated replay world and retained live peers when required. No privileged captures shared with ordinary players."
+    },
+    "supported_lifecycle": {
+      "mapLabel": null,
+      "topology": "separate_supported_single_player_and_multiplayer_sessions",
+      "precondition": "Single-player save/load uses the actual codec and ordinary UI. Independently, multiplayer host transfer/reconnect uses real clients and relay. Never treat these as coordinated multiplayer save/load."
+    }
+  },
+  "hooks": {
+    "native_case_binding": {
+      "owner": "apps/portal-e2e/src/e2e/skirmish-ai-runtime.spec.ts",
+      "missing": "Forty-four cases now have concrete native factories and ID-specific readers, authored unrun. Bind the remaining41 specifications; no prose contract is executed by the runner."
+    },
+    "opponent_script": {
+      "owner": "apps/portal-e2e/src/e2e/skirmish-ai-runtime-perturbation-runner.ts",
+      "missing": "Shared movement/attack/cast/construct/board/unload scripts and real three-player lobby slots are authored. Other cases still need their own fault/authority/lifecycle actions. An authored script is not a measured native premise."
+    },
+    "contact_history": {
+      "owner": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-runtime-scenario-bridge.ts",
+      "missing": "Bounded native visibility/remembered-region coverage, selected mission state and physical scout joins are authored for SCOUT-01–04/H-22. Reuse them for remaining cases; missing native exposure or physical learning must fail, never enter planner inputs."
+    },
+    "route_history": {
+      "owner": "apps/portal-e2e/src/e2e/skirmish-ai-runtime-native-navigation.ts",
+      "missing": "Existing native movement/closed-history readers now join AI prefix construction and stamped physical probes in PLACE/WALL bindings, authored unrun. Remaining recovery/access cases need their own exact route/lifetime predicates. Static queries never replace actual original-destination arrival."
+    },
+    "route_fault": {
+      "owner": "libs/games/probable-waffle/phaser/src/lib/world/services/navigation.service.ts",
+      "missing": "Finite original-actor route-service null responses are authored for STRAT-09, including fixed outage interval, actual interception evidence and owned cleanup. Remaining route/recovery cases must bind their own query identities and effects; no global navigation corruption is introduced."
+    },
+    "native_combat": {
+      "owner": "apps/portal-e2e/src/e2e/skirmish-ai-runtime-producer-exposure.ts",
+      "missing": "Explicit captureCombat retains native weapon requests/commits, healing returns, status application/removal, spell cooldown and post-damage identities. Per-ID readers join legal range/domain/timing conservatively; ambiguous spell/weapon attribution is unavailable. Direct projectile identity tracing is not added. Native timing and usefulness remain unmeasured."
+    },
+    "transport_script": {
+      "owner": "apps/portal-e2e/src/e2e/skirmish-ai-runtime-transport-evaluation.ts",
+      "missing": "Native board/sail/unload controls and bounded membership capture are authored for Tivara boat raids/escorts. Skaduwee has no ship producer; unsupported capabilities remain explicit. Remaining recovery/transport/lifecycle cases need their own bindings; island content is still deferred."
+    },
+    "placement_history": {
+      "owner": "libs/games/probable-waffle/phaser/src/lib/world/services/multiplayer/shared-command-application.service.ts",
+      "missing": "PLACE-01–03 now bind constrained/threatened fields, native service and competing layout/transit/spawn predicates, authored unrun. Exact constrained-site count and actual timing require the later gate. Other recovery/interruption cases still need case-specific bindings."
+    },
+    "construction_history": {
+      "owner": "apps/portal-e2e/src/e2e/skirmish-ai-runtime-construction-authority.ts",
+      "missing": "Normal pre-tick construction, pinned cancellation/loss and actual AI-built site loss are authored with native payment/completion/route readers. Remaining H recovery cases need their own scenario bindings; existing raw authority is reused."
+    },
+    "fortified_geometry": {
+      "owner": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/test-map-contract.md",
+      "missing": "WALL-01–05/H-27/28 now declare native prefab/terrain worlds, paid prefixes, physical friendly/hostile passage, occupied firing, shore/air, recovery and cumulative budget predicates. All are unrun. This does not supply a validated reusable fortified map or certify additional cases."
+    },
+    "decision_history": {
+      "owner": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-runtime-scenario-bridge.ts",
+      "missing": "Bounded selected mission/recovery/authority/lane slices exist. Remaining cases must bind original cause/deadline/claim continuation, real snapshot/restart boundaries and independent native effects; summary labels alone cannot prove them."
+    },
+    "lane_history": {
+      "owner": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-runtime-scenario-bridge.ts",
+      "missing": "Complete bounded consideration, accepted-service, wait-edge and authority slices now exist at selected decisions. Remaining resource/recovery cases must establish their original per-resource ownership and native useful effects; consideration or accepted service alone is not applied work."
+    },
+    "receipt_fault": {
+      "owner": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/install-ai-runtime-receipt-fault.ts",
+      "missing": "Consumer-only original-AI receipt hold/release and history unavailability now exist. Remaining cases must bind their actual cancellation/epoch/peer/save boundaries and native claim lifecycle; no general old-command transport reorder or dedup-pressure driver is supplied."
+    },
+    "multiplayer_boundary": {
+      "owner": "apps/portal-e2e/src/e2e/skirmish-ai-multiplayer-host-transfer.spec.ts",
+      "missing": "Existing real relay/reconnect/host-transfer specs are reusable. Bind this case to two real clients, authoritative promotion and identical full-state checkpoints; the single-browser matrix cannot certify it."
+    },
+    "snapshot_boundary": {
+      "owner": "libs/games/probable-waffle/phaser/src/lib/world/services/recovery/state-hash-projection.ts",
+      "missing": "SharedQueue lane order, exact remaining work, paid policy and command lineage are now included in the authored peer/AI projection. Queue codec/continuation and lifecycle controls are authored but unrun. Real save/load/replay at safe before/during/after-apply boundaries and full peer/host continuation still need native bindings and evidence."
+    },
+    "input_fault": {
+      "owner": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/player-ai-controller.ts",
+      "missing": "No recipe hook currently injects a one-generation optional proposer/debug error or invalid numeric field. Add scoped injection outside production authority and preserve mandatory-fault handling."
+    },
+    "terminal_history": {
+      "owner": "libs/games/probable-waffle/phaser/src/lib/world/state/GameModeConditionChecker.ts",
+      "missing": "Bind the ordinary mode/score terminal transition and exact player identity. Initial quit is not victory; fixture-forced win, silent concession or a launch trace cannot satisfy terminal acceptance."
+    },
+    "profile_history": {
+      "owner": "apps/portal-e2e/src/e2e/skirmish-ai-runtime-checkpoint.ts",
+      "missing": "Existing profileDifficulty is not cadence/quota/version evidence. Bind actual configured registry version, scheduler eligibility/debt and consumed quotas through safe save/controller reads."
+    },
+    "multi_opponent_script": {
+      "owner": "apps/portal-e2e/src/e2e/skirmish-ai-runtime-variant-runner.ts",
+      "missing": "C-06 uses the existing three-spawn map, native third-player capture, real defeat and initial team controls. No in-match diplomacy command exists; dynamic diplomacy is explicitly unsupported. Real socket peers and host migration remain separate acceptance."
+    },
+    "calibration_driver": {
+      "owner": "tools/ai/fixtures/difficulty-calibration-v1.json",
+      "missing": "Bind isolated pinned baseline/candidate builds, paired/holdout seed declarations, terminal metrics and uncertainty to the existing calibration gate; unsupported baseline cannot fall back to candidate. No calibration runs in this authoring pass."
+    },
+    "repro_driver": {
+      "owner": "tools/ai/run-skirmish-matrix.mjs",
+      "missing": "Connect real capture/replay/compare/what-if entry points and completeness/provenance checks to this native case. A pure decision bundle cannot substitute for a complete physical checkpoint/input log."
+    },
+    "debug_surface": {
+      "owner": "libs/games/probable-waffle/phaser/src/lib/prefabs/gui/debug/ai-controller/AiControllerDebugPanel.ts",
+      "missing": "Drive actual developer debug/import/read-only surfaces and compare independent native state. Existing pure projection controls do not establish UI, live multiplayer or export behavior."
+    },
+    "recovery_binding_h_05": {
+      "owner": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/ai-command-reconciliation.ts",
+      "missing": "Reuse the authored consumer-only original AI receipt hold/release and independent raw shared application. Still bind disappearing optional purpose, safe atomic claim release, already-paid/uncertain ownership and native actor reassignment in all original H-05 branches; a human scheduled command is insufficient."
+    },
+    "recovery_binding_h_20": {
+      "owner": "apps/portal-e2e/src/e2e/skirmish-ai-runtime-variant-runner.ts",
+      "missing": "Native finite topology-churn schedule and bounded query/cursor samples, plus a scene-disposal boundary captured outside the disposed scene. The current paused checkpoint reader cannot certify old callback fencing after shutdown."
+    },
+    "recovery_binding_h_21": {
+      "owner": "libs/games/probable-waffle/phaser/src/lib/world/services/navigation.service.ts",
+      "missing": "Pair a real small-unit traversal with a definition-backed larger-unit/formation clearance failure or alternate transit. Static protected-route tileMargin envelopes and compact graph clearance cannot alone certify physical unit clearance."
+    },
+    "recovery_binding_h_23": {
+      "owner": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-runtime-preset-world-v1.ts",
+      "missing": "Native AI-owned indispensable transport-worker duty and original departure deadline, contrasted with optional late/lost support. Human-scripted board/unload membership is available but cannot establish AI mission ownership; Skaduwee has no ship producer."
+    },
+    "authority_binding_h_08": {
+      "owner": "apps/portal-e2e/src/e2e/skirmish-ai-native-scenario-evaluation.ts",
+      "missing": "Host-fence source repairs preserve admitted commitments and retire definitely-unsent requests. One real-relay host-promotion/original-AI replay control is authored in skirmish-ai-multiplayer-authority-continuation.spec.ts, unrun. Still bind timeout/cancellation orderings, original delayed callbacks and canonical peer comparisons; the local replay/application probe is not network redelivery or full H-08."
+    },
+    "authority_binding_h_09": {
+      "owner": "apps/portal-e2e/src/e2e/skirmish-ai-native-scenario-evaluation.ts",
+      "missing": "Original active execution metadata now survives bounded history eviction and JSON restore; a real bus retention-limit control is authored, unrun. Still drive acknowledged native peer compaction, physical original paid work, real codec/scene restore and exact old/unresolved redelivery. Headless Concede controls do not certify native H-09."
+    },
+    "authority_binding_h_31": {
+      "owner": "apps/portal-e2e/src/e2e/skirmish-ai-native-scenario-evaluation.ts",
+      "missing": "Detached save/clock/live-authority primitives plus unsent pendingCommandBatches persistence, strict restore and nonzero relay startup are authored. Still bind ordinary completed-boundary codec/scene reload against uninterrupted native continuation, real server-accepted outbound tails, chronic blocker/lease premises and complete queues/debt/RNG. Client-local unsent input is not an acknowledged server tail; no native H-31 registration."
+    },
+    "authority_binding_h_32": {
+      "owner": "apps/portal-e2e/src/e2e/skirmish-ai-native-scenario-evaluation.ts",
+      "missing": "Disposed bus/lockstep/save callbacks, duplicate host transitions and delayed Angular communicator setup/teardown are fenced in source. A retained original replay callback seam is authored under explicit localhost opt-in. Still drive ordinary UI second-match startup in the SAME browser realm with distinct identity/seed, old pending path/receipt callbacks and real host replacement; count actual current controllers and useful second-match effects."
+    }
+  },
+  "scenarioIds": [],
+  "cases": []
+}

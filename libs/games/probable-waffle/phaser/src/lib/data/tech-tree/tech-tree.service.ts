@@ -88,6 +88,15 @@ export class TechTreeService {
     return factionSet ? factionSet.has(objectName) : false;
   }
 
+  /**
+   * Returns the authored, graph-reachable roster for one faction. Consumers that
+   * surface player options must start here rather than enumerate the global graph.
+   */
+  getFactionActorIds(factionType: FactionType): readonly ObjectNames[] {
+    if (this.factionCache.size === 0) this.buildFactionSets();
+    return [...(this.factionCache.get(factionType) ?? [])].sort();
+  }
+
   getMainBuildingForFaction(factionType: FactionType): ObjectNames {
     const objectName = FactionDefinitions.factions.find((f) => f.type === factionType)?.value.mainBuildingActorName;
     if (objectName) return objectName;

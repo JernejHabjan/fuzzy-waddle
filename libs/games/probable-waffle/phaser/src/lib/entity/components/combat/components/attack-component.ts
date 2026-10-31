@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { type AttackData } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/attack-data";
 import { HealthComponent } from "./health-component";
+import { StatusEffectComponent } from "../../status-effect/status-effect-component";
 import { getActorComponent } from "../../../../data/actor-component";
 import type { Subscription } from "rxjs";
 import { AnimationActorComponent } from "../../animation/animation-actor-component";
@@ -32,6 +33,7 @@ import { CancelableSimDelay } from "../../../../world/services/simulation-time";
 import { SimulationTickService } from "../../../../world/services/simulation-tick.service";
 import { PhaserProjectileFactory } from "../../../../combat/phaser-projectile-factory";
 import { applyCampaignProgressionModifiers } from "../../../../campaign/campaign-progression-modifier";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 /**
  * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
  * storage boundaries do not drift into an unconstrained primitive.
@@ -55,6 +57,8 @@ export class AttackComponent {
   // track delayed fire so we can cancel before projectile spawns
   private fireTimer?: CancelableSimDelay;
   private hitTimer?: CancelableSimDelay;
+  private pendingHit?: NonNullable<AttackComponentData["pendingHit"]>;
+  private initialized = false;
 
   private attackDefinition: AttackDefinition;
 
@@ -79,6 +83,8 @@ export class AttackComponent {
     this.cooldownTickSub = this.simulationTickService?.tick$.subscribe(() => {
       this.onSimulationTick();
     });
+    this.initialized = true;
+    this.resumePendingHit();
   }
 
   private destroy() {
@@ -93,6 +99,7 @@ export class AttackComponent {
     if (this.hitTimer) {
       this.hitTimer.remove();
       this.hitTimer = undefined;
+      this.pendingHit = undefined;
     }
     for (const timer of this.projectileImpactTimers) {
       timer.remove();
@@ -168,6 +175,9 @@ export class AttackComponent {
   }
 
   useAttack(enemy: GameObject) {
+    if (getActorComponent(this.gameObject, StatusEffectComponent)?.isStunned()) {
+      return;
+    }
     if (this.remainingCooldown > 0) {
       return;
     }
@@ -208,6 +218,22 @@ export class AttackComponent {
       this.hitTimer.remove();
       this.hitTimer = undefined;
     }
+    const targetActorId = getActorComponent(enemy, IdComponent)?.id;
+    const attackIndex = this.attackDefinition.attacks.indexOf(attack);
+    if (targetActorId && attackIndex >= 0 && this.simulationTickService) {
+      this.pendingHit = {
+        targetActorId,
+        attackIndex,
+        dueTick: this.simulationTickService.currentTick +
+          Math.ceil(attack.delays.hit / SimulationTickService.TICK_INTERVAL_MS)
+      };
+      const pendingHit = this.pendingHit;
+      this.hitTimer = new CancelableSimDelay(this.gameObject.scene, attack.delays.hit, () => {
+        this.applyPendingHit(pendingHit, enemy, attack);
+      });
+      return;
+    }
+    this.pendingHit = undefined;
     // Use CancelableSimDelay so damage fires at the same simulation tick on all clients,
     // regardless of render frame rate.
     this.hitTimer = new CancelableSimDelay(this.gameObject.scene, attack.delays.hit, () => {
@@ -220,6 +246,48 @@ export class AttackComponent {
       this.playHitSound(attack, enemy);
       this.applyInstantAttackDamage(attack, enemy);
     });
+  }
+
+  private resumePendingHit(): void {
+    if (!this.initialized || !this.pendingHit || this.hitTimer) return;
+    const tickService = this.simulationTickService;
+    const attack = this.attackDefinition.attacks[this.pendingHit.attackIndex];
+    if (!tickService || !attack) return;
+
+    const pendingHit = this.pendingHit;
+    // Restore must not apply gameplay effects while the scene is still being reconstructed.
+    const remainingTicks = Math.max(1, pendingHit.dueTick - tickService.currentTick);
+    this.hitTimer = new CancelableSimDelay(
+      this.gameObject.scene,
+      remainingTicks * SimulationTickService.TICK_INTERVAL_MS,
+      () => {
+        // Actors can be restored after their attacker; resolve identity only when simulation resumes.
+        if (this.pendingHit !== pendingHit) return;
+        const target = this.actorIndexSystem?.getActorById(pendingHit.targetActorId);
+        if (!target) {
+          this.hitTimer = undefined;
+          this.pendingHit = undefined;
+          return;
+        }
+        this.applyPendingHit(pendingHit, target, attack);
+      }
+    );
+  }
+
+  private applyPendingHit(
+    pendingHit: NonNullable<AttackComponentData["pendingHit"]>,
+    target: GameObject,
+    attack: AttackData
+  ): void {
+    if (this.pendingHit !== pendingHit) return;
+    this.hitTimer = undefined;
+    this.pendingHit = undefined;
+    if (!isGameObjectActiveInActiveScene(this.gameObject) || !isGameObjectActiveInActiveScene(target)) return;
+    const healthComponent = getActorComponent(this.gameObject, HealthComponent);
+    if (!healthComponent || healthComponent.killed) return;
+
+    this.playHitSound(attack, target);
+    this.applyInstantAttackDamage(attack, target);
   }
 
   private getInstantAttackTargets(attack: AttackData, enemy: GameObject): GameObject[] {
@@ -616,6 +684,7 @@ export class AttackComponent {
     if (this.hitTimer) {
       this.hitTimer.remove();
       this.hitTimer = undefined;
+      this.pendingHit = undefined;
     }
     // do not call stopProjectile here if projectile is already travelling
   }
@@ -745,7 +814,7 @@ export class AttackComponent {
   }
 
   setData(data: Partial<AttackComponentData> & Partial<AttackDefinition>) {
-    if (data.remainingCooldown !== undefined || data.currentAttackIndex !== undefined) {
+    if (data.pendingHit !== undefined || data.remainingCooldown !== undefined || data.currentAttackIndex !== undefined) {
       this.resetTransientAttackExecutionState();
     }
 
@@ -763,7 +832,6 @@ export class AttackComponent {
         this.currentAttack = this.attackDefinition.attacks[idx]!;
       }
     }
-
     // Update definition (for level upgrades)
     if (data.attacks !== undefined) {
       this.attackDefinition.attacks = data.attacks;
@@ -772,6 +840,17 @@ export class AttackComponent {
         this.currentAttack = null;
       }
     }
+    if (data.pendingHit !== undefined || data.remainingCooldown !== undefined || data.currentAttackIndex !== undefined) {
+      const pendingHit = data.pendingHit;
+      this.pendingHit = pendingHit &&
+        typeof pendingHit.targetActorId === "string" && pendingHit.targetActorId.length > 0 &&
+        Number.isSafeInteger(pendingHit.attackIndex) && pendingHit.attackIndex >= 0 &&
+        pendingHit.attackIndex < this.attackDefinition.attacks.length &&
+        Number.isSafeInteger(pendingHit.dueTick) && pendingHit.dueTick >= 0
+        ? { ...pendingHit }
+        : undefined;
+    }
+    if (this.initialized) this.resumePendingHit();
   }
 
   getData(): AttackComponentData {
@@ -780,7 +859,8 @@ export class AttackComponent {
       : undefined;
     return {
       remainingCooldown: this.remainingCooldown,
-      currentAttackIndex
+      currentAttackIndex,
+      ...(this.pendingHit ? { pendingHit: { ...this.pendingHit } } : {})
     };
   }
 
@@ -798,6 +878,7 @@ export class AttackComponent {
       this.hitTimer.remove();
       this.hitTimer = undefined;
     }
+    this.pendingHit = undefined;
     for (const timer of this.projectileImpactTimers) {
       timer.remove();
     }

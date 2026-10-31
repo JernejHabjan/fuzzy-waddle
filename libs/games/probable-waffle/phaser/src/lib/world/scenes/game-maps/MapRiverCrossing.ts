@@ -1840,7 +1840,7 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     this.events.emit("scene-awake");
   }
 
-  public override tilemap!: Phaser.Tilemaps.Tilemap;
+  public declare tilemap: Phaser.Tilemaps.Tilemap;
 
   /* START-USER-CODE */
 

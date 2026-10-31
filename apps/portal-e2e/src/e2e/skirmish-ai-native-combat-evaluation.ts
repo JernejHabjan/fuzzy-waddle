@@ -1,0 +1,236 @@
+import { StatusEffectType } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
+import { nativePhysicalDamageFromActor, nativeRetainedActor, nativeRetreats, nativeWeaponHits } from "./skirmish-ai-native-combat-effects";
+
+export function nativeRaidTargetRole(branch: string): string {
+  return branch === "expansion" ? "enemy-deposit" : "contact-group";
+}
+
+/** Tactical outcomes require native operations and physical recovery, not stance/script strings alone. */
+export function evaluateNativeCombat(id: string, branch: string, context: ReturnType<typeof nativeScenarioContext>): string[] {
+  const failures: string[] = [], target = context.roles["contact-group"], ranged = context.roles["ranged-probe"];
+  const operations = context.facts.flatMap((fact) => fact.kind === "native_combat" ? [{ fact, value: fact.operation }] : []);
+  if (operations.some(({ fact, value }) => value.clockTick !== fact.tick || !value.sceneActive ||
+      value.snapshotRestoreInProgress || value.gaps.length)) failures.push("combat_native_operation_boundary_invalid");
+  // The native attack component currently commits outside min/max range; pursue behavior is legal under that contract.
+  if (operations.some(({ value }) => value.kind === "attack_committed" && value.actor.playerNumber === 2 &&
+      (value.stunned || value.targetFlying && !value.weapon.canTargetAir)))
+    failures.push("combat_attack_started_with_illegal_status_range_or_domain");
+  if (id === "FIGHT-01") {
+    if (!nativeWeaponHits(context, target).some((fact) => fact.tick < 400)) failures.push("combat_initial_favorable_fight_missing");
+    if (branch !== "quiet" && !nativeRetreats(context, 400).length) failures.push("combat_changed_risk_has_no_physical_regroup");
+    if (branch === "quiet" && !nativeWeaponHits(context, target, 400).length)
+      failures.push("combat_favorable_control_did_not_continue_useful_fighting");
+  }
+  if (id === "FIGHT-02") {
+    const initial = context.frames[0]?.tacticalBoundary?.actors.find((actor) => actor.identity.actorId === ranged);
+    if (!initial || initial.combat?.status !== "known" || initial.health === null ||
+        initial.health > initial.combat.value.maxHealth * 0.45) failures.push("combat_damaged_ranged_premise_missing");
+    if (!nativeRetainedActor(context, ranged) || !context.arrived(ranged, 200).length)
+      failures.push("combat_valuable_actor_not_physically_preserved");
+    if (!nativePhysicalDamageFromActor(context, ranged, undefined).length)
+      failures.push("combat_preserved_actor_no_useful_shot");
+    const requests = operations.filter(({ value }) => value.kind === "attack_requested" && value.actor.actorId === ranged);
+    const committed = new Set(operations.flatMap(({ fact, value }) => value.kind === "attack_committed"
+      ? [`${value.actor.actorId}:${value.target.actorId}:${fact.tick}:${value.weapon.weaponType}:${value.weapon.damage}`]
+      : []));
+    const unmatched = requests.filter(({ fact, value }) => value.kind === "attack_requested" &&
+      !committed.has(`${value.actor.actorId}:${value.target.actorId}:${fact.tick}:${value.weapon.weaponType}:${value.weapon.damage}`));
+    if (unmatched.length > 2) failures.push("combat_excessive_cancelled_windups");
+  }
+  if (id === "FIGHT-03") failures.push(...evaluateNativeFronts(branch, context));
+  if (id === "RAID-01") {
+    const raidTarget = context.roles[nativeRaidTargetRole(branch)];
+    const worker = context.roles["enemy-worker"];
+    const workerUsesRaidTarget = !["workers", "expansion"].includes(branch) || context.facts.some((fact) =>
+      fact.kind === "spatial_authority" && fact.spatial.kind === "service_attempt" &&
+      fact.spatial.operation === "drop_off" && fact.spatial.phase === "resolved" &&
+      fact.spatial.source.actorId === worker && fact.spatial.target.actorId === raidTarget &&
+      fact.spatial.amount !== null && fact.spatial.amount > 0 && fact.spatial.sourceInCaptureScene &&
+      fact.spatial.targetInCaptureScene && fact.spatial.lifetimeValid && fact.spatial.sceneActive &&
+      fact.spatial.clockTick === fact.tick && !fact.spatial.snapshotRestoreInProgress && !fact.spatial.gaps.length);
+    const allowedRaidTargets = new Set(workerUsesRaidTarget ? [raidTarget, worker] : [raidTarget]);
+    const raidMissions = context.frames.flatMap((frame) => (frame.decision.missionState?.squads ?? [])
+      .filter((squad) => squad.role === "attack" && squad.squadId.startsWith("squad:attack:raid:") &&
+        squad.actorIds.length > 0 && squad.actorIds.length <= 4 && allowedRaidTargets.has(squad.tactics?.targetActorId ?? ""))
+      .map((squad) => ({ tick: frame.tick, squad })));
+    const raidHits = nativeWeaponHits(context).filter((fact) => {
+      const actorId = fact.damage.initiator?.actorId;
+      return !!actorId && raidMissions.some(({ tick, squad }) =>
+        fact.tick >= tick && squad.actorIds.includes(actorId) && squad.tactics?.targetActorId === fact.damage.target.actorId);
+    });
+    if (branch !== "protected" && (!workerUsesRaidTarget || !raidMissions.length || !raidHits.length ||
+        !raidMissions.some(({ tick, squad }) =>
+          squad.actorIds.some((actorId) => context.arrived(actorId, tick).length))))
+      failures.push("raid_limited_suitable_squad_has_no_native_harassment");
+    if (branch === "protected" && context.frames.some((frame) => frame.decision.missionState?.squads.some((squad) =>
+      squad.role === "attack" && squad.squadId.startsWith("squad:attack:raid:") &&
+      squad.tactics?.targetActorId === raidTarget && squad.actorIds.length > 0)))
+      failures.push("raid_protected_control_selected_for_harassment");
+    // A faction's real core can become visible after the authored fronts are selected; it is a useful
+    // continuation of the main assault and should not be rejected by this protected-raid control.
+    const mainTargets = new Set([
+      context.roles["front-target-a"], context.roles["front-target-b"], context.roles["enemy-home"]
+    ]);
+    const mainMissions = context.frames.flatMap((frame) => {
+      const squads = frame.decision.missionState?.squads ?? [];
+      const frameRaidActorIds = new Set(squads.filter((squad) =>
+        squad.role === "attack" && squad.squadId.startsWith("squad:attack:raid:") &&
+        squad.tactics?.targetActorId === raidTarget).flatMap((squad) => squad.actorIds));
+      return squads.filter((squad) => squad.role === "attack" &&
+        !squad.squadId.startsWith("squad:attack:raid:") && squad.actorIds.length > 0 &&
+        mainTargets.has(squad.tactics?.targetActorId ?? "") &&
+        squad.actorIds.every((actorId) => !frameRaidActorIds.has(actorId)))
+        .map((squad) => ({ tick: frame.tick, squad }));
+    });
+    const mainObjectiveHits = nativeWeaponHits(context).filter((fact) => {
+      const actorId = fact.damage.initiator?.actorId;
+      return !!actorId && mainMissions.some(({ tick, squad }) =>
+        fact.tick >= tick && squad.actorIds.includes(actorId) && squad.tactics?.targetActorId === fact.damage.target.actorId);
+    });
+    if (!mainObjectiveHits.length) failures.push("raid_main_objective_has_no_continuing_native_pressure");
+  }
+  if (id === "FIGHT-04") failures.push(...evaluateNativeSupport(branch, context));
+  if (id === "FIGHT-05") {
+    if (["stun", "slow"].includes(branch)) {
+      const expected = branch === "stun" ? [StatusEffectType.Stunned, StatusEffectType.Frozen] : [StatusEffectType.Slowed];
+      const applied = operations.find(({ value }) => value.kind === "status_applied" && value.actor.actorId === ranged &&
+        expected.includes(value.effect.type));
+      if (!applied || applied.value.kind !== "status_applied" || !applied.value.effect.sourceActorId)
+        failures.push("combat_definition_backed_native_status_missing");
+      else {
+        const duration = Math.ceil(applied.value.effect.duration / 50), effect = applied.value.effect;
+        const removed = operations.find(({ fact, value }) => fact.sequence > applied.fact.sequence &&
+          value.kind === "status_removed" && value.actor.actorId === ranged && value.effectType === effect.type);
+        if (!removed || removed.fact.tick < applied.fact.tick + duration - 1 ||
+            removed.fact.tick > applied.fact.tick + duration + 1) failures.push("combat_native_status_duration_or_expiry_invalid");
+        if (!context.arrived(ranged, removed?.fact.tick ?? Infinity).length &&
+            !nativeWeaponHits(context, undefined, removed?.fact.tick ?? Infinity).some((fact) =>
+              fact.kind === "native_damage" && fact.damage.initiator?.actorId === ranged))
+          failures.push("combat_no_useful_recovery_after_native_status_expiry");
+      }
+    } else {
+      const lossTick = branch === "target_loss" && target ? nativeTargetLossTick(context, target) : undefined;
+      if (branch === "target_loss" && (!target || lossTick === undefined)) failures.push("combat_original_target_loss_not_applied");
+      const effectStartTick = lossTick ?? 400;
+      if (branch === "target_loss" && context.frames.some((frame) => frame.tick > effectStartTick + 40 &&
+        frame.decision.acceptedIntents.some((intent) => intent.kind === "attack" && intent.targetActorId === target)))
+        failures.push("combat_dead_target_still_commanded");
+      if (branch === "wall" && !context.facts.some((fact) => fact.kind === "spatial_authority" &&
+        fact.spatial.kind === "placement" && fact.tick === 400 && fact.spatial.legal &&
+        fact.spatial.command.execution?.source === "human" && fact.spatial.site.canonicalObjectName === "Wall"))
+        failures.push("combat_real_shared_wall_blocker_missing");
+      if (!context.frames.some((frame) => frame.tick > effectStartTick && frame.tick <= effectStartTick + 400 &&
+        frame.decision.acceptedIntents.some((intent) => (intent.kind === "move" || intent.kind === "attack") &&
+          (intent.kind !== "attack" || intent.targetActorId !== target)))) failures.push("combat_bounded_alternative_duty_missing");
+      const alternativeHits = nativeWeaponHits(context, undefined, effectStartTick).filter((fact) =>
+        fact.kind === "native_damage" && fact.damage.target.actorId !== target);
+      if (!nativeRetreats(context, effectStartTick).length && !alternativeHits.length)
+        failures.push("combat_alternative_duty_has_no_native_effect");
+    }
+  }
+  return [...new Set(failures)];
+}
+
+export function nativeTargetLossTick(context: ReturnType<typeof nativeScenarioContext>, targetId: string): number | undefined {
+  return context.result.perturbations.find((event) => event.id === "loss-contact-group" &&
+    event.affectedActorId === targetId)?.tick;
+}
+
+/** Independent targets need disjoint useful groups; weighted response is measured in real members and real hits. */
+export function evaluateNativeFronts(branch: string, context: ReturnType<typeof nativeScenarioContext>): string[] {
+  const a = context.roles["front-target-a"], b = context.roles["front-target-b"], failures: string[] = [];
+  const pair = context.frames.find((frame) => {
+    const squads = frame.decision.missionState?.squads ?? [];
+    const left = squads.find((squad) => squad.tactics?.targetActorId === a && squad.actorIds.length);
+    const right = squads.find((squad) => squad.tactics?.targetActorId === b && squad.actorIds.length);
+    return left && right && !left.actorIds.some((id) => right.actorIds.includes(id));
+  });
+  if (!pair || !nativeWeaponHits(context, a).length || !nativeWeaponHits(context, b).length)
+    failures.push("combat_independent_physically_useful_fronts_missing");
+  if (["unequal", "escalated"].includes(branch)) {
+    const responsive = context.frames.some((frame) => frame.tick > 400 && frame.tick <= 800 &&
+      (frame.decision.missionState?.squads.find((squad) => squad.tactics?.targetActorId === a)?.actorIds.length ?? 0) >
+      (frame.decision.missionState?.squads.find((squad) => squad.tactics?.targetActorId === b)?.actorIds.length ?? Infinity));
+    if (!responsive) failures.push("combat_reinforcements_not_proportional_to_escalation");
+  }
+  if (branch === "infeasible" && (!nativeWeaponHits(context, b, 600).length || context.frames.some((frame) =>
+    frame.tick > 800 && frame.decision.missionState?.squads.some((squad) => squad.tactics?.targetActorId === a &&
+      !["completed", "cancelled", "retreat", "recover"].includes(squad.state)))))
+    failures.push("combat_infeasible_front_not_released_independently");
+  return failures;
+}
+
+/** Claims must settle into real effects and release on native expiry; declarative support capacity is insufficient. */
+function evaluateNativeSupport(branch: string, context: ReturnType<typeof nativeScenarioContext>): string[] {
+  const failures: string[] = [];
+  const operations = context.facts.flatMap((fact) => fact.kind === "native_combat" ? [{ fact, value: fact.operation }] : []);
+  if (branch === "overkill") {
+    if (!nativeWeaponHits(context, context.roles["contact-group"]).length ||
+        !nativeWeaponHits(context, context.roles["front-target-a"]).length) failures.push("combat_overkill_no_actual_target_distribution");
+    for (const frame of context.frames) {
+      const claims = frame.decision.missionState?.squads.flatMap((squad) => squad.tactics?.damageReservations ?? []) ?? [];
+      for (const targetId of new Set(claims.map((claim) => claim.targetActorId))) {
+        const hp = frame.tacticalBoundary?.actors.find((actor) => actor.identity.actorId === targetId);
+        const values = claims.filter((claim) => claim.targetActorId === targetId && claim.impactTick >= frame.tick);
+        const committed = values.reduce((sum, claim) => sum + claim.expectedDamage, 0);
+        if (hp?.health !== null && hp?.health !== undefined && values.length > 1 &&
+            committed - Math.max(...values.map((claim) => claim.expectedDamage)) >= hp.health + (hp.armour ?? 0))
+          failures.push("combat_avoidable_overkill_still_reserved");
+      }
+    }
+  } else {
+    const applied = operations.filter(({ value }) => value.kind === "status_applied" &&
+      value.effect.sourceActorId === context.roles["support-probe"] || value.kind === "heal_returned" &&
+      value.actor.playerNumber === 2 && value.beforeHealth !== null && value.afterHealth !== null &&
+      value.afterHealth > value.beforeHealth || value.kind === "health_healed" && value.actor.playerNumber === 2 &&
+      value.afterHealth > value.beforeHealth);
+    const summonedAndExpired = branch === "support_expiry" && nativeSummonExpired(context.facts, "HealingTotem", 2);
+    const harmfulZoneApplied = branch === "zone" && nativeHarmfulZoneApplied(context);
+    if (!applied.length && !summonedAndExpired && !harmfulZoneApplied)
+      failures.push("combat_support_has_no_native_applied_effect");
+    if (!operations.some(({ value }) => value.kind === "spell_cooldown_started" &&
+      value.actor.actorId === context.roles["support-probe"])) failures.push("combat_selected_caster_never_started_native_spell");
+    for (const frame of context.frames) {
+      const active = frame.decision.missionState?.support.filter((plan) => !["completed", "released"].includes(plan.state ?? "")) ?? [];
+      if (active.some((plan) => plan.expiresAt && plan.expiresAt.dueTick < frame.tick))
+        failures.push("combat_expired_support_still_owns_capacity");
+      const effects = active.flatMap((plan) => plan.effectId ? [plan.effectId] : []);
+      if (new Set(effects).size !== effects.length) failures.push("combat_pending_support_effect_reserved_twice");
+    }
+    if (branch === "zone" && !harmfulZoneApplied)
+      failures.push("combat_actual_harmful_zone_never_observed");
+    if (branch === "support_expiry" && !context.facts.some((fact) => fact.kind === "actor_unregistered" &&
+      fact.objectName.toLowerCase().includes("totem"))) failures.push("combat_temporary_support_native_expiry_missing");
+  }
+  return failures;
+}
+
+/** A self-owned enemy-only zone is neutral to its caster, while its native damage status appears on the opponent. */
+function nativeHarmfulZoneApplied(context: ReturnType<typeof nativeScenarioContext>): boolean {
+  const casterId = context.roles["support-probe"];
+  const casterPlayer = context.capture?.playerNumber;
+  const opponentPlayer = context.opponent?.playerNumber;
+  const cast = context.facts.find((fact) => fact.kind === "native_combat" &&
+    fact.operation.kind === "spell_cooldown_started" && fact.operation.actor.actorId === casterId &&
+    fact.operation.spellType === "firestorm");
+  if (!cast || casterPlayer === undefined || opponentPlayer === undefined) return false;
+  const observedZone = context.frames.some((frame) => frame.decision.input?.effects?.some((effect) =>
+    effect.owner === casterPlayer && effect.relation === "self" && effect.influence !== "beneficial" &&
+    (effect.radius ?? 0) > 0 && effect.expiresAt.status === "known" && effect.expiresAt.value > frame.tick));
+  const damagedOpponent = context.facts.some((fact) => fact.tick >= cast.tick && fact.kind === "native_combat" &&
+    fact.operation.kind === "status_applied" && fact.operation.actor.playerNumber === opponentPlayer &&
+    fact.operation.effect.type === StatusEffectType.Burning && (fact.operation.effect.damagePerTick ?? 0) > 0);
+  return observedZone && damagedOpponent;
+}
+
+export function nativeSummonExpired(
+  facts: ReturnType<typeof nativeScenarioContext>["facts"],
+  objectName: string,
+  playerNumber: number
+): boolean {
+  return facts.some((registered) => registered.kind === "actor_registered" &&
+    registered.actor.objectName === objectName && registered.actor.playerNumber === playerNumber &&
+    facts.some((removed) => removed.kind === "actor_unregistered" && removed.actorId === registered.actor.actorId &&
+      removed.tick > registered.tick));
+}

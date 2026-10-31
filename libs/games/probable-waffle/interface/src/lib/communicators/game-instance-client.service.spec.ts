@@ -7,6 +7,8 @@ import { authServiceStub } from "@fuzzy-waddle/platform-identity/client/auth/aut
 import { provideRouter } from "@angular/router";
 import { provideHttpClient } from "@angular/common/http";
 import { GameSaveService } from "../services/game-save/game-save.service";
+import { SceneCommunicatorClientService } from "./scene-communicator-client.service";
+import { Subscription } from "rxjs";
 import {
   CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION,
   GameSaveScope,
@@ -35,6 +37,39 @@ describe("GameInstanceClientService", () => {
 
   it("should be created", () => {
     expect(service).toBeTruthy();
+  });
+
+  it("preserves a new match if an older instance cleanup finishes after replacement", async () => {
+    let release: (() => void) | undefined;
+    jest.spyOn(TestBed.inject(SceneCommunicatorClientService), "destroyCommunicators")
+      .mockImplementation(() => new Promise<void>((resolve) => { release = resolve; }));
+    const original = { marker: "old" } as unknown as ProbableWaffleGameInstance;
+    const replacement = { marker: "new" } as unknown as ProbableWaffleGameInstance;
+    const listener = new Subscription();
+    service.gameInstance = original;
+    Reflect.set(service, "communicatorInstanceId", "old");
+    Reflect.set(service, "communicatorSubscriptions", [listener]);
+    const cleanup = (service as unknown as { cleanupLocalGameState(): Promise<void> }).cleanupLocalGameState();
+    expect(listener.closed).toBe(true);
+    service.gameInstance = replacement;
+    service.currentPlayerNumber = 7;
+    if (!release) throw new Error("Old cleanup did not reach storage boundary");
+    release();
+    await cleanup;
+    expect(service.gameInstance).toBe(replacement);
+    expect(service.currentPlayerNumber).toBe(7);
+  });
+
+  it("uses the captured world rather than later live state after thumbnail and naming delays", async () => {
+    const instance = { data: { gameStateData: { actors: [], pause: false, score: 0, simulationTick: 900 } } };
+    service.gameInstance = instance as ProbableWaffleGameInstance;
+    const captured = structuredClone(instance.data);
+    captured.gameStateData.simulationTick = 200;
+    await service.saveGameInstance({ kind: "manual", name: "Captured boundary", thumbnail: "image", gameInstanceData: captured });
+    captured.gameStateData.simulationTick = 1000;
+    expect(gameSaveService.save).toHaveBeenCalledWith(expect.objectContaining({
+      gameInstanceData: expect.objectContaining({ gameStateData: expect.objectContaining({ simulationTick: 200 }) })
+    }));
   });
 
   it("persists instant-game saves through the shared game-save service", async () => {

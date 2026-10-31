@@ -1,0 +1,1345 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "runtime",
+  "driver": "runtime",
+  "scenarioIds": [
+    "D-04"
+  ],
+  "status": "authored_not_executed",
+  "purpose": "Easy still opens, produces useful copies, counters legal threats, retreats and recovers; reduced breadth is not broken behavior",
+  "acceptance": {
+    "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/classic-rts-and-difficulty-scenarios.md",
+    "requiredOutcome": "Easy still opens, produces useful copies, counters legal threats, retreats and recovers; reduced breadth is not broken behavior",
+    "setup": [
+      "Easy ordinary legal start uses the real reduced-breadth profile for each faction",
+      "Opponent script creates a legal counterable threat and a later recovery opportunity"
+    ],
+    "actions": [
+      "Let opening establish delivered income, useful repeated production and an actual mission",
+      "Turn one engagement unfavorable then allow a valid retreat and recovery"
+    ],
+    "measurements": [
+      "Native opening completions, repeated useful output, target-compatible counters, retreat arrival and resumed income/mission effect"
+    ],
+    "required": [
+      "Easy remains functional across opening, copies, countering, retreat and recovery",
+      "Reduced search breadth does not disable necessary gameplay"
+    ],
+    "forbidden": [
+      "Passing on profile lookup alone",
+      "Fixture grants mistaken for earned economy",
+      "Forced suicide to demonstrate attack"
+    ]
+  },
+  "recipe": {
+    "mapLabel": "AI Open Economy (test only)",
+    "aiPlayerNumber": 2,
+    "simulationTimeScale": 1,
+    "fixedStepFrames": true,
+    "checkpointTicks": [
+      40,
+      400,
+      1200,
+      2400,
+      2600,
+      3000,
+      3200,
+      4000,
+      5000,
+      6000,
+      12000,
+      18000
+    ],
+    "variants": [
+      {
+        "id": "d-04-tivara-opening-counter-retreat-recovery",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Easy",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "D-04"
+        ],
+        "presetWorld": {
+          "fixtureId": "d-04-tivara-opening-counter-retreat-recovery",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "continuity-target",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -192,
+                "y": 768,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "continuity-counter-0",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -64,
+                "y": 224,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "continuity-counter-1",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -32,
+                "y": 240,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "continuity-counter-2",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": 0,
+                "y": 256,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "continuity-counter-3",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": 32,
+                "y": 272,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "continuity-counter-4",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -96,
+                "y": 240,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "continuity-counter-5",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -64,
+                "y": 256,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "continuity-counter-6",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -32,
+                "y": 272,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "continuity-counter-7",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": 0,
+                "y": 288,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "continuity-counter-8",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -128,
+                "y": 256,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "continuity-counter-9",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -96,
+                "y": 272,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "continuity-counter-10",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -64,
+                "y": 288,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "continuity-counter-11",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 1,
+              "position": {
+                "x": -32,
+                "y": 304,
+                "z": 0
+              }
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "original-home",
+              "actorName": "Sandhold",
+              "owner": 2
+            },
+            {
+              "fixtureActorId": "enemy-home",
+              "actorName": "FrostForge",
+              "owner": 1
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [],
+          "controls": [
+            {
+              "id": "counter-arrive-0",
+              "producerFixtureActorId": "continuity-counter-0",
+              "requestTick": 2600,
+              "applicationTick": 2600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 64,
+                  "y": 800,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-attack-0",
+              "producerFixtureActorId": "continuity-counter-0",
+              "requestTick": 3000,
+              "applicationTick": 3000,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "counter-leave-0",
+              "producerFixtureActorId": "continuity-counter-0",
+              "requestTick": 5000,
+              "applicationTick": 5000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 224,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-arrive-1",
+              "producerFixtureActorId": "continuity-counter-1",
+              "requestTick": 2600,
+              "applicationTick": 2600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 816,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-attack-1",
+              "producerFixtureActorId": "continuity-counter-1",
+              "requestTick": 3000,
+              "applicationTick": 3000,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "counter-leave-1",
+              "producerFixtureActorId": "continuity-counter-1",
+              "requestTick": 5000,
+              "applicationTick": 5000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -32,
+                  "y": 240,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-arrive-2",
+              "producerFixtureActorId": "continuity-counter-2",
+              "requestTick": 2600,
+              "applicationTick": 2600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 128,
+                  "y": 832,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-attack-2",
+              "producerFixtureActorId": "continuity-counter-2",
+              "requestTick": 3000,
+              "applicationTick": 3000,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "counter-leave-2",
+              "producerFixtureActorId": "continuity-counter-2",
+              "requestTick": 5000,
+              "applicationTick": 5000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 0,
+                  "y": 256,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-arrive-3",
+              "producerFixtureActorId": "continuity-counter-3",
+              "requestTick": 2600,
+              "applicationTick": 2600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 160,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-attack-3",
+              "producerFixtureActorId": "continuity-counter-3",
+              "requestTick": 3000,
+              "applicationTick": 3000,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "counter-leave-3",
+              "producerFixtureActorId": "continuity-counter-3",
+              "requestTick": 5000,
+              "applicationTick": 5000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 272,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-arrive-4",
+              "producerFixtureActorId": "continuity-counter-4",
+              "requestTick": 2600,
+              "applicationTick": 2600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 816,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-attack-4",
+              "producerFixtureActorId": "continuity-counter-4",
+              "requestTick": 3000,
+              "applicationTick": 3000,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "counter-leave-4",
+              "producerFixtureActorId": "continuity-counter-4",
+              "requestTick": 5000,
+              "applicationTick": 5000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -96,
+                  "y": 240,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-arrive-5",
+              "producerFixtureActorId": "continuity-counter-5",
+              "requestTick": 2600,
+              "applicationTick": 2600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 64,
+                  "y": 832,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-attack-5",
+              "producerFixtureActorId": "continuity-counter-5",
+              "requestTick": 3000,
+              "applicationTick": 3000,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "counter-leave-5",
+              "producerFixtureActorId": "continuity-counter-5",
+              "requestTick": 5000,
+              "applicationTick": 5000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 256,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-arrive-6",
+              "producerFixtureActorId": "continuity-counter-6",
+              "requestTick": 2600,
+              "applicationTick": 2600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-attack-6",
+              "producerFixtureActorId": "continuity-counter-6",
+              "requestTick": 3000,
+              "applicationTick": 3000,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "counter-leave-6",
+              "producerFixtureActorId": "continuity-counter-6",
+              "requestTick": 5000,
+              "applicationTick": 5000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -32,
+                  "y": 272,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-arrive-7",
+              "producerFixtureActorId": "continuity-counter-7",
+              "requestTick": 2600,
+              "applicationTick": 2600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 128,
+                  "y": 864,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-attack-7",
+              "producerFixtureActorId": "continuity-counter-7",
+              "requestTick": 3000,
+              "applicationTick": 3000,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "counter-leave-7",
+              "producerFixtureActorId": "continuity-counter-7",
+              "requestTick": 5000,
+              "applicationTick": 5000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 0,
+                  "y": 288,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-arrive-8",
+              "producerFixtureActorId": "continuity-counter-8",
+              "requestTick": 2600,
+              "applicationTick": 2600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 0,
+                  "y": 832,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-attack-8",
+              "producerFixtureActorId": "continuity-counter-8",
+              "requestTick": 3000,
+              "applicationTick": 3000,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "counter-leave-8",
+              "producerFixtureActorId": "continuity-counter-8",
+              "requestTick": 5000,
+              "applicationTick": 5000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -128,
+                  "y": 256,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-arrive-9",
+              "producerFixtureActorId": "continuity-counter-9",
+              "requestTick": 2600,
+              "applicationTick": 2600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-attack-9",
+              "producerFixtureActorId": "continuity-counter-9",
+              "requestTick": 3000,
+              "applicationTick": 3000,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "counter-leave-9",
+              "producerFixtureActorId": "continuity-counter-9",
+              "requestTick": 5000,
+              "applicationTick": 5000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -96,
+                  "y": 272,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-arrive-10",
+              "producerFixtureActorId": "continuity-counter-10",
+              "requestTick": 2600,
+              "applicationTick": 2600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 64,
+                  "y": 864,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-attack-10",
+              "producerFixtureActorId": "continuity-counter-10",
+              "requestTick": 3000,
+              "applicationTick": 3000,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "counter-leave-10",
+              "producerFixtureActorId": "continuity-counter-10",
+              "requestTick": 5000,
+              "applicationTick": 5000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 288,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-arrive-11",
+              "producerFixtureActorId": "continuity-counter-11",
+              "requestTick": 2600,
+              "applicationTick": 2600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 880,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-attack-11",
+              "producerFixtureActorId": "continuity-counter-11",
+              "requestTick": 3000,
+              "applicationTick": 3000,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "counter-leave-11",
+              "producerFixtureActorId": "continuity-counter-11",
+              "requestTick": 5000,
+              "applicationTick": 5000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -32,
+                  "y": 304,
+                  "z": 0
+                }
+              }
+            }
+          ],
+          "events": [
+            {
+              "id": "continuity-worker-loss",
+              "tick": 3200,
+              "kind": "destroy_owned_actor",
+              "owner": 2,
+              "objectName": "TivaraWorkerMale"
+            }
+          ],
+          "initialOrders": [],
+          "terrainPatches": []
+        }
+      },
+      {
+        "id": "d-04-skaduwee-opening-counter-retreat-recovery",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Skaduwee",
+        "humanFaction": "Tivara",
+        "difficulty": "Easy",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "D-04"
+        ],
+        "presetWorld": {
+          "fixtureId": "d-04-skaduwee-opening-counter-retreat-recovery",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "continuity-target",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -192,
+                "y": 768,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "continuity-counter-0",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -64,
+                "y": 224,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "continuity-counter-1",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -32,
+                "y": 240,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "continuity-counter-2",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": 0,
+                "y": 256,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "continuity-counter-3",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": 32,
+                "y": 272,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "continuity-counter-4",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -96,
+                "y": 240,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "continuity-counter-5",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -64,
+                "y": 256,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "continuity-counter-6",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -32,
+                "y": 272,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "continuity-counter-7",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": 0,
+                "y": 288,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "continuity-counter-8",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -128,
+                "y": 256,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "continuity-counter-9",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -96,
+                "y": 272,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "continuity-counter-10",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -64,
+                "y": 288,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "continuity-counter-11",
+              "actorName": "TivaraMacemanMale",
+              "owner": 1,
+              "position": {
+                "x": -32,
+                "y": 304,
+                "z": 0
+              }
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "original-home",
+              "actorName": "FrostForge",
+              "owner": 2
+            },
+            {
+              "fixtureActorId": "enemy-home",
+              "actorName": "Sandhold",
+              "owner": 1
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [],
+          "controls": [
+            {
+              "id": "counter-arrive-0",
+              "producerFixtureActorId": "continuity-counter-0",
+              "requestTick": 2600,
+              "applicationTick": 2600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 64,
+                  "y": 800,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-attack-0",
+              "producerFixtureActorId": "continuity-counter-0",
+              "requestTick": 3000,
+              "applicationTick": 3000,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "counter-leave-0",
+              "producerFixtureActorId": "continuity-counter-0",
+              "requestTick": 5000,
+              "applicationTick": 5000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 224,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-arrive-1",
+              "producerFixtureActorId": "continuity-counter-1",
+              "requestTick": 2600,
+              "applicationTick": 2600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 816,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-attack-1",
+              "producerFixtureActorId": "continuity-counter-1",
+              "requestTick": 3000,
+              "applicationTick": 3000,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "counter-leave-1",
+              "producerFixtureActorId": "continuity-counter-1",
+              "requestTick": 5000,
+              "applicationTick": 5000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -32,
+                  "y": 240,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-arrive-2",
+              "producerFixtureActorId": "continuity-counter-2",
+              "requestTick": 2600,
+              "applicationTick": 2600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 128,
+                  "y": 832,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-attack-2",
+              "producerFixtureActorId": "continuity-counter-2",
+              "requestTick": 3000,
+              "applicationTick": 3000,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "counter-leave-2",
+              "producerFixtureActorId": "continuity-counter-2",
+              "requestTick": 5000,
+              "applicationTick": 5000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 0,
+                  "y": 256,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-arrive-3",
+              "producerFixtureActorId": "continuity-counter-3",
+              "requestTick": 2600,
+              "applicationTick": 2600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 160,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-attack-3",
+              "producerFixtureActorId": "continuity-counter-3",
+              "requestTick": 3000,
+              "applicationTick": 3000,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "counter-leave-3",
+              "producerFixtureActorId": "continuity-counter-3",
+              "requestTick": 5000,
+              "applicationTick": 5000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 272,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-arrive-4",
+              "producerFixtureActorId": "continuity-counter-4",
+              "requestTick": 2600,
+              "applicationTick": 2600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 816,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-attack-4",
+              "producerFixtureActorId": "continuity-counter-4",
+              "requestTick": 3000,
+              "applicationTick": 3000,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "counter-leave-4",
+              "producerFixtureActorId": "continuity-counter-4",
+              "requestTick": 5000,
+              "applicationTick": 5000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -96,
+                  "y": 240,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-arrive-5",
+              "producerFixtureActorId": "continuity-counter-5",
+              "requestTick": 2600,
+              "applicationTick": 2600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 64,
+                  "y": 832,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-attack-5",
+              "producerFixtureActorId": "continuity-counter-5",
+              "requestTick": 3000,
+              "applicationTick": 3000,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "counter-leave-5",
+              "producerFixtureActorId": "continuity-counter-5",
+              "requestTick": 5000,
+              "applicationTick": 5000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 256,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-arrive-6",
+              "producerFixtureActorId": "continuity-counter-6",
+              "requestTick": 2600,
+              "applicationTick": 2600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-attack-6",
+              "producerFixtureActorId": "continuity-counter-6",
+              "requestTick": 3000,
+              "applicationTick": 3000,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "counter-leave-6",
+              "producerFixtureActorId": "continuity-counter-6",
+              "requestTick": 5000,
+              "applicationTick": 5000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -32,
+                  "y": 272,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-arrive-7",
+              "producerFixtureActorId": "continuity-counter-7",
+              "requestTick": 2600,
+              "applicationTick": 2600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 128,
+                  "y": 864,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-attack-7",
+              "producerFixtureActorId": "continuity-counter-7",
+              "requestTick": 3000,
+              "applicationTick": 3000,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "counter-leave-7",
+              "producerFixtureActorId": "continuity-counter-7",
+              "requestTick": 5000,
+              "applicationTick": 5000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 0,
+                  "y": 288,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-arrive-8",
+              "producerFixtureActorId": "continuity-counter-8",
+              "requestTick": 2600,
+              "applicationTick": 2600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 0,
+                  "y": 832,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-attack-8",
+              "producerFixtureActorId": "continuity-counter-8",
+              "requestTick": 3000,
+              "applicationTick": 3000,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "counter-leave-8",
+              "producerFixtureActorId": "continuity-counter-8",
+              "requestTick": 5000,
+              "applicationTick": 5000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -128,
+                  "y": 256,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-arrive-9",
+              "producerFixtureActorId": "continuity-counter-9",
+              "requestTick": 2600,
+              "applicationTick": 2600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 848,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-attack-9",
+              "producerFixtureActorId": "continuity-counter-9",
+              "requestTick": 3000,
+              "applicationTick": 3000,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "counter-leave-9",
+              "producerFixtureActorId": "continuity-counter-9",
+              "requestTick": 5000,
+              "applicationTick": 5000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -96,
+                  "y": 272,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-arrive-10",
+              "producerFixtureActorId": "continuity-counter-10",
+              "requestTick": 2600,
+              "applicationTick": 2600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 64,
+                  "y": 864,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-attack-10",
+              "producerFixtureActorId": "continuity-counter-10",
+              "requestTick": 3000,
+              "applicationTick": 3000,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "counter-leave-10",
+              "producerFixtureActorId": "continuity-counter-10",
+              "requestTick": 5000,
+              "applicationTick": 5000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -64,
+                  "y": 288,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-arrive-11",
+              "producerFixtureActorId": "continuity-counter-11",
+              "requestTick": 2600,
+              "applicationTick": 2600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 96,
+                  "y": 880,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "counter-attack-11",
+              "producerFixtureActorId": "continuity-counter-11",
+              "requestTick": 3000,
+              "applicationTick": 3000,
+              "action": {
+                "kind": "attack",
+                "targetFixtureActorId": "original-home"
+              }
+            },
+            {
+              "id": "counter-leave-11",
+              "producerFixtureActorId": "continuity-counter-11",
+              "requestTick": 5000,
+              "applicationTick": 5000,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": -32,
+                  "y": 304,
+                  "z": 0
+                }
+              }
+            }
+          ],
+          "events": [
+            {
+              "id": "continuity-worker-loss",
+              "tick": 3200,
+              "kind": "destroy_owned_actor",
+              "owner": 2,
+              "objectName": "SkaduweeWorkerMale"
+            }
+          ],
+          "initialOrders": [],
+          "terrainPatches": []
+        }
+      }
+    ]
+  },
+  "assertions": {
+    "D-04": {
+      "maximumTick": 18000,
+      "minimumDecisions": 1,
+      "minimumAppliedCommands": 1,
+      "requiredAiFactions": [
+        "Tivara",
+        "Skaduwee"
+      ],
+      "requiredNativeScenario": {
+        "schemaVersion": 1,
+        "scenarioId": "D-04",
+        "latestTick": 18000,
+        "humanPlayerNumber": 1,
+        "branchByVariant": {
+          "d-04-tivara-opening-counter-retreat-recovery": "opening_counter_retreat_recovery",
+          "d-04-skaduwee-opening-counter-retreat-recovery": "opening_counter_retreat_recovery"
+        }
+      }
+    }
+  }
+}

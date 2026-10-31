@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "scenarioIds": [
+    "H-32"
+  ],
+  "purpose": "Reuse actual controller shutdown controls without treating them as full second-match native proof",
+  "driver": "pure",
+  "seeds": [
+    759014,
+    759114,
+    759214
+  ],
+  "context": {
+    "mapId": "stage-14-adaptation-and-tech",
+    "mapDigest": "authored-stage-14-not-yet-executed",
+    "side": 1,
+    "faction": "Tivara",
+    "rulesVersion": "probable-waffle-rules-v1",
+    "contractVersions": {
+      "scenario": 1,
+      "brain": 1,
+      "observation": 1,
+      "command": 1,
+      "repro": 1,
+      "worldProjection": 1
+    }
+  },
+  "pureCases": [
+    {
+      "scenarioId": "H-32",
+      "coverage": "owner_contract",
+      "setup": "Dispose a controller with queued work, reconciliation and a tick subscription; attempt late reactivation and restores",
+      "expected": "No late planning or restore; release reconciliation and subscriptions exactly once",
+      "remaining": [
+        "Real same-realm second-match, paid/path and host-replacement runtime branches remain required"
+      ],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/player-ai-controller.spec.ts",
+          "title": "cannot reactivate a disposed controller through late host toggles, restore or queued steps"
+        }
+      ]
+    }
+  ],
+  "status": "authored_not_run"
+}

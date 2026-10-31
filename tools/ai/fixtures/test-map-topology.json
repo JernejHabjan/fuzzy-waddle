@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "maps": [
+    {
+      "id": "ai-open-economy",
+      "scene": "libs/games/probable-waffle/phaser/src/lib/world/scenes/game-maps/MapAiOpenEconomy.scene",
+      "sceneSha256": "3ef671872b5ee0c323d214fe13850b863d5541b51bb775e7732f208c9e87cdaa",
+      "tilemap": "libs/games/probable-waffle/phaser/src/assets/probable-waffle/tilemaps/ai_open_economy.json",
+      "tilemapSha256": "86eaef4b4a6f361d1dbf7973595c9609a32bee354b08b3ee0ef89ad1a8cac64a",
+      "assetPackDirectory": "libs/games/probable-waffle/phaser/src/assets/probable-waffle/asset-packers/maps",
+      "assetPack": "asset-pack-probable-waffle-ai-open-economy.json",
+      "assetPackSha256": "ff64f3747be26a85fd239e7883cd85b01c82bb490d80518ca97ad07d0c851b3d"
+    },
+    {
+      "id": "ai-multiplayer",
+      "scene": "libs/games/probable-waffle/phaser/src/lib/world/scenes/game-maps/MapAiMultiplayer.scene",
+      "sceneSha256": "7467598e14083d03673c831915889b92bbc156c1325639eacbe05bca0858e2b8",
+      "tilemap": "libs/games/probable-waffle/phaser/src/assets/probable-waffle/tilemaps/ai_open_economy.json",
+      "tilemapSha256": "86eaef4b4a6f361d1dbf7973595c9609a32bee354b08b3ee0ef89ad1a8cac64a",
+      "assetPackDirectory": "libs/games/probable-waffle/phaser/src/assets/probable-waffle/asset-packers/maps",
+      "assetPack": "asset-pack-probable-waffle-ai-open-economy.json",
+      "assetPackSha256": "ff64f3747be26a85fd239e7883cd85b01c82bb490d80518ca97ad07d0c851b3d"
+    },
+    {
+      "id": "ai-bridge-crossing",
+      "scene": "libs/games/probable-waffle/phaser/src/lib/world/scenes/game-maps/MapAiBridgeCrossing.scene",
+      "sceneSha256": "d8f0fdcc0585b384d86a87e4e00271da6e40f6acfc9dc5c077a53601940eb18a",
+      "tilemap": "libs/games/probable-waffle/phaser/src/assets/probable-waffle/tilemaps/ai_bridge_crossing.json",
+      "tilemapSha256": "cfb395d217909d5380a4c0c3a74cc219fa1438b990bcfb7df474b45a5d631588",
+      "assetPackDirectory": "libs/games/probable-waffle/phaser/src/assets/probable-waffle/asset-packers/maps",
+      "assetPack": "asset-pack-probable-waffle-ai-bridge-crossing.json",
+      "assetPackSha256": "aee3c951a2524adf3ca493bd0b43e38f0c9abf5b7ab27ded3600dbc70d6437c7"
+    }
+  ]
+}

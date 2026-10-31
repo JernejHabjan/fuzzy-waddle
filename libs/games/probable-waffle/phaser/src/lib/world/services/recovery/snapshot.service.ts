@@ -1,7 +1,8 @@
 import Phaser from "phaser";
 import type { Subscription } from "rxjs";
 import { filter } from "rxjs";
-import { getSceneService } from "../scene-component-helpers";
+import { getSceneService, getSceneSystem } from "../scene-component-helpers";
+import { AiPlayerHandler } from "../../../player/ai-controller/ai-player-handler";
 import { SimulationTickService } from "../simulation-tick.service";
 import { ActorIndexSystem } from "../ActorIndexSystem";
 import { ActorManager } from "../../../data/actor-manager";
@@ -16,6 +17,10 @@ import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { CancelableSimDelay } from "../simulation-time";
 import { createMultiplayerClientLogger } from "../multiplayer/multiplayer-client-logger";
 import { RandomService } from "../random.service";
+import { CommandBusService } from "../multiplayer/command-bus.service";
+import { SummonExpiryService } from "../../../entity/systems/summon-expiry.service";
+import { AoeZoneManager } from "../../../entity/systems/aoe-zone-manager";
+import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 
 /** Documents the following declaration and its compatibility contract. */
 const SNAPSHOT_REFRESH_INTERVAL_MS = 60_000;
@@ -36,7 +41,10 @@ const SNAPSHOT_REFRESH_INTERVAL_MS = 60_000;
 export class SnapshotService {
   private latestSnapshot: ProbableWaffleSnapshotData | null = null;
   private refreshHandle?: ReturnType<typeof setInterval>;
+  private initialCaptureDelay?: CancelableSimDelay;
   private requestSub?: Subscription;
+  private shutdownScene?: ProbableWaffleScene;
+  private readonly onSceneShutdown = () => this.destroy();
   private readonly logger = createMultiplayerClientLogger("SnapshotService");
 
   /**
@@ -48,11 +56,12 @@ export class SnapshotService {
    * @see {@link captureSnapshot} for serialization ownership.
    * @see {@link ReconnectService} for the requesting client lifecycle.
    */
-  init(scene: ProbableWaffleScene): void {
+  init(scene: ProbableWaffleScene, hostMigrationConfirmed = false): void {
     // Only the host generates and serves snapshots.
-    if (!scene.isHost) {
+    if (!scene.isHost && !hostMigrationConfirmed) {
       return;
     }
+    if (this.refreshHandle !== undefined || this.requestSub) return;
 
     const communicator = getCommunicator(scene);
     if (!communicator.snapshotRequested) {
@@ -68,7 +77,7 @@ export class SnapshotService {
 
     // Immediately take the first snapshot once the scene is running.
     // A small delay lets all actors finish spawning and registering.
-    new CancelableSimDelay(scene, 500, () => {
+    this.initialCaptureDelay = new CancelableSimDelay(scene, 500, () => {
       this.captureSnapshot(scene);
     });
 
@@ -93,7 +102,8 @@ export class SnapshotService {
         );
       });
 
-    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
+    this.shutdownScene = scene;
+    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.onSceneShutdown);
   }
 
   /** Documents the get latest snapshot member and its declared contract at this boundary. */
@@ -127,16 +137,23 @@ export class SnapshotService {
       const num = player.playerNumber;
       if (num !== undefined) {
         playerStates[num] = structuredClone(player.playerState.data);
+        const ai = getSceneSystem(scene, AiPlayerHandler)?.getAiPlayerController(num);
+        if (ai) playerStates[num].aiBehaviorTreeState = structuredClone(ai.getSaveState());
         playerSelectionGroups[num] = structuredClone(player.playerController.data.selectionGroups ?? []);
       }
     }
 
     // --- Research ---
     const rawResearch = scene.baseGameData.gameInstance.gameState?.data.playerResearch;
-    const playerResearch = rawResearch ? structuredClone(rawResearch) : undefined;
+    const liveResearch = getSceneService(scene, TechTreeService)?.getResearchData();
+    const playerResearch = liveResearch ? Object.fromEntries([...liveResearch].map(([owner, types]) => [owner, [...types]]))
+      : rawResearch ? structuredClone(rawResearch) : undefined;
     const rawCampaignMission = scene.baseGameData.gameInstance.gameState?.data.campaignMission;
     const campaignMission = rawCampaignMission ? structuredClone(rawCampaignMission) : undefined;
     const randomState = getSceneService(scene, RandomService)?.getState();
+    const commandAuthority = getSceneService(scene, CommandBusService)?.getAuthorityState();
+    const summonExpiries = getSceneService(scene, SummonExpiryService)?.getData();
+    const aoeZones = getSceneService(scene, AoeZoneManager)?.getData();
 
     this.latestSnapshot = {
       tick,
@@ -145,7 +162,10 @@ export class SnapshotService {
       playerSelectionGroups,
       playerResearch,
       campaignMission,
-      randomState
+      randomState,
+      commandAuthority,
+      summonExpiries,
+      aoeZones
     } satisfies ProbableWaffleSnapshotData;
   }
 
@@ -176,10 +196,16 @@ export class SnapshotService {
   }
 
   destroy(): void {
+    this.shutdownScene?.events.off(Phaser.Scenes.Events.SHUTDOWN, this.onSceneShutdown);
+    this.shutdownScene = undefined;
+    this.initialCaptureDelay?.remove();
+    this.initialCaptureDelay = undefined;
     if (this.refreshHandle !== undefined) {
       clearInterval(this.refreshHandle);
       this.refreshHandle = undefined;
     }
     this.requestSub?.unsubscribe();
+    this.requestSub = undefined;
+    this.latestSnapshot = null;
   }
 }

@@ -1,0 +1,163 @@
+import { ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
+import type { AiIntentV1 } from "../contracts/ai-intent-v1";
+import type { AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
+import { nextIds } from "./ai-macro-effect-identity";
+import { claimedActorIds, compareAiActorsByVisibleGeometry } from "./ai-macro-observation";
+import { aiEconomySiteSafety } from "./ai-economy-site-safety";
+
+function nextUnstaffedFoodSource(
+  observation: AiObservationV1,
+  self: readonly AiObservationV1["actors"][number][],
+  readyFoodSources: readonly AiObservationV1["actors"][number][],
+  foodPrerequisiteObject: ObjectNames | undefined,
+  catalog: AiCapabilityCatalogV1
+) {
+  const staffedFoodSourceIds = new Set(
+    self.flatMap((actor) => {
+      const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
+      return order?.orderType === OrderType.Gather && order.targetActorId ? [order.targetActorId] : [];
+    })
+  );
+  const returningWorkerCount = self.filter((actor) => {
+    const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
+    if (order?.orderType !== OrderType.ReturnResources) return false;
+    if (actor.resourceState.status === "known") return actor.resourceState.value.resourceType === ResourceType.Food;
+    return self.some(
+      (target) =>
+        target.actorId === order.targetActorId &&
+        (target.objectName === foodPrerequisiteObject ||
+          target.objectName === ObjectNames.Granary ||
+          catalog.entries.some(
+            (entry) =>
+              entry.sourceObjectName === target.objectName && entry.acceptsResources?.includes(ResourceType.Food)
+          ))
+    );
+  }).length;
+  const unstaffedFoodSources = readyFoodSources
+    .filter(aiEconomySiteSafety(observation).actorSafe)
+    .sort(compareAiActorsByVisibleGeometry)
+    .filter((source) => !staffedFoodSourceIds.has(source.actorId));
+  return unstaffedFoodSources[returningWorkerCount];
+}
+
+export function hasUnstaffedAiFoodSource(
+  observation: AiObservationV1,
+  self: readonly AiObservationV1["actors"][number][],
+  readyFoodSources: readonly AiObservationV1["actors"][number][],
+  foodPrerequisiteObject: ObjectNames | undefined,
+  catalog: AiCapabilityCatalogV1
+): boolean {
+  return nextUnstaffedFoodSource(
+    observation,
+    self,
+    readyFoodSources,
+    foodPrerequisiteObject,
+    catalog
+  ) !== undefined;
+}
+
+/** Assigns one free farmer without stealing cargo or a Field's returning worker. */
+export function proposeAiFieldLabor(
+  observation: AiObservationV1,
+  state: AiBrainStateV1,
+  catalog: AiCapabilityCatalogV1,
+  self: readonly AiObservationV1["actors"][number][],
+  readyFoodSources: readonly AiObservationV1["actors"][number][],
+  foodPrerequisiteObject: ObjectNames | undefined,
+  reservedActorIds: ReadonlySet<string>,
+  priorIntents: readonly AiIntentV1[],
+  ordinal: number
+): AiIntentV1 | null {
+  const unstaffedFoodSource = nextUnstaffedFoodSource(
+    observation,
+    self,
+    readyFoodSources,
+    foodPrerequisiteObject,
+    catalog
+  );
+  if (!unstaffedFoodSource) return null;
+  const alreadyClaimed = claimedActorIds(priorIntents);
+  const worker = self
+    .filter((actor) =>
+      catalog.entries.some(
+        (entry) => entry.sourceObjectName === actor.objectName && entry.gathers.includes(ResourceType.Food)
+      )
+    )
+    .filter((actor) => !reservedActorIds.has(actor.actorId) && !alreadyClaimed.has(actor.actorId))
+    .filter(
+      (actor) =>
+        !actor.resourceTransferInFlight &&
+        (actor.carriedResourceAmount ?? 0) === 0 &&
+        !(
+          actor.resourceState.status === "known" &&
+          actor.resourceState.value.carried.status === "known" &&
+          actor.resourceState.value.carried.value > 0
+        )
+    )
+    .filter((actor) => {
+      const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
+      // Returning food is part of the Field's durable labor assignment. Replacing
+      // that order strands the carried food and causes every decision to bounce a
+      // worker between otherwise healthy Fields.
+      return (
+        order === null ||
+        (order.orderType === OrderType.Gather &&
+          (order.targetActorId === null || !readyFoodSources.some((source) => source.actorId === order.targetActorId)))
+      );
+    })
+    .sort((left, right) => {
+      const sourcePosition =
+        unstaffedFoodSource.logicalPosition.status === "known" ? unstaffedFoodSource.logicalPosition.value : null;
+      const sourceAccessNode =
+        unstaffedFoodSource.accessNodeId.status === "known" ? unstaffedFoodSource.accessNodeId.value : null;
+      const leftPosition = left.logicalPosition.status === "known" ? left.logicalPosition.value : null;
+      const rightPosition = right.logicalPosition.status === "known" ? right.logicalPosition.value : null;
+      const leftAccessNode = left.accessNodeId.status === "known" ? left.accessNodeId.value : null;
+      const rightAccessNode = right.accessNodeId.status === "known" ? right.accessNodeId.value : null;
+      const leftAccessPenalty = sourceAccessNode && leftAccessNode === sourceAccessNode ? 0 : 1;
+      const rightAccessPenalty = sourceAccessNode && rightAccessNode === sourceAccessNode ? 0 : 1;
+      const leftDistance = sourcePosition && leftPosition
+        ? Math.abs(leftPosition.x - sourcePosition.x) + Math.abs(leftPosition.y - sourcePosition.y)
+        : Number.POSITIVE_INFINITY;
+      const rightDistance = sourcePosition && rightPosition
+        ? Math.abs(rightPosition.x - sourcePosition.x) + Math.abs(rightPosition.y - sourcePosition.y)
+        : Number.POSITIVE_INFINITY;
+      const leftIdle = left.activeOrder?.status === "known" && left.activeOrder.value === null ? 0 : 1;
+      const rightIdle = right.activeOrder?.status === "known" && right.activeOrder.value === null ? 0 : 1;
+      return leftAccessPenalty - rightAccessPenalty || leftDistance - rightDistance || leftIdle - rightIdle ||
+        compareAiActorsByVisibleGeometry(left, right);
+    })[0];
+  if (!worker) return null;
+  const next = nextIds(state, "food-labor", ordinal);
+  return {
+    ...next,
+    kind: "assign_gatherers",
+    planId: state.opening.plan.planId,
+    demandId: "demand:economy:sustainable-food" as AiDemandV1["demandId"],
+    lane: "essential_economy",
+    proposedTick: observation.tick,
+    // Keep at least one worker on renewable food before general gathering
+    // claims the same unloaded actor for wood. The arbiter sorts urgency first.
+    urgencyClass: 0,
+    utility: 985,
+    preconditions: [
+      { kind: "actor_exists", actorId: worker.actorId },
+      { kind: "actor_exists", actorId: unstaffedFoodSource.actorId }
+    ],
+    claims: [
+      { claimId: next.claimId, kind: "actor", actorId: worker.actorId },
+      {
+        claimId: `${next.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
+        kind: "effect",
+        effectId: next.effectId
+      }
+    ],
+    reasonCode: `food_labor:source=${unstaffedFoodSource.actorId}`,
+    actorIds: [worker.actorId],
+    resourceType: ResourceType.Food,
+    sourceActorId: unstaffedFoodSource.actorId
+  };
+}

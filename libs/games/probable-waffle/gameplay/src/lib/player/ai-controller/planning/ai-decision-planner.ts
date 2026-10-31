@@ -1,0 +1,203 @@
+import { selectAiCycleVictim } from "./ai-cycle-victim";
+import { preservesAiFriendlyRally } from "./ai-friendly-rally";
+import { aiDeadline } from "../contracts/ai-core-types";
+import type { AiBrainStateV1, AiStrategyStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiCommandOutcomeV1 } from "../contracts/ai-command-contracts";
+import type { AiIntentDecisionV1, AiIntentV1 } from "../contracts/ai-intent-v1";
+import type { AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
+import type { AiManagerProposalV1 } from "./ai-manager-proposal";
+import { reconcileAiCommandReservations } from "./reconcile-ai-command-reservations";
+
+/** The shared, deterministic Stage 6 reducer result. It owns only durable planning state. */
+export interface AiDecisionPlanningResult {
+  readonly state: AiBrainStateV1;
+  readonly proposals: readonly AiIntentV1[];
+  readonly preDecisions: readonly AiIntentDecisionV1[];
+}
+
+const LANE_ORDER = [
+  "essential_economy",
+  "supply_production",
+  "scouting",
+  "army_threat",
+  "optional_infrastructure_tech"
+] as const;
+
+function strategyFor(observation: AiObservationV1, state: AiBrainStateV1): AiStrategyStateV1 {
+  const previous = state.strategy;
+  const visibleThreat = observation.threatSummary.visibleEnemyActorIds.length > 0;
+  const activeObjective = observation.modeGoals.find((goal) => goal.state === "active")?.id ?? null;
+  const openingComplete = state.opening.plan.lifecycle === "completed";
+  const candidate = visibleThreat ? "defend" : openingComplete ? "stabilize" : "opening";
+  const canInterrupt =
+    candidate === "defend" || previous.goalId === null || observation.tick >= previous.commitmentDeadline.dueTick;
+  if (candidate === previous.stance || !canInterrupt) return previous;
+  return {
+    // This reducer owns the stance, not the skirmish assessment consumed by committed production schedules.
+    ...previous,
+    stance: candidate,
+    enteredTick: observation.tick,
+    goalId: candidate === "opening" ? "plan:opening" : previous.goalId,
+    objectiveId: activeObjective,
+    commitmentDeadline: aiDeadline(observation.tick + 200),
+    evidenceIds: previous.evidenceIds,
+    suspendedGoalId: candidate === "defend" ? previous.goalId : null
+  };
+}
+
+function isTerminal(outcome: AiCommandOutcomeV1): boolean {
+  return (
+    outcome.kind === "completed" ||
+    outcome.kind === "rejected" ||
+    outcome.kind === "cancelled" ||
+    outcome.kind === "failed"
+  );
+}
+
+/** Proposers and arbitration must see the same current leases and terminal command outcomes. */
+export function reconcileAiDecisionReservations(
+  state: AiBrainStateV1,
+  outcomes: readonly AiCommandOutcomeV1[],
+  tick: number
+) {
+  const terminalCommands = new Set<string>(outcomes.filter(isTerminal).map((outcome) => outcome.identity.commandId));
+  return reconcileAiCommandReservations(state.reservations, outcomes).filter((reservation) => {
+    if (reservation.state.kind === "provisional") {
+      const actorId = reservation.subjectKey?.startsWith("actor:")
+        ? reservation.subjectKey.slice("actor:".length)
+        : null;
+      if (actorId && reservation.ownerPlanId.startsWith("plan:squad:")) {
+        const ownerSquadId = reservation.ownerPlanId.slice("plan:".length);
+        const ownerSquad = state.squads.find((squad) => squad.squadId === ownerSquadId);
+        if (
+          !ownerSquad ||
+          ["completed", "cancelled"].includes(ownerSquad.state) ||
+          !ownerSquad.actorIds.includes(actorId)
+        )
+          return false;
+      }
+      return reservation.state.expiresAt.dueTick > tick;
+    }
+    if (reservation.state.kind === "dispatched") return !terminalCommands.has(reservation.state.commandId);
+    return true;
+  });
+}
+
+/**
+ * Applies the Stage 6 fair-lane, stance, reservation and progress-supervision invariants before arbitration.
+ * It deliberately does not invent domain actions: Stage 7+ managers supply those proposals through this boundary.
+ */
+export function planAiDecisions(
+  observation: AiObservationV1,
+  previous: AiBrainStateV1,
+  outcomes: readonly AiCommandOutcomeV1[],
+  batches: readonly AiManagerProposalV1[],
+  profile: AiProfileConfigV1
+): AiDecisionPlanningResult {
+  const sortedBatches = [...batches].sort((left, right) => left.managerId.localeCompare(right.managerId));
+  const considered = new Set(
+    sortedBatches
+      .filter((batch) => batch.evaluated)
+      .flatMap((batch) => [batch.lane, ...(batch.evaluatedLanes ?? [])])
+  );
+  const lanes = LANE_ORDER.map((lane) => {
+    const existing = previous.lanes.find((entry) => entry.lane === lane);
+    const wasConsidered = considered.has(lane);
+    return {
+      lane,
+      deficit: wasConsidered ? 0 : Math.min(8, (existing?.deficit ?? 0) + 1),
+      lastConsideredTick: wasConsidered
+        ? observation.tick
+        : (existing?.lastConsideredTick ?? previous.lastCommittedTick),
+      // Evaluation is not command service. The brain records service only after arbitration accepts a lane's command.
+      lastServicedTick: existing?.lastServicedTick ?? previous.lastCommittedTick,
+      continuationCursor: ((existing?.continuationCursor ?? 0) + 1) % Math.max(1, profile.maxIntentProposalsPerStep)
+    };
+  });
+  const reservations = reconcileAiDecisionReservations(previous, outcomes, observation.tick);
+  const overdue = previous.progress.filter((progress) => progress.milestoneDeadline.dueTick <= observation.tick);
+  const blockers = [...previous.blockers];
+  for (const progress of overdue) {
+    if (blockers.some((blocker) => blocker.planId === progress.planId && blocker.status !== "failed_optional"))
+      continue;
+    blockers.push({
+      blockerId: `blocker:progress:${progress.planId}:${progress.milestoneDeadline.dueTick}`,
+      planId: progress.planId,
+      cause: "service_slot",
+      causeId: "no_useful_progress",
+      enteredTick: observation.tick,
+      deadline: aiDeadline(observation.tick + 200),
+      status: "recovering"
+    });
+  }
+  const cyclicPlan = selectAiCycleVictim({
+    ...previous,
+    reservations,
+    pendingOutcomes: [...previous.pendingOutcomes, ...outcomes]
+  });
+  const preDecisions: AiIntentDecisionV1[] = [];
+  if (cyclicPlan) {
+    const reversible = reservations
+      .filter((reservation) => reservation.ownerPlanId === cyclicPlan && reservation.state.kind === "provisional")
+      .sort((left, right) => left.claimId.localeCompare(right.claimId))[0];
+    if (reversible) {
+      preDecisions.push({
+        outcome: "rejected",
+        intent: sortedBatches.flatMap((batch) => batch.intents).find((intent) => intent.planId === cyclicPlan) ?? {
+          kind: "concede",
+          intentId: "intent:supervisor:cycle",
+          effectId: "effect:supervisor:cycle",
+          planId: cyclicPlan,
+          demandId: null,
+          lane: "essential_economy",
+          proposedTick: observation.tick,
+          urgencyClass: 0,
+          utility: 0,
+          preconditions: [],
+          claims: [],
+          reasonCode: "dependency_cycle",
+          reason: "dependency_cycle"
+        },
+        reason: "claim_conflict",
+        detail: `dependency_cycle_released:${reversible.claimId}`
+      });
+    }
+  }
+  const proposals = sortedBatches
+    .flatMap((batch) => batch.intents)
+    .filter((intent) => {
+      if (!preservesAiFriendlyRally(observation, intent)) return true;
+      preDecisions.push({
+        outcome: "rejected",
+        intent,
+        reason: "precondition_failed",
+        detail: "friendly_rally_in_progress"
+      });
+      return false;
+    });
+  return {
+    state: {
+      ...previous,
+      lastCommittedTick: observation.tick,
+      strategy: strategyFor(observation, previous),
+      reservations: cyclicPlan
+        ? reservations.filter(
+            (reservation) => !(reservation.ownerPlanId === cyclicPlan && reservation.state.kind === "provisional")
+          )
+        : reservations,
+      pendingOutcomes: outcomes.slice(-previous.authority.pendingLimit),
+      authority: {
+        ...previous.authority,
+        health: previous.authority.health === "technical_fault" ? "technical_fault" : "healthy"
+      },
+      blockers: blockers.sort(
+        (left, right) => left.enteredTick - right.enteredTick || left.blockerId.localeCompare(right.blockerId)
+      ),
+      lanes,
+      scheduler: { ...previous.scheduler, decisionSequence: previous.scheduler.decisionSequence + 1 }
+    },
+    proposals,
+    preDecisions
+  };
+}

@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "baselineSourceSha": "de47f482889db30420692bf4406fba463d7db296",
+  "pinnedBeforeAiBehaviorChanges": true,
+  "fixtureManifestVersion": "skirmish-v1",
+  "baselineReport": "baseline-report-v1.json",
+  "stage15Execution": {
+    "checkoutStrategy": "detached_isolated_worktrees",
+    "candidateAndBaselineUseSameFrozenManifest": true,
+    "dependencyPolicy": "install_from_each_revision_lockfile",
+    "artifactPolicy": "retain_first_failure_and_source_fixture_config_digests"
+  },
+  "compatibility": {
+    "pureBrain": "unsupported_baseline_predates_pure_brain",
+    "runtimeCommands": "compatible_through_baseline_adapter",
+    "worldProjection": "compatible_through_multiplayer_hash_v1",
+    "difficultyProfiles": "baseline_uses_legacy_behavior",
+    "comparisonPolicy": "same_scenario_semantics_with_explicit_unsupported_rows"
+  },
+  "prohibitions": [
+    "never_replace_this_sha_with_candidate_head",
+    "never_generate_expected_assertions_from_candidate_output",
+    "never_label_unsupported_baseline_rows_as_passed"
+  ]
+}

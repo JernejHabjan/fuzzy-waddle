@@ -14,6 +14,7 @@ export interface SpellData {
   targetAllies: boolean; // can target/affect allies
   targetEnemies: boolean; // can target/affect enemies
   targetSelf: boolean; // can target self
+  targetDomains?: readonly ("land" | "water" | "air")[]; // omitted means every movement domain
 
   // Damage effects
   damageType?: DamageType;

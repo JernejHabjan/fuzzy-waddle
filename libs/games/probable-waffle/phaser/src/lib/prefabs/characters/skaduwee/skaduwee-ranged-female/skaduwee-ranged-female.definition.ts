@@ -61,7 +61,7 @@ export const skaduweeRangedFemaleDefinition = {
     productionCost: {
       resources: {
         [ResourceType.Wood]: 25,
-        [ResourceType.Food]: 100
+        [ResourceType.Food]: 70
       },
       refundFactor: 0.5,
       productionTime: 10000,

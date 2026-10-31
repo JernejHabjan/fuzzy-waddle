@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "scenarioIds": ["ECO-08"],
+  "purpose": "Both legal faction openings produce and count bootstrap workers from the equal 200-resource start.",
+  "driver": "pure",
+  "seeds": [759081, 759082, 759083],
+  "context": {
+    "mapId": "opening-bootstrap-pure",
+    "mapDigest": "typed-faction-producer-and-worker-catalog",
+    "side": 1,
+    "faction": "Tivara+Skaduwee",
+    "rulesVersion": "probable-waffle-rules-v1",
+    "contractVersions": { "scenario": 1, "brain": 1, "observation": 1, "command": 1 }
+  },
+  "assertionPolicy": {
+    "repetitions": 3,
+    "requires": [
+      "zero-worker-produce",
+      "catalog-priced-food-claim",
+      "queued-worker-once",
+      "two-worker-checkpoint",
+      "both-factions",
+      "canonical-digest"
+    ],
+    "forbids": ["duplicate-queued-worker", "stale-bootstrap-gate", "hidden-resource-grant"]
+  }
+}

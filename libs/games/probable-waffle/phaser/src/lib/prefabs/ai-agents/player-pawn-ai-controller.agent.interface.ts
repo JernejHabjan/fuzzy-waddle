@@ -1,7 +1,9 @@
 import { State } from "mistreevous";
 
-export type PlayerPawnRangeType = "move" | "gather" | "attack" | "dropOff" | "construct" | "heal" | "repair";
-export type PlayerPawnCooldownType = "gather" | "attack" | "construct" | "heal" | "repair";
+import type { PlayerPawnRangeType } from "./player-pawn-range-type";
+import type { PlayerPawnCooldownType } from "./player-pawn-cooldown-type";
+export type { PlayerPawnRangeType } from "./player-pawn-range-type";
+export type { PlayerPawnCooldownType } from "./player-pawn-cooldown-type";
 
 export interface IPlayerPawnControllerAgent {
   // Player Orders and Status
@@ -64,6 +66,8 @@ export interface IPlayerPawnControllerAgent {
   GatherHighValueResource(): State;
   HasHarvestComponent(): boolean;
   GatherCapacityFull(): boolean;
+  /** Cargo presence is independent of current pack capacity, particularly after restore or balance changes. */
+  HasCarriedResources(): boolean;
 
   // Construction and Building
   ConstructBuilding(): State;
@@ -79,6 +83,7 @@ export interface IPlayerPawnControllerAgent {
   CanAssignRepairer(): boolean;
 
   // Movement
+  CanBoardContainerNow(): boolean;
   MoveToTarget(type: PlayerPawnRangeType): Promise<State>;
   MoveToTargetOrLocation(type: PlayerPawnRangeType): Promise<State>;
   MoveToLocation(): Promise<State>;

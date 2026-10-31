@@ -27,6 +27,8 @@ export class GameSaveService extends GameSavePort implements GameSaveServiceInte
   private readonly codec = inject(GameSaveCodecService);
 
   async save(request: SaveGameRequest): Promise<GameSaveRecord> {
+    // Freeze before the first repository await; callers may resume simulation while encryption/storage is pending.
+    const gameInstanceData = structuredClone(request.gameInstanceData);
     const now = new Date().toISOString();
     const existing = await this.list();
     const overwrite = request.overwriteSaveId
@@ -61,8 +63,7 @@ export class GameSaveService extends GameSavePort implements GameSaveServiceInte
       syncState: GameSaveSyncState.Local,
       campaign: request.campaign,
       thumbnail: request.thumbnail,
-      // JSON persistence below creates the durable value copy; keeping this assignment compatible with older test runtimes.
-      gameInstanceData: request.gameInstanceData
+      gameInstanceData
     };
     await this.repository.upsert(await this.encodeRecord(record));
     await this.retainAutosaves(record);

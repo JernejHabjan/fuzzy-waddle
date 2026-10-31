@@ -1,0 +1,3915 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "runtime",
+  "driver": "runtime",
+  "scenarioIds": [
+    "H-20"
+  ],
+  "status": "authored_not_executed",
+  "purpose": "Bounded backlog/cursors, eventual stable-route publication and unrelated progress",
+  "acceptance": {
+    "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/adversarial-scenarios.md",
+    "requiredOutcome": "Bounded backlog/cursors, eventual stable-route publication and unrelated progress",
+    "setup": [
+      "A reachable useful route crosses a topology subregion while unrelated native construction can invalidate revisions",
+      "Keep a stable alternative local economy/defense duty"
+    ],
+    "actions": [
+      "Complete/destroy a finite schedule of legal topology-changing actors",
+      "Stop changes at a predeclared tick, then allow the existing query work to finish"
+    ],
+    "measurements": [
+      "Query generations, work cursor/backlog, actual topology revisions and eventual route publication",
+      "Native unrelated income/defense during the storm"
+    ],
+    "required": [
+      "Backlog and ownership remain bounded",
+      "Stable route publishes after churn stops and unrelated work continues"
+    ],
+    "forbidden": [
+      "Starting unlimited fresh queries on every revision",
+      "Restarting the full graph forever",
+      "Treating unknown as unreachable"
+    ]
+  },
+  "recipe": {
+    "mapLabel": "AI Open Economy (test only)",
+    "aiPlayerNumber": 2,
+    "simulationTimeScale": 1,
+    "fixedStepFrames": true,
+    "checkpointTicks": [
+      40,
+      200,
+      360,
+      520,
+      680,
+      840,
+      1000,
+      1200,
+      1600,
+      2000,
+      3000,
+      3500,
+      4000
+    ],
+    "variants": [
+      {
+        "id": "h-20-tivara-unrelated",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "H-20"
+        ],
+        "presetWorld": {
+          "fixtureId": "h-20-tivara-unrelated",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "worker-0",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 352,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-7",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-0",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 160,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-house",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 1008,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -32,
+                "y": 1072,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 1088,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "scout-probe",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ranged-probe",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "support-probe",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-producer",
+              "actorName": "InfantryInn",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 496,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-deposit",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -320,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -448,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-worker",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": -352,
+                "y": 784,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-target",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -224,
+                "y": 752,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-house-0",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 512,
+                "y": 1152,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-house-1",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 1216,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-house-2",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 256,
+                "y": 1280,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-house-3",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 1344,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-0",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": -928,
+                "y": 752,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-1",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": -896,
+                "y": 768,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-2",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": -864,
+                "y": 784,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-3",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": -832,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-4",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": -800,
+                "y": 816,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-5",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": -768,
+                "y": 832,
+                "z": 0
+              }
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "original-home",
+              "actorName": "Sandhold",
+              "owner": 2
+            },
+            {
+              "fixtureActorId": "enemy-home",
+              "actorName": "FrostForge",
+              "owner": 1
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            {
+              "playerNumber": 1,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            },
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            }
+          ],
+          "controls": [],
+          "events": [
+            {
+              "id": "loss-churn-wall-0",
+              "tick": 200,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-0"
+            },
+            {
+              "id": "loss-churn-wall-1",
+              "tick": 360,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-1"
+            },
+            {
+              "id": "loss-churn-wall-2",
+              "tick": 520,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-2"
+            },
+            {
+              "id": "loss-churn-wall-3",
+              "tick": 680,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-3"
+            },
+            {
+              "id": "loss-churn-wall-4",
+              "tick": 840,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-4"
+            },
+            {
+              "id": "loss-churn-wall-5",
+              "tick": 1000,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-5"
+            }
+          ],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "enemy-worker",
+              "sourceFixtureActorId": "enemy-source",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "worker-1",
+              "sourceFixtureActorId": "own-source",
+              "kind": "gather"
+            }
+          ],
+          "terrainPatches": [],
+          "routeOutages": [
+            {
+              "id": "churn-stable-query",
+              "fromTick": 1,
+              "throughTick": 1001,
+              "fixtureActorIds": [
+                "army-0"
+              ],
+              "mode": "pending"
+            }
+          ]
+        }
+      },
+      {
+        "id": "h-20-tivara-corridor",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "H-20"
+        ],
+        "presetWorld": {
+          "fixtureId": "h-20-tivara-corridor",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "worker-0",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 352,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-7",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-0",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 160,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-house",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 1008,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -32,
+                "y": 1072,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 1088,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "scout-probe",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ranged-probe",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "support-probe",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-producer",
+              "actorName": "InfantryInn",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 496,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-deposit",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -320,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -448,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-worker",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": -352,
+                "y": 784,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-target",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -224,
+                "y": 752,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-house-0",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 512,
+                "y": 1152,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-house-1",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 1216,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-house-2",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 256,
+                "y": 1280,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-house-3",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 1344,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-0",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": 96,
+                "y": 752,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-1",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": 64,
+                "y": 768,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-2",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": 32,
+                "y": 784,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-3",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": 0,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-4",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": -32,
+                "y": 816,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-5",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": -64,
+                "y": 832,
+                "z": 0
+              }
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "original-home",
+              "actorName": "Sandhold",
+              "owner": 2
+            },
+            {
+              "fixtureActorId": "enemy-home",
+              "actorName": "FrostForge",
+              "owner": 1
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            {
+              "playerNumber": 1,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            },
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            }
+          ],
+          "controls": [],
+          "events": [
+            {
+              "id": "loss-churn-wall-0",
+              "tick": 200,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-0"
+            },
+            {
+              "id": "loss-churn-wall-1",
+              "tick": 360,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-1"
+            },
+            {
+              "id": "loss-churn-wall-2",
+              "tick": 520,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-2"
+            },
+            {
+              "id": "loss-churn-wall-3",
+              "tick": 680,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-3"
+            },
+            {
+              "id": "loss-churn-wall-4",
+              "tick": 840,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-4"
+            },
+            {
+              "id": "loss-churn-wall-5",
+              "tick": 1000,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-5"
+            }
+          ],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "enemy-worker",
+              "sourceFixtureActorId": "enemy-source",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "worker-1",
+              "sourceFixtureActorId": "own-source",
+              "kind": "gather"
+            }
+          ],
+          "terrainPatches": [
+            {
+              "x": 24,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 2,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 3,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 4,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 5,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 6,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 7,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 8,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 9,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 10,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 11,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 12,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 13,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 14,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 15,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 16,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 17,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 18,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 19,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 20,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 21,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 28,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 29,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 30,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 31,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 32,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 33,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 34,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 35,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 36,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 37,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 38,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 39,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 40,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 41,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 42,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 43,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 49,
+              "terrain": "water",
+              "blocked": false
+            }
+          ],
+          "routeOutages": [
+            {
+              "id": "churn-stable-query",
+              "fromTick": 1,
+              "throughTick": 1001,
+              "fixtureActorIds": [
+                "army-0"
+              ],
+              "mode": "pending"
+            }
+          ]
+        }
+      },
+      {
+        "id": "h-20-tivara-dispose",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "H-20"
+        ],
+        "presetWorld": {
+          "fixtureId": "h-20-tivara-dispose",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "worker-0",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 352,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-7",
+              "actorName": "TivaraWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-0",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 160,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-producer",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-house",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 1008,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -32,
+                "y": 1072,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 1088,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "scout-probe",
+              "actorName": "TivaraMacemanMale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ranged-probe",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "support-probe",
+              "actorName": "TivaraSlingshotFemale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-producer",
+              "actorName": "InfantryInn",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 496,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-deposit",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -320,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -448,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-worker",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": -352,
+                "y": 784,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-target",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -224,
+                "y": 752,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-house-0",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 512,
+                "y": 1152,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-house-1",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 1216,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-house-2",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 256,
+                "y": 1280,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-house-3",
+              "actorName": "Olival",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 1344,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-0",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": 96,
+                "y": 752,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-1",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": 64,
+                "y": 768,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-2",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": 32,
+                "y": 784,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-3",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": 0,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-4",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": -32,
+                "y": 816,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-5",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": -64,
+                "y": 832,
+                "z": 0
+              }
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "original-home",
+              "actorName": "Sandhold",
+              "owner": 2
+            },
+            {
+              "fixtureActorId": "enemy-home",
+              "actorName": "FrostForge",
+              "owner": 1
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            {
+              "playerNumber": 1,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            },
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            }
+          ],
+          "controls": [],
+          "events": [
+            {
+              "id": "loss-churn-wall-0",
+              "tick": 200,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-0"
+            },
+            {
+              "id": "loss-churn-wall-1",
+              "tick": 360,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-1"
+            },
+            {
+              "id": "loss-churn-wall-2",
+              "tick": 520,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-2"
+            },
+            {
+              "id": "loss-churn-wall-3",
+              "tick": 680,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-3"
+            },
+            {
+              "id": "loss-churn-wall-4",
+              "tick": 840,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-4"
+            },
+            {
+              "id": "loss-churn-wall-5",
+              "tick": 1000,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-5"
+            }
+          ],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "enemy-worker",
+              "sourceFixtureActorId": "enemy-source",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "worker-1",
+              "sourceFixtureActorId": "own-source",
+              "kind": "gather"
+            }
+          ],
+          "terrainPatches": [
+            {
+              "x": 24,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 2,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 3,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 4,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 5,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 6,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 7,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 8,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 9,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 10,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 11,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 12,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 13,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 14,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 15,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 16,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 17,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 18,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 19,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 20,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 21,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 28,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 29,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 30,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 31,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 32,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 33,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 34,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 35,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 36,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 37,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 38,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 39,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 40,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 41,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 42,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 43,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 49,
+              "terrain": "water",
+              "blocked": false
+            }
+          ],
+          "routeOutages": [
+            {
+              "id": "churn-stable-query",
+              "fromTick": 1,
+              "throughTick": 1001,
+              "fixtureActorIds": [
+                "army-0"
+              ],
+              "mode": "pending"
+            },
+            {
+              "id": "churn-disposal-query",
+              "fromTick": 3500,
+              "throughTick": 4500,
+              "fixtureActorIds": [
+                "army-0"
+              ],
+              "mode": "pending"
+            }
+          ]
+        }
+      },
+      {
+        "id": "h-20-skaduwee-unrelated",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Skaduwee",
+        "humanFaction": "Tivara",
+        "difficulty": "Normal",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "H-20"
+        ],
+        "presetWorld": {
+          "fixtureId": "h-20-skaduwee-unrelated",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "worker-0",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 352,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-7",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-0",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 160,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-producer",
+              "actorName": "InfantryInn",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-house",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 1008,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -32,
+                "y": 1072,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 1088,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "scout-probe",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ranged-probe",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "support-probe",
+              "actorName": "SkaduweeMagicianFemale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-producer",
+              "actorName": "AnkGuard",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 496,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-deposit",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -320,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -448,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-worker",
+              "actorName": "TivaraWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": -352,
+                "y": 784,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-target",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -224,
+                "y": 752,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-house-0",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 512,
+                "y": 1152,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-house-1",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 1216,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-house-2",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 256,
+                "y": 1280,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-house-3",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 1344,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-0",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": -928,
+                "y": 752,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-1",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": -896,
+                "y": 768,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-2",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": -864,
+                "y": 784,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-3",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": -832,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-4",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": -800,
+                "y": 816,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-5",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": -768,
+                "y": 832,
+                "z": 0
+              }
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "original-home",
+              "actorName": "FrostForge",
+              "owner": 2
+            },
+            {
+              "fixtureActorId": "enemy-home",
+              "actorName": "Sandhold",
+              "owner": 1
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            {
+              "playerNumber": 1,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            },
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            }
+          ],
+          "controls": [],
+          "events": [
+            {
+              "id": "loss-churn-wall-0",
+              "tick": 200,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-0"
+            },
+            {
+              "id": "loss-churn-wall-1",
+              "tick": 360,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-1"
+            },
+            {
+              "id": "loss-churn-wall-2",
+              "tick": 520,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-2"
+            },
+            {
+              "id": "loss-churn-wall-3",
+              "tick": 680,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-3"
+            },
+            {
+              "id": "loss-churn-wall-4",
+              "tick": 840,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-4"
+            },
+            {
+              "id": "loss-churn-wall-5",
+              "tick": 1000,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-5"
+            }
+          ],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "enemy-worker",
+              "sourceFixtureActorId": "enemy-source",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "worker-1",
+              "sourceFixtureActorId": "own-source",
+              "kind": "gather"
+            }
+          ],
+          "terrainPatches": [],
+          "routeOutages": [
+            {
+              "id": "churn-stable-query",
+              "fromTick": 1,
+              "throughTick": 1001,
+              "fixtureActorIds": [
+                "army-0"
+              ],
+              "mode": "pending"
+            }
+          ]
+        }
+      },
+      {
+        "id": "h-20-skaduwee-corridor",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Skaduwee",
+        "humanFaction": "Tivara",
+        "difficulty": "Normal",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "H-20"
+        ],
+        "presetWorld": {
+          "fixtureId": "h-20-skaduwee-corridor",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "worker-0",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 352,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-7",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-0",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 160,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-producer",
+              "actorName": "InfantryInn",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-house",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 1008,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -32,
+                "y": 1072,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 1088,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "scout-probe",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ranged-probe",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "support-probe",
+              "actorName": "SkaduweeMagicianFemale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-producer",
+              "actorName": "AnkGuard",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 496,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-deposit",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -320,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -448,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-worker",
+              "actorName": "TivaraWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": -352,
+                "y": 784,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-target",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -224,
+                "y": 752,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-house-0",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 512,
+                "y": 1152,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-house-1",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 1216,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-house-2",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 256,
+                "y": 1280,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-house-3",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 1344,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-0",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": 96,
+                "y": 752,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-1",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": 64,
+                "y": 768,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-2",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": 32,
+                "y": 784,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-3",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": 0,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-4",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": -32,
+                "y": 816,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-5",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": -64,
+                "y": 832,
+                "z": 0
+              }
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "original-home",
+              "actorName": "FrostForge",
+              "owner": 2
+            },
+            {
+              "fixtureActorId": "enemy-home",
+              "actorName": "Sandhold",
+              "owner": 1
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            {
+              "playerNumber": 1,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            },
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            }
+          ],
+          "controls": [],
+          "events": [
+            {
+              "id": "loss-churn-wall-0",
+              "tick": 200,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-0"
+            },
+            {
+              "id": "loss-churn-wall-1",
+              "tick": 360,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-1"
+            },
+            {
+              "id": "loss-churn-wall-2",
+              "tick": 520,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-2"
+            },
+            {
+              "id": "loss-churn-wall-3",
+              "tick": 680,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-3"
+            },
+            {
+              "id": "loss-churn-wall-4",
+              "tick": 840,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-4"
+            },
+            {
+              "id": "loss-churn-wall-5",
+              "tick": 1000,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-5"
+            }
+          ],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "enemy-worker",
+              "sourceFixtureActorId": "enemy-source",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "worker-1",
+              "sourceFixtureActorId": "own-source",
+              "kind": "gather"
+            }
+          ],
+          "terrainPatches": [
+            {
+              "x": 24,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 2,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 3,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 4,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 5,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 6,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 7,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 8,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 9,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 10,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 11,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 12,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 13,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 14,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 15,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 16,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 17,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 18,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 19,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 20,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 21,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 28,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 29,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 30,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 31,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 32,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 33,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 34,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 35,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 36,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 37,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 38,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 39,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 40,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 41,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 42,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 43,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 49,
+              "terrain": "water",
+              "blocked": false
+            }
+          ],
+          "routeOutages": [
+            {
+              "id": "churn-stable-query",
+              "fromTick": 1,
+              "throughTick": 1001,
+              "fixtureActorIds": [
+                "army-0"
+              ],
+              "mode": "pending"
+            }
+          ]
+        }
+      },
+      {
+        "id": "h-20-skaduwee-dispose",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "seed": 759940,
+        "deadlineRationale": "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
+        "aiFaction": "Skaduwee",
+        "humanFaction": "Tivara",
+        "difficulty": "Normal",
+        "captureConstruction": true,
+        "captureCombat": true,
+        "scenarioIds": [
+          "H-20"
+        ],
+        "presetWorld": {
+          "fixtureId": "h-20-skaduwee-dispose",
+          "requireFactionRoster": true,
+          "actors": [
+            {
+              "fixtureActorId": "worker-0",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 864,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-1",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-2",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-3",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-4",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 352,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-5",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-6",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 416,
+                "y": 912,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "worker-7",
+              "actorName": "SkaduweeWorkerMale",
+              "owner": 2,
+              "position": {
+                "x": 448,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-0",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 160,
+                "y": 880,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "army-1",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 896,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-producer",
+              "actorName": "InfantryInn",
+              "owner": 2,
+              "position": {
+                "x": 480,
+                "y": 976,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-house",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 704,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-deposit",
+              "actorName": "WorkMill",
+              "owner": 2,
+              "position": {
+                "x": 96,
+                "y": 1008,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "own-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -32,
+                "y": 1072,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ready-granary",
+              "actorName": "Granary",
+              "owner": 2,
+              "position": {
+                "x": 320,
+                "y": 1088,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "scout-probe",
+              "actorName": "SkaduweeWarriorMale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 832,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "ranged-probe",
+              "actorName": "SkaduweeRangedFemale",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 928,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "support-probe",
+              "actorName": "SkaduweeMagicianFemale",
+              "owner": 2,
+              "position": {
+                "x": 192,
+                "y": 960,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-producer",
+              "actorName": "AnkGuard",
+              "owner": 1,
+              "position": {
+                "x": -160,
+                "y": 496,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-deposit",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -320,
+                "y": 736,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-source",
+              "actorName": "Tree1",
+              "owner": null,
+              "position": {
+                "x": -448,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "enemy-worker",
+              "actorName": "TivaraWorkerMale",
+              "owner": 1,
+              "position": {
+                "x": -352,
+                "y": 784,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-target",
+              "actorName": "WorkMill",
+              "owner": 1,
+              "position": {
+                "x": -224,
+                "y": 752,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-house-0",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 512,
+                "y": 1152,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-house-1",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 384,
+                "y": 1216,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-house-2",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 256,
+                "y": 1280,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "authority-house-3",
+              "actorName": "Emberstone",
+              "owner": 2,
+              "position": {
+                "x": 128,
+                "y": 1344,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-0",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": 96,
+                "y": 752,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-1",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": 64,
+                "y": 768,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-2",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": 32,
+                "y": 784,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-3",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": 0,
+                "y": 800,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-4",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": -32,
+                "y": 816,
+                "z": 0
+              }
+            },
+            {
+              "fixtureActorId": "churn-wall-5",
+              "actorName": "Wall",
+              "owner": 1,
+              "position": {
+                "x": -64,
+                "y": 832,
+                "z": 0
+              }
+            }
+          ],
+          "existingActorBindings": [
+            {
+              "fixtureActorId": "original-home",
+              "actorName": "FrostForge",
+              "owner": 2
+            },
+            {
+              "fixtureActorId": "enemy-home",
+              "actorName": "Sandhold",
+              "owner": 1
+            }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            {
+              "playerNumber": 1,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            },
+            {
+              "playerNumber": 2,
+              "amounts": {
+                "food": 1200,
+                "wood": 1600,
+                "stone": 800,
+                "minerals": 800
+              }
+            }
+          ],
+          "controls": [],
+          "events": [
+            {
+              "id": "loss-churn-wall-0",
+              "tick": 200,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-0"
+            },
+            {
+              "id": "loss-churn-wall-1",
+              "tick": 360,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-1"
+            },
+            {
+              "id": "loss-churn-wall-2",
+              "tick": 520,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-2"
+            },
+            {
+              "id": "loss-churn-wall-3",
+              "tick": 680,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-3"
+            },
+            {
+              "id": "loss-churn-wall-4",
+              "tick": 840,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-4"
+            },
+            {
+              "id": "loss-churn-wall-5",
+              "tick": 1000,
+              "kind": "destroy_owned_actor",
+              "owner": 1,
+              "objectName": "Wall",
+              "fixtureActorId": "churn-wall-5"
+            }
+          ],
+          "initialOrders": [
+            {
+              "workerFixtureActorId": "enemy-worker",
+              "sourceFixtureActorId": "enemy-source",
+              "kind": "gather"
+            },
+            {
+              "workerFixtureActorId": "worker-1",
+              "sourceFixtureActorId": "own-source",
+              "kind": "gather"
+            }
+          ],
+          "terrainPatches": [
+            {
+              "x": 24,
+              "y": 0,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 1,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 2,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 3,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 4,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 5,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 6,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 7,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 8,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 9,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 10,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 11,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 12,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 13,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 14,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 15,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 16,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 17,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 18,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 19,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 20,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 21,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 28,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 29,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 30,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 31,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 32,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 33,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 34,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 35,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 36,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 37,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 38,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 39,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 40,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 41,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 42,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 43,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 44,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 45,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 46,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 47,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 48,
+              "terrain": "water",
+              "blocked": false
+            },
+            {
+              "x": 24,
+              "y": 49,
+              "terrain": "water",
+              "blocked": false
+            }
+          ],
+          "routeOutages": [
+            {
+              "id": "churn-stable-query",
+              "fromTick": 1,
+              "throughTick": 1001,
+              "fixtureActorIds": [
+                "army-0"
+              ],
+              "mode": "pending"
+            },
+            {
+              "id": "churn-disposal-query",
+              "fromTick": 3500,
+              "throughTick": 4500,
+              "fixtureActorIds": [
+                "army-0"
+              ],
+              "mode": "pending"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "assertions": {
+    "H-20": {
+      "maximumTick": 4000,
+      "minimumDecisions": 1,
+      "minimumAppliedCommands": 1,
+      "requiredAiFactions": [
+        "Tivara",
+        "Skaduwee"
+      ],
+      "requiredNativeScenario": {
+        "schemaVersion": 1,
+        "scenarioId": "H-20",
+        "latestTick": 4000,
+        "humanPlayerNumber": 1,
+        "branchByVariant": {
+          "h-20-tivara-unrelated": "unrelated",
+          "h-20-tivara-corridor": "corridor",
+          "h-20-tivara-dispose": "dispose",
+          "h-20-skaduwee-unrelated": "unrelated",
+          "h-20-skaduwee-corridor": "corridor",
+          "h-20-skaduwee-dispose": "dispose"
+        }
+      }
+    }
+  }
+}

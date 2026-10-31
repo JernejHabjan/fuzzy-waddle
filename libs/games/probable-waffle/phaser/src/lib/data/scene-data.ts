@@ -24,6 +24,7 @@ import { VisionComponent } from "../entity/components/vision-component";
 import { ActorIndexSystem } from "../world/services/ActorIndexSystem";
 import { OwnerComponent } from "../entity/components/owner-component";
 import { getSceneService } from "../world/services/scene-component-helpers";
+import { fenceSceneResourceHistory } from "./scene-resource-observation";
 
 /**
  * Defines the closed probable waffle scene data key classification. Use an explicit member rather than a
@@ -47,6 +48,7 @@ export function isSnapshotApplyInProgress(scene: Scene): boolean {
 }
 
 export function setSnapshotApplyInProgress(scene: Scene, inProgress: boolean): void {
+  if (inProgress) fenceSceneResourceHistory(scene, "snapshot_restore_before_write");
   scene.data.set(ProbableWaffleSceneDataKey.SnapshotApplyInProgress, inProgress);
 }
 

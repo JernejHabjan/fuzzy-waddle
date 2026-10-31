@@ -22,22 +22,31 @@ import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { ConstructableDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/constructable-category";
 import type { AnimationOptions } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-options";
 import type { BuilderDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/builder-definition";
-type GameObject = Phaser.GameObjects.GameObject;
 import { TilemapComponent } from "../../../world/tilemap/tilemap.component";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
+import { getSceneComponent } from "../../../world/services/scene-component-helpers";
+import { getCenterTileCoordUnderObject, getTileCoordsUnderObject } from "../../../library/tile-under-object";
+import { constructionApproachRange } from "./construction-approach-range";
 
 // Allows the actor to construct building
 export class BuilderComponent {
   // building site the builder is currently working on
-  assignedConstructionSite?: GameObject;
+  assignedConstructionSite?: Phaser.GameObjects.GameObject;
 
   // when cooldown has expired
-  // onCooldownReady: EventEmitter<GameObject> = new EventEmitter<GameObject>();
-  onConstructionSiteEntered: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
-  onAssignedToConstructionSite: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
-  // onConstructionStarted: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
-  onRemovedFromConstructionSite: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
-  onConstructionSiteLeft: Subject<[GameObject, GameObject]> = new Subject<[GameObject, GameObject]>();
+  // onCooldownReady: EventEmitter<Phaser.GameObjects.GameObject> = new EventEmitter<Phaser.GameObjects.GameObject>();
+  onConstructionSiteEntered: Subject<[Phaser.GameObjects.GameObject, Phaser.GameObjects.GameObject]> = new Subject<
+    [Phaser.GameObjects.GameObject, Phaser.GameObjects.GameObject]
+  >();
+  onAssignedToConstructionSite: Subject<[Phaser.GameObjects.GameObject, Phaser.GameObjects.GameObject]> = new Subject<
+    [Phaser.GameObjects.GameObject, Phaser.GameObjects.GameObject]
+  >();
+  onRemovedFromConstructionSite: Subject<[Phaser.GameObjects.GameObject, Phaser.GameObjects.GameObject]> = new Subject<
+    [Phaser.GameObjects.GameObject, Phaser.GameObjects.GameObject]
+  >();
+  onConstructionSiteLeft: Subject<[Phaser.GameObjects.GameObject, Phaser.GameObjects.GameObject]> = new Subject<
+    [Phaser.GameObjects.GameObject, Phaser.GameObjects.GameObject]
+  >();
   remainingCooldown = 0;
   // Fixes same-tick cooldown decrement right after setData/reconnect restore.
   private cooldownStartedOnTick = -1;
@@ -48,17 +57,20 @@ export class BuilderComponent {
   private audioService?: AudioService;
   private animationActorComponent?: AnimationActorComponent;
   private actorTranslateComponent?: ActorTranslateComponent;
+  private disposed = false;
 
   constructor(
-    private readonly gameObject: GameObject,
+    private readonly gameObject: Phaser.GameObjects.GameObject,
     private readonly builderComponentDefinition: BuilderDefinition
   ) {
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
+    gameObject.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     onObjectReady(this.gameObject, this.onObjectReady, this);
   }
 
   private onObjectReady() {
+    if (this.disposed) return;
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
     this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
     this.actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
@@ -121,7 +133,8 @@ export class BuilderComponent {
     return this.assignedConstructionSite;
   }
 
-  assignToConstructionSite(constructionSite: GameObject) {
+  assignToConstructionSite(constructionSite: Phaser.GameObjects.GameObject) {
+    if (this.disposed) return;
     if (this.assignedConstructionSite === constructionSite) return;
 
     const constructionSiteComponent = getActorComponent(constructionSite, ConstructionSiteComponent);
@@ -131,6 +144,8 @@ export class BuilderComponent {
       this.reportDeniedAction(HudVisualFeedbackMessageType.CannotAssignBuilder);
       return;
     }
+    // Release the former site's progress/capacity before transferring this worker to another site.
+    this.leaveConstructionSite();
     this.assignedConstructionSite = constructionSite;
     constructionSiteComponent.assignBuilder(this.gameObject);
     this.onAssignedToConstructionSite.next([this.gameObject, constructionSite]);
@@ -146,15 +161,16 @@ export class BuilderComponent {
   }
 
   leaveConstructionSite() {
+    this.pendingAssignedConstructionSiteId = undefined;
     if (!this.assignedConstructionSite) return;
 
     const constructionSite = this.assignedConstructionSite;
     const constructionSiteComponent = getActorComponent(constructionSite, ConstructionSiteComponent);
-    if (!constructionSiteComponent) return;
 
     // remove builder
     this.assignedConstructionSite = undefined;
-    constructionSiteComponent.unAssignBuilder(this.gameObject);
+    constructionSiteComponent?.unAssignBuilder(this.gameObject);
+    constructionSiteComponent?.unAssignRepairer(this.gameObject);
 
     // notify listeners
     this.onRemovedFromConstructionSite.next([this.gameObject, constructionSite]);
@@ -170,8 +186,15 @@ export class BuilderComponent {
     }
   }
 
-  getConstructionRange(): number {
-    return 1;
+  /** Uses the target footprint to give pathfinding a free tile beyond its blocked center. */
+  getConstructionRange(target?: Phaser.GameObjects.GameObject): number {
+    if (!target) return 1;
+    const tilemap = getSceneComponent(target.scene, TilemapComponent)?.tilemap;
+    if (!tilemap) return 1;
+    return constructionApproachRange(
+      getTileCoordsUnderObject(tilemap, target),
+      getCenterTileCoordUnderObject(tilemap, target)
+    );
   }
 
   /**
@@ -186,6 +209,7 @@ export class BuilderComponent {
   }
 
   assignToRepairSite(target: Phaser.GameObjects.GameObject) {
+    if (this.disposed) return;
     if (this.assignedConstructionSite === target) return;
 
     const constructionSiteComponent = getActorComponent(target, ConstructionSiteComponent);
@@ -195,6 +219,7 @@ export class BuilderComponent {
       this.reportDeniedAction(HudVisualFeedbackMessageType.CannotAssignRepairer);
       return;
     }
+    this.leaveConstructionSite();
     this.assignedConstructionSite = target;
     constructionSiteComponent.assignRepairer(this.gameObject);
     this.onAssignedToConstructionSite.next([this.gameObject, target]);
@@ -224,40 +249,30 @@ export class BuilderComponent {
   }
 
   leaveRepairSite() {
-    if (!this.assignedConstructionSite) return;
-
-    const constructionSite = this.assignedConstructionSite;
-    const constructionSiteComponent = getActorComponent(constructionSite, ConstructionSiteComponent);
-    if (!constructionSiteComponent) return;
-
-    // remove repairer
-    this.assignedConstructionSite = undefined;
-    constructionSiteComponent.unAssignRepairer(this.gameObject);
-
-    // notify listeners
-    this.onRemovedFromConstructionSite.next([this.gameObject, constructionSite]);
-
-    console.log("builder left repair site");
-    if (this.builderComponentDefinition.enterConstructionSite) {
-      // leave repair site
-      const containerComponent = getActorComponent(constructionSite, ContainerComponent);
-      if (containerComponent) {
-        containerComponent.unloadGameObject(this.gameObject);
-        this.onConstructionSiteLeft.next([this.gameObject, constructionSite]);
-      }
-    }
+    this.leaveConstructionSite();
   }
 
   private destroy() {
+    if (this.disposed) return;
+    this.disposed = true;
     this.cooldownTickSub?.unsubscribe();
     this.simulationTickService = undefined;
+    this.leaveConstructionSite();
+    this.gameObject.off(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
+    this.gameObject.off(HealthComponent.KilledEvent, this.destroy, this);
+    this.gameObject.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+    this.onConstructionSiteEntered.complete();
+    this.onAssignedToConstructionSite.complete();
+    this.onRemovedFromConstructionSite.complete();
+    this.onConstructionSiteLeft.complete();
   }
 
   isIdle() {
     return !this.assignedConstructionSite;
   }
 
-  async getClosestConstructionSite(rangeInTiles: number): Promise<GameObject | null> {
+  async getClosestConstructionSite(rangeInTiles: number): Promise<Phaser.GameObjects.GameObject | null> {
+    if (this.disposed) return null;
     const owner = getActorComponent(this.gameObject, OwnerComponent)?.getOwner();
     const transform = getGameObjectLogicalTransform(this.gameObject);
     if (!owner || !transform) {
@@ -268,19 +283,16 @@ export class BuilderComponent {
     const tileSize = TilemapComponent.tileWidth;
     const worldRange = rangeInTiles * tileSize;
 
+    const canUseSite = (site: Phaser.GameObjects.GameObject) =>
+      site.active !== false && site.scene === this.gameObject.scene &&
+      site !== this.assignedConstructionSite &&
+      getActorComponent(site, ConstructionSiteComponent)?.canAssignBuilder() === true &&
+      getActorComponent(site, OwnerComponent)?.getOwner() === owner;
+
     // First filter by geometric distance and ownership
     const availableConstructionSites = this.gameObject.scene.children.list.filter((go) => {
       // Skip the currently assigned construction site (we're looking for the NEXT one)
-      if (go === this.assignedConstructionSite) return false;
-
-      const constructionSiteComponent = getActorComponent(go, ConstructionSiteComponent);
-      if (!constructionSiteComponent) return false;
-      if (!constructionSiteComponent.canAssignBuilder()) return false;
-      const targetOwnerComponent = getActorComponent(go, OwnerComponent);
-      if (!targetOwnerComponent) return false;
-      const targetOwner = targetOwnerComponent.getOwner();
-      if (!targetOwner) return false;
-      if (targetOwner !== owner) return false;
+      if (!canUseSite(go)) return false;
 
       // Pre-filter by geometric distance to avoid unnecessary pathfinding
       const targetPosition = getGameObjectLogicalTransform(go);
@@ -289,22 +301,26 @@ export class BuilderComponent {
       return geometricDistance <= worldRange;
     });
 
-    // console.log("[Build] getClosestConstructionSite: Found", availableConstructionSites.length, "sites in geometric range (excluding current:", this.assignedConstructionSite, ")");
-
     if (availableConstructionSites.length === 0) return null;
 
     // Get navigation distances for all sites using batch method
-    const pairs: [GameObject, GameObject][] = availableConstructionSites.map((site) => [this.gameObject, site]);
+    const pairs: [Phaser.GameObjects.GameObject, Phaser.GameObjects.GameObject][] = availableConstructionSites.map(
+      (site) => [this.gameObject, site]
+    );
     const distances = await DistanceHelper.batchGetDistancesBetweenGameObjects(pairs);
+    if (this.disposed || owner !== getActorComponent(this.gameObject, OwnerComponent)?.getOwner()) return null;
 
-    const sitesWithDistance: { site: GameObject; distance: number }[] = [];
+    const sitesWithDistance: { site: Phaser.GameObjects.GameObject; distance: number }[] = [];
 
     for (let i = 0; i < availableConstructionSites.length; i++) {
+      // Cancellation, completion, capture or a competing builder can invalidate a pending lookup.
+      const site = availableConstructionSites[i];
+      if (!site || !canUseSite(site)) continue;
       const distance = distances[i];
       // console.log("[Build] getClosestConstructionSite: Site", availableConstructionSites[i], "navDistance=", distance);
       // Only include reachable sites
       if (typeof distance === "number" && distance <= rangeInTiles) {
-        sitesWithDistance.push({ site: availableConstructionSites[i]!, distance });
+        sitesWithDistance.push({ site, distance });
       }
     }
 
@@ -333,6 +349,7 @@ export class BuilderComponent {
   }
 
   setData(data: Partial<BuilderComponentData>) {
+    if (this.disposed) return;
     if (data.remainingCooldown !== undefined) {
       this.remainingCooldown = data.remainingCooldown;
       if (this.remainingCooldown > 0) {

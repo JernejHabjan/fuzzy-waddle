@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "authored",
+  "scenarioIds": ["STRAT-09"],
+  "purpose": "Pure owner control for choosing an evidenced risky objective while the stronger enemy reserve protects its core.",
+  "driver": "pure",
+  "seeds": [759014],
+  "context": {
+    "mapId": "observed-comeback-opportunity",
+    "mapDigest": "authored-offensive-opportunity-contract",
+    "side": 1,
+    "faction": "Tivara",
+    "rulesVersion": "probable-waffle-rules-v1",
+    "contractVersions": { "scenario": 1, "brain": 1, "observation": 1, "command": 1 }
+  },
+  "status": "authored_not_run",
+  "pureCases": [
+    {
+      "scenarioId": "STRAT-09",
+      "coverage": "owner_contract",
+      "setup": "Four compatible attackers, a visible exposed producer, a defended enemy core, and a stronger observed reserve.",
+      "expected": "Choose and attack the reachable exposed producer without inventing a hidden objective or misclassifying the stronger reserve as absent.",
+      "remaining": [
+        "Native raid, denial, unrecoverable elimination and technical route-outage branches remain required by the runtime recipe."
+      ],
+      "tests": [
+        {
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/select-ai-offensive-opportunity.spec.ts",
+          "title": "STRAT-09 chooses an observed exposed producer while a stronger enemy reserve guards its core"
+        }
+      ]
+    }
+  ]
+}
