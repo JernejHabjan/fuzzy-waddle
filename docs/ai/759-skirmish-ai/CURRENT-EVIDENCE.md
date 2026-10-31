@@ -1,6 +1,6 @@
 # RTS AI — evidence ledger
 
-Updated 2026-10-31. T/S1/S2/S3 and SCOUT-02 are closed. Refresh the local regression pack after the final offense/observation change; remote CI remains.
+Updated 2026-10-31. T/S1/S2/S3 and SCOUT-02 are closed. Current-source local regression pack passed; remote CI is blocked on default-branch workflow availability.
 Prior detailed ledger is preserved at commit 90e8d711a. Read it narrowly when provenance is needed.
 
 ## New acceptance
