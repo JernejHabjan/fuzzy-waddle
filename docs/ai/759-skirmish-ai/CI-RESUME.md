@@ -9,4 +9,6 @@ Updated 2026-10-31. Current progress and acceptance are in [HANDOFF.md](HANDOFF.
 - PR/develop runtime packs require repository variable `RUN_AI_REGRESSION=true`; manual dispatch uses the workflow checkbox.
   Defaults are off. PR draft state is unchanged.
 - Existing multiplayer peer CI remains a separate job and is not certified by this single-player pack.
-- Current workflows are authored but not dispatched. A successful local H-13 shard is recorded in CURRENT-EVIDENCE.
+- Before default-branch registration, explicitly push an `ai-regression/<unique-run-name>` tag at the desired commit to run the same pack. Ordinary branch pushes do not trigger it.
+- Native jobs hydrate LFS assets; compile-only pointer allowances are insufficient for runtime tests.
+- Remote run 41249184852 passed all seven core cases on d6ddd363a. SCOUT-02 integration remains outside the current core selection.

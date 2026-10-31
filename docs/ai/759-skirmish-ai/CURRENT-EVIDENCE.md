@@ -1,6 +1,6 @@
 # RTS AI — evidence ledger
 
-Updated 2026-10-31. T/S1/S2/S3 and SCOUT-02 are closed. Current-source local regression pack passed; remote CI is blocked on default-branch workflow availability.
+Updated 2026-10-31. T/S1/S2/S3 and SCOUT-02 are closed. Current-source local regression pack passed; remote tag-triggered run 41249184852 passed all seven runtime jobs.
 Prior detailed ledger is preserved at commit 90e8d711a. Read it narrowly when provenance is needed.
 
 ## New acceptance
@@ -11,9 +11,9 @@ Prior detailed ledger is preserved at commit 90e8d711a. Read it narrowly when pr
 | S1 | complete | Six behavior classes mapped below; proposal/admission/application/useful effect are recorded separately with exact current specs and native limits. |
 | S2 | complete | Positive/negative controls verified across all six strategic behaviors; AI gameplay preflight passes 105 suites/630 tests. |
 | S3 | complete | Native evidence covers scouting/intel (SCOUT-02), air response (DOMAIN-05), upgrade timing (TECH-01), harassment (RAID-01), and counterforce adaptation (STRAT-05). Details below. |
-| R1–R4 | in_progress | Shared manifest command, strict boolean E2E hook and opt-in CI workflow are authored and locally exercised. Current-source pack passed: seven selected cases, all accounted for, 1,527,416ms (25m27s), within the 30m cap. Remote workflow execution remains. |
-| F1–F3 | complete | Current full family `1793446488003-passed`: 10/10 variants, 1,200 decisions, 24,010 ticks, 23m10s; fixture `fnv1a32:c1a463c0`, dirty source `fnv1a32:b02a039e`. |
-| C1–C3 | in_progress | Both owning TSC checks, focused changed-owner tests, changed-file lint (0 errors) and current-source regression pack pass. Task-owned commits are pushed. Full project lint still reports errors in unchanged legacy files; final audits are recorded. Remote workflow validation is blocked because GitHub has not indexed the new workflow on the default branch. |
+| R1–R4 | in_progress | Shared manifest command, strict boolean E2E hook and opt-in CI workflow are authored and locally exercised. Current-source pack passed: seven selected cases, all accounted for, 1,527,416ms (25m27s), within the 30m cap. Remote run 41249184852 passed all seven jobs on d6ddd363a. |
+| F1–F3 | complete | Current full family `1793446488003-passed`: 10/10 variants, 1,200 decisions, 24,010 ticks, 23m10s; fixture `fnv1a32:c1a463c0`, dirty source `fnv1a32:b02a039e`. Native F1/F2 and F3 controls pass; F3 also requires integration into R, which the seven-case core pack does not provide. |
+| C1–C3 | in_progress | Both owning TSC checks, focused changed-owner tests, changed-file lint (0 errors) and current-source regression pack pass. Task-owned commits are pushed. Full project lint still reports errors in unchanged legacy files; final audits are recorded. Remote run 41249184852 passed all seven jobs; the dispatch blocker is resolved. |
 
 ## Retained single-player evidence
 
@@ -95,15 +95,17 @@ Coverage terms stay separate: a proposal is not an admitted order; an admitted o
 ## Closure audit
 
 - Omission audit: T, all six S behaviours, R1–R4, SCOUT-02 F1–F3 and C1–C3 each have a ledger row above. Unsupported peer obligations, multiplayer, ESCORT/naval, D-06 calibration, optional islands and advanced replay remain excluded explicitly below.
-- Final closure: task-owned changes are pushed in `795d2f8b2` and `1854f11c4`; local focused/native checks and the selected pack pass. Current-source S3 includes a diagnostic STRAT-05 replay, not full-family recertification. Full-project lint errors are limited to unchanged legacy files. Remote C2 is blocked by GitHub requiring the workflow on the default branch; therefore the overall goal remains open.
+- Final closure: task-owned changes are pushed in `795d2f8b2` and `1854f11c4`; local focused/native checks and the selected pack pass. Current-source S3 includes a diagnostic STRAT-05 replay, not full-family recertification. Full-project lint errors are limited to unchanged legacy files. Remote C2 execution passed through explicit tag run 41249184852. F3 periodic-pack integration remains open (the prior complete label was too broad).
 
 ## Known limitations and exclusions
 
 - Earlier SCOUT-02 reports failed before the route/identity corrections; the latest full family passes and supersedes
   those diagnostic outcomes for the current fixture only.
-- CI jobs exist but skip draft PRs. The new workflow is pushed on this branch, but GitHub does not list it until it exists on the default branch; `gh workflow run .github/workflows/ai-regression.yml --ref feature/759-skirmish-ai` returned HTTP 404 `not found on the default branch`. Dispatch prerequisite: make the workflow available on the default branch, then dispatch with `run_ai_regression=true`. No successful new remote run recorded. PR #814 remains draft/unchanged.
+- PR CI skips drafts, but explicit `ai-regression/*` tags run the same pack from the tagged source. Manual dispatch still needs default-branch registration. PR #814 remains draft/unchanged.
 - Seven historical peer obligations, ESCORT 1793242080163, D-06 comparison/calibration, optional islands and
   advanced replay certification stay outside this goal. Show exclusions in the regression report.
 
 Update affected rows with command/result, source/fixture/report identity, coverage and next action.
 Do not replace missing native proof with planner reason strings or successful command dispatch.
+
+Review update: 0c73050a4 fixes repetition omissions (six tests pass) and enables explicit tag runs. Run 41249025842 exposed unhydrated LFS assets before any match; d6ddd363a fixes all three runtime workflows. Replacement run 41249184852 succeeded with seven runtime jobs.
