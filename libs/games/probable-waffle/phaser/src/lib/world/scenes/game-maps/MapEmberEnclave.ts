@@ -507,7 +507,7 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
     const tilemapHeight = this.tilemap.heightInPixels;
 
     // Function to spawn a single cloud
-    const spawnSingleCloud = (startOffScreen: boolean = true) => {
+    const spawnSingleCloud = (startOffScreen = true) => {
       const cloud = this.add.image(0, 0, "factions", "buildings/skaduwee/infantry_inn/cloud-vertical.png");
 
       // Rotate cloud to be horizontal

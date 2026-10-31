@@ -1,6 +1,6 @@
 # RTS AI — next execution handoff
 
-Updated 2026-10-31. S3 and the current-source local regression pack are complete. Remaining work is remote CI validation, final audits, commit/push, and deciding whether any CI blocker can be resolved without changing PR #814.
+Updated 2026-10-31. S3 and the current-source local regression pack are complete. Task changes are committed and pushed. Remote CI validation is blocked because GitHub does not expose the new dispatch workflow until it is on the default branch; PR #814 remains unchanged.
 `REMAINING-WORK.md` owns scope and acceptance; `CURRENT-EVIDENCE.md` owns evidence and exclusions.
 
 ## Current state
@@ -11,14 +11,15 @@ Updated 2026-10-31. S3 and the current-source local regression pack are complete
 - Current-source `pnpm ai:regression` passed: 7/7 selected cases, preflight 105 suites/632 tests, 25m27s under the 30m cap. Aggregate is `tmp/ai-skirmish-regression/latest.json`; run report IDs and source/fixture digests are in CURRENT-EVIDENCE.
 - Local pack source is HEAD `90e8d711a` plus working-tree digest `fnv1a32:4f3eea29`. Seven selected diagnostic cases are not whole-family certification.
 - R pack, strict E2E hook and manual workflow are authored. Remote successful workflow run and artifacts are not yet recorded.
+- Commits pushed: `795d2f8b2` (AI/scouting behavior and native evidence), `1854f11c4` (regression runner, CI integration and docs).
+- `gh workflow list --all` does not include AI Regression Pack. Dispatch attempt returned HTTP 404: workflow not found on the default branch. Do not alter PR #814; required prerequisite is making the workflow available on the default branch.
+- Changed TypeScript files pass direct ESLint with 0 errors (warnings remain). Whole-project lint has existing errors in unchanged `skirmish-ai-expansion-pressure-pairs.ts`, `skirmish-ai-native-scenario-evaluation.ts`, `skirmish-ai-native-scenario-pairs.ts`, and `ai-runtime-route-outages.ts`.
 
 ## Next actions
 
 1. Run final omission/closure audits and `git diff --check`; inspect ownership/scope before staging.
-2. Commit task-owned changes and push `feature/759-skirmish-ai`.
-3. Try dispatching `.github/workflows/ai-regression.yml` with `run_ai_regression=true`; capture run URL/status/artifacts. Keep PR #814 draft and unchanged.
-4. If dispatch is blocked by workflow/default-branch or repository access, record the exact reason and keep C2 incomplete. Do not claim remote validation.
-5. Update this handoff and evidence ledger with the remote result; complete the goal only when all required checks and audits close.
+2. Remote C2 cannot proceed while the workflow is absent from the default branch. Once available there, dispatch `.github/workflows/ai-regression.yml` with `run_ai_regression=true`, then capture run URL/status/artifacts. Keep PR #814 draft and unchanged.
+3. Keep C2 and the tool goal open until remote evidence exists or the user explicitly changes the default-branch/PR constraint.
 
 ## Guardrails
 
