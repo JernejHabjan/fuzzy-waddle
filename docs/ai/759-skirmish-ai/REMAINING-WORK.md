@@ -4,6 +4,64 @@ Prepared 2026-10-31; execution started on user “go”.
 Worker: Luna High; no automatic model switching or delegation. Branch: feature/759-skirmish-ai.
 This replaces the prior single-player execution queue. Prior evidence remains applicable where dependencies are unchanged.
 
+## Next execution packet: finish the remaining acceptance
+
+Prepared after review of 4ea0b3e57. Preparation only; implementation starts on go.
+This packet narrows the next work order, not the original acceptance contract below.
+Worker: Luna High or Sol Medium, chosen by the user; no automatic switching/delegation.
+
+Copyable goal:
+
+> Finish the remaining RTS AI acceptance in docs/ai/759-skirmish-ai/REMAINING-WORK.md:
+> integrate complete SCOUT-02 paired fairness coverage into the shared local/CI regression runner;
+> resolve the four recorded owning-project lint errors without suppressions; prove the new scout
+> execution route locally and remotely; reconcile every original acceptance ID and publish the fixes.
+> Preserve the seven-case core pack and its valid evidence. Keep every invocation under 30 minutes,
+> retain one local native runner, and avoid unchanged full-suite reruns. Keep PR #814 draft and
+> exclude multiplayer, difficulty calibration and advanced replay certification. Update the existing
+> handoff/evidence records in place. Complete only after separate omission and closure audits.
+
+Cold start: read HANDOFF and CURRENT-EVIDENCE, check git/goal state, then start N1 below.
+The existing tool goal is unfinished; resume it rather than falsely completing it to create another.
+Commit/push authority persists on feature/759-skirmish-ai. Explicit ai-regression/* tag runs are authorized.
+
+### N1 - integrate scouting into periodic regression (F3, R1-R4)
+
+- Extend tools/ai/run-ai-regression.mjs, ai-regression-selection.mjs, ai-regression-execution.mjs,
+  select-ai-regression-shards.mjs and the existing fixture/manifest contracts; do not create a second catalogue.
+- Preserve the default seven-case core. Add an explicit scout profile (proposed command:
+  pnpm ai:regression -- --profile scout) that invokes the complete SCOUT-02 family, including both factions
+  and the hidden-position/health/queue comparisons. Existing family runtime was 23m10s; cap at 30m.
+- Use tools/ai/run-skirmish-matrix.mjs and fixtures/scout-02-native-runtime.json. Inspect
+  apps/portal-e2e/src/e2e/skirmish-ai-native-scenario-pairs.ts before choosing shard boundaries.
+  Ten individually green diagnostic variants are insufficient: the family comparisons must execute.
+- Keep RUN_AI_REGRESSION as the sole on/off switch; profile selection chooses coverage, not enablement.
+  Support the same profile in local CLI, E2E hook and CI selection. Document which profile defaults apply.
+- Preview must enumerate selected variants/repetitions and exclusions; missing controls, empty selection,
+  timeout, failed comparison or absent artifacts must fail. Report fixture/source identity and actual coverage.
+- Extend focused runner tests for core compatibility, scout family dispatch, paired-control completeness,
+  strict boolean behavior, failure propagation and local/CI selection parity before native execution.
+
+### N2 - close owning lint failures (T2, C1)
+
+- Inspect portal-e2e module-boundary errors in skirmish-ai-expansion-pressure-pairs.ts,
+  skirmish-ai-native-scenario-evaluation.ts and skirmish-ai-native-scenario-pairs.ts; repair the shared
+  tooling dependency correctly, without duplicating validators or disabling module-boundary rules.
+- Repair the unused expression in Phaser testing/ai-runtime-route-outages.ts while preserving rejection
+  versus shutdown behavior. Reuse ai-runtime-route-outages.spec.ts for focused evidence.
+- Run owning Phaser/portal-e2e lint and both tsconfig.json noEmit checks once the slice stabilizes.
+  Baseline attribution alone does not waive a required check. Record a real blocker if repair needs broader design.
+
+### N3 - evidence and publication (C2-C3)
+
+- One local scout-profile run plus one remote scout-profile run proves the new route; use the same source/fixture.
+  Reuse core CI run 41249184852 unless shared execution changes invalidate its evidence; do not rerun for docs alone.
+- Preserve full family paired evaluation in CI. Keep each job <=30m including startup and retain its artifacts.
+  Manual dispatch before default registration is optional: explicit tags already provide remote execution.
+- Reconcile original T/S/R/F/C acceptance against actual results, including previously overstated F3 and lint closure.
+  Promote stable commands to the existing AI testing README; keep three records compact and commit/push exact files.
+- Stop after required evidence and separate omission/closure audits. Do not expand into additional AI features.
+
 ## Goal
 
 On “go”, inspect the goal tool. Create this objective only if no unfinished goal exists; never invent a token budget:
