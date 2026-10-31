@@ -251,9 +251,8 @@ export class AttackComponent {
   private resumePendingHit(): void {
     if (!this.initialized || !this.pendingHit || this.hitTimer) return;
     const tickService = this.simulationTickService;
-    const target = this.actorIndexSystem?.getActorById(this.pendingHit.targetActorId);
     const attack = this.attackDefinition.attacks[this.pendingHit.attackIndex];
-    if (!tickService || !target || !attack) return;
+    if (!tickService || !attack) return;
 
     const pendingHit = this.pendingHit;
     // Restore must not apply gameplay effects while the scene is still being reconstructed.
@@ -262,6 +261,14 @@ export class AttackComponent {
       this.gameObject.scene,
       remainingTicks * SimulationTickService.TICK_INTERVAL_MS,
       () => {
+        // Actors can be restored after their attacker; resolve identity only when simulation resumes.
+        if (this.pendingHit !== pendingHit) return;
+        const target = this.actorIndexSystem?.getActorById(pendingHit.targetActorId);
+        if (!target) {
+          this.hitTimer = undefined;
+          this.pendingHit = undefined;
+          return;
+        }
         this.applyPendingHit(pendingHit, target, attack);
       }
     );
@@ -807,7 +814,7 @@ export class AttackComponent {
   }
 
   setData(data: Partial<AttackComponentData> & Partial<AttackDefinition>) {
-    if (data.remainingCooldown !== undefined || data.currentAttackIndex !== undefined) {
+    if (data.pendingHit !== undefined || data.remainingCooldown !== undefined || data.currentAttackIndex !== undefined) {
       this.resetTransientAttackExecutionState();
     }
 

@@ -1,7 +1,7 @@
 # #759 single-player iteration — start here
 
 Updated 2026-10-31. User approved Astra preparation, then one model switch/compact and "go".
-The approved single-player iteration is complete and published. Read this and [REMAINING-WORK.md](REMAINING-WORK.md)
+The single-player implementation is published; E3 release verification remains incomplete after review. Read this and [REMAINING-WORK.md](REMAINING-WORK.md)
 for scope, acceptance, loop and deferred follow-ups; do not restart completed packets absent a demonstrated regression.
 Do not reconstruct the old seven-package roadmap from chat or historical records.
 
@@ -30,7 +30,7 @@ Do not reconstruct the old seven-package roadmap from chat or historical records
 | B expansion/mission continuity | validated           | B1-B3 pass selected minimum. SEQ-01 both factions win; SEQ-02 shows recovery under renewed pressure. Failed retreat moves select another legal slot. SCOUT-02/ESCORT remain follow-ups. Do not rerun absent a new defect. |
 | C resource/command ownership   | validated           | C1 duplicate admission preserves actor/application progress; C2 expired provisional escrow and contracted-balance gating have focused coverage, H-10 retains both-faction capacity evidence, and H-13 has current native base-control confirmation for both factions. Safe unloaded gatherer leases now transfer to food-field labor/construction while retaining the old effect receipt. C3 epoch/identity/dispatch guards reviewed; focused Phaser tests pass 20/20. Latest gameplay suite passes 105 suites/630 tests.                                                                                                                                                                                                                                                                                      |
 | D essential SP lifecycle       | validated           | H-31 during-active both factions pass (`1793402499466`, `1793402579687`): saved/restored world, brain, authority and reservation digests match at tick119; first resumed input matches; each continues decision 5->20 with 563 advancing queue attempts and 3 completions by tick401. H-32 paid-queue/normal and shutdown cleanup remain passed. Later physical observations may diverge after the first resumed decision; see CURRENT-EVIDENCE. |
-| E ordinary play/closure        | validated           | E1/E2 pass; A-D and E1/E2 are validated. Changed-owner checks and separate Omission/Final Closure Audits complete; implementation published as `7b03d62e3`. Full Phaser/portal-e2e TypeScript commands still exit 2 on unrelated pre-existing diagnostics; no changed-file diagnostics. Multiplayer/CI, exhaustive calibration and named optional scenarios stay deferred. |
+| E ordinary play/closure | partial | E1/E2 retain bounded gameplay evidence. E3 requires successful owning TypeScript checks or an explicitly agreed baseline exception; absence of changed-file diagnostics is insufficient. Review fixes pending-hit target resolution and timer replacement, with 3 focused tests passing. |
 
 Ready means planned, not validated. Every acceptance ID in REMAINING-WORK needs evidence or a blocker.
 Packet completion does not certify every old manifest scenario.
@@ -47,6 +47,12 @@ Packet completion does not certify every old manifest scenario.
 - Keep concise updates; no CPU/memory reporting. Move to independent work when a packet blocks.
 - Maintain three active records only: HANDOFF (cursor), REMAINING-WORK (contract), CURRENT-EVIDENCE (results).
   Replace stale entries; Git/artifacts hold chronology. Do not append session journals to the archive.
+
+## Review follow-up
+
+- H-31 proves exact restore and first decision plus subsequent useful work; later combat replay parity remains unproven.
+- Native reports predate the review fix; focused attack lifecycle tests cover this change. No new full-match claim.
+- Suggested next bounded goal: finish release verification, then SCOUT-02 stale-intelligence fairness and scouting continuity.
 
 ## References on demand
 
