@@ -78,7 +78,12 @@ export function evaluateNativeStrategy(id: string, branch: string, context: Retu
     if (branch !== "quiet") {
       if (!discovery || !after.some((frame) => frame.tick > discovery.tick && frame.tick <= discovery.tick + 400 &&
         (frame.decision.strategy?.objectiveId !== before?.decision.strategy?.objectiveId ||
-         frame.decision.acceptedIntents.some((intent) => intent.kind === "produce"))))
+         frame.decision.acceptedIntents.some((intent) => intent.kind === "produce") ||
+         frame.decision.missionState?.squads.some((squad) =>
+           squad.role === "defense" && squad.actorIds.length > 0 &&
+           !["completed", "cancelled"].includes(squad.state) &&
+           Object.entries(context.roles).some(([role, actorId]) => role.startsWith("reinforcement-") &&
+             (squad.objectiveId === actorId || squad.tactics?.targetActorId === actorId))))))
         failures.push("strategy_counterforce_no_fair_future_plan_response");
     }
   }

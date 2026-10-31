@@ -204,19 +204,34 @@ describe("AI scouting admission", () => {
     ).toBe(true);
   });
 
-  it("selects a frontier scout by visible position rather than runtime actor ID", () => {
+  it("selects the frontier scout closest to the information objective rather than runtime actor ID", () => {
     const proposal = manager.propose(observation(20, [
       unit("a-far", enemyNode, 1),
       unit("z-near", homeNode, 0)
     ]), state());
 
-    expect(proposal.intents).toContainEqual(expect.objectContaining({ kind: "scout", actorIds: ["z-near"] }));
+    expect(proposal.intents).toContainEqual(expect.objectContaining({ kind: "scout", actorIds: ["a-far"] }));
   });
 
   it("gives frontier scouts actor claims so arbitration cannot also assign another mission", () => {
     const proposal = manager.propose(observation(20, guards()), state());
-    expect(proposal.intents).toContainEqual(
-      expect.objectContaining({ kind: "scout", claims: [expect.objectContaining({ kind: "actor", actorId: "guard" })] })
-    );
+    const scout = proposal.intents.find((intent) => intent.kind === "scout");
+    expect(scout?.actorIds).toHaveLength(1);
+    expect(scout?.claims).toEqual([
+      expect.objectContaining({ kind: "actor", actorId: scout?.actorIds[0] })
+    ]);
+  });
+
+  it("does not assign a combat unit committed by this proposal to a new frontier scout mission", () => {
+    const enemy = {
+      ...unit("visible-enemy", enemyNode, 1),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const
+    };
+    const proposal = manager.propose(observation(20, [...guards(), enemy], [enemyNode]), state());
+    const assigned = proposal.statePatch?.squads?.flatMap((squad) => squad.actorIds) ?? [];
+
+    expect(new Set(assigned).size).toBe(assigned.length);
   });
 });

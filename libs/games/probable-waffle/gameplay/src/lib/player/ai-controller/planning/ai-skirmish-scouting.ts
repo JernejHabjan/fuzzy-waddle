@@ -44,10 +44,18 @@ function canScoutNode(
   );
 }
 
-function compareScoutActors(left: AiSkirmishProposalContext["combat"][number], right: AiSkirmishProposalContext["combat"][number]): number {
+function compareScoutActors(
+  left: AiSkirmishProposalContext["combat"][number],
+  right: AiSkirmishProposalContext["combat"][number],
+  destination?: { x: number; y: number; z: number }
+): number {
   const leftPosition = position(left);
   const rightPosition = position(right);
   if (leftPosition && rightPosition) {
+    if (destination) {
+      const routeProximity = distance(leftPosition, destination) - distance(rightPosition, destination);
+      if (routeProximity !== 0) return routeProximity;
+    }
     return leftPosition.y - rightPosition.y || leftPosition.x - rightPosition.x || leftPosition.z - rightPosition.z ||
       left.objectName.localeCompare(right.objectName) || left.actorId.localeCompare(right.actorId);
   }
@@ -169,10 +177,10 @@ function appendNeutralClaim(context: AiSkirmishProposalContext, allowNewClaim = 
     return targetNode !== undefined && context.combat.some((member) => canScoutNode(context, member, targetNode));
   });
   const targetNode = node(neutral);
+  const destination = context.observation.map?.accessGraph?.nodes.find((entry) => entry.nodeId === targetNode);
   const member = targetNode
     ? context.combat.slice().sort(compareScoutActors).find((actor) => canScoutNode(context, actor, targetNode))
     : undefined;
-  const destination = context.observation.map?.accessGraph?.nodes.find((entry) => entry.nodeId === targetNode);
   if (!neutral || !member || !destination) return;
   const claimantId = "squad:scout:neutral" as AiSquadId;
   const claimantPlanId = `plan:${claimantId}` as AiPlanId;
@@ -258,20 +266,20 @@ function appendFrontierScout(context: AiSkirmishProposalContext): void {
   if (!target) return;
   const scoutPosition = target.representativePosition;
   const continuingActorIds = new Set(activeScout?.actorIds ?? []);
-  const assignedActorIds = new Set(
-    context.state.squads
-      .filter((squad) => {
-        const updated = context.nextSquads.find((candidate) => candidate.squadId === squad.squadId);
-        return !["completed", "cancelled"].includes(updated?.state ?? squad.state);
-      })
-      .flatMap((squad) => squad.actorIds)
-  );
+  const assignedActorIds = new Set(context.nextSquads
+    .filter((squad) => !["completed", "cancelled"].includes(squad.state))
+    .flatMap((squad) => squad.actorIds));
+  for (const squad of context.state.squads) {
+    if (context.nextSquads.some((candidate) => candidate.squadId === squad.squadId)) continue;
+    if (!["completed", "cancelled"].includes(squad.state))
+      squad.actorIds.forEach((actorId) => assignedActorIds.add(actorId));
+  }
   const eligible = combat.filter(
     (actor) =>
       !context.primaryOwnedActors.has(actor.actorId) &&
       (!assignedActorIds.has(actor.actorId) || continuingActorIds.has(actor.actorId)) &&
       canScoutNode(context, actor, target.nodeId)
-  ).sort(compareScoutActors);
+  ).sort((left, right) => compareScoutActors(left, right, scoutPosition));
   const scoutId = activeScout?.squadId ?? ("squad:scout:primary" as AiSquadId);
   const scoutPlanId = `plan:${scoutId}` as AiPlanId;
   const continuingScout = activeScout?.objectiveId === currentQuestion.questionId;

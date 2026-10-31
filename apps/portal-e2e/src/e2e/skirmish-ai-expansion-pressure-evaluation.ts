@@ -52,7 +52,8 @@ export function firstSustainedClearBoundary(
       continue;
     }
     clear.push(observation);
-    if (clear.length >= requiredClearObservations) return { tick: clear[0].tick, sequence: clear[0].sequence };
+    const first = clear[0];
+    if (clear.length >= requiredClearObservations && first) return { tick: first.tick, sequence: first.sequence };
   }
   return undefined;
 }
@@ -112,9 +113,10 @@ export function expansionPressureFailures(
       fact.control.id.startsWith("withdraw-home-pressure") && fact.control.phase === "applied" ? [fact.tick] : []);
     const withdrawalTick = appliedWithdrawalTicks.length === originalRaiders.length ? Math.max(...appliedWithdrawalTicks) : undefined;
     const dangerousSequences = new Set(pressured.map(({ fact }) => fact.sequence));
-    const withdrawalClear = withdrawalTick !== undefined && resolution.resolvedTick !== undefined
+    const resolvedTick = resolution.resolvedTick;
+    const withdrawalClear = withdrawalTick !== undefined && resolvedTick !== undefined
       ? firstSustainedClearBoundary(capture.facts.flatMap((fact) => {
-        if (fact.kind !== "decision_selected" || fact.tick < withdrawalTick || fact.tick > resolution.resolvedTick) return [];
+        if (fact.kind !== "decision_selected" || fact.tick < withdrawalTick || fact.tick > resolvedTick) return [];
         const input = fact.decision.input, observation = input?.observation;
         if (!input || input.gaps.length || input.snapshotRestoreInProgress || observation?.tick !== fact.tick) return [];
         const home = observation.actors.find((actor) => actor.actorId === homeId && actor.relation === "self");
@@ -124,11 +126,11 @@ export function expansionPressureFailures(
           const confirmedDead = human.facts.some((entry) => entry.kind === "actor_unregistered" &&
             entry.actorId === id && entry.actor?.playerNumber === 1 && entry.actor.alive === false && entry.tick <= fact.tick);
           return confirmedDead || raider?.visibility === "visible" && raider.relation === "enemy" &&
-            raider.logicalPosition.status === "known" && raider.combatProfile.status === "known";
+            raider.logicalPosition.status === "known" && raider.combatProfile?.status === "known";
         });
         return [{ tick: fact.tick, sequence: fact.sequence, dangerous: dangerousSequences.has(fact.sequence),
           complete: allRaidersKnown }];
-      }), withdrawalTick, resolution.resolvedTick) : undefined;
+      }), withdrawalTick, resolvedTick) : undefined;
     const recoveryBoundary = expansionRecoveryBoundary(branch, withdrawalClear, resolution);
     const resumed = capture.facts.flatMap((fact) => fact.kind === "decision_selected" &&
       recoveryBoundary !== undefined &&

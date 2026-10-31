@@ -61,7 +61,17 @@ export function nativeScenarioWorld(id, faction, branch) {
       move(`reinforcement-${index}`, 400, 25 + (index % 3), 22 + Math.floor(index / 3));
   };
   if (id === "SCOUT-02" && branch !== "visible") {
-    move("contact-group", 200, branch === "hidden_position" ? 5 : 8, branch === "hidden_position" ? 10 : 8);
+    // Withdraw away from the active AI's vision and scout route. Skaduwee contacts pursue
+    // the scout, so keep both paired destinations in the southern map band.
+    const destination = own === "Skaduwee"
+      ? branch === "hidden_position" ? [48, 48] : [44, 44]
+      : branch === "hidden_position" ? [48, 48] : [45, 45];
+    move("contact-group", 20, destination[0], destination[1]);
+    // The autonomous enemy can retarget the investigating scout after withdrawal. Reissue
+    // the same retreat after the first arrival, before it can carry the contact back into vision.
+    move("contact-group", 200, destination[0], destination[1]);
+    move("contact-group", 320, destination[0], destination[1]);
+    move("contact-group", 600, destination[0], destination[1]);
     if (branch === "hidden_health")
       world.events.push({
         id: "hidden-damage",

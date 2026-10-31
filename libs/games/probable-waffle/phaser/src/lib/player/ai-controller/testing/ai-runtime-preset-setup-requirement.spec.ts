@@ -10,7 +10,7 @@ describe("runtime preset setup scheduling", () => {
 
   it("applies pre-existing research at the paused pre-tick setup boundary", () => {
     expect(requiresScheduledAiRuntimePresetSetup({
-      completedResearch: [{ playerNumber: 2, researchType: "healingLightSpell" }]
+      completedResearch: [{ playerNumber: 2, researchType: "healingLightSpell" as never }]
     })).toBe(true);
   });
 });

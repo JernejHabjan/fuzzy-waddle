@@ -74,7 +74,7 @@
           "SCOUT-02"
         ],
         "presetWorld": {
-          "fixtureId": "scout-02-tivara-withdrawn",
+          "fixtureId": "scout-02-tivara-withdrawal-pair",
           "requireFactionRoster": true,
           "actors": [
             {
@@ -212,8 +212,8 @@
               "actorName": "TivaraMacemanMale",
               "owner": 2,
               "position": {
-                "x": 384,
-                "y": 960,
+                "x": 1216,
+                "y": 832,
                 "z": 0
               }
             },
@@ -222,8 +222,8 @@
               "actorName": "TivaraSlingshotFemale",
               "owner": 2,
               "position": {
-                "x": 128,
-                "y": 928,
+                "x": 1216,
+                "y": 768,
                 "z": 0
               }
             },
@@ -232,8 +232,8 @@
               "actorName": "TivaraSlingshotFemale",
               "owner": 2,
               "position": {
-                "x": 192,
-                "y": 960,
+                "x": 1280,
+                "y": 800,
                 "z": 0
               }
             },
@@ -242,8 +242,8 @@
               "actorName": "SkaduweeOwl",
               "owner": 1,
               "position": {
-                "x": 160,
-                "y": 848,
+                "x": 832,
+                "y": 1056,
                 "z": 0
               }
             },
@@ -353,6 +353,20 @@
           ],
           "controls": [
             {
+              "id": "move-contact-group-20",
+              "producerFixtureActorId": "contact-group",
+              "requestTick": 20,
+              "applicationTick": 20,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 1456,
+                  "z": 0
+                }
+              }
+            },
+            {
               "id": "move-contact-group-200",
               "producerFixtureActorId": "contact-group",
               "requestTick": 200,
@@ -361,7 +375,35 @@
                 "kind": "move",
                 "worldPosition": {
                   "x": 32,
-                  "y": 272,
+                  "y": 1456,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-contact-group-320",
+              "producerFixtureActorId": "contact-group",
+              "requestTick": 320,
+              "applicationTick": 320,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 1456,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-contact-group-600",
+              "producerFixtureActorId": "contact-group",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 1456,
                   "z": 0
                 }
               }
@@ -393,7 +435,7 @@
           "SCOUT-02"
         ],
         "presetWorld": {
-          "fixtureId": "scout-02-tivara-visible",
+          "fixtureId": "scout-02-tivara-withdrawal-pair",
           "requireFactionRoster": true,
           "actors": [
             {
@@ -531,8 +573,8 @@
               "actorName": "TivaraMacemanMale",
               "owner": 2,
               "position": {
-                "x": 384,
-                "y": 960,
+                "x": 1216,
+                "y": 832,
                 "z": 0
               }
             },
@@ -541,8 +583,8 @@
               "actorName": "TivaraSlingshotFemale",
               "owner": 2,
               "position": {
-                "x": 128,
-                "y": 928,
+                "x": 1216,
+                "y": 768,
                 "z": 0
               }
             },
@@ -551,8 +593,8 @@
               "actorName": "TivaraSlingshotFemale",
               "owner": 2,
               "position": {
-                "x": 192,
-                "y": 960,
+                "x": 1280,
+                "y": 800,
                 "z": 0
               }
             },
@@ -561,8 +603,8 @@
               "actorName": "SkaduweeOwl",
               "owner": 1,
               "position": {
-                "x": 160,
-                "y": 848,
+                "x": 832,
+                "y": 1056,
                 "z": 0
               }
             },
@@ -697,7 +739,7 @@
           "SCOUT-02"
         ],
         "presetWorld": {
-          "fixtureId": "scout-02-tivara-hidden-position",
+          "fixtureId": "scout-02-tivara-withdrawal-pair",
           "requireFactionRoster": true,
           "actors": [
             {
@@ -835,8 +877,8 @@
               "actorName": "TivaraMacemanMale",
               "owner": 2,
               "position": {
-                "x": 384,
-                "y": 960,
+                "x": 1216,
+                "y": 832,
                 "z": 0
               }
             },
@@ -845,8 +887,8 @@
               "actorName": "TivaraSlingshotFemale",
               "owner": 2,
               "position": {
-                "x": 128,
-                "y": 928,
+                "x": 1216,
+                "y": 768,
                 "z": 0
               }
             },
@@ -855,8 +897,8 @@
               "actorName": "TivaraSlingshotFemale",
               "owner": 2,
               "position": {
-                "x": 192,
-                "y": 960,
+                "x": 1280,
+                "y": 800,
                 "z": 0
               }
             },
@@ -865,8 +907,8 @@
               "actorName": "SkaduweeOwl",
               "owner": 1,
               "position": {
-                "x": 160,
-                "y": 848,
+                "x": 832,
+                "y": 1056,
                 "z": 0
               }
             },
@@ -976,6 +1018,20 @@
           ],
           "controls": [
             {
+              "id": "move-contact-group-20",
+              "producerFixtureActorId": "contact-group",
+              "requestTick": 20,
+              "applicationTick": 20,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 1552,
+                  "z": 0
+                }
+              }
+            },
+            {
               "id": "move-contact-group-200",
               "producerFixtureActorId": "contact-group",
               "requestTick": 200,
@@ -983,8 +1039,36 @@
               "action": {
                 "kind": "move",
                 "worldPosition": {
-                  "x": -128,
-                  "y": 256,
+                  "x": 32,
+                  "y": 1552,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-contact-group-320",
+              "producerFixtureActorId": "contact-group",
+              "requestTick": 320,
+              "applicationTick": 320,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 1552,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-contact-group-600",
+              "producerFixtureActorId": "contact-group",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 1552,
                   "z": 0
                 }
               }
@@ -1016,7 +1100,7 @@
           "SCOUT-02"
         ],
         "presetWorld": {
-          "fixtureId": "scout-02-tivara-hidden-health",
+          "fixtureId": "scout-02-tivara-withdrawal-pair",
           "requireFactionRoster": true,
           "actors": [
             {
@@ -1154,8 +1238,8 @@
               "actorName": "TivaraMacemanMale",
               "owner": 2,
               "position": {
-                "x": 384,
-                "y": 960,
+                "x": 1216,
+                "y": 832,
                 "z": 0
               }
             },
@@ -1164,8 +1248,8 @@
               "actorName": "TivaraSlingshotFemale",
               "owner": 2,
               "position": {
-                "x": 128,
-                "y": 928,
+                "x": 1216,
+                "y": 768,
                 "z": 0
               }
             },
@@ -1174,8 +1258,8 @@
               "actorName": "TivaraSlingshotFemale",
               "owner": 2,
               "position": {
-                "x": 192,
-                "y": 960,
+                "x": 1280,
+                "y": 800,
                 "z": 0
               }
             },
@@ -1184,8 +1268,8 @@
               "actorName": "SkaduweeOwl",
               "owner": 1,
               "position": {
-                "x": 160,
-                "y": 848,
+                "x": 832,
+                "y": 1056,
                 "z": 0
               }
             },
@@ -1295,6 +1379,20 @@
           ],
           "controls": [
             {
+              "id": "move-contact-group-20",
+              "producerFixtureActorId": "contact-group",
+              "requestTick": 20,
+              "applicationTick": 20,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 1456,
+                  "z": 0
+                }
+              }
+            },
+            {
               "id": "move-contact-group-200",
               "producerFixtureActorId": "contact-group",
               "requestTick": 200,
@@ -1303,7 +1401,35 @@
                 "kind": "move",
                 "worldPosition": {
                   "x": 32,
-                  "y": 272,
+                  "y": 1456,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-contact-group-320",
+              "producerFixtureActorId": "contact-group",
+              "requestTick": 320,
+              "applicationTick": 320,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 1456,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-contact-group-600",
+              "producerFixtureActorId": "contact-group",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 1456,
                   "z": 0
                 }
               }
@@ -1345,7 +1471,7 @@
           "SCOUT-02"
         ],
         "presetWorld": {
-          "fixtureId": "scout-02-tivara-hidden-queue",
+          "fixtureId": "scout-02-tivara-withdrawal-pair",
           "requireFactionRoster": true,
           "actors": [
             {
@@ -1483,8 +1609,8 @@
               "actorName": "TivaraMacemanMale",
               "owner": 2,
               "position": {
-                "x": 384,
-                "y": 960,
+                "x": 1216,
+                "y": 832,
                 "z": 0
               }
             },
@@ -1493,8 +1619,8 @@
               "actorName": "TivaraSlingshotFemale",
               "owner": 2,
               "position": {
-                "x": 128,
-                "y": 928,
+                "x": 1216,
+                "y": 768,
                 "z": 0
               }
             },
@@ -1503,8 +1629,8 @@
               "actorName": "TivaraSlingshotFemale",
               "owner": 2,
               "position": {
-                "x": 192,
-                "y": 960,
+                "x": 1280,
+                "y": 800,
                 "z": 0
               }
             },
@@ -1513,8 +1639,8 @@
               "actorName": "SkaduweeOwl",
               "owner": 1,
               "position": {
-                "x": 160,
-                "y": 848,
+                "x": 832,
+                "y": 1056,
                 "z": 0
               }
             },
@@ -1624,6 +1750,20 @@
           ],
           "controls": [
             {
+              "id": "move-contact-group-20",
+              "producerFixtureActorId": "contact-group",
+              "requestTick": 20,
+              "applicationTick": 20,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 1456,
+                  "z": 0
+                }
+              }
+            },
+            {
               "id": "move-contact-group-200",
               "producerFixtureActorId": "contact-group",
               "requestTick": 200,
@@ -1632,7 +1772,35 @@
                 "kind": "move",
                 "worldPosition": {
                   "x": 32,
-                  "y": 272,
+                  "y": 1456,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-contact-group-320",
+              "producerFixtureActorId": "contact-group",
+              "requestTick": 320,
+              "applicationTick": 320,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 1456,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-contact-group-600",
+              "producerFixtureActorId": "contact-group",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 1456,
                   "z": 0
                 }
               }
@@ -1674,7 +1842,7 @@
           "SCOUT-02"
         ],
         "presetWorld": {
-          "fixtureId": "scout-02-skaduwee-withdrawn",
+          "fixtureId": "scout-02-skaduwee-withdrawal-pair",
           "requireFactionRoster": true,
           "actors": [
             {
@@ -1812,8 +1980,8 @@
               "actorName": "SkaduweeWarriorMale",
               "owner": 2,
               "position": {
-                "x": 384,
-                "y": 960,
+                "x": 1216,
+                "y": 832,
                 "z": 0
               }
             },
@@ -1822,8 +1990,8 @@
               "actorName": "SkaduweeRangedFemale",
               "owner": 2,
               "position": {
-                "x": 128,
-                "y": 928,
+                "x": 1216,
+                "y": 768,
                 "z": 0
               }
             },
@@ -1832,8 +2000,8 @@
               "actorName": "SkaduweeMagicianFemale",
               "owner": 2,
               "position": {
-                "x": 192,
-                "y": 960,
+                "x": 1280,
+                "y": 800,
                 "z": 0
               }
             },
@@ -1842,8 +2010,8 @@
               "actorName": "TivaraAlchemist",
               "owner": 1,
               "position": {
-                "x": 160,
-                "y": 848,
+                "x": 832,
+                "y": 1056,
                 "z": 0
               }
             },
@@ -1953,6 +2121,20 @@
           ],
           "controls": [
             {
+              "id": "move-contact-group-20",
+              "producerFixtureActorId": "contact-group",
+              "requestTick": 20,
+              "applicationTick": 20,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 1424,
+                  "z": 0
+                }
+              }
+            },
+            {
               "id": "move-contact-group-200",
               "producerFixtureActorId": "contact-group",
               "requestTick": 200,
@@ -1961,7 +2143,35 @@
                 "kind": "move",
                 "worldPosition": {
                   "x": 32,
-                  "y": 272,
+                  "y": 1424,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-contact-group-320",
+              "producerFixtureActorId": "contact-group",
+              "requestTick": 320,
+              "applicationTick": 320,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 1424,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-contact-group-600",
+              "producerFixtureActorId": "contact-group",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 1424,
                   "z": 0
                 }
               }
@@ -1993,7 +2203,7 @@
           "SCOUT-02"
         ],
         "presetWorld": {
-          "fixtureId": "scout-02-skaduwee-visible",
+          "fixtureId": "scout-02-skaduwee-withdrawal-pair",
           "requireFactionRoster": true,
           "actors": [
             {
@@ -2131,8 +2341,8 @@
               "actorName": "SkaduweeWarriorMale",
               "owner": 2,
               "position": {
-                "x": 384,
-                "y": 960,
+                "x": 1216,
+                "y": 832,
                 "z": 0
               }
             },
@@ -2141,8 +2351,8 @@
               "actorName": "SkaduweeRangedFemale",
               "owner": 2,
               "position": {
-                "x": 128,
-                "y": 928,
+                "x": 1216,
+                "y": 768,
                 "z": 0
               }
             },
@@ -2151,8 +2361,8 @@
               "actorName": "SkaduweeMagicianFemale",
               "owner": 2,
               "position": {
-                "x": 192,
-                "y": 960,
+                "x": 1280,
+                "y": 800,
                 "z": 0
               }
             },
@@ -2161,8 +2371,8 @@
               "actorName": "TivaraAlchemist",
               "owner": 1,
               "position": {
-                "x": 160,
-                "y": 848,
+                "x": 832,
+                "y": 1056,
                 "z": 0
               }
             },
@@ -2297,7 +2507,7 @@
           "SCOUT-02"
         ],
         "presetWorld": {
-          "fixtureId": "scout-02-skaduwee-hidden-position",
+          "fixtureId": "scout-02-skaduwee-withdrawal-pair",
           "requireFactionRoster": true,
           "actors": [
             {
@@ -2435,8 +2645,8 @@
               "actorName": "SkaduweeWarriorMale",
               "owner": 2,
               "position": {
-                "x": 384,
-                "y": 960,
+                "x": 1216,
+                "y": 832,
                 "z": 0
               }
             },
@@ -2445,8 +2655,8 @@
               "actorName": "SkaduweeRangedFemale",
               "owner": 2,
               "position": {
-                "x": 128,
-                "y": 928,
+                "x": 1216,
+                "y": 768,
                 "z": 0
               }
             },
@@ -2455,8 +2665,8 @@
               "actorName": "SkaduweeMagicianFemale",
               "owner": 2,
               "position": {
-                "x": 192,
-                "y": 960,
+                "x": 1280,
+                "y": 800,
                 "z": 0
               }
             },
@@ -2465,8 +2675,8 @@
               "actorName": "TivaraAlchemist",
               "owner": 1,
               "position": {
-                "x": 160,
-                "y": 848,
+                "x": 832,
+                "y": 1056,
                 "z": 0
               }
             },
@@ -2576,6 +2786,20 @@
           ],
           "controls": [
             {
+              "id": "move-contact-group-20",
+              "producerFixtureActorId": "contact-group",
+              "requestTick": 20,
+              "applicationTick": 20,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 1552,
+                  "z": 0
+                }
+              }
+            },
+            {
               "id": "move-contact-group-200",
               "producerFixtureActorId": "contact-group",
               "requestTick": 200,
@@ -2583,8 +2807,36 @@
               "action": {
                 "kind": "move",
                 "worldPosition": {
-                  "x": -128,
-                  "y": 256,
+                  "x": 32,
+                  "y": 1552,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-contact-group-320",
+              "producerFixtureActorId": "contact-group",
+              "requestTick": 320,
+              "applicationTick": 320,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 1552,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-contact-group-600",
+              "producerFixtureActorId": "contact-group",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 1552,
                   "z": 0
                 }
               }
@@ -2616,7 +2868,7 @@
           "SCOUT-02"
         ],
         "presetWorld": {
-          "fixtureId": "scout-02-skaduwee-hidden-health",
+          "fixtureId": "scout-02-skaduwee-withdrawal-pair",
           "requireFactionRoster": true,
           "actors": [
             {
@@ -2754,8 +3006,8 @@
               "actorName": "SkaduweeWarriorMale",
               "owner": 2,
               "position": {
-                "x": 384,
-                "y": 960,
+                "x": 1216,
+                "y": 832,
                 "z": 0
               }
             },
@@ -2764,8 +3016,8 @@
               "actorName": "SkaduweeRangedFemale",
               "owner": 2,
               "position": {
-                "x": 128,
-                "y": 928,
+                "x": 1216,
+                "y": 768,
                 "z": 0
               }
             },
@@ -2774,8 +3026,8 @@
               "actorName": "SkaduweeMagicianFemale",
               "owner": 2,
               "position": {
-                "x": 192,
-                "y": 960,
+                "x": 1280,
+                "y": 800,
                 "z": 0
               }
             },
@@ -2784,8 +3036,8 @@
               "actorName": "TivaraAlchemist",
               "owner": 1,
               "position": {
-                "x": 160,
-                "y": 848,
+                "x": 832,
+                "y": 1056,
                 "z": 0
               }
             },
@@ -2895,6 +3147,20 @@
           ],
           "controls": [
             {
+              "id": "move-contact-group-20",
+              "producerFixtureActorId": "contact-group",
+              "requestTick": 20,
+              "applicationTick": 20,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 1424,
+                  "z": 0
+                }
+              }
+            },
+            {
               "id": "move-contact-group-200",
               "producerFixtureActorId": "contact-group",
               "requestTick": 200,
@@ -2903,7 +3169,35 @@
                 "kind": "move",
                 "worldPosition": {
                   "x": 32,
-                  "y": 272,
+                  "y": 1424,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-contact-group-320",
+              "producerFixtureActorId": "contact-group",
+              "requestTick": 320,
+              "applicationTick": 320,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 1424,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-contact-group-600",
+              "producerFixtureActorId": "contact-group",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 1424,
                   "z": 0
                 }
               }
@@ -2945,7 +3239,7 @@
           "SCOUT-02"
         ],
         "presetWorld": {
-          "fixtureId": "scout-02-skaduwee-hidden-queue",
+          "fixtureId": "scout-02-skaduwee-withdrawal-pair",
           "requireFactionRoster": true,
           "actors": [
             {
@@ -3083,8 +3377,8 @@
               "actorName": "SkaduweeWarriorMale",
               "owner": 2,
               "position": {
-                "x": 384,
-                "y": 960,
+                "x": 1216,
+                "y": 832,
                 "z": 0
               }
             },
@@ -3093,8 +3387,8 @@
               "actorName": "SkaduweeRangedFemale",
               "owner": 2,
               "position": {
-                "x": 128,
-                "y": 928,
+                "x": 1216,
+                "y": 768,
                 "z": 0
               }
             },
@@ -3103,8 +3397,8 @@
               "actorName": "SkaduweeMagicianFemale",
               "owner": 2,
               "position": {
-                "x": 192,
-                "y": 960,
+                "x": 1280,
+                "y": 800,
                 "z": 0
               }
             },
@@ -3113,8 +3407,8 @@
               "actorName": "TivaraAlchemist",
               "owner": 1,
               "position": {
-                "x": 160,
-                "y": 848,
+                "x": 832,
+                "y": 1056,
                 "z": 0
               }
             },
@@ -3224,6 +3518,20 @@
           ],
           "controls": [
             {
+              "id": "move-contact-group-20",
+              "producerFixtureActorId": "contact-group",
+              "requestTick": 20,
+              "applicationTick": 20,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 1424,
+                  "z": 0
+                }
+              }
+            },
+            {
               "id": "move-contact-group-200",
               "producerFixtureActorId": "contact-group",
               "requestTick": 200,
@@ -3232,7 +3540,35 @@
                 "kind": "move",
                 "worldPosition": {
                   "x": 32,
-                  "y": 272,
+                  "y": 1424,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-contact-group-320",
+              "producerFixtureActorId": "contact-group",
+              "requestTick": 320,
+              "applicationTick": 320,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 1424,
+                  "z": 0
+                }
+              }
+            },
+            {
+              "id": "move-contact-group-600",
+              "producerFixtureActorId": "contact-group",
+              "requestTick": 600,
+              "applicationTick": 600,
+              "action": {
+                "kind": "move",
+                "worldPosition": {
+                  "x": 32,
+                  "y": 1424,
                   "z": 0
                 }
               }

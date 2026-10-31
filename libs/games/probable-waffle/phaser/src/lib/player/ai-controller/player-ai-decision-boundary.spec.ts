@@ -30,10 +30,10 @@ function fixture() {
   const observationPipeline = {
     refresh,
     refreshNow,
-    getObservation: () => undefined,
-    getDebugSnapshot: () => ({ lastCommitError: null }),
-    getLastCommitErrorStage: () => null,
-    getLastCommitErrorCode: () => null
+    getObservation: () => undefined as { tick: number } | undefined,
+    getDebugSnapshot: () => ({ lastCommitError: null as string | null }),
+    getLastCommitErrorStage: (): string | null => null,
+    getLastCommitErrorCode: (): string | null => null
   };
   Reflect.set(agent, "scene", {});
   Reflect.set(agent, "worldStateSnapshotManager", world);
@@ -85,7 +85,7 @@ it("rejects a retained old observation when the current capture fails", () => {
 
 it("classifies capture failures without exposing the underlying capture error", () => {
   const f = fixture();
-  f.refreshNow.mockReturnValue(undefined);
+  f.refreshNow.mockReturnValue(undefined as never);
   f.observationPipeline.getDebugSnapshot = () => ({ lastCommitError: "hidden internal detail" });
   f.observationPipeline.getLastCommitErrorStage = () => "actor_projection";
   f.observationPipeline.getLastCommitErrorCode = () => "missing_scene";

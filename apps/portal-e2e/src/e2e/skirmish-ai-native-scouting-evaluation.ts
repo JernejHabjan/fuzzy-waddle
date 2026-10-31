@@ -1,4 +1,14 @@
 import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
+import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionSpatialV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-spatial-v1";
+
+type MovementAuthorityFact = Extract<AiRuntimeProductionFactV1, { kind: "spatial_authority" }> & {
+  readonly spatial: Extract<AiRuntimeProductionSpatialV1, { kind: "movement" }>;
+};
+
+function isMovementAuthorityFact(fact: AiRuntimeProductionFactV1): fact is MovementAuthorityFact {
+  return fact.kind === "spatial_authority" && fact.spatial.kind === "movement";
+}
 
 /** Player-scoped inputs are checked against independent native sight; privileged truth is never an AI target source. */
 export function nativeScoutingFairness(context: ReturnType<typeof nativeScenarioContext>): string[] {
@@ -103,9 +113,9 @@ function nativeScoutMovesStoppedAtDestination(
   actorId: string,
   afterTick: number
 ) {
-  const groups = new Map<number, typeof context.capture.facts>();
+  const groups = new Map<number, MovementAuthorityFact[]>();
   for (const fact of context.capture?.facts ?? []) {
-    if (fact.kind !== "spatial_authority" || fact.spatial.kind !== "movement" || fact.tick < afterTick ||
+    if (!isMovementAuthorityFact(fact) || fact.tick < afterTick ||
       fact.spatial.source.actorId !== actorId) continue;
     const group = groups.get(fact.spatial.executionId) ?? [];
     group.push(fact);
@@ -136,9 +146,9 @@ function nativeScoutMovesWithPhysicalProgress(
   actorId: string,
   afterTick: number
 ) {
-  const groups = new Map<number, typeof context.capture.facts>();
+  const groups = new Map<number, MovementAuthorityFact[]>();
   for (const fact of context.capture?.facts ?? []) {
-    if (fact.kind !== "spatial_authority" || fact.spatial.kind !== "movement" || fact.tick < afterTick ||
+    if (!isMovementAuthorityFact(fact) || fact.tick < afterTick ||
       fact.spatial.source.actorId !== actorId) continue;
     const group = groups.get(fact.spatial.executionId) ?? [];
     group.push(fact);
@@ -210,8 +220,10 @@ export function evaluateNativeScouting(
     if (!visible.length || branch !== "visible" && !remembered.length)
       failures.push("scouting_original_contact_and_native_loss_missing");
     if (branch !== "visible" && branch !== "remains") {
+      // With 700 initial confidence and one point of decay per simulation tick, 360 ticks
+      // marks a material loss of certainty while leaving time for a scout mission to be served.
       const stale = remembered.find((frame) => frame.tick - (frame.decision.input?.observation?.actors.find((actor) =>
-        actor.actorId === targetId)?.observedTick ?? frame.tick) >= 720);
+        actor.actorId === targetId)?.observedTick ?? frame.tick) >= 360);
       const earlier = scenarioId === "SCOUT-02"
         ? visible[0]?.decision.economyProduction.adaptation.evidence.find((entry) => entry.sourceContactId === targetId)
         : visible[0]?.decision.missionState?.skirmish.incidents.find((entry) => entry.hostileActorIds.includes(targetId));
@@ -220,13 +232,25 @@ export function evaluateNativeScouting(
         : stale?.decision.missionState?.skirmish.incidents.find((entry) => entry.hostileActorIds.includes(targetId));
       if (!stale || !earlier || later && later.confidencePermille >= earlier.confidencePermille)
         failures.push("scouting_stale_certainty_did_not_decrease");
-      if (!trips.some((trip) => trip.selectedTick >= (stale?.tick ?? Infinity)))
+      const staleTrips = trips.filter((trip) => trip.selectedTick >= (stale?.tick ?? Infinity));
+      if (!staleTrips.length)
         failures.push("scouting_stale_information_job_not_served");
     }
   }
   if (scenarioId === "SCOUT-02" && branch !== "visible") {
-    if (!context.opponent?.frontiers?.intervals.at(-1)?.actors.some(({ identity }) => identity.actorId === targetId &&
-      identity.alive && identity.indexed)) failures.push("scouting_withdrawn_army_not_alive_at_horizon");
+    if (!context.opponent?.frontiers?.intervals.some((interval) => interval.closedThroughTick >= 600 &&
+      interval.actors.some(({ identity }) => identity.actorId === targetId && identity.alive && identity.indexed)))
+      failures.push("scouting_contact_not_alive_through_hidden_control_window");
+    if (branch === "hidden_position") {
+      const withdrawal = context.facts.find((fact) => fact.kind === "preset_control" &&
+        fact.control.id === "move-contact-group-20" && fact.control.phase === "applied" &&
+        fact.control.command?.type === "MOVE" && fact.control.command.actorIds.includes(targetId));
+      const commandId = withdrawal?.kind === "preset_control" ? withdrawal.control.command?.execution?.commandId : undefined;
+      const arrived = commandId && context.facts.some((fact) => fact.kind === "spatial_authority" &&
+        fact.spatial.kind === "movement" && fact.spatial.source.actorId === targetId && fact.spatial.phase === "arrived" &&
+        fact.spatial.caller?.order?.commandContext?.execution.commandId === commandId);
+      if (!arrived) failures.push("scouting_hidden_position_control_not_physically_applied");
+    }
     if (branch === "hidden_health" && !context.facts.some((fact) => fact.kind === "native_damage" && fact.tick === 600 &&
       fact.damage.target.actorId === targetId && fact.damage.initiator === null && fact.damage.amount > 0))
       failures.push("scouting_hidden_health_control_never_changed_native_durability");

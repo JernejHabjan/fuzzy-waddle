@@ -409,6 +409,7 @@ export function advanceAiSkirmishOffense(
   const chooseRaid = (candidates: typeof raidCandidates) =>
     selectAiOffensiveOpportunity(raidTargetContext, candidates, {
       raid: true,
+      threatContacts: context.rememberedEnemies,
       candidateFilter: (actor) =>
         actor.actorId !== context.opponent?.actorId &&
         hasEconomicRaidValue(actor) &&
@@ -436,6 +437,7 @@ export function advanceAiSkirmishOffense(
     raidSelectionEnabled && navalRaidCandidates.length > 0
       ? selectAiOffensiveOpportunity(navalRaidTargetContext, navalRaidCandidates, {
           raid: true,
+          threatContacts: context.rememberedEnemies,
           candidateFilter: (actor) => {
             if (navalCombatRaidAvailable) return isNavalCombatTarget(actor);
             return (

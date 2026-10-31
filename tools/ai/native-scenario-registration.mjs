@@ -79,7 +79,8 @@ export function nativeScenarioFixture(id) {
     // Paired controls need identical stamped match/actor/command identities, not merely the same random seed.
     world.fixtureId = id === "DBG-06" ? `dbg-06-${faction.toLowerCase()}-parity` :
       ["H-06", "H-07"].includes(id) ? `${id.toLowerCase()}-${faction.toLowerCase()}-receipt-pair` : id === "D-03" ?
-      `d-03-${faction.toLowerCase()}-${branch.split("_")[0]}` : variantId;
+      `d-03-${faction.toLowerCase()}-${branch.split("_")[0]}` : id === "SCOUT-02" ?
+      `scout-02-${faction.toLowerCase()}-withdrawal-pair` : variantId;
     branches[variantId] = branch;
     // An explicit route declaration requires at least one route; empty factory scratch arrays are not declarations.
     if (world.protectedRoutes?.length === 0) delete world.protectedRoutes;

@@ -1,5 +1,6 @@
 import type { AiRuntimeProductionFactV1 } from "./ai-runtime-production-fact-v1";
 import { AI_RUNTIME_MAX_FACTS, appendAiRuntimeProductionFact } from "./append-ai-runtime-production-fact";
+import type { AiRuntimeProductionBoundaryState } from "./ai-runtime-production-boundary-state";
 
 describe("runtime production fact budget", () => {
   it("retains a full long-horizon combat capture then records overflow", () => {
@@ -19,7 +20,15 @@ describe("runtime production fact budget", () => {
         facts,
         fact,
         sequence,
-        () => ({}),
+        () => ({
+          resources: null,
+          brain: null,
+          pendingCommands: [],
+          pendingResourceClaims: null,
+          queues: null,
+          obligations: null,
+          gaps: []
+        } satisfies AiRuntimeProductionBoundaryState),
         () => (losses += 1),
         () => (dropped += 1)
       );

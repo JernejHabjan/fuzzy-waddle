@@ -785,9 +785,35 @@ test("SCOUT-02 opens with visible contact outside the probe's attack radius", ()
   const fixture = nativeScenarioFixture("SCOUT-02");
   for (const variant of fixture.recipe.variants) {
     const probe = variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "scout-probe");
+    const rangedProbe = variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "ranged-probe");
+    const supportProbe = variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "support-probe");
     const contact = variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "contact-group");
-    assert.deepEqual(probe?.position, { x: 384, y: 960, z: 0 });
-    assert.deepEqual(contact?.position, { x: 160, y: 848, z: 0 });
+    assert.deepEqual(probe?.position, { ...tile(44, 7) });
+    assert.deepEqual(rangedProbe?.position, { ...tile(42, 5) });
+    assert.deepEqual(supportProbe?.position, { ...tile(44, 5) });
+    assert.deepEqual(contact?.position, { ...tile(45, 20) });
+  }
+});
+
+test("SCOUT-02 hidden branches withdraw beyond the AI army while preserving an independent position mutation", () => {
+  const fixture = nativeScenarioFixture("SCOUT-02");
+  for (const variant of fixture.recipe.variants.filter((entry) => entry.id.includes("withdrawn") || entry.id.includes("hidden-"))) {
+    assert.equal(variant.presetWorld.fixtureId, `scout-02-${variant.aiFaction.toLowerCase()}-withdrawal-pair`, variant.id);
+    const control = variant.presetWorld.controls.find((entry) => entry.id === "move-contact-group-20");
+    const arrivalRetreat = variant.presetWorld.controls.find((entry) => entry.id === "move-contact-group-200");
+    const pursuitRetreat = variant.presetWorld.controls.find((entry) => entry.id === "move-contact-group-320");
+    const staleWindowRetreat = variant.presetWorld.controls.find((entry) => entry.id === "move-contact-group-600");
+    const expected = variant.aiFaction === "Skaduwee"
+      ? variant.id.includes("hidden-position") ? tile(48, 48) : tile(44, 44)
+      : variant.id.includes("hidden-position") ? tile(48, 48) : tile(45, 45);
+    assert.deepEqual(
+      control?.action.worldPosition,
+      { ...expected },
+      variant.id
+    );
+    assert.deepEqual(arrivalRetreat?.action.worldPosition, { ...expected }, variant.id);
+    assert.deepEqual(pursuitRetreat?.action.worldPosition, { ...expected }, variant.id);
+    assert.deepEqual(staleWindowRetreat?.action.worldPosition, { ...expected }, variant.id);
   }
 });
 

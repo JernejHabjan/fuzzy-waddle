@@ -34,7 +34,7 @@ export function evaluateNativeCombat(id: string, branch: string, context: Return
     const committed = new Set(operations.flatMap(({ fact, value }) => value.kind === "attack_committed"
       ? [`${value.actor.actorId}:${value.target.actorId}:${fact.tick}:${value.weapon.weaponType}:${value.weapon.damage}`]
       : []));
-    const unmatched = requests.filter(({ fact, value }) =>
+    const unmatched = requests.filter(({ fact, value }) => value.kind === "attack_requested" &&
       !committed.has(`${value.actor.actorId}:${value.target.actorId}:${fact.tick}:${value.weapon.weaponType}:${value.weapon.damage}`));
     if (unmatched.length > 2) failures.push("combat_excessive_cancelled_windups");
   }
@@ -56,7 +56,7 @@ export function evaluateNativeCombat(id: string, branch: string, context: Return
       .map((squad) => ({ tick: frame.tick, squad })));
     const raidHits = nativeWeaponHits(context).filter((fact) => {
       const actorId = fact.damage.initiator?.actorId;
-      return actorId !== undefined && raidMissions.some(({ tick, squad }) =>
+      return !!actorId && raidMissions.some(({ tick, squad }) =>
         fact.tick >= tick && squad.actorIds.includes(actorId) && squad.tactics?.targetActorId === fact.damage.target.actorId);
     });
     if (branch !== "protected" && (!workerUsesRaidTarget || !raidMissions.length || !raidHits.length ||
@@ -85,7 +85,7 @@ export function evaluateNativeCombat(id: string, branch: string, context: Return
     });
     const mainObjectiveHits = nativeWeaponHits(context).filter((fact) => {
       const actorId = fact.damage.initiator?.actorId;
-      return actorId !== undefined && mainMissions.some(({ tick, squad }) =>
+      return !!actorId && mainMissions.some(({ tick, squad }) =>
         fact.tick >= tick && squad.actorIds.includes(actorId) && squad.tactics?.targetActorId === fact.damage.target.actorId);
     });
     if (!mainObjectiveHits.length) failures.push("raid_main_objective_has_no_continuing_native_pressure");
@@ -110,8 +110,8 @@ export function evaluateNativeCombat(id: string, branch: string, context: Return
           failures.push("combat_no_useful_recovery_after_native_status_expiry");
       }
     } else {
-      const lossTick = branch === "target_loss" ? nativeTargetLossTick(context, target) : undefined;
-      if (branch === "target_loss" && lossTick === undefined) failures.push("combat_original_target_loss_not_applied");
+      const lossTick = branch === "target_loss" && target ? nativeTargetLossTick(context, target) : undefined;
+      if (branch === "target_loss" && (!target || lossTick === undefined)) failures.push("combat_original_target_loss_not_applied");
       const effectStartTick = lossTick ?? 400;
       if (branch === "target_loss" && context.frames.some((frame) => frame.tick > effectStartTick + 40 &&
         frame.decision.acceptedIntents.some((intent) => intent.kind === "attack" && intent.targetActorId === target)))

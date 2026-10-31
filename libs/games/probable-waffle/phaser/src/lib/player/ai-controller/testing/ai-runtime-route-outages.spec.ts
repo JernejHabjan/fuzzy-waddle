@@ -26,7 +26,8 @@ it("scopes null responses to the original actor/window and restores owned method
   const mover = { scene, name: "original" } as unknown as Phaser.GameObjects.GameObject;
   const other = { scene, name: "other" } as unknown as Phaser.GameObjects.GameObject;
   const nativePath = [{ x: 1, y: 2 }], basic = jest.fn(async () => nativePath), dynamic = jest.fn(async () => nativePath);
-  const nav = { findPathFromGameObjectToTile: basic, findPathFromGameObjectToTileAvoidingDynamicBlockers: dynamic };
+  const nav = { findPathFromGameObjectToTile: basic, findPathFromGameObjectToTileAvoidingDynamicBlockers: dynamic } as
+    unknown as NavigationService;
   const clock = { currentTick: 399, tick$ };
   jest.mocked(getSceneService).mockImplementation((_scene, service) =>
     (service === NavigationService ? nav : service === SimulationTickService ? clock : undefined) as never);
@@ -59,7 +60,8 @@ it.each([false, true])("releases retained native queries in request order, shutd
   const order: number[] = [], basic = jest.fn(async (_actor, to: { x: number; y: number }) => {
     order.push(to.x); return [to];
   });
-  const nav = { findPathFromGameObjectToTile: basic, findPathFromGameObjectToTileAvoidingDynamicBlockers: basic };
+  const nav = { findPathFromGameObjectToTile: basic, findPathFromGameObjectToTileAvoidingDynamicBlockers: basic } as
+    unknown as NavigationService;
   const clock = { currentTick: 400, tick$ };
   jest.mocked(getSceneService).mockImplementation((_scene, service) =>
     (service === NavigationService ? nav : service === SimulationTickService ? clock : undefined) as never);
@@ -88,7 +90,8 @@ it("settles retained native queries on Phaser's destroy-only scene lifecycle", a
   const scene = { onShutdown: shutdown, events } as unknown as ProbableWaffleScene;
   const mover = { scene, name: "original" } as unknown as Phaser.GameObjects.GameObject;
   const basic = jest.fn(async () => [{ x: 1, y: 2 }]);
-  const nav = { findPathFromGameObjectToTile: basic, findPathFromGameObjectToTileAvoidingDynamicBlockers: basic };
+  const nav = { findPathFromGameObjectToTile: basic, findPathFromGameObjectToTileAvoidingDynamicBlockers: basic } as
+    unknown as NavigationService;
   const clock = { currentTick: 400, tick$ };
   jest.mocked(getSceneService).mockImplementation((_scene, service) =>
     (service === NavigationService ? nav : service === SimulationTickService ? clock : undefined) as never);
@@ -109,7 +112,8 @@ it("settles retained native queries when the owning simulation clock completes",
   const scene = { onShutdown: shutdown, events: new EventEmitter() } as unknown as ProbableWaffleScene;
   const mover = { scene, name: "original" } as unknown as Phaser.GameObjects.GameObject;
   const basic = jest.fn(async () => [{ x: 1, y: 2 }]);
-  const nav = { findPathFromGameObjectToTile: basic, findPathFromGameObjectToTileAvoidingDynamicBlockers: basic };
+  const nav = { findPathFromGameObjectToTile: basic, findPathFromGameObjectToTileAvoidingDynamicBlockers: basic } as
+    unknown as NavigationService;
   const clock = { currentTick: 400, tick$ };
   jest.mocked(getSceneService).mockImplementation((_scene, service) =>
     (service === NavigationService ? nav : service === SimulationTickService ? clock : undefined) as never);

@@ -102,8 +102,8 @@ function raidContext(raidSquadId: string, raidTargetId: "worker" | "contact" | "
 it.describe("FIGHT-05 target-loss timing", () => {
   it("uses the applied native loss event tick instead of assuming tick 400", () => {
     const context = { result: { perturbations: [{ id: "loss-contact-group", tick: 200, affectedActorId: "target" }] } };
-    expect(nativeTargetLossTick(context as ReturnType<typeof nativeScenarioContext>, "target")).toBe(200);
-    expect(nativeTargetLossTick(context as ReturnType<typeof nativeScenarioContext>, "other-target")).toBeUndefined();
+    expect(nativeTargetLossTick(context as unknown as ReturnType<typeof nativeScenarioContext>, "target")).toBe(200);
+    expect(nativeTargetLossTick(context as unknown as ReturnType<typeof nativeScenarioContext>, "other-target")).toBeUndefined();
   });
 });
 
@@ -187,7 +187,7 @@ const damage = (overrides: Partial<Extract<AiRuntimeProductionFactV1, { kind: "n
     snapshotRestoreInProgress: false
   },
   ...overrides
-}) as Extract<AiRuntimeProductionFactV1, { kind: "native_damage" }>;
+}) as unknown as Extract<AiRuntimeProductionFactV1, { kind: "native_damage" }>;
 
 it.describe("native physical damage attribution", () => {
   it("matches only positive exact actor-to-target damage after the paid output", () => {
@@ -195,7 +195,7 @@ it.describe("native physical damage attribution", () => {
     const context = { facts: [actual] } as ReturnType<typeof nativeScenarioContext>;
 
     expect(nativePhysicalDamageFromActor(context, "air-output", "backline", 40)).toEqual([actual]);
-    expect(nativePhysicalDamageFromActor(context, "air-output")).toEqual([actual]);
+    expect(nativePhysicalDamageFromActor(context, "air-output", undefined)).toEqual([actual]);
     expect(nativePhysicalDamageFromActor(context, "other-output", "backline")).toEqual([]);
     expect(nativePhysicalDamageFromActor(context, "air-output", "other-target")).toEqual([]);
     expect(nativePhysicalDamageFromActor(context, "air-output", "backline", 41)).toEqual([]);

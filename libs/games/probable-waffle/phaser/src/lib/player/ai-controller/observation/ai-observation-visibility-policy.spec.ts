@@ -90,7 +90,10 @@ describe("Stage 4 AI visibility policy", () => {
       active: true,
       scene: captureScene,
       getData: (key: string) => key === ActorDataKey
-        ? new ActorData(new Map([[VisionComponent, vision], [RepresentableComponent, representable]]), new Map())
+        ? new ActorData(
+            new Map<new (...args: any[]) => any, any>([[VisionComponent, vision], [RepresentableComponent, representable]]),
+            new Map()
+          )
         : undefined
     } as unknown as Phaser.GameObjects.GameObject;
     const navigation = { getCenterTileCoordUnderObject: () => ({ x: 0, y: 0 }) };

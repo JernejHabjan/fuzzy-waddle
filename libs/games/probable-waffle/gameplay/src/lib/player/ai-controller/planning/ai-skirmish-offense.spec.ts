@@ -160,10 +160,10 @@ describe("AiSkirmishManager offense target selection", () => {
     });
     const proposal = new AiSkirmishManager(profile, () => catalog).propose(world, initial);
     expect(proposal.statePatch?.squads?.find((squad) => squad.squadId === "squad:scout:primary")?.actorIds).toEqual([
-      frontierCandidate.actorId
+      neutralCandidate.actorId
     ]);
     expect(proposal.statePatch?.squads?.find((squad) => squad.squadId === "squad:scout:neutral")?.actorIds).toEqual([
-      neutralCandidate.actorId
+      frontierCandidate.actorId
     ]);
   });
 

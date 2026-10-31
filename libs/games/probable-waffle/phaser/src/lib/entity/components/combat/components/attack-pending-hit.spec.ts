@@ -30,7 +30,7 @@ describe("pending attack restoration", () => {
     expect(lookup).not.toHaveBeenCalled();
     const target = {};
     lookup.mockReturnValue(target);
-    jest.mocked(CancelableSimDelay).mock.calls[0][2]();
+    jest.mocked(CancelableSimDelay).mock.calls[0]![2]!();
     expect(component.applyPendingHit).toHaveBeenCalledWith(expect.any(Object), target, expect.any(Object));
   });
 
@@ -46,7 +46,7 @@ describe("pending attack restoration", () => {
   it("releases pending state when the saved target no longer exists", () => {
     const { component } = fixture();
     component.setData({ pendingHit: { targetActorId: "gone", attackIndex: 0, dueTick: 120 } });
-    jest.mocked(CancelableSimDelay).mock.calls[0][2]();
+    jest.mocked(CancelableSimDelay).mock.calls[0]![2]!();
     expect(component.getData().pendingHit).toBeUndefined();
     expect(component.applyPendingHit).not.toHaveBeenCalled();
   });

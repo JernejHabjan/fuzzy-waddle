@@ -24,7 +24,7 @@ test("native production capture streams large JSON into gzip without stringify o
         objectStringifyAttempts += 1;
         throw new Error("full_capture_json_materialized");
       }
-      return originalStringify.call(JSON, value, ...args);
+      return Reflect.apply(originalStringify, JSON, [value, ...args]) as string | undefined;
     }) as typeof JSON.stringify;
     const host = window as unknown as Record<string, unknown>;
     host.__fuzzyWaddleAiRuntimeBrowserTestV1 = {

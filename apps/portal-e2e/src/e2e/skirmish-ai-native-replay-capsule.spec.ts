@@ -9,8 +9,11 @@ const body: Omit<NativeReplayCapsule, "payloadDigest"> = { schemaVersion: 1, sou
   control: { ...saved, owner: { ...saved.owner, tick: 801, decisionSequence: 40 } },
   checkpoint: { id: "opaque-native-record", revision: 1 } as NativeReplayCapsule["checkpoint"],
   trace: { overflow: false, records: Array.from({ length: 11 }, (_, index) => ({ tick: 600 + index * 20,
-    sequence: 30 + index, inputDigest: `input-${index}`, resultDigest: `result-${index}` })) },
-  inputs: { fromTick: 599, throughTick: 801, frameMilliseconds: 50, simulationTimeScale: 1, externalCommandCount: 0 } };
+    sequence: 30 + index, inputDigest: `input-${index}`, resultDigest: `result-${index}`,
+    profileDigest: `profile-${index}`, catalogDigest: `catalog-${index}`, observationDigest: `observation-${index}`,
+    priorStateDigest: `state-${index}`, outcomesDigest: `outcomes-${index}` })), retainedInputs: [] },
+  inputs: { fromTick: 599, throughTick: 801, frameMilliseconds: 50, simulationTimeScale: 1, externalCommandCount: 0 },
+  };
 const capsule: NativeReplayCapsule = { ...body, payloadDigest: nativeReplayCapsuleDigest(body) };
 const blocker = (value: NativeReplayCapsule) => nativeReplayCapsuleBlocker(value, body.sourceRevision, body.fixtureDigest);
 

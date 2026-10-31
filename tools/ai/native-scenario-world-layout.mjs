@@ -54,8 +54,16 @@ export function nativeScenarioActors(id, own, enemy, branch) {
   if (id === "SCOUT-02") {
     // Keep the opening contact in scout vision without starting the probe inside its
     // attack radius; this case measures stale information service after withdrawal.
-    actors.find((entry) => entry.fixtureActorId === "scout-probe").position = tile(35, 24);
-    actors.find((entry) => entry.fixtureActorId === "contact-group").position = tile(28, 24);
+    // Start the designated scout in the same connected access region as the oldest search point,
+    // while keeping its opening vision on the contact and outside melee range.
+    actors.find((entry) => entry.fixtureActorId === "scout-probe").position = tile(44, 7);
+    // Keep the ranged and support members out of auto-defense range so the contact can withdraw
+    // before it becomes a combat target; otherwise their opening attack cancels the move control.
+    actors.find((entry) => entry.fixtureActorId === "ranged-probe").position = tile(42, 5);
+    actors.find((entry) => entry.fixtureActorId === "support-probe").position = tile(44, 5);
+    // Keep first contact visible but outside the home-defense radius so stale scouting is not
+    // converted into an opening base-defense response.
+    actors.find((entry) => entry.fixtureActorId === "contact-group").position = tile(45, 20);
   }
   if (id === "FIGHT-01") {
     // Start the favorable contact within one decision's travel of the authored army.

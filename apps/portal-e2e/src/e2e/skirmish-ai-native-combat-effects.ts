@@ -1,4 +1,6 @@
 import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
+import type { AiRuntimeProductionFactV1 } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
 
 /** Exact, positive native damage by a selected actor, optionally scoped to one target. */
 export function nativePhysicalDamageFromActor(
@@ -24,7 +26,9 @@ export function nativePhysicalDamageFromActor(
 }
 
 /** Actual native weapon start, compatible range/domain and positive damage; reserved/expected damage never counts. */
-export function nativeWeaponHits(context: ReturnType<typeof nativeScenarioContext>, targetId?: string, fromTick = 0) {
+export function nativeWeaponHits(
+  context: ReturnType<typeof nativeScenarioContext>, targetId?: string, fromTick = 0
+): Extract<AiRuntimeProductionFactV1, { kind: "native_damage" }>[] {
   const targetFootprintRadiusTiles = new Map<string, number>();
   for (const frame of context.frames) {
     for (const entry of frame.decision.input?.capabilityCatalog?.entries ?? []) {
@@ -53,7 +57,7 @@ export function nativeWeaponHits(context: ReturnType<typeof nativeScenarioContex
     const key = JSON.stringify([value.actor.actorId, value.target.actorId, fact.tick, value.weapon]);
     commits.set(key, [...(commits.get(key) ?? []), fact.sequence]);
   }
-  return context.facts.filter((fact) => {
+  return context.facts.filter((fact): fact is Extract<AiRuntimeProductionFactV1, { kind: "native_damage" }> => {
     if (fact.kind !== "native_damage" || fact.tick < fromTick || fact.damage.initiator?.playerNumber !== 2 ||
         !fact.damage.initiator.actorId || !fact.damage.target.actorId ||
         targetId && fact.damage.target.actorId !== targetId || fact.damage.amount <= 0 || fact.damage.damageTick !== fact.tick ||

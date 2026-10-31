@@ -114,7 +114,7 @@ export async function retainNativeSceneWork(
       // Redeliver through the actual old emitter. Shutdown must have removed every original subscriber.
       clock.tick$.next(clock.currentTick + 1);
       const result = { oldSceneInactive: !scene.sys.isActive(), oldTickObservers: clock.tick$.observers.length,
-        oldSceneStatus: scene.sys.settings.status, oldSceneSleeping: scene.sys.isSleeping(),
+        oldSceneStatus: String(scene.sys.settings.status), oldSceneSleeping: scene.sys.isSleeping(),
         oldSceneRegistered: originalGame.scene.getScenes(false).includes(scene),
         sameSceneEmitter: scene.events === sceneEvents, sameSystemsEmitter: scene.sys.events === systemsEvents,
         shutdownCallObserved, shutdownListenerCountAtCall, shutdownListenerCountAfterCall,

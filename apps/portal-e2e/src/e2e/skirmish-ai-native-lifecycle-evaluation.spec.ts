@@ -8,6 +8,8 @@ const proof: NativeLifecycleProof = { branch: "normal", sourceRevision: "a".repe
   original: owner, nextInitial: { ...owner, tick: 0, seed: 2, matchId: "next", decisionSequence: 0 },
   nextActive: { ...owner, seed: 2, matchId: "next" }, nativeBeforeLateWork: "actual-world", nativeAfterLateWork: "actual-world",
   nextAiErrors: [], retained: { oldSceneInactive: true, oldSceneShutdownObserved: true, oldTickSubjectStopped: true,
+    oldSceneStatus: "shutdown", oldSceneSleeping: false, oldSceneRegistered: false,
+    sameSceneEmitter: true, sameSystemsEmitter: true,
     oldTickObservers: 0, shutdownCallObserved: true, shutdownListenerCountAtCall: 10,
     shutdownListenerCountAfterCall: 2, shutdownErrorMessage: null, originalPaidCommandId: null,
     completionResults: [], pathWasPending: false, pathCancelled: false, sameRealm: true } };

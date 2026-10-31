@@ -40,8 +40,8 @@ test("the full matrix declaration and standalone owner factories describe the sa
     if (!branch) throw new Error("authored expansion branch missing");
     expect(variant.presetWorld).toEqual(expansionWorld(variant.aiFaction, branch).recipe.variants[0]?.presetWorld);
     if (branch === "pressure_withdrawn") {
-      expect(variant.presetWorld.controls.filter((control) => control.id.startsWith("withdraw-home-pressure"))
-        .every((control) => control.requestTick === 500 && control.applicationTick === 500)).toBe(true);
+      expect(variant.presetWorld?.controls?.filter((control) => control.id.startsWith("withdraw-home-pressure"))
+        .every((control) => control.requestTick === 440 && control.applicationTick === 440)).toBe(true);
     }
   }
   const failures = evaluateExpansionPressurePairs(fixture, []);

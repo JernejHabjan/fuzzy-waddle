@@ -31,17 +31,21 @@ function paidMissionEffect(
   domain: "air" | "water"
 ): boolean {
   const hits = nativeWeaponHits(context);
-  return outputs.some(({ actor, fact }) => hits.some((hit) => {
-    if (hit.kind !== "native_damage" || hit.damage.initiator?.actorId !== actor.actorId || hit.tick < fact.tick) return false;
+  return outputs.some(({ actor, fact }) => {
+    const actorId = actor.actorId;
+    if (!actorId) return false;
+    return hits.some((hit) => {
+    if (hit.damage.initiator?.actorId !== actorId || hit.tick < fact.tick) return false;
     return context.frames.some((frame) => {
       const target = frame.decision.input?.observation?.actors.find((candidate) =>
         candidate.actorId === hit.damage.target.actorId && candidate.relation === "enemy" &&
         ["visible", "last_seen"].includes(candidate.visibility));
       return frame.tick <= hit.tick && target !== undefined &&
         frame.decision.missionState?.squads.some((squad) =>
-          nativeDomainMissionTargetsActor(squad, target, domain, actor.actorId, frame.decision.strategy?.assessment));
+          nativeDomainMissionTargetsActor(squad, target, domain, actorId, frame.decision.strategy?.assessment));
     });
-  }));
+    });
+  });
 }
 
 /** Domain investment needs a real catalog capability and a native mission effect, never just a water/air map label. */

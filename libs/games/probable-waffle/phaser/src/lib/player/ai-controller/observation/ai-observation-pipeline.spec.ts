@@ -69,6 +69,36 @@ describe("observation actor eligibility", () => {
     );
     expect(pipeline.isEligibleActor({ scene, active: false } as unknown as Phaser.GameObjects.GameObject)).toBe(false);
   });
+
+  it("remembers combatant classification without retaining hidden enemy combat stats", () => {
+    const memory = new Map();
+    const pipeline = Object.assign(Object.create(AiObservationPipeline.prototype), {
+      memory,
+      knowledgeRevision: 0
+    }) as unknown as { remember(actor: AiObservedActorV1, tick: number): void };
+    const visibleEnemy: AiObservedActorV1 = {
+      ...observation().actors[0]!,
+      objectName: ObjectNames.TivaraMacemanMale,
+      visibility: "visible",
+      observedTick: 100,
+      logicalPosition: { status: "known", value: { x: 2, y: 3, z: 0 }, observedTick: 100 },
+      capabilities: [{
+        id: "enemy-maceman:attack",
+        family: "military",
+        level: 1,
+        domains: ["ground"],
+        targetDomains: ["ground"],
+        capacity: { status: "known", value: 0, observedTick: 100 }
+      }]
+    };
+
+    pipeline.remember(visibleEnemy, 100);
+    const remembered = projectRememberedContacts(memory as never, new Set(), 160)[0];
+
+    expect(remembered).toMatchObject({ visibility: "last_seen", wasCombatant: true, capabilities: [] });
+    expect(remembered).not.toHaveProperty("combatProfile");
+    expect(remembered?.housingCost).toEqual(unknown);
+  });
 });
 
 describe("observation restore invalidations", () => {
@@ -92,7 +122,7 @@ describe("observation restore invalidations", () => {
       contacts: []
     });
 
-    listeners[0]();
+    listeners[0]?.();
 
     expect(pipeline.getState()).toMatchObject({ queryInputRevision: 26, invalidationDebt: 3 });
   });
@@ -285,6 +315,7 @@ describe("Stage 4 observation generation guards", () => {
           lastSeenTick: 420,
           confidencePermille: 920,
           mainBuilding: true,
+          wasCombatant: true,
           position: { x: 2, y: 3, z: 0 }
         }
       ]
@@ -298,6 +329,7 @@ describe("Stage 4 observation generation guards", () => {
     expect(remembered).toMatchObject({
       actorId: "enemy-core",
       visibility: "last_seen",
+      wasCombatant: true,
       mainBuilding: { status: "known", value: true, observedTick: 420 },
       queue: unknown
     });

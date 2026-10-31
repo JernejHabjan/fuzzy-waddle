@@ -23,6 +23,7 @@ const USEFUL_REMEMBERED_OBJECTIVE_MAX_AGE_TICKS = 1200;
 const NATIVE_PURSUIT_ORDER_MAX_AGE_TICKS = 200;
 const NATIVE_PURSUIT_DESTINATION_RADIUS = 8;
 const NATIVE_PURSUIT_ARRIVAL_RADIUS = 6;
+const REMEMBERED_THREAT_MAX_AGE_TICKS = 1200;
 
 function recentFailedMission(context: AiSkirmishProposalContext): AiStrategyAssessment["recentFailure"] {
   const previous = context.state.strategy.assessment;
@@ -88,19 +89,40 @@ function nearbyWaterThreatBonus(context: AiSkirmishProposalContext, actor: AiObs
 function threatNear(
   context: AiSkirmishProposalContext,
   target: AiObservedActorV1,
-  attackers: readonly AiObservedActorV1[]
+  attackers: readonly AiObservedActorV1[],
+  additionalThreats: readonly AiObservedActorV1[] = []
 ): number {
   const targetPosition = position(target);
   if (!targetPosition) return 0;
   const navalObjective = domains(target).includes("water");
-  return context.visibleEnemies.filter((enemy) => {
+  const contacts = new Map(context.visibleEnemies.map((enemy) => [enemy.actorId, enemy]));
+  for (const enemy of [...context.observation.actors, ...additionalThreats]) {
+    const lastKnownPositionTick = enemy.logicalPosition.status === "known"
+      ? enemy.logicalPosition.observedTick
+      : enemy.observedTick;
+    const age = context.observation.tick - lastKnownPositionTick;
+    if (enemy.relation === "enemy" && enemy.visibility === "last_seen" && age >= 0 && age <= REMEMBERED_THREAT_MAX_AGE_TICKS) {
+      contacts.set(enemy.actorId, enemy);
+    }
+  }
+  return [...contacts.values()].reduce((threatCount, enemy) => {
     const enemyPosition = position(enemy);
+    if (enemy.visibility === "last_seen") {
+      if (enemy.actorId === target.actorId || enemy.wasCombatant !== true) return threatCount;
+      const distanceToTarget = enemyPosition ? distance(targetPosition, enemyPosition) : Number.POSITIVE_INFINITY;
+      if (distanceToTarget > 18) return threatCount;
+      const lastKnownPositionTick = enemy.logicalPosition.status === "known"
+        ? enemy.logicalPosition.observedTick
+        : enemy.observedTick;
+      const evidenceAge = context.observation.tick - lastKnownPositionTick;
+      return evidenceAge <= REMEMBERED_THREAT_MAX_AGE_TICKS ? threatCount + 1 : threatCount;
+    }
     if (navalObjective) {
-      if (enemyPosition === undefined || distance(targetPosition, enemyPosition) > 18) return false;
+      if (enemyPosition === undefined || distance(targetPosition, enemyPosition) > 18) return threatCount;
       if (enemy.actorId === target.actorId && canFight(enemy) && attackers.some((actor) => canTarget(enemy, actor)))
-        return true;
+        return threatCount + 1;
       const attacks = enemy.combatProfile?.status === "known" ? enemy.combatProfile.value.attacks : [];
-      return attackers.some((attacker) => {
+      const threatensAttacker = attackers.some((attacker) => {
         const attackerPosition = position(attacker);
         if (!attackerPosition) return false;
         const separation = distance(attackerPosition, enemyPosition);
@@ -112,8 +134,9 @@ function threatNear(
             separation <= attack.range + (enemyPosition.z > attackerPosition.z ? attack.highGroundRangeBonus : 0)
         );
       });
+      return threatCount + Number(threatensAttacker);
     }
-    return (
+    const threatensAttacker = (
       enemyPosition !== undefined &&
       distance(targetPosition, enemyPosition) <= 18 &&
       (enemy.combatProfile?.status === "known"
@@ -122,7 +145,8 @@ function threatNear(
           )
         : canFight(enemy) && attackers.some((actor) => canTarget(enemy, actor)))
     );
-  }).length;
+    return threatCount + Number(threatensAttacker);
+  }, 0);
 }
 
 function productionNear(context: AiSkirmishProposalContext, target: AiObservedActorV1): number {
@@ -143,7 +167,12 @@ function productionNear(context: AiSkirmishProposalContext, target: AiObservedAc
 export function selectAiOffensiveOpportunity(
   context: AiSkirmishProposalContext,
   attackers: readonly AiObservedActorV1[],
-  options: { readonly candidateFilter?: (actor: AiObservedActorV1) => boolean; readonly raid?: boolean } = {}
+  options: {
+    readonly candidateFilter?: (actor: AiObservedActorV1) => boolean;
+    readonly raid?: boolean;
+    /** Recent last-seen contacts can influence target risk without becoming attack objectives. */
+    readonly threatContacts?: readonly AiObservedActorV1[];
+  } = {}
 ): AiOffensiveOpportunity {
   const recentFailure = recentFailedMission(context);
   const contacts = [...context.visibleEnemies, ...context.rememberedEnemies]
@@ -154,7 +183,7 @@ export function selectAiOffensiveOpportunity(
       const viable = selectAiOffensiveForce(context, opponent, attackers);
       if (!viable) return [];
       const { group: compatibleAttackers, route } = viable;
-      const threats = threatNear(context, opponent, compatibleAttackers);
+      const threats = threatNear(context, opponent, compatibleAttackers, options.threatContacts);
       const producers = productionNear(context, opponent);
       const capable = compatibleAttackers.length;
       const failurePenalty =

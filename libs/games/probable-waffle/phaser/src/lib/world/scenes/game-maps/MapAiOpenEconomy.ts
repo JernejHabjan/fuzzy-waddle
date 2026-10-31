@@ -8,7 +8,7 @@ import Minerals from "../../../prefabs/outside/resources/minerals/Minerals";
 
 /** Frozen, campaign-free topology for targeted skirmish economy and production cases. */
 export default class MapAiOpenEconomy extends GameProbableWaffleScene {
-  public override tilemap!: Phaser.Tilemaps.Tilemap;
+  public declare tilemap: Phaser.Tilemaps.Tilemap;
 
   constructor(sceneKey = "MapAiOpenEconomy", private readonly thirdSpawn = false) {
     super(sceneKey);

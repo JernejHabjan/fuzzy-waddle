@@ -130,6 +130,8 @@ export interface AiObservedActorV1 {
   readonly owner: PlayerNumber | null;
   readonly relation: AiDiplomacyRelationV1;
   readonly visibility: "owned" | "visible" | "last_seen";
+  /** Historical combatant classification retained only after an enemy was observed; contains no combat statistics. */
+  readonly wasCombatant?: boolean;
   /** Current enemy contacts visible to this owned actor's native vision source. */
   readonly visibleEnemyActorIds?: readonly ActorId[];
   readonly evidenceId: AiEvidenceId;

@@ -752,6 +752,8 @@ export interface AiObservationRememberedContactData {
   readonly confidencePermille: number;
   /** Previously observed public building role; never inferred from hidden current state. */
   readonly mainBuilding?: boolean;
+  /** Previously observed ability to fight; stores no weapon, range, damage, or live combat state. */
+  readonly wasCombatant?: boolean;
   readonly position: Vector3Simple | null;
 }
 

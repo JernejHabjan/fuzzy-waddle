@@ -75,7 +75,9 @@ export async function captureRuntimeProductionAuthority(
           controller.enqueue(encoder.encode(text));
         }
       });
-      const stream = json.pipeThrough(new CompressionStream("gzip"));
+      const stream = json.pipeThrough(
+        new CompressionStream("gzip") as unknown as TransformStream<Uint8Array, Uint8Array>
+      );
       const bytes = new Uint8Array(await new Response(stream).arrayBuffer());
       let binary = "";
       for (let offset = 0; offset < bytes.length; offset += 0x8000)

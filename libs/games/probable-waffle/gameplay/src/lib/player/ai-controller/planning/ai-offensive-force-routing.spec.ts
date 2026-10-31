@@ -14,6 +14,59 @@ function flyer(id: string): AiObservedActorV1 {
 }
 
 describe("offensive force routing and domain readiness", () => {
+  it("uses recent last-seen defenders as raid risk without making them target candidates", () => {
+    const attackers = Array.from({ length: 3 }, (_, index) => guard(`raid-attacker-${index}`, "self", 0));
+    const target = producer("raid-workmill");
+    const defenders = Array.from({ length: 8 }, (_, index) => ({
+      ...guard(`remembered-defender-${index}`, "enemy", 1),
+      visibility: "last_seen" as const,
+      wasCombatant: true,
+      capabilities: [],
+      observedTick: 20
+    }));
+    const observation = world([...attackers, target, ...defenders]);
+    const catalog = {
+      schemaVersion: 1 as const,
+      generation: 1,
+      unsupported: [],
+      entries: [{
+        capabilityId: "remembered-maceman",
+        family: "military",
+        sourceObjectName: defenders[0]!.objectName,
+        effectiveLevel: 1,
+        movementDomains: ["ground" as const],
+        targetDomains: ["ground" as const],
+        produces: [], constructs: [], researches: [], gathers: [],
+        housingCapacity: null, housingCost: 1, cargoCapacity: null
+      }]
+    };
+    const context = createAiSkirmishProposalContext(observation, brain(), catalog);
+    const choice = selectAiOffensiveOpportunity(
+      { ...context, rememberedEnemies: [] },
+      attackers,
+      { raid: true, threatContacts: defenders, candidateFilter: (actor) => actor.actorId === target.actorId }
+    );
+
+    expect(choice.opponent?.actorId).toBe(target.actorId);
+    expect(choice.assessment).toMatchObject({ requiredForce: 13, visibleThreatCount: 8 });
+
+    const nearExpiryContext = { ...context, observation: { ...context.observation, tick: 1020 }, rememberedEnemies: [] };
+    const nearExpiryChoice = selectAiOffensiveOpportunity(nearExpiryContext, attackers, {
+      raid: true,
+      threatContacts: defenders,
+      candidateFilter: (actor) => actor.actorId === target.actorId
+    });
+    expect(nearExpiryChoice.assessment).toMatchObject({ requiredForce: 13, visibleThreatCount: 8 });
+
+    const expiredContext = { ...context, observation: { ...context.observation, tick: 1221 }, rememberedEnemies: [] };
+    const expiredChoice = selectAiOffensiveOpportunity(expiredContext, attackers, {
+      raid: true,
+      threatContacts: defenders,
+      candidateFilter: (actor) => actor.actorId === target.actorId
+    });
+    expect(expiredChoice.assessment).toMatchObject({ requiredForce: 3, visibleThreatCount: 0 });
+  });
+
   it("keeps a ground anti-air force eligible for an observed flying objective", () => {
     const attackers = Array.from({ length: 3 }, (_, i) => {
       const actor = guard(`interceptor-${i}`, "self", 0);

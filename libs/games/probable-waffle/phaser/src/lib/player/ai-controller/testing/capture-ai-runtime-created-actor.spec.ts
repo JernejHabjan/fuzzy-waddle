@@ -50,7 +50,7 @@ it("uses the explicitly supplied owner index for actors whose scene service cont
   jest.mocked(getActorComponent).mockImplementation((_actor, component) =>
     (component === IdComponent ? { id: "owner-indexed-actor" } : undefined) as never);
   jest.mocked(getSceneService).mockClear();
-  const ownerIndex = { getActorById: (id: string) => id === "owner-indexed-actor" ? actor : undefined };
+  const ownerIndex = { getActorById: (id: string) => id === "owner-indexed-actor" ? actor : null };
   expect(captureAiRuntimeCreatedActor(actor, ownerIndex)).toMatchObject({ actorId: "owner-indexed-actor", indexed: true });
   expect(getSceneService).not.toHaveBeenCalled();
 });

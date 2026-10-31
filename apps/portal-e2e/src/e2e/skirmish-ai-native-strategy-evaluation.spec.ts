@@ -203,3 +203,29 @@ test("STRAT-05 blocked-retreat accepts a bounded counterforce response when no r
     "strategy_counterforce_reassessment_or_control_continuation_missing"
   );
 });
+
+test("STRAT-05 accepts a local defense squad against discovered reinforcements as a future plan response", () => {
+  const frames = [
+    {
+      tick: 200,
+      decision: { strategy: { objectiveId: "opening" }, missionState: { squads: [] }, acceptedIntents: [],
+        input: { observation: { actors: [] } } }
+    },
+    {
+      tick: 400,
+      decision: { strategy: { objectiveId: "opening" }, missionState: { squads: [] }, acceptedIntents: [],
+        input: { observation: { actors: [{ actorId: "reinforcement-0", relation: "enemy", visibility: "visible" }] } } }
+    },
+    {
+      tick: 600,
+      decision: { strategy: { objectiveId: "opening" }, acceptedIntents: [], input: { observation: { actors: [] } },
+        missionState: { squads: [{ role: "defense", state: "engage", objectiveId: "reinforcement-0",
+          actorIds: ["defender"], tactics: { targetActorId: "reinforcement-0" } }] } }
+    }
+  ];
+  const initial = attackFacts(1, 200, "front-target-b"), counterforce = attackFacts(4, 700, "reinforcement-0");
+
+  expect(evaluateNativeStrategy("STRAT-05", "blocked_retreat", context([...initial, ...counterforce], frames))).toEqual([]);
+  expect(evaluateNativeStrategy("STRAT-05", "blocked_retreat", context([...initial, ...counterforce], frames.slice(0, 2)))
+    .join(",")).toContain("strategy_counterforce_no_fair_future_plan_response");
+});

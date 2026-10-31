@@ -52,7 +52,8 @@ export function nativeSavePremises(
       )
     );
   });
-  const paidCommandIds = new Set(paidSetupCommands.map((application) => application.command.execution.commandId));
+  const paidCommandIds = new Set(paidSetupCommands.flatMap((application) =>
+    application.command.execution?.commandId ? [application.command.execution.commandId] : []));
   const paidTrainingItems = items.filter(
     (item) =>
       item.objectName !== null &&
@@ -87,8 +88,8 @@ export function nativeSavePremises(
     !!siteApplication &&
     constructionCharges.length === 1 &&
     (() => {
-      const charge =
-        constructionCharges[0].kind === "construction_authority" ? constructionCharges[0].construction : undefined;
+      const chargeFact = constructionCharges[0];
+      const charge = chargeFact?.kind === "construction_authority" ? chargeFact.construction : undefined;
       if (
         !charge ||
         charge.kind !== "resource" ||

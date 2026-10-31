@@ -382,6 +382,11 @@ export class AiObservationPipeline {
       lastSeenTick: tick,
       confidencePermille: 1000,
       ...(actor.mainBuilding?.status === "known" ? { mainBuilding: actor.mainBuilding.value } : {}),
+      wasCombatant:
+        actor.relation === "enemy" &&
+        (actor.capabilities.some((capability) => capability.family === "military") ||
+          (actor.combatProfile?.status === "known" &&
+            actor.combatProfile.value.attacks.some((attack) => attack.damage > 0))),
       position: actor.logicalPosition.status === "known" ? { ...actor.logicalPosition.value } : null
     });
     trimRememberedContacts(this.memory);
