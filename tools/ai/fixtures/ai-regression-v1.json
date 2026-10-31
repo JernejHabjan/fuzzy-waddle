@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "packId": "ai-regression-v1",
+  "runtimeBudgetMs": 1800000,
+  "preflight": {
+    "project": "probable-waffle-gameplay",
+    "testPathPattern": "ai-",
+    "timeoutMs": 120000,
+    "purpose": "Run focused AI decision, arbitration, scouting and adaptation unit suites before native cases."
+  },
+  "selection": [
+    {
+      "caseId": "place-03-skaduwee-completion",
+      "scenarioId": "PLACE-03",
+      "variantId": "place-03-skaduwee-completion",
+      "repetition": 1,
+      "estimatedWallMs": 221062,
+      "evidence": [
+        {
+          "reportId": "1793328176798",
+          "status": "diagnostic_passed",
+          "scenarioId": "PLACE-03",
+          "variantId": "place-03-skaduwee-completion",
+          "sourceRevision": "227d700e53317e30b8b36eaac27b5587847ffafd",
+          "dirtySourceDigest": "fnv1a32:562d9732",
+          "fixtureDigest": "fnv1a32:1485a26b"
+        }
+      ],
+      "covers": "useful legal placement and preserved transit, Skaduwee"
+    },
+    {
+      "caseId": "place-03-tivara-completion",
+      "scenarioId": "PLACE-03",
+      "variantId": "place-03-tivara-completion",
+      "repetition": 1,
+      "estimatedWallMs": 153241,
+      "evidence": [
+        {
+          "reportId": "1793328339115",
+          "status": "diagnostic_passed",
+          "scenarioId": "PLACE-03",
+          "variantId": "place-03-tivara-completion",
+          "sourceRevision": "227d700e53317e30b8b36eaac27b5587847ffafd",
+          "dirtySourceDigest": "fnv1a32:562d9732",
+          "fixtureDigest": "fnv1a32:1485a26b"
+        }
+      ],
+      "covers": "useful legal placement and preserved transit, Tivara"
+    },
+    {
+      "caseId": "wall-01-skaduwee-terrain",
+      "scenarioId": "WALL-01",
+      "variantId": "wall-01-skaduwee-terrain",
+      "repetition": 1,
+      "estimatedWallMs": 326867,
+      "evidence": [
+        {
+          "reportId": "1793327749131",
+          "status": "diagnostic_passed",
+          "scenarioId": "WALL-01",
+          "variantId": "wall-01-skaduwee-terrain",
+          "sourceRevision": "90c39211b417ddbeb432da6f8d25928ec2dfd66c",
+          "dirtySourceDigest": "fnv1a32:ee68b853",
+          "fixtureDigest": "fnv1a32:78650e80"
+        }
+      ],
+      "covers": "useful terrain wall and effect, Skaduwee"
+    },
+    {
+      "caseId": "wall-01-skaduwee-no-value",
+      "scenarioId": "WALL-01",
+      "variantId": "wall-01-skaduwee-no-value",
+      "repetition": 1,
+      "estimatedWallMs": 202672,
+      "evidence": [
+        {
+          "reportId": "1793321331730",
+          "status": "diagnostic_passed",
+          "scenarioId": "WALL-01",
+          "variantId": "wall-01-skaduwee-no-value",
+          "sourceRevision": "46b0e0612ed5e84f12f3deac3c3a083ee4382fa1",
+          "dirtySourceDigest": null,
+          "fixtureDigest": "fnv1a32:78650e80"
+        }
+      ],
+      "covers": "decline wall without useful value, Skaduwee"
+    },
+    {
+      "caseId": "h-13-skaduwee-new-identity",
+      "scenarioId": "H-13",
+      "variantId": "h-13-skaduwee-new-identity",
+      "repetition": 1,
+      "estimatedWallMs": 153576,
+      "evidence": [
+        {
+          "reportId": "1793300480186",
+          "status": "diagnostic_passed",
+          "scenarioId": "H-13",
+          "variantId": "h-13-skaduwee-new-identity",
+          "sourceRevision": "9597a577f7aedd39c4b873b3a04656a0ec30eee1",
+          "dirtySourceDigest": "fnv1a32:9c928322",
+          "fixtureDigest": "fnv1a32:1ce3d633"
+        }
+      ],
+      "covers": "resource ownership, native delivery and legal new-base purchase, Skaduwee"
+    },
+    {
+      "caseId": "seq-01-tivara-land-loop",
+      "scenarioId": "SEQ-01",
+      "variantId": "tivara-land-loop",
+      "repetition": 1,
+      "estimatedWallMs": 142290,
+      "evidence": [
+        {
+          "reportId": "1793395964724",
+          "status": "diagnostic_passed",
+          "scenarioId": "SEQ-01",
+          "variantId": "tivara-land-loop",
+          "sourceRevision": "74c05b455084ba2fdc7d5e52bf1341d94901af88",
+          "dirtySourceDigest": "fnv1a32:1cdae123",
+          "fixtureDigest": "fnv1a32:5406a5d4"
+        }
+      ],
+      "covers": "two-faction victory path, Tivara"
+    },
+    {
+      "caseId": "seq-01-skaduwee-land-loop",
+      "scenarioId": "SEQ-01",
+      "variantId": "skaduwee-land-loop",
+      "repetition": 1,
+      "estimatedWallMs": 147710,
+      "evidence": [
+        {
+          "reportId": "1793396116011",
+          "status": "diagnostic_passed",
+          "scenarioId": "SEQ-01",
+          "variantId": "skaduwee-land-loop",
+          "sourceRevision": "74c05b455084ba2fdc7d5e52bf1341d94901af88",
+          "dirtySourceDigest": "fnv1a32:1cdae123",
+          "fixtureDigest": "fnv1a32:5406a5d4"
+        }
+      ],
+      "covers": "two-faction victory path, Skaduwee"
+    }
+  ],
+  "omissionPolicy": {
+    "unsupported": "Manifest marks this runtime content unsupported or deferred; do not fabricate a native case.",
+    "multiplayer": "Peer/multiplayer evidence is outside this single-player pack and remains in its existing CI job.",
+    "calibration": "D-06 expensive difficulty comparison is explicitly outside this goal.",
+    "boundedSelection": "Not selected for this approximately 22.5-minute core pack; existing evidence stays in CURRENT-EVIDENCE. Add only after duration and provenance review."
+  }
+}

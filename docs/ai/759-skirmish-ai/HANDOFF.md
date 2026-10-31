@@ -1,64 +1,29 @@
-# #759 single-player iteration — start here
+# RTS AI — next execution handoff
 
-Updated 2026-10-31. User approved Astra preparation, then one model switch/compact and "go".
-The single-player implementation is published; E3 release verification remains incomplete after review. Read this and [REMAINING-WORK.md](REMAINING-WORK.md)
-for scope, acceptance, loop and deferred follow-ups; do not restart completed packets absent a demonstrated regression.
-Do not reconstruct the old seven-package roadmap from chat or historical records.
+Updated 2026-10-31. S3 and the current-source local regression pack are complete. Remaining work is remote CI validation, final audits, commit/push, and deciding whether any CI blocker can be resolved without changing PR #814.
+`REMAINING-WORK.md` owns scope and acceptance; `CURRENT-EVIDENCE.md` owns evidence and exclusions.
 
-## Resume
+## Current state
 
-- Workspace: C:\Git\Jernej\fuzzy-waddle; branch: feature/759-skirmish-ai.
-- Gameplay baseline: 3555fb04e21c; preceding gameplay batch: b9274bdd15d7.
-- Worker recommendation: Luna High, Standard speed. Sol Medium can execute the same plan. No automatic switches.
-- Goal created on 2026-10-29 from REMAINING-WORK after user said "go".
-- Tooling: `agent:doctor` and `agent:context` return `unavailable_repository_runtime`; use direct Node 24/pnpm/Nx.
-  The wrapper's Windows `pnpm.CMD` shell issue is unrelated; leave it alone.
-- A3 adjacent-wall clearance fix and H-11 passes for both factions are in CURRENT-EVIDENCE. The focused
-  builder-loss recovery control passes on `76bec1347` after moving its invalid seeded site.
-- Packet A now meets the selected native minimum: PLACE-03 layout/concurrent/completion/loss passes for both
-  factions, H-11 both factions, builder-loss recovery, WALL-01 useful effect both factions and a Skaduwee no-value
-  control. The completion fixture now binds its route to the real tick-1 army transit. Details are in CURRENT-EVIDENCE.
-- B1 withdrawal recovery passes for both factions. C is validated. D1 H-31 during-active continuation and D2
-  second-match lifecycle pass. Exact boundary/work proof and the allowed later physical divergence are in CURRENT-EVIDENCE.
-- No multiplayer/CI, exhaustive calibration or optional content in this iteration; do not touch PR #814.
+- Workspace `C:/Git/Jernej/fuzzy-waddle`, branch `feature/759-skirmish-ai`, Node 24, pnpm.
+- T1/T2, S1/S2/S3, F1/F2/F3 complete. TSC checks pass for Phaser and portal-e2e; focused tests and native checks are recorded in CURRENT-EVIDENCE.
+- Strategic native counterparts: SCOUT-02 full family `1793446488003-passed`; DOMAIN-05 `1793447721151-passed`; TECH-01 `1793446778377-passed`; RAID-01 `1793453795782-passed`; STRAT-05 had one evaluator false negative, fixed and covered by focused spec plus `1793455109552-diagnostic_passed` replay. That replay is diagnostic, not a replacement full-family certification.
+- Current-source `pnpm ai:regression` passed: 7/7 selected cases, preflight 105 suites/632 tests, 25m27s under the 30m cap. Aggregate is `tmp/ai-skirmish-regression/latest.json`; run report IDs and source/fixture digests are in CURRENT-EVIDENCE.
+- Local pack source is HEAD `90e8d711a` plus working-tree digest `fnv1a32:4f3eea29`. Seven selected diagnostic cases are not whole-family certification.
+- R pack, strict E2E hook and manual workflow are authored. Remote successful workflow run and artifacts are not yet recorded.
 
-## Progress cursor
+## Next actions
 
-| Packet                         | State               | Next action                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| ------------------------------ | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| A placement/walls/recovery     | validated           | PLACE-03 layout/concurrent/completion/loss passes for both factions; H-11 and builder-loss recovery pass. WALL-01 useful effect passes both factions and Skaduwee no-value passes. Corrected completion-route evidence is retained. Do not reopen absent a new acceptance defect. |
-| B expansion/mission continuity | validated           | B1-B3 pass selected minimum. SEQ-01 both factions win; SEQ-02 shows recovery under renewed pressure. Failed retreat moves select another legal slot. SCOUT-02/ESCORT remain follow-ups. Do not rerun absent a new defect. |
-| C resource/command ownership   | validated           | C1 duplicate admission preserves actor/application progress; C2 expired provisional escrow and contracted-balance gating have focused coverage, H-10 retains both-faction capacity evidence, and H-13 has current native base-control confirmation for both factions. Safe unloaded gatherer leases now transfer to food-field labor/construction while retaining the old effect receipt. C3 epoch/identity/dispatch guards reviewed; focused Phaser tests pass 20/20. Latest gameplay suite passes 105 suites/630 tests.                                                                                                                                                                                                                                                                                      |
-| D essential SP lifecycle       | validated           | H-31 during-active both factions pass (`1793402499466`, `1793402579687`): saved/restored world, brain, authority and reservation digests match at tick119; first resumed input matches; each continues decision 5->20 with 563 advancing queue attempts and 3 completions by tick401. H-32 paid-queue/normal and shutdown cleanup remain passed. Later physical observations may diverge after the first resumed decision; see CURRENT-EVIDENCE. |
-| E ordinary play/closure | partial | E1/E2 retain bounded gameplay evidence. E3 requires successful owning TypeScript checks or an explicitly agreed baseline exception; absence of changed-file diagnostics is insufficient. Review fixes pending-hit target resolution and timer replacement, with 3 focused tests passing. |
+1. Run final omission/closure audits and `git diff --check`; inspect ownership/scope before staging.
+2. Commit task-owned changes and push `feature/759-skirmish-ai`.
+3. Try dispatching `.github/workflows/ai-regression.yml` with `run_ai_regression=true`; capture run URL/status/artifacts. Keep PR #814 draft and unchanged.
+4. If dispatch is blocked by workflow/default-branch or repository access, record the exact reason and keep C2 incomplete. Do not claim remote validation.
+5. Update this handoff and evidence ledger with the remote result; complete the goal only when all required checks and audits close.
 
-Ready means planned, not validated. Every acceptance ID in REMAINING-WORK needs evidence or a blocker.
-Packet completion does not certify every old manifest scenario.
+## Guardrails
 
-## User authority and boundaries
-
-- After "go": autonomous implementation, necessary focused checks, bounded native confirmation, and normal
-  task-owned commits/pushes on this branch. Do not update, ready, merge or close PR #814.
-- Multiplayer, CI activation, exhaustive calibration/debug certification and optional content are deferred.
-  Preserve shared authority guards. No Docker/peer troubleshooting as an iteration prerequisite.
-- SCOUT-02 and ESCORT remain follow-ups; basic fair useful scouting and supported land victory remain required.
-- Hard 30-minute wall-clock cap per local runtime invocation; one owned runtime process at a time.
-- Retain unchanged passing evidence. Repeated failed repairs trigger the smaller-reproduction procedure.
-- Keep concise updates; no CPU/memory reporting. Move to independent work when a packet blocks.
-- Maintain three active records only: HANDOFF (cursor), REMAINING-WORK (contract), CURRENT-EVIDENCE (results).
-  Replace stale entries; Git/artifacts hold chronology. Do not append session journals to the archive.
-
-## Review follow-up
-
-- H-31 proves exact restore and first decision plus subsequent useful work; later combat replay parity remains unproven.
-- Native reports predate the review fix; focused attack lifecycle tests cover this change. No new full-match claim.
-- Suggested next bounded goal: finish release verification, then SCOUT-02 stale-intelligence fairness and scouting continuity.
-
-## References on demand
-
-- [CURRENT-EVIDENCE](CURRENT-EVIDENCE.md): passes, failures, artifact references and acceptance ledger.
-- [CI-RESUME](CI-RESUME.md): deferred CI facts, not an execution queue.
-- [SCENARIO-INVENTORY](SCENARIO-INVENTORY.md) and [EVIDENCE-ARCHIVE](EVIDENCE-ARCHIVE.md):
-  historical lookup only; read narrowly when an artifact cannot be found in current evidence.
-- Manifest: tools/ai/fixtures/skirmish-v1.json.
-- Owning documentation: libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/README.md.
+- One native runner at a time; each invocation max 30 minutes. No unchanged scenario reruns.
+- Keep multiplayer, ESCORT/naval expansion, D-06 calibration, tournament balance and advanced replay parity excluded as listed in REMAINING-WORK.
+- Preserve PR #814 draft status. No merge or PR readiness changes.
+- Keep these three docs compact; update rows in place instead of appending a journal.
+- `pnpm ai:regression -- --list` previews selection. `RUN_AI_REGRESSION=true pnpm e2e` opts into the pack; unset/false runs ordinary E2E only.

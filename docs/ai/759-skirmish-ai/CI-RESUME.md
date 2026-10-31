@@ -1,25 +1,12 @@
-# #759 CI follow-up (deferred)
+# AI regression CI
 
-Updated 2026-10-29. CI activation and real-peer evidence are excluded from the first single-player iteration.
-Read HANDOFF.md and REMAINING-WORK.md for current work. This file is not an active queue.
+Updated 2026-10-31. Current progress and acceptance are in [HANDOFF.md](HANDOFF.md),
+[REMAINING-WORK.md](REMAINING-WORK.md) and [CURRENT-EVIDENCE.md](CURRENT-EVIDENCE.md).
 
-## Existing implementation
-
-.github/workflows/pull-request-checks.yml defines:
-- skirmish-runtime-plan: tools/ai/select-skirmish-ci-shards.mjs derives supported manifest shards.
-- skirmish-runtime: runs native matrix shards, retains artifacts, max-parallel 2 and job timeout 60 minutes.
-- skirmish-multiplayer: starts Supabase and runs the real-peer harness, timeout 35 minutes.
-
-All three jobs require github.event.pull_request.draft == false. PR #814 is draft and must remain unchanged.
-Configured automation is therefore not evidence that current branch checks have executed.
-The selector includes supported runtime rows; it is not a changed-owner test selector.
-No other-PC probe is needed. Do not manually duplicate the scenario catalogue in workflow YAML.
-
-## Later activation work
-
-After the single-player iteration, choose an explicitly authorized CI route (for example a manual workflow)
-without changing PR state implicitly. Separate fast affected checks/small smoke coverage from extended native
-runs; use existing manifest fixtures. Preserve real-peer requirements and report missing infrastructure honestly.
-Run existing reconnect/host-transfer/stale-command cases and retain their own evidence; SP cannot certify them.
-Resolve unsupported D-06 baseline comparison as a separate scope decision before calibration.
-Do not activate or redesign these workflows during the current iteration.
+- `pnpm ai:regression -- --list` previews the seven selected variants and explicit omissions.
+- `pnpm ai:regression` runs the bounded single-player pack; each result includes source/fixture identity and artifact path.
+- `RUN_AI_REGRESSION=true pnpm e2e` runs ordinary E2E first, then the extended pack. Unset/false runs ordinary E2E only.
+- PR/develop runtime packs require repository variable `RUN_AI_REGRESSION=true`; manual dispatch uses the workflow checkbox.
+  Defaults are off. PR draft state is unchanged.
+- Existing multiplayer peer CI remains a separate job and is not certified by this single-player pack.
+- Current workflows are authored but not dispatched. A successful local H-13 shard is recorded in CURRENT-EVIDENCE.

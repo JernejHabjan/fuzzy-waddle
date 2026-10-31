@@ -119,7 +119,7 @@ jobs:
           NX_RUN_GROUP: ${{ github.run_id }}
 
   skirmish-runtime-plan:
-    if: github.event.pull_request.draft == false
+    if: github.event.pull_request.draft == false && vars.RUN_AI_REGRESSION == 'true'
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.select.outputs.matrix }}
@@ -128,13 +128,15 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Select required skirmish shards
         id: select
-        run: node tools/ai/select-skirmish-ci-shards.mjs
+        run: node tools/ai/select-ai-regression-shards.mjs
 
   skirmish-runtime:
-    if: github.event.pull_request.draft == false
+    if: github.event.pull_request.draft == false && vars.RUN_AI_REGRESSION == 'true'
     needs: skirmish-runtime-plan
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 30
+    env:
+      RUN_AI_REGRESSION: ${{ vars.RUN_AI_REGRESSION }}
     strategy:
       fail-fast: false
       max-parallel: 2
@@ -158,8 +160,8 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Install Playwright Chromium
         run: pnpm exec playwright install --with-deps chromium
-      - name: Run required skirmish shard
-        run: node --max-old-space-size=8192 tools/ai/run-skirmish-matrix.mjs --scenarios "${{ matrix.scenarios }}" --mode runtime
+      - name: Run selected AI regression case
+        run: pnpm ai:regression -- --case "${{ matrix.caseId }}"
         env:
           AI_SKIRMISH_MATRIX_RUN_ID: ${{ github.run_id }}-${{ github.run_attempt }}
       - name: Retain skirmish evidence
@@ -171,6 +173,7 @@ jobs:
             tmp/ai-skirmish-matrix/*.json
             tmp/ai-skirmish-matrix/*.json.variants/**
             tmp/ai-skirmish-matrix/indexes/*.json
+            tmp/ai-skirmish-regression/latest.json
             test-results/
           if-no-files-found: warn
 
