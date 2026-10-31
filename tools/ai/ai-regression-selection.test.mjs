@@ -21,6 +21,19 @@ test("AI regression selection binds exact manifest variants and reports every om
   assert.ok(resolved.omissions.some((entry) => entry.scenarioId === "SCOUT-02" && entry.reason.includes("Not selected")));
 });
 
+test("selection accounts for every unselected repetition", () => {
+  const subject = pack.selection[0];
+  const load = (reference) => {
+    const fixture = structuredClone(readFixture(reference));
+    const variant = fixture.recipe?.variants?.find((entry) => entry.id === subject.variantId);
+    if (variant) variant.repetitions = 3;
+    return fixture;
+  };
+  const resolved = resolveAiRegressionSelection(pack, manifest, load);
+  assert.deepEqual(resolved.omissions.filter((entry) => entry.scenarioId === subject.scenarioId &&
+    entry.variantId === subject.variantId).map((entry) => entry.repetition), [2, 3]);
+});
+
 test("AI regression selection fails closed for empty, stale or over-budget entries", () => {
   assert.throws(() => resolveAiRegressionSelection({ ...pack, selection: [] }, manifest, readFixture), /invalid_ai_regression_pack/);
   const stale = structuredClone(pack);

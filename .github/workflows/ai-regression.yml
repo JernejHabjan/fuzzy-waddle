@@ -1,6 +1,8 @@
 name: AI Regression Pack
 
 on:
+  push:
+    tags: ["ai-regression/**"]
   workflow_dispatch:
     inputs:
       run_ai_regression:
@@ -14,7 +16,7 @@ permissions:
 
 jobs:
   plan:
-    if: ${{ inputs.run_ai_regression }}
+    if: ${{ github.event_name == 'push' || inputs.run_ai_regression }}
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.select.outputs.matrix }}
@@ -26,7 +28,7 @@ jobs:
         run: node tools/ai/select-ai-regression-shards.mjs
 
   run:
-    if: ${{ inputs.run_ai_regression }}
+    if: ${{ github.event_name == 'push' || inputs.run_ai_regression }}
     needs: plan
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -35,7 +37,7 @@ jobs:
       max-parallel: 4
       matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
     env:
-      RUN_AI_REGRESSION: ${{ inputs.run_ai_regression }}
+      RUN_AI_REGRESSION: ${{ github.event_name == 'push' || inputs.run_ai_regression }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -71,7 +73,7 @@ jobs:
           if-no-files-found: warn
 
   skipped:
-    if: ${{ !inputs.run_ai_regression }}
+    if: ${{ github.event_name == 'workflow_dispatch' && !inputs.run_ai_regression }}
     runs-on: ubuntu-latest
     steps:
       - name: Confirm the extended pack was disabled

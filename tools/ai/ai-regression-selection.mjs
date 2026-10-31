@@ -63,12 +63,14 @@ export function resolveAiRegressionSelection(pack, manifest, readFixture) {
       continue;
     }
     for (const variant of variants) {
-      const isSelected = selectedKeys.has(`${row.id}:${variant.id}:1`);
-      if (!isSelected) omissions.push({
-        scenarioId: row.id,
-        variantId: variant.id,
-        reason: omissionReason(row, variant, fixture, pack)
-      });
+      for (let repetition = 1; repetition <= (variant.repetitions ?? 1); repetition++) {
+        if (!selectedKeys.has(`${row.id}:${variant.id}:${repetition}`)) omissions.push({
+          scenarioId: row.id,
+          variantId: variant.id,
+          repetition,
+          reason: omissionReason(row, variant, fixture, pack)
+        });
+      }
     }
   }
   return { packId: pack.packId, runtimeBudgetMs: pack.runtimeBudgetMs, estimatedWallMs, selected, omissions };
