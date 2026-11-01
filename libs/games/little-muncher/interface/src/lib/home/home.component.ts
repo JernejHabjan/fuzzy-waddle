@@ -1,4 +1,4 @@
-import { Component, inject, output } from "@angular/core";
+import { Component, inject, output, ChangeDetectionStrategy } from "@angular/core";
 import {
   type HillData,
   type LittleMuncherGameCreate,
@@ -18,6 +18,7 @@ import { RouterLink } from "@angular/router";
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"],
   imports: [SpectateComponent, HomeNavComponent, KeyValuePipe, RouterLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: AngularHost.contentFlexFullHeight
 })
 export class HomeComponent {

@@ -120,7 +120,7 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
     const tendableComponent = actor ? getActorComponent(actor, TendableComponent) : undefined;
     if (tendableComponent) {
       iconsAndTexts.push({
-        icon: { key: "gui", frame: "actor_info_icons/element.png" },
+        icon: { key: "gui", frame: "actor_info_icons/growth.png" },
         text: `${Math.round(tendableComponent.growthPercent)}%`
       });
       return iconsAndTexts;
@@ -134,7 +134,7 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
       const maxResources = resourceSourceComponent.getMaximumResources();
       const resourcesText = `${currentResources}/${maxResources}`;
       iconsAndTexts.push({
-        icon: { key: "gui", frame: "actor_info_icons/element.png" }, // todo
+        icon: { key: "gui", frame: "actor_info_icons/resources.png" },
         text: resourcesText
       });
 
@@ -142,7 +142,7 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
       const assignedCount = resourceSourceComponent.getAssignedGatherersCount();
       const gatherersText = assignedCount === 1 ? "1 gatherer" : `${assignedCount} gatherers`;
       iconsAndTexts.push({
-        icon: { key: "gui", frame: "actor_info_icons/element.png" }, // todo
+        icon: { key: "gui", frame: "actor_info_icons/gatherers.png" },
         text: gatherersText
       });
 
@@ -164,7 +164,7 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
       const count = containerComponent.getContainedGameObjects().length;
       const cap = containerComponent.containerDefinition.capacity;
       iconsAndTexts.push({
-        icon: { key: "gui", frame: "actor_info_icons/element.png" }, // todo: cargo icon
+        icon: { key: "gui", frame: "actor_info_icons/cargo.png" },
         text: `${count}/${cap}`
       });
     }
@@ -199,7 +199,7 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
       const highGroundBonus = primaryAttack?.highGroundRangeBonus;
       if (highGroundBonus && highGroundBonus > 0) {
         iconsAndTexts.push({
-          icon: { key: "gui", frame: "actor_info_icons/high-ground.png" }, // todo
+          icon: { key: "gui", frame: "actor_info_icons/high-ground.png" },
           text: highGroundBonus.toString()
         });
       }
@@ -210,7 +210,7 @@ export default class ActorDetails extends Phaser.GameObjects.Container {
     if (productionTime && productionTime > 0) {
       const timeInSeconds = (productionTime / 1000).toFixed(1);
       iconsAndTexts.push({
-        icon: { key: "gui", frame: "actor_info_icons/training_time.png" }, // TODO #652: icon doesn't exist yet
+        icon: { key: "gui", frame: "actor_info_icons/training_time.png" },
         text: `${timeInSeconds}s`
       });
     }

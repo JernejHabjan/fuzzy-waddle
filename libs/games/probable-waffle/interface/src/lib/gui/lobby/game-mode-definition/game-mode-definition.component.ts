@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
 import {
   type ProbableWaffleDataChangeEventProperty,
   type ProbableWaffleGameModeData
@@ -12,6 +12,7 @@ import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.se
   selector: "probable-waffle-game-mode-definition",
   templateUrl: "./game-mode-definition.component.html",
   styleUrls: ["./game-mode-definition.component.scss"],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule]
 })
 export class GameModeDefinitionComponent {

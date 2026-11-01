@@ -1,11 +1,12 @@
 import type { OnInit } from "@angular/core";
-import { Component, inject, input } from "@angular/core";
+import { Component, inject, input, ChangeDetectionStrategy } from "@angular/core";
 import { type PlayerScoreData, STANDARD_METRICS } from "@fuzzy-waddle/probable-waffle-protocol";
 import { ScoreDataService } from "../../../services/score-data.service";
 
 @Component({
   selector: "probable-waffle-score-table",
   templateUrl: "./score-table.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ["./score-table.component.scss"]
 })
 export class ScoreTableComponent implements OnInit {

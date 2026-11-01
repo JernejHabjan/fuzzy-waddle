@@ -1,4 +1,4 @@
-import { Component, inject, type OnInit } from "@angular/core";
+import { Component, inject, type OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { DatePipe } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { ChatReportStatus, UserAccountStatus } from "@fuzzy-waddle/platform-database-schema";
@@ -16,6 +16,7 @@ import { getRoleIcon, getRoleLabel } from "@fuzzy-waddle/platform-identity/clien
   selector: "fuzzy-waddle-moderation",
   templateUrl: "./moderation.component.html",
   styleUrls: ["./moderation.component.scss"],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [HomeNavComponent, DatePipe, FormsModule, FaIconComponent]
 })
 export class ModerationComponent implements OnInit {

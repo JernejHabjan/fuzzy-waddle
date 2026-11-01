@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, type OnDestroy, type OnInit } from "@angular/core";
+import { Component, HostListener, inject, type OnDestroy, type OnInit, ChangeDetectionStrategy } from "@angular/core";
 
 import { LoaderComponent } from "@fuzzy-waddle/platform-game-host/angular/loader/loader.component";
 import { MatchmakingService } from "../matchmaking/matchmaking.service";
@@ -11,6 +11,7 @@ import { CenterWrapperComponent } from "@fuzzy-waddle/platform-game-host/angular
   selector: "fuzzy-waddle-instant-network-match",
   imports: [LoaderComponent, RouterLink, CenterWrapperComponent],
   host: AngularHost.contentFlexFullHeight,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     @if (errorText) {
       <fuzzy-waddle-center-wrapper>

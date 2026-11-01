@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, type OnDestroy, type OnInit, ViewEncapsulation } from "@angular/core";
+import { Component, HostListener, inject, type OnDestroy, type OnInit, ViewEncapsulation, ChangeDetectionStrategy } from "@angular/core";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { UserInstanceService } from "@fuzzy-waddle/platform-identity/client/profile/user-instance.service";
 import { RouterOutlet } from "@angular/router";
@@ -12,6 +12,7 @@ import { TauriService } from "@fuzzy-waddle/platform-game-host/angular/services/
   // The lazy-loaded AOTA theme stylesheet needs to reach routed children under this shell,
   // so these route-scoped styles must stay global instead of using Angular's scoped attributes.
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     ...AngularHost.contentFlexFullHeight,
     "(window:focus)": "onWindowFocus()",

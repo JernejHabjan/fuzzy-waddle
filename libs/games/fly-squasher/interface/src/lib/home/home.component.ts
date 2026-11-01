@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
 import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
@@ -14,6 +14,7 @@ import { CenterWrapperComponent } from "@fuzzy-waddle/platform-game-host/angular
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"],
   imports: [FaIconComponent, RouterLink, HomeNavComponent, CenterWrapperComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: AngularHost.contentFlexFullHeight
 })
 export class HomeComponent {
