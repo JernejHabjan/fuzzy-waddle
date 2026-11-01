@@ -44,3 +44,12 @@ export function readRuntimeResult(path, identity, options = {}) {
     Object.defineProperty(report, "__artifactSourcePath", { value: path });
   return report;
 }
+
+/** Keep decoding failure as report data so the caller can retain the child exit status and diagnostic streams. */
+export function readRuntimeResultOutcome(path, identity, options = {}) {
+  try {
+    return { report: readRuntimeResult(path, identity, options), reason: undefined };
+  } catch (error) {
+    return { report: null, reason: error instanceof Error ? error.message : "runtime_result_artifact_unavailable" };
+  }
+}

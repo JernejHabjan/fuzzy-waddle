@@ -6,7 +6,7 @@ import { pnpmInvocation } from "../shared/command-invocation.ts";
 import { readPureFixtureCase } from "../scenarios/validation/pure-fixture-cases.ts";
 import { pureFixtureReference, runtimeFixtureReference } from "../scenarios/validation/skirmish-matrix-fixtures.ts";
 import { digestString, readHead, readJson, readWorkingTreeSource } from "./skirmish-matrix-io.ts";
-import { createRuntimeResultPath, readRuntimeResult } from "./skirmish-runtime-result.ts";
+import { createRuntimeResultPath, readRuntimeResultOutcome } from "./skirmish-runtime-result.ts";
 import { invokeCalibrationHarness } from "../calibration/skirmish-calibration-execution.ts";
 import { writeRuntimeRequest } from "../shared/transport/skirmish-ai-runtime-request-transport.ts";
 
@@ -281,11 +281,11 @@ function invokeRuntimeHarness(input, context) {
     cwd: workspaceRoot,
     env: environment,
     encoding: "utf8",
-    maxBuffer: 32 * 1024 * 1024
+    maxBuffer: 32 * 1024 * 1024,
+    timeout: 30 * 60 * 1000
   });
   const wallMs = Math.round(performance.now() - startedAt);
-  if (command.error) throw command.error;
-  const runtimeReport = readRuntimeResult(
+  const result = readRuntimeResultOutcome(
     resultArtifact,
     {
       sourceRevision,
@@ -294,8 +294,14 @@ function invokeRuntimeHarness(input, context) {
     },
     { expandExternalVariants: false }
   );
+  const runtimeReport = result.report;
   const report = {
     schemaVersion: 1,
+    ...(command.error || result.reason
+      ? {
+          reason: command.error ? `runtime_process_error:${command.error.message}` : result.reason
+        }
+      : {}),
     status: input.diagnosticSelection
       ? command.status === 0 && runtimeReport?.status === "diagnostic_passed"
         ? "diagnostic_passed"

@@ -3,7 +3,12 @@ import { mkdtempSync, rmSync, truncateSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import test from "node:test";
-import { createRuntimeResultPath, MAX_RUNTIME_RESULT_BYTES, readRuntimeResult } from "./skirmish-runtime-result.ts";
+import {
+  createRuntimeResultPath,
+  MAX_RUNTIME_RESULT_BYTES,
+  readRuntimeResult,
+  readRuntimeResultOutcome
+} from "./skirmish-runtime-result.ts";
 
 const identity = { sourceRevision: "source", fixtureDigest: "fixture", dirtySourceDigest: null };
 const report = {
@@ -13,6 +18,18 @@ const report = {
   scenarios: [],
   workCounts: { scenarios: 1, decisions: 16, ticks: 300 }
 };
+
+test("empty artifacts remain failed evidence without throwing away the caller's process diagnostics", () =>
+  fixture((path) => {
+    writeFileSync(path, "");
+    assert.deepEqual(readRuntimeResultOutcome(path, identity), {
+      report: null,
+      reason: "runtime_result_artifact_malformed"
+    });
+    writeFileSync(path, JSON.stringify({ ...report, sourceRevision: "foreign" }));
+    assert.equal(readRuntimeResultOutcome(path, identity).report, null);
+    assert.equal(readRuntimeResultOutcome(path, identity).reason, "runtime_result_artifact_identity_or_shape_invalid");
+  }));
 
 function fixture(run) {
   const directory = mkdtempSync(join(tmpdir(), "skirmish-result-test-"));

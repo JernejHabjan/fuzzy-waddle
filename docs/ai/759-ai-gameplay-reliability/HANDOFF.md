@@ -15,8 +15,10 @@
 - First baseline ended: session `72969` exited 1; result file
   `tmp/ai-skirmish-runtime-results/run-Lx7H2N/runtime.json` has zero bytes. Matrix report
   `tmp/ai-skirmish-matrix/1793566924002-failed.json` is infrastructure-only (zero work), not performance evidence.
-- Next diagnostic owner: T `matrix/skirmish-matrix-execution.ts` near `readRuntimeResult` (line ~288).
-  Preserve subprocess exit/signal/bounded stderr when decoding fails before rerunning; current catch loses that detail.
+- Runner diagnostic repair preserves process failure details; 9 Node tests, tooling types/lint pass.
+  Retry `62748` ended with ENOSPC. Both default evidence directories are junctions to full D:.
+  Keep historical artifacts. New runs must use `AI_SKIRMISH_RUNTIME_RESULTS_DIRECTORY` and `--output` under
+  workspace-local `tmp/ai-gameplay-reliability/` (C:, available space), not the old junctions.
 - Offline player binding reproduced (scene controls 3 failed/1 passed before, 4 passed after). Unique-human offline
   slot sync and scene lookup repaired; Angular service 7 tests, Phaser types and both owning lints pass.
   Source-only interface types pass; full interface types expose existing fixture errors in game.component,
