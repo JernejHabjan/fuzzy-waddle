@@ -1,5 +1,9 @@
 # Difficulty calibration
 
+Difficulty calibration and its test campaign were cancelled by the user on 2026-11-01
+([#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817)). The methodology below is optional reference,
+not a current execution queue or release gate. Existing difficulty configuration and fairness correctness still apply.
+
 Correctness and challenge are separate gates. Every difficulty must obey the same rules, information boundary and essential recovery invariants before outcome calibration begins.
 
 ## Paired design

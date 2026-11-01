@@ -8,6 +8,6 @@ Developer documentation:
 - [Testing and stable commands](../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/README.md)
 - [Runtime E2E and pre-merge policy](../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/runtime-e2e.md)
 - [AI debugging workbench](../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/debugging/README.md)
-- [Open #759 handoff](../docs/ai/759-skirmish-ai/HANDOFF.md)
+- [Coverage and deferred follow-ups](../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/coverage-status.md)
 
 The executable scenario manifest is `tools/ai/fixtures/skirmish-v1.json`. Documentation does not substitute for green runtime evidence.

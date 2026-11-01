@@ -1,10 +1,16 @@
 # Runtime E2E and pre-merge policy
 
-## Required merge gate
+## Current execution policy
 
-Skirmish AI runtime acceptance must be executable in CI before a change merges to `develop`/`main`; it must not exist only as a one-time agent run. The required Playwright matrix should be sharded by stable scenario group while preserving one isolated game per variant. Derive shard membership from manifest support status; workflow YAML must not duplicate a hand-written scenario list.
+Automatic extended AI CI jobs and tag triggers are commented out by user request. Local core/scout regression
+profiles remain available; the dedicated workflow retains manual dispatch when default-branch registration permits it.
+Do not make PR readiness, multiplayer certification, difficulty calibration or an unchanged complete matrix sweep a
+prerequisite for this single-player iteration. [Coverage and follow-ups](coverage-status.md) records the retained evidence.
 
-The pre-merge gate must include every supported runtime-required manifest row. Missing fixtures, zero decisions, zero ticks, a missing terminal result, provenance mismatch or browser/runtime failure fails the gate. Unsupported future capabilities remain visible in the report and require an explicit reason.
+The matrix supports manifest-derived shards for explicitly requested coverage. Keep one isolated game per variant;
+workflow YAML must not duplicate scenario lists. A requested run must fail on missing fixtures, zero decisions/ticks,
+missing required outcomes, source/fixture mismatch or browser/runtime failure. Registration is not passing evidence.
+Unsupported content remains visible with an explicit reason.
 For a victory row, an authoritative AI-player `win` is required; loss, tie, quit or a completed intermediate mode goal
 cannot substitute for victory. A terminal world may stop early only after all selected victory assertions and scheduled
 events are complete. The currently authored terminal-stop helper does not yet cover nonterminal focused success cases.
@@ -15,18 +21,13 @@ with no ID-specific assertion cannot count as coverage. The compact report lists
 nonzero. This contract is authored but awaits the final validation gate; existing generic test titles may need explicit
 scenario names then.
 
-Recommended CI tiers:
+Local iteration uses focused owner tests followed by affected native cases when behavior changes. The established
+core and scout profiles are periodic opt-in regression packs, each bounded to 30 minutes. A complete matrix or
+additional stress seeds requires a separately requested scope. Difficulty calibration is cancelled. Multiplayer and
+additional save/load certification are deferred to #819 and #823.
 
-| Tier               | Trigger                                  | Coverage                                                                 |
-| ------------------ | ---------------------------------------- | ------------------------------------------------------------------------ |
-| Focused            | AI pull-request iteration                | Changed unit/integration tests and affected runtime groups               |
-| Required pre-merge | Merge queue or explicit release workflow | All supported runtime rows, all pure rows, coverage/provenance checks    |
-| Extended           | Scheduled/manual                         | Additional seeds, stress variants, long soaks and difficulty calibration |
-
-The pull-request workflow now derives one runtime shard per manifest group/fixture and refuses to produce a required
-matrix while a supported row has no executable recipe. It skips draft PRs; making the PR ready for review enables the
-gate. At present the gate is intentionally red because core runtime rows remain unmapped. The four island-only runtime
-rows `DOMAIN-03`, `DOMAIN-04`, `H-29`, and `SEQ-05` are explicitly visible as `deferred_content` for optional #822.
+The island-only runtime rows `DOMAIN-03`, `DOMAIN-04`, `H-29`, and `SEQ-05` remain visible as optional
+`deferred_content` under #822.
 The first three still require pure contracts; `SEQ-05` requires runtime evidence when an island map ships. Do not
 remove those rows from the manifest or mistake this CI wiring for passing coverage.
 
@@ -93,9 +94,9 @@ own oracle only and reports `diagnostic_passed` or `diagnostic_failed`; it canno
 determinism group or full matrix coverage. The repair reducer rejects diagnostic reports as coverage. Use its
 `rerunScenario` command for full proof after a repair, or `rerunVariant` to isolate one failure first. Shared text is
 not proof of shared cause; confirm the
-earliest causal owner before editing. Rerun affected shards after a repair batch. Establish final required matrix
-evidence after all repairs, tuning, optimization and legacy removal; reuse a complete passing sweep only while its
-relevant source/workload inputs still match. Never drop a required row or weaken its oracle to clear a cluster.
+earliest causal owner before editing. Rerun affected shards after a repair batch; reuse retained evidence only while
+its relevant source/workload inputs still match. A local diagnostic pass cannot recertify an entire family. Never
+drop a requested row or weaken its oracle to clear a cluster.
 
 ## Authoritative focused worlds
 
@@ -234,9 +235,8 @@ ticks or the amount of gameplay work. Record both tick count and wall time.
   result, and report why any increase over the current 12,000-tick SEQ request ceiling is necessary. A longer match
   must not substitute for missing focused coverage or make a losing AI appear to pass.
 - Cover representative factions/sides and seeds 1–5 on authored maps in extended runs; expand selected stress cases
-  to seeds 1–20. Difficulty calibration uses 20 paired seeds, up to 100 if uncertainty remains material. At least
-  three 60-minute-simulation soaks cover large armies, depleted resources, effects and lifecycle recovery in the
-  scheduled/manual tier, not every PR. Freeze holdout seeds and thresholds before release evaluation.
+  to seeds 1–20 only when explicitly requested. Difficulty paired-seed campaigns and calibration soaks are cancelled;
+  retained calibration fixtures do not schedule them automatically.
 
 ## Runtime coverage families
 

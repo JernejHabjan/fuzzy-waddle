@@ -1,6 +1,6 @@
 # Probable Waffle runtime source routes
 
-Start with the responsibility-based [skirmish AI documentation](../../../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/README.md) for architecture, tests and debugging. Unfinished #759 work is isolated in its linked handoff.
+Start with the responsibility-based [skirmish AI documentation](../../../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/README.md) for architecture, tests and debugging. Evidence limits and deferred issues are linked from that index.
 
 All paths in the following table are relative to libs/games/probable-waffle/phaser/src/lib/. Existing entry points, verified 2026-09-09; inspect current implementations before changing behavior.
 
@@ -8,8 +8,8 @@ All paths in the following table are relative to libs/games/probable-waffle/phas
 | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | AI cadence and ownership                            | player/ai-controller/player-ai-controller.agent.ts                                                                                              |
 | Pure planner runtime bridge                         | player/ai-controller/player-ai-controller.ts ; player/ai-controller/observation/ai-observation-pipeline.ts                                      |
-| Fair AI observation projection                      | player/ai-controller/observation/ai-observation-visibility-policy.ts ; ai-observation-actor-projector.ts ; ai-observation-catalog.ts ; ai-observation-map.ts ; ai-observation-context.ts (same directory) |
-| Build-site reachability and deterministic ranking   | player/ai-controller/ai-behavior/base-planner.ts ; player/ai-controller/ai-behavior/map-analyzer.ts                                             |
+| Fair AI observation projection                      | player/ai-controller/observation/ai-observation-visibility-policy.ts ; player/ai-controller/observation/ai-observation-actor-projector.ts ; player/ai-controller/observation/ai-observation-catalog.ts ; player/ai-controller/observation/ai-observation-map.ts ; player/ai-controller/observation/ai-observation-context.ts |
+| Build-site reachability and deterministic ranking   | player/ai-controller/observation/ai-observation-map.ts ; world/services/multiplayer/apply-shared-construction-command.ts                                             |
 | AI order dispatch                                   | player/ai-controller/dispatch-ai-order.ts                                                                                                       |
 | Shared applied orders                               | world/services/multiplayer/command-bus.service.ts ; entity/systems/queue-command.system.ts ; entity/systems/action.system.ts                    |
 | Actor capabilities and faction tech                 | prefabs/definitions/actor-definitions.ts ; prefabs/definitions/prefab-definition.ts ; data/tech-tree/tech-tree.service.ts                       |
@@ -49,9 +49,11 @@ Read adjacent specs and follow imports for the next consumer. For spells, contai
 - Base identity is definition-backed by an owned main structure, never an average of mobile actors. Candidate sites are advisory persisted facts; `SharedCommandApplicationService` owns final footprint, navigation, collision, resource and builder validation.
 - Combat estimates must consume effective component/definition facts from the committed observation. Keep current opponent cooldowns private, filter weapons by actual target domain, and retain accepted damage/heal/effect reservations only through their bounded impact or terminal outcome.
 - In-game AI diagnostics may navigate committed history and saved overlays, but must not call a planner, mutable legacy strategy calculation or live pathfinder to fill a panel row.
-- Pure and legacy planners are alternative command authorities. A tick may run one or the other, never both; keep legacy behavior only as an explicit fallback when the pure brain is unavailable.
+- The pure player planner is the only strategy command authority. Invalid identity/faction configuration fails before
+  scheduling; pawn behavior trees execute native orders independently and are not the retired player planner.
 - Actor indexes can temporarily contain destroyed, cross-scene or incompletely initialized objects. Filter for a stable numeric actor id and the owning scene before deterministic sorting or component projection.
 - Project catalog capabilities from definition components. Select workers, transports and combat variants by capability; exact prefab names and human-readable labels are not stable contracts.
 - A browser console without `error` events is insufficient AI evidence: accelerated-match smoke must also inspect game log entries such as `Error stepping AI controller`, planner tick progress and accepted production/build-order transitions.
 
-For unfinished #759 work, read only `docs/ai/759-skirmish-ai/HANDOFF.md`. Keep generic skills free of issue-specific tuning constants and model assignments.
+For evidence and deferred work, use the AI documentation index and the selected GitHub issue. Keep generic skills
+free of session history, tuning constants and model assignments.

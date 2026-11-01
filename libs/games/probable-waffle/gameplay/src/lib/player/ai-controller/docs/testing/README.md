@@ -481,8 +481,7 @@ observation -> demand/mission -> intent/claim -> command application -> outcome 
 
 The [generated scenario catalog](scenario-catalog.md) joins every manifest ID to its requirement, registered pure fixture,
 ID-referencing specs, and real-game recipe/map/checkpoint data. It reports wiring, not passing evidence. Edit the
-linked requirement and fixture sources, then regenerate with `node tools/ai/generate-skirmish-test-catalog.mjs --write`; the non-draft PR
-and `develop` CI jobs check that the catalog stays synchronized. Existing browser recipes still use changing product
+linked requirement and fixture sources, then regenerate with `node tools/ai/generate-skirmish-test-catalog.mjs --write`; the catalog can be checked locally. Automatic extended AI CI is currently disabled. Existing browser recipes still use changing product
 maps; [frozen test maps](test-map-contract.md) and their migration remain implementation work under #816. Until that
 migration is done, do not describe a changing-map run as a stable reference-map regression.
 
@@ -491,7 +490,7 @@ IDs, variant/run counts, preset coverage, maximum tick and migration flags. It r
 launching the game. Flags are an inventory, not proof of a failing test or an excuse to drop a required row.
 
 The current catalog contains 121 named cases before variants. Registered pure fixtures still require complete semantic
-and native acceptance where declared; see [the handoff](../../../../../../../../../../docs/ai/759-skirmish-ai/HANDOFF.md).
+and native acceptance where declared; see [coverage and follow-ups](coverage-status.md).
 
 Detailed requirements are split by concern:
 
@@ -627,9 +626,10 @@ persisted difficulty, accepted proposal/command quota consistency and a real app
 Invalid configuration is covered at the actual controller/factory boundary: there is no invalid lobby option to select.
 This is registration, not difficulty calibration, quota saturation or D-03 hidden-state fairness certification.
 
-### Frozen difficulty calibration registration
+### Optional frozen difficulty calibration tooling
 
-D-06 uses tools/ai/run-difficulty-calibration.mjs through the matrix's dedicated dispatch, after core rows pass.
+Difficulty calibration was cancelled on 2026-11-01 (#817); D-06 is not a current delivery requirement.
+Retained experimental tooling uses tools/ai/run-difficulty-calibration.mjs through dedicated matrix dispatch when explicitly requested.
 The six native fixture descriptors expand difficulty-calibration-v1.json; they are not six physical matches.
 The frozen workload covers both maps/factions, five existing fixed Normal openings, both sides and three policies,
 20 initial seed clusters with up to80 reserved extension seeds,5 isolated holdout seeds and3 full72000-tick soaks.
@@ -655,9 +655,9 @@ The scout profile is one family execution; diagnostic variant successes cannot r
 enable regression by itself. Direct `ai:regression` explicitly requests execution regardless of the hook flag.
 CLI `--profile` overrides the profile environment variable; invalid profile names fail.
 
-PR/develop CI uses the same selector and reads the repository variables RUN_AI_REGRESSION and
-AI_REGRESSION_PROFILE. Manual AI Regression Pack dispatch has an enable checkbox and profile choice.
-Before default-branch registration, explicitly push `ai-regression/scout/<unique-name>` at the desired
-commit for scout coverage, or another `ai-regression/<unique-name>` tag for core. Ordinary pushes do not
-activate this dedicated workflow. Runtime checkouts hydrate LFS assets. Summaries and native reports
-are retained as artifacts; a skipped, failed or timed-out family is not certification.
+Automatic AI regression/matrix jobs in PR/develop CI and the dedicated workflow's tag trigger are commented out
+by user request. Setting repository variables or pushing an `ai-regression/*` tag does not enable these jobs.
+The dedicated AI Regression Pack retains manual dispatch (once the workflow is registered on the default branch),
+with its enable checkbox and core/scout profile choice. Runtime checkouts hydrate LFS assets.
+Local commands and the strict E2E opt-in remain available. Retained remote runs predate this CI disablement.
+Do not re-enable automatic execution as part of unrelated AI work. See [coverage and follow-ups](coverage-status.md).

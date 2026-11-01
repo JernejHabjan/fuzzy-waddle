@@ -25,8 +25,7 @@ Pure preparation and selection run synchronously inside the same simulation-tick
 owned resources/supply and delivered-income sampling, then calls `AiObservationPipeline.refreshNow`; a failed capture
 cannot dispatch using the retained older observation. Awaiting even a resolved promise here can let a render frame's
 remaining fixed ticks advance before selection, separating the consumed input from its native safety/authority facts.
-Bounded access products remain pending when unavailable. Legacy enemy-route and targeting waits belong only to the
-behavior-tree fallback's preparation path.
+Bounded access products remain pending when unavailable. The observation adapter performs no legacy enemy-route or targeting waits.
 
 `AiBrainStateV1` owns persistent goals, knowledge, demand, reservations, bases, squads, transports, fortifications, recovery, scheduling and deterministic identity state. Every persisted deadline uses simulation ticks. Canonical serialization sorts set-like data while preserving intentionally ordered data such as RNG state.
 
@@ -45,7 +44,7 @@ The Phaser bridge converts accepted intents to the same command path used by oth
 
 ## Required invariants
 
-- A tick has one command authority. Pure and legacy controllers never both issue orders.
+- A tick has one command authority: the pure planner dispatches through the shared command bus.
 - Identical observation, prior state, configuration and seed produce identical ordered decisions.
 - Accepted-but-not-yet-observed work is counted once through stable effect identity.
 - Missing, late or duplicate outcomes cannot cause duplicate payment or world effects.
@@ -53,9 +52,41 @@ The Phaser bridge converts accepted intents to the same command path used by oth
 - Destroyed, cross-scene or incompletely initialized actors are excluded from observations.
 - Terminal match state stops new strategic intents and releases controller lifecycle resources.
 
-Configured skirmishes use the pure brain. The runtime currently retains a legacy behavior-tree fallback only when player
-identity or faction resolution fails; this is a transitional compatibility path, not a second strategy layer. Its
-evidence-backed removal is tracked by [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820).
+## Controller ownership and compatibility
+
+Configured skirmishes use only the pure brain. Invalid/missing player identity, unsupported faction or invalid
+profile configuration throws before observation services, subscriptions or scheduling are installed. A missing pure
+brain cannot invoke another strategy engine. Host demotion fences planning and dispatch without rewriting saved
+campaign AI policy.
+
+`PlayerAiControllerAgent` is an observation/income adapter. It owns no behavior-tree actions or command managers.
+The controller disposes confirmed-income sampling at shutdown; the observation pipeline owns its scene-bound queries.
+The pawn behavior trees still execute native unit orders and are independent of the removed player strategy tree.
+
+The supported responsibilities of the retired player tree are owned by the production brain's registered managers:
+
+| Responsibility | Pure owner |
+| --- | --- |
+| Opening, labor, supply, useful production | AiMacroManager and AiResourceServiceManager |
+| Placement and expansion | AiBaseManager, shared construction validation |
+| Fortification and staffing | AiFortificationManager |
+| Scouting, defense, attack, regroup, concession | AiSkirmishManager |
+| Compatible targeting, focus, retreat, support | AiTacticsManager |
+| Counters and research | AiAdaptationManager |
+| Causal repair and recovery | AiRecoveryManager and macro construction recovery |
+| Transport and handoff | AiTransportManager |
+
+The old direct flanking heuristic is retired; it is not a separately certified pure-planner feature. Objective/route
+selection, domain missions and tactical targeting provide current maneuver behavior without reintroducing direct
+pawn mutation.
+
+`AIBehaviorTreeStateData` / `aiBehaviorTreeState` retain their existing wire names for save and host-checkpoint
+compatibility. `PlayerAiBlackboard` remains a data/owned-world compatibility projection used by shared production
+validation and existing saves; it does not choose or dispatch strategy. The data-only `MapAnalysis` shape remains
+for that projection. No legacy map planner, targeting, production, research or scouting manager is instantiated.
+Blackboard-only saves migrate one way through `migrateAiBrainState`, using current-world identity and treating the
+old opening as completed. Versioned brain state retains checked canonical migration; unknown future schemas fail.
+Save/load and real-peer certification limits are recorded in [coverage and follow-ups](../testing/coverage-status.md).
 
 ## Source anchors
 

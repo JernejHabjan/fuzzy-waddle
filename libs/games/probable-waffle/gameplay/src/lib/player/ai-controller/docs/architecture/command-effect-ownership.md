@@ -1,6 +1,6 @@
 # Shared command and effect ownership
 
-This inventory maps shared command/application responsibilities. Runtime validation status and unfinished coverage belong in the [#759 handoff](../../../../../../../../../../docs/ai/759-skirmish-ai/HANDOFF.md), not in this architecture document.
+This inventory maps shared command/application responsibilities. Runtime validation status and unfinished certification are recorded in [coverage and follow-ups](../testing/coverage-status.md).
 
 ## One authority and lifecycle
 

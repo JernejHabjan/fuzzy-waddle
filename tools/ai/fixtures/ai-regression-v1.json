@@ -147,6 +147,6 @@
     "unsupported": "Manifest marks this runtime content unsupported or deferred; do not fabricate a native case.",
     "multiplayer": "Peer/multiplayer evidence is outside this single-player pack and remains in its existing CI job.",
     "calibration": "D-06 expensive difficulty comparison is explicitly outside this goal.",
-    "boundedSelection": "Not selected for this approximately 22.5-minute core pack; existing evidence stays in CURRENT-EVIDENCE. Add only after duration and provenance review."
+    "boundedSelection": "Not selected for this approximately 22.5-minute core pack; retained evidence is documented in the AI testing coverage-status.md. Add only after duration and provenance review."
   }
 }

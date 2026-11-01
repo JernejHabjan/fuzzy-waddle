@@ -7,12 +7,11 @@ description: Implement, diagnose or validate the Probable Waffle skirmish AI, de
 
 ## Load the minimum state
 
-1. Read the [AI documentation index](../../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/README.md). For unfinished #759 work, read only [HANDOFF.md](../../../../docs/ai/759-skirmish-ai/HANDOFF.md).
-   When a #759 subissue has a linked cold-start plan, read that plan instead of reconstructing its scope from the parent handoff.
-   The #824 repository-wide efficiency/tooling gate and #825 current-content domain/transport foundation are complete.
-   A generic “continue” request resumes the handoff's current unfinished step, then the next dependency-ready package.
-   Read only its selected plan/scenario/evidence sections; never load the archive or full historical ledger by default. Optional
-   island-map issue #822 is not a core dependency or merge gate.
+1. Read the [AI documentation index](../../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/README.md).
+   Read [coverage and follow-ups](../../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/coverage-status.md)
+   when evidence status or unfinished work matters. GitHub issues contain self-contained follow-up acceptance; there is
+   no active #759 handoff queue. Multiplayer and extended save/load certification are deferred; difficulty calibration
+   is cancelled. Automatic AI CI jobs/tag triggers are disabled until explicitly requested otherwise.
 2. Read only the named manifest rows/fixtures implicated by the task. Use the [RTS source index](../fuzzy-waddle-phaser/references/rts-source-index.md) once, then navigate exact symbols and adjacent specs.
    If a JetBrains semantic tool is available, probe it once with a known symbol and use it for bounded symbol/call
    lookup; otherwise use narrow `rg` in the indexed owner. Do not repeat repository-wide searches after ownership is known.
@@ -23,12 +22,11 @@ description: Implement, diagnose or validate the Probable Waffle skirmish AI, de
 - Keep an internal acceptance list keyed by scenario ID and invariant. Repair the first causal disagreement: observation -> demand/mission -> intent/claim -> shared application -> outcome -> cleanup.
 - Batch related focused Jest specs and independent TypeScript/build checks. Run only one accelerated Phaser/Playwright match process at a time; group compatible runtime IDs with `--scenarios` so the browser starts once.
   Before expensive matches, finish the affected lifecycle review and controls in [runtime triage](references/runtime-triage.md), steps 4–5.
-- When execution is authorized, run `pnpm agent:doctor` and `pnpm agent:context -- --issue <number>` first for
-  unfinished #759 work. During an explicit no-validation sweep, use the handoff and indexed source directly; do not
-  run these commands merely because this skill lists them. Use
-  `agent:verify`, `agent:triage`, `agent:metrics`, `agent:process`, and manifest-backed `agent:scenario` only through
-  their documented contracts; do not manually rebuild their bounded output from chat history. #816 owns supported-row
-  classification and CI sharding, so do not manufacture a scenario list in workflow YAML.
+- Use the generic `agent:doctor`, `agent:verify`, `agent:triage`, `agent:metrics`, `agent:process` and manifest-backed
+  `agent:scenario` tools through their documented contracts when relevant and authorized. `agent:context --issue`
+  requires an existing local issue plan; GitHub-only follow-ups use the issue body and durable source docs directly.
+  Do not recreate retired local plans just to satisfy context lookup. Derive CI selection from manifests, never a
+  hand-written scenario list in workflow YAML.
 - Before expanding #816 browser fixtures, inspect `pnpm ai:skirmish:catalog -- --inventory` for one-line-per-recipe
   setup/repetition/tick flags; do not dump every fixture or treat inventory flags as execution evidence.
 - Summarize the newest matrix artifact with `pnpm ai:skirmish:report -- --details`, or a named artifact with
@@ -43,6 +41,7 @@ description: Implement, diagnose or validate the Probable Waffle skirmish AI, de
 - A dispatch, debug label or authored fixture is not outcome evidence. Preserve fixture/source/seed digests and fail closed when a required runtime or pinned-baseline path is absent.
 - Do not weaken a liveness, authority, fairness or useful-effect oracle to make a run pass. A balance threshold may change only with recorded workload evidence and a fresh affected run.
 - Same-type units, producers and deposits are legal when dated demand/throughput/service value requires them. Suppress fulfilled causal commitments and duplicate side effects, not object-name repetition.
-- When a #759 issue closes, migrate proven AI behavior/testing/debugging guidance beside the controller, update its GitHub links, and retire its resolved follow-up plan. Remove the #759-specific routing from this skill when the parent roadmap closes.
+- Keep proven behavior/testing/debugging guidance beside the controller and unresolved acceptance in GitHub issues.
+  Retire completed temporary plans after updating backlinks; do not accumulate session ledgers.
 
 For stable commands and evidence layers, read the [testing guide](../../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/README.md). When a runtime row fails, read [runtime triage](references/runtime-triage.md).

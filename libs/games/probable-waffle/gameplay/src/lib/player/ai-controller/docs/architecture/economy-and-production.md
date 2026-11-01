@@ -24,8 +24,9 @@ The Phaser economy manager samples confirmed native harvest/drop-off credits eve
 smooths delivered units per second; the observation converts that rate to units per minute. Starting balances, setup
 grants, purchases and refunds do not count as gathering income. The receipt notification is part of normal gameplay,
 independent of optional diagnostics, and is emitted only after the native player balance actually increases. Scene
-shutdown removes the listener. Restore clears this derived sample window and old net-stockpile estimates; it neither
-credits saved cargo nor changes cash. Resumed cargo counts when its actual native delivery completes.
+shutdown removes the listener. Current saves preserve the confirmed-delivery sample window; legacy or invalid sampling
+resets unsafe net-stockpile estimates. Restore neither credits saved cargo nor changes cash. Resumed cargo counts
+when its actual native delivery completes.
 
 Owned observations expose both exact cargo amount (including zero after its type clears) and whether native resource
 work is awaiting completion. An empty pack during extraction is busy labor. Native extraction/return calls share one
@@ -44,12 +45,6 @@ Native source/drain selection belongs to the order that requested it. After an a
 probe, replacement, cancellation, changed type/target, worker death or inactive scene discards the result before
 retargeting or admitting extraction. This protects newer delivery and player orders from late recovery work. Native
 extraction or delivery already admitted retains its existing transfer semantics; a discarded lookup is not income.
-The legacy logistics rebalancer selects only unloaded workers, rechecks their assignment after source lookup and
-counts a reassignment only when native admission succeeds. Refusal does not start its successful-rebalance cooldown.
-After delivery empties a pack, a destroyed remembered source triggers fresh selection. If no live source remains,
-the pawn finishes the return through normal Stop/order/queue/movement cleanup instead of repeatedly depositing zero.
-Loaded workers retain delivery ownership, and a late selection cannot stop a replacement order.
-
 Field labor remains committed while its farmer returns food to any compatible drop-off, including a main building.
 Known cargo identifies food returns; when cargo identity is unavailable, a catalog-defined food-capable destination
 conservatively defers new Field staffing until gathering resumes. A known non-food delivery does not block staffing.

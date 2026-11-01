@@ -88,7 +88,7 @@ Each leg retains its own continuous world and brain. Multiplayer save/load is no
 
 Fixed disturbance timing must preserve the scenario's declared feasibility. For losses modeled by an opponent, use deterministic legal attacks; for lifecycle faults, use labeled test transport seams. Report damage and assets removed. A fixture that destroys every recovery route cannot demand normal recovery and then fault the AI for obeying defeat rules.
 
-For core SEQ-01/02/03/04/07 start with 20–30 simulated-minute bounds, derive milestone sub-deadlines from actual costs/routes, and allow early victory. Transport/fortification/lifecycle sequences get explicit workload-derived bounds. Release validation includes three 60-minute soaks from these sequences with sustained legal adversarial events; avoid extending a match by disabling victory or spawning hidden reinforcements unless that variant is explicitly a non-victory stress test.
+For core SEQ-01/02/03/04/07 start with 20–30 simulated-minute bounds, derive milestone sub-deadlines from actual costs/routes, and allow early victory. Transport/fortification/lifecycle sequences get explicit workload-derived bounds. Extended lifecycle/stress soaks require explicit scheduling; the difficulty calibration campaign is cancelled. Avoid extending a match by disabling victory or spawning hidden reinforcements unless that variant is explicitly a non-victory stress test.
 
 ## Stronger final acceptance and evidence discipline
 

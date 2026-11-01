@@ -1,0 +1,98 @@
+# AI coverage and follow-ups
+
+## Delivery scope
+
+The current single-player iteration covers purposeful economy/production, both-faction victory and recovery,
+placement/expansion/walls, command/resource ownership, scouting and strategic decision controls. The legacy player
+strategy tree is retired. This does not certify every registered scenario, real-peer multiplayer, complete save/load
+continuation, exact replay determinism or difficulty ordering.
+
+`tools/ai/fixtures/skirmish-v1.json` and `tools/ai/shared/native-scenario-bindings.json` own scenario registration. The regression
+selection is `tools/ai/fixtures/ai-regression-v1.json`; use `pnpm ai:regression -- --list` or the scout profile's
+`--list` for current variants/repetitions/exclusions. A registered recipe is authored coverage, not execution evidence.
+Keep proposal selection, arbitration admission, native application and useful physical effect distinct.
+
+## Retained evidence
+
+These results identify tested historical source/fixtures. They are not blanket certification of later revisions.
+Raw local reports may live only in ignored `tmp/`; remote artifacts have normal retention limits. Preserve relevant
+source/fixture identity when using a report and rerun only the affected invariant when later changes invalidate it.
+
+| Coverage | Evidence and limits |
+| --- | --- |
+| Core periodic regression | Seven selected land cases passed locally in 25m27s and remotely in [run 41249184852](https://github.com/JernejHabjan/fuzzy-waddle/actions/runs/41249184852) at d6ddd363a. Includes PLACE-03 completion for both factions, WALL-01 Skaduwee terrain/no-value pair, H-13 Skaduwee new identity and SEQ-01 victory for both factions. This is selected diagnostic coverage, not all-family certification. |
+| SCOUT-02 periodic regression | Complete both-faction family and hidden-position/health/queue pairs passed in [run 41284467090](https://github.com/JernejHabjan/fuzzy-waddle/actions/runs/41284467090), following profile integration at e9789ce05. Separate from the core profile. |
+| SCOUT-02 original family | Report 1793446488003-passed: 10/10 variants, 1,200 decisions, 24,010 ticks, 23m10s; fixture fnv1a32:c1a463c0 and source digest fnv1a32:b02a039e. Physical investigation, confidence aging and hidden-state fairness controls pass. |
+| Placement/recovery | PLACE-03 both-faction layout/concurrency/completion/loss; completion reports 1793328176798 and 1793328339115, loss 1793328568541. H-11 reports 1793316324413/1793316467854 and builder-loss control at 76bec1347. |
+| Walls/expansion | WALL-01 useful-effect reports 1793320599420/1793327749131, no-value control 1793321331730. Expansion withdrawal 1793329609190/1793329761479 and combat-resolved 1793329279497/1793329456393; fixture fnv1a32:48f86832 at c31e56b1dc91. |
+| Ownership | Retained H-06/07/H-10 controls; H-13 Skaduwee report 1793300480186. Tivara 1793300103293 required an evaluator correction; that correction is not a fresh native pass. |
+| Victory/recovery | SEQ-01 reports 1793395964724/1793396116011 establish both-faction wins. SEQ-02 Tivara 1793396298669 wins; Skaduwee 1793395560564 recovery was established by temporal re-evaluation, not a fresh run. Source 74c05b455084 plus fnv1a32:1cdae123; fixture fnv1a32:5406a5d4. |
+| Justified air | DOMAIN-05 report 1793447721151-passed: six native exposed-value, observed anti-air and no-value branches. |
+| Harassment | RAID-01 report 1793453795782-passed: 8/8 both-faction targets/controls, 960 decisions, 19,208 ticks, 17m21s; fixture fnv1a32:164d5d1c, source fnv1a32:4542cb24. |
+| Upgrade timing | TECH-01 report 1793446778377-passed: Tivara small/mass controls defer or complete the useful upgrade once; source fnv1a32:62b2edfa. |
+| Composition adaptation | STRAT-05 full family 1793454820881-failed had one over-narrow evaluator predicate. Focused correction and selected replay 1793455109552-diagnostic_passed support the response; they do not recertify the full family. |
+| Save/next match | H-31 reports 1793402499466/1793402579687 establish exact restoration/first input and initial continuing work; later physical observations diverge. They predate the restored-hit fix at 90e8d711a. H-32 includes Skaduwee next-match report 1793333000870. Further continuation coverage belongs to #823. |
+
+The last detailed pre-retirement evidence ledger is retained in Git at b20459766. Its historical counts and run
+instructions are not current policy. Local scout-profile retries stopped with ENOSPC before assertions; the complete
+remote scout run supplies the retained family evidence. No new native match is implied by documentation cleanup.
+
+## Strategic decision controls
+
+Paths below are relative to the gameplay AI-controller directory. Inspect their positive and negative controls before
+adding another fixture. Native limits are in the table above.
+
+| Decision | Focused source |
+| --- | --- |
+| Start useful scouting | planning/ai-scouting-admission.spec.ts, ai-scout-search-questions.spec.ts, ai-skirmish-offense.spec.ts |
+| Investigate stale intelligence | planning/ai-adaptation-manager.spec.ts, ai-tactics-scouting.spec.ts; Phaser observation memory/coverage specs |
+| Justify air production | planning/ai-adaptation-manager.spec.ts, ai-adaptation-scenarios.spec.ts |
+| Harass and withdraw | planning/ai-skirmish-offense.spec.ts and RAID-01/02 fixtures |
+| Time upgrades | planning/ai-adaptation-manager.spec.ts TECH-01/02 |
+| Adapt composition/strategy | planning/ai-adaptation-scenarios.spec.ts and offense controls |
+
+## Independently resumable work
+
+Issues contain source anchors, acceptance, constraints and known evidence. They do not require a handoff or chat history.
+
+- [#819: multiplayer E2E](https://github.com/JernejHabjan/fuzzy-waddle/issues/819): real peers, reconnect, host transfer,
+  stale commands, exact-once effects and repeated-match cleanup. Deferred from single-player delivery.
+- [#823: save/load E2E](https://github.com/JernejHabjan/fuzzy-waddle/issues/823): active paid commitments, combat,
+  scouting, native continuation and cleanup. Exact full replay parity is outside that issue.
+- [#821: source structure](https://github.com/JernejHabjan/fuzzy-waddle/issues/821): remaining naming/size debt;
+  persisted identifiers require compatibility-safe migration.
+- [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) and
+  [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816): broader manifest/evidence work remains explicit;
+  existing selected passes must not be advertised as a complete matrix.
+- [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) and
+  [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829): review existing strategy/economy implementation and
+  evidence against their acceptance before proposing further changes; do not restart old implementation plans.
+- [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828): profile only a concrete measured slowdown.
+- [#822](https://github.com/JernejHabjan/fuzzy-waddle/issues/822): optional island content/transport-required worlds.
+  No shipped flying-container capability or synthetic fixture establishes native air transport.
+
+Difficulty calibration was cancelled in [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817). Existing
+configuration/fairness tests remain; D-06 comparisons, difficulty-order campaigns and calibration soaks are not queued.
+
+## Execution policy
+
+Automatic AI regression/matrix jobs and tag triggers are commented out. Manual dispatch remains available when the
+dedicated workflow is registered on the default branch. Local `pnpm ai:regression` and its scout profile remain usable;
+the strict `RUN_AI_REGRESSION=true` E2E hook is documented in [testing commands](README.md#periodic-regression-profiles).
+Repository variables and tags alone cannot activate commented jobs. Do not re-enable them without a new request.
+
+Use focused causal checks before affected native confirmation. Keep one local native runner and each invocation at
+or below 30 minutes. Retain valid evidence and avoid unchanged full-family reruns. Missing or infrastructure-only
+results are not gameplay passes. Draft PR #814 is not made ready or merged by this cleanup.
+
+## Retirement verification
+
+The legacy removal at `7e905de1e` was checked with eight focused Phaser suites (39 tests), six gameplay suites (65 tests),
+seven regression-selector tests, the Phaser and portal-e2e owning TypeScript compilers, and Phaser project lint
+(zero errors; existing warnings remain). Skill route/schema and changed-document link checks pass.
+These checks cover pure-only authority, invalid startup configuration, current-tick observation/cadence, host fencing,
+income sampler disposal, canonical/legacy migration and representative pure macro/strategy/tactics responsibilities.
+No new native match, real-peer session or full-tail save/load certification was run for retirement; the historical
+native evidence above retains its source limits. Broader lifecycle proofs remain in the explicitly deferred issues.
+Separate omission and closure audits cover deleted-code consumers, shared validators/save compatibility, documentation
+backlinks and publication scope. No saved/wire schema or pawn order-execution tree is removed.
