@@ -2,17 +2,18 @@
 
 ## Current boundary
 
-Most registered Playwright recipes still launch the shipped Ember Enclave and River Crossing maps. They exercise
-real Phaser gameplay, but those maps can change as game content develops. Focused ECO-01/02 resource-service,
-ECO-03 source-saturation and ECO-04 labor recipes are the first authored migrations to the test-owned open-economy
-map; their runtime results are unverified. That map is now
-authored as `MapAiOpenEconomy.scene`, `MapAiOpenEconomy.ts` and `ai_open_economy.json`, with a frozen asset digest in
-`tools/probable-waffle/skirmish/ai/testing/fixtures/maps/frozen-skirmish-test-map-topology.json`. It has two owned spawns, neutral Tree6 wood/stone/minerals and flat grass tiles;
-food still comes from normal faction construction. Ordinary map browsing and matchmaking exclude it; the explicit
-local runtime-test lobby can select it. Its static contract test is authored but unrun, and no runtime topology,
-resource access, placement or map-start proof exists yet. The [scenario catalog](./scenario-catalog.md) still correctly
-labels the registered product-map recipes. Migrate them only with legal preset and independent outcome review. Natural
-playtests on the latest shipped maps remain a separate compatibility signal.
+Test-owned open-economy, bridge-crossing and three-spawn multiplayer maps are committed. Their scenes, tilemaps and
+asset packs are pinned in `tools/probable-waffle/skirmish/ai/testing/fixtures/maps/frozen-skirmish-test-map-topology.json`.
+SHA-256 hashes use UTF-8 text with CRLF normalized to LF, matching Git's stored representation; changed JSON content
+still fails. Static topology contracts check the pinned files, legal spawn structure, resources and absence of
+inherited campaign actors. A separate regression verifies line-ending parity and rejects changed content.
+
+`MapAiOpenEconomy` has two owned spawns, neutral Tree6 wood/stone/minerals and flat grass tiles; food comes from normal
+faction construction. Ordinary map browsing and matchmaking exclude test maps; the explicit local runtime-test lobby
+can select them. Some recipes still use mutable shipped maps. The manifest and [scenario catalog](./scenario-catalog.md)
+identify each actual selection; [coverage status](./coverage-status.md) records executed outcomes and their limits.
+Static contracts alone do not prove physical path, placement or transport outcomes. Natural playtests on the latest
+shipped maps remain a separate compatibility signal.
 
 ## Target map set
 
@@ -23,10 +24,9 @@ playtests on the latest shipped maps remain a separate compatibility signal.
 | Fortified approach | Legal wall/stair/tower surfaces, a deliberate friendly opening and alternate attack approaches | Placement, rampart defense, breach, withdrawal and friendly clearance |
 | Island crossing | A genuinely unreachable-by-land objective, usable water route and landing sites | Optional #822 transport-required runtime cases; not a #759 merge dependency |
 
-Build these incrementally, not as one prerequisite bundle. Freeze the smallest open-economy map first and migrate
-economy/production cases that need it. Add the bridge map when land-route, combat or continuous-match cases need it.
-Add the fortified map when wall/rampart cases are ready to author. Each map gets its own topology contract and can
-support stable CI cases without waiting for the later maps. Island crossing remains optional #822 content.
+Reuse the existing open-economy and bridge maps. Author a fortified map only when a specific wall/rampart invariant
+needs topology that existing worlds cannot provide. Each new map needs its own frozen topology contract and legal
+preset/outcome review. Island crossing remains optional #822 content.
 
 The bridge map can begin as an editor-authored copy of River Crossing with unrelated scene objects removed. Copy its
 tilemap and relevant navigation/tileset metadata into test-owned assets too; referencing the live product tilemap would

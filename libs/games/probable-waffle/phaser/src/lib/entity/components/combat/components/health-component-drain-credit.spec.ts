@@ -81,7 +81,7 @@ jest.mock("../../building/building-destruction-effect", () => ({
 // Native health/drain/journal path with controlled simulation wait and emitResource adapter; no real-match proof.
 describe("native health mutation during drain wait", () => {
   it.each(["normal", "granted", "none"] as const)(
-    "keeps %s native credit/full return across gatherer damage/death",
+    "credits living gatherers and fences dead carriers under %s economy",
     async (economy) => {
       for (const mutation of ["damage", "kill", "silent"] as const) {
         jest.clearAllMocks();
@@ -111,11 +111,11 @@ describe("native health mutation during drain wait", () => {
         const actor = new Phaser.GameObjects.GameObject(scene, "gatherer"),
           destroyed = jest.spyOn(actor, "destroy");
         const health = new HealthComponent(actor, { maxHealth: 100 });
-        jest
-          .mocked(getActorComponent)
-          .mockImplementation((_actor, token) =>
-            token === OwnerComponent ? ({ getOwner: () => 2 } as never) : undefined
-          );
+        jest.mocked(getActorComponent).mockImplementation((candidate, token) => {
+          if (token === OwnerComponent) return { getOwner: () => 2 } as never;
+          if (candidate === actor && token === HealthComponent) return health as never;
+          return undefined;
+        });
         jest.mocked(getPlayer).mockReturnValue(player);
         const changes = new Subject<{
           property: "resource.added";
@@ -168,7 +168,18 @@ describe("native health mutation during drain wait", () => {
         }
         if (!settle) throw new Error("drain_wait_missing");
         settle();
-        expect(await pending).toBe(3);
+        expect(await pending).toBe(mutation === "damage" ? 3 : 0);
+        if (mutation !== "damage") {
+          expect(returned).not.toHaveBeenCalled();
+          expect(emitResource).not.toHaveBeenCalled();
+          expect(player.getResources().wood).toBe(200);
+          expect(records.some((event) => event.kind === "resource_credit")).toBe(false);
+          expect(facts.map((fact) => fact.kind)).toEqual(["recipient_resources_installed"]);
+          expect(coverage.read().lost).toBe(true);
+          release();
+          journal.dispose();
+          continue;
+        }
         expect(returned).toHaveBeenCalledWith([ResourceType.Wood, 3, actor]);
         expect(player.getResources().wood).toBe(economy === "normal" ? 203 : 200);
         expect(records.at(-1)).toMatchObject({

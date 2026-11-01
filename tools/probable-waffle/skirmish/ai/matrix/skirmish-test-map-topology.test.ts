@@ -13,10 +13,23 @@ const contract = JSON.parse(
 );
 
 function frozenJson(path, expectedDigest) {
-  const content = readFileSync(resolve(root, path));
-  assert.equal(createHash("sha256").update(content).digest("hex"), expectedDigest, `${path} changed intentionally?`);
-  return JSON.parse(content.toString("utf8"));
+  return parseFrozenJson(readFileSync(resolve(root, path), "utf8"), expectedDigest, path);
 }
+
+/** JSON text hashes use Git's LF representation, independently of local checkout line endings. */
+function parseFrozenJson(text: string, expectedDigest: string, path: string) {
+  const content = text.replaceAll("\r\n", "\n");
+  assert.equal(createHash("sha256").update(content).digest("hex"), expectedDigest, `${path} changed intentionally?`);
+  return JSON.parse(content);
+}
+
+test("frozen JSON hashes ignore checkout line endings while rejecting changed content", () => {
+  const text = '{\n  "frozen": true\n}\n';
+  const digest = createHash("sha256").update(text).digest("hex");
+  assert.deepEqual(parseFrozenJson(text, digest, "fixture"), { frozen: true });
+  assert.deepEqual(parseFrozenJson(text.replaceAll("\n", "\r\n"), digest, "fixture"), { frozen: true });
+  assert.throws(() => parseFrozenJson(text.replace("true", "false"), digest, "fixture"), /changed intentionally/);
+});
 
 test("continuous victory uses frozen bridge terrain without inherited campaign armies", () => {
   const map = contract.maps.find((candidate) => candidate.id === "ai-bridge-crossing");
