@@ -1,6 +1,6 @@
 # RTS AI — evidence ledger
 
-Updated 2026-10-31. T/S1/S2/S3 and SCOUT-02 are closed. Current-source local regression pack passed; remote tag-triggered run 41249184852 passed all seven runtime jobs.
+Updated 2026-11-01. T/S1/S2/S3, R1–R4 and SCOUT-02 are closed. Local and remote core packs plus remote scout profile passed.
 Prior detailed ledger is preserved at commit 90e8d711a. Read it narrowly when provenance is needed.
 
 ## New acceptance
@@ -11,9 +11,9 @@ Prior detailed ledger is preserved at commit 90e8d711a. Read it narrowly when pr
 | S1 | complete | Six behavior classes mapped below; proposal/admission/application/useful effect are recorded separately with exact current specs and native limits. |
 | S2 | complete | Positive/negative controls verified across all six strategic behaviors; AI gameplay preflight passes 105 suites/630 tests. |
 | S3 | complete | Native evidence covers scouting/intel (SCOUT-02), air response (DOMAIN-05), upgrade timing (TECH-01), harassment (RAID-01), and counterforce adaptation (STRAT-05). Details below. |
-| R1–R4 | in_progress | Shared manifest command, strict boolean E2E hook and opt-in CI workflow are authored and locally exercised. Current-source pack passed: seven selected cases, all accounted for, 1,527,416ms (25m27s), within the 30m cap. Remote run 41249184852 passed all seven jobs on d6ddd363a. |
+| R1–R4 | complete | Shared manifest command, strict boolean E2E hook and opt-in CI workflow are locally exercised. Core pack: seven cases in 1,527,416ms (25m27s), within cap. Remote core run 41249184852 and full scout run 41284467090 passed on their recorded source revisions. |
 | F1–F3 | complete | Current full family `1793446488003-passed`: 10/10 variants, 1,200 decisions, 24,010 ticks, 23m10s; fixture `fnv1a32:c1a463c0`, dirty source `fnv1a32:b02a039e`. Native F1/F2/F3 pass; full SCOUT-02 is integrated as the separate scout profile and passed remotely in run 41284467090. Core intentionally remains seven bounded land cases. |
-| C1–C3 | in_progress | Both owning TSC checks, focused changed-owner tests, changed-file lint (0 errors) and current-source regression pack pass. Task-owned commits are pushed. Full project lint still reports errors in unchanged legacy files; final audits are recorded. Remote run 41249184852 passed all seven jobs; the dispatch blocker is resolved. |
+| C1–C3 | complete | Owning TypeScript checks, Phaser/portal-e2e project lint, focused tests, local core pack and remote core/scout packs pass. Commits are pushed; audits are below. Local scout retry was prevented by ENOSPC before a behavior result; remote complete-family evidence passes. |
 
 ## Retained single-player evidence
 
@@ -95,7 +95,7 @@ Coverage terms stay separate: a proposal is not an admitted order; an admitted o
 ## Closure audit
 
 - Omission audit: T, all six S behaviours, R1–R4, SCOUT-02 F1–F3 and C1–C3 each have a ledger row above. Unsupported peer obligations, multiplayer, ESCORT/naval, D-06 calibration, optional islands and advanced replay remain excluded explicitly below.
-- Final closure: task-owned changes are pushed in `795d2f8b2` and `1854f11c4`; local focused/native checks and the selected pack pass. Current-source S3 includes a diagnostic STRAT-05 replay, not full-family recertification. Full-project lint errors are limited to unchanged legacy files. Remote C2 execution passed through explicit tag run 41249184852. Remote scout-profile integration passes in run 41284467090. Local scout attempts stopped on ENOSPC before an assertion; core local/remote and scout remote evidence pass.
+- Final closure: task-owned changes are pushed through `fc154fbb1`; local focused checks and core pack pass, and remote core (`41249184852`) plus full SCOUT-02 (`41284467090`) pass. TSC and owning Phaser/portal-e2e lint pass. S3 includes a diagnostic STRAT-05 replay after the evaluator correction, not full-family recertification. Local scout attempts stopped on ENOSPC before an assertion; remote full-family evidence is authoritative. PR #814 remains draft.
 
 ## Known limitations and exclusions
 

@@ -21,7 +21,7 @@ REMAINING-WORK owns acceptance; CURRENT-EVIDENCE owns provenance and limitations
 ## Closure
 
 - Full SCOUT-02 family is integrated and passed remotely across both factions, including all paired hidden-state comparisons. Seven-case core pack and SCOUT-02 are separate profiles, each capped at 30 minutes.
-- Local core pack, remote core pack, remote scout pack, TSC, Phaser/portal-e2e lint, focused tests and omission/final audits pass. Local scout execution is unavailable on the full temp volume (8 KB free); remote run is authoritative for this profile.
+- Local core pack, remote core pack, remote scout pack, TSC, Phaser/portal-e2e project lint, focused tests and omission/final audits pass. Local scout attempts stopped with ENOSPC before an assertion; the full remote family run is authoritative for scout coverage.
 - PR #814 remains draft. Manual dispatch requires default registration; explicit profile tags provide remote execution.
 - No multiplayer, calibration or replay-determinism certification.
 
