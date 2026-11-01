@@ -124,7 +124,8 @@ No new size exemption is introduced. Converted tooling has its own enforced sour
 tests and world-authoring functions are split by responsibility.
 The closure review rechecked 74 strategy/economy tests, the shared player-default test and 66 tooling/rule contracts.
 It repaired a Unicode parser-offset defect in source-size enforcement and package-script separator handling in the
-catalog CLI. Owning lint, tooling type checking, catalog consistency and skill/link checks pass.
+catalog CLI. Catalog links use forward slashes and spec discovery has explicit ordering so Windows and Linux produce
+the same checked-in document. Owning lint, tooling type checking, catalog consistency and skill/link checks pass.
 No native match, real-peer session or full-tail save/load certification was rerun for these mechanical changes;
 retained native evidence above keeps its original source/fixture limitations. The omission/closure audits cover
 consumers, wire/save validation, deleted-code references, documentation links and publication scope.
