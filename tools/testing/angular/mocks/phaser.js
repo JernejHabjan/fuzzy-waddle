@@ -193,6 +193,9 @@ const Types = {
 };
 
 const Scenes = {
+  RUNNING: 5,
+  PAUSED: 6,
+  SHUTDOWN: 8,
   Events: {
     SHUTDOWN: "shutdown",
     DESTROY: "destroy"
