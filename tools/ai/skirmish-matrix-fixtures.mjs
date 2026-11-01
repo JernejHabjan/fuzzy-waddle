@@ -6,7 +6,7 @@ import { validProductionCompositionPair } from "./skirmish-runtime-production-co
 import { validProductionContracts } from "./skirmish-runtime-production-contract-fixture.mjs";
 import { validEconomyContracts, validResourceRecoveryContract } from "./skirmish-runtime-economy-fixture.mjs";
 import { readNativeRecipeDraft } from "./native-recipe-drafts.mjs";
-import { validExpansionPressureRecipe } from "./skirmish-runtime-expansion-pressure-fixture.mjs";
+import { validExpansionPressureRecipe } from "./shared/skirmish-runtime-expansion-pressure-fixture.mjs";
 import { validNativeScenarioFixture } from "./skirmish-runtime-native-scenario-fixture.mjs";
 
 export function validateManifest(value, fixtureDirectory) {

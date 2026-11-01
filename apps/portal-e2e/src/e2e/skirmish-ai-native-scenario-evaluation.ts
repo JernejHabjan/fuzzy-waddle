@@ -15,7 +15,7 @@ import { evaluateNativeDebugComparison } from "./skirmish-ai-native-debug-compar
 import { evaluateNativeOptionalRelease } from "./skirmish-ai-native-optional-release";
 import { evaluateNativeDebugParity } from "./skirmish-ai-native-debug-parity-evaluation";
 import { evaluateNativeIslandEstablishment } from "./skirmish-ai-native-island-establishment";
-import bindings from "../../../../tools/ai/native-scenario-bindings.json";
+import bindings from "@fuzzy-waddle/skirmish-ai-tools/native-scenario-bindings.json";
 import type { RuntimeAssertionV1 } from "./skirmish-ai-runtime-assertion";
 import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
 import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";

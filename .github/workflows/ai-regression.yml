@@ -5,11 +5,19 @@ on:
     tags: ["ai-regression/**"]
   workflow_dispatch:
     inputs:
+      profile:
+        description: Regression coverage
+        type: choice
+        options: [core, scout]
+        default: core
       run_ai_regression:
         description: Run the bounded single-player native AI regression pack
         type: boolean
         required: true
         default: false
+
+env:
+  AI_REGRESSION_PROFILE: ${{ inputs.profile || (startsWith(github.ref, 'refs/tags/ai-regression/scout/') && 'scout' || 'core') }}
 
 permissions:
   contents: read

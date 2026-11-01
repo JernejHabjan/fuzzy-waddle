@@ -104,3 +104,13 @@ test("extended E2E hook is strict, opt-in and runs once only after ordinary E2E 
 function readJson(name) {
   return JSON.parse(readFileSync(join(fixtures, name), "utf8"));
 }
+
+ test("scout profile preserves a full family instead of diagnostic shards", () => {
+  const selection = resolveAiRegressionSelection(pack, manifest, readFixture, "scout");
+  assert.equal(selection.selected.length, 1);
+  assert.equal(selection.selected[0].family, true);
+  assert.equal(selection.selected[0].variants.length, 10);
+  assert.equal(selection.runtimeBudgetMs, 1800000);
+  assert.throws(() => resolveAiRegressionSelection(pack, manifest, readFixture, "unknown"), /invalid_ai_regression_profile/);
+  assert.throws(() => resolveAiRegressionSelection(pack, manifest, () => ({}), "scout"), /scout_fixture_missing/);
+ });

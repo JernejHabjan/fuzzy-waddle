@@ -12,10 +12,10 @@ const args = parseArgs(process.argv.slice(2));
 const fixtureDirectory = join(root, "tools/ai/fixtures");
 const pack = readJson(join(fixtureDirectory, "ai-regression-v1.json"));
 const manifest = readJson(join(fixtureDirectory, "skirmish-v1.json"));
-const selection = resolveAiRegressionSelection(pack, manifest, (reference) => readJson(join(fixtureDirectory, reference)));
+const selection = resolveAiRegressionSelection(pack, manifest, (reference) => readJson(join(fixtureDirectory, reference)), args.profile);
 
 if (args.help) {
-  process.stdout.write("Usage: pnpm ai:regression [--list | --case CASE_ID]\n");
+  process.stdout.write("Usage: pnpm ai:regression [--profile core|scout] [--list | --case CASE_ID]\n");
   process.exit(0);
 }
 if (args.list) {
@@ -27,7 +27,7 @@ if (args.list) {
   process.stdout.write(`${JSON.stringify({
     packId: selection.packId,
     preflight: pack.preflight,
-    selectedCases: selection.selected.map(({ caseId, scenarioId, variantId, evidence }) => ({ caseId, scenarioId, variantId, evidence })),
+    selectedCases: selection.selected.map(({ caseId, scenarioId, variantId, evidence, variants }) => ({ caseId, scenarioId, variantId, evidence, variants })),
     estimatedWallMs: selection.estimatedWallMs,
     runtimeEstimateMinutes: Number((selection.estimatedWallMs / 60000).toFixed(1)),
     runtimeBudgetMinutes: selection.runtimeBudgetMs / 60000,
@@ -67,21 +67,26 @@ await executeAiRegressionCases({
   cases,
   budgetMs: Math.max(1, selection.runtimeBudgetMs - (Date.now() - startedAt)),
   runCase: (entry, remainingMs) => {
-    process.stdout.write(`[${completed + 1}/${cases.length}] ${entry.caseId} — ${entry.covers}\n`);
+    process.stdout.write(`[${completed + 1}/${cases.length}] ${entry.caseId} â€” ${entry.covers}\n`);
     return runVariant(entry, remainingMs);
   },
   onResult: (result) => {
     completed++;
     results.push(result);
-    process.stdout.write(`  ${result.status}${result.wallMs === undefined ? "" : ` (${(result.wallMs / 1000).toFixed(0)}s)`}${result.artifact ? ` — ${result.artifact}` : ""}\n`);
+    process.stdout.write(`  ${result.status}${result.wallMs === undefined ? "" : ` (${(result.wallMs / 1000).toFixed(0)}s)`}${result.artifact ? ` â€” ${result.artifact}` : ""}\n`);
     writeSummary();
   }
 });
 
-const failed = results.some((result) => result.status !== "diagnostic_passed");
+const failed = results.some((result) => !successful(result));
 writeSummary();
 process.stdout.write(`AI regression ${failed ? "FAILED" : "PASSED"}; results: ${summaryPath}\n`);
 if (failed) process.exitCode = 1;
+
+function successful(result) {
+  const entry = cases.find((candidate) => candidate.caseId === result.caseId);
+  return result.status === (entry?.family ? "passed" : "diagnostic_passed");
+}
 
 function writeSummary() {
   const summary = {
@@ -89,14 +94,14 @@ function writeSummary() {
     packId: selection.packId,
     status: preflight && preflight.status !== "passed" ? "failed"
       : results.length !== cases.length ? "in_progress"
-      : results.every((result) => result.status === "diagnostic_passed") ? "passed" : "failed",
+      : results.every((result) => successful(result)) ? "passed" : "failed",
     sourceRevision,
     startedAt: startedAtIso,
     elapsedMs: Date.now() - startedAt,
     runtimeBudgetMs: selection.runtimeBudgetMs,
     estimatedWallMs: cases.reduce((sum, entry) => sum + entry.estimatedWallMs, 0),
-    selectedCases: cases.map(({ caseId, scenarioId, variantId, repetition, evidence, covers }) =>
-      ({ caseId, scenarioId, variantId, repetition, evidence, covers })),
+    selectedCases: cases.map(({ caseId, scenarioId, variantId, repetition, evidence, covers, family, variants }) =>
+      ({ caseId, scenarioId, variantId, repetition, evidence, covers, family, variants })),
     omissions: selection.omissions,
     preflight,
     results
@@ -129,7 +134,7 @@ function runPreflight(remainingMs) {
 async function runVariant(entry, remainingMs) {
   const started = Date.now();
   const childArgs = [join(root, "tools/ai/run-skirmish-matrix.mjs"), "--scenario", entry.scenarioId,
-    "--mode", "runtime", "--variant", entry.variantId, "--repetition", String(entry.repetition)];
+    "--mode", "runtime", ...(entry.family ? [] : ["--variant", entry.variantId, "--repetition", String(entry.repetition)])];
   const child = spawn(process.execPath, childArgs, {
     cwd: root,
     stdio: ["ignore", "pipe", "pipe"],
@@ -186,12 +191,13 @@ function readJson(path, required = true) {
 }
 
 function parseArgs(values) {
-  const parsed = { list: false, help: false, caseId: null };
+  const parsed = { list: false, help: false, caseId: null, profile: process.env.AI_REGRESSION_PROFILE ?? "core" };
   if (values[0] === "--") values = values.slice(1);
   for (let index = 0; index < values.length; index++) {
     const value = values[index];
     if (value === "--list" || value === "--dry-run") parsed.list = true;
     else if (value === "--help" || value === "-h") parsed.help = true;
+    else if (value === "--profile" && values[index + 1]) parsed.profile = values[++index];
     else if (value === "--case" && values[index + 1]) parsed.caseId = values[++index];
     else throw new Error(`unknown_ai_regression_argument:${value}`);
   }

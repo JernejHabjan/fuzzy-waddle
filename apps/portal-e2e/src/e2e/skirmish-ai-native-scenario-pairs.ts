@@ -1,4 +1,4 @@
-import bindings from "../../../../tools/ai/native-scenario-bindings.json";
+import bindings from "@fuzzy-waddle/skirmish-ai-tools/native-scenario-bindings.json";
 import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
 import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
 import { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";

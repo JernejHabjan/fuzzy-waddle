@@ -19,7 +19,7 @@ import { nativeLifecycleWorld } from "./native-lifecycle-worlds.mjs";
 import { nativeSaveWorld } from "./native-save-worlds.mjs";
 import { nativeLifecycleSequenceWorld } from "./native-lifecycle-sequence-worlds.mjs";
 
-export const nativeScenarioBindings = JSON.parse(readFileSync(new URL("./native-scenario-bindings.json", import.meta.url), "utf8"));
+export const nativeScenarioBindings = JSON.parse(readFileSync(new URL("./shared/native-scenario-bindings.json", import.meta.url), "utf8"));
 const expansion = JSON.parse(readFileSync(new URL("./fixtures/expansion-pressure-runtime.json", import.meta.url), "utf8"));
 
 /** Missing faction capabilities are explicit branch bindings, not fictional casters or silently skipped test assertions. */

@@ -9,6 +9,7 @@ permissions:
   contents: read
 
 env:
+  AI_REGRESSION_PROFILE: ${{ vars.AI_REGRESSION_PROFILE || 'core' }}
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
 
 jobs:

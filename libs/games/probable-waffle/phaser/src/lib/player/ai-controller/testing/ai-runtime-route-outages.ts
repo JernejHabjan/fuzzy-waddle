@@ -91,7 +91,10 @@ export function installAiRuntimeRouteOutages(
         try {
           Promise.resolve(call()).then((path) => resolve(live(actor) ? path : null),
             (error: unknown) => live(actor) ? reject(error) : resolve(null));
-        } catch (error) { live(actor) ? reject(error) : resolve(null); }
+        } catch (error) {
+          if (live(actor)) reject(error);
+          else resolve(null);
+        }
       } });
     });
   };

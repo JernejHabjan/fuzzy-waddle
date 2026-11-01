@@ -1,6 +1,6 @@
 import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
 import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
-import { validExpansionPressureRecipe } from "../../../../tools/ai/skirmish-runtime-expansion-pressure-fixture.mjs";
+import { validExpansionPressureRecipe } from "@fuzzy-waddle/skirmish-ai-tools/skirmish-runtime-expansion-pressure-fixture.mjs";
 import { evaluateExpansionWorld } from "./skirmish-ai-expansion-world-evaluation";
 import { expansionHomeDanger } from "./skirmish-ai-expansion-home-danger";
 import { expansionServiceFailures } from "./skirmish-ai-expansion-service-evaluation";

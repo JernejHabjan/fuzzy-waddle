@@ -1,6 +1,6 @@
 const safeCaseId = /^[a-z0-9][a-z0-9-]{0,99}$/;
 
-export function resolveAiRegressionSelection(pack, manifest, readFixture) {
+export function resolveAiRegressionSelection(pack, manifest, readFixture, profile = "core") {
   if (pack?.schemaVersion !== 1 || pack.packId !== "ai-regression-v1" || !Array.isArray(pack.selection) ||
       pack.selection.length === 0 || !Number.isSafeInteger(pack.runtimeBudgetMs) || pack.runtimeBudgetMs < 1 ||
       !pack.omissionPolicy || typeof pack.omissionPolicy !== "object" ||
@@ -10,6 +10,24 @@ export function resolveAiRegressionSelection(pack, manifest, readFixture) {
   if (manifest?.schemaVersion !== 1 || !Array.isArray(manifest.rows) || manifest.rows.length !== manifest.requiredCaseCount)
     throw new Error("invalid_ai_regression_manifest");
 
+  if (!["core", "scout"].includes(profile)) throw new Error(`invalid_ai_regression_profile:${profile}`);
+  if (profile === "scout") {
+    const row = manifest.rows.find((entry) => entry.id === "SCOUT-02");
+    if (!row?.fixture || !row.drivers?.includes("runtime")) throw new Error("scout_runtime_missing");
+    const fixture = readFixture(row.fixture);
+    const variants = fixture?.recipe?.variants;
+    if (!variants?.length || !fixture.scenarioIds?.includes("SCOUT-02")) throw new Error("scout_fixture_missing");
+    return {
+      packId: `${pack.packId}-scout`, runtimeBudgetMs: pack.runtimeBudgetMs, estimatedWallMs: 1390000,
+      selected: [{ caseId: "scout-02-family", scenarioId: "SCOUT-02", family: true,
+        estimatedWallMs: 1390000, fixtureReference: row.fixture,
+        variants: variants.map(({ id, repetitions }) => ({ variantId: id, repetitions: repetitions ?? 1 })),
+        covers: "Complete SCOUT-02 family with cross-variant fairness comparisons" }],
+      omissions: manifest.rows.filter((entry) => entry.id !== "SCOUT-02").map((entry) => ({
+        scenarioId: entry.id, reason: "Outside the explicit scout profile; use core for the bounded land regression pack."
+      }))
+    };
+  }
   const rows = new Map(manifest.rows.map((row) => [row.id, row]));
   if (rows.size !== manifest.rows.length) throw new Error("duplicate_ai_regression_manifest_rows");
   const selected = [];

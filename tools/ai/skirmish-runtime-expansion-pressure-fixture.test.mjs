@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
-import { validExpansionPressureRecipe } from "./skirmish-runtime-expansion-pressure-fixture.mjs";
+import { validExpansionPressureRecipe } from "./shared/skirmish-runtime-expansion-pressure-fixture.mjs";
 import { validateManifest } from "./skirmish-matrix-fixtures.mjs";
 import { fileURLToPath } from "node:url";
 
