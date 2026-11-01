@@ -1,8 +1,8 @@
 name: AI Regression Pack
 
 on:
-  push:
-    tags: ["ai-regression/**"]
+  # push:
+  #   tags: ["ai-regression/**"]
   workflow_dispatch:
     inputs:
       profile:
