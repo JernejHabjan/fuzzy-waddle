@@ -1,4 +1,4 @@
-import { Component, inject, type OnInit } from "@angular/core";
+import { Component, inject, type OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { DatePipe } from "@angular/common";
 import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 import { environment } from "@fuzzy-waddle/environments/environment";
@@ -27,6 +27,7 @@ export type DisplayGame = {
   templateUrl: "./home-page.component.html",
   styleUrls: ["./home-page.component.scss"],
   imports: [ChatFloatComponent, RouterLink, HomePageNavComponent, FaIconComponent, DatePipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: AngularHost.contentFlexFullHeight
 })
 export class HomePageComponent implements OnInit {
@@ -40,7 +41,7 @@ export class HomePageComponent implements OnInit {
   protected isBanned = false;
   protected bannedUntil: string | null = null;
   protected moderationNote: string | null = null;
-  private readonly currentlyFeaturedGame = "dungeon-crawler";
+  private readonly currentlyFeaturedGame = "trump-defense";
   displayGames: DisplayGame[] = [
     {
       name: "Ashes of the Ancients",
@@ -71,6 +72,13 @@ export class HomePageComponent implements OnInit {
       bannerImage: "dungeon-crawler-banner.webp",
       route: "dungeon-crawler",
       inDevelopment: true
+    },
+    {
+      name: "Trump Defense 2016",
+      description: "Build towers and raise the wall to prevent invaders from entering the country",
+      image: "trump-defense.webp",
+      bannerImage: "trump-defense.webp",
+      route: "trump-defense"
     }
   ];
 

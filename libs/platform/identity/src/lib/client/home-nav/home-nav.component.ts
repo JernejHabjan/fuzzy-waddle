@@ -1,4 +1,4 @@
-import { Component, computed, input, signal } from "@angular/core";
+import { Component, computed, input, signal, ChangeDetectionStrategy } from "@angular/core";
 
 import { RouterLink } from "@angular/router";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
@@ -9,6 +9,7 @@ import { NgbCollapse } from "@ng-bootstrap/ng-bootstrap";
   selector: "fuzzy-waddle-home-nav",
   templateUrl: "./home-nav.component.html",
   styleUrls: ["./home-nav.component.scss"],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink, FaIconComponent, NgbCollapse]
 })
 export class HomeNavComponent {

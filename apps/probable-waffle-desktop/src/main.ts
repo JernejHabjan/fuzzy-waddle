@@ -1,6 +1,6 @@
 /// <reference types="@angular/localize" />
 
-import { provideHttpClient, withInterceptors } from "@angular/common/http";
+import { provideHttpClient, withInterceptors, withXhr } from "@angular/common/http";
 import { enableProdMode, importProvidersFrom, provideZoneChangeDetection } from "@angular/core";
 import { bootstrapApplication, BrowserModule } from "@angular/platform-browser";
 import { provideRouter, type Routes, withComponentInputBinding } from "@angular/router";
@@ -36,6 +36,6 @@ bootstrapApplication(AppComponent, {
     ),
     AuthGuard,
     { provide: DESKTOP_AUTH_BRIDGE, useExisting: TauriService },
-    provideHttpClient(withInterceptors([authReadyInterceptor, accessTokenInterceptor]))
+    provideHttpClient(withXhr(), withInterceptors([authReadyInterceptor, accessTokenInterceptor]))
   ]
 }).catch((err) => console.error(err));

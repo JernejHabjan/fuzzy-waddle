@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, type OnDestroy, type OnInit } from "@angular/core";
+import { Component, HostListener, inject, type OnDestroy, type OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
 import { type LittleMuncherGameCreate } from "@fuzzy-waddle/little-muncher-protocol";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
@@ -16,6 +16,7 @@ import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
   templateUrl: "./little-muncher.component.html",
   styleUrls: ["./little-muncher.component.scss"],
   imports: [FaIconComponent, HomeComponent, MainComponent, NgbToast],
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: AngularHost.contentFlexFullHeight
 })
 export class LittleMuncherComponent implements OnInit, OnDestroy {

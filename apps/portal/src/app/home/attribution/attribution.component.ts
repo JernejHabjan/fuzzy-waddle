@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
 import type { OnInit } from "@angular/core";
 import { AsyncPipe } from "@angular/common";
 import { map, Observable } from "rxjs";
@@ -17,6 +17,7 @@ interface GroupedAttribution {
   imports: [HomeNavComponent, AsyncPipe],
   templateUrl: "./attribution.component.html",
   styleUrl: "./attribution.component.scss",
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: AngularHost.contentFlexFullHeight
 })
 export class AttributionComponent implements OnInit {

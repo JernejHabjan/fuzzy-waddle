@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, type OnDestroy, type OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, inject, type OnDestroy, type OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { ProbableWaffleGameInstance, ProbableWaffleUserInfo } from "@fuzzy-waddle/probable-waffle-protocol";
 import { type BaseGameData } from "@fuzzy-waddle/platform-game-host/phaser/game/base-game-data";
 import { ProbableWaffleCommunicatorService } from "../../communicators/probable-waffle-communicator.service";
@@ -17,6 +17,7 @@ import type { Types } from "phaser";
   templateUrl: "./probable-waffle-game.component.html",
   styleUrls: ["./probable-waffle-game.component.scss"],
   imports: [GameContainerComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: AngularHost.contentFlexFullHeight
 })
 export class ProbableWaffleGameComponent implements OnInit, OnDestroy {

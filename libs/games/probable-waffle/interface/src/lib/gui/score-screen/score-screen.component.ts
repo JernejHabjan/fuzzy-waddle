@@ -1,4 +1,4 @@
-import { Component, computed, HostListener, inject, type OnDestroy, type OnInit } from "@angular/core";
+import { Component, computed, HostListener, inject, type OnDestroy, type OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { Subscription } from "rxjs";
 import { ScoreTableComponent } from "./table/score-table.component";
 import { ScoreThroughTimeComponent } from "./chart/score-through-time.component";
@@ -23,6 +23,7 @@ import { Router } from "@angular/router";
 @Component({
   imports: [ScoreTableComponent, ScoreThroughTimeComponent],
   templateUrl: "./score-screen.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ["./score-screen.component.scss"]
 })
 export class ScoreScreenComponent implements OnInit, OnDestroy {

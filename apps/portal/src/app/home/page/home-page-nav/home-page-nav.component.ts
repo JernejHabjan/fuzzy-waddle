@@ -1,4 +1,4 @@
-import { Component, inject, type OnInit } from "@angular/core";
+import { Component, inject, type OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
@@ -13,6 +13,7 @@ import type { CurrentUserProfileDto } from "@fuzzy-waddle/platform-identity";
   selector: "fuzzy-waddle-home-page-nav",
   templateUrl: "./home-page-nav.component.html",
   styleUrls: ["./home-page-nav.component.scss"],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FaIconComponent, HomeNavComponent, RouterLink]
 })
 export class HomePageNavComponent implements OnInit {

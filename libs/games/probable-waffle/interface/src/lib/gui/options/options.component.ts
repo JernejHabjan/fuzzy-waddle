@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, type OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, inject, type OnInit, ChangeDetectionStrategy } from "@angular/core";
 
 import { FormsModule } from "@angular/forms";
 import { RouterLink } from "@angular/router";
@@ -15,6 +15,7 @@ import { isTauri, TauriService } from "@fuzzy-waddle/platform-game-host/angular/
   templateUrl: "./options.component.html",
   styleUrls: ["./options.component.scss"],
   imports: [FormsModule, RouterLink, HomeNavComponent, CenterWrapperComponent, FaIconComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: AngularHost.contentFlexFullHeight
 })
 export class OptionsComponent implements OnInit {

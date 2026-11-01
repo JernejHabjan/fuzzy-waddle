@@ -1,4 +1,4 @@
-import { Component, inject, type OnDestroy, type OnInit } from "@angular/core";
+import { Component, inject, type OnDestroy, type OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { ProbableWaffleCommunicatorService } from "../../../communicators/probable-waffle-communicator.service";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
@@ -11,6 +11,7 @@ import { ChatComponent } from "@fuzzy-waddle/platform-chat/client/components/cha
   selector: "probable-waffle-lobby-chat",
   imports: [ChatComponent],
   templateUrl: "./lobby-chat.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ["./lobby-chat.component.scss"]
 })
 export class LobbyChatComponent implements OnInit, OnDestroy {

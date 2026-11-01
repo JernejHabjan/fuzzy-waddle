@@ -1,4 +1,4 @@
-import { Component, inject, type OnDestroy, type OnInit } from "@angular/core";
+import { Component, inject, type OnDestroy, type OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { ProbableWaffleCommunicatorService } from "../../communicators/probable-waffle-communicator.service";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
@@ -13,6 +13,7 @@ import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
   imports: [ChatComponent],
   templateUrl: "./in-game-chat.component.html",
   styleUrls: ["./in-game-chat.component.scss"],
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: AngularHost.contentFlexFullHeight
 })
 export class InGameChatComponent implements OnInit, OnDestroy {

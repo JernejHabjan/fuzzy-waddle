@@ -24,7 +24,6 @@ export type Database = {
             | null
           game_key: string
           id: string
-          image_key: string | null
           is_active: boolean
           is_secret: boolean
           metadata: Json
@@ -40,7 +39,6 @@ export type Database = {
             | null
           game_key: string
           id: string
-          image_key?: string | null
           is_active?: boolean
           is_secret?: boolean
           metadata?: Json
@@ -56,7 +54,6 @@ export type Database = {
             | null
           game_key?: string
           id?: string
-          image_key?: string | null
           is_active?: boolean
           is_secret?: boolean
           metadata?: Json

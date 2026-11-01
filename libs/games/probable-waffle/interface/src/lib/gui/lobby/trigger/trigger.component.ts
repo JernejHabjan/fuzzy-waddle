@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 import { ToastService } from "@fuzzy-waddle/platform-game-host/angular/services/toast.service";
@@ -16,6 +16,7 @@ import { FaIconComponent } from "@fortawesome/angular-fontawesome";
   selector: "probable-waffle-trigger",
   templateUrl: "./trigger.component.html",
   imports: [FaIconComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ["./trigger.component.scss"]
 })
 export class TriggerComponent {
