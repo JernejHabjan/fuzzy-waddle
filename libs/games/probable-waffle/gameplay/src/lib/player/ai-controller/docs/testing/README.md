@@ -43,7 +43,7 @@ may be released at the original readiness threshold; missing indispensable passe
 
 ### Native scenario bindings and bounded lookup
 
-Native bindings use tools/ai/native-scenario-bindings.json for original obligations/branches/ceilings and
+Native bindings use tools/ai/shared/native-scenario-bindings.json for original obligations/branches/ceilings and
 native-scenario-registration.mjs to author ordinary matrix fixtures. Existing world layout/world factories own
 construction/scouting/combat inputs; native-strategic-worlds.mjs, native-domain-worlds.mjs and native-classic-worlds.mjs
 own the remaining mission/domain/classic inputs. native-authority-worlds.mjs owns H-06/H-07/H-10/H-13–15. skirmish-runtime-native-scenario-fixture.mjs refuses source-controlled
@@ -642,3 +642,22 @@ Indistinguishable ordering, incomplete pairs, changed starts and short terminal 
 Per-match artifacts cap128KiB locally; model-facing summaries cap8192 UTF-8 bytes.
 All supported runtime IDs are now registered; the authoring draft catalog has no active cases. Registration does
 not certify typing, compilation, native premises or gameplay. All new calibration/holdout/soak controls remain unrun.
+
+## Periodic regression profiles
+
+`pnpm ai:regression` runs the seven-case core land pack. `pnpm ai:regression -- --profile scout`
+runs the entire SCOUT-02 family, including its cross-variant hidden-state fairness comparisons.
+Use `--list` with either profile to preview coverage. Each invocation has a 30-minute total budget.
+The scout profile is one family execution; diagnostic variant successes cannot replace its pair checks.
+
+`RUN_AI_REGRESSION=true` adds regression after ordinary `pnpm e2e` succeeds. Set
+`AI_REGRESSION_PROFILE=scout` to choose scouting; core is the default. This profile variable does not
+enable regression by itself. Direct `ai:regression` explicitly requests execution regardless of the hook flag.
+CLI `--profile` overrides the profile environment variable; invalid profile names fail.
+
+PR/develop CI uses the same selector and reads the repository variables RUN_AI_REGRESSION and
+AI_REGRESSION_PROFILE. Manual AI Regression Pack dispatch has an enable checkbox and profile choice.
+Before default-branch registration, explicitly push `ai-regression/scout/<unique-name>` at the desired
+commit for scout coverage, or another `ai-regression/<unique-name>` tag for core. Ordinary pushes do not
+activate this dedicated workflow. Runtime checkouts hydrate LFS assets. Summaries and native reports
+are retained as artifacts; a skipped, failed or timed-out family is not certification.

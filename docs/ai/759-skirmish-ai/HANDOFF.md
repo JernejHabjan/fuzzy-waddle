@@ -1,6 +1,6 @@
 # RTS AI — execution handoff
 
-Updated 2026-10-31. Review repaired the CI blocker. Remote run 41249184852 passed all seven core runtime cases.
+Updated 2026-11-01. Scout profile implementation pushed at e9789ce05; remote full-family CI passed. Review repaired the CI blocker. Remote run 41249184852 passed all seven core runtime cases.
 REMAINING-WORK owns acceptance; CURRENT-EVIDENCE owns provenance and limitations.
 
 ## Current state
@@ -12,16 +12,18 @@ REMAINING-WORK owns acceptance; CURRENT-EVIDENCE owns provenance and limitations
 - Native SCOUT-02 full-family and strategic evidence remain recorded in CURRENT-EVIDENCE. No gameplay changes in this review.
 - Local core pack passed 7/7 in 25m27s; both owning compilers and changed-file lint pass. Full project lint retains the documented legacy errors.
 
-## Next execution
+## Live checks
 
-Read the N1-N3 completion packet at the top of REMAINING-WORK.md. It defines the next goal, source anchors, verification and finish criteria. Preparation only; start on go.
+- Local scout profile attempts failed with ENOSPC in the workspace temp volume; no behavior verdict. Free space or redirect runner outputs before retry.
+- Remote scout profile passed: run 41284467090, tag ai-regression/scout/closure-20261101-1.
+- Both owning lint and TypeScript checks pass; 63 runner/fixture tests and nine route-outage tests pass.
 
-## Remaining acceptance
+## Closure
 
-- F3 explicitly requires integrating passing SCOUT-02 variants into R. The core pack omits all SCOUT-02 variants; earlier F1–F3 complete status overstated closure. Native scouting proof is present, periodic regression integration is unfinished.
-- Preserve the core pack budget when adding a separately bounded scout coverage option; do not silently expand the default beyond 30 minutes or substitute individual diagnostic runs for paired fairness comparisons.
-- C2 remote execution blocker is resolved. Manual dispatch still needs default-branch registration, but an explicitly pushed ai-regression/* tag runs the identical workflow now.
-- Keep the goal incomplete until remaining acceptance is verified. No unchanged reassurance match reruns.
+- Full SCOUT-02 family is integrated and passed remotely across both factions, including all paired hidden-state comparisons. Seven-case core pack and SCOUT-02 are separate profiles, each capped at 30 minutes.
+- Local core pack, remote core pack, remote scout pack, TSC, Phaser/portal-e2e lint, focused tests and omission/final audits pass. Local scout execution is unavailable on the full temp volume (8 KB free); remote run is authoritative for this profile.
+- PR #814 remains draft. Manual dispatch requires default registration; explicit profile tags provide remote execution.
+- No multiplayer, calibration or replay-determinism certification.
 
 ## Guardrails
 
