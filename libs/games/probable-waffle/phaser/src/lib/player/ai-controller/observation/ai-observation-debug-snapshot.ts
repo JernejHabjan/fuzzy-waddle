@@ -1,4 +1,4 @@
-import type { AiObservationInformationPolicy } from "./ai-observation-visibility-policy";
+import type { AiObservationInformationPolicy } from "./knowledge/ai-observation-visibility-policy";
 
 /** Read-only diagnostic projection; it never reaches back into the live world. */
 export interface AiObservationDebugSnapshot {

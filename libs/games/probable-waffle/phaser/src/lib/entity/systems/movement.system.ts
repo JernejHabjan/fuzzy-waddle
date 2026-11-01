@@ -15,7 +15,7 @@ import {
 } from "../../data/game-object-helper";
 import { getActorComponent } from "../../data/actor-component";
 import { HealthComponent } from "../components/combat/components/health-component";
-import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
+import { PawnAiController } from "../../prefabs/ai-agents/controller/pawn-ai-controller";
 import { OrderType } from "../../ai/order-type";
 import { OrderData } from "../../ai/OrderData";
 import { FlyingComponent } from "../components/movement/flying-component";

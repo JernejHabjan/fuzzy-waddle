@@ -10,7 +10,7 @@ import { AoeZoneManager } from "../../../entity/systems/aoe-zone-manager";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { IsoHelper } from "../../../world/tilemap/iso-helper";
 import { getPlayerRelation } from "../../../data/player-relation";
-import { AiObservationVisibilityPolicy } from "./ai-observation-visibility-policy";
+import { AiObservationVisibilityPolicy } from "./knowledge/ai-observation-visibility-policy";
 import { knownValue, millisecondsToSimulationTicks } from "./ai-observation-values";
 
 type GameObject = Phaser.GameObjects.GameObject;

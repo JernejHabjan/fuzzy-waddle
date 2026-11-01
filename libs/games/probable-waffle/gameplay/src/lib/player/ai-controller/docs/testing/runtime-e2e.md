@@ -5,7 +5,7 @@
 Automatic extended AI CI jobs and tag triggers are commented out by user request. Local core/scout regression
 profiles remain available; the dedicated workflow retains manual dispatch when default-branch registration permits it.
 Do not make PR readiness, multiplayer certification, difficulty calibration or an unchanged complete matrix sweep a
-prerequisite for this single-player iteration. [Coverage and follow-ups](coverage-status.md) records the retained evidence.
+prerequisite for this single-player iteration. [Coverage and follow-ups](./coverage-status.md) records the retained evidence.
 
 The matrix supports manifest-derived shards for explicitly requested coverage. Keep one isolated game per variant;
 workflow YAML must not duplicate scenario lists. A requested run must fail on missing fixtures, zero decisions/ticks,
@@ -72,7 +72,7 @@ the browser driver also refuses to stop while a scheduled perturbation remains o
 reviewed fixture opts in and the final-gate tests execute, existing recipes still run their authored ceilings.
 
 At the final validation gate, first run the frozen open-economy map preflight with
-`AI_SKIRMISH_MAP_PREFLIGHT=1 pnpm exec playwright test apps/portal-e2e/src/e2e/skirmish-ai-test-map-preflight.spec.ts --config=apps/portal-e2e/playwright.config.ts --workers=1`.
+`AI_SKIRMISH_MAP_PREFLIGHT=1 pnpm exec playwright test apps/portal-e2e/src/e2e/probable-waffle/skirmish/ai/setup/skirmish-ai-test-map-preflight.spec.ts --config=apps/portal-e2e/playwright.config.ts --workers=1`.
 It starts an ordinary test-marked lobby, verifies the active scene and indexed neutral resources, finds open 3×3
 ground patches near both starts, and requests a real ground path between them. It emits one bounded
 `AI_SKIRMISH_MAP_PREFLIGHT` JSON line. This is an infrastructure check, not a scenario result or proof that a

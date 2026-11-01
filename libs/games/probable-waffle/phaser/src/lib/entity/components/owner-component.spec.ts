@@ -1,4 +1,4 @@
-import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
 import Phaser from "phaser";
 import { Subject } from "rxjs";
 import { OwnerComponent } from "./owner-component";
@@ -18,7 +18,7 @@ jest.mock("../../data/player-relation", () => ({ arePlayersAllied: jest.fn() }))
 jest.mock("../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 jest.mock("../../world/services/ActorIndexSystem", () => ({ ActorIndexSystem: class {} }));
 jest.mock("../../world/scenes/GameProbableWaffleScene", () => ({ __esModule: true, default: class {} }));
-jest.mock("../../world/services/lighting/scene-lighting.service", () => ({ SceneLightingService: class {} }));
+jest.mock("../../world/services/lighting/scene-lighting.service.ts", () => ({ SceneLightingService: class {} }));
 jest.mock("../../world/services/lighting/lighting-game-object-meta", () => ({
   markGameObjectAmbientResponsive: jest.fn()
 }));

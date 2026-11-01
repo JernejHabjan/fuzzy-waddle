@@ -10,4 +10,4 @@ export {
   publishAiRuntimeBrowserTestHost,
   readAiRuntimeBrowserTestConfig,
   recordAiRuntimeBrowserInitialState
-} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-config";
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/browser/ai-runtime-browser-test-config";

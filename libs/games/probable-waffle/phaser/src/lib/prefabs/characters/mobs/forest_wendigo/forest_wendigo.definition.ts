@@ -5,7 +5,7 @@ import { weaponDefinitions } from "../../../../entity/components/combat/weapon-d
 import { SpellType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/spell-type";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
-import { AiType } from "../../../ai-agents/ai-type";
+import { AiType } from "../../../ai-agents/controller/ai-type";
 
 export const wendigoDefinition = {
   components: {

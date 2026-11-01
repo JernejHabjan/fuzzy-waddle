@@ -28,7 +28,7 @@ import { AudioSprites } from "../../../sfx/audio-sprites";
 import { UiFeedbackSfx } from "../../../hud/UiFeedbackSfx";
 import { CrossSceneCommunicationService } from "../../../world/services/CrossSceneCommunicationService";
 import { OwnerComponent } from "../../../entity/components/owner-component";
-import { PawnAiController } from "../../ai-agents/pawn-ai-controller";
+import { PawnAiController } from "../../ai-agents/controller/pawn-ai-controller";
 import { PlayerActionsHandler } from "../../../player/human-controller/player-actions-handler";
 import { OrderType } from "../../../ai/order-type";
 import { HealingComponent } from "../../../entity/components/combat/components/healing-component";

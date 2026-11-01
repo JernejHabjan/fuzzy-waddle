@@ -1,5 +1,5 @@
 import { FactionType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiReproBundle } from "../contracts/ai-repro-bundle";
+import type { AiReproBundle } from "../contracts/diagnostics/ai-repro-bundle";
 
 /** Access context for importing a reproduction bundle. */
 export interface AiReproBundleParseOptions {

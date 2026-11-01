@@ -6,7 +6,7 @@ import {
   ResearchType, type SharedQueueSnapshotData
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { createAiProductionPolicyFixture } from
-  "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-production-policy-fixture";
+  "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/production/ai-production-policy-fixture";
 import { aiDeadline } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/contracts/ai-core-types";
 import { GameSaveCodecService } from "./game-save-codec.service";
 

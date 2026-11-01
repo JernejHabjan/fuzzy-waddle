@@ -1,11 +1,11 @@
 import { FactionType, ProbableWaffleAiDifficulty, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainState } from "../brain/create-ai-brain-state";
+import { createAiBrainState } from "../brain/state/create-ai-brain-state";
 import { aiDeadline } from "../contracts/ai-core-types";
-import type { AiBrainState, AiSquadState, AiTransportState } from "../contracts/ai-brain-state";
-import type { AiIntentDecision, AiIntent } from "../contracts/ai-intent";
-import type { AiDemand } from "../contracts/ai-plan-contracts";
+import type { AiBrainState, AiSquadState, AiTransportState } from "../contracts/state/ai-state-contracts";
+import type { AiIntentDecision, AiIntent } from "../contracts/commands/ai-intent";
+import type { AiDemand } from "../contracts/planning/ai-plan-contracts";
 import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
-import { createAiTestObservation, createAiTestOwnedActor, requireAiTestEntry } from "../testing/ai-test-fixtures";
+import { createAiTestObservation, createAiTestOwnedActor, requireAiTestEntry } from "../testing/fixtures/coordination/ai-test-fixtures";
 import { projectAiStrategicIntentSummary } from "./project-ai-strategic-intent-summary";
 
 const observation = createAiTestObservation();

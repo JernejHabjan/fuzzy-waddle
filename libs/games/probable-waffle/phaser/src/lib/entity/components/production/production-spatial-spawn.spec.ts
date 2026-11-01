@@ -12,7 +12,7 @@ import {
   PRODUCTION_SPATIAL_AUTHORITY_EVENT,
   type ProductionSpatialAuthorityEvent
 } from "../../../world/services/multiplayer/production-spatial-authority-event";
-import { productionCaptureItem } from "../../../player/ai-controller/testing/ai-runtime-production-capture-fixtures";
+import { productionCaptureItem } from "../../../player/ai-controller/test-support/production/fixtures/ai-runtime-production-capture-fixtures";
 import { spawnProductionActor } from "./production-spawner";
 
 jest.mock("../../../data/actor-system", () => ({ getActorSystem: jest.fn() }));

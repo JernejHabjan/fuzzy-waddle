@@ -23,7 +23,7 @@ description: Implement, diagnose or validate the Probable Waffle skirmish AI, de
 
 - Keep an internal acceptance list keyed by scenario ID and invariant. Repair the first causal disagreement: observation -> demand/mission -> intent/claim -> shared application -> outcome -> cleanup.
 - Batch related focused Jest specs and independent TypeScript/build checks. Run only one accelerated Phaser/Playwright match process at a time; group compatible runtime IDs with `--scenarios` so the browser starts once.
-  Before expensive matches, finish the affected lifecycle review and controls in [runtime triage](references/runtime-triage.md), steps 4–5.
+  Before expensive matches, finish the affected lifecycle review and controls in [runtime triage](./references/runtime-triage.md), steps 4–5.
 - Use the generic `agent:doctor`, `agent:verify`, `agent:triage`, `agent:metrics`, `agent:process` and manifest-backed
   `agent:scenario` tools through their documented contracts when relevant and authorized. `agent:context --issue`
   requires an existing local issue plan; GitHub-only follow-ups use the issue body and durable source docs directly.
@@ -46,4 +46,4 @@ description: Implement, diagnose or validate the Probable Waffle skirmish AI, de
 - Keep proven behavior/testing/debugging guidance beside the controller and unresolved acceptance in GitHub issues.
   Retire completed temporary plans after updating backlinks; do not accumulate session ledgers.
 
-For stable commands and evidence layers, read the [testing guide](../../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/README.md). When a runtime row fails, read [runtime triage](references/runtime-triage.md).
+For stable commands and evidence layers, read the [testing guide](../../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/README.md). When a runtime row fails, read [runtime triage](./references/runtime-triage.md).

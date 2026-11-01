@@ -1,6 +1,6 @@
 import type Phaser from "phaser";
 import { observeProductionOutput } from "./observe-production-output";
-import { productionCaptureItem } from "../../../player/ai-controller/testing/ai-runtime-production-capture-fixtures";
+import { productionCaptureItem } from "../../../player/ai-controller/test-support/production/fixtures/ai-runtime-production-capture-fixtures";
 
 /** A lost listener diagnostic must never abort the already selected native action. */
 describe("production output observation failure isolation", () => {

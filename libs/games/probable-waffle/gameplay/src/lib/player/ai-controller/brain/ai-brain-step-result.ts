@@ -1,6 +1,6 @@
-import type { AiBrainState } from "../contracts/ai-brain-state";
-import type { AiDebugSnapshot } from "../contracts/ai-debug-snapshot";
-import type { AiIntentDecision, AiIntent } from "../contracts/ai-intent";
+import type { AiBrainState } from "../contracts/state/ai-state-contracts";
+import type { AiDebugSnapshot } from "../contracts/diagnostics/ai-debug-snapshot";
+import type { AiIntentDecision, AiIntent } from "../contracts/commands/ai-intent";
 
 /** Result of one pure decision boundary. */
 export interface AiBrainStepResult {

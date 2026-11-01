@@ -1,5 +1,5 @@
 import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
-import type { PawnAiBlackboard } from "../../prefabs/ai-agents/pawn-ai-blackboard";
+import type { PawnAiBlackboard } from "../../prefabs/ai-agents/controller/pawn-ai-blackboard";
 import { getGameObjectCurrentTile } from "../../data/game-object-helper";
 import type { MovementQueryContext } from "./movement-query-context";
 import type { MovementCompletionEvent } from "./movement-completion-event";

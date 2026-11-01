@@ -1,4 +1,4 @@
-import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
 import Phaser from "phaser";
 import { ProbableWaffleGameInstance } from "@fuzzy-waddle/probable-waffle-protocol";
 import { Subject } from "rxjs";
@@ -8,9 +8,9 @@ import {
   ProbableWafflePlayerState
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { OwnerComponent } from "../owner-component";
-import { AiRuntimeRecipientResourceCapture } from "../../../player/ai-controller/testing/ai-runtime-recipient-resource-capture";
-import { AiRuntimeResourceCoverageCapture } from "../../../player/ai-controller/testing/ai-runtime-resource-coverage-capture";
-import type { AiRuntimeProductionFact } from "../../../player/ai-controller/testing/ai-runtime-production-fact";
+import { AiRuntimeRecipientResourceCapture } from "../../../player/ai-controller/test-support/economy/capture/ai-runtime-recipient-resource-capture";
+import { AiRuntimeResourceCoverageCapture } from "../../../player/ai-controller/test-support/economy/capture/ai-runtime-resource-coverage-capture";
+import type { AiRuntimeProductionFact } from "../../../player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import {
   ResourceType,

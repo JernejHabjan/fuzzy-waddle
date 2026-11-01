@@ -1,10 +1,10 @@
-import type { AiBrainState } from "../contracts/ai-brain-state";
-import type { AiObservation } from "../contracts/ai-observation";
-import type { AiIntentDecision } from "../contracts/ai-intent";
-import type { AiManagerProposal } from "../planning/ai-manager-proposal";
+import type { AiBrainState } from "../contracts/state/ai-state-contracts";
+import type { AiObservation } from "../contracts/observation/ai-observation";
+import type { AiIntentDecision } from "../contracts/commands/ai-intent";
+import type { AiManagerProposal } from "../planning/coordination/ai-manager-proposal";
 import { projectAiDebugSnapshot } from "./project-ai-debug-snapshot";
 import { aiDebugFailureSnapshot } from "./ai-debug-failure-snapshot";
-import { recordAiBoundaryFailure, recoverAiBoundary } from "../brain/ai-optional-boundaries";
+import { recordAiBoundaryFailure, recoverAiBoundary } from "../brain/arbitration/ai-optional-boundaries";
 
 /** Optional diagnostics cannot discard a valid command result. Retries use the same saved cadence as proposers. */
 export function projectAiDebugSafely(

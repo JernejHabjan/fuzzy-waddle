@@ -5,7 +5,7 @@ import { type ProbableWaffleHostMigratedEvent } from "@fuzzy-waddle/probable-waf
 import { getCommunicator } from "../../../data/scene-data";
 import { getSceneService, getSceneSystem } from "../scene-component-helpers";
 import { SnapshotService } from "./snapshot.service";
-import { AiPlayerHandler } from "../../../player/ai-controller/ai-player-handler";
+import { AiPlayerHandler } from "../../../player/ai-controller/commands/ai-player-handler";
 import { createMultiplayerClientLogger } from "../multiplayer/multiplayer-client-logger";
 import { CommandBusService } from "../multiplayer/command-bus.service";
 

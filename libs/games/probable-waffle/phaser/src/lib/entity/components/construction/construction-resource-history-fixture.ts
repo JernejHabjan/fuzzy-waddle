@@ -15,9 +15,9 @@ import { getSceneService } from "../../../world/services/scene-component-helpers
 import { AudioService } from "../../../world/services/audio.service";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
-import { AiRuntimeRecipientResourceCapture } from "../../../player/ai-controller/testing/ai-runtime-recipient-resource-capture";
-import { AiRuntimeResourceCoverageCapture } from "../../../player/ai-controller/testing/ai-runtime-resource-coverage-capture";
-import type { AiRuntimeProductionFact } from "../../../player/ai-controller/testing/ai-runtime-production-fact";
+import { AiRuntimeRecipientResourceCapture } from "../../../player/ai-controller/test-support/economy/capture/ai-runtime-recipient-resource-capture";
+import { AiRuntimeResourceCoverageCapture } from "../../../player/ai-controller/test-support/economy/capture/ai-runtime-resource-coverage-capture";
+import type { AiRuntimeProductionFact } from "../../../player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 
 jest.mock("../combat/components/health-presentation", () => ({ HealthPresentation: class {
@@ -30,7 +30,7 @@ jest.mock("../../../data/actor-data", () => ({ upgradeFromConstructingToFullActo
 jest.mock("../../../data/actor-level-utils", () => ({ getResearchedLevelForActor: () => null }));
 jest.mock("../../../prefabs/definitions/actor-definitions", () => ({ getPwActorDefinition: jest.fn() }));
 jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("../../../world/services/audio.service", () => ({ AudioService: class {} }));
+jest.mock("../../../world/services/audio.service.ts", () => ({ AudioService: class {} }));
 jest.mock("./construction-progress-ui-component", () => ({ ConstructionProgressUiComponent: class {} }));
 jest.mock("./construction-payment", () => ({ startConstructionPayment: jest.fn(), refundConstructionPayment: jest.fn() }));
 

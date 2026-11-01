@@ -1,8 +1,8 @@
-import type { AiBrainState } from "../contracts/ai-brain-state";
-import type { AiDebugSnapshot } from "../contracts/ai-debug-snapshot";
-import type { AiIntentDecision } from "../contracts/ai-intent";
-import type { AiObservation } from "../contracts/ai-observation";
-import type { AiManagerProposal } from "../planning/ai-manager-proposal";
+import type { AiBrainState } from "../contracts/state/ai-state-contracts";
+import type { AiDebugSnapshot } from "../contracts/diagnostics/ai-debug-snapshot";
+import type { AiIntentDecision } from "../contracts/commands/ai-intent";
+import type { AiObservation } from "../contracts/observation/ai-observation";
+import type { AiManagerProposal } from "../planning/coordination/ai-manager-proposal";
 import { projectAiStrategicIntentSummary } from "./project-ai-strategic-intent-summary";
 
 /** Exact recorded answer for a saved subject; absence is explicit and never recomputed from live state. */

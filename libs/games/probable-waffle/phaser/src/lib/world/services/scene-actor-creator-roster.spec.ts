@@ -11,7 +11,7 @@ jest.mock("../../data/load-game", () => ({
     load() {}
   }
 }));
-jest.mock("./multiplayer/actor-id-authority.service", () => ({ ActorIdAuthorityService: class {} }));
+jest.mock("./multiplayer/actor-id-authority.service.ts", () => ({ ActorIdAuthorityService: class {} }));
 jest.mock("../../data/actor-component", () => ({ getActorComponent: () => undefined }));
 
 function fixture(owner?: EditorOwner["owner_id"], playerNumbers = [1, 2]) {

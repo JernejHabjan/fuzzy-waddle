@@ -130,7 +130,7 @@ jobs:
 #         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 #       - name: Select required skirmish shards
 #         id: select
-#         run: node tools/ai/select-ai-regression-shards.mjs
+#         run: node tools/probable-waffle/skirmish/ai/cli/select-ai-regression-shards.ts
 #
   # Runtime matrix also excluded by request.
 #   skirmish-runtime:

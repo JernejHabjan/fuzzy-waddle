@@ -10,7 +10,7 @@ const inspection = {
   runtime: { node: "v24.0.0", packageManager: "pnpm@11.14.0", nxProjectCount: 1 },
   projects: [{ name: "portal", path: "apps/portal/project.json", targets: ["lint"] }],
   indexes: ["source-index.md"],
-  sourceStructure: { baseline: "baseline.json", legacyEntries: 1, changedBaselinedFiles: [] },
+  sourceStructure: { baseline: "baseline/pinned-reference-implementation.json", legacyEntries: 1, changedBaselinedFiles: [] },
   adapters: [
     {
       id: "generic",

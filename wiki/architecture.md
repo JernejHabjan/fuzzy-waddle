@@ -91,7 +91,7 @@ There is no catch-all API interfaces package. Import contracts from their owner:
 
 ## Real-time Communication
 
-Socket.IO carries multiplayer state. The Angular interface owns the browser socket adapter, each game protocol owns its event names and payloads, and the matching server project owns the NestJS gateway. Probable Waffle's detailed design is documented in [AOTA Multiplayer Architecture](aota-multiplayer-architecture.md).
+Socket.IO carries multiplayer state. The Angular interface owns the browser socket adapter, each game protocol owns its event names and payloads, and the matching server project owns the NestJS gateway. Probable Waffle's detailed design is documented in [AOTA Multiplayer Architecture](./aota-multiplayer-architecture.md).
 
 ## Architecture evolution priorities
 

@@ -55,7 +55,7 @@ cp apps/api/.env.example apps/api/.env.local
 | `SUPABASE_URL`         | Local Supabase API URL, usually `http://127.0.0.1:54321`                   |
 | `SUPABASE_SERVICE_KEY` | Local secret key from `supabase status` > `Authentication Keys` > `Secret` |
 
-See the [Supabase setup guide](supabase.md) for local startup, Google OAuth, and hosted project values.
+See the [Supabase setup guide](./supabase.md) for local startup, Google OAuth, and hosted project values.
 
 ## 3. Start the Dev Servers
 

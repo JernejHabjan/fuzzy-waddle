@@ -7,10 +7,10 @@ real Phaser gameplay, but those maps can change as game content develops. Focuse
 ECO-03 source-saturation and ECO-04 labor recipes are the first authored migrations to the test-owned open-economy
 map; their runtime results are unverified. That map is now
 authored as `MapAiOpenEconomy.scene`, `MapAiOpenEconomy.ts` and `ai_open_economy.json`, with a frozen asset digest in
-`tools/ai/fixtures/test-map-topology.json`. It has two owned spawns, neutral Tree6 wood/stone/minerals and flat grass tiles;
+`tools/probable-waffle/skirmish/ai/testing/fixtures/maps/frozen-skirmish-test-map-topology.json`. It has two owned spawns, neutral Tree6 wood/stone/minerals and flat grass tiles;
 food still comes from normal faction construction. Ordinary map browsing and matchmaking exclude it; the explicit
 local runtime-test lobby can select it. Its static contract test is authored but unrun, and no runtime topology,
-resource access, placement or map-start proof exists yet. The [scenario catalog](scenario-catalog.md) still correctly
+resource access, placement or map-start proof exists yet. The [scenario catalog](./scenario-catalog.md) still correctly
 labels the registered product-map recipes. Migrate them only with legal preset and independent outcome review. Natural
 playtests on the latest shipped maps remain a separate compatibility signal.
 

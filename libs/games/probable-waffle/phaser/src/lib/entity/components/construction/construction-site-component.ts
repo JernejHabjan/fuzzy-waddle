@@ -11,7 +11,7 @@ import { ConstructionProgressUiComponent } from "./construction-progress-ui-comp
 import { BuilderComponent } from "./builder-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { ConstructionPresentation } from "./construction-presentation";
-import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
+import { PawnAiController } from "../../../prefabs/ai-agents/controller/pawn-ai-controller";
 // prettier-ignore
 import type { ConstructionSiteDefinition } from
   "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/construction-site-definition";

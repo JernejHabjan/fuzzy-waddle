@@ -6,7 +6,7 @@ import { compactOutput, validateCommandResult } from "./command-contracts.mjs";
 import { findIssuePlan, inspectRepository } from "./repository-inspection.mjs";
 import { executeVerification } from "./verification-execution.mjs";
 import { compareMeasurements } from "./metrics-report.mjs";
-import { selectSkirmishScenarios } from "./skirmish-adapter.mjs";
+import { selectSkirmishScenarios } from "../probable-waffle/skirmish/ai/integration/agent/skirmish-adapter.ts";
 import { selectVerification } from "./verification-selection.mjs";
 import { triageVerification } from "./verification-triage.mjs";
 

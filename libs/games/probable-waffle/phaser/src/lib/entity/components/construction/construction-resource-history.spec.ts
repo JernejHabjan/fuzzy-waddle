@@ -1,4 +1,4 @@
-import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
 import { constructionHistoryFixture } from "./construction-resource-history-fixture";
 import Phaser from "phaser";
 import { ConstructionStateEnum } from "@fuzzy-waddle/probable-waffle-protocol";
@@ -9,8 +9,8 @@ import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definit
 import { onObjectReady } from "../../../data/game-object-helper";
 import { subscribeSceneResourceLoss } from "../../../data/scene-resource-observation";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
-import { AiRuntimeRecipientResourceCapture } from "../../../player/ai-controller/testing/ai-runtime-recipient-resource-capture";
-import { AiRuntimeResourceCoverageCapture } from "../../../player/ai-controller/testing/ai-runtime-resource-coverage-capture";
+import { AiRuntimeRecipientResourceCapture } from "../../../player/ai-controller/test-support/economy/capture/ai-runtime-recipient-resource-capture";
+import { AiRuntimeResourceCoverageCapture } from "../../../player/ai-controller/test-support/economy/capture/ai-runtime-resource-coverage-capture";
 
 const constructionReason = "resource_actor_construction_change",
   healthReason = "resource_actor_health_change";

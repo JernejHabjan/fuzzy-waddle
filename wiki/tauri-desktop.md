@@ -7,7 +7,7 @@ Probable Waffle can be built as a standalone desktop app using [Tauri v2](https:
 | Tool                    | Install                                                                                                                         |
 |-------------------------|---------------------------------------------------------------------------------------------------------------------------------|
 | Rust (stable toolchain) | [rustup.rs](https://rustup.rs/)                                                                                                 |
-| Node.js + pnpm          | As for normal web dev (see [Getting Started](getting-started.md))                                                               |
+| Node.js + pnpm          | As for normal web dev (see [Getting Started](./getting-started.md))                                                               |
 | **Windows**             | [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) + WebView2 (bundled with Windows 10/11) |
 | **macOS**               | Xcode Command Line Tools: `xcode-select --install`                                                                              |
 | **Linux**               | `libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf` (Debian/Ubuntu)                                              |
@@ -30,7 +30,7 @@ Output: `apps/probable-waffle-desktop/src-tauri/target/release/bundle/nsis/Ashes
 
 ## Release Versioning
 
-Desktop releases use the same version as the web app. See [releases.md](releases.md) for the required version bump flow and sync rules before merging into `main`.
+Desktop releases use the same version as the web app. See [releases.md](./releases.md) for the required version bump flow and sync rules before merging into `main`.
 
 ## Features
 
@@ -90,7 +90,7 @@ Tauri's WebView cannot complete a standard browser OAuth redirect, so sign-in us
 
 Using a plain HTML file (not an Angular page) prevents Supabase's `detectSessionInUrl` from accidentally establishing a session in the browser tab instead of the app. The callback forwards only the fields needed to complete authentication; provider credentials and unrelated response metadata are not copied into the native protocol URL.
 
-The nonce-bearing `/assets/auth-callback.html?desktop_auth_nonce=*` redirect URL pattern must also be registered in Supabase — see [supabase.md](supabase.md).
+The nonce-bearing `/assets/auth-callback.html?desktop_auth_nonce=*` redirect URL pattern must also be registered in Supabase — see [supabase.md](./supabase.md).
 
 ## Notes
 
@@ -109,4 +109,4 @@ The Tauri app origin depends on how it runs. Local development uses the local AP
 
 In dev mode Tauri's WebView loads the Angular dev server directly, so the origin is the dev server's URL. In a production build Tauri serves the bundled `dist/` through a virtual host: WebView2 requires an HTTP scheme (`http://tauri.localhost`), while WKWebView and WebKitGTK accept a custom scheme (`tauri://localhost`).
 
-All three must be in the `CORS_ORIGIN` environment variable of the Render API service — see [deployment.md](deployment.md). Without them the browser blocks every API and WebSocket call with a CORS error.
+All three must be in the `CORS_ORIGIN` environment variable of the Render API service — see [deployment.md](./deployment.md). Without them the browser blocks every API and WebSocket call with a CORS error.

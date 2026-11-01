@@ -21,7 +21,7 @@ import { GameSaveService } from "../../services/game-save/game-save.service";
 import type { Game, Types } from "phaser";
 import { environment } from "@fuzzy-waddle/environments/environment";
 import { prepareAiRuntimeCalibrationPlayers } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-calibration";
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/browser/ai-runtime-calibration";
 import {
   clearAiRuntimeBrowserTestHost,
   publishAiRuntimeBrowserTestHost,

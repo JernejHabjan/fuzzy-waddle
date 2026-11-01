@@ -1,4 +1,4 @@
-import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
 import type { GameCommand, ProbableWaffleReplayCommandBatch } from "@fuzzy-waddle/probable-waffle-protocol";
 import { commandBusTestScene } from "./command-bus-test-scene";
 import { CommandLockstep } from "./command-lockstep";

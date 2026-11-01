@@ -1,4 +1,4 @@
-import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getSceneService, getSceneSystem } from "../scene-component-helpers";
 import { CommandBusService } from "../multiplayer/command-bus.service";

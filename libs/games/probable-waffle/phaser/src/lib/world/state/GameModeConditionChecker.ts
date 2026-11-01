@@ -27,7 +27,7 @@ import { filter, type Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import type EndGameDialog from "../scenes/hud-scenes/EndGameDialog";
 import { getSceneService, getSceneSystem } from "../services/scene-component-helpers";
-import { AiPlayerHandler } from "../../player/ai-controller/ai-player-handler";
+import { AiPlayerHandler } from "../../player/ai-controller/commands/ai-player-handler";
 import HudProbableWaffle from "../scenes/hud-scenes/HudProbableWaffle";
 import { SceneDialogHelper } from "../scenes/scene-dialog-helper";
 import { ScoreTracker } from "./ScoreTracker";

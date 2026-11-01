@@ -1,8 +1,8 @@
 # Deterministic strategic scenarios — implementation and acceptance specification
 
-These 63 strategic cases preserve the required outcomes and negative examples while resolving them against this game's actual capabilities. Read with [contracts and tuning](../architecture/contracts-and-tuning.md) and the [runtime E2E policy](runtime-e2e.md).
+These 63 strategic cases preserve the required outcomes and negative examples while resolving them against this game's actual capabilities. Read with [contracts and tuning](../architecture/contracts-and-tuning.md) and the [runtime E2E policy](./runtime-e2e.md).
 
-They are joined by H-01–32 and SEQ-01–08 in [adversarial scenarios](adversarial-scenarios.md), C-01–06 and D-01–06 in [classic RTS/difficulty](classic-rts-and-difficulty-scenarios.md), and DBG-01–06 in [debugging scenarios](debugging-scenarios.md): 121 named cases before paired variants. Apply [H1–H9](progress-and-recovery-oracles.md) to their assertions. A blocker string, optional expansion or token order does not establish useful recovery or offensive play.
+They are joined by H-01–32 and SEQ-01–08 in [adversarial scenarios](./adversarial-scenarios.md), C-01–06 and D-01–06 in [classic RTS/difficulty](./classic-rts-and-difficulty-scenarios.md), and DBG-01–06 in [debugging scenarios](./debugging-scenarios.md): 121 named cases before paired variants. Apply [H1–H9](./progress-and-recovery-oracles.md) to their assertions. A blocker string, optional expansion or token order does not establish useful recovery or offensive play.
 
 ## Two different questions, two kinds of assertions
 
@@ -13,15 +13,15 @@ Do not rely only on a planner's self-reported reason to pass a case. Check indep
 
 Use exact action/golden-trace assertions where identity/order is itself the contract: duplicate application, claim ownership, command authorization, save continuation and reproducibility. Version golden traces separately from semantic expectations. Never regenerate expected outcomes from candidate output.
 
-## Required schema and file layout
+## Scenario contracts and file layout
 
-Proposed new files, to be implemented rather than assumed present:
+The implementation separates the following responsibilities; fixture registration still does not establish execution:
 
 - Gameplay `src/lib/player/ai-controller/testing/`: typed scenario contracts, immutable observation/event builders, pure driver, independent assertion helpers and semantic reports; substantive exported types in their own files.
 - Gameplay AI test fixtures grouped by `economy`, `production`, `strategy`, `scouting`, `combat`, `access`, `placement`, `recovery`, `lifecycle`.
 - Phaser tests/runtime bridge: world setup through real actor definitions, normal components and shared commands, fixed-tick execution, permitted observation projection and independently measured results.
-- `tools/ai/fixtures/skirmish.json`: manifest linking stable IDs below to fixture files, responsible subsystem, pure/runtime coverage, roster support, expected assertions, baseline compatibility and evidence.
-- `tools/ai/run-skirmish-matrix.mjs`: one-command suite plus single-case replay/filter support. Unknown IDs and failed/missing mandatory coverage return nonzero.
+- `tools/probable-waffle/skirmish/ai/testing/fixtures/skirmish-scenario-manifest.json`: manifest linking stable IDs below to fixture files, responsible subsystem, pure/runtime coverage, roster support, expected assertions, baseline compatibility and evidence.
+- `tools/probable-waffle/skirmish/ai/cli/run-skirmish-matrix.ts`: one-command suite plus single-case replay/filter support. Unknown IDs and failed/missing mandatory coverage return nonzero.
 
 Each scenario requires:
 

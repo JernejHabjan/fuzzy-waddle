@@ -8,23 +8,23 @@ All paths in the following table are relative to libs/games/probable-waffle/phas
 | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | AI cadence and ownership                            | player/ai-controller/player-ai-controller.agent.ts                                                                                              |
 | Pure planner runtime bridge                         | player/ai-controller/player-ai-controller.ts ; player/ai-controller/observation/ai-observation-pipeline.ts                                      |
-| Fair AI observation projection                      | player/ai-controller/observation/ai-observation-visibility-policy.ts ; player/ai-controller/observation/ai-observation-actor-projector.ts ; player/ai-controller/observation/ai-observation-catalog.ts ; player/ai-controller/observation/ai-observation-map.ts ; player/ai-controller/observation/ai-observation-context.ts |
-| Build-site reachability and deterministic ranking   | player/ai-controller/observation/ai-observation-map.ts ; world/services/multiplayer/apply-shared-construction-command.ts                                             |
-| AI order dispatch                                   | player/ai-controller/dispatch-ai-order.ts                                                                                                       |
+| Fair AI observation projection                      | player/ai-controller/observation/knowledge/ai-observation-visibility-policy.ts ; player/ai-controller/observation/ai-observation-actor-projector.ts ; player/ai-controller/observation/catalog/ai-observation-catalog.ts ; player/ai-controller/observation/world/ai-observation-map.ts ; player/ai-controller/observation/ai-observation-context.ts |
+| Build-site reachability and deterministic ranking   | player/ai-controller/observation/world/ai-observation-map.ts ; world/services/multiplayer/apply-shared-construction-command.ts                                             |
+| AI order dispatch                                   | player/ai-controller/commands/dispatch-ai-order.ts                                                                                                       |
 | Shared applied orders                               | world/services/multiplayer/command-bus.service.ts ; entity/systems/queue-command.system.ts ; entity/systems/action.system.ts                    |
 | Actor capabilities and faction tech                 | prefabs/definitions/actor-definitions.ts ; prefabs/definitions/prefab-definition.ts ; data/tech-tree/tech-tree.service.ts                       |
 | Indexed actors / fixed clock                        | world/services/ActorIndexSystem.ts ; world/services/simulation-tick.service.ts                                                                  |
-| Access and topology                                 | world/services/navigation.service.ts ; player/ai-controller/observation/ai-access-graph.adapter.ts                                              |
+| Access and topology                                 | world/services/navigation.service.ts ; player/ai-controller/observation/world/ai-access-graph.adapter.ts                                              |
 | Cargo and transport runtime                         | entity/components/building/container-component.ts ; entity/components/building/containable-component.ts ; prefabs/characters/shared/CommonBoat/ |
 | Save/load and authoritative hash                    | data/save-game.ts ; data/load-game.ts ; world/services/recovery/state-hash.service.ts                                                           |
 | Match end conditions                                | world/state/GameModeConditionChecker.ts                                                                                                         |
 | Purposeful skirmish loop                            | player/ai-controller/player-ai-controller.ts                                                                                                    |
-| Stable bases and expansion candidates               | player/ai-controller/observation/ai-observation-map.ts ; world/services/multiplayer/shared-command-application.service.ts                       |
+| Stable bases and expansion candidates               | player/ai-controller/observation/world/ai-observation-map.ts ; world/services/multiplayer/shared-command-application.service.ts                       |
 | Fortification graph planning                        | prefabs/buildings/tivara/navigation-topology.events.ts ; world/services/height-navigation-graph-builder.ts                                      |
 | Causal recovery / anti-blocking                     | player/ai-controller/observation/ai-observation-pipeline.ts ; world/services/multiplayer/command-bus.service.ts                                 |
-| Tactical squads, combat estimates and support       | player/ai-controller/observation/ai-observation-combat-profile.ts ; player/ai-controller/player-ai-controller.ts                                  |
+| Tactical squads, combat estimates and support       | player/ai-controller/observation/catalog/ai-observation-combat-profile.ts ; player/ai-controller/player-ai-controller.ts                                  |
 | Adaptive counters, research and archetype rationale | player/ai-controller/observation/ai-observation-context.ts ; player/ai-controller/player-ai-controller.ts                                         |
-| AI incident capture and offline investigation       | player/ai-controller/testing/ai-runtime-scenario-bridge.ts                                                                                      |
+| AI incident capture and offline investigation       | player/ai-controller/test-support/reproduction/ai-runtime-scenario-bridge.ts                                                                                      |
 | In-game AI panel                                    | prefabs/gui/debug/ai-controller/AiControllerDebugPanel.ts                                                                                       |
 
 Cross-library paths (repository-relative):
@@ -34,7 +34,7 @@ Cross-library paths (repository-relative):
 - Wire commands: libs/games/probable-waffle/protocol/src/lib/game-instance/probable-waffle/game-command.ts
 - Server authorization: libs/games/probable-waffle/server/src/lib/probable-waffle/game-instance/multiplayer/game-command-validator.service.ts
 - Browser harness host: apps/portal-e2e/
-- AI matrix manifest, release runner and compact report: tools/ai/fixtures/ ; tools/ai/run-skirmish-matrix.mjs ; tools/ai/summarize-skirmish-report.mjs
+- AI matrix manifest, release runner and compact report: tools/probable-waffle/skirmish/ai/testing/fixtures/ ; tools/probable-waffle/skirmish/ai/cli/run-skirmish-matrix.ts ; tools/probable-waffle/skirmish/ai/reports/summarize-skirmish-report.ts
 
 Read adjacent specs and follow imports for the next consumer. For spells, containers, gathering, housing or target-domain changes, start at the definition registry, then follow the specific component implementation; do not infer behavior from a familiar RTS name.
 

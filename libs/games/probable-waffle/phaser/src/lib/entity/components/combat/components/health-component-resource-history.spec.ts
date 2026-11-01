@@ -10,9 +10,9 @@ import { HealthComponent } from "./health-component";
 import { onObjectReady, isGameObjectActiveInActiveScene } from "../../../../data/game-object-helper";
 import { applyCampaignProgressionModifiers } from "../../../../campaign/campaign-progression-modifier";
 import { subscribeSceneResourceLoss } from "../../../../data/scene-resource-observation";
-import { AiRuntimeRecipientResourceCapture } from "../../../../player/ai-controller/testing/ai-runtime-recipient-resource-capture";
-import { AiRuntimeResourceCoverageCapture } from "../../../../player/ai-controller/testing/ai-runtime-resource-coverage-capture";
-import type { AiRuntimeProductionFact } from "../../../../player/ai-controller/testing/ai-runtime-production-fact";
+import { AiRuntimeRecipientResourceCapture } from "../../../../player/ai-controller/test-support/economy/capture/ai-runtime-recipient-resource-capture";
+import { AiRuntimeResourceCoverageCapture } from "../../../../player/ai-controller/test-support/economy/capture/ai-runtime-resource-coverage-capture";
+import type { AiRuntimeProductionFact } from "../../../../player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import type { ProbableWaffleScene } from "../../../../core/probable-waffle.scene";
 
 jest.mock("./health-presentation", () => ({
@@ -47,8 +47,8 @@ jest.mock("../../../../world/services/simulation-time", () => ({
     remove() {}
   }
 }));
-jest.mock("../../../../world/services/simulation-tick.service", () => ({ SimulationTickService: class {} }));
-jest.mock("../../../../world/services/audio.service", () => ({ AudioService: class {} }));
+jest.mock("../../../../world/services/simulation-tick.service.ts", () => ({ SimulationTickService: class {} }));
+jest.mock("../../../../world/services/audio.service.ts", () => ({ AudioService: class {} }));
 jest.mock("../../owner-component", () => ({ OwnerComponent: class {} }));
 jest.mock("../../selectable-component", () => ({ SelectableComponent: class {} }));
 jest.mock("../../actor-audio/audio-actor-component", () => ({ AudioActorComponent: class {} }));

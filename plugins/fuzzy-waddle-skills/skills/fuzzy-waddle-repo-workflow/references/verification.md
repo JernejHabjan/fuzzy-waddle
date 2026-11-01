@@ -22,7 +22,7 @@ Read package.json (Node/pnpm/Phaser versions), the owning project.json and Jest/
 This snapshot is not an excuse to omit needed tests. Discover other project targets locally; do not assume every library has test/build.
 
 - Focus a supported Jest target with pnpm exec nx test followed by the owning project and its supported test filter. Verify the filter selected the intended spec and a nonzero test count.
-- This checkout uses legacy .eslintrc.json and project-scoped Nx lint. A bare ESLint 9 invocation expects flat config and is not the equivalent route; root ignore rules and extensions may exclude standalone .mjs tools. Use the owning target, or explicitly scoped syntax/rule checks for a tool with no target, and label that narrower coverage. Do not migrate repository lint configuration for an unrelated task.
+- This checkout uses flat ESLint configuration with shared root/library settings and project-scoped Nx lint. Use the owning target so project boundaries, extensions and local rules are included. Probable Waffle AI TypeScript tooling has its own `skirmish-ai-tools:lint` and `typecheck` targets; unrelated standalone `.mjs` tools may still need explicitly scoped checks. Do not migrate repository lint configuration for an unrelated task.
 - Type-check actual source through the owning TypeScript config; a passing empty/include-excluded target proves nothing.
 - Use tools/testing/jest-node-preset.cjs or tools/testing/jest-angular-preset.cjs where appropriate; keep production imports and real consumer contracts represented.
 - Editor wiring: package script phaser-editor:check. Assets/LFS: assets:check. Broad production builds are not a substitute for focused regressions.

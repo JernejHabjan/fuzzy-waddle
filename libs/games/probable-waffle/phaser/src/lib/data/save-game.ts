@@ -8,7 +8,7 @@ import type { SaveGamePayload } from "./save-game-payload";
 import { SelectionGroupsComponent } from "../player/human-controller/selection-groups.component";
 import { CameraMovementHandler } from "../player/human-controller/cameraMovementHandler";
 import { type AllScenesEventData, ProbableWafflePlayerType } from "@fuzzy-waddle/probable-waffle-protocol";
-import { AiPlayerHandler } from "../player/ai-controller/ai-player-handler";
+import { AiPlayerHandler } from "../player/ai-controller/commands/ai-player-handler";
 import { SimulationTickService } from "../world/services/simulation-tick.service";
 import { evaluateCampaignSaveEligibility } from "./campaign-save-eligibility";
 import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";

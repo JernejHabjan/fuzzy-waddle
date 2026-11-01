@@ -2,7 +2,7 @@ import { MovementQueryObservation } from "./movement-query-observation";
 import { MovementCompletionObservation } from "./movement-completion-observation";
 import type { MovementCompletionEvent } from "./movement-completion-event";
 import type { MovementQueryContext } from "./movement-query-context";
-import { PawnAiBlackboard } from "../../prefabs/ai-agents/pawn-ai-blackboard";
+import { PawnAiBlackboard } from "../../prefabs/ai-agents/controller/pawn-ai-blackboard";
 import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { getGameObjectCurrentTile } from "../../data/game-object-helper";
 import { MovementTween } from "./movement-tween";

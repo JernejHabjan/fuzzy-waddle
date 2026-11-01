@@ -1,5 +1,5 @@
 import { FactionType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiReproBundle } from "../contracts/ai-repro-bundle";
+import type { AiReproBundle } from "../contracts/diagnostics/ai-repro-bundle";
 import { AiIncidentCaptureStore } from "./ai-incident-capture-store";
 
 function bundle(id: number): AiReproBundle {

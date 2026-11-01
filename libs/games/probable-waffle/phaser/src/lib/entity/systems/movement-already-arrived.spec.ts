@@ -5,7 +5,7 @@ import { getGameObjectCurrentTile, isGameObjectActiveInActiveScene } from "../..
 import { MovementTween } from "./movement-tween";
 import { MovementCompletionObservation } from "./movement-completion-observation";
 import type { MovementCompletionEvent } from "./movement-completion-event";
-import { PawnAiBlackboard } from "../../prefabs/ai-agents/pawn-ai-blackboard";
+import { PawnAiBlackboard } from "../../prefabs/ai-agents/controller/pawn-ai-blackboard";
 import type { MovementQueryContext } from "./movement-query-context";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
@@ -23,7 +23,7 @@ jest.mock("../../data/game-object-helper", () => ({
   isSceneActive: jest.fn(),
   onObjectReady: jest.fn()
 }));
-jest.mock("../../prefabs/ai-agents/pawn-ai-controller", () => ({ PawnAiController: class {} }));
+jest.mock("../../prefabs/ai-agents/controller/pawn-ai-controller", () => ({ PawnAiController: class {} }));
 
 function fixture() {
   const f = movementTestFixture(),

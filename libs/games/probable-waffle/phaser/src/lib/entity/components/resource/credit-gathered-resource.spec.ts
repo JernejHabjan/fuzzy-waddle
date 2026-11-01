@@ -1,4 +1,4 @@
-import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
 import Phaser from "phaser";
 import { type ProbableWafflePlayer, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { emitResource, getPlayer, isSnapshotApplyInProgress } from "../../../data/scene-data";

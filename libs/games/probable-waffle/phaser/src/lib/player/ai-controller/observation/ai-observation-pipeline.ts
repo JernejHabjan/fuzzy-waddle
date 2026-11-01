@@ -23,13 +23,13 @@ import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
-import { AiObservationVisibilityPolicy } from "./ai-observation-visibility-policy";
-import { AiAccessGraphAdapter } from "./ai-access-graph.adapter";
+import { AiObservationVisibilityPolicy } from "./knowledge/ai-observation-visibility-policy";
+import { AiAccessGraphAdapter } from "./world/ai-access-graph.adapter";
 import type { AiObservationDebugSnapshot } from "./ai-observation-debug-snapshot";
 import { projectAiObservedActor } from "./ai-observation-actor-projector";
-import { projectCatalogEntry, projectAvailableCatalogEntries } from "./ai-observation-catalog";
-import { permittedAiObservationTopology, projectAiObservationMap } from "./ai-observation-map";
-import { compareAccessProductCandidates, projectAccessProduct } from "./ai-observation-access-product";
+import { projectCatalogEntry, projectAvailableCatalogEntries } from "./catalog/ai-observation-catalog";
+import { permittedAiObservationTopology, projectAiObservationMap } from "./world/ai-observation-map";
+import { compareAccessProductCandidates, projectAccessProduct } from "./world/ai-observation-access-product";
 import {
   countUnknownFacts,
   projectModeGoals,
@@ -43,19 +43,19 @@ import {
   projectRememberedContacts,
   trimRememberedContacts,
   type RememberedContact
-} from "./ai-observation-memory";
+} from "./knowledge/ai-observation-memory";
 import {
   accumulateObservationInvalidationDebt,
   isCurrentObservationGeneration,
   selectBoundedObservationWork
-} from "./ai-observation-work";
+} from "./economy/ai-observation-work";
 import { knownValue, uniqueDomain, unknownValue } from "./ai-observation-values";
-import { projectAiProductionObligations } from "./ai-production-obligations";
-import { beginAiResourceInputRead } from "./ai-resource-input-observation";
+import { projectAiProductionObligations } from "./economy/ai-production-obligations";
+import { beginAiResourceInputRead } from "./economy/ai-resource-input-observation";
 import {
   readAiResourceInputRead,
   rememberAiResourceInputRead
-} from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-resource-input-observation";
+} from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/economy/forecast/ai-resource-input-observation";
 
 const MAX_ACCESS_PRODUCTS_PER_OBSERVATION = 4;
 const MAX_INVALIDATION_DEBT = 1024;
@@ -456,11 +456,11 @@ export {
   isCurrentObservationGeneration,
   selectBoundedObservationWork,
   accumulateObservationInvalidationDebt
-} from "./ai-observation-work";
+} from "./economy/ai-observation-work";
 export {
   decayObservationConfidence,
   isRememberedContactExpired,
   normalizeAiObservationMemoryState
-} from "./ai-observation-memory";
-export { normalizeGatherResourceTypes } from "./ai-observation-capabilities";
+} from "./knowledge/ai-observation-memory";
+export { normalizeGatherResourceTypes } from "./catalog/ai-observation-capabilities";
 export type { AiObservationDebugSnapshot } from "./ai-observation-debug-snapshot";

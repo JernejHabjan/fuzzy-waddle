@@ -2,7 +2,7 @@
 
 Difficulty configuration/fairness requirements below remain useful correctness contracts. The D-06 statistical
 calibration campaign is cancelled for the current iteration; it is not a queued test or release gate. See
-[coverage and follow-ups](coverage-status.md) for current evidence and execution scope.
+[coverage and follow-ups](./coverage-status.md) for current evidence and execution scope.
 
 These requirements complement H1–H9 without adding runtime machine learning. Read the [economy/production](../architecture/economy-and-production.md), [combat/strategy](../architecture/combat-and-strategy.md) and [debug workbench](../debugging/README.md) documentation. All numbers below are tuning defaults, not measured results.
 

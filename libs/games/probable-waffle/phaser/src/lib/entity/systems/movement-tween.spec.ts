@@ -9,7 +9,7 @@ import { MovementStepBlockedError } from "./movement-step-blocked-error";
 import { MovementStepInterruptedError } from "./movement-step-interrupted-error";
 import { MovementCompletionObservation } from "./movement-completion-observation";
 import type { MovementCompletionEvent } from "./movement-completion-event";
-import { PawnAiBlackboard } from "../../prefabs/ai-agents/pawn-ai-blackboard";
+import { PawnAiBlackboard } from "../../prefabs/ai-agents/controller/pawn-ai-blackboard";
 import { movementTestFixture } from "./movement-test-fixture";
 
 // Local arithmetic/event double avoids changing the shared Phaser mock during the no-validation sweep.

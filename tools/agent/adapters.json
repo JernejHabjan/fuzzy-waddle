@@ -18,7 +18,7 @@
       "metadata": {
         "project": "portal-e2e",
         "ports": [4200],
-        "sourcePaths": ["tools/ai/fixtures/skirmish.json", "tools/ai/run-skirmish-matrix.mjs"],
+        "sourcePaths": ["tools/probable-waffle/skirmish/ai/testing/fixtures/skirmish-scenario-manifest.json", "tools/probable-waffle/skirmish/ai/cli/run-skirmish-matrix.ts"],
         "persistentProcess": {
           "id": "portal-runtime",
           "executable": "node",

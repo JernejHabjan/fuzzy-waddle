@@ -10,7 +10,7 @@ import { CONSTRUCTION_AUTHORITY_EVENT, type ConstructionAuthorityEvent } from ".
 // prettier-ignore
 import type { ConstructionSiteDefinition } from
   "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/construction-site-definition";
-import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
+import { PawnAiController } from "../../../prefabs/ai-agents/controller/pawn-ai-controller";
 import { HealthComponent } from "../combat/components/health-component";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";

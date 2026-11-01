@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import type { Subscription } from "rxjs";
 import { filter } from "rxjs";
 import { getSceneService, getSceneSystem } from "../scene-component-helpers";
-import { AiPlayerHandler } from "../../../player/ai-controller/ai-player-handler";
+import { AiPlayerHandler } from "../../../player/ai-controller/commands/ai-player-handler";
 import { SimulationTickService } from "../simulation-tick.service";
 import { ActorIndexSystem } from "../ActorIndexSystem";
 import { ActorManager } from "../../../data/actor-manager";

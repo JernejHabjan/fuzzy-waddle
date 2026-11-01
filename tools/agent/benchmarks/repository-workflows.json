@@ -59,7 +59,7 @@
       "description": "Affected-project selection for shared RTS gameplay plus portal runtime coverage.",
       "contextFiles": [
         "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/profiles/ai-profile-defaults.ts",
-        "apps/portal-e2e/src/e2e/skirmish-ai-runtime.spec.ts",
+        "apps/portal-e2e/src/e2e/probable-waffle/skirmish/ai/runner/skirmish-ai-runtime.spec.ts",
         "nx.json"
       ],
       "requiredSelections": {
@@ -82,7 +82,7 @@
             "show",
             "projects",
             "--affected",
-            "--files=libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/profiles/ai-profile-defaults.ts,apps/portal-e2e/src/e2e/skirmish-ai-runtime.spec.ts"
+            "--files=libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/profiles/ai-profile-defaults.ts,apps/portal-e2e/src/e2e/probable-waffle/skirmish/ai/runner/skirmish-ai-runtime.spec.ts"
           ],
           "expectedOutcome": "passed",
           "outputIncludes": ["probable-waffle-gameplay", "portal-e2e"]
@@ -133,7 +133,7 @@
       "id": "focused-test-repair",
       "description": "A focused pure AI scenario repair in its gameplay owner.",
       "contextFiles": [
-        "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/ai-scenario-harness.spec.ts",
+        "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/harness/ai-scenario-harness.spec.ts",
         "tools/testing/jest-node-preset.cjs"
       ],
       "requiredSelections": {
@@ -161,11 +161,11 @@
       "id": "skirmish-runtime-scenario",
       "description": "One seeded, manifest-backed Playwright skirmish opening scenario.",
       "contextFiles": [
-        "tools/ai/fixtures/skirmish.json",
-        "tools/ai/fixtures/opening-workforce-runtime.json",
-        "tools/ai/run-skirmish-matrix.mjs",
+        "tools/probable-waffle/skirmish/ai/testing/fixtures/skirmish-scenario-manifest.json",
+        "tools/probable-waffle/skirmish/ai/testing/fixtures/native/economy/opening-workforce-native-gameplay.json",
+        "tools/probable-waffle/skirmish/ai/cli/run-skirmish-matrix.ts",
         "apps/portal-e2e/playwright.config.ts",
-        "apps/portal-e2e/src/e2e/skirmish-ai-runtime.spec.ts"
+        "apps/portal-e2e/src/e2e/probable-waffle/skirmish/ai/runner/skirmish-ai-runtime.spec.ts"
       ],
       "requiredSelections": {
         "projects": ["portal", "portal-e2e"],

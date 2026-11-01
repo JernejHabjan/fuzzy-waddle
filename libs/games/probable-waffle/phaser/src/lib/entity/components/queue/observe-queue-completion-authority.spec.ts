@@ -1,11 +1,11 @@
-import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
 import Phaser from "phaser";
 import { ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { QueueItemType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../owner-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
-import { productionCaptureItem } from "../../../player/ai-controller/testing/ai-runtime-production-capture-fixtures";
+import { productionCaptureItem } from "../../../player/ai-controller/test-support/production/fixtures/ai-runtime-production-capture-fixtures";
 import {
   QUEUE_COMPLETION_AUTHORITY_EVENT,
   type QueueCompletionAuthorityEvent

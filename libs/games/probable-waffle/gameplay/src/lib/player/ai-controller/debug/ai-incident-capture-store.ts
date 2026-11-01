@@ -2,7 +2,7 @@ import {
   AI_REPRO_CAPTURE_POLICY,
   type AiReproBundle,
   type AiReproCapturePolicy
-} from "../contracts/ai-repro-bundle";
+} from "../contracts/diagnostics/ai-repro-bundle";
 
 /** One bounded capture entry; unresolved authoritative commands are intentionally owned elsewhere. */
 export interface AiIncidentCaptureEntry {

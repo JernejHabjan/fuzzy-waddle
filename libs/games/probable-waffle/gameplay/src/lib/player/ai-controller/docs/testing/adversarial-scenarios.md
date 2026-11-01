@@ -1,10 +1,10 @@
 # Integration gates and adversarial match testing
 
-These mandatory cases add fault/progress coverage and continuous match sequences to the [63 strategic scenarios](strategic-scenarios.md). They use the shared [progress and recovery oracles](progress-and-recovery-oracles.md).
+These mandatory cases add fault/progress coverage and continuous match sequences to the [63 strategic scenarios](./strategic-scenarios.md). They use the shared [progress and recovery oracles](./progress-and-recovery-oracles.md).
 
 ## Verification ladder
 
-Include the C/D cases from [classic RTS and difficulty](classic-rts-and-difficulty-scenarios.md) and DBG cases from [debugging scenarios](debugging-scenarios.md) in the same runner and coverage manifest. Do not create a disconnected debug simulator. The combined catalog contains 121 named cases before variants.
+Include the C/D cases from [classic RTS and difficulty](./classic-rts-and-difficulty-scenarios.md) and DBG cases from [debugging scenarios](./debugging-scenarios.md) in the same runner and coverage manifest. Do not create a disconnected debug simulator. The combined catalog contains 121 named cases before variants.
 
 ### Minimum executable vertical slices
 

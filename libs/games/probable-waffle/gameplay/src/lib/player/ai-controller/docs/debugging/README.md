@@ -30,4 +30,4 @@ overview/strategy views use their retained snapshot; categories requiring an unr
 must say so instead of mixing in current facts. The live panel selects one cloned snapshot and does not clone the full
 bounded history on every refresh. A selected historical decision may clone that history for navigation.
 
-See [incident reproduction](incident-reproduction.md) for capture and offline comparison.
+See [incident reproduction](./incident-reproduction.md) for capture and offline comparison.

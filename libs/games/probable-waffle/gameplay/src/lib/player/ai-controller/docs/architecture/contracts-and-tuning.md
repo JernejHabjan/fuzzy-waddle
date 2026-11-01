@@ -1,6 +1,6 @@
 # Shared implementation decisions
 
-These are the shared implementation defaults for the controller. Read them with the [decision cycle](decision-cycle.md) and [progress/recovery oracles](../testing/progress-and-recovery-oracles.md). Numbers are initial authored tuning values, not measured optimal balance; calibration must evaluate them with recorded evidence. Preserve actual game costs, damage, capacity and faction rules from definitions.
+These are the shared implementation defaults for the controller. Read them with the [decision cycle](./decision-cycle.md) and [progress/recovery oracles](../testing/progress-and-recovery-oracles.md). Numbers are initial authored tuning values, not measured optimal balance; calibration must evaluate them with recorded evidence. Preserve actual game costs, damage, capacity and faction rules from definitions.
 
 ## Source and destination map
 
@@ -21,10 +21,10 @@ All paths below are repository-relative. Resolve against the checkout, not a fix
 
 Use one exported substantive type/class per file and existing path aliases. Reuse `PlayerNumber`, actor ID, `ObjectNames`, `ResourceType`, faction/order/command types rather than copying the illustrative string IDs from the research document. Add named plan/squad/claim IDs where needed. Stable collections serialize as sorted arrays; convert to lookup maps inside pure reducers if useful.
 
-The persisted brain-state import surface is `contracts/ai-brain-state.ts`; each state slice is defined in one
-`contracts/brain-state/` file. `contracts/validate-ai-contracts.ts` retains the validation import surface,
+The persisted brain-state import surface is `contracts/state/ai-state-contracts.ts`; each state slice is defined in one
+`contracts/brain-state/` file. `contracts/validation/validate-ai-contracts.ts` retains the validation import surface,
 delegating to focused brain, observation, dependency-edge, transport and squad validators. Canonical JSON values live
-in `brain/canonical-ai-value.ts`, while `brain/canonical-ai-serialization.ts` owns deterministic ordering and digests.
+in `brain/persistence/canonical-ai-value.ts`, while `brain/persistence/canonical-ai-serialization.ts` owns deterministic ordering and digests.
 These boundaries do not change persisted schema names or serialized field order.
 
 ## Brain composition and lifecycle

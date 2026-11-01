@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import type { ActorDefinition } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getSceneService, getSceneSystem } from "../scene-component-helpers";
-import { AiPlayerHandler } from "../../../player/ai-controller/ai-player-handler";
+import { AiPlayerHandler } from "../../../player/ai-controller/commands/ai-player-handler";
 import { CommandBusService } from "../multiplayer/command-bus.service";
 import { SimulationTickService } from "../simulation-tick.service";
 import { projectAiControllerContinuation } from "./ai-controller-continuation-projection";
@@ -20,7 +20,7 @@ import { ResourceSourceComponent } from "../../../entity/components/resource/res
 import { getGameObjectCurrentTile, getGameObjectLogicalTransform } from "../../../data/game-object-helper";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { ActorManager } from "../../../data/actor-manager";
-import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
+import { PawnAiController } from "../../../prefabs/ai-agents/controller/pawn-ai-controller";
 import {
   serializeCampaignMissionRuntimeState,
   serializeCampaignMissionRuntimeStateFamilies

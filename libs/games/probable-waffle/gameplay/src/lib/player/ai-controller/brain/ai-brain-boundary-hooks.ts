@@ -1,6 +1,6 @@
-import type { AiBrainState } from "../contracts/ai-brain-state";
-import type { AiObservation } from "../contracts/ai-observation";
-import type { AiProposalManager, AiManagerProposal } from "../planning/ai-manager-proposal";
+import type { AiBrainState } from "../contracts/state/ai-state-contracts";
+import type { AiObservation } from "../contracts/observation/ai-observation";
+import type { AiProposalManager, AiManagerProposal } from "../planning/coordination/ai-manager-proposal";
 import type { projectAiDebugSnapshot } from "../debug/project-ai-debug-snapshot";
 
 /** Explicit test-only dependency overrides. Ordinary brains omit this; no global policy or alternate command authority. */

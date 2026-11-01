@@ -5,9 +5,9 @@ import { ProbableWafflePlayer, ProbableWafflePlayerState, ProbableWafflePlayerCo
 import { OwnerComponent } from "./owner-component";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { subscribeSceneResourceLoss } from "../../data/scene-resource-observation";
-import { AiRuntimeRecipientResourceCapture } from "../../player/ai-controller/testing/ai-runtime-recipient-resource-capture";
-import { AiRuntimeResourceCoverageCapture } from "../../player/ai-controller/testing/ai-runtime-resource-coverage-capture";
-import type { AiRuntimeProductionFact } from "../../player/ai-controller/testing/ai-runtime-production-fact";
+import { AiRuntimeRecipientResourceCapture } from "../../player/ai-controller/test-support/economy/capture/ai-runtime-recipient-resource-capture";
+import { AiRuntimeResourceCoverageCapture } from "../../player/ai-controller/test-support/economy/capture/ai-runtime-resource-coverage-capture";
+import type { AiRuntimeProductionFact } from "../../player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 
 jest.mock("./owner-presentation", () => ({ OwnerPresentation: class {

@@ -1,16 +1,16 @@
 import type Phaser from "phaser";
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getActorComponent } from "../../../data/actor-component";
-import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
-import { PawnAiBlackboard } from "../../../prefabs/ai-agents/pawn-ai-blackboard";
+import { PawnAiController } from "../../../prefabs/ai-agents/controller/pawn-ai-controller";
+import { PawnAiBlackboard } from "../../../prefabs/ai-agents/controller/pawn-ai-blackboard";
 import { OrderData } from "../../../ai/OrderData";
-import type { AiAccessGraphAdapter } from "./ai-access-graph.adapter";
+import type { AiAccessGraphAdapter } from "./world/ai-access-graph.adapter";
 import { projectAiObservedActor } from "./ai-observation-actor-projector";
 import { QueueComponent } from "../../../entity/components/queue/queue-component";
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { VisionComponent } from "../../../entity/components/vision-component";
-import { productionCaptureItem } from "../testing/ai-runtime-production-capture-fixtures";
+import { productionCaptureItem } from "../test-support/production/fixtures/ai-runtime-production-capture-fixtures";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
@@ -22,9 +22,9 @@ jest.mock("../../../data/game-object-helper", () => ({
 jest.mock("../../../prefabs/definitions/actor-definitions", () => ({
   getPwActorDefinition: jest.fn(() => undefined)
 }));
-jest.mock("../../../prefabs/ai-agents/pawn-ai-controller", () => ({ PawnAiController: class {} }));
-jest.mock("./ai-observation-catalog", () => ({ projectActorCapabilities: () => [] }));
-jest.mock("./ai-observation-combat-profile", () => ({ projectAiCombatProfile: () => undefined }));
+jest.mock("../../../prefabs/ai-agents/controller/pawn-ai-controller", () => ({ PawnAiController: class {} }));
+jest.mock("./catalog/ai-observation-catalog", () => ({ projectActorCapabilities: () => [] }));
+jest.mock("./catalog/ai-observation-combat-profile", () => ({ projectAiCombatProfile: () => undefined }));
 
 it("projects queued intake before activation, clears it after removal and keeps opponents' queued orders private", () => {
   const board = new PawnAiBlackboard();

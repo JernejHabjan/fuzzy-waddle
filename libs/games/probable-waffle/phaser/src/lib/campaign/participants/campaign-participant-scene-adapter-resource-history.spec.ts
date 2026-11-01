@@ -1,7 +1,7 @@
 import { CampaignParticipantSceneAdapter } from "./campaign-participant-scene-adapter";
 import { subscribeSceneResourceLoss } from "../../data/scene-resource-observation";
 
-jest.mock("../../data/tech-tree/tech-tree.service", () => ({ TechTreeService: class {} }));
+jest.mock("../../data/tech-tree/tech-tree.service.ts", () => ({ TechTreeService: class {} }));
 
 let mockEconomy: "normal" | "granted" | "none" = "normal";
 jest.mock("@fuzzy-waddle/probable-waffle-campaign", () => ({

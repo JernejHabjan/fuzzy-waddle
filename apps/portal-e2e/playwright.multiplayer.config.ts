@@ -6,7 +6,10 @@ const serviceKey = process.env.AI_MULTIPLAYER_SUPABASE_SERVICE_KEY;
 export default defineConfig({
   testDir: "./src/e2e",
   outputDir: "../../test-results/skirmish-multiplayer",
-  testMatch: ["skirmish-ai-multiplayer-*.spec.ts", "skirmish-ai-runtime.spec.ts"],
+  testMatch: [
+    "**/probable-waffle/skirmish/ai/multiplayer/**/skirmish-ai-multiplayer-*.spec.ts",
+    "**/probable-waffle/skirmish/ai/runner/skirmish-ai-runtime.spec.ts"
+  ],
   fullyParallel: false,
   retries: 0,
   reporter: process.env.CI ? "github" : "list",

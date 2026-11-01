@@ -18,7 +18,7 @@ import { ContainerComponent } from "../entity/components/building/container-comp
 import { ResourceDrainComponent } from "../entity/components/resource/resource-drain-component";
 import { ResourceSourceComponent } from "../entity/components/resource/resource-source-component";
 import { ProductionComponent } from "../entity/components/production/production-component";
-import { PawnAiController } from "../prefabs/ai-agents/pawn-ai-controller";
+import { PawnAiController } from "../prefabs/ai-agents/controller/pawn-ai-controller";
 import { HousingComponent } from "../entity/components/building/housing-component";
 import { getSceneService } from "../world/services/scene-component-helpers";
 import { SceneActorCreator } from "../world/services/scene-actor-creator";

@@ -5,7 +5,7 @@ description: Implement or review Fuzzy Waddle Phaser gameplay, scenes, entities 
 
 # Phaser ownership and discovery
 
-Read [RTS source routes](references/rts-source-index.md) for Probable Waffle work. For another game, use the repo source index and its existing neighbours. Read package.json for the installed Phaser major; the former phaser3 skill name and apps/client paths are historical, not implementation guidance. No framework migration is implied.
+Read [RTS source routes](./references/rts-source-index.md) for Probable Waffle work. For another game, use the repo source index and its existing neighbours. Read package.json for the installed Phaser major; the former phaser3 skill name and apps/client paths are historical, not implementation guidance. No framework migration is implied.
 
 ## Runtime rules
 

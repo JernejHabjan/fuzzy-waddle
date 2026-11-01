@@ -1,5 +1,5 @@
 import type Phaser from "phaser";
-import { PawnAiBlackboard } from "../../prefabs/ai-agents/pawn-ai-blackboard";
+import { PawnAiBlackboard } from "../../prefabs/ai-agents/controller/pawn-ai-blackboard";
 import { getGameObjectCurrentTile } from "../../data/game-object-helper";
 import { MovementCompletionObservation } from "./movement-completion-observation";
 import type { MovementCompletionEvent } from "./movement-completion-event";

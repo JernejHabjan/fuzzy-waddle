@@ -1,20 +1,20 @@
 import { FactionType, ProbableWaffleAiDifficulty, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiIntent } from "../contracts/ai-intent";
-import type { AiManagerProposal, AiProposalManager } from "../planning/ai-manager-proposal";
+import type { AiIntent } from "../contracts/commands/ai-intent";
+import type { AiManagerProposal, AiProposalManager } from "../planning/coordination/ai-manager-proposal";
 import { aiDeadline } from "../contracts/ai-core-types";
 import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
-import { createAiBrainState } from "./create-ai-brain-state";
+import { createAiBrainState } from "./state/create-ai-brain-state";
 import { PureAiBrain } from "./ai-brain";
-import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
+import { createAiTestObservation, createAiTestOwnedActor } from "../testing/fixtures/coordination/ai-test-fixtures";
 import { findAiWhyNotExplanation } from "../debug/project-ai-debug-snapshot";
-import { AiSkirmishManager } from "../planning/ai-skirmish-manager";
+import { AiSkirmishManager } from "../planning/strategy/missions/ai-skirmish-manager";
 import {
   catalog as scoutCatalog,
   homeNode,
   enemyNode,
   observation as scoutObservation,
   unit as scoutUnit
-} from "../planning/ai-skirmish-test-fixtures";
+} from "../testing/fixtures/strategy/ai-skirmish-test-fixtures";
 
 function stopIntent(id: string, utility: number, actorId: string, wood: number): AiIntent {
   return {

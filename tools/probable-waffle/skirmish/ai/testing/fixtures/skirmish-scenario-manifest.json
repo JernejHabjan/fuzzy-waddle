@@ -1,0 +1,995 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "skirmish",
+  "requiredCaseCount": 121,
+  "baseline": "baseline/pinned-reference-implementation.json",
+  "defaultSeeds": [759001, 759002, 759003],
+  "rowDefaults": {
+    "required": true,
+    "rosterSupport": "resolve_from_runtime_catalog_when_fixture_is_authored",
+    "expectedAssertions": "nonempty_fixture_authored_semantic_and_forbidden_predicates",
+    "baselineCompatibility": "resolve_through_pinned_baseline_adapter_without_candidate_fallback",
+    "evidence": "authored_not_run_until_stage_15"
+  },
+  "rows": [
+    {
+      "id": "ECO-01",
+      "stages": [7, 10],
+      "group": "economy",
+      "fixture": "native/economy/resource-service-native-gameplay.json",
+      "authoredFixture": "pure/economy/resource-service-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "ECO-02",
+      "stages": [7, 10],
+      "group": "economy",
+      "fixture": "native/economy/resource-service-native-gameplay.json",
+      "authoredFixture": "pure/economy/resource-service-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "ECO-03",
+      "stages": [7],
+      "group": "economy",
+      "fixture": "native/economy/source-saturation-native-gameplay.json",
+      "authoredFixture": "pure/economy/economy-forecast-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "ECO-04",
+      "stages": [7],
+      "group": "economy",
+      "fixture": "native/economy/labor-deficit-native-gameplay.json",
+      "authoredFixture": "pure/economy/economy-forecast-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "ECO-05",
+      "stages": [7],
+      "group": "economy",
+      "fixture": "native/economy/economy-delivery-native-gameplay.json",
+      "authoredFixture": "pure/economy/economy-forecast-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "ECO-06",
+      "stages": [7, 12],
+      "group": "economy",
+      "fixture": "native/economy/resource-recovery-native-gameplay.json",
+      "authoredFixture": "pure/economy/resource-service-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "ECO-07",
+      "stages": [7],
+      "group": "economy",
+      "fixture": "native/economy/supply-native-gameplay.json",
+      "authoredFixture": "pure/economy/economy-supply-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "ECO-08",
+      "stages": [7],
+      "group": "economy",
+      "fixture": "native/economy/opening-workforce-native-gameplay.json",
+      "authoredFixture": "pure/economy/opening-bootstrap-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "PRO-01",
+      "stages": [7],
+      "group": "production",
+      "fixture": "native/production/production-capacity-native-gameplay.json",
+      "authoredFixture": "pure/production/production-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "PRO-02",
+      "stages": [7],
+      "group": "production",
+      "fixture": "native/production/production-capacity-native-gameplay.json",
+      "authoredFixture": "pure/production/production-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "PRO-03",
+      "stages": [7],
+      "group": "production",
+      "fixture": "native/production/production-authority-native-gameplay.json",
+      "authoredFixture": "pure/production/production-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "PRO-04",
+      "stages": [7],
+      "group": "production",
+      "fixture": "native/production/production-composition-native-gameplay.json",
+      "authoredFixture": "pure/production/production-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "PRO-05",
+      "stages": [6, 7],
+      "group": "production",
+      "fixture": "native/production/production-replacement-native-gameplay.json",
+      "authoredFixture": "pure/production/production-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "PRO-06",
+      "stages": [7, 12, 14],
+      "group": "production",
+      "fixture": "native/production/production-authority-native-gameplay.json",
+      "authoredFixture": "pure/adaptation/research-counter-composition-and-visibility-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "PRO-07",
+      "stages": [7, 14],
+      "group": "production",
+      "fixture": "native/production/production-authority-native-gameplay.json",
+      "authoredFixture": "pure/adaptation/research-counter-composition-and-visibility-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "TECH-01",
+      "stages": [14],
+      "group": "technology",
+      "fixture": "native/technology/technology-native-gameplay.json",
+      "authoredFixture": "pure/adaptation/research-counter-composition-and-visibility-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "TECH-02",
+      "stages": [14],
+      "group": "technology",
+      "fixture": "native/technology/technology-native-gameplay.json",
+      "authoredFixture": "pure/adaptation/research-counter-composition-and-visibility-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "TECH-03",
+      "stages": [9, 14],
+      "group": "technology",
+      "fixture": "native/technology/technology-native-gameplay.json",
+      "authoredFixture": "pure/adaptation/research-counter-composition-and-visibility-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "TECH-04",
+      "stages": [14],
+      "group": "technology",
+      "fixture": "native/technology/technology-native-gameplay.json",
+      "authoredFixture": "pure/adaptation/research-counter-composition-and-visibility-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "TECH-05",
+      "stages": [14],
+      "group": "technology",
+      "fixture": "native/technology/technology-native-gameplay.json",
+      "authoredFixture": "pure/adaptation/research-counter-composition-and-visibility-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "TECH-06",
+      "stages": [13, 14],
+      "group": "technology",
+      "fixture": "native/technology/technology-native-gameplay.json",
+      "authoredFixture": "pure/adaptation/research-counter-composition-and-visibility-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "SCOUT-01",
+      "stages": [9],
+      "group": "scouting",
+      "fixture": "native/scouting/scout-01-assign-reachable-information-objectives-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "SCOUT-02",
+      "stages": [9],
+      "group": "scouting",
+      "fixture": "native/scouting/scout-02-increase-relevant-scouting-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "SCOUT-03",
+      "stages": [9, 13],
+      "group": "scouting",
+      "fixture": "native/scouting/scout-03-preserve-scout-or-use-bounded-risk-fallback-update-knowledge-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "SCOUT-04",
+      "stages": [9],
+      "group": "scouting",
+      "fixture": "native/scouting/scout-04-knowledge-changes-relevant-objectives-access-plans-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "SCOUT-05",
+      "stages": [4, 9, 14],
+      "group": "scouting",
+      "fixture": "native/scouting/hidden-state-native-gameplay.json",
+      "authoredFixture": "pure/adaptation/research-counter-composition-and-visibility-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "STRAT-01",
+      "stages": [6, 9],
+      "group": "strategy",
+      "fixture": "native/strategy/pressure-budget-native-gameplay.json",
+      "authoredFixture": "pure/strategy/pressure-strategy-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "STRAT-02",
+      "stages": [9, 13],
+      "group": "strategy",
+      "fixture": "native/strategy/strat-02-allocate-limited-compatible-defense-protect-economy-and-retain-main-objective-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "STRAT-03",
+      "stages": [9, 13],
+      "group": "strategy",
+      "fixture": "native/strategy/strat-03-increase-defense-partially-fully-recall-when-needed-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "STRAT-04",
+      "stages": [6, 9],
+      "group": "strategy",
+      "fixture": "native/strategy/strat-04-handle-locally-and-preserve-goal-step-claims-through-noise-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "STRAT-05",
+      "stages": [6, 13, 14],
+      "group": "strategy",
+      "fixture": "native/strategy/strat-05-suspend-retarget-retreat-and-adjust-future-plan-runtime.json",
+      "authoredFixture": "pure/strategy/victory-route-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "STRAT-06",
+      "stages": [6, 7, 14],
+      "group": "strategy",
+      "fixture": "native/strategy/strat-06-different-state-driven-phases-pressure-buildup-versus-stabilize-recover-runtime.json",
+      "authoredFixture": "pure/strategy/victory-route-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "STRAT-07",
+      "stages": [9, 13],
+      "group": "strategy",
+      "fixture": "native/strategy/strat-07-exploit-a-safe-high-value-opportunity-with-an-appropriate-force-runtime.json",
+      "authoredFixture": "pure/strategy/victory-route-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "STRAT-08",
+      "stages": [9, 13],
+      "group": "strategy",
+      "fixture": "native/strategy/strat-08-choose-finishing-objective-and-complete-ordinary-victory-score-path-runtime.json",
+      "authoredFixture": "pure/strategy/victory-route-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "STRAT-09",
+      "stages": [6, 9, 14],
+      "group": "strategy",
+      "fixture": "native/strategy/strat-09-choose-an-evidenced-higher-risk-feasible-comeback-instead-of-normal-booming-runtime.json",
+      "authoredFixture": "pure/strategy/strat-09-defeat-concession-and-recoverable-control.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "STRAT-10",
+      "stages": [7, 12],
+      "group": "strategy",
+      "fixture": "native/strategy/strat-10-reduce-ambition-rebuild-worker-income-minimum-defense-and-needed-production-before-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "STRAT-11",
+      "stages": [9, 13],
+      "group": "strategy",
+      "fixture": "native/strategy/strat-11-control-when-marginal-safety-economic-offensive-value-justifies-commitment-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "STRAT-12",
+      "stages": [9, 13],
+      "group": "strategy",
+      "fixture": "native/strategy/strat-12-compare-denial-harassment-against-frontal-fighting-and-defend-own-dependency-proportionately-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "STRAT-13",
+      "stages": [9, 13],
+      "group": "strategy",
+      "fixture": "native/strategy/strat-13-maintain-independent-squads-objectives-and-reinforcement-priorities-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "DOMAIN-01",
+      "stages": [8, 9, 14],
+      "group": "access",
+      "fixture": "native/access/domain-01-no-naval-demand-solely-from-water-existence-runtime.json",
+      "authoredFixture": "pure/adaptation/research-counter-composition-and-visibility-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "DOMAIN-02",
+      "stages": [8, 9, 14],
+      "group": "access",
+      "fixture": "native/access/domain-02-select-mission-specific-useful-fleet-runtime.json",
+      "authoredFixture": "pure/adaptation/research-counter-composition-and-visibility-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "DOMAIN-03",
+      "stages": [8, 9],
+      "group": "access",
+      "fixture": null,
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"],
+      "runtimeSupport": {
+        "status": "deferred_content",
+        "issue": 822,
+        "reason": "No shipped transport-required island map"
+      }
+    },
+    {
+      "id": "DOMAIN-04",
+      "stages": [8, 12],
+      "group": "access",
+      "fixture": null,
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"],
+      "runtimeSupport": { "status": "deferred_content", "issue": 822, "reason": "No shipped carrier-loss island route" }
+    },
+    {
+      "id": "DOMAIN-05",
+      "stages": [9, 14],
+      "group": "access",
+      "fixture": "native/access/domain-05-choose-air-when-travel-target-value-makes-it-useful-runtime.json",
+      "authoredFixture": "pure/adaptation/research-counter-composition-and-visibility-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "DOMAIN-06",
+      "stages": [8, 13],
+      "group": "access",
+      "fixture": "native/access/defense-native-gameplay.json",
+      "authoredFixture": "pure/combat/tactical-domain-support-and-transport-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "RAID-01",
+      "stages": [9, 13],
+      "group": "combat",
+      "fixture": "native/combat/raid-01-choose-valuable-feasible-harassment-target-and-limited-squad-not-necessarily-main-runtime.json",
+      "authoredFixture": "pure/combat/tactical-domain-support-and-transport-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "RAID-02",
+      "stages": [13],
+      "group": "combat",
+      "fixture": "native/access/defense-native-gameplay.json",
+      "authoredFixture": "pure/combat/tactical-domain-support-and-transport-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "RAID-03",
+      "stages": [8, 9, 13],
+      "group": "combat",
+      "fixture": "native/combat/raid-03-exercise-strat-02-03-through-real-landing-visibility-combat-not-only-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "PLACE-01",
+      "stages": [10],
+      "group": "placement",
+      "fixture": "native/placement/place-01-efficient-aligned-field-layout-in-safe-economic-space-valid-tending-deposit-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "PLACE-02",
+      "stages": [10],
+      "group": "placement",
+      "fixture": "native/placement/place-02-outer-placement-only-when-sensible-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "PLACE-03",
+      "stages": [10],
+      "group": "placement",
+      "fixture": "native/placement/place-03-preserve-production-spawn-worker-resource-army-rally-retreat-and-future-building-runtime.json",
+      "drivers": ["pure", "runtime"],
+      "authoredFixture": "pure/fortification/placement-recovery-scenarios.json"
+    },
+    {
+      "id": "EXP-01",
+      "stages": [10],
+      "group": "placement",
+      "fixture": "native/placement/exp-01-select-defensible-high-benefit-reachable-site-including-complete-island-establishment-when-runtime.json",
+      "drivers": ["pure", "runtime"],
+      "authoredFixture": "pure/fortification/placement-recovery-scenarios.json"
+    },
+    {
+      "id": "EXP-02",
+      "stages": [10],
+      "group": "placement",
+      "fixture": "native/placement/expansion-pressure-native-gameplay.json",
+      "drivers": ["pure", "runtime"],
+      "authoredFixture": "pure/fortification/placement-recovery-scenarios.json"
+    },
+    {
+      "id": "WALL-01",
+      "stages": [11],
+      "group": "fortification",
+      "fixture": "native/fortification/wall-01-useful-connected-defense-exploits-terrain-covers-assets-and-reduces-required-artificial-runtime.json",
+      "drivers": ["pure", "runtime"],
+      "authoredFixture": "pure/fortification/placement-recovery-scenarios.json"
+    },
+    {
+      "id": "WALL-02",
+      "stages": [11],
+      "group": "fortification",
+      "fixture": "native/fortification/wall-02-preserve-intentional-opening-and-access-through-every-construction-prefix-runtime.json",
+      "drivers": ["pure", "runtime"],
+      "authoredFixture": "pure/fortification/placement-recovery-scenarios.json"
+    },
+    {
+      "id": "WALL-03",
+      "stages": [11, 13],
+      "group": "fortification",
+      "fixture": "native/fortification/wall-03-reachable-posts-legal-elevated-firing-and-marginal-tower-coverage-runtime.json",
+      "authoredFixture": "pure/combat/tactical-domain-support-and-transport-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "WALL-04",
+      "stages": [11, 12],
+      "group": "fortification",
+      "fixture": "native/fortification/wall-04-repair-rebuild-needed-nodes-and-reposition-defenders-or-abandon-invalid-perimeter-runtime.json",
+      "drivers": ["pure", "runtime"],
+      "authoredFixture": "pure/fortification/placement-recovery-scenarios.json"
+    },
+    {
+      "id": "WALL-05",
+      "stages": [11],
+      "group": "fortification",
+      "fixture": "native/fortification/wall-05-preserve-shore-egress-runtime.json",
+      "drivers": ["pure", "runtime"],
+      "authoredFixture": "pure/fortification/placement-recovery-scenarios.json"
+    },
+    {
+      "id": "FIGHT-01",
+      "stages": [13],
+      "group": "combat",
+      "fixture": "native/combat/fight-01-reassess-and-retreat-regroup-within-bound-runtime.json",
+      "authoredFixture": "pure/combat/tactical-domain-support-and-transport-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "FIGHT-02",
+      "stages": [13],
+      "group": "combat",
+      "fixture": "native/combat/fight-02-reposition-preserve-without-illegal-teleport-min-range-behavior-or-constant-windup-runtime.json",
+      "authoredFixture": "pure/combat/tactical-domain-support-and-transport-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "FIGHT-03",
+      "stages": [9, 13],
+      "group": "combat",
+      "fixture": "native/combat/fight-03-reinforce-useful-front-proportionately-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "FIGHT-04",
+      "stages": [13],
+      "group": "combat",
+      "fixture": "native/combat/fight-04-coordinated-damage-caster-claims-useful-effects-safe-positions-and-actual-runtime-runtime.json",
+      "authoredFixture": "pure/combat/tactical-domain-support-and-transport-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "FIGHT-05",
+      "stages": [12, 13],
+      "group": "combat",
+      "fixture": "native/combat/fight-05-respect-status-durations-bounded-recovery-and-real-route-weapon-legality-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-01",
+      "stages": [6, 12],
+      "group": "recovery",
+      "fixture": "native/recovery/h-01-cumulative-episode-deadline-still-escalates-and-restores-useful-duty-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-02",
+      "stages": [6, 12],
+      "group": "recovery",
+      "fixture": "native/recovery/h-02-best-progress-cause-tracker-detects-false-progress-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-03",
+      "stages": [6, 12],
+      "group": "recovery",
+      "fixture": "native/recovery/h-03-healthy-work-is-retained-with-observed-progress-expected-milestone-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-04",
+      "stages": [6, 12],
+      "group": "recovery",
+      "fixture": "native/recovery/h-04-parent-deadline-still-fires-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-05",
+      "stages": [6, 12],
+      "group": "recovery",
+      "fixture": "native/recovery/h-05-atomic-safe-release-and-bounded-reassignment-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-06",
+      "stages": [3],
+      "group": "authority",
+      "fixture": "native/authority/h-06-same-effect-identity-reconciles-to-actual-state-exactly-once-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-07",
+      "stages": [3],
+      "group": "authority",
+      "fixture": "native/authority/h-07-authoritative-history-proves-application-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-08",
+      "stages": [3],
+      "group": "authority",
+      "fixture": "native/authority/h-08-canonical-epoch-sequence-fencing-and-correct-lifecycle-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-09",
+      "stages": [3],
+      "group": "authority",
+      "fixture": "native/authority/h-09-safe-watermark-rejects-stale-reapplication-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-10",
+      "stages": [3],
+      "group": "authority",
+      "fixture": "native/authority/h-10-backpressure-preserves-required-records-and-unrelated-safe-progress-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-11",
+      "stages": [6, 12],
+      "group": "reservations",
+      "fixture": "native/reservations/h-11-cheapest-legal-feasible-recovery-chain-or-independently-confirmed-strategic-infeasibility-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-12",
+      "stages": [6, 12],
+      "group": "reservations",
+      "fixture": "native/reservations/h-12-native-atomic-bundles-prevent-resource-deadlock-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-13",
+      "stages": [6, 12],
+      "group": "lanes",
+      "fixture": "native/lanes/h-13-player-wide-exposure-remains-bounded-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-14",
+      "stages": [6, 12],
+      "group": "lanes",
+      "fixture": "native/lanes/h-14-emergency-decays-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-15",
+      "stages": [6, 12],
+      "group": "lanes",
+      "fixture": "native/lanes/h-15-survival-preempts-appropriate-actors-resources-while-observation-reconciliation-continue-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-16",
+      "stages": [7, 12],
+      "group": "economy",
+      "fixture": "native/economy/economy-delivery-native-gameplay.json",
+      "authoredFixture": "pure/economy/economy-forecast-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-17",
+      "stages": [7, 12],
+      "group": "production",
+      "fixture": "native/production/production-authority-native-gameplay.json",
+      "authoredFixture": "pure/production/production-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-18",
+      "stages": [7, 12],
+      "group": "economy",
+      "fixture": "native/economy/supply-loss-native-gameplay.json",
+      "authoredFixture": "pure/economy/economy-supply-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-19",
+      "stages": [4, 8],
+      "group": "access",
+      "fixture": "native/access/h-19-local-permitted-defense-still-executes-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-20",
+      "stages": [4, 8],
+      "group": "access",
+      "fixture": "native/access/h-20-bounded-backlog-cursors-eventual-stable-route-publication-and-unrelated-progress-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-21",
+      "stages": [8],
+      "group": "access",
+      "fixture": null,
+      "runtimeSupport": {
+        "status": "deferred_content",
+        "issue": 759,
+        "reason": "User 2026-10-21 deferred larger-unit/formation native clearance coverage until suitable content exists; preserve pure clearance contracts."
+      },
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-22",
+      "stages": [4, 9],
+      "group": "scouting",
+      "fixture": "native/scouting/h-22-hypothesis-retired-legal-search-progresses-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-23",
+      "stages": [9, 13],
+      "group": "combat",
+      "fixture": "native/combat/h-23-useful-force-launches-or-changes-to-feasible-mission-by-deadline-runtime.json",
+      "authoredFixture": "pure/combat/tactical-domain-support-and-transport-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-24",
+      "stages": [9, 13],
+      "group": "combat",
+      "fixture": "native/combat/h-24-bounded-useful-probe-mission-not-permanent-assembly-or-forced-suicide-runtime.json",
+      "authoredFixture": "pure/combat/tactical-domain-support-and-transport-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-25",
+      "stages": [9, 13],
+      "group": "combat",
+      "fixture": "native/combat/h-25-detect-oscillation-alter-objective-force-route-and-achieve-recovery-progress-runtime.json",
+      "authoredFixture": "pure/combat/tactical-domain-support-and-transport-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-26",
+      "stages": [9, 13],
+      "group": "combat",
+      "fixture": "native/combat/h-26-reachable-grouping-alternate-route-or-stop-feeding-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-27",
+      "stages": [11],
+      "group": "fortification",
+      "fixture": "native/fortification/h-27-planner-cannot-claim-sealed-defense-runtime.json",
+      "drivers": ["pure", "runtime"],
+      "authoredFixture": "pure/fortification/placement-recovery-scenarios.json"
+    },
+    {
+      "id": "H-28",
+      "stages": [11, 12],
+      "group": "fortification",
+      "fixture": "native/fortification/h-28-cumulative-base-player-commitments-counted-runtime.json",
+      "drivers": ["pure", "runtime"],
+      "authoredFixture": "pure/fortification/placement-recovery-scenarios.json"
+    },
+    {
+      "id": "H-29",
+      "stages": [8, 12, 13],
+      "group": "transport",
+      "fixture": null,
+      "runtimeSupport": {
+        "status": "deferred_content",
+        "issue": 822,
+        "reason": "No shipped transport-required island map"
+      },
+      "authoredFixture": "pure/combat/tactical-domain-support-and-transport-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-30",
+      "stages": [6, 13],
+      "group": "lifecycle",
+      "fixture": "native/lifecycle/h-30-boundary-guards-isolate-faulty-output-preserve-valid-orders-and-surface-incident-runtime.json",
+      "authoredFixture": "pure/combat/tactical-domain-support-and-transport-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-31",
+      "stages": [12, 14, 15],
+      "group": "lifecycle",
+      "fixture": "native/lifecycle/h-31-failure-age-debt-claims-epoch-and-next-legitimate-decisions-preserved-runtime.json",
+      "authoredFixture": "pure/adaptation/research-counter-composition-and-visibility-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "H-32",
+      "stages": [13, 14, 15],
+      "group": "lifecycle",
+      "fixture": "native/lifecycle/h-32-exactly-one-current-controller-player-runtime.json",
+      "authoredFixture": "pure/lifecycle/controller-lifecycle-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "SEQ-01",
+      "name": "Continuous land-match victory",
+      "stages": [15],
+      "group": "continuous",
+      "fixture": "native/continuous/continuous-land-native-gameplay.json",
+      "drivers": ["runtime"]
+    },
+    {
+      "id": "SEQ-02",
+      "name": "Defend a home raid and resume play",
+      "stages": [15],
+      "group": "continuous",
+      "fixture": "native/continuous/continuous-land-native-gameplay.json",
+      "drivers": ["runtime"]
+    },
+    {
+      "id": "SEQ-03",
+      "stages": [15],
+      "group": "continuous",
+      "fixture": "native/continuous/seq-03-delivered-income-recovers-within-independent-service-build-bounds-runtime.json",
+      "drivers": ["runtime"]
+    },
+    {
+      "id": "SEQ-04",
+      "stages": [15],
+      "group": "continuous",
+      "fixture": "native/continuous/seq-04-no-ghost-reservations-double-spending-runtime.json",
+      "drivers": ["runtime"]
+    },
+    {
+      "id": "SEQ-05",
+      "name": "Island transport and expansion",
+      "stages": [15],
+      "group": "continuous",
+      "fixture": null,
+      "drivers": ["runtime"],
+      "runtimeSupport": { "status": "deferred_content", "issue": 822, "reason": "No shipped island map" }
+    },
+    {
+      "id": "SEQ-06",
+      "stages": [15],
+      "group": "continuous",
+      "fixture": "native/continuous/seq-06-measured-defense-value-friendly-clearance-throughout-bounded-repair-spend-mobile-force-runtime.json",
+      "drivers": ["runtime"]
+    },
+    {
+      "id": "SEQ-07",
+      "stages": [15],
+      "group": "continuous",
+      "fixture": "native/continuous/seq-07-proportionate-evidence-response-no-queue-churn-useful-retained-units-bounded-tactical-runtime.json",
+      "drivers": ["runtime"]
+    },
+    {
+      "id": "SEQ-08",
+      "stages": [15],
+      "group": "continuous",
+      "fixture": "native/continuous/seq-08-exact-saved-continuation-for-equivalent-logical-inputs-applied-once-effects-no-runtime.json",
+      "drivers": ["runtime"]
+    },
+    {
+      "id": "C-01",
+      "stages": [7, 14],
+      "group": "classic-rts",
+      "fixture": "native/classic-rts/c-01-both-faction-branches-preserve-completed-assets-commitments-during-evidence-backed-transition-runtime.json",
+      "authoredFixture": "pure/classic-rts/classic-rts-pure-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "C-02",
+      "stages": [7, 13, 14],
+      "group": "classic-rts",
+      "fixture": "native/classic-rts/c-02-upgrade-batch-timing-launches-within-the-viable-window-or-explicitly-changes-runtime.json",
+      "authoredFixture": "pure/classic-rts/classic-rts-pure-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "C-03",
+      "stages": [7],
+      "group": "classic-rts",
+      "fixture": "native/classic-rts/c-03-army-total-grows-with-useful-affordable-mission-demand-respects-worker-supply-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "C-04",
+      "stages": [4, 9, 14],
+      "group": "classic-rts",
+      "fixture": "native/classic-rts/c-04-question-driven-scouting-changes-a-real-decision-runtime.json",
+      "authoredFixture": "pure/classic-rts/classic-rts-pure-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "C-05",
+      "stages": [9, 13],
+      "group": "classic-rts",
+      "fixture": "native/classic-rts/c-05-bait-retreat-cannot-pull-asset-defenders-into-a-bad-pursuit-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "C-06",
+      "stages": [9, 13],
+      "group": "classic-rts",
+      "fixture": "native/classic-rts/c-06-multiple-opponents-retain-coherent-mission-focus-runtime.json",
+      "authoredFixture": "pure/classic-rts/classic-rts-pure-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "D-01",
+      "stages": [6],
+      "group": "difficulty",
+      "fixture": "native/difficulty/d-01-every-lobby-difficulty-selects-the-exact-versioned-profile-and-expected-cadence-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "D-02",
+      "stages": [6, 14],
+      "group": "difficulty",
+      "fixture": "native/difficulty/d-02-save-load-replay-host-transfer-preserves-difficulty-archetype-scheduling-and-active-runtime.json",
+      "authoredFixture": "pure/adaptation/research-counter-composition-and-visibility-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "D-03",
+      "stages": [6, 14],
+      "group": "difficulty",
+      "fixture": "native/difficulty/d-03-equal-permitted-observations-rules-across-profiles-runtime.json",
+      "authoredFixture": "pure/adaptation/research-counter-composition-and-visibility-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "D-04",
+      "stages": [7, 9, 12],
+      "group": "difficulty",
+      "fixture": "native/difficulty/d-04-easy-still-opens-produces-useful-copies-counters-legal-threats-retreats-and-runtime.json",
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "D-05",
+      "stages": [9, 13, 14],
+      "group": "difficulty",
+      "fixture": "native/difficulty/d-05-caps-and-reconsideration-cadence-affect-eligible-voluntary-activity-while-independent-defense-runtime.json",
+      "authoredFixture": "pure/adaptation/research-counter-composition-and-visibility-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "D-06",
+      "stages": [15],
+      "group": "difficulty",
+      "fixture": "native/difficulty/d-06-paired-calibration-report-identifies-versions-sample-counts-uncertainty-and-challenge-trend-runtime.json",
+      "authoredFixture": "calibration/paired-difficulty-calibration-workload.json",
+      "drivers": ["runtime"]
+    },
+    {
+      "id": "DBG-01",
+      "stages": [5, 13],
+      "group": "debug",
+      "fixture": "native/debug/dbg-01-real-incident-captures-and-reproduces-pure-decision-and-applicable-full-runtime-runtime.json",
+      "authoredFixture": "pure/debug/decision-reproduction-and-debug-boundary-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "DBG-02",
+      "stages": [6, 13],
+      "group": "debug",
+      "fixture": null,
+      "authoredFixture": "pure/integration/controller-contract-scenarios.json",
+      "drivers": ["pure"]
+    },
+    {
+      "id": "DBG-03",
+      "stages": [5, 13],
+      "group": "debug",
+      "fixture": "native/debug/dbg-03-offline-tick-decision-step-and-named-breakpoint-stop-at-safe-reproducible-runtime.json",
+      "authoredFixture": "pure/debug/decision-reproduction-and-debug-boundary-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "DBG-04",
+      "stages": [5, 13],
+      "group": "debug",
+      "fixture": "native/debug/dbg-04-different-input-config-labeled-correctly-runtime.json",
+      "authoredFixture": "pure/debug/decision-reproduction-and-debug-boundary-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "DBG-05",
+      "stages": [2, 5, 13],
+      "group": "debug",
+      "fixture": "native/debug/dbg-05-malformed-oversized-version-mismatched-traversal-html-payloads-rejected-or-rendered-safely-runtime.json",
+      "authoredFixture": "pure/debug/decision-reproduction-and-debug-boundary-controls.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "DBG-06",
+      "stages": [13, 15],
+      "group": "debug",
+      "fixture": "native/debug/dbg-06-capture-quota-history-truncation-scene-disposal-stay-bounded-runtime.json",
+      "drivers": ["runtime"]
+    }
+  ]
+}

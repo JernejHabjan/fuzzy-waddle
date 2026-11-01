@@ -7,7 +7,7 @@ import { upgradeFromConstructingToFullActorData } from "../../../data/actor-data
 import { subscribeSceneResourceLoss } from "../../../data/scene-resource-observation";
 import { startConstructionPayment, refundConstructionPayment } from "./construction-payment";
 import { BuilderComponent } from "./builder-component";
-import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
+import { PawnAiController } from "../../../prefabs/ai-agents/controller/pawn-ai-controller";
 import { HealthComponent } from "../combat/components/health-component";
 import { ProbableWaffleSceneEventName } from "../../../world/services/recovery/probable-waffle-scene-events";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";

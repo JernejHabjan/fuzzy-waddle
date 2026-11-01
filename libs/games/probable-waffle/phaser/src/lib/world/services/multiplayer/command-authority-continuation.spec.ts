@@ -5,7 +5,7 @@ import { SimulationTickService } from "../simulation-tick.service";
 import { CommandBusService } from "./command-bus.service";
 import { CommandAuthority } from "./command-authority";
 import { commandBusTestScene } from "./command-bus-test-scene";
-import { AiCommandReconciliation } from "../../../player/ai-controller/ai-command-reconciliation";
+import { AiCommandReconciliation } from "../../../player/ai-controller/outcomes/ai-command-reconciliation";
 
 /** Real bus admission/restore controls; no rendered world, payment or multiplayer pass is inferred. */
 function setup() {

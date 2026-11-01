@@ -1,5 +1,5 @@
 import { FactionType } from "@fuzzy-waddle/probable-waffle-protocol";
-import { AI_REPRO_CAPTURE_POLICY, type AiReproBundle } from "../contracts/ai-repro-bundle";
+import { AI_REPRO_CAPTURE_POLICY, type AiReproBundle } from "../contracts/diagnostics/ai-repro-bundle";
 import { AiReproBundleValidationError, parseAiReproBundle } from "./parse-ai-repro-bundle";
 
 const validBundle = {

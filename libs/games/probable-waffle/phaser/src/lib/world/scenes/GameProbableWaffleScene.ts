@@ -16,7 +16,7 @@ import { AudioService } from "../services/audio.service";
 import { RandomService } from "../services/random.service";
 import { TilemapComponent } from "../tilemap/tilemap.component";
 import { RestartGame } from "../../data/restart-game";
-import { AiPlayerHandler } from "../../player/ai-controller/ai-player-handler";
+import { AiPlayerHandler } from "../../player/ai-controller/commands/ai-player-handler";
 import { BuildingCursor } from "../../player/human-controller/building-cursor";
 import { DebuggingService } from "../services/DebuggingService";
 import { CrossSceneCommunicationService } from "../services/CrossSceneCommunicationService";
@@ -45,7 +45,7 @@ import { StateHashService } from "../services/recovery/state-hash.service";
 import {
   AiMultiplayerDiagnostics,
   multiplayerDiagnosticsRequested
-} from "../../player/ai-controller/testing/ai-multiplayer-diagnostics";
+} from "../../player/ai-controller/test-support/multiplayer/ai-multiplayer-diagnostics";
 import { SnapshotService } from "../services/recovery/snapshot.service";
 import { ReconnectService } from "../services/recovery/reconnect.service";
 import { ReplayPlaybackService } from "../services/replay/replay-playback.service";
@@ -64,10 +64,10 @@ import { CampaignRestoreCoordinator } from "../../campaign/campaign-restore-coor
 import {
   readAiRuntimeBrowserTestConfig,
   recordAiRuntimeBrowserInitialState
-} from "../../player/ai-controller/testing/ai-runtime-browser-test-config";
+} from "../../player/ai-controller/test-support/browser/ai-runtime-browser-test-config";
 import { GathererComponent } from "../../entity/components/resource/gatherer-component";
 import { getActorComponent } from "../../data/actor-component";
-import { applyAiRuntimePresetWorld } from "../../player/ai-controller/testing/apply-ai-runtime-preset-world";
+import { applyAiRuntimePresetWorld } from "../../player/ai-controller/test-support/presets/setup/apply-ai-runtime-preset-world";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;

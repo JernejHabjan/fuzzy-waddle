@@ -2,7 +2,7 @@ import type Phaser from "phaser";
 import { ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
 // prettier-ignore
 import { createAiTestOwnedActor } from
-  "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
+  "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
 import { getActorComponent } from "../../../data/actor-component";
 import { projectResearchCandidates } from "./ai-observation-context";
 

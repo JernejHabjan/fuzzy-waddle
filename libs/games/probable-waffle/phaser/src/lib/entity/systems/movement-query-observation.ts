@@ -1,6 +1,6 @@
 import type Phaser from "phaser";
 import type { OrderData } from "../../ai/OrderData";
-import type { PawnAiBlackboard } from "../../prefabs/ai-agents/pawn-ai-blackboard";
+import type { PawnAiBlackboard } from "../../prefabs/ai-agents/controller/pawn-ai-blackboard";
 import type { MovementQueryContext } from "./movement-query-context";
 
 /** Passive local observation. Only the actual synchronous navigation invocation has an ambient binding. */

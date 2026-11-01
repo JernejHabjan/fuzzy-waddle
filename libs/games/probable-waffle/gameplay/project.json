@@ -18,7 +18,7 @@
     "skirmish-matrix": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/ai/run-skirmish-matrix.mjs",
+        "command": "node tools/probable-waffle/skirmish/ai/cli/run-skirmish-matrix.ts",
         "cwd": "{workspaceRoot}",
         "forwardAllArgs": true
       }

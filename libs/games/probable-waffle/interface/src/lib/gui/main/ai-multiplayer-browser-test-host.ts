@@ -1,7 +1,7 @@
 import type Phaser from "phaser";
 import { environment } from "@fuzzy-waddle/environments/environment";
 import { captureAiRuntimeArtifact } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/capture-ai-runtime-artifact";
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/harness/capture/capture-ai-runtime-artifact";
 
 const marker = "fuzzy-waddle:ai-multiplayer-browser-test";
 const hostKey = "__fuzzyWaddleAiMultiplayerBrowserTest";

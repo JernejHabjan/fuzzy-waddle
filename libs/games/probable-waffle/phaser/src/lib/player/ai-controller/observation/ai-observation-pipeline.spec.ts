@@ -14,8 +14,8 @@ import {
   normalizeAiObservationMemoryState,
   selectBoundedObservationWork
 } from "./ai-observation-pipeline";
-import { projectRememberedContacts } from "./ai-observation-memory";
-import { compareAccessProductCandidates } from "./ai-observation-access-product";
+import { projectRememberedContacts } from "./knowledge/ai-observation-memory";
+import { compareAccessProductCandidates } from "./world/ai-observation-access-product";
 import { AiObservationPipeline } from "./ai-observation-pipeline";
 import type Phaser from "phaser";
 

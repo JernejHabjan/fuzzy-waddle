@@ -56,7 +56,7 @@ Default bounded capture: one automatic incident capture per causal episode, at m
 
 ## CLI and artifact integration
 
-Extend the existing planned tools/ai/run-skirmish-matrix.mjs rather than creating a parallel simulator:
+Extend the existing planned tools/probable-waffle/skirmish/ai/cli/run-skirmish-matrix.ts rather than creating a parallel simulator:
 
 - `--replay-bundle <path> --until-tick <n>`: validate kind/version/digests, resolve exact compatible sources/assets and execute to a safe boundary.
 - `--replay-bundle <path> --break-on <named-condition>`: isolated bounded stepping; noninteractive mode emits breakpoint artifacts and exits with a documented diagnostic status, not an endless wait.
@@ -75,11 +75,11 @@ For a repair, compare command and AI digests, authoritative outcomes and indepen
 - Phaser UI owns bounded presentation, overlays, keyboard behavior and cleanup.
 - Playwright owns reproduction round trips, debug parity, bounded viewport checks, and repeated-selection lifecycle.
 
-The targeted `apps/portal-e2e/src/e2e/skirmish-ai-debug-parity.spec.ts` is a regular Playwright test, runnable from
+The targeted `apps/portal-e2e/src/e2e/probable-waffle/skirmish/ai/debug/skirmish-ai-debug-parity.spec.ts` is a regular Playwright test, runnable from
 the IDE or with:
 
 ```bash
-pnpm exec playwright test -c apps/portal-e2e/playwright.config.ts apps/portal-e2e/src/e2e/skirmish-ai-debug-parity.spec.ts --workers=1
+pnpm exec playwright test -c apps/portal-e2e/playwright.config.ts apps/portal-e2e/src/e2e/probable-waffle/skirmish/ai/debug/skirmish-ai-debug-parity.spec.ts --workers=1
 ```
 
 It boots four real same-seed 400-tick matches from the authoritative preset world, compares committed gameplay digests

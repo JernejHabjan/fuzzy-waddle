@@ -8,7 +8,7 @@ import HudProbableWaffle from "../../../../world/scenes/hud-scenes/HudProbableWa
 import { ProbableWaffleScene } from "../../../../core/probable-waffle.scene";
 import { getPlayer } from "../../../../data/scene-data";
 import { getSceneService, getSceneSystem } from "../../../../world/services/scene-component-helpers";
-import { AiPlayerHandler } from "../../../../player/ai-controller/ai-player-handler";
+import { AiPlayerHandler } from "../../../../player/ai-controller/commands/ai-player-handler";
 import { type PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import type { PlayerAiController } from "../../../../player/ai-controller/player-ai-controller";
 import { NavigationService } from "../../../../world/services/navigation.service";

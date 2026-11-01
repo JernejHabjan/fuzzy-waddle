@@ -7,8 +7,8 @@ placement/expansion/walls, command/resource ownership, scouting and strategic de
 strategy tree is retired. This does not certify every registered scenario, real-peer multiplayer, complete save/load
 continuation, exact replay determinism or difficulty ordering.
 
-`tools/ai/fixtures/skirmish.json` and `tools/ai/shared/native-scenario-bindings.json` own scenario registration. The regression
-selection is `tools/ai/fixtures/ai-regression.json`; use `pnpm ai:regression -- --list` or the scout profile's
+`tools/probable-waffle/skirmish/ai/testing/fixtures/skirmish-scenario-manifest.json` and `tools/probable-waffle/skirmish/ai/testing/bindings/native-scenario-bindings.json` own scenario registration. The regression
+selection is `tools/probable-waffle/skirmish/ai/testing/fixtures/periodic-native-regression-profiles.json`; use `pnpm ai:regression -- --list` or the scout profile's
 `--list` for current variants/repetitions/exclusions. A registered recipe is authored coverage, not execution evidence.
 Keep proposal selection, arbitration admission, native application and useful physical effect distinct.
 
@@ -44,12 +44,12 @@ adding another fixture. Native limits are in the table above.
 
 | Decision | Focused source |
 | --- | --- |
-| Start useful scouting | planning/ai-scouting-admission.spec.ts, ai-scout-search-questions.spec.ts, ai-skirmish-offense.spec.ts |
-| Investigate stale intelligence | planning/ai-adaptation-manager.spec.ts, ai-tactics-scouting.spec.ts; Phaser observation memory/coverage specs |
-| Justify air production | planning/ai-adaptation-manager.spec.ts, ai-adaptation-scenarios.spec.ts |
-| Harass and withdraw | planning/ai-skirmish-offense.spec.ts and RAID-01/02 fixtures |
-| Time upgrades | planning/ai-adaptation-manager.spec.ts TECH-01/02 |
-| Adapt composition/strategy | planning/ai-adaptation-scenarios.spec.ts and offense controls |
+| Start useful scouting | planning/strategy/scouting/ai-scouting-admission.spec.ts, ai-scout-search-questions.spec.ts, ai-skirmish-offense.spec.ts |
+| Investigate stale intelligence | planning/adaptation/ai-adaptation-manager.spec.ts, ai-tactics-scouting.spec.ts; Phaser observation memory/coverage specs |
+| Justify air production | planning/adaptation/ai-adaptation-manager.spec.ts, ai-adaptation-scenarios.spec.ts |
+| Harass and withdraw | planning/strategy/offense/ai-skirmish-offense.spec.ts and RAID-01/02 fixtures |
+| Time upgrades | planning/adaptation/ai-adaptation-manager.spec.ts TECH-01/02 |
+| Adapt composition/strategy | planning/adaptation/ai-adaptation-scenarios.spec.ts and offense controls |
 
 ## Independently resumable work
 
@@ -79,7 +79,7 @@ configuration/fairness tests remain; D-06 comparisons, difficulty-order campaign
 
 Automatic AI regression/matrix jobs and tag triggers are commented out. Manual dispatch remains available when the
 dedicated workflow is registered on the default branch. Local `pnpm ai:regression` and its scout profile remain usable;
-the strict `RUN_AI_REGRESSION=true` E2E hook is documented in [testing commands](README.md#periodic-regression-profiles).
+the strict `RUN_AI_REGRESSION=true` E2E hook is documented in [testing commands](./README.md#periodic-regression-profiles).
 Repository variables and tags alone cannot activate commented jobs. Do not re-enable them without a new request.
 
 Use focused causal checks before affected native confirmation. Keep one local native runner and each invocation at
@@ -92,15 +92,23 @@ The legacy player strategy tree was removed at `7e905de1e`. The subsequent namin
 unsuffixed AI filenames/symbols, with snapshot/contract names where an interface and implementation would collide.
 Source naming does not replace validation of actual save, fixture or report inputs.
 
-Verification covers 105 gameplay suites (632 tests), 103 Phaser AI suites (431 tests, including a focused rerun of
-four corrected harness suites), 160 AI tooling tests and 38 generic agent tests. Both owning TypeScript compilers and gameplay, Phaser
-and portal-e2e lint pass; existing lint warnings remain. Catalog, skill/schema and documentation-reference checks pass.
-The harness repairs restore missing new-game metadata, expect atomic rejected payments, use platform-correct paths,
-and pin the current 579 native preset variants (the pre-rename manifest also contains 579). Packet/log paths
-use native containment checks and stable forward-slash report paths on Windows as well as Unix.
+The source-layout/tooling cleanup was checked with 105 gameplay suites (632 tests), 103 Phaser controller suites
+(431 tests), 16 pawn-executor suites (168 tests), 605 browser-free Playwright contract tests and 204 Node
+tool/agent/skill/source-rule tests. Counts include focused reruns of repaired harness expectations. Gameplay, Phaser,
+portal-e2e and AI-tool lint pass; existing warnings remain. Phaser, portal-e2e and the dedicated tooling TypeScript
+checks pass. Catalog/skill/link checks, CLI regression selection and Playwright discovery cover the relocated paths.
+This is contract/static evidence, not a fresh native match campaign.
 
-Source-structure exemption moves are limited to exact name substitutions from matching original hashes. Stale
-nonmatching entries are removed rather than renewed. No new size exemption is introduced.
+Registered presets still admit exactly 579 focused native worlds. Consumers follow descriptive manifest bindings
+instead of reconstructing filenames or relying on their former flat directory. An older pawn-progress test expected
+timeouts to invent terminal failures; it now verifies the existing technical-fault contract, retained uncertain paid
+ownership and absence of fabricated outcomes. Runtime JSON validation, native scenario branches, seeds, numeric
+deadlines and gameplay policy remain unchanged.
+
+Source-structure exemption moves require matching original hashes and equivalent parsed code after import/name
+normalization. Pre-existing stale entries are not renewed; the removed stale missing-file entry is dropped.
+No new size exemption is introduced. Converted tooling has its own enforced source-size lint, and oversized fixture
+tests and world-authoring functions are split by responsibility.
 No native match, real-peer session or full-tail save/load certification was rerun for these mechanical changes;
 retained native evidence above keeps its original source/fixture limitations. The omission/closure audits cover
 consumers, wire/save validation, deleted-code references, documentation links and publication scope.

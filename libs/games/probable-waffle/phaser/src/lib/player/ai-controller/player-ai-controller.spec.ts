@@ -1,4 +1,4 @@
-import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
 import type { AiIntent, AiObservation } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { FactionType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { OrderType } from "../../ai/order-type";
@@ -8,9 +8,9 @@ import { getSceneService } from "../../world/services/scene-component-helpers";
 import { PlayerAiController } from "./player-ai-controller";
 import type Phaser from "phaser";
 import { Subject } from "rxjs";
-import { installAiResourceInputObserver } from "./observation/ai-resource-input-observation";
-import { rememberAiResourceInputRead } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-resource-input-observation";
-import { createAiProductionPolicyFixture } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-production-policy-fixture";
+import { installAiResourceInputObserver } from "./observation/economy/ai-resource-input-observation";
+import { rememberAiResourceInputRead } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/economy/forecast/ai-resource-input-observation";
+import { createAiProductionPolicyFixture } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/production/ai-production-policy-fixture";
 import { PureAiBrain } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain";
 import type { AiAuthorityState } from "@fuzzy-waddle/probable-waffle-gameplay";
 

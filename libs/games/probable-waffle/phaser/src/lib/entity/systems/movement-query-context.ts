@@ -1,6 +1,6 @@
 import type Phaser from "phaser";
 import type { OrderData } from "../../ai/OrderData";
-import type { PawnAiBlackboard } from "../../prefabs/ai-agents/pawn-ai-blackboard";
+import type { PawnAiBlackboard } from "../../prefabs/ai-agents/controller/pawn-ai-blackboard";
 
 /** Transient native caller identity, explicitly carried across awaits; never saved or consumed by planning. */
 export interface MovementQueryContext {

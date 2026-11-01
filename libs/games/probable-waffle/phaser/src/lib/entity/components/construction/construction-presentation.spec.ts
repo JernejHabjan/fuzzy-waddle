@@ -1,4 +1,4 @@
-import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
 import Phaser from "phaser";
 import { Subject } from "rxjs";
 import { ConstructionStateEnum } from "@fuzzy-waddle/probable-waffle-protocol";
@@ -23,7 +23,7 @@ jest.mock("../../../data/actor-data", () => ({ upgradeFromConstructingToFullActo
 jest.mock("../../../data/actor-level-utils", () => ({ getResearchedLevelForActor: () => null }));
 jest.mock("../../../prefabs/definitions/actor-definitions", () => ({ getPwActorDefinition: jest.fn() }));
 jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("../../../world/services/audio.service", () => ({ AudioService: class {} }));
+jest.mock("../../../world/services/audio.service.ts", () => ({ AudioService: class {} }));
 jest.mock("./construction-progress-ui-component", () => ({ ConstructionProgressUiComponent: jest.fn() }));
 jest.mock("./construction-payment", () => ({
   startConstructionPayment: jest.fn(),

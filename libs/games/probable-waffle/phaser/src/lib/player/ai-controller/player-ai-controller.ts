@@ -1,4 +1,4 @@
-import { createAiRuntimeBrainHooks } from "./testing/create-ai-runtime-brain-hooks";
+import { createAiRuntimeBrainHooks } from "./test-support/harness/controls/create-ai-runtime-brain-hooks";
 import {
   type AiCommandReconciliationStateData,
   type AIBehaviorTreeStateData,
@@ -11,32 +11,32 @@ import { PlayerAiControllerAgent } from "./player-ai-controller.agent";
 import Phaser from "phaser";
 import { TelemetrySink } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/telemetry";
 import { AI_CONFIG } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/ai-config";
-import { getSimulationNow } from "./ai-time";
+import { getSimulationNow } from "./decision/ai-time";
 import { isSceneActive } from "../../data/game-object-helper";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { SimulationTickService } from "../../world/services/simulation-tick.service";
 import { take, type Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
-import { AiCommandReconciliation } from "./ai-command-reconciliation";
+import { AiCommandReconciliation } from "./outcomes/ai-command-reconciliation";
 import type { AiAuthorityState, AiBrainState, AiCommandOutcome } from "@fuzzy-waddle/probable-waffle-gameplay";
-import { createAiBrainState } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-brain-state";
-import { migrateAiBrainState } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/migrate-ai-brain-state";
-import { canonicalizeAiBrainState } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/canonical-ai-serialization";
+import { createAiBrainState } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/state/create-ai-brain-state";
+import { migrateAiBrainState } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/persistence/migrate-ai-brain-state";
+import { canonicalizeAiBrainState } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/persistence/canonical-ai-serialization";
 import { createAiProfileConfig } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-profile-defaults";
 import type { PureAiBrain } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain";
 import type { AiDebugSnapshot, AiProfileConfig } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { selectAiOpeningArchetype } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-opening-archetypes";
-import { readAiRuntimeCalibrationOpening } from "./testing/ai-runtime-calibration";
+import { readAiRuntimeCalibrationOpening } from "./test-support/browser/ai-runtime-calibration";
 import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
 import type { AiBrainStepResult } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain-step-result";
-import { dispatchAiIntents } from "./ai-intent-dispatcher";
-import { dispatchAiBrainResult } from "./dispatch-ai-brain-result";
-import { captureAiDecisionInput } from "./capture-ai-decision-input";
-import { beginAiResourceDecision, fenceAiResourceNeed } from "./observation/ai-resource-input-observation";
-import type { AiDecisionInput } from "./ai-decision-input";
-import { createAiProductionBrain } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-production-brain";
-import { publishAiRuntimeDecisionRepro } from "./testing/ai-runtime-decision-repro";
+import { dispatchAiIntents } from "./commands/ai-intent-dispatcher";
+import { dispatchAiBrainResult } from "./commands/dispatch-ai-brain-result";
+import { captureAiDecisionInput } from "./decision/capture-ai-decision-input";
+import { beginAiResourceDecision, fenceAiResourceNeed } from "./observation/economy/ai-resource-input-observation";
+import type { AiDecisionInput } from "./decision/ai-decision-input";
+import { createAiProductionBrain } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/state/create-ai-production-brain";
+import { publishAiRuntimeDecisionRepro } from "./test-support/reproduction/ai-runtime-decision-repro";
 
 /** Owns one pure planner, its fixed-tick cadence and the shared command/save boundary. */
 export class PlayerAiController {

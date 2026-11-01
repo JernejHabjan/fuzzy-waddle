@@ -18,11 +18,11 @@ import { ContainerComponent } from "../../../entity/components/building/containe
 import { ConstructionSiteComponent } from "../../../entity/components/construction/construction-site-component";
 import { StatusEffectComponent } from "../../../entity/components/status-effect/status-effect-component";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
-import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
-import type { AiAccessGraphAdapter } from "./ai-access-graph.adapter";
-import { projectActorCapabilities } from "./ai-observation-catalog";
-import { projectAiCombatProfile } from "./ai-observation-combat-profile";
-import { aiObservationQueueItemId } from "./ai-observation-queue-item-id";
+import { PawnAiController } from "../../../prefabs/ai-agents/controller/pawn-ai-controller";
+import type { AiAccessGraphAdapter } from "./world/ai-access-graph.adapter";
+import { projectActorCapabilities } from "./catalog/ai-observation-catalog";
+import { projectAiCombatProfile } from "./catalog/ai-observation-combat-profile";
+import { aiObservationQueueItemId } from "./economy/ai-observation-queue-item-id";
 import { knownValue, unknownValue, uniqueDomain } from "./ai-observation-values";
 
 type GameObject = Phaser.GameObjects.GameObject;

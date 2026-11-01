@@ -1,4 +1,4 @@
-import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiBrainState } from "../contracts/state/ai-state-contracts";
 
 /** Persisted state slice names that require one owner, default, migration and serializer policy. */
 export type AiBrainSliceName = Exclude<

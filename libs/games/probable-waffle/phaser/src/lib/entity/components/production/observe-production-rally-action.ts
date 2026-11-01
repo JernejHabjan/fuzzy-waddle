@@ -1,8 +1,8 @@
 import type Phaser from "phaser";
 import type { UnifiedQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
 import { getActorComponent } from "../../../data/actor-component";
-import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
-import { PawnOrderObservation } from "../../../prefabs/ai-agents/pawn-order-observation";
+import { PawnAiController } from "../../../prefabs/ai-agents/controller/pawn-ai-controller";
+import { PawnOrderObservation } from "../../../prefabs/ai-agents/orders/pawn-order-observation";
 import { PRODUCTION_SPATIAL_AUTHORITY_EVENT } from "../../../world/services/multiplayer/production-spatial-authority-event";
 
 /** Scope only the already-selected synchronous action. Unstamped rally orders never acquire a fabricated command. */

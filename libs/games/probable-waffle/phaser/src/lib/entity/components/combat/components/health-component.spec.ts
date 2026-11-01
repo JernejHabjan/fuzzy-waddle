@@ -1,4 +1,4 @@
-import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
 import Phaser from "phaser";
 import { Subject } from "rxjs";
 import { DamageType } from "@fuzzy-waddle/probable-waffle-protocol";
@@ -51,8 +51,8 @@ jest.mock("../../../../world/services/simulation-time", () => ({
   getSimulationNow: () => 123,
   CancelableSimDelay: jest.fn().mockImplementation(() => ({ remove: jest.fn() }))
 }));
-jest.mock("../../../../world/services/simulation-tick.service", () => ({ SimulationTickService: class {} }));
-jest.mock("../../../../world/services/audio.service", () => ({ AudioService: class {} }));
+jest.mock("../../../../world/services/simulation-tick.service.ts", () => ({ SimulationTickService: class {} }));
+jest.mock("../../../../world/services/audio.service.ts", () => ({ AudioService: class {} }));
 jest.mock("../../owner-component", () => ({ OwnerComponent: class {} }));
 jest.mock("../../selectable-component", () => ({ SelectableComponent: class {} }));
 jest.mock("../../actor-audio/audio-actor-component", () => ({ AudioActorComponent: class {} }));

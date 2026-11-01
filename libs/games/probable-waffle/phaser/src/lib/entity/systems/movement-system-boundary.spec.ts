@@ -4,8 +4,8 @@ import type { MovementCompletionEvent } from "./movement-completion-event";
 import type { MovementQueryContext } from "./movement-query-context";
 import type Phaser from "phaser";
 import type { GameCommand, MoveCommand } from "@fuzzy-waddle/probable-waffle-protocol";
-import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
-import { PawnAiBlackboard } from "../../prefabs/ai-agents/pawn-ai-blackboard";
+import { PawnAiController } from "../../prefabs/ai-agents/controller/pawn-ai-controller";
+import { PawnAiBlackboard } from "../../prefabs/ai-agents/controller/pawn-ai-blackboard";
 import { MovementFormation } from "./movement-formation";
 import { OrderType } from "../../ai/order-type";
 import { OrderData } from "../../ai/OrderData";
@@ -33,7 +33,7 @@ jest.mock("../../data/game-object-helper", () => ({
   isSceneActive: jest.fn(),
   onObjectReady: jest.fn()
 }));
-jest.mock("../../prefabs/ai-agents/pawn-ai-controller", () => ({ PawnAiController: class {} }));
+jest.mock("../../prefabs/ai-agents/controller/pawn-ai-controller", () => ({ PawnAiController: class {} }));
 
 function fixture() {
   const f = movementTestFixture(),

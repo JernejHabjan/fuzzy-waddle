@@ -6,8 +6,8 @@
 | ----------------------- | ------------------------------------------------------------------------- | ----------------------------------------------------- |
 | Unit/pure Jest          | Reducers, managers, contracts, serialization and semantic oracles         | `gameplay/src/lib/player/ai-controller/**/*.spec.ts`  |
 | Phaser integration Jest | Observation, command application, outcomes, saves and runtime driver      | `phaser/src/lib/player/ai-controller/**/*.spec.ts`    |
-| Real runtime Playwright | Lobby launch, Phaser ticks, real commands, world effects and match result | `apps/portal-e2e/src/e2e/skirmish-ai-runtime.spec.ts` |
-| Matrix/report tooling   | Coverage, provenance, grouped execution and compact failure reports       | `tools/ai/`                                           |
+| Real runtime Playwright | Lobby launch, Phaser ticks, real commands, world effects and match result | `apps/portal-e2e/src/e2e/probable-waffle/skirmish/ai/runner/skirmish-ai-runtime.spec.ts` |
+| Matrix/report tooling   | Coverage, provenance, grouped execution and compact failure reports       | `tools/probable-waffle/skirmish/ai/`                                           |
 
 An authored fixture or planner trace is not runtime evidence. A runtime case must launch the actual game world and measure authoritative outcomes independently of the planner's explanation.
 
@@ -16,7 +16,7 @@ Their assertions are deterministic code and require no LLM evaluation or manual 
 not automated coverage.
 
 Native recipe specifications can be authored before their execution bindings exist. The manifest's
-`runtimeRecipeDraft` links a case in `tools/ai/fixtures/native-scenario-recipes.json`: legal-world requirements,
+`runtimeRecipeDraft` links a case in `tools/probable-waffle/skirmish/ai/testing/fixtures/authoring/unexecuted-native-scenario-recipes.json`: legal-world requirements,
 opponent/fault actions, sampling ticks and finite ceiling, independent native measurements, required and forbidden
 outcomes, control branches, reusable owners and specific missing harness bindings. These are authoring contracts,
 not interpreted test programs. Every case is `authored_not_executed`; the ordinary matrix continues to report its
@@ -43,13 +43,13 @@ may be released at the original readiness threshold; missing indispensable passe
 
 ### Native scenario bindings and bounded lookup
 
-Native bindings use tools/ai/shared/native-scenario-bindings.json for original obligations/branches/ceilings and
+Native bindings use tools/probable-waffle/skirmish/ai/testing/bindings/native-scenario-bindings.json for original obligations/branches/ceilings and
 native-scenario-registration.mjs to author ordinary matrix fixtures. Existing world layout/world factories own
 construction/scouting/combat inputs; native-strategic-worlds.mjs, native-domain-worlds.mjs and native-classic-worlds.mjs
 own the remaining mission/domain/classic inputs. native-authority-worlds.mjs owns H-06/H-07/H-10/H-13–15. skirmish-runtime-native-scenario-fixture.mjs refuses source-controlled
 recipe/assertion drift. Read only the selected ID and its factory, not every generated fixture.
 
-The normal evaluation dispatches through apps/portal-e2e/src/e2e/skirmish-ai-native-scenario-evaluation.ts to the selected
+The normal evaluation dispatches through apps/portal-e2e/src/e2e/probable-waffle/skirmish/ai/evaluation/scenario/skirmish-ai-native-scenario-evaluation.ts to the selected
 family reader. Full-case branch/faction comparisons live in skirmish-ai-native-scenario-pairs.ts. Physical hits,
 applied effects, paid output, exact service and original-destination arrivals are distinct from selected claims or
 receipts. Missing/truncated history and ambiguous spell/weapon attribution fail; no complete projectile trace is claimed.
@@ -87,7 +87,7 @@ Initial queue seeds cannot address a construction-created site because native qu
 missing, dead or replacement site. This developer test action is not a newly supported relayed multiplayer cancel
 command. Scheduled combat losses still use native damage and retain their original pinned identities.
 
-The standalone [construction worlds](../../../../../../../../../../apps/portal-e2e/src/e2e/skirmish-ai-construction-worlds.spec.ts)
+The standalone [construction worlds](../../../../../../../../../../apps/portal-e2e/src/e2e/probable-waffle/skirmish/ai/construction/setup/skirmish-ai-construction-worlds.spec.ts)
 are explicitly opt-in with `AI_CONSTRUCTION_WORLD_E2E=1`: builder loss, intact work and cancellation. They use the
 ordinary lobby/frame driver and the existing native capture behind `captureConstruction: true`. Their oracle joins
 the same site to actual start/payment/completion, sealed intervals, loss/removal and surviving worker orders; cancellation
@@ -102,7 +102,7 @@ each actual applied Construct to have its exact earlier same-tick placement/comm
 route. Bounds:8 routes,16384 cells/search,512 returned path tiles and256 prefix reads; loss/unavailable data fails.
 These are static tile envelopes, not actual unit/collider transit, spawn, occupied-defense value or full route history.
 
-The [field placement worlds](../../../../../../../../../../apps/portal-e2e/src/e2e/skirmish-ai-field-placement-worlds.spec.ts)
+The [field placement worlds](../../../../../../../../../../apps/portal-e2e/src/e2e/probable-waffle/skirmish/ai/construction/setup/skirmish-ai-field-placement-worlds.spec.ts)
 are opt-in with `AI_PLACEMENT_WORLD_E2E=1`, one safe-room branch per faction. Ordinary workers and zero initial food
 must create multiple new paid completed fields, an aligned pair and food delivered from each, without using reserved
 baseline lanes. Fields are walkable, so reserved-space exclusion is separate from route reachability. Attribution
@@ -112,7 +112,7 @@ room, threatened alternatives, full physical transit or any expansion/fortificat
 
 ### Native expansion and physical fortification controls
 
-The [expansion worlds](../../../../../../../../../../apps/portal-e2e/src/e2e/skirmish-ai-expansion-worlds.spec.ts)
+The [expansion worlds](../../../../../../../../../../apps/portal-e2e/src/e2e/probable-waffle/skirmish/ai/expansion/skirmish-ai-expansion-worlds.spec.ts)
 use explicit `AI_EXPANSION_WORLD_E2E=1` opt-in when execution is authorized. Both factions get ordinary land expansion,
 already-served, home-pressure, pressure-withdrawal and native combat-recovery branches. Inherited neutral resources require exact position
 bindings and native resource components; stock setup changes their actual pre-tick values without claiming extraction.
@@ -121,7 +121,7 @@ available original builder, physical arrival, actual completed paid deposit and 
 into that same deposit must agree. Native WorkMill or faction main service is eligible; another main is not compulsory.
 Served controls require delivered income, while pressure controls require real attack/damage/survival and suppression.
 Actual withdrawal or native AI-owned lethal damage and original attacker loss must precede resumed service.
-The [EXP-02 matrix fixture](../../../../../../../../../../tools/ai/fixtures/expansion-pressure-runtime.json) now registers
+The [EXP-02 matrix fixture](../../../../../../../../../../tools/probable-waffle/skirmish/ai/testing/fixtures/native/placement/expansion-pressure-native-gameplay.json) now registers
 eight worlds: both factions × safe/home-pressure/withdrawal/combat recovery. It requires sustained fair danger,
 serious native damage to the surviving original home, suppressed remote spending and productive service after recovery.
 Withdrawal also requires at least one surviving attacker to finish its actual retreat.
@@ -130,7 +130,7 @@ checks preserve shared economic inputs and reject scripted destruction or withdr
 Registration is authored unrun; a diagnostic individual world cannot supply full paired acceptance. Full EXP-01
 utility/lease/concurrency and content-gated island establishment remain separate obligations.
 
-The [fortification access worlds](../../../../../../../../../../apps/portal-e2e/src/e2e/skirmish-ai-fortification-access-worlds.spec.ts)
+The [fortification access worlds](../../../../../../../../../../apps/portal-e2e/src/e2e/probable-waffle/skirmish/ai/fortification/skirmish-ai-fortification-access-worlds.spec.ts)
 use `AI_FORTIFICATION_WORLD_E2E=1`. Human-owned native prefab geometry on the frozen open map isolates stairs
 present/missing, worker/army passage, a sealed ring and a pinned real wall breach. Shared movement must physically
 reach its original native tile; elevated occupancy must match actual wall height in closed history. A receipt,
@@ -207,14 +207,14 @@ checkpoint until legitimate contact differs. Missing/truncated input fails close
 do not install another gameplay observer. Continuous victory recipes use fixed native frames; ScoreTracker's initial
 `quit` value is not an adjudicated terminal result. Only `win`, `loss` or `tie` can stop a terminal-only run early.
 
-`economy-delivery-runtime.json` covers shared cash admission, useful surplus-worker transfer and poor-delivery recovery.
+`native/economy/economy-delivery-native-gameplay.json` covers shared cash admission, useful surplus-worker transfer and poor-delivery recovery.
 Its bounded existing decision input retains the exact consumed four-resource vector; assertions join native receipts
 to actual balance increases and transferred worker identity. This is not complete M11 alias/lifetime authority.
 These worlds retain raw capture without duplicating the full production V2 proof. Missing input, history, receipt or
 competing priced demand fails the economy reader; a deliberately rejected purchase is not required when the planner
 correctly suppresses optional spending before arbitration.
 
-`resource-recovery-runtime.json` starts a real partial pack, destroys its pinned drain, and requires the same worker's
+`native/economy/resource-recovery-native-gameplay.json` starts a real partial pack, destroys its pinned drain, and requires the same worker's
 credit at another drain, later extraction from a surviving source, and grown crop credit. Preset `sourceStocks` applies
 bounded native source amounts before ticks/orders; it does not inject cargo, income or completion. Initial Gather
 orders can target neutral or same-owner sources. Enemy sources remain invalid.
@@ -238,7 +238,7 @@ runtime content. `pairedPositionRole` permits only a named PRO-06 actor's physic
 Fair target-specific weapon pairs, actual builder paths/work, exact unit spawn/rally arrival and covered survival
 replace general range/reachability guesses. Missing native authority never becomes a safe/reachable verdict.
 
-`production-authority-runtime.json` authors the eight PRO-03/06/07 branches for each faction. Preset `controls` use
+`native/production/production-authority-native-gameplay.json` authors the eight PRO-03/06/07 branches for each faction. Preset `controls` use
 normal shared human commands, including delayed exact-handle cancellation and production probes before/after the
 actual refund. Request time never supplies refundable cash. `productionRallies` applies the same ordinary owned
 rally to each actual ready producer, including AI-built replacements. Both hooks exist only in opted-in developer
@@ -272,7 +272,7 @@ pnpm ai:tools:test
 
 The Playwright spec is parameterized by the matrix runner. Running its gutter test without `AI_SKIRMISH_RUNTIME_REQUEST` is not a complete scenario run.
 
-Matrix source ownership: `tools/ai/run-skirmish-matrix.mjs` handles CLI selection, replay comparison and report output;
+Matrix source ownership: `tools/probable-waffle/skirmish/ai/cli/run-skirmish-matrix.ts` handles CLI selection, replay comparison and report output;
 `skirmish-matrix-fixtures.mjs` validates manifest/runtime recipes; `skirmish-matrix-execution.mjs` invokes the pure and
 browser drivers; `skirmish-matrix-io.mjs` owns bounded input, source provenance and path helpers. Keep rejection and
 report behavior stable when changing these boundaries.
@@ -317,7 +317,7 @@ special diagnostic worlds with owned creatures remain possible. It proves roster
 history. Strict recipes name concrete actor variants; the browser verifies every created fixture ID, unique native ID,
 created-name multiplicity and owned starting copies. A preset declaration alone cannot satisfy these checks.
 
-`production-authority-runtime.json` groups sixteen physical branches on this map. Its 10× simulation rate keeps the
+`native/production/production-authority-native-gameplay.json` groups sixteen physical branches on this map. Its 10× simulation rate keeps the
 asynchronous decision loop closer to queue progress; tick deadlines and authority/usefulness assertions stay active.
 Check the actual in-bounds world and inherited building footprints when relocating authored armies or objectives.
 Physical-world artifacts use `productionWorldStorage: 1`: raw capture, ordinary result metadata and the actual paused
@@ -340,7 +340,7 @@ original-destination arrival and closed survival. That full join can supply the 
 command identity or arrival was missing. Other gaps still refuse usefulness; an absent movement or contradictory spawn
 never receives success merely because the legacy labels are recognized.
 
-`production-economy-runtime.json` retains standalone, economically constrained worlds on the frozen economy map for
+`native/production/production-economy-native-gameplay.json` retains standalone, economically constrained worlds on the frozen economy map for
 funding/throughput diagnosis. Its full PRO-03/06/07 oracles remain active. These legal starts do not substitute for the
 required transition/abandonment, exposed/safe/low-value/no-demand or shared-queue/pending-refund causal branches.
 
@@ -477,28 +477,28 @@ observation -> demand/mission -> intent/claim -> command application -> outcome 
 
 ## Scenario authority
 
-`tools/ai/fixtures/skirmish.json` owns the required IDs, driver requirement, fixture registration and baseline compatibility. Typed fixture builders and assertions own setup and expected behavior. The coverage gate must fail when a supported required row is missing rather than reducing the denominator.
+`tools/probable-waffle/skirmish/ai/testing/fixtures/skirmish-scenario-manifest.json` owns the required IDs, driver requirement, fixture registration and baseline compatibility. Typed fixture builders and assertions own setup and expected behavior. The coverage gate must fail when a supported required row is missing rather than reducing the denominator.
 
-The [generated scenario catalog](scenario-catalog.md) joins every manifest ID to its requirement, registered pure fixture,
+The [generated scenario catalog](./scenario-catalog.md) joins every manifest ID to its requirement, registered pure fixture,
 ID-referencing specs, and real-game recipe/map/checkpoint data. It reports wiring, not passing evidence. Edit the
-linked requirement and fixture sources, then regenerate with `node tools/ai/generate-skirmish-test-catalog.mjs --write`; the catalog can be checked locally. Automatic extended AI CI is currently disabled. Existing browser recipes still use changing product
-maps; [frozen test maps](test-map-contract.md) and their migration remain implementation work under #816. Until that
+linked requirement and fixture sources, then regenerate with `node tools/probable-waffle/skirmish/ai/cli/generate-skirmish-test-catalog.ts --write`; the catalog can be checked locally. Automatic extended AI CI is currently disabled. Existing browser recipes still use changing product
+maps; [frozen test maps](./test-map-contract.md) and their migration remain implementation work under #816. Until that
 migration is done, do not describe a changing-map run as a stable reference-map regression.
 
-For bounded authoring triage, `node tools/ai/generate-skirmish-test-catalog.mjs --inventory` prints one line per registered runtime recipe:
+For bounded authoring triage, `node tools/probable-waffle/skirmish/ai/cli/generate-skirmish-test-catalog.ts --inventory` prints one line per registered runtime recipe:
 IDs, variant/run counts, preset coverage, maximum tick and migration flags. It reads the manifest/fixtures without
 launching the game. Flags are an inventory, not proof of a failing test or an excuse to drop a required row.
 
 The current catalog contains 121 named cases before variants. Registered pure fixtures still require complete semantic
-and native acceptance where declared; see [coverage and follow-ups](coverage-status.md).
+and native acceptance where declared; see [coverage and follow-ups](./coverage-status.md).
 
 Detailed requirements are split by concern:
 
-- [Strategic scenarios](strategic-scenarios.md)
-- [Progress and recovery oracles](progress-and-recovery-oracles.md)
-- [Adversarial and continuous scenarios](adversarial-scenarios.md)
-- [Classic RTS and difficulty scenarios](classic-rts-and-difficulty-scenarios.md)
-- [Debugging scenarios](debugging-scenarios.md)
+- [Strategic scenarios](./strategic-scenarios.md)
+- [Progress and recovery oracles](./progress-and-recovery-oracles.md)
+- [Adversarial and continuous scenarios](./adversarial-scenarios.md)
+- [Classic RTS and difficulty scenarios](./classic-rts-and-difficulty-scenarios.md)
+- [Debugging scenarios](./debugging-scenarios.md)
 
 Recovery bindings H-01–04/H-19/H-24–26 use native-recovery-worlds.mjs and the native recovery/mission readers.
 They require original causal ownership and physical useful effects. Pending/error route faults are finite and
@@ -629,8 +629,8 @@ This is registration, not difficulty calibration, quota saturation or D-03 hidde
 ### Optional frozen difficulty calibration tooling
 
 Difficulty calibration was cancelled on 2026-11-01 (#817); D-06 is not a current delivery requirement.
-Retained experimental tooling uses tools/ai/run-difficulty-calibration.mjs through dedicated matrix dispatch when explicitly requested.
-The six native fixture descriptors expand difficulty-calibration.json; they are not six physical matches.
+Retained experimental tooling uses tools/probable-waffle/skirmish/ai/cli/run-difficulty-calibration.ts through dedicated matrix dispatch when explicitly requested.
+The six native fixture descriptors expand calibration/paired-difficulty-calibration-workload.json; they are not six physical matches.
 The frozen workload covers both maps/factions, five existing fixed Normal openings, both sides and three policies,
 20 initial seed clusters with up to80 reserved extension seeds,5 isolated holdout seeds and3 full72000-tick soaks.
 Whole native frames advance both actual controllers; authoritative results, legal-start parity, actual selected
@@ -660,4 +660,4 @@ by user request. Setting repository variables or pushing an `ai-regression/*` ta
 The dedicated AI Regression Pack retains manual dispatch (once the workflow is registered on the default branch),
 with its enable checkbox and core/scout profile choice. Runtime checkouts hydrate LFS assets.
 Local commands and the strict E2E opt-in remain available. Retained remote runs predate this CI disablement.
-Do not re-enable automatic execution as part of unrelated AI work. See [coverage and follow-ups](coverage-status.md).
+Do not re-enable automatic execution as part of unrelated AI work. See [coverage and follow-ups](./coverage-status.md).

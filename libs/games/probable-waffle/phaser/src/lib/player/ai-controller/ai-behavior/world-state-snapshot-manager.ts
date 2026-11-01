@@ -10,7 +10,7 @@ import { AttackComponent } from "../../../entity/components/combat/components/at
 import { ResourceDrainComponent } from "../../../entity/components/resource/resource-drain-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
-import { getUnitStrength } from "../ai-utils";
+import { getUnitStrength } from "../decision/ai-utils";
 import { AI_CONFIG } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/ai-config";
 import { getResearchedLevelForActor } from "../../../data/actor-level-utils";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";

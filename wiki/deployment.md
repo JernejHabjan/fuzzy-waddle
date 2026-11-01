@@ -35,10 +35,10 @@ Reference: [Render SPA routing](https://render.com/docs/deploy-create-react-app#
 
 A second client deployment runs on GitHub Pages at [https://jernejhabjan.github.io/fuzzy-waddle/](https://jernejhabjan.github.io/fuzzy-waddle/). This is handled automatically after merges to `main`.
 
-Automated release behavior after merging to `main` is documented in [releases.md](releases.md).
+Automated release behavior after merging to `main` is documented in [releases.md](./releases.md).
 
 ## Supabase Hosted Settings
 
-The hosted Supabase project must allow the deployed client URLs in **Authentication > URL Configuration** and must have Google enabled under **Authentication > Providers**. Keep the URL list in sync with [supabase.md](supabase.md) when Render, GitHub Pages, or Tauri callback URLs change.
+The hosted Supabase project must allow the deployed client URLs in **Authentication > URL Configuration** and must have Google enabled under **Authentication > Providers**. Keep the URL list in sync with [supabase.md](./supabase.md) when Render, GitHub Pages, or Tauri callback URLs change.
 
-Database migrations are verified locally with the Supabase CLI and applied to the hosted project after they are merged into `main`. See [supabase.md](supabase.md#database-migrations) for the local and remote migration workflow.
+Database migrations are verified locally with the Supabase CLI and applied to the hosted project after they are merged into `main`. See [supabase.md](./supabase.md#database-migrations) for the local and remote migration workflow.

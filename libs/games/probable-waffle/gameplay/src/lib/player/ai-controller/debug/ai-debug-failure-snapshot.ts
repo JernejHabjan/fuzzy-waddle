@@ -1,6 +1,6 @@
-import type { AiBrainState } from "../contracts/ai-brain-state";
-import type { AiObservation } from "../contracts/ai-observation";
-import type { AiDebugSnapshot, AiDebugSectionState } from "../contracts/ai-debug-snapshot";
+import type { AiBrainState } from "../contracts/state/ai-state-contracts";
+import type { AiObservation } from "../contracts/observation/ai-observation";
+import type { AiDebugSnapshot, AiDebugSectionState } from "../contracts/diagnostics/ai-debug-snapshot";
 
 /** Honest empty diagnostic projection. Never retries the failing projector or re-runs a planner to fill missing panels. */
 export function aiDebugFailureSnapshot(observation: AiObservation, state: AiBrainState): AiDebugSnapshot {

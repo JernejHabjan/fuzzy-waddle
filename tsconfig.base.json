@@ -14,7 +14,7 @@
     "emitDecoratorMetadata": false,
     "baseUrl": ".",
     "paths": {
-      "@fuzzy-waddle/skirmish-ai-tools/*": ["tools/ai/shared/*"],
+      "@fuzzy-waddle/probable-waffle-skirmish-ai-tools/*": ["tools/probable-waffle/skirmish/ai/*"],
       "@fuzzy-waddle/platform-identity": ["libs/platform/identity/src/index.ts"],
       "@fuzzy-waddle/platform-identity/*": ["libs/platform/identity/src/lib/*"],
       "@fuzzy-waddle/platform-chat": ["libs/platform/chat/src/index.ts"],

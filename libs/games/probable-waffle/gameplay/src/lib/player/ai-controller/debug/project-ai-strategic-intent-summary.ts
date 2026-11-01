@@ -1,7 +1,7 @@
-import type { AiBrainState } from "../contracts/ai-brain-state";
-import type { AiIntentDecision, AiIntent } from "../contracts/ai-intent";
-import type { AiObservation } from "../contracts/ai-observation";
-import type { AiStrategicIntentSummary } from "../contracts/ai-strategic-intent-summary";
+import type { AiBrainState } from "../contracts/state/ai-state-contracts";
+import type { AiIntentDecision, AiIntent } from "../contracts/commands/ai-intent";
+import type { AiObservation } from "../contracts/observation/ai-observation";
+import type { AiStrategicIntentSummary } from "../contracts/diagnostics/ai-strategic-intent-summary";
 
 const inactiveSquadStates = new Set(["completed", "cancelled", "failed"]);
 

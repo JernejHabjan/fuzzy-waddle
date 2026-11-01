@@ -1,11 +1,11 @@
 import { FactionType, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
 import { PureAiBrain } from "./ai-brain";
-import { createAiBrainState } from "./create-ai-brain-state";
-import { migrateAiBrainState } from "./migrate-ai-brain-state";
+import { createAiBrainState } from "./state/create-ai-brain-state";
+import { migrateAiBrainState } from "./persistence/migrate-ai-brain-state";
 import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
-import { createAiTestObservation } from "../testing/ai-test-fixtures";
+import { createAiTestObservation } from "../testing/fixtures/coordination/ai-test-fixtures";
 import { aiDeadline } from "../contracts/ai-core-types";
-import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiBrainState } from "../contracts/state/ai-state-contracts";
 
 /** Saved leases complement native synchronous dispatch; this control never claims a native intermediate boundary. */
 it.each([ProbableWaffleAiDifficulty.Easy, ProbableWaffleAiDifficulty.Medium, ProbableWaffleAiDifficulty.Hard])(

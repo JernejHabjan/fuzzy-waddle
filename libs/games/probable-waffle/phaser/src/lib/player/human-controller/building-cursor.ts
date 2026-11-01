@@ -26,7 +26,7 @@ import { ProductionValidator } from "../../data/tech-tree/production-validator";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { ActorTranslateComponent } from "../../entity/components/movement/actor-translate-component";
 import { OwnerComponent } from "../../entity/components/owner-component";
-import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
+import { PawnAiController } from "../../prefabs/ai-agents/controller/pawn-ai-controller";
 import { OrderData } from "../../ai/OrderData";
 import { OrderType } from "../../ai/order-type";
 import { getCostForObjectName } from "../../entity/components/production/cost-utils";

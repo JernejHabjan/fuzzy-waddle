@@ -1,5 +1,5 @@
 import type Phaser from "phaser";
-import { PawnAiBlackboard } from "../../prefabs/ai-agents/pawn-ai-blackboard";
+import { PawnAiBlackboard } from "../../prefabs/ai-agents/controller/pawn-ai-blackboard";
 import { OrderData } from "../../ai/OrderData";
 import { OrderType } from "../../ai/order-type";
 import { MovementQueryObservation } from "./movement-query-observation";
