@@ -7,6 +7,11 @@ placement/expansion/walls, command/resource ownership, scouting and strategic de
 strategy tree is retired. This does not certify every registered scenario, real-peer multiplayer, complete save/load
 continuation, exact replay determinism or difficulty ordering.
 
+New user playtest reports require a scoped gameplay/performance rework. Its
+[active handoff](../../../../../../../../../../docs/ai/759-ai-gameplay-reliability/HANDOFF.md) owns the current acceptance;
+the retained results below do not resolve those reports. Human-control/elevation restoration is included in that
+batch; broader multiplayer/save continuation and difficulty calibration retain their exclusions below.
+
 `tools/probable-waffle/skirmish/ai/testing/fixtures/skirmish-scenario-manifest.json` and `tools/probable-waffle/skirmish/ai/testing/bindings/native-scenario-bindings.json` own scenario registration. The regression
 selection is `tools/probable-waffle/skirmish/ai/testing/fixtures/periodic-native-regression-profiles.json`; use `pnpm ai:regression -- --list` or the scout profile's
 `--list` for current variants/repetitions/exclusions. A registered recipe is authored coverage, not execution evidence.

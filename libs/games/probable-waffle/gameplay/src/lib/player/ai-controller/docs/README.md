@@ -54,4 +54,6 @@ The executable scenario authority is `tools/probable-waffle/skirmish/ai/testing/
 
 Current evidence, explicit exclusions and independently resumable follow-up issues are recorded in
 [coverage and follow-ups](./testing/coverage-status.md). The executable manifests and fixtures own scenario selection;
-GitHub issues own unfinished work. Implementation handoffs are retired.
+GitHub issues own deferred work. The previous implementation handoffs are retired. The current user-requested
+playtest/performance rework has one [active execution handoff](../../../../../../../../../docs/ai/759-ai-gameplay-reliability/HANDOFF.md),
+which is temporary coordination rather than product architecture.
