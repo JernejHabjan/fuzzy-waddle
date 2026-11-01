@@ -1,0 +1,37 @@
+{
+    "id": "62c8d4ce-9f8b-4605-80cb-603d18f979fb",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 32,
+        "borderHeight": 32
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "01f5d968-7235-4b93-b92d-78c21fcc0c3b",
+            "label": "shark_fin",
+            "texture": {
+                "key": "hunt_animals",
+                "frame": "Shark/fin/s.png"
+            },
+            "x": 8,
+            "y": 14,
+            "originY": 0.875
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}
