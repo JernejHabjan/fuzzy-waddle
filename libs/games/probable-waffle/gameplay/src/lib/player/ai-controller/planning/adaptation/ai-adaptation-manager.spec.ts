@@ -206,6 +206,82 @@ describe("AiAdaptationManager", () => {
     );
   });
 
+  it.each([0, 1])(
+    "admits confirmed anti-air growth during an unrelated composition cooldown (prior=%i)",
+    (priorDesired) => {
+      const main = actor("main", ObjectNames.Sandhold, "self", []);
+      const flyers = [1, 2, 3].map((id) => actor(`flyer-${id}`, ObjectNames.Banshee, "enemy", ["air"]));
+      const initial = createAiBrainState({
+        playerNumber: 1,
+        faction: FactionType.Tivara,
+        profile,
+        tick: 0,
+        archetypeId: "opening:1:balanced"
+      });
+      const adaptation = {
+        ...initial.economyProduction.adaptation,
+        lastTransitionTick: 100,
+        lastTransitionReason: "water_control",
+        activeRoleTargets: [
+          { role: "water_control" as const, desired: 1, evidenceIds: [] },
+          ...(priorDesired ? [{ role: "anti_air" as const, desired: priorDesired, evidenceIds: [] }] : [])
+        ]
+      };
+      const first = manager.propose(observation(110, [main, ...flyers]), {
+        ...initial,
+        economyProduction: { ...initial.economyProduction, adaptation }
+      });
+      expect(first.intents.some((intent) => intent.reasonCode.startsWith("adapt:anti_air"))).toBe(false);
+      const second = manager.propose(observation(120, [main, ...flyers]), {
+        ...initial,
+        economyProduction: { ...initial.economyProduction, adaptation: first.statePatch!.adaptation! }
+      });
+      expect(second.statePatch?.adaptationDemands).toContainEqual(
+        expect.objectContaining({ capabilityOrRole: "anti_air", desired: 3 })
+      );
+      expect(second.intents).toContainEqual(
+        expect.objectContaining({ kind: "produce", objectName: ObjectNames.TivaraSlingshotFemale })
+      );
+      expect(second.statePatch?.adaptation?.activeRoleTargets).toContainEqual(
+        expect.objectContaining({ role: "anti_air", desired: 3 })
+      );
+      expect(second.statePatch?.adaptation?.activeRoleTargets).toContainEqual(
+        expect.objectContaining({ role: "water_control", desired: 1 })
+      );
+      expect(second.statePatch?.adaptation?.lastTransitionTick).toBe(100);
+    }
+  );
+
+  it.each(["producer_clue", "memory"])("keeps composition cooldown for %s without confirmed live flyers", (source) => {
+    const main = actor("main", ObjectNames.Sandhold, "self", []);
+    const flyer = actor("flyer", ObjectNames.Banshee, "enemy", ["air"]);
+    const contact: AiObservedActor =
+      source === "memory"
+        ? { ...flyer, visibility: "last_seen" }
+        : { ...flyer, capabilities: [{ ...flyer.capabilities[0]!, family: "produce_air", domains: [] }] };
+    const initial = createAiBrainState({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "opening:1:balanced"
+    });
+    const first = manager.propose(observation(110, [main, contact]), {
+      ...initial,
+      economyProduction: {
+        ...initial.economyProduction,
+        adaptation: { ...initial.economyProduction.adaptation, lastTransitionTick: 100 }
+      }
+    });
+    const second = manager.propose(observation(120, [main, contact]), {
+      ...initial,
+      economyProduction: { ...initial.economyProduction, adaptation: first.statePatch!.adaptation! }
+    });
+    expect(second.intents.some((intent) => intent.reasonCode.startsWith("adapt:anti_air"))).toBe(false);
+    expect(second.statePatch?.adaptation?.activeRoleTargets).toEqual([]);
+    expect(second.statePatch?.adaptation?.lastTransitionTick).toBe(100);
+  });
+
   it("DOMAIN-02 treats a visible valuable shoreline objective as evidence for bounded naval control", () => {
     const base = createAiTestObservation();
     const access = buildAiAccessGraph({

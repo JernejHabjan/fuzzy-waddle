@@ -7,29 +7,27 @@
 - PR: [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814), ready for review before this batch.
 - Previous [ordinary CI](https://github.com/JernejHabjan/fuzzy-waddle/actions/runs/41323002450) passed that base.
   It does not establish that the newly reported gameplay defects are resolved.
-- Next action: capture the normal-speed performance baseline and army-order churn; continue R2 local-player/elevation
-  reproductions. Teardown repair is focused-test checked; broader lifecycle acceptance remains open.
-- Latest evidence: topology shutdown regression failed before repair; three focused lifecycle tests and Phaser
-  TypeScript check now pass. Logs: ignored `tmp/ai-layout/topology-{before,after,types,lint}.log`.
-- Goal controller resumed by user; execution is active. Teardown repair published at `2c7844410`.
-- First baseline ended: session `72969` exited 1; result file
-  `tmp/ai-skirmish-runtime-results/run-Lx7H2N/runtime.json` has zero bytes. Matrix report
-  `tmp/ai-skirmish-matrix/1793566924002-failed.json` is infrastructure-only (zero work), not performance evidence.
-- Runner diagnostic repair preserves process failure details; 9 Node tests, tooling types/lint pass.
-  Retry `62748` ended with ENOSPC. Both default evidence directories are junctions to full D:.
-  Keep historical artifacts. New runs must use `AI_SKIRMISH_RUNTIME_RESULTS_DIRECTORY` and `--output` under
-  workspace-local `tmp/ai-gameplay-reliability/` (C:, available space), not the old junctions.
-  Replacement run completed: `matrix/1793567546332-diagnostic_passed.json` under that local directory;
-  150 decisions/3000 ticks, play 17925ms, 10 long tasks. This is manually stepped throughput, not rendered 1x FPS.
-  New opt-in E `runner/skirmish-ai-gameplay-profile.spec.ts` samples real Phaser RAF for three fresh 22s openings;
-  type/lint checks pass. Run it with AI_GAMEPLAY_PROFILE=1 and a fresh configured Playwright server.
-- Offline player binding reproduced (scene controls 3 failed/1 passed before, 4 passed after). Unique-human offline
-  slot sync and scene lookup repaired; Angular service 7 tests, Phaser types and both owning lints pass.
-  Source-only interface types pass; full interface types expose existing fixture errors in game.component,
-  game-save-codec and game-save-migration specs (log `tmp/ai-layout/player-binding-interface-types.log`).
-  These remain outstanding; the touched service fixture's missing thumbnail was repaired. R2 is not closed.
-- Open questions: exact triggers of order churn, retreat, missing defense, player binding and elevation drift.
-  Teardown's unconditional topology notification is an identified hazard, not a completed crash reproduction.
+- Goal controller is active. Completed packets: **0/8**; implemented slices are not full gameplay acceptance.
+- Next: finish anti-air cooldown repair checks, then reproduce mission/formation churn and elevation restoration.
+  Do not rerun unchanged full matches. Use one focused runner and a 30-minute maximum verification batch.
+- Published fixes: teardown lifecycle `2c7844410` (3 regressions, Phaser types/lint); offline unique-human binding
+  `927c5b84b` (4 scene + 7 service tests, Phaser types and owner lints). Ordinary CI 41350341383 passed.
+  Full autosave/elevation acceptance remains open; full interface types still expose save/component fixture errors
+  (`tmp/ai-layout/player-binding-interface-types.log`). Source-only types are narrower evidence.
+- Runner diagnostics `8e3eae635`: malformed artifacts retain process errors; 9 tests and tools types/lint pass.
+  Default result/matrix directories are junctions to full D:. Preserve historical evidence; set
+  `AI_SKIRMISH_RUNTIME_RESULTS_DIRECTORY` and `--output` under `tmp/ai-gameplay-reliability/` for new runs.
+- Throughput diagnostic: `matrix/1793567546332-diagnostic_passed.json` in that directory; 3000 ticks/150 decisions,
+  play 17925ms, 10 long tasks. Manually stepped headless throughput is not rendered 1x frame performance.
+- Rendered profiler `9626a9879` plus tick-zero repair: actual 22s sample recorded 377 frames, p50 50ms/p95 66.7ms,
+  171 ticks/8 decisions/1 worker and no runtime errors. It FAILED the >200 tick progress guard; do not lower it or
+  call this a completed baseline. Log `rendered-profile-focused.log` and JSON under `rendered-opening/` in that
+  evidence directory. No runner remains active. Three matched samples and combat/multi-AI profiling remain.
+- Anti-air focused reproduction: new confirmed flyers during the 40-tick composition cooldown yielded no target
+  (or stayed capped at one). Repair admits confirmed live anti-air growth while retaining other roles and their
+  cooldown; producer clues/memory remain gated. 14 focused tests and owner lint pass; portal-e2e types pass.
+  Full gameplay types fail on existing fixture typing outside this repair (gameplay-types.log); the touched
+  adaptation files have no diagnostics. R6 output/assignment acceptance remains open. Ordinary CI 41350712579 passed.
 
 Cold-start instruction:
 
@@ -75,7 +73,7 @@ and controls. Record an evidence gap separately from a code defect. A blocker do
 | R3 Movement and formation stability | R1 | not_started | Stable slots, yielding, arrival and bounded obstruction recovery. |
 | R4 Pursuit and attack execution | R1, R3 relevant contract | not_started | Faster pursuer lands legal hits; no perpetual approach/abort cycle. |
 | R5 AI mission ownership and defense | R1, R3, R4 | not_started | Calm assembly; effective ground/air defense and deliberate preemption. |
-| R6 Emergency counter production | R1, R5 defender contract | not_started | Visible flyers cause useful legal anti-air output and assignment. |
+| R6 Emergency counter production | R1, R5 defender contract | in_progress | Cooldown suppression reproduced and repaired in pure manager; physical output/assignment remains. |
 | R7 Retreat and re-engagement | R1, R4, R5 | not_started | Favorable fights persist; losing fights withdraw without oscillation. |
 | R8 Measured performance improvement | baseline in R1; final comparison after R2–R7 | not_started | Optimize measured owners; matched before/after proof and regression guard. |
 

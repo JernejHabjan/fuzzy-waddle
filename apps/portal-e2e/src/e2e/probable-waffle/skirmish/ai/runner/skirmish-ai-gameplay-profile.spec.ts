@@ -28,7 +28,15 @@ for (let repetition = 1; repetition <= 3; repetition++) {
     const errors: string[] = [];
     const fixtureDigest = `sha256:${createHash("sha256").update(JSON.stringify(fixture)).digest("hex")}`;
     await prepareRuntimeVariant(page, fixture, variant, variant.seed, source, fixtureDigest, true, errors);
-    const before = await captureCheckpoint(page, fixture.recipe.aiPlayerNumber, 0);
+    // Tick zero has no committed observation/catalog yet; sample only the initialized clock/state here.
+    const before = await page.evaluate((playerNumber) => {
+      const parts = window.__fuzzyWaddleAiRuntimeParts?.(playerNumber);
+      if (!parts) throw new Error("profile_runtime_missing");
+      return {
+        tick: parts.tickService.currentTick,
+        decisionSequence: parts.controller.getBrainState()?.scheduler.decisionSequence ?? 0
+      };
+    }, fixture.recipe.aiPlayerNumber);
     const frames = await page.evaluate(async (playerNumber) => {
       const parts = window.__fuzzyWaddleAiRuntimeParts?.(playerNumber);
       const host = window as unknown as {

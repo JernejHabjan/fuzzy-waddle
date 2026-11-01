@@ -168,6 +168,22 @@ export class AiAdaptationManager implements AiProposalManager {
     const canTransition =
       prior.lastTransitionTick === null ||
       observation.tick - prior.lastTransitionTick >= this.profile.compositionReconsiderationTicks;
+    // Confirmed live flyers may grow the counterforce without reopening unrelated composition choices.
+    // A producer clue or remembered contact alone must still respect the normal transition cooldown.
+    const emergencyAntiAir = targets.find(
+      (target) =>
+        target.role === "anti_air" &&
+        target.desired > (prior.activeRoleTargets.find((entry) => entry.role === "anti_air")?.desired ?? 0) &&
+        evidence.some(
+          (entry) =>
+            target.evidenceIds.includes(entry.evidenceId) && entry.permittedFacts.includes("visible_air_movement")
+        )
+    );
+    const activeRoleTargets = canTransition
+      ? targets
+      : emergencyAntiAir
+        ? [...prior.activeRoleTargets.filter((target) => target.role !== "anti_air"), emergencyAntiAir]
+        : prior.activeRoleTargets;
     const adaptationDemands: AiDemand[] = [];
     const intents: AiIntent[] = [];
     const remainingResources = new Map(
@@ -184,7 +200,7 @@ export class AiAdaptationManager implements AiProposalManager {
         ? target.desired
         : Math.min(
             target.desired,
-            prior.activeRoleTargets.find((priorTarget) => priorTarget.role === target.role)?.desired ?? 0
+            activeRoleTargets.find((priorTarget) => priorTarget.role === target.role)?.desired ?? 0
           );
       if (desired === 0) continue;
       const currentActorIds = currentRoleActorIds(observation, catalog, target.role);
@@ -306,7 +322,6 @@ export class AiAdaptationManager implements AiProposalManager {
     }
 
     const fallback = archetypeFallback(state, observation, catalog);
-    const activeRoleTargets = canTransition ? targets : prior.activeRoleTargets;
     const researchReason = scoredResearch
       ? `research_score:${scoredResearch.score}`
       : survivalThreatVisible
