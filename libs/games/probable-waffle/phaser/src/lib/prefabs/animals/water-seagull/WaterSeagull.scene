@@ -1,0 +1,39 @@
+{
+    "id": "02e5907e-4675-4ad5-bc6b-e6b588ac4e54",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 32,
+        "borderHeight": 128
+    },
+    "displayList": [
+        {
+            "type": "Sprite",
+            "id": "a9c3640a-b404-4a2e-88b5-348ebc3051f7",
+            "label": "water_seagull",
+            "texture": {
+                "key": "animals",
+                "frame": "1.png"
+            },
+            "x": 16,
+            "y": 112,
+            "originY": 1,
+            "animationPlayMethod": 1,
+            "animationKey": "bird-idle"
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}
