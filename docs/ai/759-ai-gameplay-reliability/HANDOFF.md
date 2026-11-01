@@ -19,6 +19,10 @@
   Retry `62748` ended with ENOSPC. Both default evidence directories are junctions to full D:.
   Keep historical artifacts. New runs must use `AI_SKIRMISH_RUNTIME_RESULTS_DIRECTORY` and `--output` under
   workspace-local `tmp/ai-gameplay-reliability/` (C:, available space), not the old junctions.
+  Replacement run completed: `matrix/1793567546332-diagnostic_passed.json` under that local directory;
+  150 decisions/3000 ticks, play 17925ms, 10 long tasks. This is manually stepped throughput, not rendered 1x FPS.
+  New opt-in E `runner/skirmish-ai-gameplay-profile.spec.ts` samples real Phaser RAF for three fresh 22s openings;
+  type/lint checks pass. Run it with AI_GAMEPLAY_PROFILE=1 and a fresh configured Playwright server.
 - Offline player binding reproduced (scene controls 3 failed/1 passed before, 4 passed after). Unique-human offline
   slot sync and scene lookup repaired; Angular service 7 tests, Phaser types and both owning lints pass.
   Source-only interface types pass; full interface types expose existing fixture errors in game.component,
