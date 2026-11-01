@@ -12,7 +12,8 @@ import { Subscription } from "rxjs";
 import {
   CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION,
   GameSaveScope,
-  type ProbableWaffleGameInstance,
+  ProbableWaffleGameInstance,
+  ProbableWafflePlayerType,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility
 } from "@fuzzy-waddle/probable-waffle-protocol";
@@ -39,10 +40,35 @@ describe("GameInstanceClientService", () => {
     expect(service).toBeTruthy();
   });
 
+  it.each([1, 2])("restores the unique offline human slot with %s AI players", (aiCount) => {
+    const game = new ProbableWaffleGameInstance();
+    game.gameInstanceMetadata.data.type = ProbableWaffleGameInstanceType.Skirmish;
+    for (let index = 0; index <= aiCount; index++) {
+      game.players.push(
+        game.initPlayer({
+          userId: null,
+          playerDefinition: {
+            player: { playerNumber: index + 1, joined: true },
+            playerType: index === aiCount ? ProbableWafflePlayerType.Human : ProbableWafflePlayerType.AI
+          }
+        })
+      );
+    }
+    service.gameInstance = game;
+    (
+      service as unknown as { syncCurrentPlayerNumberFromGameInstance(): void }
+    ).syncCurrentPlayerNumberFromGameInstance();
+    expect(service.currentPlayerNumber).toBe(aiCount + 1);
+  });
+
   it("preserves a new match if an older instance cleanup finishes after replacement", async () => {
     let release: (() => void) | undefined;
-    jest.spyOn(TestBed.inject(SceneCommunicatorClientService), "destroyCommunicators")
-      .mockImplementation(() => new Promise<void>((resolve) => { release = resolve; }));
+    jest.spyOn(TestBed.inject(SceneCommunicatorClientService), "destroyCommunicators").mockImplementation(
+      () =>
+        new Promise<void>((resolve) => {
+          release = resolve;
+        })
+    );
     const original = { marker: "old" } as unknown as ProbableWaffleGameInstance;
     const replacement = { marker: "new" } as unknown as ProbableWaffleGameInstance;
     const listener = new Subscription();
@@ -65,11 +91,18 @@ describe("GameInstanceClientService", () => {
     service.gameInstance = instance as ProbableWaffleGameInstance;
     const captured = structuredClone(instance.data);
     captured.gameStateData.simulationTick = 200;
-    await service.saveGameInstance({ kind: "manual", name: "Captured boundary", thumbnail: "image", gameInstanceData: captured });
+    await service.saveGameInstance({
+      kind: "manual",
+      name: "Captured boundary",
+      thumbnail: "image",
+      gameInstanceData: captured
+    });
     captured.gameStateData.simulationTick = 1000;
-    expect(gameSaveService.save).toHaveBeenCalledWith(expect.objectContaining({
-      gameInstanceData: expect.objectContaining({ gameStateData: expect.objectContaining({ simulationTick: 200 }) })
-    }));
+    expect(gameSaveService.save).toHaveBeenCalledWith(
+      expect.objectContaining({
+        gameInstanceData: expect.objectContaining({ gameStateData: expect.objectContaining({ simulationTick: 200 }) })
+      })
+    );
   });
 
   it("persists instant-game saves through the shared game-save service", async () => {
@@ -115,7 +148,7 @@ describe("GameInstanceClientService", () => {
       }
     } as ProbableWaffleGameInstance;
 
-    await service.saveGameInstance({ kind: "manual", name: "Dream checkpoint" });
+    await service.saveGameInstance({ kind: "manual", name: "Dream checkpoint", thumbnail: "" });
 
     expect(gameSaveService.save).toHaveBeenCalledWith(
       expect.objectContaining({

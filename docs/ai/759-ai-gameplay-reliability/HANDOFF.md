@@ -11,7 +11,17 @@
   reproductions. Teardown repair is focused-test checked; broader lifecycle acceptance remains open.
 - Latest evidence: topology shutdown regression failed before repair; three focused lifecycle tests and Phaser
   TypeScript check now pass. Logs: ignored `tmp/ai-layout/topology-{before,after,types,lint}.log`.
-- Goal controller still reports blocked despite user go; user was asked to resume it for automatic continuation.
+- Goal controller resumed by user; execution is active. Teardown repair published at `2c7844410`.
+- First baseline ended: session `72969` exited 1; result file
+  `tmp/ai-skirmish-runtime-results/run-Lx7H2N/runtime.json` has zero bytes. Matrix report
+  `tmp/ai-skirmish-matrix/1793566924002-failed.json` is infrastructure-only (zero work), not performance evidence.
+- Next diagnostic owner: T `matrix/skirmish-matrix-execution.ts` near `readRuntimeResult` (line ~288).
+  Preserve subprocess exit/signal/bounded stderr when decoding fails before rerunning; current catch loses that detail.
+- Offline player binding reproduced (scene controls 3 failed/1 passed before, 4 passed after). Unique-human offline
+  slot sync and scene lookup repaired; Angular service 7 tests, Phaser types and both owning lints pass.
+  Source-only interface types pass; full interface types expose existing fixture errors in game.component,
+  game-save-codec and game-save-migration specs (log `tmp/ai-layout/player-binding-interface-types.log`).
+  These remain outstanding; the touched service fixture's missing thumbnail was repaired. R2 is not closed.
 - Open questions: exact triggers of order churn, retreat, missing defense, player binding and elevation drift.
   Teardown's unconditional topology notification is an identified hazard, not a completed crash reproduction.
 
@@ -55,7 +65,7 @@ and controls. Record an evidence gap separately from a code defect. A blocker do
 | Packet | Depends on | State | Evidence / next boundary |
 | --- | --- | --- | --- |
 | R1 Focused reproductions and baseline | none | in_progress | Teardown reproduction established; army churn and matched performance workload remain. |
-| R2 Restore and teardown lifecycle | R1 relevant reproduction | in_progress | Teardown crash/duplicate notification repaired; 3 focused tests and types pass. Input/elevation/load acceptance remains. |
+| R2 Restore and teardown lifecycle | R1 relevant reproduction | in_progress | Teardown and offline human-slot binding repaired with focused controls. Full load/elevation evidence and interface fixture types remain. |
 | R3 Movement and formation stability | R1 | not_started | Stable slots, yielding, arrival and bounded obstruction recovery. |
 | R4 Pursuit and attack execution | R1, R3 relevant contract | not_started | Faster pursuer lands legal hits; no perpetual approach/abort cycle. |
 | R5 AI mission ownership and defense | R1, R3, R4 | not_started | Calm assembly; effective ground/air defense and deliberate preemption. |

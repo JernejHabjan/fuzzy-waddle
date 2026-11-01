@@ -5,7 +5,8 @@ import {
   type ProbableWaffleDataChangeEventProperty,
   ProbableWaffleGameInstance,
   type ProbableWaffleGameInstanceMetadataData,
-  ProbableWaffleGameInstanceType
+  ProbableWaffleGameInstanceType,
+  ProbableWafflePlayerType
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { type GameInstanceId, type PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
@@ -71,7 +72,18 @@ export abstract class GameInstanceClientContext {
 
   protected syncCurrentPlayerNumberFromGameInstance(): void {
     if (!this.authService.userId) {
-      this.currentPlayerNumber = undefined;
+      // Local saves do not replay the lobby's human-joined event. Null user IDs also belong to AI slots.
+      const local = [
+        ProbableWaffleGameInstanceType.Skirmish,
+        ProbableWaffleGameInstanceType.Campaign,
+        ProbableWaffleGameInstanceType.InstantGame
+      ].some((type) => type === this.getNormalizedGameInstanceType());
+      const humans = local
+        ? (this.gameInstance?.players.filter(
+            (player) => player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human
+          ) ?? [])
+        : [];
+      this.currentPlayerNumber = humans.length === 1 ? humans[0]?.playerNumber : undefined;
       return;
     }
 

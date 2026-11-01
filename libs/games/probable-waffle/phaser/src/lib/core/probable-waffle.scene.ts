@@ -8,6 +8,8 @@ import {
   ProbableWaffleLevels,
   type ProbableWaffleMapData,
   ProbableWafflePlayer,
+  ProbableWafflePlayerType,
+  ProbableWaffleGameInstanceType,
   type ProbableWafflePlayerControllerData,
   type ProbableWafflePlayerStateData,
   ProbableWaffleSpectator,
@@ -31,6 +33,25 @@ export class ProbableWaffleScene extends BaseScene<
   ProbableWaffleSpectator,
   ProbableWaffleCommunicatorServiceInterface
 > {
+  /** Offline AI and human slots share null user IDs; only the restored local human slot owns input. */
+  override get playerOrNull(): ProbableWafflePlayer | null {
+    if (this.baseGameData.user.userId) return super.playerOrNull;
+    const type = this.baseGameData.gameInstance.gameInstanceMetadata.data.type;
+    const local = [
+      ProbableWaffleGameInstanceType.Skirmish,
+      ProbableWaffleGameInstanceType.Campaign,
+      ProbableWaffleGameInstanceType.InstantGame
+    ].includes(type);
+    if (!local || this.baseGameData.user.playerNumber === undefined) return null;
+    return (
+      this.players.find(
+        (player) =>
+          player.playerNumber === this.baseGameData.user.playerNumber &&
+          player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human
+      ) ?? null
+    );
+  }
+
   override getSceneGameData() {
     this.sceneGameData.baseGameData = this.baseGameData;
     return this.sceneGameData;
