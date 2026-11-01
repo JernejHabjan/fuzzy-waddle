@@ -54,7 +54,7 @@ test("catalog includes all scenario identities and distinguishes wiring from pas
   assert.equal(ids.length, 121);
   assert.equal(new Set(ids).size, 121);
   assert.equal(ids.includes(undefined), false);
-  assert.equal(/\]\([^\)\r\n]*\\/u.test(catalog), false, "Markdown links must use portable forward slashes");
+  assert.equal(/\]\([^)\r\n]*\\/u.test(catalog), false, "Markdown links must use portable forward slashes");
   assert.match(catalog, /Continuous land-match victory \(SEQ-01\)/);
   assert.match(catalog, /Defend a home raid and resume play \(SEQ-02\)/);
   assert.match(catalog, /Island transport and expansion \(SEQ-05\)/);
