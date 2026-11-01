@@ -154,7 +154,8 @@ research command remains the final authority. Adaptation evidence, targets, rese
 are saved and projected into the debug snapshot without live replanning.
 Queued production items count as future beneficiaries once each; an idle producer alone is not an upgraded unit.
 Optional research must clear the minimum useful-value threshold even for a tech archetype, and a visible survival
-threat suspends it. The paired early/mass/queued/threat pure case is authored but unverified until the final gate.
+threat suspends it. `ai-adaptation-manager.spec.ts` covers the paired TECH-01/02 early, mass, queued-beneficiary and
+survival-threat controls. Retained native upgrade evidence and its faction limits are in the coverage record.
 
 ## Difficulty
 

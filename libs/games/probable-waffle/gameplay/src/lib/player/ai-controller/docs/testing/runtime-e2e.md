@@ -1,11 +1,11 @@
-# Runtime E2E and pre-merge policy
+# Runtime E2E and optional matrix certification
 
 ## Current execution policy
 
 Automatic extended AI CI jobs and tag triggers are commented out by user request. Local core/scout regression
 profiles remain available; the dedicated workflow retains manual dispatch when default-branch registration permits it.
-Do not make PR readiness, multiplayer certification, difficulty calibration or an unchanged complete matrix sweep a
-prerequisite for this single-player iteration. [Coverage and follow-ups](./coverage-status.md) records the retained evidence.
+Multiplayer certification, difficulty calibration and an unchanged complete matrix sweep are outside this
+single-player iteration. [Coverage and follow-ups](./coverage-status.md) records the retained evidence and scoped acceptance.
 
 The matrix supports manifest-derived shards for explicitly requested coverage. Keep one isolated game per variant;
 workflow YAML must not duplicate scenario lists. A requested run must fail on missing fixtures, zero decisions/ticks,
@@ -13,13 +13,14 @@ missing required outcomes, source/fixture mismatch or browser/runtime failure. R
 Unsupported content remains visible with an explicit reason.
 For a victory row, an authoritative AI-player `win` is required; loss, tie, quit or a completed intermediate mode goal
 cannot substitute for victory. A terminal world may stop early only after all selected victory assertions and scheduled
-events are complete. The currently authored terminal-stop helper does not yet cover nonterminal focused success cases.
+events are complete. Nonterminal focused cases may separately opt into the guarded `evidenceStop` contract below.
 
-Pure selection also requires a passing, actually executed Jest assertion naming each requested scenario ID. The matrix
-captures separate Jest JSON results for gameplay and Phaser without a cached target; a broad passing spec file or a registered fixture
-with no ID-specific assertion cannot count as coverage. The compact report lists missing IDs, and the runner exits
-nonzero. This contract is authored but awaits the final validation gate; existing generic test titles may need explicit
-scenario names then.
+Pure selection requires passing, actually executed Jest assertions bound to each requested scenario ID. Explicit
+fixture bindings require every declared title in its owning file; legacy rows without bindings use ID-named assertions.
+The matrix captures separate Jest JSON results for gameplay and Phaser without a cached target; a broad passing spec
+file or a registered fixture with no matching assertion cannot count as coverage. The compact report lists missing IDs, and the runner exits
+nonzero. Node contract tests cover exact fixture-bound assertions, missing/pending results and incidental ID matches.
+This enforcement does not establish that every manifest row already has complete semantic coverage; #815 owns that audit.
 
 Local iteration uses focused owner tests followed by affected native cases when behavior changes. The established
 core and scout profiles are periodic opt-in regression packs, each bounded to 30 minutes. A complete matrix or
@@ -39,8 +40,8 @@ that path requires a relay and multiple human clients. Real peer relay, reconnec
 An additional, currently unrun `skirmish-ai-multiplayer-relay.spec.ts` starts two authenticated browser contexts
 against a local Supabase-backed Nest API and the frozen three-spawn `MapAiMultiplayer`. Its separate
 `pnpm ai:skirmish:multiplayer` runner discovers local credentials without printing them and starts the portal/API
-through `playwright.multiplayer.config.ts`; the caller must first start local Supabase. The non-draft PR workflow
-has a separate job for these cases. The first smoke requires a real relayed AI command and common-tick hashes,
+through `playwright.multiplayer.config.ts`; the caller must first start local Supabase. The separate PR workflow job
+is commented out with the other automatic AI jobs. The first smoke requires a real relayed AI command and common-tick hashes,
 and a separate case checks immediate host-disconnect promotion and authority-epoch fencing. These do not satisfy
 #819's reconnect, exact-once migration continuation, lifecycle, combat or terminal obligations. Neither has run yet.
 
@@ -60,18 +61,21 @@ the inline representation. Custom raw-file consumers must use `decodeRuntimeArti
 before reading variants. Matrix persistence uses the same encoding, so it cannot recreate duplicated capture strings.
 For a retained sweep, isolate its artifacts in one directory, give every shard the same `--run-id`, then use
 `pnpm ai:skirmish:report -- --report <directory> --repair-list --require-supported`. The output is compact JSON;
-nonzero exit means a failing or missing required row. These new contracts are authored but unverified until the final gate.
+nonzero exit means a failing or missing required row. Node contracts exercise codec roundtrips, damaged references,
+provenance conflicts, missing shards and rejection of diagnostic-only results as complete coverage.
 Each matrix runtime artifact also writes a bounded JSON index under its report directory's `indexes/` subdirectory.
 Read that index first for source/run/fixture identity, exact expected/executed/passed/failed/unexecuted counts, stop
 reasons, the first failed predicate per row, and a pointer back to the retained raw artifact. An omitted-failure count
 means the bounded index truncated display, never the underlying results or exit status. Indexes are kept outside the
-top-level shard directory so `--repair-list` reads only complete reports. This source path is authored, unverified.
+top-level shard directory so `--repair-list` reads only complete reports. Node tests verify counts, zero-work rejection,
+failed-process rejection, failure truncation and raw-artifact pointers.
 Focused positive variants may opt into `evidenceStop` only with an explicit earliest checkpoint and consecutive-stability
 window. The fixture reader rejects controls and any assertion with absence, temporal, terminal or lifecycle obligations;
 the browser driver also refuses to stop while a scheduled perturbation remains or any selected oracle fails. Until a
-reviewed fixture opts in and the final-gate tests execute, existing recipes still run their authored ceilings.
+reviewed fixture opts in, existing recipes still run their authored ceilings. Browser-free contract tests cover the
+stability window, pending events, controls and unsafe assertion rejection.
 
-At the final validation gate, first run the frozen open-economy map preflight with
+When broader map/matrix certification is requested under #816, first run the frozen open-economy map preflight with
 `AI_SKIRMISH_MAP_PREFLIGHT=1 pnpm exec playwright test apps/portal-e2e/src/e2e/probable-waffle/skirmish/ai/setup/skirmish-ai-test-map-preflight.spec.ts --config=apps/portal-e2e/playwright.config.ts --workers=1`.
 It starts an ordinary test-marked lobby, verifies the active scene and indexed neutral resources, finds open 3×3
 ground patches near both starts, and requests a real ground path between them. It emits one bounded
@@ -81,7 +85,7 @@ authored but has not been executed.
 
 Then run representative fixture preflight and manifest-selected family/map shards as one retained sweep. Reuse a
 browser/server process inside a worker but isolate every game world; independent
-CI workers may run separate shards. An authored, unverified `--repair-list` mode reads an isolated directory of runtime
+CI workers may run separate shards. The contract-tested `--repair-list` mode reads an isolated directory of runtime
 reports and emits bounded JSON. Use `--require-supported` for the full required matrix, plus one shared `--run-id` for
 manual shards; CI supplies a run ID. The reporter requires common source/run/manifest identity
 and each shard's expected fixture identities/digests. Different selected fixture sets legitimately have different
@@ -133,7 +137,7 @@ generated scenario catalog must derive, for each registered runtime row, that ki
 starting-state summary, positive/control run counts, map, tick deadline and exception rationale from recipe data.
 It must show missing setup as missing rather than infer it from requirement prose. Do not hand-edit generated rows
 or copy fixture state into another maintained table.
-The current metadata contract and catalog variant table are authored but unverified; subject/control pairs now declare
+Fixture and catalog tests validate the metadata contract and generated variant table; subject/control pairs declare
 one pair ID and matching seed, map and scenario membership. Existing multi-run focused variants remain migration work.
 Catalog output reports registration and declared budgets, never an executed pass.
 
@@ -177,19 +181,19 @@ registered but has not yet been executed or proven in the browser.
 The authored ECO-01/02 preset pairs an underserved visible Tree1 with the same forest already served by a local
 WorkMill. A remote owned WorkMill remains in both worlds: the positive branch must apply a resource-service command
 and complete another WorkMill within ten observed tiles of the source, while the control must not duplicate its local
-service. Each branch repeats three times; this recipe and its oracle are unexecuted until the final validation gate.
+service. These authored repetitions remain part of the broader #816 evidence backlog.
 
 The authored ECO-03 preset gives two workers ordinary pre-tick Gather orders to the same definition-backed,
 two-slot tree and leaves a third worker available. The runtime oracle uses authoritative fixture-to-actor IDs,
 not prefab names or debug intent text: it requires an observed full source, no overassignment, and an actual
 Gather order to another observed wood source. Exact pre-tick stockpiles make wood the scarce resource. These are
 starting-world orders, not AI decisions or substituted brain outcomes. This recipe and its oracle are unexecuted
-until the final validation gate.
+under the broader #816 certification scope.
 
 ECO-08 retains both natural 200-resource faction openings and adds a focused Tivara growth variant with six real
 workers, two finished Fields and a Granary. Its exact 200-resource starting balance is checked before tick zero;
 the oracle requires at least seven observed workers by tick 3,000, retains seven at the final checkpoint, and
-observes delivered income. Three isolated repetitions are authored but unexecuted until the final gate.
+observes delivered income. These authored repetitions remain a specific #829/#816 evidence gap.
 
 A natural-map control that cannot satisfy a focused invariant is not an equivalent correctness oracle or a performance
 baseline. Record that outcome in its issue/handoff without claiming a speedup. The focused fixture remains the
@@ -208,16 +212,16 @@ ticks or the amount of gameplay work. Record both tick count and wall time.
   A longer focused deadline needs measured construction/travel/combat latency and a written reason in its recipe;
   do not skip real production, movement or combat merely to meet a budget. Stop at the earliest authoritative
   acceptance milestone rather than waiting for a distant final checkpoint.
-- The current runner always advances through every authored checkpoint. #816 must add optional stop-on-evidence for
-  focused cases before broad fixture expansion: evaluate independently captured authoritative outcomes at settled
-  checkpoints, stop only after every selected positive requirement is satisfied and no required scheduled event or
-  observation horizon remains, then record the stop tick/reason. A negative control, absence assertion, liveness
+- The runner supports opt-in stop-on-evidence for safe focused subject cases. It evaluates independently captured
+  authoritative outcomes at settled checkpoints and requires every selected positive requirement, the configured
+  stability interval and no pending scheduled event before recording the stop tick/reason. Fixture opt-in and measured
+  budget reductions remain #816 work. A negative control, absence assertion, liveness
   window or continuous match must keep its required horizon. Early stop never converts a missing terminal result,
   missing checkpoint, or unobserved effect into a pass.
   A positive milestone with later cleanup, retention or no-duplicate obligations must finish that stability window.
   A shared variant can stop only when every selected scenario's obligations are complete; continuous matches can
   finish at their authoritative terminal result.
-- Run each positive and control variant once in ordinary PR and required pre-merge coverage. For a scenario whose
+- In a separately requested focused certification tier, run each positive and control variant once. For a scenario whose
   acceptance explicitly includes repeatability, use at least two identical-start runs and compare normalized
   decisions, initial-world and outcome digests, reporting the first differing path. Put additional repeats and
   seed sweeps in scheduled/manual extended coverage. A single run proves a behavior on that seed, not determinism.

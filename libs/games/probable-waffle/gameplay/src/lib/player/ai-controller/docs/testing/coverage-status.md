@@ -60,20 +60,32 @@ Issues contain source anchors, acceptance, constraints and known evidence. They 
   independently of the single-player AI issue.
 - [#823: save/load E2E](https://github.com/JernejHabjan/fuzzy-waddle/issues/823): active paid commitments, combat,
   scouting, native continuation and cleanup. Exact full replay parity is outside that issue.
-- [#821: source structure](https://github.com/JernejHabjan/fuzzy-waddle/issues/821): remaining naming/size debt;
-  persisted identifiers require compatibility-safe migration.
+- [#821: source structure](https://github.com/JernejHabjan/fuzzy-waddle/issues/821): folder/source naming and lint
+  enforcement are delivered. Remaining debt includes old stage-based comments/local names, diagnostic labels and
+  baselined oversized files; stored manager/claim/effect identities need compatibility-safe changes.
 - [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) and
   [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816): broader manifest/evidence work remains explicit;
   existing selected passes must not be advertised as a complete matrix.
 - [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) and
-  [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829): review existing strategy/economy implementation and
-  evidence against their acceptance before proposing further changes; do not restart old implementation plans.
+  [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829): the acceptance audit below separates implemented
+  strategy/economy from specific enhancements and evidence gaps; do not restart old implementation plans.
 - [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828): profile only a concrete measured slowdown.
 - [#822](https://github.com/JernejHabjan/fuzzy-waddle/issues/822): optional island content/transport-required worlds.
   No shipped flying-container capability or synthetic fixture establishes native air transport.
 
 Difficulty calibration was cancelled in [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817). Existing
 configuration/fairness tests remain; D-06 comparisons, difficulty-order campaigns and calibration soaks are not queued.
+
+### Strategy and economy acceptance audit
+
+| Issue | Implemented and covered by focused contracts | Remaining acceptance |
+| --- | --- | --- |
+| #827 strategy | Permitted-contact objective ranking, domain/route feasibility, local force gates, damaged-economy recovery, exposed-core finishing, failed-mission rebuilding/follow-up and saved alternatives. `select-ai-offensive-opportunity*.spec.ts` and `ai-offensive-opportunity-*.spec.ts` exercise these controls. | The current assessment chooses finish/pressure/recover/scout and ranks enemy objectives. It does not provide the proposed unified comparison of expansion, containment and counter/tech against attacks, with production/reinforcement timing and opportunity cost. Keep that enhancement open; existing victory evidence does not prove optimal win timing. |
+| #829 economy | Equal 200-resource defaults, demand/capacity-driven workforce above the six-worker recovery floor, food runway, threat budgets, recovery hysteresis and finish-aware growth. `player.spec.ts`, `ai-economy-policy.spec.ts`, `ai-resource-forecast.spec.ts` and macro tests cover these contracts; workforce/posture are committed debug state. | Focused ECO-08 growth beyond six workers and the broader low-resource growth/recovery acceptance lack complete retained physical evidence. Do not interpret already-proven defaults/policy as missing implementation or restart both-faction victory work. |
+
+These are separately tracked follow-ups to the single-player delivery. Their broader acceptance is not a claim made
+by this PR. Source structure enforcement is active; lint exemptions remain visible debt rather than a claim that every
+historical file meets the new limits.
 
 ## Execution policy
 
@@ -84,7 +96,8 @@ Repository variables and tags alone cannot activate commented jobs. Do not re-en
 
 Use focused causal checks before affected native confirmation. Keep one local native runner and each invocation at
 or below 30 minutes. Retain valid evidence and avoid unchanged full-family reruns. Missing or infrastructure-only
-results are not gameplay passes. Draft PR #814 is not made ready or merged by this cleanup.
+results are not gameplay passes. PR review/readiness is separate from broader matrix certification; merging remains
+a user-controlled action.
 
 ## Cleanup verification
 
@@ -109,6 +122,9 @@ Source-structure exemption moves require matching original hashes and equivalent
 normalization. Pre-existing stale entries are not renewed; the removed stale missing-file entry is dropped.
 No new size exemption is introduced. Converted tooling has its own enforced source-size lint, and oversized fixture
 tests and world-authoring functions are split by responsibility.
+The closure review rechecked 74 strategy/economy tests, the shared player-default test and 66 tooling/rule contracts.
+It repaired a Unicode parser-offset defect in source-size enforcement and package-script separator handling in the
+catalog CLI. Owning lint, tooling type checking, catalog consistency and skill/link checks pass.
 No native match, real-peer session or full-tail save/load certification was rerun for these mechanical changes;
 retained native evidence above keeps its original source/fixture limitations. The omission/closure audits cover
 consumers, wire/save validation, deleted-code references, documentation links and publication scope.

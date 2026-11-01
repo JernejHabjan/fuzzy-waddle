@@ -239,11 +239,18 @@ export function renderCatalog() {
   return `${lines.join("\n")}\n`;
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const mode = process.argv[2] ?? "--check";
-  if (!["--write", "--check", "--inventory"].includes(mode) || process.argv.length > 3) {
+/** Accepts direct Node flags and the leading separator forwarded by package-script runners. */
+export function parseCatalogMode(arguments_: readonly string[]): "--write" | "--check" | "--inventory" {
+  const args = arguments_[0] === "--" ? arguments_.slice(1) : arguments_;
+  const mode = args[0] ?? "--check";
+  if ((mode !== "--write" && mode !== "--check" && mode !== "--inventory") || args.length > 1) {
     throw new Error("usage: --write|--check|--inventory");
   }
+  return mode;
+}
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const mode = parseCatalogMode(process.argv.slice(2));
   if (mode === "--inventory") {
     const manifest: ScenarioManifest = JSON.parse(
       readFileSync(join(fixtureDirectory, "skirmish-scenario-manifest.json"), "utf8")

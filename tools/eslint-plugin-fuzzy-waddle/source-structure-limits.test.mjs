@@ -44,3 +44,10 @@ test("excludes comment-only lines from source and function limits", () => {
   const comments = Array.from({ length: 450 }, () => "// explanation").join("\n");
   assert.deepEqual(verify(`${comments}\nexport function answer() {\n  return 42;\n}\n`), []);
 });
+
+test("keeps parser offsets aligned when comments contain supplementary Unicode characters", () => {
+  const comments = "// \u{1f3ae}\n".repeat(450);
+  assert.deepEqual(verify(`${comments}export function answer() {\n  return 42;\n}\n`), []);
+  const oversized = `function oversized() {\n${"  consume();\n".repeat(201)}}`;
+  assert.match(verify(`${comments}${oversized}`)[0]?.message ?? "", /maximum is 200/u);
+});

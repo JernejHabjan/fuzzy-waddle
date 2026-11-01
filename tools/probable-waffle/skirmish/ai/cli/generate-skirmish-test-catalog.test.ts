@@ -1,6 +1,28 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { parseRequirementRows, renderCatalog } from "./generate-skirmish-test-catalog.ts";
+import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
+import { parseCatalogMode, parseRequirementRows, renderCatalog } from "./generate-skirmish-test-catalog.ts";
+
+test("catalog flags accept a package-script separator while rejecting unknown and extra arguments", () => {
+  for (const mode of ["--write", "--check", "--inventory"] as const) {
+    assert.equal(parseCatalogMode([mode]), mode);
+    assert.equal(parseCatalogMode(["--", mode]), mode);
+  }
+  assert.equal(parseCatalogMode([]), "--check");
+  for (const args of [["--unknown"], ["--check", "--write"], ["--", "--check", "extra"]]) {
+    assert.throws(() => parseCatalogMode(args), /usage:/);
+  }
+});
+
+test("the catalog CLI checks the committed catalog with forwarded package-script arguments", () => {
+  const result = spawnSync(
+    process.execPath,
+    [fileURLToPath(new URL("./generate-skirmish-test-catalog.ts", import.meta.url)), "--", "--check"],
+    { encoding: "utf8" }
+  );
+  assert.equal(result.status, 0, result.stderr);
+});
 
 test("catalog requirements retain explicit setup and result or mark missing setup", () => {
   const rows = parseRequirementRows(

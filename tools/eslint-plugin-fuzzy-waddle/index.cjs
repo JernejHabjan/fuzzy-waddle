@@ -15,7 +15,8 @@ const sourceDeclarationTypes = new Set([
 ]);
 
 function maskComments(sourceCode) {
-  const characters = [...sourceCode.text];
+  // Parser ranges use UTF-16 offsets; preserve surrogate pairs as two code units.
+  const characters = sourceCode.text.split("");
   for (const comment of sourceCode.getAllComments()) {
     for (let index = comment.range[0]; index < comment.range[1]; index += 1) {
       if (characters[index] !== "\n" && characters[index] !== "\r") characters[index] = " ";

@@ -44,17 +44,18 @@ may be released at the original readiness threshold; missing indispensable passe
 ### Native scenario bindings and bounded lookup
 
 Native bindings use tools/probable-waffle/skirmish/ai/testing/bindings/native-scenario-bindings.json for original obligations/branches/ceilings and
-native-scenario-registration.mjs to author ordinary matrix fixtures. Existing world layout/world factories own
-construction/scouting/combat inputs; native-strategic-worlds.mjs, native-domain-worlds.mjs and native-classic-worlds.mjs
-own the remaining mission/domain/classic inputs. native-authority-worlds.mjs owns H-06/H-07/H-10/H-13–15. skirmish-runtime-native-scenario-fixture.mjs refuses source-controlled
+native-scenario-registration.ts to author ordinary matrix fixtures. Existing world layout/world factories own
+construction/scouting/combat inputs; native-strategic-worlds.ts, native-domain-worlds.ts and native-classic-worlds.ts
+own the remaining mission/domain/classic inputs. native-authority-worlds.ts owns H-06/H-07/H-10/H-13–15. skirmish-runtime-native-scenario-fixture.ts refuses source-controlled
 recipe/assertion drift. Read only the selected ID and its factory, not every generated fixture.
 
 The normal evaluation dispatches through apps/portal-e2e/src/e2e/probable-waffle/skirmish/ai/evaluation/scenario/skirmish-ai-native-scenario-evaluation.ts to the selected
 family reader. Full-case branch/faction comparisons live in skirmish-ai-native-scenario-pairs.ts. Physical hits,
 applied effects, paid output, exact service and original-destination arrivals are distinct from selected claims or
 receipts. Missing/truncated history and ambiguous spell/weapon attribution fail; no complete projectile trace is claimed.
-These62 bindings/400 faction-control variants are authored unrun. Native setup, timing and outcome correctness remain
-unmeasured until an authorized gate. New recipes must keep unavailable premises separate from AI behavior failures.
+Bindings and variant counts come from the current manifest/catalog. Registration establishes authored setup and
+contract validity; the coverage record alone identifies executed outcomes. New recipes must keep unavailable
+premises separate from AI behavior failures.
 
 Only Tivara offers current ships; real boat landing/escort uses that faction. Native hostile ship cases use the existing
 three-spawn map and a third Tivara opponent through the ordinary lobby, never a foreign prefab or synthesized player.
@@ -210,7 +211,7 @@ do not install another gameplay observer. Continuous victory recipes use fixed n
 `native/economy/economy-delivery-native-gameplay.json` covers shared cash admission, useful surplus-worker transfer and poor-delivery recovery.
 Its bounded existing decision input retains the exact consumed four-resource vector; assertions join native receipts
 to actual balance increases and transferred worker identity. This is not complete M11 alias/lifetime authority.
-These worlds retain raw capture without duplicating the full production V2 proof. Missing input, history, receipt or
+These worlds retain raw capture without duplicating the full native production proof. Missing input, history, receipt or
 competing priced demand fails the economy reader; a deliberately rejected purchase is not required when the planner
 correctly suppresses optional spending before arbitration.
 
@@ -222,7 +223,7 @@ orders can target neutral or same-owner sources. Enemy sources remain invalid.
 ## Native production authority
 
 Full PRO-03/06/07 runtime evaluation consumes `productionEvidenceV2`. Legacy current captures and pure oracle controls
-remain diagnostic regressions; they cannot satisfy the runtime gate. V2 separates paused actual setup, exact consumed
+remain diagnostic regressions; they cannot satisfy the runtime gate. This report separates paused actual setup, exact consumed
 and selected decisions, operation-time definitions, native lifecycle callbacks and closed physical intervals.
 
 `inputTick` belongs to the consumed observation, `selectedTick` to publication, and `applicationTick` to the actual
@@ -273,8 +274,8 @@ pnpm ai:tools:test
 The Playwright spec is parameterized by the matrix runner. Running its gutter test without `AI_SKIRMISH_RUNTIME_REQUEST` is not a complete scenario run.
 
 Matrix source ownership: `tools/probable-waffle/skirmish/ai/cli/run-skirmish-matrix.ts` handles CLI selection, replay comparison and report output;
-`skirmish-matrix-fixtures.mjs` validates manifest/runtime recipes; `skirmish-matrix-execution.mjs` invokes the pure and
-browser drivers; `skirmish-matrix-io.mjs` owns bounded input, source provenance and path helpers. Keep rejection and
+`skirmish-matrix-fixtures.ts` validates manifest/runtime recipes; `skirmish-matrix-execution.ts` invokes the pure and
+browser drivers; `skirmish-matrix-io.ts` owns bounded input, source provenance and path helpers. Keep rejection and
 report behavior stable when changing these boundaries.
 
 Browser results are retained separately under `tmp/ai-skirmish-runtime-results/`; the matrix report's
@@ -500,30 +501,31 @@ Detailed requirements are split by concern:
 - [Classic RTS and difficulty scenarios](./classic-rts-and-difficulty-scenarios.md)
 - [Debugging scenarios](./debugging-scenarios.md)
 
-Recovery bindings H-01–04/H-19/H-24–26 use native-recovery-worlds.mjs and the native recovery/mission readers.
+Recovery bindings H-01–04/H-19/H-24–26 use native-recovery-worlds.ts and the native recovery/mission readers.
 They require original causal ownership and physical useful effects. Pending/error route faults are finite and
 actor-scoped; pending calls cap at32 and release in original request order or settle null on scene shutdown.
 H-05/H-20/H-23 now bind original AI receipt uncertainty, pending-query scene disposal and indispensable island
 builder cargo. H-21 native larger-unit/formation clearance is explicitly deferred until suitable content exists.
 Static geometry, a human scheduled command or scripted passenger membership cannot replace native outcomes.
-All new sources remain unrun.
+Full-family execution status belongs to the coverage record, independently of source registration.
 
-### Command/resource authoring update — 2026-10-20
+### Command/resource fault controls
 
 Consumer-only receipt faults preserve the actual shared outcome stream and command application. Explicit preset opt-in
 selects original AI requests, retains bounded callbacks, releases them FIFO at fixed simulation ticks and detaches on shutdown.
 Ordinary gameplay has no installed fault policy. Existing root capture records narrow delivery metadata within its budget;
 it does not duplicate heavy world samples for those events. Selected authority/lanes/wait ownership has explicit loss bounds.
 H-06/H-07/H-10 readers join raw native charges/output/history; H-13–15 require player-wide resource exposure,
-actual applied service and relevant native defense. Cumulative nine bindings/62 variants are authored unrun.
+actual applied service and relevant native defense. Selected ownership passes and their limits are in the coverage record;
+registration does not certify every authority variant.
 H-11 independently prices/exhausts the complete scarce food chain. H-12 proves native atomic admission prevention
 plus pure cycle recovery under the explicitly approved scope; it reverses real proposal enumeration.
 H-30 uses finite optional/debug/mandatory faults with saved retry debt and original native reconciliation.
 H-08/H-09/H-31 now have native
-save/continuation registration described below; its execution is still deferred.
-No recipe, test, lint, type check, formatter, build or other validation ran. Model summaries remain at most8192 UTF-8 bytes.
+save/continuation registration described below; complete family certification remains deferred.
+Model summaries remain at most8192 UTF-8 bytes.
 
-### Authority/save/lifecycle source update — 2026-10-20
+### Authority, saves and lifecycle
 
 Admitted commands retain original execution/progress across host epochs and history eviction. Duplicate delivery is
 not terminal failure of the original paid effect; a distinct rejected new request cannot release its original purpose.
@@ -533,15 +535,14 @@ are not an acknowledged authoritative response tail or a peer-independent hash p
 
 Disposed bus/transport/save callbacks and delayed Angular communicator transitions are fenced. The single root client
 facade delegates through shared context, event and lobby inheritance layers; the previous oversized-file issue was
-addressed by splitting source, without updating the lint baseline. Dependency-injection/type/lint checks remain unrun.
+addressed by splitting source, without updating the lint baseline. Current owning check results are in the coverage record.
 
 The localhost authority-probe opt-in retains only genuine admitted AI envelopes (16 candidates,32 selected outcomes,
 explicit overflow failure). skirmish-ai-multiplayer-authority-continuation.spec.ts authors ONE real host-promotion and
 original replay/application branch. H-08/H-09 now have the complete source registrations described below.
 Headless bus/codec tests cannot certify those native outcomes.
-No recipes, tests, lint, types, formatter, browser or other verification ran in this source batch.
 
-H-32 uses native-lifecycle-worlds.mjs and the native lifecycle runner/readers for eight worlds: normal disposal,
+H-32 uses native-lifecycle-worlds.ts and the native lifecycle runner/readers for eight worlds: normal disposal,
 an original pending path, an original paid queue and a real two-client host replacement, for both factions.
 Menu hitboxes, score-screen Leave and the skirmish lobby retain the same browser realm. The second match must have
 its own seed/identity, exactly one current controller/player and later decisions. Actual old queue completions,
@@ -564,7 +565,8 @@ fixture inputs cannot silently disappear after reload. The pause/speed leg uses 
 selection/dispatch is synchronous: pure ai-saved-continuation.spec.ts covers otherwise unreachable saved provisional expiry,
 debt/age and retained paid/unknown claims. New saves preserve confirmed delivered-income sampling, while legacy saves still
 reset unsafe derived income. Deterministic comparison excludes measured telemetry only. Raw captures stay local; bounded
-fingerprints and the first differing decision enter reports. All controls remain authored and unrun.
+fingerprints and the first differing decision enter reports. The coverage record qualifies retained restoration/initial
+continuation evidence and later divergence; the full continuation family remains uncertified under #823.
 
 D-02 binds18 variants across every difficulty and both factions. Single-player legs save immediately before the selected
 profile's first eligible decision or with a genuine applied command still awaiting its consumer receipt. Separate
@@ -622,7 +624,8 @@ both import and native capture. Only bounded digests/results enter reports. Impo
 Six native worlds select Easy/Normal/Hard in the ordinary lobby for both factions on the same legal setup/seed.
 The existing listener-gated consumed-input projection includes the actual controller/brain profile. The D-01 reader
 pins every policy field independently of the production factory and requires every selected tick/sequence through2000,
-persisted difficulty, accepted proposal/command quota consistency and a real applied AI action. No checks have run.
+persisted difficulty, accepted proposal/command quota consistency and a real applied AI action. This native family is
+registered without complete retained execution evidence.
 Invalid configuration is covered at the actual controller/factory boundary: there is no invalid lobby option to select.
 This is registration, not difficulty calibration, quota saturation or D-03 hidden-state fairness certification.
 
