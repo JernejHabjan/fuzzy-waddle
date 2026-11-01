@@ -78,3 +78,6 @@ test-results/
 .mcp.json
 .output.txt
 test_output.txt
+
+# Generated Husky hook wrappers
+/.husky/_/

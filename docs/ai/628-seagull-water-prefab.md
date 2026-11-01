@@ -3,6 +3,19 @@
 Tracks [#628](https://github.com/JernejHabjan/fuzzy-waddle/issues/628). Related dependency:
 [#575](https://github.com/JernejHabjan/fuzzy-waddle/issues/575).
 
+## Implementation update — 2026-11-01
+
+- Implemented paired WaterSeagull prefab and River Crossing placement using the existing bird atlas.
+- Consumes the typed indexed shark from PR #811; PR #802 remains stacked on that branch.
+- Polls active sharks within 192 pixels every 250 ms, takes off once away from the trigger, and releases timers, animation listeners and tweens on destruction or shutdown.
+- Uses a water-level origin, padded camera exit and a three-second safety timeout beginning at takeoff.
+- Ignores generated `.husky/_/` wrappers while retaining support for authored hooks.
+- Focused behavior/lifecycle tests and scoped ESLint pass. The broader spec typecheck reports existing campaign/selection fixture errors; no seagull diagnostics remain after repair.
+- Manual/visual playtesting remains outstanding. PR #811 intentionally defers shark runtime atlas packing, which also limits combined visual validation.
+- Omission and closure audits reviewed the prefab pair, map pair, animation keys, shark registrations and local-only lifecycle. Runtime implementation is complete; visual evidence is pending.
+
+The sections below retain the approved design and original implementation checklist as historical planning context.
+
 ## Status
 
 - [x] Inspect #628, related issue #575, and the current repository implementation.

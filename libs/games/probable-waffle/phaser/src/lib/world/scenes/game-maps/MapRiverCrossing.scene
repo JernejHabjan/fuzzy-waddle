@@ -1200,6 +1200,14 @@
       "y": 448
     },
     {
+      "prefabId": "02e5907e-4675-4ad5-bc6b-e6b588ac4e54",
+      "id": "d2489e92-a5cc-4393-ac0f-43e2bcabcde9",
+      "unlock": ["x", "y"],
+      "label": "waterSeagull",
+      "x": 928,
+      "y": 480
+    },
+    {
       "prefabId": "26690ab3-3a0b-47ef-a80a-de41a0f83a9e",
       "id": "462a1899-04b8-44c7-be00-73657ac10a26",
       "unlock": ["x", "y", "sfxKey", "type", "sfxType"],
