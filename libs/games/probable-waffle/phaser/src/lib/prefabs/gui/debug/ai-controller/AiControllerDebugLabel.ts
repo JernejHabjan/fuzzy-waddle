@@ -12,8 +12,6 @@ import { AiPlayerHandler } from "../../../../player/ai-controller/ai-player-hand
 import { type PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import type { PlayerAiController } from "../../../../player/ai-controller/player-ai-controller";
 import { NavigationService } from "../../../../world/services/navigation.service";
-import { AiLegacyDebugStrategicLines } from "./AiLegacyDebugStrategicLines";
-import { AiLegacyDebugEconomicLines } from "./AiLegacyDebugEconomicLines";
 import { AiCommittedDebugLines } from "./AiCommittedDebugLines";
 import { selectAiDebugSnapshot } from "./select-ai-debug-snapshot";
 /* END-USER-IMPORTS */
@@ -75,7 +73,9 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
     this.telemetryText.setInteractive();
     this.telemetryText.on("wheel", this.onTelemetryWheel, this);
     this.telemetryText.on("pointerup", this.onTelemetryBookmark, this);
-    this.once(Phaser.GameObjects.Events.DESTROY, () => { this.bookmarks.length = 0; });
+    this.once(Phaser.GameObjects.Events.DESTROY, () => {
+      this.bookmarks.length = 0;
+    });
     const panelBackground = scene.add.rectangle(-250, 0, 500, 320, 0x111827, 0.74);
     panelBackground.setOrigin(0.5, 0);
     this.addAt(panelBackground, 0);
@@ -85,16 +85,6 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
     this.playerAction.setStyle({ align: "left", color: "#d8e6ff", fontSize: "16px", maxLines: 2 });
     this.telemetryText.setPosition(-490, 78).setOrigin(0, 0).setWordWrapWidth(480, true);
     this.telemetryText.setStyle({ align: "left", color: "#ffffff", fontSize: "16px", lineSpacing: 1, maxLines: 16 });
-    // Preserve generated-label compatibility references without executing the legacy mutable readers.
-    void [
-      AiLegacyDebugStrategicLines.getOverviewLines,
-      AiLegacyDebugStrategicLines.getStrategyLines,
-      AiLegacyDebugEconomicLines.getResourcesLines,
-      AiLegacyDebugEconomicLines.getProductionLines,
-      AiLegacyDebugEconomicLines.getLogisticsLines,
-      AiLegacyDebugStrategicLines.getIntelLines,
-      AiLegacyDebugStrategicLines.getThresholdsLines
-    ];
     /* END-USER-CTR-CODE */
   }
 
@@ -234,16 +224,35 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
     if (event.altKey && controller) {
       const bookmark = [...this.bookmarks].reverse().find((entry) => entry.playerNumber === this.playerNum);
       const history = controller.getBrainDebugHistory();
-      const index = bookmark ? history.findIndex((entry) => entry.tick === bookmark.tick &&
-        entry.decisionSequence === bookmark.decisionSequence) : -1;
-      if (index >= 0) { this.historyOffset = history.length - 1 - index; this.pageIndex = 0; this.lastTelemetryAt = 0; }
+      const index = bookmark
+        ? history.findIndex(
+            (entry) => entry.tick === bookmark.tick && entry.decisionSequence === bookmark.decisionSequence
+          )
+        : -1;
+      if (index >= 0) {
+        this.historyOffset = history.length - 1 - index;
+        this.pageIndex = 0;
+        this.lastTelemetryAt = 0;
+      }
       return;
     }
     const snapshot = controller ? this.getSelectedBrainSnapshot(controller) : undefined;
-    if (!snapshot || this.bookmarks.some((entry) => entry.playerNumber === this.playerNum && entry.tick === snapshot.tick &&
-      entry.decisionSequence === snapshot.decisionSequence)) return;
+    if (
+      !snapshot ||
+      this.bookmarks.some(
+        (entry) =>
+          entry.playerNumber === this.playerNum &&
+          entry.tick === snapshot.tick &&
+          entry.decisionSequence === snapshot.decisionSequence
+      )
+    )
+      return;
     if (this.bookmarks.length >= 16) this.bookmarks.shift();
-    this.bookmarks.push({ playerNumber: this.playerNum, tick: snapshot.tick, decisionSequence: snapshot.decisionSequence });
+    this.bookmarks.push({
+      playerNumber: this.playerNum,
+      tick: snapshot.tick,
+      decisionSequence: snapshot.decisionSequence
+    });
     this.lastTelemetryAt = 0;
   }
 
@@ -461,7 +470,6 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
     this.clearFortificationOverlay();
     this.clearTacticalOverlay();
   }
-
 
   private getCommandAuthorityLines(controller: PlayerAiController): string[] {
     return AiCommittedDebugLines.getCommandAuthorityLines(

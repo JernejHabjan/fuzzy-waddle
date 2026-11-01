@@ -2,14 +2,13 @@ import { createAiRuntimeBrainHooks } from "./testing/create-ai-runtime-brain-hoo
 import {
   type AiCommandReconciliationStateData,
   type AIBehaviorTreeStateData,
+  FactionType,
   ProbableWaffleAiDifficulty,
   ProbableWafflePlayer
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { PlayerAiBlackboard } from "./player-ai-blackboard";
 import { PlayerAiControllerAgent } from "./player-ai-controller.agent";
-import { BehaviourTree } from "mistreevous";
 import Phaser from "phaser";
-import { PlayerAiControllerMdsl } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/player-ai-controller.mdsl";
 import { TelemetrySink } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/telemetry";
 import { AI_CONFIG } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/ai-config";
 import { getSimulationNow } from "./ai-time";
@@ -39,11 +38,11 @@ import type { AiDecisionInputV1 } from "./ai-decision-input-v1";
 import { createAiProductionBrain } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-production-brain";
 import { publishAiRuntimeDecisionRepro } from "./testing/ai-runtime-decision-repro";
 
+/** Owns one pure planner, its fixed-tick cadence and the shared command/save boundary. */
 export class PlayerAiController {
   private static readonly MAX_SCHEDULED_STEPS_PER_RUN = 5;
   readonly playerAiControllerAgent: PlayerAiControllerAgent;
   public blackboard: PlayerAiBlackboard;
-  private behaviourTree: BehaviourTree;
   private elapsedTime = 0;
   private static readonly AI_ENABLED = true;
   private enabled = true;
@@ -57,8 +56,8 @@ export class PlayerAiController {
   private stepQueued = false;
   private readonly commandReconciliation?: AiCommandReconciliation;
   private brainState?: AiBrainStateV1;
-  private readonly profile: AiProfileConfigV1 | undefined;
-  private readonly pureBrain: PureAiBrain | undefined;
+  private readonly profile: AiProfileConfigV1;
+  private readonly pureBrain: PureAiBrain;
   private latestBrainDebug?: AiDebugSnapshotV1;
   private readonly brainDebugHistory: AiDebugSnapshotV1[] = [];
   private completedDecisionSequence = 0;
@@ -71,13 +70,11 @@ export class PlayerAiController {
       (this.profile?.decisionIntervalTicks ??
         AI_CONFIG.controllerStepIntervalMs / SimulationTickService.TICK_INTERVAL_MS) *
       SimulationTickService.TICK_INTERVAL_MS;
-    this.pureBrain = this.profile
-      ? createAiProductionBrain(
-          this.profile,
-          () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog(),
-          createAiRuntimeBrainHooks(scene, player.playerNumber)
-        )
-      : undefined;
+    this.pureBrain = createAiProductionBrain(
+      this.profile,
+      () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog(),
+      createAiRuntimeBrainHooks(scene, player.playerNumber)
+    );
     this.blackboard = new PlayerAiBlackboard(scene);
     const commandBus = getSceneService(scene, CommandBusService);
     if (commandBus && player.playerNumber !== undefined) {
@@ -88,10 +85,7 @@ export class PlayerAiController {
       );
     }
     this.playerAiControllerAgent = new PlayerAiControllerAgent(this.scene, this.player, this.blackboard);
-    this.playerAiControllerAgent.setPurePlannerOwnsCommands(this.pureBrain !== undefined);
-    this.playerAiControllerAgent.setPurePlannerOwnsResearch(this.pureBrain !== undefined);
     this.brainState = this.createInitialBrainState();
-    this.behaviourTree = new BehaviourTree(PlayerAiControllerMdsl, this.playerAiControllerAgent);
     // expose telemetry snapshot container in diagnostics if absent
     this.blackboard.diagnostics.telemetry = this.telemetry.snapshot();
 
@@ -152,23 +146,16 @@ export class PlayerAiController {
         this.telemetry.nextFrame();
         const frameBeforeSnapshot = this.telemetry.snapshot().frame;
         try {
-          if (this.pureBrain) {
-            this.telemetry.withSpan("ai.preTick", () =>
-              this.playerAiControllerAgent.preparePureDecision(getSimulationNow(this.scene))
-            );
-          } else {
-            await this.telemetry.withSpanAsync(
-              "ai.preTick",
-              async () => await this.playerAiControllerAgent.preTick(getSimulationNow(this.scene))
-            );
-          }
+          this.telemetry.withSpan("ai.preTick", () =>
+            this.playerAiControllerAgent.preparePureDecision(getSimulationNow(this.scene))
+          );
           if (!this.authorityActive || !this.enabled) break;
           this.stepDecisionPlanner();
           if (this.telemetryFrameModulo && frameBeforeSnapshot % this.telemetryFrameModulo === 0) {
             this.blackboard.diagnostics.telemetry = this.telemetry.snapshot();
           }
         } catch (e) {
-          console.log(e, "Error stepping behaviour tree");
+          console.log(e, "Error stepping AI controller");
           const message = e instanceof Error ? e.message : String(e);
           this.telemetry.recordEvent("bt.error", { message });
         }
@@ -202,6 +189,7 @@ export class PlayerAiController {
     this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.updateFrameNonDeterministicFallback, this);
     this.tickSubscription?.unsubscribe();
     this.commandReconciliation?.destroy();
+    this.playerAiControllerAgent?.destroy();
     this.brainDebugHistory.length = 0;
   }
 
@@ -210,7 +198,7 @@ export class PlayerAiController {
   }
 
   /**
-   * Get the AI behavior tree state for saving.
+   * Saves pure state using the existing wire envelope, including compatibility blackboard data.
    */
   public getSaveState(): AIBehaviorTreeStateData {
     return {
@@ -231,7 +219,7 @@ export class PlayerAiController {
   }
 
   /**
-   * Set the AI behavior tree state from saved data.
+   * Restores pure state or migrates a blackboard-only save without reviving legacy command execution.
    */
   public setSaveState(state: AIBehaviorTreeStateData): void {
     if (this.disposed) throw new Error("ai_controller_disposed");
@@ -304,7 +292,7 @@ export class PlayerAiController {
     return this.commandReconciliation?.getState();
   }
 
-  /** Stage 4 fair observation consumed by the later pure brain and current read-only debug UI. */
+  /** Fair observation committed for the current decision and read-only debug UI. */
   getCommittedObservation() {
     return this.playerAiControllerAgent.getCommittedObservation();
   }
@@ -319,7 +307,7 @@ export class PlayerAiController {
     return this.playerAiControllerAgent.getObservationDebugSnapshot();
   }
 
-  /** Stage 6 committed planner view; callers receive facts captured at the decision boundary only. */
+  /** Committed planner view; callers receive facts captured at the decision boundary only. */
   getBrainDebugSnapshot(): AiDebugSnapshotV1 | undefined {
     return this.latestBrainDebug ? structuredClone(this.latestBrainDebug) : undefined;
   }
@@ -334,7 +322,7 @@ export class PlayerAiController {
     return JSON.stringify(this.brainDebugHistory);
   }
 
-  /** Read-only Stage 3 adapter consumed when the pure brain becomes live in Stage 6. */
+  /** Read-only projection of the command frontier and delivered outcomes. */
   getBrainCommandBridgeSnapshot():
     | { readonly outcomes: readonly AiCommandOutcomeV1[]; readonly authority: AiAuthorityStateV1 }
     | undefined {
@@ -350,7 +338,7 @@ export class PlayerAiController {
     return !this.stepInFlight && !this.stepQueued;
   }
 
-  /** Canonical save-owned pure state prepared for Stage 6 live adoption and Stage 5 replay. */
+  /** Canonical save-owned pure state; callers cannot mutate the live brain. */
   getBrainState(): AiBrainStateV1 | undefined {
     return this.brainState ? structuredClone(canonicalizeAiBrainStateV1(this.brainState)) : undefined;
   }
@@ -369,8 +357,7 @@ export class PlayerAiController {
     return context ? createAiBrainStateV1(context) : undefined;
   }
 
-  /** Runs the persisted pure planner at the same boundary as transitional legacy execution. */
-  /** Stage 15 makes the two planners exclusive so legacy commands cannot conflict with accepted pure intents. */
+  /** Runs the persisted pure planner synchronously against the committed observation. */
   private stepPureBrain(): void {
     const observation = this.playerAiControllerAgent.getCommittedObservation();
     const bridge = this.getBrainCommandBridgeSnapshot();
@@ -425,7 +412,7 @@ export class PlayerAiController {
       this.telemetry.withSpan("ai.pureBrainStep", () => this.stepPureBrain());
       return;
     }
-    this.telemetry.withSpan("ai.behaviourTreeStep", () => this.behaviourTree.step());
+    throw new Error("ai_pure_brain_unavailable");
   }
 
   /** Routes accepted commands under the host fence; real pure steps also publish their exact accepting result. */
@@ -443,9 +430,16 @@ export class PlayerAiController {
     else dispatchAiIntents(this.scene, this.player.playerNumber, intents);
   }
 
-  private resolveProfile(): AiProfileConfigV1 | undefined {
+  private resolveProfile(): AiProfileConfigV1 {
     const definition = this.player.playerController.data.playerDefinition;
-    if (this.player.playerNumber === undefined || definition?.factionType === undefined) return undefined;
+    if (
+      this.player.playerNumber === undefined ||
+      !Number.isSafeInteger(this.player.playerNumber) ||
+      this.player.playerNumber < 0
+    )
+      throw new Error("ai_player_identity_unavailable");
+    if (definition?.factionType !== FactionType.Tivara && definition?.factionType !== FactionType.Skaduwee)
+      throw new Error("ai_player_faction_unavailable");
     return createAiProfileConfigV1(definition.difficulty ?? ProbableWaffleAiDifficulty.Medium);
   }
 

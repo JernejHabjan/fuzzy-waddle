@@ -9,10 +9,8 @@ import { PlayerAiController } from "./player-ai-controller";
 import type Phaser from "phaser";
 import { Subject } from "rxjs";
 import { installAiResourceInputObserver } from "./observation/ai-resource-input-observation";
-import { rememberAiResourceInputRead } from
-  "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-resource-input-observation";
-import { createAiProductionPolicyFixture } from
-  "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-production-policy-fixture";
+import { rememberAiResourceInputRead } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-resource-input-observation";
+import { createAiProductionPolicyFixture } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-production-policy-fixture";
 import { PureAiBrain } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain";
 import type { AiAuthorityStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 
@@ -36,17 +34,21 @@ describe("PlayerAiController pure planner integration", () => {
   afterEach(() => jest.clearAllMocks());
 
   it("uses current authority for admission and saves the frontier after synchronous dispatch callbacks", () => {
-    const f = createAiProductionPolicyFixture(), controller = Object.create(PlayerAiController.prototype) as PlayerAiController;
+    const f = createAiProductionPolicyFixture(),
+      controller = Object.create(PlayerAiController.prototype) as PlayerAiController;
     let live: AiAuthorityStateV1 = { ...f.state.authority, pendingCommandIds: ["command:before"] };
-    const brain = new PureAiBrain(f.profile, []), step = jest.fn(brain.step.bind(brain));
+    const brain = new PureAiBrain(f.profile, []),
+      step = jest.fn(brain.step.bind(brain));
     Reflect.set(controller, "scene", { events: { listenerCount: () => 0 } });
     Reflect.set(controller, "player", { playerNumber: 1 });
     Reflect.set(controller, "profile", f.profile);
     Reflect.set(controller, "brainState", f.state);
     Reflect.set(controller, "brainDebugHistory", []);
     Reflect.set(controller, "pureBrain", { step });
-    Reflect.set(controller, "playerAiControllerAgent", { getCommittedObservation: () => f.observation,
-      getCommittedCapabilityCatalog: () => f.catalog });
+    Reflect.set(controller, "playerAiControllerAgent", {
+      getCommittedObservation: () => f.observation,
+      getCommittedCapabilityCatalog: () => f.catalog
+    });
     Reflect.set(controller, "getBrainCommandBridgeSnapshot", () => ({ authority: live, outcomes: [] }));
     Reflect.set(controller, "dispatchAcceptedIntents", () => {
       live = { ...live, pendingCommandIds: ["command:before", "command:during"] };
@@ -58,7 +60,9 @@ describe("PlayerAiController pure planner integration", () => {
 
   it("cannot reactivate a disposed controller through late host toggles, restore or queued steps", async () => {
     const controller = Object.create(PlayerAiController.prototype) as PlayerAiController;
-    const reconciliation = { destroy: jest.fn() }, off = jest.fn(), unsubscribe = jest.fn();
+    const reconciliation = { destroy: jest.fn() },
+      off = jest.fn(),
+      unsubscribe = jest.fn();
     const shutdown = new Subject<void>();
     Reflect.set(controller, "scene", { events: { off }, onShutdown: shutdown.asObservable() });
     Reflect.set(controller, "player", { playerNumber: 1 });
@@ -67,11 +71,14 @@ describe("PlayerAiController pure planner integration", () => {
     Reflect.set(controller, "brainDebugHistory", []);
     Reflect.set(controller, "authorityActive", true);
     Reflect.set(controller, "stepQueued", true);
-    const step = jest.fn(); Reflect.set(controller, "stepDecisionPlanner", step);
+    const step = jest.fn();
+    Reflect.set(controller, "stepDecisionPlanner", step);
     const lifecycle = controller as unknown as { bindSceneShutdown(): void; runScheduledStep(): Promise<void> };
     lifecycle.bindSceneShutdown();
-    shutdown.next(); shutdown.next();
-    controller.setAuthorityActive(true); controller.setEnabled(true);
+    shutdown.next();
+    shutdown.next();
+    controller.setAuthorityActive(true);
+    controller.setEnabled(true);
     await lifecycle.runScheduledStep();
     expect(step).not.toHaveBeenCalled();
     expect(reconciliation.destroy).toHaveBeenCalledTimes(1);
@@ -79,51 +86,84 @@ describe("PlayerAiController pure planner integration", () => {
     expect(shutdown.observers).toHaveLength(0);
     expect(Reflect.get(controller, "stepQueued")).toBe(false);
     expect(() => controller.setBrainState({})).toThrow("ai_controller_disposed");
-    expect(() => controller.setSaveState({} as Parameters<PlayerAiController["setSaveState"]>[0]))
-      .toThrow("ai_controller_disposed");
+    expect(() => controller.setSaveState({} as Parameters<PlayerAiController["setSaveState"]>[0])).toThrow(
+      "ai_controller_disposed"
+    );
   });
 
   it("binds the actual committed read before reconciliation even when the pure step throws", () => {
     const controller = Object.create(PlayerAiController.prototype) as PlayerAiController;
-    const observation = { schemaVersion: 1, generation: 7, tick: 0, playerNumber: 1, faction: FactionType.Tivara,
-      actors: [], resources: [], accessProducts: [], effects: [], modeGoals: [], researchCandidates: [],
-      threatSummary: { observedTick: 0, visibleEnemyActorIds: [], rememberedEnemyActorIds: [], observedCapabilityFamilies: [] }
+    const observation = {
+      schemaVersion: 1,
+      generation: 7,
+      tick: 0,
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      actors: [],
+      resources: [],
+      accessProducts: [],
+      effects: [],
+      modeGoals: [],
+      researchCandidates: [],
+      threatSummary: {
+        observedTick: 0,
+        visibleEnemyActorIds: [],
+        rememberedEnemyActorIds: [],
+        observedCapabilityFamilies: []
+      }
     } satisfies AiObservationV1;
     const read = { captureEpoch: 1, lossEpoch: 0, sequence: 2, playerNumber: 1, generation: 7 };
     rememberAiResourceInputRead(observation, read);
-    const scene = {} as Phaser.Scene, order: string[] = [];
-    Reflect.set(controller, "scene", scene); Reflect.set(controller, "player", { playerNumber: 1 });
+    const scene = {} as Phaser.Scene,
+      order: string[] = [];
+    Reflect.set(controller, "scene", scene);
+    Reflect.set(controller, "player", { playerNumber: 1 });
     Reflect.set(controller, "playerAiControllerAgent", { getCommittedObservation: () => observation });
     Reflect.set(controller, "getBrainCommandBridgeSnapshot", () => undefined);
     Reflect.set(controller, "brainState", {});
-    Reflect.set(controller, "pureBrain", { step: (input: AiObservationV1) => {
-      order.push("reconcile"); expect(input).toBe(observation); throw new Error("pure_failed");
-    } });
-    const release = installAiResourceInputObserver(scene, { begin: () => undefined,
+    Reflect.set(controller, "pureBrain", {
+      step: (input: AiObservationV1) => {
+        order.push("reconcile");
+        expect(input).toBe(observation);
+        throw new Error("pure_failed");
+      }
+    });
+    const release = installAiResourceInputObserver(scene, {
+      begin: () => undefined,
       fence: (player, reason, incoming) => {
-        order.push("close_previous"); expect(player).toBe(1); expect(reason).toBe("controller_decision_started");
+        order.push("close_previous");
+        expect(player).toBe(1);
+        expect(reason).toBe("controller_decision_started");
         expect(incoming).toEqual(read);
-      } });
+      }
+    });
     try {
       expect(() => (controller as unknown as { stepPureBrain(): void }).stepPureBrain()).toThrow("pure_failed");
       expect(order).toEqual(["close_previous", "reconcile"]);
-    } finally { release(); }
+    } finally {
+      release();
+    }
   });
 
   it("publishes disable/authority/replacement fences before changing controller policy or attempting migration", () => {
     const controller = Object.create(PlayerAiController.prototype) as PlayerAiController;
-    const scene = {} as Phaser.Scene, policy = { campaignAiEnabled: true };
+    const scene = {} as Phaser.Scene,
+      policy = { campaignAiEnabled: true };
     Reflect.set(controller, "scene", scene);
     Reflect.set(controller, "player", { playerNumber: 1, playerController: { data: { playerDefinition: policy } } });
     Reflect.set(controller, "authorityActive", true);
     const reasons: string[] = [];
     const before: unknown[] = [];
-    const release = installAiResourceInputObserver(scene, { begin: () => undefined, fence: (_player, reason) => {
-      reasons.push(reason);
-      if (reason === "controller_disabled") before.push(policy.campaignAiEnabled);
-      if (reason === "controller_authority_lost") before.push(Reflect.get(controller, "authorityActive"));
-    } });
-    controller.setEnabled(false); controller.setAuthorityActive(false);
+    const release = installAiResourceInputObserver(scene, {
+      begin: () => undefined,
+      fence: (_player, reason) => {
+        reasons.push(reason);
+        if (reason === "controller_disabled") before.push(policy.campaignAiEnabled);
+        if (reason === "controller_authority_lost") before.push(Reflect.get(controller, "authorityActive"));
+      }
+    });
+    controller.setEnabled(false);
+    controller.setAuthorityActive(false);
     Reflect.set(controller, "getBrainMigrationContext", () => undefined);
     expect(() => controller.setBrainState({})).toThrow("ai_brain_identity_unavailable");
     expect(reasons).toEqual(["controller_disabled", "controller_authority_lost", "controller_brain_replaced"]);
@@ -146,7 +186,7 @@ describe("PlayerAiController pure planner integration", () => {
     expect(legacyStep).not.toHaveBeenCalled();
   });
 
-  it("keeps the legacy behavior tree as a fallback when no profile can create a pure brain", () => {
+  it("fails visibly without issuing legacy commands when no pure brain is available", () => {
     const controller = Object.create(PlayerAiController.prototype) as PlayerAiController;
     const pureStep = jest.fn();
     const legacyStep = jest.fn();
@@ -155,10 +195,10 @@ describe("PlayerAiController pure planner integration", () => {
     Reflect.set(controller, "behaviourTree", { step: legacyStep });
     Reflect.set(controller, "telemetry", { withSpan: (_name: string, action: () => void) => action() });
 
-    invokeDecisionPlanner(controller);
+    expect(() => invokeDecisionPlanner(controller)).toThrow("ai_pure_brain_unavailable");
 
     expect(pureStep).not.toHaveBeenCalled();
-    expect(legacyStep).toHaveBeenCalledTimes(1);
+    expect(legacyStep).not.toHaveBeenCalled();
   });
 
   it("fences a demoted host before planning or dispatch without changing the saved AI policy", () => {

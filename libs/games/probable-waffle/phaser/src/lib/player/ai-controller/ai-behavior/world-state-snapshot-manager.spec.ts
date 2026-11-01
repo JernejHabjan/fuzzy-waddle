@@ -1,11 +1,7 @@
 import Phaser from "phaser";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { ActorData, ActorDataKey } from "../../../data/actor-data";
-import {
-  compareAiActorsByStableId,
-  hasStableAiActorId,
-  isCampaignAiTargetVisible
-} from "./world-state-snapshot-manager";
+import { compareAiActorsByStableId, hasStableAiActorId } from "./world-state-snapshot-manager";
 
 function actorWithId(id: string): Phaser.GameObjects.GameObject {
   const idComponent = Object.assign(Object.create(IdComponent.prototype), { id });
@@ -14,14 +10,6 @@ function actorWithId(id: string): Phaser.GameObjects.GameObject {
     getData: (key: string) => (key === ActorDataKey ? actorData : undefined)
   } as unknown as Phaser.GameObjects.GameObject;
 }
-
-describe("campaign AI visibility", () => {
-  it("uses deterministic logical distance from the base and owned vision sources", () => {
-    expect(isCampaignAiTargetVisible({ x: 3, y: 4, z: 0 }, [], { x: 0, y: 0, z: 0 }, 5)).toBe(true);
-    expect(isCampaignAiTargetVisible({ x: 12, y: 10, z: 0 }, [{ x: 10, y: 10, z: 2 }], undefined, 2)).toBe(true);
-    expect(isCampaignAiTargetVisible({ x: 13, y: 10, z: 0 }, [{ x: 10, y: 10, z: 2 }], undefined, 2)).toBe(false);
-  });
-});
 
 describe("AI actor ordering", () => {
   it("uses stable actor IDs instead of insertion order", () => {

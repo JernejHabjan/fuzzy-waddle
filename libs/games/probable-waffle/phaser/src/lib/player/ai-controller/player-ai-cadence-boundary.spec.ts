@@ -51,15 +51,6 @@ it("selects each pure step before another tick in the same render task", async (
   expect(Reflect.get(f.controller, "completedDecisionSequence")).toBe(2);
 });
 
-it("retains asynchronous legacy preparation", async () => {
-  const f = fixture(false);
-  const pending = f.run();
-  expect(f.decisions).toEqual([]);
-  await pending;
-  expect(f.decisions).toEqual([41]);
-  expect(f.preparePureDecision).not.toHaveBeenCalled();
-});
-
 it("does not schedule a decision while its scene is inactive", async () => {
   const f = fixture(true);
   jest.mocked(isSceneActive).mockReturnValue(false);

@@ -59,22 +59,23 @@ function fixture() {
 
 afterEach(() => jest.resetAllMocks());
 
-it("selects pure observations on their tick without awaiting legacy path work", async () => {
+it("selects observations synchronously on their tick without legacy path work", () => {
   const f = fixture();
-  f.agent.setPurePlannerOwnsCommands(true);
-  await f.agent.preTick(2000);
+  f.agent.preparePureDecision(2000);
   expect(f.clock.currentTick).toBe(40);
-  expect(f.events).toEqual(["owned", "economy", "vision", "observation:40"]);
+  expect(f.events).toEqual(["owned", "economy", "observation:40"]);
   expect(f.world.update).not.toHaveBeenCalled();
   expect(f.targeting.update).not.toHaveBeenCalled();
 });
 
-it("retains legacy preparation and prerequisite order when the pure brain does not own commands", async () => {
-  const f = fixture();
-  f.agent.setPurePlannerOwnsCommands(false);
-  await f.agent.preTick(2000);
-  expect(f.events).toEqual(["observation:40", "legacy_world", "economy", "vision", "legacy_target", "prerequisites"]);
-  expect(f.world.updateOwned).not.toHaveBeenCalled();
+it("releases confirmed-income subscriptions exactly once and rejects preparation after disposal", () => {
+  const f = fixture(),
+    destroy = jest.fn();
+  Reflect.set(f.agent, "economyManager", { destroy });
+  f.agent.destroy();
+  f.agent.destroy();
+  expect(destroy).toHaveBeenCalledTimes(1);
+  expect(() => f.agent.preparePureDecision(2000)).toThrow("ai_controller_disposed");
 });
 
 it("rejects a retained old observation when the current capture fails", () => {
