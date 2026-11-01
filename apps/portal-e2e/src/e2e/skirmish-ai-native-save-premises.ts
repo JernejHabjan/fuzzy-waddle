@@ -1,4 +1,4 @@
-import type { AiRuntimeProductionCaptureV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 
 type NativeSaveSetupApplication = {
   readonly initialQueueItems: readonly {
@@ -25,7 +25,7 @@ type NativeSaveSetupApplication = {
 
 /** Extract actual original queue/site/receipt premises before rewinding. Full captures never enter save reports. */
 export function nativeSavePremises(
-  capture: AiRuntimeProductionCaptureV1,
+  capture: AiRuntimeProductionSnapshot,
   tick: number,
   siteId?: string,
   setup?: NativeSaveSetupApplication

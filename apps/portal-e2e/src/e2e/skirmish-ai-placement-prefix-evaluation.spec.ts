@@ -1,14 +1,14 @@
 import { expect, test } from "@playwright/test";
 import { ObjectNames, ProbableWaffleGameCommandTypes } from "@fuzzy-waddle/probable-waffle-protocol";
 import { evaluateRuntimePlacementPrefixes } from "./skirmish-ai-placement-prefix-evaluation";
-import type { RuntimePresetWorldV1 } from "./skirmish-ai-runtime-preset-world";
-import type { AiRuntimePlacementClearanceV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-placement-clearance-v1";
+import type { RuntimePresetWorld } from "./skirmish-ai-runtime-preset-world";
+import type { AiRuntimePlacementClearance } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-placement-clearance";
 
 const route = { id: "army-retreat", playerNumber: 2, from: { x: 32, y: 16 }, to: { x: 96, y: 48 }, tileMargin: 1 };
-const preset: RuntimePresetWorldV1 = { fixtureId: "prefix-world", actors: [], resourceGrants: [], protectedRoutes: [route] };
+const preset: RuntimePresetWorld = { fixtureId: "prefix-world", actors: [], resourceGrants: [], protectedRoutes: [route] };
 
-function sample(tick = 0): AiRuntimePlacementClearanceV1 {
+function sample(tick = 0): AiRuntimePlacementClearance {
   return { clockTick: tick, snapshotRestoreInProgress: false, sceneActive: true, gaps: [], routes: [{
     declaration: route, fromTile: { x: 1, y: 1 }, toTile: { x: 3, y: 1 }, status: "path",
     path: [{ x: 1, y: 1 }, { x: 2, y: 1 }, { x: 3, y: 1 }], visitedTiles: 8, gaps: []

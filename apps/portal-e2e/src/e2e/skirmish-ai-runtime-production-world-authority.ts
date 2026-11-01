@@ -1,9 +1,9 @@
 // prettier-ignore
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 // prettier-ignore
-import type { AiRuntimePresetApplicationV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application-v1";
+import type { AiRuntimePresetApplication } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application";
 import { normalizeRuntimeProductionWorld } from "./skirmish-ai-runtime-production-world-normalization";
 import { normalizeRuntimeProductionInitialQueues } from "./skirmish-ai-runtime-production-initial-queue-normalization";
 import { normalizeRuntimeProductionDecisions } from "./skirmish-ai-runtime-production-decisions";
@@ -15,8 +15,8 @@ import { projectRuntimeConstructionCatalog } from "./skirmish-ai-runtime-constru
 
 /** Groups existing world/setup/definition authority readers; it does not clear any of their omissions. */
 export function normalizeRuntimeProductionWorldAuthority(
-  capture: AiRuntimeProductionCaptureV1,
-  setup: AiRuntimePresetApplicationV1 | undefined
+  capture: AiRuntimeProductionSnapshot,
+  setup: AiRuntimePresetApplication | undefined
 ) {
   const failures: string[] = [];
   const gaps = new Set<string>();

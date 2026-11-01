@@ -1,7 +1,7 @@
 import type { Browser } from "@playwright/test";
-import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
-import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
-import type { RuntimeRequestV1 } from "./skirmish-ai-runtime-request";
+import type { RuntimeFixture } from "./skirmish-ai-runtime-fixture";
+import type { RuntimeVariant } from "./skirmish-ai-runtime-variant";
+import type { RuntimeRequest } from "./skirmish-ai-runtime-request";
 import { runNativeSaveVariant } from "./skirmish-ai-native-save-runner";
 import { runNativeProfileTransfer } from "./skirmish-ai-native-profile-transfer";
 import { readNativeSequenceScore, runNativeSequenceTail } from "./skirmish-ai-native-sequence-tail";
@@ -16,7 +16,7 @@ export interface NativeSequenceProof {
 
 /** Independent supported SP and MP chains share actual save/transfer owners, never a fabricated combined reload. */
 export async function runNativeSequenceVariant(
-  browser: Browser, fixture: RuntimeFixtureV1, variant: RuntimeVariantV1, request: RuntimeRequestV1, branch: string
+  browser: Browser, fixture: RuntimeFixture, variant: RuntimeVariant, request: RuntimeRequest, branch: string
 ) {
   let singlePlayer: NativeSequenceProof["singlePlayer"] | undefined;
   let controlScore: NativeSequenceProof["controlScore"] | undefined;

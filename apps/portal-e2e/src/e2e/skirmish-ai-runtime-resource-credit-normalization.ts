@@ -3,11 +3,11 @@ import { projectRuntimeResourceCredits } from "./skirmish-ai-runtime-resource-cr
 import { AI_RUNTIME_MAX_FACTS } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/append-ai-runtime-production-fact";
 // prettier-ignore
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 import type { ResourceCargoSample } from "@fuzzy-waddle/probable-waffle-phaser/entity/components/resource/resource-cargo-sample";
-import type { RuntimeResourceCreditV1 } from "./skirmish-ai-runtime-resource-credit";
-import type { RuntimeCargoContributionV1 } from "./skirmish-ai-runtime-cargo-contribution";
+import type { RuntimeResourceCredit } from "./skirmish-ai-runtime-resource-credit";
+import type { RuntimeCargoContribution } from "./skirmish-ai-runtime-cargo-contribution";
 import { normalizeRuntimeServiceAttempts } from "./skirmish-ai-runtime-service-attempt-normalization";
 import {
   validateRuntimeResourceService
@@ -16,7 +16,7 @@ import { runtimeRouteOrderFenced } from "./skirmish-ai-runtime-route-order-fence
 
 /** Retrospective whole-pile lineage. Unknown cargo and partial allocation remain unavailable; actual credit is independent. */
 export function normalizeRuntimeResourceCredits(
-  capture: AiRuntimeProductionCaptureV1,
+  capture: AiRuntimeProductionSnapshot,
   service = normalizeRuntimeServiceAttempts(capture)
 ) {
   if (capture.facts.length > AI_RUNTIME_MAX_FACTS || capture.droppedFactCount) {
@@ -38,21 +38,21 @@ export function normalizeRuntimeResourceCredits(
       known: boolean;
       sequence: number;
       version: number;
-      contributions: RuntimeCargoContributionV1[];
+      contributions: RuntimeCargoContribution[];
     }
   >();
   const offers = new Map<
     number,
     {
-      fact: RuntimeResourceCreditV1["fact"];
+      fact: RuntimeResourceCredit["fact"];
       known: boolean;
       version: number;
-      contributions: RuntimeCargoContributionV1[];
+      contributions: RuntimeCargoContribution[];
     }
   >();
-  const removals = new Map<number, { fact: RuntimeResourceCreditV1["fact"]; version: number }>();
-  const entries = new Map<number, RuntimeResourceCreditV1["fact"]>();
-  const candidates: { fact: RuntimeResourceCreditV1["fact"]; uninterrupted: boolean }[] = [];
+  const removals = new Map<number, { fact: RuntimeResourceCredit["fact"]; version: number }>();
+  const entries = new Map<number, RuntimeResourceCredit["fact"]>();
+  const candidates: { fact: RuntimeResourceCredit["fact"]; uninterrupted: boolean }[] = [];
   const sameCargo = (left: ResourceCargoSample, right: ResourceCargoSample) =>
     left.amount === right.amount && (left.amount === 0 || left.resourceType === right.resourceType);
   const fenced = (actorId: string | null, from: number, to: number) =>
@@ -66,7 +66,7 @@ export function normalizeRuntimeResourceCredits(
         fact.spatial.phase === "cargo_changed" &&
         fact.spatial.change.reason === "restore"
     );
-  const available = (fact: RuntimeResourceCreditV1["fact"]) => {
+  const available = (fact: RuntimeResourceCredit["fact"]) => {
     const value = fact.spatial;
     return (
       value.kind === "resource_service" &&
@@ -106,7 +106,7 @@ export function normalizeRuntimeResourceCredits(
       known: before.amount === 0,
       sequence: fact.sequence,
       version: 0,
-      contributions: new Array<RuntimeCargoContributionV1>()
+      contributions: new Array<RuntimeCargoContribution>()
     };
     if (
       !sameCargo(state.sample, before) ||

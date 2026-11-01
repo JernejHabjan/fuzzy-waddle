@@ -1,12 +1,12 @@
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
 import type { AiEvidenceId } from "../contracts/ai-core-types";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiObservation } from "../contracts/ai-observation";
 import type { AiAdaptationRole } from "./ai-adaptation-role";
 
-type EvidenceKind = AiBrainStateV1["economyProduction"]["adaptation"]["evidence"][number]["kind"];
+type EvidenceKind = AiBrainState["economyProduction"]["adaptation"]["evidence"][number]["kind"];
 const VISIBLE_EVIDENCE_CONFIDENCE_PERMILLE = 700;
 
-function enemyEvidence(observation: AiObservationV1): readonly {
+function enemyEvidence(observation: AiObservation): readonly {
   readonly evidenceId: AiEvidenceId;
   readonly kind: EvidenceKind;
   readonly sourceContactId: string;
@@ -67,7 +67,7 @@ function enemyEvidence(observation: AiObservationV1): readonly {
     .sort((left, right) => left.evidenceId.localeCompare(right.evidenceId));
 }
 
-function isExposedValuableBackline(actor: AiObservationV1["actors"][number], observation: AiObservationV1): boolean {
+function isExposedValuableBackline(actor: AiObservation["actors"][number], observation: AiObservation): boolean {
   const objectivePosition = knownPosition(actor);
   if (
     !objectivePosition ||
@@ -101,14 +101,14 @@ function isExposedValuableBackline(actor: AiObservationV1["actors"][number], obs
 }
 
 function knownPosition(
-  actor: AiObservationV1["actors"][number]
+  actor: AiObservation["actors"][number]
 ): { readonly x: number; readonly y: number } | undefined {
   return actor.logicalPosition.status === "known"
     ? { x: actor.logicalPosition.value.x, y: actor.logicalPosition.value.y }
     : undefined;
 }
 
-function isValuableCoastalObjective(actor: AiObservationV1["actors"][number], observation: AiObservationV1): boolean {
+function isValuableCoastalObjective(actor: AiObservation["actors"][number], observation: AiObservation): boolean {
   const accessNodeId = actor.accessNodeId.status === "known" ? actor.accessNodeId.value : undefined;
   const graph = observation.map?.accessGraph;
   if (
@@ -133,9 +133,9 @@ function isValuableCoastalObjective(actor: AiObservationV1["actors"][number], ob
 }
 
 export function mergeAdaptationEvidence(
-  state: AiBrainStateV1,
-  observation: AiObservationV1
-): AiBrainStateV1["economyProduction"]["adaptation"]["evidence"] {
+  state: AiBrainState,
+  observation: AiObservation
+): AiBrainState["economyProduction"]["adaptation"]["evidence"] {
   const previous = new Map(state.economyProduction.adaptation.evidence.map((entry) => [entry.evidenceId, entry]));
   const visible = enemyEvidence(observation).map((entry) => {
     const earlier = previous.get(entry.evidenceId);
@@ -168,8 +168,8 @@ export function mergeAdaptationEvidence(
 }
 
 export function adaptationRoleTargets(
-  evidence: AiBrainStateV1["economyProduction"]["adaptation"]["evidence"],
-  state: AiBrainStateV1
+  evidence: AiBrainState["economyProduction"]["adaptation"]["evidence"],
+  state: AiBrainState
 ): readonly {
   readonly role: AiAdaptationRole;
   readonly desired: number;

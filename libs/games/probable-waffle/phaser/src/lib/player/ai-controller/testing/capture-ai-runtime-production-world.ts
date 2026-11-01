@@ -4,15 +4,15 @@ import { isSnapshotApplyInProgress } from "../../../data/scene-data";
 import { LevelComponent } from "../../../entity/components/level/level-component";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
 import { captureAiRuntimeQueueCatalog } from "./capture-ai-runtime-queue-catalog";
-import type { AiRuntimeProductionWorldV1 } from "./ai-runtime-production-world-v1";
+import type { AiRuntimeProductionWorld } from "./ai-runtime-production-world";
 
 /** Read-only bounded capture; actors outside the player's index/scene/ownership never supply catalog authority. */
 export function captureAiRuntimeProductionWorld(
   scene: Phaser.Scene, playerNumber: number, ownedActors: readonly Phaser.GameObjects.GameObject[]
-): AiRuntimeProductionWorldV1 {
+): AiRuntimeProductionWorld {
   const snapshotRestoreInProgress = isSnapshotApplyInProgress(scene);
-  const actors: AiRuntimeProductionWorldV1["actors"][number][] = [];
-  const catalog: AiRuntimeProductionWorldV1["catalog"][number][] = [];
+  const actors: AiRuntimeProductionWorld["actors"][number][] = [];
+  const catalog: AiRuntimeProductionWorld["catalog"][number][] = [];
   const gaps = new Set<string>();
   if (snapshotRestoreInProgress) gaps.add("production_world_restore_in_progress");
   if (ownedActors.length > 256) return { snapshotRestoreInProgress, actors, catalog, gaps: ["production_world_actor_overflow"] };

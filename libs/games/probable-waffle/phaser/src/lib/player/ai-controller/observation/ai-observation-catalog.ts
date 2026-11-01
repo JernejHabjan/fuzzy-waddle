@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { ObjectNames, type ProbableWafflePlayer, type ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiCapabilityCatalogEntryV1, AiObservedActorV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiCapabilityCatalogEntry, AiObservedActor } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { getActorComponent } from "../../../data/actor-component";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import { ResearchComponent } from "../../../entity/components/research/research-component";
@@ -23,7 +23,7 @@ export function projectActorCapabilities(
   objectName: ObjectNames,
   definition: ReturnType<typeof getPwActorDefinition>,
   level: number
-): AiObservedActorV1["capabilities"] {
+): AiObservedActor["capabilities"] {
   if (!definition) return [];
   const families = capabilityFamilies(definition);
   const domains = movementDomains(definition);
@@ -42,7 +42,7 @@ export function projectCatalogEntry(
   actor: GameObject,
   level: number,
   scene: Phaser.Scene
-): AiCapabilityCatalogEntryV1 | undefined {
+): AiCapabilityCatalogEntry | undefined {
   const objectName = actor.name as ObjectNames;
   const definition = getPwActorDefinition(objectName, level);
   if (!definition) return undefined;
@@ -60,7 +60,7 @@ export function projectAvailableCatalogEntries(
   scene: Phaser.Scene,
   player: ProbableWafflePlayer,
   playerNumber: number,
-  catalogEntries: Map<string, AiCapabilityCatalogEntryV1>
+  catalogEntries: Map<string, AiCapabilityCatalogEntry>
 ): void {
   const techTree = getSceneService(scene, TechTreeService);
   if (!techTree) return;
@@ -91,7 +91,7 @@ export function projectCatalogDefinition(
   definition: NonNullable<ReturnType<typeof getPwActorDefinition>>,
   level: number,
   researches: readonly ResearchType[]
-): AiCapabilityCatalogEntryV1 {
+): AiCapabilityCatalogEntry {
   return {
     capabilityId: `${objectName}:level:${level}`,
     family:

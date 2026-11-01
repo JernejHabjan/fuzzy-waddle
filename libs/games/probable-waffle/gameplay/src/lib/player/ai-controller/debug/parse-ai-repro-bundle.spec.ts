@@ -1,6 +1,6 @@
 import { FactionType } from "@fuzzy-waddle/probable-waffle-protocol";
-import { AI_REPRO_CAPTURE_POLICY_V1, type AiReproBundleV1 } from "../contracts/ai-repro-bundle-v1";
-import { AiReproBundleValidationError, parseAiReproBundleV1 } from "./parse-ai-repro-bundle";
+import { AI_REPRO_CAPTURE_POLICY, type AiReproBundle } from "../contracts/ai-repro-bundle";
+import { AiReproBundleValidationError, parseAiReproBundle } from "./parse-ai-repro-bundle";
 
 const validBundle = {
   schemaVersion: 1,
@@ -11,13 +11,13 @@ const validBundle = {
     mapId: "map-1",
     mapDigest: "sha256:map",
     contentDigest: "sha256:content",
-    configVersion: "config-v1",
-    profileVersion: "skirmish-ai-v1",
-    archetypeVersion: "opening-archetypes-v1",
+    configVersion: "config",
+    profileVersion: "skirmish-ai",
+    archetypeVersion: "opening-archetypes",
     difficulty: "normal",
     faction: FactionType.Tivara,
     playerNumber: 1,
-    rulesVersion: "rules-v1",
+    rulesVersion: "rules",
     tickInterval: 20,
     authorityEpoch: 1,
     tick: 200,
@@ -38,11 +38,11 @@ const validBundle = {
   },
   privacy: "permitted_player_data",
   display: { label: "Decision 200" }
-} satisfies AiReproBundleV1;
+} satisfies AiReproBundle;
 
-describe("parseAiReproBundleV1 / DBG-05", () => {
+describe("parseAiReproBundle / DBG-05", () => {
   it("accepts a bounded permitted decision manifest", () => {
-    expect(parseAiReproBundleV1(JSON.stringify(validBundle), { access: "player" })).toEqual(validBundle);
+    expect(parseAiReproBundle(JSON.stringify(validBundle), { access: "player" })).toEqual(validBundle);
   });
 
   it.each([
@@ -57,25 +57,25 @@ describe("parseAiReproBundleV1 / DBG-05", () => {
     ],
     ["unsafe_label", JSON.stringify({ ...validBundle, display: { label: "<img onerror=alert(1)>" } })]
   ] as const)("rejects %s input", (code, json) => {
-    expect(() => parseAiReproBundleV1(json, { access: "developer" })).toThrow(new AiReproBundleValidationError(code));
+    expect(() => parseAiReproBundle(json, { access: "developer" })).toThrow(new AiReproBundleValidationError(code));
   });
 
   it("rejects oversized input before JSON parsing", () => {
-    expect(() => parseAiReproBundleV1(JSON.stringify(validBundle), { access: "developer", maxBytes: 8 })).toThrow(
+    expect(() => parseAiReproBundle(JSON.stringify(validBundle), { access: "developer", maxBytes: 8 })).toThrow(
       new AiReproBundleValidationError("oversized")
     );
   });
 
   it("keeps runtime captures host/developer-only", () => {
     const runtime = { ...validBundle, kind: "runtime", privacy: "host_confidential" } as const;
-    expect(() => parseAiReproBundleV1(JSON.stringify(runtime), { access: "player" })).toThrow(
+    expect(() => parseAiReproBundle(JSON.stringify(runtime), { access: "player" })).toThrow(
       new AiReproBundleValidationError("access_denied")
     );
-    expect(parseAiReproBundleV1(JSON.stringify(runtime), { access: "host" }).kind).toBe("runtime");
+    expect(parseAiReproBundle(JSON.stringify(runtime), { access: "host" }).kind).toBe("runtime");
   });
 
   it("publishes the bounded automatic capture policy", () => {
-    expect(AI_REPRO_CAPTURE_POLICY_V1).toEqual({
+    expect(AI_REPRO_CAPTURE_POLICY).toEqual({
       automaticCapturesPerCausalEpisode: 1,
       maxRetainedIncidentBundles: 5,
       sessionQuotaBytes: 64 * 1024 * 1024

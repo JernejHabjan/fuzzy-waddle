@@ -1,8 +1,8 @@
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
 import type { AiPlanId } from "../contracts/ai-core-types";
 
 /** Only a known edge can prove a cycle; convergent paths and feeders must not become victims. */
-function isCyclic(state: AiBrainStateV1, planId: AiPlanId): boolean {
+function isCyclic(state: AiBrainState, planId: AiPlanId): boolean {
   const edges = state.waitEdges.filter((edge) => edge.status === "known" && edge.toPlanId !== null);
   const pending = edges.filter((edge) => edge.fromPlanId === planId).flatMap((edge) => edge.toPlanId ?? []);
   const seen = new Set<AiPlanId>();
@@ -22,7 +22,7 @@ function isCyclic(state: AiBrainStateV1, planId: AiPlanId): boolean {
  * Any dispatched/paid/refundable neighbor in that same plan fences the bundle. Unknown legacy ranks retain ownership.
  * Stable plan identity breaks equal-rank ties. A stronger sibling claim protects the plan's entire atomic purpose.
  */
-export function selectAiCycleVictim(state: AiBrainStateV1): AiPlanId | null {
+export function selectAiCycleVictim(state: AiBrainState): AiPlanId | null {
   const plans = [...new Set(state.waitEdges.map((edge) => edge.fromPlanId))];
   const candidates = plans.flatMap((planId) => {
     if (!isCyclic(state, planId)) return [];

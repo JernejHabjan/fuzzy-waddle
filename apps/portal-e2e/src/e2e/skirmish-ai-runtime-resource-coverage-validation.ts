@@ -1,9 +1,9 @@
 import { isDeepStrictEqual } from "node:util";
-import type { AiRuntimeProductionCaptureV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { AiRuntimeResourceCoverageV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-resource-coverage-v1";
+import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { AiRuntimeResourceCoverage } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-resource-coverage";
 
 /** Validate all read/cohort tails, including monotone terminal loss; legacy omission is a gap, never implicit completeness. */
-export function validateRuntimeResourceCoverage(capture: AiRuntimeProductionCaptureV1) {
+export function validateRuntimeResourceCoverage(capture: AiRuntimeProductionSnapshot) {
   const failures: string[] = [],
     gaps = new Set<string>();
   const integer = (value: number) => Number.isSafeInteger(value) && value >= 0;
@@ -27,7 +27,7 @@ export function validateRuntimeResourceCoverage(capture: AiRuntimeProductionCapt
   ) {
     failures.push("production_resource_capture_order_invalid");
   }
-  let previous: AiRuntimeResourceCoverageV1 | undefined;
+  let previous: AiRuntimeResourceCoverage | undefined;
   const records = [...capture.snapshots.map((snapshot) => snapshot.resourceCoverage), capture.resourceCoverage];
   for (let index = 0; index < records.length; index++) {
     const record = records[index];
@@ -120,7 +120,7 @@ export function validateRuntimeResourceCoverage(capture: AiRuntimeProductionCapt
 }
 
 /** Sparse player facts retain the global order. Check both neighbours without a fact scan for every cohort/read pair. */
-function installationClockMatches(capture: AiRuntimeProductionCaptureV1, tick: number, sequence: number): boolean {
+function installationClockMatches(capture: AiRuntimeProductionSnapshot, tick: number, sequence: number): boolean {
   let left = 0,
     right = capture.facts.length;
   while (left < right) {

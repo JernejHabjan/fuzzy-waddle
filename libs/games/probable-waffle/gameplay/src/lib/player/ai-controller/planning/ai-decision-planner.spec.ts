@@ -1,15 +1,15 @@
 import { FactionType, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation } from "../testing/ai-test-fixtures";
 import { planAiDecisions } from "./ai-decision-planner";
 
 describe("planAiDecisions", () => {
-  const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+  const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
 
   it("services every lane deterministically even when no manager can dispatch work", () => {
-    const state = createAiBrainStateV1({
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -28,14 +28,14 @@ describe("planAiDecisions", () => {
   });
 
   it("expires provisional work once and preserves applied spending", () => {
-    const state = createAiBrainStateV1({
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
       tick: 0,
       archetypeId: "opening:balanced"
     });
-    const withReservations: AiBrainStateV1 = {
+    const withReservations: AiBrainState = {
       ...state,
       reservations: [
         {
@@ -69,7 +69,7 @@ describe("planAiDecisions", () => {
   });
 
   it("releases provisional actor leases when squad ownership transfers", () => {
-    const state = createAiBrainStateV1({
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -92,14 +92,14 @@ describe("planAiDecisions", () => {
       prerequisites: [],
       createdTick: 0
     });
-    const withTransferredActor: AiBrainStateV1 = {
+    const withTransferredActor: AiBrainState = {
       ...state,
       squads: [
         {
-          squadId: "squad:attack:raid" as AiBrainStateV1["squads"][number]["squadId"],
+          squadId: "squad:attack:raid" as AiBrainState["squads"][number]["squadId"],
           actorIds: ["worker-1"],
           state: "engage"
-        } as AiBrainStateV1["squads"][number]
+        } as AiBrainState["squads"][number]
       ],
       reservations: [
         actorLease("claim:old-defense", "plan:squad:defense:home"),
@@ -114,8 +114,8 @@ describe("planAiDecisions", () => {
 });
 
 it("records proposal consideration without falsely claiming that a command was serviced", () => {
-  const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-  const state = createAiBrainStateV1({
+  const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+  const state = createAiBrainState({
     playerNumber: 1,
     faction: FactionType.Tivara,
     profile,
@@ -135,8 +135,8 @@ it("records proposal consideration without falsely claiming that a command was s
 });
 
 it("records every lane evaluated by a multi-lane proposer", () => {
-  const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-  const state = createAiBrainStateV1({
+  const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+  const state = createAiBrainState({
     playerNumber: 1,
     faction: FactionType.Tivara,
     profile,

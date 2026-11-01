@@ -6,7 +6,7 @@ import type { CommandBusService } from "../../../world/services/multiplayer/comm
 export function multiplayerAuthorityProbeRequested(): boolean {
   try {
     return typeof window !== "undefined" && ["localhost", "127.0.0.1"].includes(window.location.hostname) &&
-      window.sessionStorage.getItem("fuzzy-waddle:ai-multiplayer-authority-probe-v1") === "1";
+      window.sessionStorage.getItem("fuzzy-waddle:ai-multiplayer-authority-probe") === "1";
   } catch { return false; }
 }
 

@@ -1,12 +1,12 @@
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiObservation } from "../contracts/ai-observation";
 
 export const MIN_RESEARCH_UTILITY = 500;
 
 export function scoreAdaptationResearch(
-  candidate: AiObservationV1["researchCandidates"][number],
-  observation: AiObservationV1,
-  state: AiBrainStateV1
+  candidate: AiObservation["researchCandidates"][number],
+  observation: AiObservation,
+  state: AiBrainState
 ): number {
   const self = observation.actors.filter((actor) => actor.relation === "self" && actor.visibility === "owned");
   const upgradeTarget = candidate.benefit.kind === "unit_level" ? candidate.benefit.targetObjectName : null;

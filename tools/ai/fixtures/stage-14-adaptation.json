@@ -31,7 +31,7 @@
     "mapDigest": "authored-stage-14-not-yet-executed",
     "side": 1,
     "faction": "Tivara",
-    "rulesVersion": "probable-waffle-rules-v1",
+    "rulesVersion": "probable-waffle-rules",
     "contractVersions": { "scenario": 1, "brain": 1, "observation": 1, "command": 1, "repro": 1, "worldProjection": 1 }
   },
   "authoredCases": [

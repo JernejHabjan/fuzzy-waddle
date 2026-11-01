@@ -1,25 +1,25 @@
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiFortificationNodeStateV1, AiFortificationStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogEntryV1, AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
+import type { AiFortificationNodeState, AiFortificationState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalogEntry, AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
 
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
+import type { AiObservation } from "../contracts/ai-observation";
+import type { AiProfileConfig } from "../contracts/ai-profile-config";
 
 import { AI_FORTIFICATION_GRAPH_CAPS, tileKey, positionOf, constructionEntry, type ConstructionCell } from "./ai-fortification-support";
-import { fortificationPreservesConnectivityV1 } from "./ai-fortification-connectivity";
+import { fortificationPreservesConnectivity } from "./ai-fortification-connectivity";
 type Axis = "x" | "y";
 function node(
-  planId: AiFortificationStateV1["planId"],
-  kind: AiFortificationNodeStateV1["kind"],
+  planId: AiFortificationState["planId"],
+  kind: AiFortificationNodeState["kind"],
   objectName: ObjectNames | null,
   position: Vector3Simple,
   componentId: string,
   dependsOnNodeId: string | null,
-  navigation: AiCapabilityCatalogEntryV1["constructionProfile"] | null,
+  navigation: AiCapabilityCatalogEntry["constructionProfile"] | null,
   marginalCoverage: number,
-  targetDomains: AiFortificationNodeStateV1["targetDomains"]
-): AiFortificationNodeStateV1 {
+  targetDomains: AiFortificationNodeState["targetDomains"]
+): AiFortificationNodeState {
   const nodeId = `${planId}:node:${kind}:${position.x}:${position.y}:${position.z}`;
   const footprintRadius = navigation?.footprintRadiusTiles ?? 0;
   const footprintTileKeys: string[] = [];
@@ -70,16 +70,16 @@ function hasClearFootprint(
 
 /** Builds and checks the bounded choke layout before any resource commitment. */
 export function createFortificationLayout(
-  observation: AiObservationV1,
+  observation: AiObservation,
   anchor: Vector3Simple,
   target: Vector3Simple,
-  planId: AiFortificationStateV1["planId"],
-  wallEntry: AiCapabilityCatalogEntryV1,
-  towerEntry: AiCapabilityCatalogEntryV1,
-  stairEntry: AiCapabilityCatalogEntryV1,
+  planId: AiFortificationState["planId"],
+  wallEntry: AiCapabilityCatalogEntry,
+  towerEntry: AiCapabilityCatalogEntry,
+  stairEntry: AiCapabilityCatalogEntry,
   gateObjectName: ObjectNames | null,
-  catalog: AiCapabilityCatalogV1,
-  profile: AiProfileConfigV1
+  catalog: AiCapabilityCatalog,
+  profile: AiProfileConfig
 ) {
   const byKey = new Map((observation.map?.constructionCells ?? []).map((cell) => [cell.tileKey, cell]));
   const dx = target.x - anchor.x;
@@ -197,7 +197,7 @@ export function createFortificationLayout(
   )[0];
   const towerOffsets: number[] = towerPair ? [...towerPair] : singleTowerOffset === undefined ? [] : [singleTowerOffset];
   const covered = new Set<string>();
-  const nodes: AiFortificationNodeStateV1[] = [gate];
+  const nodes: AiFortificationNodeState[] = [gate];
   for (const side of [negativeOffsets, positiveOffsets] as const) {
     let dependency: string | null = null;
     const sideNodeOffsets = side.filter(
@@ -312,7 +312,7 @@ export function createFortificationLayout(
   const protectedPosition = atOffset(0, -1);
   const exteriorPosition = atOffset(0, 1);
   if (
-    !fortificationPreservesConnectivityV1({
+    !fortificationPreservesConnectivity({
       cells: observation.map?.constructionCells ?? [],
       blockedTileKeys: blocked,
       protectedPosition,

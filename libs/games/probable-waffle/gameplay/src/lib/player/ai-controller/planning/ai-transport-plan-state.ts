@@ -1,8 +1,8 @@
 import { aiDeadline } from "../contracts/ai-core-types";
-import type { AiBrainStateV1, AiTransportStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiBrainState, AiTransportState } from "../contracts/ai-brain-state";
 import type { AiTransportPlanWithLifecycle } from "./ai-transport-plan-lifecycle";
 
-export function hasAiTransportNonTerminalOutcome(state: AiBrainStateV1, intentId: string): boolean {
+export function hasAiTransportNonTerminalOutcome(state: AiBrainState, intentId: string): boolean {
   return state.pendingOutcomes.some(
     (outcome) =>
       outcome.identity.intentId === intentId &&
@@ -10,7 +10,7 @@ export function hasAiTransportNonTerminalOutcome(state: AiBrainStateV1, intentId
   );
 }
 
-export function hasAiTransportFailedOutcome(state: AiBrainStateV1, intentIds: readonly string[]): boolean {
+export function hasAiTransportFailedOutcome(state: AiBrainState, intentIds: readonly string[]): boolean {
   return state.pendingOutcomes.some(
     (outcome) =>
       intentIds.includes(outcome.identity.intentId) &&
@@ -20,10 +20,10 @@ export function hasAiTransportFailedOutcome(state: AiBrainStateV1, intentIds: re
 
 export function withAiTransportPhase(
   plan: AiTransportPlanWithLifecycle,
-  phase: AiTransportStateV1["phase"],
+  phase: AiTransportState["phase"],
   tick: number,
   duration: number,
-  changes: Partial<NonNullable<AiTransportStateV1["lifecycle"]>> = {}
+  changes: Partial<NonNullable<AiTransportState["lifecycle"]>> = {}
 ): AiTransportPlanWithLifecycle {
   const lifecycle = plan.lifecycle;
   return {

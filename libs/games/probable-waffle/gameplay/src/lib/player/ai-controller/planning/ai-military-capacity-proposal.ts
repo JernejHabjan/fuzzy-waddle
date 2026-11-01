@@ -1,24 +1,24 @@
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiIntent } from "../contracts/ai-intent";
+import type { AiObservation } from "../contracts/ai-observation";
+import type { AiDemand } from "../contracts/ai-plan-contracts";
 import { selectAiMilitaryCapacitySite } from "./ai-military-capacity-site";
 import { plannedAiProducerCount } from "./ai-force-capacity";
 import { nextIds, unresolvedReservedEffectIds } from "./ai-macro-effect-identity";
 import { claimedActorIds, isAvailableBuilder, isFinishedActor } from "./ai-macro-observation";
 import { producerMilitaryProducts } from "./ai-military-catalog";
 import { createAiResourceCostClaims } from "./ai-resource-cost-claims";
-import type { AiProductionTransitionV1 } from "../contracts/brain-state/ai-production-transition-v1";
+import type { AiProductionTransition } from "../contracts/brain-state/ai-production-transition";
 import { canAffordAiEconomyCost } from "./ai-economy-policy";
 import { needsAiProducerResilience, observedAiProducerThreats } from "./ai-producer-safety";
 
 /** Proposes throughput only when a dated force deficit needs more producer capacity. */
 export function proposeAiMilitaryCapacity(args: {
-  readonly observation: AiObservationV1;
-  readonly state: AiBrainStateV1;
-  readonly catalog: AiCapabilityCatalogV1;
-  readonly self: readonly AiObservationV1["actors"][number][];
+  readonly observation: AiObservation;
+  readonly state: AiBrainState;
+  readonly catalog: AiCapabilityCatalog;
+  readonly self: readonly AiObservation["actors"][number][];
   readonly pressureDomain: "ground" | "air";
   readonly targetMilitary: number;
   readonly militaryCount: number;
@@ -27,13 +27,13 @@ export function proposeAiMilitaryCapacity(args: {
   readonly workforceRecoveryOwnsFood: boolean;
   readonly reservedActorIds: ReadonlySet<string>;
   readonly selectedConstructionTileKeys: Set<string>;
-  readonly priorIntents: readonly AiIntentV1[];
+  readonly priorIntents: readonly AiIntent[];
   readonly ordinal: number;
-  readonly transition?: AiProductionTransitionV1;
+  readonly transition?: AiProductionTransition;
 }): {
-  readonly demand: AiDemandV1 | null;
-  readonly intent: AiIntentV1 | null;
-  readonly producers: readonly AiObservationV1["actors"][number][];
+  readonly demand: AiDemand | null;
+  readonly intent: AiIntent | null;
+  readonly producers: readonly AiObservation["actors"][number][];
 } {
   const {
     observation,
@@ -100,8 +100,8 @@ export function proposeAiMilitaryCapacity(args: {
   const demandId =
     transition?.status === "committed"
       ? (`demand:capacity:${transition.planId}` as const)
-      : ("demand:capacity:first-army" as AiDemandV1["demandId"]);
-  const demand: AiDemandV1 = {
+      : ("demand:capacity:first-army" as AiDemand["demandId"]);
+  const demand: AiDemand = {
     demandId,
     purpose: resilient ? "critical_producer_resilience" : "dated_military_throughput",
     capabilityOrRole: primaryObjectName,
@@ -153,7 +153,7 @@ export function proposeAiMilitaryCapacity(args: {
   if (!selected) return { demand, intent: null, producers };
   const { builder, position } = selected;
   const next = nextIds(state, `capacity:${primaryObjectName}`, ordinal);
-  const intent: AiIntentV1 = {
+  const intent: AiIntent = {
     ...next,
     kind: "construct",
     spendingCategory: "defense",
@@ -166,7 +166,7 @@ export function proposeAiMilitaryCapacity(args: {
     preconditions: [{ kind: "actor_exists", actorId: builder.actorId }],
     claims: [
       {
-        claimId: `${next.claimId}:builder` as AiIntentV1["claims"][number]["claimId"],
+        claimId: `${next.claimId}:builder` as AiIntent["claims"][number]["claimId"],
         kind: "actor",
         actorId: builder.actorId
       },
@@ -177,7 +177,7 @@ export function proposeAiMilitaryCapacity(args: {
       },
       ...createAiResourceCostClaims(next.claimId, entry?.constructionProfile?.resourceCost ?? {}),
       {
-        claimId: `${next.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
+        claimId: `${next.claimId}:effect` as AiIntent["claims"][number]["claimId"],
         kind: "effect",
         effectId: next.effectId
       }

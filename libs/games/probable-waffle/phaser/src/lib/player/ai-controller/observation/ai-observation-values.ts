@@ -1,15 +1,15 @@
-import type { AiDomainV1, AiKnownValueV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiDomain, AiKnownValue } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 
-export function knownValue<T>(value: T, observedTick: number): AiKnownValueV1<T> {
+export function knownValue<T>(value: T, observedTick: number): AiKnownValue<T> {
   return { status: "known", value, observedTick };
 }
 
-export function unknownValue(reason: "not_observed" | "not_supported" | "query_pending"): AiKnownValueV1<never> {
+export function unknownValue(reason: "not_observed" | "not_supported" | "query_pending"): AiKnownValue<never> {
   return { status: "unknown", reason };
 }
 
-export function uniqueDomain(domain: AiDomainV1, index: number, values: readonly AiDomainV1[]): boolean {
+export function uniqueDomain(domain: AiDomain, index: number, values: readonly AiDomain[]): boolean {
   return values.indexOf(domain) === index;
 }
 

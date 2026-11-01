@@ -1,5 +1,5 @@
 import type { RuntimeProductionEvidenceV2 } from "./skirmish-ai-runtime-production-evidence-v2";
-import type { RuntimeProductionContractV1 } from "./skirmish-ai-runtime-production-contract";
+import type { RuntimeProductionContract } from "./skirmish-ai-runtime-production-contract";
 import { productionActorRetained, productionWorldAt } from "./skirmish-ai-runtime-production-authority-evaluation";
 import { runtimeProductionUsefulOutputs } from "./skirmish-ai-runtime-production-useful-output";
 import { runtimeProductionBuilderWork } from "./skirmish-ai-runtime-production-builder-work";
@@ -33,7 +33,7 @@ export function runtimeProductionExposure(evidence: RuntimeProductionEvidenceV2,
 
 /** Requires a distinct, actually ready replacement before pinned loss and its own useful post-loss output. */
 export function evaluateRuntimeProductionRecovery(
-  contract: RuntimeProductionContractV1,
+  contract: RuntimeProductionContract,
   evidence: RuntimeProductionEvidenceV2
 ) {
   const decision = evidence.decisions.find(

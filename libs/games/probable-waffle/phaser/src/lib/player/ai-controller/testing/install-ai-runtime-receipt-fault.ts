@@ -14,11 +14,11 @@ import { QUEUE_COMPLETION_AUTHORITY_EVENT, type QueueCompletionAuthorityEvent } 
   "../../../entity/components/queue/queue-completion-authority-event";
 import { AI_INTENT_COMMAND_DISPATCH_EVENT, type AiIntentCommandDispatchEvent } from "../ai-intent-command-dispatch-event";
 import { installAiCommandOutcomeDelivery } from "../ai-command-outcome-delivery";
-import type { AiRuntimePresetWorldV1 } from "./ai-runtime-preset-world-v1";
-import { AI_RUNTIME_AUTHORITY_DELIVERY_EVENT, type AiRuntimeAuthorityDeliveryV1 } from "./ai-runtime-authority-delivery-v1";
+import type { AiRuntimePresetWorld } from "./ai-runtime-preset-world";
+import { AI_RUNTIME_AUTHORITY_DELIVERY_EVENT, type AiRuntimeAuthorityDelivery } from "./ai-runtime-authority-delivery";
 
 /** Withhold only the addressed AI consumer; normal callbacks retain exact native identity and FIFO delivery order. */
-export function installAiRuntimeReceiptFault(scene: ProbableWaffleScene, preset: AiRuntimePresetWorldV1): void {
+export function installAiRuntimeReceiptFault(scene: ProbableWaffleScene, preset: AiRuntimePresetWorld): void {
   const fault = preset.receiptFault;
   if (!fault) return;
   const clock = getSceneService(scene, SimulationTickService), bus = getSceneService(scene, CommandBusService);
@@ -29,11 +29,11 @@ export function installAiRuntimeReceiptFault(scene: ProbableWaffleScene, preset:
   const losses: { actor: Phaser.GameObjects.GameObject; commandId: string; atTick: number }[] = [];
   let destroyed = false, historyObserved = false, contended = false, emitted = 0;
   const within = () => !cleanup.closed && clock.currentTick >= fault.fromTick && clock.currentTick <= fault.throughTick;
-  const record = (phase: AiRuntimeAuthorityDeliveryV1["phase"], outcome: GameCommandOutcome | null, actorId: string | null) => {
+  const record = (phase: AiRuntimeAuthorityDelivery["phase"], outcome: GameCommandOutcome | null, actorId: string | null) => {
     if (++emitted > 1024) throw new Error("runtime_receipt_fault_evidence_overflow");
     scene.events.emit(AI_RUNTIME_AUTHORITY_DELIVERY_EVENT, { faultId: fault.id, playerNumber: fault.playerNumber,
       tick: clock.currentTick, phase, outcome: outcome ? structuredClone(outcome) : null, actorId,
-      pendingCount: selected.size } satisfies AiRuntimeAuthorityDeliveryV1);
+      pendingCount: selected.size } satisfies AiRuntimeAuthorityDelivery);
   };
   const request = (event: AiIntentCommandDispatchEvent) => {
     if (!within() || event.kind !== "requested" || event.playerNumber !== fault.playerNumber ||

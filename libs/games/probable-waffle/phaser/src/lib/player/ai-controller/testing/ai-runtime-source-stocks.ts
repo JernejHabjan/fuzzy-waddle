@@ -1,7 +1,7 @@
 import type Phaser from "phaser";
 import { getActorComponent } from "../../../data/actor-component";
 import { ResourceSourceComponent } from "../../../entity/components/resource/resource-source-component";
-import type { AiRuntimePresetWorldV1 } from "./ai-runtime-preset-world-v1";
+import type { AiRuntimePresetWorld } from "./ai-runtime-preset-world";
 
 /** Strict, bounded pre-tick source stock setup; never changes definitions, harvest factors or live AI state. */
 export function validAiRuntimeSourceStocks(value: unknown, actorIds: ReadonlySet<string>): boolean {
@@ -33,7 +33,7 @@ export function validAiRuntimeSourceStocks(value: unknown, actorIds: ReadonlySet
 
 /** Apply saved-component stock authority before orders/ticks; reject over-max requests instead of silently clamping. */
 export function applyAiRuntimeSourceStocks(
-  preset: AiRuntimePresetWorldV1,
+  preset: AiRuntimePresetWorld,
   actors: ReadonlyMap<string, Phaser.GameObjects.GameObject>
 ): void {
   for (const stock of preset.sourceStocks ?? []) {

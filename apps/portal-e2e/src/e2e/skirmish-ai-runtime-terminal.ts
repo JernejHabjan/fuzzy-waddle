@@ -1,16 +1,16 @@
-import type { RuntimeAssertionV1 } from "./skirmish-ai-runtime-assertion";
-import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
+import type { RuntimeAssertion } from "./skirmish-ai-runtime-assertion";
+import type { RuntimeCheckpoint } from "./skirmish-ai-runtime-checkpoint";
 
 /** Victory acceptance uses the AI player's authoritative score result. */
-export function isAiVictory(checkpoint: Pick<RuntimeCheckpointV1, "gameResult">): boolean {
+export function isAiVictory(checkpoint: Pick<RuntimeCheckpoint, "gameResult">): boolean {
   return checkpoint.gameResult === "win";
 }
 
 /** A terminal world cannot satisfy a pending event or an unrelated scenario's observation horizon. */
 export function canStopAfterTerminal(
-  assertions: Readonly<Record<string, Pick<RuntimeAssertionV1, "requireAiVictory">>>,
+  assertions: Readonly<Record<string, Pick<RuntimeAssertion, "requireAiVictory">>>,
   scenarioIds: readonly string[],
-  checkpoint: Pick<RuntimeCheckpointV1, "gameResult" | "tick">,
+  checkpoint: Pick<RuntimeCheckpoint, "gameResult" | "tick">,
   pendingEventTicks: readonly number[]
 ): boolean {
   // ScoreTracker initializes unfinished players to Quit. Only an adjudicated win/loss/tie ends this gate.

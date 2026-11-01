@@ -1,4 +1,4 @@
-import type { AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiSquadState } from "../contracts/ai-brain-state";
 import { distance, knownPosition, movementDomains } from "./ai-tactics-geometry";
 import {
   AI_TACTICS_ATTACK_RATIO_PERMILLE,
@@ -127,7 +127,7 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
     (squad.lifecycle?.effectDeadline.dueTick ?? Number.MAX_SAFE_INTEGER) <= observation.tick;
   const missionRecoveryExhausted = missionExpired && (squad.lifecycle?.recoveryAttempt ?? 0) >= 1;
   const emptyRecoveryExhausted = members.length === 0 && (squad.state === "recover" || squad.state === "recovering");
-  const quietState: AiSquadStateV1["state"] = landedForRegroup
+  const quietState: AiSquadState["state"] = landedForRegroup
     ? "regroup"
     : squad.role === "reserve"
       ? "reserve"
@@ -144,7 +144,7 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
                 : squad.state === "recover" || squad.state === "recovering"
                   ? "rally"
                   : "advance";
-  const proposedState: AiSquadStateV1["state"] =
+  const proposedState: AiSquadState["state"] =
     emptyRecoveryExhausted || missionRecoveryExhausted
       ? "completed"
       : members.length === 0
@@ -194,13 +194,13 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
         (squad.tactics.oscillationCount !== 1 &&
           observation.tick - squad.tactics.lastTransitionTick < 2 * TACTICAL_RECONSIDERATION_TICKS)
       : observation.tick < squad.tactics.nextReconsiderTick);
-  const nextState: AiSquadStateV1["state"] = holdRetreat ? "retreat" : proposedState;
+  const nextState: AiSquadState["state"] = holdRetreat ? "retreat" : proposedState;
   const nowRetreat = nextState === "retreat";
   const oscillationCount =
     previousRetreat !== nowRetreat && squad.tactics && observation.tick <= squad.tactics.nextReconsiderTick
       ? squad.tactics.oscillationCount + 1
       : Math.max(0, (squad.tactics?.oscillationCount ?? 0) - 1);
-  const script: NonNullable<AiSquadStateV1["tactics"]>["script"] =
+  const script: NonNullable<AiSquadState["tactics"]>["script"] =
     oscillationCount >= 2
       ? "hold_front"
       : topologyLost

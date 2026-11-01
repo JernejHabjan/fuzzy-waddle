@@ -2,7 +2,7 @@ import { ObjectNames, OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 import { catalog, completedOpeningState } from "./ai-macro-test-fixtures";
 import { AiMacroManager } from "./ai-macro-manager";
-import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import type { AiObservedActor } from "../contracts/ai-observation";
 
 function fixture() {
   const worker = {
@@ -34,7 +34,7 @@ function fixture() {
     )
   };
   const state = completedOpeningState();
-  const actors: AiObservedActorV1[] = [worker, site];
+  const actors: AiObservedActor[] = [worker, site];
   const world = { ...createAiTestObservation(), actors };
   return { worker, site, capabilities, state, world, manager: new AiMacroManager(() => capabilities) };
 }

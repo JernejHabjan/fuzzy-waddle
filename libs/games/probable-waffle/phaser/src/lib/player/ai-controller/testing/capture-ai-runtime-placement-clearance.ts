@@ -9,18 +9,18 @@ import { ActorTranslateComponent } from "../../../entity/components/movement/act
 import { TilemapComponent } from "../../../world/tilemap/tilemap.component";
 import { IsoHelper } from "../../../world/tilemap/iso-helper";
 import { getActorComponent } from "../../../data/actor-component";
-import type { AiRuntimeProtectedRouteV1 } from "./ai-runtime-protected-route-v1";
-import type { AiRuntimePlacementClearanceV1 } from "./ai-runtime-placement-clearance-v1";
+import type { AiRuntimeProtectedRoute } from "./ai-runtime-protected-route";
+import type { AiRuntimePlacementClearance } from "./ai-runtime-placement-clearance";
 import { findAiRuntimeClearancePath } from "./find-ai-runtime-clearance-path";
 
 /** Opt-in test projection. Rebuilds current native static geometry without touching the live graph, cache or timers. */
 export function captureAiRuntimePlacementClearance(
-  scene: Phaser.Scene, declarations: readonly AiRuntimeProtectedRouteV1[]
-): AiRuntimePlacementClearanceV1 {
+  scene: Phaser.Scene, declarations: readonly AiRuntimeProtectedRoute[]
+): AiRuntimePlacementClearance {
   const clockTick = getSceneService(scene, SimulationTickService)?.currentTick ?? null;
   const boundary = { clockTick, snapshotRestoreInProgress: isSnapshotApplyInProgress(scene),
     sceneActive: scene.sys?.isActive() ?? false };
-  const missing = (gap: string): AiRuntimePlacementClearanceV1 => ({ ...boundary, gaps: [gap], routes: [] });
+  const missing = (gap: string): AiRuntimePlacementClearance => ({ ...boundary, gaps: [gap], routes: [] });
   if (clockTick === null || boundary.snapshotRestoreInProgress || !boundary.sceneActive) {
     return missing("placement_clearance_boundary_unavailable");
   }

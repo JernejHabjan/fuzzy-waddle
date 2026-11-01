@@ -1,11 +1,11 @@
 import { isDeepStrictEqual } from "node:util";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
-import type { RuntimeProductionOperationV1 } from "./skirmish-ai-runtime-production-operation";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
+import type { RuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality";
+import type { RuntimeProductionOperation } from "./skirmish-ai-runtime-production-operation";
 import { calculateRuntimeQueueLiabilities } from "./skirmish-ai-runtime-queue-liabilities";
 import { sameRuntimeQueueVector } from "./skirmish-ai-runtime-scoped-queue-payments";
 import { validateRuntimeProductionProgress } from "./skirmish-ai-runtime-production-progress";
@@ -16,17 +16,17 @@ import { isRuntimeProductionBalance, reconcileRuntimeProductionUnspent } from ".
  * recorded by sequence rather than deleting a global authority gap. Null unspent ownership never becomes zero.
  */
 export function projectRuntimeProductionOperations(
-  capture: AiRuntimeProductionCaptureV1,
-  commands: RuntimeProductionCausalityV1["commands"],
-  payments: RuntimeProductionCausalityV1["payments"],
+  capture: AiRuntimeProductionSnapshot,
+  commands: RuntimeProductionCausality["commands"],
+  payments: RuntimeProductionCausality["payments"],
   progress = validateRuntimeProductionProgress(capture, commands.map((scope) => scope.command))
 ) {
   const failures = [...progress.failures];
   const gaps: string[] = [];
-  const operations: RuntimeProductionOperationV1[] = [];
+  const operations: RuntimeProductionOperation[] = [];
   const used = new Set<number>();
   const zero: Record<ResourceType, number> = { food: 0, wood: 0, stone: 0, minerals: 0 };
-  const interval = (before: AiRuntimeProductionFactV1, after: AiRuntimeProductionFactV1) => {
+  const interval = (before: AiRuntimeProductionFact, after: AiRuntimeProductionFact) => {
     const left = before.boundaryState;
     const right = after.boundaryState;
     if (!left?.resources || !right?.resources || !left.queues || !right.queues || !left.obligations || !right.obligations) {
@@ -47,8 +47,8 @@ export function projectRuntimeProductionOperations(
       reservedUnspentBefore: unspentBefore.resources, reservedUnspentAfter: unspentAfter.resources,
       boundarySequences: [before.sequence, after.sequence] as const };
   };
-  const claimInterval = (before: AiRuntimeProductionFactV1, after: AiRuntimeProductionFactV1,
-    origin: RuntimeProductionCausalityV1["commands"][number], charging: boolean) => {
+  const claimInterval = (before: AiRuntimeProductionFact, after: AiRuntimeProductionFact,
+    origin: RuntimeProductionCausality["commands"][number], charging: boolean) => {
     const left = before.boundaryState?.unspentClaims;
     const right = after.boundaryState?.unspentClaims;
     if (!left?.resources || !right?.resources) return false;

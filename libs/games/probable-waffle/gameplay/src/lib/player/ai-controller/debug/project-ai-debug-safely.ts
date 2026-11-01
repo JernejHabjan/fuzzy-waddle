@@ -1,15 +1,15 @@
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import type { AiIntentDecisionV1 } from "../contracts/ai-intent-v1";
-import type { AiManagerProposalV1 } from "../planning/ai-manager-proposal";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiObservation } from "../contracts/ai-observation";
+import type { AiIntentDecision } from "../contracts/ai-intent";
+import type { AiManagerProposal } from "../planning/ai-manager-proposal";
 import { projectAiDebugSnapshot } from "./project-ai-debug-snapshot";
 import { aiDebugFailureSnapshot } from "./ai-debug-failure-snapshot";
 import { recordAiBoundaryFailure, recoverAiBoundary } from "../brain/ai-optional-boundaries";
 
 /** Optional diagnostics cannot discard a valid command result. Retries use the same saved cadence as proposers. */
 export function projectAiDebugSafely(
-  observation: AiObservationV1, state: AiBrainStateV1, decisions: readonly AiIntentDecisionV1[],
-  batches: readonly AiManagerProposalV1[], cadence: number, project = projectAiDebugSnapshot
+  observation: AiObservation, state: AiBrainState, decisions: readonly AiIntentDecision[],
+  batches: readonly AiManagerProposal[], cadence: number, project = projectAiDebugSnapshot
 ) {
   const owner = "debug_projection", incidents = state.scheduler.boundaryFaults ?? [];
   const previous = incidents.find((fault) => fault.owner === owner);
@@ -21,7 +21,7 @@ export function projectAiDebugSafely(
     return { state: { ...state, scheduler: { ...state.scheduler, boundaryFaults } }, snapshot };
   } catch (error) {
     const boundaryFaults = recordAiBoundaryFailure(owner, observation.tick, cadence, incidents, error);
-    const next = { ...state, scheduler: { ...state.scheduler, boundaryFaults } } satisfies AiBrainStateV1;
+    const next = { ...state, scheduler: { ...state.scheduler, boundaryFaults } } satisfies AiBrainState;
     return { state: next, snapshot: aiDebugFailureSnapshot(observation, next) };
   }
 }

@@ -1,6 +1,6 @@
 import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import { expect, test } from "@playwright/test";
-import type { AiDecisionInputV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/ai-decision-input-v1";
+import type { AiDecisionInput } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/ai-decision-input";
 import { productionConsumedDecisionFixture } from "./skirmish-ai-runtime-production-consumed-decision-fixture";
 import { normalizeRuntimeProductionFairInput } from "./skirmish-ai-runtime-production-fair-input-normalization";
 
@@ -9,7 +9,7 @@ test.describe("fair production decision synthetic contract tests", () => {
     const { input } = productionConsumedDecisionFixture();
     if (!input.observation) throw new Error("synthetic_observation_missing");
     const unknown = { status: "unknown", reason: "not_observed" } as const;
-    const remembered: AiDecisionInputV1 = {
+    const remembered: AiDecisionInput = {
       ...input,
       observation: {
         ...input.observation,
@@ -37,7 +37,7 @@ test.describe("fair production decision synthetic contract tests", () => {
     const result = normalizeRuntimeProductionFairInput(remembered);
     expect(result.failures).toEqual([]);
     expect(result.fairInput?.visibleThreats).toEqual([]);
-    const missing: AiDecisionInputV1 = {
+    const missing: AiDecisionInput = {
       ...input,
       observation: {
         ...input.observation,
@@ -85,7 +85,7 @@ test.describe("fair production decision synthetic contract tests", () => {
     const { input } = productionConsumedDecisionFixture();
     if (!input.observation || !input.accessGraph) throw new Error("synthetic_input_missing");
     const observation = input.observation;
-    const defects: AiDecisionInputV1[] = [
+    const defects: AiDecisionInput[] = [
       {
         ...input,
         observation: { ...observation, actors: [...observation.actors, requireAiTestEntry(observation.actors, 0)] }

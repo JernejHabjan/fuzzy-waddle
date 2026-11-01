@@ -6,14 +6,14 @@ import {
   ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
 
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservation } from "../contracts/ai-observation";
+import type { AiDemand } from "../contracts/ai-plan-contracts";
 import { AiMacroManager } from "../planning/ai-macro-manager";
 
 import { projectAiResourceForecasts } from "../planning/ai-resource-forecast";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import {
   createAiTestObservation,
   createAiTestOwnedActor,
@@ -21,7 +21,7 @@ import {
   requireAiTestEntry
 } from "./ai-test-fixtures";
 
-export const catalog: AiCapabilityCatalogV1 = {
+export const catalog: AiCapabilityCatalog = {
   schemaVersion: 1,
   generation: 1,
   unsupported: [],
@@ -82,7 +82,7 @@ export const catalog: AiCapabilityCatalogV1 = {
   ]
 };
 
-export const demand: AiDemandV1 = {
+export const demand: AiDemand = {
   demandId: "demand:forecast:ranged",
   purpose: "dated_ranged_force",
   capabilityOrRole: "ground_ranged",
@@ -119,7 +119,7 @@ export function source(actorId: string, objectName: ObjectNames, resourceType: R
 }
 
 /** Builds a fixed workforce and two resource sources with independently spendable balances. */
-export function world(woodStockpile: number, foodStockpile: number): AiObservationV1 {
+export function world(woodStockpile: number, foodStockpile: number): AiObservation {
   const base = createAiTestObservation();
   const workers = Array.from({ length: 6 }, (_, index) => ({
     ...createAiTestOwnedActor(`worker-${index}`),
@@ -154,14 +154,14 @@ export function world(woodStockpile: number, foodStockpile: number): AiObservati
 export function proposal(
   woodStockpile: number,
   foodStockpile: number,
-  demands: readonly AiDemandV1[] = [demand],
+  demands: readonly AiDemand[] = [demand],
   observation = world(woodStockpile, foodStockpile),
-  runtimeCatalog: AiCapabilityCatalogV1 = catalog
+  runtimeCatalog: AiCapabilityCatalog = catalog
 ) {
-  const initial = createAiBrainStateV1({
+  const initial = createAiBrainState({
     playerNumber: 1,
     faction: FactionType.Tivara,
-    profile: createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium),
+    profile: createAiProfileConfig(ProbableWaffleAiDifficulty.Medium),
     tick: 20,
     archetypeId: "balanced",
     completedOpeningStepIds: [

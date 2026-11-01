@@ -1,9 +1,9 @@
-import type { AiDecisionInputV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/ai-decision-input-v1";
+import type { AiDecisionInput } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/ai-decision-input";
 import { HIGH_GROUND_THRESHOLD } from
   "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/high-ground-constants";
 
 /** Validates target-specific native attack capture against its exact consumed weapons; no universal building range. */
-export function normalizeRuntimeProducerExposure(input: AiDecisionInputV1) {
+export function normalizeRuntimeProducerExposure(input: AiDecisionInput) {
   const failures: string[] = [];
   const gaps = new Set<string>();
   const exposure = input.producerExposure;

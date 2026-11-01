@@ -1,8 +1,8 @@
 import { FactionType, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiProfileConfigV1 } from "./ai-profile-defaults";
-import { selectAiOpeningArchetypeV1 } from "./ai-opening-archetypes-v1";
+import { createAiProfileConfig } from "./ai-profile-defaults";
+import { selectAiOpeningArchetype } from "./ai-opening-archetypes";
 
-describe("createAiProfileConfigV1", () => {
+describe("createAiProfileConfig", () => {
   it.each([
     [ProbableWaffleAiDifficulty.Easy, "easy", 40, 1, 80],
     [ProbableWaffleAiDifficulty.Medium, "normal", 20, 2, 40],
@@ -10,10 +10,10 @@ describe("createAiProfileConfigV1", () => {
   ] as const)(
     "maps lobby difficulty %s to the versioned fair profile",
     (source, label, interval, missions, reconsideration) => {
-      const profile = createAiProfileConfigV1(source);
+      const profile = createAiProfileConfig(source);
       expect(profile).toMatchObject({
         schemaVersion: 1,
-        profileVersion: "skirmish-ai-v1",
+        profileVersion: "skirmish-ai",
         sourceDifficulty: source,
         difficulty: label,
         decisionIntervalTicks: interval,
@@ -26,25 +26,25 @@ describe("createAiProfileConfigV1", () => {
   );
 
   it("rejects an unknown lobby difficulty", () => {
-    expect(() => createAiProfileConfigV1(99 as ProbableWaffleAiDifficulty)).toThrow("unsupported_ai_difficulty");
+    expect(() => createAiProfileConfig(99 as ProbableWaffleAiDifficulty)).toThrow("unsupported_ai_difficulty");
   });
 
   it("D-02/D-03 selects a persisted fair personality from difficulty and stable seed only", () => {
-    const easy = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Easy);
-    const hard = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Hard);
-    const first = selectAiOpeningArchetypeV1({
+    const easy = createAiProfileConfig(ProbableWaffleAiDifficulty.Easy);
+    const hard = createAiProfileConfig(ProbableWaffleAiDifficulty.Hard);
+    const first = selectAiOpeningArchetype({
       faction: FactionType.Tivara,
       playerNumber: 1,
       profile: easy,
       seed: 759
     });
-    const restored = selectAiOpeningArchetypeV1({
+    const restored = selectAiOpeningArchetype({
       faction: FactionType.Tivara,
       playerNumber: 1,
       profile: easy,
       seed: 759
     });
-    const hardArchetype = selectAiOpeningArchetypeV1({
+    const hardArchetype = selectAiOpeningArchetype({
       faction: FactionType.Tivara,
       playerNumber: 1,
       profile: hard,

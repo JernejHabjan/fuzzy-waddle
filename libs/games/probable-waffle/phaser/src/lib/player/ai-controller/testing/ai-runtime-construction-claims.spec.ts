@@ -1,6 +1,6 @@
 import { ConstructionStateEnum, ObjectNames, type ConstructCommand } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
-import type { AiRuntimeConstructionV1 } from "./ai-runtime-construction-v1";
+import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiRuntimeConstruction } from "./ai-runtime-construction";
 import { AiRuntimeUnspentClaims } from "./ai-runtime-unspent-claims";
 import { unspentClaimFixture } from "./ai-runtime-unspent-claim-fixtures";
 import { pendingCommandOutcome } from "./ai-runtime-pending-command-fixtures";
@@ -15,7 +15,7 @@ function fixture(existingCommandId?: string) {
     objectName: ObjectNames.AnkGuard,
     logicalPosition: { x: 3, y: 4, z: 0 },
     siteKey: "site:one"
-  } satisfies AiIntentV1;
+  } satisfies AiIntent;
   const command = {
     type: "CONSTRUCT",
     playerNumber: 2,
@@ -70,7 +70,7 @@ function fixture(existingCommandId?: string) {
       finished: false,
       indexed: true
     }
-  } satisfies AiRuntimeConstructionV1;
+  } satisfies AiRuntimeConstruction;
   return { ledger, charge };
 }
 

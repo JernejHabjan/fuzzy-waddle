@@ -1,6 +1,6 @@
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import type { RuntimeResourceNeedV1 } from "./skirmish-ai-runtime-resource-need";
-import type { RuntimeResourceCreditV1 } from "./skirmish-ai-runtime-resource-credit";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
+import type { RuntimeResourceNeed } from "./skirmish-ai-runtime-resource-need";
+import type { RuntimeResourceCredit } from "./skirmish-ai-runtime-resource-credit";
 import { recipientJournalFixture } from "./skirmish-ai-runtime-recipient-journal-fixture";
 import { resourceServiceFixture } from "./skirmish-ai-runtime-resource-service-fixture";
 import { normalizeRuntimeResourceCredits } from "./skirmish-ai-runtime-resource-credit-normalization";
@@ -57,8 +57,8 @@ export function resourceNeedAccountingFixture() {
         forecasts: [{ resourceType: selection.resourceType, ...selection.forecast }]
       }
     }
-  } satisfies AiRuntimeProductionFactV1;
-  const mutations: AiRuntimeProductionFactV1[] = [];
+  } satisfies AiRuntimeProductionFact;
+  const mutations: AiRuntimeProductionFact[] = [];
   for (const [index, action] of (["add", "pay", "add"] as const).entries()) {
     const before = action === "pay" ? f.after : f.zero,
       after = action === "pay" ? f.zero : f.after;
@@ -114,7 +114,7 @@ export function resourceNeedAccountingFixture() {
         gathering: { ...lot.gathering, serviceCommand: { ...command, decision: selected } }
       };
     })
-  } satisfies RuntimeResourceCreditV1;
+  } satisfies RuntimeResourceCredit;
   const start = {
     kind: "resource_need_fence",
     sequence: 3,
@@ -122,7 +122,7 @@ export function resourceNeedAccountingFixture() {
     playerNumber: 1,
     reason: "controller_decision_started",
     incomingRead: f.read
-  } satisfies AiRuntimeProductionFactV1;
+  } satisfies AiRuntimeProductionFact;
   const facts = [...f.capture.facts.slice(0, 2), start, selected, ...mutations, credit.fact];
   const capture = {
     ...f.capture,
@@ -130,6 +130,6 @@ export function resourceNeedAccountingFixture() {
     recipientResourceFacts: [...f.capture.facts.slice(0, 2), start, ...mutations],
     resourceCoverage: { ...f.capture.resourceCoverage, frontier: { tick: 0, captureSequence: 11 } }
   };
-  const need = { selectedSequence: 4, selection, grossUnmet: 10, gaps: [] } satisfies RuntimeResourceNeedV1;
+  const need = { selectedSequence: 4, selection, grossUnmet: 10, gaps: [] } satisfies RuntimeResourceNeed;
   return { capture, need, credit };
 }

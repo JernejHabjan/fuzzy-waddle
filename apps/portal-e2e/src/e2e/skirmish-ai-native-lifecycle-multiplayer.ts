@@ -1,12 +1,12 @@
 import { expect, type Browser } from "@playwright/test";
-import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
-import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
-import type { RuntimeRequestV1 } from "./skirmish-ai-runtime-request";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeFixture } from "./skirmish-ai-runtime-fixture";
+import type { RuntimeVariant } from "./skirmish-ai-runtime-variant";
+import type { RuntimeRequest } from "./skirmish-ai-runtime-request";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 import type GameProbableWaffleScene from
   "@fuzzy-waddle/probable-waffle-phaser/world/scenes/GameProbableWaffleScene";
-import type { AiRuntimeBrowserTestHostV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host-v1";
+import type { AiRuntimeBrowserTestHost } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host";
 import type { ActorIndexSystem } from "@fuzzy-waddle/probable-waffle-phaser/world/services/ActorIndexSystem";
 import { startMultiplayerTestMatch } from "./skirmish-ai-multiplayer-match";
 import { multiplayerAuthorityProbe } from "./skirmish-ai-multiplayer-authority-probe";
@@ -21,8 +21,8 @@ import { installRuntimeErrorListeners } from "./skirmish-ai-runtime-error-listen
 
 /** Genuine relayed AI3 host replacement, followed by a native AI2 next match in the surviving peer's original realm. */
 export async function runNativeLifecycleMultiplayer(
-  browser: Browser, fixture: RuntimeFixtureV1, variant: RuntimeVariantV1, request: RuntimeRequestV1
-): Promise<RuntimeVariantResultV1> {
+  browser: Browser, fixture: RuntimeFixture, variant: RuntimeVariant, request: RuntimeRequest
+): Promise<RuntimeVariantResult> {
   if (process.env.AI_MULTIPLAYER_E2E !== "1") throw new Error("native_lifecycle_requires_real_multiplayer_config");
   const seed = request.seed ?? variant.seed;
   const match = await startMultiplayerTestMatch(browser, { authorityProbe: true, seed,
@@ -47,16 +47,16 @@ export async function runNativeLifecycleMultiplayer(
       return peer.aiControllerPresent && peer.relay.authorityEpoch > pinned.authorityEpoch;
     }, { timeout: 60_000 }).toBe(true);
     await installRuntimeAccessor(match.peer);
-    await match.peer.waitForFunction(() => !!window.__fuzzyWaddleAiRuntimePartsV1?.(3)?.controller.getCommittedObservation());
+    await match.peer.waitForFunction(() => !!window.__fuzzyWaddleAiRuntimeParts?.(3)?.controller.getCommittedObservation());
     await match.peer.evaluate(() => {
-      const clock = window.__fuzzyWaddleAiRuntimePartsV1?.(3)?.tickService;
+      const clock = window.__fuzzyWaddleAiRuntimeParts?.(3)?.tickService;
       if (!clock) throw new Error("lifecycle_promoted_native_clock_missing");
       clock.pauseTick("manual");
     });
-    await match.peer.waitForFunction(() => window.__fuzzyWaddleAiRuntimePartsV1?.(3)?.controller.isDecisionBoundarySettled());
+    await match.peer.waitForFunction(() => window.__fuzzyWaddleAiRuntimeParts?.(3)?.controller.isDecisionBoundarySettled());
     const initial = await match.peer.evaluate(() => {
-      const host = (window as unknown as { __fuzzyWaddleAiMultiplayerBrowserTestV1?:
-        Pick<AiRuntimeBrowserTestHostV1, "game"> }).__fuzzyWaddleAiMultiplayerBrowserTestV1;
+      const host = (window as unknown as { __fuzzyWaddleAiMultiplayerBrowserTest?:
+        Pick<AiRuntimeBrowserTestHost, "game"> }).__fuzzyWaddleAiMultiplayerBrowserTest;
       const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key === "MapAiMultiplayer") as
         GameProbableWaffleScene | undefined;
       const services: readonly object[] = scene?.getSceneGameData().services ?? [];
@@ -70,7 +70,7 @@ export async function runNativeLifecycleMultiplayer(
         }).length }, presetApplication: null,
         initialResourceBalances: Object.fromEntries(scene.players.map((player) => [player.playerNumber, player.getResources()])) };
     });
-    const observedTick = await match.peer.evaluate(() => window.__fuzzyWaddleAiRuntimePartsV1?.(3)?.tickService.currentTick);
+    const observedTick = await match.peer.evaluate(() => window.__fuzzyWaddleAiRuntimeParts?.(3)?.tickService.currentTick);
     if (observedTick === undefined || observedTick > 4000) throw new Error("native_lifecycle_promotion_exceeded_original_ceiling");
     const checkpoint = await captureCheckpoint(match.peer, 3, observedTick, false);
     const promotedEpoch = (await observeMultiplayerPeer(match.peer, 3)).relay.authorityEpoch;

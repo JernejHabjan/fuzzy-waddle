@@ -5,7 +5,7 @@ import {
   type AiPlanId,
   type AiSquadId
 } from "../contracts/ai-core-types";
-import type { AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiSquadState } from "../contracts/ai-brain-state";
 import type { AiSkirmishProposalContext } from "./ai-skirmish-proposal-context";
 import {
   baseId,
@@ -17,7 +17,7 @@ import {
   routeCapability,
   withTimeline
 } from "./ai-skirmish-support";
-import { queryAiAccessRouteV1 } from "./ai-access-graph-v1";
+import { queryAiAccessRoute } from "./ai-access-graph";
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { distance } from "./ai-tactics-geometry";
 
@@ -33,7 +33,7 @@ function canScoutNode(
   const sourceNode = node(actor);
   if (!graph || !sourceNode || context.primaryOwnedActors.has(actor.actorId)) return false;
   return (
-    queryAiAccessRouteV1(graph, {
+    queryAiAccessRoute(graph, {
       queryId: `scout:${context.observation.tick}:${actor.actorId}:${targetNode}`,
       kind: "movement",
       fromNodeId: sourceNode,
@@ -64,7 +64,7 @@ function compareScoutActors(
   return left.objectName.localeCompare(right.objectName) || left.actorId.localeCompare(right.actorId);
 }
 
-function recallScout(context: AiSkirmishProposalContext, scout: AiSquadStateV1): void {
+function recallScout(context: AiSkirmishProposalContext, scout: AiSquadState): void {
   const members = context.combat.filter(
     (actor) => scout.actorIds.includes(actor.actorId) && !context.primaryOwnedActors.has(actor.actorId)
   );
@@ -184,7 +184,7 @@ function appendNeutralClaim(context: AiSkirmishProposalContext, allowNewClaim = 
   if (!neutral || !member || !destination) return;
   const claimantId = "squad:scout:neutral" as AiSquadId;
   const claimantPlanId = `plan:${claimantId}` as AiPlanId;
-  const claimant: AiSquadStateV1 = {
+  const claimant: AiSquadState = {
     squadId: claimantId,
     role: "scout",
     domain: domains(member).includes("air") ? "air" : domains(member).includes("water") ? "water" : "ground",
@@ -302,7 +302,7 @@ function appendFrontierScout(context: AiSkirmishProposalContext): void {
   const tacticalWithdrawal = ["protected_retreat", "rampart_withdraw", "land_regroup"].includes(
     activeScout?.tactics?.script ?? ""
   );
-  const scout: AiSquadStateV1 = {
+  const scout: AiSquadState = {
     squadId: scoutId,
     role: "scout",
     domain: domains(lead).includes("air") ? "air" : domains(lead).includes("water") ? "water" : "ground",

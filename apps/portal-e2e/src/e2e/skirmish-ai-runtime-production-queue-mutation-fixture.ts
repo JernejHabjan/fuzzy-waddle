@@ -1,7 +1,7 @@
 import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import type { AiRuntimeProductionBoundaryState } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-boundary-state";
-import type { AiRuntimeQueueMutationV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-queue-mutation-v1";
+import type { AiRuntimeQueueMutation } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-queue-mutation";
 import { productionOperationFixture } from "./skirmish-ai-runtime-production-operation-fixture";
 import { productionRefundOperationFixture } from "./skirmish-ai-runtime-production-refund-operation-fixture";
 import { calculateRuntimeQueueLiabilities } from "./skirmish-ai-runtime-queue-liabilities";
@@ -28,7 +28,7 @@ export function productionQueueMutationFixture(
   const capture = {
     ...source,
     facts: source.facts.map(
-      (fact): AiRuntimeProductionFactV1 => ({
+      (fact): AiRuntimeProductionFact => ({
         ...fact,
         ...(fact.kind === "queue_changed" ? { queue: moveWaiting(fact.queue) } : {}),
         ...(fact.boundaryState?.queues
@@ -91,7 +91,7 @@ export function productionQueueMutationFixture(
     },
     gaps: []
   });
-  const mutation: AiRuntimeQueueMutationV1 = {
+  const mutation: AiRuntimeQueueMutation = {
     mutationId: 1,
     phase: "before",
     operation: "enqueue",
@@ -105,11 +105,11 @@ export function productionQueueMutationFixture(
     originatingCommandContext: { execution, playerNumber: 1, actorIds: ["producer"] }
   };
   const pair = (
-    value: AiRuntimeQueueMutationV1,
+    value: AiRuntimeQueueMutation,
     tick: number,
     left: AiRuntimeProductionBoundaryState,
     right: AiRuntimeProductionBoundaryState
-  ): AiRuntimeProductionFactV1[] => [
+  ): AiRuntimeProductionFact[] => [
     { sequence: 0, tick, playerNumber: 1, kind: "queue_mutation", mutation: value, boundaryState: left },
     {
       sequence: 0,
@@ -120,7 +120,7 @@ export function productionQueueMutationFixture(
       boundaryState: right
     }
   ];
-  let facts: AiRuntimeProductionFactV1[] = capture.facts.flatMap((fact) =>
+  let facts: AiRuntimeProductionFact[] = capture.facts.flatMap((fact) =>
     fact === physical
       ? [
           ...pair(mutation, 6, state(beforeQueues, false), state(afterQueues, true)),

@@ -7,7 +7,7 @@ export function selectSkirmishScenarios(root, { mode, scenarioIds, seed }) {
     throw new Error("invalid_skirmish_scenarios");
   if (!new Set(["pure", "runtime", "both"]).has(mode)) throw new Error(`invalid_skirmish_mode:${mode ?? "missing"}`);
   if (seed !== null && (!Number.isInteger(seed) || seed < 0)) throw new Error("invalid_skirmish_seed");
-  const manifestPath = "tools/ai/fixtures/skirmish-v1.json";
+  const manifestPath = "tools/ai/fixtures/skirmish.json";
   const manifest = readManifest(root, manifestPath);
   const rows = scenarioIds.map((id) => findScenario(manifest, id));
   validateMode(manifest, rows, mode);

@@ -1,13 +1,13 @@
 import type { AiRuntimeUnspentClaimEntry } from "./ai-runtime-unspent-claim-entry";
 import { observeAiRuntimeQueueClaimPayment } from "./observe-ai-runtime-queue-claim-payment";
 import { ResourceType, type GameCommandOutcome, type ConstructCommand } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeConstructionV1 } from "./ai-runtime-construction-v1";
+import type { AiRuntimeConstruction } from "./ai-runtime-construction";
 import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
 import type { AiDecisionDispatchEvent } from "../ai-decision-dispatch-event";
 import type { AiIntentCommandDispatchEvent } from "../ai-intent-command-dispatch-event";
-import type { AiRuntimeUnspentClaimsV1 } from "./ai-runtime-unspent-claims-v1";
-import type { AiRuntimeQueueResourceV1 } from "./ai-runtime-queue-resource-v1";
-import type { AiRuntimeProductionQueueV1 } from "./ai-runtime-production-queue-v1";
+import type { AiRuntimeUnspentClaimsSnapshot } from "./ai-runtime-unspent-claims-snapshot";
+import type { AiRuntimeQueueResource } from "./ai-runtime-queue-resource";
+import type { AiRuntimeProductionQueue } from "./ai-runtime-production-queue";
 
 const MAX_ENTRIES = 512;
 
@@ -268,7 +268,7 @@ export class AiRuntimeUnspentClaims {
   }
 
   /** A command-backed pay-over-time item owns future charges, so its accepted cash claim is no longer added. */
-  observeQueue(playerNumber: number, queue: AiRuntimeProductionQueueV1): void {
+  observeQueue(playerNumber: number, queue: AiRuntimeProductionQueue): void {
     const owner = this.owner(playerNumber);
     for (const item of queue.lanes.flatMap((lane) => lane.items)) {
       if (item.payment !== "per_successful_tick") continue;
@@ -297,14 +297,14 @@ export class AiRuntimeUnspentClaims {
   }
 
   /** Exact queue operation owns retirement; no later settled snapshot may release this cash. */
-  observeResource(playerNumber: number, resource: AiRuntimeQueueResourceV1): void {
+  observeResource(playerNumber: number, resource: AiRuntimeQueueResource): void {
     observeAiRuntimeQueueClaimPayment(playerNumber, resource, this.owner(playerNumber), (intent, price) =>
       this.sameClaims(intent, price)
     );
   }
 
   /** Detached bounded ownership. Sticky authority gaps and an unfinished cash callback yield null, never zero. */
-  snapshot(playerNumber: number): AiRuntimeUnspentClaimsV1 {
+  snapshot(playerNumber: number): AiRuntimeUnspentClaimsSnapshot {
     const owner = this.owner(playerNumber);
     const gaps = new Set(owner.gaps);
     if (!owner.initialized) gaps.add("unspent_selected_decision_missing");
@@ -338,7 +338,7 @@ export class AiRuntimeUnspentClaims {
   }
 
   /** Retires construction cash only after the native owner's exact successful immediate charge. */
-  observeConstruction(playerNumber: number, record: AiRuntimeConstructionV1): void {
+  observeConstruction(playerNumber: number, record: AiRuntimeConstruction): void {
     if (record.kind !== "resource" || record.operation !== "start_charge" || record.status !== "returned") return;
     const command = record.site.actorId ? this.sites.get(record.site.actorId) : undefined;
     if (command?.execution?.source !== "ai") return;
@@ -389,7 +389,7 @@ export class AiRuntimeUnspentClaims {
   }
 
   private sameClaims(
-    intent: AiRuntimeUnspentClaimsV1["entries"][number]["intent"],
+    intent: AiRuntimeUnspentClaimsSnapshot["entries"][number]["intent"],
     price: Partial<Record<ResourceType, number>>
   ) {
     if (Object.keys(price).some((key) => !Object.values(ResourceType).some((type) => type === key))) return false;

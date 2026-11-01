@@ -14,7 +14,7 @@ Steps 4–5 must never change the live match. This design transfers the observat
 
 ## Live read-only investigation
 
-Extend AiDebugSnapshotV1 with bounded causal summary indexes and diagnostic completeness flags. Support filters for player, base, goal, demand, actor, command, reason/severity and tick range. Selecting a plan links its economic obligation, prerequisite chain, squad/route, command outcome and useful progress.
+Extend AiDebugSnapshot with bounded causal summary indexes and diagnostic completeness flags. Support filters for player, base, goal, demand, actor, command, reason/severity and tick range. Selecting a plan links its economic obligation, prerequisite chain, squad/route, command outcome and useful progress.
 
 “Why not attack/build/counter?” must identify the actual rejection boundary: no permitted evidence; no useful candidate; generator not serviced; prerequisite/route pending; demand already fulfilled; resource/actor conflict; profile/mission limit; utility loss; application rejected; or outcome unresolved. Use recorded facts and proposer counters, not a second live planner call. If the bounded trace omitted an alternative, display **not recorded**, not an invented explanation.
 
@@ -50,7 +50,7 @@ Breakpoint/filter configuration uses validated enums/typed comparisons over allo
 
 Capture from a safe completed simulation boundary using the existing save/command/hash seam; no half-serialized Promise or live Phaser reference. If the necessary checkpoint/history was evicted, mark the bundle incomplete with missing ranges and refuse an “exact replay” claim. Retain history truncation counts.
 
-Implement a validated AiReproBundleV1 manifest with: bundle kind, schema, source revision plus dirty-source digest, map/content digests, config/profile/archetype versions, difficulty, faction/player/rules, tick interval/epoch, snapshot/input references and digests, expected checkpoints, scenario/case ID, diagnostics completeness and privacy classification. Separate display metadata from canonical replay inputs.
+Implement a validated AiReproBundle manifest with: bundle kind, schema, source revision plus dirty-source digest, map/content digests, config/profile/archetype versions, difficulty, faction/player/rules, tick interval/epoch, snapshot/input references and digests, expected checkpoints, scenario/case ID, diagnostics completeness and privacy classification. Separate display metadata from canonical replay inputs.
 
 Default bounded capture: one automatic incident capture per causal episode, at most five retained incident bundles within a configurable 64 MiB session quota. Do not silently upload or trigger repeated browser downloads; retain locally through supported storage or show explicit manual export. Full data too large for the cap needs user-initiated file export with size warning or an incomplete diagnostic summary, not silently dropped replay inputs. Keep unresolved authoritative command records outside this disposable diagnostic quota.
 

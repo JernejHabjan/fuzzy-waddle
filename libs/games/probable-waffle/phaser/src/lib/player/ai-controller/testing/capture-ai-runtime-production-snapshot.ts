@@ -13,7 +13,7 @@ import { AiPlayerHandler } from "../ai-player-handler";
 import { projectAiProductionObligations } from "../observation/ai-production-obligations";
 import { captureAiRuntimeProductionQueue } from "./ai-runtime-production-queues";
 import { captureAiRuntimeProductionWorld } from "./capture-ai-runtime-production-world";
-import type { AiRuntimeProductionCaptureV1 } from "./ai-runtime-production-capture-v1";
+import type { AiRuntimeProductionSnapshot } from "./ai-runtime-production-snapshot";
 import type { AiRuntimePendingCommands } from "./ai-runtime-pending-commands";
 
 /** Read-time snapshot is diagnostic only; planner inputs and native closed frontiers have distinct owners. */
@@ -24,8 +24,8 @@ export function captureAiRuntimeProductionSnapshot(
   context: {
     readonly startedTick: number;
     readonly afterSequence: number;
-    readonly resources: AiRuntimeProductionCaptureV1["snapshots"][number]["resources"];
-    readonly resourceCoverage: AiRuntimeProductionCaptureV1["resourceCoverage"];
+    readonly resources: AiRuntimeProductionSnapshot["snapshots"][number]["resources"];
+    readonly resourceCoverage: AiRuntimeProductionSnapshot["resourceCoverage"];
     readonly pendingCommands: AiRuntimePendingCommands;
     readonly identify: (actorId: string, item: UnifiedQueueItem) => string;
     readonly watchQueue: (actor: Phaser.GameObjects.GameObject) => void;
@@ -71,6 +71,6 @@ export function captureAiRuntimeProductionSnapshot(
     ),
     queues,
     completedResearch: [...(getSceneService(scene, TechTreeService)?.getPlayerResearch(playerNumber) ?? [])].sort()
-  } satisfies AiRuntimeProductionCaptureV1["snapshots"][number];
+  } satisfies AiRuntimeProductionSnapshot["snapshots"][number];
   return { snapshot, pending };
 }

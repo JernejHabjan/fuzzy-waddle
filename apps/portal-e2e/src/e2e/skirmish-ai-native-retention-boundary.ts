@@ -1,8 +1,8 @@
 import type { Page } from "@playwright/test";
 import type { GameCommand } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { ProbableWaffleScene } from "@fuzzy-waddle/probable-waffle-phaser/core/probable-waffle.scene";
-import type { AiRuntimeBrowserTestHostV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host-v1";
+import type { AiRuntimeBrowserTestHost } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host";
 import type { CommandBusService } from "@fuzzy-waddle/probable-waffle-phaser/world/services/multiplayer/command-bus.service";
 import { digestCanonicalAiValue } from
   "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/canonical-ai-serialization";
@@ -12,9 +12,9 @@ export async function readNativeRetentionBoundary(
   page: Page, original: Pick<GameCommand, "playerNumber" | "execution">, replayCommand?: GameCommand
 ) {
   const capture = await page.evaluate(({ original, replayCommand }) => {
-    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: AiRuntimeBrowserTestHostV1;
-      __fuzzyWaddleAiMultiplayerBrowserTestV1?: Pick<AiRuntimeBrowserTestHostV1, "game"> };
-    const host = realm.__fuzzyWaddleAiRuntimeBrowserTestV1 ?? realm.__fuzzyWaddleAiMultiplayerBrowserTestV1;
+    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost;
+      __fuzzyWaddleAiMultiplayerBrowserTest?: Pick<AiRuntimeBrowserTestHost, "game"> };
+    const host = realm.__fuzzyWaddleAiRuntimeBrowserTest ?? realm.__fuzzyWaddleAiMultiplayerBrowserTest;
     const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
       ProbableWaffleScene | undefined;
     const services: readonly object[] = scene?.getSceneGameData().services ?? [];

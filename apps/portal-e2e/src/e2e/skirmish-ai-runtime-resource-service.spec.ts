@@ -1,6 +1,6 @@
 import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import { expect, test } from "@playwright/test";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { resourceServiceFixture } from "./skirmish-ai-runtime-resource-service-fixture";
 import { normalizeRuntimeNativeServices } from "./skirmish-ai-runtime-native-service-normalization";
 import { normalizeRuntimeResourceNeeds } from "./skirmish-ai-runtime-resource-need-normalization";
@@ -34,7 +34,7 @@ test("actual null-demand selection and a pulse/empty window retain income but ne
 for (const invalid of ["duplicate_intent", "wrong_intent_kind"] as const) {
   test(`${invalid} cannot supply the selected gathering need or any parent service quantity`, () => {
     const f = resourceServiceFixture();
-    const facts = f.capture.facts.map((fact): AiRuntimeProductionFactV1 => {
+    const facts = f.capture.facts.map((fact): AiRuntimeProductionFact => {
       if (fact.kind !== "decision_selected" || !fact.decision.gatheringSelections?.length) return fact;
       const intent = requireAiTestEntry(fact.decision.acceptedIntents, 0);
       const acceptedIntents =
@@ -70,7 +70,7 @@ for (const state of ["fallback", "expired", "zero_confidence", "nonpositive", "m
                 ? { ...selection, forecast: { ...selection.forecast, amount: 100 }, plannerDeficit: 0 }
                 : selection;
     const facts = capture.facts.map(
-      (fact): AiRuntimeProductionFactV1 =>
+      (fact): AiRuntimeProductionFact =>
         fact.kind === "decision_selected" && fact.decision.gatheringSelections?.length
           ? {
               ...fact,
@@ -294,7 +294,7 @@ test("other income can fulfill the need before a cohort credit; spending cannot 
     native = normalizeRuntimeNativeServices(f.capture),
     credit = requireAiTestEntry(native.resources.credits, 0);
   const before = { food: 100, wood: 100, stone: 100, minerals: 100 };
-  const supplied: AiRuntimeProductionFactV1[] = [
+  const supplied: AiRuntimeProductionFact[] = [
     {
       sequence: credit.fact.sequence,
       tick: 10,

@@ -1,7 +1,7 @@
 import type { Page } from "@playwright/test";
 import type { ProbableWaffleScene } from "@fuzzy-waddle/probable-waffle-phaser/core/probable-waffle.scene";
-import type { AiRuntimeBrowserTestHostV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host-v1";
+import type { AiRuntimeBrowserTestHost } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host";
 import type { SimulationTickService } from "@fuzzy-waddle/probable-waffle-phaser/world/services/simulation-tick.service";
 import type { AiRuntimeDecisionRepro } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-decision-repro";
@@ -9,10 +9,10 @@ import type { AiRuntimeDecisionRepro } from
 /** Real transport disconnect/reconnect and native scene event boundaries; never edit a snapshot, epoch or AI state. */
 export async function installNativeTransferHooks(page: Page) {
   await page.evaluate(() => {
-    const realm = window as unknown as { __fuzzyWaddleAiMultiplayerBrowserTestV1?: Pick<AiRuntimeBrowserTestHostV1, "game">;
+    const realm = window as unknown as { __fuzzyWaddleAiMultiplayerBrowserTest?: Pick<AiRuntimeBrowserTestHost, "game">;
       __nativeTransfer?: { disconnected: boolean; snapshotTick: number | null; promoted: boolean;
         nextDecision: { tick: number; sequence: number } | null; reconnect(): void; resume(): void } };
-    const scene = realm.__fuzzyWaddleAiMultiplayerBrowserTestV1?.game.scene.getScenes(true)
+    const scene = realm.__fuzzyWaddleAiMultiplayerBrowserTest?.game.scene.getScenes(true)
       .find((entry) => entry.scene.key === "MapAiMultiplayer") as ProbableWaffleScene | undefined;
     const clock = scene?.getSceneGameData().services.find((entry): entry is SimulationTickService =>
       "currentTick" in entry && "pauseTick" in entry && "resumeTick" in entry);

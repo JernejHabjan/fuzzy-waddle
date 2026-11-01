@@ -3,20 +3,20 @@ import { AI_RUNTIME_MAX_FACTS } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/append-ai-runtime-production-fact";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 // prettier-ignore
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
-import type { RuntimeProductionEvidenceV1 } from "./skirmish-ai-runtime-production-evidence";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { RuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality";
+import type { RuntimeProductionEvidence } from "./skirmish-ai-runtime-production-evidence";
 import { sameRuntimeQueueVector } from "./skirmish-ai-runtime-scoped-queue-payments";
 
 /** Joins checked physical insertion to its own charge, never a nearby money callback or predicted refund. */
 export function projectRuntimeProductionEnqueues(
-  capture: AiRuntimeProductionCaptureV1,
-  mutations: RuntimeProductionCausalityV1["queueMutations"],
-  operations: RuntimeProductionCausalityV1["operations"],
-  commands: RuntimeProductionCausalityV1["commands"]
+  capture: AiRuntimeProductionSnapshot,
+  mutations: RuntimeProductionCausality["queueMutations"],
+  operations: RuntimeProductionCausality["operations"],
+  commands: RuntimeProductionCausality["commands"]
 ) {
-  const events: RuntimeProductionEvidenceV1["events"][number][] = [];
+  const events: RuntimeProductionEvidence["events"][number][] = [];
   const failures: string[] = [],
     gaps: string[] = [];
   if (capture.droppedFactCount || capture.facts.length > AI_RUNTIME_MAX_FACTS || mutations.length > 8192 || operations.length > 8192) {

@@ -1,11 +1,11 @@
 // prettier-ignore
-import type { AiRuntimePresetApplicationV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application-v1";
+import type { AiRuntimePresetApplication } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application";
 import type { Page } from "@playwright/test";
-import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
-import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
-import type { AiRuntimeCalibrationV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-calibration-v1";
+import type { RuntimeFixture } from "./skirmish-ai-runtime-fixture";
+import type { RuntimeVariant } from "./skirmish-ai-runtime-variant";
+import type { AiRuntimeCalibration } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-calibration-config";
 import { installRuntimeAccessor } from "./skirmish-ai-runtime-browser-accessor";
 import { assertRuntimePresetRoster } from "./skirmish-ai-runtime-preset-roster";
 import { assertRuntimeConstructionSetup } from "./skirmish-ai-runtime-construction-setup";
@@ -15,15 +15,15 @@ import { installRuntimeErrorListeners } from "./skirmish-ai-runtime-error-listen
 /** Installs bounded browser probes, launches the ordinary lobby, and verifies authored pre-tick state. */
 export async function prepareRuntimeVariant(
   page: Page,
-  fixture: RuntimeFixtureV1,
-  variant: RuntimeVariantV1,
+  fixture: RuntimeFixture,
+  variant: RuntimeVariant,
   effectiveSeed: number,
   sourceRevision: string,
   fixtureDigest: string,
   profiling: boolean,
   aiErrors: string[],
   debugProbe?: (page: Page, checkpointIndex: number) => Promise<void>,
-  sameRealm = false, calibration?: AiRuntimeCalibrationV1
+  sameRealm = false, calibration?: AiRuntimeCalibration
 ) {
   if (profiling) {
     await page.addInitScript(() => {
@@ -65,7 +65,7 @@ export async function prepareRuntimeVariant(
   page.on("pageerror", collectPageError);
   try {
     await page.waitForFunction(
-      (playerNumber) => !!window.__fuzzyWaddleAiRuntimePartsV1?.(playerNumber),
+      (playerNumber) => !!window.__fuzzyWaddleAiRuntimeParts?.(playerNumber),
       fixture.recipe.aiPlayerNumber,
       { timeout: 120_000 }
     );
@@ -93,8 +93,8 @@ export async function prepareRuntimeVariant(
     try {
       await page.waitForFunction((count) => {
         const host = (window as unknown as {
-          __fuzzyWaddleAiRuntimeBrowserTestV1?: { presetApplication?: AiRuntimePresetApplicationV1 };
-        }).__fuzzyWaddleAiRuntimeBrowserTestV1;
+          __fuzzyWaddleAiRuntimeBrowserTest?: { presetApplication?: AiRuntimePresetApplication };
+        }).__fuzzyWaddleAiRuntimeBrowserTest;
         return host?.presetApplication?.constructionApplications?.length === count;
       },
         variant.presetWorld.constructionOrders.length, { timeout: 30_000 }
@@ -102,7 +102,7 @@ export async function prepareRuntimeVariant(
     } catch (error) {
       const setupState = await page.evaluate(() => {
         const host = (window as unknown as {
-          __fuzzyWaddleAiRuntimeBrowserTestV1?: {
+          __fuzzyWaddleAiRuntimeBrowserTest?: {
             game?: { scene?: { getScenes(active: boolean): {
               scene: { key: string; sys?: { settings?: { status?: string } } };
               getSceneGameData?: () => {
@@ -112,7 +112,7 @@ export async function prepareRuntimeVariant(
             }[] } };
             presetApplication?: { fixtureId: string; constructionApplications?: unknown[] };
           };
-        }).__fuzzyWaddleAiRuntimeBrowserTestV1;
+        }).__fuzzyWaddleAiRuntimeBrowserTest;
         return {
           presetApplication: host?.presetApplication ?? null,
           scenes: host?.game?.scene?.getScenes(true).map((candidate) => {
@@ -144,9 +144,9 @@ export async function prepareRuntimeVariant(
       (count) => {
         const host = (
           window as unknown as {
-            __fuzzyWaddleAiRuntimeBrowserTestV1?: { presetApplication?: { queuedItemCount: number } };
+            __fuzzyWaddleAiRuntimeBrowserTest?: { presetApplication?: { queuedItemCount: number } };
           }
-        ).__fuzzyWaddleAiRuntimeBrowserTestV1;
+        ).__fuzzyWaddleAiRuntimeBrowserTest;
         return host?.presetApplication?.queuedItemCount === count;
       },
       expected,
@@ -156,7 +156,7 @@ export async function prepareRuntimeVariant(
   const initialBoundary = await page.evaluate((playerNumber) => {
     const host = (
       window as unknown as {
-        __fuzzyWaddleAiRuntimeBrowserTestV1?: {
+        __fuzzyWaddleAiRuntimeBrowserTest?: {
           game: {
             scene: {
               getScenes(active: boolean): {
@@ -169,10 +169,10 @@ export async function prepareRuntimeVariant(
             number,
             { ownedActorCount: number; workerCount: number; ownedActorNames: string[] }
           >;
-          presetApplication?: AiRuntimePresetApplicationV1;
+          presetApplication?: AiRuntimePresetApplication;
         };
       }
-    ).__fuzzyWaddleAiRuntimeBrowserTestV1;
+    ).__fuzzyWaddleAiRuntimeBrowserTest;
     const state = host?.initialStateByPlayer[playerNumber];
     if (!state) throw new Error("runtime_initial_state_unavailable");
     const scene = host?.game.scene.getScenes(true).find((candidate) => candidate.scene.key.startsWith("Map"));
@@ -266,7 +266,7 @@ function compareQueueItem(
 }
 
 export async function configureLobby(
-  page: Page, fixture: RuntimeFixtureV1, variant: RuntimeVariantV1, sameRealm: boolean
+  page: Page, fixture: RuntimeFixture, variant: RuntimeVariant, sameRealm: boolean
 ): Promise<void> {
   if (sameRealm) await page.getByRole("button", { name: /Skirmish.*Custom battles/ }).click();
   else await page.goto("/aota/skirmish");

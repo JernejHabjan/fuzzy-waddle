@@ -1,6 +1,6 @@
 import type { Page } from "@playwright/test";
-import type { AiRuntimeBrowserTestHostV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host-v1";
+import type { AiRuntimeBrowserTestHost } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host";
 import type { ProbableWaffleScene } from "@fuzzy-waddle/probable-waffle-phaser/core/probable-waffle.scene";
 import type { ActorIndexSystem } from "@fuzzy-waddle/probable-waffle-phaser/world/services/ActorIndexSystem";
 import type { SimulationTickService } from "@fuzzy-waddle/probable-waffle-phaser/world/services/simulation-tick.service";
@@ -14,8 +14,8 @@ export async function retainNativeSceneWork(
   page: Page, playerNumber: number, requirePaidQueue: boolean, pathActorId?: string
 ) {
   return page.evaluate(async ({ playerNumber, requirePaidQueue, pathActorId }) => {
-    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: AiRuntimeBrowserTestHostV1;
-      __fuzzyWaddleAiMultiplayerBrowserTestV1?: Pick<AiRuntimeBrowserTestHostV1, "game">;
+    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost;
+      __fuzzyWaddleAiMultiplayerBrowserTest?: Pick<AiRuntimeBrowserTestHost, "game">;
       __nativeRetainedWork?: () => Promise<{
         oldSceneInactive: boolean; oldSceneStatus: string; oldSceneSleeping: boolean; oldSceneRegistered: boolean;
         sameSceneEmitter: boolean; sameSystemsEmitter: boolean;
@@ -25,7 +25,7 @@ export async function retainNativeSceneWork(
         originalPaidCommandId: string | null; completionResults: (string | null)[];
         pathWasPending: boolean; pathCancelled: boolean; sameRealm: boolean
       }> };
-    const host = realm.__fuzzyWaddleAiRuntimeBrowserTestV1 ?? realm.__fuzzyWaddleAiMultiplayerBrowserTestV1;
+    const host = realm.__fuzzyWaddleAiRuntimeBrowserTest ?? realm.__fuzzyWaddleAiMultiplayerBrowserTest;
     const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
       ProbableWaffleScene | undefined;
     if (!host || !scene) throw new Error("retained_native_scene_missing");
@@ -84,7 +84,7 @@ export async function retainNativeSceneWork(
     if (pathActorId && !pathWasPending) {
       removeSceneProbes();
       shutdownObserver.unsubscribe();
-      const observed = realm.__fuzzyWaddleAiRuntimeBrowserTestV1?.presetApplication?.eventResults
+      const observed = realm.__fuzzyWaddleAiRuntimeBrowserTest?.presetApplication?.eventResults
         .map((event) => `${event.id}@${event.tick}`).join(",") ?? "missing";
       throw new Error(`retained_native_query_not_pending:tick=${clock.currentTick}:events=${observed}:settled=${pathSettled}`);
     }

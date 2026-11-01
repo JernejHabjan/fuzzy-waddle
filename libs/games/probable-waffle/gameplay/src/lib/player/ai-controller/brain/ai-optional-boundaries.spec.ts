@@ -1,13 +1,13 @@
 import { requireAiTestEntry } from "../testing/ai-test-fixtures";
 import { PureAiBrain } from "./ai-brain";
 import { createAiProductionPolicyFixture } from "../testing/ai-production-policy-fixture";
-import type { AiProposalManagerV1 } from "../planning/ai-manager-proposal";
+import type { AiProposalManager } from "../planning/ai-manager-proposal";
 
 function fixture() {
   const f = createAiProductionPolicyFixture();
   const propose = jest.fn(() => ({ managerId: "optional", lane: "scouting" as const,
     evaluated: true, intents: [], reasons: [] }));
-  const manager: AiProposalManagerV1 = { managerId: "optional", propose };
+  const manager: AiProposalManager = { managerId: "optional", propose };
   return { ...f, manager, propose };
 }
 
@@ -32,7 +32,7 @@ it("preserves retry age across serialized continuation, skips cooldown, then rec
 
 it("a diagnostic exception cannot discard accepted work or poison mandatory authority", () => {
   const f = fixture();
-  const other: AiProposalManagerV1 = { managerId: "valid", propose: () => ({ managerId: "valid",
+  const other: AiProposalManager = { managerId: "valid", propose: () => ({ managerId: "valid",
     lane: "essential_economy", evaluated: true, reasons: [], intents: [{ kind: "stop", actorIds: ["worker-0"],
       intentId: "intent:valid", effectId: "effect:valid", planId: "plan:opening", demandId: null,
       lane: "essential_economy", proposedTick: f.observation.tick, urgencyClass: 0, utility: 900,

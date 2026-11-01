@@ -1,5 +1,5 @@
-import type { RuntimeAssertionV1 } from "./skirmish-ai-runtime-assertion";
-import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
+import type { RuntimeAssertion } from "./skirmish-ai-runtime-assertion";
+import type { RuntimeVariant } from "./skirmish-ai-runtime-variant";
 
 const monotonicAssertionKeys = new Set([
   "maximumTick", "minimumDecisions", "minimumAppliedCommands", "requiredAiFactions",
@@ -9,14 +9,14 @@ const monotonicAssertionKeys = new Set([
 ]);
 
 /** Fail closed: an absence, deadline, lifecycle, terminal or temporal oracle must run its full observation horizon. */
-export function isEvidenceStopSafe(assertion: RuntimeAssertionV1): boolean {
+export function isEvidenceStopSafe(assertion: RuntimeAssertion): boolean {
   return Object.keys(assertion).every((key) => monotonicAssertionKeys.has(key));
 }
 
 export function nextEvidenceStopState(input: {
-  readonly config: RuntimeVariantV1["evidenceStop"];
-  readonly role: RuntimeVariantV1["role"];
-  readonly assertions: readonly RuntimeAssertionV1[];
+  readonly config: RuntimeVariant["evidenceStop"];
+  readonly role: RuntimeVariant["role"];
+  readonly assertions: readonly RuntimeAssertion[];
   readonly tick: number;
   readonly pendingEventTicks: readonly number[];
   readonly allPredicatesSatisfied: boolean;

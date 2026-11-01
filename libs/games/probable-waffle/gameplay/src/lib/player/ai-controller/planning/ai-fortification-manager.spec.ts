@@ -1,8 +1,8 @@
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
 import { ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
 import { aiDeadline } from "../contracts/ai-core-types";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
+import type { AiIntent } from "../contracts/ai-intent";
 import { arbitrateAiIntents } from "../brain/ai-intent-arbiter";
 import { AiFortificationManager } from "./ai-fortification-manager";
 import { profile, catalog, actor, observation, threatenedState } from "./ai-fortification-test-fixture";
@@ -40,7 +40,7 @@ describe("AiFortificationManager", () => {
     const construct = proposal.intents.find((intent) => intent.kind === "construct");
     if (construct?.kind !== "construct" || construct.builderIds[0] === undefined)
       throw new Error("missing_threatened_construction_intent");
-    const gather: AiIntentV1 = {
+    const gather: AiIntent = {
       intentId: "intent:gather:competing-builder",
       effectId: "effect:gather:competing-builder",
       kind: "assign_gatherers",
@@ -342,7 +342,7 @@ describe("fortification native work ownership", () => {
     const firstNode = first.statePatch!.fortifications![0]!.graph!.nodes.find(
       (node) => node.effectId === firstConstruct?.effectId
     );
-    const reservedState: AiBrainStateV1 = {
+    const reservedState: AiBrainState = {
       ...plannedState,
       reservations:
         firstNode && firstConstruct
@@ -414,7 +414,7 @@ describe("fortification native work ownership", () => {
     const stair = plan?.graph?.nodes.find((node) => node.kind === "stair");
     const dependency = plan?.graph?.nodes.find((node) => node.nodeId === stair?.dependsOnNodeId);
     if (!plan?.graph || !stair || !dependency?.objectName) throw new Error("invalid_fortification_fixture");
-    const state: AiBrainStateV1 = {
+    const state: AiBrainState = {
       ...threatenedState(),
       fortifications: [
         {

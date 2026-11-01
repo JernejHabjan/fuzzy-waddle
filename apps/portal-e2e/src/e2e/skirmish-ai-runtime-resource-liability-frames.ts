@@ -1,12 +1,12 @@
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { AiRuntimeUnspentClaimsV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-unspent-claims-v1";
-import type { RuntimeResourceNeedV1 } from "./skirmish-ai-runtime-resource-need";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { AiRuntimeUnspentClaimsSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-unspent-claims-snapshot";
+import type { RuntimeResourceNeed } from "./skirmish-ai-runtime-resource-need";
 
 /** Diagnostic cash frames for one exact selected need; they never replace its consumed ledger or activate useful credit. */
-export interface RuntimeResourceLiabilityFramesV1 {
+export interface RuntimeResourceLiabilityFrames {
   /** Unspent cash at the actual planner read; null means absent, invalid or incomplete ownership. */
   readonly consumedReserved: number | null;
   /** Cash before this selection added/retired claims, independent of the saved brain view. */
@@ -20,7 +20,7 @@ export interface RuntimeResourceLiabilityFramesV1 {
 }
 
 /** Inspect every supplied snapshot, including unselected resources and tails with no gathering need. */
-export function validateRuntimeResourceLiabilityFrames(capture: AiRuntimeProductionCaptureV1): string[] {
+export function validateRuntimeResourceLiabilityFrames(capture: AiRuntimeProductionSnapshot): string[] {
   for (const fact of [...capture.facts, ...(capture.recipientResourceFacts ?? [])]) {
     const snapshots = [fact.boundaryState?.unspentClaims];
     if (fact.kind === "resource_input_read") snapshots.push(fact.unspentClaimsAtRead);
@@ -34,15 +34,15 @@ export function validateRuntimeResourceLiabilityFrames(capture: AiRuntimeProduct
 }
 
 /** Project three detached frames only after the caller checked the exact read and intervening native boundaries. */
-export function projectRuntimeResourceLiabilityFrames(capture: AiRuntimeProductionCaptureV1, need: RuntimeResourceNeedV1,
-  read: AiRuntimeProductionCaptureV1["facts"][number] | undefined,
-  selected: AiRuntimeProductionCaptureV1["facts"][number] | undefined, scopeGaps: ReadonlySet<string>)
-  : RuntimeResourceLiabilityFramesV1 {
+export function projectRuntimeResourceLiabilityFrames(capture: AiRuntimeProductionSnapshot, need: RuntimeResourceNeed,
+  read: AiRuntimeProductionSnapshot["facts"][number] | undefined,
+  selected: AiRuntimeProductionSnapshot["facts"][number] | undefined, scopeGaps: ReadonlySet<string>)
+  : RuntimeResourceLiabilityFrames {
   const gaps = new Set<string>(), { resourceType: type, ledger } = need.selection;
   const consumed = read?.kind === "resource_input_read" ? read.unspentClaimsAtRead : undefined;
   const before = selected?.kind === "decision_selected" ? selected.unspentClaimsBeforeSelection : undefined;
   const state = selected?.boundaryState, accepting = state?.unspentClaims;
-  const amount = (snapshot: AiRuntimeUnspentClaimsV1 | undefined): number | null =>
+  const amount = (snapshot: AiRuntimeUnspentClaimsSnapshot | undefined): number | null =>
     snapshot && validSnapshot(snapshot) ? snapshot.resources?.[type] ?? null : null;
   const consumedReserved = amount(consumed), beforeSelectionReserved = amount(before), acceptingReserved = amount(accepting);
   if (!need.selection.resourceInputRead || read?.kind !== "resource_input_read" ||
@@ -81,14 +81,14 @@ export function projectRuntimeResourceLiabilityFrames(capture: AiRuntimeProducti
 }
 
 /** Null resources are a supported gap; a supplied vector must contain every finite, nonnegative native resource. */
-function validSnapshot(snapshot: AiRuntimeUnspentClaimsV1): boolean {
+function validSnapshot(snapshot: AiRuntimeUnspentClaimsSnapshot): boolean {
   if (!snapshot || !Array.isArray(snapshot.entries) || snapshot.entries.length > 512 ||
     !Array.isArray(snapshot.gaps) || snapshot.gaps.some((gap) => typeof gap !== "string" || !gap)) return false;
   return snapshot.resources === null || validVector(snapshot.resources);
 }
 
 /** Complete native vector, with no missing or unknown resource key treated as a zero amount. */
-function validVector(resources: AiRuntimeUnspentClaimsV1["resources"]): boolean {
+function validVector(resources: AiRuntimeUnspentClaimsSnapshot["resources"]): boolean {
   const types = Object.values(ResourceType);
   return !!resources && !Array.isArray(resources) &&
     Object.keys(resources).every((key) => types.some((type) => type === key)) &&

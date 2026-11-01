@@ -1,7 +1,7 @@
 // prettier-ignore
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { RuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality";
 import { matchRuntimeRejectedAdmission } from "./skirmish-ai-runtime-rejected-admission";
 import {
   isRuntimeQueueCommand,
@@ -10,7 +10,7 @@ import {
 import { matchRuntimeProductionDecision } from "./skirmish-ai-runtime-production-decision-lineage";
 
 /** Keeps each request/retry paired with its exact selected intent, receipt and stamped application outcomes. */
-export function normalizeRuntimeProductionCommands(capture: AiRuntimeProductionCaptureV1) {
+export function normalizeRuntimeProductionCommands(capture: AiRuntimeProductionSnapshot) {
   const failures: string[] = [];
   const gaps = new Set<string>();
   const decisions = capture.facts.filter((fact) => fact.kind === "decision_selected");
@@ -18,7 +18,7 @@ export function normalizeRuntimeProductionCommands(capture: AiRuntimeProductionC
   const dispatches = capture.facts.filter((fact) => fact.kind === "intent_dispatch");
   const deliveries = capture.facts.filter((fact) => fact.kind === "command_delivered");
   const outcomes = capture.facts.filter((fact) => fact.kind === "outcome");
-  const commands: RuntimeProductionCausalityV1["commands"][number][] = [];
+  const commands: RuntimeProductionCausality["commands"][number][] = [];
   const admissions: NonNullable<ReturnType<typeof matchRuntimeRejectedAdmission>["scope"]>[] = [];
   const matchedReceipts = new Set<number>();
   const commandIds = new Set<string>();

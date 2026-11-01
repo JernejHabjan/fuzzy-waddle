@@ -1,4 +1,4 @@
-import type { AiDomainV1, AiObservedActorV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiDomain, AiObservedActor } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { getActorComponent } from "../../../data/actor-component";
 import type { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
@@ -14,9 +14,9 @@ export function projectAiCombatProfile(
   actor: Phaser.GameObjects.GameObject,
   definition: ReturnType<typeof getPwActorDefinition>,
   owned: boolean,
-  visibility: AiObservedActorV1["visibility"],
+  visibility: AiObservedActor["visibility"],
   tick: number
-): AiObservedActorV1["combatProfile"] {
+): AiObservedActor["combatProfile"] {
   const health = getActorComponent(actor, HealthComponent);
   const attack = getActorComponent(actor, AttackComponent);
   const healing = getActorComponent(actor, HealingComponent);
@@ -74,7 +74,7 @@ export function projectAiCombatProfile(
                       targetEnemies: data.targetEnemies,
                       targetSelf: data.targetSelf,
                       targetDomains: (data.targetDomains ?? ["land", "water", "air"])
-                        .map((domain): AiDomainV1 => (domain === "land" ? "ground" : domain))
+                        .map((domain): AiDomain => (domain === "land" ? "ground" : domain))
                         .filter(uniqueDomain),
                       instantDamage: data.instantDamage ?? 0,
                       periodicDamage:

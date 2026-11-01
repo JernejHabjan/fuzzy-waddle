@@ -2,12 +2,12 @@ import type { Browser } from "@playwright/test";
 import type { GameCommand } from "@fuzzy-waddle/probable-waffle-protocol";
 import { digestCanonicalAiValue } from
   "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/canonical-ai-serialization";
-import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
-import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
-import type { RuntimeRequestV1 } from "./skirmish-ai-runtime-request";
+import type { RuntimeFixture } from "./skirmish-ai-runtime-fixture";
+import type { RuntimeVariant } from "./skirmish-ai-runtime-variant";
+import type { RuntimeRequest } from "./skirmish-ai-runtime-request";
 import type { NativeRetentionProof } from "./skirmish-ai-native-retention-proof";
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 import { runVariant } from "./skirmish-ai-runtime-variant-runner";
 import { captureRuntimeProductionAuthority } from "./skirmish-ai-runtime-production-capture";
 import { captureRuntimeHumanAuthority } from "./skirmish-ai-runtime-human-capture";
@@ -22,11 +22,11 @@ import { runNativeRetentionMultiplayer } from "./skirmish-ai-native-retention-mu
 
 /** Original native envelopes come from actual dispatch receipts; retention is crossed by ordinary human commands. */
 export async function runNativeRetentionVariant(
-  browser: Browser, fixture: RuntimeFixtureV1, variant: RuntimeVariantV1, request: RuntimeRequestV1, branch: string
+  browser: Browser, fixture: RuntimeFixture, variant: RuntimeVariant, request: RuntimeRequest, branch: string
 ) {
   const player = fixture.recipe.aiPlayerNumber;
   let original: GameCommand | undefined, nativeRetention: NativeRetentionProof | undefined;
-  let opponentCapture: AiRuntimeProductionCaptureV1 | undefined;
+  let opponentCapture: AiRuntimeProductionSnapshot | undefined;
   let save: Awaited<ReturnType<typeof saveNativeMatch>> | undefined;
   let saved: Awaited<ReturnType<typeof captureNativeContinuationBoundary>> | undefined;
   const result = await runVariant(browser, fixture, variant, request.seed, request.scenarioIds,
@@ -79,7 +79,7 @@ export async function runNativeRetentionVariant(
         const afterReplayContinuation = await captureNativeContinuationBoundary(page, player);
         await advanceRuntimeFrames(page, player, 201);
         await page.waitForFunction((number) =>
-          window.__fuzzyWaddleAiRuntimePartsV1?.(number)?.controller.isDecisionBoundarySettled(), player);
+          window.__fuzzyWaddleAiRuntimeParts?.(number)?.controller.isDecisionBoundarySettled(), player);
         const resumed = await captureNativeContinuationBoundary(page, player);
         const capture = await captureRuntimeProductionAuthority(page, player);
         nativeRetention = { ...nativeRetention, save: { saveId: loaded.saveId, revision: loaded.revision,

@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { productionProgressFixture } from "./skirmish-ai-runtime-production-progress-fixture";
 import { validateRuntimeProductionProgress } from "./skirmish-ai-runtime-production-progress";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
@@ -21,7 +21,7 @@ test.describe("production progress synthetic contract tests", () => {
   test("an absent end, substituted callback, wrong cash or residual final charge fails closed", () => {
     for (const mutation of ["end", "callback", "remaining", "cash", "liability", "baseline", "epoch", "restore"] as const) {
       const { capture, command } = productionProgressFixture("advanced", 50);
-      const facts = capture.facts.flatMap((fact): AiRuntimeProductionFactV1[] => {
+      const facts = capture.facts.flatMap((fact): AiRuntimeProductionFact[] => {
         if (mutation === "end" && fact.kind === "queue_progress" && fact.progress.phase === "advanced") return [];
         if (mutation === "callback" && fact.kind === "queue_resource" && fact.resource.emission.phase === "callback") return [];
         if (mutation === "epoch" && fact.kind === "queue_resource") return [{ ...fact, resource: { ...fact.resource,

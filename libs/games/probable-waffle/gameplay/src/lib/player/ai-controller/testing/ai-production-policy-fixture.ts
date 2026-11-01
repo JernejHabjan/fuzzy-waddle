@@ -1,8 +1,8 @@
 import { FactionType, ObjectNames, ProbableWaffleAiDifficulty, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservation, AiObservedActor } from "../contracts/ai-observation";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "./ai-test-fixtures";
 
 /** Pure permitted facts only; this builder is never an applied-world runtime adapter. */
@@ -10,8 +10,8 @@ export function createAiProductionPolicyFixture(faction: FactionType = FactionTy
   const workerName = faction === FactionType.Tivara ? ObjectNames.TivaraWorkerMale : ObjectNames.SkaduweeWorkerMale;
   const producerName = faction === FactionType.Tivara ? ObjectNames.AnkGuard : ObjectNames.InfantryInn;
   const unitName = faction === FactionType.Tivara ? ObjectNames.TivaraMacemanMale : ObjectNames.SkaduweeWarriorMale;
-  const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-  const initial = createAiBrainStateV1({
+  const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+  const initial = createAiBrainState({
     playerNumber: 1, faction, profile, tick: 100, archetypeId: "balanced",
     completedOpeningStepIds: ["step:opening:bootstrap-worker", "step:opening:supply-safety",
       "step:opening:first-producer", "step:opening:sustainable-food"]
@@ -24,7 +24,7 @@ export function createAiProductionPolicyFixture(faction: FactionType = FactionTy
       confidencePermille: 1000, expectedEffectTick: 900, reconsiderTick: 240, alternatives: []
     } }
   };
-  const catalog: AiCapabilityCatalogV1 = {
+  const catalog: AiCapabilityCatalog = {
     schemaVersion: 1, generation: 1, unsupported: [],
     entries: [
       {
@@ -50,19 +50,19 @@ export function createAiProductionPolicyFixture(faction: FactionType = FactionTy
       }
     ]
   };
-  const producer: AiObservedActorV1 = {
+  const producer: AiObservedActor = {
     ...createAiTestOwnedActor("producer"), objectName: producerName,
     logicalPosition: { status: "known", value: { x: 8, y: 5, z: 0 }, observedTick: 200 },
     queue: { status: "known", value: { capacity: 5, occupied: 0, itemIds: [], items: [] }, observedTick: 200 },
     housingCost: { status: "known", value: 0, observedTick: 200 },
     constructionProgress: { status: "known", value: 100, observedTick: 200 }
   };
-  const objective: AiObservedActorV1 = {
+  const objective: AiObservedActor = {
     ...createAiTestOwnedActor("objective"), objectName: ObjectNames.FrostForge,
     owner: 2, relation: "enemy", visibility: "visible", observedTick: 200,
     logicalPosition: { status: "known", value: { x: 30, y: 5, z: 0 }, observedTick: 200 }
   };
-  const observation: AiObservationV1 = {
+  const observation: AiObservation = {
     ...createAiTestObservation(), faction, tick: 200,
     actors: [
       ...Array.from({ length: 6 }, (_, index) => ({ ...createAiTestOwnedActor(`worker-${index}`), objectName: workerName })),
@@ -90,7 +90,7 @@ export function createAiProductionPolicyFixture(faction: FactionType = FactionTy
 }
 
 /** Current visible effective weapon facts for the pure resilience policy. */
-export function createAiProducerThreat(tick = 200): AiObservedActorV1 {
+export function createAiProducerThreat(tick = 200): AiObservedActor {
   return {
     ...createAiTestOwnedActor("threat"), owner: 2, relation: "enemy", visibility: "visible", observedTick: tick,
     logicalPosition: { status: "known", value: { x: 9, y: 5, z: 0 }, observedTick: tick },

@@ -6,13 +6,13 @@ import {
   ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
 
-import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import type { AiObservedActor } from "../contracts/ai-observation";
 
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
 
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
 
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 
@@ -21,8 +21,8 @@ import { catalog } from "./ai-macro-test-fixtures";
 
 describe("AI macro opening and gathering", () => {
   it("keeps bootstrap demand stable and proposes the legal missing worker", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -50,8 +50,8 @@ describe("AI macro opening and gathering", () => {
   });
 
   it("does not regress the opening workforce checkpoint after later bases appear", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const initial = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const initial = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -83,8 +83,8 @@ describe("AI macro opening and gathering", () => {
   });
 
   it("counts typed queued workers before requesting more production", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -128,19 +128,19 @@ describe("AI macro opening and gathering", () => {
   });
 
   it("assigns idle workers to the scarcest visible resource without reordering active workers", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
       tick: 0,
       archetypeId: "balanced"
     });
-    const idleWorker: AiObservedActorV1 = {
+    const idleWorker: AiObservedActor = {
       ...createAiTestOwnedActor("worker-idle"),
       activeOrder: { status: "known", value: null, observedTick: 20 }
     };
-    const activeWorker: AiObservedActorV1 = {
+    const activeWorker: AiObservedActor = {
       ...createAiTestOwnedActor("worker-active"),
       activeOrder: {
         status: "known",
@@ -148,7 +148,7 @@ describe("AI macro opening and gathering", () => {
         observedTick: 20
       }
     };
-    const source: AiObservedActorV1 = {
+    const source: AiObservedActor = {
       ...createAiTestOwnedActor("wood-source"),
       owner: null,
       relation: "neutral",
@@ -181,15 +181,15 @@ describe("AI macro opening and gathering", () => {
   });
 
   it("counts runtime worker variants toward one canonical workforce demand", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
       tick: 0,
       archetypeId: "balanced"
     });
-    const variantCatalog: AiCapabilityCatalogV1 = {
+    const variantCatalog: AiCapabilityCatalog = {
       ...catalog,
       entries: [
         ...catalog.entries,
@@ -223,8 +223,8 @@ describe("AI macro opening and gathering", () => {
   });
 
   it("does not request housing when the committed supply buffer already exists", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -249,8 +249,8 @@ describe("AI macro opening and gathering", () => {
   });
 
   it("uses only observed legal construction cells instead of guessed offsets", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,

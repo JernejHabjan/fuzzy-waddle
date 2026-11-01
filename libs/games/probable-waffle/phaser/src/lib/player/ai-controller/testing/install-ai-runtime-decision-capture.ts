@@ -5,22 +5,22 @@ import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { AI_DECISION_DISPATCH_EVENT, type AiDecisionDispatchEvent } from "../ai-decision-dispatch-event";
 import { AI_RUNTIME_PRESET_CONTROL_EVENT, type AiRuntimePresetControlEvent } from "./ai-runtime-preset-control-event";
 import type { AiRuntimeUnspentClaims } from "./ai-runtime-unspent-claims";
-import type { AiRuntimeProductionFactV1 } from "./ai-runtime-production-fact-v1";
-import type { AiRuntimeTacticalBoundaryV1 } from "./ai-runtime-tactical-boundary-v1";
+import type { AiRuntimeProductionFact } from "./ai-runtime-production-fact";
+import type { AiRuntimeTacticalBoundary } from "./ai-runtime-tactical-boundary";
 import { captureAiRuntimeTacticalBoundary } from "./capture-ai-runtime-tactical-boundary";
-import { AI_RUNTIME_AUTHORITY_DELIVERY_EVENT, type AiRuntimeAuthorityDeliveryV1 } from "./ai-runtime-authority-delivery-v1";
+import { AI_RUNTIME_AUTHORITY_DELIVERY_EVENT, type AiRuntimeAuthorityDelivery } from "./ai-runtime-authority-delivery";
 
 /** Existing root-capture listeners retain selection-before-dispatch order and detach as one owned subscription. */
 export function installAiRuntimeDecisionCapture(
   scene: ProbableWaffleScene, claims: AiRuntimeUnspentClaims,
-  boundary: (player: number) => Pick<AiRuntimeProductionFactV1, "sequence" | "tick" | "playerNumber">,
-  append: (fact: AiRuntimeProductionFactV1) => void, lose: (reason: string) => void, combat: boolean
+  boundary: (player: number) => Pick<AiRuntimeProductionFact, "sequence" | "tick" | "playerNumber">,
+  append: (fact: AiRuntimeProductionFact) => void, lose: (reason: string) => void, combat: boolean
 ): () => void {
   let active = true;
   const control = (value: AiRuntimePresetControlEvent) => {
     if (active) append({ ...boundary(value.playerNumber), kind: "preset_control", control: value });
   };
-  const delivery = (value: AiRuntimeAuthorityDeliveryV1) => {
+  const delivery = (value: AiRuntimeAuthorityDelivery) => {
     if (active) append({ ...boundary(value.playerNumber), kind: "authority_delivery", delivery: value });
   };
   const brainFault = (value: AiRuntimeBrainFaultEvent) => {
@@ -36,7 +36,7 @@ export function installAiRuntimeDecisionCapture(
     if (!active) return;
     const unspentClaimsBeforeSelection = claims.snapshot(value.identity.playerNumber);
     claims.observeDecision(value);
-    let tacticalBoundary: AiRuntimeTacticalBoundaryV1 | undefined;
+    let tacticalBoundary: AiRuntimeTacticalBoundary | undefined;
     if (combat) {
       try { tacticalBoundary = captureAiRuntimeTacticalBoundary(scene, value); }
       catch (error: unknown) {

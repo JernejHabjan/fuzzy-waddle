@@ -1,18 +1,18 @@
 import type { ActorId, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
-import type { AiAccessTransferPointV1, AiRouteResultV1 } from "../contracts/ai-access-graph-v1";
-import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import type { AiAccessTransferPoint, AiRouteResult } from "../contracts/ai-access-graph";
+import type { AiObservation, AiObservedActor } from "../contracts/ai-observation";
 import type { AiTransportPlanWithLifecycle } from "./ai-transport-plan-lifecycle";
 
 function distance(left: Vector3Simple, right: Vector3Simple): number {
   return Math.abs(left.x - right.x) + Math.abs(left.y - right.y) + Math.abs(left.z - right.z);
 }
 
-export function aiTransportActorPosition(actor: AiObservedActorV1 | undefined): Vector3Simple | undefined {
+export function aiTransportActorPosition(actor: AiObservedActor | undefined): Vector3Simple | undefined {
   return actor?.logicalPosition.status === "known" ? actor.logicalPosition.value : undefined;
 }
 
 export function isAiTransportActorNear(
-  actor: AiObservedActorV1 | undefined,
+  actor: AiObservedActor | undefined,
   position: Vector3Simple,
   radius = 2
 ): boolean {
@@ -21,10 +21,10 @@ export function isAiTransportActorNear(
 }
 
 /** Scores legal transfer pairs from permitted threat evidence, room and total travel. Higher is better. */
-export function scoreAiTransportTransferV1(
-  pickup: AiAccessTransferPointV1,
-  landing: AiAccessTransferPointV1,
-  observation: AiObservationV1,
+export function scoreAiTransportTransfer(
+  pickup: AiAccessTransferPoint,
+  landing: AiAccessTransferPoint,
+  observation: AiObservation,
   requiredClearance: number
 ): number {
   if (pickup.clearance < requiredClearance || landing.clearance < requiredClearance) return Number.MIN_SAFE_INTEGER;
@@ -41,16 +41,16 @@ export function scoreAiTransportTransferV1(
 }
 
 export function chooseAiTransportTransfers(
-  route: Extract<AiRouteResultV1, { readonly kind: "water_transport" | "air_transport" }>,
-  observation: AiObservationV1,
+  route: Extract<AiRouteResult, { readonly kind: "water_transport" | "air_transport" }>,
+  observation: AiObservation,
   requiredClearance: number,
   attempt: number
-): { pickup: AiAccessTransferPointV1; landing: AiAccessTransferPointV1 } | undefined {
+): { pickup: AiAccessTransferPoint; landing: AiAccessTransferPoint } | undefined {
   const pairs = route.pickupCandidates
     .flatMap((pickup) => route.landingCandidates.map((landing) => ({ pickup, landing })))
     .map((pair) => ({
       ...pair,
-      score: scoreAiTransportTransferV1(pair.pickup, pair.landing, observation, requiredClearance)
+      score: scoreAiTransportTransfer(pair.pickup, pair.landing, observation, requiredClearance)
     }))
     .filter((pair) => pair.score !== Number.MIN_SAFE_INTEGER)
     .sort(
@@ -63,10 +63,10 @@ export function chooseAiTransportTransfers(
 }
 
 export function mobileAiTransportActors(
-  observation: AiObservationV1,
+  observation: AiObservation,
   routeKind: "water_transport" | "air_transport",
   missionPassengerIds: ReadonlySet<ActorId>
-): AiObservedActorV1[] {
+): AiObservedActor[] {
   const requiredDomain = routeKind === "water_transport" ? "water" : "air";
   return observation.actors
     .filter((actor) => actor.relation === "self" && actor.containerState?.status === "known")
@@ -83,7 +83,7 @@ export function mobileAiTransportActors(
 }
 
 export function assignAiTransportSeats(
-  transports: readonly AiObservedActorV1[],
+  transports: readonly AiObservedActor[],
   manifest: AiTransportPlanWithLifecycle["lifecycle"]["manifest"],
   requiredCapacity: number
 ): { transportIds: ActorId[]; assignments: { transportId: ActorId; passengerIds: ActorId[] }[]; capacity: number } {

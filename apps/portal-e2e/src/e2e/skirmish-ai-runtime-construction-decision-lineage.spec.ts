@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { constructionDecisionFixture } from "./skirmish-ai-runtime-construction-decision-fixture";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
 
@@ -19,7 +19,7 @@ test("joins two addressed builders, actual selected intent, stamp and native pat
 
 test("actual late construction application retains the intended command tick separately", () => {
   const capture = constructionDecisionFixture();
-  const facts = capture.facts.map((fact): AiRuntimeProductionFactV1 => {
+  const facts = capture.facts.map((fact): AiRuntimeProductionFact => {
     if (fact.tick !== 20) return fact;
     if (fact.kind === "spatial_authority") return { ...fact, tick: 21, spatial: { ...fact.spatial, clockTick: 21 } };
     if (fact.kind === "outcome") return { ...fact, tick: 21, outcome: { ...fact.outcome, tick: 21 } };
@@ -33,7 +33,7 @@ test("actual late construction application retains the intended command tick sep
 test("legacy missing selected identity retains only its native placement join", () => {
   const capture = constructionDecisionFixture();
   const facts = capture.facts.map(
-    (fact): AiRuntimeProductionFactV1 =>
+    (fact): AiRuntimeProductionFact =>
       fact.kind === "intent_dispatch" && fact.event.kind === "requested"
         ? { ...fact, event: { ...fact.event, decisionIdentity: undefined } }
         : fact
@@ -52,7 +52,7 @@ test("a failed prior attempt with the same effect cannot steal the later accepte
   const priorFinish = {
     ...request,
     event: { kind: "threw", playerNumber: 1, correlation: request.event.correlation }
-  } satisfies AiRuntimeProductionFactV1;
+  } satisfies AiRuntimeProductionFact;
   const facts = [request, priorFinish, ...capture.facts].map((fact, index) => ({ ...fact, sequence: index + 1 }));
   const result = normalizeRuntimeProductionCausality({ ...capture, facts });
   expect(result.failures).toEqual([]);
@@ -65,7 +65,7 @@ test("a receipt observed only after the path resolved cannot backfill that inter
   if (!receipt) throw new Error("synthetic_receipt_missing");
   // Keep all facts at one tick so the failure exercises observer order rather than monotonic-clock rejection.
   const facts = [...capture.facts.filter((fact) => fact !== receipt), receipt].map(
-    (fact, index): AiRuntimeProductionFactV1 => {
+    (fact, index): AiRuntimeProductionFact => {
       if (fact.kind === "intent_dispatch" && fact.event.kind === "requested" && fact.event.acceptedIntent) {
         return {
           ...fact,
@@ -95,7 +95,7 @@ test("a receipt observed only after the path resolved cannot backfill that inter
 for (const defect of ["decision", "builders", "site", "stamp", "admission", "duplicate_receipt"] as const) {
   test(`contradictory ${defect} construction suppresses the complete normalized effect group`, () => {
     const capture = constructionDecisionFixture();
-    let facts = capture.facts.map((fact): AiRuntimeProductionFactV1 => {
+    let facts = capture.facts.map((fact): AiRuntimeProductionFact => {
       if (defect === "decision" && fact.kind === "decision_selected") {
         return { ...fact, decision: { ...fact.decision, acceptedIntents: [] } };
       }

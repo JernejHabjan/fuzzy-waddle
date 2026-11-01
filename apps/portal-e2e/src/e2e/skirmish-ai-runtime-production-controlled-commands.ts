@@ -1,10 +1,10 @@
 import { isDeepStrictEqual } from "node:util";
 // prettier-ignore
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 
 /** Exact test-controller lineage; human/shared commands must never acquire an invented selected AI intent. */
-export function projectRuntimeControlledCommands(capture: AiRuntimeProductionCaptureV1) {
+export function projectRuntimeControlledCommands(capture: AiRuntimeProductionSnapshot) {
   const facts = capture.facts.filter((fact) => fact.kind === "preset_control");
   const failures: string[] = [];
   const commands = facts

@@ -37,7 +37,7 @@ export function readRuntimeResult(path, identity, options = {}) {
   ) {
     throw new Error("runtime_result_artifact_identity_or_shape_invalid");
   }
-  if (report.artifactEncoding === "external-runtime-variants-v1" && !Object.hasOwn(report, "__artifactSourcePath"))
+  if (report.artifactEncoding === "external-runtime-variants" && !Object.hasOwn(report, "__artifactSourcePath"))
     Object.defineProperty(report, "__artifactSourcePath", { value: path });
   return report;
 }

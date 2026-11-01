@@ -5,7 +5,7 @@ import { execFileSync } from "node:child_process";
 
 export const PINNED_CALIBRATION_BASELINE = "de47f482889db30420692bf4406fba463d7db296";
 const digest = (text) => `sha256:${createHash("sha256").update(text).digest("hex")}`;
-const key = "fuzzy-waddle:ai-calibration-legacy-v1";
+const key = "fuzzy-waddle:ai-calibration-legacy";
 
 /** Only the detached pinned checkout receives this observable setup adapter; no candidate AI or rules code is copied. */
 export function installPinnedCalibrationAdapter(worktree) {
@@ -56,7 +56,7 @@ export function installPinnedCalibrationAdapter(worktree) {
     if (typeof window !== "undefined" && ["localhost", "127.0.0.1"].includes(window.location.hostname) &&
         JSON.parse(window.sessionStorage.getItem("${key}") ?? "null")?.enabled === true)
       this.pauseTick(SimulationPauseReason.Manual);`));
-  return { adapter: "legacy-runtime-command-and-world-projection-v1", version: 1, sourceRevision: head, patches,
+  return { adapter: "legacy-runtime-command-and-world-projection", version: 1, sourceRevision: head, patches,
     adapterDigest: digest(JSON.stringify(patches)),
     supported: ["ordinary_two_ai_legal_start", "native_commands", "legacy_world_hash", "native_terminal_metrics"],
     unsupported: ["new_difficulty_profiles", "fixed_new_opening_opponents", "pure_brain", "new_command_authority"] };

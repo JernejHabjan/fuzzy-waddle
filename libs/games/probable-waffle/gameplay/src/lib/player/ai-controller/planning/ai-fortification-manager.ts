@@ -1,11 +1,11 @@
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiBrainStateV1, AiFortificationStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
+import type { AiBrainState, AiFortificationState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
 
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
-import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
+import type { AiIntent } from "../contracts/ai-intent";
+import type { AiObservation } from "../contracts/ai-observation";
+import type { AiProfileConfig } from "../contracts/ai-profile-config";
+import type { AiManagerProposal, AiProposalManager } from "./ai-manager-proposal";
 
 import { hasUnmetMacroFloor, isDefensiveArchetype } from "./ai-fortification-support";
 import { reconcileFortificationPlan } from "./ai-fortification-recovery";
@@ -16,21 +16,21 @@ export {
   AI_STANDARD_FORTIFICATION_SPEND_PERMILLE,
   AI_TURTLE_FORTIFICATION_SPEND_PERMILLE
 } from "./ai-fortification-support";
-export { fortificationPreservesConnectivityV1 } from "./ai-fortification-connectivity";
+export { fortificationPreservesConnectivity } from "./ai-fortification-connectivity";
 /**
  * Owns one bounded, persistent fortification graph per base. All candidates come from the
  * committed local topology, while shared construction remains final placement authority.
  */
-export class AiFortificationManager implements AiProposalManagerV1 {
+export class AiFortificationManager implements AiProposalManager {
   readonly managerId = "stage-11-fortifications";
 
   constructor(
-    private readonly profile: AiProfileConfigV1,
-    private readonly getCatalog: () => AiCapabilityCatalogV1 | undefined,
+    private readonly profile: AiProfileConfig,
+    private readonly getCatalog: () => AiCapabilityCatalog | undefined,
     private readonly gateObjectName: ObjectNames | null = null
   ) {}
 
-  propose(observation: AiObservationV1, state: AiBrainStateV1): AiManagerProposalV1 {
+  propose(observation: AiObservation, state: AiBrainState): AiManagerProposal {
     const catalog = this.getCatalog();
     if (!catalog || catalog.generation !== observation.generation) return this.empty("catalog_not_ready", false);
     const cells = observation.map?.constructionCells ?? [];
@@ -111,7 +111,7 @@ export class AiFortificationManager implements AiProposalManagerV1 {
     ]);
   }
 
-  private empty(reason: string, evaluated: boolean): AiManagerProposalV1 {
+  private empty(reason: string, evaluated: boolean): AiManagerProposal {
     return {
       managerId: this.managerId,
       lane: "optional_infrastructure_tech",
@@ -122,10 +122,10 @@ export class AiFortificationManager implements AiProposalManagerV1 {
   }
 
   private result(
-    fortifications: readonly AiFortificationStateV1[],
-    intents: readonly AiIntentV1[],
+    fortifications: readonly AiFortificationState[],
+    intents: readonly AiIntent[],
     reasons: readonly string[]
-  ): AiManagerProposalV1 {
+  ): AiManagerProposal {
     return {
       managerId: this.managerId,
       lane: "optional_infrastructure_tech",
@@ -137,10 +137,10 @@ export class AiFortificationManager implements AiProposalManagerV1 {
   }
 
   private markProposedEffects(
-    plan: AiFortificationStateV1,
-    intents: readonly AiIntentV1[],
+    plan: AiFortificationState,
+    intents: readonly AiIntent[],
     tick: number
-  ): AiFortificationStateV1 {
+  ): AiFortificationState {
     if (!plan.graph) return plan;
     const effects = new Map(
       intents

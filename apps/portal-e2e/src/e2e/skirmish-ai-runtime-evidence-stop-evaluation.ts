@@ -1,19 +1,19 @@
-import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
-import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
-import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeCheckpoint } from "./skirmish-ai-runtime-checkpoint";
+import type { RuntimeFixture } from "./skirmish-ai-runtime-fixture";
+import type { RuntimeVariant } from "./skirmish-ai-runtime-variant";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 import type { prepareRuntimeVariant } from "./skirmish-ai-runtime-variant-setup";
 import { evaluateRuntimeVariant } from "./skirmish-ai-runtime-variant-evaluation";
 import { nextEvidenceStopState } from "./skirmish-ai-runtime-evidence-stop";
 
 export function evaluateEvidenceStopAtCheckpoint(input: {
-  readonly variant: RuntimeVariantV1;
-  readonly fixture: RuntimeFixtureV1;
+  readonly variant: RuntimeVariant;
+  readonly fixture: RuntimeFixture;
   readonly scenarioIds: readonly string[];
   readonly initialBoundary: Awaited<ReturnType<typeof prepareRuntimeVariant>>;
   readonly effectiveSeed: number;
-  readonly checkpoints: readonly RuntimeCheckpointV1[];
-  readonly perturbations: RuntimeVariantResultV1["perturbations"];
+  readonly checkpoints: readonly RuntimeCheckpoint[];
+  readonly perturbations: RuntimeVariantResult["perturbations"];
   readonly aiErrors: readonly string[];
   readonly pendingEventTicks: readonly number[];
   readonly satisfiedSinceTick: number | null;
@@ -59,7 +59,7 @@ export function evaluateEvidenceStopAtCheckpoint(input: {
     checkpoints,
     perturbations,
     aiErrors
-  } satisfies RuntimeVariantResultV1;
+  } satisfies RuntimeVariantResult;
   return nextEvidenceStopState({
     config: variant.evidenceStop,
     role: variant.role,

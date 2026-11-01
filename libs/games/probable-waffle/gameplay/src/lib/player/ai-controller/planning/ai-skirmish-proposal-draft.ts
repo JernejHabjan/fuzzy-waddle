@@ -1,8 +1,8 @@
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
 import { aiDeadline, type AiAccessNodeId } from "../contracts/ai-core-types";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiBrainStateV1, AiSkirmishStateV1, AiThreatIncidentV1 } from "../contracts/ai-brain-state-v1";
-import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiBrainState, AiSkirmishState, AiThreatIncident } from "../contracts/ai-brain-state";
+import type { AiObservation, AiObservedActor } from "../contracts/ai-observation";
 import type { AiSkirmishProposalContext } from "./ai-skirmish-proposal-context";
 import { observedAiEconomyThreats } from "./ai-economy-policy";
 import {
@@ -24,9 +24,9 @@ const THREAT_EXPIRY_TICKS = 240;
 const LAST_SEEN_PURSUIT_TICKS = 1200;
 
 export function createAiSkirmishProposalContext(
-  observation: AiObservationV1,
-  state: AiBrainStateV1,
-  catalog: AiCapabilityCatalogV1
+  observation: AiObservation,
+  state: AiBrainState,
+  catalog: AiCapabilityCatalog
 ): AiSkirmishProposalContext {
   const combat = ownedCombat(observation, catalog);
   const visibleEnemies = hostileContacts(observation).filter((actor) => actor.visibility === "visible");
@@ -52,7 +52,7 @@ export function createAiSkirmishProposalContext(
         severity: Math.min(1000, canFight(enemy) ? 600 : 250),
         createdTick: observation.tick,
         expiresAt: aiDeadline(observation.tick + THREAT_EXPIRY_TICKS)
-      }) satisfies AiThreatIncidentV1
+      }) satisfies AiThreatIncident
   );
   const incidentById = new Map(
     state.skirmish.incidents
@@ -88,7 +88,7 @@ export function createAiSkirmishProposalContext(
     )
     .sort((left, right) => left.questionId.localeCompare(right.questionId));
 
-  let skirmish: AiSkirmishStateV1 = { ...state.skirmish, incidents: liveIncidents };
+  let skirmish: AiSkirmishState = { ...state.skirmish, incidents: liveIncidents };
   for (const incident of incidents)
     skirmish = withTimeline(skirmish, observation.tick, "threat", incident.incidentId, incident.kind);
   if (currentQuestion)
@@ -125,12 +125,12 @@ export function createAiSkirmishProposalContext(
           return ordersHomeAttack || (mobileThreat && distance(home, candidatePosition) <= 12);
         })
         .sort((left, right) => {
-          const targetsHome = (candidate: AiObservedActorV1) =>
+          const targetsHome = (candidate: AiObservedActor) =>
             candidate.activeOrder?.status === "known" &&
             candidate.activeOrder.value?.targetActorId === homeBaseActor.actorId
               ? 0
               : 1;
-          const distanceToHome = (candidate: AiObservedActorV1) => {
+          const distanceToHome = (candidate: AiObservedActor) => {
             const candidatePosition = position(candidate);
             return candidatePosition ? distance(home, candidatePosition) : Number.POSITIVE_INFINITY;
           };

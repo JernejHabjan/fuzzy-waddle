@@ -1,7 +1,7 @@
-import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
+import type { RuntimeFixture } from "./skirmish-ai-runtime-fixture";
 
 /** Open safe-room owner branch of PLACE-01; constrained-room and threatened-site branches remain separate obligations. */
-export function fieldPlacementWorld(faction: "Tivara" | "Skaduwee"): RuntimeFixtureV1 {
+export function fieldPlacementWorld(faction: "Tivara" | "Skaduwee"): RuntimeFixture {
   return {
     schemaVersion: 1, evidenceKind: "runtime", scenarioIds: ["PLACE-01"],
     recipe: {

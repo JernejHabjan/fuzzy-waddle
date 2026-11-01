@@ -6,9 +6,9 @@ import { projectRuntimeProductionCompletions } from "./skirmish-ai-runtime-produ
 import { projectRuntimeProductionRejections } from "./skirmish-ai-runtime-production-rejections";
 import { projectRuntimeProductionQueueMutations } from "./skirmish-ai-runtime-production-queue-mutations";
 // prettier-ignore
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { RuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality";
 import { isRuntimeQueueCommand } from "./skirmish-ai-runtime-production-command-lineage";
 import { normalizeRuntimeProductionCommands } from "./skirmish-ai-runtime-production-command-normalization";
 import { normalizeRuntimeProductionPayments } from "./skirmish-ai-runtime-production-payments";
@@ -21,17 +21,17 @@ import { projectRuntimeProductionEnqueues } from "./skirmish-ai-runtime-producti
 import { projectRuntimeProductionLifecycleEvents } from "./skirmish-ai-runtime-production-lifecycle-events";
 import { projectRuntimeProductionCatalog } from "./skirmish-ai-runtime-production-catalog-projection";
 // prettier-ignore
-import type { AiRuntimePresetApplicationV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application-v1";
+import type { AiRuntimePresetApplication } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application";
 
 /**
  * Pure, bounded by the raw capture limits. Links real dispatch scope to stamped queue authority; no nearest
  * checkpoint, reason string or fixture expectation can supply missing accepted-intent or payment lineage.
  */
 export function normalizeRuntimeProductionCausality(
-  capture: AiRuntimeProductionCaptureV1,
-  setup?: AiRuntimePresetApplicationV1
-): RuntimeProductionCausalityV1 {
+  capture: AiRuntimeProductionSnapshot,
+  setup?: AiRuntimePresetApplication
+): RuntimeProductionCausality {
   const failures: string[] = [];
   const gaps = new Set(capture.gaps);
   gaps.add("production_ai_event_liabilities_missing");
@@ -197,5 +197,5 @@ export function normalizeRuntimeProductionCausality(
     queueLifecycleEvents: failures.length ? [] : lifecycle.events,
     definitionCatalog: failures.length ? [] : definitions.catalog,
     rejections: failures.length ? [] : rejections.rejections
-  } satisfies RuntimeProductionCausalityV1);
+  } satisfies RuntimeProductionCausality);
 }

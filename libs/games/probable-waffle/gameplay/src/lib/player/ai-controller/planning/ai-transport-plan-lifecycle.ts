@@ -1,5 +1,5 @@
-import type { AiTransportStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiTransportState } from "../contracts/ai-brain-state";
 
-export type AiTransportPlanWithLifecycle = AiTransportStateV1 & {
-  readonly lifecycle: NonNullable<AiTransportStateV1["lifecycle"]>;
+export type AiTransportPlanWithLifecycle = AiTransportState & {
+  readonly lifecycle: NonNullable<AiTransportState["lifecycle"]>;
 };

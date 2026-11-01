@@ -1,7 +1,7 @@
 import { FactionType, ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import type { AiObservedActor } from "../contracts/ai-observation";
 import { createAiTestOwnedActor, unknownAiValue } from "../testing/ai-test-fixtures";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
 import { combatActor, fixtureState, squad, manager as tacticsManager } from "./ai-tactics-test-fixtures";
 import { homeNode, enemyNode, unit, observation, profile, manager } from "./ai-skirmish-test-fixtures";
 import { aiEconomySiteSafety } from "./ai-economy-site-safety";
@@ -9,7 +9,7 @@ import { proposeAiGeneralGathering } from "./ai-general-gathering-proposal";
 import { AiRecoveryManager } from "./ai-recovery-manager";
 import { catalog } from "./ai-macro-test-fixtures";
 
-function source(actorId: string, x: number): AiObservedActorV1 {
+function source(actorId: string, x: number): AiObservedActor {
   return {
     ...createAiTestOwnedActor(actorId),
     objectName: ObjectNames.Tree1,
@@ -103,7 +103,7 @@ describe("economic site safety and defense share actual worker exposure", () => 
     const base = observation(100, [main, ...guards, raider]);
     const result = manager.propose(
       { ...base, threatSummary: { ...base.threatSummary, visibleEnemyActorIds: [raider.actorId] } },
-      createAiBrainStateV1({ playerNumber: 1, faction: FactionType.Tivara, profile, tick: 0, archetypeId: "balanced" })
+      createAiBrainState({ playerNumber: 1, faction: FactionType.Tivara, profile, tick: 0, archetypeId: "balanced" })
     );
     const defense = result.statePatch?.squads?.find((entry) => entry.role === "defense");
     expect(defense?.actorIds.length).toBeGreaterThan(3);
@@ -138,7 +138,7 @@ describe("economic site safety and defense share actual worker exposure", () => 
     const base = observation(100, [main, ...guards, ...enemies]);
     const result = manager.propose(
       { ...base, threatSummary: { ...base.threatSummary, visibleEnemyActorIds: enemies.map((a) => a.actorId) } },
-      createAiBrainStateV1({ playerNumber: 1, faction: FactionType.Tivara, profile, tick: 0, archetypeId: "balanced" })
+      createAiBrainState({ playerNumber: 1, faction: FactionType.Tivara, profile, tick: 0, archetypeId: "balanced" })
     );
     expect(result.statePatch?.squads?.find((s) => s.role === "defense")?.actorIds).toHaveLength(3);
     expect(result.statePatch?.strategy?.assessment).toMatchObject({
@@ -192,7 +192,7 @@ describe("economic site safety and defense share actual worker exposure", () => 
       })),
       threatSummary: { ...base.threatSummary, observedTick: 100, visibleEnemyActorIds: ["enemy"] }
     };
-    const state = createAiBrainStateV1({
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -229,7 +229,7 @@ describe("economic site safety and defense share actual worker exposure", () => 
           observedTick: 100
         }
       },
-      createAiBrainStateV1({ playerNumber: 1, faction: FactionType.Tivara, profile, tick: 0, archetypeId: "balanced" })
+      createAiBrainState({ playerNumber: 1, faction: FactionType.Tivara, profile, tick: 0, archetypeId: "balanced" })
     );
     expect(result.statePatch?.squads).toContainEqual(
       expect.objectContaining({

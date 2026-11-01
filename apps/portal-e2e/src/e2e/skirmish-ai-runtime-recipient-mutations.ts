@@ -4,20 +4,20 @@ import { AI_RUNTIME_MAX_FACTS } from
 import { isDeepStrictEqual } from "node:util";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 // prettier-ignore
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 // prettier-ignore
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 
 /** Strict bounded all-beneficiary replay. Inspect every supplied tail; never add the older resources_applied observations. */
-export function normalizeRuntimeRecipientMutations(capture: AiRuntimeProductionCaptureV1) {
+export function normalizeRuntimeRecipientMutations(capture: AiRuntimeProductionSnapshot) {
   const failures: string[] = [],
     gaps = new Set<string>();
   const facts = capture.recipientResourceFacts;
   const operations: {
-    entry: Extract<AiRuntimeProductionFactV1, { kind: "recipient_resource_mutation" }>;
-    terminal: Extract<AiRuntimeProductionFactV1, { kind: "recipient_resource_mutation" }>;
+    entry: Extract<AiRuntimeProductionFact, { kind: "recipient_resource_mutation" }>;
+    terminal: Extract<AiRuntimeProductionFact, { kind: "recipient_resource_mutation" }>;
   }[] = [];
   if (!facts) return { operations, failures, gaps: ["production_recipient_journal_missing"] };
   if (capture.resourceCoverage?.lost) gaps.add("production_recipient_capture_lost");
@@ -27,9 +27,9 @@ export function normalizeRuntimeRecipientMutations(capture: AiRuntimeProductionC
   const installed = new Map<number, Record<ResourceType, number> | null>();
   const rootFacts = new Map(capture.facts.map((fact) => [fact.sequence, fact]));
   if (rootFacts.size !== capture.facts.length) failures.push("production_recipient_root_sequence_conflict");
-  const supplied = new Map<number, AiRuntimeProductionFactV1>();
+  const supplied = new Map<number, AiRuntimeProductionFact>();
   const openPlayers = new Set<number>();
-  const open = new Map<number, Extract<AiRuntimeProductionFactV1, { kind: "recipient_resource_mutation" }>>();
+  const open = new Map<number, Extract<AiRuntimeProductionFact, { kind: "recipient_resource_mutation" }>>();
   const ids = new Set<number>();
   const integer = (value: number) => Number.isSafeInteger(value) && value >= 0;
   let sequence = 0,

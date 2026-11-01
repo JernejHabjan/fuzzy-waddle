@@ -1,8 +1,8 @@
 import { ConstructionStateEnum, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 // prettier-ignore
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { AiRuntimeConstructionV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-construction-v1";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { AiRuntimeConstruction } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-construction";
 import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
 import { sameRuntimeQueueVector } from "./skirmish-ai-runtime-scoped-queue-payments";
 
@@ -19,7 +19,7 @@ function validVector(vector: Readonly<Partial<Record<ResourceType, number>>> | n
 }
 
 /** Validate callback-time native conditions, not desired payment policy or continuity between unsampled boundaries. */
-function resourceFailures(value: Extract<AiRuntimeConstructionV1, { kind: "resource" }>): string[] {
+function resourceFailures(value: Extract<AiRuntimeConstruction, { kind: "resource" }>): string[] {
   const failures: string[] = [];
   const start = value.operation === "start_charge";
   const refundFactor = value.refundFactor;
@@ -110,7 +110,7 @@ function resourceFailures(value: Extract<AiRuntimeConstructionV1, { kind: "resou
 }
 
 /** Bound the diagnostic group; missing history cannot be repaired from placement prices, balances or later definitions. */
-export function normalizeRuntimeConstructionAuthority(capture: AiRuntimeProductionCaptureV1) {
+export function normalizeRuntimeConstructionAuthority(capture: AiRuntimeProductionSnapshot) {
   const records = capture.facts.filter((fact) => fact.kind === "construction_authority");
   const failures: string[] = [];
   const gaps = new Set<string>([

@@ -1,6 +1,6 @@
 import type { Page } from "@playwright/test";
-import type { AiRuntimeBrowserTestHostV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host-v1";
+import type { AiRuntimeBrowserTestHost } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host";
 import type { AiRuntimeDecisionRepro } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-decision-repro";
 
@@ -24,10 +24,10 @@ export async function armNativeDecisionTrace(page: Page, playerNumber: number) {
       read(): { overflow: boolean; records: TraceEntry[]; firstInput?: FirstInput; retainedInputs: DecisionInput[] };
       dispose(): void;
     };
-    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: AiRuntimeBrowserTestHostV1;
+    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost;
       __nativeDecisionTrace?: Handle };
     realm.__nativeDecisionTrace?.dispose();
-    const scene = realm.__fuzzyWaddleAiRuntimeBrowserTestV1?.game.scene.getScenes(true)
+    const scene = realm.__fuzzyWaddleAiRuntimeBrowserTest?.game.scene.getScenes(true)
       .find((entry) => entry.scene.key.startsWith("Map"));
     if (!scene) throw new Error("native_decision_trace_scene_missing");
     const records: TraceEntry[] = [];

@@ -1,9 +1,9 @@
 import { isDeepStrictEqual } from "node:util";
 import { OrderType, ResourceType, type GameCommand } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import type { AiRuntimeRouteOrderV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-route-order-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
+import type { AiRuntimeRouteOrder } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-route-order";
 
 /** Complete shared movement/service payload and all eight stamp fields; no target-only command matching. */
 export function sameRuntimeRouteServiceCommand(left: GameCommand, right: GameCommand | undefined): boolean {
@@ -19,7 +19,7 @@ export function sameRuntimeRouteServiceCommand(left: GameCommand, right: GameCom
 }
 
 /** Mirrors the existing intent dispatcher, without translating a new command or resolving a live target. */
-export function validateRuntimeRouteServiceRequest(request: Extract<AiRuntimeProductionFactV1, { kind: "intent_dispatch" }>) {
+export function validateRuntimeRouteServiceRequest(request: Extract<AiRuntimeProductionFact, { kind: "intent_dispatch" }>) {
   if (request.event.kind !== "requested") return ["production_route_service_request_invalid"];
   const event = request.event, intent = event.acceptedIntent, command = event.command;
   if (!intent || command.type !== "ACTOR_ACTION" || !("actorIds" in intent)) {
@@ -60,7 +60,7 @@ export function validateRuntimeRouteServiceRequest(request: Extract<AiRuntimePro
 }
 
 /** Context equality also applies to orders whose payload remains owned by the construction diagnostic. */
-export function runtimeRouteOrderHasCommandContext(order: AiRuntimeRouteOrderV1, actorId: string, command: GameCommand): boolean {
+export function runtimeRouteOrderHasCommandContext(order: AiRuntimeRouteOrder, actorId: string, command: GameCommand): boolean {
   const context = order.commandContext;
   if (!context || context.playerNumber !== command.playerNumber || !command.actorIds.includes(actorId) ||
     !isDeepStrictEqual(context.actorIds, command.actorIds) ||
@@ -70,7 +70,7 @@ export function runtimeRouteOrderHasCommandContext(order: AiRuntimeRouteOrderV1,
 }
 
 /** Native admission payload, before mutable gather/attack orders can retarget. No later sample repairs a missing admission. */
-export function runtimeRouteOrderMatchesCommand(order: AiRuntimeRouteOrderV1, actorId: string, command: GameCommand): boolean {
+export function runtimeRouteOrderMatchesCommand(order: AiRuntimeRouteOrder, actorId: string, command: GameCommand): boolean {
   if (!runtimeRouteOrderHasCommandContext(order, actorId, command)) return false;
   if (command.type === "MOVE") return order.orderType === OrderType.Move && !order.target &&
     isDeepStrictEqual(order.targetTile, command.tileVec3);

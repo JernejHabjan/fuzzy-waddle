@@ -8,8 +8,8 @@ import { parseAiRegressionFlag, runE2eWithAiRegression } from "./ai-regression-h
 import { resolveAiRegressionSelection } from "./ai-regression-selection.mjs";
 
 const fixtures = join(dirname(fileURLToPath(import.meta.url)), "fixtures");
-const manifest = readJson("skirmish-v1.json");
-const pack = readJson("ai-regression-v1.json");
+const manifest = readJson("skirmish.json");
+const pack = readJson("ai-regression.json");
 const readFixture = (reference) => readJson(reference);
 
 test("AI regression selection binds exact manifest variants and reports every omission", () => {

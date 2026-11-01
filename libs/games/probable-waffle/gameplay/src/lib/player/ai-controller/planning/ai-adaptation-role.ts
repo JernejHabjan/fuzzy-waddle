@@ -1,3 +1,3 @@
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
 
-export type AiAdaptationRole = AiBrainStateV1["economyProduction"]["adaptation"]["activeRoleTargets"][number]["role"];
+export type AiAdaptationRole = AiBrainState["economyProduction"]["adaptation"]["activeRoleTargets"][number]["role"];

@@ -1,13 +1,13 @@
-import type { AiRuntimeProductionFactV1 } from "./ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "./ai-runtime-production-fact";
 import { AI_RUNTIME_MAX_FACTS, appendAiRuntimeProductionFact } from "./append-ai-runtime-production-fact";
 import type { AiRuntimeProductionBoundaryState } from "./ai-runtime-production-boundary-state";
 
 describe("runtime production fact budget", () => {
   it("retains a full long-horizon combat capture then records overflow", () => {
-    const facts: AiRuntimeProductionFactV1[] = [];
+    const facts: AiRuntimeProductionFact[] = [];
     let losses = 0;
     let dropped = 0;
-    const fact: AiRuntimeProductionFactV1 = {
+    const fact: AiRuntimeProductionFact = {
       kind: "resource_need_fence",
       reason: "fixture",
       tick: 0,

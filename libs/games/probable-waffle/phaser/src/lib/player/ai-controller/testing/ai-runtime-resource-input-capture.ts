@@ -3,8 +3,8 @@ import { installAiResourceInputObserver } from "../observation/ai-resource-input
 import { rememberAiResourceInputRead } from
   "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-resource-input-observation";
 import type { AiRuntimeResourceCoverageCapture } from "./ai-runtime-resource-coverage-capture";
-import type { AiRuntimeProductionFactV1 } from "./ai-runtime-production-fact-v1";
-import type { AiRuntimeUnspentClaimsV1 } from "./ai-runtime-unspent-claims-v1";
+import type { AiRuntimeProductionFact } from "./ai-runtime-production-fact";
+import type { AiRuntimeUnspentClaimsSnapshot } from "./ai-runtime-unspent-claims-snapshot";
 
 /** Bind the actual resource/obligation read to the ordered root journal, independently of later decision/save views. */
 export class AiRuntimeResourceInputCapture {
@@ -12,8 +12,8 @@ export class AiRuntimeResourceInputCapture {
 
   constructor(scene: ProbableWaffleScene, coverage: AiRuntimeResourceCoverageCapture, reconcile: () => void,
     frontier: () => number, boundary: (playerNumber: number) => { tick: number; sequence: number; playerNumber: number },
-    append: (fact: AiRuntimeProductionFactV1) => void,
-    snapshotClaims?: (playerNumber: number) => AiRuntimeUnspentClaimsV1) {
+    append: (fact: AiRuntimeProductionFact) => void,
+    snapshotClaims?: (playerNumber: number) => AiRuntimeUnspentClaimsSnapshot) {
     this.release = installAiResourceInputObserver(scene, {
       fence: (playerNumber, reason, incomingRead) => {
         if (playerNumber === undefined) { coverage.lose("resource_need_player_missing"); return; }

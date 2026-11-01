@@ -1,13 +1,13 @@
 import { ObjectNames, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
 
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observation-v1";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservedActor, AiObservation } from "../contracts/ai-observation";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
-import { buildAiAccessGraphV1 } from "./ai-access-graph-v1";
+import { buildAiAccessGraph } from "./ai-access-graph";
 import { AiSkirmishManager } from "./ai-skirmish-manager";
 
-const graphInput = buildAiAccessGraphV1({
+const graphInput = buildAiAccessGraph({
   generation: 1,
   staticRevision: 1,
   dynamicRevision: 1,
@@ -43,7 +43,7 @@ export const homeNode = graphInput.groundNodeByTileKey.get("0,0")!;
 
 export const enemyNode = graphInput.groundNodeByTileKey.get("1,0")!;
 
-export const catalog: AiCapabilityCatalogV1 = {
+export const catalog: AiCapabilityCatalog = {
   schemaVersion: 1,
   generation: 1,
   unsupported: [],
@@ -67,7 +67,7 @@ export const catalog: AiCapabilityCatalogV1 = {
 };
 
 /** Supplies a ground combat contact at an explicit graph node and logical position. */
-export function unit(actorId: string, accessNodeId: typeof homeNode, x: number): AiObservedActorV1 {
+export function unit(actorId: string, accessNodeId: typeof homeNode, x: number): AiObservedActor {
   return {
     ...createAiTestOwnedActor(actorId),
     objectName: ObjectNames.TivaraMacemanMale,
@@ -91,10 +91,10 @@ export function unit(actorId: string, accessNodeId: typeof homeNode, x: number):
 /** Separates authored graph/frontier facts from the planner's committed mission state. */
 export function observation(
   tick: number,
-  actors: readonly AiObservedActorV1[],
+  actors: readonly AiObservedActor[],
   frontiers: readonly (typeof homeNode)[] = [enemyNode],
   coverage: readonly (typeof homeNode)[] = []
-): AiObservationV1 {
+): AiObservation {
   return {
     ...createAiTestObservation(),
     generation: 1,
@@ -112,6 +112,6 @@ export function observation(
   };
 }
 
-export const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+export const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
 
 export const manager = new AiSkirmishManager(profile, () => catalog);

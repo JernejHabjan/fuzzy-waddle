@@ -26,7 +26,7 @@ import {
   serializeCampaignMissionRuntimeStateFamilies
 } from "@fuzzy-waddle/probable-waffle-campaign";
 import { RandomService } from "../random.service";
-import type { AuthoritativeStateProjectionV1 } from "./authoritative-state-projection";
+import type { AuthoritativeStateProjection } from "./authoritative-state-projection";
 import { serializeActorQueueState } from "./serialize-actor-queue-state";
 import type { StableSerializable } from "./stable-hash-value";
 import type { HashOrder } from "./hash-order";
@@ -38,7 +38,7 @@ export class StateHashProjection {
    * Multiplayer and Stage 5 scenario reports therefore compare the same world facts while using
    * distinct digest algorithms and retaining normalized field diagnostics.
    */
-  captureAuthoritativeProjection(scene: Phaser.Scene): AuthoritativeStateProjectionV1 {
+  captureAuthoritativeProjection(scene: Phaser.Scene): AuthoritativeStateProjection {
     const campaignMission = (scene as ProbableWaffleScene).baseGameData.gameInstance.gameState?.data.campaignMission;
     const campaignMissionDigest = campaignMission ? djb2(serializeCampaignMissionRuntimeState(campaignMission)) : "";
     const campaignMissionFamilyDigests = campaignMission

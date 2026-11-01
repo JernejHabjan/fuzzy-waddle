@@ -1,4 +1,4 @@
-import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import type { AiObservation, AiObservedActor } from "../contracts/ai-observation";
 
 /**
  * Checks footprints against the bounded observed ground component. Current bodies forbid placement, not travel.
@@ -6,8 +6,8 @@ import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observa
  * Missing advisory origin cells defer to native placement; a known disconnected site is never proposed.
  */
 export function constructionAccessPolicy(
-  observation: AiObservationV1,
-  builder: AiObservedActorV1,
+  observation: AiObservation,
+  builder: AiObservedActor,
   reserved: ReadonlySet<string>,
   footprintRadiusTiles = 0
 ): (footprint: readonly string[]) => boolean {

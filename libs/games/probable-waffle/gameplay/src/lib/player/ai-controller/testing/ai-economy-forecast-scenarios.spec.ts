@@ -1,7 +1,7 @@
 import { ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { digestCanonicalAiValue } from "../brain/canonical-ai-serialization";
 
-import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
+import type { AiDemand } from "../contracts/ai-plan-contracts";
 
 import { canAffordAiEconomyCost } from "../planning/ai-economy-policy";
 import { projectAiResourceForecasts } from "../planning/ai-resource-forecast";
@@ -79,7 +79,7 @@ describe("typed deterministic economy forecast scenarios", () => {
   });
 
   it("ECO-05: aggregates queued force, upgrade, expansion and supply needs without promising reserved wood", () => {
-    const consumers: readonly AiDemandV1[] = [
+    const consumers: readonly AiDemand[] = [
       { ...demand, queuedIds: ["ranged-queued-1", "ranged-queued-2"] },
       {
         ...demand,

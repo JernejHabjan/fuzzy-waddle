@@ -14,13 +14,13 @@ import { SimulationTickService } from "../../../world/services/simulation-tick.s
 import { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import type { AiRuntimePresetWorldV1 } from "./ai-runtime-preset-world-v1";
+import type { AiRuntimePresetWorld } from "./ai-runtime-preset-world";
 import { AI_RUNTIME_PRESET_CONTROL_EVENT, type AiRuntimePresetControlEvent } from "./ai-runtime-preset-control-event";
 
 /** Test-owned rally destination applies once through shared commands to each ready producer, including actual AI-built replacements. */
 export function installAiRuntimeProductionRallies(
   scene: ProbableWaffleScene,
-  preset: AiRuntimePresetWorldV1,
+  preset: AiRuntimePresetWorld,
   actors: ReadonlyMap<string, Phaser.GameObjects.GameObject>
 ): void {
   const rules = preset.productionRallies;

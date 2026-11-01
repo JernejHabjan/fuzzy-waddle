@@ -9,9 +9,9 @@ import type { NavigationService } from "../../../world/services/navigation.servi
 import type { ProductionSpatialAuthorityEvent } from "../../../world/services/multiplayer/production-spatial-authority-event";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
 import { captureAiRuntimeProductionItem } from "./ai-runtime-production-item";
-import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spatial-v1";
+import type { AiRuntimeProductionSpatial } from "./ai-runtime-production-spatial";
 import type { AiRuntimeNavigationObservation } from "./ai-runtime-navigation-observation";
-import type { AiRuntimeProducerRouteV1 } from "./ai-runtime-producer-route-v1";
+import type { AiRuntimeProducerRoute } from "./ai-runtime-producer-route";
 import { AiRuntimeRouteOrderCapture } from "./ai-runtime-route-order-capture";
 import { MovementQueryObservation } from "../../../entity/systems/movement-query-observation";
 import type { AiRuntimeResourceCoverageCapture } from "./ai-runtime-resource-coverage-capture";
@@ -29,10 +29,10 @@ export class AiRuntimeProducerRouteCapture {
 
   constructor(
     private readonly scene: Phaser.Scene,
-    private readonly boundary: () => Pick<AiRuntimeProductionSpatialV1,
+    private readonly boundary: () => Pick<AiRuntimeProductionSpatial,
       "clockTick" | "snapshotRestoreInProgress" | "sceneActive">,
     private readonly identify: (actorId: string, item: UnifiedQueueItem) => string,
-    private readonly append: (playerNumber: number, value: AiRuntimeProductionSpatialV1) => void,
+    private readonly append: (playerNumber: number, value: AiRuntimeProductionSpatial) => void,
     private readonly navigationObservation?: AiRuntimeNavigationObservation,
     coverage?: AiRuntimeResourceCoverageCapture
   ) { this.orders = new AiRuntimeRouteOrderCapture(scene, boundary, append, coverage); }
@@ -98,7 +98,7 @@ export class AiRuntimeProducerRouteCapture {
     this.orders.dispose();
   }
 
-  private emit(playerNumber: number, value: AiRuntimeProductionSpatialV1): void {
+  private emit(playerNumber: number, value: AiRuntimeProductionSpatial): void {
     try { this.append(playerNumber, structuredClone(value)); }
     catch { /* A lost diagnostic cannot change the native Promise or invoke another query. */ }
   }
@@ -107,12 +107,12 @@ export class AiRuntimeProducerRouteCapture {
   private observe(
     source: Phaser.GameObjects.GameObject, target: Phaser.GameObjects.GameObject | null,
     targetTile: Vector2Simple | null, radiusTiles: number | null,
-    method: Extract<AiRuntimeProducerRouteV1, { kind: "producer_path" }>["method"], dynamicBlockerCount: number | null,
+    method: Extract<AiRuntimeProducerRoute, { kind: "producer_path" }>["method"], dynamicBlockerCount: number | null,
     call: () => Promise<Vector2Simple[] | null>
   ): Promise<Vector2Simple[] | null> {
     const caller = MovementQueryObservation.take(source);
     if (this.disposed || this.nextQueryId > 8192) return call();
-    let snapshot: (() => AiRuntimeProductionSpatialV1 & { kind: "producer_path" }) | undefined;
+    let snapshot: (() => AiRuntimeProductionSpatial & { kind: "producer_path" }) | undefined;
     let playerNumber: number | undefined;
     try {
       playerNumber = getActorComponent(source, OwnerComponent)?.getOwner();

@@ -1,10 +1,10 @@
 import { isDeepStrictEqual } from "node:util";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 
 /** Validates the unstamped accepted request itself; admission rejection must never manufacture a bus command. */
-export function validateRuntimeProductionRequest(request: Extract<AiRuntimeProductionFactV1, { kind: "intent_dispatch" }>) {
+export function validateRuntimeProductionRequest(request: Extract<AiRuntimeProductionFact, { kind: "intent_dispatch" }>) {
   if (request.event.kind !== "requested") return ["production_ai_request_missing"];
   const event = request.event;
   const intent = event.acceptedIntent;

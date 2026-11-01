@@ -3,8 +3,8 @@ import { environment } from "@fuzzy-waddle/environments/environment";
 import { captureAiRuntimeArtifact } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/capture-ai-runtime-artifact";
 
-const marker = "fuzzy-waddle:ai-multiplayer-browser-test-v1";
-const hostKey = "__fuzzyWaddleAiMultiplayerBrowserTestV1";
+const marker = "fuzzy-waddle:ai-multiplayer-browser-test";
+const hostKey = "__fuzzyWaddleAiMultiplayerBrowserTest";
 
 type BrowserTestWindow = Window & { [hostKey]?: { game: Phaser.Game;
   captureRuntimeArtifact: (playerNumber: number, tick: number,

@@ -1,6 +1,6 @@
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionCaptureV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 import type { ExpansionBranch } from "./skirmish-ai-expansion-branch";
 import { runtimeClosedHistoryFailures } from "./skirmish-ai-runtime-closed-history";
 import { hasNativeSourceDelivery } from "./skirmish-ai-source-delivery";
@@ -11,8 +11,8 @@ import { isWithinObservedGroundWeaponRange } from "./skirmish-ai-native-weapon-r
 /** Native land owner outcomes, including fair premises, real paid construction and useful delivered service. */
 export function evaluateExpansionWorld(
   branch: ExpansionBranch,
-  result: Pick<RuntimeVariantResultV1, "productionCapture" | "presetCreatedActorIds" | "aiFaction">,
-  human: AiRuntimeProductionCaptureV1 | undefined,
+  result: Pick<RuntimeVariantResult, "productionCapture" | "presetCreatedActorIds" | "aiFaction">,
+  human: AiRuntimeProductionSnapshot | undefined,
   latestTick = 3000
 ): string[] {
   const capture = result.productionCapture;

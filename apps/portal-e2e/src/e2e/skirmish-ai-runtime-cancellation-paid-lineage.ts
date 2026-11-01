@@ -1,16 +1,16 @@
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { isDeepStrictEqual } from "node:util";
-import type { AiRuntimeProductionCaptureV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
-import type { RuntimeProductionQueueMutationV1 } from "./skirmish-ai-runtime-production-queue-mutation";
+import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { RuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality";
+import type { RuntimeProductionQueueMutation } from "./skirmish-ai-runtime-production-queue-mutation";
 import { sameRuntimeQueueVector } from "./skirmish-ai-runtime-scoped-queue-payments";
 
 /** Requires observed purchase payment or the complete actual per-tick progress chain since physical insertion. */
 export function matchRuntimeCancellationPaidLineage(
-  capture: AiRuntimeProductionCaptureV1,
-  removal: RuntimeProductionQueueMutationV1,
-  mutations: RuntimeProductionCausalityV1["queueMutations"],
-  operations: RuntimeProductionCausalityV1["operations"]
+  capture: AiRuntimeProductionSnapshot,
+  removal: RuntimeProductionQueueMutation,
+  mutations: RuntimeProductionCausality["queueMutations"],
+  operations: RuntimeProductionCausality["operations"]
 ) {
   const failures: string[] = [];
   const gaps: string[] = [];
@@ -43,7 +43,7 @@ export function matchRuntimeCancellationPaidLineage(
     return { sequences: paid.length === 1 && payment && !failures.length ? [payment.sequence] : null, failures, gaps };
   }
   const progress = capture.facts.filter(
-    (entry): entry is Extract<AiRuntimeProductionFactV1, { kind: "queue_progress" }> =>
+    (entry): entry is Extract<AiRuntimeProductionFact, { kind: "queue_progress" }> =>
       entry.kind === "queue_progress" &&
       entry.sequence > insertion.sequence &&
       entry.sequence < removal.boundarySequences[0] &&

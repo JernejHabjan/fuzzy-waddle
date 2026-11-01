@@ -1,8 +1,8 @@
-import type { AiAccessNodeId, AiObservationV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
-import type { AiAccessCellV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-access-graph-v1";
+import type { AiAccessNodeId, AiObservation } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiAccessCell } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-access-graph";
 
 /** Cached geography samples for information missions, separate from route connectivity. No hidden actors are consulted. */
-export function buildAiScoutSearchPoints(cells: readonly AiAccessCellV1[], nodes: ReadonlyMap<string, AiAccessNodeId>) {
+export function buildAiScoutSearchPoints(cells: readonly AiAccessCell[], nodes: ReadonlyMap<string, AiAccessNodeId>) {
   let width = 0,
     height = 0;
   for (const cell of cells) {
@@ -11,8 +11,8 @@ export function buildAiScoutSearchPoints(cells: readonly AiAccessCellV1[], nodes
   }
   let sector = 8;
   while (Math.ceil(width / sector) * Math.ceil(height / sector) > 128) sector += 4;
-  const selected = new Map<string, AiAccessCellV1>();
-  const distance = (cell: AiAccessCellV1) =>
+  const selected = new Map<string, AiAccessCell>();
+  const distance = (cell: AiAccessCell) =>
     Math.hypot(
       cell.x - (Math.floor(cell.x / sector) * sector + (sector - 1) / 2),
       cell.y - (Math.floor(cell.y / sector) * sector + (sector - 1) / 2)
@@ -35,5 +35,5 @@ export function buildAiScoutSearchPoints(cells: readonly AiAccessCellV1[], nodes
       return accessNodeId
         ? [{ pointId, accessNodeId, position: { x: cell.x, y: cell.y, z: cell.elevation }, observed: false }]
         : [];
-    }) satisfies NonNullable<NonNullable<AiObservationV1["map"]>["scoutSearchPoints"]>;
+    }) satisfies NonNullable<NonNullable<AiObservation["map"]>["scoutSearchPoints"]>;
 }

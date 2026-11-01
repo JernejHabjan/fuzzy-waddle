@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
 import { ResourceType, type ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiObservedActorV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiObservedActor } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { getActorComponent } from "../../../data/actor-component";
 import { getResearchedLevelForActor } from "../../../data/actor-level-utils";
 import { getGameObjectCurrentTile, getGameObjectLogicalTransform } from "../../../data/game-object-helper";
@@ -30,12 +30,12 @@ type GameObject = Phaser.GameObjects.GameObject;
 export function projectAiObservedActor(
   actor: GameObject,
   actorId: ActorId,
-  relation: AiObservedActorV1["relation"],
-  visibility: AiObservedActorV1["visibility"],
+  relation: AiObservedActor["relation"],
+  visibility: AiObservedActor["visibility"],
   tick: number,
   owned: boolean,
   accessGraphAdapter: AiAccessGraphAdapter
-): AiObservedActorV1 {
+): AiObservedActor {
   const level = getResearchedLevelForActor(actor) ?? 1;
   const actorOwner = getActorComponent(actor, OwnerComponent)?.getOwner() ?? null;
   const definition = getPwActorDefinition(actor.name, level);

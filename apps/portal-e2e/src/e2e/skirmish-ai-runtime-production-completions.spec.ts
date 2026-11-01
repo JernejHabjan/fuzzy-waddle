@@ -1,7 +1,7 @@
 import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import { expect, test } from "@playwright/test";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
 import { productionRejectionFixture } from "./skirmish-ai-runtime-production-rejection-fixture";
 import { productionCompletionFixture } from "./skirmish-ai-runtime-production-completion-fixture";
@@ -60,7 +60,7 @@ test.describe("native queue completed-effect authority", () => {
 
   test("a creator returning no actor with its actual failed terminal retains failure-to-create without completion credit", () => {
     const source = productionCompletionFixture();
-    const facts = source.facts.flatMap((fact): AiRuntimeProductionFactV1[] => {
+    const facts = source.facts.flatMap((fact): AiRuntimeProductionFact[] => {
       if (fact.kind === "actor_registered") return [];
       if (fact.kind === "queue_completion")
         return [
@@ -107,7 +107,7 @@ test.describe("native queue completed-effect authority", () => {
 
   test("nested authority intervals cannot consume the same exact native physical removal twice", () => {
     const source = productionCompletionFixture();
-    const facts = source.facts.flatMap((fact): AiRuntimeProductionFactV1[] =>
+    const facts = source.facts.flatMap((fact): AiRuntimeProductionFact[] =>
       fact.kind === "queue_completion"
         ? fact.completion.phase === "before"
           ? [{ ...fact, completion: { ...fact.completion, completionId: 2 } }, fact]
@@ -163,7 +163,7 @@ test.describe("native queue completed-effect authority", () => {
   ]) {
     test(`contradictory ${defect} completion suppresses every normalized causal effect`, () => {
       const source = productionCompletionFixture();
-      let facts = source.facts.map((fact): AiRuntimeProductionFactV1 => {
+      let facts = source.facts.map((fact): AiRuntimeProductionFact => {
         if (fact.kind === "queue_completion") {
           const completion = { ...fact.completion };
           if (defect === "native" && completion.originatingCommandContext)
@@ -200,7 +200,7 @@ test.describe("native queue completed-effect authority", () => {
       if (defect === "conflicting_terminal")
         facts.push({ ...terminal, outcome: { ...terminal.outcome, kind: "cancelled" } });
       if (defect === "duplicate_interval")
-        facts = facts.flatMap((fact): AiRuntimeProductionFactV1[] =>
+        facts = facts.flatMap((fact): AiRuntimeProductionFact[] =>
           fact.kind === "queue_completion" ? [fact, fact] : [fact]
         );
       if (defect === "duplicate_registration")
@@ -210,7 +210,7 @@ test.describe("native queue completed-effect authority", () => {
           index === 0 ? { ...fact, tick: 4 } : fact
         );
       if (defect === "removed_actor")
-        facts = facts.flatMap((fact): AiRuntimeProductionFactV1[] =>
+        facts = facts.flatMap((fact): AiRuntimeProductionFact[] =>
           fact === terminal
             ? [
                 {
@@ -241,7 +241,7 @@ test.describe("native queue completed-effect authority", () => {
   for (const defect of ["pre_registered", "not_registered", "duplicate_registration", "wrong_link", "wrong_type"]) {
     test(`contradictory ${defect} research cannot borrow a global completed-tech notification`, () => {
       const source = productionCompletionFixture("research");
-      const facts = source.facts.flatMap((fact): AiRuntimeProductionFactV1[] => {
+      const facts = source.facts.flatMap((fact): AiRuntimeProductionFact[] => {
         if (fact.kind === "queue_completion")
           return [
             {

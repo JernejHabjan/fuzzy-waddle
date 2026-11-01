@@ -5,11 +5,11 @@ import {
   ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { digestCanonicalAiValue } from "../brain/canonical-ai-serialization";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservation } from "../contracts/ai-observation";
 import { proposeAiOpening } from "../planning/ai-opening-proposal";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "./ai-test-fixtures";
 import { owned } from "../planning/ai-macro-observation";
 
@@ -22,7 +22,7 @@ function openingWorld(
   opening: (typeof openings)[number],
   workers: number,
   queuedWorker: boolean
-): { observation: AiObservationV1; catalog: AiCapabilityCatalogV1 } {
+): { observation: AiObservation; catalog: AiCapabilityCatalog } {
   const base = createAiTestObservation();
   const core = {
     ...createAiTestOwnedActor("core"),
@@ -52,7 +52,7 @@ function openingWorld(
     ...createAiTestOwnedActor(`worker-${index}`),
     objectName: opening.worker
   }));
-  const observation: AiObservationV1 = {
+  const observation: AiObservation = {
     ...base,
     faction: opening.faction,
     actors: [core, ...workerActors],
@@ -64,7 +64,7 @@ function openingWorld(
       deliveredIncomePerMinute: { status: "known" as const, value: 0, observedTick: 20 }
     }))
   };
-  const catalog: AiCapabilityCatalogV1 = {
+  const catalog: AiCapabilityCatalog = {
     schemaVersion: 1,
     generation: observation.generation,
     unsupported: [],
@@ -114,10 +114,10 @@ function openingWorld(
 
 function openingProposal(opening: (typeof openings)[number], workers: number, queuedWorker: boolean) {
   const { observation, catalog } = openingWorld(opening, workers, queuedWorker);
-  const state = createAiBrainStateV1({
+  const state = createAiBrainState({
     playerNumber: 1,
     faction: opening.faction,
-    profile: createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium),
+    profile: createAiProfileConfig(ProbableWaffleAiDifficulty.Medium),
     tick: observation.tick,
     archetypeId: "balanced"
   });

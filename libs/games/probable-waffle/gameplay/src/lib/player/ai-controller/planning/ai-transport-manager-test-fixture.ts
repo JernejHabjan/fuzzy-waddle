@@ -1,10 +1,10 @@
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservedActor, AiObservation } from "../contracts/ai-observation";
 import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "../testing/ai-test-fixtures";
-import { buildAiAccessGraphV1, queryAiAccessRouteV1 } from "./ai-access-graph-v1";
+import { buildAiAccessGraph, queryAiAccessRoute } from "./ai-access-graph";
 
-export const built = buildAiAccessGraphV1({
+export const built = buildAiAccessGraph({
   generation: 1,
   staticRevision: 1,
   dynamicRevision: 1,
@@ -84,14 +84,14 @@ export const routeRequest = {
 };
 /** Preserve the checked transport discriminant for every importing lifecycle/route fixture. */
 function fixtureRoute() {
-  const result = queryAiAccessRouteV1(built.graph, routeRequest);
+  const result = queryAiAccessRoute(built.graph, routeRequest);
   if (result.kind !== "water_transport") throw new Error("invalid_boat_fixture_route");
   return result;
 }
 
 export const route = fixtureRoute();
 
-export const catalog: AiCapabilityCatalogV1 = {
+export const catalog: AiCapabilityCatalog = {
   schemaVersion: 1,
   generation: 1,
   unsupported: [],
@@ -119,7 +119,7 @@ export function actor(
   objectName: ObjectNames,
   nodeId: typeof fromNodeId,
   x: number
-): AiObservedActorV1 {
+): AiObservedActor {
   return {
     ...createAiTestOwnedActor(actorId),
     objectName,
@@ -129,7 +129,7 @@ export function actor(
   };
 }
 
-export function observation(actors: readonly AiObservedActorV1[], tick: number): AiObservationV1 {
+export function observation(actors: readonly AiObservedActor[], tick: number): AiObservation {
   return {
     ...createAiTestObservation(),
     tick,

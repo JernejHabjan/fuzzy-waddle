@@ -1,6 +1,6 @@
 import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import { expect, test } from "@playwright/test";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { productionRefundOperationFixture } from "./skirmish-ai-runtime-production-refund-operation-fixture";
 import { productionOperationFixture } from "./skirmish-ai-runtime-production-operation-fixture";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
@@ -118,7 +118,7 @@ test.describe("production operation synthetic contract tests", () => {
   test("invalid whole-ledger totals, missing admissions, premature paid state and foreign claims suppress operations", () => {
     for (const mutation of ["total", "omitted", "paid", "identity", "lease", "cash", "lane", "effect"] as const) {
       const raw = productionOperationFixture("immediate");
-      const facts = raw.facts.map((fact): AiRuntimeProductionFactV1 => {
+      const facts = raw.facts.map((fact): AiRuntimeProductionFact => {
         if (mutation === "effect" && fact.kind === "queue_resource")
           return {
             ...fact,
@@ -191,7 +191,7 @@ test.describe("production operation synthetic contract tests", () => {
   test("payment finish alone cannot substitute for post-progress, and null callbacks are never closest-snapshot filled", () => {
     for (const missing of ["advanced", "boundary"] as const) {
       const raw = productionOperationFixture();
-      const facts = raw.facts.flatMap((fact): AiRuntimeProductionFactV1[] => {
+      const facts = raw.facts.flatMap((fact): AiRuntimeProductionFact[] => {
         if (fact.kind !== "queue_progress" || fact.progress.phase !== "advanced") return [fact];
         return missing === "advanced" ? [] : [{ ...fact, boundaryState: undefined }];
       });
@@ -210,7 +210,7 @@ test.describe("production operation synthetic contract tests", () => {
     const facts = [
       ...raw.facts,
       ...duplicate.map(
-        (fact): AiRuntimeProductionFactV1 =>
+        (fact): AiRuntimeProductionFact =>
           fact.kind === "queue_progress" ? { ...fact, progress: { ...fact.progress, attemptId: 2 } } : fact
       )
     ].map((fact, index) => ({ ...fact, sequence: index + 1 }));

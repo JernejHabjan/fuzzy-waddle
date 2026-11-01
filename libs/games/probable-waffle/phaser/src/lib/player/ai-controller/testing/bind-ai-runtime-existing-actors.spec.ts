@@ -8,7 +8,7 @@ import { HealthComponent } from "../../../entity/components/combat/components/he
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import type { AiRuntimePresetWorldV1 } from "./ai-runtime-preset-world-v1";
+import type { AiRuntimePresetWorld } from "./ai-runtime-preset-world";
 import { bindAiRuntimeExistingActors } from "./bind-ai-runtime-existing-actors";
 
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
@@ -21,7 +21,7 @@ jest.mock("../../../data/tech-tree/canonical-actor-name", () => ({
 it("binds exactly one live inherited actor without changing or creating the actor", () => {
   const scene = {} as ProbableWaffleScene;
   const actor = { scene, active: true, name: ObjectNames.Sandhold } as unknown as Phaser.GameObjects.GameObject;
-  const preset: AiRuntimePresetWorldV1 = {
+  const preset: AiRuntimePresetWorld = {
     fixtureId: "inherited-main",
     actors: [],
     resourceGrants: [],
@@ -61,7 +61,7 @@ it("pins one actual neutral source by exact position, refusing ambiguous, moved 
   const first = { scene, active: true, name: ObjectNames.Tree6 } as unknown as Phaser.GameObjects.GameObject;
   const second = { scene, active: true, name: ObjectNames.Tree6 } as unknown as Phaser.GameObjects.GameObject;
   const position = { x: 608, y: 928, z: 0 };
-  const preset: AiRuntimePresetWorldV1 = { fixtureId: "neutral-inherited", actors: [], resourceGrants: [],
+  const preset: AiRuntimePresetWorld = { fixtureId: "neutral-inherited", actors: [], resourceGrants: [],
     provenance: { sourceRevision: "a".repeat(40), fixtureDigest: "fnv1a32:12345678" },
     existingActorBindings: [{ fixtureActorId: "local-tree", actorName: ObjectNames.Tree6, owner: null, position }] };
   jest.mocked(getSceneService).mockReturnValue({ getAllIdActors: () => [first, second] } as never);

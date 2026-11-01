@@ -1,4 +1,4 @@
-import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
 import type { GameCommandInput } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import type { CommandBusService, GameCommandDispatchReceipt } from "../../world/services/multiplayer/command-bus.service";
@@ -11,7 +11,7 @@ export function dispatchAiIntentCommand(
   scene: ProbableWaffleScene,
   bus: CommandBusService,
   command: GameCommandInput,
-  intent: AiIntentV1,
+  intent: AiIntent,
   decisionIdentity?: AiDecisionIdentity
 ): GameCommandDispatchReceipt {
   const correlation = {

@@ -1,15 +1,15 @@
-import type { RuntimeAssertionV1 } from "./skirmish-ai-runtime-assertion";
-import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeAssertion } from "./skirmish-ai-runtime-assertion";
+import type { RuntimeCheckpoint } from "./skirmish-ai-runtime-checkpoint";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 
-type ResourceServiceCheckpoint = Pick<RuntimeCheckpointV1, "tick" | "resourceServiceActors" | "appliedCommands">;
+type ResourceServiceCheckpoint = Pick<RuntimeCheckpoint, "tick" | "resourceServiceActors" | "appliedCommands">;
 type ResourceServiceVariant = Pick<
-  RuntimeVariantResultV1,
+  RuntimeVariantResult,
   "presetFixtureId" | "presetCreatedActorNames" | "resourceServiceBranch"
 > & { readonly checkpoints: readonly ResourceServiceCheckpoint[] };
 
 export function evaluateRuntimeResourceService(
-  requirement: NonNullable<RuntimeAssertionV1["requiredResourceService"]>,
+  requirement: NonNullable<RuntimeAssertion["requiredResourceService"]>,
   variant: ResourceServiceVariant
 ): string[] {
   const failures: string[] = [];

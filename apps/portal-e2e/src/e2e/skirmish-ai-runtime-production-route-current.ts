@@ -1,7 +1,7 @@
 import { isDeepStrictEqual } from "node:util";
 import type { RuntimeProductionEvidenceV2 } from "./skirmish-ai-runtime-production-evidence-v2";
-import type { RuntimeProducerRoutesV1 } from "./skirmish-ai-runtime-producer-routes";
-import type { RuntimeProductionSpatialAuthorityV1 } from "./skirmish-ai-runtime-production-spatial-authority";
+import type { RuntimeProducerRoutes } from "./skirmish-ai-runtime-producer-routes";
+import type { RuntimeProductionSpatialAuthority } from "./skirmish-ai-runtime-production-spatial-authority";
 
 /** Awaited owned routes require closed physical and native navigation continuity, never just equal endpoint samples. */
 export function runtimeProductionRouteCurrent(
@@ -9,7 +9,7 @@ export function runtimeProductionRouteCurrent(
     readonly coverage: RuntimeProductionEvidenceV2["coverage"];
     readonly lifecycle: Pick<RuntimeProductionEvidenceV2["lifecycle"], "losses">;
   },
-  path: RuntimeProducerRoutesV1["paths"][number] | RuntimeProductionSpatialAuthorityV1["paths"][number]
+  path: RuntimeProducerRoutes["paths"][number] | RuntimeProductionSpatialAuthority["paths"][number]
 ): boolean {
   if (path.currentAtResolution) return true;
   const start = path.requested.spatial,

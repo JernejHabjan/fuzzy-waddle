@@ -1,13 +1,13 @@
 import type { Browser } from "@playwright/test";
 import type { AiRuntimeDecisionRepro } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-decision-repro";
-import type { AiRuntimeReproArtifactV1, AiRuntimeReproProvenanceV1 } from
+import type { AiRuntimeReproArtifact, AiRuntimeReproProvenance } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-scenario-bridge";
 import { digestCanonicalAiValue } from
   "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/canonical-ai-serialization";
-import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
-import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
-import type { RuntimeRequestV1 } from "./skirmish-ai-runtime-request";
+import type { RuntimeFixture } from "./skirmish-ai-runtime-fixture";
+import type { RuntimeVariant } from "./skirmish-ai-runtime-variant";
+import type { RuntimeRequest } from "./skirmish-ai-runtime-request";
 import type { NativeImportProof } from "./skirmish-ai-native-import-proof";
 import { runVariant } from "./skirmish-ai-runtime-variant-runner";
 import { armNativeDebugComparison } from "./skirmish-ai-native-debug-comparison";
@@ -17,11 +17,11 @@ import { observeMultiplayerPeer } from "./skirmish-ai-multiplayer-observation";
 
 /** Capture a real native artifact and import through the actual developer UI; never advertise import as replay. */
 export async function runNativeImportVariant(
-  browser: Browser, fixture: RuntimeFixtureV1, variant: RuntimeVariantV1, request: RuntimeRequestV1, branch: string
+  browser: Browser, fixture: RuntimeFixture, variant: RuntimeVariant, request: RuntimeRequest, branch: string
 ) {
   let nativeImport: NativeImportProof | undefined;
   let artifactJson: string | undefined;
-  let captureProvenance: AiRuntimeReproProvenanceV1 | undefined;
+  let captureProvenance: AiRuntimeReproProvenance | undefined;
   const result = await runVariant(browser, fixture, variant, request.seed, request.scenarioIds,
     request.sourceRevision, request.fixtureDigest, async (page, index, checkpoint) => {
       if (index === -1) { await armNativeDebugComparison(page); return; }
@@ -29,15 +29,15 @@ export async function runNativeImportVariant(
       const selected = await page.evaluate(() => (window as unknown as {
         __nativeDebugComparisonCapture?: AiRuntimeDecisionRepro }).__nativeDebugComparisonCapture);
       if (!selected) throw new Error("native_import_selected_provenance_missing");
-      const provenance: AiRuntimeReproProvenanceV1 = {
+      const provenance: AiRuntimeReproProvenance = {
         sourceRevision: request.sourceRevision, dirtySourceDigest: request.dirtySourceDigest,
         mapId: variant.mapLabel ?? fixture.recipe.mapLabel, mapDigest: digestCanonicalAiValue(selected.payload.observation.map ?? null),
         contentDigest: digestCanonicalAiValue(selected.catalog), configVersion: selected.profile.profileVersion,
         profileVersion: selected.profile.profileVersion, archetypeVersion: selected.profile.archetypeVersion,
-        difficulty: selected.profile.difficulty, rulesVersion: "skirmish-ai-v1", scenarioId: "DBG-05" };
+        difficulty: selected.profile.difficulty, rulesVersion: "skirmish-ai", scenarioId: "DBG-05" };
       captureProvenance = provenance;
       const artifact = await page.evaluate(async ({ provenance, tick }) => {
-        const host = window.__fuzzyWaddleAiRuntimeBrowserTestV1;
+        const host = window.__fuzzyWaddleAiRuntimeBrowserTest;
         if (!host?.captureRuntimeArtifact) throw new Error("native_runtime_artifact_entry_missing");
         return host.captureRuntimeArtifact(2, tick, provenance);
       }, { provenance, tick: checkpoint.tick });
@@ -63,9 +63,9 @@ export async function runNativeImportVariant(
           throw new Error("native_host_import_or_real_peer_proof_missing");
         const denied = await importThroughNativeUi(match.peer, artifactJson);
         const captureResult = await match.peer.evaluate(async (provenance) => {
-          const host = (window as unknown as { __fuzzyWaddleAiMultiplayerBrowserTestV1?: {
-            captureRuntimeArtifact?: (player: number, tick: number, provenance: AiRuntimeReproProvenanceV1) => Promise<unknown>
-          } }).__fuzzyWaddleAiMultiplayerBrowserTestV1;
+          const host = (window as unknown as { __fuzzyWaddleAiMultiplayerBrowserTest?: {
+            captureRuntimeArtifact?: (player: number, tick: number, provenance: AiRuntimeReproProvenance) => Promise<unknown>
+          } }).__fuzzyWaddleAiMultiplayerBrowserTest;
           if (!host?.captureRuntimeArtifact) throw new Error("native_peer_capture_entry_missing");
           try { await host.captureRuntimeArtifact(3, 0, provenance); return "unexpectedly_allowed"; }
           catch (error) { return error instanceof Error ? error.message : String(error); }
@@ -73,13 +73,13 @@ export async function runNativeImportVariant(
         nativeImport = { ...nativeImport, realPeerAccess: { humanClients: 2, captureResult, ...denied } };
       } finally { await match.dispose(); }
     }, async (page) => {
-      await page.addInitScript(() => sessionStorage.setItem("fuzzy-waddle:ai-runtime-import-v1", "1"));
+      await page.addInitScript(() => sessionStorage.setItem("fuzzy-waddle:ai-runtime-import", "1"));
     });
   if (!nativeImport) throw new Error("native_import_not_captured");
   return { ...result, nativeImport };
 }
 
-function importMutations(branch: string, artifact: AiRuntimeReproArtifactV1): [string, string][] {
+function importMutations(branch: string, artifact: AiRuntimeReproArtifact): [string, string][] {
   let copy = structuredClone(artifact);
   if (branch === "malformed") return [["malformed", "{"]];
   if (branch === "version_mismatch") copy = { ...copy, manifest: {

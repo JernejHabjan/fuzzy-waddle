@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
 import { evaluateNativeRaidStrategy, nativeMaximumRaidResponseMembers, nativeRaidOffenseAfterRecall, nativeRaidThreatIds } from
   "./skirmish-ai-native-raid-strategy-evaluation";
@@ -82,7 +82,7 @@ function raidContext(targetHealthAfter: number, attackDistance = 2, targetId = "
         snapshotRestoreInProgress: false
       }
     }
-  ] as unknown as AiRuntimeProductionFactV1[];
+  ] as unknown as AiRuntimeProductionFact[];
   const frames = [{
     tick: 800,
     decision: {

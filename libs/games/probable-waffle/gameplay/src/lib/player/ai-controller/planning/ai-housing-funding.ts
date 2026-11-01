@@ -1,14 +1,14 @@
 import { OrderType, type ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
-import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservation, AiObservedActor } from "../contracts/ai-observation";
+import type { AiDemand } from "../contracts/ai-plan-contracts";
 import { projectAiResourceForecasts } from "./ai-resource-forecast";
 
 /** Missing housing needs actual cash even when another resource has a larger optional forecast. */
 export function housingFundingResourceTypes(
-  observation: AiObservationV1,
-  catalog: AiCapabilityCatalogV1,
-  demands: readonly AiDemandV1[]
+  observation: AiObservation,
+  catalog: AiCapabilityCatalog,
+  demands: readonly AiDemand[]
 ): ReadonlySet<ResourceType> {
   return new Set(
     projectAiResourceForecasts(
@@ -27,11 +27,11 @@ export function housingFundingResourceTypes(
 
 /** Moves one unloaded donor to essential housing funding, preserving return trips and one gatherer per donor resource. */
 export function selectAiHousingFundingWorker(
-  observation: AiObservationV1,
-  catalog: AiCapabilityCatalogV1,
-  workers: readonly AiObservedActorV1[],
+  observation: AiObservation,
+  catalog: AiCapabilityCatalog,
+  workers: readonly AiObservedActor[],
   targetResource: ResourceType
-): AiObservedActorV1 | undefined {
+): AiObservedActor | undefined {
   const sources = new Map(
     observation.actors.flatMap((actor) =>
       actor.visibility !== "last_seen" &&

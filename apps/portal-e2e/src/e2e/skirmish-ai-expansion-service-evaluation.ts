@@ -1,5 +1,5 @@
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 import { hasNativeSourceDelivery } from "./skirmish-ai-source-delivery";
 import { normalizeRuntimeMovement } from "./skirmish-ai-runtime-movement-normalization";
 
@@ -15,7 +15,7 @@ export function expansionEffectMatchesExecution(
  * Bind a paid expansion to its original builder's native arrival and exact economic-worker delivery into that building.
  */
 export function expansionServiceFailures(
-  result: Pick<RuntimeVariantResultV1, "productionCapture" | "presetCreatedActorIds">,
+  result: Pick<RuntimeVariantResult, "productionCapture" | "presetCreatedActorIds">,
   siteId: string, commandId: string, builderId: string, latestTick = 3000
 ): string[] {
   const capture = result.productionCapture, sourceId = result.presetCreatedActorIds["safe-source"];

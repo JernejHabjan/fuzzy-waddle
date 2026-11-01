@@ -1,8 +1,8 @@
 import { closeSync, copyFileSync, existsSync, mkdirSync, openSync, readFileSync, statSync, writeSync } from "node:fs";
 import { join } from "node:path";
 
-const encoding = "shared-runtime-variants-v1";
-const externalEncoding = "external-runtime-variants-v1";
+const encoding = "shared-runtime-variants";
+const externalEncoding = "external-runtime-variants";
 const maxVariantBytes = 1024 * 1024 * 1024;
 const maxInlineVariantBytes = 8 * 1024 * 1024;
 
@@ -201,7 +201,7 @@ export function encodeRuntimeArtifact(report, artifactPath) {
   return { ...report, scenarios, artifactEncoding: encoding, artifactVariants: variants };
 }
 
-/** Expand checked storage references to shared objects; legacy inline V1 reports are returned unchanged. */
+/** Expand checked storage references to shared objects; legacy inline current reports are returned unchanged. */
 export function decodeRuntimeArtifact(report, artifactPath, options = {}) {
   if (!isRecord(report)) return report;
   if (isRecord(report.runtime))

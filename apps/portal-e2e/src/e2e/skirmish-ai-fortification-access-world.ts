@@ -1,8 +1,8 @@
-import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
+import type { RuntimeFixture } from "./skirmish-ai-runtime-fixture";
 import type { FortificationAccessBranch } from "./skirmish-ai-fortification-access-branch";
 
 /** Fixed native prefab geometry on the frozen open map; ordinary shared movement supplies physical witnesses. */
-export function fortificationAccessWorld(branch: FortificationAccessBranch): RuntimeFixtureV1 {
+export function fortificationAccessWorld(branch: FortificationAccessBranch): RuntimeFixture {
   const stairs = branch.startsWith("stairs_");
   const ring = [-1, 0, 1].flatMap((dy) => [-1, 0, 1].flatMap((dx) => {
     if ((!dx && !dy) || (branch.startsWith("opening_") && dx === -1 && dy === 0)) return [];

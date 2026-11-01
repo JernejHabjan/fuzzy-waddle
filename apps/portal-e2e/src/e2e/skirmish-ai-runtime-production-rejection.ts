@@ -1,10 +1,10 @@
-import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
 import type { GameCommandInput, GameCommandOutcomeReason, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 
 /** Native rejection diagnostic; no physical item, credited refund, useful effect or full production evidence is implied. */
-export interface RuntimeProductionRejectionV1 {
+export interface RuntimeProductionRejection {
   readonly stage: "admission" | "application";
   readonly requestedSequence: number;
   readonly requestedTick: number;
@@ -17,9 +17,9 @@ export interface RuntimeProductionRejectionV1 {
   readonly scheduledTick: number | null;
   readonly reason: GameCommandOutcomeReason;
   readonly request: GameCommandInput;
-  readonly acceptedIntent: AiIntentV1;
-  readonly decision: Extract<AiRuntimeProductionFactV1, { kind: "decision_selected" }>;
-  readonly nativeOutcome: Extract<AiRuntimeProductionFactV1, { kind: "outcome" }> | null;
+  readonly acceptedIntent: AiIntent;
+  readonly decision: Extract<AiRuntimeProductionFact, { kind: "decision_selected" }>;
+  readonly nativeOutcome: Extract<AiRuntimeProductionFact, { kind: "outcome" }> | null;
   /** Both samples belong to the same callback sequence: before and after its diagnostic ledger update. */
   readonly boundarySequences: readonly [number, number];
   readonly resourcesBefore: Readonly<Record<ResourceType, number>> | null;

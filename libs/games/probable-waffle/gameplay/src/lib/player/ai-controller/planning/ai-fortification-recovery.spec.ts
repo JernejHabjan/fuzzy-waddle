@@ -1,7 +1,7 @@
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiIntent } from "../contracts/ai-intent";
 import { aiDeadline } from "../contracts/ai-core-types";
 import { arbitrateAiIntents } from "../brain/ai-intent-arbiter";
 import { AiFortificationManager } from "./ai-fortification-manager";
@@ -73,7 +73,7 @@ describe("fortification recovery ownership", () => {
     expect(replacement?.effectId).not.toBe(root.effectId);
   });
   it("releases a fortification after two timed repair attempts fail instead of retrying forever", () => {
-    const failed = (intent: Extract<AiIntentV1, { kind: "construct" }>, tick: number, sequence: number) => ({
+    const failed = (intent: Extract<AiIntent, { kind: "construct" }>, tick: number, sequence: number) => ({
       kind: "failed" as const,
       tick,
       reason: "native_site_unreachable",
@@ -210,7 +210,7 @@ describe("fortification recovery ownership", () => {
         )
       }
     };
-    const state: AiBrainStateV1 = {
+    const state: AiBrainState = {
       ...threatenedState(),
       fortifications: [replacement],
       reservations: [

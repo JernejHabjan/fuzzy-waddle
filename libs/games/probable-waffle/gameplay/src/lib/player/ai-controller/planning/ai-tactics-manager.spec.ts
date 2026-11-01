@@ -1,8 +1,8 @@
 import { ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 import { AiTacticsManager } from "./ai-tactics-manager";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
 
 import {
   profile,
@@ -116,7 +116,7 @@ describe("AiTacticsManager", () => {
       }
     };
     const current = fixtureState([squadWithFailedSlot]);
-    const failedOutcome: AiBrainStateV1["pendingOutcomes"][number] = {
+    const failedOutcome: AiBrainState["pendingOutcomes"][number] = {
       kind: "failed",
       identity: {
         matchId: "match:test" as never,
@@ -184,7 +184,7 @@ describe("AiTacticsManager", () => {
       }
     };
     const current = fixtureState([retreatingSquad]);
-    const failedOutcome: AiBrainStateV1["pendingOutcomes"][number] = {
+    const failedOutcome: AiBrainState["pendingOutcomes"][number] = {
       kind: "failed",
       identity: {
         matchId: "match:test" as never,
@@ -231,7 +231,7 @@ describe("AiTacticsManager", () => {
   });
 
   it("releases an armed gatherer from a tactical squad instead of interrupting its economy work", () => {
-    const workerCatalog: AiCapabilityCatalogV1 = {
+    const workerCatalog: AiCapabilityCatalog = {
       schemaVersion: 1,
       generation: 1,
       unsupported: [],
@@ -297,7 +297,7 @@ describe("AiTacticsManager", () => {
       state: "retreat" as const
     };
     const initial = fixtureState([committedSquad]);
-    const pressureState: AiBrainStateV1 = {
+    const pressureState: AiBrainState = {
       ...initial,
       strategy: {
         ...initial.strategy,
@@ -359,7 +359,7 @@ describe("AiTacticsManager", () => {
       objectiveId: objective.actorId
     };
     const initial = fixtureState([attackSquad]);
-    const pressureState: AiBrainStateV1 = {
+    const pressureState: AiBrainState = {
       ...initial,
       strategy: {
         ...initial.strategy,
@@ -672,7 +672,7 @@ describe("AiTacticsManager", () => {
         effectId,
         intentId: "intent:stage13:7"
       }
-    } satisfies AiBrainStateV1["pendingOutcomes"][number];
+    } satisfies AiBrainState["pendingOutcomes"][number];
     const proposal = manager.propose(observation([guard], 120), { ...current, pendingOutcomes: [applied] });
     expect(proposal.statePatch?.squadUpdates?.[0]?.lifecycle?.lastUsefulEffectTick).toBe(115);
   });

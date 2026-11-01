@@ -1,4 +1,4 @@
-import type { AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiSquadState } from "../contracts/ai-brain-state";
 import { retainAiSquadTacticsForActors } from "./ai-skirmish-tactics-ownership";
 
 it("removes per-actor orders, positions and damage reservations when membership changes", () => {
@@ -29,7 +29,7 @@ it("removes per-actor orders, positions and damage reservations when membership 
     protectedRouteNodeIds: [],
     mobileReserveActorIds: [],
     objectiveAlternatives: []
-  } satisfies NonNullable<AiSquadStateV1["tactics"]>;
+  } satisfies NonNullable<AiSquadState["tactics"]>;
 
   expect(retainAiSquadTacticsForActors(tactics, ["retained"])).toMatchObject({
     orderedActorIds: ["retained"],

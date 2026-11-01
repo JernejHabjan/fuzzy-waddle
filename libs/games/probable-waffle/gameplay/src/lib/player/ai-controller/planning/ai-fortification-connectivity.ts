@@ -49,7 +49,7 @@ function nearestPassableKey(
 }
 
 /** Pure whole-layout check used by the manager and deterministic Stage 11 fixtures. */
-export function fortificationPreservesConnectivityV1(input: {
+export function fortificationPreservesConnectivity(input: {
   readonly cells: readonly ConstructionCell[];
   readonly blockedTileKeys: readonly string[];
   readonly protectedPosition: Vector3Simple;

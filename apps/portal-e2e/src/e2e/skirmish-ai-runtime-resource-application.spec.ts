@@ -13,7 +13,7 @@ import { fenceSceneResourceHistory } from "@fuzzy-waddle/probable-waffle-phaser/
 import { resourceApplicationFixture } from "./skirmish-ai-runtime-resource-application-fixture";
 import { projectRuntimeResourceServices } from "./skirmish-ai-runtime-resource-service-projection";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 
 test("native application stays in its window when publication arrives later; grant/spend cannot reopen need", () => {
   const f = resourceApplicationFixture(),
@@ -166,7 +166,7 @@ test("an unrelated recipient's exact native credit cannot become this cohort's i
     tick: 3,
     playerNumber: 2,
     resources: { food: 0, wood: 0, stone: 0, minerals: 0 }
-  } satisfies AiRuntimeProductionFactV1;
+  } satisfies AiRuntimeProductionFact;
   const journal = [...recipient, installed].sort((left, right) => left.sequence - right.sequence);
   const snapshots = f.capture.snapshots.map((snapshot) =>
     snapshot.tick >= 10
@@ -206,7 +206,7 @@ for (const reason of [
     let frontier = { tick: 0, captureSequence: 0 };
     const coverage = new AiRuntimeResourceCoverageCapture(0, () => frontier);
     coverage.install({}, requireAiTestEntry(f.declaration.actorIds, 0), 1);
-    const journalFacts: AiRuntimeProductionFactV1[] = [];
+    const journalFacts: AiRuntimeProductionFact[] = [];
     const journal = new AiRuntimeRecipientResourceCapture(
       scene,
       coverage,

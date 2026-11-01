@@ -2,11 +2,11 @@
 import { AI_RUNTIME_MAX_FACTS } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/append-ai-runtime-production-fact";
 // prettier-ignore
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 
 /** Preserves whole-capture order and overflow failures before exposing any normalized subset. */
-export function runtimeProductionCaptureFailures(capture: AiRuntimeProductionCaptureV1): string[] {
+export function runtimeProductionCaptureFailures(capture: AiRuntimeProductionSnapshot): string[] {
   const failures: string[] = [];
   if (
     capture.droppedFactCount ||

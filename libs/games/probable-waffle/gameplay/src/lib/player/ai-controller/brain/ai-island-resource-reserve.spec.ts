@@ -1,13 +1,13 @@
 import { FactionType, ObjectNames, ProbableWaffleAiDifficulty, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "./create-ai-brain-state-v1";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import { createAiBrainState } from "./create-ai-brain-state";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation } from "../testing/ai-test-fixtures";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
-import { createAiTransportPlanV1 } from "../planning/ai-transport-plan-creation";
+import type { AiIntent } from "../contracts/ai-intent";
+import { createAiTransportPlan } from "../planning/ai-transport-plan-creation";
 import { route, routeRequest } from "../planning/ai-transport-manager-test-fixture";
 import { arbitrateAiIntents } from "./ai-intent-arbiter";
 
-function purchase(id: string, cost: number, survival = false): Extract<AiIntentV1, { kind: "construct" }> {
+function purchase(id: string, cost: number, survival = false): Extract<AiIntent, { kind: "construct" }> {
   return { kind: "construct", intentId: `intent:${id}`, effectId: `effect:${id}`, planId: "plan:other", demandId: null,
     lane: "optional_infrastructure_tech", spendingCategory: survival ? "survival" : "economy",
     proposedTick: 20, urgencyClass: 3, utility: 800, preconditions: [], reasonCode: id,
@@ -16,9 +16,9 @@ function purchase(id: string, cost: number, survival = false): Extract<AiIntentV
 }
 
 it("preserves affordable island construction cash without double reserving its actual purchase or blocking survival", () => {
-  const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-  const initial = createAiBrainStateV1({ profile, playerNumber: 1, faction: FactionType.Tivara, tick: 0, archetypeId: "balanced" });
-  const plan = createAiTransportPlanV1({ planId: "transport:island-service:source", route, routeRequest, tick: 20,
+  const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+  const initial = createAiBrainState({ profile, playerNumber: 1, faction: FactionType.Tivara, tick: 0, archetypeId: "balanced" });
+  const plan = createAiTransportPlan({ planId: "transport:island-service:source", route, routeRequest, tick: 20,
     missionKind: "island_establishment", estimatedTravelTicks: 40,
     establishment: { sourceActorId: "source", serviceObjectName: ObjectNames.WorkMill, resourceCost: { wood: 50 } },
     passengers: [{ actorId: "worker-1", role: "builder", indispensable: true, handoff: "economy" },

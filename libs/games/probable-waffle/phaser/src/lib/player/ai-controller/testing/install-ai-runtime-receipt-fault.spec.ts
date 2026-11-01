@@ -9,8 +9,8 @@ import { getSceneService } from "../../../world/services/scene-component-helpers
 import { deliverAiCommandOutcome } from "../ai-command-outcome-delivery";
 import { AI_INTENT_COMMAND_DISPATCH_EVENT } from "../ai-intent-command-dispatch-event";
 import { installAiRuntimeReceiptFault } from "./install-ai-runtime-receipt-fault";
-import type { AiRuntimePresetWorldV1 } from "./ai-runtime-preset-world-v1";
-import { AI_RUNTIME_AUTHORITY_DELIVERY_EVENT } from "./ai-runtime-authority-delivery-v1";
+import type { AiRuntimePresetWorld } from "./ai-runtime-preset-world";
+import { AI_RUNTIME_AUTHORITY_DELIVERY_EVENT } from "./ai-runtime-authority-delivery";
 
 jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
@@ -21,7 +21,7 @@ function deliveryFixture(commandKind: "any" | "research" = "any") {
     service === SimulationTickService ? clock : service === CommandBusService ? bus : service === ActorIndexSystem ? {} : null);
   const scene = { events, onShutdown: shutdown.asObservable() } as unknown as ProbableWaffleScene;
   const preset = { receiptFault: { id: "original-receipt", playerNumber: 2, fromTick: 1, throughTick: 10,
-    maximumCommands: 1, commandKind } } as AiRuntimePresetWorldV1;
+    maximumCommands: 1, commandKind } } as AiRuntimePresetWorld;
   const outcome: GameCommandOutcome = { schemaVersion: 1, playerNumber: 2, commandId: "original",
     commitmentKey: "original-effect", effectId: "original-effect", authorityEpoch: 0, sequence: 1,
     tick: 2, kind: "completed", reason: "applied", actorIds: ["worker"], worldLinkIds: [] };

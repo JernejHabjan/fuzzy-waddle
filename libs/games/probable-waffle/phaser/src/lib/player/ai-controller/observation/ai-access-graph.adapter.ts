@@ -1,10 +1,10 @@
 import type Phaser from "phaser";
 import {
-  buildAiAccessGraphV1,
-  type AiAccessGraphV1,
+  buildAiAccessGraph,
+  type AiAccessGraph,
   type AiAccessNodeId,
-  type AiDomainV1,
-  type BuiltAiAccessGraphV1
+  type AiDomain,
+  type BuiltAiAccessGraph
 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { MovementTerrainType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/movement-terrain-type";
 import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
@@ -21,10 +21,10 @@ export class AiAccessGraphAdapter {
   // Supported land maps finish before another observed topology change can restart the build; larger maps still yield.
   private static readonly CELL_BUDGET_PER_OBSERVATION = 4096;
   private cachedRevision = -1;
-  private cached?: BuiltAiAccessGraphV1;
+  private cached?: BuiltAiAccessGraph;
   private pendingRevision = -1;
   private pendingCursor = 0;
-  private pendingCells: Parameters<typeof buildAiAccessGraphV1>[0]["cells"][number][] = [];
+  private pendingCells: Parameters<typeof buildAiAccessGraph>[0]["cells"][number][] = [];
   private searchPoints: ReturnType<typeof buildAiScoutSearchPoints> = [];
 
   getScoutSearchPoints() {
@@ -41,7 +41,7 @@ export class AiAccessGraphAdapter {
       readonly blockedTileKeys: ReadonlySet<string>;
       readonly navigableTileKeys: ReadonlySet<string>;
     }
-  ): AiAccessGraphV1 | undefined {
+  ): AiAccessGraph | undefined {
     const navigation = getSceneService(this.scene, NavigationService);
     const tilemap = getSceneComponent(this.scene, TilemapComponent)?.tilemap;
     if (!navigation || !tilemap) return undefined;
@@ -71,7 +71,7 @@ export class AiAccessGraphAdapter {
     }
     this.pendingCursor = end;
     if (this.pendingCursor >= totalCells) {
-      this.cached = buildAiAccessGraphV1({
+      this.cached = buildAiAccessGraph({
         generation: revision,
         staticRevision: 1,
         dynamicRevision: revision,
@@ -91,7 +91,7 @@ export class AiAccessGraphAdapter {
     return undefined;
   }
 
-  resolveNodeId(tile: Vector2Simple | undefined, domains: readonly AiDomainV1[]): AiAccessNodeId | undefined {
+  resolveNodeId(tile: Vector2Simple | undefined, domains: readonly AiDomain[]): AiAccessNodeId | undefined {
     if (!tile) return undefined;
     const built = this.cached;
     if (!built) return undefined;

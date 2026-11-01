@@ -1,15 +1,15 @@
 import { expect, type Page } from "@playwright/test";
 import type Phaser from "phaser";
-import type { AiRuntimeBrowserTestHostV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host-v1";
+import type { AiRuntimeBrowserTestHost } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host";
 
 /** Use actual visible Phaser menu hitboxes, preserving the app realm and its ordinary scene/dialog/Angular route handlers. */
 export async function openNativeGameAction(page: Page, action: "load" | "quit") {
   await clickNativeGameMenuButton(page, "menu");
   await page.waitForFunction(() => {
-    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: AiRuntimeBrowserTestHostV1;
-      __fuzzyWaddleAiMultiplayerBrowserTestV1?: { game: Phaser.Game } };
-    return (realm.__fuzzyWaddleAiRuntimeBrowserTestV1?.game ?? realm.__fuzzyWaddleAiMultiplayerBrowserTestV1?.game)
+    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost;
+      __fuzzyWaddleAiMultiplayerBrowserTest?: { game: Phaser.Game } };
+    return (realm.__fuzzyWaddleAiRuntimeBrowserTest?.game ?? realm.__fuzzyWaddleAiMultiplayerBrowserTest?.game)
       ?.scene.isActive("GameActionsLayer");
   });
   await clickNativeGameMenuButton(page, action);
@@ -18,9 +18,9 @@ export async function openNativeGameAction(page: Page, action: "load" | "quit") 
 
 async function clickNativeGameMenuButton(page: Page, action: "menu" | "load" | "quit") {
   const target = await page.evaluate((action) => {
-    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: AiRuntimeBrowserTestHostV1;
-      __fuzzyWaddleAiMultiplayerBrowserTestV1?: { game: Phaser.Game } };
-    const game = realm.__fuzzyWaddleAiRuntimeBrowserTestV1?.game ?? realm.__fuzzyWaddleAiMultiplayerBrowserTestV1?.game;
+    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost;
+      __fuzzyWaddleAiMultiplayerBrowserTest?: { game: Phaser.Game } };
+    const game = realm.__fuzzyWaddleAiRuntimeBrowserTest?.game ?? realm.__fuzzyWaddleAiMultiplayerBrowserTest?.game;
     if (!game) throw new Error("lifecycle_native_game_unavailable");
     game.loop.wake();
     const scene = game.scene.getScenes(true).find((entry) => entry.scene.key ===
@@ -51,24 +51,24 @@ export async function leaveNativeMatchInSameRealm(page: Page) {
 /** A real adjudicated finish follows the dialog's ordinary pointer action, not a second quit result. */
 export async function continueNativeEndGameDialog(page: Page) {
   const terminalDialog = await page.evaluate(() => {
-    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: AiRuntimeBrowserTestHostV1;
-      __fuzzyWaddleAiMultiplayerBrowserTestV1?: { game: Phaser.Game } };
-    return (realm.__fuzzyWaddleAiRuntimeBrowserTestV1?.game ?? realm.__fuzzyWaddleAiMultiplayerBrowserTestV1?.game)
+    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost;
+      __fuzzyWaddleAiMultiplayerBrowserTest?: { game: Phaser.Game } };
+    return (realm.__fuzzyWaddleAiRuntimeBrowserTest?.game ?? realm.__fuzzyWaddleAiMultiplayerBrowserTest?.game)
       ?.scene.isActive("EndGameDialog") === true;
   });
   if (!terminalDialog) return;
   await page.waitForFunction(() => {
-    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: AiRuntimeBrowserTestHostV1;
-      __fuzzyWaddleAiMultiplayerBrowserTestV1?: { game: Phaser.Game } };
-    const game = realm.__fuzzyWaddleAiRuntimeBrowserTestV1?.game ?? realm.__fuzzyWaddleAiMultiplayerBrowserTestV1?.game;
+    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost;
+      __fuzzyWaddleAiMultiplayerBrowserTest?: { game: Phaser.Game } };
+    const game = realm.__fuzzyWaddleAiRuntimeBrowserTest?.game ?? realm.__fuzzyWaddleAiMultiplayerBrowserTest?.game;
     const dialog = game?.scene.getScenes(true).find((entry) => entry.scene.key === "EndGameDialog") as unknown as
       { callback?: unknown } | undefined;
     return typeof dialog?.callback === "function";
   });
   const target = await page.evaluate(() => {
-    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: AiRuntimeBrowserTestHostV1;
-      __fuzzyWaddleAiMultiplayerBrowserTestV1?: { game: Phaser.Game } };
-    const game = realm.__fuzzyWaddleAiRuntimeBrowserTestV1?.game ?? realm.__fuzzyWaddleAiMultiplayerBrowserTestV1?.game;
+    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost;
+      __fuzzyWaddleAiMultiplayerBrowserTest?: { game: Phaser.Game } };
+    const game = realm.__fuzzyWaddleAiRuntimeBrowserTest?.game ?? realm.__fuzzyWaddleAiMultiplayerBrowserTest?.game;
     const dialog = game?.scene.getScenes(true).find((entry) => entry.scene.key === "EndGameDialog") as unknown as
       { continue_button?: Phaser.GameObjects.Container } | undefined;
     const button = dialog?.continue_button;

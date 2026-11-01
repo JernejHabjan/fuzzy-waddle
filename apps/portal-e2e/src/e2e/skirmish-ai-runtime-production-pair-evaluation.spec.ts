@@ -1,19 +1,19 @@
 import { expect, test } from "@playwright/test";
-import type { RuntimeAssertionV1 } from "./skirmish-ai-runtime-assertion";
+import type { RuntimeAssertion } from "./skirmish-ai-runtime-assertion";
 import { evaluateRuntimeProductionPairs } from "./skirmish-ai-runtime-production-pair-evaluation";
 import { productionContract, productionEvidence } from "./skirmish-ai-runtime-production-contract-fixtures";
-import type { RuntimeProductionContractV1 } from "./skirmish-ai-runtime-production-contract";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeProductionContract } from "./skirmish-ai-runtime-production-contract";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 import { productionAuthorityFixture } from "./skirmish-ai-runtime-production-authority-fixture";
 import { normalizeRuntimeProductionSetup } from "./skirmish-ai-runtime-production-setup";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 
 function pairData(
-  scenarioId: RuntimeProductionContractV1["scenarioId"],
-  branches: readonly RuntimeProductionContractV1["branch"][]
+  scenarioId: RuntimeProductionContract["scenarioId"],
+  branches: readonly RuntimeProductionContract["branch"][]
 ) {
   const variants: Pick<
-    RuntimeVariantResultV1,
+    RuntimeVariantResult,
     | "variantId"
     | "aiFaction"
     | "mapLabel"
@@ -84,7 +84,7 @@ function pairData(
         }
       ])
     )
-  } satisfies RuntimeAssertionV1;
+  } satisfies RuntimeAssertion;
   return { assertion, variants };
 }
 

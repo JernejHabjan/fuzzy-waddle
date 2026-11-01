@@ -6,14 +6,14 @@ import {
   ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { arbitrateAiIntents } from "../brain/ai-intent-arbiter";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
 import { digestCanonicalAiValue } from "../brain/canonical-ai-serialization";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import type { AiIntent } from "../contracts/ai-intent";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation } from "./ai-test-fixtures";
 
-const profile = { ...createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium), maxAcceptedCommandBatchesPerStep: 4 };
-const state = createAiBrainStateV1({
+const profile = { ...createAiProfileConfig(ProbableWaffleAiDifficulty.Medium), maxAcceptedCommandBatchesPerStep: 4 };
+const state = createAiBrainState({
   playerNumber: 1,
   faction: FactionType.Tivara,
   profile,
@@ -22,7 +22,7 @@ const state = createAiBrainStateV1({
 });
 
 /** Admission-layer claims only; these examples do not prove applied queue capacity or actual cancellation/refunds. */
-function intent(kind: "produce" | "research", slot = 0): AiIntentV1 {
+function intent(kind: "produce" | "research", slot = 0): AiIntent {
   const suffix = kind === "produce" ? "train" : "research";
   const common = {
     intentId: `intent:${suffix}` as const,
@@ -73,7 +73,7 @@ function admit(
 
 describe("production resource authority admission layer", () => {
   it("H-18: funds housing after a reversible military lease is released without counting paid cash twice", () => {
-    const housing: AiIntentV1 = {
+    const housing: AiIntent = {
       ...intent("produce"),
       kind: "construct",
       objectName: ObjectNames.Olival,

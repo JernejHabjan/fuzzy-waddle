@@ -1,10 +1,10 @@
 import { expect, test } from "@playwright/test";
 import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import { ConstructionStateEnum, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeConstructionV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-construction-v1";
+import type { AiRuntimeConstruction } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-construction";
 // prettier-ignore
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { productionSpatialFixture } from "./skirmish-ai-runtime-production-spatial-fixture";
 import { normalizeRuntimeConstructionAuthority } from "./skirmish-ai-runtime-construction-authority";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
@@ -34,8 +34,8 @@ function fixture() {
     callbackCount: 1,
     nestedEmission: false,
     balanceMatches: true
-  } satisfies AiRuntimeConstructionV1;
-  const fact = (construction: AiRuntimeConstructionV1, sequence = 5): AiRuntimeProductionFactV1 => ({
+  } satisfies AiRuntimeConstruction;
+  const fact = (construction: AiRuntimeConstruction, sequence = 5): AiRuntimeProductionFact => ({
     kind: "construction_authority",
     sequence,
     tick: 20,
@@ -116,7 +116,7 @@ test("an immediate native charge and denial use the cost policy despite nonzero 
 
 test("restore suppression, missing owner and nested/thrown intervals retain gaps without fabricated applied money", () => {
   const f = fixture();
-  const variants: AiRuntimeConstructionV1[] = [
+  const variants: AiRuntimeConstruction[] = [
     {
       ...f.resource,
       snapshotRestoreInProgress: true,
@@ -163,7 +163,7 @@ test("real state boundaries retain restore/teardown while contradictory start/fi
     sceneActive: true,
     clockTick: 20,
     transition: "restored"
-  } satisfies AiRuntimeConstructionV1;
+  } satisfies AiRuntimeConstruction;
   expect(normalizeRuntimeConstructionAuthority({ ...f.capture, facts: [f.fact(lifecycle, 1)] }).failures).toEqual([]);
   expect(
     normalizeRuntimeConstructionAuthority({
@@ -183,7 +183,7 @@ test("real state boundaries retain restore/teardown while contradictory start/fi
 
 test("contradictory money, owner, callback, boundary and native predicate suppress every normalized authority group", () => {
   const f = fixture();
-  const defects: AiRuntimeConstructionV1[] = [
+  const defects: AiRuntimeConstruction[] = [
     { ...f.resource, requested: { food: 6 } },
     { ...f.resource, after: { ...f.resource.after, food: 106 } },
     { ...f.resource, ownerArgument: 2 },

@@ -1,13 +1,13 @@
 import { FactionType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { PureAiBrain } from "../brain/ai-brain";
 import {
-  canonicalizeAiBrainStateV1, digestCanonicalAiValue, serializeCanonicalAiValue
+  canonicalizeAiBrainState, digestCanonicalAiValue, serializeCanonicalAiValue
 } from "../brain/canonical-ai-serialization";
 import { migrateAiBrainState } from "../brain/migrate-ai-brain-state";
 import { projectAiManagerState } from "../brain/project-ai-manager-state";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCommandOutcomeV1 } from "../contracts/ai-command-contracts";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiCommandOutcome } from "../contracts/ai-command-contracts";
+import type { AiObservation } from "../contracts/ai-observation";
 import { AiMacroManager } from "../planning/ai-macro-manager";
 import { createAiProductionPolicyFixture, createAiProducerThreat } from "./ai-production-policy-fixture";
 import { createAiTestOwnedActor } from "./ai-test-fixtures";
@@ -48,7 +48,7 @@ describe.each([FactionType.Tivara, FactionType.Skaduwee])("production policy %s"
   it("releases optional unspent forecast/leases after abandonment without inventing refunds or later capacity", () => {
     const { state, observation, catalog, profile } = fixture();
     const brain = new PureAiBrain(profile, [new AiMacroManager(() => catalog)]);
-    const blocked: AiObservationV1 = { ...observation, map: { ...observation.map!, constructionCells: [] } };
+    const blocked: AiObservation = { ...observation, map: { ...observation.map!, constructionCells: [] } };
     const first = brain.step(blocked, state, []);
     expect(first.nextState.economyProduction.transition?.status).toBe("committed");
     expect(first.acceptedIntents.some((intent) => intent.kind === "construct")).toBe(false);
@@ -76,14 +76,14 @@ describe.each([FactionType.Tivara, FactionType.Skaduwee])("production policy %s"
     const construct = first.acceptedIntents.find((intent) => intent.kind === "construct");
     expect(construct).toBeDefined();
     if (!construct) throw new Error("expected_construct");
-    const identity: AiCommandOutcomeV1["identity"] = { matchId: "production-policy", authorityEpoch: 0, playerNumber: 1,
+    const identity: AiCommandOutcome["identity"] = { matchId: "production-policy", authorityEpoch: 0, playerNumber: 1,
       sequence: 0, commandId: "command:construct", effectId: construct.effectId, intentId: construct.intentId };
     const input = { ...first.nextState, strategy: { ...first.nextState.strategy,
       assessment: { ...state.strategy.assessment, choice: "scout" as const, targetActorId: null, requiredForce: 0 } } };
     for (const outcome of [
       { kind: "dispatched", identity, tick: 205 },
       { kind: "applied", identity, tick: 205, worldLinkIds: ["new-site"] }
-    ] satisfies AiCommandOutcomeV1[]) {
+    ] satisfies AiCommandOutcome[]) {
       const next = brain.step({ ...observation, tick: 220 }, input, [outcome]);
       const retained = next.nextState.reservations.filter((lease) => lease.ownerPlanId === construct.planId);
       expect(retained).toHaveLength(construct.claims.length);
@@ -97,10 +97,10 @@ describe.each([FactionType.Tivara, FactionType.Skaduwee])("production policy %s"
     expect(completed.nextState.reservations.some((lease) => lease.subjectKey === `effect:${construct.effectId}`)).toBe(false);
   });
 
-  it("round-trips the stable schedule, rejects malformed saved dates, and defaults older V1 to no commitment", () => {
+  it("round-trips the stable schedule, rejects malformed saved dates, and defaults older current to no commitment", () => {
     const { state, observation, catalog, profile } = fixture();
     const proposal = new AiMacroManager(() => catalog).propose(observation, state);
-    const saved = canonicalizeAiBrainStateV1(projectAiManagerState(state, [proposal]));
+    const saved = canonicalizeAiBrainState(projectAiManagerState(state, [proposal]));
     const context = { playerNumber: 1, faction, profile, tick: 200, archetypeId: "balanced", satisfiedOpeningStepIds: [] };
     const restored = migrateAiBrainState(JSON.parse(serializeCanonicalAiValue(saved)), context);
     expect(restored.economyProduction.transition).toEqual(saved.economyProduction.transition);
@@ -138,7 +138,7 @@ describe.each([FactionType.Tivara, FactionType.Skaduwee])("production policy %s"
     const { state, observation, catalog, producer, unitName } = fixture();
     const threat = createAiProducerThreat();
     const army = Array.from({ length: 10 }, (_, index) => ({ ...createAiTestOwnedActor(`unit-${index}`), objectName: unitName }));
-    const input: AiObservationV1 = { ...observation, actors: [...observation.actors, ...army, threat],
+    const input: AiObservation = { ...observation, actors: [...observation.actors, ...army, threat],
       threatSummary: { ...observation.threatSummary, visibleEnemyActorIds: ["objective", threat.actorId] } };
     const manager = new AiMacroManager(() => catalog);
     const subject = manager.propose(input, state);
@@ -148,7 +148,7 @@ describe.each([FactionType.Tivara, FactionType.Skaduwee])("production policy %s"
       capacity[0].logicalPosition.y - 5) > 3).toBe(true);
     const safe = { ...producer, actorId: "safe-producer", logicalPosition: {
       status: "known" as const, value: { x: 2, y: 2, z: 0 }, observedTick: 200 } };
-    const controls: readonly { observation: AiObservationV1; state: AiBrainStateV1 }[] = [
+    const controls: readonly { observation: AiObservation; state: AiBrainState }[] = [
       { observation: { ...input, actors: [...input.actors, safe] }, state },
       { observation: { ...input, actors: [...input.actors, ...["unit-10", "unit-11"].map((actorId) =>
         ({ ...createAiTestOwnedActor(actorId), objectName: unitName }))] }, state: { ...state, strategy: { ...state.strategy,

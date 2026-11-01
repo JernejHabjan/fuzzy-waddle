@@ -1,8 +1,8 @@
 import { isDeepStrictEqual } from "node:util";
-import type { AiRuntimeProductionCaptureV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { RuntimeResourceNeedV1 } from "./skirmish-ai-runtime-resource-need";
-import type { RuntimeResourceCreditV1 } from "./skirmish-ai-runtime-resource-credit";
-import type { RuntimeResourceNeedAccountingV1 } from "./skirmish-ai-runtime-resource-need-accounting";
+import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { RuntimeResourceNeed } from "./skirmish-ai-runtime-resource-need";
+import type { RuntimeResourceCredit } from "./skirmish-ai-runtime-resource-credit";
+import type { RuntimeResourceNeedAccounting } from "./skirmish-ai-runtime-resource-need-accounting";
 import {
   projectRuntimeResourceLiabilityFrames,
   validateRuntimeResourceLiabilityFrames
@@ -17,13 +17,13 @@ import { runtimeResourceCreditMatchesOperation } from "./skirmish-ai-runtime-res
 
 /** Frozen inputs and disjoint liabilities, closed conservatively at actual known boundaries. No partial channel activates usefulness. */
 export function projectRuntimeResourceNeedAccounting(
-  capture: AiRuntimeProductionCaptureV1,
-  needs: readonly RuntimeResourceNeedV1[],
-  credits: readonly RuntimeResourceCreditV1[]
+  capture: AiRuntimeProductionSnapshot,
+  needs: readonly RuntimeResourceNeed[],
+  credits: readonly RuntimeResourceCredit[]
 ) {
   const journal = normalizeRuntimeRecipientMutations(capture);
   const failures = [...journal.failures, ...validateRuntimeResourceLiabilityFrames(capture)];
-  const records: RuntimeResourceNeedAccountingV1[] = [];
+  const records: RuntimeResourceNeedAccounting[] = [];
   const gaps = new Set<string>([
     ...journal.gaps,
     "resource_recipient_mutable_alias_history_incomplete",
@@ -155,7 +155,7 @@ export function projectRuntimeResourceNeedAccounting(
     );
     const closedSequence = !sameTarget ? need.selectedSequence : (close?.sequence ?? null);
     if (!sameTarget) local.add("production_need_accepting_result_replaced_target");
-    const applications: RuntimeResourceNeedAccountingV1["applications"][number][] = [];
+    const applications: RuntimeResourceNeedAccounting["applications"][number][] = [];
     for (const credit of credits) {
       const value = credit.fact.spatial;
       if (

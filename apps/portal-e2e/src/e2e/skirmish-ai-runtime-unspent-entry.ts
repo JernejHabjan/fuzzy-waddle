@@ -2,23 +2,23 @@ import { hasRuntimeRemovedQueueOwnership } from "./skirmish-ai-runtime-removed-q
 import { matchRuntimeRejectedAdmission } from "./skirmish-ai-runtime-rejected-admission";
 import { isDeepStrictEqual } from "node:util";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type * as Capture from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type * as Facts from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
+import type * as Capture from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type * as Facts from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
+import type { RuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality";
 import { sameRuntimeQueueVector } from "./skirmish-ai-runtime-scoped-queue-payments";
 
-import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
-import type * as Unspent from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-unspent-claims-v1";
+import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type * as Unspent from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-unspent-claims-snapshot";
 /** Reconciles one already validated selection against exact admission, payment, transfer and release boundaries. */
 export function reconcileRuntimeUnspentEntry(
-  capture: Capture.AiRuntimeProductionCaptureV1,
-  fact: Facts.AiRuntimeProductionFactV1,
-  entry: Unspent.AiRuntimeUnspentClaimsV1["entries"][number],
-  intent: Extract<AiIntentV1, { kind: "produce" | "research" }>,
-  prefix: readonly Facts.AiRuntimeProductionFactV1[],
+  capture: Capture.AiRuntimeProductionSnapshot,
+  fact: Facts.AiRuntimeProductionFact,
+  entry: Unspent.AiRuntimeUnspentClaimsSnapshot["entries"][number],
+  intent: Extract<AiIntent, { kind: "produce" | "research" }>,
+  prefix: readonly Facts.AiRuntimeProductionFact[],
   cutoff: number,
-  commands: RuntimeProductionCausalityV1["commands"],
-  payments: RuntimeProductionCausalityV1["payments"]
+  commands: RuntimeProductionCausality["commands"],
+  payments: RuntimeProductionCausality["payments"]
 ) {
   const failures: string[] = [];
   const gaps: string[] = [];

@@ -1,13 +1,13 @@
 import type { ActorId, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiBaseStateV1, AiBrainStateV1, AiRecoveryStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
+import type { AiBaseState, AiBrainState, AiRecoveryState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
 import { aiDeadline } from "../contracts/ai-core-types";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import type { AiIntent } from "../contracts/ai-intent";
+import type { AiObservation, AiObservedActor } from "../contracts/ai-observation";
 import { aiEconomySiteSafety } from "./ai-economy-site-safety";
 import { compareAiActorsByVisibleGeometry } from "./ai-macro-observation";
-import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
+import type { AiManagerProposal, AiProposalManager } from "./ai-manager-proposal";
 
 /** The H1 default is shared by every Stage-12 domain; it is a backoff floor, never a deadline reset. */
 export const AI_RECOVERY_NO_PROGRESS_TICKS = 200;
@@ -15,19 +15,19 @@ const AI_RECOVERY_PHASE_DEADLINE_TICKS = 1200;
 const MAX_RECOVERY_RECORDS = 64;
 const MAX_RECOVERY_ATTEMPTS = 2;
 
-type RecoveryRecord = AiRecoveryStateV1["records"][number];
+type RecoveryRecord = AiRecoveryState["records"][number];
 
-function owned(observation: AiObservationV1): AiObservedActorV1[] {
+function owned(observation: AiObservation): AiObservedActor[] {
   return observation.actors
     .filter((actor) => actor.relation === "self" && actor.visibility === "owned")
     .sort(compareAiActorsByVisibleGeometry);
 }
 
-function position(actor: AiObservedActorV1 | undefined): Vector3Simple | null {
+function position(actor: AiObservedActor | undefined): Vector3Simple | null {
   return actor?.logicalPosition.status === "known" ? actor.logicalPosition.value : null;
 }
 
-function compareVisibleActors(left: AiObservedActorV1, right: AiObservedActorV1): number {
+function compareVisibleActors(left: AiObservedActor, right: AiObservedActor): number {
   const leftPosition = position(left);
   const rightPosition = position(right);
   if (leftPosition && rightPosition) {
@@ -43,17 +43,17 @@ function distance(left: Vector3Simple, right: Vector3Simple): number {
   return Math.abs(left.x - right.x) + Math.abs(left.y - right.y) + Math.abs(left.z - right.z);
 }
 
-function movementDomains(actor: AiObservedActorV1): readonly ("ground" | "water" | "air")[] {
+function movementDomains(actor: AiObservedActor): readonly ("ground" | "water" | "air")[] {
   const result = [...new Set(actor.capabilities.flatMap((capability) => capability.domains))].sort();
   return result.length > 0 ? result : ["ground"];
 }
 
-function canTarget(attacker: AiObservedActorV1, target: AiObservedActorV1): boolean {
+function canTarget(attacker: AiObservedActor, target: AiObservedActor): boolean {
   const supported = new Set(attacker.capabilities.flatMap((capability) => capability.targetDomains));
   return movementDomains(target).some((domain) => supported.has(domain));
 }
 
-function canSee(attacker: AiObservedActorV1, target: AiObservedActorV1, catalog: AiCapabilityCatalogV1): boolean {
+function canSee(attacker: AiObservedActor, target: AiObservedActor, catalog: AiCapabilityCatalog): boolean {
   const attackerPosition = position(attacker);
   const targetPosition = position(target);
   if (!attackerPosition || !targetPosition) return false;
@@ -64,14 +64,14 @@ function canSee(attacker: AiObservedActorV1, target: AiObservedActorV1, catalog:
 }
 
 function ids(
-  state: AiBrainStateV1,
+  state: AiBrainState,
   key: string
-): Pick<AiIntentV1, "intentId" | "effectId"> & { claimId: AiIntentV1["claims"][number]["claimId"] } {
+): Pick<AiIntent, "intentId" | "effectId"> & { claimId: AiIntent["claims"][number]["claimId"] } {
   const ordinal = `${state.scheduler.decisionSequence}:${key}`;
   return {
-    intentId: `intent:recovery:${ordinal}` as AiIntentV1["intentId"],
-    effectId: `effect:recovery:${ordinal}` as AiIntentV1["effectId"],
-    claimId: `claim:recovery:${ordinal}` as AiIntentV1["claims"][number]["claimId"]
+    intentId: `intent:recovery:${ordinal}` as AiIntent["intentId"],
+    effectId: `effect:recovery:${ordinal}` as AiIntent["effectId"],
+    claimId: `claim:recovery:${ordinal}` as AiIntent["claims"][number]["claimId"]
   };
 }
 
@@ -89,11 +89,11 @@ function record(
   };
 }
 
-function isGatherer(actor: AiObservedActorV1, catalog: AiCapabilityCatalogV1): boolean {
+function isGatherer(actor: AiObservedActor, catalog: AiCapabilityCatalog): boolean {
   return catalog.entries.some((entry) => entry.sourceObjectName === actor.objectName && entry.gathers.length > 0);
 }
 
-function sourceActors(observation: AiObservationV1): AiObservedActorV1[] {
+function sourceActors(observation: AiObservation): AiObservedActor[] {
   return observation.actors
     .filter(aiEconomySiteSafety(observation).actorSafe)
     .filter((actor) => actor.relation !== "enemy" && actor.visibility !== "last_seen")
@@ -107,7 +107,7 @@ function sourceActors(observation: AiObservationV1): AiObservedActorV1[] {
     .sort(compareVisibleActors);
 }
 
-function isTerminalOutcomeFor(outcomes: AiBrainStateV1["pendingOutcomes"], effectId: string): boolean {
+function isTerminalOutcomeFor(outcomes: AiBrainState["pendingOutcomes"], effectId: string): boolean {
   return outcomes.some(
     (outcome) => outcome.identity.effectId === effectId && ["rejected", "failed", "cancelled"].includes(outcome.kind)
   );
@@ -118,12 +118,12 @@ function isTerminalOutcomeFor(outcomes: AiBrainStateV1["pendingOutcomes"], effec
  * mutates actors or invents placement authority: it records observed failure, backs off stable
  * effects, chooses a legal alternative and releases only its own provisional claims.
  */
-export class AiRecoveryManager implements AiProposalManagerV1 {
+export class AiRecoveryManager implements AiProposalManager {
   readonly managerId = "stage-12-recovery";
 
-  constructor(private readonly getCatalog: () => AiCapabilityCatalogV1 | undefined) {}
+  constructor(private readonly getCatalog: () => AiCapabilityCatalog | undefined) {}
 
-  propose(observation: AiObservationV1, state: AiBrainStateV1): AiManagerProposalV1 {
+  propose(observation: AiObservation, state: AiBrainState): AiManagerProposal {
     const catalog = this.getCatalog();
     if (!catalog || catalog.generation !== observation.generation) {
       return {
@@ -137,7 +137,7 @@ export class AiRecoveryManager implements AiProposalManagerV1 {
     const self = owned(observation);
     const prior = new Map(state.recovery.records.map((entry) => [entry.recoveryKey, entry]));
     const records: RecoveryRecord[] = [];
-    const intents: AiIntentV1[] = [];
+    const intents: AiIntent[] = [];
     const reasons: string[] = [];
 
     // Stage 6 owns the generic progress contract; Stage 12 turns an overdue observed milestone
@@ -176,7 +176,7 @@ export class AiRecoveryManager implements AiProposalManagerV1 {
     // Outcome-driven expansion retry: rejected sites are recorded by site key and require a new
     // candidate selected by Stage 10. This avoids same-site spam while preserving shared authority.
     let placementChanged = false;
-    const bases: AiBaseStateV1[] = state.bases.map((base) => {
+    const bases: AiBaseState[] = state.bases.map((base) => {
       if (!base.reservedSiteKey) return base;
       const effect = `effect:expansion:${state.identities.nextIntent}`;
       const rejected = isTerminalOutcomeFor(state.pendingOutcomes, effect);
@@ -239,7 +239,7 @@ export class AiRecoveryManager implements AiProposalManagerV1 {
         intents.push({
           ...actionIds,
           kind: "assign_gatherers",
-          planId: "plan:recovery:economy" as AiIntentV1["planId"],
+          planId: "plan:recovery:economy" as AiIntent["planId"],
           demandId: null,
           lane: "essential_economy",
           proposedTick: observation.tick,
@@ -248,12 +248,12 @@ export class AiRecoveryManager implements AiProposalManagerV1 {
           preconditions: selected.map((worker) => ({ kind: "actor_exists" as const, actorId: worker.actorId })),
           claims: [
             ...selected.map((worker, index) => ({
-              claimId: `${actionIds.claimId}:worker:${index}` as AiIntentV1["claims"][number]["claimId"],
+              claimId: `${actionIds.claimId}:worker:${index}` as AiIntent["claims"][number]["claimId"],
               kind: "actor" as const,
               actorId: worker.actorId
             })),
             {
-              claimId: `${actionIds.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
+              claimId: `${actionIds.claimId}:effect` as AiIntent["claims"][number]["claimId"],
               kind: "effect",
               effectId: actionIds.effectId
             }
@@ -296,7 +296,7 @@ export class AiRecoveryManager implements AiProposalManagerV1 {
       if (!squad) continue;
       const capableDefenders = squad.actorIds
         .map((actorId) => self.find((actor) => actor.actorId === actorId))
-        .filter((actor): actor is AiObservedActorV1 => actor !== undefined)
+        .filter((actor): actor is AiObservedActor => actor !== undefined)
         .filter((actor) =>
           actor.healthPermille?.status !== "known" || actor.healthPermille.value > 400 ||
           actor.combatProfile?.status !== "known" ||
@@ -311,7 +311,7 @@ export class AiRecoveryManager implements AiProposalManagerV1 {
       intents.push({
         ...actionIds,
         kind: "attack",
-        planId: `plan:${squad.squadId}` as AiIntentV1["planId"],
+        planId: `plan:${squad.squadId}` as AiIntent["planId"],
         demandId: null,
         lane: "army_threat",
         proposedTick: observation.tick,
@@ -320,7 +320,7 @@ export class AiRecoveryManager implements AiProposalManagerV1 {
         preconditions: [{ kind: "target_visible", actorId: blocker.actorId }],
         claims: [
           ...capableDefenders.map((actor, index) => ({
-            claimId: `${actionIds.claimId}:actor:${index}` as AiIntentV1["claims"][number]["claimId"],
+            claimId: `${actionIds.claimId}:actor:${index}` as AiIntent["claims"][number]["claimId"],
             kind: "actor" as const,
             actorId: actor.actorId
           })),
@@ -379,7 +379,7 @@ export class AiRecoveryManager implements AiProposalManagerV1 {
       intents.push({
         ...actionIds,
         kind: "repair",
-        planId: "plan:recovery:repair" as AiIntentV1["planId"],
+        planId: "plan:recovery:repair" as AiIntent["planId"],
         demandId: null,
         lane: "essential_economy",
         proposedTick: observation.tick,
@@ -388,12 +388,12 @@ export class AiRecoveryManager implements AiProposalManagerV1 {
         preconditions: [{ kind: "actor_exists", actorId: damaged.actorId }],
         claims: [
           ...repairers.map((actor, index) => ({
-            claimId: `${actionIds.claimId}:repairer:${index}` as AiIntentV1["claims"][number]["claimId"],
+            claimId: `${actionIds.claimId}:repairer:${index}` as AiIntent["claims"][number]["claimId"],
             kind: "actor" as const,
             actorId: actor.actorId
           })),
           {
-            claimId: `${actionIds.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
+            claimId: `${actionIds.claimId}:effect` as AiIntent["claims"][number]["claimId"],
             kind: "effect",
             effectId: actionIds.effectId
           }

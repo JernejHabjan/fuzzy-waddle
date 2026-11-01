@@ -1,12 +1,12 @@
-import type { RuntimeProductionSpatialAuthorityV1 } from "./skirmish-ai-runtime-production-spatial-authority";
-import type { RuntimeConstructionCatalogEntryV1 } from "./skirmish-ai-runtime-construction-catalog-entry";
-import type { RuntimeConstructionLineageV1 } from "./skirmish-ai-runtime-construction-lineage";
+import type { RuntimeProductionSpatialAuthority } from "./skirmish-ai-runtime-production-spatial-authority";
+import type { RuntimeConstructionCatalogEntry } from "./skirmish-ai-runtime-construction-catalog-entry";
+import type { RuntimeConstructionLineage } from "./skirmish-ai-runtime-construction-lineage";
 
 /** Consumes validated native placements and exact existing scopes; autonomous/legacy sites need no invented path. */
 export function projectRuntimeConstructionCatalog(
-  authority: RuntimeProductionSpatialAuthorityV1, lineage: readonly RuntimeConstructionLineageV1[] = []
+  authority: RuntimeProductionSpatialAuthority, lineage: readonly RuntimeConstructionLineage[] = []
 ) {
-  const entries: RuntimeConstructionCatalogEntryV1[] = [];
+  const entries: RuntimeConstructionCatalogEntry[] = [];
   const failures: string[] = [];
   const gaps = new Set<string>();
   if (authority.placements.length > 256) {

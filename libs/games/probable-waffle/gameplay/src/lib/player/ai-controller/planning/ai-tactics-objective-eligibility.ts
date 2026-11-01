@@ -1,4 +1,4 @@
-import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import type { AiObservation, AiObservedActor } from "../contracts/ai-observation";
 import { canTarget } from "./ai-tactics-combat";
 import { knownPosition, distance, movementDomains } from "./ai-tactics-geometry";
 
@@ -6,9 +6,9 @@ import { knownPosition, distance, movementDomains } from "./ai-tactics-geometry"
  * A blocked movement route does not prevent an already-in-range weapon from firing across terrain.
  */
 export function canPursueAiTacticalObjective(
-  members: readonly AiObservedActorV1[],
-  target: AiObservedActorV1 | undefined,
-  observation: AiObservationV1
+  members: readonly AiObservedActor[],
+  target: AiObservedActor | undefined,
+  observation: AiObservation
 ): boolean {
   if (!target || target.relation !== "enemy") return false;
   return members.some((member) => {

@@ -1,12 +1,12 @@
 import { expect, test } from "@playwright/test";
-import type { AiRuntimeNavigationBoundaryV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-navigation-boundary-v1";
+import type { AiRuntimeNavigationBoundary } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-navigation-boundary";
 import { productionSpatialFixture } from "./skirmish-ai-runtime-production-spatial-fixture";
 import { normalizeRuntimeProductionSpatial } from "./skirmish-ai-runtime-production-spatial-normalization";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
 
 /** The report consumes exact synthetic query boundaries. None of these fixtures prove cached-path freshness. */
-function interval(before?: AiRuntimeNavigationBoundaryV1, after?: AiRuntimeNavigationBoundaryV1) {
+function interval(before?: AiRuntimeNavigationBoundary, after?: AiRuntimeNavigationBoundary) {
   const f = productionSpatialFixture();
   return { ...f.capture, facts: [
     f.fact({ ...f.requested, navigation: before }, 1),
@@ -75,7 +75,7 @@ test("invalid or regressing counters fail all normalized groups, including nativ
     [{ graphObservationId: 2, updateRequestCount: 0 }, { graphObservationId: 1, updateRequestCount: 0 }],
     [{ graphObservationId: 1, updateRequestCount: 2 }, { graphObservationId: 1, updateRequestCount: 1 }],
     [{ graphObservationId: null, updateRequestCount: null }, { graphObservationId: 1, updateRequestCount: 0 }]
-  ] satisfies readonly (readonly [AiRuntimeNavigationBoundaryV1, AiRuntimeNavigationBoundaryV1])[]) {
+  ] satisfies readonly (readonly [AiRuntimeNavigationBoundary, AiRuntimeNavigationBoundary])[]) {
     for (const failed of [false, true]) {
       const capture = interval(before, after);
       const facts = failed ? capture.facts.map((fact) => fact.kind === "spatial_authority" &&

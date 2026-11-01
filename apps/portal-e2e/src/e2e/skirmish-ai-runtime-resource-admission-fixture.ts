@@ -1,5 +1,5 @@
 import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { OrderType, type GameCommand } from "@fuzzy-waddle/probable-waffle-protocol";
 import { resourceNeedAccountingFixture } from "./skirmish-ai-runtime-resource-need-accounting-fixture";
 /** Producer-shaped read/start/result/request/admission/receipt/application ordering; not native execution evidence. */
@@ -16,7 +16,7 @@ export function resourceAdmissionFixture() {
       acceptedIntents: [intent],
       decisions: [{ intent, reason: "accepted", outcome: "accepted" }]
     }
-  } satisfies AiRuntimeProductionFactV1;
+  } satisfies AiRuntimeProductionFact;
   const correlation = {
     intentId: intent.intentId.replace(/^intent:/, ""),
     effectId: intent.effectId.replace(/^effect:/, ""),
@@ -52,7 +52,7 @@ export function resourceAdmissionFixture() {
     actorIds: command.actorIds,
     worldLinkIds: []
   };
-  const admission: AiRuntimeProductionFactV1[] = [
+  const admission: AiRuntimeProductionFact[] = [
     {
       ...common,
       sequence: 5,
@@ -83,7 +83,7 @@ export function resourceAdmissionFixture() {
       event: { kind: "finished", playerNumber: 1, correlation, receipt: { status: "dispatched", command } }
     }
   ];
-  const shift = (fact: AiRuntimeProductionFactV1): AiRuntimeProductionFactV1 =>
+  const shift = (fact: AiRuntimeProductionFact): AiRuntimeProductionFact =>
     fact.sequence < 5
       ? fact
       : fact.kind === "recipient_resource_mutation"

@@ -3,7 +3,7 @@ import { aiEconomySiteSafety } from "../planning/ai-economy-site-safety";
 import { combatActor } from "../planning/ai-tactics-test-fixtures";
 import { createAiProductionPolicyFixture } from "./ai-production-policy-fixture";
 import { createAiTestOwnedActor } from "./ai-test-fixtures";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiObservation } from "../contracts/ai-observation";
 
 const builder = {
   ...createAiTestOwnedActor("field-builder"),
@@ -62,7 +62,7 @@ describe("economic placement scenario contracts", () => {
       actors: [builder],
       map: { ...f.observation.map, constructionCells: [cell(2), cell(-5)] }
     };
-    const choose = (world: AiObservationV1) =>
+    const choose = (world: AiObservation) =>
       selectConstructionPosition(world, builder, 1, 0, new Set(), 0, (candidate) =>
         aiEconomySiteSafety(world).positionSafe(candidate.position)
       );

@@ -1,11 +1,11 @@
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { RuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality";
 
 /** Names missing physical/payment authority for admitted queue effects without synthesizing money or insertions. */
 export function runtimeProductionApplicationGaps(
-  capture: AiRuntimeProductionCaptureV1, commands: RuntimeProductionCausalityV1["commands"],
-  payments: RuntimeProductionCausalityV1["payments"], mutations: RuntimeProductionCausalityV1["queueMutations"]
+  capture: AiRuntimeProductionSnapshot, commands: RuntimeProductionCausality["commands"],
+  payments: RuntimeProductionCausality["payments"], mutations: RuntimeProductionCausality["queueMutations"]
 ): string[] {
   const gaps = new Set<string>();
   for (const entry of commands) {

@@ -1,12 +1,12 @@
-import type { AiRuntimeNavigationBoundaryV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-navigation-boundary-v1";
+import type { AiRuntimeNavigationBoundary } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-navigation-boundary";
 
 import { validateRuntimeNativeBoundary } from "./skirmish-ai-runtime-native-navigation-validation";
 
 /** Validate capture-local counters before accepting even a failed or unbound native query. Legacy omission is a gap. */
 export function validateRuntimeNavigationBoundary(
-  value: AiRuntimeNavigationBoundaryV1 | undefined,
-  previous: AiRuntimeNavigationBoundaryV1 | undefined
+  value: AiRuntimeNavigationBoundary | undefined,
+  previous: AiRuntimeNavigationBoundary | undefined
 ): string[] {
   if (value === undefined) return [];
   if (value === null || typeof value !== "object") return ["production_spatial_navigation_boundary_invalid"];
@@ -28,8 +28,8 @@ export function validateRuntimeNavigationBoundary(
 
 /** Equality is limited to two observed references/update counters; it supplies no freshness or complete history. */
 export function projectRuntimeNavigationInterval(
-  before: AiRuntimeNavigationBoundaryV1 | undefined,
-  after: AiRuntimeNavigationBoundaryV1 | undefined
+  before: AiRuntimeNavigationBoundary | undefined,
+  after: AiRuntimeNavigationBoundary | undefined
 ): "same_observed" | "changed" | "unavailable" {
   if (!before || !after || before.graphObservationId === null || after.graphObservationId === null ||
     before.updateRequestCount === null || after.updateRequestCount === null) return "unavailable";

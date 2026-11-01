@@ -5,17 +5,17 @@ import {
   ProbableWaffleAiDifficulty,
   ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
 import { aiDeadline } from "../contracts/ai-core-types";
-import type { AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observation-v1";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import type { AiObservedActor, AiObservation } from "../contracts/ai-observation";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 
-export const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+export const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
 
-export const catalog: AiCapabilityCatalogV1 = {
+export const catalog: AiCapabilityCatalog = {
   schemaVersion: 1,
   generation: 1,
   unsupported: [],
@@ -136,7 +136,7 @@ export function actor(
   x: number,
   y: number,
   relation: "self" | "enemy" = "self"
-): AiObservedActorV1 {
+): AiObservedActor {
   return {
     ...createAiTestOwnedActor(actorId),
     objectName,
@@ -151,7 +151,7 @@ export function actor(
   };
 }
 
-export function observation(extraActors: readonly AiObservedActorV1[] = [], tick = 100): AiObservationV1 {
+export function observation(extraActors: readonly AiObservedActor[] = [], tick = 100): AiObservation {
   const cells = [];
   for (let y = 0; y <= 20; y += 1) {
     for (let x = 0; x <= 20; x += 1) {
@@ -204,8 +204,8 @@ export function observation(extraActors: readonly AiObservedActorV1[] = [], tick
   };
 }
 
-export function threatenedState(): AiBrainStateV1 {
-  const initial = createAiBrainStateV1({
+export function threatenedState(): AiBrainState {
+  const initial = createAiBrainState({
     playerNumber: 1,
     faction: FactionType.Tivara,
     profile,

@@ -1,7 +1,7 @@
 import type { Browser, Page } from "@playwright/test";
-import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
-import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
-import type { RuntimeRequestV1 } from "./skirmish-ai-runtime-request";
+import type { RuntimeFixture } from "./skirmish-ai-runtime-fixture";
+import type { RuntimeVariant } from "./skirmish-ai-runtime-variant";
+import type { RuntimeRequest } from "./skirmish-ai-runtime-request";
 import type { NativeSaveProof } from "./skirmish-ai-native-save-proof";
 import { runVariant } from "./skirmish-ai-runtime-variant-runner";
 import { saveNativeMatch } from "./skirmish-ai-native-save-reload";
@@ -15,14 +15,14 @@ import {
   captureNativeSaveNavigationDiagnostics,
   type NativeSaveNavigationDiagnostics
 } from "./skirmish-ai-native-save-navigation-diagnostics";
-import type { AiRuntimeBrowserTestHostV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host-v1";
+import type { AiRuntimeBrowserTestHost } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host";
 
 /** Seal the original autonomous SP interval, rewind the real encrypted save and repeat the same logical ticks. */
 export async function runNativeSaveVariant(
   browser: Browser,
-  fixture: RuntimeFixtureV1,
-  variant: RuntimeVariantV1,
-  request: RuntimeRequestV1,
+  fixture: RuntimeFixture,
+  variant: RuntimeVariant,
+  request: RuntimeRequest,
   branch: string,
   saveTickOverride?: number,
   afterContinuation?: (page: Page, proof: NativeSaveProof) => Promise<void>,
@@ -62,9 +62,9 @@ export async function runNativeSaveVariant(
     const setup = await page.evaluate((playerNumber) => {
       const host = (
         window as unknown as {
-          __fuzzyWaddleAiRuntimeBrowserTestV1?: AiRuntimeBrowserTestHostV1;
+          __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost;
         }
-      ).__fuzzyWaddleAiRuntimeBrowserTestV1;
+      ).__fuzzyWaddleAiRuntimeBrowserTest;
       const application = host?.presetApplication;
       return {
         siteId: application?.createdActorIds["save-paid-site"],

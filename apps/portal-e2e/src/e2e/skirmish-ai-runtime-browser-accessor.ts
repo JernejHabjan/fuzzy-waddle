@@ -1,26 +1,26 @@
 import type { Page } from "@playwright/test";
-import type { RuntimePageControllerV1 } from "./skirmish-ai-runtime-controller";
-import type { RuntimePagePartsV1 } from "./skirmish-ai-runtime-parts";
-import type { RuntimePageTickServiceV1 } from "./skirmish-ai-runtime-tick-service";
+import type { RuntimePageController } from "./skirmish-ai-runtime-controller";
+import type { RuntimePageParts } from "./skirmish-ai-runtime-parts";
+import type { RuntimePageTickService } from "./skirmish-ai-runtime-tick-service";
 
 declare global {
   interface Window {
-    __fuzzyWaddleAiRuntimePartsV1?: (playerNumber: number) => RuntimePagePartsV1 | null;
+    __fuzzyWaddleAiRuntimeParts?: (playerNumber: number) => RuntimePageParts | null;
   }
 }
 
 export async function installRuntimeAccessor(page: Page): Promise<void> {
   await page.waitForFunction(
     () => {
-      const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: unknown;
-        __fuzzyWaddleAiMultiplayerBrowserTestV1?: unknown };
-      return !!(realm.__fuzzyWaddleAiRuntimeBrowserTestV1 ?? realm.__fuzzyWaddleAiMultiplayerBrowserTestV1);
+      const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: unknown;
+        __fuzzyWaddleAiMultiplayerBrowserTest?: unknown };
+      return !!(realm.__fuzzyWaddleAiRuntimeBrowserTest ?? realm.__fuzzyWaddleAiMultiplayerBrowserTest);
     },
     undefined,
     { timeout: 120_000 }
   );
   await page.evaluate(() => {
-    window.__fuzzyWaddleAiRuntimePartsV1 = (playerNumber: number) => {
+    window.__fuzzyWaddleAiRuntimeParts = (playerNumber: number) => {
       type Host = {
         game: {
           scene: {
@@ -31,20 +31,20 @@ export async function installRuntimeAccessor(page: Page): Promise<void> {
           };
         };
       };
-      const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: Host;
-        __fuzzyWaddleAiMultiplayerBrowserTestV1?: Host };
-      const host = realm.__fuzzyWaddleAiRuntimeBrowserTestV1 ?? realm.__fuzzyWaddleAiMultiplayerBrowserTestV1;
+      const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: Host;
+        __fuzzyWaddleAiMultiplayerBrowserTest?: Host };
+      const host = realm.__fuzzyWaddleAiRuntimeBrowserTest ?? realm.__fuzzyWaddleAiMultiplayerBrowserTest;
       const scene = host?.game.scene
         .getScenes(true)
         .find((candidate) => candidate.scene.key.startsWith("Map") && candidate.getSceneGameData);
       const graph = scene?.getSceneGameData?.();
       if (!graph) return null;
       const handler = graph.systems.find(
-        (candidate): candidate is { getAiPlayerController(player: number): RuntimePageControllerV1 | undefined } =>
+        (candidate): candidate is { getAiPlayerController(player: number): RuntimePageController | undefined } =>
           !!candidate && typeof (candidate as { getAiPlayerController?: unknown }).getAiPlayerController === "function"
       );
       const tickService = graph.services.find(
-        (candidate): candidate is RuntimePageTickServiceV1 =>
+        (candidate): candidate is RuntimePageTickService =>
           !!candidate &&
           typeof (candidate as { setSimulationTimeScale?: unknown }).setSimulationTimeScale === "function" &&
           typeof (candidate as { currentTick?: unknown }).currentTick === "number"

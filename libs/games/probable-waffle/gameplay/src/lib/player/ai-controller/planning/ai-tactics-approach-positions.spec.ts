@@ -1,9 +1,9 @@
-import type { AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiObservedActor, AiObservation } from "../contracts/ai-observation";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 import { selectAiAttackApproachPositions, selectAiSafeFiringPositions } from "./ai-tactics-approach-positions";
 import { combatActor } from "./ai-tactics-test-fixtures";
 
-function attacker(actorId: string): AiObservedActorV1 {
+function attacker(actorId: string): AiObservedActor {
   return {
     ...createAiTestOwnedActor(actorId),
     logicalPosition: { status: "known", value: { x: 0, y: 0, z: 0 }, observedTick: 100 },
@@ -35,7 +35,7 @@ describe("observed attack approach positions", () => {
     const observation = {
       ...base,
       map: { ...base.map!, constructionCells: [home], tacticalCells: [approach] }
-    } satisfies AiObservationV1;
+    } satisfies AiObservation;
 
     expect(selectAiAttackApproachPositions([attacker("a")], { x: 20, y: 20, z: 0 }, observation)).toEqual([
       { actorId: "a", position: approach.position }
@@ -107,7 +107,7 @@ describe("observed attack approach positions", () => {
         regionGeneration: { generation: 1, status: "ready" as const, continuationCursor: 0 },
         constructionCells: cells
       }
-    } satisfies AiObservationV1;
+    } satisfies AiObservation;
 
     const positions = selectAiAttackApproachPositions([attacker("a"), attacker("b")], target, observation, 1);
     expect(positions).toHaveLength(2);
@@ -135,7 +135,7 @@ describe("observed attack approach positions", () => {
     const observation = {
       ...base,
       map: { ...base.map!, constructionCells: cells, tacticalCells: cells }
-    } satisfies AiObservationV1;
+    } satisfies AiObservation;
     const members = [
       {
         ...attacker("a-east"),
@@ -215,7 +215,7 @@ describe("observed attack approach positions", () => {
           unknownNodeIds: []
         }
       }
-    } satisfies AiObservationV1;
+    } satisfies AiObservation;
 
     expect(selectAiAttackApproachPositions([member], { x: 20, y: 20, z: 0 }, observation)).toEqual([
       { actorId: "a", position: reachable.position }
@@ -233,11 +233,11 @@ describe("observed attack approach positions", () => {
       observedBlocked: false
     };
     const next = { ...first, tileKey: "20,19", position: { x: 20, y: 19, z: 0 } };
-    const map = base.map ?? ({} as NonNullable<AiObservationV1["map"]>);
+    const map = base.map ?? ({} as NonNullable<AiObservation["map"]>);
     const observation = {
       ...base,
       map: { ...map, tacticalCells: [first, next] }
-    } satisfies AiObservationV1;
+    } satisfies AiObservation;
 
     expect(
       selectAiAttackApproachPositions(
@@ -256,7 +256,7 @@ describe("observed attack approach positions", () => {
     const observation = {
       ...base,
       map: { ...base.map!, tacticalCells: [], constructionCells: [] }
-    } satisfies AiObservationV1;
+    } satisfies AiObservation;
 
     const positions = selectAiAttackApproachPositions([airAttacker], { x: 10, y: 0, z: 0 }, observation);
 
@@ -293,7 +293,7 @@ describe("observed attack approach positions", () => {
       ...base,
       actors: [member, enemy, target],
       map: { ...base.map!, tacticalCells: [firingTile, saferFiringTile] }
-    } satisfies AiObservationV1;
+    } satisfies AiObservation;
 
     expect(selectAiSafeFiringPositions([member], [enemy, target], target, observation)).toEqual([
       { actorId: member.actorId, position: firingTile.position }
@@ -337,7 +337,7 @@ describe("observed attack approach positions", () => {
       ...base,
       actors: [member, enemy, target],
       map: { ...base.map!, tacticalCells: [retreatTile] }
-    } satisfies AiObservationV1;
+    } satisfies AiObservation;
 
     expect(selectAiSafeFiringPositions([member], [enemy, target], target, observation)).toEqual([
       { actorId: member.actorId, position: retreatTile.position }

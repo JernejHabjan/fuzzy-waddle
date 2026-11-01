@@ -16,9 +16,9 @@ import { evaluateNativeOptionalRelease } from "./skirmish-ai-native-optional-rel
 import { evaluateNativeDebugParity } from "./skirmish-ai-native-debug-parity-evaluation";
 import { evaluateNativeIslandEstablishment } from "./skirmish-ai-native-island-establishment";
 import bindings from "@fuzzy-waddle/skirmish-ai-tools/native-scenario-bindings.json";
-import type { RuntimeAssertionV1 } from "./skirmish-ai-runtime-assertion";
-import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeAssertion } from "./skirmish-ai-runtime-assertion";
+import type { RuntimeFixture } from "./skirmish-ai-runtime-fixture";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 import { nativeScenarioContext, nativeScenarioRequiresResourceCoverage } from "./skirmish-ai-native-scenario-context";
 import { nativeLifecycleProofFailures } from "./skirmish-ai-native-lifecycle-evaluation";
 import { nativeImportProofFailures } from "./skirmish-ai-native-import-evaluation";
@@ -48,9 +48,9 @@ import {
 /** Mandatory matrix binding; existing partial owner-world experiments remain explicitly outside full case registration. */
 export function evaluateNativeScenarioVariant(
   id: string,
-  assertion: RuntimeAssertionV1,
-  result: RuntimeVariantResultV1,
-  fixture?: RuntimeFixtureV1
+  assertion: RuntimeAssertion,
+  result: RuntimeVariantResult,
+  fixture?: RuntimeFixture
 ): string[] {
   const definition = Object.entries(bindings.cases).find(([scenarioId]) => scenarioId === id)?.[1];
   const contract = assertion.requiredNativeScenario;

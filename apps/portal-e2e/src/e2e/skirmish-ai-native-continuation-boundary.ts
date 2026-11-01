@@ -8,7 +8,7 @@ import { readNativeSceneOwnership } from "./skirmish-ai-native-scene-ownership";
 export async function captureNativeContinuationBoundary(page: Page, playerNumber: number) {
   const owner = await readNativeSceneOwnership(page, playerNumber);
   const capture = await page.evaluate((playerNumber) => {
-    const controller = window.__fuzzyWaddleAiRuntimePartsV1?.(playerNumber)?.controller;
+    const controller = window.__fuzzyWaddleAiRuntimeParts?.(playerNumber)?.controller;
     const brain = controller?.getBrainState(), saved = controller?.getSaveState();
     if (!brain || !saved?.controllerCadence) throw new Error("native_continuation_state_or_cadence_missing");
     return { brain, cadence: saved.controllerCadence, income: saved.deliveredIncomeSampling,

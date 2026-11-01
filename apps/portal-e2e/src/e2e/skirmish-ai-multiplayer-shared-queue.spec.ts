@@ -3,8 +3,8 @@ import { startMultiplayerTestMatch } from "./skirmish-ai-multiplayer-match";
 import { multiplayerSharedQueueWorld } from "./skirmish-ai-multiplayer-shared-queue-world";
 import { normalizeMultiplayerSharedQueueWorld } from "./skirmish-ai-multiplayer-shared-queue-normalization";
 import { observeMultiplayerPeer } from "./skirmish-ai-multiplayer-observation";
-import type { AiMultiplayerSharedQueueWorldV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-multiplayer-shared-queue-world-v1";
+import type { AiMultiplayerSharedQueueWorldSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-multiplayer-shared-queue-world-snapshot";
 
 test.skip(process.env.AI_MULTIPLAYER_E2E !== "1", "Requires local Supabase and the local API relay.");
 test.setTimeout(180_000);
@@ -12,8 +12,8 @@ test.setTimeout(180_000);
 for (const branch of ["shared_contention", "cancel_research"] as const) {
   test(`distinct shared queue authority world: ${branch}`, async ({ browser }, testInfo) => {
     const match = await startMultiplayerTestMatch(browser, { sharedQueueWorld: branch });
-    let host: AiMultiplayerSharedQueueWorldV1 | null = null;
-    let peer: AiMultiplayerSharedQueueWorldV1 | null = null;
+    let host: AiMultiplayerSharedQueueWorldSnapshot | null = null;
+    let peer: AiMultiplayerSharedQueueWorldSnapshot | null = null;
     const comparisons = new Map<number, boolean>();
     const read = async () => {
       [host, peer] = await Promise.all([multiplayerSharedQueueWorld(match.host), multiplayerSharedQueueWorld(match.peer)]);

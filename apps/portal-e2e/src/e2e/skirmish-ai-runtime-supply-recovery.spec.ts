@@ -4,7 +4,7 @@ import { productionAuthorityFixture } from "./skirmish-ai-runtime-production-aut
 import { productionWorldFixture } from "./skirmish-ai-runtime-production-world-fixture";
 import { productionEvent } from "./skirmish-ai-runtime-production-contract-fixtures";
 import { productionCheckpoint } from "./skirmish-ai-runtime-digest-fixtures";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 
 const requirement = { lossEventId: "loss", housingObjectName: "Olival", latestTick: 600, paidQueueCount: 1 };
 
@@ -99,7 +99,7 @@ test("seeded controller outputs use raw native completion without an AI-selected
   const item = variant.presetInitialQueueItems[0];
   if (!item?.objectName) throw new Error("seeded_queue_fixture_missing");
   const { raw } = productionAuthorityFixture();
-  const fact: Extract<AiRuntimeProductionFactV1, { kind: "queue_completion" }> = {
+  const fact: Extract<AiRuntimeProductionFact, { kind: "queue_completion" }> = {
     sequence: 20,
     tick: 500,
     playerNumber: 1,

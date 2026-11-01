@@ -1,6 +1,6 @@
 import type Phaser from "phaser";
 import { ResourceServiceObservation } from "../../../entity/components/resource/resource-service-observation";
-import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spatial-v1";
+import type { AiRuntimeProductionSpatial } from "./ai-runtime-production-spatial";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
 import type { AiRuntimeResourceCoverageCapture } from "./ai-runtime-resource-coverage-capture";
 import { readAiRuntimeResourceOperationId } from "./ai-runtime-resource-operation-identity";
@@ -20,11 +20,11 @@ export class AiRuntimeResourceServiceCapture {
   constructor(
     private readonly scene: Phaser.Scene,
     private readonly boundary: () => Pick<
-      AiRuntimeProductionSpatialV1,
+      AiRuntimeProductionSpatial,
       "clockTick" | "snapshotRestoreInProgress" | "sceneActive"
     >,
     private readonly attempt: (execution?: object) => { attemptId: number; lifetimeValid: boolean } | undefined,
-    private readonly append: (owner: number, value: AiRuntimeProductionSpatialV1) => void,
+    private readonly append: (owner: number, value: AiRuntimeProductionSpatial) => void,
     private readonly liveCargo?: (actor: Phaser.GameObjects.GameObject) => object | undefined,
     private readonly coverage?: AiRuntimeResourceCoverageCapture
   ) {}
@@ -131,7 +131,7 @@ export class AiRuntimeResourceServiceCapture {
                 },
                 before: event.before,
                 after: event.after
-              } satisfies AiRuntimeProductionSpatialV1)
+              } satisfies AiRuntimeProductionSpatial)
             );
           } else if (event.kind === "cargo_offered" || event.kind === "cargo_started") {
             this.append(
@@ -140,7 +140,7 @@ export class AiRuntimeResourceServiceCapture {
                 ...common,
                 phase: event.kind,
                 cargo: event.cargo
-              } satisfies AiRuntimeProductionSpatialV1)
+              } satisfies AiRuntimeProductionSpatial)
             );
           } else {
             if (
@@ -166,7 +166,7 @@ export class AiRuntimeResourceServiceCapture {
                 emissionRestoreInProgress,
                 operationId: readAiRuntimeResourceOperationId(this.scene, application),
                 phase: "resource_credit"
-              } satisfies AiRuntimeProductionSpatialV1)
+              } satisfies AiRuntimeProductionSpatial)
             );
           }
         } catch {

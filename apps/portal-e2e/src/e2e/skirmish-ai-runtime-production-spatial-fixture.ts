@@ -1,6 +1,6 @@
 import { ObjectNames, type ConstructCommand } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionSpatialV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-spatial-v1";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionSpatial } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-spatial";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { productionWorldFixture } from "./skirmish-ai-runtime-production-world-fixture";
 
 /** Synthetic native callback intervals, not an applied construction or fair safe-site proof. */
@@ -48,7 +48,7 @@ export function productionSpatialFixture() {
     site: target,
     footprint: [{ x: 7, y: 9 }],
     legal: true
-  } satisfies AiRuntimeProductionSpatialV1;
+  } satisfies AiRuntimeProductionSpatial;
   const requested = {
     ...boundary,
     kind: "builder_path",
@@ -61,7 +61,7 @@ export function productionSpatialFixture() {
     radiusTiles: 1,
     path: null,
     result: null
-  } satisfies AiRuntimeProductionSpatialV1;
+  } satisfies AiRuntimeProductionSpatial;
   const resolved = {
     ...requested,
     phase: "resolved",
@@ -70,7 +70,7 @@ export function productionSpatialFixture() {
       { x: 6, y: 9 }
     ],
     result: "path"
-  } satisfies AiRuntimeProductionSpatialV1;
+  } satisfies AiRuntimeProductionSpatial;
   const spawn = {
     ...boundary,
     kind: "spawn",
@@ -90,15 +90,15 @@ export function productionSpatialFixture() {
     waterUnit: false,
     tile: { x: 6, y: 9 },
     position: { x: 100, y: 200, z: 0 }
-  } satisfies AiRuntimeProductionSpatialV1;
-  const fact = (spatial: AiRuntimeProductionSpatialV1, sequence: number) =>
+  } satisfies AiRuntimeProductionSpatial;
+  const fact = (spatial: AiRuntimeProductionSpatial, sequence: number) =>
     ({
       kind: "spatial_authority",
       playerNumber: 1,
       tick: spatial.clockTick ?? 20,
       sequence,
       spatial
-    }) satisfies Extract<AiRuntimeProductionFactV1, { kind: "spatial_authority" }>;
+    }) satisfies Extract<AiRuntimeProductionFact, { kind: "spatial_authority" }>;
   const capture = {
     ...base,
     snapshots: [],

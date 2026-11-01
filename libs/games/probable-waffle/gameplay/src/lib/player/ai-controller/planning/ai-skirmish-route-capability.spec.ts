@@ -1,17 +1,17 @@
 import { FactionType, ObjectNames, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservedActor } from "../contracts/ai-observation";
 import type { AiSkirmishProposalContext } from "./ai-skirmish-proposal-context";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
-import { buildAiAccessGraphV1, queryAiAccessRouteV1, type AiAccessCellV1 } from "./ai-access-graph-v1";
+import { buildAiAccessGraph, queryAiAccessRoute, type AiAccessCell } from "./ai-access-graph";
 import { AiSkirmishManager } from "./ai-skirmish-manager";
 import { routeCapability } from "./ai-skirmish-support";
 import { selectAiOffensiveForce } from "./select-ai-offensive-force";
 import { AiTransportManager } from "./ai-transport-manager";
 
-const catalog: AiCapabilityCatalogV1 = {
+const catalog: AiCapabilityCatalog = {
   schemaVersion: 1,
   generation: 1,
   unsupported: [],
@@ -49,7 +49,7 @@ const catalog: AiCapabilityCatalogV1 = {
   ]
 };
 
-function combatActor(): AiObservedActorV1 {
+function combatActor(): AiObservedActor {
   return {
     ...createAiTestOwnedActor("guard"),
     objectName: ObjectNames.TivaraMacemanMale,
@@ -85,7 +85,7 @@ describe("skirmish route capability", () => {
   });
 
   it("keeps air and water combat units out of the ground home reserve", () => {
-    const navalCatalog: AiCapabilityCatalogV1 = {
+    const navalCatalog: AiCapabilityCatalog = {
       ...catalog,
       entries: [
         ...catalog.entries,
@@ -138,15 +138,15 @@ describe("skirmish route capability", () => {
       ...combatActor(),
       actorId: `ground-${index}`
     }));
-    const state = createAiBrainStateV1({
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
-      profile: createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium),
+      profile: createAiProfileConfig(ProbableWaffleAiDifficulty.Medium),
       tick: 0,
       archetypeId: "balanced"
     });
     const proposal = new AiSkirmishManager(
-      createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium),
+      createAiProfileConfig(ProbableWaffleAiDifficulty.Medium),
       () => navalCatalog
     ).propose({ ...createAiTestObservation(), actors: [boat, aircraft, ...ground] }, state);
 
@@ -159,7 +159,7 @@ describe("skirmish route capability", () => {
   });
 
   it("routes an owned naval combat unit to a valuable shoreline objective", () => {
-    const access = buildAiAccessGraphV1({
+    const access = buildAiAccessGraph({
       generation: 1,
       staticRevision: 1,
       dynamicRevision: 1,
@@ -269,7 +269,7 @@ describe("skirmish route capability", () => {
   });
 
   it("seeds one transport child plan for a reachable enemy when the carrier is buildable", () => {
-    const cells: readonly AiAccessCellV1[] = [
+    const cells: readonly AiAccessCell[] = [
       {
         x: 0,
         y: 0,
@@ -301,7 +301,7 @@ describe("skirmish route capability", () => {
         clearance: 2
       }
     ];
-    const built = buildAiAccessGraphV1({
+    const built = buildAiAccessGraph({
       generation: 1,
       staticRevision: 1,
       dynamicRevision: 1,
@@ -343,8 +343,8 @@ describe("skirmish route capability", () => {
         accessGraph: built.graph
       }
     };
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -354,7 +354,7 @@ describe("skirmish route capability", () => {
     const capabilities = routeCapability(observation, [guard], catalog);
     expect(capabilities).toEqual(expect.objectContaining({ canProduceWaterTransport: true }));
     expect(
-      queryAiAccessRouteV1(built.graph, {
+      queryAiAccessRoute(built.graph, {
         queryId: "query:carrier-contract",
         kind: "firing_position",
         fromNodeId: source,

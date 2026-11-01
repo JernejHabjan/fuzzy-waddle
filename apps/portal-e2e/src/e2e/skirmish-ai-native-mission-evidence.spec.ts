@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { nativePresetControlSucceeded } from "./skirmish-ai-native-mission-evidence";
 
 function unloadControl(kind: "applied" | "completed" | "rejected", reason: string) {
@@ -12,7 +12,7 @@ function unloadControl(kind: "applied" | "completed" | "rejected", reason: strin
       command: { execution: { commandId: "unload-1" } },
       outcomes: [{ commandId: "unload-1", kind, reason }]
     }
-  } as unknown as Extract<AiRuntimeProductionFactV1, { kind: "preset_control" }>;
+  } as unknown as Extract<AiRuntimeProductionFact, { kind: "preset_control" }>;
 }
 
 test("native unload accepts completed application and rejects dispatch-only outcomes", () => {

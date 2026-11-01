@@ -1,16 +1,16 @@
 // prettier-ignore
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 // prettier-ignore
-import type { AiRuntimePresetApplicationV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application-v1";
+import type { AiRuntimePresetApplication } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
 import { projectRuntimeProductionEvidenceV2 } from "./skirmish-ai-runtime-production-evidence-projection";
 
 /** One projection per final read; both legacy diagnostics and separate V2 authority retain their actual provenance. */
 export function buildRuntimeProductionReport(
-  productionCapture: AiRuntimeProductionCaptureV1,
-  setup?: AiRuntimePresetApplicationV1
+  productionCapture: AiRuntimeProductionSnapshot,
+  setup?: AiRuntimePresetApplication
 ) {
   const productionCausality = normalizeRuntimeProductionCausality(productionCapture, setup);
   return {
@@ -29,11 +29,11 @@ export function compactRuntimeProductionReport(report: ReturnType<typeof buildRu
   };
 }
 
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 import { normalizeRuntimeProductionSetup } from "./skirmish-ai-runtime-production-setup";
 
 /** Verifies the bridge from one marked runtime capture into the retained normalized diagnostic report. */
-export function checkRuntimeProductionReportBridge(scenarioId: string, variant: RuntimeVariantResultV1): string[] {
+export function checkRuntimeProductionReportBridge(scenarioId: string, variant: RuntimeVariantResult): string[] {
   if (!["PRO-03", "PRO-06", "PRO-07", "H-17"].includes(scenarioId)) return [];
   const capture = variant.productionCapture;
   const report = variant.productionCausality;

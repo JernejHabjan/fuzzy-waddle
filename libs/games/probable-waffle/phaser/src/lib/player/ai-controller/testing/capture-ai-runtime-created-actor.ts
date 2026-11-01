@@ -7,15 +7,15 @@ import { HealthComponent } from "../../../entity/components/combat/components/he
 import { ConstructionSiteComponent } from "../../../entity/components/construction/construction-site-component";
 import { ActorIndexSystem, type ActorIndexSystem as ActorIndexSystemType } from "../../../world/services/ActorIndexSystem";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
-import type { AiRuntimeCreatedActorV1 } from "./ai-runtime-created-actor-v1";
+import type { AiRuntimeCreatedActor } from "./ai-runtime-created-actor";
 
-const indexedIdentities = new WeakMap<Phaser.GameObjects.GameObject, AiRuntimeCreatedActorV1>();
+const indexedIdentities = new WeakMap<Phaser.GameObjects.GameObject, AiRuntimeCreatedActor>();
 
 /** Samples the real returned/index-registered object; canonical variants use the shared definition registry. */
 export function captureAiRuntimeCreatedActor(
   actor: Phaser.GameObjects.GameObject,
   ownerIndex?: Pick<ActorIndexSystemType, "getActorById">
-): AiRuntimeCreatedActorV1 {
+): AiRuntimeCreatedActor {
   const actorId = getActorComponent(actor, IdComponent)?.id ?? null;
   const previous = indexedIdentities.get(actor);
   if (!actor.active && !actorId && previous) {

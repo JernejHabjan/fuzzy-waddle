@@ -1,7 +1,7 @@
 import { safeRetreatPosition } from "../planning/ai-tactics-geometry";
 import { combatActor, squad, fixtureState, observation, manager } from "../planning/ai-tactics-test-fixtures";
 import { AiTacticsManager } from "../planning/ai-tactics-manager";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
 
 describe("combat and scouting scenario contracts", () => {
@@ -66,7 +66,7 @@ describe("combat and scouting scenario contracts", () => {
     const weak = combatActor("weak", "self", 1, "ground", 100, { damage: 1 });
     const enemy = combatActor("strong", "enemy", 3, "ground", 1000, { damage: 100 });
     const current = { ...squad("squad:weak", "attack", [weak.actorId]), objectiveId: enemy.actorId };
-    const result = new AiTacticsManager(createAiProfileConfigV1(ProbableWaffleAiDifficulty.Easy)).propose(
+    const result = new AiTacticsManager(createAiProfileConfig(ProbableWaffleAiDifficulty.Easy)).propose(
       observation([weak, enemy]),
       fixtureState([current])
     );

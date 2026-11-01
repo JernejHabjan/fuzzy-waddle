@@ -4,19 +4,19 @@ import type { UnifiedQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/en
 import { getActorComponent } from "../../../data/actor-component";
 import { isSnapshotApplyInProgress } from "../../../data/scene-data";
 import type { QueueCompletionAuthorityEvent } from "../../../entity/components/queue/queue-completion-authority-event";
-import type { AiRuntimeQueueCompletionV1 } from "./ai-runtime-queue-completion-v1";
+import type { AiRuntimeQueueCompletion } from "./ai-runtime-queue-completion";
 import { captureAiRuntimeProductionItem } from "./ai-runtime-production-item";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
 
 /** The item is already removed. Missing identity or creation projection stays null with its own gap. */
 export function projectAiRuntimeQueueCompletion(
   event: QueueCompletionAuthorityEvent, identify: (actorId: string, item: UnifiedQueueItem) => string
-): AiRuntimeQueueCompletionV1 {
+): AiRuntimeQueueCompletion {
   const gaps: string[] = [];
   let actorId: string | null = null;
-  let item: AiRuntimeQueueCompletionV1["item"] = null;
-  let requestedCanonicalObjectName: AiRuntimeQueueCompletionV1["requestedCanonicalObjectName"] = null;
-  let createdActor: AiRuntimeQueueCompletionV1["createdActor"] = null;
+  let item: AiRuntimeQueueCompletion["item"] = null;
+  let requestedCanonicalObjectName: AiRuntimeQueueCompletion["requestedCanonicalObjectName"] = null;
+  let createdActor: AiRuntimeQueueCompletion["createdActor"] = null;
   try {
     actorId = getActorComponent(event.producer, IdComponent)?.id ?? null;
     if (actorId) item = captureAiRuntimeProductionItem(actorId, event.item, identify);
@@ -30,5 +30,5 @@ export function projectAiRuntimeQueueCompletion(
     createdActorInProducerScene: event.createdActor ? event.createdActor.scene === event.producer.scene : null,
     researchRegistered: event.researchRegistered,
     snapshotRestoreInProgress: isSnapshotApplyInProgress(event.producer.scene), gaps
-  } satisfies AiRuntimeQueueCompletionV1);
+  } satisfies AiRuntimeQueueCompletion);
 }

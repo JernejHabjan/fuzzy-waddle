@@ -1,14 +1,14 @@
 import { aiDeadline } from "../contracts/ai-core-types";
-import type { AiTransportStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiTransportState } from "../contracts/ai-brain-state";
 import {
   AI_TRANSPORT_BOARDING_TIMEOUT_TICKS,
   AI_TRANSPORT_MINIMUM_DEPARTURE_PERMILLE,
   MAX_TRANSPORT_RECOVERY_ATTEMPTS
 } from "./ai-transport-constants";
-import type { CreateAiTransportPlanV1Input } from "./ai-transport-plan-input";
+import type { CreateAiTransportPlanInput } from "./ai-transport-plan-input";
 
 /** Creates a save-safe mission; no live object or Promise crosses this boundary. */
-export function createAiTransportPlanV1(input: CreateAiTransportPlanV1Input): AiTransportStateV1 {
+export function createAiTransportPlan(input: CreateAiTransportPlanInput): AiTransportState {
   const manifest = [...input.passengers]
     .map((passenger) => ({ ...passenger, seats: passenger.seats ?? 1 }))
     .sort((left, right) => left.actorId.localeCompare(right.actorId));

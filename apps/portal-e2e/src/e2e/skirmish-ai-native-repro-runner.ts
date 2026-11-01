@@ -1,7 +1,7 @@
 import type { Browser, BrowserContext } from "@playwright/test";
-import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
-import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
-import type { RuntimeRequestV1 } from "./skirmish-ai-runtime-request";
+import type { RuntimeFixture } from "./skirmish-ai-runtime-fixture";
+import type { RuntimeVariant } from "./skirmish-ai-runtime-variant";
+import type { RuntimeRequest } from "./skirmish-ai-runtime-request";
 import type { NativeReplayCapsule } from "./skirmish-ai-native-replay-capsule";
 import { nativeReplayCapsuleBlocker, nativeReplayCapsuleDigest } from "./skirmish-ai-native-replay-capsule";
 import { runVariant } from "./skirmish-ai-runtime-variant-runner";
@@ -32,7 +32,7 @@ export type NativeReproProof = Awaited<ReturnType<typeof reproduceNativeCapsule>
 
 /** Native incident, opaque codec checkpoint and a witnessed autonomous interval feed separate pure and physical replays. */
 export async function runNativeReproVariant(
-  browser: Browser, fixture: RuntimeFixtureV1, variant: RuntimeVariantV1, request: RuntimeRequestV1, branch: string
+  browser: Browser, fixture: RuntimeFixture, variant: RuntimeVariant, request: RuntimeRequest, branch: string
 ) {
   const world = variant.presetWorld;
   if (!world || world.events?.length || world.controls?.length || world.routeOutages?.length ||
@@ -81,8 +81,8 @@ export async function runNativeReproVariant(
 }
 
 async function reproduceNativeCapsule(
-  browser: Browser, originalContext: BrowserContext, fixture: RuntimeFixtureV1, variant: RuntimeVariantV1,
-  request: RuntimeRequestV1, capsule: NativeReplayCapsule, stepping: boolean
+  browser: Browser, originalContext: BrowserContext, fixture: RuntimeFixture, variant: RuntimeVariant,
+  request: RuntimeRequest, capsule: NativeReplayCapsule, stepping: boolean
 ) {
   const session = await openNativeReplaySession(browser, fixture, variant, capsule, request.sourceRevision, request.fixtureDigest);
   try {
@@ -91,7 +91,7 @@ async function reproduceNativeCapsule(
     if (stepping) for (const kind of ["tick", "decision", "queue_progress"] as const)
       steps.push(await stepNativeReplay(session.page, kind, capsule.control.owner.tick));
     await advanceRuntimeFrames(session.page, 2, capsule.control.owner.tick);
-    await session.page.waitForFunction(() => window.__fuzzyWaddleAiRuntimePartsV1?.(2)?.controller.isDecisionBoundarySettled());
+    await session.page.waitForFunction(() => window.__fuzzyWaddleAiRuntimeParts?.(2)?.controller.isDecisionBoundarySettled());
     const resumed = await captureNativeContinuationBoundary(session.page, 2), trace = await closeNativeDecisionTrace(session.page);
     return { isolatedContext: session.context !== originalContext && session.page.context() !== originalContext,
       capsuleDigest: capsule.payloadDigest, restored: session.restored, saved: capsule.saved,

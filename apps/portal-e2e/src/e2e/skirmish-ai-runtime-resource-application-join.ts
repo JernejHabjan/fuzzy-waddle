@@ -1,10 +1,10 @@
 import { isDeepStrictEqual } from "node:util";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { RuntimeResourceCreditV1 } from "./skirmish-ai-runtime-resource-credit";
+import type { RuntimeResourceCredit } from "./skirmish-ai-runtime-resource-credit";
 import type { normalizeRuntimeRecipientMutations } from "./skirmish-ai-runtime-recipient-mutations";
 
 /** Exact recipient/payload/native terminal join; never use nearest operation, source owner or publication clock. */
-export function runtimeResourceCreditMatchesOperation(credit: RuntimeResourceCreditV1,
+export function runtimeResourceCreditMatchesOperation(credit: RuntimeResourceCredit,
   operation: ReturnType<typeof normalizeRuntimeRecipientMutations>["operations"][number]): boolean {
   const value = credit.fact.spatial, terminal = operation.terminal, mutation = terminal.mutation;
   if (value.kind !== "resource_service" || value.phase !== "resource_credit" || value.resourceType === null) return false;

@@ -1,6 +1,6 @@
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import type { AiRuntimeProductionSpatialV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-spatial-v1";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
+import type { AiRuntimeProductionSpatial } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-spatial";
 import { productionCompletionFixture } from "./skirmish-ai-runtime-production-completion-fixture";
 
 /** Invented native creation/branch/query order only. No live movement, cache freshness or useful strategic arrival. */
@@ -17,7 +17,7 @@ export function producerRouteFixture() {
     canonicalObjectName: ObjectNames.Sandhold
   };
   const boundary = { clockTick: 10, sceneActive: true, snapshotRestoreInProgress: false, gaps: [] };
-  const fact = (spatial: AiRuntimeProductionSpatialV1): AiRuntimeProductionFactV1 => ({
+  const fact = (spatial: AiRuntimeProductionSpatial): AiRuntimeProductionFact => ({
     sequence: 0,
     tick: spatial.clockTick ?? 10,
     playerNumber: 1,
@@ -32,7 +32,7 @@ export function producerRouteFixture() {
     waterUnit: false,
     tile: { x: 3, y: 4 },
     position: { x: 100, y: 200, z: 0 }
-  } satisfies AiRuntimeProductionSpatialV1;
+  } satisfies AiRuntimeProductionSpatial;
   const output = {
     ...boundary,
     kind: "output",
@@ -43,7 +43,7 @@ export function producerRouteFixture() {
     rallyMode: "tile_action",
     target: null,
     targetTile: { x: 8, y: 9, z: 0 }
-  } satisfies AiRuntimeProductionSpatialV1;
+  } satisfies AiRuntimeProductionSpatial;
   const requested = {
     ...boundary,
     kind: "producer_path",
@@ -63,9 +63,9 @@ export function producerRouteFixture() {
     navigation: { graphObservationId: 1, updateRequestCount: 0 },
     path: null,
     result: null
-  } satisfies AiRuntimeProductionSpatialV1;
-  const resolved = { ...requested, phase: "resolved", path: [], result: "path" } satisfies AiRuntimeProductionSpatialV1;
-  const facts = base.facts.flatMap((entry): AiRuntimeProductionFactV1[] => {
+  } satisfies AiRuntimeProductionSpatial;
+  const resolved = { ...requested, phase: "resolved", path: [], result: "path" } satisfies AiRuntimeProductionSpatial;
+  const facts = base.facts.flatMap((entry): AiRuntimeProductionFact[] => {
     if (entry.kind === "queue_completion" && entry.completion.phase === "before") return [fact(spawn), entry];
     if (entry.kind === "outcome" && entry.outcome.kind === "completed") return [fact(output), entry];
     return [entry];

@@ -1,9 +1,9 @@
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
-import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import type { AiObservation, AiObservedActor } from "../contracts/ai-observation";
 import { isAiProducerPositionExposed, observedAiProducerThreats } from "./ai-producer-safety";
 
 /** Reuses current permitted weapon facts; includes adjacent worker contact cells, without inventing hidden threats. */
-export function aiEconomySiteSafety(observation: AiObservationV1) {
+export function aiEconomySiteSafety(observation: AiObservation) {
   const threats = observedAiProducerThreats(observation);
   const positionSafe = (position: Vector3Simple): boolean => {
     for (let y = -1; y <= 1; y += 1)
@@ -13,7 +13,7 @@ export function aiEconomySiteSafety(observation: AiObservationV1) {
   };
   return {
     positionSafe,
-    actorSafe: (actor: AiObservedActorV1): boolean =>
+    actorSafe: (actor: AiObservedActor): boolean =>
       actor.logicalPosition.status !== "known" || positionSafe(actor.logicalPosition.value)
   };
 }

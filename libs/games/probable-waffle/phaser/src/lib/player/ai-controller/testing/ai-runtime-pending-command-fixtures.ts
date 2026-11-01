@@ -1,9 +1,9 @@
-import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { ObjectNames, ResourceType, type GameCommandOutcome } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiIntentCommandDispatchEvent } from "../ai-intent-command-dispatch-event";
 
 /** Synthetic observer inputs only; these do not represent a relayed or paid Phaser world. */
-export function pendingCommandIntent(suffix = "one"): AiIntentV1 {
+export function pendingCommandIntent(suffix = "one"): AiIntent {
   return {
     kind: "produce", intentId: `intent:${suffix}`, effectId: `effect:${suffix}`, planId: "plan:force",
     demandId: "demand:force", lane: "supply_production", proposedTick: 99, urgencyClass: 2, utility: 10,

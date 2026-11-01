@@ -1,6 +1,6 @@
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 import type { FortificationAccessBranch } from "./skirmish-ai-fortification-access-branch";
 import { runtimeClosedHistoryFailures } from "./skirmish-ai-runtime-closed-history";
 import { runtimeControlTransitFailures } from "./skirmish-ai-runtime-control-transit";
@@ -8,8 +8,8 @@ import { runtimeControlTransitFailures } from "./skirmish-ai-runtime-control-tra
 /** Physical prefab-owner controls require movement and closed native position, independent of planner graph/arrival labels. */
 export function evaluateFortificationAccessWorld(
   branch: FortificationAccessBranch,
-  result: Pick<RuntimeVariantResultV1, "presetCreatedActorIds" | "perturbations">,
-  capture: AiRuntimeProductionCaptureV1 | undefined
+  result: Pick<RuntimeVariantResult, "presetCreatedActorIds" | "perturbations">,
+  capture: AiRuntimeProductionSnapshot | undefined
 ): string[] {
   const failures = runtimeClosedHistoryFailures(capture, 800);
   if (!capture || failures.length) return failures;

@@ -8,7 +8,7 @@ import { AiReproBundleValidationError } from
 /** Explicit localhost developer surface. Imported content is inert data and is never applied to the running match. */
 export function mountAiRuntimeBundleImport(scene: ProbableWaffleScene): void {
   if (environment.production || typeof window === "undefined" || !["localhost", "127.0.0.1"].includes(location.hostname)) return;
-  try { if (sessionStorage.getItem("fuzzy-waddle:ai-runtime-import-v1") !== "1") return; }
+  try { if (sessionStorage.getItem("fuzzy-waddle:ai-runtime-import") !== "1") return; }
   catch { return; }
   const root = document.createElement("details");
   root.dataset.aiRuntimeBundleImport = "1";

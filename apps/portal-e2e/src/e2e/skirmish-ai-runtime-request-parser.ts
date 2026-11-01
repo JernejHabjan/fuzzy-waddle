@@ -1,8 +1,8 @@
-import type { RuntimeRequestV1 } from "./skirmish-ai-runtime-request";
+import type { RuntimeRequest } from "./skirmish-ai-runtime-request";
 
-export function parseRequest(value: string | undefined): RuntimeRequestV1 {
+export function parseRequest(value: string | undefined): RuntimeRequest {
   if (!value) throw new Error("runtime_request_missing");
-  const parsed = JSON.parse(value) as RuntimeRequestV1;
+  const parsed = JSON.parse(value) as RuntimeRequest;
   if (
     parsed.schemaVersion !== 1 ||
     !/^[a-f0-9]{40}$/.test(parsed.sourceRevision) ||

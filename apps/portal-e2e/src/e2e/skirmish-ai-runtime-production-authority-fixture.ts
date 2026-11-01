@@ -1,7 +1,7 @@
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 // prettier-ignore
-import type { AiRuntimeProductionSetupV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-setup-v1";
+import type { AiRuntimeProductionSetup } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-setup";
 import type { RuntimeProductionEvidenceV2 } from "./skirmish-ai-runtime-production-evidence-v2";
 import { normalizeRuntimeProductionSetup } from "./skirmish-ai-runtime-production-setup";
 import { productionConsumedDecisionFixture } from "./skirmish-ai-runtime-production-consumed-decision-fixture";
@@ -24,7 +24,7 @@ export function productionAuthorityFixture() {
       outcomes: []
     },
     actors: [{ actorId: "enemy", position: { x: 5, y: 5, z: 0 }, definition: { name: ObjectNames.TivaraMacemanMale } }]
-  } satisfies AiRuntimeProductionSetupV1;
+  } satisfies AiRuntimeProductionSetup;
   const evidence = {
     schemaVersion: 2,
     setup: normalizeRuntimeProductionSetup(setup, { threat: "enemy" }),

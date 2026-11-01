@@ -1,15 +1,15 @@
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiStrategyAssessment } from "../contracts/ai-strategy-assessment";
-import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
-import { queryAiAccessRouteV1 } from "./ai-access-graph-v1";
+import type { AiObservedActor } from "../contracts/ai-observation";
+import { queryAiAccessRoute } from "./ai-access-graph";
 import type { AiSkirmishProposalContext } from "./ai-skirmish-proposal-context";
 import { canFight, canTarget, distance, domains, position } from "./ai-skirmish-support";
 import { selectAiOffensiveForce } from "./select-ai-offensive-force";
 
 export interface AiOffensiveOpportunity {
-  readonly opponent: AiObservedActorV1 | undefined;
-  readonly attackers: readonly AiObservedActorV1[];
-  readonly route: ReturnType<typeof queryAiAccessRouteV1> | undefined;
+  readonly opponent: AiObservedActor | undefined;
+  readonly attackers: readonly AiObservedActor[];
+  readonly route: ReturnType<typeof queryAiAccessRoute> | undefined;
   readonly assessment: AiStrategyAssessment;
 }
 
@@ -56,11 +56,11 @@ function recentFailedMission(context: AiSkirmishProposalContext): AiStrategyAsse
   };
 }
 
-function isCore(actor: AiObservedActorV1): boolean {
+function isCore(actor: AiObservedActor): boolean {
   return actor.mainBuilding?.status === "known" && actor.mainBuilding.value === true;
 }
 
-function targetValue(actor: AiObservedActorV1): number {
+function targetValue(actor: AiObservedActor): number {
   if (isCore(actor)) return 1200;
   const families = new Set(actor.capabilities.map((capability) => capability.family));
   if (families.has("produce")) return 720;
@@ -69,7 +69,7 @@ function targetValue(actor: AiObservedActorV1): number {
   return canFight(actor) ? 280 : 360;
 }
 
-function nearbyWaterThreatBonus(context: AiSkirmishProposalContext, actor: AiObservedActorV1): number {
+function nearbyWaterThreatBonus(context: AiSkirmishProposalContext, actor: AiObservedActor): number {
   if (!domains(actor).includes("water") || !canFight(actor) || !position(actor)) return 0;
   const attacks = actor.combatProfile?.status === "known" ? actor.combatProfile.value.attacks : [];
   const threatensGround = attacks.some((attack) => attack.targetDomains.includes("ground"));
@@ -88,9 +88,9 @@ function nearbyWaterThreatBonus(context: AiSkirmishProposalContext, actor: AiObs
 
 function threatNear(
   context: AiSkirmishProposalContext,
-  target: AiObservedActorV1,
-  attackers: readonly AiObservedActorV1[],
-  additionalThreats: readonly AiObservedActorV1[] = []
+  target: AiObservedActor,
+  attackers: readonly AiObservedActor[],
+  additionalThreats: readonly AiObservedActor[] = []
 ): number {
   const targetPosition = position(target);
   if (!targetPosition) return 0;
@@ -149,7 +149,7 @@ function threatNear(
   }, 0);
 }
 
-function productionNear(context: AiSkirmishProposalContext, target: AiObservedActorV1): number {
+function productionNear(context: AiSkirmishProposalContext, target: AiObservedActor): number {
   const targetPosition = position(target);
   if (!targetPosition) return 0;
   return context.visibleEnemies.filter((enemy) => {
@@ -166,12 +166,12 @@ function productionNear(context: AiSkirmishProposalContext, target: AiObservedAc
 /** Deterministically ranks only observed or remembered, reachable and targetable objectives. */
 export function selectAiOffensiveOpportunity(
   context: AiSkirmishProposalContext,
-  attackers: readonly AiObservedActorV1[],
+  attackers: readonly AiObservedActor[],
   options: {
-    readonly candidateFilter?: (actor: AiObservedActorV1) => boolean;
+    readonly candidateFilter?: (actor: AiObservedActor) => boolean;
     readonly raid?: boolean;
     /** Recent last-seen contacts can influence target risk without becoming attack objectives. */
-    readonly threatContacts?: readonly AiObservedActorV1[];
+    readonly threatContacts?: readonly AiObservedActor[];
   } = {}
 ): AiOffensiveOpportunity {
   const recentFailure = recentFailedMission(context);
@@ -258,7 +258,7 @@ export function selectAiOffensiveOpportunity(
         order.targetActorId === targetActorId
       );
     });
-  const hasFreshNativePursuitOrder = (target: AiObservedActorV1) => {
+  const hasFreshNativePursuitOrder = (target: AiObservedActor) => {
     const targetPosition = position(target);
     if (!targetPosition) return false;
     return attackers.some((actor) => {

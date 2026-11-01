@@ -1,4 +1,4 @@
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 import type { runNativeSequenceTail } from "./skirmish-ai-native-sequence-tail";
 import { nativeSaveProofFailures } from "./skirmish-ai-native-save-evaluation";
 import { nativeLifecycleProofFailures } from "./skirmish-ai-native-lifecycle-evaluation";
@@ -9,7 +9,7 @@ import { digestCanonicalAiValue } from
 
 /** A chain must contain its own native terminal result and next scene; unrelated passing legs cannot stand in for it. */
 export function nativeSequenceProofFailures(
-  branch: string, result: RuntimeVariantResultV1, difficulty: "Easy" | "Normal" | "Hard"
+  branch: string, result: RuntimeVariantResult, difficulty: "Easy" | "Normal" | "Hard"
 ) {
   const proof = result.nativeSequence, save = result.nativeSave;
   if (!proof || proof.branch !== branch || !save) return ["native_sequence_continuous_proof_missing"];

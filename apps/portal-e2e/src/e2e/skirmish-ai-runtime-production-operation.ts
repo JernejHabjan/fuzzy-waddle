@@ -5,7 +5,7 @@ import type { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
  * production event: enqueue/removal, useful products, catalog and fair setup require their own authorities.
  * Unspent values are null when the captured queue-claim ledger cannot be reconciled; pending claims are never added.
  */
-export interface RuntimeProductionOperationV1 {
+export interface RuntimeProductionOperation {
   readonly sequence: number;
   readonly tick: number;
   readonly kind: "immediate_charge" | "cancellation_refund" | "tick_charge" | "tick_denied";

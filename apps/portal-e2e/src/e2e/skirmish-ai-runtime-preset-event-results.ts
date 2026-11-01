@@ -1,13 +1,13 @@
 import type { Page } from "@playwright/test";
-import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeVariant } from "./skirmish-ai-runtime-variant";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 // prettier-ignore
-import type { AiRuntimePresetApplicationV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application-v1";
+import type { AiRuntimePresetApplication } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application";
 
 export function assertRuntimePresetEvents(
-  variant: RuntimeVariantV1,
-  application: Pick<AiRuntimePresetApplicationV1, "eventResults" | "createdActorIds">
+  variant: RuntimeVariant,
+  application: Pick<AiRuntimePresetApplication, "eventResults" | "createdActorIds">
 ): void {
   const expected = variant.presetWorld?.events ?? [];
   const outages = variant.presetWorld?.routeOutages ?? [];
@@ -54,17 +54,17 @@ export function assertRuntimePresetEvents(
 /** Read applied preset-event facts only after the normal browser service has executed them. */
 export async function collectRuntimePresetEvents(
   page: Page,
-  variant: RuntimeVariantV1
-): Promise<RuntimeVariantResultV1["perturbations"]> {
+  variant: RuntimeVariant
+): Promise<RuntimeVariantResult["perturbations"]> {
   if (!variant.presetWorld?.events?.length && !variant.presetWorld?.routeOutages?.length) return [];
   const application = await page.evaluate(() => {
     const host = (
       window as unknown as {
-        __fuzzyWaddleAiRuntimeBrowserTestV1?: {
-          presetApplication?: AiRuntimePresetApplicationV1;
+        __fuzzyWaddleAiRuntimeBrowserTest?: {
+          presetApplication?: AiRuntimePresetApplication;
         };
       }
-    ).__fuzzyWaddleAiRuntimeBrowserTestV1;
+    ).__fuzzyWaddleAiRuntimeBrowserTest;
     return host?.presetApplication;
   });
   if (!application) throw new Error("runtime_preset_events_incomplete");

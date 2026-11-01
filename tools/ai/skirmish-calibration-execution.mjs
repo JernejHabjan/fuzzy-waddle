@@ -11,11 +11,11 @@ export function invokeCalibrationHarness(input, context) {
   const { workspaceRoot, fixtureDirectory } = context, sourceRevision = input.candidate ?? readHead();
   const row = input.rows[0], fixturePath = join(fixtureDirectory, row.fixture), fixture = readJson(fixturePath, 1024 * 1024);
   const fixtureDigest = `sha256:${createHash("sha256").update(JSON.stringify([{ row, fixture }])).digest("hex")}`;
-  const specification = readJson(join(fixtureDirectory, "difficulty-calibration-v1.json"), 256 * 1024);
+  const specification = readJson(join(fixtureDirectory, "difficulty-calibration.json"), 256 * 1024);
   const resultPath = createRuntimeResultPath(workspaceRoot);
   const command = spawnSync(process.execPath, [join(workspaceRoot, "tools/ai/run-difficulty-calibration.mjs"),
     `--candidate=${sourceRevision}`, `--baseline=${specification.baseline.sourceRevision}`, `--fixture=${fixturePath}`,
-    `--manifest=${join(fixtureDirectory, "skirmish-v1.json")}`, `--fixture-digest=${fixtureDigest}`, `--output=${resultPath}`],
+    `--manifest=${join(fixtureDirectory, "skirmish.json")}`, `--fixture-digest=${fixtureDigest}`, `--output=${resultPath}`],
   { cwd: workspaceRoot, encoding: "utf8", maxBuffer: 64 * 1024 });
   if (command.error) throw command.error;
   const runtime = readRuntimeResult(resultPath, { sourceRevision, fixtureDigest, dirtySourceDigest: null });

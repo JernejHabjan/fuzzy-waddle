@@ -1,6 +1,6 @@
 import { createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 import { createAiProductionPolicyFixture } from "../testing/ai-production-policy-fixture";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiObservation } from "../contracts/ai-observation";
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { selectConstructionPosition } from "./ai-construction-site-selector";
 
@@ -14,7 +14,7 @@ function fixture(positions: readonly (readonly [number, number])[]) {
     }
   };
   const source = createAiProductionPolicyFixture().observation;
-  const observation: AiObservationV1 = {
+  const observation: AiObservation = {
     ...source,
     actors: [builder],
     map: {

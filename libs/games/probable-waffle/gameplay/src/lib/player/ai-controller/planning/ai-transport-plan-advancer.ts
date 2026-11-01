@@ -1,6 +1,6 @@
 import type { AiTransportPlanContext } from "./ai-transport-plan-context";
 import type { AiTransportPlanWithLifecycle } from "./ai-transport-plan-lifecycle";
-import { queryAiAccessRouteV1 } from "./ai-access-graph-v1";
+import { queryAiAccessRoute } from "./ai-access-graph";
 import { advanceAiTransportLanding } from "./ai-transport-plan-landing";
 import { advanceAiTransportLoading } from "./ai-transport-plan-loading";
 import { claimAiTransportPlanOwnership } from "./ai-transport-plan-ownership";
@@ -62,7 +62,7 @@ export function advanceAiTransportPlan(
     });
   }
   if (context.graph.generation !== plan.lifecycle.routeGeneration) {
-    const refreshedRoute = queryAiAccessRouteV1(context.graph, plan.lifecycle.routeRequest);
+    const refreshedRoute = queryAiAccessRoute(context.graph, plan.lifecycle.routeRequest);
     if (refreshedRoute.kind !== route.kind) {
       return withAiTransportPhase(plan, "recovering", context.observation.tick, 200, {
         terminalReason: "route_generation_invalidated"

@@ -6,9 +6,9 @@ import {
   ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
 
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
 
 import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "../testing/ai-test-fixtures";
 
@@ -42,8 +42,8 @@ describe("AI macro construction commitments", () => {
         constructionCells
       }
     };
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -163,8 +163,8 @@ describe("AI macro construction commitments", () => {
     );
   });
   it("executes the opening in order and gives one builder only one construction commitment", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -237,8 +237,8 @@ describe("AI macro construction commitments", () => {
   });
 
   it("waits for an actively staffed construction site instead of issuing duplicate buildings", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -277,8 +277,8 @@ describe("AI macro construction commitments", () => {
   });
 
   it("resumes an observed construction site after its builder is displaced", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -308,8 +308,8 @@ describe("AI macro construction commitments", () => {
   });
 
   it("does not reassign a worker that is already constructing", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,

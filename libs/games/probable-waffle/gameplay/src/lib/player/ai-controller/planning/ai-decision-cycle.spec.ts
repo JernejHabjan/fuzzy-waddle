@@ -1,13 +1,13 @@
 import { requireAiTestEntry } from "../testing/ai-test-fixtures";
 import { aiDeadline, type AiPlanId } from "../contracts/ai-core-types";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
 import { createAiProductionPolicyFixture } from "../testing/ai-production-policy-fixture";
 import { planAiDecisions } from "./ai-decision-planner";
 import { selectAiCycleVictim } from "./ai-cycle-victim";
 
 function cycleState(pairs: readonly (readonly [AiPlanId, AiPlanId])[]) {
   const fixture = createAiProductionPolicyFixture();
-  const state: AiBrainStateV1 = { ...fixture.state,
+  const state: AiBrainState = { ...fixture.state,
     waitEdges: pairs.map(([fromPlanId, toPlanId], index) => ({ edgeId: `wait:${index}`, fromPlanId, toPlanId,
       status: "known", deadline: aiDeadline(500), prerequisite: { kind: "worker", capabilityId: "worker" } })),
     reservations: [...new Set(pairs.map(([from]) => from))].map((ownerPlanId, index) => ({
@@ -36,7 +36,7 @@ it("does not mistake converging acyclic dependency paths for a cycle", () => {
 
 it("releases the original lowest-priority bundle independently of plan name, edge and claim enumeration", () => {
   const f = cycleState([["plan:a", "plan:z"], ["plan:z", "plan:a"]]);
-  const state: AiBrainStateV1 = { ...f.state, reservations: f.state.reservations.map((claim) => ({ ...claim,
+  const state: AiBrainState = { ...f.state, reservations: f.state.reservations.map((claim) => ({ ...claim,
     priority: { urgencyClass: claim.ownerPlanId === "plan:z" ? 3 : 0, utility: 950 } })) };
   expect(selectAiCycleVictim(state)).toBe("plan:z");
   expect(selectAiCycleVictim({ ...state, waitEdges: [...state.waitEdges].reverse(),
@@ -47,7 +47,7 @@ it("releases the original lowest-priority bundle independently of plan name, edg
 
 it.each(["dispatched", "applied_spending", "refundable_work"] as const)("protects a bundle with %s work", (kind) => {
   const f = cycleState([["plan:a", "plan:b"], ["plan:b", "plan:a"]]);
-  const state: AiBrainStateV1 = { ...f.state, reservations: [...f.state.reservations, {
+  const state: AiBrainState = { ...f.state, reservations: [...f.state.reservations, {
     claimId: "claim:paid-neighbor", ownerPlanId: "plan:a", createdTick: 0, prerequisites: [],
     state: kind === "dispatched" ? { kind, commandId: "original" } : kind === "applied_spending"
       ? { kind, appliedTick: 10 } : { kind, refundPending: false }
@@ -64,7 +64,7 @@ it("retains legacy unranked claims and refuses unknown edges as cycle proof", ()
 
 it("protects a provisional label when current original outcomes already prove dispatch/application", () => {
   const f = cycleState([["plan:a", "plan:b"], ["plan:b", "plan:a"]]);
-  const state: AiBrainStateV1 = { ...f.state, reservations: f.state.reservations.map((claim) =>
+  const state: AiBrainState = { ...f.state, reservations: f.state.reservations.map((claim) =>
     claim.ownerPlanId === "plan:a" ? { ...claim, subjectKey: "effect:effect:original" } : claim),
     pendingOutcomes: [{ kind: "applied", tick: 100, worldLinkIds: [], identity: { matchId: "match", playerNumber: 1,
       authorityEpoch: 0, sequence: 1, commandId: "command:original", intentId: "intent:original", effectId: "effect:original" } }] };

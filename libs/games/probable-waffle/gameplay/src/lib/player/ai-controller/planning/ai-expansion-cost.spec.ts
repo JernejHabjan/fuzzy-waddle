@@ -1,8 +1,8 @@
 import { ObjectNames, ProbableWaffleAiDifficulty, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservedActor, AiObservation } from "../contracts/ai-observation";
 import { arbitrateAiIntents } from "../brain/ai-intent-arbiter";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "../testing/ai-test-fixtures";
 import { catalog, completedOpeningState } from "./ai-macro-test-fixtures";
 import { AiBaseManager } from "./ai-base-manager";
@@ -31,17 +31,17 @@ function fixture(wood: number, reservedWood = 0, priced = true) {
       }
       return entry;
     })
-  } satisfies AiCapabilityCatalogV1;
+  } satisfies AiCapabilityCatalog;
   const main = {
     ...createAiTestOwnedActor("main"),
     objectName: ObjectNames.Sandhold,
     mainBuilding: { status: "known", value: true, observedTick: tick },
     logicalPosition: { status: "known", value: { x: 0, y: 0, z: 0 }, observedTick: tick }
-  } satisfies AiObservedActorV1;
+  } satisfies AiObservedActor;
   const worker = {
     ...createAiTestOwnedActor("worker"),
     logicalPosition: { status: "known", value: { x: 1, y: 0, z: 0 }, observedTick: tick }
-  } satisfies AiObservedActorV1;
+  } satisfies AiObservedActor;
   const distant = {
     ...createAiTestOwnedActor("distant"),
     objectName: ObjectNames.Tree1,
@@ -60,7 +60,7 @@ function fixture(wood: number, reservedWood = 0, priced = true) {
         serviceCapacity: { status: "known", value: 2, observedTick: tick }
       }
     }
-  } satisfies AiObservedActorV1;
+  } satisfies AiObservedActor;
   const observation = {
     ...createAiTestObservation(),
     tick,
@@ -81,8 +81,8 @@ function fixture(wood: number, reservedWood = 0, priced = true) {
         deliveredIncomePerMinute: unknownAiValue
       }
     ]
-  } satisfies AiObservationV1;
-  const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+  } satisfies AiObservation;
+  const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
   const initial = completedOpeningState();
   const state = {
     ...initial,

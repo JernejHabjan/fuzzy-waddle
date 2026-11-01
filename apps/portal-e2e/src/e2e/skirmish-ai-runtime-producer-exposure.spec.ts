@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test";
 import { HIGH_GROUND_THRESHOLD } from
   "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/high-ground-constants";
-import type { AiDecisionProducerExposureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/ai-decision-producer-exposure-v1";
+import type { AiDecisionProducerExposure } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/ai-decision-producer-exposure";
 import { productionConsumedDecisionFixture } from "./skirmish-ai-runtime-production-consumed-decision-fixture";
 import { normalizeRuntimeProductionFairInput } from "./skirmish-ai-runtime-production-fair-input-normalization";
 import { normalizeRuntimeProducerExposure } from "./skirmish-ai-runtime-producer-exposure";
@@ -17,7 +17,7 @@ function fixture() {
   if (!producer || !enemy) throw new Error("synthetic_pair_missing");
   const exposure = { tick: 20, generation: 1, pairs: [{ producerActorId: "producer", threatActorId: "enemy", status: "known",
     attackIndex: 0, range: 4, positioningRange: 4, highGroundBonus: 1, attackerElevation: HIGH_GROUND_THRESHOLD,
-    targetElevation: 0, distanceTiles: 4, withinSelectedWeaponBand: true }], gaps: [] } satisfies AiDecisionProducerExposureV1;
+    targetElevation: 0, distanceTiles: 4, withinSelectedWeaponBand: true }], gaps: [] } satisfies AiDecisionProducerExposure;
   const observation = { ...f.input.observation, actors: [{ ...producer, capabilities: [...producer.capabilities,
     { id: "produce", family: "produce", level: 1, domains: [], targetDomains: [],
       capacity: { status: "known" as const, value: 1, observedTick: 20 } }] }, enemy] };

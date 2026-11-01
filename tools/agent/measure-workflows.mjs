@@ -240,7 +240,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     else {
       const benchmarkPath = options.benchmark
         ? resolveInside(workspaceRoot, options.benchmark)
-        : join(scriptDirectory, "benchmarks", "repository-workflows-v1.json");
+        : join(scriptDirectory, "benchmarks", "repository-workflows.json");
       const benchmark = JSON.parse(readFileSync(benchmarkPath, "utf8"));
       const report = measureBenchmark({ root: workspaceRoot, benchmark, workflowIds: options.workflowIds });
       const path = writeMeasurement(workspaceRoot, report, options.output);

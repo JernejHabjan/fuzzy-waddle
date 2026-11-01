@@ -1,10 +1,10 @@
-import type { RuntimeAssertionV1 } from "./skirmish-ai-runtime-assertion";
-import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeAssertion } from "./skirmish-ai-runtime-assertion";
+import type { RuntimeCheckpoint } from "./skirmish-ai-runtime-checkpoint";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 
-type LaborCheckpoint = Pick<RuntimeCheckpointV1, "tick" | "resourceServiceActors" | "workerOrders">;
+type LaborCheckpoint = Pick<RuntimeCheckpoint, "tick" | "resourceServiceActors" | "workerOrders">;
 type LaborVariant = Pick<
-  RuntimeVariantResultV1,
+  RuntimeVariantResult,
   "presetInitialOrderCount" | "presetResourceStartCount" | "presetInitialResourceBalances"
 > & {
   readonly checkpoints: readonly LaborCheckpoint[];
@@ -12,7 +12,7 @@ type LaborVariant = Pick<
 
 /** Requires an AI-issued order that reaches an observed source, not a forecast or preloaded fixture order. */
 export function evaluateRuntimeResourceLabor(
-  requirement: NonNullable<RuntimeAssertionV1["requiredResourceLabor"]>,
+  requirement: NonNullable<RuntimeAssertion["requiredResourceLabor"]>,
   variant: LaborVariant
 ): string[] {
   const failures: string[] = [];

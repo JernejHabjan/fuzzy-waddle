@@ -4,13 +4,13 @@ import { getActorComponent } from "../../../data/actor-component";
 import { isSnapshotApplyInProgress } from "../../../data/scene-data";
 import { ConstructionSiteComponent } from "../../../entity/components/construction/construction-site-component";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
-import type { AiRuntimeInitialConstructionV1 } from "./ai-runtime-initial-construction-v1";
+import type { AiRuntimeInitialConstruction } from "./ai-runtime-initial-construction";
 
 /** Reuses the installation's indexed actor list once. No later snapshot can backfill this membership. */
 export function captureAiRuntimeInitialConstruction(
   scene: ProbableWaffleScene, actors: readonly Phaser.GameObjects.GameObject[], tick: number
-): Map<number, AiRuntimeInitialConstructionV1> {
-  const records = new Map<number, { sites: AiRuntimeInitialConstructionV1["sites"][number][]; gaps: Set<string> }>();
+): Map<number, AiRuntimeInitialConstruction> {
+  const records = new Map<number, { sites: AiRuntimeInitialConstruction["sites"][number][]; gaps: Set<string> }>();
   for (const player of scene.players) {
     if (player.playerNumber !== undefined) records.set(player.playerNumber, { sites: [], gaps: new Set() });
   }
@@ -35,8 +35,8 @@ export function captureAiRuntimeInitialConstruction(
     } catch { readerFailed = true; }
   }
   const snapshotRestoreInProgress = isSnapshotApplyInProgress(scene);
-  return new Map<number, AiRuntimeInitialConstructionV1>([...records].map(([playerNumber, record]) =>
+  return new Map<number, AiRuntimeInitialConstruction>([...records].map(([playerNumber, record]) =>
     [playerNumber, structuredClone({ tick, snapshotRestoreInProgress, sites: readerFailed ? [] : record.sites,
       gaps: [...record.gaps, ...(readerFailed ? ["production_construction_initial_reader_missing"] : [])].sort()
-    } satisfies AiRuntimeInitialConstructionV1)]));
+    } satisfies AiRuntimeInitialConstruction)]));
 }

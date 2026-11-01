@@ -1,8 +1,8 @@
 import { isDeepStrictEqual } from "node:util";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionCaptureV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import type { RuntimeRouteOrderLineageV1 } from "./skirmish-ai-runtime-route-order-lineage";
+import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
+import type { RuntimeRouteOrderLineage } from "./skirmish-ai-runtime-route-order-lineage";
 import { matchRuntimeProductionDecision } from "./skirmish-ai-runtime-production-decision-lineage";
 import { validateRuntimeProductionCommandLineage } from "./skirmish-ai-runtime-production-command-lineage";
 import {
@@ -18,21 +18,21 @@ import {
 
 /** Join only this admitted native order to a stamped shared service dispatch selected before its actual application. */
 export function matchRuntimeRouteServiceLineage(
-  capture: AiRuntimeProductionCaptureV1,
-  admission: RuntimeRouteOrderLineageV1["admission"],
+  capture: AiRuntimeProductionSnapshot,
+  admission: RuntimeRouteOrderLineage["admission"],
   requestedSequence: number
 ) {
   const failures: string[] = [],
     gaps: string[] = [];
-  let serviceCommand: RuntimeRouteOrderLineageV1["serviceCommand"] = null;
-  let selectedDemand: RuntimeRouteOrderLineageV1["selectedDemand"] = null;
+  let serviceCommand: RuntimeRouteOrderLineage["serviceCommand"] = null;
+  let selectedDemand: RuntimeRouteOrderLineage["selectedDemand"] = null;
   const value = admission?.spatial;
   if (!admission || value?.kind !== "route_order" || !value.order.commandContext) {
     return { failures, gaps: ["production_route_shared_service_command_missing"], serviceCommand, selectedDemand };
   }
   const context = value.order.commandContext;
   const deliveries = capture.facts.filter(
-    (fact): fact is Extract<AiRuntimeProductionFactV1, { kind: "command_delivered" }> =>
+    (fact): fact is Extract<AiRuntimeProductionFact, { kind: "command_delivered" }> =>
       fact.kind === "command_delivered" && fact.command.execution?.commandId === context.execution.commandId
   );
   const delivery = deliveries[0];
@@ -103,7 +103,7 @@ export function matchRuntimeRouteServiceLineage(
     failures.push("production_route_service_dispatch_interval_invalid");
   }
   const outcomes = capture.facts.filter(
-    (fact): fact is Extract<AiRuntimeProductionFactV1, { kind: "outcome" }> =>
+    (fact): fact is Extract<AiRuntimeProductionFact, { kind: "outcome" }> =>
       fact.kind === "outcome" && fact.outcome.commandId === context.execution.commandId
   );
   if (
@@ -155,7 +155,7 @@ export function matchRuntimeRouteServiceLineage(
     command,
     deliveries,
     outcomes
-  } satisfies NonNullable<RuntimeRouteOrderLineageV1["serviceCommand"]>;
+  } satisfies NonNullable<RuntimeRouteOrderLineage["serviceCommand"]>;
   serviceCommand = matchedCommand;
   const demandId = matchedCommand.acceptedIntent.demandId;
   if ((decision.decision?.decision.economyProduction.demands.length ?? 0) > 256) {

@@ -1,10 +1,10 @@
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 import { productionCompletionFixture } from "./skirmish-ai-runtime-production-completion-fixture";
 
 /** Invented ordered post-completion samples. Sample presence supplies no continuous stability or strategic utility. */
 export function productionEffectRetentionFixture(family: "production" | "research" = "production"):
-  AiRuntimeProductionCaptureV1 {
+  AiRuntimeProductionSnapshot {
   const source = productionCompletionFixture(family);
   const after = source.facts.find((fact) => fact.kind === "queue_completion" && fact.completion.phase === "after");
   const terminal = source.facts.find((fact) => fact.kind === "outcome" && fact.outcome.kind === "completed");

@@ -1,6 +1,6 @@
 import type { Page } from "@playwright/test";
-import type { AiRuntimeBrowserTestHostV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host-v1";
+import type { AiRuntimeBrowserTestHost } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host";
 import type { armAiRuntimeIncidentCaptureProbe } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-incident-capture-probe";
 import { nativeDebugWorldDigest } from "./skirmish-ai-native-debug-comparison";
@@ -10,9 +10,9 @@ import type { NativeDebugParityProof } from "./skirmish-ai-native-debug-parity-p
 /** Arm the real scene-owned diagnostic capture, including its shutdown subscriber, before the first selected input. */
 export async function armNativeDebugParity(page: Page, sourceRevision: string, dirtySourceDigest: string | null) {
   await page.evaluate(({ sourceRevision, dirtySourceDigest }) => {
-    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: AiRuntimeBrowserTestHostV1;
+    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost;
       __nativeDebugQuota?: ReturnType<typeof armAiRuntimeIncidentCaptureProbe> };
-    const arm = realm.__fuzzyWaddleAiRuntimeBrowserTestV1?.armIncidentCaptureProbe;
+    const arm = realm.__fuzzyWaddleAiRuntimeBrowserTest?.armIncidentCaptureProbe;
     if (!arm) throw new Error("native_debug_incident_owner_missing");
     realm.__nativeDebugQuota = arm(sourceRevision, dirtySourceDigest);
   }, { sourceRevision, dirtySourceDigest });
@@ -31,7 +31,7 @@ export async function captureNativeDebugParity(page: Page) {
       if (result === "captured") accepted++;
       if (result === "quota_exceeded") { rejected = true; break; }
     }
-    const history = window.__fuzzyWaddleAiRuntimePartsV1?.(2)?.controller.getBrainDebugHistory();
+    const history = window.__fuzzyWaddleAiRuntimeParts?.(2)?.controller.getBrainDebugHistory();
     const first = history?.[0], last = history?.at(-1);
     if (!history || !first || !last) throw new Error("native_debug_retained_history_missing");
     return { accepted, rejected, repeated: probe.captureEpisode("diagnostic-quota-0"), peak: probe.metrics(),

@@ -1,5 +1,5 @@
-import type { RuntimeProductionContractV1 } from "./skirmish-ai-runtime-production-contract";
-import type { RuntimeProductionEvidenceV1 } from "./skirmish-ai-runtime-production-evidence";
+import type { RuntimeProductionContract } from "./skirmish-ai-runtime-production-contract";
+import type { RuntimeProductionEvidence } from "./skirmish-ai-runtime-production-evidence";
 import { evaluateRuntimeProductionTransition } from "./skirmish-ai-runtime-production-transition-evaluation";
 import { evaluateRuntimeProducerResilience } from "./skirmish-ai-runtime-producer-resilience-evaluation";
 import { evaluateRuntimeProductionPayments, evaluateRuntimeProductionRefund }
@@ -9,8 +9,8 @@ import { validateRuntimeProductionEvidence } from "./skirmish-ai-runtime-product
 /** Mandatory on PRO-03/06/07: old aggregate capacity/queue assertions are not causal proof. */
 export function evaluateRuntimeProductionContract(
   scenarioId: string,
-  contract: RuntimeProductionContractV1 | undefined,
-  evidence: RuntimeProductionEvidenceV1 | undefined
+  contract: RuntimeProductionContract | undefined,
+  evidence: RuntimeProductionEvidence | undefined
 ): string[] {
   if (!["PRO-03", "PRO-06", "PRO-07"].includes(scenarioId)) return [];
   if (!contract || contract.scenarioId !== scenarioId) return ["production_contract_missing"];

@@ -2,21 +2,21 @@ import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { expect, test } from "@playwright/test";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
+import type { RuntimeFixture } from "./skirmish-ai-runtime-fixture";
 import { expansionWorld } from "./skirmish-ai-expansion-world";
 import { evaluateExpansionPressurePairs } from "./skirmish-ai-expansion-pressure-pairs";
 import { nativeDamageMatches } from "./skirmish-ai-native-damage";
 import { expansionPressureResolution, nativeRetreatPrecedesLoss } from "./skirmish-ai-expansion-pressure-resolution";
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 
-const fixture: RuntimeFixtureV1 = JSON.parse(readFileSync(
+const fixture: RuntimeFixture = JSON.parse(readFileSync(
   resolve(__dirname, "../../../../tools/ai/fixtures/expansion-pressure-runtime.json"), "utf8"
 ));
 
-function damage(tick = 80): Extract<AiRuntimeProductionFactV1, { kind: "native_damage" }> {
+function damage(tick = 80): Extract<AiRuntimeProductionFact, { kind: "native_damage" }> {
   const target = { actorId: "original-raider", playerNumber: 1, objectName: "SkaduweeWarriorMale",
     canonicalObjectName: ObjectNames.SkaduweeWarriorMale, active: true, alive: false, finished: true, indexed: false };
   return { kind: "native_damage", sequence: 2, tick, playerNumber: 1, damage: {
@@ -26,7 +26,7 @@ function damage(tick = 80): Extract<AiRuntimeProductionFactV1, { kind: "native_d
   } };
 }
 
-function capture(facts: readonly AiRuntimeProductionFactV1[]): AiRuntimeProductionCaptureV1 {
+function capture(facts: readonly AiRuntimeProductionFact[]): AiRuntimeProductionSnapshot {
   return { schemaVersion: 1, kind: "production_authority_capture", startedTick: 0, playerNumber: 1,
     droppedFactCount: 0, droppedSnapshotCount: 0, gaps: [], snapshots: [], facts };
 }
@@ -51,7 +51,7 @@ test("the full matrix declaration and standalone owner factories describe the sa
 
 test("combat recovery requires the original native death plus AI-owned lethal damage in the same tick", () => {
   const hit = damage();
-  const loss: AiRuntimeProductionFactV1 = { kind: "actor_unregistered", sequence: 1, tick: 80, playerNumber: 1,
+  const loss: AiRuntimeProductionFact = { kind: "actor_unregistered", sequence: 1, tick: 80, playerNumber: 1,
     actorId: "original-raider", objectName: "SkaduweeWarriorMale", actor: hit.damage.target };
   // Native death/unregistration is synchronous inside takeDamage, before ScoreDamage is emitted.
   expect(expansionPressureResolution(capture([loss, hit]), ["original-raider"], true))
@@ -84,7 +84,7 @@ test("foreign/restored damage, unrelated ownership and missing health cannot sup
 
 test("an unavailable withdrawal after native death cannot masquerade as measured retreat", () => {
   const hit = damage();
-  const facts: AiRuntimeProductionFactV1[] = [
+  const facts: AiRuntimeProductionFact[] = [
     { kind: "actor_unregistered", sequence: 1, tick: 80, playerNumber: 1, actorId: "original-raider",
       objectName: "SkaduweeWarriorMale", actor: hit.damage.target },
     hit,

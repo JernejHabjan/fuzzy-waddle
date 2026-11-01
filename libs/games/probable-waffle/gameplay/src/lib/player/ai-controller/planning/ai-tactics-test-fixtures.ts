@@ -1,15 +1,15 @@
 import { FactionType, ObjectNames, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
 import { SpellType } from "../../../entity/components/combat/spell-type";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
 import { aiDeadline } from "../contracts/ai-core-types";
-import type { AiBrainStateV1, AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiBrainState, AiSquadState } from "../contracts/ai-brain-state";
 
-import type { AiDomainV1, AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observation-v1";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import type { AiDomain, AiObservedActor, AiObservation } from "../contracts/ai-observation";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 import { AiTacticsManager } from "./ai-tactics-manager";
 
-export const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+export const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
 
 export function requireValue<T>(value: T | undefined, reason: string): T {
   if (value === undefined) throw new Error(reason);
@@ -21,18 +21,18 @@ export function combatActor(
   actorId: string,
   relation: "self" | "enemy",
   x: number,
-  domain: AiDomainV1 = "ground",
+  domain: AiDomain = "ground",
   healthPermille = 1000,
   options: {
     readonly damage?: number;
     readonly heal?: number;
     readonly spell?: boolean;
     readonly autocast?: boolean;
-    readonly targetDomains?: readonly AiDomainV1[];
+    readonly targetDomains?: readonly AiDomain[];
     readonly capabilityFamilies?: readonly string[];
     readonly mainBuilding?: boolean;
   } = {}
-): AiObservedActorV1 {
+): AiObservedActor {
   const damage = options.damage ?? 10;
   return {
     ...createAiTestOwnedActor(actorId),
@@ -105,9 +105,9 @@ export function combatActor(
 }
 
 /** Creates one dated mission without assuming movement or damage has applied. */
-export function squad(squadId: string, role: AiSquadStateV1["role"], actorIds: readonly string[]): AiSquadStateV1 {
+export function squad(squadId: string, role: AiSquadState["role"], actorIds: readonly string[]): AiSquadState {
   return {
-    squadId: squadId as AiSquadStateV1["squadId"],
+    squadId: squadId as AiSquadState["squadId"],
     role,
     domain: "ground",
     actorIds,
@@ -130,8 +130,8 @@ export function squad(squadId: string, role: AiSquadStateV1["role"], actorIds: r
 }
 
 /** Keeps the fixture's committed squad state separate from each new observation. */
-export function fixtureState(squads: readonly AiSquadStateV1[]): AiBrainStateV1 {
-  const state = createAiBrainStateV1({
+export function fixtureState(squads: readonly AiSquadState[]): AiBrainState {
+  const state = createAiBrainState({
     playerNumber: 1,
     faction: FactionType.Tivara,
     profile,
@@ -154,7 +154,7 @@ export function fixtureState(squads: readonly AiSquadStateV1[]): AiBrainStateV1 
 }
 
 /** Builds permitted combat and placement facts; it does not represent an applied Phaser world. */
-export function observation(actors: readonly AiObservedActorV1[], tick = 100): AiObservationV1 {
+export function observation(actors: readonly AiObservedActor[], tick = 100): AiObservation {
   return {
     ...createAiTestObservation(),
     tick,

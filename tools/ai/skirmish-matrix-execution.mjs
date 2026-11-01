@@ -147,7 +147,7 @@ export function invokeHarness(input, context) {
       "economy-forecast-(scenarios|budget)|opening-bootstrap-scenarios|" +
       "resource-forecast|resource-service-manager|pressure-strategy-scenarios|victory-route-scenarios|victory-pressure-scenarios)",
     "ai-(tactics-(manager|combat)|adaptation-(manager|queue|scenarios)|saved-continuation)",
-    "validate-ai-runtime-browser-test-config-v1",
+    "validate-ai-runtime-browser-test-config",
     "ai-profile-defaults",
     "player-ai-controller\\.agent\\.static"
   ];

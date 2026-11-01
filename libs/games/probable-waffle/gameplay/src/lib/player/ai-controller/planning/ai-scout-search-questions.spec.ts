@@ -1,9 +1,9 @@
 import { FactionType, OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import { buildAiAccessGraphV1 } from "./ai-access-graph-v1";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
+import { buildAiAccessGraph } from "./ai-access-graph";
 import { homeNode, unit, observation, profile, manager } from "./ai-skirmish-test-fixtures";
 
-const access = buildAiAccessGraphV1({
+const access = buildAiAccessGraph({
   generation: 1,
   staticRevision: 1,
   dynamicRevision: 1,
@@ -40,7 +40,7 @@ function world(tick: number, firstSeen: boolean) {
 
 describe("scouting search questions", () => {
   it("SCOUT-01/SCOUT-02 progresses through unseen points in one region and remembers answers after leaving", () => {
-    const state = createAiBrainStateV1({
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -78,7 +78,7 @@ describe("scouting search questions", () => {
   });
 
   it("redispatches an active scout mission when combat replaced its native search move", () => {
-    const state = createAiBrainStateV1({
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,

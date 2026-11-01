@@ -1,14 +1,14 @@
-import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { ResourceType, type GameCommand } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { multiplayerSharedQueueFixture } from "./skirmish-ai-multiplayer-shared-queue-fixture";
 
 /** Synthetic causal contracts only: adding accepted intents here never turns the human socket world into AI proof. */
 export function productionCausalityFixture(branch: "shared_contention" | "cancel_research" = "shared_contention"):
-  AiRuntimeProductionCaptureV1 {
+  AiRuntimeProductionSnapshot {
   const world = multiplayerSharedQueueFixture(branch);
   if (!world.capture || !world.setup) throw new Error("synthetic_causal_world_missing");
   const sourceCapture = world.capture;
@@ -19,7 +19,7 @@ export function productionCausalityFixture(branch: "shared_contention" | "cancel
       intentId: role, effectId: role, commitmentKey: `ai:effect:${role}` } } satisfies GameCommand
   }));
   const byId = (id: string | undefined) => commands.find((entry) => entry.command.execution.commandId === id)?.command;
-  const facts: AiRuntimeProductionFactV1[] = sourceCapture.facts.flatMap((fact): AiRuntimeProductionFactV1[] => {
+  const facts: AiRuntimeProductionFact[] = sourceCapture.facts.flatMap((fact): AiRuntimeProductionFact[] => {
     if (fact.kind === "outcome") {
       if (fact.outcome.kind === "dispatched") return [];
       const command = byId(fact.outcome.commandId);
@@ -50,7 +50,7 @@ export function productionCausalityFixture(branch: "shared_contention" | "cancel
       claims: command.type === "CANCEL_RESEARCH" ? [] : Object.values(ResourceType).flatMap((resourceType) =>
         (price[resourceType] ?? 0) > 0 ? [{ kind: "resource", claimId: `claim:${role}:${resourceType}`,
           resourceType, amount: price[resourceType] ?? 0 } as const] : []), reasonCode: "synthetic_force" } as const;
-    const intent: AiIntentV1 = command.type === "PRODUCTION"
+    const intent: AiIntent = command.type === "PRODUCTION"
       ? { ...common, kind: "produce", producerId: "producer", objectName: command.actorName }
       : command.type === "RESEARCH"
         ? { ...common, kind: "research", producerId: "producer", researchType: command.researchType }

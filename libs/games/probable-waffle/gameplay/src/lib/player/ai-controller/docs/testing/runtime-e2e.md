@@ -51,9 +51,9 @@ the explicit Playwright timeout for the whole selected variant group. A timeout 
 tests/decisions/ticks is an infrastructure failure, not behavioral evidence.
 
 Use `pnpm ai:skirmish:report -- --report <artifact> --scenario <ID> --failures-only --details` for bounded triage.
-Grouped file reports may use `artifactEncoding: shared-runtime-variants-v1`: each scenario's `variants` contains
+Grouped file reports may use `artifactEncoding: shared-runtime-variants`: each scenario's `variants` contains
 integer indexes into `artifactVariants`, which retains each shared physical match once. The runtime file reader and
-compact reporter expand checked references back to the complete inline V1 report. Raw facts, null authority, failures,
+compact reporter expand checked references back to the complete inline current report. Raw facts, null authority, failures,
 provenance and physical work counts are unchanged. Invalid references, unused variants and unknown encodings fail
 closed; the 256 MiB runtime artifact ceiling remains. Single-use variant reports and direct console output retain
 the inline representation. Custom raw-file consumers must use `decodeRuntimeArtifact` from the E2E artifact codec
@@ -75,7 +75,7 @@ At the final validation gate, first run the frozen open-economy map preflight wi
 `AI_SKIRMISH_MAP_PREFLIGHT=1 pnpm exec playwright test apps/portal-e2e/src/e2e/skirmish-ai-test-map-preflight.spec.ts --config=apps/portal-e2e/playwright.config.ts --workers=1`.
 It starts an ordinary test-marked lobby, verifies the active scene and indexed neutral resources, finds open 3×3
 ground patches near both starts, and requests a real ground path between them. It emits one bounded
-`AI_SKIRMISH_MAP_PREFLIGHT_V1` JSON line. This is an infrastructure check, not a scenario result or proof that a
+`AI_SKIRMISH_MAP_PREFLIGHT` JSON line. This is an infrastructure check, not a scenario result or proof that a
 particular building placement is legal; the focused building recipes must prove that separately. The preflight is
 authored but has not been executed.
 

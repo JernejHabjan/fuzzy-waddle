@@ -1,8 +1,8 @@
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionCaptureV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import type { AiRuntimeResourceServiceV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-resource-service-v1";
-import type { AiRuntimeCreatedActorV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-created-actor-v1";
+import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
+import type { AiRuntimeResourceService } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-resource-service";
+import type { AiRuntimeCreatedActor } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-created-actor";
 import type { ResourceCargoSample } from "@fuzzy-waddle/probable-waffle-phaser/entity/components/resource/resource-cargo-sample";
 
 const types = Object.values(ResourceType);
@@ -10,7 +10,7 @@ const amount = (value: unknown): value is number => typeof value === "number" &&
 const integer = (value: number) => Number.isSafeInteger(value) && value >= 0;
 const id = (value: number | null) => value === null || (integer(value) && value > 0 && value <= 8192);
 const resource = (value: ResourceType | null) => value === null || types.includes(value);
-const actor = (value: AiRuntimeCreatedActorV1 | null) =>
+const actor = (value: AiRuntimeCreatedActor | null) =>
   !!value &&
   !!value.actorId &&
   !!value.objectName &&
@@ -27,7 +27,7 @@ const vector = (value: Partial<Record<ResourceType, number>> | null, complete = 
 
 /** Recompute the native scoped application claim. Root event timing/current balances cannot backfill this interval. */
 export function runtimeResourceCreditMatches(
-  value: Extract<AiRuntimeResourceServiceV1, { phase: "resource_credit" }>
+  value: Extract<AiRuntimeResourceService, { phase: "resource_credit" }>
 ): boolean {
   return (
     value.status === "returned" &&
@@ -49,7 +49,7 @@ export function runtimeResourceCreditMatches(
 }
 
 /** Inspect every supplied cargo/credit tail before overflow suppression, including failed/suppressed native attempts. */
-export function validateRuntimeResourceService(capture: AiRuntimeProductionCaptureV1) {
+export function validateRuntimeResourceService(capture: AiRuntimeProductionSnapshot) {
   const failures: string[] = [];
   const identities = new Map<number, string>(),
     closed = new Set<number>(),
@@ -58,7 +58,7 @@ export function validateRuntimeResourceService(capture: AiRuntimeProductionCaptu
   let creditCount = 0;
   const transfers = new Map<number, { fingerprint: string; offered: boolean; credited: boolean; removed: boolean }>();
   const facts = capture.facts.filter(
-    (fact): fact is Extract<AiRuntimeProductionFactV1, { kind: "spatial_authority" }> =>
+    (fact): fact is Extract<AiRuntimeProductionFact, { kind: "spatial_authority" }> =>
       fact.kind === "spatial_authority" && fact.spatial.kind === "resource_service"
   );
   for (const fact of facts) {

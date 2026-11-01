@@ -23,7 +23,7 @@ import { HealthComponent } from "./health-component";
 import { isGameObjectActiveInActiveScene } from "../../../../data/game-object-helper";
 import { AiRuntimeRecipientResourceCapture } from "../../../../player/ai-controller/testing/ai-runtime-recipient-resource-capture";
 import { AiRuntimeResourceCoverageCapture } from "../../../../player/ai-controller/testing/ai-runtime-resource-coverage-capture";
-import type { AiRuntimeProductionFactV1 } from "../../../../player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "../../../../player/ai-controller/testing/ai-runtime-production-fact";
 import type { ProbableWaffleScene } from "../../../../core/probable-waffle.scene";
 
 jest.mock("./health-presentation", () => ({
@@ -131,7 +131,7 @@ describe("native health mutation during drain wait", () => {
             data: { playerNumber: 2, playerStateData: { resources: amounts } }
           });
         });
-        const facts: AiRuntimeProductionFactV1[] = [];
+        const facts: AiRuntimeProductionFact[] = [];
         const coverage = new AiRuntimeResourceCoverageCapture(0, () => ({ tick: 0, captureSequence: facts.length }));
         const journal = new AiRuntimeRecipientResourceCapture(
           scene,

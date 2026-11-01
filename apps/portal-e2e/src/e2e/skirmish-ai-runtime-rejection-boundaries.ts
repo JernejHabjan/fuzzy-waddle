@@ -1,6 +1,6 @@
 import { isDeepStrictEqual } from "node:util";
 import type { AiRuntimeProductionBoundaryState } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-boundary-state";
-import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { calculateRuntimeQueueLiabilities } from "./skirmish-ai-runtime-queue-liabilities";
 import { isRuntimeProductionBalance } from "./skirmish-ai-runtime-production-unspent";
 import { sameRuntimeQueueVector } from "./skirmish-ai-runtime-scoped-queue-payments";
@@ -9,7 +9,7 @@ import { sameRuntimeQueueVector } from "./skirmish-ai-runtime-scoped-queue-payme
 export function validateRuntimeRejectionBoundaries(
   before: AiRuntimeProductionBoundaryState | undefined,
   after: AiRuntimeProductionBoundaryState | undefined,
-  intent: AiIntentV1,
+  intent: AiIntent,
   commandId: string | null,
   stage: "admission" | "application"
 ) {

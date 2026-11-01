@@ -9,10 +9,10 @@ import { QueueComponent } from "../../../entity/components/queue/queue-component
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
-import type { AiMultiplayerQueueWorldV1 } from "./ai-multiplayer-queue-world-v1";
+import type { AiMultiplayerQueueWorldSnapshot } from "./ai-multiplayer-queue-world-snapshot";
 
 /** Mirrors only starting cash on both peers; real purchase/refund/payment always travels through the socket bus. */
-export function prepareAiMultiplayerQueueWorld(scene: ProbableWaffleScene, tick: number): AiMultiplayerQueueWorldV1["setup"] {
+export function prepareAiMultiplayerQueueWorld(scene: ProbableWaffleScene, tick: number): AiMultiplayerQueueWorldSnapshot["setup"] {
   const playerNumber = 1;
   const player = getPlayer(scene, playerNumber);
   const index = getSceneService(scene, ActorIndexSystem);

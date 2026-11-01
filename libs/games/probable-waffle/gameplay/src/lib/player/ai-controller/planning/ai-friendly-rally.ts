@@ -1,9 +1,9 @@
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiIntent } from "../contracts/ai-intent";
+import type { AiObservation } from "../contracts/ai-observation";
 
 /** Active or queued native Moves to live owned actors are intake work; routine squads wait for their terminal state. */
-export function preservesAiFriendlyRally(observation: AiObservationV1, intent: AiIntentV1): boolean {
+export function preservesAiFriendlyRally(observation: AiObservation, intent: AiIntent): boolean {
   if (
     !["army_threat", "scouting"].includes(intent.lane) ||
     !("actorIds" in intent) ||

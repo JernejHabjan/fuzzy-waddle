@@ -1,5 +1,5 @@
 import { ResourceType, type GameCommand } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionCaptureV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 import { sameRuntimeQueueCommand } from "./skirmish-ai-runtime-queue-command-equality";
 
 /** Numeric comparison accepts sparse definition costs and full authority balances, without accepting non-finite money. */
@@ -23,7 +23,7 @@ export function sameRuntimeQueueVector(
 
 /** Actual immediate charges and either native refund policy; per-tick charges require their own progress interval. */
 export function normalizeRuntimeScopedQueuePayments(
-  capture: AiRuntimeProductionCaptureV1,
+  capture: AiRuntimeProductionSnapshot,
   commands: readonly GameCommand[]
 ) {
   const failures: string[] = [];

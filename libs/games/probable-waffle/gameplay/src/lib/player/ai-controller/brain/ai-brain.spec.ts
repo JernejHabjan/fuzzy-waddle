@@ -1,12 +1,12 @@
 import { FactionType, ProbableWaffleAiDifficulty, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiManagerProposalV1, AiProposalManagerV1 } from "../planning/ai-manager-proposal";
+import type { AiIntent } from "../contracts/ai-intent";
+import type { AiManagerProposal, AiProposalManager } from "../planning/ai-manager-proposal";
 import { aiDeadline } from "../contracts/ai-core-types";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
-import { createAiBrainStateV1 } from "./create-ai-brain-state-v1";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
+import { createAiBrainState } from "./create-ai-brain-state";
 import { PureAiBrain } from "./ai-brain";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
-import { findAiWhyNotExplanationV1 } from "../debug/project-ai-debug-snapshot";
+import { findAiWhyNotExplanation } from "../debug/project-ai-debug-snapshot";
 import { AiSkirmishManager } from "../planning/ai-skirmish-manager";
 import {
   catalog as scoutCatalog,
@@ -16,7 +16,7 @@ import {
   unit as scoutUnit
 } from "../planning/ai-skirmish-test-fixtures";
 
-function stopIntent(id: string, utility: number, actorId: string, wood: number): AiIntentV1 {
+function stopIntent(id: string, utility: number, actorId: string, wood: number): AiIntent {
   return {
     kind: "stop",
     intentId: `intent:${id}`,
@@ -40,15 +40,15 @@ function stopIntent(id: string, utility: number, actorId: string, wood: number):
   };
 }
 
-class DummyManager implements AiProposalManagerV1 {
+class DummyManager implements AiProposalManager {
   readonly managerId = "dummy";
 
   constructor(
-    private readonly intents: readonly AiIntentV1[],
-    private readonly spendingBudget?: AiManagerProposalV1["spendingBudget"]
+    private readonly intents: readonly AiIntent[],
+    private readonly spendingBudget?: AiManagerProposal["spendingBudget"]
   ) {}
 
-  propose(): AiManagerProposalV1 {
+  propose(): AiManagerProposal {
     return {
       managerId: this.managerId,
       lane: "essential_economy",
@@ -60,18 +60,18 @@ class DummyManager implements AiProposalManagerV1 {
   }
 }
 
-class ThrowingOptionalManager implements AiProposalManagerV1 {
+class ThrowingOptionalManager implements AiProposalManager {
   readonly managerId = "throwing.optional";
 
-  propose(): AiManagerProposalV1 {
+  propose(): AiManagerProposal {
     throw new Error("fixture_failure");
   }
 }
 
-class MacroLedgerManager implements AiProposalManagerV1 {
+class MacroLedgerManager implements AiProposalManager {
   readonly managerId = "stage-7-macro";
 
-  propose(_: unknown, state: ReturnType<typeof createAiBrainStateV1>): AiManagerProposalV1 {
+  propose(_: unknown, state: ReturnType<typeof createAiBrainState>): AiManagerProposal {
     return {
       managerId: this.managerId,
       lane: "essential_economy",
@@ -102,10 +102,10 @@ class MacroLedgerManager implements AiProposalManagerV1 {
   }
 }
 
-class AdaptationLedgerManager implements AiProposalManagerV1 {
+class AdaptationLedgerManager implements AiProposalManager {
   readonly managerId = "stagez14.adaptation";
 
-  propose(_: unknown, state: ReturnType<typeof createAiBrainStateV1>): AiManagerProposalV1 {
+  propose(_: unknown, state: ReturnType<typeof createAiBrainState>): AiManagerProposal {
     return {
       managerId: this.managerId,
       lane: "optional_infrastructure_tech",
@@ -136,8 +136,8 @@ class AdaptationLedgerManager implements AiProposalManagerV1 {
 
 describe("PureAiBrain", () => {
   it("records accepted command service separately from evaluated but rejected lanes", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -163,8 +163,8 @@ describe("PureAiBrain", () => {
     expect(blocked.nextState.lanes.find((entry) => entry.lane === "essential_economy")?.lastServicedTick).toBe(0);
   });
   it("SCOUT-05 commits identical exact intents from identical permitted inputs, then responds to a real sighting", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -191,8 +191,8 @@ describe("PureAiBrain", () => {
   });
 
   it("applies the emergency posture to competing affordable spending while preserving survival", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -219,8 +219,8 @@ describe("PureAiBrain", () => {
   });
 
   it("admits only the affordable combination of separately affordable resource claims", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -242,8 +242,8 @@ describe("PureAiBrain", () => {
     { tick: 19, expiry: 20, accepted: false },
     { tick: 20, expiry: 20, accepted: true }
   ])("retains provisional resource escrow until its deadline across a contracted balance: %j", ({ tick, expiry, accepted }) => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -283,8 +283,8 @@ describe("PureAiBrain", () => {
   });
 
   it("explains accepted and rejected intents with deterministic claim arbitration", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -318,8 +318,8 @@ describe("PureAiBrain", () => {
   });
 
   it("rejects invalid utility before it can rank as a winner", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Easy);
-    const state = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Easy);
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -336,8 +336,8 @@ describe("PureAiBrain", () => {
   });
 
   it("does not reacquire a live physical claim from the same plan on the next decision", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -359,8 +359,8 @@ describe("PureAiBrain", () => {
   });
 
   it("does not reacquire a physical claim while the same plan still owns it", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const initial = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const initial = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -380,8 +380,8 @@ describe("PureAiBrain", () => {
   });
 
   it("H-30 isolates an optional proposer exception and records why it was not evaluated", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -402,7 +402,7 @@ describe("PureAiBrain", () => {
         reason: "technical_fault:Error"
       })
     );
-    expect(findAiWhyNotExplanationV1(result.debugSnapshot, "unrecorded.alternative")).toEqual({
+    expect(findAiWhyNotExplanation(result.debugSnapshot, "unrecorded.alternative")).toEqual({
       subjectId: "unrecorded.alternative",
       status: "not_recorded",
       reason: null
@@ -410,8 +410,8 @@ describe("PureAiBrain", () => {
   });
 
   it("preserves the current macro ledger while Stage 14 replaces only adaptive demand rows", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -432,8 +432,8 @@ describe("PureAiBrain", () => {
   });
 
   it("does not accept new commands after an authoritative player goal resolves", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,

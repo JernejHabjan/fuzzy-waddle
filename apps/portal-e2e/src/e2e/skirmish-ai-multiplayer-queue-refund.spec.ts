@@ -3,8 +3,8 @@ import { startMultiplayerTestMatch } from "./skirmish-ai-multiplayer-match";
 import { multiplayerQueueWorld } from "./skirmish-ai-multiplayer-queue-world";
 import { normalizeMultiplayerQueueBoundary } from "./skirmish-ai-multiplayer-queue-normalization";
 import { observeMultiplayerPeer } from "./skirmish-ai-multiplayer-observation";
-import type { AiMultiplayerQueueWorldV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-multiplayer-queue-world-v1";
+import type { AiMultiplayerQueueWorldSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-multiplayer-queue-world-snapshot";
 
 test.skip(process.env.AI_MULTIPLAYER_E2E !== "1", "Requires local Supabase and the local API relay.");
 test.setTimeout(180_000);
@@ -12,8 +12,8 @@ test.setTimeout(180_000);
 test("a relayed purchase probe is rejected while cancellation is buffered, before real refund credit on both peers",
   async ({ browser }, testInfo) => {
     const match = await startMultiplayerTestMatch(browser, { queueWorld: true });
-    let host: AiMultiplayerQueueWorldV1 | null = null;
-    let peer: AiMultiplayerQueueWorldV1 | null = null;
+    let host: AiMultiplayerQueueWorldSnapshot | null = null;
+    let peer: AiMultiplayerQueueWorldSnapshot | null = null;
     const comparisons = new Map<number, boolean>();
     const observe = async () => {
       [host, peer] = await Promise.all([multiplayerQueueWorld(match.host), multiplayerQueueWorld(match.peer)]);

@@ -12,7 +12,7 @@
     "mapId": "AiBridgeCrossing+EmberEnclave+RiverCrossing",
     "mapDigest": "resolved_from_candidate_assets",
     "side": 2,
-    "rulesVersion": "probable-waffle-rules-v1"
+    "rulesVersion": "probable-waffle-rules"
   },
   "recipe": {
     "mapLabel": "Ember Enclave",

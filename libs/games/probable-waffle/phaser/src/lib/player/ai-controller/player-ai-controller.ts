@@ -19,22 +19,22 @@ import { take, type Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { AiCommandReconciliation } from "./ai-command-reconciliation";
-import type { AiAuthorityStateV1, AiBrainStateV1, AiCommandOutcomeV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
-import { createAiBrainStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-brain-state-v1";
+import type { AiAuthorityState, AiBrainState, AiCommandOutcome } from "@fuzzy-waddle/probable-waffle-gameplay";
+import { createAiBrainState } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-brain-state";
 import { migrateAiBrainState } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/migrate-ai-brain-state";
-import { canonicalizeAiBrainStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/canonical-ai-serialization";
-import { createAiProfileConfigV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-profile-defaults";
+import { canonicalizeAiBrainState } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/canonical-ai-serialization";
+import { createAiProfileConfig } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-profile-defaults";
 import type { PureAiBrain } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain";
-import type { AiDebugSnapshotV1, AiProfileConfigV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
-import { selectAiOpeningArchetypeV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-opening-archetypes-v1";
+import type { AiDebugSnapshot, AiProfileConfig } from "@fuzzy-waddle/probable-waffle-gameplay";
+import { selectAiOpeningArchetype } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-opening-archetypes";
 import { readAiRuntimeCalibrationOpening } from "./testing/ai-runtime-calibration";
-import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
-import type { AiBrainStepResultV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain-step-result-v1";
+import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiBrainStepResult } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain-step-result";
 import { dispatchAiIntents } from "./ai-intent-dispatcher";
 import { dispatchAiBrainResult } from "./dispatch-ai-brain-result";
 import { captureAiDecisionInput } from "./capture-ai-decision-input";
 import { beginAiResourceDecision, fenceAiResourceNeed } from "./observation/ai-resource-input-observation";
-import type { AiDecisionInputV1 } from "./ai-decision-input-v1";
+import type { AiDecisionInput } from "./ai-decision-input";
 import { createAiProductionBrain } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-production-brain";
 import { publishAiRuntimeDecisionRepro } from "./testing/ai-runtime-decision-repro";
 
@@ -55,11 +55,11 @@ export class PlayerAiController {
   private stepInFlight = false;
   private stepQueued = false;
   private readonly commandReconciliation?: AiCommandReconciliation;
-  private brainState?: AiBrainStateV1;
-  private readonly profile: AiProfileConfigV1;
+  private brainState?: AiBrainState;
+  private readonly profile: AiProfileConfig;
   private readonly pureBrain: PureAiBrain;
-  private latestBrainDebug?: AiDebugSnapshotV1;
-  private readonly brainDebugHistory: AiDebugSnapshotV1[] = [];
+  private latestBrainDebug?: AiDebugSnapshot;
+  private readonly brainDebugHistory: AiDebugSnapshot[] = [];
   private completedDecisionSequence = 0;
   constructor(
     public readonly scene: ProbableWaffleScene,
@@ -208,7 +208,7 @@ export class PlayerAiController {
       enabled: this.enabled,
       commandReconciliation: this.commandReconciliation?.getState(),
       observationMemory: this.playerAiControllerAgent.getObservationMemoryState(),
-      brainState: this.brainState ? structuredClone(canonicalizeAiBrainStateV1(this.brainState)) : undefined,
+      brainState: this.brainState ? structuredClone(canonicalizeAiBrainState(this.brainState)) : undefined,
       controllerCadence: {
         schemaVersion: 1,
         elapsedMilliseconds: this.elapsedTime,
@@ -248,12 +248,12 @@ export class PlayerAiController {
     if (state.brainState) {
       const context = this.getBrainMigrationContext();
       if (context)
-        this.brainState = structuredClone(canonicalizeAiBrainStateV1(migrateAiBrainState(state.brainState, context)));
+        this.brainState = structuredClone(canonicalizeAiBrainState(migrateAiBrainState(state.brainState, context)));
     } else {
       const context = this.getBrainMigrationContext();
       if (context) {
         this.brainState = structuredClone(
-          canonicalizeAiBrainStateV1(migrateAiBrainState(state, { ...context, legacyOpeningLifecycle: "completed" }))
+          canonicalizeAiBrainState(migrateAiBrainState(state, { ...context, legacyOpeningLifecycle: "completed" }))
         );
       }
     }
@@ -308,12 +308,12 @@ export class PlayerAiController {
   }
 
   /** Committed planner view; callers receive facts captured at the decision boundary only. */
-  getBrainDebugSnapshot(): AiDebugSnapshotV1 | undefined {
+  getBrainDebugSnapshot(): AiDebugSnapshot | undefined {
     return this.latestBrainDebug ? structuredClone(this.latestBrainDebug) : undefined;
   }
 
   /** Bounded immutable live history; navigating it never pauses or advances the match. */
-  getBrainDebugHistory(): readonly AiDebugSnapshotV1[] {
+  getBrainDebugHistory(): readonly AiDebugSnapshot[] {
     return this.brainDebugHistory.map((snapshot) => structuredClone(snapshot));
   }
 
@@ -324,7 +324,7 @@ export class PlayerAiController {
 
   /** Read-only projection of the command frontier and delivered outcomes. */
   getBrainCommandBridgeSnapshot():
-    | { readonly outcomes: readonly AiCommandOutcomeV1[]; readonly authority: AiAuthorityStateV1 }
+    | { readonly outcomes: readonly AiCommandOutcome[]; readonly authority: AiAuthorityState }
     | undefined {
     if (!this.commandReconciliation) return undefined;
     return {
@@ -339,22 +339,22 @@ export class PlayerAiController {
   }
 
   /** Canonical save-owned pure state; callers cannot mutate the live brain. */
-  getBrainState(): AiBrainStateV1 | undefined {
-    return this.brainState ? structuredClone(canonicalizeAiBrainStateV1(this.brainState)) : undefined;
+  getBrainState(): AiBrainState | undefined {
+    return this.brainState ? structuredClone(canonicalizeAiBrainState(this.brainState)) : undefined;
   }
 
-  /** Replaces state only through the checked V1 migration boundary. */
+  /** Replaces state only through the checked current migration boundary. */
   setBrainState(state: unknown): void {
     if (this.disposed) throw new Error("ai_controller_disposed");
     fenceAiResourceNeed(this.scene, this.player.playerNumber, "controller_brain_replaced");
     const context = this.getBrainMigrationContext();
     if (!context) throw new Error("ai_brain_identity_unavailable");
-    this.brainState = structuredClone(canonicalizeAiBrainStateV1(migrateAiBrainState(state, context)));
+    this.brainState = structuredClone(canonicalizeAiBrainState(migrateAiBrainState(state, context)));
   }
 
-  private createInitialBrainState(): AiBrainStateV1 | undefined {
+  private createInitialBrainState(): AiBrainState | undefined {
     const context = this.getBrainMigrationContext();
-    return context ? createAiBrainStateV1(context) : undefined;
+    return context ? createAiBrainState(context) : undefined;
   }
 
   /** Runs the persisted pure planner synchronously against the committed observation. */
@@ -365,7 +365,7 @@ export class PlayerAiController {
     beginAiResourceDecision(this.scene, this.player.playerNumber, observation);
     // Outcomes can arrive between decisions or synchronously during dispatch. Admission must consume the live frontier.
     const previous = { ...this.brainState, authority: bridge?.authority ?? this.brainState.authority };
-    let result: AiBrainStepResultV1;
+    let result: AiBrainStepResult;
     try {
       result = this.pureBrain.step(observation, previous, bridge?.outcomes ?? []);
     } catch (error) {
@@ -395,7 +395,7 @@ export class PlayerAiController {
       )
     });
     this.brainState = structuredClone(
-      canonicalizeAiBrainStateV1({
+      canonicalizeAiBrainState({
         ...result.nextState,
         authority: this.getBrainCommandBridgeSnapshot()?.authority ?? result.nextState.authority
       })
@@ -417,11 +417,11 @@ export class PlayerAiController {
 
   /** Routes accepted commands under the host fence; real pure steps also publish their exact accepting result. */
   private dispatchAcceptedIntents(
-    intents: readonly AiIntentV1[],
+    intents: readonly AiIntent[],
     decision?: {
-      readonly result: AiBrainStepResultV1;
-      readonly authority: AiAuthorityStateV1;
-      readonly input?: AiDecisionInputV1;
+      readonly result: AiBrainStepResult;
+      readonly authority: AiAuthorityState;
+      readonly input?: AiDecisionInput;
     }
   ): void {
     if (this.authorityActive === false || this.player.playerNumber === undefined) return;
@@ -430,7 +430,7 @@ export class PlayerAiController {
     else dispatchAiIntents(this.scene, this.player.playerNumber, intents);
   }
 
-  private resolveProfile(): AiProfileConfigV1 {
+  private resolveProfile(): AiProfileConfig {
     const definition = this.player.playerController.data.playerDefinition;
     if (
       this.player.playerNumber === undefined ||
@@ -440,7 +440,7 @@ export class PlayerAiController {
       throw new Error("ai_player_identity_unavailable");
     if (definition?.factionType !== FactionType.Tivara && definition?.factionType !== FactionType.Skaduwee)
       throw new Error("ai_player_faction_unavailable");
-    return createAiProfileConfigV1(definition.difficulty ?? ProbableWaffleAiDifficulty.Medium);
+    return createAiProfileConfig(definition.difficulty ?? ProbableWaffleAiDifficulty.Medium);
   }
 
   private getBrainMigrationContext() {
@@ -449,8 +449,8 @@ export class PlayerAiController {
     const faction = definition?.factionType;
     if (playerNumber === undefined || faction === undefined) return undefined;
     const profile =
-      this.profile ?? createAiProfileConfigV1(definition?.difficulty ?? ProbableWaffleAiDifficulty.Medium);
-    const archetype = selectAiOpeningArchetypeV1({
+      this.profile ?? createAiProfileConfig(definition?.difficulty ?? ProbableWaffleAiDifficulty.Medium);
+    const archetype = selectAiOpeningArchetype({
       faction,
       playerNumber,
       profile,

@@ -6,28 +6,28 @@ import { projectRuntimeNativeNavigation } from "./skirmish-ai-runtime-native-nav
 import { validateRuntimeRouteOrders } from "./skirmish-ai-runtime-route-order-validation";
 import { projectRuntimeRouteOrder } from "./skirmish-ai-runtime-route-order-projection";
 import { validateRuntimeNativeQuery } from "./skirmish-ai-runtime-native-navigation-validation";
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { AiRuntimeNavigationBoundaryV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-navigation-boundary-v1";
-import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
-import type { RuntimeProductionSpatialAuthorityV1 } from "./skirmish-ai-runtime-production-spatial-authority";
-import type { RuntimeProducerRoutesV1 } from "./skirmish-ai-runtime-producer-routes";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { AiRuntimeNavigationBoundary } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-navigation-boundary";
+import type { RuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality";
+import type { RuntimeProductionSpatialAuthority } from "./skirmish-ai-runtime-production-spatial-authority";
+import type { RuntimeProducerRoutes } from "./skirmish-ai-runtime-producer-routes";
 import { validateRuntimeProducerRoute } from "./skirmish-ai-runtime-producer-route-validation";
 import { matchRuntimeProducerOutput } from "./skirmish-ai-runtime-producer-output-lineage";
 import { projectRuntimeNavigationInterval, validateRuntimeNavigationBoundary } from "./skirmish-ai-runtime-navigation-boundary";
 
 /** Every route is native-observed and bounded. Missing producer-service intent cannot be filled by producer/name equality. */
 export function normalizeRuntimeProducerRoutes(
-  capture: AiRuntimeProductionCaptureV1, commands: RuntimeProductionCausalityV1["commands"],
-  completions: RuntimeProductionCausalityV1["completions"], spatial: RuntimeProductionSpatialAuthorityV1
+  capture: AiRuntimeProductionSnapshot, commands: RuntimeProductionCausality["commands"],
+  completions: RuntimeProductionCausality["completions"], spatial: RuntimeProductionSpatialAuthority
 ) {
-  const outputs: RuntimeProducerRoutesV1["outputs"][number][] = [];
-  const paths: RuntimeProducerRoutesV1["paths"][number][] = [];
+  const outputs: RuntimeProducerRoutes["outputs"][number][] = [];
+  const paths: RuntimeProducerRoutes["paths"][number][] = [];
   const failures: string[] = [];
   const gaps = new Set(["production_route_complete_query_history_missing", "production_route_useful_arrival_missing"]);
   if (capture.facts.length > AI_RUNTIME_MAX_FACTS || capture.droppedFactCount) {
-    return { routes: { outputs: [], paths: [] } satisfies RuntimeProducerRoutesV1,
+    return { routes: { outputs: [], paths: [] } satisfies RuntimeProducerRoutes,
       failures: ["production_route_capture_dropped"], gaps: [...gaps] };
   }
   const facts = capture.facts.filter((fact) => fact.kind === "spatial_authority");
@@ -36,7 +36,7 @@ export function normalizeRuntimeProducerRoutes(
   const outputIds = new Set<number>();
   const productIds = new Set<string>();
   const consumedItems = new Set<string>();
-  let lastNavigation: AiRuntimeNavigationBoundaryV1 | undefined;
+  let lastNavigation: AiRuntimeNavigationBoundary | undefined;
   const orders = validateRuntimeRouteOrders(capture);
   failures.push(...orders.failures);
   let overflow = orders.overflow;
@@ -113,7 +113,7 @@ export function normalizeRuntimeProducerRoutes(
     if (value.result === "no_path") entryGaps.push("production_route_native_path_not_found");
     const candidate = outputs.find((entry) => entry.boundary.spatial.kind === "output" &&
       entry.boundary.spatial.outputId === before.outputId);
-    let output: RuntimeProducerRoutesV1["outputs"][number] | null = candidate ?? null;
+    let output: RuntimeProducerRoutes["outputs"][number] | null = candidate ?? null;
     if (before.outputId !== null && candidate?.boundary.spatial.kind === "output") {
       const bound = candidate.boundary.spatial;
       if (candidate.boundary.sequence >= request.sequence || bound.product.actorId !== before.source.actorId ||
@@ -159,6 +159,6 @@ export function normalizeRuntimeProducerRoutes(
   if (!outputIds.size && !requests.size) gaps.add("production_route_authority_missing");
   if (overflow) gaps.add("production_route_group_overflow");
   return structuredClone({ routes: { outputs: failures.length || overflow ? [] : outputs,
-    paths: failures.length || overflow ? [] : paths } satisfies RuntimeProducerRoutesV1,
+    paths: failures.length || overflow ? [] : paths } satisfies RuntimeProducerRoutes,
     failures: [...new Set(failures)], gaps: [...gaps].sort() });
 }

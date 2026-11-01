@@ -1,5 +1,5 @@
 import { FactionType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiReproBundleV1 } from "../contracts/ai-repro-bundle-v1";
+import type { AiReproBundle } from "../contracts/ai-repro-bundle";
 
 /** Access context for importing a reproduction bundle. */
 export interface AiReproBundleParseOptions {
@@ -54,7 +54,7 @@ function isNonEmptyString(value: unknown): value is string {
   return typeof value === "string" && value.length > 0 && value.length <= 512;
 }
 
-function isAiReproBundleV1(value: unknown): value is AiReproBundleV1 {
+function isAiReproBundle(value: unknown): value is AiReproBundle {
   if (!isRecord(value)) return false;
   const replay = value.replayInputs;
   const display = value.display;
@@ -118,7 +118,7 @@ function isAiReproBundleV1(value: unknown): value is AiReproBundleV1 {
 }
 
 /** Parses untrusted JSON with size, schema, traversal, markup and privacy guards. */
-export function parseAiReproBundleV1(json: string, options: AiReproBundleParseOptions): AiReproBundleV1 {
+export function parseAiReproBundle(json: string, options: AiReproBundleParseOptions): AiReproBundle {
   const maxBytes = options.maxBytes ?? 16 * 1024 * 1024;
   if (!Number.isSafeInteger(maxBytes) || maxBytes <= 0) {
     throw new AiReproBundleValidationError("malformed_bundle");
@@ -151,6 +151,6 @@ export function parseAiReproBundleV1(json: string, options: AiReproBundleParseOp
     throw new AiReproBundleValidationError("access_denied");
   }
 
-  if (!isAiReproBundleV1(parsed)) throw new AiReproBundleValidationError("malformed_bundle");
+  if (!isAiReproBundle(parsed)) throw new AiReproBundleValidationError("malformed_bundle");
   return parsed;
 }

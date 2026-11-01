@@ -1,5 +1,5 @@
 import type { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
+import type { AiIntent } from "../contracts/ai-intent";
 
 /** Per-decision posture allocation. It protects a competing affordable purchase, not idle money. */
 export interface AiSpendingBudget {
@@ -9,7 +9,7 @@ export interface AiSpendingBudget {
 
 type BudgetCategory = "economy" | "defense";
 
-function costFor(intent: AiIntentV1, resourceType: ResourceType): number {
+function costFor(intent: AiIntent, resourceType: ResourceType): number {
   return intent.claims.reduce(
     (total, claim) => total + (claim.kind === "resource" && claim.resourceType === resourceType ? claim.amount : 0),
     0
@@ -18,8 +18,8 @@ function costFor(intent: AiIntentV1, resourceType: ResourceType): number {
 
 /** Returns the first resource protected for the other category, if any. Survival remains stockpile-bound only. */
 export function aiSpendingBudgetConflict(
-  intent: AiIntentV1,
-  proposals: readonly AiIntentV1[],
+  intent: AiIntent,
+  proposals: readonly AiIntent[],
   budget: AiSpendingBudget | undefined,
   available: (resourceType: ResourceType) => number,
   committed: ReadonlyMap<ResourceType, number>,

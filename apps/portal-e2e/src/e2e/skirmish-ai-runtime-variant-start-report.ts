@@ -1,10 +1,10 @@
-import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
+import type { RuntimeVariant } from "./skirmish-ai-runtime-variant";
 import type { prepareRuntimeVariant } from "./skirmish-ai-runtime-variant-setup";
 import { digestRuntimeValue, projectRuntimePresetQueueDigest } from "./skirmish-ai-runtime-digest";
 
 /** Legacy operator/setup report labels stay separate from independently captured V2 actual-world equivalence. */
 export function projectRuntimeVariantStart(
-  variant: RuntimeVariantV1,
+  variant: RuntimeVariant,
   initialBoundary: Awaited<ReturnType<typeof prepareRuntimeVariant>>,
   effectiveSeed: number,
   mapLabel: string

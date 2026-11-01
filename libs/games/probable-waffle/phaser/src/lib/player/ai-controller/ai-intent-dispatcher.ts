@@ -1,6 +1,6 @@
 import type { GameCommandInput } from "@fuzzy-waddle/probable-waffle-protocol";
 import { dispatchAiIntentCommand } from "./dispatch-ai-intent-command";
-import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { SharedQueueItemType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/shared-queue-item-type";
 import type { PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import { OrderType } from "../../ai/order-type";
@@ -18,7 +18,7 @@ import type { AiDecisionIdentity } from "./ai-decision-identity";
 
 function dispatchEconomicOrMovementIntent(
   scene: ProbableWaffleScene,
-  intent: AiIntentV1,
+  intent: AiIntent,
   playerNumber: PlayerNumber,
   actorIndex: ActorIndexSystem,
   commandBus: CommandBusService,
@@ -120,7 +120,7 @@ function dispatchEconomicOrMovementIntent(
 
 function dispatchCombatOrControlIntent(
   scene: ProbableWaffleScene,
-  intent: AiIntentV1,
+  intent: AiIntent,
   playerNumber: PlayerNumber,
   actorIndex: ActorIndexSystem,
   commandBus: CommandBusService,
@@ -202,7 +202,7 @@ export function castTargetObjectId(
 export function dispatchAiIntents(
   scene: ProbableWaffleScene,
   playerNumber: PlayerNumber,
-  intents: readonly AiIntentV1[],
+  intents: readonly AiIntent[],
   decisionIdentity?: AiDecisionIdentity
 ): void {
   const actorIndex = getSceneService(scene, ActorIndexSystem);

@@ -1,4 +1,4 @@
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
 
 import { requireValue, combatActor, squad, fixtureState, observation, manager } from "./ai-tactics-test-fixtures";
 
@@ -12,7 +12,7 @@ describe("AiTacticsManager", () => {
       passengerIds: ["guard"],
       transportIds: ["carrier"],
       queryIds: ["query:landing"]
-    } as AiBrainStateV1["transport"][number];
+    } as AiBrainState["transport"][number];
     const inTransit = manager.propose(observation([guard]), { ...current, transport: [transport] });
     expect(inTransit.statePatch?.squadUpdates?.[0]).toEqual(
       expect.objectContaining({ actorIds: [], state: "recover" })

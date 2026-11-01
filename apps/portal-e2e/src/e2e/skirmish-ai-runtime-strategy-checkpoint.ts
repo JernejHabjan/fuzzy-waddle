@@ -1,5 +1,5 @@
 import type { Page } from "@playwright/test";
-import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
+import type { RuntimeCheckpoint } from "./skirmish-ai-runtime-checkpoint";
 import { digestRuntimeValue } from "./skirmish-ai-runtime-digest";
 import { writeFileSync } from "node:fs";
 
@@ -7,11 +7,11 @@ export async function captureRuntimeStrategyCheckpoint(
   page: Page,
   aiPlayerNumber: number,
   captureFairness = false
-): Promise<Partial<RuntimeCheckpointV1>> {
+): Promise<Partial<RuntimeCheckpoint>> {
   const diagnosticTick = Number(process.env.AI_SKIRMISH_CAPTURE_DECISION_TICK ?? -1);
   const { fairnessObservation, diagnosticInputs, ...checkpoint } = await page.evaluate(
     ({ playerNumber, captureFairness, diagnosticTick }) => {
-      const parts = window.__fuzzyWaddleAiRuntimePartsV1?.(playerNumber);
+      const parts = window.__fuzzyWaddleAiRuntimeParts?.(playerNumber);
       if (!parts) throw new Error("runtime_controller_unavailable");
       const observation = parts.controller.getCommittedObservation();
       const state = parts.controller.getBrainState();

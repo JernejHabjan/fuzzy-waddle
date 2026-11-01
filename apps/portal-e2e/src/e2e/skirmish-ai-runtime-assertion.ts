@@ -1,12 +1,12 @@
-import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
-import type { RuntimeProductionContractV1 } from "./skirmish-ai-runtime-production-contract";
+import type { RuntimeVariant } from "./skirmish-ai-runtime-variant";
+import type { RuntimeProductionContract } from "./skirmish-ai-runtime-production-contract";
 import type { RuntimeTechnologyContract } from "./skirmish-ai-runtime-technology-contract";
 import type { RuntimeEconomyContract } from "./skirmish-ai-runtime-economy-contract";
 import type { RuntimeResourceRecoveryContract } from "./skirmish-ai-runtime-resource-recovery-contract";
 import type { RuntimeExpansionPressureContract } from "./skirmish-ai-expansion-pressure-contract";
 import type { RuntimeNativeScenarioContract } from "./skirmish-ai-native-scenario-contract";
 
-export interface RuntimeAssertionV1 {
+export interface RuntimeAssertion {
   readonly requiredNativeScenario?: RuntimeNativeScenarioContract;
   /** Complete EXP-02 native survival/recovery predicates; individual diagnostic variants remain partial evidence. */
   readonly requiredExpansionPressure?: RuntimeExpansionPressureContract;
@@ -14,7 +14,7 @@ export interface RuntimeAssertionV1 {
   readonly requiredResourceRecovery?: RuntimeResourceRecoveryContract;
   readonly requiredTechnologyContracts?: Readonly<Record<string, RuntimeTechnologyContract>>;
   /** Required per variant for causal PRO-03/06/07 proof; natural aggregate recipes remain insufficient. */
-  readonly requiredProductionContracts?: Readonly<Record<string, RuntimeProductionContractV1>>;
+  readonly requiredProductionContracts?: Readonly<Record<string, RuntimeProductionContract>>;
   readonly maximumTick?: number;
   readonly minimumDecisions: number;
   readonly minimumAppliedCommands: number;
@@ -22,7 +22,7 @@ export interface RuntimeAssertionV1 {
   readonly requireNoInitialWorker?: boolean;
   readonly requireDeliveredIncome?: boolean;
   readonly requireRenewableFoodIncome?: boolean;
-  readonly requiredAiFactions: readonly RuntimeVariantV1["aiFaction"][];
+  readonly requiredAiFactions: readonly RuntimeVariant["aiFaction"][];
   readonly minimumMilitaryCount?: number;
   readonly minimumMilitaryTypeCount?: number;
   readonly minimumRepeatedMilitaryTypeCount?: number;
@@ -32,7 +32,7 @@ export interface RuntimeAssertionV1 {
   readonly requireCapacityDemand?: boolean;
   readonly requiredProductionCapacity?: {
     readonly latestTick: number;
-    readonly producerObjectNameByFaction: Readonly<Record<RuntimeVariantV1["aiFaction"], string>>;
+    readonly producerObjectNameByFaction: Readonly<Record<RuntimeVariant["aiFaction"], string>>;
   };
   readonly requireProductionStopsAtTarget?: boolean;
   /** Independent unit, command and seeded-queue proof, followed by a full no-excess observation window. */
@@ -46,7 +46,7 @@ export interface RuntimeAssertionV1 {
     /** Useful copies absent from the subject's starting world and supplied by either control branch. */
     readonly additionalUnitCount: number;
     /** Definition-backed useful unit whose repeated production is under test. */
-    readonly unitObjectNameByFaction: Readonly<Record<RuntimeVariantV1["aiFaction"], string>>;
+    readonly unitObjectNameByFaction: Readonly<Record<RuntimeVariant["aiFaction"], string>>;
   };
   readonly maximumQueueOccupancyPerProducer?: number;
   readonly firstOffensiveLaunchByTick?: number;

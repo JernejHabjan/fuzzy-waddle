@@ -2,7 +2,7 @@
  * Test-owned ordered facts for independent production oracles. The runtime adapter must capture real committed
  * snapshots and applied events; fixtures may declare expectations but must never manufacture these records.
  */
-export interface RuntimeProductionEvidenceV1 {
+export interface RuntimeProductionEvidence {
   /** Shared causal setup digest excludes only the declared transition, exposure or paid cancellation variable. */
   readonly pairedSetupDigest: string;
   readonly initialProducerIds: readonly string[];

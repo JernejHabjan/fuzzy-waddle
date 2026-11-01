@@ -1,17 +1,17 @@
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import { reachableAiAccessNodeIdsV1 } from "./ai-access-graph-v1";
+import type { AiObservation } from "../contracts/ai-observation";
+import { reachableAiAccessNodeIds } from "./ai-access-graph";
 import { constructionAccessPolicy } from "./ai-construction-access";
 
 /** Selects an observed buildable footprint and reserves its tiles for this decision. */
 export function selectConstructionPosition(
-  observation: AiObservationV1,
-  builder: AiObservationV1["actors"][number],
+  observation: AiObservation,
+  builder: AiObservation["actors"][number],
   _decisionSequence: number,
   _ordinal: number,
   selectedTileKeys: Set<string>,
   footprintRadiusTiles = 0,
   /** Optional production policy filter; shared construction application remains the placement authority. */
-  acceptCell?: (cell: NonNullable<NonNullable<AiObservationV1["map"]>["constructionCells"]>[number]) => boolean
+  acceptCell?: (cell: NonNullable<NonNullable<AiObservation["map"]>["constructionCells"]>[number]) => boolean
 ) {
   if (builder.logicalPosition.status !== "known") return undefined;
   const origin = builder.logicalPosition.value;
@@ -22,7 +22,7 @@ export function selectConstructionPosition(
     ? builder.accessNodeId.value
     : undefined;
   const builderReachableAccessNodeIds = builderAccessNodeId && observation.map?.accessGraph?.status === "ready"
-    ? reachableAiAccessNodeIdsV1(observation.map.accessGraph, [builderAccessNodeId], "ground", 1)
+    ? reachableAiAccessNodeIds(observation.map.accessGraph, [builderAccessNodeId], "ground", 1)
     : undefined;
   const preservesAccess = constructionAccessPolicy(observation, builder, selectedTileKeys, footprintRadiusTiles);
   const footprintKeys = (x: number, y: number) => {

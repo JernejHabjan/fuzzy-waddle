@@ -23,7 +23,7 @@ The controller covers coherent economy, useful duplicate capacity, squads, acces
 
 ## C1 — opening branches and timing plans
 
-The macro/adaptation owners maintain a small versioned opening/transition library for **each registered faction**, resolved from its real tech tree. Start with balanced pressure and safer economic development branches. Emergency recovery is shared, not a separate random opening. Air/naval/expeditionary branches require actual roster and map usefulness.
+The macro/adaptation owners maintain a small opening/transition library for **each registered faction**, resolved from its real tech tree. Start with balanced pressure and safer economic development branches. Emergency recovery is shared, not a separate random opening. Air/naval/expeditionary branches require actual roster and map usefulness.
 
 Each branch stores ID/version, entry conditions, critical versus optional steps, resource obligations, dated army role/capability targets, launch milestone, optional upgrade/tech timing, invalidation evidence and a fallback branch. Reuse stable checkpoint and demand identities across transitions. Existing assets can satisfy either branch; never rebuild just to conform to the selected script.
 
@@ -62,7 +62,7 @@ After a won engagement, compare immediate pressure on the exposed core/expansion
 
 ## D — difficulty already exists; make it real and testable
 
-The profile lifecycle spans lobby selection -> versioned profile -> host brain -> save/replay/host transfer -> debug/results. There are three initial fair levels. They vary planning tempo and breadth, not access to hidden state or economic legality. No adaptive rubber-banding or silent mid-match difficulty switching.
+The profile lifecycle spans lobby selection -> profile -> host brain -> save/replay/host transfer -> debug/results. There are three initial fair levels. They vary planning tempo and breadth, not access to hidden state or economic legality. No adaptive rubber-banding or silent mid-match difficulty switching.
 
 | Policy                                            | Easy                                                                  | Normal                                  | Hard                                                  |
 | ------------------------------------------------- | --------------------------------------------------------------------- | --------------------------------------- | ----------------------------------------------------- |
@@ -95,7 +95,7 @@ Run focused cases while developing their responsible subsystem and all cases in 
 | C-04 | Question-driven scouting changes a real decision; repeated reading of the same contact does not inflate enemy mass/confidence                            |
 | C-05 | Bait retreat cannot pull asset defenders into a bad pursuit; won battle creates useful follow-up pressure                                                |
 | C-06 | Multiple opponents retain coherent mission focus; diplomacy/defeat cleanly retargets without ignoring local threats                                      |
-| D-01 | Every lobby difficulty selects the exact versioned profile and expected cadence/quotas with no fallback to identical defaults                            |
+| D-01 | Every lobby difficulty selects the exact profile and expected cadence/quotas with no fallback to identical defaults                            |
 | D-02 | Single-player save/load/replay and independent multiplayer host transfer/reconnect preserve difficulty, archetype, scheduling and active plans; no silent profile drift |
 | D-03 | Equal permitted observations/rules across profiles; no hidden current state or unadvertised resource/stat bonuses                                        |
 | D-04 | Easy still opens, produces useful copies, counters legal threats, retreats and recovers; reduced breadth is not broken behavior                          |

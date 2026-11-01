@@ -1,15 +1,15 @@
 import { ProbableWaffleAiDifficulty, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiProgressContractV1 } from "../contracts/ai-progress-contracts";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiProgressContract } from "../contracts/ai-progress-contracts";
 import { aiDeadline } from "../contracts/ai-core-types";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { AiRecoveryManager } from "../planning/ai-recovery-manager";
 import { planAiDecisions } from "../planning/ai-decision-planner";
-import { projectAiDebugSnapshot, findAiWhyNotExplanationV1 } from "../debug/project-ai-debug-snapshot";
+import { projectAiDebugSnapshot, findAiWhyNotExplanation } from "../debug/project-ai-debug-snapshot";
 import { createAiProductionPolicyFixture } from "./ai-production-policy-fixture";
 import { createAiTestObservation } from "./ai-test-fixtures";
 
-function progress(planId: AiProgressContractV1["planId"], deadline: number): AiProgressContractV1 {
+function progress(planId: AiProgressContract["planId"], deadline: number): AiProgressContract {
   return {
     planId,
     expectedEvidenceKinds: ["income_delivered"],
@@ -93,7 +93,7 @@ describe("controller progress and admission scenario contracts", () => {
 
   it("H-12 releases the deterministic reversible side of a wait cycle while preserving paid work", () => {
     const f = createAiProductionPolicyFixture();
-    const state: AiBrainStateV1 = {
+    const state: AiBrainState = {
       ...f.state,
       waitEdges: [
         {
@@ -170,7 +170,7 @@ describe("difficulty and debug scenario contracts", () => {
       ProbableWaffleAiDifficulty.Easy,
       ProbableWaffleAiDifficulty.Medium,
       ProbableWaffleAiDifficulty.Hard
-    ].map(createAiProfileConfigV1);
+    ].map(createAiProfileConfig);
     expect(
       profiles.map((profile) => [
         profile.decisionIntervalTicks,
@@ -183,8 +183,8 @@ describe("difficulty and debug scenario contracts", () => {
       [20, 8, 32, 2],
       [10, 12, 48, 3]
     ]);
-    expect(profiles.every((profile) => profile.profileVersion === "skirmish-ai-v1" && !profile.cheats)).toBe(true);
-    expect(() => createAiProfileConfigV1(99 as ProbableWaffleAiDifficulty)).toThrow("unsupported_ai_difficulty");
+    expect(profiles.every((profile) => profile.profileVersion === "skirmish-ai" && !profile.cheats)).toBe(true);
+    expect(() => createAiProfileConfig(99 as ProbableWaffleAiDifficulty)).toThrow("unsupported_ai_difficulty");
   });
 
   it("DBG-02 returns every recorded why-not status and honest absence without changing the planner snapshot", () => {
@@ -197,8 +197,8 @@ describe("difficulty and debug scenario contracts", () => {
     ];
     const snapshot = { ...base, whyNot };
     const before = JSON.stringify(snapshot);
-    for (const record of whyNot) expect(findAiWhyNotExplanationV1(snapshot, record.subjectId)).toEqual(record);
-    expect(findAiWhyNotExplanationV1(snapshot, "never-recorded")).toEqual({
+    for (const record of whyNot) expect(findAiWhyNotExplanation(snapshot, record.subjectId)).toEqual(record);
+    expect(findAiWhyNotExplanation(snapshot, "never-recorded")).toEqual({
       subjectId: "never-recorded",
       status: "not_recorded",
       reason: null

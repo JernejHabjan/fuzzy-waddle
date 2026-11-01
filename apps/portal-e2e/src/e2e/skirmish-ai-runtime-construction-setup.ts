@@ -1,12 +1,12 @@
-import type { RuntimePresetWorldV1 } from "./skirmish-ai-runtime-preset-world";
+import type { RuntimePresetWorld } from "./skirmish-ai-runtime-preset-world";
 // prettier-ignore
-import type { AiRuntimePresetApplicationV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application-v1";
+import type { AiRuntimePresetApplication } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application";
 
 /** Refuse a lost/rewritten browser binding even when a fixture label and construction count happen to match. */
 export function assertRuntimeConstructionSetup(
-  preset: RuntimePresetWorldV1,
-  application: AiRuntimePresetApplicationV1
+  preset: RuntimePresetWorld,
+  application: AiRuntimePresetApplication
 ): void {
   const orders = preset.constructionOrders ?? [];
   const applied = application.constructionApplications ?? [];

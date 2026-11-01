@@ -1,29 +1,29 @@
 import { OrderType, type ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservation, AiObservedActor } from "../contracts/ai-observation";
 import { aiResourceForecastDeficit } from "./ai-resource-forecast";
 
 const MIN_TRANSFER_DEFICIT = 100;
 const MIN_DONOR_SURPLUS = 100;
 
-function spendable(observation: AiObservationV1, resourceType: ResourceType): number {
+function spendable(observation: AiObservation, resourceType: ResourceType): number {
   const resource = observation.resources.find((entry) => entry.resourceType === resourceType);
   return (resource?.stockpile ?? 0) - (resource?.reservedUnspent ?? 0) - (resource?.obligationsDue ?? 0);
 }
 
 /** Selects at most one unloaded donor when a priced shortage and a separate, well-stocked source are both observed. */
 export function selectAiSurplusLaborTransfer(
-  observation: AiObservationV1,
-  catalog: AiCapabilityCatalogV1,
+  observation: AiObservation,
+  catalog: AiCapabilityCatalog,
   forecasts: readonly {
     readonly resourceType: ResourceType;
     readonly horizonTick: number;
     readonly amount: number;
   }[],
-  workers: readonly AiObservedActorV1[],
-  sources: readonly AiObservedActorV1[],
+  workers: readonly AiObservedActor[],
+  sources: readonly AiObservedActor[],
   targetResource: ResourceType
-): AiObservedActorV1 | undefined {
+): AiObservedActor | undefined {
   const targetForecast = forecasts.find((entry) => entry.resourceType === targetResource);
   if (!targetForecast || aiResourceForecastDeficit(observation, targetForecast) < MIN_TRANSFER_DEFICIT)
     return undefined;

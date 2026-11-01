@@ -1,9 +1,9 @@
 import { isDeepStrictEqual } from "node:util";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
-import type { RuntimeProductionQueueMutationV1 } from "./skirmish-ai-runtime-production-queue-mutation";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { RuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality";
+import type { RuntimeProductionQueueMutation } from "./skirmish-ai-runtime-production-queue-mutation";
 import { validateRuntimeQueueMutationBoundaries } from "./skirmish-ai-runtime-queue-mutation-boundaries";
 import { reconcileRuntimeProductionUnspent } from "./skirmish-ai-runtime-production-unspent";
 import { sameRuntimeQueueVector } from "./skirmish-ai-runtime-scoped-queue-payments";
@@ -11,14 +11,14 @@ import { sameRuntimeQueueCommand } from "./skirmish-ai-runtime-queue-command-equ
 
 /** Native command scopes plus exact physical mutation callbacks; never promotes removal to useful completion evidence. */
 export function projectRuntimeProductionQueueMutations(
-  capture: AiRuntimeProductionCaptureV1,
-  commands: RuntimeProductionCausalityV1["commands"],
-  payments: RuntimeProductionCausalityV1["payments"],
-  operations: RuntimeProductionCausalityV1["operations"]
+  capture: AiRuntimeProductionSnapshot,
+  commands: RuntimeProductionCausality["commands"],
+  payments: RuntimeProductionCausality["payments"],
+  operations: RuntimeProductionCausality["operations"]
 ) {
   const failures: string[] = [];
   const gaps: string[] = [];
-  const mutations: RuntimeProductionQueueMutationV1[] = [];
+  const mutations: RuntimeProductionQueueMutation[] = [];
   const facts = capture.facts.filter((fact) => fact.kind === "queue_mutation");
   const ids = new Set(facts.map((fact) => fact.mutation.mutationId));
   const inserted = new Set<string>();

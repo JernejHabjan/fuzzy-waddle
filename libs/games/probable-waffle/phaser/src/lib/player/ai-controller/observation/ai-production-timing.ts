@@ -1,4 +1,4 @@
-import type { AiCapabilityCatalogEntryV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiCapabilityCatalogEntry } from "@fuzzy-waddle/probable-waffle-gameplay";
 import type {
   ProductionCostDefinition
 } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-cost-definition";
@@ -12,7 +12,7 @@ export function projectAiProductionTiming(
   cost: ProductionCostDefinition | undefined,
   construction: ConstructionSiteDefinition | undefined,
   parallelQueues: number
-): AiCapabilityCatalogEntryV1["productionTiming"] {
+): AiCapabilityCatalogEntry["productionTiming"] {
   if (!cost) return undefined;
   const singleBuilderRate = construction
     ? construction.progressMadeAutomatically +

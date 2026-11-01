@@ -1,19 +1,19 @@
 import { ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiIntent } from "../contracts/ai-intent";
+import type { AiObservation } from "../contracts/ai-observation";
+import type { AiDemand } from "../contracts/ai-plan-contracts";
 import { nextIds } from "./ai-macro-effect-identity";
 import { claimedActorIds, compareAiActorsByVisibleGeometry } from "./ai-macro-observation";
 import { aiEconomySiteSafety } from "./ai-economy-site-safety";
 
 function nextUnstaffedFoodSource(
-  observation: AiObservationV1,
-  self: readonly AiObservationV1["actors"][number][],
-  readyFoodSources: readonly AiObservationV1["actors"][number][],
+  observation: AiObservation,
+  self: readonly AiObservation["actors"][number][],
+  readyFoodSources: readonly AiObservation["actors"][number][],
   foodPrerequisiteObject: ObjectNames | undefined,
-  catalog: AiCapabilityCatalogV1
+  catalog: AiCapabilityCatalog
 ) {
   const staffedFoodSourceIds = new Set(
     self.flatMap((actor) => {
@@ -44,11 +44,11 @@ function nextUnstaffedFoodSource(
 }
 
 export function hasUnstaffedAiFoodSource(
-  observation: AiObservationV1,
-  self: readonly AiObservationV1["actors"][number][],
-  readyFoodSources: readonly AiObservationV1["actors"][number][],
+  observation: AiObservation,
+  self: readonly AiObservation["actors"][number][],
+  readyFoodSources: readonly AiObservation["actors"][number][],
   foodPrerequisiteObject: ObjectNames | undefined,
-  catalog: AiCapabilityCatalogV1
+  catalog: AiCapabilityCatalog
 ): boolean {
   return nextUnstaffedFoodSource(
     observation,
@@ -61,16 +61,16 @@ export function hasUnstaffedAiFoodSource(
 
 /** Assigns one free farmer without stealing cargo or a Field's returning worker. */
 export function proposeAiFieldLabor(
-  observation: AiObservationV1,
-  state: AiBrainStateV1,
-  catalog: AiCapabilityCatalogV1,
-  self: readonly AiObservationV1["actors"][number][],
-  readyFoodSources: readonly AiObservationV1["actors"][number][],
+  observation: AiObservation,
+  state: AiBrainState,
+  catalog: AiCapabilityCatalog,
+  self: readonly AiObservation["actors"][number][],
+  readyFoodSources: readonly AiObservation["actors"][number][],
   foodPrerequisiteObject: ObjectNames | undefined,
   reservedActorIds: ReadonlySet<string>,
-  priorIntents: readonly AiIntentV1[],
+  priorIntents: readonly AiIntent[],
   ordinal: number
-): AiIntentV1 | null {
+): AiIntent | null {
   const unstaffedFoodSource = nextUnstaffedFoodSource(
     observation,
     self,
@@ -136,7 +136,7 @@ export function proposeAiFieldLabor(
     ...next,
     kind: "assign_gatherers",
     planId: state.opening.plan.planId,
-    demandId: "demand:economy:sustainable-food" as AiDemandV1["demandId"],
+    demandId: "demand:economy:sustainable-food" as AiDemand["demandId"],
     lane: "essential_economy",
     proposedTick: observation.tick,
     // Keep at least one worker on renewable food before general gathering
@@ -150,7 +150,7 @@ export function proposeAiFieldLabor(
     claims: [
       { claimId: next.claimId, kind: "actor", actorId: worker.actorId },
       {
-        claimId: `${next.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
+        claimId: `${next.claimId}:effect` as AiIntent["claims"][number]["claimId"],
         kind: "effect",
         effectId: next.effectId
       }

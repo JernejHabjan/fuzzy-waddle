@@ -1,9 +1,9 @@
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 import type { ExpansionBranch } from "./skirmish-ai-expansion-branch";
 import { EXPANSION_HOME_RAIDER_ROLES } from "./skirmish-ai-expansion-branch";
-import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 import { expansionEffectMatchesExecution, expansionServiceFailures } from "./skirmish-ai-expansion-service-evaluation";
 import { expansionPressureResolution } from "./skirmish-ai-expansion-pressure-resolution";
 import { nativeDamageMatches } from "./skirmish-ai-native-damage";
@@ -61,8 +61,8 @@ export function firstSustainedClearBoundary(
 /** Real home danger, damage and survival precede suppression; the full matrix also requires a productive safe pair. */
 export function expansionPressureFailures(
   branch: ExpansionBranch,
-  result: Pick<RuntimeVariantResultV1, "productionCapture" | "presetCreatedActorIds">,
-  human: AiRuntimeProductionCaptureV1
+  result: Pick<RuntimeVariantResult, "productionCapture" | "presetCreatedActorIds">,
+  human: AiRuntimeProductionSnapshot
 ): string[] {
   if (branch === "expand" || branch === "served") return [];
   const capture = result.productionCapture, homeId = result.presetCreatedActorIds["original-home"];
@@ -77,7 +77,7 @@ export function expansionPressureFailures(
   if (source?.logicalPosition.status !== "known") return ["expansion_pressure_fair_remote_source_missing"];
   const sourcePosition = source.logicalPosition.value;
   const homeName = capture.setup?.actors.find((actor) => actor.actorId === homeId)?.definition.name;
-  const remoteService = (intent: AiIntentV1) => intent.kind === "construct" &&
+  const remoteService = (intent: AiIntent) => intent.kind === "construct" &&
     (intent.objectName === "WorkMill" || intent.objectName === homeName) &&
     Math.abs(intent.logicalPosition.x - sourcePosition.x) + Math.abs(intent.logicalPosition.y - sourcePosition.y) <= 12;
   for (const [index, raiderId] of originalRaiders.entries()) {

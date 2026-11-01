@@ -1,9 +1,9 @@
 import { RUNTIME_ROUTE_HISTORY_LIMIT, RUNTIME_ROUTE_ORDER_IDENTITY_LIMIT } from "./skirmish-ai-runtime-route-history-budget";
 import { expect, test } from "@playwright/test";
 // prettier-ignore
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import type { AiRuntimeRouteCallerV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-route-caller-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
+import type { AiRuntimeRouteCaller } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-route-caller";
 import { routeOrderFixture } from "./skirmish-ai-runtime-route-order-fixture";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
 import { validateRuntimeRouteOrders } from "./skirmish-ai-runtime-route-order-validation";
@@ -19,9 +19,9 @@ function callerFixture(rally = false) {
     stage: "initial",
     order: f.currentOrder,
     lifetimeValid: true
-  } satisfies AiRuntimeRouteCallerV1;
+  } satisfies AiRuntimeRouteCaller;
   const facts = f.capture.facts.map(
-    (fact): AiRuntimeProductionFactV1 =>
+    (fact): AiRuntimeProductionFact =>
       fact.kind === "spatial_authority" && fact.spatial.kind === "producer_path"
         ? { ...fact, spatial: { ...fact.spatial, queryCaller: caller } }
         : fact
@@ -31,7 +31,7 @@ function callerFixture(rally = false) {
 
 test("paired native caller joins its service demand independently of replacement current orders and query endpoints", () => {
   const f = callerFixture();
-  const facts = f.capture.facts.map((fact): AiRuntimeProductionFactV1 => {
+  const facts = f.capture.facts.map((fact): AiRuntimeProductionFact => {
     if (fact.kind !== "spatial_authority" || fact.spatial.kind !== "producer_path") return fact;
     return {
       ...fact,
@@ -75,7 +75,7 @@ test("actor/boarding admission can avoid known dynamic blockers, while probes an
     for (const dynamicBlockerCount of [0, 1]) {
       const f = callerFixture();
       const facts = f.capture.facts.map(
-        (fact): AiRuntimeProductionFactV1 =>
+        (fact): AiRuntimeProductionFact =>
           fact.kind === "spatial_authority" && fact.spatial.kind === "producer_path"
             ? {
                 ...fact,
@@ -99,7 +99,7 @@ for (const caller of ["range_probe", "reachability_probe", "actor_movement", "bo
   test(`${caller} object query can own an order without claiming movement success`, () => {
     const f = callerFixture();
     const facts = f.capture.facts.map(
-      (fact): AiRuntimeProductionFactV1 =>
+      (fact): AiRuntimeProductionFact =>
         fact.kind === "spatial_authority" && fact.spatial.kind === "producer_path"
           ? {
               ...fact,
@@ -125,7 +125,7 @@ for (const stage of ["repath", "fallback"] as const) {
   test(`${stage} uses its retained order even when the actual endpoint differs from admission`, () => {
     const f = callerFixture();
     const facts = f.capture.facts.map(
-      (fact): AiRuntimeProductionFactV1 =>
+      (fact): AiRuntimeProductionFact =>
         fact.kind === "spatial_authority" && fact.spatial.kind === "producer_path"
           ? {
               ...fact,
@@ -149,7 +149,7 @@ for (const stage of ["repath", "fallback"] as const) {
 test("an invocation snapshot taken before admission cannot borrow a later admitted sample", () => {
   const f = callerFixture();
   const facts = f.capture.facts.map(
-    (fact): AiRuntimeProductionFactV1 =>
+    (fact): AiRuntimeProductionFact =>
       fact.kind === "spatial_authority" && fact.spatial.kind === "producer_path"
         ? {
             ...fact,
@@ -169,7 +169,7 @@ test("an invocation snapshot taken before admission cannot borrow a later admitt
 for (const missing of ["legacy", "terminal", "admission", "unordered", "clock"] as const) {
   test(`caller ${missing} remains explicit and cannot borrow current-order attribution`, () => {
     const f = callerFixture();
-    const facts = f.capture.facts.flatMap((fact): AiRuntimeProductionFactV1[] => {
+    const facts = f.capture.facts.flatMap((fact): AiRuntimeProductionFact[] => {
       if (missing === "admission" && fact.kind === "spatial_authority" && fact.spatial.kind === "route_order")
         return [];
       if (fact.kind !== "spatial_authority" || fact.spatial.kind !== "producer_path") return [fact];
@@ -192,7 +192,7 @@ for (const reason of ["restore_attempt", "controller_replaced", "unregister", "r
   test(`${reason} fences original caller, while a true terminal revival is contradictory`, () => {
     const f = callerFixture();
     const facts = f.capture.facts
-      .flatMap((fact): AiRuntimeProductionFactV1[] => {
+      .flatMap((fact): AiRuntimeProductionFact[] => {
         if (
           fact.kind !== "spatial_authority" ||
           fact.spatial.kind !== "producer_path" ||
@@ -200,7 +200,7 @@ for (const reason of ["restore_attempt", "controller_replaced", "unregister", "r
         ) {
           return [fact];
         }
-        const fence: AiRuntimeProductionFactV1 =
+        const fence: AiRuntimeProductionFact =
           reason === "unregister"
             ? {
                 sequence: 0,
@@ -253,7 +253,7 @@ for (const reason of ["restore_attempt", "controller_replaced", "unregister", "r
       });
     }
     const revived = facts.map(
-      (fact): AiRuntimeProductionFactV1 =>
+      (fact): AiRuntimeProductionFact =>
         fact.kind === "spatial_authority" && fact.spatial.kind === "producer_path"
           ? { ...fact, spatial: { ...fact.spatial, queryCaller: f.caller } }
           : fact
@@ -309,7 +309,7 @@ test("nested unbound observations remain missing, while failed outer queries can
   expect(result.failures).toEqual([]);
   expect(result.producerRoutes.paths.map((path) => path.orderLineage.queryCallerAttributed)).toEqual([true, false]);
   const rejected = f.capture.facts.map(
-    (fact): AiRuntimeProductionFactV1 =>
+    (fact): AiRuntimeProductionFact =>
       fact.kind === "spatial_authority" && fact.spatial.kind === "producer_path" && fact.spatial.phase === "resolved"
         ? { ...fact, spatial: { ...fact.spatial, phase: "rejected", result: null, path: null } }
         : fact
@@ -319,7 +319,7 @@ test("nested unbound observations remain missing, while failed outer queries can
   expect(failed.producerRoutes.paths[0]?.orderLineage.queryCallerAttributed).toBe(true);
   expect(failed.gaps).toContain("production_route_native_query_failed");
   const noPath = f.capture.facts.map(
-    (fact): AiRuntimeProductionFactV1 =>
+    (fact): AiRuntimeProductionFact =>
       fact.kind === "spatial_authority" && fact.spatial.kind === "producer_path" && fact.spatial.phase === "resolved"
         ? { ...fact, spatial: { ...fact.spatial, result: "no_path", path: null } }
         : fact

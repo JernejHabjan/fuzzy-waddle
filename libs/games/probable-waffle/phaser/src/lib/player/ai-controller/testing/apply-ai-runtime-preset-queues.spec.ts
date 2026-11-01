@@ -24,7 +24,7 @@ import { getSceneService } from "../../../world/services/scene-component-helpers
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import { QueueComponent } from "../../../entity/components/queue/queue-component";
 import type { GameCommandDispatchReceipt } from "../../../world/services/multiplayer/command-bus.service";
-import type { AiRuntimePresetWorldV1 } from "./ai-runtime-preset-world-v1";
+import type { AiRuntimePresetWorld } from "./ai-runtime-preset-world";
 import { applyAiRuntimePresetQueues } from "./apply-ai-runtime-preset-queues";
 
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
@@ -97,7 +97,7 @@ function setup(payment = PaymentType.PayImmediately) {
       } as never;
     return undefined;
   });
-  const preset: AiRuntimePresetWorldV1 = {
+  const preset: AiRuntimePresetWorld = {
     fixtureId: "legal-queue-world",
     provenance: { sourceRevision: "a".repeat(40), fixtureDigest: "fnv1a32:12345678" },
     actors: [],
@@ -135,7 +135,7 @@ describe("applyAiRuntimePresetQueues command/application boundary", () => {
       researchQueues: [
         { producerFixtureActorId: "producer-fixture", researchType: ResearchType.TivaraMacemanUpgradeLevel2 }
       ]
-    } satisfies AiRuntimePresetWorldV1;
+    } satisfies AiRuntimePresetWorld;
     const result = applyAiRuntimePresetQueues(f.scene, preset, f.actors);
     expect(result.queueApplications.map((entry) => entry.command.type)).toEqual([
       "PRODUCTION",

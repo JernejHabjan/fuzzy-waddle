@@ -1,6 +1,6 @@
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
 import type { AiObservationMemoryStateData } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiObservedActorV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiObservedActor } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { knownValue, unknownValue } from "./ai-observation-values";
 
 const MAX_INVALIDATION_DEBT = 1024;
@@ -15,8 +15,8 @@ export function projectRememberedContacts(
   visibleIds: ReadonlySet<ActorId>,
   tick: number,
   mayObserveGroundTile: (position: NonNullable<RememberedContact["position"]>) => boolean = () => false
-): AiObservedActorV1[] {
-  const remembered: AiObservedActorV1[] = [];
+): AiObservedActor[] {
+  const remembered: AiObservedActor[] = [];
   for (const contact of memory.values()) {
     if (visibleIds.has(contact.actorId)) continue;
     // A stationary main building cannot remain at an empty location the player can currently see.
@@ -40,7 +40,7 @@ export function projectRememberedContacts(
       owner: contact.owner,
       relation: contact.relation,
       visibility: "last_seen",
-      evidenceId: contact.evidenceId as AiObservedActorV1["evidenceId"],
+      evidenceId: contact.evidenceId as AiObservedActor["evidenceId"],
       observedTick: contact.lastSeenTick,
       logicalPosition: position,
       accessNodeId: unknownValue("query_pending"),

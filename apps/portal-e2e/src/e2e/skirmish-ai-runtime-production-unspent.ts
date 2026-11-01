@@ -3,9 +3,9 @@ import { reconcileRuntimeUnspentEntry } from "./skirmish-ai-runtime-unspent-entr
 import { isRuntimeProductionBalance } from "./skirmish-ai-runtime-production-balance";
 import { isDeepStrictEqual } from "node:util";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type * as Capture from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type * as Facts from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
+import type * as Capture from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type * as Facts from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
+import type { RuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality";
 import { sameRuntimeQueueVector } from "./skirmish-ai-runtime-scoped-queue-payments";
 
 export { isRuntimeProductionBalance } from "./skirmish-ai-runtime-production-balance";
@@ -17,10 +17,10 @@ export { isRuntimeProductionBalance } from "./skirmish-ai-runtime-production-bal
  * the enclosing event from lifecycle reconciliation while retaining its real sampled physical state and sequence.
  */
 export function reconcileRuntimeProductionUnspent(
-  capture: Capture.AiRuntimeProductionCaptureV1,
-  fact: Facts.AiRuntimeProductionFactV1,
-  commands: RuntimeProductionCausalityV1["commands"],
-  payments: RuntimeProductionCausalityV1["payments"],
+  capture: Capture.AiRuntimeProductionSnapshot,
+  fact: Facts.AiRuntimeProductionFact,
+  commands: RuntimeProductionCausality["commands"],
+  payments: RuntimeProductionCausality["payments"],
   beforeCallback = false
 ) {
   const ledger = fact.boundaryState?.unspentClaims;

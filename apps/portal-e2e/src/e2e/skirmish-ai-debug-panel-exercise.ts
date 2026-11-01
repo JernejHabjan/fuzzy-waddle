@@ -34,11 +34,11 @@ export async function exerciseDebug(
       () => {
         const host = (
           window as unknown as {
-            __fuzzyWaddleAiRuntimeBrowserTestV1?: {
+            __fuzzyWaddleAiRuntimeBrowserTest?: {
               game: { scene: { getScenes(active: boolean): { scene: { key: string }; aiControllerDebugPanel?: unknown }[] } };
             };
           }
-        ).__fuzzyWaddleAiRuntimeBrowserTestV1;
+        ).__fuzzyWaddleAiRuntimeBrowserTest;
         return !!host?.game.scene.getScenes(false).find((scene) => scene.scene.key === "HudProbableWaffle")
           ?.aiControllerDebugPanel;
       },
@@ -54,7 +54,7 @@ export async function exerciseDebug(
     ({ selectedMode, index, includeLifecycle: hasLifecycle }) => {
       const host = (
         window as unknown as {
-          __fuzzyWaddleAiRuntimeBrowserTestV1?: {
+          __fuzzyWaddleAiRuntimeBrowserTest?: {
             game: {
               scene: {
                 getScenes(active: boolean): {
@@ -65,7 +65,7 @@ export async function exerciseDebug(
             };
           };
         }
-      ).__fuzzyWaddleAiRuntimeBrowserTestV1;
+      ).__fuzzyWaddleAiRuntimeBrowserTest;
       const hud = host?.game.scene.getScenes(false).find((scene) => scene.scene.key === "HudProbableWaffle");
       const panel = (hud as { aiControllerDebugPanel?: unknown } | undefined)?.aiControllerDebugPanel as
         | DebugPanel
@@ -128,7 +128,7 @@ export async function exerciseDebug(
         if (!panel.labels[0]?.playerName.text.includes("Player 2")) throw new Error("debug_player_selection_not_visible");
       }
       if (selectedMode === "exported" && index >= 1) {
-        const controller = window.__fuzzyWaddleAiRuntimePartsV1?.(2)?.controller;
+        const controller = window.__fuzzyWaddleAiRuntimeParts?.(2)?.controller;
         if (!controller) throw new Error("debug_controller_missing");
         const history = JSON.parse(controller.exportBrainDebugHistory()) as unknown[];
         if (history.length === 0) throw new Error("debug_export_empty");

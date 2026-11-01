@@ -1,5 +1,5 @@
 import { ResourceType, type GameCommandOutcomeKind } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiMultiplayerSharedQueueWorldV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-multiplayer-shared-queue-world-v1";
+import type { AiMultiplayerSharedQueueWorldSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-multiplayer-shared-queue-world-snapshot";
 import {
   normalizeRuntimeScopedQueuePayments,
   sameRuntimeQueueVector
@@ -8,7 +8,7 @@ import { sameRuntimeQueueCommand } from "./skirmish-ai-runtime-queue-command-equ
 
 /** Distinct technology replacement and real progress-dependent refund, with a future cancellation request on the sender. */
 export function evaluateMultiplayerResearchCancellation(
-  world: AiMultiplayerSharedQueueWorldV1,
+  world: AiMultiplayerSharedQueueWorldSnapshot,
   payments: ReturnType<typeof normalizeRuntimeScopedQueuePayments>["payments"],
   sender: boolean
 ): string[] {
@@ -16,7 +16,7 @@ export function evaluateMultiplayerResearchCancellation(
   const capture = world.capture;
   if (!setup || !capture) return ["research_cancellation_capture_missing"];
   const failures: string[] = [];
-  const command = (role: AiMultiplayerSharedQueueWorldV1["commands"][number]["role"]) =>
+  const command = (role: AiMultiplayerSharedQueueWorldSnapshot["commands"][number]["role"]) =>
     world.commands.find((entry) => entry.role === role)?.command;
   const [purchase, probe, cancel, resume] = [
     command("purchase"),
@@ -41,7 +41,7 @@ export function evaluateMultiplayerResearchCancellation(
       entry.resource.operation === "immediate_charge" &&
       entry.resource.originatingCommandContext?.execution.commandId === id("resume")
   );
-  const snapshot = (name: AiMultiplayerSharedQueueWorldV1["checkpoints"][number]["boundary"]) =>
+  const snapshot = (name: AiMultiplayerSharedQueueWorldSnapshot["checkpoints"][number]["boundary"]) =>
     world.checkpoints.find((entry) => entry.boundary === name)?.snapshot;
   const items = (name: Parameters<typeof snapshot>[0]) =>
     snapshot(name)

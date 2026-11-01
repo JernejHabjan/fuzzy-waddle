@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { resolve } from "node:path";
 import {
   boundSummaryOutput,
   parseSummaryArguments,
@@ -55,11 +56,11 @@ test("parses a cross-shard repair request", () => {
     () => parseSummaryArguments(["--report", "a.json", "--report", "b.json"]),
     /multiple_reports_need_repair_list/
   );
-  assert.deepEqual(resolveRepairReportPaths(["tools/ai/fixtures/skirmish-v1.json"]), [
-    `${process.cwd()}/tools/ai/fixtures/skirmish-v1.json`
+  assert.deepEqual(resolveRepairReportPaths(["tools/ai/fixtures/skirmish.json"]), [
+    resolve("tools/ai/fixtures/skirmish.json")
   ]);
   assert.throws(
-    () => resolveRepairReportPaths(["tools/ai/fixtures/skirmish-v1.json", "tools/ai/fixtures/skirmish-v1.json"]),
+    () => resolveRepairReportPaths(["tools/ai/fixtures/skirmish.json", "tools/ai/fixtures/skirmish.json"]),
     /repair_report_explicit_paths_must_be_distinct_files/
   );
 });

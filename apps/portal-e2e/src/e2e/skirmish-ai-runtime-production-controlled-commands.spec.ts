@@ -3,8 +3,8 @@ import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { productionAuthorityFixture } from "./skirmish-ai-runtime-production-authority-fixture";
 import { projectRuntimeControlledCommands } from "./skirmish-ai-runtime-production-controlled-commands";
 // prettier-ignore
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 
 function fixture() {
   const {
@@ -34,7 +34,7 @@ function fixture() {
     setupItemId: null,
     outcomes: []
   };
-  const facts: AiRuntimeProductionFactV1[] = [
+  const facts: AiRuntimeProductionFact[] = [
     {
       kind: "preset_control",
       playerNumber: 1,

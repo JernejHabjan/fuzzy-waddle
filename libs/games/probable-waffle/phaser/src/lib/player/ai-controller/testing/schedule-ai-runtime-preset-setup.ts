@@ -4,7 +4,7 @@ import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getSceneInitializers, getSceneService } from "../../../world/services/scene-component-helpers";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { isSceneActive } from "../../../data/game-object-helper";
-import { AI_RUNTIME_BROWSER_TEST_HOST_KEY_V1 } from "./ai-runtime-browser-test-config";
+import { AI_RUNTIME_BROWSER_TEST_HOST_KEY } from "./ai-runtime-browser-test-config";
 
 /** Runs once after earlier object-ready timers, while the marked scene remains paused at tick zero. */
 export function scheduleAiRuntimePresetSetup(scene: ProbableWaffleScene, apply: () => void): void {
@@ -26,7 +26,7 @@ export function scheduleAiRuntimePresetSetup(scene: ProbableWaffleScene, apply: 
     timer = scene.time.delayedCall(0, () => {
       if (disposed) return;
       const ticks = getSceneService(scene, SimulationTickService);
-      const currentGame = window[AI_RUNTIME_BROWSER_TEST_HOST_KEY_V1]?.game;
+      const currentGame = window[AI_RUNTIME_BROWSER_TEST_HOST_KEY]?.game;
       cleanup();
       if (currentGame !== scene.game || !isSceneActive(scene)) return;
       if (!ticks || ticks.currentTick !== 0 || !ticks.isPaused) throw new Error("runtime_preset_setup_tick_zero_required");

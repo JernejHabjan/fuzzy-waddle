@@ -1,14 +1,14 @@
 import { ObjectNames, type GameCommand } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 import type { AiRuntimeProductionBoundaryState } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-boundary-state";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import type { AiRuntimeProductionQueueV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-queue-v1";
-import type { AiRuntimeQueueResourceV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-queue-resource-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
+import type { AiRuntimeProductionQueue } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-queue";
+import type { AiRuntimeQueueResource } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-queue-resource";
 
 /** Invented multi-item liabilities and callback contracts only; never a real paid queue or AI world. */
 export function productionProgressFixture(phase: "advanced" | "denied" = "advanced", remainingBeforeMs = 100) {
@@ -17,7 +17,7 @@ export function productionProgressFixture(phase: "advanced" | "denied" = "advanc
       commitmentKey: "ai:effect:purchase", intentId: "purchase", effectId: "purchase" } } satisfies GameCommand;
   const item = { itemId: "queue:producer:purchase", identitySource: "command", commandId: "purchase", effectId: "purchase",
     objectName: ObjectNames.TivaraWorker, researchType: null, totalTimeMs: 150, remainingTimeMs: remainingBeforeMs,
-    payment: "per_successful_tick", charge: { food: 7 } } satisfies AiRuntimeProductionQueueV1["lanes"][number]["items"][number];
+    payment: "per_successful_tick", charge: { food: 7 } } satisfies AiRuntimeProductionQueue["lanes"][number]["items"][number];
   const advanced = phase === "advanced";
   const next = { ...item, remainingTimeMs: advanced ? Math.max(0, remainingBeforeMs - 50) : remainingBeforeMs };
   const resources = { food: 100, wood: 100, stone: 100, minerals: 100 };
@@ -43,8 +43,8 @@ export function productionProgressFixture(phase: "advanced" | "denied" = "advanc
     payment: "per_successful_tick", storedPrice: { food: 7 }, refundFactor: 1, cancellationCommand: null,
     originatingCommandContext: { execution: command.execution, playerNumber: 1, actorIds: ["producer"] }, gaps: [],
     emission: { operationId: 4, requested: { food: 7 }, before: resources, snapshotRestoreInProgress: false, phase: "started" }
-  } satisfies AiRuntimeQueueResourceV1;
-  const facts: AiRuntimeProductionFactV1[] = [
+  } satisfies AiRuntimeQueueResource;
+  const facts: AiRuntimeProductionFact[] = [
     { ...base, kind: "queue_progress", progress: { ...progress, phase: "started" }, boundaryState: before },
     ...(advanced ? [
       { ...base, kind: "queue_resource" as const, resource },
@@ -59,6 +59,6 @@ export function productionProgressFixture(phase: "advanced" | "denied" = "advanc
   ];
   const capture = { schemaVersion: 1, kind: "production_authority_capture", startedTick: 0, playerNumber: 1,
     droppedFactCount: 0, droppedSnapshotCount: 0, gaps: ["synthetic_progress_only"], snapshots: [],
-    facts: facts.map((fact, index) => ({ ...fact, sequence: index + 1 })) } satisfies AiRuntimeProductionCaptureV1;
+    facts: facts.map((fact, index) => ({ ...fact, sequence: index + 1 })) } satisfies AiRuntimeProductionSnapshot;
   return { capture, command };
 }

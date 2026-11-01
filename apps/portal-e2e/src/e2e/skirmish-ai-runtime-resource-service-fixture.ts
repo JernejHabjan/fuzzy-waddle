@@ -1,10 +1,10 @@
-import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { OrderType, ResourceType, type GameCommand } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiGatheringSelection } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-gathering-selection";
-import type { AiRuntimeProductionCaptureV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import type { AiRuntimeResourceCoverageV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-resource-coverage-v1";
-import type { AiRuntimeResourceServiceIntervalV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-resource-service-interval-v1";
+import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
+import type { AiRuntimeResourceCoverage } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-resource-coverage";
+import type { AiRuntimeResourceServiceInterval } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-resource-service-interval";
 import { resourceCreditFixture } from "./skirmish-ai-runtime-resource-credit-fixture";
 
 /** Synthetic exact accounting/control shapes only; every useful/capacity verdict must still be unavailable. */
@@ -27,7 +27,7 @@ export function resourceServiceFixture() {
     actorIds: [f.product.actorId ?? ""],
     resourceType: ResourceType.Wood,
     sourceActorId: f.producer.actorId ?? ""
-  } satisfies AiIntentV1;
+  } satisfies AiIntent;
   const command = {
     ...f.command,
     orderType: OrderType.Gather,
@@ -54,7 +54,7 @@ export function resourceServiceFixture() {
     }
   } satisfies AiGatheringSelection;
   const order = { ...f.currentOrder, orderType: OrderType.Gather, target: f.producer, targetTile: null };
-  const facts = f.capture.facts.map((fact): AiRuntimeProductionFactV1 => {
+  const facts = f.capture.facts.map((fact): AiRuntimeProductionFact => {
     if (fact.kind === "decision_selected")
       return {
         ...fact,
@@ -114,7 +114,7 @@ export function resourceServiceFixture() {
   if (!beforeExecution) throw new Error("resource_service_fixture_execution_missing");
   const boundary = beforeExecution.sequence - 1,
     finalSequence = facts.at(-1)?.sequence ?? 0;
-  const coverage = (tick: number, sequence: number): AiRuntimeResourceCoverageV1 => ({
+  const coverage = (tick: number, sequence: number): AiRuntimeResourceCoverage => ({
     captureEpoch: 1,
     lossEpoch: 0,
     startedTick: f.capture.startedTick,
@@ -143,8 +143,8 @@ export function resourceServiceFixture() {
     runCeilingTick: 30,
     windowTicks: 10,
     minimumUsefulDelivery: 1
-  } satisfies AiRuntimeResourceServiceIntervalV1;
-  const template: AiRuntimeProductionCaptureV1["snapshots"][number] = {
+  } satisfies AiRuntimeResourceServiceInterval;
+  const template: AiRuntimeProductionSnapshot["snapshots"][number] = {
     tick: 10,
     observation: null,
     capabilityCatalog: null,
@@ -173,6 +173,6 @@ export function resourceServiceFixture() {
       afterSequence: tick === 10 ? boundary : finalSequence,
       resourceCoverage: coverage(tick, tick === 10 ? boundary : finalSequence)
     }))
-  } satisfies AiRuntimeProductionCaptureV1;
+  } satisfies AiRuntimeProductionSnapshot;
   return { capture, interval, selection, coverage, boundary, finalSequence };
 }

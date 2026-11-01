@@ -1,6 +1,6 @@
 import { requireAiTestEntry } from "../testing/ai-test-fixtures";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
 import { createAiProductionPolicyFixture } from "../testing/ai-production-policy-fixture";
 import { createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 import { renewableFoodReserve } from "./ai-renewable-food-reserve";
@@ -14,7 +14,7 @@ function fixture() {
     constructionProfile: { resourceCost: { [ResourceType.Wood]: wood }, requiredObjectNames,
       footprintRadiusTiles: 0, visionRange: 6, navigableHeight: null, enterHeight: null, exitHeight: null }
   });
-  const catalog: AiCapabilityCatalogV1 = { ...f.catalog, entries: [
+  const catalog: AiCapabilityCatalog = { ...f.catalog, entries: [
     ...f.catalog.entries.filter((entry) => entry.sourceObjectName !== workerName),
     { ...entry(workerName, 10), gathers: [ResourceType.Food], constructs: [ObjectNames.Granary, ObjectNames.Field] },
     entry(ObjectNames.Field, 60, [ObjectNames.Granary]), entry(ObjectNames.Granary, 80)

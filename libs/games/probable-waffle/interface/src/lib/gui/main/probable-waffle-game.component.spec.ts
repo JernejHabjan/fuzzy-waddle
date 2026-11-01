@@ -11,7 +11,7 @@ import { GameSaveService } from "../../services/game-save/game-save.service";
 import { GameSaveServiceStub } from "../../services/game-save/game-save.service.stub";
 import type Phaser from "phaser";
 import { By } from "@angular/platform-browser";
-import { AI_RUNTIME_BROWSER_TEST_CONFIG_KEY_V1 } from "./ai-runtime-browser-test-host";
+import { AI_RUNTIME_BROWSER_TEST_CONFIG_KEY } from "./ai-runtime-browser-test-host";
 import {
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility,
@@ -27,9 +27,9 @@ describe("ProbableWaffleGameComponent", () => {
   let fixture: ComponentFixture<ProbableWaffleGameComponent>;
 
   beforeEach(async () => {
-    window.sessionStorage.removeItem(AI_RUNTIME_BROWSER_TEST_CONFIG_KEY_V1);
-    window.sessionStorage.removeItem("fuzzy-waddle:ai-multiplayer-browser-test-v1");
-    delete window.__fuzzyWaddleAiRuntimeBrowserTestV1;
+    window.sessionStorage.removeItem(AI_RUNTIME_BROWSER_TEST_CONFIG_KEY);
+    window.sessionStorage.removeItem("fuzzy-waddle:ai-multiplayer-browser-test");
+    delete window.__fuzzyWaddleAiRuntimeBrowserTest;
     await TestBed.configureTestingModule({
       providers: [
         { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
@@ -67,7 +67,7 @@ describe("ProbableWaffleGameComponent", () => {
     instance.addPlayer(instance.initPlayer({ playerDefinition: { playerType: ProbableWafflePlayerType.AI,
       factionType: FactionType.Skaduwee, player: { playerNumber: 2, joined: true } } }));
     const banks = JSON.stringify(instance.players.map((player) => player.playerState.data.resources));
-    window.sessionStorage.setItem(AI_RUNTIME_BROWSER_TEST_CONFIG_KEY_V1, JSON.stringify({
+    window.sessionStorage.setItem(AI_RUNTIME_BROWSER_TEST_CONFIG_KEY, JSON.stringify({
       schemaVersion: 1, enabled: true, seed: 759061, startPaused: true,
       calibration: { targetPlayerNumber: 1, difficulty: "Hard", opponentArchetype: "rush" }
     }));
@@ -91,7 +91,7 @@ describe("ProbableWaffleGameComponent", () => {
       ProbableWaffleGameInstanceType.Skirmish
     );
     window.sessionStorage.setItem(
-      AI_RUNTIME_BROWSER_TEST_CONFIG_KEY_V1,
+      AI_RUNTIME_BROWSER_TEST_CONFIG_KEY,
       JSON.stringify({ schemaVersion: 1, enabled: true, seed: 759008, startPaused: true })
     );
     fixture = TestBed.createComponent(ProbableWaffleGameComponent);
@@ -107,7 +107,7 @@ describe("ProbableWaffleGameComponent", () => {
 
     container.gameConfig()?.callbacks?.postBoot?.(game);
 
-    expect(window.__fuzzyWaddleAiRuntimeBrowserTestV1).toEqual({
+    expect(window.__fuzzyWaddleAiRuntimeBrowserTest).toEqual({
       schemaVersion: 1,
       config: { schemaVersion: 1, enabled: true, seed: 759008, startPaused: true },
       game,
@@ -116,7 +116,7 @@ describe("ProbableWaffleGameComponent", () => {
       armIncidentCaptureProbe: expect.any(Function)
     });
     fixture.destroy();
-    expect(window.__fuzzyWaddleAiRuntimeBrowserTestV1).toBeUndefined();
+    expect(window.__fuzzyWaddleAiRuntimeBrowserTest).toBeUndefined();
   });
 
   it("preserves saved session identity and RNG seed when the developer probe survives a native reload", async () => {
@@ -130,7 +130,7 @@ describe("ProbableWaffleGameComponent", () => {
     metadata.startOptions.loadFromSave = true;
     metadata.rndSeed = 12345;
     metadata.gameInstanceId = "actual-saved-session";
-    window.sessionStorage.setItem(AI_RUNTIME_BROWSER_TEST_CONFIG_KEY_V1,
+    window.sessionStorage.setItem(AI_RUNTIME_BROWSER_TEST_CONFIG_KEY,
       JSON.stringify({ schemaVersion: 1, enabled: true, seed: 759008, startPaused: true }));
     fixture = TestBed.createComponent(ProbableWaffleGameComponent);
     fixture.detectChanges();
@@ -141,7 +141,7 @@ describe("ProbableWaffleGameComponent", () => {
     expect(container.gameConfig()?.seed).toEqual(["12345"]);
     const game = {} as Phaser.Game;
     container.gameConfig()?.callbacks?.postBoot?.(game);
-    expect(window.__fuzzyWaddleAiRuntimeBrowserTestV1?.game).toBe(game);
+    expect(window.__fuzzyWaddleAiRuntimeBrowserTest?.game).toBe(game);
     fixture.destroy();
   });
 
@@ -154,19 +154,19 @@ describe("ProbableWaffleGameComponent", () => {
     );
     const originalSeed = gameInstanceClientServiceStub.gameInstance!.gameInstanceMetadata.data.rndSeed;
     const originalId = gameInstanceClientServiceStub.gameInstance!.gameInstanceMetadata.data.gameInstanceId;
-    window.sessionStorage.setItem("fuzzy-waddle:ai-multiplayer-browser-test-v1", "1");
+    window.sessionStorage.setItem("fuzzy-waddle:ai-multiplayer-browser-test", "1");
     fixture = TestBed.createComponent(ProbableWaffleGameComponent);
     fixture.detectChanges();
     const container = fixture.debugElement.query(By.directive(GameContainerTestingComponent))
       .componentInstance as GameContainerTestingComponent;
     const game = {} as Phaser.Game;
     container.gameConfig()?.callbacks?.postBoot?.(game);
-    const observed = window as typeof window & { __fuzzyWaddleAiMultiplayerBrowserTestV1?: { game: Phaser.Game } };
-    expect(observed.__fuzzyWaddleAiMultiplayerBrowserTestV1?.game).toBe(game);
-    expect(window.__fuzzyWaddleAiRuntimeBrowserTestV1).toBeUndefined();
+    const observed = window as typeof window & { __fuzzyWaddleAiMultiplayerBrowserTest?: { game: Phaser.Game } };
+    expect(observed.__fuzzyWaddleAiMultiplayerBrowserTest?.game).toBe(game);
+    expect(window.__fuzzyWaddleAiRuntimeBrowserTest).toBeUndefined();
     expect(gameInstanceClientServiceStub.gameInstance!.gameInstanceMetadata.data.rndSeed).toBe(originalSeed);
     expect(gameInstanceClientServiceStub.gameInstance!.gameInstanceMetadata.data.gameInstanceId).toBe(originalId);
     fixture.destroy();
-    expect(observed.__fuzzyWaddleAiMultiplayerBrowserTestV1).toBeUndefined();
+    expect(observed.__fuzzyWaddleAiMultiplayerBrowserTest).toBeUndefined();
   });
 });

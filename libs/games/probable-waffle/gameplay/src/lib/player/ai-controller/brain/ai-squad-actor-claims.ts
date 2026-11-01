@@ -1,13 +1,13 @@
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiIntentClaimV1, AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiIntentClaim, AiIntent } from "../contracts/ai-intent";
+import type { AiObservation } from "../contracts/ai-observation";
 
 /** A squad may replace its own provisional lease, or interrupt its own dispatched order to cast; other commitments stay exclusive. */
 export function canRenewAiSquadActorClaim(
-  intent: AiIntentV1,
-  claim: AiIntentClaimV1,
-  state: AiBrainStateV1,
-  observation: AiObservationV1
+  intent: AiIntent,
+  claim: AiIntentClaim,
+  state: AiBrainState,
+  observation: AiObservation
 ): boolean {
   if (claim.kind !== "actor" || !["move", "attack", "stop", "cast", "scout"].includes(intent.kind)) return false;
   if (

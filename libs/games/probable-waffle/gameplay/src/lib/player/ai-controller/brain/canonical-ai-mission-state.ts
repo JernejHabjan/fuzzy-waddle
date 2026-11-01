@@ -1,7 +1,7 @@
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
 
 /** Canonical keyed mission state; sequence/history semantics remain owned by the original contracts. */
-export function canonicalizeAiSquads(state: AiBrainStateV1): AiBrainStateV1["squads"] {
+export function canonicalizeAiSquads(state: AiBrainState): AiBrainState["squads"] {
   return [...state.squads]
     .map((squad) => ({
       ...squad,
@@ -30,7 +30,7 @@ export function canonicalizeAiSquads(state: AiBrainStateV1): AiBrainStateV1["squ
 }
 
 /** Canonical keyed mission state; sequence/history semantics remain owned by the original contracts. */
-export function canonicalizeAiTransport(state: AiBrainStateV1): AiBrainStateV1["transport"] {
+export function canonicalizeAiTransport(state: AiBrainState): AiBrainState["transport"] {
   return [...state.transport]
     .map((plan) => ({
       ...plan,
@@ -68,7 +68,7 @@ export function canonicalizeAiTransport(state: AiBrainStateV1): AiBrainStateV1["
 }
 
 /** Canonical keyed mission state; sequence/history semantics remain owned by the original contracts. */
-export function canonicalizeAiFortifications(state: AiBrainStateV1): AiBrainStateV1["fortifications"] {
+export function canonicalizeAiFortifications(state: AiBrainState): AiBrainState["fortifications"] {
   return [...state.fortifications]
     .map((plan) => ({
       ...plan,

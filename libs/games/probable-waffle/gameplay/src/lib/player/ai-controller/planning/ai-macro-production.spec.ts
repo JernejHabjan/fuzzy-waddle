@@ -1,6 +1,6 @@
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
 
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 
@@ -10,7 +10,7 @@ import { catalog, completedOpeningState } from "./ai-macro-test-fixtures";
 describe("AI macro production demand", () => {
   it("uses every free producer and permits repeated useful unit types", () => {
     const state = completedOpeningState();
-    const oneTypeCatalog: AiCapabilityCatalogV1 = {
+    const oneTypeCatalog: AiCapabilityCatalog = {
       ...catalog,
       entries: catalog.entries.map((entry) =>
         entry.sourceObjectName === ObjectNames.AnkGuard
@@ -86,7 +86,7 @@ describe("AI macro production demand", () => {
 
   it("selects an affordable composition unit and reserves its resources for the decision", () => {
     const state = completedOpeningState();
-    const resourceCatalog: AiCapabilityCatalogV1 = {
+    const resourceCatalog: AiCapabilityCatalog = {
       ...catalog,
       entries: catalog.entries.map((entry) => {
         if (entry.sourceObjectName === ObjectNames.TivaraMacemanMale)
@@ -182,7 +182,7 @@ describe("AI macro production demand", () => {
 
   it("keeps land-force demand and throughput separate from air and naval production", () => {
     const state = completedOpeningState();
-    const domainCatalog: AiCapabilityCatalogV1 = {
+    const domainCatalog: AiCapabilityCatalog = {
       ...catalog,
       entries: [
         ...catalog.entries.map((entry) =>

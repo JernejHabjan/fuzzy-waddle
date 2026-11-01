@@ -1,8 +1,8 @@
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
+import type { AiIntent } from "../contracts/ai-intent";
 import { aiSpendingBudgetConflict } from "./ai-spending-budget";
 
-function purchase(id: string, category: AiIntentV1["spendingCategory"], amount: number): AiIntentV1 {
+function purchase(id: string, category: AiIntent["spendingCategory"], amount: number): AiIntent {
   return {
     kind: "stop",
     intentId: `intent:${id}`,

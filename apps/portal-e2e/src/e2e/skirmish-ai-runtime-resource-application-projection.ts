@@ -1,27 +1,27 @@
 import { isDeepStrictEqual } from "node:util";
-import type { AiRuntimeProductionCaptureV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { RuntimeResourceCreditV1 } from "./skirmish-ai-runtime-resource-credit";
-import type { RuntimeResourceNeedAccountingV1 } from "./skirmish-ai-runtime-resource-need-accounting";
-import type { RuntimeResourceApplicationIntervalV1 } from "./skirmish-ai-runtime-resource-application-interval";
+import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { RuntimeResourceCredit } from "./skirmish-ai-runtime-resource-credit";
+import type { RuntimeResourceNeedAccounting } from "./skirmish-ai-runtime-resource-need-accounting";
+import type { RuntimeResourceApplicationInterval } from "./skirmish-ai-runtime-resource-application-interval";
 import { normalizeRuntimeRecipientMutations } from "./skirmish-ai-runtime-recipient-mutations";
 import { runtimeResourceCreditMatchesOperation } from "./skirmish-ai-runtime-resource-application-join";
 
 /** Called with validated declarations by the service projection; inspect the complete supplied journal and credit tail. */
 export function projectRuntimeResourceApplications(
-  capture: AiRuntimeProductionCaptureV1,
-  declarations: readonly RuntimeResourceApplicationIntervalV1["declaration"][],
-  credits: readonly RuntimeResourceCreditV1[],
-  accounting: readonly RuntimeResourceNeedAccountingV1[]
+  capture: AiRuntimeProductionSnapshot,
+  declarations: readonly RuntimeResourceApplicationInterval["declaration"][],
+  credits: readonly RuntimeResourceCredit[],
+  accounting: readonly RuntimeResourceNeedAccounting[]
 ) {
   const journal = normalizeRuntimeRecipientMutations(capture),
     failures = [...journal.failures];
   const gaps = new Set(journal.gaps),
-    intervals: RuntimeResourceApplicationIntervalV1[] = [];
+    intervals: RuntimeResourceApplicationInterval[] = [];
   const operations = new Map(
     journal.operations.map((operation) => [operation.terminal.mutation.operationId, operation])
   );
   const facts = new Map(capture.facts.map((fact) => [fact.sequence, fact]));
-  const joins = new Map<RuntimeResourceCreditV1, (typeof journal.operations)[number]>(),
+  const joins = new Map<RuntimeResourceCredit, (typeof journal.operations)[number]>(),
     used = new Set<number>();
   if (credits.length > 256 || capture.snapshots.length > 256) failures.push("production_resource_application_overflow");
   for (const credit of credits) {
@@ -69,7 +69,7 @@ export function projectRuntimeResourceApplications(
       ...(need?.gaps ?? []),
       "production_resource_application_usefulness_unavailable"
     ]);
-    const windows: RuntimeResourceApplicationIntervalV1["windows"][number][] = [];
+    const windows: RuntimeResourceApplicationInterval["windows"][number][] = [];
     let totalIncome: number | null = 0,
       totalBound: number | null = 0;
     for (let left = declaration.startTick; left < declaration.endTick; left += declaration.windowTicks) {
@@ -104,7 +104,7 @@ export function projectRuntimeResourceApplications(
       )
         local.add("production_resource_application_cohort_unavailable");
       if (scoped.some((credit) => !joins.has(credit))) local.add("production_resource_application_join_missing");
-      const inWindow: RuntimeResourceCreditV1[] = [];
+      const inWindow: RuntimeResourceCredit[] = [];
       if (read)
         for (const credit of scoped) {
           const operation = joins.get(credit);

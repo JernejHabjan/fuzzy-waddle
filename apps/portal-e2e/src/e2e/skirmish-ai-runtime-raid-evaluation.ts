@@ -1,11 +1,11 @@
-import type { RuntimeAssertionV1 } from "./skirmish-ai-runtime-assertion";
-import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeAssertion } from "./skirmish-ai-runtime-assertion";
+import type { RuntimeCheckpoint } from "./skirmish-ai-runtime-checkpoint";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 
 export function evaluateRuntimeRaidRecovery(
-  assertion: RuntimeAssertionV1,
-  variant: RuntimeVariantResultV1,
-  final: RuntimeCheckpointV1,
+  assertion: RuntimeAssertion,
+  variant: RuntimeVariantResult,
+  final: RuntimeCheckpoint,
   hasAiVictory: boolean
 ): string[] {
   const failures: string[] = [];

@@ -1,13 +1,13 @@
-import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
+import type { RuntimeFixture } from "./skirmish-ai-runtime-fixture";
 
-export interface RuntimeRequestV1 {
+export interface RuntimeRequest {
   readonly schemaVersion: 1;
   readonly sourceRevision: string;
   readonly dirtySourceDigest: string | null;
   readonly fixtureDigest: string;
   readonly seed: number | null;
   readonly scenarioIds: readonly string[];
-  readonly fixtures: readonly RuntimeFixtureV1[];
+  readonly fixtures: readonly RuntimeFixture[];
   readonly diagnosticSelection?: {
     readonly scenarioId: string;
     readonly variantId: string;

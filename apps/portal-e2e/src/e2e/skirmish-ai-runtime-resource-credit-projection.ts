@@ -1,38 +1,38 @@
 // prettier-ignore
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 import type { ResourceCargoSample } from "@fuzzy-waddle/probable-waffle-phaser/entity/components/resource/resource-cargo-sample";
-import type { RuntimeResourceCreditV1 } from "./skirmish-ai-runtime-resource-credit";
-import type { RuntimeCargoContributionV1 } from "./skirmish-ai-runtime-cargo-contribution";
+import type { RuntimeResourceCredit } from "./skirmish-ai-runtime-resource-credit";
+import type { RuntimeCargoContribution } from "./skirmish-ai-runtime-cargo-contribution";
 import type { normalizeRuntimeServiceAttempts } from "./skirmish-ai-runtime-service-attempt-normalization";
 import { runtimeResourceCreditMatches } from "./skirmish-ai-runtime-resource-service-validation";
 import { runtimeRouteOrderFenced } from "./skirmish-ai-runtime-route-order-fence";
 
 /** Joins the already observed whole-pile offers/consumption to actual credit and exact service ownership. */
 export function projectRuntimeResourceCredits(args: {
-  readonly capture: AiRuntimeProductionCaptureV1;
-  readonly candidates: readonly { fact: RuntimeResourceCreditV1["fact"]; uninterrupted: boolean }[];
+  readonly capture: AiRuntimeProductionSnapshot;
+  readonly candidates: readonly { fact: RuntimeResourceCredit["fact"]; uninterrupted: boolean }[];
   readonly offers: ReadonlyMap<
     number,
     {
-      fact: RuntimeResourceCreditV1["fact"];
+      fact: RuntimeResourceCredit["fact"];
       known: boolean;
       version: number;
-      contributions: RuntimeCargoContributionV1[];
+      contributions: RuntimeCargoContribution[];
     }
   >;
-  readonly removals: ReadonlyMap<number, { fact: RuntimeResourceCreditV1["fact"]; version: number }>;
-  readonly entries: ReadonlyMap<number, RuntimeResourceCreditV1["fact"]>;
+  readonly removals: ReadonlyMap<number, { fact: RuntimeResourceCredit["fact"]; version: number }>;
+  readonly entries: ReadonlyMap<number, RuntimeResourceCredit["fact"]>;
   readonly attempts: ReadonlyMap<number, ReturnType<typeof normalizeRuntimeServiceAttempts>["attempts"][number]>;
   readonly sameCargo: (left: ResourceCargoSample, right: ResourceCargoSample) => boolean;
   readonly fenced: (actorId: string | null, from: number, to: number) => boolean;
-  readonly available: (fact: RuntimeResourceCreditV1["fact"]) => boolean;
+  readonly available: (fact: RuntimeResourceCredit["fact"]) => boolean;
   readonly failures: string[];
   readonly gaps: Set<string>;
 }) {
   const { capture, candidates, offers, removals, entries, attempts, sameCargo, fenced, available, failures, gaps } =
     args;
-  const credits: RuntimeResourceCreditV1[] = [];
+  const credits: RuntimeResourceCredit[] = [];
   for (const { fact, uninterrupted } of candidates) {
     const value = fact.spatial;
     if (value.kind !== "resource_service" || value.phase !== "resource_credit") continue;

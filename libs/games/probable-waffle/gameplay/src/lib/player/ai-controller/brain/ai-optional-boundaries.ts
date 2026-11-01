@@ -1,9 +1,9 @@
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiBoundaryFault } from "../contracts/ai-boundary-fault";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import type { AiManagerProposalV1, AiProposalManagerV1 } from "../planning/ai-manager-proposal";
-import { assertAiBrainStateV1 } from "../contracts/validate-ai-brain-state-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiObservation } from "../contracts/ai-observation";
+import type { AiManagerProposal, AiProposalManager } from "../planning/ai-manager-proposal";
+import { assertAiBrainState } from "../contracts/validate-ai-brain-state";
 import { projectAiManagerState } from "./project-ai-manager-state";
 import type { AiBrainBoundaryHooks } from "./ai-brain-boundary-hooks";
 
@@ -28,7 +28,7 @@ export function recoverAiBoundary(owner: string, tick: number, records: readonly
 }
 
 /** Validate the entire optional batch before ranking or committing its patch; one bad output cannot partially publish. */
-function assertBatch(batch: AiManagerProposalV1, owner: string, state: AiBrainStateV1, maximum: number): void {
+function assertBatch(batch: AiManagerProposal, owner: string, state: AiBrainState, maximum: number): void {
   if (!batch || batch.managerId !== owner || !Array.isArray(batch.intents) || batch.intents.length > maximum ||
       !Array.isArray(batch.reasons) || batch.reasons.some((reason) => typeof reason !== "string") ||
       typeof batch.evaluated !== "boolean" || !["essential_economy", "supply_production", "scouting",
@@ -56,12 +56,12 @@ function assertBatch(batch: AiManagerProposalV1, owner: string, state: AiBrainSt
   }
   if (batch.spendingBudget && Object.values(batch.spendingBudget).some((value) =>
     !Number.isSafeInteger(value) || value < 0 || value > 1000)) throw new Error("invalid_optional_budget");
-  if (batch.statePatch) assertAiBrainStateV1(projectAiManagerState(state, [batch]));
+  if (batch.statePatch) assertAiBrainState(projectAiManagerState(state, [batch]));
 }
 
 /** Isolates only proposer computation. Observation, authority, reconciliation and shared publication remain mandatory. */
 export function collectAiProposals(
-  managers: readonly AiProposalManagerV1[], observation: AiObservationV1, state: AiBrainStateV1,
+  managers: readonly AiProposalManager[], observation: AiObservation, state: AiBrainState,
   cadence: number, maximum: number, hooks?: AiBrainBoundaryHooks
 ) {
   const owners = managers.map((manager) => manager.managerId);
@@ -71,7 +71,7 @@ export function collectAiProposals(
     owners.includes(fault.owner) || fault.owner === "debug_projection");
   const batches = [...managers].sort((a, b) => a.managerId.localeCompare(b.managerId)).map((manager) => {
     const incident = faults.find((fault) => fault.owner === manager.managerId);
-    const empty = (reason: string): AiManagerProposalV1 => ({ managerId: manager.managerId,
+    const empty = (reason: string): AiManagerProposal => ({ managerId: manager.managerId,
       lane: "optional_infrastructure_tech", evaluated: false, intents: [], reasons: [reason] });
     if (incident?.recoveredTick === null && observation.tick < incident.retryAtTick) return empty(incident.reason);
     try {

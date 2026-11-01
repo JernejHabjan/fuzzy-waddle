@@ -2,10 +2,10 @@ import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-contex
 import { nativeWeaponHits } from "./skirmish-ai-native-combat-effects";
 import { runtimeControlTransitFailures } from "./skirmish-ai-runtime-control-transit";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 
 export function nativePresetControlSucceeded(
-  fact: Extract<AiRuntimeProductionFactV1, { kind: "preset_control" }>, id: string
+  fact: Extract<AiRuntimeProductionFact, { kind: "preset_control" }>, id: string
 ): boolean {
   const commandId = fact.control.command?.execution?.commandId;
   return fact.control.id === id && fact.control.phase === "applied" && !!commandId &&
@@ -54,7 +54,7 @@ export function nativeLandingFailures(context: ReturnType<typeof nativeScenarioC
     [context.roles["escort-worker"]];
   const capture = prefix === "raid" ? context.opponent : context.capture;
   const controlTick = (id: string, fallback: number) => capture?.facts.find(
-    (fact): fact is Extract<AiRuntimeProductionFactV1, { kind: "preset_control" }> =>
+    (fact): fact is Extract<AiRuntimeProductionFact, { kind: "preset_control" }> =>
       fact.kind === "preset_control" && fact.control.id === id && fact.control.phase === "requested"
   )?.control.scheduledTick ?? fallback;
   const sailTick = controlTick(`${prefix}-sail`, prefix === "raid" ? 500 : 600);
@@ -69,7 +69,7 @@ export function nativeLandingFailures(context: ReturnType<typeof nativeScenarioC
   if (!carrier || !loaded || !unloaded || !capture ||
       runtimeControlTransitFailures(capture, `${prefix}-sail`, unloadTick, "arrive").length)
     failures.push("mission_real_board_sail_unload_missing");
-  if (!capture?.facts.some((fact): fact is Extract<AiRuntimeProductionFactV1, { kind: "preset_control" }> =>
+  if (!capture?.facts.some((fact): fact is Extract<AiRuntimeProductionFact, { kind: "preset_control" }> =>
       fact.kind === "preset_control" && nativePresetControlSucceeded(fact, `${prefix}-unload`)))
     failures.push("mission_native_unload_application_missing");
   return failures;

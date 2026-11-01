@@ -1,15 +1,15 @@
 import { FactionType, ObjectNames, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
+import type { AiBrainState } from "../contracts/ai-brain-state";
 import { digestCanonicalAiValue } from "../brain/canonical-ai-serialization";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
-import { buildAiAccessGraphV1 } from "../planning/ai-access-graph-v1";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservation, AiObservedActor } from "../contracts/ai-observation";
+import { buildAiAccessGraph } from "../planning/ai-access-graph";
 import { AiSkirmishManager } from "../planning/ai-skirmish-manager";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "./ai-test-fixtures";
 
-const access = buildAiAccessGraphV1({
+const access = buildAiAccessGraph({
   generation: 1,
   staticRevision: 1,
   dynamicRevision: 1,
@@ -44,8 +44,8 @@ const access = buildAiAccessGraphV1({
 const home = access.groundNodeByTileKey.get("0,0")!;
 const reachable = access.groundNodeByTileKey.get("1,0")!;
 const unexplored = access.groundNodeByTileKey.get("2,0")!;
-const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-const catalog: AiCapabilityCatalogV1 = {
+const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+const catalog: AiCapabilityCatalog = {
   schemaVersion: 1,
   generation: 1,
   unsupported: [],
@@ -69,7 +69,7 @@ const catalog: AiCapabilityCatalogV1 = {
 };
 const manager = new AiSkirmishManager(profile, () => catalog);
 
-function actor(actorId: string, relation: "self" | "enemy", x: number): AiObservedActorV1 {
+function actor(actorId: string, relation: "self" | "enemy", x: number): AiObservedActor {
   return {
     ...createAiTestOwnedActor(actorId),
     objectName: ObjectNames.TivaraMacemanMale,
@@ -100,13 +100,13 @@ function actor(actorId: string, relation: "self" | "enemy", x: number): AiObserv
   };
 }
 
-function world(includeWorker: boolean, tick = 20): AiObservationV1 {
-  const core: AiObservedActorV1 = {
+function world(includeWorker: boolean, tick = 20): AiObservation {
+  const core: AiObservedActor = {
     ...actor("enemy-core", "enemy", 2),
     housingCost: { status: "known", value: 0, observedTick: 20 },
     mainBuilding: { status: "known", value: true, observedTick: 20 }
   };
-  const worker: AiObservedActorV1 = {
+  const worker: AiObservedActor = {
     ...actor("enemy-worker", "enemy", 1),
     objectName: ObjectNames.TivaraWorker,
     capabilities: [
@@ -149,8 +149,8 @@ function world(includeWorker: boolean, tick = 20): AiObservationV1 {
   };
 }
 
-function brain(): AiBrainStateV1 {
-  return createAiBrainStateV1({
+function brain(): AiBrainState {
+  return createAiBrainState({
     playerNumber: 1,
     faction: FactionType.Tivara,
     profile,
@@ -211,7 +211,7 @@ describe("STRAT-07 credible-route priority", () => {
   });
 
   it("does not turn an expired assembly deadline into a one-unit attack against a visible defender", () => {
-    const defender: AiObservedActorV1 = {
+    const defender: AiObservedActor = {
       ...actor("enemy-defender", "enemy", 1),
       capabilities: [
         {
@@ -260,7 +260,7 @@ describe("STRAT-07 credible-route priority", () => {
 
 describe("STRAT-08 reachable exposed-core finish", () => {
   it("commits an immediate finishing attack when the core and sufficient ground force share a known route", () => {
-    const known = buildAiAccessGraphV1({
+    const known = buildAiAccessGraph({
       generation: 1,
       staticRevision: 1,
       dynamicRevision: 1,
@@ -304,7 +304,7 @@ describe("STRAT-08 reachable exposed-core finish", () => {
       mainBuilding: { status: "known" as const, value: true, observedTick: 20 }
     };
     const baseWorld = world(false);
-    const finishWorld: AiObservationV1 = {
+    const finishWorld: AiObservation = {
       ...baseWorld,
       actors: [...guards, core],
       threatSummary: { ...baseWorld.threatSummary, visibleEnemyActorIds: ["enemy-core"] },

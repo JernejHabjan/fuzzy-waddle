@@ -10,14 +10,14 @@ export async function multiplayerAuthorityProbe(
     type Diagnostics = Pick<AiMultiplayerDiagnostics,
       "kind" | "getSnapshot" | "pinAuthorityProbe" | "redeliverAuthorityProbe" | "redeliverAuthorityReceipt" | "retainAuthorityReplay">;
     const realm = window as unknown as {
-      __fuzzyWaddleAiMultiplayerBrowserTestV1?: {
+      __fuzzyWaddleAiMultiplayerBrowserTest?: {
         game: { scene: { getScenes(active: boolean): {
           scene: { key: string }; getSceneGameData(): { services: unknown[] };
         }[] } };
       };
-      __fuzzyWaddleRetainedAuthorityReplayV1?: () => boolean;
+      __fuzzyWaddleRetainedAuthorityReplay?: () => boolean;
     };
-    const scene = realm.__fuzzyWaddleAiMultiplayerBrowserTestV1?.game.scene.getScenes(true)
+    const scene = realm.__fuzzyWaddleAiMultiplayerBrowserTest?.game.scene.getScenes(true)
       .find((entry) => entry.scene.key === "MapAiMultiplayer");
     const diagnostics = scene?.getSceneGameData().services.find((candidate): candidate is Diagnostics =>
       !!candidate && (candidate as { kind?: unknown }).kind === "ai-multiplayer-browser-diagnostics");
@@ -25,7 +25,7 @@ export async function multiplayerAuthorityProbe(
     if (requested === "pin") diagnostics.pinAuthorityProbe();
     if (requested === "redeliver") diagnostics.redeliverAuthorityProbe();
     if (requested === "receipt") diagnostics.redeliverAuthorityReceipt();
-    if (requested === "retain") realm.__fuzzyWaddleRetainedAuthorityReplayV1 = diagnostics.retainAuthorityReplay();
+    if (requested === "retain") realm.__fuzzyWaddleRetainedAuthorityReplay = diagnostics.retainAuthorityReplay();
     const snapshot = diagnostics.getSnapshot(3).authorityProbe;
     if (!snapshot) throw new Error("multiplayer_authority_probe_not_enabled");
     return snapshot;

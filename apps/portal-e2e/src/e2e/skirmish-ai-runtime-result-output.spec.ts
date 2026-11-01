@@ -17,7 +17,7 @@ test("publishes the complete failed report in an artifact with only its location
   try {
     publishRuntimeResult(report, path);
     expect(JSON.parse(readFileSync(path, "utf8"))).toEqual(report);
-    expect(logs).toEqual([`AI_SKIRMISH_RUNTIME_RESULT_ARTIFACT_V1:${path}`]);
+    expect(logs).toEqual([`AI_SKIRMISH_RUNTIME_RESULT_ARTIFACT:${path}`]);
   } finally {
     console.log = original;
     rmSync(directory, { recursive: true, force: true });
@@ -32,7 +32,7 @@ test("direct callers retain the legacy result prefix", () => {
   };
   try {
     publishRuntimeResult({ schemaVersion: 1 });
-    expect(logs).toEqual(['AI_SKIRMISH_RUNTIME_RESULT_V1:{"schemaVersion":1}']);
+    expect(logs).toEqual(['AI_SKIRMISH_RUNTIME_RESULT:{"schemaVersion":1}']);
   } finally {
     console.log = original;
   }
@@ -54,10 +54,10 @@ test("grouped file output retains each shared capture once and reconstructs ever
     const stored: unknown = JSON.parse(readFileSync(path, "utf8"));
     expect(decodeRuntimeArtifact(stored)).toEqual(report);
     expect(readFileSync(path, "utf8").match(/productionCapture/g)).toHaveLength(1);
-    expect(logs).toEqual([`AI_SKIRMISH_RUNTIME_RESULT_ARTIFACT_V1:${path}`]);
+    expect(logs).toEqual([`AI_SKIRMISH_RUNTIME_RESULT_ARTIFACT:${path}`]);
     logs.length = 0;
     publishRuntimeResult(report);
-    expect(logs).toEqual([`AI_SKIRMISH_RUNTIME_RESULT_V1:${JSON.stringify(report)}`]);
+    expect(logs).toEqual([`AI_SKIRMISH_RUNTIME_RESULT:${JSON.stringify(report)}`]);
   } finally {
     console.log = original;
     rmSync(directory, { recursive: true, force: true });

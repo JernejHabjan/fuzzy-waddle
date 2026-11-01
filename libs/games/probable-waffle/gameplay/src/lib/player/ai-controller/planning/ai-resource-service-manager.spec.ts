@@ -6,10 +6,10 @@ import {
   ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { digestCanonicalAiValue } from "../brain/canonical-ai-serialization";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservation, AiObservedActor } from "../contracts/ai-observation";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import {
   createAiTestObservation,
   createAiTestOwnedActor,
@@ -19,7 +19,7 @@ import {
 import { AiResourceServiceManager } from "./ai-resource-service-manager";
 import { canAffordAiEconomyCost } from "./ai-economy-policy";
 
-const catalog: AiCapabilityCatalogV1 = {
+const catalog: AiCapabilityCatalog = {
   schemaVersion: 1,
   generation: 1,
   unsupported: [],
@@ -82,7 +82,7 @@ const catalog: AiCapabilityCatalogV1 = {
   ]
 };
 
-function actor(id: string, objectName: ObjectNames, x: number, y: number): AiObservedActorV1 {
+function actor(id: string, objectName: ObjectNames, x: number, y: number): AiObservedActor {
   return {
     ...createAiTestOwnedActor(id),
     objectName,
@@ -90,7 +90,7 @@ function actor(id: string, objectName: ObjectNames, x: number, y: number): AiObs
   };
 }
 
-function tree(id: string, x: number): AiObservedActorV1 {
+function tree(id: string, x: number): AiObservedActor {
   return {
     ...actor(id, ObjectNames.Tree1, x, 5),
     owner: null,
@@ -110,7 +110,7 @@ function tree(id: string, x: number): AiObservedActorV1 {
   };
 }
 
-function world(sourceX: number, extra: readonly AiObservedActorV1[] = []): AiObservationV1 {
+function world(sourceX: number, extra: readonly AiObservedActor[] = []): AiObservation {
   const base = createAiTestObservation();
   const cells = [];
   for (let y = 1; y <= 9; y += 1) {
@@ -149,11 +149,11 @@ function world(sourceX: number, extra: readonly AiObservedActorV1[] = []): AiObs
   };
 }
 
-function proposal(observation: AiObservationV1) {
-  const initial = createAiBrainStateV1({
+function proposal(observation: AiObservation) {
+  const initial = createAiBrainState({
     playerNumber: 1,
     faction: FactionType.Tivara,
-    profile: createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium),
+    profile: createAiProfileConfig(ProbableWaffleAiDifficulty.Medium),
     tick: 20,
     archetypeId: "balanced"
   });
@@ -257,9 +257,9 @@ describe("AiResourceServiceManager", () => {
           statuses: []
         }
       }
-    } satisfies AiObservedActorV1));
+    } satisfies AiObservedActor));
     const observation = world(20, attackers);
-    const pressured: AiObservationV1 = {
+    const pressured: AiObservation = {
       ...observation,
       actors: observation.actors.map((observed) => observed.actorId === "main"
         ? { ...observed, mainBuilding: { status: "known" as const, value: true, observedTick: 20 } }
@@ -307,7 +307,7 @@ describe("AiResourceServiceManager", () => {
       }
     };
     const observation = world(20, [enemyTower]);
-    const input: AiObservationV1 = {
+    const input: AiObservation = {
       ...observation,
       actors: observation.actors.map((observed) => {
         if (observed.actorId === "main") {
@@ -345,7 +345,7 @@ describe("AiResourceServiceManager", () => {
 
   it("ECO-06 partial: carried wood is not spendable and a nearly depleted tree does not trigger mill churn", () => {
     const baseline = world(20);
-    const observation: AiObservationV1 = {
+    const observation: AiObservation = {
       ...baseline,
       actors: baseline.actors.map((candidate) => {
         if (candidate.actorId === "worker-0") {
@@ -387,7 +387,7 @@ describe("AiResourceServiceManager", () => {
 
   it("ECO-06: replaces a destroyed drop-off without commandeering a returning loaded worker", () => {
     const base = world(20);
-    const destroyed: AiObservationV1 = {
+    const destroyed: AiObservation = {
       ...base,
       actors: base.actors
         .filter((candidate) => candidate.actorId !== "main")
@@ -426,7 +426,7 @@ describe("AiResourceServiceManager", () => {
       actors: [...destroyed.actors, actor("restored-mill", ObjectNames.WorkMill, 19, 5)]
     };
     expect(proposal(restored).intents).toHaveLength(0);
-    const depleted: AiObservationV1 = {
+    const depleted: AiObservation = {
       ...destroyed,
       actors: destroyed.actors.map((candidate) =>
         candidate.actorId === "forest-b" && candidate.resourceState.status === "known"

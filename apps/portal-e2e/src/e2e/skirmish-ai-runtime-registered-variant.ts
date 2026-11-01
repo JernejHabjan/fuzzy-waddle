@@ -1,13 +1,13 @@
 import type { Browser } from "@playwright/test";
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
-import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
-import type { RuntimeRequestV1 } from "./skirmish-ai-runtime-request";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { RuntimeFixture } from "./skirmish-ai-runtime-fixture";
+import type { RuntimeVariant } from "./skirmish-ai-runtime-variant";
+import type { RuntimeRequest } from "./skirmish-ai-runtime-request";
 import { runVariant } from "./skirmish-ai-runtime-variant-runner";
 import { captureRuntimeHumanAuthority } from "./skirmish-ai-runtime-human-capture";
 import { captureRuntimeProductionAuthority } from "./skirmish-ai-runtime-production-capture";
-import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
+import type { RuntimeCheckpoint } from "./skirmish-ai-runtime-checkpoint";
 import { captureNativeDisposal } from "./skirmish-ai-native-disposal";
 import type { NativeDisposalEvidence } from "./skirmish-ai-native-disposal-evidence";
 import { armNativeDebugComparison, captureNativeDebugComparison } from "./skirmish-ai-native-debug-comparison";
@@ -27,7 +27,7 @@ import { runNativeReproVariant } from "./skirmish-ai-native-repro-runner";
 
 /** The existing runner owns the match. Bound cases additionally arm/read the same observer for the real human opponent. */
 export async function runRegisteredRuntimeVariant(
-  browser: Browser, fixture: RuntimeFixtureV1, variant: RuntimeVariantV1, request: RuntimeRequestV1
+  browser: Browser, fixture: RuntimeFixture, variant: RuntimeVariant, request: RuntimeRequest
 ) {
   if (request.scenarioIds.includes("D-06")) throw new Error("d06_requires_frozen_calibration_workload_driver");
   for (const id of ["DBG-01", "DBG-03"]) {
@@ -54,8 +54,8 @@ export async function runRegisteredRuntimeVariant(
     return runNativeImportVariant(browser, fixture, variant, request, importBranch);
   const contract = (request.scenarioIds.includes("EXP-02") ? fixture.assertions["EXP-02"]?.requiredExpansionPressure : undefined) ??
     request.scenarioIds.map((id) => fixture.assertions[id]?.requiredNativeScenario).find((binding) => binding !== undefined);
-  let opponentCapture: AiRuntimeProductionCaptureV1 | undefined;
-  let otherOpponentCaptures: AiRuntimeProductionCaptureV1[] | undefined;
+  let opponentCapture: AiRuntimeProductionSnapshot | undefined;
+  let otherOpponentCaptures: AiRuntimeProductionSnapshot[] | undefined;
   let nativeDisposal: NativeDisposalEvidence | undefined;
   let nativeDebugComparison: NativeDebugComparisonProof | undefined;
   let nativeDebugParity: NativeDebugParityProof | undefined;
@@ -65,7 +65,7 @@ export async function runRegisteredRuntimeVariant(
   const debugBranch = fixture.assertions["DBG-04"]?.requiredNativeScenario?.branchByVariant[variant.id];
   const parityBranch = fixture.assertions["DBG-06"]?.requiredNativeScenario?.branchByVariant[variant.id];
   const result = await runVariant(browser, fixture, variant, request.seed, request.scenarioIds,
-    request.sourceRevision, request.fixtureDigest, contract ? async (page, index, checkpoint?: RuntimeCheckpointV1) => {
+    request.sourceRevision, request.fixtureDigest, contract ? async (page, index, checkpoint?: RuntimeCheckpoint) => {
       if (index === -1) {
         if (debugBranch) await armNativeDebugComparison(page);
         if (parityBranch) await armNativeDebugParity(page, request.sourceRevision, request.dirtySourceDigest);

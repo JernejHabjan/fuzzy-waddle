@@ -1,5 +1,5 @@
 import type { Page } from "@playwright/test";
-import type { AiRuntimeBrowserTestHostV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host-v1";
+import type { AiRuntimeBrowserTestHost } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host";
 
 export interface NativeSaveNavigationSummary {
   readonly randomOperationCount: number;
@@ -31,8 +31,8 @@ export interface NativeSaveNavigationDiagnostics extends NativeSaveNavigationSum
 /** Captures the exact terrain and object-grid inputs used by native navigation setup. */
 export async function captureNativeSaveNavigationDiagnostics(page: Page): Promise<NativeSaveNavigationDiagnostics> {
   return page.evaluate(() => {
-    const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: AiRuntimeBrowserTestHostV1 })
-      .__fuzzyWaddleAiRuntimeBrowserTestV1;
+    const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
+      .__fuzzyWaddleAiRuntimeBrowserTest;
     const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
       | {
           getSceneGameData(): { services: readonly Record<string, unknown>[] };
@@ -104,8 +104,8 @@ export async function captureNativeSaveNavigationDiagnostics(page: Page): Promis
 /** Records deterministic RNG call sites only across the actual native scene reload. */
 export async function armNativeSaveRandomTrace(page: Page): Promise<void> {
   await page.evaluate(() => {
-    const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: AiRuntimeBrowserTestHostV1 })
-      .__fuzzyWaddleAiRuntimeBrowserTestV1;
+    const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
+      .__fuzzyWaddleAiRuntimeBrowserTest;
     const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
       | { getSceneGameData(): { services: readonly Record<string, unknown>[] } }
       | undefined;

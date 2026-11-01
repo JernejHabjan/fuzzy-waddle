@@ -1,14 +1,14 @@
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import type { AiAccessNodeId } from "../contracts/ai-core-types";
-import type { AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import type { AiSquadState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservation, AiObservedActor } from "../contracts/ai-observation";
 import { knownPosition, legalForMembers, movementDomains } from "./ai-tactics-geometry";
 
 function hasKnownGroundRoute(
   sourceNodeId: AiAccessNodeId,
   targetNodeId: AiAccessNodeId,
-  observation: AiObservationV1
+  observation: AiObservation
 ): boolean | undefined {
   const graph = observation.map?.accessGraph;
   if (graph?.status !== "ready") return undefined;
@@ -44,7 +44,7 @@ function distance(left: Vector3Simple, right: Vector3Simple): number {
   return Math.abs(left.x - right.x) + Math.abs(left.y - right.y) + Math.abs(left.z - right.z);
 }
 
-function airWeaponRange(member: AiObservedActorV1, target: Vector3Simple): number | undefined {
+function airWeaponRange(member: AiObservedActor, target: Vector3Simple): number | undefined {
   if (!member.capabilities.some((capability) => capability.domains.includes("air"))) return undefined;
   const profile = member.combatProfile?.status === "known" ? member.combatProfile.value : null;
   if (!profile?.attacks.length) return undefined;
@@ -55,7 +55,7 @@ function airWeaponRange(member: AiObservedActorV1, target: Vector3Simple): numbe
 }
 
 function airApproachPosition(
-  member: AiObservedActorV1,
+  member: AiObservedActor,
   target: Vector3Simple,
   range: number
 ): Vector3Simple | undefined {
@@ -76,12 +76,12 @@ function airApproachPosition(
 
 /** Picks distinct observed passable cells near an occupied objective; the building center is never a move order. */
 export function selectAiAttackApproachPositions(
-  members: readonly AiObservedActorV1[],
+  members: readonly AiObservedActor[],
   target: Vector3Simple,
-  observation: AiObservationV1,
+  observation: AiObservation,
   targetFootprintRadiusTiles = 0,
   rejectedPositionByActor: ReadonlyMap<string, string> = new Map()
-): NonNullable<AiSquadStateV1["tactics"]>["assignedPositions"] {
+): NonNullable<AiSquadState["tactics"]>["assignedPositions"] {
   const positionedMembers = members
     .map((member) => ({ member, position: knownPosition(member) }))
     .sort(
@@ -162,11 +162,11 @@ export function selectAiAttackApproachPositions(
 
 /** Selects a safe firing position, or a retreat for an isolated critical ranged unit. */
 export function selectAiSafeFiringPositions(
-  members: readonly AiObservedActorV1[],
-  enemies: readonly AiObservedActorV1[],
-  target: AiObservedActorV1 | null | undefined,
-  observation: AiObservationV1
-): NonNullable<AiSquadStateV1["tactics"]>["assignedPositions"] {
+  members: readonly AiObservedActor[],
+  enemies: readonly AiObservedActor[],
+  target: AiObservedActor | null | undefined,
+  observation: AiObservation
+): NonNullable<AiSquadState["tactics"]>["assignedPositions"] {
   const targetPosition = knownPosition(target ?? undefined);
   if (!target || !targetPosition) return [];
   const cells = observation.map?.tacticalCells ?? observation.map?.constructionCells ?? [];
@@ -320,8 +320,8 @@ export function selectAiSafeFiringPositions(
 
 /** Reads native definition footprint when the objective is a known building; unknown actors use no extra margin. */
 export function targetFootprintRadiusTiles(
-  target: AiObservedActorV1 | null | undefined,
-  catalog: AiCapabilityCatalogV1 | undefined
+  target: AiObservedActor | null | undefined,
+  catalog: AiCapabilityCatalog | undefined
 ): number {
   if (!target || !catalog) return 0;
   return Math.max(

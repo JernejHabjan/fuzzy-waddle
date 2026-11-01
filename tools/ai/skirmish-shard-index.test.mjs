@@ -4,7 +4,7 @@ import { buildSkirmishShardIndex } from "./skirmish-shard-index.mjs";
 
 function report() {
   return {
-    status: "failed", runId: "run-1", candidate: "candidate", manifestVersion: "skirmish-v1",
+    status: "failed", runId: "run-1", candidate: "candidate", manifestVersion: "skirmish",
     fixtureDigest: "sha256:fixture", rows: ["PRO-01", "PRO-02", "PRO-03"],
     workCounts: { decisions: 30, ticks: 100 }, execution: { wallMs: 500 },
     runtime: { scenarios: [

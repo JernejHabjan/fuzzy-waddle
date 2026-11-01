@@ -1,12 +1,12 @@
 import { createAiProductionPolicyFixture, createAiProducerThreat } from "../testing/ai-production-policy-fixture";
-import type { AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiObservedActor, AiObservation } from "../contracts/ai-observation";
 import { proposeAiMilitaryCapacity } from "./ai-military-capacity-proposal";
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 function propose(
   fixture: ReturnType<typeof createAiProductionPolicyFixture>,
-  self: readonly AiObservedActorV1[],
-  observation: AiObservationV1 = { ...fixture.observation, actors: self }
+  self: readonly AiObservedActor[],
+  observation: AiObservation = { ...fixture.observation, actors: self }
 ) {
   return proposeAiMilitaryCapacity({
     observation,

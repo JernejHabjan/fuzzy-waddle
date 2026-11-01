@@ -1,4 +1,4 @@
-import type { AiRuntimeProductionFactV1 } from "./ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "./ai-runtime-production-fact";
 import type { AiRuntimeProductionBoundaryState } from "./ai-runtime-production-boundary-state";
 
 /** Bounded aggregate budget covers the 33,823-fact native escort capture with 3k facts of headroom. */
@@ -6,8 +6,8 @@ export const AI_RUNTIME_MAX_FACTS = 36_864;
 
 /** Single root budget for all channels. Loss precedes fallible diagnostics; sequence ownership remains with the capture. */
 export function appendAiRuntimeProductionFact(
-  facts: AiRuntimeProductionFactV1[],
-  fact: AiRuntimeProductionFactV1,
+  facts: AiRuntimeProductionFact[],
+  fact: AiRuntimeProductionFact,
   sequence: number,
   sample: () => AiRuntimeProductionBoundaryState,
   lose: (reason: string) => void,

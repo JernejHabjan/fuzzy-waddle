@@ -1,15 +1,15 @@
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiDebugSnapshotV1 } from "../contracts/ai-debug-snapshot-v1";
-import type { AiIntentDecisionV1 } from "../contracts/ai-intent-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import type { AiManagerProposalV1 } from "../planning/ai-manager-proposal";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiDebugSnapshot } from "../contracts/ai-debug-snapshot";
+import type { AiIntentDecision } from "../contracts/ai-intent";
+import type { AiObservation } from "../contracts/ai-observation";
+import type { AiManagerProposal } from "../planning/ai-manager-proposal";
 import { projectAiStrategicIntentSummary } from "./project-ai-strategic-intent-summary";
 
 /** Exact recorded answer for a saved subject; absence is explicit and never recomputed from live state. */
-export function findAiWhyNotExplanationV1(
-  snapshot: AiDebugSnapshotV1,
+export function findAiWhyNotExplanation(
+  snapshot: AiDebugSnapshot,
   subjectId: string
-): AiDebugSnapshotV1["whyNot"][number] {
+): AiDebugSnapshot["whyNot"][number] {
   return (
     snapshot.whyNot.find((entry) => entry.subjectId === subjectId) ?? {
       subjectId,
@@ -21,11 +21,11 @@ export function findAiWhyNotExplanationV1(
 
 /** Projects Stage 2 decision facts and honest typed not-ready sections for later owners. */
 export function projectAiDebugSnapshot(
-  observation: AiObservationV1,
-  state: AiBrainStateV1,
-  decisions: readonly AiIntentDecisionV1[],
-  proposals: readonly AiManagerProposalV1[] = []
-): AiDebugSnapshotV1 {
+  observation: AiObservation,
+  state: AiBrainState,
+  decisions: readonly AiIntentDecision[],
+  proposals: readonly AiManagerProposal[] = []
+): AiDebugSnapshot {
   const rejected = decisions.filter((decision) => decision.outcome === "rejected");
   const accepted = decisions.filter((decision) => decision.outcome === "accepted");
   const topReasons = [

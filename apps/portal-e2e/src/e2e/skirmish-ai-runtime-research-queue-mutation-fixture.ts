@@ -1,16 +1,16 @@
 import { ResearchType, type GameCommand } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import type { AiRuntimeProductionQueueV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-queue-v1";
+import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
+import type { AiRuntimeProductionQueue } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-queue";
 import { productionQueueMutationFixture } from "./skirmish-ai-runtime-production-queue-mutation-fixture";
 
 /** Invented research ordering and cash contracts only; neither runtime definition pricing nor registered tech is proven. */
 export function researchQueueMutationFixture() {
   const source = productionQueueMutationFixture("cancel");
   const researchType = ResearchType.TivaraMacemanUpgradeLevel2;
-  const intent = (value: AiIntentV1): AiIntentV1 => value.kind === "produce" ? {
+  const intent = (value: AiIntent): AiIntent => value.kind === "produce" ? {
     intentId: value.intentId, effectId: value.effectId, planId: value.planId, demandId: value.demandId,
     lane: value.lane, proposedTick: value.proposedTick, urgencyClass: value.urgencyClass, utility: value.utility,
     preconditions: value.preconditions, claims: value.claims, reasonCode: value.reasonCode,
@@ -21,11 +21,11 @@ export function researchQueueMutationFixture() {
     execution: value.execution
   } : value.type === "CANCEL_PRODUCTION" ? { type: "CANCEL_RESEARCH", tick: value.tick,
     playerNumber: value.playerNumber, actorIds: value.actorIds, execution: value.execution } : value;
-  const item = (value: AiRuntimeProductionQueueV1["lanes"][number]["items"][number]) =>
+  const item = (value: AiRuntimeProductionQueue["lanes"][number]["items"][number]) =>
     value.commandId === "purchase" ? { ...value, objectName: null, researchType } : value;
-  const queue = (value: AiRuntimeProductionQueueV1) => ({ ...value, lanes: value.lanes.map((lane) => ({ ...lane,
+  const queue = (value: AiRuntimeProductionQueue) => ({ ...value, lanes: value.lanes.map((lane) => ({ ...lane,
     items: lane.items.map(item) })) });
-  let facts = source.facts.map((fact): AiRuntimeProductionFactV1 => {
+  let facts = source.facts.map((fact): AiRuntimeProductionFact => {
     const boundaryState = fact.boundaryState ? { ...fact.boundaryState,
       queues: fact.boundaryState.queues?.map(queue) ?? null,
       unspentClaims: fact.boundaryState.unspentClaims ? { ...fact.boundaryState.unspentClaims,
@@ -61,7 +61,7 @@ export function researchQueueMutationFixture() {
   if (!before?.boundaryState || refunds.length !== 3) throw new Error("synthetic_research_cancel_missing");
   const paid = before.boundaryState;
   const afterCash = { food: 97, wood: 100, stone: 100, minerals: 100 };
-  const refundFacts = refunds.map((fact, index): AiRuntimeProductionFactV1 => {
+  const refundFacts = refunds.map((fact, index): AiRuntimeProductionFact => {
     if (fact.kind !== "queue_resource") throw new Error("synthetic_refund_missing");
     const emission = fact.resource.emission;
     return { ...fact, resource: { ...fact.resource, emission: {

@@ -1,11 +1,11 @@
 import { ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import type { AiObservedActor } from "../contracts/ai-observation";
 import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "../testing/ai-test-fixtures";
 import { AiMacroManager } from "./ai-macro-manager";
 import { isAvailableBuilder } from "./ai-macro-observation";
 import { catalog, completedOpeningState } from "./ai-macro-test-fixtures";
 
-function carryingWorker(amount: number): AiObservedActorV1 {
+function carryingWorker(amount: number): AiObservedActor {
   return {
     ...createAiTestOwnedActor("a-carrying"),
     resourceState: {

@@ -1,11 +1,11 @@
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservation } from "../contracts/ai-observation";
+import type { AiDemand } from "../contracts/ai-plan-contracts";
 
 const FORECAST_HORIZON_TICKS = 600;
 
-function committedCount(demand: AiDemandV1): number {
+function committedCount(demand: AiDemand): number {
   return (
     demand.satisfiedActorIds.length +
     demand.queuedIds.length +
@@ -14,7 +14,7 @@ function committedCount(demand: AiDemandV1): number {
   );
 }
 
-function cheapestPreferredCost(demand: AiDemandV1, catalog: AiCapabilityCatalogV1) {
+function cheapestPreferredCost(demand: AiDemand, catalog: AiCapabilityCatalog) {
   const candidates = demand.preferredObjectNames
     .flatMap((objectName) => {
       const cost = catalog.entries.find((entry) => entry.sourceObjectName === objectName)?.constructionProfile
@@ -30,9 +30,9 @@ function cheapestPreferredCost(demand: AiDemandV1, catalog: AiCapabilityCatalogV
 }
 
 export function projectAiResourceForecasts(
-  observation: AiObservationV1,
-  demands: readonly AiDemandV1[],
-  catalog: AiCapabilityCatalogV1
+  observation: AiObservation,
+  demands: readonly AiDemand[],
+  catalog: AiCapabilityCatalog
 ) {
   const amounts = new Map<ResourceType, number>();
   let pricedDemandCount = 0;
@@ -60,7 +60,7 @@ export function projectAiResourceForecasts(
 }
 
 export function selectAiForecastResource(
-  observation: AiObservationV1,
+  observation: AiObservation,
   forecasts: readonly ReturnType<typeof projectAiResourceForecasts>[number][],
   availableTypes: ReadonlySet<ResourceType>
 ): ResourceType | undefined {
@@ -69,7 +69,7 @@ export function selectAiForecastResource(
 
 /** Returns the actual winning entry, including duplicate-resource forecasts, in the native selector's stable order. */
 export function selectAiForecastEntry(
-  observation: AiObservationV1,
+  observation: AiObservation,
   forecasts: readonly ReturnType<typeof projectAiResourceForecasts>[number][],
   availableTypes: ReadonlySet<ResourceType>
 ) {
@@ -82,7 +82,7 @@ export function selectAiForecastEntry(
 
 /** Uses empirical delivered income only within the bounded dated horizon; unknown income makes no promise. */
 export function aiResourceForecastDeficit(
-  observation: AiObservationV1,
+  observation: AiObservation,
   forecast: { readonly resourceType: ResourceType; readonly horizonTick: number; readonly amount: number }
 ): number {
   const resource = observation.resources.find((entry) => entry.resourceType === forecast.resourceType);

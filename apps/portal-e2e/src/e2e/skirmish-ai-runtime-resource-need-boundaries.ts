@@ -1,7 +1,7 @@
 import { isDeepStrictEqual } from "node:util";
-import type { AiRuntimeProductionCaptureV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import type { RuntimeResourceNeedV1 } from "./skirmish-ai-runtime-resource-need";
+import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
+import type { RuntimeResourceNeed } from "./skirmish-ai-runtime-resource-need";
 import {
   sameRuntimeRouteServiceCommand,
   validateRuntimeRouteServiceRequest
@@ -9,8 +9,8 @@ import {
 
 /** One exact start may preserve its incoming read, while the same fence always closes older generations. */
 export function runtimeNeedHasIncomingStart(
-  capture: AiRuntimeProductionCaptureV1,
-  need: RuntimeResourceNeedV1
+  capture: AiRuntimeProductionSnapshot,
+  need: RuntimeResourceNeed
 ): boolean {
   const read = need.selection.resourceInputRead;
   const selected = capture.facts.find((fact) => fact.sequence === need.selectedSequence);
@@ -37,8 +37,8 @@ export function runtimeNeedHasIncomingStart(
 
 /** Exempt only one accepted, resource-claim-free gather admission with an exact stamped returned command. */
 export function runtimeNeedOwnAdmissionSequences(
-  capture: AiRuntimeProductionCaptureV1,
-  need: RuntimeResourceNeedV1
+  capture: AiRuntimeProductionSnapshot,
+  need: RuntimeResourceNeed
 ): Set<number> {
   const selected = capture.facts.find((fact) => fact.sequence === need.selectedSequence);
   const exempt = new Set<number>();
@@ -55,7 +55,7 @@ export function runtimeNeedOwnAdmissionSequences(
   )
     return exempt;
   const dispatches = capture.facts.filter(
-    (fact): fact is Extract<AiRuntimeProductionFactV1, { kind: "intent_dispatch" }> =>
+    (fact): fact is Extract<AiRuntimeProductionFact, { kind: "intent_dispatch" }> =>
       fact.kind === "intent_dispatch" &&
       fact.playerNumber === need.selection.playerNumber &&
       fact.sequence > need.selectedSequence &&

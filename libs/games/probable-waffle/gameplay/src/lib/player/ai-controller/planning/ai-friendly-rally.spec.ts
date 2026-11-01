@@ -1,11 +1,11 @@
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
+import type { AiIntent } from "../contracts/ai-intent";
 import { createAiProductionPolicyFixture } from "../testing/ai-production-policy-fixture";
 import { planAiDecisions } from "./ai-decision-planner";
 
 it("defers routine squad intake until a friendly move ends while retaining essential defense and lost-target recovery", () => {
   const f = createAiProductionPolicyFixture();
-  const intent: AiIntentV1 = {
+  const intent: AiIntent = {
     kind: "move",
     intentId: "intent:rally",
     effectId: "effect:rally",

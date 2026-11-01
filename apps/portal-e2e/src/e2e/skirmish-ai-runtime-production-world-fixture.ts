@@ -1,8 +1,8 @@
 import { FactionType, ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiObservationV1, AiObservedActorV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
-import type { AiRuntimeProductionCaptureV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { AiRuntimePresetApplicationV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application-v1";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiObservation, AiObservedActor } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { AiRuntimePresetApplication } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { productionQueueMutationFixture } from "./skirmish-ai-runtime-production-queue-mutation-fixture";
 
 /** Synthetic price/readiness/setup joins only; never a legal runtime world, stable useful force or navigation proof. */
@@ -16,7 +16,7 @@ export function productionWorldFixture(payment: "immediate" | "tick" = "immediat
         fact.kind === "outcome" ||
         (payment === "immediate" && fact.kind === "queue_resource")
     )
-    .map((fact): AiRuntimeProductionFactV1 => {
+    .map((fact): AiRuntimeProductionFact => {
       if (fact.kind === "command_delivered") return { ...fact, tick: 0, command: { ...fact.command, tick: 0 } };
       if (fact.kind === "outcome")
         return {
@@ -75,7 +75,7 @@ export function productionWorldFixture(payment: "immediate" | "tick" = "immediat
     }
   ];
   const balance = { food: 100, wood: 100, stone: 100, minerals: 100 };
-  const noObservation = (): AiObservationV1 | null => null;
+  const noObservation = (): AiObservation | null => null;
   const world = { snapshotRestoreInProgress: false, actors: [actor], catalog, gaps: [] };
   const capture = {
     ...source,
@@ -98,7 +98,7 @@ export function productionWorldFixture(payment: "immediate" | "tick" = "immediat
         world
       }
     ]
-  } satisfies AiRuntimeProductionCaptureV1;
+  } satisfies AiRuntimeProductionSnapshot;
   const setup = {
     fixtureId: "synthetic-setup",
     sourceRevision: "synthetic-source",
@@ -132,12 +132,12 @@ export function productionWorldFixture(payment: "immediate" | "tick" = "immediat
         resourcesAfter: { ...balance, food: payment === "immediate" ? 93 : 100 }
       }
     ]
-  } satisfies AiRuntimePresetApplicationV1;
+  } satisfies AiRuntimePresetApplication;
   return { capture, setup };
 }
 
 /** A complete typed fair observation with only the producer exposed; no live or hidden actors are consulted. */
-export function productionWorldObservation(tick = 0): AiObservationV1 {
+export function productionWorldObservation(tick = 0): AiObservation {
   const known = <T>(value: T) => ({ status: "known" as const, value, observedTick: tick });
   const unknown = { status: "unknown", reason: "not_supported" } as const;
   const actor = {
@@ -158,7 +158,7 @@ export function productionWorldObservation(tick = 0): AiObservationV1 {
     housingCapacity: unknown,
     resourceState: unknown,
     activeEffectIds: []
-  } satisfies AiObservedActorV1;
+  } satisfies AiObservedActor;
   return {
     schemaVersion: 1,
     generation: 1,

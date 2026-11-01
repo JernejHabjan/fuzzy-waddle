@@ -1,14 +1,14 @@
 import { isDeepStrictEqual } from "node:util";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { calculateRuntimeQueueLiabilities } from "./skirmish-ai-runtime-queue-liabilities";
 import { isRuntimeProductionBalance } from "./skirmish-ai-runtime-production-balance";
 import { sameRuntimeQueueVector } from "./skirmish-ai-runtime-scoped-queue-payments";
 
 /** Independent exact push/splice and all-lane arithmetic. No other lane or cash may change within this physical interval. */
 export function validateRuntimeQueueMutationBoundaries(
-  before: Extract<AiRuntimeProductionFactV1, { kind: "queue_mutation" }>,
-  after: Extract<AiRuntimeProductionFactV1, { kind: "queue_mutation" }>
+  before: Extract<AiRuntimeProductionFact, { kind: "queue_mutation" }>,
+  after: Extract<AiRuntimeProductionFact, { kind: "queue_mutation" }>
 ) {
   const left = before.boundaryState;
   const right = after.boundaryState;

@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { evaluateRuntimeProductionComposition } from "./skirmish-ai-runtime-production-composition-evaluation";
 import { isEvidenceStopSafe } from "./skirmish-ai-runtime-evidence-stop";
-import type { RuntimeAssertionV1 } from "./skirmish-ai-runtime-assertion";
+import type { RuntimeAssertion } from "./skirmish-ai-runtime-assertion";
 
 const requirement = {
   latestTick: 600,
@@ -9,7 +9,7 @@ const requirement = {
   targetMilitaryCount: 6,
   additionalUnitCount: 2,
   unitObjectNameByFaction: { Tivara: "frontline", Skaduwee: "frontline" }
-} satisfies NonNullable<RuntimeAssertionV1["requiredProductionComposition"]>;
+} satisfies NonNullable<RuntimeAssertion["requiredProductionComposition"]>;
 
 type Evidence = Parameters<typeof evaluateRuntimeProductionComposition>[1];
 type Checkpoint = Evidence["checkpoints"][number];

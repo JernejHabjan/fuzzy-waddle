@@ -1,6 +1,6 @@
 import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import { expect, test } from "@playwright/test";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { resourceCreditFixture } from "./skirmish-ai-runtime-resource-credit-fixture";
 import { normalizeRuntimeResourceCredits } from "./skirmish-ai-runtime-resource-credit-normalization";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
@@ -57,7 +57,7 @@ for (const missing of [
 ] as const) {
   test(`missing ${missing} preserves scoped credit but leaves whole-pile provenance unavailable`, () => {
     const f = resourceCreditFixture();
-    const capture = f.rewrite((fact): AiRuntimeProductionFactV1[] => {
+    const capture = f.rewrite((fact): AiRuntimeProductionFact[] => {
       if (missing === "admission" && fact.kind === "spatial_authority" && fact.spatial.kind === "route_order")
         return [];
       if (fact.kind !== "spatial_authority" || fact.spatial.kind !== "resource_service") return [fact];
@@ -95,7 +95,7 @@ for (const missing of [
 for (const unavailable of ["campaign", "callback", "interference", "restore", "balance", "threw"] as const) {
   test(`${unavailable} cannot promote a full native return to applied income`, () => {
     const f = resourceCreditFixture();
-    const capture = f.rewrite((fact): AiRuntimeProductionFactV1[] => {
+    const capture = f.rewrite((fact): AiRuntimeProductionFact[] => {
       if (
         fact.kind !== "spatial_authority" ||
         fact.spatial.kind !== "resource_service" ||
@@ -128,7 +128,7 @@ for (const unavailable of ["campaign", "callback", "interference", "restore", "b
 
 test("cargo-only restore fences a pending pile even without a board restore, and revival is contradictory", () => {
   const f = resourceCreditFixture();
-  const capture = f.rewrite((fact): AiRuntimeProductionFactV1[] => {
+  const capture = f.rewrite((fact): AiRuntimeProductionFact[] => {
     if (fact.kind !== "spatial_authority" || fact.spatial.kind !== "resource_service") return [fact];
     if (fact.spatial.phase === "resource_credit")
       return [
@@ -155,7 +155,7 @@ test("cargo-only restore fences a pending pile even without a board restore, and
   expect(result.failures).toEqual([]);
   expect(requireAiTestEntry(result.credits, 0)).toMatchObject({ appliedAmount: 3, cargoAttributed: false });
   const revived = capture.facts.map(
-    (fact): AiRuntimeProductionFactV1 =>
+    (fact): AiRuntimeProductionFact =>
       fact.kind === "spatial_authority" &&
       fact.spatial.kind === "resource_service" &&
       fact.spatial.phase === "resource_credit"
@@ -169,7 +169,7 @@ test("cargo-only restore fences a pending pile even without a board restore, and
 
 test("a partial pile consumption has no invented FIFO attribution", () => {
   const f = resourceCreditFixture();
-  const capture = f.rewrite((fact): AiRuntimeProductionFactV1[] =>
+  const capture = f.rewrite((fact): AiRuntimeProductionFact[] =>
     fact.kind === "spatial_authority" &&
     fact.spatial.kind === "resource_service" &&
     fact.spatial.phase === "cargo_changed" &&
@@ -184,7 +184,7 @@ test("a partial pile consumption has no invented FIFO attribution", () => {
 
 test("a target unregister/reuse fence prevents cargo attribution while retaining observed balance application", () => {
   const f = resourceCreditFixture();
-  const capture = f.rewrite((fact): AiRuntimeProductionFactV1[] =>
+  const capture = f.rewrite((fact): AiRuntimeProductionFact[] =>
     fact.kind === "spatial_authority" &&
     fact.spatial.kind === "resource_service" &&
     fact.spatial.phase === "resource_credit"
@@ -208,7 +208,7 @@ test("a target unregister/reuse fence prevents cargo attribution while retaining
 
 test("zero credit remains a zero observation and supplies no positive cargo contribution", () => {
   const f = resourceCreditFixture();
-  const capture = f.rewrite((fact): AiRuntimeProductionFactV1[] => {
+  const capture = f.rewrite((fact): AiRuntimeProductionFact[] => {
     if (
       fact.kind === "spatial_authority" &&
       fact.spatial.kind === "service_attempt" &&
@@ -254,7 +254,7 @@ for (const invalid of [
 ] as const) {
   test(`contradictory ${invalid} suppresses resource and existing normalized groups`, () => {
     const f = resourceCreditFixture();
-    const capture = f.rewrite((fact): AiRuntimeProductionFactV1[] => {
+    const capture = f.rewrite((fact): AiRuntimeProductionFact[] => {
       if (
         invalid === "gather_result" &&
         fact.kind === "spatial_authority" &&

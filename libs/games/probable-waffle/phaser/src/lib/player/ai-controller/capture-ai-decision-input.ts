@@ -1,21 +1,21 @@
-import type { AiCapabilityCatalogV1, AiObservationV1, AiProfileConfigV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiCapabilityCatalog, AiObservation, AiProfileConfig } from "@fuzzy-waddle/probable-waffle-gameplay";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { isSnapshotApplyInProgress } from "../../data/scene-data";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { SimulationTickService } from "../../world/services/simulation-tick.service";
 import { AI_DECISION_DISPATCH_EVENT } from "./ai-decision-dispatch-event";
-import type { AiDecisionInputV1 } from "./ai-decision-input-v1";
+import type { AiDecisionInput } from "./ai-decision-input";
 import { captureAiProducerExposure } from "./capture-ai-producer-exposure";
 
 /** Listener-gated diagnostic projection: consumed input plus bounded current target binding; no navigation query or timer. */
 export function captureAiDecisionInput(
   scene: ProbableWaffleScene,
-  observation: AiObservationV1,
-  catalog: AiCapabilityCatalogV1 | undefined,
+  observation: AiObservation,
+  catalog: AiCapabilityCatalog | undefined,
   intervalMs: number,
   completedBefore: number,
-  profile?: AiProfileConfigV1
-): AiDecisionInputV1 | undefined {
+  profile?: AiProfileConfig
+): AiDecisionInput | undefined {
   if (!scene.events.listenerCount(AI_DECISION_DISPATCH_EVENT)) return undefined;
   const gaps: string[] = [];
   const ticks = getSceneService(scene, SimulationTickService);

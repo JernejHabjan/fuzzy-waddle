@@ -1,8 +1,8 @@
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 
 /** Observed actor/controller resets fence existing orders; an absent history never proves continuity. */
-export function runtimeRouteOrderFenced(capture: AiRuntimeProductionCaptureV1, actorId: string | null,
+export function runtimeRouteOrderFenced(capture: AiRuntimeProductionSnapshot, actorId: string | null,
   start: number, end: number): boolean {
   return capture.facts.some((fact) => fact.sequence > start && fact.sequence <= end &&
     (fact.kind === "actor_unregistered" && fact.actorId === actorId ||

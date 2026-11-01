@@ -1,16 +1,16 @@
-import type { RuntimeResourceNeedV1 } from "./skirmish-ai-runtime-resource-need";
-import type { RuntimeResourceLiabilityFramesV1 } from "./skirmish-ai-runtime-resource-liability-frames";
+import type { RuntimeResourceNeed } from "./skirmish-ai-runtime-resource-need";
+import type { RuntimeResourceLiabilityFrames } from "./skirmish-ai-runtime-resource-liability-frames";
 
 /** Partial-history diagnostics. Upper bounds describe observed accounting only; useful contribution remains activation-gated. */
-export interface RuntimeResourceNeedAccountingV1 {
-  readonly need: RuntimeResourceNeedV1;
+export interface RuntimeResourceNeedAccounting {
+  readonly need: RuntimeResourceNeed;
   readonly closedSequence: number | null;
   readonly frame: {
     readonly stockpile: number;
     readonly reservedUnspent: number;
     readonly obligationsDue: number;
   } | null;
-  readonly liabilityFrames?: RuntimeResourceLiabilityFramesV1;
+  readonly liabilityFrames?: RuntimeResourceLiabilityFrames;
   readonly applications: readonly {
     readonly operationId: number;
     readonly entrySequence: number;

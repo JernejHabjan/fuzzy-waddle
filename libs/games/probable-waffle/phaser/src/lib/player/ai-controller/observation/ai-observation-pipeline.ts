@@ -6,12 +6,12 @@ import {
   type ProbableWafflePlayer
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import {
-  canonicalizeAiObservationV1,
-  type AiCapabilityCatalogEntryV1,
-  type AiCapabilityCatalogV1,
-  type AiObservedAccessProductV1,
-  type AiObservedActorV1,
-  type AiObservationV1
+  canonicalizeAiObservation,
+  type AiCapabilityCatalogEntry,
+  type AiCapabilityCatalog,
+  type AiObservedAccessProduct,
+  type AiObservedActor,
+  type AiObservation
 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { getActorComponent } from "../../../data/actor-component";
 import { isSceneActive } from "../../../data/game-object-helper";
@@ -74,8 +74,8 @@ export class AiObservationPipeline {
   private queryContinuationCursor = 0;
   private invalidationDebt = 0;
   private readonly memory = new Map<ActorId, RememberedContact>();
-  private latestObservation?: AiObservationV1;
-  private latestCatalog?: AiCapabilityCatalogV1;
+  private latestObservation?: AiObservation;
+  private latestCatalog?: AiCapabilityCatalog;
   private lastCommitError: string | null = null;
   private lastCommitErrorStage: string | null = null;
   private lastCommitErrorCode: string | null = null;
@@ -99,12 +99,12 @@ export class AiObservationPipeline {
   }
 
   /** Captures and atomically publishes the newest generation, rejecting late work by generation. */
-  async refresh(tick: number): Promise<AiObservationV1 | undefined> {
+  async refresh(tick: number): Promise<AiObservation | undefined> {
     return this.refreshNow(tick);
   }
 
   /** Pure selection must capture and consume its input before the next simulation tick. */
-  refreshNow(tick: number): AiObservationV1 | undefined {
+  refreshNow(tick: number): AiObservation | undefined {
     if (this.player.playerNumber === undefined || !this.player.factionType || !isSceneActive(this.scene)) {
       return this.latestObservation;
     }
@@ -119,7 +119,7 @@ export class AiObservationPipeline {
       if (!isCurrentObservationGeneration(this.requestedGeneration, generation) || !isSceneActive(this.scene)) {
         return this.latestObservation;
       }
-      this.latestObservation = canonicalizeAiObservationV1(captured.observation);
+      this.latestObservation = canonicalizeAiObservation(captured.observation);
       const resourceRead = readAiResourceInputRead(captured.observation);
       if (resourceRead) rememberAiResourceInputRead(this.latestObservation, resourceRead);
       this.latestCatalog = captured.catalog;
@@ -137,11 +137,11 @@ export class AiObservationPipeline {
     }
   }
 
-  getObservation(): AiObservationV1 | undefined {
+  getObservation(): AiObservation | undefined {
     return this.latestObservation;
   }
 
-  getCapabilityCatalog(): AiCapabilityCatalogV1 | undefined {
+  getCapabilityCatalog(): AiCapabilityCatalog | undefined {
     return this.latestCatalog;
   }
 
@@ -216,15 +216,15 @@ export class AiObservationPipeline {
     tick: number,
     policy: AiObservationVisibilityPolicy,
     diagnostics: { stage: string }
-  ): { observation: AiObservationV1; catalog: AiCapabilityCatalogV1 } {
+  ): { observation: AiObservation; catalog: AiCapabilityCatalog } {
     const playerNumber = this.player.playerNumber!;
     const index = getSceneService(this.scene, ActorIndexSystem);
     const liveActors = (index?.getAllIdActors() ?? [])
       .filter((actor) => this.isEligibleActor(actor))
       .sort(compareByActorId);
-    let projectedActors: AiObservedActorV1[] = [];
+    let projectedActors: AiObservedActor[] = [];
     const liveById = new Map<ActorId, Phaser.GameObjects.GameObject>();
-    const catalogEntries = new Map<string, AiCapabilityCatalogEntryV1>();
+    const catalogEntries = new Map<string, AiCapabilityCatalogEntry>();
 
     for (const actor of liveActors) {
       diagnostics.stage = "actor_projection";
@@ -360,7 +360,7 @@ export class AiObservationPipeline {
         ),
         unsupported: []
       }
-    } satisfies { observation: AiObservationV1; catalog: AiCapabilityCatalogV1 };
+    } satisfies { observation: AiObservation; catalog: AiCapabilityCatalog };
     finishResourceRead?.(captured.observation);
     return captured;
   }
@@ -371,7 +371,7 @@ export class AiObservationPipeline {
     return !health?.killed;
   }
 
-  private remember(actor: AiObservedActorV1, tick: number): void {
+  private remember(actor: AiObservedActor, tick: number): void {
     if (actor.relation === "self") return;
     this.memory.set(actor.actorId, {
       actorId: actor.actorId,
@@ -394,10 +394,10 @@ export class AiObservationPipeline {
   }
 
   private projectAccessProducts(
-    actors: readonly AiObservedActorV1[],
+    actors: readonly AiObservedActor[],
     liveById: ReadonlyMap<ActorId, Phaser.GameObjects.GameObject>,
     tick: number
-  ): AiObservedAccessProductV1[] {
+  ): AiObservedAccessProduct[] {
     const owned = actors.filter((actor) => actor.visibility === "owned" && actor.accessNodeId.status === "known");
     const contacts = actors.filter(
       (actor) => actor.visibility === "visible" && actor.relation === "enemy" && actor.accessNodeId.status === "known"

@@ -1,8 +1,8 @@
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 import { buildRuntimeProductionReport } from "./skirmish-ai-runtime-production-report";
 
 /** Store native records once; reproducible joined views can exceed V8's single-string limit. */
-export function encodeRuntimeProductionWorld(result: RuntimeVariantResultV1) {
+export function encodeRuntimeProductionWorld(result: RuntimeVariantResult) {
   return {
     productionWorldStorage: 1,
     result: {
@@ -15,9 +15,9 @@ export function encodeRuntimeProductionWorld(result: RuntimeVariantResultV1) {
 
 /** Legacy views remain untouched. Raw storage reuses the retained actual setup and the current pure readers. */
 export function decodeRuntimeProductionWorld(artifact: {
-  readonly result: RuntimeVariantResultV1;
+  readonly result: RuntimeVariantResult;
   readonly productionWorldStorage?: number;
-}): RuntimeVariantResultV1 {
+}): RuntimeVariantResult {
   if (!artifact?.result || typeof artifact.result !== "object")
     throw new Error("production_world_storage_shape_invalid");
   if (artifact.productionWorldStorage === undefined) return artifact.result;

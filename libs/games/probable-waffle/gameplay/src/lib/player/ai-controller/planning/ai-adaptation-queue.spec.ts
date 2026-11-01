@@ -4,14 +4,14 @@ import {
   ProbableWaffleAiDifficulty,
   ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservation } from "../contracts/ai-observation";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 import { AiAdaptationManager } from "./ai-adaptation-manager";
 
-const catalog: AiCapabilityCatalogV1 = {
+const catalog: AiCapabilityCatalog = {
   schemaVersion: 1,
   generation: 1,
   unsupported: [],
@@ -57,7 +57,7 @@ const catalog: AiCapabilityCatalogV1 = {
   ]
 };
 
-function world(tick: number, queuedItemCount: number): AiObservationV1 {
+function world(tick: number, queuedItemCount: number): AiObservation {
   const base = createAiTestObservation();
   const main = {
     ...createAiTestOwnedActor("main"),
@@ -111,9 +111,9 @@ function world(tick: number, queuedItemCount: number): AiObservationV1 {
 
 describe("adaptation queue commitments", () => {
   it("PRO-07 / TECH-05: counts queued counters without redundant production or cancellation loops", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
     const manager = new AiAdaptationManager(profile, () => catalog);
-    const initial = createAiBrainStateV1({
+    const initial = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,

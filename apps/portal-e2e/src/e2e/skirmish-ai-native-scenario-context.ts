@@ -1,5 +1,5 @@
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 import { runtimeClosedHistoryFailures } from "./skirmish-ai-runtime-closed-history";
 import { normalizeRuntimeMovement } from "./skirmish-ai-runtime-movement-normalization";
 import { nativeDamageMatches } from "./skirmish-ai-native-damage";
@@ -34,7 +34,7 @@ export function nativeScenarioRequiresResourceCoverage(scenarioId: string): bool
 
 /** One projection of existing raw authority, shared by the ID-specific assertions. No additional match/report interpreter. */
 export function nativeScenarioContext(
-  result: RuntimeVariantResultV1,
+  result: RuntimeVariantResult,
   latestTick: number,
   terminalHorizon?: number,
   options: { readonly requireResourceCoverage?: boolean } = {}
@@ -59,7 +59,7 @@ export function nativeScenarioContext(
   )
     failures.push("native_capture_channel_lost");
   const frames = (capture?.facts ?? []).filter(
-    (fact): fact is Extract<AiRuntimeProductionFactV1, { kind: "decision_selected" }> =>
+    (fact): fact is Extract<AiRuntimeProductionFact, { kind: "decision_selected" }> =>
       fact.kind === "decision_selected" && fact.tick <= latestTick
   );
   if (

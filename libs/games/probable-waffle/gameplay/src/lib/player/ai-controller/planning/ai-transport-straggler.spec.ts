@@ -1,16 +1,16 @@
 import { FactionType, ObjectNames, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
-import { AiTransportManager, createAiTransportPlanV1 } from "./ai-transport-manager";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
+import { AiTransportManager, createAiTransportPlan } from "./ai-transport-manager";
 import { actor, built, catalog, fromNodeId, observation, route, routeRequest } from "./ai-transport-manager-test-fixture";
 import { aiTransportReleasedClaimIds } from "../brain/ai-transport-released-claims";
 import { aiDeadline } from "../contracts/ai-core-types";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
 
 it("H-23 drops a late optional passenger at sufficient original readiness but never drops its required builder", () => {
-  const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-  const initial = createAiBrainStateV1({ profile, playerNumber: 1, faction: FactionType.Tivara, tick: 0, archetypeId: "balanced" });
-  const source = createAiTransportPlanV1({ planId: "transport:island-straggler", routeRequest, route, tick: 20,
+  const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+  const initial = createAiBrainState({ profile, playerNumber: 1, faction: FactionType.Tivara, tick: 0, archetypeId: "balanced" });
+  const source = createAiTransportPlan({ planId: "transport:island-straggler", routeRequest, route, tick: 20,
     missionKind: "island_establishment", estimatedTravelTicks: 40, passengers: [
       { actorId: "builder", role: "builder", indispensable: true, handoff: "economy" },
       { actorId: "guard", role: "protection", indispensable: true, handoff: "squad" },
@@ -43,9 +43,9 @@ it("H-23 drops a late optional passenger at sufficient original readiness but ne
   expect(lost?.lifecycle?.requiredCapacity).toBe(4);
   if (!departure) throw new Error("required_departure_missing");
   const ownerPlanId = `plan:${plan.planId}` as const;
-  const reservation: AiBrainStateV1["reservations"][number] = { claimId: "claim:optional-lease", ownerPlanId,
+  const reservation: AiBrainState["reservations"][number] = { claimId: "claim:optional-lease", ownerPlanId,
     subjectKey: "actor:optional-late", state: { kind: "provisional", expiresAt: aiDeadline(1000) }, prerequisites: [], createdTick: 20 };
-  const held: AiBrainStateV1["reservations"] = [reservation,
+  const held: AiBrainState["reservations"] = [reservation,
     { ...reservation, claimId: "claim:paid", state: { kind: "applied_spending", appliedTick: 20 } },
     { ...reservation, claimId: "claim:unknown", state: { kind: "dispatched", commandId: "original:pending" } },
     { ...reservation, claimId: "claim:foreign", ownerPlanId: "plan:foreign" }];

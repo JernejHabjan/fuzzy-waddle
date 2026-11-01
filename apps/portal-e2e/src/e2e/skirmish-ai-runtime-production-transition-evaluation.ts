@@ -1,11 +1,11 @@
 import { evaluateRuntimeProductionAbandonment } from "./skirmish-ai-runtime-production-abandonment-evaluation";
-import type { RuntimeProductionContractV1 } from "./skirmish-ai-runtime-production-contract";
-import type { RuntimeProductionEvidenceV1 } from "./skirmish-ai-runtime-production-evidence";
+import type { RuntimeProductionContract } from "./skirmish-ai-runtime-production-contract";
+import type { RuntimeProductionEvidence } from "./skirmish-ai-runtime-production-evidence";
 
 /** A dated future commitment must cause ready capacity; abandonment releases only optional, unspent leases. */
 export function evaluateRuntimeProductionTransition(
-  contract: RuntimeProductionContractV1,
-  evidence: RuntimeProductionEvidenceV1
+  contract: RuntimeProductionContract,
+  evidence: RuntimeProductionEvidence
 ): string[] {
   const { snapshots, events } = evidence;
   const initial = snapshots[0];

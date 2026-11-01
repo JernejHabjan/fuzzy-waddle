@@ -11,7 +11,7 @@ import { AiPlayerHandler } from "../ai-player-handler";
 import { projectAiProductionObligations } from "../observation/ai-production-obligations";
 import { captureAiRuntimeProductionQueue } from "./ai-runtime-production-queues";
 import type { AiRuntimePendingCommands } from "./ai-runtime-pending-commands";
-import type { AiRuntimeUnspentClaimsV1 } from "./ai-runtime-unspent-claims-v1";
+import type { AiRuntimeUnspentClaimsSnapshot } from "./ai-runtime-unspent-claims-snapshot";
 import type { AiRuntimeProductionBoundaryState } from "./ai-runtime-production-boundary-state";
 
 const MAX_ACTORS = 256;
@@ -24,7 +24,7 @@ export function projectAiRuntimeProductionBoundaryState(
   playerNumber: number,
   pendingCommands: AiRuntimePendingCommands,
   identify: (actorId: string, item: UnifiedQueueItem) => string,
-  unspentClaims?: AiRuntimeUnspentClaimsV1,
+  unspentClaims?: AiRuntimeUnspentClaimsSnapshot,
   exhaustedProgressItem?: UnifiedQueueItem
 ): AiRuntimeProductionBoundaryState {
   const gaps = new Set<string>(unspentClaims?.gaps ?? []);

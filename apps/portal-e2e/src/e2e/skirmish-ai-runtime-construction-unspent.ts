@@ -1,18 +1,18 @@
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { isDeepStrictEqual } from "node:util";
 // prettier-ignore
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 // prettier-ignore
-import type { AiRuntimeUnspentClaimsV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-unspent-claims-v1";
+import type { AiRuntimeUnspentClaimsSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-unspent-claims-snapshot";
 import { sameRuntimeQueueVector } from "./skirmish-ai-runtime-scoped-queue-payments";
 
 /** Construction ownership is selected cash until exact admission and native site payment; placement alone never spends it. */
 export function reconcileRuntimeConstructionUnspent(
-  entry: AiRuntimeUnspentClaimsV1["entries"][number],
-  prefix: readonly AiRuntimeProductionFactV1[],
-  allFacts: readonly AiRuntimeProductionFactV1[] = prefix
+  entry: AiRuntimeUnspentClaimsSnapshot["entries"][number],
+  prefix: readonly AiRuntimeProductionFact[],
+  allFacts: readonly AiRuntimeProductionFact[] = prefix
 ) {
   const failures: string[] = [],
     gaps: string[] = [];

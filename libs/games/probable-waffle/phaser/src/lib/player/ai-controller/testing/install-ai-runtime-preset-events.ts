@@ -9,8 +9,8 @@ import type GameProbableWaffleScene from "../../../world/scenes/GameProbableWaff
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
-import type { AiRuntimePresetWorldV1 } from "./ai-runtime-preset-world-v1";
-import { recordAiRuntimePresetEventV1 } from "./ai-runtime-browser-test-config";
+import type { AiRuntimePresetWorld } from "./ai-runtime-preset-world";
+import { recordAiRuntimePresetEvent } from "./ai-runtime-browser-test-config";
 import type { AiRuntimeDecisionRepro } from "./ai-runtime-decision-repro";
 import { PRODUCTION_SPATIAL_AUTHORITY_EVENT, type ProductionSpatialAuthorityEvent } from
   "../../../world/services/multiplayer/production-spatial-authority-event";
@@ -18,7 +18,7 @@ import { PRODUCTION_SPATIAL_AUTHORITY_EVENT, type ProductionSpatialAuthorityEven
 /** Test-owned scheduled losses use native damage and retain the exact original identity when explicitly pinned. */
 export function installAiRuntimePresetEvents(
   scene: GameProbableWaffleScene,
-  preset: AiRuntimePresetWorldV1,
+  preset: AiRuntimePresetWorld,
   createdActors: ReadonlyMap<string, Phaser.GameObjects.GameObject>
 ): void {
   const pendingEvents = [...(preset.events ?? [])].sort(
@@ -93,7 +93,7 @@ export function installAiRuntimePresetEvents(
           health.takeDamage(event.kind === "damage_owned_actor" ? event.damage ?? 0 : Number.MAX_SAFE_INTEGER,
             DamageType.Physical);
         }
-        recordAiRuntimePresetEventV1({
+        recordAiRuntimePresetEvent({
           id: event.id,
           tick: tickService.currentTick,
           affectedActors: applied ? 1 : 0,

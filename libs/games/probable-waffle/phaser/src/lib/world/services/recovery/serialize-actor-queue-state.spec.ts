@@ -1,7 +1,7 @@
 import { ObjectNames, ResearchType, type SharedQueueSnapshotData } from "@fuzzy-waddle/probable-waffle-protocol";
 import { snapshotSharedQueues, restoreSharedQueues } from "../../../entity/components/queue/shared-queue-snapshot";
 import { serializeActorQueueState } from "./serialize-actor-queue-state";
-import { digestAuthoritativeStateProjectionV1 } from "./authoritative-state-projection";
+import { digestAuthoritativeStateProjection } from "./authoritative-state-projection";
 
 function snapshot(): SharedQueueSnapshotData {
   return {
@@ -27,7 +27,7 @@ function snapshot(): SharedQueueSnapshotData {
 }
 
 function peerHash(sharedQueue: SharedQueueSnapshotData): string {
-  return digestAuthoritativeStateProjectionV1({
+  return digestAuthoritativeStateProjection({
     schemaVersion: 1, actors: [{ actorId: "producer", digest: serializeActorQueueState({ sharedQueue }) }],
     players: [], research: [], campaignMission: "", campaignMissionFamilies: {}, random: "", systems: {}
   });

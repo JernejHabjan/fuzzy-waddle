@@ -1,26 +1,26 @@
 import { FactionType, ProbableWaffleAiDifficulty, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
 import { aiDeadline } from "../contracts/ai-core-types";
-import type { AiBrainStateV1, AiSquadStateV1, AiTransportStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiIntentDecisionV1, AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import type { AiBrainState, AiSquadState, AiTransportState } from "../contracts/ai-brain-state";
+import type { AiIntentDecision, AiIntent } from "../contracts/ai-intent";
+import type { AiDemand } from "../contracts/ai-plan-contracts";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor, requireAiTestEntry } from "../testing/ai-test-fixtures";
 import { projectAiStrategicIntentSummary } from "./project-ai-strategic-intent-summary";
 
 const observation = createAiTestObservation();
 
-function brainState(): AiBrainStateV1 {
-  return createAiBrainStateV1({
+function brainState(): AiBrainState {
+  return createAiBrainState({
     playerNumber: 1,
     faction: FactionType.Tivara,
-    profile: createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium),
+    profile: createAiProfileConfig(ProbableWaffleAiDifficulty.Medium),
     tick: 20,
     archetypeId: "balanced"
   });
 }
 
-function squad(role: AiSquadStateV1["role"], state: AiSquadStateV1["state"]): AiSquadStateV1 {
+function squad(role: AiSquadState["role"], state: AiSquadState["state"]): AiSquadState {
   return {
     squadId: "squad:1",
     role,
@@ -80,7 +80,7 @@ describe("committed strategic intent summary", () => {
 
   it("shows committed composition, deficit, queue capacity, and observed counter evidence", () => {
     const state = brainState();
-    const demand: AiDemandV1 = {
+    const demand: AiDemand = {
       demandId: "demand:air",
       purpose: "counter_air_pressure",
       capabilityOrRole: "anti_air",
@@ -176,7 +176,7 @@ describe("committed strategic intent summary", () => {
       passengerIds: ["soldier-1"],
       transportIds: ["carrier-1"],
       queryIds: []
-    } satisfies AiTransportStateV1;
+    } satisfies AiTransportState;
     const moving = projectAiStrategicIntentSummary(observation, { ...state, transport: [transport] }, []);
     expect(moving.objective).toContain("Transfer by unconfirmed transport");
     expect(moving.force).toContain("1 passenger, 1 carrier; boarding; deadline tick unknown");
@@ -189,7 +189,7 @@ describe("committed strategic intent summary", () => {
   });
 
   it("reports an accepted gather action and a rejected prerequisite separately", () => {
-    const intent: AiIntentV1 = {
+    const intent: AiIntent = {
       kind: "assign_gatherers" as const,
       intentId: "intent:gather",
       effectId: "effect:gather",
@@ -206,7 +206,7 @@ describe("committed strategic intent summary", () => {
       resourceType: ResourceType.Wood,
       sourceActorId: null
     };
-    const decisions: AiIntentDecisionV1[] = [
+    const decisions: AiIntentDecision[] = [
       { outcome: "accepted", reason: "accepted", intent },
       { outcome: "rejected", reason: "precondition_failed", detail: "target_visible", intent }
     ];

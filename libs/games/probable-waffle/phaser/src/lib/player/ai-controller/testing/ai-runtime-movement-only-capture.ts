@@ -8,9 +8,9 @@ import { OwnerComponent } from "../../../entity/components/owner-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { getGameObjectCurrentTile } from "../../../data/game-object-helper";
-import type { AiRuntimeProductionCaptureV1 } from "./ai-runtime-production-capture-v1";
-import type { AiRuntimeProductionFactV1 } from "./ai-runtime-production-fact-v1";
-import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spatial-v1";
+import type { AiRuntimeProductionSnapshot } from "./ai-runtime-production-snapshot";
+import type { AiRuntimeProductionFact } from "./ai-runtime-production-fact";
+import type { AiRuntimeProductionSpatial } from "./ai-runtime-production-spatial";
 import { AiRuntimeRouteOrderCapture } from "./ai-runtime-route-order-capture";
 
 const MAX_FACTS = 4_096;
@@ -34,8 +34,8 @@ const FOCUS_ACTOR_IDS = new Set([
 
 /** Test-only bounded recorder for move completion and the order that caused it. */
 export class AiRuntimeMovementOnlyCapture {
-  private readonly facts: AiRuntimeProductionFactV1[] = [];
-  private readonly movementQueries: NonNullable<AiRuntimeProductionCaptureV1["movementQueries"]>[number][] = [];
+  private readonly facts: AiRuntimeProductionFact[] = [];
+  private readonly movementQueries: NonNullable<AiRuntimeProductionSnapshot["movementQueries"]>[number][] = [];
   private readonly dropped = new Map<number, number>();
   private readonly subscriptions: { unsubscribe(): void }[] = [];
   private nextSequence = 1;
@@ -67,7 +67,7 @@ export class AiRuntimeMovementOnlyCapture {
     scene.events.once(Phaser.Scenes.Events.DESTROY, this.dispose, this);
   }
 
-  capture(playerNumber: number): AiRuntimeProductionCaptureV1 {
+  capture(playerNumber: number): AiRuntimeProductionSnapshot {
     if (this.disposed) throw new Error("movement_capture_disposed");
     return {
       schemaVersion: 1,
@@ -83,7 +83,7 @@ export class AiRuntimeMovementOnlyCapture {
     };
   }
 
-  captureHumanQueueBoundary(playerNumber: number): AiRuntimeProductionCaptureV1 {
+  captureHumanQueueBoundary(playerNumber: number): AiRuntimeProductionSnapshot {
     return this.capture(playerNumber);
   }
 
@@ -97,7 +97,7 @@ export class AiRuntimeMovementOnlyCapture {
     this.scene.events.off(Phaser.Scenes.Events.DESTROY, this.dispose, this);
   }
 
-  private append(playerNumber: number, spatial: AiRuntimeProductionSpatialV1): void {
+  private append(playerNumber: number, spatial: AiRuntimeProductionSpatial): void {
     if (this.disposed) return;
     if (this.facts.length >= MAX_FACTS) {
       this.dropped.set(playerNumber, (this.dropped.get(playerNumber) ?? 0) + 1);

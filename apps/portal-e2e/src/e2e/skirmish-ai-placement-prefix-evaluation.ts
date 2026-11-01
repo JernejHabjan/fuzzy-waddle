@@ -1,15 +1,15 @@
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
-import type { RuntimePresetWorldV1 } from "./skirmish-ai-runtime-preset-world";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimePresetWorld } from "./skirmish-ai-runtime-preset-world";
 import { ProbableWaffleGameCommandTypes } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimePlacementClearanceV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-placement-clearance-v1";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimePlacementClearance } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-placement-clearance";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 
 /** Checks static access at every applied shared-build prefix. Actual unit transit/spawn remains a separate obligation. */
 export function evaluateRuntimePlacementPrefixes(
-  preset: RuntimePresetWorldV1,
-  result: Pick<RuntimeVariantResultV1, "productionPreset" | "productionCapture">,
+  preset: RuntimePresetWorld,
+  result: Pick<RuntimeVariantResult, "productionPreset" | "productionCapture">,
   minimumAppliedPrefixes: number
 ): string[] {
   const capture = result.productionCapture, application = result.productionPreset;
@@ -30,7 +30,7 @@ export function evaluateRuntimePlacementPrefixes(
     previousTick = fact.tick;
   }
   const placements = capture.facts.filter(
-    (fact): fact is Extract<AiRuntimeProductionFactV1, { kind: "spatial_authority" }> =>
+    (fact): fact is Extract<AiRuntimeProductionFact, { kind: "spatial_authority" }> =>
       fact.kind === "spatial_authority" && fact.spatial.kind === "placement"
   );
   const delivered = capture.facts.flatMap((fact) => fact.kind === "command_delivered" &&
@@ -77,8 +77,8 @@ export function evaluateRuntimePlacementPrefixes(
 }
 
 function clearanceFailures(
-  sample: AiRuntimePlacementClearanceV1 | undefined,
-  declarations: NonNullable<RuntimePresetWorldV1["protectedRoutes"]>,
+  sample: AiRuntimePlacementClearance | undefined,
+  declarations: NonNullable<RuntimePresetWorld["protectedRoutes"]>,
   tick: number
 ): string[] {
   if (!sample || sample.clockTick !== tick || sample.snapshotRestoreInProgress || !sample.sceneActive || sample.gaps.length) {

@@ -1,10 +1,10 @@
 import { evaluateRuntimeSharedContention } from "./skirmish-ai-runtime-shared-contention-evaluation";
-import type { RuntimeProductionContractV1 } from "./skirmish-ai-runtime-production-contract";
-import type { RuntimeProductionEvidenceV1 } from "./skirmish-ai-runtime-production-evidence";
+import type { RuntimeProductionContract } from "./skirmish-ai-runtime-production-contract";
+import type { RuntimeProductionEvidence } from "./skirmish-ai-runtime-production-evidence";
 
 /** Checks application-order cash, definition prices and remaining pay-over-time commitments without predicted refunds. */
 export function evaluateRuntimeProductionPayments(
-  evidence: Pick<RuntimeProductionEvidenceV1, "events" | "catalog">
+  evidence: Pick<RuntimeProductionEvidence, "events" | "catalog">
 ): string[] {
   const failures: string[] = [];
   const paid = new Map<string, Record<string, number>>();
@@ -119,8 +119,8 @@ function hasItem(items: readonly string[], itemId: string | null): boolean {
 
 /** A physical lane is shared by train/research; cancellation money becomes spendable only at resource application. */
 export function evaluateRuntimeProductionRefund(
-  contract: RuntimeProductionContractV1,
-  evidence: RuntimeProductionEvidenceV1
+  contract: RuntimeProductionContract,
+  evidence: RuntimeProductionEvidence
 ): string[] {
   if (!["shared_contention", "cancel_pending_refund"].includes(contract.branch))
     return ["production_queue_branch_missing"];

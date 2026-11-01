@@ -27,7 +27,7 @@ test("native production capture streams large JSON into gzip without stringify o
       return Reflect.apply(originalStringify, JSON, [value, ...args]) as string | undefined;
     }) as typeof JSON.stringify;
     const host = window as unknown as Record<string, unknown>;
-    host.__fuzzyWaddleAiRuntimeBrowserTestV1 = {
+    host.__fuzzyWaddleAiRuntimeBrowserTest = {
       productionCapture: { capture: () => record }
     };
     host.__captureSerializerTest = {

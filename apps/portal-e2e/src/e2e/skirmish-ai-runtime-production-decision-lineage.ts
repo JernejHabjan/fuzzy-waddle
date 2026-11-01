@@ -1,11 +1,11 @@
 import { isDeepStrictEqual } from "node:util";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 
 /** Exact result linkage only. Missing legacy records remain a gap; supplied contradictory authority is a failure. */
 export function matchRuntimeProductionDecision(
-  request: Extract<AiRuntimeProductionFactV1, { kind: "intent_dispatch" }>,
-  decisions: readonly Extract<AiRuntimeProductionFactV1, { kind: "decision_selected" }>[],
+  request: Extract<AiRuntimeProductionFact, { kind: "intent_dispatch" }>,
+  decisions: readonly Extract<AiRuntimeProductionFact, { kind: "decision_selected" }>[],
   authorityEpoch: number | undefined
 ) {
   if (request.event.kind !== "requested") return { failures: ["production_ai_decision_request_invalid"], decision: null };

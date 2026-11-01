@@ -4,11 +4,11 @@ import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import type { ProductionSpatialAuthorityEvent } from "../../../world/services/multiplayer/production-spatial-authority-event";
-import type { AiRuntimeConstructionCatalogV1 } from "./ai-runtime-construction-catalog-v1";
+import type { AiRuntimeConstructionCatalog } from "./ai-runtime-construction-catalog";
 
 /** Test-only definition observation; no new affordability, eligibility, path or resource mutation is performed. */
 export function captureAiRuntimeConstructionCatalog(event: Extract<ProductionSpatialAuthorityEvent, { kind: "placement" }>) {
-  const catalog: AiRuntimeConstructionCatalogV1 = { priceSource: "shared_command_base_definition",
+  const catalog: AiRuntimeConstructionCatalog = { priceSource: "shared_command_base_definition",
     admissionCost: { ...event.admissionCost }, siteDefinition: null };
   const tech = getSceneService(event.site.scene, TechTreeService);
   if (!tech) return { catalog, gaps: ["production_construction_effective_definition_missing"] };
@@ -30,5 +30,5 @@ export function captureAiRuntimeConstructionCatalog(event: Extract<ProductionSpa
   }
   return { catalog: { ...catalog, siteDefinition: { researchedLevel: level, cost: { ...definition.resources },
     configuredPayment: definition.costType === PaymentType.PayImmediately ? "immediate" : "per_successful_tick",
-    requiredWorkMs: definition.productionTime } } satisfies AiRuntimeConstructionCatalogV1, gaps: [] };
+    requiredWorkMs: definition.productionTime } } satisfies AiRuntimeConstructionCatalog, gaps: [] };
 }

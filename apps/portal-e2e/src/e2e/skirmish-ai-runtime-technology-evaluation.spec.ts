@@ -4,7 +4,7 @@ import { productionAuthorityFixture } from "./skirmish-ai-runtime-production-aut
 import { productionEvent } from "./skirmish-ai-runtime-production-contract-fixtures";
 import type { RuntimeTechnologyContract } from "./skirmish-ai-runtime-technology-contract";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
 
 const contract: RuntimeTechnologyContract = {
   latestTick: 600,
@@ -83,7 +83,7 @@ test("an anti-air target or an unrelated completion cannot substitute for an exe
   if (!targeted) throw new Error("targeted_fixture_missing");
   const input = selected.result.input;
   if (!input?.capabilityCatalog) throw new Error("oracle_input_missing");
-  const counter: AiIntentV1 = {
+  const counter: AiIntent = {
     kind: "produce",
     intentId: "intent:counter",
     effectId: "effect:counter",

@@ -1,15 +1,15 @@
-import type { AiManagerProposalV1 } from "./ai-manager-proposal";
+import type { AiManagerProposal } from "./ai-manager-proposal";
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
+import type { AiIntent } from "../contracts/ai-intent";
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
-import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
+import type { AiProfileConfig } from "../contracts/ai-profile-config";
 import { aiDeadline, type AiClaimId, type AiPlanId, type AiSquadId } from "../contracts/ai-core-types";
-import type { AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiSquadState } from "../contracts/ai-brain-state";
 import type { AiStrategyAssessment } from "../contracts/ai-strategy-assessment";
-import { queryAiAccessRouteV1 } from "./ai-access-graph-v1";
-import type { AiRouteResultV1 } from "../contracts/ai-access-graph-v1";
+import { queryAiAccessRoute } from "./ai-access-graph";
+import type { AiRouteResult } from "../contracts/ai-access-graph";
 import type { AiSkirmishProposalContext } from "./ai-skirmish-proposal-context";
-import { createAiTransportPlanV1 } from "./ai-transport-manager";
+import { createAiTransportPlan } from "./ai-transport-manager";
 import { AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS } from "./ai-skirmish-defense";
 import { selectAiNavalFiringPosition } from "./select-ai-offensive-force";
 import { selectAiOffensiveOpportunity } from "./select-ai-offensive-opportunity";
@@ -28,7 +28,7 @@ import {
   withTimeline
 } from "./ai-skirmish-support";
 
-function retainSquadTacticsForActors(squad: AiSquadStateV1, actorIds: readonly string[]): AiSquadStateV1 {
+function retainSquadTacticsForActors(squad: AiSquadState, actorIds: readonly string[]): AiSquadState {
   return {
     ...squad,
     actorIds: [...actorIds],
@@ -149,7 +149,7 @@ function isMovingTo(actor: AiSkirmishProposalContext["combat"][number], target: 
   return order?.orderType === OrderType.Move && !!order.targetPosition && distance(order.targetPosition, target) <= 1;
 }
 
-function actorClaims(actorIds: readonly string[]): AiIntentV1["claims"] {
+function actorClaims(actorIds: readonly string[]): AiIntent["claims"] {
   return actorIds.map((actorId) => ({
     claimId: `claim:stage9:actor:${actorId}` as AiClaimId,
     kind: "actor" as const,
@@ -161,14 +161,14 @@ function createAttackSquad(
   context: AiSkirmishProposalContext,
   opponent: NonNullable<AiSkirmishProposalContext["opponent"]>,
   attackers: readonly AiSkirmishProposalContext["combat"][number][],
-  route: ReturnType<typeof queryAiAccessRouteV1> | undefined,
+  route: ReturnType<typeof queryAiAccessRoute> | undefined,
   sourceNode: ReturnType<typeof node>,
   mission?: {
     readonly squadId?: AiSquadId;
-    readonly existing?: AiSquadStateV1;
+    readonly existing?: AiSquadState;
     readonly assessment?: AiStrategyAssessment;
   }
-): AiSquadStateV1 {
+): AiSquadState {
   const activeAttack = mission?.existing ?? (mission?.squadId ? undefined : context.activeAttack);
   const assessment = mission?.assessment ?? context.assessment;
   const assemblyExpired =
@@ -187,13 +187,13 @@ function createAttackSquad(
     route.domain === "ground" &&
     (assessment?.readyForce ?? 0) >= minimumTimedForce;
   const isReachable = route?.kind === "direct" || route?.kind === "air_or_naval_objective";
-  const attackState: AiSquadStateV1["state"] =
+  const attackState: AiSquadState["state"] =
     isReachable && assessment?.choice !== "recover" && (fullEngagement || timedEngagement) ? "moving" : "forming";
   const attackId = mission?.squadId ?? activeAttack?.squadId ?? ("squad:attack:primary" as AiSquadId);
   context.attackPlanId = `plan:${attackId}` as AiPlanId;
   const actorIds = attackers.map((actor) => actor.actorId);
   const previousTactics = activeAttack?.tactics;
-  const attack: AiSquadStateV1 = {
+  const attack: AiSquadState = {
     squadId: attackId,
     role: "attack",
     domain: domains(attackers[0]!).includes("air")
@@ -226,12 +226,12 @@ function createAttackSquad(
 
 function transportProposal(
   context: AiSkirmishProposalContext,
-  attack: AiSquadStateV1,
+  attack: AiSquadState,
   attackers: readonly AiSkirmishProposalContext["combat"][number][],
-  route: Extract<ReturnType<typeof queryAiAccessRouteV1>, { readonly kind: "water_transport" | "air_transport" }>,
+  route: Extract<ReturnType<typeof queryAiAccessRoute>, { readonly kind: "water_transport" | "air_transport" }>,
   sourceNode: NonNullable<ReturnType<typeof node>>,
   targetNode: NonNullable<ReturnType<typeof node>>
-): AiManagerProposalV1 | undefined {
+): AiManagerProposal | undefined {
   const transportPlanId = `transport:mission:${attack.squadId}` as const;
   if (context.state.transport.some((transport) => transport.planId === transportPlanId)) return undefined;
   const passengers = attackers.slice(0, Math.max(1, Math.min(attackers.length, 6))).map((actor, index) => ({
@@ -268,7 +268,7 @@ function transportProposal(
         `transport:${route.kind}`
       ),
       transportAppend: [
-        createAiTransportPlanV1({
+        createAiTransportPlan({
           planId: transportPlanId,
           routeRequest: {
             queryId: route.queryId,
@@ -291,8 +291,8 @@ function transportProposal(
 
 export function advanceAiSkirmishOffense(
   context: AiSkirmishProposalContext,
-  profile: AiProfileConfigV1
-): AiManagerProposalV1 | undefined {
+  profile: AiProfileConfig
+): AiManagerProposal | undefined {
   const activeAttack = context.activeAttack;
   const liveTarget = context.visibleEnemies.find((actor) => actor.actorId === activeAttack?.objectiveId);
   const missionSquads = activeAttack
@@ -420,7 +420,7 @@ export function advanceAiSkirmishOffense(
     });
   type RaidChoice = ReturnType<typeof chooseRaid>;
   type MaybeRaidChoice = RaidChoice | undefined;
-  type ExecutableRaidRoute = Extract<AiRouteResultV1, { readonly kind: "direct" | "air_or_naval_objective" }>;
+  type ExecutableRaidRoute = Extract<AiRouteResult, { readonly kind: "direct" | "air_or_naval_objective" }>;
   const canLaunchRaid = (choice: MaybeRaidChoice): choice is RaidChoice & { readonly route: ExecutableRaidRoute } => {
     const route = choice?.route;
     return (

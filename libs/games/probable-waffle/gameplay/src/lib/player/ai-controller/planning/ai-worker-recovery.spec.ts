@@ -4,14 +4,14 @@ import {
   ProbableWaffleAiDifficulty,
   ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservedActor } from "../contracts/ai-observation";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 import { proposeAiWorkerRecovery } from "./ai-worker-recovery";
 
-const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
 const workerEntry = {
   capabilityId: "worker",
   family: "economy",
@@ -35,7 +35,7 @@ const workerEntry = {
     exitHeight: null
   }
 };
-const catalog: AiCapabilityCatalogV1 = {
+const catalog: AiCapabilityCatalog = {
   schemaVersion: 1,
   generation: 1,
   unsupported: [],
@@ -52,11 +52,11 @@ const catalog: AiCapabilityCatalogV1 = {
   ]
 };
 
-function worker(id: string): AiObservedActorV1 {
+function worker(id: string): AiObservedActor {
   return { ...createAiTestOwnedActor(id), objectName: ObjectNames.TivaraWorker };
 }
 
-function producer(queueItemIds: readonly string[] = []): AiObservedActorV1 {
+function producer(queueItemIds: readonly string[] = []): AiObservedActor {
   return {
     ...createAiTestOwnedActor("home"),
     objectName: ObjectNames.Sandhold,
@@ -99,7 +99,7 @@ function result(
       }
     ]
   };
-  const state = createAiBrainStateV1({
+  const state = createAiBrainState({
     playerNumber: 1,
     faction: FactionType.Tivara,
     profile,
@@ -146,7 +146,7 @@ describe("worker economy replacement", () => {
   it("releases a terminally rejected worker lease so a replacement can be retried", () => {
     const initial = createAiTestObservation();
     const effectId = "effect:worker-recovery:7:home" as never;
-    const state = createAiBrainStateV1({
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,

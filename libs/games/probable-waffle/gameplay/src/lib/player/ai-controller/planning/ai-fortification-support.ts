@@ -1,22 +1,22 @@
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogEntryV1, AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalogEntry, AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
 
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiObservation } from "../contracts/ai-observation";
 
 /** Initial graph caps prevent a new plan identity from turning fortification into unbounded work. */
 export const AI_FORTIFICATION_GRAPH_CAPS = { walls: 16, towers: 3, stairs: 2 } as const;
 export const AI_STANDARD_FORTIFICATION_SPEND_PERMILLE = 200;
 export const AI_TURTLE_FORTIFICATION_SPEND_PERMILLE = 300;
 
-export type ConstructionCell = NonNullable<NonNullable<AiObservationV1["map"]>["constructionCells"]>[number];
+export type ConstructionCell = NonNullable<NonNullable<AiObservation["map"]>["constructionCells"]>[number];
 
 export function tileKey(position: Pick<Vector3Simple, "x" | "y">): string {
   return `${position.x},${position.y}`;
 }
 
-export function positionOf(actor: AiObservationV1["actors"][number]): Vector3Simple | null {
+export function positionOf(actor: AiObservation["actors"][number]): Vector3Simple | null {
   return actor.logicalPosition.status === "known" ? actor.logicalPosition.value : null;
 }
 
@@ -29,7 +29,7 @@ export function resourceEntries(cost: Readonly<Partial<Record<ResourceType, numb
     .sort((left, right) => left[0].localeCompare(right[0]));
 }
 
-export function hasUnmetMacroFloor(state: AiBrainStateV1): boolean {
+export function hasUnmetMacroFloor(state: AiBrainState): boolean {
   const protectedPurposes = new Set(["bootstrap_worker", "supply_buffer", "sustainable_food"]);
   return state.economyProduction.demands.some((demand) => {
     if (!protectedPurposes.has(demand.purpose)) return false;
@@ -47,7 +47,7 @@ export function isDefensiveArchetype(archetypeId: string): boolean {
   return archetypeId.endsWith(":safe") || archetypeId.endsWith(":turtle");
 }
 
-export function threatPosition(observation: AiObservationV1, anchor: Vector3Simple): Vector3Simple | null {
+export function threatPosition(observation: AiObservation, anchor: Vector3Simple): Vector3Simple | null {
   return (
     observation.actors
       .filter((actor) => actor.relation === "enemy" && actor.visibility === "visible")
@@ -65,9 +65,9 @@ export function threatPosition(observation: AiObservationV1, anchor: Vector3Simp
 }
 
 export function constructionEntry(
-  catalog: AiCapabilityCatalogV1,
+  catalog: AiCapabilityCatalog,
   objectName: ObjectNames
-): AiCapabilityCatalogEntryV1 | null {
+): AiCapabilityCatalogEntry | null {
   return (
     catalog.entries
       .filter((entry) => entry.sourceObjectName === objectName)

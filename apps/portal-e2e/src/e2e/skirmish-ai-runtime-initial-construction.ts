@@ -1,9 +1,9 @@
 import { ConstructionStateEnum } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 
 /** Initial membership is installation-owned. Tick-zero presence alone is never paired setup or paid provenance. */
-export function normalizeRuntimeInitialConstruction(capture: AiRuntimeProductionCaptureV1) {
+export function normalizeRuntimeInitialConstruction(capture: AiRuntimeProductionSnapshot) {
   const initial = capture.initialConstruction;
   const failures: string[] = [];
   const gaps = new Set<string>(["production_construction_initial_setup_identity_missing",

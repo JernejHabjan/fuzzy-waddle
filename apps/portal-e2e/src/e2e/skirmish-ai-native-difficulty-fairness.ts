@@ -1,4 +1,4 @@
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 import { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
 import { nativeDifficultyProfile } from "./skirmish-ai-native-difficulty-profile";
 import { nativeDifficultySelectionFailures } from "./skirmish-ai-native-difficulty-evaluation";
@@ -39,7 +39,7 @@ export function evaluateNativeDifficultyFairness(branch: string, context: Return
 
 /** Same-policy hidden changes require exact input/intent equality after the change, until genuine information differs. */
 export function evaluateDifficultyFairnessPairs(
-  worlds: readonly RuntimeVariantResultV1[], branchOf: (world: RuntimeVariantResultV1) => string | undefined
+  worlds: readonly RuntimeVariantResult[], branchOf: (world: RuntimeVariantResult) => string | undefined
 ) {
   const failures: string[] = [];
   const setupSignatures: string[] = [];

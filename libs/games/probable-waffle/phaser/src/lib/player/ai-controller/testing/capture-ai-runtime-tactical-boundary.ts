@@ -15,12 +15,12 @@ import { AiObservationVisibilityPolicy } from "../observation/ai-observation-vis
 import { projectAiCombatProfile } from "../observation/ai-observation-combat-profile";
 import type { AiDecisionDispatchEvent } from "../ai-decision-dispatch-event";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
-import type { AiRuntimeTacticalBoundaryV1 } from "./ai-runtime-tactical-boundary-v1";
+import type { AiRuntimeTacticalBoundary } from "./ai-runtime-tactical-boundary";
 
 /** Passive, bounded, same-turn truth for fair contact and combat premises. No route query, mutation or extra observer. */
 export function captureAiRuntimeTacticalBoundary(
   scene: ProbableWaffleScene, decision: AiDecisionDispatchEvent
-): AiRuntimeTacticalBoundaryV1 {
+): AiRuntimeTacticalBoundary {
   const playerNumber = decision.identity.playerNumber;
   const index = getSceneService(scene, ActorIndexSystem);
   const navigation = getSceneService(scene, NavigationService);

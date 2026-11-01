@@ -3,12 +3,12 @@ import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-contex
 import { nativeCompletedPlacements } from "./skirmish-ai-native-construction-evidence";
 import { hasNativeSourceDelivery } from "./skirmish-ai-source-delivery";
 import { nativePaidMissionOutputs } from "./skirmish-ai-native-mission-evidence";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 
 /** Independently price the complete native closure; zero cash alone never establishes impossibility. */
 export function evaluateNativeScarceRecovery(branch: string, context: ReturnType<typeof nativeScenarioContext>): string[] {
-  const records = context.facts.filter((fact): fact is Extract<AiRuntimeProductionFactV1, { kind: "recovery_setup" }> =>
+  const records = context.facts.filter((fact): fact is Extract<AiRuntimeProductionFact, { kind: "recovery_setup" }> =>
     fact.kind === "recovery_setup" && fact.playerNumber === 2);
   const setup = records[0]?.recovery, input = context.frames[0]?.decision.input;
   const catalog = input?.capabilityCatalog, actors = context.capture?.setup?.actors;

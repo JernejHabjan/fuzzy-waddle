@@ -1,7 +1,7 @@
-import type { RuntimePresetWorldV1 } from "./skirmish-ai-runtime-preset-world";
-import type { RuntimePerturbationV1 } from "./skirmish-ai-runtime-perturbation";
+import type { RuntimePresetWorld } from "./skirmish-ai-runtime-preset-world";
+import type { RuntimePerturbation } from "./skirmish-ai-runtime-perturbation";
 
-export interface RuntimeVariantV1 {
+export interface RuntimeVariant {
   readonly id: string;
   readonly executionKind: "focused_preset" | "focused_natural" | "continuous";
   readonly role: "subject" | "control" | "standalone";
@@ -20,9 +20,9 @@ export interface RuntimeVariantV1 {
     readonly difficulty: "Easy" | "Normal" | "Hard" }[];
   /** Initial supported team relations; not an in-match diplomacy command. */
   readonly lobbyTeams?: readonly { readonly playerNumber: number; readonly team: number }[];
-  readonly presetWorld?: RuntimePresetWorldV1;
+  readonly presetWorld?: RuntimePresetWorld;
   /** H-32's real multiplayer first match has no preset; this setup belongs exclusively to its ordinary next match. */
-  readonly nextMatchPresetWorld?: RuntimePresetWorldV1;
+  readonly nextMatchPresetWorld?: RuntimePresetWorld;
   /** Explicit test-only native construction history; ordinary matches and unmarked recipes install none. */
   readonly captureConstruction?: true;
   /** Adds native damage facts to that same opt-in capture; omitted recipes retain their previous fact stream. */
@@ -36,5 +36,5 @@ export interface RuntimeVariantV1 {
   readonly productionCapacityBranch?: "build" | "already_sufficient";
   /** PRO-04 pairs isolate ready copies or normally paid queue commitments from the same ten-unit force. */
   readonly productionCompositionBranch?: "fill_deficit" | "satisfied_control" | "seeded_queue_control";
-  readonly perturbations?: readonly RuntimePerturbationV1[];
+  readonly perturbations?: readonly RuntimePerturbation[];
 }

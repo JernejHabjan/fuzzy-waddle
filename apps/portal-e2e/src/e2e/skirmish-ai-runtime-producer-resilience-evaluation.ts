@@ -1,10 +1,10 @@
-import type { RuntimeProductionContractV1 } from "./skirmish-ai-runtime-production-contract";
-import type { RuntimeProductionEvidenceV1 } from "./skirmish-ai-runtime-production-evidence";
+import type { RuntimeProductionContract } from "./skirmish-ai-runtime-production-contract";
+import type { RuntimeProductionEvidence } from "./skirmish-ai-runtime-production-evidence";
 
 /** Exposure needs a currently visible effective building weapon; hidden/global threat summaries are insufficient. */
 function exposed(
-  producer: RuntimeProductionEvidenceV1["snapshots"][number]["producers"][number],
-  snapshot: RuntimeProductionEvidenceV1["snapshots"][number]
+  producer: RuntimeProductionEvidence["snapshots"][number]["producers"][number],
+  snapshot: RuntimeProductionEvidence["snapshots"][number]
 ): boolean {
   return snapshot.visibleThreats.some(
     (threat) =>
@@ -17,8 +17,8 @@ function exposed(
 
 /** Critical exposed throughput requires a new safe identity before loss and useful applied output after loss. */
 export function evaluateRuntimeProducerResilience(
-  contract: RuntimeProductionContractV1,
-  evidence: RuntimeProductionEvidenceV1
+  contract: RuntimeProductionContract,
+  evidence: RuntimeProductionEvidence
 ): string[] {
   const { snapshots, events } = evidence;
   const initial = snapshots[0];

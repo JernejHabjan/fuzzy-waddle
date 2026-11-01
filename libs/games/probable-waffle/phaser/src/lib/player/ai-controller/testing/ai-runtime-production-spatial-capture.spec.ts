@@ -19,7 +19,7 @@ import { SimulationTickService } from "../../../world/services/simulation-tick.s
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { productionCaptureItem } from "./ai-runtime-production-capture-fixtures";
 import { AiRuntimeProductionSpatialCapture } from "./ai-runtime-production-spatial-capture";
-import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spatial-v1";
+import type { AiRuntimeProductionSpatial } from "./ai-runtime-production-spatial";
 import type { HeightNavigationGraph } from "../../../world/services/height-navigation-graph-builder";
 import { NavigationProvenance } from "../../../world/services/navigation-provenance";
 import type { NavigationNativeQuery } from "../../../world/services/navigation-native-query";
@@ -64,7 +64,7 @@ function fixture() {
   });
   jest.mocked(getGameObjectCurrentTile).mockReturnValue({ x: 4, y: 5 });
   jest.mocked(isSnapshotApplyInProgress).mockReturnValue(false);
-  const records: AiRuntimeProductionSpatialV1[] = [];
+  const records: AiRuntimeProductionSpatial[] = [];
   const capture = new AiRuntimeProductionSpatialCapture(
     scene,
     () => "unused",

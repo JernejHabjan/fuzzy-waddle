@@ -46,7 +46,7 @@ export async function runNativeRetentionMultiplayer(browser: Browser, options: {
           throw new Error("native_retention_relay_rejection_duplicate_or_ceiling");
         return witnesses.every((witness) => witness.admitted === target && witness.completed === target);
       }, { timeout: 30_000 }).toBe(true);
-      await match.host.waitForFunction(() => window.__fuzzyWaddleAiRuntimePartsV1?.(3)?.controller.isDecisionBoundarySettled());
+      await match.host.waitForFunction(() => window.__fuzzyWaddleAiRuntimeParts?.(3)?.controller.isDecisionBoundarySettled());
     }
     const hostWitness = await nativeRetentionWitnessAction(match.host), peerWitness = await nativeRetentionWitnessAction(match.peer);
     const beforeHost = await readNativeRetentionBoundary(match.host, original);

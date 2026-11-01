@@ -1,12 +1,12 @@
 import type { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservedActor } from "../contracts/ai-observation";
 import { producerMilitaryProducts } from "./ai-military-catalog";
 
 /** Preserve one definition-priced reinforcement before optional worker growth can consume its accumulating cash. */
 export function nextAiMilitarySpendingReserve(
-  producers: readonly AiObservedActorV1[],
-  catalog: AiCapabilityCatalogV1,
+  producers: readonly AiObservedActor[],
+  catalog: AiCapabilityCatalog,
   domain: "ground" | "air"
 ): Readonly<Partial<Record<ResourceType, number>>> {
   const names = new Set(

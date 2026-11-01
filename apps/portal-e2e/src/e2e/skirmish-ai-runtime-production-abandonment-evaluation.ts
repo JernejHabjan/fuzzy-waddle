@@ -1,11 +1,11 @@
-import type { RuntimeProductionEvidenceV1 } from "./skirmish-ai-runtime-production-evidence";
-import type { RuntimeProductionContractV1 } from "./skirmish-ai-runtime-production-contract";
+import type { RuntimeProductionEvidence } from "./skirmish-ai-runtime-production-evidence";
+import type { RuntimeProductionContract } from "./skirmish-ai-runtime-production-contract";
 
 /** Optional future abandonment releases only unspent claims and cannot erase admitted or paid work. */
 export function evaluateRuntimeProductionAbandonment(
-  contract: RuntimeProductionContractV1,
-  evidence: RuntimeProductionEvidenceV1,
-  committed: RuntimeProductionEvidenceV1["snapshots"][number]
+  contract: RuntimeProductionContract,
+  evidence: RuntimeProductionEvidence,
+  committed: RuntimeProductionEvidence["snapshots"][number]
 ): string[] {
   const { snapshots, events } = evidence;
   const transition = committed.transition;

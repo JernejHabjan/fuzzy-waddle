@@ -1,5 +1,5 @@
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { productionQueueMutationFixture } from "./skirmish-ai-runtime-production-queue-mutation-fixture";
 import { calculateRuntimeQueueLiabilities } from "./skirmish-ai-runtime-queue-liabilities";
 
@@ -21,7 +21,7 @@ export function productionPerTickCancellationFixture() {
     entries: advanced.boundaryState.unspentClaims.entries.map((entry) => ({ ...entry, state: "released" as const })) } };
   const afterCash = { food: 97, wood: 100, stone: 100, minerals: 100 };
   const selectedCancel = cancel.facts.filter((entry) => entry.tick === 8);
-  const effect = cancel.facts.filter((entry) => entry.tick === 10).map((entry): AiRuntimeProductionFactV1 => {
+  const effect = cancel.facts.filter((entry) => entry.tick === 10).map((entry): AiRuntimeProductionFact => {
     if (entry.kind === "queue_mutation") return { ...entry, mutation: { ...entry.mutation, item },
       boundaryState: entry.mutation.phase === "before" ? paid : removed };
     if (entry.kind === "queue_resource") {

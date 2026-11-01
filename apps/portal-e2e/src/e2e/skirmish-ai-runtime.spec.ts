@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
-import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeFixture } from "./skirmish-ai-runtime-fixture";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 import { evaluateScenario } from "./skirmish-ai-runtime-evaluation";
 import { evaluateRuntimeVariant } from "./skirmish-ai-runtime-variant-evaluation";
 import { parseRequest } from "./skirmish-ai-runtime-request-parser";
@@ -22,7 +22,7 @@ test("executes selected AI scenarios in real lobby-started Phaser matches", asyn
     ...new Set(
       request.scenarioIds
         .map((scenarioId) => request.fixtures.find((fixture) => fixture.scenarioIds.includes(scenarioId)))
-        .filter((fixture): fixture is RuntimeFixtureV1 => fixture !== undefined)
+        .filter((fixture): fixture is RuntimeFixture => fixture !== undefined)
     )
   ];
   const variantRuns = selectedFixtures.reduce(
@@ -59,13 +59,13 @@ test("executes selected AI scenarios in real lobby-started Phaser matches", asyn
   const maximumVariantTicks = Math.max(0, ...selectedVariantHorizons);
   // Budget each serial variant from its simulation horizon while preserving the runner teardown margin.
   test.setTimeout(skirmishRuntimeTestTimeoutMs(variantRuns, maximumVariantTicks));
-  const fixtureRuns = new Map<RuntimeFixtureV1, readonly RuntimeVariantResultV1[]>();
-  const fixtureErrors = new Map<RuntimeFixtureV1, string[]>();
+  const fixtureRuns = new Map<RuntimeFixture, readonly RuntimeVariantResult[]>();
+  const fixtureErrors = new Map<RuntimeFixture, string[]>();
   const scenarioResults: {
     scenarioId: string;
     passed: boolean;
     failures: string[];
-    variants: readonly RuntimeVariantResultV1[];
+    variants: readonly RuntimeVariantResult[];
   }[] = [];
 
   for (const scenarioId of request.scenarioIds) {
@@ -73,7 +73,7 @@ test("executes selected AI scenarios in real lobby-started Phaser matches", asyn
     if (!fixture) throw new Error(`runtime_fixture_missing:${scenarioId}`);
     let variants = fixtureRuns.get(fixture);
     if (!variants) {
-      const executed: RuntimeVariantResultV1[] = [];
+      const executed: RuntimeVariantResult[] = [];
       for (const variant of fixture.recipe.variants.filter(
         (candidate) =>
           (candidate.scenarioIds === undefined ||

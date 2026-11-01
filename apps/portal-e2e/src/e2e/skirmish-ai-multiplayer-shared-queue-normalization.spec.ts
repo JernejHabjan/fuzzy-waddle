@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test";
 import { multiplayerSharedQueueFixture } from "./skirmish-ai-multiplayer-shared-queue-fixture";
 import { normalizeMultiplayerSharedQueueWorld } from "./skirmish-ai-multiplayer-shared-queue-normalization";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 
 test.describe("shared queue synthetic contract tests (no runtime or legal-world proof)", () => {
   for (const branch of ["shared_contention", "cancel_research"] as const) {
@@ -29,7 +29,7 @@ test.describe("shared queue synthetic contract tests (no runtime or legal-world 
           sequence: fact.sequence, tick: fact.tick, playerNumber: fact.playerNumber, kind: "resources_applied",
           action: "resource.removed", amounts: { food: 50 }, before: { food: 75, wood: 0, stone: 0, minerals: 0 },
           after: { food: 25, wood: 0, stone: 0, minerals: 0 }, balanceMatches: true
-        } satisfies AiRuntimeProductionFactV1)
+        } satisfies AiRuntimeProductionFact)
       } }, true).failures).toContain(branch === "shared_contention"
         ? "shared_queue_contention_missing" : "research_cancellation_command_cycle_invalid");
     });

@@ -14,7 +14,7 @@ authoritative world
   -> reconciliation, trace and next observation
 ```
 
-`AiObservationV1` is the only strategic input. It contains owned facts, legitimately observed enemy knowledge and capability projections resolved from the runtime catalog. It must not expose live Phaser objects, hidden queues, current hidden positions or unrestricted navigation state.
+`AiObservation` is the only strategic input. It contains owned facts, legitimately observed enemy knowledge and capability projections resolved from the runtime catalog. It must not expose live Phaser objects, hidden queues, current hidden positions or unrestricted navigation state.
 
 In the Phaser adapter, `ai-observation-pipeline.ts` owns the visibility gate, generation commit, saved cursor and lifecycle.
 Neighboring `observation/` modules project actors/combat, the capability catalog, permitted topology/map cells,
@@ -27,7 +27,7 @@ cannot dispatch using the retained older observation. Awaiting even a resolved p
 remaining fixed ticks advance before selection, separating the consumed input from its native safety/authority facts.
 Bounded access products remain pending when unavailable. The observation adapter performs no legacy enemy-route or targeting waits.
 
-`AiBrainStateV1` owns persistent goals, knowledge, demand, reservations, bases, squads, transports, fortifications, recovery, scheduling and deterministic identity state. Every persisted deadline uses simulation ticks. Canonical serialization sorts set-like data while preserving intentionally ordered data such as RNG state.
+`AiBrainState` owns persistent goals, knowledge, demand, reservations, bases, squads, transports, fortifications, recovery, scheduling and deterministic identity state. Every persisted deadline uses simulation ticks. Canonical serialization sorts set-like data while preserving intentionally ordered data such as RNG state.
 
 Domain managers propose changes; they do not mutate the world. The brain merges each manager's owned state projection, resolves claims and budgets, and emits a deterministic intent order. A manager may replace only the state slice or keyed rows it owns.
 

@@ -4,14 +4,14 @@ import {
   ProbableWaffleAiDifficulty,
   ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 import { AiMacroManager } from "./ai-macro-manager";
 import { WORKER_RECOVERY_FLOOR } from "./ai-food-economy-proposal";
 
-const catalog: AiCapabilityCatalogV1 = {
+const catalog: AiCapabilityCatalog = {
   schemaVersion: 1,
   generation: 1,
   unsupported: [],
@@ -74,8 +74,8 @@ const catalog: AiCapabilityCatalogV1 = {
 
 describe("AI macro domain pressure", () => {
   it("turns an observed air-access objective into an affordable air force instead of more blocked land troops", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const initial = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const initial = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Skaduwee,
       profile,

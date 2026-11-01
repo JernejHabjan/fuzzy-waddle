@@ -109,7 +109,7 @@ test("large variant sets are externalized into bounded files and reconstructed b
       }
     ];
     const encoded = encodeRuntimeArtifact(report, path);
-    assert.equal(encoded.artifactEncoding, "external-runtime-variants-v1");
+    assert.equal(encoded.artifactEncoding, "external-runtime-variants");
     assert.equal(encoded.artifactVariantFiles.length, 6);
     writeFileSync(path, JSON.stringify(encoded));
     assert.deepEqual(readRuntimeResult(path, identity), report);
@@ -140,7 +140,7 @@ test("streams an oversized single native variant to external storage", () => {
     report.scenarios[0].variants[0].largeEvidence = largeEvidence;
 
     const encoded = encodeRuntimeArtifact(report, path);
-    assert.equal(encoded.artifactEncoding, "external-runtime-variants-v1");
+    assert.equal(encoded.artifactEncoding, "external-runtime-variants");
     assert.equal(encoded.artifactVariantFiles.length, 1);
     assert.equal(encoded.artifactVariantSummaries[0].checkpoints[0].gameResult, "defeat");
     writeFileSync(path, JSON.stringify(encoded));

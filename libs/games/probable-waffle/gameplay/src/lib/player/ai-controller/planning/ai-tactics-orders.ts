@@ -1,16 +1,16 @@
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
 import type { AiPlanId } from "../contracts/ai-core-types";
-import type { AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiDomainV1, AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import type { AiSquadState } from "../contracts/ai-brain-state";
+import type { AiIntent } from "../contracts/ai-intent";
+import type { AiDomain, AiObservation, AiObservedActor } from "../contracts/ai-observation";
 import { movementDomains } from "./ai-tactics-geometry";
 
 export function splitDomainSquads(
-  squads: readonly AiSquadStateV1[],
-  actorById: ReadonlyMap<ActorId, AiObservedActorV1>
-): AiSquadStateV1[] {
+  squads: readonly AiSquadState[],
+  actorById: ReadonlyMap<ActorId, AiObservedActor>
+): AiSquadState[] {
   const split = squads.flatMap((squad) => {
-    const groups = new Map<AiDomainV1, ActorId[]>();
+    const groups = new Map<AiDomain, ActorId[]>();
     for (const actorId of squad.actorIds) {
       const actor = actorById.get(actorId);
       const domain = actor
@@ -24,13 +24,13 @@ export function splitDomainSquads(
     if (ordered.length <= 1) return [squad];
     return ordered.map(([domain, actorIds], index) => ({
       ...squad,
-      squadId: index === 0 ? squad.squadId : (`${squad.squadId}:domain:${domain}` as AiSquadStateV1["squadId"]),
+      squadId: index === 0 ? squad.squadId : (`${squad.squadId}:domain:${domain}` as AiSquadState["squadId"]),
       domain,
       actorIds
     }));
   });
   // A reinforced parent can generate a child ID that already owns surviving members.
-  const merged = new Map<AiSquadStateV1["squadId"], AiSquadStateV1>();
+  const merged = new Map<AiSquadState["squadId"], AiSquadState>();
   for (const squad of split) {
     const existing = merged.get(squad.squadId);
     merged.set(
@@ -42,12 +42,12 @@ export function splitDomainSquads(
 }
 
 export function intentBase(
-  observation: AiObservationV1,
-  squad: AiSquadStateV1,
+  observation: AiObservation,
+  squad: AiSquadState,
   suffix: string,
   utility: number
 ): Pick<
-  AiIntentV1,
+  AiIntent,
   | "intentId"
   | "effectId"
   | "planId"
@@ -62,8 +62,8 @@ export function intentBase(
 > {
   const planId = `plan:${squad.squadId}` as AiPlanId;
   return {
-    intentId: `intent:stage13:${observation.generation}:${squad.squadId}:${suffix}` as AiIntentV1["intentId"],
-    effectId: `effect:stage13:${squad.squadId}:${suffix}:${observation.tick}` as AiIntentV1["effectId"],
+    intentId: `intent:stage13:${observation.generation}:${squad.squadId}:${suffix}` as AiIntent["intentId"],
+    effectId: `effect:stage13:${squad.squadId}:${suffix}:${observation.tick}` as AiIntent["effectId"],
     planId,
     demandId: null,
     lane: "army_threat",
@@ -72,7 +72,7 @@ export function intentBase(
     utility,
     preconditions: [{ kind: "plan_active", planId }],
     claims: squad.actorIds.map((actorId) => ({
-      claimId: `claim:stage13:actor:${actorId}` as AiIntentV1["claims"][number]["claimId"],
+      claimId: `claim:stage13:actor:${actorId}` as AiIntent["claims"][number]["claimId"],
       kind: "actor" as const,
       actorId
     })),
@@ -80,8 +80,8 @@ export function intentBase(
   };
 }
 
-export function boundedTacticalIntents(intents: readonly AiIntentV1[], actorOrderLimit: number): readonly AiIntentV1[] {
-  const accepted: AiIntentV1[] = [];
+export function boundedTacticalIntents(intents: readonly AiIntent[], actorOrderLimit: number): readonly AiIntent[] {
+  const accepted: AiIntent[] = [];
   let actorOrders = 0;
   for (const intent of [...intents].sort(
     (left, right) =>

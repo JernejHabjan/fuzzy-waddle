@@ -1,7 +1,7 @@
 import { validateRuntimeProductionRequest } from "./skirmish-ai-runtime-production-request";
 import type { GameCommand, GameCommandOutcome } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { sameRuntimeProductionCommand } from "./skirmish-ai-runtime-production-command-equality";
 
 /** Selects the closed queue command family for this diagnostic; payload and native execution are validated separately. */
@@ -11,11 +11,11 @@ export function isRuntimeQueueCommand(command: { readonly type: string }): boole
 
 /** Validates the accepted proposal, actual bus stamp and all observed lifecycle callbacks without guessing a plan. */
 export function validateRuntimeProductionCommandLineage(
-  request: Extract<AiRuntimeProductionFactV1, { kind: "intent_dispatch" }>,
-  receipt: Extract<AiRuntimeProductionFactV1, { kind: "intent_dispatch" }>,
+  request: Extract<AiRuntimeProductionFact, { kind: "intent_dispatch" }>,
+  receipt: Extract<AiRuntimeProductionFact, { kind: "intent_dispatch" }>,
   command: GameCommand,
-  deliveries: readonly Extract<AiRuntimeProductionFactV1, { kind: "command_delivered" }>[],
-  outcomes: readonly Extract<AiRuntimeProductionFactV1, { kind: "outcome" }>[],
+  deliveries: readonly Extract<AiRuntimeProductionFact, { kind: "command_delivered" }>[],
+  outcomes: readonly Extract<AiRuntimeProductionFact, { kind: "outcome" }>[],
   authority?: {
     readonly validateRequest: typeof validateRuntimeProductionRequest;
     readonly sameCommand: typeof sameRuntimeProductionCommand;

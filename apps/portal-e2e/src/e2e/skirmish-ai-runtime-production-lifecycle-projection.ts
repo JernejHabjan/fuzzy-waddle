@@ -2,28 +2,28 @@ import { projectRuntimeControlledOutputs } from "./skirmish-ai-runtime-controlle
 import { projectRuntimeControlledRefunds } from "./skirmish-ai-runtime-production-controlled-refund";
 import { projectRuntimeControlledCommands } from "./skirmish-ai-runtime-production-controlled-commands";
 // prettier-ignore
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 // prettier-ignore
-import type { AiRuntimePresetApplicationV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application-v1";
-import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
+import type { AiRuntimePresetApplication } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application";
+import type { RuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality";
 import type { RuntimeProductionLifecycleV2 } from "./skirmish-ai-runtime-production-lifecycle-v2";
 import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 /** Retains checked native joins and marks every unsupported cash/claim/site origin unavailable. */
 export function projectRuntimeProductionLifecycleV2(
-  capture: AiRuntimeProductionCaptureV1,
-  causal: RuntimeProductionCausalityV1,
-  preset?: AiRuntimePresetApplicationV1
+  capture: AiRuntimeProductionSnapshot,
+  causal: RuntimeProductionCausality,
+  preset?: AiRuntimePresetApplication
 ): RuntimeProductionLifecycleV2 {
   const controlled = projectRuntimeControlledCommands(capture);
   const gaps = new Set<string>();
   const failures: string[] = [...controlled.failures];
   const setupIds = new Set(capture.setup?.actors.map((actor) => actor.actorId));
   const firstSelected = capture.facts.find((fact) => fact.kind === "decision_selected")?.sequence ?? Infinity;
-  const isSetup = (entry: RuntimeProductionCausalityV1["constructionLineage"][number]) => {
+  const isSetup = (entry: RuntimeProductionCausality["constructionLineage"][number]) => {
     const record = entry.boundary.construction;
     if (record.site.actorId !== null && setupIds.has(record.site.actorId)) return true;
     // Native finished-actor initialization precedes deterministic ID registration. It is never runtime work or payment.

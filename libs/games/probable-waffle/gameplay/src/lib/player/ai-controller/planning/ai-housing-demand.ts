@@ -1,14 +1,14 @@
 import type { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiIntent } from "../contracts/ai-intent";
+import type { AiObservation } from "../contracts/ai-observation";
 
 export function calculateAiHousingDemand(
-  observation: AiObservationV1,
-  catalog: AiCapabilityCatalogV1,
+  observation: AiObservation,
+  catalog: AiCapabilityCatalog,
   preferredObjectName: ObjectNames,
   buffer: number,
-  acceptedEffectIds: readonly AiIntentV1["effectId"][]
+  acceptedEffectIds: readonly AiIntent["effectId"][]
 ) {
   const owned = observation.actors.filter((actor) => actor.relation === "self" && actor.visibility === "owned");
   const preferredEntry = catalog.entries.find(
@@ -19,7 +19,7 @@ export function calculateAiHousingDemand(
       .filter((actor) => actor.constructionProgress?.status !== "known" || actor.constructionProgress.value >= 100)
       .map((actor) => actor.objectName)
   );
-  const prerequisitesReady = (entry: AiCapabilityCatalogV1["entries"][number]) =>
+  const prerequisitesReady = (entry: AiCapabilityCatalog["entries"][number]) =>
     (entry.constructionProfile?.requiredObjectNames ?? []).every((name) => readyNames.has(name));
   // A lost core can lock ordinary houses. Fund a legal provider rather than repeatedly ordering a forbidden house.
   const housingEntry = !preferredEntry

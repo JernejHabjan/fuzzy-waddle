@@ -16,7 +16,7 @@ import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getGameObjectCurrentTile } from "../../../data/game-object-helper";
 import { AiRuntimeRouteOrderCapture } from "./ai-runtime-route-order-capture";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
-import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spatial-v1";
+import type { AiRuntimeProductionSpatial } from "./ai-runtime-production-spatial";
 import { productionCaptureItem } from "./ai-runtime-production-capture-fixtures";
 
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
@@ -44,7 +44,7 @@ function fixture() {
     finished: true,
     indexed: true
   }));
-  const records: AiRuntimeProductionSpatialV1[] = [],
+  const records: AiRuntimeProductionSpatial[] = [],
     item = productionCaptureItem();
   const capture = new AiRuntimeRouteOrderCapture(
     scene,

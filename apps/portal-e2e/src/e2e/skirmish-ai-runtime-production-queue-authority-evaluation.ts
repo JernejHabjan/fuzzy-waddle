@@ -1,5 +1,5 @@
 import type { RuntimeProductionEvidenceV2 } from "./skirmish-ai-runtime-production-evidence-v2";
-import type { RuntimeProductionContractV1 } from "./skirmish-ai-runtime-production-contract";
+import type { RuntimeProductionContract } from "./skirmish-ai-runtime-production-contract";
 import { runtimeProductionUsefulOutputs } from "./skirmish-ai-runtime-production-useful-output";
 import { evaluateRuntimeProductionPayments } from "./skirmish-ai-runtime-production-refund-evaluation";
 import { researchDefinitions } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/research/research-definitions";
@@ -8,7 +8,7 @@ import { productionActorRetained, productionWorldAt } from "./skirmish-ai-runtim
 
 /** Joins operation-time producer definitions to individual items; changing global product prices cannot overwrite history. */
 export function evaluateRuntimeProductionQueueAuthority(
-  contract: RuntimeProductionContractV1,
+  contract: RuntimeProductionContract,
   evidence: RuntimeProductionEvidenceV2
 ) {
   const failures: string[] = [];

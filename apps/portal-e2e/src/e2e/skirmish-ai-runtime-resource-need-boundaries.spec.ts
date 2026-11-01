@@ -1,6 +1,6 @@
 import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import { expect, test } from "@playwright/test";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { resourceAdmissionFixture } from "./skirmish-ai-runtime-resource-admission-fixture";
 import { projectRuntimeResourceNeedAccounting } from "./skirmish-ai-runtime-resource-need-accounting-projection";
 test("exact incoming read survives its start and own gather admission; other income still caps delivery", () => {
@@ -25,7 +25,7 @@ for (const boundary of [
 ] as const) {
   test(`${boundary} cannot borrow a preserved read or own admission exemption`, () => {
     const f = resourceAdmissionFixture();
-    const facts = f.capture.facts.flatMap((fact): AiRuntimeProductionFactV1[] => {
+    const facts = f.capture.facts.flatMap((fact): AiRuntimeProductionFact[] => {
       if (boundary === "legacy" && fact.kind === "resource_need_fence") return [{ ...fact, incomingRead: undefined }];
       if (boundary === "purchase" && fact.kind === "decision_selected" && fact.boundaryState?.unspentClaims) {
         return [

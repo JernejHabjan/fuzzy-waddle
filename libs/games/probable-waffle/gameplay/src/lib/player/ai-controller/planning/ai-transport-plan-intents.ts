@@ -1,11 +1,11 @@
 import type { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
+import type { AiDemand } from "../contracts/ai-plan-contracts";
 import type { AiTransportPlanWithLifecycle } from "./ai-transport-plan-lifecycle";
 
 export function createAiTransportCapacityDemand(
   plan: AiTransportPlanWithLifecycle,
   preferredObjectNames: readonly ObjectNames[]
-): AiDemandV1 {
+): AiDemand {
   const lifecycle = plan.lifecycle;
   return {
     demandId: `demand:transport:${plan.planId}`,

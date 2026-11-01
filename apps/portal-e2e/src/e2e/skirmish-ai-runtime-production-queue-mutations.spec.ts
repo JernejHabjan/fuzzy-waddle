@@ -1,5 +1,5 @@
 import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { researchQueueMutationFixture } from "./skirmish-ai-runtime-research-queue-mutation-fixture";
 import { expect, test } from "@playwright/test";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
@@ -53,7 +53,7 @@ test.describe("native production physical mutation projection", () => {
     const receipt = source.facts.find((fact) => fact.kind === "intent_dispatch" && fact.event.kind === "finished");
     if (!receipt) throw new Error("synthetic_receipt_missing");
     const facts = [...source.facts.filter((fact) => fact !== receipt), receipt].map(
-      (fact, index): AiRuntimeProductionFactV1 => {
+      (fact, index): AiRuntimeProductionFact => {
         const base = { ...fact, tick: 4, sequence: index + 1 };
         if (fact.kind === "outcome")
           return {

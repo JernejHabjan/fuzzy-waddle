@@ -1,7 +1,7 @@
-import type { RuntimeAssertionV1 } from "./skirmish-ai-runtime-assertion";
-import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
+import type { RuntimeAssertion } from "./skirmish-ai-runtime-assertion";
+import type { RuntimeVariant } from "./skirmish-ai-runtime-variant";
 
-export interface RuntimeFixtureV1 {
+export interface RuntimeFixture {
   readonly schemaVersion: 1;
   readonly evidenceKind: "runtime";
   readonly scenarioIds: readonly string[];
@@ -14,7 +14,7 @@ export interface RuntimeFixtureV1 {
     readonly fixedStepFrames?: boolean;
     readonly requiresMultiplayer?: true;
     readonly checkpointTicks: readonly number[];
-    readonly variants: readonly RuntimeVariantV1[];
+    readonly variants: readonly RuntimeVariant[];
   };
-  readonly assertions: Readonly<Record<string, RuntimeAssertionV1>>;
+  readonly assertions: Readonly<Record<string, RuntimeAssertion>>;
 }

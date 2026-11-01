@@ -1,11 +1,11 @@
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiDemand } from "../contracts/ai-plan-contracts";
 import { createAiTestObservation } from "../testing/ai-test-fixtures";
 import { canAffordAiEconomyCost } from "./ai-economy-policy";
 import { projectAiResourceForecasts, selectAiForecastResource } from "./ai-resource-forecast";
 
-const catalog: AiCapabilityCatalogV1 = {
+const catalog: AiCapabilityCatalog = {
   schemaVersion: 1,
   generation: 1,
   unsupported: [],
@@ -36,7 +36,7 @@ const catalog: AiCapabilityCatalogV1 = {
   ]
 };
 
-function demand(): AiDemandV1 {
+function demand(): AiDemand {
   return {
     demandId: "demand:test:army",
     purpose: "pressure",
@@ -117,7 +117,7 @@ describe("AI resource forecast", () => {
       ]
     };
     const army = demand();
-    const supply: AiDemandV1 = {
+    const supply: AiDemand = {
       ...demand(),
       demandId: "demand:test:supply",
       purpose: "supply",

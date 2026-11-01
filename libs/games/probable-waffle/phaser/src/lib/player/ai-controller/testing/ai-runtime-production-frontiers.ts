@@ -1,8 +1,8 @@
-import type { AiRuntimeProductionFrontierV1 } from "./ai-runtime-production-frontier-v1";
+import type { AiRuntimeProductionFrontier } from "./ai-runtime-production-frontier";
 
 /** Capture-owned bounded interval history. Identical consecutive physical states share one interval; money stays separate. */
 export class AiRuntimeProductionFrontiers {
-  private readonly intervals: AiRuntimeProductionFrontierV1[] = [];
+  private readonly intervals: AiRuntimeProductionFrontier[] = [];
   private readonly gaps = new Set<string>();
   private readonly required = new Set<number>();
   private lastClosed = -1;
@@ -43,7 +43,7 @@ export class AiRuntimeProductionFrontiers {
   /** The supplied detached state belongs to t, although the native clock has already incremented to t+1. */
   close(
     capturedAtTick: number,
-    sample: () => Omit<AiRuntimeProductionFrontierV1, "capturedAtTick" | "closedFromTick" | "closedThroughTick">
+    sample: () => Omit<AiRuntimeProductionFrontier, "capturedAtTick" | "closedFromTick" | "closedThroughTick">
   ): void {
     if (!this.active) return;
     const tick = capturedAtTick - 1;

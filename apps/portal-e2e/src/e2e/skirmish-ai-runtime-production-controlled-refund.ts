@@ -1,16 +1,16 @@
 // prettier-ignore
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 // prettier-ignore
-import type { AiRuntimePresetApplicationV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application-v1";
+import type { AiRuntimePresetApplication } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { projectRuntimeControlledCommands } from "./skirmish-ai-runtime-production-controlled-commands";
 
 /** Controlled refund experiment joins physical setup payment, exact handle removal and real native money callbacks. */
 export function projectRuntimeControlledRefunds(
-  capture: AiRuntimeProductionCaptureV1,
-  setup?: AiRuntimePresetApplicationV1
+  capture: AiRuntimeProductionSnapshot,
+  setup?: AiRuntimePresetApplication
 ) {
   const controls = projectRuntimeControlledCommands(capture).commands;
   return controls

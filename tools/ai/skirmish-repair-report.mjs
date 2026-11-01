@@ -60,7 +60,7 @@ function resolveVariant(runtime, reference) {
   if (isRecord(reference)) return reference;
   if (
     !Number.isSafeInteger(reference) ||
-    runtime?.artifactEncoding !== "external-runtime-variants-v1" ||
+    runtime?.artifactEncoding !== "external-runtime-variants" ||
     !runtime.__artifactSourcePath ||
     !runtime.artifactVariantFiles?.[reference]
   )
@@ -217,7 +217,7 @@ export function buildRepairReport(entries, options = {}) {
     failures.push(
       failureRecord(
         shared,
-        "tools/ai/fixtures/skirmish-v1.json",
+        "tools/ai/fixtures/skirmish.json",
         { group: "selection", map: "unassigned" },
         { scenarioId: id },
         "unknown:missing_required_row"

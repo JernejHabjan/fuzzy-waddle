@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { createAiTestObservation } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { resourceServiceFixture } from "./skirmish-ai-runtime-resource-service-fixture";
 import { evaluateRuntimeEconomy } from "./skirmish-ai-runtime-economy-evaluation";
 import { evaluateRuntimeResourceRecovery } from "./skirmish-ai-runtime-resource-recovery-evaluation";
@@ -22,7 +22,7 @@ function fixture() {
     playerNumber: 1,
     read: { captureEpoch: 1, lossEpoch: 0, sequence: 1, playerNumber: 1, generation: 1 },
     resources: [f.selection.ledger]
-  } satisfies AiRuntimeProductionFactV1;
+  } satisfies AiRuntimeProductionFact;
   const selection = {
     ...selected,
     sequence: 2,
@@ -43,7 +43,7 @@ function fixture() {
         reasonCode: "economy:surplus_transfer:1:wood"
       }))
     }
-  } satisfies AiRuntimeProductionFactV1;
+  } satisfies AiRuntimeProductionFact;
   const capture = {
     ...f.capture,
     gaps: [],
@@ -109,7 +109,7 @@ test("economy reader accepts native receipt shapes and rejects promised cash, mi
   const overspent = {
     ...capture,
     facts: capture.facts.map(
-      (fact): AiRuntimeProductionFactV1 =>
+      (fact): AiRuntimeProductionFact =>
         fact.kind === "decision_selected"
           ? {
               ...fact,
@@ -194,7 +194,7 @@ test("aggregate budget accepts a contended purchase suppressed before arbitratio
   const capture = {
     ...f.variant.productionCapture,
     facts: f.variant.productionCapture.facts.map(
-      (fact): AiRuntimeProductionFactV1 =>
+      (fact): AiRuntimeProductionFact =>
         fact.kind === "decision_selected"
           ? {
               ...fact,

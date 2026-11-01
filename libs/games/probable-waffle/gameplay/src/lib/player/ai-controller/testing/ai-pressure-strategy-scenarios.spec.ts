@@ -1,11 +1,11 @@
 import { FactionType, ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { digestCanonicalAiValue } from "../brain/canonical-ai-serialization";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservation } from "../contracts/ai-observation";
 import { decideAiEconomyPolicy, hasCredibleAiEconomyThreat } from "../planning/ai-economy-policy";
 import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "./ai-test-fixtures";
 
-const catalog: AiCapabilityCatalogV1 = {
+const catalog: AiCapabilityCatalog = {
   schemaVersion: 1,
   generation: 1,
   unsupported: [],
@@ -29,7 +29,7 @@ const catalog: AiCapabilityCatalogV1 = {
 };
 const forecasts = [{ resourceType: ResourceType.Wood, amount: 600 }];
 
-function economyWorld(contact: "none" | "local" | "remembered" | "remote"): AiObservationV1 {
+function economyWorld(contact: "none" | "local" | "remembered" | "remote"): AiObservation {
   const base = createAiTestObservation();
   const workers = Array.from({ length: 8 }, (_, index) => createAiTestOwnedActor(`worker-${index}`));
   const field = {

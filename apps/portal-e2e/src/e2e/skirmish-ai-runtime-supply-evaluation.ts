@@ -1,18 +1,18 @@
-import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
-import type { RuntimeAssertionV1 } from "./skirmish-ai-runtime-assertion";
+import type { RuntimeCheckpoint } from "./skirmish-ai-runtime-checkpoint";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeAssertion } from "./skirmish-ai-runtime-assertion";
 
 type SupplyCheckpoint = Pick<
-  RuntimeCheckpointV1,
+  RuntimeCheckpoint,
   "tick" | "readyHousingCapacity" | "usedPopulation" | "queuedPopulation" | "readyHousingActorNames"
 > &
-  Partial<Pick<RuntimeCheckpointV1, "ownedConstruction" | "decisionFacts">>;
+  Partial<Pick<RuntimeCheckpoint, "ownedConstruction" | "decisionFacts">>;
 
 /** Paid queue identities must complete once through a real housing loss and its funded replacement. */
 export function evaluateRuntimeSupplyRecovery(
-  requirement: NonNullable<RuntimeAssertionV1["requiredSupplyRecovery"]>,
+  requirement: NonNullable<RuntimeAssertion["requiredSupplyRecovery"]>,
   variant: Pick<
-    RuntimeVariantResultV1,
+    RuntimeVariantResult,
     | "productionEvidenceV2"
     | "productionCapture"
     | "presetInitialQueueItems"

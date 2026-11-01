@@ -2,8 +2,8 @@ import { RUNTIME_ROUTE_HISTORY_LIMIT } from "./skirmish-ai-runtime-route-history
 import { ConstructionStateEnum } from "@fuzzy-waddle/probable-waffle-protocol";
 import { expect, test } from "@playwright/test";
 // prettier-ignore
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { productionSpatialFixture } from "./skirmish-ai-runtime-production-spatial-fixture";
 import { producerRouteFixture } from "./skirmish-ai-runtime-producer-route-fixture";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
@@ -34,7 +34,7 @@ for (const result of ["no_path", "path"] as const) {
   test(`native ${result} retains null versus empty success without claiming usefulness`, () => {
     const f = producerRouteFixture();
     const facts = f.capture.facts.map(
-      (fact): AiRuntimeProductionFactV1 =>
+      (fact): AiRuntimeProductionFact =>
         fact.kind === "spatial_authority" && fact.spatial.kind === "producer_path" && fact.spatial.phase === "resolved"
           ? { ...fact, spatial: { ...fact.spatial, result, path: result === "path" ? [] : null } }
           : fact
@@ -52,7 +52,7 @@ for (const result of ["no_path", "path"] as const) {
 test("service-target queries cannot borrow a production demand from producer identity", () => {
   const f = producerRouteFixture();
   const facts = f.capture.facts.map(
-    (fact): AiRuntimeProductionFactV1 =>
+    (fact): AiRuntimeProductionFact =>
       fact.kind === "spatial_authority" && fact.spatial.kind === "producer_path"
         ? {
             ...fact,
@@ -77,7 +77,7 @@ test("service-target queries cannot borrow a production demand from producer ide
 for (const fence of ["restore", "reuse", "scene", "index", "awaited", "topology"] as const) {
   test(`${fence} cannot provide a current useful route binding`, () => {
     const f = producerRouteFixture();
-    let facts = f.capture.facts.map((fact): AiRuntimeProductionFactV1 => {
+    let facts = f.capture.facts.map((fact): AiRuntimeProductionFact => {
       if (
         fact.kind !== "spatial_authority" ||
         fact.spatial.kind !== "producer_path" ||
@@ -93,7 +93,7 @@ for (const fence of ["restore", "reuse", "scene", "index", "awaited", "topology"
       return { ...fact, tick: fence === "awaited" ? 11 : fact.tick, spatial };
     });
     if (fence === "reuse")
-      facts = facts.flatMap((fact): AiRuntimeProductionFactV1[] =>
+      facts = facts.flatMap((fact): AiRuntimeProductionFact[] =>
         fact.kind === "spatial_authority" && fact.spatial.kind === "producer_path" && fact.spatial.phase === "resolved"
           ? [
               {
@@ -161,7 +161,7 @@ for (const defect of [
 ]) {
   test(`contradictory ${defect} suppresses route and other normalized groups`, () => {
     const f = producerRouteFixture();
-    let facts = f.capture.facts.flatMap((fact): AiRuntimeProductionFactV1[] => {
+    let facts = f.capture.facts.flatMap((fact): AiRuntimeProductionFact[] => {
       if (fact.kind !== "spatial_authority") return [fact];
       if (fact.spatial.kind === "output") {
         const spatial = { ...fact.spatial };
@@ -246,7 +246,7 @@ test("interleaved builder and producer queries cannot regress the one shared nav
   const builder = productionSpatialFixture().requested;
   const earlier = f.fact({ ...builder, clockTick: 10, navigation: { graphObservationId: 2, updateRequestCount: 0 } });
   const facts = f.capture.facts
-    .flatMap((fact): AiRuntimeProductionFactV1[] =>
+    .flatMap((fact): AiRuntimeProductionFact[] =>
       fact.kind === "spatial_authority" && fact.spatial.kind === "producer_path" && fact.spatial.phase === "requested"
         ? [earlier, fact]
         : [fact]
@@ -274,9 +274,9 @@ test("manual construction setData fences a producer service query even outside g
       clockTick: 10,
       site: f.producer
     }
-  } satisfies AiRuntimeProductionFactV1;
+  } satisfies AiRuntimeProductionFact;
   const facts = f.capture.facts
-    .flatMap((fact): AiRuntimeProductionFactV1[] => {
+    .flatMap((fact): AiRuntimeProductionFact[] => {
       if (fact.kind !== "spatial_authority" || fact.spatial.kind !== "producer_path") return [fact];
       const changed = {
         ...fact,
@@ -289,7 +289,7 @@ test("manual construction setData fences a producer service query even outside g
           target: f.producer,
           targetInCaptureScene: true
         }
-      } satisfies AiRuntimeProductionFactV1;
+      } satisfies AiRuntimeProductionFact;
       return fact.spatial.phase === "resolved" ? [restore, changed] : [changed];
     })
     .map((fact, index) => ({ ...fact, sequence: index + 1 }));
@@ -303,7 +303,7 @@ for (const phase of ["rejected", "threw"] as const) {
   test(`native ${phase} query keeps its terminal and failure gap without successful path credit`, () => {
     const f = producerRouteFixture();
     const facts = f.capture.facts.map(
-      (fact): AiRuntimeProductionFactV1 =>
+      (fact): AiRuntimeProductionFact =>
         fact.kind === "spatial_authority" && fact.spatial.kind === "producer_path" && fact.spatial.phase === "resolved"
           ? { ...fact, spatial: { ...fact.spatial, phase, path: null, result: null } }
           : fact

@@ -1,7 +1,7 @@
 import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import type { GameCommand } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { productionOperationFixture } from "./skirmish-ai-runtime-production-operation-fixture";
 /** Invented distinct cancellation command and real-shaped refund interval; it proves no runtime cancellation policy. */
 export function productionRefundOperationFixture() {
@@ -48,7 +48,7 @@ export function productionRefundOperationFixture() {
     kind: "cancel",
     actorId: "producer",
     queueIndex: 0
-  } satisfies AiIntentV1;
+  } satisfies AiIntent;
   const identity = { ...selected.decision.identity, tick: 8, decisionSequence: 2 };
   const correlation = { intentId: "cancel", effectId: "cancel", commitmentKey: command.execution.commitmentKey };
   const base = { sequence: 0, tick: 8, playerNumber: 1 };
@@ -59,7 +59,7 @@ export function productionRefundOperationFixture() {
     reason: "accepted_for_dispatch",
     tick: 10
   } satisfies Extract<
-    AiRuntimeProductionFactV1,
+    AiRuntimeProductionFact,
     {
       kind: "outcome";
     }
@@ -85,7 +85,7 @@ export function productionRefundOperationFixture() {
       entries: purchase.boundaryState.unspentClaims.entries.map((entry) => ({ ...entry, state: "released" as const }))
     }
   };
-  const facts: AiRuntimeProductionFactV1[] = [
+  const facts: AiRuntimeProductionFact[] = [
     ...capture.facts,
     {
       ...base,

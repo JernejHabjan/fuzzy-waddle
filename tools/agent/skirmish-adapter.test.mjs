@@ -10,7 +10,7 @@ async function fixture(t) {
   t.after(() => rm(root, { recursive: true, force: true }));
   await mkdir(resolve(root, "tools/ai/fixtures"), { recursive: true });
   await writeFile(
-    resolve(root, "tools/ai/fixtures/skirmish-v1.json"),
+    resolve(root, "tools/ai/fixtures/skirmish.json"),
     JSON.stringify({
       rows: [
         {

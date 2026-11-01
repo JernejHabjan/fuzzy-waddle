@@ -1,13 +1,13 @@
 import { isDeepStrictEqual } from "node:util";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionCaptureV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { RuntimeResourceNeedV1 } from "./skirmish-ai-runtime-resource-need";
+import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { RuntimeResourceNeed } from "./skirmish-ai-runtime-resource-need";
 
 /** Validate every supplied tail before exposing a bounded group. Newer forecast snapshots never supply selection authority. */
-export function normalizeRuntimeResourceNeeds(capture: AiRuntimeProductionCaptureV1) {
+export function normalizeRuntimeResourceNeeds(capture: AiRuntimeProductionSnapshot) {
   const failures: string[] = [],
     gaps = new Set<string>(),
-    needs: RuntimeResourceNeedV1[] = [];
+    needs: RuntimeResourceNeed[] = [];
   let count = 0;
   for (const fact of capture.facts) {
     if (fact.kind !== "decision_selected") continue;

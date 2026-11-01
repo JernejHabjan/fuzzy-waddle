@@ -30,13 +30,13 @@ export async function advanceRuntimeFrames(
         framesWithoutTick,
         frameLimit
       }) => {
-        const parts = window.__fuzzyWaddleAiRuntimePartsV1?.(playerNumber);
+        const parts = window.__fuzzyWaddleAiRuntimeParts?.(playerNumber);
         const realm = window as unknown as {
-          __fuzzyWaddleAiRuntimeBrowserTestV1?: { game: FrameGame };
-          __fuzzyWaddleAiMultiplayerBrowserTestV1?: { game: FrameGame };
+          __fuzzyWaddleAiRuntimeBrowserTest?: { game: FrameGame };
+          __fuzzyWaddleAiMultiplayerBrowserTest?: { game: FrameGame };
         };
         type FrameGame = { loop: { sleep(): void; now: number }; headlessStep(time: number, delta: number): void };
-        const host = realm.__fuzzyWaddleAiRuntimeBrowserTestV1 ?? realm.__fuzzyWaddleAiMultiplayerBrowserTestV1;
+        const host = realm.__fuzzyWaddleAiRuntimeBrowserTest ?? realm.__fuzzyWaddleAiMultiplayerBrowserTest;
         if (!parts || !host) throw new Error("runtime_frame_driver_unavailable");
         const game = host.game;
         game.loop.sleep();

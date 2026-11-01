@@ -7,7 +7,7 @@ import { getSceneService } from "../../world/services/scene-component-helpers";
 import { subscribeSceneResourceLoss } from "../../data/scene-resource-observation";
 import { AiRuntimeRecipientResourceCapture } from "../../player/ai-controller/testing/ai-runtime-recipient-resource-capture";
 import { AiRuntimeResourceCoverageCapture } from "../../player/ai-controller/testing/ai-runtime-resource-coverage-capture";
-import type { AiRuntimeProductionFactV1 } from "../../player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "../../player/ai-controller/testing/ai-runtime-production-fact";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 
 jest.mock("./owner-presentation", () => ({ OwnerPresentation: class {
@@ -24,7 +24,7 @@ function fixture() {
   const gameInstance = new ProbableWaffleGameInstance(); gameInstance.players = [player];
   const scene = { get players() { return gameInstance.players; }, baseGameData: { gameInstance } } as ProbableWaffleScene;
   const actor = { scene, emit: jest.fn() } as unknown as Phaser.GameObjects.GameObject;
-  const owner = new OwnerComponent(actor, { color: [] }), facts: AiRuntimeProductionFactV1[] = [];
+  const owner = new OwnerComponent(actor, { color: [] }), facts: AiRuntimeProductionFact[] = [];
   const coverage = new AiRuntimeResourceCoverageCapture(0, () => ({ tick: 0, captureSequence: facts.length }));
   const journal = new AiRuntimeRecipientResourceCapture(scene, coverage,
     (playerNumber) => ({ playerNumber, tick: 0, sequence: 0 }), () => facts.length,

@@ -1,7 +1,7 @@
-import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
 import type { ConstructCommand, GameCommandOutcome } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { productionSpatialFixture } from "./skirmish-ai-runtime-production-spatial-fixture";
 import { productionDecisionFixture } from "./skirmish-ai-runtime-production-decision-fixture";
 
@@ -12,7 +12,7 @@ export function constructionDecisionFixture() {
     demandId: "demand:force", lane: "supply_production", proposedTick: 18, urgencyClass: 2, utility: 10,
     preconditions: [], claims: [], reasonCode: "synthetic_construct", builderIds: ["builder", "other-builder"],
     objectName: f.placement.command.actorName, logicalPosition: f.placement.command.tileVec3, siteKey: f.placement.command.siteKey
-  } satisfies Extract<AiIntentV1, { kind: "construct" }>;
+  } satisfies Extract<AiIntent, { kind: "construct" }>;
   const command = { ...f.placement.command, actorIds: intent.builderIds, execution: { ...f.placement.command.execution,
     intentId: "construct", effectId: "construct", commitmentKey: "ai:effect:construct" } } satisfies ConstructCommand;
   const correlation = { intentId: "construct", effectId: "construct", commitmentKey: "ai:effect:construct" };
@@ -22,7 +22,7 @@ export function constructionDecisionFixture() {
   const outcome = { ...command.execution, schemaVersion: 1, tick: 20, playerNumber: 1, actorIds: command.actorIds,
     kind: "applied", reason: "applied", worldLinkIds: ["site"] } satisfies GameCommandOutcome;
   const placement = { ...f.placement, command };
-  const facts: AiRuntimeProductionFactV1[] = [
+  const facts: AiRuntimeProductionFact[] = [
     { ...selected, tick: 18, decision: { ...selected.decision, identity, acceptedIntents: [intent],
       decisions: [{ outcome: "accepted", reason: "accepted", intent }] } },
     { sequence: 0, tick: 18, playerNumber: 1, kind: "intent_dispatch", event: { kind: "requested", playerNumber: 1,

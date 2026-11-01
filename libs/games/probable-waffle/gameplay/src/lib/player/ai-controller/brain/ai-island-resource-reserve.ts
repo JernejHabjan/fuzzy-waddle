@@ -1,18 +1,18 @@
 import type { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiObservation } from "../contracts/ai-observation";
+import type { AiIntent } from "../contracts/ai-intent";
 
 /** Keep the landed builder's deposit affordable; this is a spending policy, never another payment or authoritative escrow. */
 export function aiIslandResourceReserve(
-  observation: AiObservationV1, state: AiBrainStateV1, intent: AiIntentV1, accepted: readonly AiIntentV1[], type: ResourceType
+  observation: AiObservation, state: AiBrainState, intent: AiIntent, accepted: readonly AiIntent[], type: ResourceType
 ): number {
   if (intent.spendingCategory === "survival") return 0;
   return state.transport.reduce((total, plan) => {
     const purpose = plan.lifecycle?.establishment;
     if (!purpose || ["cancelled", "failed"].includes(plan.phase)) return total;
     const planId = `plan:resource-service:${purpose.sourceActorId}`;
-    const purchase = (candidate: AiIntentV1) => candidate.kind === "construct" && candidate.planId === planId &&
+    const purchase = (candidate: AiIntent) => candidate.kind === "construct" && candidate.planId === planId &&
       candidate.objectName === purpose.serviceObjectName;
     const source = observation.actors.find((actor) => actor.actorId === purpose.sourceActorId);
     if (plan.phase === "completed" && !source || source?.resourceState.status === "known" &&

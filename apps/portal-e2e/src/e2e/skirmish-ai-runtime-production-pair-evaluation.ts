@@ -1,7 +1,7 @@
 import type { RuntimeProductionPairInput } from "./skirmish-ai-runtime-production-pair-input";
-import type { RuntimeAssertionV1 } from "./skirmish-ai-runtime-assertion";
-import type { RuntimeProductionContractV1 } from "./skirmish-ai-runtime-production-contract";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeAssertion } from "./skirmish-ai-runtime-assertion";
+import type { RuntimeProductionContract } from "./skirmish-ai-runtime-production-contract";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 import { compareRuntimeProductionSetups } from "./skirmish-ai-runtime-production-setup";
 
 const branches = {
@@ -11,7 +11,7 @@ const branches = {
   "PRO-07": ["shared_contention", "cancel_pending_refund"]
 } as const;
 
-function balances(variant: Pick<RuntimeVariantResultV1, "presetInitialResourceBalances">): string {
+function balances(variant: Pick<RuntimeVariantResult, "presetInitialResourceBalances">): string {
   return JSON.stringify(
     Object.entries(variant.presetInitialResourceBalances)
       .sort(([left], [right]) => left.localeCompare(right))
@@ -25,7 +25,7 @@ function balances(variant: Pick<RuntimeVariantResultV1, "presetInitialResourceBa
 /** Every required faction must supply distinct causal branches; one passing subject cannot stand in for controls. */
 export function evaluateRuntimeProductionPairs(
   scenarioId: string,
-  assertion: RuntimeAssertionV1,
+  assertion: RuntimeAssertion,
   variants: readonly RuntimeProductionPairInput[]
 ): string[] {
   if (scenarioId !== "PRO-03" && scenarioId !== "PRO-06" && scenarioId !== "PRO-07" && scenarioId !== "H-17") return [];
@@ -52,14 +52,14 @@ export function evaluateRuntimeProductionPairs(
       });
       const [leftContract, rightContract] = pairContracts;
       const [left, right] = pair;
-      const required: readonly RuntimeProductionContractV1["branch"][] =
+      const required: readonly RuntimeProductionContract["branch"][] =
         scenarioId === "PRO-03" || scenarioId === "H-17"
           ? branches["PRO-03"]
           : pairContracts.some((contract) => contract.branch === "critical_exposed")
             ? ["critical_exposed", "safe_served"]
             : ["low_value", "no_demand"];
       const signatures = pairContracts.map((contract) => contract.branch);
-      const compatible = (left: RuntimeProductionContractV1, right: RuntimeProductionContractV1) =>
+      const compatible = (left: RuntimeProductionContract, right: RuntimeProductionContract) =>
         left.scenarioId === right.scenarioId &&
         left.latestTick === right.latestTick &&
         left.stableForTicks === right.stableForTicks &&

@@ -1,12 +1,12 @@
 import { aiDeadline, type AiPlanId } from "../contracts/ai-core-types";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiManagerProposalV1 } from "./ai-manager-proposal";
+import type { AiIntent } from "../contracts/ai-intent";
+import type { AiManagerProposal } from "./ai-manager-proposal";
 import type { AiSkirmishProposalContext } from "./ai-skirmish-proposal-context";
 import { intentBase, withTimeline } from "./ai-skirmish-support";
 
 export const AI_CONCESSION_HOPELESS_TICKS = 1200;
 
-export function finalizeAiSkirmishProposal(context: AiSkirmishProposalContext): AiManagerProposalV1 {
+export function finalizeAiSkirmishProposal(context: AiSkirmishProposalContext): AiManagerProposal {
   const { observation, state } = context;
   const ownModeComplete = observation.modeGoals.some(
     (goal) => goal.owner === observation.playerNumber && goal.state === "completed"
@@ -42,7 +42,7 @@ export function finalizeAiSkirmishProposal(context: AiSkirmishProposalContext): 
   if (!ownModeComplete && !ownModeFailed && concessionDue && mode.concessionIntentId === null) {
     const concedePlanId = "plan:mode:concession" as AiPlanId;
     const base = intentBase(state, concedePlanId, observation.tick, "concede", "army_threat", 1000);
-    const concede: AiIntentV1 = { ...base, kind: "concede", reason: "sustained_no_recoverable_route" };
+    const concede: AiIntent = { ...base, kind: "concede", reason: "sustained_no_recoverable_route" };
     context.intents.push(concede);
     mode = { ...mode, concessionIntentId: concede.intentId };
     context.skirmish = withTimeline(

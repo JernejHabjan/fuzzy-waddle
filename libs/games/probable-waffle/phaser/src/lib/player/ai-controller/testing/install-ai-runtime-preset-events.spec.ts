@@ -9,18 +9,18 @@ import type GameProbableWaffleScene from "../../../world/scenes/GameProbableWaff
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
-import { readAiRuntimeBrowserTestConfigV1, recordAiRuntimePresetEventV1 } from "./ai-runtime-browser-test-config";
-import type { AiRuntimePresetWorldV1 } from "./ai-runtime-preset-world-v1";
+import { readAiRuntimeBrowserTestConfig, recordAiRuntimePresetEvent } from "./ai-runtime-browser-test-config";
+import type { AiRuntimePresetWorld } from "./ai-runtime-preset-world";
 import { installAiRuntimePresetEvents } from "./install-ai-runtime-preset-events";
-import { applyAiRuntimePresetWorldV1 } from "./apply-ai-runtime-preset-world-v1";
+import { applyAiRuntimePresetWorld } from "./apply-ai-runtime-preset-world";
 import type { SceneActorCreator } from "../../../world/services/scene-actor-creator";
 
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 jest.mock("./ai-runtime-browser-test-config", () => ({
-  recordAiRuntimePresetEventV1: jest.fn(),
-  readAiRuntimeBrowserTestConfigV1: jest.fn(),
-  recordAiRuntimePresetApplicationV1: jest.fn()
+  recordAiRuntimePresetEvent: jest.fn(),
+  readAiRuntimeBrowserTestConfig: jest.fn(),
+  recordAiRuntimePresetApplication: jest.fn()
 }));
 jest.mock("./install-ai-runtime-production-capture", () => ({ installAiRuntimeProductionCapture: jest.fn() }));
 
@@ -29,6 +29,7 @@ function setup(pinned = true, cancellation = false, finished = false) {
   const onShutdown = new Subject<void>();
   const ticks = { currentTick: 0, tick$ };
   const scene = {
+    baseGameData: { gameInstance: { gameInstanceMetadata: { data: { startOptions: { loadFromSave: false } } } } },
     onShutdown,
     players: [{ playerNumber: 2 }],
     tilemap: { widthInPixels: 5000, heightInPixels: 5000 }
@@ -64,7 +65,7 @@ function setup(pinned = true, cancellation = false, finished = false) {
             ? { getOwnedActors: () => owned }
             : undefined) as never
     );
-  const preset: AiRuntimePresetWorldV1 = {
+  const preset: AiRuntimePresetWorld = {
     fixtureId: "producer-loss-world",
     provenance: { sourceRevision: "a".repeat(40), fixtureDigest: "fnv1a32:12345678" },
     actors: [],
@@ -97,7 +98,7 @@ it("cancels only the pinned unfinished site through native teardown, without man
   expect(f.original.target.destroy).toHaveBeenCalledTimes(1);
   expect(f.original.health.takeDamage).not.toHaveBeenCalled();
   expect(f.replacement.target.destroy).not.toHaveBeenCalled();
-  expect(recordAiRuntimePresetEventV1).toHaveBeenCalledWith(expect.objectContaining({
+  expect(recordAiRuntimePresetEvent).toHaveBeenCalledWith(expect.objectContaining({
     affectedActors: 1, affectedActorId: "z-original"
   }));
 });
@@ -106,7 +107,7 @@ it("refuses cancellation of a finished site and requires an explicit original ro
   const f = setup(true, true, true);
   f.advance(100);
   expect(f.original.target.destroy).not.toHaveBeenCalled();
-  expect(recordAiRuntimePresetEventV1).toHaveBeenCalledWith(expect.objectContaining({ affectedActors: 0 }));
+  expect(recordAiRuntimePresetEvent).toHaveBeenCalledWith(expect.objectContaining({ affectedActors: 0 }));
   expect(() => setup(false, true)).toThrow("runtime_preset_cancellation_requires_original_role");
 });
 
@@ -118,7 +119,7 @@ it("damages the pinned original once, even when a replacement sorts first", () =
   f.advance(101);
   expect(f.original.health.takeDamage).toHaveBeenCalledTimes(1);
   expect(f.replacement.health.takeDamage).not.toHaveBeenCalled();
-  expect(recordAiRuntimePresetEventV1).toHaveBeenCalledWith({
+  expect(recordAiRuntimePresetEvent).toHaveBeenCalledWith({
     id: "producer-loss",
     tick: 100,
     subjectName: "AnkGuard",
@@ -139,10 +140,10 @@ it("the public preset caller wires pinned loss to the actor it actually created"
     ]
   };
   jest
-    .mocked(readAiRuntimeBrowserTestConfigV1)
+    .mocked(readAiRuntimeBrowserTestConfig)
     .mockReturnValue({ schemaVersion: 1, enabled: true, seed: 759101, startPaused: true, presetWorld: preset });
   const creator = { createFinishedActor: jest.fn(() => f.original.target) } as unknown as SceneActorCreator;
-  applyAiRuntimePresetWorldV1(f.scene, creator);
+  applyAiRuntimePresetWorld(f.scene, creator);
   f.advance(100);
   expect(f.original.health.takeDamage).toHaveBeenCalledTimes(1);
   expect(f.replacement.health.takeDamage).not.toHaveBeenCalled();
@@ -163,7 +164,7 @@ it("does not substitute another producer when the original has disappeared", () 
   f.advance(100);
   expect(f.original.health.takeDamage).not.toHaveBeenCalled();
   expect(f.replacement.health.takeDamage).not.toHaveBeenCalled();
-  expect(recordAiRuntimePresetEventV1).toHaveBeenCalledWith(
+  expect(recordAiRuntimePresetEvent).toHaveBeenCalledWith(
     expect.objectContaining({ affectedActors: 0, affectedActorId: null })
   );
 });
@@ -193,5 +194,5 @@ it("releases a pending event subscription on scene shutdown", () => {
   f.advance(100);
   expect(f.tick$.observed).toBe(false);
   expect(f.original.health.takeDamage).not.toHaveBeenCalled();
-  expect(recordAiRuntimePresetEventV1).not.toHaveBeenCalled();
+  expect(recordAiRuntimePresetEvent).not.toHaveBeenCalled();
 });

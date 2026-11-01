@@ -1,4 +1,4 @@
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
 import type { AiTransportPlanContext } from "./ai-transport-plan-context";
 import { createAiTransportCapacityDemand, createAiTransportIntentBase } from "./ai-transport-plan-intents";
 import type { AiTransportPlanWithLifecycle } from "./ai-transport-plan-lifecycle";
@@ -6,7 +6,7 @@ import { hasAiTransportNonTerminalOutcome, withAiTransportPhase } from "./ai-tra
 import { assignAiTransportSeats, chooseAiTransportTransfers, mobileAiTransportActors } from "./ai-transport-transfer";
 import { AI_TRANSPORT_BOARDING_TIMEOUT_TICKS } from "./ai-transport-constants";
 
-function findAiTransportEntries(catalog: AiCapabilityCatalogV1 | undefined, plan: AiTransportPlanWithLifecycle) {
+function findAiTransportEntries(catalog: AiCapabilityCatalog | undefined, plan: AiTransportPlanWithLifecycle) {
   const domain = plan.lifecycle.route.kind === "water_transport" ? "water" : "air";
   return (
     catalog?.entries

@@ -1,16 +1,16 @@
 import { isDeepStrictEqual } from "node:util";
-import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
-import type { RuntimeProductionEvidenceV1 } from "./skirmish-ai-runtime-production-evidence";
+import type { RuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality";
+import type { RuntimeProductionEvidence } from "./skirmish-ai-runtime-production-evidence";
 import { sameRuntimeQueueVector } from "./skirmish-ai-runtime-scoped-queue-payments";
 
 /** Checks every captured definition and stored queue price; a changing definition cannot become a global price table. */
 export function projectRuntimeProductionCatalog(
-  causal: Pick<RuntimeProductionCausalityV1, "worldSnapshots" | "queueMutations" | "constructionCatalog">
+  causal: Pick<RuntimeProductionCausality, "worldSnapshots" | "queueMutations" | "constructionCatalog">
 ) {
-  const entries = new Map<string, RuntimeProductionEvidenceV1["catalog"][number]>();
+  const entries = new Map<string, RuntimeProductionEvidence["catalog"][number]>();
   const failures: string[] = [],
     gaps: string[] = [];
-  const add = (entry: RuntimeProductionEvidenceV1["catalog"][number]) => {
+  const add = (entry: RuntimeProductionEvidence["catalog"][number]) => {
     const previous = entries.get(entry.productKey);
     if (previous && !isDeepStrictEqual(previous, entry)) failures.push("production_ai_catalog_definition_changed");
     else entries.set(entry.productKey, entry);

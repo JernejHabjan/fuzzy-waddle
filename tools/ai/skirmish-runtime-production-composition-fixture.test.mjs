@@ -13,7 +13,7 @@ const requirement = fixture.assertions["PRO-04"];
 
 test("ready and paid-queue production pairs validate independently for both factions", () => {
   assert.equal(validProductionCompositionPair(fixture.recipe, requirement, "PRO-04"), true);
-  const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish-v1.json", import.meta.url)));
+  const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish.json", import.meta.url)));
   validateManifest(manifest, fileURLToPath(new URL("./fixtures", import.meta.url)));
   assert.equal(manifest.rows.find((row) => row.id === "PRO-04").fixture, "focused-production-composition-runtime.json");
 });

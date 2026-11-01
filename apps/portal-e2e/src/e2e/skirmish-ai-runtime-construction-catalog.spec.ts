@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import type { AiRuntimeConstructionCatalogV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-construction-catalog-v1";
+import type { AiRuntimeConstructionCatalog } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-construction-catalog";
 import { constructionDecisionFixture } from "./skirmish-ai-runtime-construction-decision-fixture";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
 import { projectRuntimeConstructionCatalog } from "./skirmish-ai-runtime-construction-catalog-projection";
@@ -10,7 +10,7 @@ function fixture() {
     priceSource: "shared_command_base_definition",
     admissionCost: { food: 7 },
     siteDefinition: { researchedLevel: 2, cost: { food: 11 }, configuredPayment: "immediate", requiredWorkMs: 150 }
-  } satisfies AiRuntimeConstructionCatalogV1;
+  } satisfies AiRuntimeConstructionCatalog;
   const capture = constructionDecisionFixture();
   return {
     catalog,

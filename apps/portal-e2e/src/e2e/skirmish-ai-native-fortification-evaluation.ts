@@ -1,5 +1,5 @@
 import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
-import type { RuntimePresetWorldV1 } from "./skirmish-ai-runtime-preset-world";
+import type { RuntimePresetWorld } from "./skirmish-ai-runtime-preset-world";
 import { nativeCompletedPlacements } from "./skirmish-ai-native-construction-evidence";
 import { evaluateRuntimePlacementPrefixes } from "./skirmish-ai-placement-prefix-evaluation";
 import { nativeProtectedTransits } from "./skirmish-ai-native-placement-evaluation";
@@ -9,7 +9,7 @@ import { nativeFortificationBudgetFailures } from "./skirmish-ai-native-fortific
 
 /** Real paid prefixes, friendly passage, hostile access and occupied compatible firing stay separate obligations. */
 export function evaluateNativeFortification(
-  id: string, branch: string, context: ReturnType<typeof nativeScenarioContext>, preset: RuntimePresetWorldV1
+  id: string, branch: string, context: ReturnType<typeof nativeScenarioContext>, preset: RuntimePresetWorld
 ): string[] {
   const failures: string[] = [];
   const capture = context.capture;

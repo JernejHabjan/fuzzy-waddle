@@ -1,15 +1,15 @@
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
-import type { AiRouteRequestV1, AiRouteResultV1 } from "../contracts/ai-access-graph-v1";
+import type { AiRouteRequest, AiRouteResult } from "../contracts/ai-access-graph";
 import type { AiTransportPlanId } from "../contracts/ai-core-types";
-import type { AiTransportStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiTransportState } from "../contracts/ai-brain-state";
 
-export interface CreateAiTransportPlanV1Input {
+export interface CreateAiTransportPlanInput {
   readonly planId: AiTransportPlanId;
-  readonly routeRequest: AiRouteRequestV1;
-  readonly route: Extract<AiRouteResultV1, { readonly kind: "water_transport" | "air_transport" }>;
+  readonly routeRequest: AiRouteRequest;
+  readonly route: Extract<AiRouteResult, { readonly kind: "water_transport" | "air_transport" }>;
   readonly tick: number;
   readonly missionKind: "island_establishment" | "army_transfer" | "evacuation";
-  readonly establishment?: NonNullable<AiTransportStateV1["lifecycle"]>["establishment"];
+  readonly establishment?: NonNullable<AiTransportState["lifecycle"]>["establishment"];
   readonly estimatedTravelTicks: number;
   readonly passengers: readonly {
     readonly actorId: ActorId;

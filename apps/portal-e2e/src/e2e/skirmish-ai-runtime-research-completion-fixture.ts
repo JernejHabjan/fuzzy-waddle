@@ -1,5 +1,5 @@
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { researchQueueMutationFixture } from "./skirmish-ai-runtime-research-queue-mutation-fixture";
 
 /** Invented immediate-paid research progress/removal, with no cancellation or money at completion. */
@@ -23,7 +23,7 @@ export function researchCompletionRemovalFixture() {
   const progress = { attemptId: 1, actorId: "producer", laneId: "producer:lane:0", deltaMs: 50, remainingBeforeMs: 50,
     snapshotRestoreInProgress: false, gaps: [] };
   const mutation = { ...enqueue.mutation, mutationId: 2, operation: "complete_remove" as const, item: next };
-  const completionFacts: AiRuntimeProductionFactV1[] = [
+  const completionFacts: AiRuntimeProductionFact[] = [
     { ...base, kind: "queue_progress", progress: { ...progress, phase: "started", item }, boundaryState: before },
     { ...base, kind: "queue_progress", progress: { ...progress, phase: "advanced", item: next }, boundaryState: after },
     { ...base, kind: "queue_mutation", mutation: { ...mutation, phase: "before" }, boundaryState: after },

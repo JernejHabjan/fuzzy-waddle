@@ -1,12 +1,12 @@
 // prettier-ignore
-import type { AiRuntimePresetApplicationV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application-v1";
-import type { RuntimePresetWorldV1 } from "./skirmish-ai-runtime-preset-world";
+import type { AiRuntimePresetApplication } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application";
+import type { RuntimePresetWorld } from "./skirmish-ai-runtime-preset-world";
 
 /** Strict presets name concrete variants and retain every created identity and owned starting actor. */
 export function assertRuntimePresetRoster(
-  preset: RuntimePresetWorldV1,
-  application: AiRuntimePresetApplicationV1,
+  preset: RuntimePresetWorld,
+  application: AiRuntimePresetApplication,
   playerNumber: number,
   initial: { readonly ownedActorCount: number; readonly ownedActorNames: readonly string[] }
 ): void {

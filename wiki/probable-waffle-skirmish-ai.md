@@ -10,4 +10,4 @@ Developer documentation:
 - [AI debugging workbench](../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/debugging/README.md)
 - [Coverage and deferred follow-ups](../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/coverage-status.md)
 
-The executable scenario manifest is `tools/ai/fixtures/skirmish-v1.json`. Documentation does not substitute for green runtime evidence.
+The executable scenario manifest is `tools/ai/fixtures/skirmish.json`. Documentation does not substitute for green runtime evidence.

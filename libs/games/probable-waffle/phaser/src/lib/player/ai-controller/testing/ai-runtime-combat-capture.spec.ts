@@ -8,7 +8,7 @@ import { weaponDefinitions } from "../../../entity/components/combat/weapon-defi
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
 import { AiRuntimeCombatCapture } from "./ai-runtime-combat-capture";
-import type { AiRuntimeCombatOperationV1 } from "./ai-runtime-combat-operation-v1";
+import type { AiRuntimeCombatOperation } from "./ai-runtime-combat-operation";
 
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 jest.mock("../../../data/game-object-helper", () => ({ getGameObjectCurrentTile: () => ({ x: 10, y: 10 }) }));
@@ -34,8 +34,8 @@ function fixture() {
     actorId: actor.name, objectName: actor.name, canonicalObjectName: ObjectNames.TivaraMacemanMale,
     playerNumber: actor === source ? 2 : 1, active: true, alive: true, finished: true, indexed: true
   }));
-  const operations: AiRuntimeCombatOperationV1[] = [], lose = jest.fn();
-  const append = jest.fn((_owner: number, operation: AiRuntimeCombatOperationV1) => operations.push(operation));
+  const operations: AiRuntimeCombatOperation[] = [], lose = jest.fn();
+  const append = jest.fn((_owner: number, operation: AiRuntimeCombatOperation) => operations.push(operation));
   const capture = new AiRuntimeCombatCapture(scene, append, lose);
   return { source, target, attack, operations, lose, append, capture };
 }

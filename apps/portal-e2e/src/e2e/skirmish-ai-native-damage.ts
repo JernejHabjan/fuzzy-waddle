@@ -1,10 +1,10 @@
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 
 /** Match an actual post-damage callback, refusing score totals, foreign scenes, restores and absent native clocks/identities. */
 export function nativeDamageMatches(
-  fact: AiRuntimeProductionFactV1, targetId: string, initiatorOwner: number, initiatorId?: string
-): fact is Extract<AiRuntimeProductionFactV1, { kind: "native_damage" }> {
+  fact: AiRuntimeProductionFact, targetId: string, initiatorOwner: number, initiatorId?: string
+): fact is Extract<AiRuntimeProductionFact, { kind: "native_damage" }> {
   if (fact.kind !== "native_damage") return false;
   const damage = fact.damage;
   return damage.damageTick === fact.tick && damage.sceneActive && !damage.snapshotRestoreInProgress &&

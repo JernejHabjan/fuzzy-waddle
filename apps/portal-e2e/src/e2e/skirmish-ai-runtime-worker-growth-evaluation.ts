@@ -1,9 +1,9 @@
-import type { RuntimeAssertionV1 } from "./skirmish-ai-runtime-assertion";
-import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeAssertion } from "./skirmish-ai-runtime-assertion";
+import type { RuntimeCheckpoint } from "./skirmish-ai-runtime-checkpoint";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 
-type WorkerCheckpoint = Pick<RuntimeCheckpointV1, "tick" | "workerCount" | "deliveredIncome">;
-type FoodCheckpoint = Pick<RuntimeCheckpointV1, "deliveredIncomeByResource" | "ownedConstruction">;
+type WorkerCheckpoint = Pick<RuntimeCheckpoint, "tick" | "workerCount" | "deliveredIncome">;
+type FoodCheckpoint = Pick<RuntimeCheckpoint, "deliveredIncomeByResource" | "ownedConstruction">;
 
 /** The open-economy world has no wild food: require an owned ready Field and delivered food. */
 export function hasRenewableFoodIncome(checkpoints: readonly FoodCheckpoint[]): boolean {
@@ -13,13 +13,13 @@ export function hasRenewableFoodIncome(checkpoints: readonly FoodCheckpoint[]): 
       checkpoint.ownedConstruction.some((actor) => actor.objectName === "Field" && actor.progress >= 100)
   );
 }
-type WorkerVariant = Pick<RuntimeVariantResultV1, "variantId" | "initialWorkerCount" | "presetResourceStartCount"> & {
+type WorkerVariant = Pick<RuntimeVariantResult, "variantId" | "initialWorkerCount" | "presetResourceStartCount"> & {
   readonly checkpoints: readonly WorkerCheckpoint[];
 };
 
 /** Requires actual owned workers and income, not a desired-workforce debug label. */
 export function evaluateRuntimeWorkerGrowth(
-  requirement: NonNullable<RuntimeAssertionV1["requiredWorkerGrowth"]>,
+  requirement: NonNullable<RuntimeAssertion["requiredWorkerGrowth"]>,
   variant: WorkerVariant
 ): string[] {
   if (variant.variantId !== requirement.variantId) return [];

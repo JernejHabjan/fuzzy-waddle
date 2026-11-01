@@ -1,5 +1,5 @@
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiObservation } from "../contracts/ai-observation";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 import { distance, formationPositions, safeRetreatPosition } from "./ai-tactics-geometry";
 
@@ -20,7 +20,7 @@ describe("safeRetreatPosition", () => {
           { position: { x: 21, y: 7, z: 0 }, groundPassable: true, waterPassable: false, observedBlocked: false }
         ]
       }
-    } as unknown as AiObservationV1;
+    } as unknown as AiObservation;
     const state = {
       bases: [
         {
@@ -31,7 +31,7 @@ describe("safeRetreatPosition", () => {
           anchorPosition: { x: 33, y: 19, z: 0 }
         }
       ]
-    } as unknown as AiBrainStateV1;
+    } as unknown as AiBrainState;
 
     expect(safeRetreatPosition(observation, state, [], "base:home")).toEqual({ x: 32, y: 19, z: 0 });
     expect(safeRetreatPosition(observation, state, [])).toEqual({ x: 21, y: 7, z: 0 });
@@ -57,7 +57,7 @@ describe("safeRetreatPosition", () => {
           }))
         ).flat()
       }
-    } as unknown as AiObservationV1;
+    } as unknown as AiObservation;
     const state = {
       bases: [
         {
@@ -68,7 +68,7 @@ describe("safeRetreatPosition", () => {
           anchorPosition: { x: 33, y: 19, z: 0 }
         }
       ]
-    } as unknown as AiBrainStateV1;
+    } as unknown as AiBrainState;
     const members = Array.from({ length: 8 }, (_, index) => ({
       actorId: `guard-${index}`,
       capabilities: [{ domains: ["ground"] }],
@@ -105,7 +105,7 @@ describe("formationPositions", () => {
     const observation = {
       ...base,
       map: { ...(base.map ?? {}), constructionCells: cells }
-    } satisfies AiObservationV1;
+    } satisfies AiObservation;
 
     expect(
       formationPositions(

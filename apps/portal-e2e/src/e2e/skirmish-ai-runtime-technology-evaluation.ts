@@ -1,11 +1,11 @@
 import type { RuntimeTechnologyContract } from "./skirmish-ai-runtime-technology-contract";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 
 /** Independent research application/completion and counter delivery; a ledger target alone never passes. */
 export function evaluateRuntimeTechnology(
   scenarioId: string,
   contract: RuntimeTechnologyContract | undefined,
-  variant: Pick<RuntimeVariantResultV1, "productionEvidenceV2" | "checkpoints">
+  variant: Pick<RuntimeVariantResult, "productionEvidenceV2" | "checkpoints">
 ): string[] {
   if (!scenarioId.startsWith("TECH-")) return [];
   if (!contract) return ["technology_contract_missing"];

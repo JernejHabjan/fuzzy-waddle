@@ -8,7 +8,7 @@ import { validNativeScenarioFixture } from "./skirmish-runtime-native-scenario-f
 test("all native bindings retain their full branches and original acceptance obligations", () => {
   const ids = Object.keys(nativeScenarioBindings.cases);
   assert.equal(ids.length, 84);
-  const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish-v1.json", import.meta.url)));
+  const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish.json", import.meta.url)));
   for (const id of ids) {
     const row = manifest.rows.find((row) => row.id === id);
     assert.equal(row.fixture, `${id.toLowerCase()}-native-runtime.json`);
@@ -514,7 +514,7 @@ test("all supported native bindings are connected and no executable registration
   const drafts = JSON.parse(readFileSync(new URL("./fixtures/native-scenario-recipes.json", import.meta.url)));
   assert.deepEqual(drafts.scenarioIds, []);
   assert.deepEqual(drafts.cases, []);
-  const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish-v1.json", import.meta.url)));
+  const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish.json", import.meta.url)));
   assert.deepEqual(
     manifest.rows.filter((row) => row.drivers.includes("runtime") && !row.fixture && !row.runtimeSupport),
     []
@@ -1168,7 +1168,7 @@ test("recovery bindings preserve actual obstruction, healthy work and finite pen
 });
 
 test("H-21 native larger-unit clearance is explicitly deferred by the user", () => {
-  const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish-v1.json", import.meta.url)));
+  const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish.json", import.meta.url)));
   const row = manifest.rows.find((row) => row.id === "H-21");
   assert.equal(Object.hasOwn(nativeScenarioBindings.cases, "H-21"), false);
   assert.equal(row.runtimeRecipeDraft, undefined);

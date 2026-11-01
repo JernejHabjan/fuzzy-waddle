@@ -1,6 +1,6 @@
 import { OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservedActor, AiObservation } from "../contracts/ai-observation";
 
 const WORKER_FLOOR = 6;
 const WORKER_LIMIT = 18;
@@ -8,12 +8,12 @@ const FORECAST_HORIZON_TICKS = 600;
 const LOCAL_THREAT_DISTANCE = 10;
 const POSTURE_RELEASE_TICKS = 160;
 
-function availableStockpile(observation: AiObservationV1, resourceType: ResourceType): number {
+function availableStockpile(observation: AiObservation, resourceType: ResourceType): number {
   const resource = observation.resources.find((candidate) => candidate.resourceType === resourceType);
   return Math.max(0, (resource?.stockpile ?? 0) - (resource?.reservedUnspent ?? 0) - (resource?.obligationsDue ?? 0));
 }
 
-function projectedIncome(observation: AiObservationV1, resourceType: ResourceType): number {
+function projectedIncome(observation: AiObservation, resourceType: ResourceType): number {
   const income = observation.resources.find(
     (candidate) => candidate.resourceType === resourceType
   )?.deliveredIncomePerMinute;
@@ -22,7 +22,7 @@ function projectedIncome(observation: AiObservationV1, resourceType: ResourceTyp
 
 /** Requires spendable cash for both this purchase and an unmet higher-priority purchase; neither is paid twice. */
 export function canAffordAiEconomyCost(
-  observation: AiObservationV1,
+  observation: AiObservation,
   cost: Readonly<Partial<Record<ResourceType, number>>>,
   reserve: Readonly<Partial<Record<ResourceType, number>>> = {}
 ): boolean {
@@ -32,7 +32,7 @@ export function canAffordAiEconomyCost(
   );
 }
 
-function usefulSourceCapacity(observation: AiObservationV1): number {
+function usefulSourceCapacity(observation: AiObservation): number {
   return observation.actors
     .filter(
       (actor) =>
@@ -53,7 +53,7 @@ function usefulSourceCapacity(observation: AiObservationV1): number {
 }
 
 /** Shared current threat set for workforce budgets and defense of workers outside the main base. */
-export function observedAiEconomyThreats(observation: AiObservationV1): AiObservedActorV1[] {
+export function observedAiEconomyThreats(observation: AiObservation): AiObservedActor[] {
   const visibleIds = new Set(observation.threatSummary.visibleEnemyActorIds);
   if (visibleIds.size === 0) return [];
   const visibleEnemies = observation.actors.filter(
@@ -89,7 +89,7 @@ export function observedAiEconomyThreats(observation: AiObservationV1): AiObserv
       return distance <= LOCAL_THREAT_DISTANCE;
     });
   });
-  const protectedDistance = (enemy: AiObservedActorV1): number => {
+  const protectedDistance = (enemy: AiObservedActor): number => {
     if (enemy.logicalPosition.status !== "known") return Number.POSITIVE_INFINITY;
     const position = enemy.logicalPosition.value;
     return Math.min(
@@ -105,12 +105,12 @@ export function observedAiEconomyThreats(observation: AiObservationV1): AiObserv
   );
 }
 
-export function hasCredibleAiEconomyThreat(observation: AiObservationV1): boolean {
+export function hasCredibleAiEconomyThreat(observation: AiObservation): boolean {
   return observedAiEconomyThreats(observation).length > 0;
 }
 
 /** Defers optional infrastructure only for credible pressure near a known main building. */
-export function hasCredibleAiHomeThreat(observation: AiObservationV1): boolean {
+export function hasCredibleAiHomeThreat(observation: AiObservation): boolean {
   const mainBuildingPositions = observation.actors.flatMap((actor) => {
     if (
       actor.relation !== "self" ||
@@ -138,9 +138,9 @@ export function hasCredibleAiHomeThreat(observation: AiObservationV1): boolean {
 
 /** Only defenders near the exposed economy with a weapon for the observed movement domain can cover the threat. */
 function compatibleLocalDefenders(
-  self: readonly AiObservedActorV1[],
-  threats: readonly AiObservedActorV1[],
-  catalog: AiCapabilityCatalogV1
+  self: readonly AiObservedActor[],
+  threats: readonly AiObservedActor[],
+  catalog: AiCapabilityCatalog
 ): number {
   return self.filter((defender) => {
     const defenderPosition = defender.logicalPosition;
@@ -163,8 +163,8 @@ function compatibleLocalDefenders(
 }
 
 export function decideAiEconomyPolicy(
-  observation: AiObservationV1,
-  catalog: AiCapabilityCatalogV1,
+  observation: AiObservation,
+  catalog: AiCapabilityCatalog,
   forecasts: readonly { readonly resourceType: ResourceType; readonly amount: number }[],
   defensiveCommitment = false,
   previousPosture?: Readonly<{

@@ -1,11 +1,11 @@
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiIntent } from "../contracts/ai-intent";
+import type { AiObservation } from "../contracts/ai-observation";
+import type { AiDemand } from "../contracts/ai-plan-contracts";
 import { selectConstructionPosition } from "./ai-construction-site-selector";
-import { reachableAiAccessNodeIdsV1 } from "./ai-access-graph-v1";
+import { reachableAiAccessNodeIds } from "./ai-access-graph";
 import { canAffordAiEconomyCost } from "./ai-economy-policy";
 import { nextIds } from "./ai-macro-effect-identity";
 import { claimedActorIds, compareAiActorsByVisibleGeometry, isAvailableBuilder } from "./ai-macro-observation";
@@ -14,25 +14,25 @@ import { aiEconomySiteSafety } from "./ai-economy-site-safety";
 
 /** Commits only missing renewable Field capacity with a usable food drop-off. */
 export function proposeAiFieldCapacity(args: {
-  readonly observation: AiObservationV1;
-  readonly state: AiBrainStateV1;
-  readonly catalog: AiCapabilityCatalogV1;
-  readonly self: readonly AiObservationV1["actors"][number][];
-  readonly foodSourceEntry: AiCapabilityCatalogV1["entries"][number] | undefined;
+  readonly observation: AiObservation;
+  readonly state: AiBrainState;
+  readonly catalog: AiCapabilityCatalog;
+  readonly self: readonly AiObservation["actors"][number][];
+  readonly foodSourceEntry: AiCapabilityCatalog["entries"][number] | undefined;
   readonly desiredFoodSources: number;
-  readonly readyFoodSources: readonly AiObservationV1["actors"][number][];
-  readonly constructingFoodSources: readonly AiObservationV1["actors"][number][];
-  readonly acceptedFoodSourceEffectIds: readonly AiIntentV1["effectId"][];
+  readonly readyFoodSources: readonly AiObservation["actors"][number][];
+  readonly constructingFoodSources: readonly AiObservation["actors"][number][];
+  readonly acceptedFoodSourceEffectIds: readonly AiIntent["effectId"][];
   readonly pendingFoodLabor: boolean;
   readonly hasUnstaffedReadyFoodSource: boolean;
   readonly foodPrerequisiteObject: ObjectNames | undefined;
-  readonly readyFoodPrerequisites: readonly AiObservationV1["actors"][number][];
+  readonly readyFoodPrerequisites: readonly AiObservation["actors"][number][];
   readonly reservedActorIds: ReadonlySet<string>;
   readonly selectedConstructionTileKeys: Set<string>;
-  readonly priorIntents: readonly AiIntentV1[];
+  readonly priorIntents: readonly AiIntent[];
   readonly ordinal: number;
   readonly resourceReserve?: Readonly<Partial<Record<ResourceType, number>>>;
-}): { readonly demand: AiDemandV1 | null; readonly intent: AiIntentV1 | null } {
+}): { readonly demand: AiDemand | null; readonly intent: AiIntent | null } {
   const {
     observation,
     state,
@@ -53,8 +53,8 @@ export function proposeAiFieldCapacity(args: {
     ordinal
   } = args;
   if (desiredFoodSources <= 0 || !foodSourceEntry) return { demand: null, intent: null };
-  const demandId = "demand:economy:sustainable-food" as AiDemandV1["demandId"];
-  const demand: AiDemandV1 = {
+  const demandId = "demand:economy:sustainable-food" as AiDemand["demandId"];
+  const demand: AiDemand = {
     demandId,
     purpose: "renewable_food_capacity",
     capabilityOrRole: ObjectNames.Field,
@@ -110,10 +110,10 @@ export function proposeAiFieldCapacity(args: {
   const foodDropOffRoutes = foodDropOffs.map((dropOff) => ({
     ...dropOff,
     reachableNodeIds: enforceFoodDropOffRegion && observation.map?.accessGraph?.status === "ready"
-      ? reachableAiAccessNodeIdsV1(observation.map.accessGraph, [dropOff.accessNodeId], "ground", 1)
+      ? reachableAiAccessNodeIds(observation.map.accessGraph, [dropOff.accessNodeId], "ground", 1)
       : new Set([dropOff.accessNodeId])
   }));
-  const fieldHasLocalFoodService = (cell: NonNullable<NonNullable<AiObservationV1["map"]>['constructionCells']>[number]) => {
+  const fieldHasLocalFoodService = (cell: NonNullable<NonNullable<AiObservation["map"]>['constructionCells']>[number]) => {
     if (!enforceFoodDropOffRegion) return true;
     if (!cell.groundAccessNodeId) return false;
     return foodDropOffRoutes.some((dropOff) => {
@@ -122,7 +122,7 @@ export function proposeAiFieldCapacity(args: {
       return distance <= 6;
     });
   };
-  const acceptsFieldSite = (cell: NonNullable<NonNullable<AiObservationV1["map"]>["constructionCells"]>[number]) =>
+  const acceptsFieldSite = (cell: NonNullable<NonNullable<AiObservation["map"]>["constructionCells"]>[number]) =>
     safety.positionSafe(cell.position) && fieldHasLocalFoodService(cell);
   const existingFieldPositions = readyFoodSources.flatMap((field) =>
     field.logicalPosition.status === "known" ? [field.logicalPosition.value] : []
@@ -151,7 +151,7 @@ export function proposeAiFieldCapacity(args: {
   );
   if (!position) return { demand, intent: null };
   const next = nextIds(state, `food-capacity:${ObjectNames.Field}`, ordinal);
-  const intent: AiIntentV1 = {
+  const intent: AiIntent = {
     ...next,
     kind: "construct",
     spendingCategory: readyFoodSources.length === 0 ? "survival" : "economy",
@@ -164,7 +164,7 @@ export function proposeAiFieldCapacity(args: {
     preconditions: [{ kind: "actor_exists", actorId: builder.actorId }],
     claims: [
       {
-        claimId: `${next.claimId}:builder` as AiIntentV1["claims"][number]["claimId"],
+        claimId: `${next.claimId}:builder` as AiIntent["claims"][number]["claimId"],
         kind: "actor",
         actorId: builder.actorId
       },
@@ -175,7 +175,7 @@ export function proposeAiFieldCapacity(args: {
       },
       ...createAiResourceCostClaims(next.claimId, foodSourceEntry.constructionProfile?.resourceCost ?? {}),
       {
-        claimId: `${next.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
+        claimId: `${next.claimId}:effect` as AiIntent["claims"][number]["claimId"],
         kind: "effect",
         effectId: next.effectId
       }

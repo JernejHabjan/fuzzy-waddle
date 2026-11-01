@@ -5,27 +5,27 @@ import {
   ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
 
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiIntent } from "../contracts/ai-intent";
 
 import { AiMacroManager } from "../planning/ai-macro-manager";
-import type { AiManagerProposalV1 } from "../planning/ai-manager-proposal";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import type { AiManagerProposal } from "../planning/ai-manager-proposal";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 
 import { createAiTestObservation, createAiTestOwnedActor } from "./ai-test-fixtures";
 
 /** A pure scenario pairs semantic subject/control assertions with repeatable proposal execution. */
-export interface AiProductionPureScenarioV1 {
+export interface AiProductionPureScenario {
   readonly scenarioId: "PRO-01" | "PRO-02" | "PRO-03" | "PRO-04" | "PRO-05";
   readonly purpose: string;
-  readonly execute: () => { readonly subject: AiManagerProposalV1; readonly control?: AiManagerProposalV1 };
-  readonly assertSemanticEffect: (result: ReturnType<AiProductionPureScenarioV1["execute"]>) => void;
+  readonly execute: () => { readonly subject: AiManagerProposal; readonly control?: AiManagerProposal };
+  readonly assertSemanticEffect: (result: ReturnType<AiProductionPureScenario["execute"]>) => void;
 }
 
-const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
 
-export const catalog: AiCapabilityCatalogV1 = {
+export const catalog: AiCapabilityCatalog = {
   schemaVersion: 1,
   generation: 1,
   unsupported: [],
@@ -102,7 +102,7 @@ export const catalog: AiCapabilityCatalogV1 = {
 };
 
 export function completedOpeningState(faction = FactionType.Tivara) {
-  return createAiBrainStateV1({
+  return createAiBrainState({
     playerNumber: 1,
     faction,
     profile,
@@ -151,7 +151,7 @@ export function propose(
   state = completedOpeningState(),
   faction = FactionType.Tivara,
   resources = createAiTestObservation().resources.map((resource) => ({ ...resource, stockpile: 230 }))
-): AiManagerProposalV1 {
+): AiManagerProposal {
   const observation = createAiTestObservation();
   return new AiMacroManager(() => catalogInput).propose(
     {
@@ -166,24 +166,24 @@ export function propose(
   );
 }
 
-export function production(intents: readonly AiIntentV1[]) {
+export function production(intents: readonly AiIntent[]) {
   return intents.filter(
-    (intent): intent is Extract<AiIntentV1, { readonly kind: "produce" }> =>
+    (intent): intent is Extract<AiIntent, { readonly kind: "produce" }> =>
       intent.kind === "produce" && intent.demandId === "demand:composition:first-squad"
   );
 }
 
 export function capacityConstruction(
-  intents: readonly AiIntentV1[]
-): readonly Extract<AiIntentV1, { readonly kind: "construct" }>[] {
+  intents: readonly AiIntent[]
+): readonly Extract<AiIntent, { readonly kind: "construct" }>[] {
   return intents.filter(
-    (intent): intent is Extract<AiIntentV1, { readonly kind: "construct" }> =>
+    (intent): intent is Extract<AiIntent, { readonly kind: "construct" }> =>
       intent.kind === "construct" && intent.demandId === "demand:capacity:first-army"
   );
 }
 
 /** Prices one military product and aligns both factions' worker construction authority with its producer. */
-export function oneTypeCatalog(faction: "Tivara" | "Skaduwee" = "Tivara"): AiCapabilityCatalogV1 {
+export function oneTypeCatalog(faction: "Tivara" | "Skaduwee" = "Tivara"): AiCapabilityCatalog {
   const producerName = faction === "Tivara" ? ObjectNames.AnkGuard : ObjectNames.InfantryInn;
   const workerName = faction === "Tivara" ? ObjectNames.TivaraWorkerMale : ObjectNames.SkaduweeWorkerMale;
   const frontlineName = faction === "Tivara" ? ObjectNames.TivaraMacemanMale : ObjectNames.SkaduweeWarriorMale;

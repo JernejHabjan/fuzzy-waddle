@@ -44,7 +44,7 @@ export class MapBrowserComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // Using the levels getter from map-selector
     const aiRuntimeTest = !environment.production && typeof window !== "undefined" &&
-      window.sessionStorage.getItem("fuzzy-waddle:ai-runtime-browser-test-v1") !== null;
+      window.sessionStorage.getItem("fuzzy-waddle:ai-runtime-browser-test") !== null;
     this.maps = Object.values(ProbableWaffleLevels).filter((level) =>
       level.testOnly ? aiRuntimeTest : (environment.production ? !level.devOnly : true)
     );

@@ -5,17 +5,17 @@ import {
   ProbableWaffleAiDifficulty,
   ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
 import { aiDeadline } from "../contracts/ai-core-types";
-import type { AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observation-v1";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import type { AiObservedActor, AiObservation } from "../contracts/ai-observation";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 import { AI_RECOVERY_NO_PROGRESS_TICKS, AiRecoveryManager } from "./ai-recovery-manager";
 
-const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-const catalog: AiCapabilityCatalogV1 = {
+const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+const catalog: AiCapabilityCatalog = {
   schemaVersion: 1,
   generation: 1,
   unsupported: [],
@@ -44,7 +44,7 @@ function actor(
   x: number,
   y: number,
   relation: "self" | "enemy" = "self"
-): AiObservedActorV1 {
+): AiObservedActor {
   return {
     ...createAiTestOwnedActor(id),
     objectName,
@@ -66,7 +66,7 @@ function actor(
   };
 }
 
-function observation(extra: readonly AiObservedActorV1[] = [], tick = 100): AiObservationV1 {
+function observation(extra: readonly AiObservedActor[] = [], tick = 100): AiObservation {
   const source = {
     ...actor("source", ObjectNames.Granary, 7, 5),
     resourceState: {
@@ -110,8 +110,8 @@ function observation(extra: readonly AiObservedActorV1[] = [], tick = 100): AiOb
   };
 }
 
-function state(): AiBrainStateV1 {
-  const initial = createAiBrainStateV1({
+function state(): AiBrainState {
+  const initial = createAiBrainState({
     playerNumber: 1,
     faction: FactionType.Tivara,
     profile,
@@ -295,7 +295,7 @@ describe("AiRecoveryManager", () => {
 
   it("does not spend a critically wounded ranged defender on a visible blocker", () => {
     const blocker = actor("proxy", ObjectNames.Olival, 7, 5, "enemy");
-    const woundedRanged: AiObservedActorV1 = {
+    const woundedRanged: AiObservedActor = {
       ...actor("ranged", ObjectNames.TivaraMacemanMale, 7, 6),
       healthPermille: { status: "known", value: 400, observedTick: 100 },
       combatProfile: {

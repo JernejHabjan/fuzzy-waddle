@@ -1,21 +1,21 @@
 import type { ActorId, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
-import type { AiBrainStateV1, AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import type { AiBrainState, AiSquadState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiIntent } from "../contracts/ai-intent";
+import type { AiObservation, AiObservedActor } from "../contracts/ai-observation";
 import { knownPosition, distance, movementDomains } from "./ai-tactics-geometry";
 import { MAX_LOCAL_ENEMIES } from "./ai-tactics-rules";
 
-export function canTarget(attacker: AiObservedActorV1, target: AiObservedActorV1): boolean {
+export function canTarget(attacker: AiObservedActor, target: AiObservedActor): boolean {
   const targetMovement = movementDomains(target);
   const attacks = attacker.combatProfile?.status === "known" ? attacker.combatProfile.value.attacks : [];
   return attacks.some((attack) => targetMovement.some((domain) => attack.targetDomains.includes(domain)));
 }
 
 export function canSeeTarget(
-  attacker: AiObservedActorV1,
-  target: AiObservedActorV1,
-  catalog: AiCapabilityCatalogV1 | undefined
+  attacker: AiObservedActor,
+  target: AiObservedActor,
+  catalog: AiCapabilityCatalog | undefined
 ): boolean {
   if (attacker.visibleEnemyActorIds !== undefined) return attacker.visibleEnemyActorIds.includes(target.actorId);
   const attackerPosition = knownPosition(attacker);
@@ -27,7 +27,7 @@ export function canSeeTarget(
   return distance(attackerPosition, targetPosition) <= visionRange;
 }
 
-export function isEconomicActor(actor: AiObservedActorV1, catalog: AiCapabilityCatalogV1 | undefined): boolean {
+export function isEconomicActor(actor: AiObservedActor, catalog: AiCapabilityCatalog | undefined): boolean {
   return (
     catalog?.entries.some((entry) => entry.sourceObjectName === actor.objectName && entry.gathers.length > 0) ?? false
   );
@@ -35,8 +35,8 @@ export function isEconomicActor(actor: AiObservedActorV1, catalog: AiCapabilityC
 
 /** Keeps damage and remaining durability separate until the whole fighting force is combined. */
 function actorCombatPower(
-  actor: AiObservedActorV1,
-  opponents: readonly AiObservedActorV1[]
+  actor: AiObservedActor,
+  opponents: readonly AiObservedActor[]
 ): { damage: number; durability: number } | null {
   if (actor.combatProfile?.status !== "known" || actor.healthPermille?.status !== "known") return null;
   const profile = actor.combatProfile.value;
@@ -89,7 +89,7 @@ function actorCombatPower(
 }
 
 /** Force damage acts across the opponent's combined durability; summing individual duels undervalues groups. */
-function forceCombatStrength(actors: readonly AiObservedActorV1[], opponents: readonly AiObservedActorV1[]): number {
+function forceCombatStrength(actors: readonly AiObservedActor[], opponents: readonly AiObservedActor[]): number {
   const power = actors.flatMap((actor) => actorCombatPower(actor, opponents) ?? []);
   return (
     (power.reduce((total, actor) => total + actor.damage, 0) *
@@ -99,9 +99,9 @@ function forceCombatStrength(actors: readonly AiObservedActorV1[], opponents: re
 }
 
 /** Bounded local estimate used for a tactical preference, never as self-proving outcome evidence. */
-export function estimateAiEngagementV1(
-  friendly: readonly AiObservedActorV1[],
-  hostile: readonly AiObservedActorV1[],
+export function estimateAiEngagement(
+  friendly: readonly AiObservedActor[],
+  hostile: readonly AiObservedActor[],
   pairQuota: number
 ): Readonly<{
   ratioPermille: number;
@@ -139,9 +139,9 @@ export function estimateAiEngagementV1(
 }
 
 export function objectiveScore(
-  actor: AiObservedActorV1,
+  actor: AiObservedActor,
   origin: Vector3Simple | null,
-  routeStatus: AiObservationV1["accessProducts"][number]["status"] | "not_recorded"
+  routeStatus: AiObservation["accessProducts"][number]["status"] | "not_recorded"
 ): number {
   const families = new Set(actor.capabilities.map((capability) => capability.family));
   const strategicValue =
@@ -164,13 +164,13 @@ export function objectiveScore(
 }
 
 export function assignDamage(
-  attackers: readonly AiObservedActorV1[],
-  targets: readonly AiObservedActorV1[],
+  attackers: readonly AiObservedActor[],
+  targets: readonly AiObservedActor[],
   tick: number,
-  squadId: AiSquadStateV1["squadId"],
-  previous: NonNullable<AiSquadStateV1["tactics"]>["damageReservations"],
-  outcomes: AiBrainStateV1["pendingOutcomes"]
-): NonNullable<AiSquadStateV1["tactics"]>["damageReservations"] {
+  squadId: AiSquadState["squadId"],
+  previous: NonNullable<AiSquadState["tactics"]>["damageReservations"],
+  outcomes: AiBrainState["pendingOutcomes"]
+): NonNullable<AiSquadState["tactics"]>["damageReservations"] {
   const remaining = new Map(
     targets.map((target) => {
       const profile = target.combatProfile?.status === "known" ? target.combatProfile.value : null;
@@ -198,13 +198,13 @@ export function assignDamage(
       .filter((outcome) => outcome.kind === "rejected" || outcome.kind === "cancelled" || outcome.kind === "failed")
       .map((outcome) => outcome.identity.effectId)
   );
-  const reservations: Array<NonNullable<AiSquadStateV1["tactics"]>["damageReservations"][number]> = previous
+  const reservations: Array<NonNullable<AiSquadState["tactics"]>["damageReservations"][number]> = previous
     .filter(
       (entry) =>
         entry.impactTick >= tick &&
         attackerIds.has(entry.actorId) &&
         targetIds.has(entry.targetActorId) &&
-        (!entry.effectId || !failedEffects.has(entry.effectId as AiIntentV1["effectId"]))
+        (!entry.effectId || !failedEffects.has(entry.effectId as AiIntent["effectId"]))
     )
     .map((entry) => ({ ...entry }));
   for (const reservation of reservations) {

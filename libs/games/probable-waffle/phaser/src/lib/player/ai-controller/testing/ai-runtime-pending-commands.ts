@@ -1,6 +1,6 @@
 import { ResourceType, type GameCommandOutcome } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiIntentCommandDispatchEvent } from "../ai-intent-command-dispatch-event";
-import type { AiRuntimePendingCommandV1 } from "./ai-runtime-pending-command-v1";
+import type { AiRuntimePendingCommand } from "./ai-runtime-pending-command";
 
 const MAX_PENDING = 128;
 
@@ -11,7 +11,7 @@ export class AiRuntimePendingCommands {
     commandId?: string;
     admission?: GameCommandOutcome;
   }>();
-  private readonly pending = new Map<string, AiRuntimePendingCommandV1>();
+  private readonly pending = new Map<string, AiRuntimePendingCommand>();
   private readonly gaps = new Map<number, Set<string>>();
 
   observeDispatch(event: AiIntentCommandDispatchEvent, tick: number): void {

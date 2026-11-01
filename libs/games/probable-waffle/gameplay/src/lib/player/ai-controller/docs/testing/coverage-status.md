@@ -7,8 +7,8 @@ placement/expansion/walls, command/resource ownership, scouting and strategic de
 strategy tree is retired. This does not certify every registered scenario, real-peer multiplayer, complete save/load
 continuation, exact replay determinism or difficulty ordering.
 
-`tools/ai/fixtures/skirmish-v1.json` and `tools/ai/shared/native-scenario-bindings.json` own scenario registration. The regression
-selection is `tools/ai/fixtures/ai-regression-v1.json`; use `pnpm ai:regression -- --list` or the scout profile's
+`tools/ai/fixtures/skirmish.json` and `tools/ai/shared/native-scenario-bindings.json` own scenario registration. The regression
+selection is `tools/ai/fixtures/ai-regression.json`; use `pnpm ai:regression -- --list` or the scout profile's
 `--list` for current variants/repetitions/exclusions. A registered recipe is authored coverage, not execution evidence.
 Keep proposal selection, arbitration admission, native application and useful physical effect distinct.
 
@@ -55,8 +55,9 @@ adding another fixture. Native limits are in the table above.
 
 Issues contain source anchors, acceptance, constraints and known evidence. They do not require a handoff or chat history.
 
-- [#819: multiplayer E2E](https://github.com/JernejHabjan/fuzzy-waddle/issues/819): real peers, reconnect, host transfer,
-  stale commands, exact-once effects and repeated-match cleanup. Deferred from single-player delivery.
+- Independent multiplayer work in [#819: multiplayer E2E](https://github.com/JernejHabjan/fuzzy-waddle/issues/819): real peers, reconnect, host transfer,
+  stale commands, exact-once effects and repeated-match cleanup. Scheduled in the Multiplayer Polishing milestone,
+  independently of the single-player AI issue.
 - [#823: save/load E2E](https://github.com/JernejHabjan/fuzzy-waddle/issues/823): active paid commitments, combat,
   scouting, native continuation and cleanup. Exact full replay parity is outside that issue.
 - [#821: source structure](https://github.com/JernejHabjan/fuzzy-waddle/issues/821): remaining naming/size debt;
@@ -85,14 +86,21 @@ Use focused causal checks before affected native confirmation. Keep one local na
 or below 30 minutes. Retain valid evidence and avoid unchanged full-family reruns. Missing or infrastructure-only
 results are not gameplay passes. Draft PR #814 is not made ready or merged by this cleanup.
 
-## Retirement verification
+## Cleanup verification
 
-The legacy removal at `7e905de1e` was checked with eight focused Phaser suites (39 tests), six gameplay suites (65 tests),
-seven regression-selector tests, the Phaser and portal-e2e owning TypeScript compilers, and Phaser project lint
-(zero errors; existing warnings remain). Skill route/schema and changed-document link checks pass.
-These checks cover pure-only authority, invalid startup configuration, current-tick observation/cadence, host fencing,
-income sampler disposal, canonical/legacy migration and representative pure macro/strategy/tactics responsibilities.
-No new native match, real-peer session or full-tail save/load certification was run for retirement; the historical
-native evidence above retains its source limits. Broader lifecycle proofs remain in the explicitly deferred issues.
-Separate omission and closure audits cover deleted-code consumers, shared validators/save compatibility, documentation
-backlinks and publication scope. No saved/wire schema or pawn order-execution tree is removed.
+The legacy player strategy tree was removed at `7e905de1e`. The subsequent naming cleanup uses descriptive
+unsuffixed AI filenames/symbols, with snapshot/contract names where an interface and implementation would collide.
+Source naming does not replace validation of actual save, fixture or report inputs.
+
+Verification covers 105 gameplay suites (632 tests), 103 Phaser AI suites (431 tests, including a focused rerun of
+four corrected harness suites), 160 AI tooling tests and 38 generic agent tests. Both owning TypeScript compilers and gameplay, Phaser
+and portal-e2e lint pass; existing lint warnings remain. Catalog, skill/schema and documentation-reference checks pass.
+The harness repairs restore missing new-game metadata, expect atomic rejected payments, use platform-correct paths,
+and pin the current 579 native preset variants (the pre-rename manifest also contains 579). Packet/log paths
+use native containment checks and stable forward-slash report paths on Windows as well as Unix.
+
+Source-structure exemption moves are limited to exact name substitutions from matching original hashes. Stale
+nonmatching entries are removed rather than renewed. No new size exemption is introduced.
+No native match, real-peer session or full-tail save/load certification was rerun for these mechanical changes;
+retained native evidence above keeps its original source/fixture limitations. The omission/closure audits cover
+consumers, wire/save validation, deleted-code references, documentation links and publication scope.

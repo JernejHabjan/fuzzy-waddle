@@ -1,11 +1,11 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { isAiRuntimeBrowserTestConfigV1 } from "./validate-ai-runtime-browser-test-config-v1";
+import { isAiRuntimeBrowserTestConfig } from "./validate-ai-runtime-browser-test-config";
 
 /** Check the actual browser boundary, independently of the Node fixture factory's expected-shape comparison. */
 it("admits every registered native world's complete opt-in config before launching a browser", () => {
   const directory = resolve(process.cwd(), "tools/ai/fixtures");
-  const manifest = JSON.parse(readFileSync(resolve(directory, "skirmish-v1.json"), "utf8")) as {
+  const manifest = JSON.parse(readFileSync(resolve(directory, "skirmish.json"), "utf8")) as {
     rows: { id: string; fixture?: string }[];
   };
   const rejected: string[] = [];
@@ -26,11 +26,11 @@ it("admits every registered native world's complete opt-in config before launchi
         presetWorld: { ...variant.presetWorld, provenance: { sourceRevision: "a".repeat(40), fixtureDigest: "fnv1a32:12345678" } },
         ...(variant.captureConstruction ? { captureProduction: true } : {}),
         ...(variant.captureCombat ? { captureCombat: true } : {}) };
-      if (!isAiRuntimeBrowserTestConfigV1(config)) rejected.push(`${row.id}:${variant.id}`);
+      if (!isAiRuntimeBrowserTestConfig(config)) rejected.push(`${row.id}:${variant.id}`);
     }
   }
   expect({ count: rejected.length, first: rejected.slice(0, 40) }).toEqual({ count: 0, first: [] });
-  expect(checked).toBe(580);
+  expect(checked).toBe(579);
   expect(nonPreset.sort()).toEqual([
     "d-06-skaduwee-holdout", "d-06-skaduwee-long-soaks", "d-06-skaduwee-paired-calibration",
     "d-06-tivara-holdout", "d-06-tivara-long-soaks", "d-06-tivara-paired-calibration",

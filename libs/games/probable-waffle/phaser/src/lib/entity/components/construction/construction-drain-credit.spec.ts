@@ -25,7 +25,7 @@ import { emitResource, getPlayer, getCommunicator, isSnapshotApplyInProgress } f
 import { waitForSimulationDuration } from "../../../world/services/simulation-time";
 import { AiRuntimeRecipientResourceCapture } from "../../../player/ai-controller/testing/ai-runtime-recipient-resource-capture";
 import { AiRuntimeResourceCoverageCapture } from "../../../player/ai-controller/testing/ai-runtime-resource-coverage-capture";
-import type { AiRuntimeProductionFactV1 } from "../../../player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "../../../player/ai-controller/testing/ai-runtime-production-fact";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 
 jest.mock("../combat/components/health-presentation", () => ({
@@ -145,7 +145,7 @@ describe("construction readiness changes during native drain wait", () => {
             data: { playerNumber: 2, playerStateData: { resources: amounts } }
           });
         });
-        const facts: AiRuntimeProductionFactV1[] = [];
+        const facts: AiRuntimeProductionFact[] = [];
         const coverage = new AiRuntimeResourceCoverageCapture(0, () => ({ tick: 0, captureSequence: facts.length }));
         const journal = new AiRuntimeRecipientResourceCapture(
           scene,

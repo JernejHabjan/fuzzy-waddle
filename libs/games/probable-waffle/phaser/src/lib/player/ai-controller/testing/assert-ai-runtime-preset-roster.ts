@@ -5,10 +5,10 @@ import { getCanonicalActorNameCached } from "../../../data/tech-tree/canonical-a
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { IsoHelper } from "../../../world/tilemap/iso-helper";
-import type { AiRuntimePresetWorldV1 } from "./ai-runtime-preset-world-v1";
+import type { AiRuntimePresetWorld } from "./ai-runtime-preset-world";
 
 /** Strict production worlds check both authored inputs and the indexed starting world before any test work. */
-export function assertAiRuntimePresetRoster(scene: GameProbableWaffleScene, preset: AiRuntimePresetWorldV1): void {
+export function assertAiRuntimePresetRoster(scene: GameProbableWaffleScene, preset: AiRuntimePresetWorld): void {
   if (!preset.requireFactionRoster) return;
   const tech = getSceneService(scene, TechTreeService);
   const index = getSceneService(scene, ActorIndexSystem);

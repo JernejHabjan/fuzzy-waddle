@@ -1,6 +1,6 @@
 import { test as it, expect } from "@playwright/test";
 import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import type { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { StatusEffectType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { nativePhysicalDamageFromActor, nativeRetreats, nativeWeaponHits } from "./skirmish-ai-native-combat-effects";
@@ -169,7 +169,7 @@ it.describe("harmful persistent native zones", () => {
   });
 });
 
-const damage = (overrides: Partial<Extract<AiRuntimeProductionFactV1, { kind: "native_damage" }>> = {}) => ({
+const damage = (overrides: Partial<Extract<AiRuntimeProductionFact, { kind: "native_damage" }>> = {}) => ({
   sequence: 1,
   tick: 40,
   playerNumber: 1,
@@ -187,7 +187,7 @@ const damage = (overrides: Partial<Extract<AiRuntimeProductionFactV1, { kind: "n
     snapshotRestoreInProgress: false
   },
   ...overrides
-}) as unknown as Extract<AiRuntimeProductionFactV1, { kind: "native_damage" }>;
+}) as unknown as Extract<AiRuntimeProductionFact, { kind: "native_damage" }>;
 
 it.describe("native physical damage attribution", () => {
   it("matches only positive exact actor-to-target damage after the paid output", () => {

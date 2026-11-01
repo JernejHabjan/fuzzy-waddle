@@ -32,7 +32,7 @@ local skirmishes do not establish socket-backed peer equality.
 - [Debugging](debugging/README.md): in-game workbench contracts.
 - [Incident reproduction](debugging/incident-reproduction.md): capture, replay and first-difference workflow.
 
-The executable scenario authority is `tools/ai/fixtures/skirmish-v1.json`. Assertions belong in typed fixtures and tests; this documentation explains contracts and operating policy rather than duplicating expected values.
+The executable scenario authority is `tools/ai/fixtures/skirmish.json`. Assertions belong in typed fixtures and tests; this documentation explains contracts and operating policy rather than duplicating expected values.
 
 Current evidence, explicit exclusions and independently resumable follow-up issues are recorded in
 [coverage and follow-ups](testing/coverage-status.md). The executable manifests and fixtures own scenario selection;

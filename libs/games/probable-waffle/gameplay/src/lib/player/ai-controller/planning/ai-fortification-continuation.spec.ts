@@ -1,8 +1,8 @@
-import { AiFortificationManager, fortificationPreservesConnectivityV1 } from "./ai-fortification-manager";
+import { AiFortificationManager, fortificationPreservesConnectivity } from "./ai-fortification-manager";
 import { profile, catalog, observation, threatenedState } from "./ai-fortification-test-fixture";
 import { requireAiTestEntry } from "../testing/ai-test-fixtures";
 import { createFortificationPlan } from "./ai-fortification-plan";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
 
 const manager = new AiFortificationManager(profile, () => catalog);
 
@@ -14,7 +14,7 @@ describe("fortification continuation and placement contracts", () => {
     const gate = graph.nodes.find((node) => node.kind === "gate_slot");
     if (!gate) throw new Error("fortification_opening_missing");
     expect(
-      fortificationPreservesConnectivityV1({
+      fortificationPreservesConnectivity({
         cells: source.map?.constructionCells ?? [],
         blockedTileKeys: [gate.footprintTileKeys[0] ?? "missing"],
         protectedPosition: { x: 8, y: 10, z: 0 },
@@ -48,7 +48,7 @@ describe("fortification continuation and placement contracts", () => {
     const initial = threatenedState();
     const prior = requireAiTestEntry(manager.propose(observation(), initial).statePatch?.fortifications, 0);
     if (!prior.graph) throw new Error("fortification_graph_missing");
-    const state: AiBrainStateV1 = {
+    const state: AiBrainState = {
       ...initial,
       fortifications: [
         {
@@ -75,7 +75,7 @@ describe("fortification continuation and placement contracts", () => {
   it("WALL-04 preserves requested effect identities and the remaining graph across a JSON save/load boundary", () => {
     const initial = threatenedState();
     const first = manager.propose(observation(), initial);
-    const saved: AiBrainStateV1 = JSON.parse(
+    const saved: AiBrainState = JSON.parse(
       JSON.stringify({ ...initial, fortifications: first.statePatch?.fortifications })
     );
     const original = manager.propose(observation([], 120), {

@@ -16,7 +16,7 @@ import { CommandBusService } from "../../../world/services/multiplayer/command-b
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { AiRuntimeProductionCapture } from "./ai-runtime-production-capture";
-import type { AiMultiplayerSharedQueueWorldV1 } from "./ai-multiplayer-shared-queue-world-v1";
+import type { AiMultiplayerSharedQueueWorldSnapshot } from "./ai-multiplayer-shared-queue-world-snapshot";
 import {
   prepareAiMultiplayerSharedQueueWorld,
   SHARED_QUEUE_CANCEL_WINDOW_TICKS,
@@ -24,12 +24,12 @@ import {
 } from "./prepare-ai-multiplayer-shared-queue-world";
 
 /** Separate explicit opt-in, inside the existing local-development multiplayer diagnostics gate. */
-export function multiplayerSharedQueueWorldRequested(): AiMultiplayerSharedQueueWorldV1["branch"] | null {
+export function multiplayerSharedQueueWorldRequested(): AiMultiplayerSharedQueueWorldSnapshot["branch"] | null {
   try {
     const value =
       typeof window === "undefined"
         ? null
-        : window.sessionStorage.getItem("fuzzy-waddle:ai-multiplayer-shared-queue-world-v1");
+        : window.sessionStorage.getItem("fuzzy-waddle:ai-multiplayer-shared-queue-world-snapshot");
     return value === "shared_contention" || value === "cancel_research" ? value : null;
   } catch {
     return null;
@@ -41,13 +41,13 @@ export class AiMultiplayerSharedQueueWorld {
   private readonly subscriptions = new Subscription();
   private readonly capture: AiRuntimeProductionCapture;
   private readonly ticks: SimulationTickService;
-  private state: AiMultiplayerSharedQueueWorldV1["state"] = "initializing";
+  private state: AiMultiplayerSharedQueueWorldSnapshot["state"] = "initializing";
   private failure: string | null = null;
-  private setup: AiMultiplayerSharedQueueWorldV1["setup"] = null;
-  private readonly commands: AiMultiplayerSharedQueueWorldV1["commands"][number][] = [];
-  private readonly requests: AiMultiplayerSharedQueueWorldV1["requests"][number][] = [];
-  private readonly checkpoints: AiMultiplayerSharedQueueWorldV1["checkpoints"][number][] = [];
-  private latestCapture: AiMultiplayerSharedQueueWorldV1["capture"] = null;
+  private setup: AiMultiplayerSharedQueueWorldSnapshot["setup"] = null;
+  private readonly commands: AiMultiplayerSharedQueueWorldSnapshot["commands"][number][] = [];
+  private readonly requests: AiMultiplayerSharedQueueWorldSnapshot["requests"][number][] = [];
+  private readonly checkpoints: AiMultiplayerSharedQueueWorldSnapshot["checkpoints"][number][] = [];
+  private latestCapture: AiMultiplayerSharedQueueWorldSnapshot["capture"] = null;
   private paidTick = -1;
   private refundTick = -1;
   private completedTick = -1;
@@ -58,7 +58,7 @@ export class AiMultiplayerSharedQueueWorld {
   constructor(
     private readonly scene: ProbableWaffleScene,
     private readonly bus: CommandBusService,
-    private readonly branch: AiMultiplayerSharedQueueWorldV1["branch"]
+    private readonly branch: AiMultiplayerSharedQueueWorldSnapshot["branch"]
   ) {
     const ticks = getSceneService(scene, SimulationTickService);
     if (!ticks) throw new Error("shared_queue_world_clock_missing");
@@ -87,7 +87,7 @@ export class AiMultiplayerSharedQueueWorld {
   }
 
   /** Polling neither creates authority snapshots nor moves the clock. */
-  getSnapshot(): AiMultiplayerSharedQueueWorldV1 {
+  getSnapshot(): AiMultiplayerSharedQueueWorldSnapshot {
     return structuredClone({
       branch: this.branch,
       state: this.state,
@@ -153,7 +153,7 @@ export class AiMultiplayerSharedQueueWorld {
     }
   }
 
-  private dispatch(role: AiMultiplayerSharedQueueWorldV1["commands"][number]["role"]): GameCommand {
+  private dispatch(role: AiMultiplayerSharedQueueWorldSnapshot["commands"][number]["role"]): GameCommand {
     const setup = this.setup;
     if (!setup) throw new Error("shared_queue_world_setup_missing");
     const address = { playerNumber: setup.playerNumber, actorIds: [setup.producerActorId] };
@@ -190,7 +190,7 @@ export class AiMultiplayerSharedQueueWorld {
       this.commands.some((entry) => entry.command.execution?.commandId === command.execution?.commandId)
     )
       return;
-    let role: AiMultiplayerSharedQueueWorldV1["commands"][number]["role"];
+    let role: AiMultiplayerSharedQueueWorldSnapshot["commands"][number]["role"];
     if (
       command.type === ProbableWaffleGameCommandTypes.Production &&
       command.actorName === setup.train.product &&
@@ -288,7 +288,7 @@ export class AiMultiplayerSharedQueueWorld {
     );
   }
 
-  private checkpoint(boundary: AiMultiplayerSharedQueueWorldV1["checkpoints"][number]["boundary"]): void {
+  private checkpoint(boundary: AiMultiplayerSharedQueueWorldSnapshot["checkpoints"][number]["boundary"]): void {
     if (!this.setup) throw new Error("shared_queue_world_setup_missing");
     this.latestCapture = this.capture.captureHumanQueueBoundary(this.setup.playerNumber);
     const snapshot = this.latestCapture.snapshots.at(-1);

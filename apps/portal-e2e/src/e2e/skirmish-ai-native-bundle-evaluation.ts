@@ -2,8 +2,8 @@ import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protoco
 import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
 import { nativeCompletedPlacements } from "./skirmish-ai-native-construction-evidence";
 import { hasNativeSourceDelivery } from "./skirmish-ai-source-delivery";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 
 /** User-approved H-12: native atomic prevention, with synthetic recovery policy covered separately by pure tests. */
 export function evaluateNativeBundles(branch: string, context: ReturnType<typeof nativeScenarioContext>): string[] {
@@ -51,7 +51,7 @@ export function evaluateNativeBundles(branch: string, context: ReturnType<typeof
           decision.detail.startsWith("dependency_cycle_released:"))) failures.push("bundles_native_partial_hold_cycle_was_created");
   }
   if (!contention) failures.push("bundles_real_competing_wood_stone_projects_missing");
-  const orders = context.facts.filter((fact): fact is Extract<AiRuntimeProductionFactV1, { kind: "proposal_order" }> =>
+  const orders = context.facts.filter((fact): fact is Extract<AiRuntimeProductionFact, { kind: "proposal_order" }> =>
     fact.kind === "proposal_order" && fact.playerNumber === 2);
   if (!orders.some((fact) => fact.order.before.length >= 2 &&
       fact.order.order === (branch === "permuted" ? "reverse" : "forward") &&

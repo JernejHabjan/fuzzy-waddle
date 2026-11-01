@@ -8,7 +8,7 @@ import { OwnerComponent } from "../../../entity/components/owner-component";
 import { ProductionComponent } from "../../../entity/components/production/production-component";
 import type { NavigationService } from "../../../world/services/navigation.service";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
-import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spatial-v1";
+import type { AiRuntimeProductionSpatial } from "./ai-runtime-production-spatial";
 import { productionCaptureItem } from "./ai-runtime-production-capture-fixtures";
 import { AiRuntimeProducerRouteCapture } from "./ai-runtime-producer-route-capture";
 import { AiRuntimeNavigationObservation } from "./ai-runtime-navigation-observation";
@@ -66,7 +66,7 @@ function fixture() {
     indexed: true
   }));
   jest.mocked(getGameObjectCurrentTile).mockReturnValue({ x: 3, y: 4 });
-  const records: AiRuntimeProductionSpatialV1[] = [];
+  const records: AiRuntimeProductionSpatial[] = [];
   const capture = new AiRuntimeProducerRouteCapture(
     scene,
     () => ({ clockTick: 10, sceneActive: true, snapshotRestoreInProgress: false }),

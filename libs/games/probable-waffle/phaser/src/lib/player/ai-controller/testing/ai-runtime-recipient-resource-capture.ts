@@ -3,7 +3,7 @@ import { PlayerResourceObservation, ResourceType, type ProbableWafflePlayer, typ
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { subscribeSceneResourceLoss } from "../../../data/scene-resource-observation";
 import type { AiRuntimeResourceCoverageCapture } from "./ai-runtime-resource-coverage-capture";
-import type { AiRuntimeProductionFactV1 } from "./ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "./ai-runtime-production-fact";
 import { installAiRuntimeResourceOperationIdentity } from "./ai-runtime-resource-operation-identity";
 import { AiRuntimeRecipientRosterCapture } from "./ai-runtime-recipient-roster-capture";
 
@@ -20,7 +20,7 @@ export class AiRuntimeRecipientResourceCapture {
 
   constructor(private readonly scene: ProbableWaffleScene, private readonly coverage: AiRuntimeResourceCoverageCapture,
     private readonly boundary: (playerNumber: number) => { tick: number; sequence: number; playerNumber: number },
-    private readonly frontier: () => number, private readonly append: (fact: AiRuntimeProductionFactV1) => void) {
+    private readonly frontier: () => number, private readonly append: (fact: AiRuntimeProductionFact) => void) {
     try {
       const roster = new AiRuntimeRecipientRosterCapture(scene.baseGameData.gameInstance, coverage.lose);
       this.cleanup.push(() => roster.dispose());

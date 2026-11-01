@@ -10,7 +10,7 @@ import { SimulationTickService } from "../../../world/services/simulation-tick.s
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import type { AiRuntimePresetWorldV1 } from "./ai-runtime-preset-world-v1";
+import type { AiRuntimePresetWorld } from "./ai-runtime-preset-world";
 import { installAiRuntimeProductionRallies } from "./install-ai-runtime-production-rallies";
 
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
@@ -66,7 +66,7 @@ it("sets normal owned rallies once for the initial producer and an actual ready 
             }
           : bus) as never
   );
-  const preset: AiRuntimePresetWorldV1 = {
+  const preset: AiRuntimePresetWorld = {
     fixtureId: "replacement-rally",
     actors: [],
     resourceGrants: [],

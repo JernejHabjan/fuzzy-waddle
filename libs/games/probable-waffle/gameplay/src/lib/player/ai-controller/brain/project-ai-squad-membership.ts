@@ -1,16 +1,16 @@
-import type { AiBrainStateV1, AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiBrainState, AiSquadState } from "../contracts/ai-brain-state";
 
-function family(squadId: AiSquadStateV1["squadId"]): string {
+function family(squadId: AiSquadState["squadId"]): string {
   return squadId.split(":domain:")[0] ?? squadId;
 }
 
 /** Tactical proposals read the previous decision: their snapshots must not take actors from newly projected missions. */
 export function projectAiSquadMembership(
-  current: AiBrainStateV1["squads"],
-  update: AiSquadStateV1,
-  previous: AiBrainStateV1["squads"],
-  updates: readonly AiSquadStateV1[]
-): AiSquadStateV1 {
+  current: AiBrainState["squads"],
+  update: AiSquadState,
+  previous: AiBrainState["squads"],
+  updates: readonly AiSquadState[]
+): AiSquadState {
   const currentSquad = current.find((squad) => squad.squadId === update.squadId);
   const previousMembers = new Set(
     previous.filter((squad) => family(squad.squadId) === family(update.squadId)).flatMap((squad) => squad.actorIds)

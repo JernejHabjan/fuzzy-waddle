@@ -1,11 +1,11 @@
 import type { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeQueueMutationV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-queue-mutation-v1";
+import type { AiRuntimeQueueMutation } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-queue-mutation";
 
 /** Physical queue interval only. Removal for completion does not prove a created actor, registered tech or useful effect. */
-export interface RuntimeProductionQueueMutationV1 {
+export interface RuntimeProductionQueueMutation {
   readonly mutationId: number;
-  readonly operation: AiRuntimeQueueMutationV1["operation"];
+  readonly operation: AiRuntimeQueueMutation["operation"];
   readonly sequence: number;
   readonly tick: number;
   /** Enqueue/completion use the purchase; cancellation uses its distinct applied command. */
@@ -16,7 +16,7 @@ export interface RuntimeProductionQueueMutationV1 {
   readonly actorId: string;
   readonly laneId: string;
   readonly itemIndex: number;
-  readonly item: NonNullable<AiRuntimeQueueMutationV1["item"]>;
+  readonly item: NonNullable<AiRuntimeQueueMutation["item"]>;
   readonly boundarySequences: readonly [number, number];
   readonly resourcesBefore: Readonly<Record<ResourceType, number>>;
   readonly resourcesAfter: Readonly<Record<ResourceType, number>>;

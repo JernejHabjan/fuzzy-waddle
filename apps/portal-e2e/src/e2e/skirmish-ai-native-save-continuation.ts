@@ -66,7 +66,7 @@ export async function replayNativeSavedContinuation(
   await armNativeDecisionTrace(page, playerNumber);
   await advanceRuntimeFrames(page, playerNumber, control.owner.tick, resumedSimulationTimeScale);
   await page.waitForFunction((playerNumber) =>
-    window.__fuzzyWaddleAiRuntimePartsV1?.(playerNumber)?.controller.isDecisionBoundarySettled(), playerNumber);
+    window.__fuzzyWaddleAiRuntimeParts?.(playerNumber)?.controller.isDecisionBoundarySettled(), playerNumber);
   const resumed = await captureNativeContinuationBoundary(page, playerNumber);
   const resumedTrace = await closeNativeDecisionTrace(page);
   const resumedProduction = await captureRuntimeProductionAuthority(page, playerNumber, resumed.owner.tick, true);

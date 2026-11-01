@@ -1,11 +1,11 @@
-import type { AiRuntimeNavigationBoundaryV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-navigation-boundary-v1";
+import type { AiRuntimeNavigationBoundary } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-navigation-boundary";
 import type { NavigationNativeQuery } from
   "@fuzzy-waddle/probable-waffle-phaser/world/services/navigation-native-query";
 
 /** Diagnostics compare native generations, never assert path immutability, arrival or a complete query history. */
 export function projectRuntimeNativeNavigation(
-  before: AiRuntimeNavigationBoundaryV1 | undefined, after: AiRuntimeNavigationBoundaryV1 | undefined,
+  before: AiRuntimeNavigationBoundary | undefined, after: AiRuntimeNavigationBoundary | undefined,
   query: NavigationNativeQuery | undefined
 ) {
   const left = before?.native, right = after?.native;

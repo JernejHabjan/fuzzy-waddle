@@ -1,6 +1,6 @@
 import type Phaser from "phaser";
-import { buildAiAccessGraphV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
-import type { AiAccessCellV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-access-graph-v1";
+import { buildAiAccessGraph } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiAccessCell } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-access-graph";
 import { createAiTestOwnedActor } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import { getActorComponent } from "../../../data/actor-component";
 import { getGameObjectCurrentTile } from "../../../data/game-object-helper";
@@ -10,7 +10,7 @@ import { buildAiScoutSearchPoints } from "./ai-scout-search-points";
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 jest.mock("../../../data/game-object-helper", () => ({ getGameObjectCurrentTile: jest.fn() }));
 
-const cells: AiAccessCellV1[] = Array.from({ length: 16 }, (_, x) => ({
+const cells: AiAccessCell[] = Array.from({ length: 16 }, (_, x) => ({
   x,
   y: 0,
   ground: true,
@@ -20,7 +20,7 @@ const cells: AiAccessCellV1[] = Array.from({ length: 16 }, (_, x) => ({
   knowledge: "known_static",
   groundNeighborKeys: [x - 1, x + 1].filter((nx) => nx >= 0 && nx < 16).map((nx) => `${nx},0`)
 }));
-const graph = buildAiAccessGraphV1({
+const graph = buildAiAccessGraph({
   generation: 1,
   staticRevision: 1,
   dynamicRevision: 1,

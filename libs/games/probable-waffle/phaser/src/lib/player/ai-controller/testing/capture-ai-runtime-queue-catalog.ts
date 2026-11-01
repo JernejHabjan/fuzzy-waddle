@@ -9,11 +9,11 @@ import { ResearchComponent } from "../../../entity/components/research/research-
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { millisecondsToSimulationTicks } from "../observation/ai-observation-values";
-import type { AiRuntimeQueueCatalogEntryV1 } from "./ai-runtime-queue-catalog-entry-v1";
+import type { AiRuntimeQueueCatalogEntry } from "./ai-runtime-queue-catalog-entry";
 
 /** Enumerates only the real owned producer's advertised options; never the global faction/opponent graph. */
 export function captureAiRuntimeQueueCatalog(actor: Phaser.GameObjects.GameObject, actorId: string, playerNumber: number) {
-  const catalog: AiRuntimeQueueCatalogEntryV1[] = [];
+  const catalog: AiRuntimeQueueCatalogEntry[] = [];
   const gaps: string[] = [];
   const tech = getSceneService(actor.scene, TechTreeService);
   if (!tech) return { catalog, gaps: ["production_world_tech_authority_missing"] };

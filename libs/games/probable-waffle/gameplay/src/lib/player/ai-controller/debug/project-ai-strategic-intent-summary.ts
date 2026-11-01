@@ -1,6 +1,6 @@
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiIntentDecisionV1, AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiIntentDecision, AiIntent } from "../contracts/ai-intent";
+import type { AiObservation } from "../contracts/ai-observation";
 import type { AiStrategicIntentSummary } from "../contracts/ai-strategic-intent-summary";
 
 const inactiveSquadStates = new Set(["completed", "cancelled", "failed"]);
@@ -23,7 +23,7 @@ function countNoun(count: number, singular: string, plural = `${singular}s`): st
   return `${count} ${count === 1 ? singular : plural}`;
 }
 
-function primarySquad(state: AiBrainStateV1) {
+function primarySquad(state: AiBrainState) {
   const priority: Readonly<Record<string, number>> = { defense: 0, attack: 1, reinforcement: 2, escort: 3, scout: 4 };
   return state.squads
     .filter((squad) => !inactiveSquadStates.has(squad.state))
@@ -34,9 +34,9 @@ function primarySquad(state: AiBrainStateV1) {
 }
 
 function describeObjective(
-  observation: AiObservationV1,
-  state: AiBrainStateV1,
-  squad: AiBrainStateV1["squads"][number] | undefined
+  observation: AiObservation,
+  state: AiBrainState,
+  squad: AiBrainState["squads"][number] | undefined
 ): string {
   if (state.skirmish.mode.state === "conceding") {
     return `Conceding: ${sentence(state.skirmish.mode.lastReason ?? "position is no longer recoverable")}`;
@@ -73,7 +73,7 @@ function describeObjective(
   return `${action} ${targetName}${ownership}`;
 }
 
-function describeForce(state: AiBrainStateV1, squad: AiBrainStateV1["squads"][number] | undefined): string {
+function describeForce(state: AiBrainState, squad: AiBrainState["squads"][number] | undefined): string {
   if (!squad) {
     const transport = state.transport.find((plan) => !["completed", "cancelled", "failed"].includes(plan.phase));
     if (!transport) return "No active combat force";
@@ -93,7 +93,7 @@ function describeForce(state: AiBrainStateV1, squad: AiBrainStateV1["squads"][nu
   );
 }
 
-function describeProduction(observation: AiObservationV1, state: AiBrainStateV1): string {
+function describeProduction(observation: AiObservation, state: AiBrainState): string {
   const demand = state.economyProduction.demands
     .map((candidate) => ({
       candidate,
@@ -126,15 +126,15 @@ function describeProduction(observation: AiObservationV1, state: AiBrainStateV1)
 }
 
 function describeEconomy(
-  observation: AiObservationV1,
-  state: AiBrainStateV1,
-  decisions: readonly AiIntentDecisionV1[]
+  observation: AiObservation,
+  state: AiBrainState,
+  decisions: readonly AiIntentDecision[]
 ): string {
   const gather = decisions.find(
     (
       decision
-    ): decision is Extract<AiIntentDecisionV1, { outcome: "accepted" }> & {
-      readonly intent: Extract<AiIntentV1, { kind: "assign_gatherers" }>;
+    ): decision is Extract<AiIntentDecision, { outcome: "accepted" }> & {
+      readonly intent: Extract<AiIntent, { kind: "assign_gatherers" }>;
     } => decision.outcome === "accepted" && decision.intent.kind === "assign_gatherers"
   );
   const workers = observation.actors.filter(
@@ -167,7 +167,7 @@ function describeEconomy(
   );
 }
 
-function describeNextAction(decisions: readonly AiIntentDecisionV1[]): string {
+function describeNextAction(decisions: readonly AiIntentDecision[]): string {
   const intent = decisions.find((decision) => decision.outcome === "accepted")?.intent;
   if (!intent) return "Waiting for the next eligible strategic action";
   if (intent.kind === "attack") return `Attack with ${intent.actorIds.length} units`;
@@ -182,7 +182,7 @@ function describeNextAction(decisions: readonly AiIntentDecisionV1[]): string {
   return sentence(intent.kind);
 }
 
-function describeBlocker(state: AiBrainStateV1, decisions: readonly AiIntentDecisionV1[]): string | null {
+function describeBlocker(state: AiBrainState, decisions: readonly AiIntentDecision[]): string | null {
   const blocker = state.blockers.find((entry) => entry.status === "technical_fault") ??
     state.blockers.find((entry) => entry.status !== "failed_optional");
   if (blocker) {
@@ -202,7 +202,7 @@ function describeBlocker(state: AiBrainStateV1, decisions: readonly AiIntentDeci
     return `${sentence(blocker.cause)} blocks ${affected} until tick ${blocker.deadline.dueTick}${retry}`;
   }
   const rejected = decisions.find(
-    (decision): decision is Extract<AiIntentDecisionV1, { outcome: "rejected" }> => decision.outcome === "rejected"
+    (decision): decision is Extract<AiIntentDecision, { outcome: "rejected" }> => decision.outcome === "rejected"
   );
   if (!rejected) return null;
   const explanations: Readonly<Record<typeof rejected.reason, string>> = {
@@ -218,9 +218,9 @@ function describeBlocker(state: AiBrainStateV1, decisions: readonly AiIntentDeci
 
 /** Builds presentation-ready meaning from committed state without querying or advancing gameplay. */
 export function projectAiStrategicIntentSummary(
-  observation: AiObservationV1,
-  state: AiBrainStateV1,
-  decisions: readonly AiIntentDecisionV1[]
+  observation: AiObservation,
+  state: AiBrainState,
+  decisions: readonly AiIntentDecision[]
 ): AiStrategicIntentSummary {
   const squad = primarySquad(state);
   const objective = describeObjective(observation, state, squad);

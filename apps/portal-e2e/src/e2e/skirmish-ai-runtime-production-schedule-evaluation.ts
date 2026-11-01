@@ -1,13 +1,13 @@
 import { evaluateRuntimeProductionAbandonedWork } from "./skirmish-ai-runtime-production-abandoned-work-evaluation";
 import type { RuntimeProductionEvidenceV2 } from "./skirmish-ai-runtime-production-evidence-v2";
-import type { RuntimeProductionContractV1 } from "./skirmish-ai-runtime-production-contract";
+import type { RuntimeProductionContract } from "./skirmish-ai-runtime-production-contract";
 import { productionActorRetained, productionWorldAt } from "./skirmish-ai-runtime-production-authority-evaluation";
 import { runtimeProductionUsefulOutputs } from "./skirmish-ai-runtime-production-useful-output";
 import { runtimeProductionBuilderWork } from "./skirmish-ai-runtime-production-builder-work";
 
 /** Dates belong to consumed inputs; physical ready/output deadlines belong to native closed histories. */
 export function evaluateRuntimeProductionSchedule(
-  contract: RuntimeProductionContractV1,
+  contract: RuntimeProductionContract,
   evidence: RuntimeProductionEvidenceV2
 ) {
   const committed = evidence.decisions.find(

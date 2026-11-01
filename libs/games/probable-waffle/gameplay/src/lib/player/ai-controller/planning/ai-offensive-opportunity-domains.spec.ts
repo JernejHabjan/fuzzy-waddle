@@ -1,12 +1,12 @@
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
 
-import { buildAiAccessGraphV1 } from "./ai-access-graph-v1";
+import { buildAiAccessGraph } from "./ai-access-graph";
 
 import { guard, core, world, brain, manager } from "./ai-offensive-opportunity-test-fixtures";
 
 describe("fastest credible offense", () => {
   it("does not count shoreline ground troops as a naval force against a water objective", () => {
-    const waterAccess = buildAiAccessGraphV1({
+    const waterAccess = buildAiAccessGraph({
       generation: 1,
       staticRevision: 1,
       dynamicRevision: 1,
@@ -79,7 +79,7 @@ describe("fastest credible offense", () => {
   });
 
   it("finds an air route to an observed core when the land regions are disconnected", () => {
-    const separated = buildAiAccessGraphV1({
+    const separated = buildAiAccessGraph({
       generation: 1,
       staticRevision: 1,
       dynamicRevision: 1,
@@ -159,7 +159,7 @@ describe("fastest credible offense", () => {
     const enemies = [core("enemy-core"), ...[1, 2, 3, 4].map((index) => guard(`defender-${index}`, "enemy", 1))];
     const initial = brain();
     const first = manager.propose(world([guard("a", "self", 0), guard("b", "self", 0), ...enemies]), initial);
-    const state: AiBrainStateV1 = {
+    const state: AiBrainState = {
       ...initial,
       squads: first.statePatch!.squads!,
       skirmish: first.statePatch!.skirmish!

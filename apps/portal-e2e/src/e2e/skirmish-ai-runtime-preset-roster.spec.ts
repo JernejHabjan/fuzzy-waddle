@@ -1,13 +1,13 @@
 import { expect, test } from "@playwright/test";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 // prettier-ignore
-import type { AiRuntimePresetApplicationV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application-v1";
-import type { RuntimePresetWorldV1 } from "./skirmish-ai-runtime-preset-world";
+import type { AiRuntimePresetApplication } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application";
+import type { RuntimePresetWorld } from "./skirmish-ai-runtime-preset-world";
 import { assertRuntimePresetRoster } from "./skirmish-ai-runtime-preset-roster";
 
 function fixture() {
-  const preset: RuntimePresetWorldV1 = {
+  const preset: RuntimePresetWorld = {
     fixtureId: "legal-world",
     requireFactionRoster: true,
     resourceGrants: [],
@@ -18,7 +18,7 @@ function fixture() {
       position: { x: 640, y: 480, z: 0 }
     }))
   };
-  const application: AiRuntimePresetApplicationV1 = {
+  const application: AiRuntimePresetApplication = {
     fixtureId: preset.fixtureId,
     sourceRevision: "a".repeat(40),
     fixtureDigest: "fnv1a32:12345678",

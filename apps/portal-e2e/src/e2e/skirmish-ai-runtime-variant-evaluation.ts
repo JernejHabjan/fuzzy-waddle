@@ -1,8 +1,8 @@
 import { isExpectedNativeMandatoryError } from "./skirmish-ai-native-fault-evaluation";
-import type { RuntimeAssertionV1 } from "./skirmish-ai-runtime-assertion";
+import type { RuntimeAssertion } from "./skirmish-ai-runtime-assertion";
 import { evaluateRuntimeRaidRecovery } from "./skirmish-ai-runtime-raid-evaluation";
 import { evaluateRuntimeTransport } from "./skirmish-ai-runtime-transport-evaluation";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 import { last } from "./skirmish-ai-runtime-value";
 import { evaluateRuntimePresetWorld } from "./skirmish-ai-runtime-preset-evaluation";
 import {
@@ -24,14 +24,14 @@ import { evaluateRuntimeTechnology } from "./skirmish-ai-runtime-technology-eval
 import { evaluateRuntimeEconomy } from "./skirmish-ai-runtime-economy-evaluation";
 import { evaluateRuntimeResourceRecovery } from "./skirmish-ai-runtime-resource-recovery-evaluation";
 import { evaluateRuntimeNativeContracts } from "./skirmish-ai-runtime-native-contracts";
-import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
+import type { RuntimeFixture } from "./skirmish-ai-runtime-fixture";
 import { evaluateNativeScenarioVariant } from "./skirmish-ai-native-scenario-evaluation";
 
 export function evaluateRuntimeVariant(
   scenarioId: string,
-  assertion: RuntimeAssertionV1,
-  variant: RuntimeVariantResultV1,
-  fixture?: RuntimeFixtureV1
+  assertion: RuntimeAssertion,
+  variant: RuntimeVariantResult,
+  fixture?: RuntimeFixture
 ): string[] {
   if (["D-02", "H-31", "H-32", "DBG-05"].includes(scenarioId))
     return evaluateNativeScenarioVariant(scenarioId, assertion, variant, fixture).map((failure) => `${variant.variantId}:${failure}`);

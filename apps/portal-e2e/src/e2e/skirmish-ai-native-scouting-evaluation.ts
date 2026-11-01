@@ -1,12 +1,12 @@
 import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import type { AiRuntimeProductionSpatialV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-spatial-v1";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
+import type { AiRuntimeProductionSpatial } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-spatial";
 
-type MovementAuthorityFact = Extract<AiRuntimeProductionFactV1, { kind: "spatial_authority" }> & {
-  readonly spatial: Extract<AiRuntimeProductionSpatialV1, { kind: "movement" }>;
+type MovementAuthorityFact = Extract<AiRuntimeProductionFact, { kind: "spatial_authority" }> & {
+  readonly spatial: Extract<AiRuntimeProductionSpatial, { kind: "movement" }>;
 };
 
-function isMovementAuthorityFact(fact: AiRuntimeProductionFactV1): fact is MovementAuthorityFact {
+function isMovementAuthorityFact(fact: AiRuntimeProductionFact): fact is MovementAuthorityFact {
   return fact.kind === "spatial_authority" && fact.spatial.kind === "movement";
 }
 

@@ -1,16 +1,16 @@
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { AiRuntimeCreatedActorV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-created-actor-v1";
-import type { AiRuntimeProductionSpatialV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-spatial-v1";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { AiRuntimeCreatedActor } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-created-actor";
+import type { AiRuntimeProductionSpatial } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-spatial";
 
 /** Validate actual argument/actor/result shapes without treating an endpoint, output branch or path as useful arrival. */
-export function validateRuntimeProducerRoute(capture: AiRuntimeProductionCaptureV1, value: AiRuntimeProductionSpatialV1) {
+export function validateRuntimeProducerRoute(capture: AiRuntimeProductionSnapshot, value: AiRuntimeProductionSpatial) {
   const integer = (number: number) => Number.isSafeInteger(number) && number >= 0;
   const id = (number: number) => integer(number) && number > 0 && number <= 8192;
   const tile = (point: { readonly x: number; readonly y: number }) => integer(point.x) && integer(point.y);
-  const actor = (entry: AiRuntimeCreatedActorV1, owned: boolean) => !!entry.actorId && !!entry.objectName &&
+  const actor = (entry: AiRuntimeCreatedActor, owned: boolean) => !!entry.actorId && !!entry.objectName &&
     !!entry.canonicalObjectName && (owned ? entry.playerNumber === capture.playerNumber :
       entry.playerNumber === null || integer(entry.playerNumber)) &&
     [entry.active, entry.alive, entry.finished, entry.indexed].every((flag) => typeof flag === "boolean");

@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import type { ActorId, Vector2Simple, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
-import type { AiAccessNodeId, AiObservedActorV1, AiObservationV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiAccessNodeId, AiObservedActor, AiObservation } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { getActorComponent } from "../../../data/actor-component";
 import { getTileCoordsUnderObject } from "../../../library/tile-under-object";
 import { OwnerComponent } from "../../../entity/components/owner-component";
@@ -27,18 +27,18 @@ export function projectAiObservationMap(
   scene: Phaser.Scene,
   requestedGeneration: number,
   queryContinuationCursor: number,
-  actors: readonly AiObservedActorV1[],
+  actors: readonly AiObservedActor[],
   liveById: ReadonlyMap<ActorId, GameObject>,
   tick: number,
-  accessGraph: NonNullable<AiObservationV1["map"]>["accessGraph"],
+  accessGraph: NonNullable<AiObservation["map"]>["accessGraph"],
   permittedTopology: {
     readonly blockedTileKeys: ReadonlySet<string>;
     readonly navigableTileKeys: ReadonlySet<string>;
   },
-  staticScoutSearchPoints?: NonNullable<NonNullable<AiObservationV1["map"]>["scoutSearchPoints"]>,
+  staticScoutSearchPoints?: NonNullable<NonNullable<AiObservation["map"]>["scoutSearchPoints"]>,
   resolveGroundNodeId: (tile: Vector2Simple) => AiAccessNodeId | undefined = () => undefined,
   largestBuildableFootprintRadius = 0
-): NonNullable<AiObservationV1["map"]> {
+): NonNullable<AiObservation["map"]> {
   const tilemap = getSceneComponent(scene, TilemapComponent)?.tilemap;
   const navigation = getSceneService(scene, NavigationService);
   const dynamicObstacleActorIds = actors
@@ -50,7 +50,7 @@ export function projectAiObservationMap(
     .map((actor) => actor.actorId)
     .sort();
   const scoutCoverageAccessNodeIds = projectAiScoutCoverage(accessGraph, actors, liveById);
-  const constructionCells: Array<NonNullable<NonNullable<AiObservationV1["map"]>["constructionCells"]>[number]> = [];
+  const constructionCells: Array<NonNullable<NonNullable<AiObservation["map"]>["constructionCells"]>[number]> = [];
   const mainAnchors = actors
     .filter(
       (actor) => actor.visibility === "owned" && actor.mainBuilding?.status === "known" && actor.mainBuilding.value
@@ -101,7 +101,7 @@ export function projectAiObservationMap(
   if (tilemap && navigation) {
     const occupied = observedConstructionOccupancy(tilemap, actors, liveById);
     const staticallyOccupied = observedStaticConstructionOccupancy(tilemap, actors, liveById);
-    const cellCache = new Map<string, NonNullable<NonNullable<AiObservationV1["map"]>["constructionCells"]>[number]>();
+    const cellCache = new Map<string, NonNullable<NonNullable<AiObservation["map"]>["constructionCells"]>[number]>();
     const cellAt = (x: number, y: number) => {
       if (x < 0 || y < 0 || x >= tilemap.width || y >= tilemap.height) return undefined;
       const tileKey = `${x},${y}`;
@@ -183,7 +183,7 @@ export function projectAiObservationMap(
       .filter((actor) => actor.relation === "enemy" && actor.visibility === "visible")
       .filter((actor) => actor.logicalPosition.status === "known")
       .sort((left, right) => {
-        const priority = (actor: AiObservedActorV1) =>
+        const priority = (actor: AiObservedActor) =>
           actor.mainBuilding?.status === "known" && actor.mainBuilding.value
             ? 0
             : actor.capabilities.some((capability) => capability.family === "produce")
@@ -269,7 +269,7 @@ export function projectAiObservationMap(
 /** Hashes only owned/visible topology actors so hidden movement cannot invalidate the AI graph. */
 export function permittedAiObservationTopology(
   scene: Phaser.Scene,
-  actors: readonly AiObservedActorV1[],
+  actors: readonly AiObservedActor[],
   liveById: ReadonlyMap<ActorId, GameObject>
 ): {
   readonly revision: number;

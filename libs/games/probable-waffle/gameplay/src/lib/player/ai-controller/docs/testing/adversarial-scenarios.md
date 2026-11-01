@@ -21,7 +21,7 @@ Include the C/D cases from [classic RTS and difficulty](classic-rts-and-difficul
 The shared CLI supports explicit modes:
 
 - `--scenario <id> --seed <n> --mode pure|runtime|both`: reproduce a named scenario. Pure/runtime support is declared, not guessed.
-- `--suite release --candidate <sha> --baseline <sha>`: clean isolated candidate/baseline sources and versioned complete manifest; includes original strategic cases, H-cases and SEQ-cases below.
+- `--suite release --candidate <sha> --baseline <sha>`: clean isolated candidate/baseline sources and complete manifest; includes original strategic cases, H-cases and SEQ-cases below.
 
 Keep one runner/manifest and assertion library; do not build an unrelated smoke simulator. Reports record the actual implementation, systems, assertion paths and provenance executed.
 

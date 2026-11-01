@@ -1,7 +1,7 @@
 import { expect, type Browser } from "@playwright/test";
 import type Phaser from "phaser";
-import type { AiRuntimeBrowserTestHostV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host-v1";
+import type { AiRuntimeBrowserTestHost } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host";
 import type { ProbableWaffleScene } from "@fuzzy-waddle/probable-waffle-phaser/core/probable-waffle.scene";
 import type { StateHashService } from "@fuzzy-waddle/probable-waffle-phaser/world/services/recovery/state-hash.service";
 import type { SimulationTickService } from "@fuzzy-waddle/probable-waffle-phaser/world/services/simulation-tick.service";
@@ -20,10 +20,10 @@ export async function exerciseNativeLiveWorkbench(browser: Browser, seed: number
   try {
     await installRuntimeAccessor(match.host);
     await match.host.waitForFunction(() =>
-      (window.__fuzzyWaddleAiRuntimePartsV1?.(3)?.controller.getBrainDebugHistory().length ?? 0) >= 4);
+      (window.__fuzzyWaddleAiRuntimeParts?.(3)?.controller.getBrainDebugHistory().length ?? 0) >= 4);
     const actions = await match.host.evaluate(() => {
-      const host = (window as unknown as { __fuzzyWaddleAiMultiplayerBrowserTestV1?: Pick<AiRuntimeBrowserTestHostV1, "game"> })
-        .__fuzzyWaddleAiMultiplayerBrowserTestV1;
+      const host = (window as unknown as { __fuzzyWaddleAiMultiplayerBrowserTest?: Pick<AiRuntimeBrowserTestHost, "game"> })
+        .__fuzzyWaddleAiMultiplayerBrowserTest;
       const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key === "MapAiMultiplayer") as
         ProbableWaffleScene | undefined;
       const services: readonly object[] = scene?.getSceneGameData().services ?? [];

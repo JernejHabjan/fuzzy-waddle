@@ -7,7 +7,7 @@ import type { ActorDefinition } from "@fuzzy-waddle/probable-waffle-protocol";
  */
 export function serializeActorQueueState(actor: Pick<ActorDefinition, "production" | "research" | "sharedQueue">): string {
   if (actor.sharedQueue !== undefined) {
-    return `shared-v1:${encodeURIComponent(JSON.stringify(canonicalQueueValue(actor.sharedQueue)))}`;
+    return `shared:${encodeURIComponent(JSON.stringify(canonicalQueueValue(actor.sharedQueue)))}`;
   }
   const production = (actor.production?.queue ?? [])
     .map((item) => `${item.name ?? "?"}:${Math.round(item.remainingTime ?? 0)}`)

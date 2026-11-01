@@ -1,31 +1,31 @@
 import type { GameCommandExecution } from "@fuzzy-waddle/probable-waffle-protocol";
 import { isDeepStrictEqual } from "node:util";
-import type { AiRuntimeProductionCaptureV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
-import type { RuntimeProductionRejectionV1 } from "./skirmish-ai-runtime-production-rejection";
+import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
+import type { RuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality";
+import type { RuntimeProductionRejection } from "./skirmish-ai-runtime-production-rejection";
 import { matchRuntimeRejectedAdmission } from "./skirmish-ai-runtime-rejected-admission";
 import { validateRuntimeRejectionBoundaries } from "./skirmish-ai-runtime-rejection-boundaries";
 import { reconcileRuntimeProductionUnspent } from "./skirmish-ai-runtime-production-unspent";
 
 /** Selected request / real receipt or stamped rejection, kept separate from accepted commands and physical mutations. */
 export function projectRuntimeProductionRejections(
-  capture: AiRuntimeProductionCaptureV1,
-  commands: RuntimeProductionCausalityV1["commands"],
-  payments: RuntimeProductionCausalityV1["payments"],
+  capture: AiRuntimeProductionSnapshot,
+  commands: RuntimeProductionCausality["commands"],
+  payments: RuntimeProductionCausality["payments"],
   admissions: readonly NonNullable<ReturnType<typeof matchRuntimeRejectedAdmission>["scope"]>[]
 ) {
   const failures: string[] = [];
   const gaps: string[] = [];
-  const rejections: RuntimeProductionRejectionV1[] = [];
+  const rejections: RuntimeProductionRejection[] = [];
   const append = (
-    request: Extract<AiRuntimeProductionFactV1, { kind: "intent_dispatch" }>,
+    request: Extract<AiRuntimeProductionFact, { kind: "intent_dispatch" }>,
     receiptSequence: number,
-    decision: RuntimeProductionRejectionV1["decision"],
-    terminal: Extract<AiRuntimeProductionFactV1, { kind: "intent_dispatch" | "outcome" }>,
-    stage: RuntimeProductionRejectionV1["stage"],
+    decision: RuntimeProductionRejection["decision"],
+    terminal: Extract<AiRuntimeProductionFact, { kind: "intent_dispatch" | "outcome" }>,
+    stage: RuntimeProductionRejection["stage"],
     scheduledTick: number | null,
-    nativeOutcome: RuntimeProductionRejectionV1["nativeOutcome"]
+    nativeOutcome: RuntimeProductionRejection["nativeOutcome"]
   ) => {
     if (request.event.kind !== "requested" || !request.event.acceptedIntent) return;
     const intent = request.event.acceptedIntent;

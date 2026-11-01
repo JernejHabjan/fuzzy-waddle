@@ -7,7 +7,7 @@ jest.mock("@fuzzy-waddle/environments/environment", () => ({ environment: { prod
 describe("native runtime import surface", () => {
   beforeEach(() => {
     document.querySelectorAll("[data-ai-runtime-bundle-import]").forEach((element) => element.remove());
-    sessionStorage.removeItem("fuzzy-waddle:ai-runtime-import-v1");
+    sessionStorage.removeItem("fuzzy-waddle:ai-runtime-import");
   });
 
   it("creates no surface without the explicit developer opt-in", () => {
@@ -16,7 +16,7 @@ describe("native runtime import surface", () => {
   });
 
   it("checks current host authority at click time and detaches on scene shutdown", () => {
-    sessionStorage.setItem("fuzzy-waddle:ai-runtime-import-v1", "1");
+    sessionStorage.setItem("fuzzy-waddle:ai-runtime-import", "1");
     const events = new EventEmitter();
     const owner = { isHost: true, events };
     mountAiRuntimeBundleImport(owner as unknown as ProbableWaffleScene);

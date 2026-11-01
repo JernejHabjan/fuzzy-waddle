@@ -1,12 +1,12 @@
 import type { PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
-import type { AiAuthorityStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
-import type { AiBrainStepResultV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain-step-result-v1";
+import type { AiAuthorityState } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiBrainStepResult } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain-step-result";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { AI_DECISION_DISPATCH_EVENT, type AiDecisionDispatchEvent } from "./ai-decision-dispatch-event";
 import { captureAiSelectedMissionState } from "./capture-ai-selected-mission-state";
 import { AI_INTENT_COMMAND_DISPATCH_EVENT } from "./ai-intent-command-dispatch-event";
 import { dispatchAiIntents } from "./ai-intent-dispatcher";
-import type { AiDecisionInputV1 } from "./ai-decision-input-v1";
+import type { AiDecisionInput } from "./ai-decision-input";
 // prettier-ignore
 import { readAiGatheringSelection } from
   "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-gathering-selection-observation";
@@ -15,9 +15,9 @@ import { readAiGatheringSelection } from
 export function dispatchAiBrainResult(
   scene: ProbableWaffleScene,
   playerNumber: PlayerNumber,
-  result: AiBrainStepResultV1,
-  authority: AiAuthorityStateV1,
-  input?: AiDecisionInputV1
+  result: AiBrainStepResult,
+  authority: AiAuthorityState,
+  input?: AiDecisionInput
 ): void {
   if (
     !scene.events.listenerCount(AI_DECISION_DISPATCH_EVENT) &&

@@ -1,6 +1,6 @@
 import { ObjectNames, type ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservation } from "../contracts/ai-observation";
 
 /**
  * Price the missing renewable-food prerequisite closure once per definition, before optional worker growth.
@@ -8,8 +8,8 @@ import type { AiObservationV1 } from "../contracts/ai-observation-v1";
  * that means unknown support, never proof of strategic infeasibility or permission to spend the bootstrap bank.
  */
 export function renewableFoodReserve(
-  self: readonly AiObservationV1["actors"][number][],
-  catalog: AiCapabilityCatalogV1
+  self: readonly AiObservation["actors"][number][],
+  catalog: AiCapabilityCatalog
 ): Readonly<Partial<Record<ResourceType, number>>> | null {
   const result: Partial<Record<ResourceType, number>> = {};
   const complete = new Set(self.map((actor) => actor.objectName));

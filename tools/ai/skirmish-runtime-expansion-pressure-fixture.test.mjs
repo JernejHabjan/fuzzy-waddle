@@ -10,7 +10,7 @@ const valid = (value) => validExpansionPressureRecipe(value.recipe, value.assert
 
 test("EXP-02 registers eight paired native branches and keeps every declared branch bound", () => {
   assert.equal(valid(fixture), true);
-  const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish-v1.json", import.meta.url)));
+  const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish.json", import.meta.url)));
   const row = manifest.rows.find((entry) => entry.id === "EXP-02");
   assert.equal(row.fixture, "expansion-pressure-runtime.json");
   assert.equal(row.runtimeRecipeDraft, undefined);

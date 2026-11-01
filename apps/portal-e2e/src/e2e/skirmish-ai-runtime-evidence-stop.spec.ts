@@ -1,10 +1,10 @@
 import { expect, test } from "@playwright/test";
-import type { RuntimeAssertionV1 } from "./skirmish-ai-runtime-assertion";
+import type { RuntimeAssertion } from "./skirmish-ai-runtime-assertion";
 import { isEvidenceStopSafe, nextEvidenceStopState } from "./skirmish-ai-runtime-evidence-stop";
 import { evaluateEvidenceStopAtCheckpoint } from "./skirmish-ai-runtime-evidence-stop-evaluation";
 import { productionCheckpoint } from "./skirmish-ai-runtime-digest-fixtures";
 
-const positive: RuntimeAssertionV1 = {
+const positive: RuntimeAssertion = {
   maximumTick: 1000,
   minimumDecisions: 10,
   minimumAppliedCommands: 1,
@@ -51,7 +51,7 @@ test("absence, final-composition, temporal, terminal and lifecycle assertions re
   ]) {
     expect(isEvidenceStopSafe({ ...positive, ...addition })).toBe(false);
     expect(
-      state({ tick: 400, satisfiedSinceTick: 200, assertions: [{ ...positive, ...addition }] as RuntimeAssertionV1[] })
+      state({ tick: 400, satisfiedSinceTick: 200, assertions: [{ ...positive, ...addition }] as RuntimeAssertion[] })
         .stop
     ).toBe(false);
   }

@@ -17,7 +17,7 @@
     "mapDigest": "authored-at-runtime-bootstrap",
     "side": 1,
     "faction": "Tivara",
-    "rulesVersion": "probable-waffle-rules-v1",
+    "rulesVersion": "probable-waffle-rules",
     "contractVersions": {
       "scenario": 1,
       "brain": 1,
@@ -90,7 +90,7 @@
       ],
       "tests": [
         {
-          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/debug/ai-incident-capture-store-v1.spec.ts",
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/debug/ai-incident-capture-store.spec.ts",
           "title": "DBG-05 stores labels as inert data rather than rendering HTML"
         }
       ]

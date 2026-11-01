@@ -5,11 +5,11 @@ import {
   ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { HIGH_GROUND_THRESHOLD } from "../../../entity/components/combat/high-ground-constants";
-import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
+import type { AiObservation, AiObservedActor } from "../contracts/ai-observation";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
 import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "../testing/ai-test-fixtures";
 import { completedOpeningState, catalog as macroCatalog } from "./ai-macro-test-fixtures";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { AiBaseManager } from "./ai-base-manager";
 import { findAiExpansionBuilder } from "./ai-expansion-site";
 import { aiEconomySiteSafety } from "./ai-economy-site-safety";
@@ -17,17 +17,17 @@ import { observedAiProducerThreats, isAiProducerPositionExposed } from "./ai-pro
 
 function fixture() {
   const tick = 600;
-  const main: AiObservedActorV1 = {
+  const main: AiObservedActor = {
     ...createAiTestOwnedActor("main"),
     objectName: ObjectNames.Sandhold,
     mainBuilding: { status: "known", value: true, observedTick: tick },
     logicalPosition: { status: "known", value: { x: 0, y: 3, z: 0 }, observedTick: tick }
   };
-  const worker: AiObservedActorV1 = {
+  const worker: AiObservedActor = {
     ...createAiTestOwnedActor("worker"),
     logicalPosition: { status: "known", value: { x: 1, y: 3, z: 0 }, observedTick: tick }
   };
-  const distant: AiObservedActorV1 = {
+  const distant: AiObservedActor = {
     ...createAiTestOwnedActor("source"),
     objectName: ObjectNames.Tree1,
     relation: "neutral",
@@ -46,7 +46,7 @@ function fixture() {
       }
     }
   };
-  const catalog: AiCapabilityCatalogV1 = {
+  const catalog: AiCapabilityCatalog = {
     ...macroCatalog,
     entries: macroCatalog.entries.map((entry) =>
       entry.sourceObjectName === ObjectNames.TivaraWorker
@@ -77,7 +77,7 @@ function fixture() {
         observedBlocked: false,
         elevation: 0
       });
-  const observation: AiObservationV1 = {
+  const observation: AiObservation = {
     ...createAiTestObservation(),
     tick,
     actors: [main, worker, distant],
@@ -96,14 +96,14 @@ function fixture() {
     ...initial,
     opening: { ...initial.opening, plan: { ...initial.opening.plan, lifecycle: "completed" as const } }
   };
-  const manager = new AiBaseManager(createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium), () => catalog);
+  const manager = new AiBaseManager(createAiProfileConfig(ProbableWaffleAiDifficulty.Medium), () => catalog);
   return { observation, worker, state, catalog, manager };
 }
 
 describe("expansion placement and worker ownership", () => {
   it("EXP-01 skips a currently occupied candidate and still proposes an available legal site", () => {
     const f = fixture();
-    const observation: AiObservationV1 = {
+    const observation: AiObservation = {
       ...f.observation,
       map: {
         ...f.observation.map!,
@@ -132,7 +132,7 @@ describe("expansion placement and worker ownership", () => {
           : entry
       )
     };
-    const tower: AiObservedActorV1 = {
+    const tower: AiObservedActor = {
       ...createAiTestOwnedActor("enemy-tower"),
       objectName: ObjectNames.WatchTower,
       owner: 2,
@@ -171,7 +171,7 @@ describe("expansion placement and worker ownership", () => {
         }
       }
     };
-    const observation: AiObservationV1 = {
+    const observation: AiObservation = {
       ...f.observation,
       actors: [...f.observation.actors, tower],
       threatSummary: {
@@ -205,7 +205,7 @@ describe("expansion placement and worker ownership", () => {
     "does not steal a worker holding %s for optional expansion",
     (kind) => {
       const f = fixture();
-      const busy: AiObservedActorV1 = {
+      const busy: AiObservedActor = {
         ...f.worker,
         carriedResourceAmount: kind === "cargo" ? 3 : 0,
         resourceTransferInFlight: kind === "transfer",
@@ -235,7 +235,7 @@ describe("expansion placement and worker ownership", () => {
 
   it("EXP-01 declines a known blocked route instead of repeatedly assigning its builder", () => {
     const f = fixture();
-    const observation: AiObservationV1 = {
+    const observation: AiObservation = {
       ...f.observation,
       accessProducts: [
         {
@@ -276,7 +276,7 @@ describe("expansion placement and worker ownership", () => {
 
   it("EXP-02 defers expansion during visible home pressure and resumes once that contact becomes memory", () => {
     const f = fixture();
-    const enemy: AiObservedActorV1 = {
+    const enemy: AiObservedActor = {
       ...createAiTestOwnedActor("raider"),
       owner: 2,
       relation: "enemy",
@@ -293,7 +293,7 @@ describe("expansion placement and worker ownership", () => {
         }
       ]
     };
-    const pressured: AiObservationV1 = {
+    const pressured: AiObservation = {
       ...f.observation,
       actors: [...f.observation.actors, enemy],
       threatSummary: {
@@ -304,7 +304,7 @@ describe("expansion placement and worker ownership", () => {
       }
     };
     expect(f.manager.propose(pressured, f.state).intents).toEqual([]);
-    const clear: AiObservationV1 = {
+    const clear: AiObservation = {
       ...pressured,
       actors: [...f.observation.actors, { ...enemy, visibility: "last_seen" }],
       threatSummary: { ...pressured.threatSummary, visibleEnemyActorIds: [], rememberedEnemyActorIds: [enemy.actorId] }

@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { productionEffectRetentionFixture } from "./skirmish-ai-runtime-production-effect-retention-fixture";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
 import { projectRuntimeProductionEffectRetention } from "./skirmish-ai-runtime-production-effect-retention-projection";
@@ -54,7 +54,7 @@ test("a missing product stays absent, and incomplete owned-world capture leaves 
 for (const defect of ["future_marker", "regressing_marker", "wrong_family", "reused_id", "unregistered_id", "restore"] as const) {
   test(`contradictory ${defect} samples suppress every normalized effect group`, () => {
     const capture = productionEffectRetentionFixture();
-    const facts: AiRuntimeProductionFactV1[] = [...capture.facts];
+    const facts: AiRuntimeProductionFact[] = [...capture.facts];
     if (defect === "reused_id" || defect === "unregistered_id") {
       const registration = facts.find((fact) => fact.kind === "actor_registered");
       if (!registration || registration.kind !== "actor_registered" || !registration.actor.actorId) {

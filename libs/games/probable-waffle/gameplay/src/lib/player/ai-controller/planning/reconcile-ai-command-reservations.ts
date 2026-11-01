@@ -1,12 +1,12 @@
-import type { AiCommandOutcomeV1 } from "../contracts/ai-command-contracts";
-import type { AiReservationV1 } from "../contracts/ai-dependency-contracts";
+import type { AiCommandOutcome } from "../contracts/ai-command-contracts";
+import type { AiReservation } from "../contracts/ai-dependency-contracts";
 
 /** Advances accepted intent claims from actual outcomes; terminal authority releases the complete claim bundle. */
 export function reconcileAiCommandReservations(
-  reservations: readonly AiReservationV1[],
-  outcomes: readonly AiCommandOutcomeV1[]
-): readonly AiReservationV1[] {
-  return outcomes.reduce<readonly AiReservationV1[]>((current, outcome) => {
+  reservations: readonly AiReservation[],
+  outcomes: readonly AiCommandOutcome[]
+): readonly AiReservation[] {
+  return outcomes.reduce<readonly AiReservation[]>((current, outcome) => {
     const effectKey = `effect:${outcome.identity.effectId}`;
     const ownedEffects = current.filter((reservation) => reservation.subjectKey?.startsWith("effect:"));
     const matches = ownedEffects.filter(

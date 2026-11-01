@@ -1,9 +1,9 @@
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
-import type { AiBrainStateV1, AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiDomainV1, AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import type { AiBrainState, AiSquadState } from "../contracts/ai-brain-state";
+import type { AiDomain, AiObservation, AiObservedActor } from "../contracts/ai-observation";
 import { MAX_RETREAT_CANDIDATES } from "./ai-tactics-rules";
 
-export function knownPosition(actor: AiObservedActorV1 | undefined): Vector3Simple | null {
+export function knownPosition(actor: AiObservedActor | undefined): Vector3Simple | null {
   return actor?.logicalPosition.status === "known" ? actor.logicalPosition.value : null;
 }
 
@@ -11,12 +11,12 @@ export function distance(left: Vector3Simple, right: Vector3Simple): number {
   return Math.abs(left.x - right.x) + Math.abs(left.y - right.y) + Math.abs(left.z - right.z);
 }
 
-export function movementDomains(actor: AiObservedActorV1): readonly AiDomainV1[] {
+export function movementDomains(actor: AiObservedActor): readonly AiDomain[] {
   const domains = [...new Set(actor.capabilities.flatMap((capability) => capability.domains))].sort();
   return domains.length > 0 ? domains : ["ground"];
 }
 
-export function harmfulAt(position: Vector3Simple, observation: AiObservationV1): boolean {
+export function harmfulAt(position: Vector3Simple, observation: AiObservation): boolean {
   return observation.effects.some(
     (effect) => effect.influence === "harmful" && distance(position, effect.position) <= (effect.radius ?? 0) + 1
   );
@@ -24,8 +24,8 @@ export function harmfulAt(position: Vector3Simple, observation: AiObservationV1)
 
 export function legalForMembers(
   position: Vector3Simple,
-  observation: AiObservationV1,
-  members: readonly AiObservedActorV1[]
+  observation: AiObservation,
+  members: readonly AiObservedActor[]
 ): boolean {
   if (harmfulAt(position, observation)) return false;
   const cell = [...(observation.map?.constructionCells ?? []), ...(observation.map?.tacticalCells ?? [])].find(
@@ -41,9 +41,9 @@ export function legalForMembers(
 }
 
 export function safeRetreatPosition(
-  observation: AiObservationV1,
-  state: AiBrainStateV1,
-  members: readonly AiObservedActorV1[],
+  observation: AiObservation,
+  state: AiBrainState,
+  members: readonly AiObservedActor[],
   protectedBaseId?: string | null
 ): Vector3Simple | null {
   const anchors = state.bases
@@ -95,11 +95,11 @@ export function safeRetreatPosition(
 }
 
 export function formationPositions(
-  members: readonly AiObservedActorV1[],
+  members: readonly AiObservedActor[],
   anchor: Vector3Simple | null,
-  observation: AiObservationV1,
+  observation: AiObservation,
   rejectedPositionByActor: ReadonlyMap<string, string> = new Map()
-): NonNullable<AiSquadStateV1["tactics"]>["assignedPositions"] {
+): NonNullable<AiSquadState["tactics"]>["assignedPositions"] {
   if (!anchor) return [];
   const spacing = formationSpacing(members);
   const offsets = [
@@ -133,7 +133,7 @@ export function formationPositions(
   });
 }
 
-function formationSpacing(members: readonly AiObservedActorV1[]): number {
+function formationSpacing(members: readonly AiObservedActor[]): number {
   return Math.max(
     1,
     ...members.map((actor) =>

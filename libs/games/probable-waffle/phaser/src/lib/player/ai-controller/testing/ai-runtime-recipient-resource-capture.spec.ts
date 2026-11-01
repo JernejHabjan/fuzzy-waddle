@@ -10,7 +10,7 @@ import {
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { AiRuntimeRecipientResourceCapture } from "./ai-runtime-recipient-resource-capture";
 import { AiRuntimeResourceCoverageCapture } from "./ai-runtime-resource-coverage-capture";
-import type { AiRuntimeProductionFactV1 } from "./ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "./ai-runtime-production-fact";
 import { fenceSceneResourceHistory } from "../../../data/scene-resource-observation";
 import { readAiRuntimeResourceOperationId } from "./ai-runtime-resource-operation-identity";
 
@@ -39,7 +39,7 @@ function fixture() {
     },
     baseGameData: { gameInstance }
   } as ProbableWaffleScene;
-  const facts: AiRuntimeProductionFactV1[] = [];
+  const facts: AiRuntimeProductionFact[] = [];
   const coverage = new AiRuntimeResourceCoverageCapture(0, () => ({ tick: 0, captureSequence: facts.length }));
   const journal = new AiRuntimeRecipientResourceCapture(
     scene,
@@ -90,7 +90,7 @@ describe("all-recipient native resource journal", () => {
     expect(f.player.getResources().wood).toBe(201);
     expect(f.coverage.read().losses).toContain("recipient_mutation_listener_failed");
     expect(() => f.player.payAllResources({ wood: 1, food: 201 })).toThrow("Not enough resources");
-    expect(f.player.getResources().wood).toBe(200);
+    expect(f.player.getResources()).toMatchObject({ wood: 201, food: 200 });
     append.mockRestore();
     f.journal.dispose();
   });
@@ -120,10 +120,10 @@ describe("all-recipient native resource journal", () => {
     f.journal.dispose();
     expect(readAiRuntimeResourceOperationId(f.scene, {})).toBeNull();
   });
-  it("fences partial throw, alias mismatch, replacement and restore monotonically", () => {
+  it("records rejected payment without partial debit and fences alias mismatch, replacement and restore", () => {
     const f = fixture();
     expect(() => f.player.payAllResources({ wood: 1, food: 201 })).toThrow("Not enough resources");
-    expect(f.facts.at(-1)).toMatchObject({ mutation: { phase: "threw", after: { wood: 199 } } });
+    expect(f.facts.at(-1)).toMatchObject({ mutation: { phase: "threw", after: { wood: 200, food: 200 } } });
     f.player.getResources().wood++;
     f.journal.reconcile();
     expect(f.coverage.read().losses).toContain("recipient_unobserved_balance_change");

@@ -1,6 +1,6 @@
 import type Phaser from "phaser";
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
-import type { AiObservedActorV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiObservedActor } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { getActorComponent } from "../../../data/actor-component";
 import { getTileCoordsUnderObject } from "../../../library/tile-under-object";
 import { ActorTranslateComponent } from "../../../entity/components/movement/actor-translate-component";
@@ -11,7 +11,7 @@ import { ColliderComponent } from "../../../entity/components/movement/collider-
  */
 export function observedConstructionOccupancy(
   tilemap: Phaser.Tilemaps.Tilemap,
-  actors: readonly AiObservedActorV1[],
+  actors: readonly AiObservedActor[],
   liveById: ReadonlyMap<ActorId, Phaser.GameObjects.GameObject>
 ): ReadonlySet<string> {
   const occupied = new Set<string>();
@@ -27,7 +27,7 @@ export function observedConstructionOccupancy(
 /** Visible stationary bodies block native movement; moving units remain temporary obstacles only. */
 export function observedStaticConstructionOccupancy(
   tilemap: Phaser.Tilemaps.Tilemap,
-  actors: readonly AiObservedActorV1[],
+  actors: readonly AiObservedActor[],
   liveById: ReadonlyMap<ActorId, Phaser.GameObjects.GameObject>
 ): ReadonlySet<string> {
   const occupied = new Set<string>();

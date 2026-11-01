@@ -1,5 +1,5 @@
 import type { RuntimeProductionEvidenceV2 } from "./skirmish-ai-runtime-production-evidence-v2";
-import type { RuntimeProductionContractV1 } from "./skirmish-ai-runtime-production-contract";
+import type { RuntimeProductionContract } from "./skirmish-ai-runtime-production-contract";
 import { evaluateRuntimeProductionSchedule } from "./skirmish-ai-runtime-production-schedule-evaluation";
 import { evaluateRuntimeProductionRecovery } from "./skirmish-ai-runtime-production-recovery-evaluation";
 import {
@@ -7,10 +7,10 @@ import {
   evaluateRuntimeProductionQueuePayments
 } from "./skirmish-ai-runtime-production-queue-authority-evaluation";
 
-/** Full runtime rows require V2. The retained V1 pure controls are diagnostic regressions, not runtime certification. */
+/** Full runtime rows require V2. The retained current pure controls are diagnostic regressions, not runtime certification. */
 export function evaluateRuntimeProductionAuthority(
   scenarioId: string,
-  contract: RuntimeProductionContractV1 | undefined,
+  contract: RuntimeProductionContract | undefined,
   evidence: RuntimeProductionEvidenceV2 | undefined
 ): string[] {
   if (!["PRO-03", "PRO-06", "PRO-07", "H-17"].includes(scenarioId)) return [];

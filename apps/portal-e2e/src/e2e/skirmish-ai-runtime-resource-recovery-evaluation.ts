@@ -1,11 +1,11 @@
 import type { RuntimeResourceRecoveryContract } from "./skirmish-ai-runtime-resource-recovery-contract";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 import { runtimeResourceCreditMatches } from "./skirmish-ai-runtime-resource-service-validation";
 
 /** Requires physical cargo, a real destroyed drain, native credit and later compatible extraction, plus renewable crop work. */
 export function evaluateRuntimeResourceRecovery(
   contract: RuntimeResourceRecoveryContract | undefined,
-  variant: Pick<RuntimeVariantResultV1, "productionCapture" | "presetCreatedActorIds" | "perturbations" | "checkpoints">
+  variant: Pick<RuntimeVariantResult, "productionCapture" | "presetCreatedActorIds" | "perturbations" | "checkpoints">
 ): string[] {
   if (!contract) return [];
   const capture = variant.productionCapture;

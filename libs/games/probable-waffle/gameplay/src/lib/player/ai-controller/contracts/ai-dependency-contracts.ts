@@ -1,8 +1,8 @@
 import type { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiClaimId, AiDeadlineV1, AiPlanId, AiSimulationTick, AiWaitEdgeId } from "./ai-core-types";
+import type { AiClaimId, AiDeadline, AiPlanId, AiSimulationTick, AiWaitEdgeId } from "./ai-core-types";
 
 /** Typed prerequisite edge used for admission and bounded cycle detection. */
-export type AiPrerequisiteEdgeV1 =
+export type AiPrerequisiteEdge =
   | { readonly kind: "resource"; readonly resourceType: ResourceType; readonly amount: number }
   | { readonly kind: "supply"; readonly amount: number }
   | { readonly kind: "worker"; readonly capabilityId: string }
@@ -11,33 +11,33 @@ export type AiPrerequisiteEdgeV1 =
   | { readonly kind: "service_slot"; readonly serviceId: string };
 
 /** Directed wait edge between stable plans; unknown edges retain a deadline. */
-export interface AiWaitEdgeV1 {
+export interface AiWaitEdge {
   readonly edgeId: AiWaitEdgeId;
   readonly fromPlanId: AiPlanId;
   readonly toPlanId: AiPlanId | null;
-  readonly prerequisite: AiPrerequisiteEdgeV1;
+  readonly prerequisite: AiPrerequisiteEdge;
   readonly status: "known" | "unknown" | "infeasible";
-  readonly deadline: AiDeadlineV1;
+  readonly deadline: AiDeadline;
 }
 
 /** Reservation states distinguish forecasts, reversible leases and applied spending. */
-export type AiReservationStateV1 =
+export type AiReservationState =
   | { readonly kind: "forecast" }
-  | { readonly kind: "provisional"; readonly expiresAt: AiDeadlineV1 }
+  | { readonly kind: "provisional"; readonly expiresAt: AiDeadline }
   | { readonly kind: "dispatched"; readonly commandId: string }
   | { readonly kind: "applied_spending"; readonly appliedTick: AiSimulationTick }
   | { readonly kind: "refundable_work"; readonly refundPending: boolean };
 
 /** One atomic resource/actor/service claim owned by a plan. */
-export interface AiReservationV1 {
+export interface AiReservation {
   readonly claimId: AiClaimId;
   /** Stable physical subject key for cross-decision exclusivity; absent only on migrated pre-Stage-6 saves. */
   readonly subjectKey?: string;
   /** Resource escrow held while an admitted effect is provisional or dispatched. */
   readonly resourceAmount?: number;
   readonly ownerPlanId: AiPlanId;
-  readonly state: AiReservationStateV1;
-  readonly prerequisites: readonly AiPrerequisiteEdgeV1[];
+  readonly state: AiReservationState;
+  readonly prerequisites: readonly AiPrerequisiteEdge[];
   readonly createdTick: AiSimulationTick;
   /** Original admission rank, retained through saves. Absent legacy ranks cannot safely select a cycle victim. */
   readonly priority?: Readonly<{ readonly urgencyClass: number; readonly utility: number }>;

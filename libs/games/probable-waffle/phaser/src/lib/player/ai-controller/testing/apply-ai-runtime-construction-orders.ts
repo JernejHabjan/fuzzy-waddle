@@ -11,8 +11,8 @@ import { SimulationTickService } from "../../../world/services/simulation-tick.s
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
 import { IsoHelper } from "../../../world/tilemap/iso-helper";
-import type { AiRuntimeConstructionOrderV1 } from "./ai-runtime-construction-order-v1";
-import type { AiRuntimeConstructionApplicationV1 } from "./ai-runtime-construction-application-v1";
+import type { AiRuntimeConstructionOrder } from "./ai-runtime-construction-order";
+import type { AiRuntimeConstructionApplication } from "./ai-runtime-construction-application";
 
 /**
  * Seed unfinished work through normal validation/assignment at paused tick zero. A rejected command, ambiguous
@@ -21,10 +21,10 @@ import type { AiRuntimeConstructionApplicationV1 } from "./ai-runtime-constructi
 export function applyAiRuntimeConstructionOrders(
   scene: ProbableWaffleScene,
   fixtureId: string,
-  orders: readonly AiRuntimeConstructionOrderV1[],
+  orders: readonly AiRuntimeConstructionOrder[],
   actors: Map<string, Phaser.GameObjects.GameObject>,
   actorIds: Record<string, string>
-): AiRuntimeConstructionApplicationV1[] {
+): AiRuntimeConstructionApplication[] {
   if (!orders.length) return [];
   const bus = getSceneService(scene, CommandBusService);
   const index = getSceneService(scene, ActorIndexSystem);

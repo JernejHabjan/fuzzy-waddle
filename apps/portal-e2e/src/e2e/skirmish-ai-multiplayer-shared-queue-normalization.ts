@@ -1,5 +1,5 @@
 import type { GameCommandOutcomeKind } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiMultiplayerSharedQueueWorldV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-multiplayer-shared-queue-world-v1";
+import type { AiMultiplayerSharedQueueWorldSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-multiplayer-shared-queue-world-snapshot";
 import { sameRuntimeQueueCommand } from "./skirmish-ai-runtime-queue-command-equality";
 import {
   normalizeRuntimeScopedQueuePayments,
@@ -7,8 +7,8 @@ import {
 } from "./skirmish-ai-runtime-scoped-queue-payments";
 import { evaluateMultiplayerResearchCancellation } from "./skirmish-ai-multiplayer-research-cancellation-evaluation";
 
-/** Normalizes shared human authority only; raw AI/fairness gaps remain and no RuntimeProductionEvidenceV1 is produced. */
-export function normalizeMultiplayerSharedQueueWorld(world: AiMultiplayerSharedQueueWorldV1, sender: boolean) {
+/** Normalizes shared human authority only; raw AI/fairness gaps remain and no RuntimeProductionEvidence is produced. */
+export function normalizeMultiplayerSharedQueueWorld(world: AiMultiplayerSharedQueueWorldSnapshot, sender: boolean) {
   const failures: string[] = [];
   const setup = world.setup;
   const capture = world.capture;
@@ -96,11 +96,11 @@ export function normalizeMultiplayerSharedQueueWorld(world: AiMultiplayerSharedQ
     )
       failures.push("shared_queue_outcome_lineage_invalid");
   }
-  const outcome = (role: AiMultiplayerSharedQueueWorldV1["commands"][number]["role"], kind: GameCommandOutcomeKind) => {
+  const outcome = (role: AiMultiplayerSharedQueueWorldSnapshot["commands"][number]["role"], kind: GameCommandOutcomeKind) => {
     const id = world.commands.find((entry) => entry.role === role)?.command.execution?.commandId;
     return outcomes.filter((fact) => fact.outcome.commandId === id && fact.outcome.kind === kind);
   };
-  const snapshot = (name: AiMultiplayerSharedQueueWorldV1["checkpoints"][number]["boundary"]) =>
+  const snapshot = (name: AiMultiplayerSharedQueueWorldSnapshot["checkpoints"][number]["boundary"]) =>
     world.checkpoints.find((entry) => entry.boundary === name)?.snapshot;
   const items = (name: Parameters<typeof snapshot>[0]) =>
     snapshot(name)

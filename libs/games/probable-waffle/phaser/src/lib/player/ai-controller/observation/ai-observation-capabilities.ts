@@ -1,9 +1,9 @@
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiDomainV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiDomain } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import { MovementTerrainType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/movement-terrain-type";
 
-export function movementDomains(definition: ReturnType<typeof getPwActorDefinition>): AiDomainV1[] {
+export function movementDomains(definition: ReturnType<typeof getPwActorDefinition>): AiDomain[] {
   if (!definition) return [];
   if (definition.components?.flying) return ["air"];
   switch (definition.components?.translatable?.movementTerrainType) {
@@ -18,7 +18,7 @@ export function movementDomains(definition: ReturnType<typeof getPwActorDefiniti
   }
 }
 
-export function targetDomains(definition: ReturnType<typeof getPwActorDefinition>): AiDomainV1[] {
+export function targetDomains(definition: ReturnType<typeof getPwActorDefinition>): AiDomain[] {
   const attacks = definition?.components?.attack?.attacks ?? [];
   if (attacks.length === 0) return [];
   return attacks.some((attack) => attack.canTargetAir) ? ["ground", "water", "air"] : ["ground", "water"];

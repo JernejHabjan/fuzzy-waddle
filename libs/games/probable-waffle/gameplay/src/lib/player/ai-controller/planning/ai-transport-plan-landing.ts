@@ -1,16 +1,16 @@
-import type { AiAccessTransferPointV1 } from "../contracts/ai-access-graph-v1";
+import type { AiAccessTransferPoint } from "../contracts/ai-access-graph";
 import type { AiTransportPlanContext } from "./ai-transport-plan-context";
 import { createAiTransportIntentBase } from "./ai-transport-plan-intents";
 import type { AiTransportPlanWithLifecycle } from "./ai-transport-plan-lifecycle";
 import { hasAiTransportNonTerminalOutcome, withAiTransportPhase } from "./ai-transport-plan-state";
-import { isAiTransportActorNear, scoreAiTransportTransferV1 } from "./ai-transport-transfer";
+import { isAiTransportActorNear, scoreAiTransportTransfer } from "./ai-transport-transfer";
 import { AI_TRANSPORT_BOARDING_TIMEOUT_TICKS } from "./ai-transport-constants";
 
 export function advanceAiTransportLanding(
   plan: AiTransportPlanWithLifecycle,
   context: AiTransportPlanContext,
-  pickup: AiAccessTransferPointV1,
-  landing: AiAccessTransferPointV1,
+  pickup: AiAccessTransferPoint,
+  landing: AiAccessTransferPoint,
   actors: ReadonlyMap<string, AiTransportPlanContext["observation"]["actors"][number]>
 ): AiTransportPlanWithLifecycle {
   if (plan.phase === "transit") {
@@ -38,7 +38,7 @@ export function advanceAiTransportLanding(
     if (
       !context.graph ||
       context.graph.generation !== plan.lifecycle.routeGeneration ||
-      scoreAiTransportTransferV1(
+      scoreAiTransportTransfer(
         pickup,
         landing,
         context.observation,

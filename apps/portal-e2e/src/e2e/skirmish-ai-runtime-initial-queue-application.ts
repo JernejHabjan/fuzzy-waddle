@@ -1,14 +1,14 @@
 import { isDeepStrictEqual } from "node:util";
 // prettier-ignore
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 // prettier-ignore
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 // prettier-ignore
-import type { AiRuntimePresetApplicationV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application-v1";
-import type { RuntimeProductionInitialQueueV1 } from "./skirmish-ai-runtime-production-initial-queue";
+import type { AiRuntimePresetApplication } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application";
+import type { RuntimeProductionInitialQueue } from "./skirmish-ai-runtime-production-initial-queue";
 import { isRuntimeProductionBalance } from "./skirmish-ai-runtime-production-balance";
 import {
   normalizeRuntimeScopedQueuePayments,
@@ -19,19 +19,19 @@ import { sameRuntimeQueueCommand } from "./skirmish-ai-runtime-queue-command-equ
 
 /** Validates one actual paused insertion/payment. The caller retains complete failures and never promotes a partial item. */
 export function appendRuntimeInitialQueueApplication(
-  application: AiRuntimePresetApplicationV1["queueApplications"][number],
-  capture: AiRuntimeProductionCaptureV1,
-  setup: AiRuntimePresetApplicationV1,
-  initial: AiRuntimeProductionCaptureV1["snapshots"][number] & {
-    world: NonNullable<AiRuntimeProductionCaptureV1["snapshots"][number]["world"]>;
+  application: AiRuntimePresetApplication["queueApplications"][number],
+  capture: AiRuntimeProductionSnapshot,
+  setup: AiRuntimePresetApplication,
+  initial: AiRuntimeProductionSnapshot["snapshots"][number] & {
+    world: NonNullable<AiRuntimeProductionSnapshot["snapshots"][number]["world"]>;
   },
-  facts: readonly AiRuntimeProductionFactV1[],
+  facts: readonly AiRuntimeProductionFact[],
   physical: readonly {
-    queue: AiRuntimeProductionCaptureV1["snapshots"][number]["queues"][number];
-    lane: AiRuntimeProductionCaptureV1["snapshots"][number]["queues"][number]["lanes"][number];
-    item: AiRuntimeProductionCaptureV1["snapshots"][number]["queues"][number]["lanes"][number]["items"][number];
+    queue: AiRuntimeProductionSnapshot["snapshots"][number]["queues"][number];
+    lane: AiRuntimeProductionSnapshot["snapshots"][number]["queues"][number]["lanes"][number];
+    item: AiRuntimeProductionSnapshot["snapshots"][number]["queues"][number]["lanes"][number]["items"][number];
   }[],
-  items: RuntimeProductionInitialQueueV1[],
+  items: RuntimeProductionInitialQueue[],
   failures: string[],
   gaps: Set<string>
 ): void {
@@ -123,7 +123,7 @@ export function appendRuntimeInitialQueueApplication(
     return;
   }
   const mutations = facts.filter(
-    (fact): fact is Extract<AiRuntimeProductionFactV1, { kind: "queue_mutation" }> =>
+    (fact): fact is Extract<AiRuntimeProductionFact, { kind: "queue_mutation" }> =>
       fact.kind === "queue_mutation" &&
       fact.mutation.operation === "enqueue" &&
       fact.mutation.item?.itemId === match.item.itemId

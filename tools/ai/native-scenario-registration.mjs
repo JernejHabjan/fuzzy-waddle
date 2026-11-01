@@ -130,7 +130,7 @@ export function nativeScenarioFixture(id) {
     acceptance: binding.acceptance,
     ...(binding.capabilityLimits ? { capabilityLimits: id === "D-06" ? [...binding.capabilityLimits,
       `Frozen workload specification sha256:${createHash("sha256").update(readFileSync(
-        new URL("./fixtures/difficulty-calibration-v1.json", import.meta.url))).digest("hex")}`] : binding.capabilityLimits } : {}),
+        new URL("./fixtures/difficulty-calibration.json", import.meta.url))).digest("hex")}`] : binding.capabilityLimits } : {}),
     recipe: { mapLabel: id === "D-06" ? "River Crossing" :
       ["C-06", "DOMAIN-02"].includes(id) ? "AI Multiplayer (test only)" : "AI Open Economy (test only)",
       aiPlayerNumber: 2, simulationTimeScale: 1,

@@ -5,17 +5,17 @@ import {
   ProbableWaffleAiDifficulty,
   ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservedActor } from "../contracts/ai-observation";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
-import { buildAiAccessGraphV1 } from "./ai-access-graph-v1";
+import { buildAiAccessGraph } from "./ai-access-graph";
 import { AiSkirmishManager } from "./ai-skirmish-manager";
 import { ownedCombat } from "./ai-skirmish-support";
 
-const graph = buildAiAccessGraphV1({
+const graph = buildAiAccessGraph({
   generation: 1,
   staticRevision: 1,
   dynamicRevision: 1,
@@ -48,8 +48,8 @@ const graph = buildAiAccessGraphV1({
 });
 const homeNode = graph.groundNodeByTileKey.get("0,0")!;
 const enemyNode = graph.groundNodeByTileKey.get("1,0")!;
-const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-const catalog: AiCapabilityCatalogV1 = {
+const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+const catalog: AiCapabilityCatalog = {
   schemaVersion: 1,
   generation: 1,
   unsupported: [],
@@ -72,7 +72,7 @@ const catalog: AiCapabilityCatalogV1 = {
   ]
 };
 
-function actor(actorId: string, nodeId: typeof homeNode, x: number): AiObservedActorV1 {
+function actor(actorId: string, nodeId: typeof homeNode, x: number): AiObservedActor {
   return {
     ...createAiTestOwnedActor(actorId),
     objectName: ObjectNames.TivaraMacemanMale,
@@ -112,7 +112,7 @@ describe("AiSkirmishManager offense target selection", () => {
   it("reserves the best positioned scout for the primary information question before neutral scouting", () => {
     const frontierCandidate = actor("frontier-candidate", homeNode, 0);
     const neutralCandidate = actor("neutral-candidate", homeNode, 1);
-    const resource: AiObservedActorV1 = {
+    const resource: AiObservedActor = {
       ...createAiTestOwnedActor("neutral-resource"),
       objectName: ObjectNames.Tree6,
       owner: null,
@@ -151,7 +151,7 @@ describe("AiSkirmishManager offense target selection", () => {
         accessGraph: graph.graph
       }
     };
-    const initial = createAiBrainStateV1({
+    const initial = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -175,14 +175,14 @@ describe("AiSkirmishManager offense target selection", () => {
       relation: "enemy" as const,
       visibility: "visible" as const
     };
-    const home: AiObservedActorV1 = {
+    const home: AiObservedActor = {
       ...createAiTestOwnedActor("home"),
       objectName: ObjectNames.Sandhold,
       logicalPosition: { status: "known", value: { x: 0, y: 0, z: 0 }, observedTick: 20 },
       accessNodeId: { status: "known", value: homeNode, observedTick: 20 },
       mainBuilding: { status: "known", value: true, observedTick: 20 }
     };
-    const resource: AiObservedActorV1 = {
+    const resource: AiObservedActor = {
       ...createAiTestOwnedActor("neutral-resource"),
       objectName: ObjectNames.Tree6,
       owner: null,
@@ -215,7 +215,7 @@ describe("AiSkirmishManager offense target selection", () => {
         accessGraph: graph.graph
       }
     };
-    const initial = createAiBrainStateV1({
+    const initial = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -298,14 +298,14 @@ describe("AiSkirmishManager offense target selection", () => {
         accessGraph: graph.graph
       }
     };
-    const baseState = createAiBrainStateV1({
+    const baseState = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
       tick: 0,
       archetypeId: "balanced"
     });
-    const state: AiBrainStateV1 = {
+    const state: AiBrainState = {
       ...baseState,
       squads: [
         {
@@ -390,7 +390,7 @@ describe("AiSkirmishManager offense target selection", () => {
           accessGraph: graph.graph
         }
       },
-      createAiBrainStateV1({
+      createAiBrainState({
         playerNumber: 1,
         faction: FactionType.Tivara,
         profile,
@@ -448,7 +448,7 @@ describe("AiSkirmishManager offense target selection", () => {
           accessGraph: graph.graph
         }
       },
-      createAiBrainStateV1({
+      createAiBrainState({
         playerNumber: 1,
         faction: FactionType.Tivara,
         profile,
@@ -469,7 +469,7 @@ describe("AiSkirmishManager offense target selection", () => {
   });
 
   it("sends an idle naval attacker to a remembered coast target on a separate front", () => {
-    const coastalGraph = buildAiAccessGraphV1({
+    const coastalGraph = buildAiAccessGraph({
       generation: 1,
       staticRevision: 1,
       dynamicRevision: 1,
@@ -599,7 +599,7 @@ describe("AiSkirmishManager offense target selection", () => {
       (transfer) => transfer.kind === "shore" && transfer.toNodeId === navalNode && transfer.passengerPosition.x === 5
     )?.carrierPosition;
     const army = Array.from({ length: 12 }, (_, index) => actor(`army-${index}`, homeNode, 0));
-    const boat: AiObservedActorV1 = {
+    const boat: AiObservedActor = {
       ...createAiTestOwnedActor("naval-boat"),
       objectName: ObjectNames.VikingBoat,
       housingCost: { status: "known", value: 1, observedTick: 20 },
@@ -653,7 +653,7 @@ describe("AiSkirmishManager offense target selection", () => {
       housingCost: { status: "known" as const, value: 0, observedTick: 20 },
       capabilities: []
     };
-    const mixedCatalog: AiCapabilityCatalogV1 = {
+    const mixedCatalog: AiCapabilityCatalog = {
       ...catalog,
       entries: [
         ...catalog.entries,
@@ -690,7 +690,7 @@ describe("AiSkirmishManager offense target selection", () => {
           accessGraph
         }
       },
-      createAiBrainStateV1({
+      createAiBrainState({
         playerNumber: 1,
         faction: FactionType.Tivara,
         profile,
@@ -722,7 +722,7 @@ describe("AiSkirmishManager offense target selection", () => {
       })
     );
 
-    const distantVisibleBoat: AiObservedActorV1 = {
+    const distantVisibleBoat: AiObservedActor = {
       ...boat,
       actorId: "distant-visible-naval-boat",
       logicalPosition: { status: "known", value: { x: 5, y: 12, z: 0 }, observedTick: 20 },
@@ -748,7 +748,7 @@ describe("AiSkirmishManager offense target selection", () => {
           accessGraph
         }
       },
-      createAiBrainStateV1({
+      createAiBrainState({
         playerNumber: 1,
         faction: FactionType.Tivara,
         profile,
@@ -764,7 +764,7 @@ describe("AiSkirmishManager offense target selection", () => {
       })
     );
 
-    const hostileBoat: AiObservedActorV1 = {
+    const hostileBoat: AiObservedActor = {
       ...distantVisibleBoat,
       actorId: "visible-hostile-naval-boat",
       owner: 2,
@@ -840,7 +840,7 @@ describe("AiSkirmishManager offense target selection", () => {
           tacticalCells: [waterFiringTile]
         }
       },
-      createAiBrainStateV1({
+      createAiBrainState({
         playerNumber: 1,
         faction: FactionType.Tivara,
         profile,
@@ -936,7 +936,7 @@ describe("AiSkirmishManager offense target selection", () => {
       }
     };
     const continuingState = {
-      ...createAiBrainStateV1({
+      ...createAiBrainState({
         playerNumber: 1,
         faction: FactionType.Tivara,
         profile,
@@ -1061,7 +1061,7 @@ describe("AiSkirmishManager offense target selection", () => {
         accessGraph: graph.graph
       }
     };
-    const initial = createAiBrainStateV1({
+    const initial = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -1190,7 +1190,7 @@ describe("AiSkirmishManager offense target selection", () => {
           accessGraph: graph.graph
         }
       },
-      createAiBrainStateV1({
+      createAiBrainState({
         playerNumber: 1,
         faction: FactionType.Tivara,
         profile,
@@ -1234,7 +1234,7 @@ describe("AiSkirmishManager offense target selection", () => {
       capabilities: []
     };
     const observation = createAiTestObservation();
-    const baseState = createAiBrainStateV1({
+    const baseState = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -1263,7 +1263,7 @@ describe("AiSkirmishManager offense target selection", () => {
       mobileReserveActorIds: [],
       objectiveAlternatives: []
     };
-    const state: AiBrainStateV1 = {
+    const state: AiBrainState = {
       ...baseState,
       squads: [
         {

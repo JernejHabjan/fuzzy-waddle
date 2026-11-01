@@ -1,4 +1,4 @@
-import { queryAiAccessRouteV1 } from "./ai-access-graph-v1";
+import { queryAiAccessRoute } from "./ai-access-graph";
 import { AI_TRANSPORT_BOARDING_TIMEOUT_TICKS } from "./ai-transport-constants";
 import type { AiTransportPlanContext } from "./ai-transport-plan-context";
 import type { AiTransportPlanWithLifecycle } from "./ai-transport-plan-lifecycle";
@@ -24,7 +24,7 @@ export function recoverAiTransportPlan(
       terminalReason: "route_pending"
     });
   }
-  const route = queryAiAccessRouteV1(context.graph, plan.lifecycle.routeRequest);
+  const route = queryAiAccessRoute(context.graph, plan.lifecycle.routeRequest);
   if (route.kind === "pending") {
     if (context.observation.tick < plan.lifecycle.phaseDeadline.dueTick) return plan;
     const pendingAttempt = plan.lifecycle.recoveryAttempt + 1;

@@ -9,7 +9,7 @@ import { AiMultiplayerQueueWorld, multiplayerQueueWorldRequested } from "./ai-mu
 import { AiMultiplayerSharedQueueWorld, multiplayerSharedQueueWorldRequested } from "./ai-multiplayer-shared-queue-world";
 import { AiMultiplayerAuthorityProbe, multiplayerAuthorityProbeRequested } from "./ai-multiplayer-authority-probe";
 
-const marker = "fuzzy-waddle:ai-multiplayer-browser-test-v1";
+const marker = "fuzzy-waddle:ai-multiplayer-browser-test";
 
 export function multiplayerDiagnosticsRequested(): boolean {
   if (typeof window === "undefined" || !["localhost", "127.0.0.1"].includes(window.location.hostname)) return false;

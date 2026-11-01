@@ -1,17 +1,17 @@
-import type { AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiObservedActor, AiObservation } from "../contracts/ai-observation";
 import { selectConstructionPosition } from "./ai-construction-site-selector";
 import { isAiProducerPositionExposed, reachableAiConstructionTiles } from "./ai-producer-safety";
 
 /** Builder preference never vetoes all capacity: try the next available worker when the first has no known legal route/site. */
 export function selectAiMilitaryCapacitySite(args: {
-  readonly observation: AiObservationV1;
-  readonly builders: readonly AiObservedActorV1[];
+  readonly observation: AiObservation;
+  readonly builders: readonly AiObservedActor[];
   readonly decisionSequence: number;
   readonly ordinal: number;
   readonly selectedTileKeys: Set<string>;
   readonly footprintRadiusTiles: number;
   readonly safePolicy: boolean;
-  readonly threats: readonly AiObservedActorV1[];
+  readonly threats: readonly AiObservedActor[];
 }) {
   for (const builder of args.builders) {
     const reachable = args.safePolicy ? reachableAiConstructionTiles(args.observation, builder) : null;

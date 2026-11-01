@@ -1,4 +1,4 @@
-import type { AiAccessTransferPointV1 } from "../contracts/ai-access-graph-v1";
+import type { AiAccessTransferPoint } from "../contracts/ai-access-graph";
 import type { AiTransportPlanContext } from "./ai-transport-plan-context";
 import { createAiTransportIntentBase } from "./ai-transport-plan-intents";
 import type { AiTransportPlanWithLifecycle } from "./ai-transport-plan-lifecycle";
@@ -9,7 +9,7 @@ import { AI_TRANSPORT_BOARDING_TIMEOUT_TICKS } from "./ai-transport-constants";
 export function advanceAiTransportLoading(
   plan: AiTransportPlanWithLifecycle,
   context: AiTransportPlanContext,
-  pickup: AiAccessTransferPointV1,
+  pickup: AiAccessTransferPoint,
   actors: ReadonlyMap<string, AiTransportPlanContext["observation"]["actors"][number]>
 ): AiTransportPlanWithLifecycle {
   if (plan.phase === "gather") {

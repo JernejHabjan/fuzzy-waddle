@@ -3,7 +3,7 @@ import { nativePaidMissionOutputs } from "./skirmish-ai-native-mission-evidence"
 import { nativeRecoveryIncome } from "./skirmish-ai-native-recovery-evidence";
 import { hasNativeSourceDeliveryToAnyDropOff } from "./skirmish-ai-source-delivery";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/contracts/ai-intent-v1";
+import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/contracts/ai-intent";
 
 /** Consumer delays are joined to independent shared application and physical output, never accepted as application proof. */
 export function evaluateNativeAuthority(id: string, branch: string, context: ReturnType<typeof nativeScenarioContext>) {
@@ -230,7 +230,7 @@ export function backlogFailures(
 }
 
 /** Shared demand IDs may produce different valid operations; only identical intent work is a retry. */
-export function nativeIntentOperation(intent: AiIntentV1) {
+export function nativeIntentOperation(intent: AiIntent) {
   const point = (value: { x: number; y: number; z?: number } | null | undefined) =>
     value ? `${value.x},${value.y},${value.z ?? 0}` : "";
   switch (intent.kind) {

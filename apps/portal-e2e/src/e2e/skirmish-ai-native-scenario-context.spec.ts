@@ -1,10 +1,10 @@
 import { expect, test } from "@playwright/test";
 import { nativeScenarioContext, nativeScenarioRequiresResourceCoverage } from "./skirmish-ai-native-scenario-context";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 
 test("a missing original role cannot broaden a target-specific native query", () => {
   // Deliberately incomplete capture: this checks rejection only and supplies no native acceptance evidence.
-  const result = { presetCreatedActorIds: { original: "native-original" } } as unknown as RuntimeVariantResultV1;
+  const result = { presetCreatedActorIds: { original: "native-original" } } as unknown as RuntimeVariantResult;
   const context = nativeScenarioContext(result, 100);
   expect(context.failures.length).toBeGreaterThan(0);
   expect(context.role("original")).toBe("native-original");
@@ -17,7 +17,7 @@ test("placement evidence can rely on its complete transaction facts without unre
     presetCreatedActorIds: {},
     productionCapture: capture,
     opponentCapture: capture
-  } as unknown as RuntimeVariantResultV1;
+  } as unknown as RuntimeVariantResult;
 
   expect(nativeScenarioContext(result, 100).failures).toContain("native_capture_channel_lost");
   expect(nativeScenarioContext(result, 100, undefined, { requireResourceCoverage: false }).failures).not.toContain(
@@ -79,7 +79,7 @@ test("domain evidence does not reject an additional native opponent for broad re
     productionCapture: capture,
     opponentCapture: capture,
     otherOpponentCaptures: [{ ...capture, playerNumber: 3 }]
-  } as unknown as RuntimeVariantResultV1;
+  } as unknown as RuntimeVariantResult;
 
   expect(nativeScenarioContext(result, 100, undefined, { requireResourceCoverage: false }).failures).not.toContain(
     "native_other_opponent_capture_invalid"

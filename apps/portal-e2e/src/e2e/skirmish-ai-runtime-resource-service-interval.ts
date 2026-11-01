@@ -1,12 +1,12 @@
-import type { AiRuntimeResourceServiceIntervalV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-resource-service-interval-v1";
-import type { RuntimeResourceNeedV1 } from "./skirmish-ai-runtime-resource-need";
+import type { AiRuntimeResourceServiceInterval } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-resource-service-interval";
+import type { RuntimeResourceNeed } from "./skirmish-ai-runtime-resource-need";
 
 /** Legacy publication-position diagnostics; native application positions live in applicationIntervals separately.
  * Missing complete need history cannot become an actual usefulness verdict. */
-export interface RuntimeResourceServiceIntervalV1 {
-  readonly declaration: AiRuntimeResourceServiceIntervalV1;
-  readonly need: RuntimeResourceNeedV1 | null;
+export interface RuntimeResourceServiceInterval {
+  readonly declaration: AiRuntimeResourceServiceInterval;
+  readonly need: RuntimeResourceNeed | null;
   readonly observedIncome: number | null;
   /** Positive whole-pile income with one exact accepted selection; null when cohort/read/loss authority is unavailable. */
   readonly eligibleIncome: number | null;

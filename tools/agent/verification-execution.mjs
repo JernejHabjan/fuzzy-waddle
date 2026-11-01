@@ -1,5 +1,5 @@
 import { mkdirSync, writeFileSync } from "node:fs";
-import { relative, resolve } from "node:path";
+import { relative, resolve, sep } from "node:path";
 import { spawnSync } from "node:child_process";
 import { inspectCacheEvidence } from "./cache-evidence.mjs";
 
@@ -63,7 +63,7 @@ function createLogDirectory(root, revision, runId) {
   if (!/^[0-9a-f]{40}$/u.test(revision)) throw new Error("invalid_execution_revision");
   if (!/^[a-z0-9-]+$/u.test(runId)) throw new Error("invalid_execution_run_id");
   const directory = resolve(root, "tmp", "agent-verification", revision, runId);
-  if (!directory.startsWith(`${resolve(root)}/`)) throw new Error("invalid_execution_directory");
+  if (!directory.startsWith(`${resolve(root)}${sep}`)) throw new Error("invalid_execution_directory");
   mkdirSync(directory, { recursive: true });
   return directory;
 }
@@ -74,9 +74,9 @@ function writeJson(root, directory, name, value) {
 
 function writeLog(root, directory, name, value) {
   const path = resolve(directory, name);
-  if (!path.startsWith(`${directory}/`)) throw new Error("invalid_execution_log_path");
+  if (!path.startsWith(`${directory}${sep}`)) throw new Error("invalid_execution_log_path");
   writeFileSync(path, value ?? "");
-  return relative(root, path);
+  return relative(root, path).split(sep).join("/");
 }
 
 function safeName(value) {

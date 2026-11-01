@@ -1,11 +1,11 @@
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 import { hasNativeFieldFoodDelivery } from "./skirmish-ai-field-food-delivery";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 
 /** Safe-room owner outcome: native new fields, reserved-space exclusion and actual crop-to-food delivery. */
 export function evaluateFieldPlacementWorld(
-  result: Pick<RuntimeVariantResultV1, "productionPreset" | "productionCapture" | "presetCreatedActorIds">,
+  result: Pick<RuntimeVariantResult, "productionPreset" | "productionCapture" | "presetCreatedActorIds">,
   minimumFields = 2
 ): string[] {
   const capture = result.productionCapture, baseline = result.productionPreset?.placementBaseline;
@@ -23,7 +23,7 @@ export function evaluateFieldPlacementWorld(
   }
   if (nextTick !== 2401) return ["field_placement_closed_interval_missing_or_reordered"];
   const placements = facts.filter(
-    (fact): fact is Extract<AiRuntimeProductionFactV1, { kind: "spatial_authority" }> =>
+    (fact): fact is Extract<AiRuntimeProductionFact, { kind: "spatial_authority" }> =>
       fact.kind === "spatial_authority" && fact.spatial.kind === "placement" && fact.spatial.site.canonicalObjectName === "Field"
   );
   const failures: string[] = [], fields: { id: string; x: number; y: number; completedAt: number }[] = [];

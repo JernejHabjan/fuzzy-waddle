@@ -1,14 +1,14 @@
-import type { RuntimeAssertionV1 } from "./skirmish-ai-runtime-assertion";
-import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeAssertion } from "./skirmish-ai-runtime-assertion";
+import type { RuntimeCheckpoint } from "./skirmish-ai-runtime-checkpoint";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 
-type SourceCheckpoint = Pick<RuntimeCheckpointV1, "tick" | "resourceServiceActors" | "workerOrders">;
-type SourceVariant = Pick<RuntimeVariantResultV1, "presetInitialOrderCount" | "presetCreatedActorIds"> & {
+type SourceCheckpoint = Pick<RuntimeCheckpoint, "tick" | "resourceServiceActors" | "workerOrders">;
+type SourceVariant = Pick<RuntimeVariantResult, "presetInitialOrderCount" | "presetCreatedActorIds"> & {
   readonly checkpoints: readonly SourceCheckpoint[];
 };
 
 export function evaluateRuntimeSourceSaturation(
-  requirement: NonNullable<RuntimeAssertionV1["requiredSaturatedSource"]>,
+  requirement: NonNullable<RuntimeAssertion["requiredSaturatedSource"]>,
   variant: SourceVariant
 ): string[] {
   const checkpoints = variant.checkpoints.filter((checkpoint) => checkpoint.tick <= requirement.latestTick);

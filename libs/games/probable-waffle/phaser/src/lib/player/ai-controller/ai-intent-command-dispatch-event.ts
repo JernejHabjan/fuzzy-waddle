@@ -1,4 +1,4 @@
-import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
 import type { GameCommandInput } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiGameCommandCorrelation, GameCommandDispatchReceipt } from
   "../../world/services/multiplayer/command-bus.service";
@@ -16,10 +16,10 @@ export type AiIntentCommandDispatchEvent = {
     readonly kind: "requested";
     readonly command: GameCommandInput;
     /** The arbiter's accepted claims, before any command callback can apply or retire them. */
-    readonly claims: AiIntentV1["claims"];
+    readonly claims: AiIntent["claims"];
     readonly proposedTick: number;
     /** Detached arbiter-accepted proposal, including plan/demand identity. Older diagnostic fixtures may omit it. */
-    readonly acceptedIntent?: AiIntentV1;
+    readonly acceptedIntent?: AiIntent;
     /** Exact accepting result; older captures leave an explicit missing-decision gap. */
     readonly decisionIdentity?: AiDecisionIdentity;
   }

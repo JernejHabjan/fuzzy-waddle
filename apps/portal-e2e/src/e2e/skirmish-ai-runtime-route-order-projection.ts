@@ -1,23 +1,23 @@
 import { isDeepStrictEqual } from "node:util";
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { RuntimeRouteOrderLineageV1 } from "./skirmish-ai-runtime-route-order-lineage";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { RuntimeRouteOrderLineage } from "./skirmish-ai-runtime-route-order-lineage";
 import type { validateRuntimeRouteOrders } from "./skirmish-ai-runtime-route-order-validation";
 import { matchRuntimeRouteServiceLineage } from "./skirmish-ai-runtime-route-service-lineage";
 import { runtimeRouteOrderFenced } from "./skirmish-ai-runtime-route-order-fence";
 
 /** Prefer explicit invocation ownership; legacy current-order samples retain co-observation only. */
-export function projectRuntimeRouteOrder(capture: AiRuntimeProductionCaptureV1,
-  request: NonNullable<RuntimeRouteOrderLineageV1["admission"]>, terminal: typeof request,
+export function projectRuntimeRouteOrder(capture: AiRuntimeProductionSnapshot,
+  request: NonNullable<RuntimeRouteOrderLineage["admission"]>, terminal: typeof request,
   records: ReturnType<typeof validateRuntimeRouteOrders>) {
   const gaps = ["production_route_order_useful_effect_missing",
     "production_route_complete_order_history_missing"];
   const failures: string[] = [];
-  let admission: RuntimeRouteOrderLineageV1["admission"] = null, rally: RuntimeRouteOrderLineageV1["rally"] = null;
-  let serviceCommand: RuntimeRouteOrderLineageV1["serviceCommand"] = null;
-  let selectedDemand: RuntimeRouteOrderLineageV1["selectedDemand"] = null;
+  let admission: RuntimeRouteOrderLineage["admission"] = null, rally: RuntimeRouteOrderLineage["rally"] = null;
+  let serviceCommand: RuntimeRouteOrderLineage["serviceCommand"] = null;
+  let selectedDemand: RuntimeRouteOrderLineage["selectedDemand"] = null;
   let sameCurrentOrderAtTerminal = false;
-  let queryCaller: RuntimeRouteOrderLineageV1["queryCaller"] = null, queryCallerAttributed = false;
+  let queryCaller: RuntimeRouteOrderLineage["queryCaller"] = null, queryCallerAttributed = false;
   const before = request.spatial, after = terminal.spatial;
   if (before.kind === "producer_path" && after.kind === "producer_path") {
     queryCaller = before.queryCaller ?? null;
@@ -76,5 +76,5 @@ export function projectRuntimeRouteOrder(capture: AiRuntimeProductionCaptureV1,
     if (queryCaller && !queryCallerAttributed) gaps.push("production_route_query_order_caller_unattributed");
   }
   return { failures, lineage: { admission, rally, serviceCommand, selectedDemand, sameCurrentOrderAtTerminal,
-    queryCaller, queryCallerAttributed, gaps: [...new Set(gaps)] } satisfies RuntimeRouteOrderLineageV1 };
+    queryCaller, queryCallerAttributed, gaps: [...new Set(gaps)] } satisfies RuntimeRouteOrderLineage };
 }

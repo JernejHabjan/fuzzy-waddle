@@ -1,8 +1,8 @@
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
-import type { AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import type { AiSquadState } from "../contracts/ai-brain-state";
+import type { AiObservedActor } from "../contracts/ai-observation";
 import { knownPosition, distance, legalForMembers, safeRetreatPosition } from "./ai-tactics-geometry";
-import { canTarget, canSeeTarget, isEconomicActor, estimateAiEngagementV1, objectiveScore } from "./ai-tactics-combat";
+import { canTarget, canSeeTarget, isEconomicActor, estimateAiEngagement, objectiveScore } from "./ai-tactics-combat";
 import {
   AI_TACTICS_TARGET_SWITCH_IMPROVEMENT_PERMILLE,
   MAX_LOCAL_ENEMIES,
@@ -14,7 +14,7 @@ import {
 import type { AiTacticsContext } from "./ai-tactics-context";
 import { canPursueAiTacticalObjective } from "./ai-tactics-objective-eligibility";
 
-function isCredibleThreatToMembers(enemy: AiObservedActorV1, members: readonly AiObservedActorV1[]): boolean {
+function isCredibleThreatToMembers(enemy: AiObservedActor, members: readonly AiObservedActor[]): boolean {
   const enemyProfile = enemy.combatProfile;
   if (enemyProfile?.status !== "known") return true;
   return members.some((member) => {
@@ -38,7 +38,7 @@ function isCredibleThreatToMembers(enemy: AiObservedActorV1, members: readonly A
 }
 
 /** Prepares current members and permitted combat facts. */
-export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquadStateV1) {
+export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquadState) {
   const { actorById, catalog, claimedActors, observation, profile, state, transportOwned, updates, visibleEnemies } =
     context;
   const hypothesisEvidenceId = squad.objectiveId?.startsWith("hypothesis:")
@@ -82,7 +82,7 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
     .filter((actorId) => !claimedActors.has(actorId) && !transportOwned.has(actorId))
     .map((actorId) => actorById.get(actorId))
     .filter(
-      (actor): actor is AiObservedActorV1 =>
+      (actor): actor is AiObservedActor =>
         actor !== undefined &&
         actor.relation === "self" &&
         actor.containedInActorId == null &&
@@ -219,7 +219,7 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
   const coordinatedMembers = [...new Set([...members.map((member) => member.actorId), ...coordinatedIds])]
     .map((actorId) => actorById.get(actorId))
     .filter(
-      (actor): actor is AiObservedActorV1 =>
+      (actor): actor is AiObservedActor =>
         actor !== undefined &&
         actor.relation === "self" &&
         actor.containedInActorId == null &&
@@ -227,7 +227,7 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
         !isEconomicActor(actor, catalog) &&
         (!origin || (knownPosition(actor) !== null && distance(origin, knownPosition(actor)!) <= 18))
     );
-  const estimate = estimateAiEngagementV1(
+  const estimate = estimateAiEngagement(
     coordinatedMembers,
     engagementEnemies,
     profile.maxLocalEngagementPairsPerStep

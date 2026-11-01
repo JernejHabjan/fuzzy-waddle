@@ -1,18 +1,18 @@
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
 import type { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiProductionTransitionV1 } from "../contracts/brain-state/ai-production-transition-v1";
-import type { AiReservationV1 } from "../contracts/ai-dependency-contracts";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiProductionTransition } from "../contracts/brain-state/ai-production-transition";
+import type { AiReservation } from "../contracts/ai-dependency-contracts";
 import type { AiPlanId } from "../contracts/ai-core-types";
-import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
+import type { AiDemand } from "../contracts/ai-plan-contracts";
 
 /** Forecast identity makes the optional commitment observable without pretending its budget is spent or reserved cash. */
 export function productionTransitionClaims(
-  transition: AiProductionTransitionV1 | undefined,
-  state: AiBrainStateV1,
-  catalog: AiCapabilityCatalogV1,
-  demands: readonly AiDemandV1[]
-): { readonly forecastReservations: readonly AiReservationV1[]; readonly releasedOptionalPlanIds: readonly AiPlanId[] } {
+  transition: AiProductionTransition | undefined,
+  state: AiBrainState,
+  catalog: AiCapabilityCatalog,
+  demands: readonly AiDemand[]
+): { readonly forecastReservations: readonly AiReservation[]; readonly releasedOptionalPlanIds: readonly AiPlanId[] } {
   const previous = state.economyProduction.transition;
   const releasedOptionalPlanIds = previous && (transition?.planId !== previous.planId || transition.status !== "committed")
     ? [previous.planId] : [];

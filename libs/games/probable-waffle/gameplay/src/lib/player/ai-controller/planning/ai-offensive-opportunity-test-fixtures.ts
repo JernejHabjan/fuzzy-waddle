@@ -1,16 +1,16 @@
 import { FactionType, ObjectNames, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservation, AiObservedActor } from "../contracts/ai-observation";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
-import { buildAiAccessGraphV1 } from "./ai-access-graph-v1";
+import { buildAiAccessGraph } from "./ai-access-graph";
 import { AiSkirmishManager } from "./ai-skirmish-manager";
 
-const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
 
-const access = buildAiAccessGraphV1({
+const access = buildAiAccessGraph({
   generation: 1,
   staticRevision: 1,
   dynamicRevision: 1,
@@ -46,7 +46,7 @@ const home = access.groundNodeByTileKey.get("0,0")!;
 
 const front = access.groundNodeByTileKey.get("1,0")!;
 
-const catalog: AiCapabilityCatalogV1 = {
+const catalog: AiCapabilityCatalog = {
   schemaVersion: 1,
   generation: 1,
   unsupported: [],
@@ -70,7 +70,7 @@ const catalog: AiCapabilityCatalogV1 = {
 };
 
 /** Places an observed ground weapon in the shared offensive-route fixture. */
-export function guard(actorId: string, relation: "self" | "enemy", x: number): AiObservedActorV1 {
+export function guard(actorId: string, relation: "self" | "enemy", x: number): AiObservedActor {
   return {
     ...createAiTestOwnedActor(actorId),
     objectName: ObjectNames.TivaraMacemanMale,
@@ -94,7 +94,7 @@ export function guard(actorId: string, relation: "self" | "enemy", x: number): A
   };
 }
 
-export function core(actorId: string): AiObservedActorV1 {
+export function core(actorId: string): AiObservedActor {
   return {
     ...guard(actorId, "enemy", 1),
     housingCost: { status: "known", value: 0, observedTick: 20 },
@@ -103,7 +103,7 @@ export function core(actorId: string): AiObservedActorV1 {
   };
 }
 
-export function producer(actorId: string): AiObservedActorV1 {
+export function producer(actorId: string): AiObservedActor {
   return {
     ...core(actorId),
     mainBuilding: { status: "known", value: false, observedTick: 20 },
@@ -121,7 +121,7 @@ export function producer(actorId: string): AiObservedActorV1 {
 }
 
 /** Exposes the fixed route graph and the supplied contacts without invoking an applied-world adapter. */
-export function world(actors: readonly AiObservedActorV1[], tick = 20): AiObservationV1 {
+export function world(actors: readonly AiObservedActor[], tick = 20): AiObservation {
   return {
     ...createAiTestObservation(),
     tick,
@@ -138,8 +138,8 @@ export function world(actors: readonly AiObservedActorV1[], tick = 20): AiObserv
   };
 }
 
-export function brain(): AiBrainStateV1 {
-  return createAiBrainStateV1({
+export function brain(): AiBrainState {
+  return createAiBrainState({
     playerNumber: 1,
     faction: FactionType.Tivara,
     profile,

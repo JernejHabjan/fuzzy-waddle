@@ -1,6 +1,6 @@
 import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import { expect, test } from "@playwright/test";
-import type { AiDecisionInputV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/ai-decision-input-v1";
+import type { AiDecisionInput } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/ai-decision-input";
 import { productionConsumedDecisionFixture } from "./skirmish-ai-runtime-production-consumed-decision-fixture";
 import { normalizeRuntimeProductionDecisions } from "./skirmish-ai-runtime-production-decisions";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
@@ -54,7 +54,7 @@ test.describe("consumed production decision synthetic contract tests", () => {
 
   test("missing legacy/overflow/catalog/clock inputs never borrow a later checkpoint", () => {
     const f = productionConsumedDecisionFixture();
-    const missing: AiDecisionInputV1[] = [
+    const missing: AiDecisionInput[] = [
       { ...f.input, observation: null, gaps: ["production_decision_observation_overflow"] },
       { ...f.input, capabilityCatalog: null },
       { ...f.input, cadence: { ...f.input.cadence, clock: "render_fallback", tick: null } }
@@ -80,7 +80,7 @@ test.describe("consumed production decision synthetic contract tests", () => {
     const f = productionConsumedDecisionFixture();
     if (!f.input.observation || !f.input.capabilityCatalog || !f.input.accessGraph)
       throw new Error("synthetic_input_missing");
-    const inputs: AiDecisionInputV1[] = [
+    const inputs: AiDecisionInput[] = [
       { ...f.input, snapshotRestoreInProgress: true },
       { ...f.input, cadence: { ...f.input.cadence, tick: 21 } },
       { ...f.input, cadence: { ...f.input.cadence, configuredIntervalTicks: 0 } },

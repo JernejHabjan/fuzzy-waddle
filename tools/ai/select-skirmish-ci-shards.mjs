@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { planSkirmishRuntimeShards } from "./skirmish-ci-shards.mjs";
 
 const directory = join(dirname(fileURLToPath(import.meta.url)), "fixtures");
-const manifest = JSON.parse(readFileSync(join(directory, "skirmish-v1.json"), "utf8"));
+const manifest = JSON.parse(readFileSync(join(directory, "skirmish.json"), "utf8"));
 const plan = planSkirmishRuntimeShards(
   manifest,
   (reference) => JSON.parse(readFileSync(join(directory, reference), "utf8"))

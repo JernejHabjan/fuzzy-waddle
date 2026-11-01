@@ -1,5 +1,5 @@
 import { ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiReservationV1 } from "../contracts/ai-dependency-contracts";
+import type { AiReservation } from "../contracts/ai-dependency-contracts";
 
 import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "../testing/ai-test-fixtures";
 
@@ -230,7 +230,7 @@ describe("AI macro renewable food capacity", () => {
       state: { kind: "applied_spending" as const, appliedTick: 180 },
       prerequisites: [],
       createdTick: 100
-    } satisfies AiReservationV1));
+    } satisfies AiReservation));
     const observation = {
       ...createAiTestObservation(),
       tick: 200,

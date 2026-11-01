@@ -12,14 +12,14 @@ import { getSceneService } from "../../../world/services/scene-component-helpers
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { AiRuntimeProductionCapture } from "./ai-runtime-production-capture";
-import type { AiMultiplayerQueueWorldV1 } from "./ai-multiplayer-queue-world-v1";
+import type { AiMultiplayerQueueWorldSnapshot } from "./ai-multiplayer-queue-world-snapshot";
 import { prepareAiMultiplayerQueueWorld } from "./prepare-ai-multiplayer-queue-world";
 
 export function multiplayerQueueWorldRequested(): boolean {
   try {
     return (
       typeof window !== "undefined" &&
-      window.sessionStorage.getItem("fuzzy-waddle:ai-multiplayer-queue-world-v1") === "cancel-refund"
+      window.sessionStorage.getItem("fuzzy-waddle:ai-multiplayer-queue-world-snapshot") === "cancel-refund"
     );
   } catch {
     return false;
@@ -31,13 +31,13 @@ export class AiMultiplayerQueueWorld {
   private readonly subscriptions = new Subscription();
   private readonly capture: AiRuntimeProductionCapture;
   private readonly ticks: SimulationTickService;
-  private state: AiMultiplayerQueueWorldV1["state"] = "initializing";
+  private state: AiMultiplayerQueueWorldSnapshot["state"] = "initializing";
   private failure: string | null = null;
-  private setup: AiMultiplayerQueueWorldV1["setup"] = null;
-  private readonly commands: AiMultiplayerQueueWorldV1["commands"][number][] = [];
-  private readonly requests: AiMultiplayerQueueWorldV1["requests"][number][] = [];
-  private readonly checkpoints: AiMultiplayerQueueWorldV1["checkpoints"][number][] = [];
-  private latestCapture: AiMultiplayerQueueWorldV1["capture"] = null;
+  private setup: AiMultiplayerQueueWorldSnapshot["setup"] = null;
+  private readonly commands: AiMultiplayerQueueWorldSnapshot["commands"][number][] = [];
+  private readonly requests: AiMultiplayerQueueWorldSnapshot["requests"][number][] = [];
+  private readonly checkpoints: AiMultiplayerQueueWorldSnapshot["checkpoints"][number][] = [];
+  private latestCapture: AiMultiplayerQueueWorldSnapshot["capture"] = null;
   private paidTick = -1;
   private refundTick = -1;
   private producedActorId: string | null = null;
@@ -71,7 +71,7 @@ export class AiMultiplayerQueueWorld {
   }
 
   /** Reading is passive: poll frequency neither samples authority nor schedules gameplay. */
-  getSnapshot(): AiMultiplayerQueueWorldV1 {
+  getSnapshot(): AiMultiplayerQueueWorldSnapshot {
     return structuredClone({
       state: this.state,
       failure: this.failure,
@@ -124,7 +124,7 @@ export class AiMultiplayerQueueWorld {
     }
   }
 
-  private dispatch(role: AiMultiplayerQueueWorldV1["commands"][number]["role"]): GameCommand {
+  private dispatch(role: AiMultiplayerQueueWorldSnapshot["commands"][number]["role"]): GameCommand {
     const setup = this.setup;
     if (!setup) throw new Error("multiplayer_queue_world_setup_missing");
     const address = { playerNumber: setup.playerNumber, actorIds: [setup.producerActorId] };
@@ -216,7 +216,7 @@ export class AiMultiplayerQueueWorld {
     }
   }
 
-  private checkpoint(boundary: AiMultiplayerQueueWorldV1["checkpoints"][number]["boundary"]): void {
+  private checkpoint(boundary: AiMultiplayerQueueWorldSnapshot["checkpoints"][number]["boundary"]): void {
     if (!this.setup) throw new Error("multiplayer_queue_world_setup_missing");
     this.latestCapture = this.capture.captureHumanQueueBoundary(this.setup.playerNumber);
     const snapshot = this.latestCapture.snapshots.at(-1);

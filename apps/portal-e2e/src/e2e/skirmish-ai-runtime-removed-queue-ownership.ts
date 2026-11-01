@@ -2,11 +2,11 @@ import { sameRuntimeQueueCommand } from "./skirmish-ai-runtime-queue-command-equ
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { sameRuntimeQueueVector } from "./skirmish-ai-runtime-scoped-queue-payments";
 import { isDeepStrictEqual } from "node:util";
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
+import type { RuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality";
 import { validateRuntimeQueueMutationBoundaries } from "./skirmish-ai-runtime-queue-mutation-boundaries";
 
 /**
@@ -14,12 +14,12 @@ import { validateRuntimeQueueMutationBoundaries } from "./skirmish-ai-runtime-qu
  * No old-head tombstone, later snapshot, global reservation, terminal or created actor substitutes for removal.
  */
 export function hasRuntimeRemovedQueueOwnership(
-  capture: AiRuntimeProductionCaptureV1, fact: AiRuntimeProductionFactV1,
-  origin: RuntimeProductionCausalityV1["commands"][number], cutoff: number,
-  commands: RuntimeProductionCausalityV1["commands"]
+  capture: AiRuntimeProductionSnapshot, fact: AiRuntimeProductionFact,
+  origin: RuntimeProductionCausality["commands"][number], cutoff: number,
+  commands: RuntimeProductionCausality["commands"]
 ): boolean {
   const execution = origin.command.execution;
-  const pairs = capture.facts.filter((entry): entry is Extract<AiRuntimeProductionFactV1, { kind: "queue_mutation" }> =>
+  const pairs = capture.facts.filter((entry): entry is Extract<AiRuntimeProductionFact, { kind: "queue_mutation" }> =>
     entry.kind === "queue_mutation" && entry.sequence <= cutoff && entry.mutation.operation !== "enqueue" &&
     entry.mutation.item?.commandId === execution?.commandId);
   const before = pairs.find((entry) => entry.mutation.phase === "before");

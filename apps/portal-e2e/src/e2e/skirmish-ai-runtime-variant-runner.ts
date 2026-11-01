@@ -1,8 +1,8 @@
 import type { Browser, Page } from "@playwright/test";
-import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
-import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
-import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
+import type { RuntimeFixture } from "./skirmish-ai-runtime-fixture";
+import type { RuntimeVariant } from "./skirmish-ai-runtime-variant";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeCheckpoint } from "./skirmish-ai-runtime-checkpoint";
 import { captureCheckpoint } from "./skirmish-ai-runtime-checkpoint-capture";
 import { last } from "./skirmish-ai-runtime-value";
 import { applyRuntimePerturbation } from "./skirmish-ai-runtime-perturbation-runner";
@@ -20,18 +20,18 @@ const runtimeProgressStartedAt = performance.now();
 
 export async function runVariant(
   browser: Browser,
-  fixture: RuntimeFixtureV1,
-  variant: RuntimeVariantV1,
+  fixture: RuntimeFixture,
+  variant: RuntimeVariant,
   requestedSeed: number | null,
   requestedScenarioIds: readonly string[],
   sourceRevision: string,
   fixtureDigest: string,
-  debugProbe?: (page: Page, checkpointIndex: number, checkpoint?: RuntimeCheckpointV1) => Promise<void>,
-  afterVariant?: (page: Page, result: RuntimeVariantResultV1) => Promise<void>,
+  debugProbe?: (page: Page, checkpointIndex: number, checkpoint?: RuntimeCheckpoint) => Promise<void>,
+  afterVariant?: (page: Page, result: RuntimeVariantResult) => Promise<void>,
   beforeVariant?: (page: Page) => Promise<void>,
   beforeCheckpoint?: (page: Page, checkpointIndex: number, targetTick: number) => Promise<boolean>,
   beforeFinalize?: (page: Page) => Promise<void>
-): Promise<RuntimeVariantResultV1> {
+): Promise<RuntimeVariantResult> {
   const profiling = process.env.AI_SKIRMISH_PROFILE === "1";
   const variantStartedAt = performance.now();
   const context = await browser.newContext();
@@ -64,7 +64,7 @@ export async function runVariant(
       debugProbe
     );
     const setupMs = Math.round(performance.now() - variantStartedAt);
-    const checkpoints: RuntimeCheckpointV1[] = [];
+    const checkpoints: RuntimeCheckpoint[] = [];
     const perturbations: { id: string; tick: number; dispatchedActors: number; subjectName: string | null }[] = [];
     const pendingPerturbations = [...(variant.perturbations ?? [])].sort(
       (left, right) => left.tick - right.tick || left.id.localeCompare(right.id)
@@ -98,7 +98,7 @@ export async function runVariant(
       ? await captureRuntimeProductionAuthority(page, fixture.recipe.aiPlayerNumber, productionHorizon)
       : undefined;
     const closedProductionHorizon = productionCapture?.frontiers?.latestTick ?? productionHorizon;
-    let stopReason: RuntimeVariantResultV1["stopReason"] = "checkpoint_ceiling";
+    let stopReason: RuntimeVariantResult["stopReason"] = "checkpoint_ceiling";
     let satisfiedSinceTick: number | null = null;
     const maximumTick = Math.max(
       ...applicableScenarioIds.map(
@@ -228,7 +228,7 @@ export async function runVariant(
       productionCapture && fullProductionProof
         ? buildRuntimeProductionReport(productionCapture, initialBoundary.presetApplication ?? undefined)
         : undefined;
-    const result: RuntimeVariantResultV1 = {
+    const result: RuntimeVariantResult = {
       ...projectRuntimeVariantStart(variant, initialBoundary, effectiveSeed, fixture.recipe.mapLabel),
       stopReason,
       outcomeDigest,
@@ -304,7 +304,7 @@ async function captureRuntimeProductionAuthorityWithDiagnostics(
 
 async function advanceRuntimeToTick(
   page: Page,
-  fixture: RuntimeFixtureV1,
+  fixture: RuntimeFixture,
   targetTick: number,
   checkpointIndex: number
 ) {
@@ -330,7 +330,7 @@ async function advanceRuntimeToTick(
 async function waitForSimulationTick(page: Page, aiPlayerNumber: number, targetTick: number): Promise<void> {
   await page.waitForFunction(
     ({ playerNumber, tick }) =>
-      (window.__fuzzyWaddleAiRuntimePartsV1?.(playerNumber)?.tickService.currentTick ?? -1) >= tick,
+      (window.__fuzzyWaddleAiRuntimeParts?.(playerNumber)?.tickService.currentTick ?? -1) >= tick,
     { playerNumber: aiPlayerNumber, tick: targetTick },
     { timeout: 120_000 }
   );
@@ -339,7 +339,7 @@ async function waitForSimulationTick(page: Page, aiPlayerNumber: number, targetT
 async function waitForSettledDecision(page: Page, aiPlayerNumber: number): Promise<void> {
   await page.waitForFunction(
     (playerNumber) =>
-      window.__fuzzyWaddleAiRuntimePartsV1?.(playerNumber)?.controller.isDecisionBoundarySettled() === true,
+      window.__fuzzyWaddleAiRuntimeParts?.(playerNumber)?.controller.isDecisionBoundarySettled() === true,
     aiPlayerNumber,
     { timeout: 30_000 }
   );
@@ -354,7 +354,7 @@ async function setSimulationState(
 ): Promise<void> {
   await page.evaluate(
     ({ playerNumber, nextState, timeScale, stopAtTick }) => {
-      const parts = window.__fuzzyWaddleAiRuntimePartsV1?.(playerNumber);
+      const parts = window.__fuzzyWaddleAiRuntimeParts?.(playerNumber);
       if (!parts) throw new Error("runtime_controller_unavailable");
       parts.tickService.setSimulationTimeScale(timeScale);
       if (nextState === "pause") parts.tickService.pauseTick("manual");

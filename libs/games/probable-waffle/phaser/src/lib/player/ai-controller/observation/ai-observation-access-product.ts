@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
-import type { AiObservedAccessProductV1, AiObservedActorV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiObservedAccessProduct, AiObservedActor } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { canActorTraverseTile, getGameObjectCurrentTile } from "../../../data/game-object-helper";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
@@ -9,11 +9,11 @@ import { uniqueDomain } from "./ai-observation-values";
 type GameObject = Phaser.GameObjects.GameObject;
 
 type AiAccessCandidate = {
-  readonly source: AiObservedActorV1;
-  readonly target: AiObservedActorV1;
+  readonly source: AiObservedActor;
+  readonly target: AiObservedActor;
 };
 
-function compareObservedGeometry(left: AiObservedActorV1, right: AiObservedActorV1): number {
+function compareObservedGeometry(left: AiObservedActor, right: AiObservedActor): number {
   const leftPosition = left.logicalPosition.status === "known" ? left.logicalPosition.value : null;
   const rightPosition = right.logicalPosition.status === "known" ? right.logicalPosition.value : null;
   if (leftPosition && rightPosition) {
@@ -34,18 +34,18 @@ export function compareAccessProductCandidates(left: AiAccessCandidate, right: A
 export function projectAccessProduct(
   scene: Phaser.Scene,
   queryInputRevision: number,
-  source: AiObservedActorV1,
-  target: AiObservedActorV1,
+  source: AiObservedActor,
+  target: AiObservedActor,
   liveById: ReadonlyMap<ActorId, GameObject>,
   tick: number
-): AiObservedAccessProductV1 {
+): AiObservedAccessProduct {
   const sourceNode = source.accessNodeId.status === "known" ? source.accessNodeId.value : undefined;
   const targetNode = target.accessNodeId.status === "known" ? target.accessNodeId.value : undefined;
   const queryId = `query:access:${source.actorId}:${target.actorId}`;
   const sourceActor = liveById.get(source.actorId);
   const targetActor = liveById.get(target.actorId);
   const navigation = getSceneService(scene, NavigationService);
-  let status: AiObservedAccessProductV1["status"] = "not_ready";
+  let status: AiObservedAccessProduct["status"] = "not_ready";
   if (!sourceNode || !targetNode || !sourceActor || !targetActor) {
     status = "unknown";
   } else if (!navigation) {

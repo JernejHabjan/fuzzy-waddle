@@ -9,7 +9,7 @@
     "mapDigest": "fixture-authored-per-test",
     "side": 1,
     "faction": "fixture-declared",
-    "rulesVersion": "probable-waffle-rules-v1",
+    "rulesVersion": "probable-waffle-rules",
     "contractVersions": { "scenario": 1, "brain": 1, "observation": 1, "command": 1 }
   },
   "pureCases": [

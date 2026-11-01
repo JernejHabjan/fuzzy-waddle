@@ -1,8 +1,8 @@
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiDemand } from "../contracts/ai-plan-contracts";
+import type { AiObservation } from "../contracts/ai-observation";
+import type { AiManagerProposal, AiProposalManager } from "./ai-manager-proposal";
 import { proposeAiHousing } from "./ai-housing-proposal";
 import { proposeAiFoodEconomy } from "./ai-food-economy-proposal";
 import { proposeAiGeneralGathering } from "./ai-general-gathering-proposal";
@@ -24,12 +24,12 @@ import { nextAiMilitarySpendingReserve } from "./ai-military-spending-reserve";
  * It never assumes that an object is buildable merely because its name appears
  * in a faction recipe: the catalog must expose the matching producer/builder.
  */
-export class AiMacroManager implements AiProposalManagerV1 {
+export class AiMacroManager implements AiProposalManager {
   readonly managerId = "stage-7-macro";
 
-  constructor(private readonly getCatalog: () => AiCapabilityCatalogV1 | undefined) {}
+  constructor(private readonly getCatalog: () => AiCapabilityCatalog | undefined) {}
 
-  propose(observation: AiObservationV1, state: AiBrainStateV1): AiManagerProposalV1 {
+  propose(observation: AiObservation, state: AiBrainState): AiManagerProposal {
     const catalog = this.getCatalog();
     if (!catalog || catalog.generation !== observation.generation) {
       return {
@@ -193,7 +193,7 @@ export class AiMacroManager implements AiProposalManagerV1 {
       demandId:
         transition?.status === "committed"
           ? transition.demandId
-          : ("demand:composition:first-squad" as AiDemandV1["demandId"]),
+          : ("demand:composition:first-squad" as AiDemand["demandId"]),
       purpose: openingComplete ? `dated_${pressureDomain}_pressure` : "opening_force",
       capabilityOrRole: `${pressureDomain}_combat_composition`,
       unit: "actor_count",

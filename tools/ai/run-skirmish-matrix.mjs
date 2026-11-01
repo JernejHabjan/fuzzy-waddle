@@ -3,7 +3,7 @@ import { encodeRuntimeArtifact } from "../../apps/portal-e2e/src/e2e/skirmish-ai
 import { writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
-import { resolvePinnedBaselineSupport } from "./baseline-adapter-v1.mjs";
+import { resolvePinnedBaselineSupport } from "./baseline-adapter.mjs";
 import { invokeHarness, invokeSelectedHarness } from "./skirmish-matrix-execution.mjs";
 import { selectDiagnosticVariant } from "./skirmish-runtime-diagnostic-selection.mjs";
 import { buildSkirmishShardIndex } from "./skirmish-shard-index.mjs";
@@ -36,7 +36,7 @@ if (args.help === true) {
 }
 const manifestPath = args.manifest
   ? resolveExplicitPath(args.manifest)
-  : join(toolDirectory, "fixtures", "skirmish-v1.json");
+  : join(toolDirectory, "fixtures", "skirmish.json");
 const fixtureDirectory = dirname(manifestPath);
 const reportDirectory = args.output ? resolveExplicitPath(args.output) : join(workspaceRoot, "tmp/ai-skirmish-matrix");
 const manifest = readJson(manifestPath, 4 * 1024 * 1024);
@@ -384,7 +384,7 @@ function helpText() {
     "  node tools/ai/run-skirmish-matrix.mjs --candidate SHA --baseline SHA",
     "",
     "Options:",
-    "  --manifest PATH       Override tools/ai/fixtures/skirmish-v1.json",
+    "  --manifest PATH       Override tools/ai/fixtures/skirmish.json",
     "  --output DIRECTORY    Store the JSON artifact in this directory",
     "  --seed INTEGER        Override the authored seed for a selected run",
     "  --variant ID          Diagnostic-only: run one variant of --scenario in runtime mode",

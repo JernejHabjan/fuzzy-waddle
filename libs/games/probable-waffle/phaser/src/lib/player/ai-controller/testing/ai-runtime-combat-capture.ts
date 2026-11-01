@@ -15,7 +15,7 @@ import { getHighGroundRangeBonus } from "../../../entity/components/combat/high-
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
-import type { AiRuntimeCombatOperationV1 } from "./ai-runtime-combat-operation-v1";
+import type { AiRuntimeCombatOperation } from "./ai-runtime-combat-operation";
 
 /** Owned by the existing explicit combat capture. Passive callbacks and call-through wrappers share its fact budget. */
 export class AiRuntimeCombatCapture {
@@ -24,7 +24,7 @@ export class AiRuntimeCombatCapture {
 
   constructor(
     private readonly scene: ProbableWaffleScene,
-    private readonly append: (player: number, operation: AiRuntimeCombatOperationV1) => void,
+    private readonly append: (player: number, operation: AiRuntimeCombatOperation) => void,
     private readonly lose: (reason: string) => void
   ) {}
 
@@ -155,13 +155,13 @@ export class AiRuntimeCombatCapture {
     } catch { this.lose("combat_attack_start_reader_failed"); return undefined; }
   }
 
-  private record(operation: AiRuntimeCombatOperationV1): void {
+  private record(operation: AiRuntimeCombatOperation): void {
     if (this.disposed || operation.actor.playerNumber === null) return;
     try { this.append(operation.actor.playerNumber, operation); }
     catch { this.lose("combat_operation_append_failed"); }
   }
 
-  private project(read: () => AiRuntimeCombatOperationV1): void {
+  private project(read: () => AiRuntimeCombatOperation): void {
     if (this.disposed) return;
     try { this.record(read()); }
     catch { this.lose("combat_operation_reader_failed"); }

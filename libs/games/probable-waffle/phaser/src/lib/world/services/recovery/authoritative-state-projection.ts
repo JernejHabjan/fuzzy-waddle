@@ -1,5 +1,5 @@
 /** Canonical authoritative projection shared by multiplayer hashing and the AI harness. */
-export interface AuthoritativeStateProjectionV1 {
+export interface AuthoritativeStateProjection {
   readonly schemaVersion: 1;
   readonly actors: readonly {
     readonly actorId: string;
@@ -16,9 +16,9 @@ export interface AuthoritativeStateProjectionV1 {
 }
 
 /** Normalizes set-like projection fields while preserving queue/order content inside each digest. */
-export function canonicalizeAuthoritativeStateProjectionV1(
-  projection: AuthoritativeStateProjectionV1
-): AuthoritativeStateProjectionV1 {
+export function canonicalizeAuthoritativeStateProjection(
+  projection: AuthoritativeStateProjection
+): AuthoritativeStateProjection {
   return {
     ...projection,
     actors: [...projection.actors]
@@ -37,16 +37,16 @@ export function canonicalizeAuthoritativeStateProjectionV1(
 }
 
 /** Existing multiplayer-compatible DJB2 digest over the reusable canonical projection. */
-export function digestAuthoritativeStateProjectionV1(projection: AuthoritativeStateProjectionV1): string {
-  const canonical = canonicalizeAuthoritativeStateProjectionV1(projection);
+export function digestAuthoritativeStateProjection(projection: AuthoritativeStateProjection): string {
+  const canonical = canonicalizeAuthoritativeStateProjection(projection);
   return djb2(
     `${canonical.actors.map((actor) => actor.digest).join("|")}#${canonical.players.join("|")}#${canonical.research.join("|")}#${canonical.campaignMission}#${canonical.random}`
   );
 }
 
 /** Stable FNV digest dedicated to AI scenario reports; it does not replace multiplayer hash compatibility. */
-export function digestAiWorldProjectionV1(projection: AuthoritativeStateProjectionV1): string {
-  const serialized = JSON.stringify(canonicalizeAuthoritativeStateProjectionV1(projection));
+export function digestAiWorldProjection(projection: AuthoritativeStateProjection): string {
+  const serialized = JSON.stringify(canonicalizeAuthoritativeStateProjection(projection));
   let hash = 0x811c9dc5;
   for (let index = 0; index < serialized.length; index += 1) {
     hash ^= serialized.charCodeAt(index);
@@ -56,13 +56,13 @@ export function digestAiWorldProjectionV1(projection: AuthoritativeStateProjecti
 }
 
 /** First normalized world difference for retained harness artifacts. */
-export function findFirstAuthoritativeStateDifferenceV1(
-  expected: AuthoritativeStateProjectionV1,
-  actual: AuthoritativeStateProjectionV1
+export function findFirstAuthoritativeStateDifference(
+  expected: AuthoritativeStateProjection,
+  actual: AuthoritativeStateProjection
 ): { readonly path: string; readonly expected: unknown; readonly actual: unknown } | null {
   return walk(
-    canonicalizeAuthoritativeStateProjectionV1(expected),
-    canonicalizeAuthoritativeStateProjectionV1(actual),
+    canonicalizeAuthoritativeStateProjection(expected),
+    canonicalizeAuthoritativeStateProjection(actual),
     "$"
   );
 }

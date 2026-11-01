@@ -1,9 +1,9 @@
 import { ResearchType, type GameCommand } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import type { AiRuntimeUnspentClaimsV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-unspent-claims-v1";
+import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
+import type { AiRuntimeUnspentClaimsSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-unspent-claims-snapshot";
 import { productionOperationFixture } from "./skirmish-ai-runtime-production-operation-fixture";
 import { calculateRuntimeQueueLiabilities } from "./skirmish-ai-runtime-queue-liabilities";
 
@@ -24,7 +24,7 @@ export function productionRejectionFixture(stage: "admission" | "stamped_admissi
   const queues = physical.boundaryState.queues;
   const originalIntent = requested.event.acceptedIntent;
   if (originalIntent.kind !== "produce") throw new Error("synthetic_purchase_missing");
-  const intent: AiIntentV1 = family === "research" ? {
+  const intent: AiIntent = family === "research" ? {
     intentId: originalIntent.intentId, effectId: originalIntent.effectId, planId: originalIntent.planId,
     demandId: originalIntent.demandId, lane: originalIntent.lane, proposedTick: originalIntent.proposedTick,
     urgencyClass: originalIntent.urgencyClass, utility: originalIntent.utility, preconditions: originalIntent.preconditions,
@@ -36,25 +36,25 @@ export function productionRejectionFixture(stage: "admission" | "stamped_admissi
     playerNumber: originalCommand.playerNumber, actorIds: originalCommand.actorIds, execution: originalCommand.execution,
     researchType: ResearchType.TivaraMacemanUpgradeLevel2 } : originalCommand;
   const zero = { food: 0, wood: 0, stone: 0, minerals: 0 };
-  const ledger = (state: AiRuntimeUnspentClaimsV1["entries"][number]["state"], native: boolean): AiRuntimeUnspentClaimsV1 => ({
+  const ledger = (state: AiRuntimeUnspentClaimsSnapshot["entries"][number]["state"], native: boolean): AiRuntimeUnspentClaimsSnapshot => ({
     resources: { ...zero, food: state === "released" ? 0 : 7 }, gaps: [],
     entries: [{ identity: selected.decision.identity, intent, commandId: native ? "purchase" : null, state }]
   });
-  const boundary = (state: AiRuntimeUnspentClaimsV1["entries"][number]["state"], native = false) => ({
+  const boundary = (state: AiRuntimeUnspentClaimsSnapshot["entries"][number]["state"], native = false) => ({
     ...physicalBoundary, snapshotRestoreInProgress: false, queues,
     resources: { food: 100, wood: 100, stone: 100, minerals: 100 },
     obligations: calculateRuntimeQueueLiabilities(queues), unspentClaims: ledger(state, native), gaps: []
   });
-  const request: AiRuntimeProductionFactV1 = { ...requested, event: { ...requested.event, acceptedIntent: intent,
+  const request: AiRuntimeProductionFact = { ...requested, event: { ...requested.event, acceptedIntent: intent,
     command: family === "research" ? { type: "RESEARCH", playerNumber: command.playerNumber,
       actorIds: command.actorIds, researchType: ResearchType.TivaraMacemanUpgradeLevel2 } :
       { ...requested.event.command, execution: undefined } }, boundaryStateBefore: boundary("selected"),
     boundaryState: boundary("selected") };
-  const rejection: AiRuntimeProductionFactV1 = { ...admission, tick: stage === "stamped_admission" ? 4 : 6,
+  const rejection: AiRuntimeProductionFact = { ...admission, tick: stage === "stamped_admission" ? 4 : 6,
     scheduledTick: null, outcome: { ...admission.outcome, kind: "rejected", reason: "invalid_owner",
       tick: stage === "stamped_admission" ? 4 : 6 }, boundaryStateBefore: boundary("admitted", true),
     boundaryState: boundary("released", true) };
-  const facts: AiRuntimeProductionFactV1[] = [{ ...selected, decision: { ...selected.decision,
+  const facts: AiRuntimeProductionFact[] = [{ ...selected, decision: { ...selected.decision,
     acceptedIntents: [intent], decisions: [{ intent, outcome: "accepted", reason: "accepted" }] },
     boundaryState: boundary("selected") }, request];
   if (stage === "admission" || stage === "stamped_admission") {

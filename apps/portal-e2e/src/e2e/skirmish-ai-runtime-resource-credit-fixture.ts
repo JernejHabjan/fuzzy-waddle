@@ -1,6 +1,6 @@
 import { ResourceType, OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionSpatialV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-spatial-v1";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionSpatial } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-spatial";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { routeOrderFixture } from "./skirmish-ai-runtime-route-order-fixture";
 
 /** Synthetic native intervals with one reused admitted order; movement demand supplies identity, never gather usefulness. */
@@ -39,7 +39,7 @@ export function resourceCreditFixture(oldCargo = 0, rally = false, immediate = f
         orderType: operation === "gather" ? OrderType.Gather : OrderType.ReturnResources,
         target: f.producer
       }
-    }) satisfies AiRuntimeProductionSpatialV1;
+    }) satisfies AiRuntimeProductionSpatial;
   const addition = (attemptId: number, before: number, delta: number) =>
     ({
       ...common,
@@ -51,7 +51,7 @@ export function resourceCreditFixture(oldCargo = 0, rally = false, immediate = f
       before: sample(before),
       after: sample(before + delta),
       change: { reason: "added", resourceType: ResourceType.Wood, delta }
-    }) satisfies AiRuntimeProductionSpatialV1;
+    }) satisfies AiRuntimeProductionSpatial;
   const entry = (attemptId: number, amount: number) =>
     ({
       ...common,
@@ -61,7 +61,7 @@ export function resourceCreditFixture(oldCargo = 0, rally = false, immediate = f
       attemptId,
       transferId: null,
       cargo: sample(amount)
-    }) satisfies AiRuntimeProductionSpatialV1;
+    }) satisfies AiRuntimeProductionSpatial;
   const amount = oldCargo + 3,
     deliveryId = immediate ? 1 : 3;
   const offer = {
@@ -72,7 +72,7 @@ export function resourceCreditFixture(oldCargo = 0, rally = false, immediate = f
     attemptId: deliveryId,
     transferId: 1,
     cargo: sample(amount)
-  } satisfies AiRuntimeProductionSpatialV1;
+  } satisfies AiRuntimeProductionSpatial;
   const credit = {
     ...common,
     kind: "resource_service",
@@ -93,7 +93,7 @@ export function resourceCreditFixture(oldCargo = 0, rally = false, immediate = f
     interference: false,
     emissionRestoreInProgress: false,
     balanceMatches: true
-  } satisfies AiRuntimeProductionSpatialV1;
+  } satisfies AiRuntimeProductionSpatial;
   const removal = {
     ...common,
     kind: "resource_service",
@@ -104,8 +104,8 @@ export function resourceCreditFixture(oldCargo = 0, rally = false, immediate = f
     change: { reason: "removed", resourceType: ResourceType.Wood, delta: amount },
     before: sample(amount),
     after: sample(0)
-  } satisfies AiRuntimeProductionSpatialV1;
-  const tail: AiRuntimeProductionSpatialV1[] = immediate
+  } satisfies AiRuntimeProductionSpatial;
+  const tail: AiRuntimeProductionSpatial[] = immediate
     ? [
         attempt(1, "gather", "started", null),
         entry(1, oldCargo),
@@ -135,7 +135,7 @@ export function resourceCreditFixture(oldCargo = 0, rally = false, immediate = f
     ...f.capture,
     facts: [...f.capture.facts, ...tail.map(f.fact)].map((fact, index) => ({ ...fact, sequence: index + 1 }))
   };
-  const rewrite = (change: (fact: AiRuntimeProductionFactV1) => readonly AiRuntimeProductionFactV1[]) => ({
+  const rewrite = (change: (fact: AiRuntimeProductionFact) => readonly AiRuntimeProductionFact[]) => ({
     ...capture,
     facts: capture.facts.flatMap(change).map((fact, index) => ({ ...fact, sequence: index + 1 }))
   });

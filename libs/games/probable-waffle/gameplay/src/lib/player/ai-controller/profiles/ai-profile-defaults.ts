@@ -1,16 +1,16 @@
 import { ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
+import type { AiProfileConfig } from "../contracts/ai-profile-config";
 
 const base = {
   schemaVersion: 1,
-  profileVersion: "skirmish-ai-v1",
-  archetypeVersion: "opening-archetypes-v1",
+  profileVersion: "skirmish-ai",
+  archetypeVersion: "opening-archetypes",
   intentionalErrors: false,
   cheats: false
 } as const;
 
 /** Resolves lobby difficulty to a complete, versioned and fair planning profile. */
-export function createAiProfileConfigV1(difficulty: ProbableWaffleAiDifficulty): AiProfileConfigV1 {
+export function createAiProfileConfig(difficulty: ProbableWaffleAiDifficulty): AiProfileConfig {
   switch (difficulty) {
     case ProbableWaffleAiDifficulty.Easy:
       return {

@@ -1,14 +1,14 @@
 import type { projectRuntimeControlledOutputs } from "./skirmish-ai-runtime-controlled-output";
 import type { projectRuntimeControlledRefunds } from "./skirmish-ai-runtime-production-controlled-refund";
 import type { projectRuntimeControlledCommands } from "./skirmish-ai-runtime-production-controlled-commands";
-import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
-import type { RuntimeProductionEvidenceV1 } from "./skirmish-ai-runtime-production-evidence";
+import type { RuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality";
+import type { RuntimeProductionEvidence } from "./skirmish-ai-runtime-production-evidence";
 // prettier-ignore
-import type { AiRuntimePresetApplicationV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application-v1";
+import type { AiRuntimePresetApplication } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application";
 // prettier-ignore
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 
 /** Native typed joins, retaining requests without fabricated money frames and every distinct teardown/refund callback. */
 export interface RuntimeProductionLifecycleV2 {
@@ -16,7 +16,7 @@ export interface RuntimeProductionLifecycleV2 {
   readonly controlledOutputs?: ReturnType<typeof projectRuntimeControlledOutputs>;
   readonly controlledRefunds?: ReturnType<typeof projectRuntimeControlledRefunds>;
   readonly controlledCommands?: ReturnType<typeof projectRuntimeControlledCommands>["commands"];
-  readonly queues: readonly (RuntimeProductionEvidenceV1["events"][number] & {
+  readonly queues: readonly (RuntimeProductionEvidence["events"][number] & {
     /** Actual callback clock. Scheduled request and consumed/selected clocks remain independent. */
     readonly applicationTick: number;
     readonly selectedSequence: number | null;
@@ -29,14 +29,14 @@ export interface RuntimeProductionLifecycleV2 {
     readonly effectId: string;
     readonly itemId: string;
   }[];
-  readonly construction: RuntimeProductionCausalityV1["constructionLineage"];
+  readonly construction: RuntimeProductionCausality["constructionLineage"];
   /** Lifetimes of actors actually present in paused setup, including normal preset initialization callbacks. */
-  readonly setupConstruction: RuntimeProductionCausalityV1["constructionLineage"];
-  readonly constructionDefinitions: RuntimeProductionCausalityV1["constructionCatalog"];
-  readonly rejections: RuntimeProductionCausalityV1["rejections"];
-  readonly setupPayments: AiRuntimePresetApplicationV1["queueApplications"];
+  readonly setupConstruction: RuntimeProductionCausality["constructionLineage"];
+  readonly constructionDefinitions: RuntimeProductionCausality["constructionCatalog"];
+  readonly rejections: RuntimeProductionCausality["rejections"];
+  readonly setupPayments: AiRuntimePresetApplication["queueApplications"];
   /** Actual unregister boundaries, never an inferred absence or an authored destruction schedule. */
-  readonly losses: readonly Extract<AiRuntimeProductionFactV1, { kind: "actor_unregistered" }>[];
+  readonly losses: readonly Extract<AiRuntimeProductionFact, { kind: "actor_unregistered" }>[];
   readonly failures: readonly string[];
   readonly gaps: readonly string[];
 }

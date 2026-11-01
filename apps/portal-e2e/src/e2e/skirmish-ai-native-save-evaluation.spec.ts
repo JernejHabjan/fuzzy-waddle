@@ -19,7 +19,7 @@ const boundary = (tick: number): NativeSaveProof["saved"] => ({
   },
   worldDigest: "full-shared-queue-and-world",
   brainDigest: "full-brain",
-  profileVersion: "profile-v1",
+  profileVersion: "profile",
   profileDifficulty: "normal",
   archetypeId: "opening:original",
   blackboardDigest: "original-blackboard",

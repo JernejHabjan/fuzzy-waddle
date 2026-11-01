@@ -9,12 +9,12 @@ import { HealthComponent } from "../../../entity/components/combat/components/he
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import type { AiRuntimePresetWorldV1 } from "./ai-runtime-preset-world-v1";
+import type { AiRuntimePresetWorld } from "./ai-runtime-preset-world";
 
 /** Bind actual inherited actors before creating authored actors. Ambiguity/reuse aborts setup; no actor data is rewritten. */
 export function bindAiRuntimeExistingActors(
   scene: ProbableWaffleScene,
-  preset: AiRuntimePresetWorldV1,
+  preset: AiRuntimePresetWorld,
   actors: Map<string, Phaser.GameObjects.GameObject>,
   actorIds: Record<string, string>
 ): void {

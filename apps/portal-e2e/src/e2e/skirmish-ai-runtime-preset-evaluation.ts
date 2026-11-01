@@ -1,9 +1,9 @@
-import type { RuntimeAssertionV1 } from "./skirmish-ai-runtime-assertion";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeAssertion } from "./skirmish-ai-runtime-assertion";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 
 export function evaluateRuntimePresetWorld(
-  assertion: RuntimeAssertionV1,
-  variant: RuntimeVariantResultV1
+  assertion: RuntimeAssertion,
+  variant: RuntimeVariantResult
 ): string[] {
   const failures: string[] = [];
   if (assertion.requiredPresetFixtureId !== undefined) {

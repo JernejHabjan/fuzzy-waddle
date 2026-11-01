@@ -4,15 +4,15 @@ import {
   ProbableWaffleAiDifficulty,
   ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observation-v1";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservedActor, AiObservation } from "../contracts/ai-observation";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 import { AI_EXPANSION_SATURATION_TICKS, AiBaseManager } from "./ai-base-manager";
 
-const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-const catalog: AiCapabilityCatalogV1 = {
+const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+const catalog: AiCapabilityCatalog = {
   schemaVersion: 1,
   generation: 1,
   unsupported: [],
@@ -75,7 +75,7 @@ const catalog: AiCapabilityCatalogV1 = {
   ]
 };
 
-function actor(actorId: string, objectName: ObjectNames, x: number, main = false): AiObservedActorV1 {
+function actor(actorId: string, objectName: ObjectNames, x: number, main = false): AiObservedActor {
   return {
     ...createAiTestOwnedActor(actorId),
     objectName,
@@ -85,7 +85,7 @@ function actor(actorId: string, objectName: ObjectNames, x: number, main = false
   };
 }
 
-function observation(tick: number, actors: readonly AiObservedActorV1[], deliveredIncome = 5): AiObservationV1 {
+function observation(tick: number, actors: readonly AiObservedActor[], deliveredIncome = 5): AiObservation {
   return {
     ...createAiTestObservation(),
     tick,
@@ -103,7 +103,7 @@ function observation(tick: number, actors: readonly AiObservedActorV1[], deliver
   };
 }
 
-function withCompletedOpening(state: ReturnType<typeof createAiBrainStateV1>) {
+function withCompletedOpening(state: ReturnType<typeof createAiBrainState>) {
   return {
     ...state,
     opening: { ...state.opening, plan: { ...state.opening.plan, lifecycle: "completed" as const } }
@@ -114,7 +114,7 @@ describe("AiBaseManager", () => {
   const manager = new AiBaseManager(profile, () => catalog);
 
   it("anchors the base to the main structure rather than moving it with a distant scout", () => {
-    const state = createAiBrainStateV1({
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -136,7 +136,7 @@ describe("AiBaseManager", () => {
   });
 
   it("creates one stable expansion reservation from a visible distant resource instead of duplicate same-tick plans", () => {
-    const state = createAiBrainStateV1({
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -159,7 +159,7 @@ describe("AiBaseManager", () => {
         },
         observedTick: AI_EXPANSION_SATURATION_TICKS
       }
-    } satisfies AiObservedActorV1;
+    } satisfies AiObservedActor;
     const completedState = withCompletedOpening(state);
     const first = manager.propose(
       observation(
@@ -192,7 +192,7 @@ describe("AiBaseManager", () => {
 
   it("does not reserve a new base around a remote resource already served by an owned drop-off", () => {
     const state = withCompletedOpening(
-      createAiBrainStateV1({
+      createAiBrainState({
         playerNumber: 1,
         faction: FactionType.Tivara,
         profile,
@@ -216,7 +216,7 @@ describe("AiBaseManager", () => {
         },
         observedTick: 600
       }
-    } satisfies AiObservedActorV1;
+    } satisfies AiObservedActor;
     const proposal = manager.propose(
       observation(
         600,
@@ -237,7 +237,7 @@ describe("AiBaseManager", () => {
 
   it("releases a pending base proposal after a newly built drop-off starts serving its resource", () => {
     const initial = withCompletedOpening(
-      createAiBrainStateV1({
+      createAiBrainState({
         playerNumber: 1,
         faction: FactionType.Tivara,
         profile,
@@ -261,7 +261,7 @@ describe("AiBaseManager", () => {
         },
         observedTick: 620
       }
-    } satisfies AiObservedActorV1;
+    } satisfies AiObservedActor;
     const pending = {
       baseId: "base:expansion:wood-remote",
       anchorActorId: null,
@@ -299,7 +299,7 @@ describe("AiBaseManager", () => {
 
   it("does not reissue expansion construction after the reserved site is observed", () => {
     const state = withCompletedOpening(
-      createAiBrainStateV1({
+      createAiBrainState({
         playerNumber: 1,
         faction: FactionType.Tivara,
         profile,
@@ -323,7 +323,7 @@ describe("AiBaseManager", () => {
         },
         observedTick: 600
       }
-    } satisfies AiObservedActorV1;
+    } satisfies AiObservedActor;
     const initialActors = [
       actor("sandhold", ObjectNames.Sandhold, 4, true),
       actor("worker", ObjectNames.TivaraWorker, 5),
@@ -343,7 +343,7 @@ describe("AiBaseManager", () => {
 
   it("retains rejected expansion history and chooses a different deterministic site", () => {
     const state = withCompletedOpening(
-      createAiBrainStateV1({
+      createAiBrainState({
         playerNumber: 1,
         faction: FactionType.Tivara,
         profile,
@@ -367,7 +367,7 @@ describe("AiBaseManager", () => {
         },
         observedTick: 600
       }
-    } satisfies AiObservedActorV1;
+    } satisfies AiObservedActor;
     const actors = [
       actor("sandhold", ObjectNames.Sandhold, 4, true),
       actor("worker", ObjectNames.TivaraWorker, 5),
@@ -398,7 +398,7 @@ describe("AiBaseManager", () => {
   });
 
   it("defers expansion until the committed opening is complete", () => {
-    const state = createAiBrainStateV1({
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -421,7 +421,7 @@ describe("AiBaseManager", () => {
         },
         observedTick: 900
       }
-    } satisfies AiObservedActorV1;
+    } satisfies AiObservedActor;
     const proposal = manager.propose(
       observation(
         900,

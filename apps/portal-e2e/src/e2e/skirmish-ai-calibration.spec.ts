@@ -1,8 +1,8 @@
 import { test } from "@playwright/test";
 import { readFileSync, writeFileSync, statSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
-import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
+import type { RuntimeFixture } from "./skirmish-ai-runtime-fixture";
+import type { RuntimeVariant } from "./skirmish-ai-runtime-variant";
 import type { AiCalibrationJob } from "./skirmish-ai-calibration-job";
 import { prepareRuntimeVariant, configureLobby } from "./skirmish-ai-runtime-variant-setup";
 import { runCalibrationArena } from "./skirmish-ai-calibration-arena";
@@ -15,7 +15,7 @@ test("executes each frozen native legal-start workload without exporting raw cap
   if (!requestPath || statSync(requestPath).size > 256 * 1024) throw new Error("calibration_request_missing_or_oversized");
   const request = JSON.parse(readFileSync(requestPath, "utf8")) as { schemaVersion: 1; sourceRevision: string;
     fixtureDigest: string; manifestDigest: string; adapterDigest: string | null; output: string;
-    fixture: RuntimeFixtureV1; jobs: AiCalibrationJob[] };
+    fixture: RuntimeFixture; jobs: AiCalibrationJob[] };
   const url = new URL(process.env.AI_CALIBRATION_BASE_URL ?? "");
   if (request.schemaVersion !== 1 || !/^[a-f0-9]{40}$/.test(request.sourceRevision) || !request.fixtureDigest ||
       !["localhost", "127.0.0.1"].includes(url.hostname) || !request.manifestDigest || request.jobs.length < 1 ||
@@ -37,7 +37,7 @@ test("executes each frozen native legal-start workload without exporting raw cap
     page.on("pageerror", (error) => { if (aiErrors.length < 8) aiErrors.push(error.message.slice(0, 240)); });
     page.on("console", (message) => { if (message.type() === "error" && aiErrors.length < 8) aiErrors.push(message.text().slice(0, 240)); });
     const enemy = job.faction === "Tivara" ? "Skaduwee" : "Tivara";
-    const variant: RuntimeVariantV1 = { id: job.id, executionKind: "focused_natural", role: "standalone", seed: job.seed,
+    const variant: RuntimeVariant = { id: job.id, executionKind: "focused_natural", role: "standalone", seed: job.seed,
       aiFaction: job.targetPlayerNumber === 2 ? job.faction : enemy, humanFaction: job.targetPlayerNumber === 1 ? job.faction : enemy,
       difficulty: job.difficulty === "Legacy" ? "Normal" : job.difficulty, mapLabel: job.mapLabel,
       setupRationale: "Both original map slots become native AI controllers before ordinary bootstrap; no preset actors or income." };
@@ -48,7 +48,7 @@ test("executes each frozen native legal-start workload without exporting raw cap
         { targetPlayerNumber: job.targetPlayerNumber, difficulty: variant.difficulty, opponentArchetype: job.opponentArchetype });
       else {
         if (!request.adapterDigest) throw new Error("calibration_pinned_adapter_identity_missing");
-        await page.addInitScript((value) => sessionStorage.setItem("fuzzy-waddle:ai-calibration-legacy-v1", JSON.stringify(value)),
+        await page.addInitScript((value) => sessionStorage.setItem("fuzzy-waddle:ai-calibration-legacy", JSON.stringify(value)),
           { enabled: true, seed: job.seed, calibration: { targetPlayerNumber: job.targetPlayerNumber } });
         await configureLobby(page, request.fixture, variant, false);
         await page.waitForFunction(() => {

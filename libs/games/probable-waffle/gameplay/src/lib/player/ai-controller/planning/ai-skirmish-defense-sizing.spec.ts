@@ -1,22 +1,22 @@
 import { FactionType, ObjectNames, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservedActor } from "../contracts/ai-observation";
 import type { AiSkirmishProposalContext } from "./ai-skirmish-proposal-context";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 import { advanceAiSkirmishDefense } from "./ai-skirmish-defense";
 import { createAiSkirmishProposalContext } from "./ai-skirmish-proposal-draft";
 
-const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-const catalog: AiCapabilityCatalogV1 = { schemaVersion: 1, generation: 1, entries: [], unsupported: [] };
+const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+const catalog: AiCapabilityCatalog = { schemaVersion: 1, generation: 1, entries: [], unsupported: [] };
 
 function combatant(
   id: string,
   relation: "self" | "enemy",
   x: number,
-  visibleEnemyActorIds?: AiObservedActorV1["visibleEnemyActorIds"]
-): AiObservedActorV1 {
+  visibleEnemyActorIds?: AiObservedActor["visibleEnemyActorIds"]
+): AiObservedActor {
   return {
     ...createAiTestOwnedActor(id),
     objectName: ObjectNames.TivaraMacemanMale,
@@ -45,7 +45,7 @@ function defenseContextFor(
   exactEmptyVision = false,
   defenderCount = 8
 ): AiSkirmishProposalContext {
-  const home: AiObservedActorV1 = {
+  const home: AiObservedActor = {
     ...createAiTestOwnedActor("main"),
     objectName: ObjectNames.Sandhold,
     mainBuilding: { status: "known", value: true, observedTick: 20 },
@@ -57,7 +57,7 @@ function defenseContextFor(
   );
   const raiders = Array.from({ length: raiderCount }, (_, index) => combatant(`raider-${index}`, "enemy", 3 + index));
   const observation = { ...createAiTestObservation(), actors: [home, ...defenders, ...raiders] };
-  const state = createAiBrainStateV1({
+  const state = createAiBrainState({
     playerNumber: 1,
     faction: FactionType.Tivara,
     profile,

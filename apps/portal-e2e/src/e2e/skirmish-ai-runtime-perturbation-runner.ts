@@ -1,13 +1,13 @@
 import type { Page } from "@playwright/test";
-import type { RuntimePerturbationV1 } from "./skirmish-ai-runtime-perturbation";
+import type { RuntimePerturbation } from "./skirmish-ai-runtime-perturbation";
 
 export async function applyRuntimePerturbation(
   page: Page,
-  perturbation: RuntimePerturbationV1,
+  perturbation: RuntimePerturbation,
   aiPlayerNumber: number
 ): Promise<{ id: string; tick: number; dispatchedActors: number; subjectName: string | null }> {
   const targetActorId = await page.evaluate(({ playerNumber, targetObjectName }) => {
-      const observation = window.__fuzzyWaddleAiRuntimePartsV1?.(playerNumber)?.controller.getCommittedObservation();
+      const observation = window.__fuzzyWaddleAiRuntimeParts?.(playerNumber)?.controller.getCommittedObservation();
       return observation?.actors.find(
         (actor) =>
           actor.relation === "self" &&
@@ -22,7 +22,7 @@ export async function applyRuntimePerturbation(
   }
   const dispatched = await page.evaluate(
     ({ playerNumber, input, targetId }) => {
-      const parts = window.__fuzzyWaddleAiRuntimePartsV1?.(playerNumber);
+      const parts = window.__fuzzyWaddleAiRuntimeParts?.(playerNumber);
       if (!parts) throw new Error("runtime_controller_unavailable");
       return parts.dispatchHumanRaid(1, targetId, input.maximumAttackers, input.attackerObjectNames);
     },

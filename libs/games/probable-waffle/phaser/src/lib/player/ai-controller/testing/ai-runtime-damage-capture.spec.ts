@@ -11,7 +11,7 @@ import { ProbableWaffleSceneEventName } from "../../../world/services/recovery/p
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { AiRuntimeProductionWorldCapture } from "./ai-runtime-production-world-capture";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
-import type { AiRuntimeProductionFactV1 } from "./ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "./ai-runtime-production-fact";
 
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 jest.mock("../../../data/scene-data", () => ({ isSnapshotApplyInProgress: jest.fn() }));
@@ -39,7 +39,7 @@ function setup(captureCombat: boolean) {
     actorId: actor === target ? "home" : "raider", objectName: actor.name, canonicalObjectName: actor === target ? ObjectNames.Sandhold : ObjectNames.SkaduweeWarriorMale,
     playerNumber: actor === target ? 2 : 1, active: true, alive: true, finished: true, indexed: true
   }));
-  const facts: AiRuntimeProductionFactV1[] = [];
+  const facts: AiRuntimeProductionFact[] = [];
   const capture = new AiRuntimeProductionWorldCapture(scene, {
     resources: () => ({ food: 100, wood: 100, stone: 100, minerals: 100 }),
     boundary: (playerNumber) => ({ sequence: facts.length + 1, tick: 20, playerNumber }),

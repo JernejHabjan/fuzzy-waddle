@@ -1,11 +1,11 @@
 import { FactionType, ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
+import type { AiObservedActor } from "../contracts/ai-observation";
 import { unknownAiValue } from "../testing/ai-test-fixtures";
 import { enemyNode, homeNode, manager, observation, profile, unit } from "./ai-skirmish-test-fixtures";
 
 function state() {
-  return createAiBrainStateV1({
+  return createAiBrainState({
     playerNumber: 1,
     faction: FactionType.Tivara,
     profile,
@@ -14,7 +14,7 @@ function state() {
   });
 }
 
-function neutral(actorId = "resource", accessNode = enemyNode, x = 22): AiObservedActorV1 {
+function neutral(actorId = "resource", accessNode = enemyNode, x = 22): AiObservedActor {
   return {
     ...unit(actorId, accessNode, x),
     objectName: ObjectNames.Tree6,

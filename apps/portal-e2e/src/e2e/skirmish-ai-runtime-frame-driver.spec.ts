@@ -21,8 +21,8 @@ test("native frame driver yields across bounded browser calls and nested Promise
       }
     };
     Object.assign(window, {
-      __fuzzyWaddleAiRuntimePartsV1: () => ({ tickService }),
-      __fuzzyWaddleAiRuntimeBrowserTestV1: {
+      __fuzzyWaddleAiRuntimeParts: () => ({ tickService }),
+      __fuzzyWaddleAiRuntimeBrowserTest: {
         game: {
           loop: {
             now: 100,

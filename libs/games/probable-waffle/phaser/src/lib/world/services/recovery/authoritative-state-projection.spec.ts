@@ -1,11 +1,11 @@
 import {
-  digestAiWorldProjectionV1,
-  digestAuthoritativeStateProjectionV1,
-  findFirstAuthoritativeStateDifferenceV1,
-  type AuthoritativeStateProjectionV1
+  digestAiWorldProjection,
+  digestAuthoritativeStateProjection,
+  findFirstAuthoritativeStateDifference,
+  type AuthoritativeStateProjection
 } from "./authoritative-state-projection";
 
-const projection: AuthoritativeStateProjectionV1 = {
+const projection: AuthoritativeStateProjection = {
   schemaVersion: 1,
   actors: [
     { actorId: "b", digest: "b:state", aiState: { spell: { remainingCooldown: 50 } } },
@@ -27,9 +27,9 @@ describe("Stage 5 authoritative world projection", () => {
       players: [...projection.players].reverse(),
       research: [...projection.research].reverse()
     };
-    expect(digestAuthoritativeStateProjectionV1(reversed)).toBe(digestAuthoritativeStateProjectionV1(projection));
-    expect(digestAiWorldProjectionV1(reversed)).toBe(digestAiWorldProjectionV1(projection));
-    expect(digestAuthoritativeStateProjectionV1(projection)).toBe(
+    expect(digestAuthoritativeStateProjection(reversed)).toBe(digestAuthoritativeStateProjection(projection));
+    expect(digestAiWorldProjection(reversed)).toBe(digestAiWorldProjection(projection));
+    expect(digestAuthoritativeStateProjection(projection)).toBe(
       legacyDjb2("a:state|b:state#1:state|2:state#1:a|2:z#mission#rng")
     );
   });
@@ -39,7 +39,7 @@ describe("Stage 5 authoritative world projection", () => {
       ...projection,
       actors: projection.actors.map((actor) => (actor.actorId === "b" ? { ...actor, digest: "b:changed" } : actor))
     };
-    expect(findFirstAuthoritativeStateDifferenceV1(projection, changed)?.path).toBe("$.actors[1].digest");
+    expect(findFirstAuthoritativeStateDifference(projection, changed)?.path).toBe("$.actors[1].digest");
   });
 
   it("reports an injected AI continuation at its normalized nested field", () => {
@@ -49,7 +49,7 @@ describe("Stage 5 authoritative world projection", () => {
         actor.actorId === "b" ? { ...actor, aiState: { spell: { remainingCooldown: 100 } } } : actor
       )
     };
-    expect(findFirstAuthoritativeStateDifferenceV1(projection, changed)?.path).toBe(
+    expect(findFirstAuthoritativeStateDifference(projection, changed)?.path).toBe(
       "$.actors[1].aiState.spell.remainingCooldown"
     );
   });

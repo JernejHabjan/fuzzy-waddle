@@ -6,16 +6,16 @@ import {
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
-import { runAiRuntimeScenarioV1, type AiRuntimeScenarioBridgePortV1 } from "./ai-runtime-scenario-driver";
-import type { AiRuntimeScenarioBoundaryV1 } from "./ai-runtime-scenario-bridge";
+import { runAiRuntimeScenario, type AiRuntimeScenarioBridgePort } from "./ai-runtime-scenario-driver";
+import type { AiRuntimeScenarioBoundary } from "./ai-runtime-scenario-bridge";
 
 const controllerState = { blackboard: {} } as AIBehaviorTreeStateData;
 
 describe("Stage 5 real runtime scenario bootstrap", () => {
   it("restores the captured controller boundary before continuing later checkpoints", async () => {
     const restored: number[] = [];
-    const bridge: AiRuntimeScenarioBridgePortV1 = {
-      advanceToCommittedObservation: async (_playerNumber, tick): Promise<AiRuntimeScenarioBoundaryV1> => ({
+    const bridge: AiRuntimeScenarioBridgePort = {
+      advanceToCommittedObservation: async (_playerNumber, tick): Promise<AiRuntimeScenarioBoundary> => ({
         tick,
         observationDigest: `observation:${tick}`,
         worldDigest: `world:${tick}`,
@@ -25,7 +25,7 @@ describe("Stage 5 real runtime scenario bootstrap", () => {
       }),
       restoreControllerBoundary: (_playerNumber, state) => restored.push(state === controllerState ? -1 : 20)
     };
-    const boundaries = await runAiRuntimeScenarioV1(bridge, {
+    const boundaries = await runAiRuntimeScenario(bridge, {
       scenarioId: "DBG-01",
       playerNumber: 1,
       checkpointTicks: [20, 40],

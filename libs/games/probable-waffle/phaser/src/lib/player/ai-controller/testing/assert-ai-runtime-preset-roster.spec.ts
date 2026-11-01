@@ -4,10 +4,10 @@ import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { assertAiRuntimePresetRoster } from "./assert-ai-runtime-preset-roster";
-import type { AiRuntimePresetWorldV1 } from "./ai-runtime-preset-world-v1";
-import { applyAiRuntimePresetWorldV1 } from "./apply-ai-runtime-preset-world-v1";
+import type { AiRuntimePresetWorld } from "./ai-runtime-preset-world";
+import { applyAiRuntimePresetWorld } from "./apply-ai-runtime-preset-world";
 import type { SceneActorCreator } from "../../../world/services/scene-actor-creator";
-import { AI_RUNTIME_BROWSER_TEST_CONFIG_KEY_V1 } from "./ai-runtime-browser-test-config";
+import { AI_RUNTIME_BROWSER_TEST_CONFIG_KEY } from "./ai-runtime-browser-test-config";
 import { IsoHelper } from "../../../world/tilemap/iso-helper";
 
 jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
@@ -15,6 +15,7 @@ jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneSe
 function fixture(faction = FactionType.Tivara) {
   const tech = new TechTreeService();
   const scene = {
+    baseGameData: { gameInstance: { gameInstanceMetadata: { data: { startOptions: { loadFromSave: false } } } } },
     tilemap: { width: 64, height: 64 },
     players: [{ playerNumber: 2, playerController: { data: { playerDefinition: { factionType: faction } } } }]
   } as unknown as GameProbableWaffleScene;
@@ -30,7 +31,7 @@ function fixture(faction = FactionType.Tivara) {
             : undefined) as never
     );
   const name = faction === FactionType.Tivara ? ObjectNames.TivaraWorkerMale : ObjectNames.SkaduweeWorkerMale;
-  const preset: AiRuntimePresetWorldV1 = {
+  const preset: AiRuntimePresetWorld = {
     fixtureId: "faction-production",
     requireFactionRoster: true,
     provenance: { sourceRevision: "a".repeat(40), fixtureDigest: "fnv1a32:12345678" },
@@ -45,7 +46,7 @@ beforeEach(() => {
   jest.spyOn(IsoHelper, "isometricWorldToTileXY").mockReturnValue({ x: 10, y: 10 });
 });
 afterEach(() => {
-  window.sessionStorage.removeItem(AI_RUNTIME_BROWSER_TEST_CONFIG_KEY_V1);
+  window.sessionStorage.removeItem(AI_RUNTIME_BROWSER_TEST_CONFIG_KEY);
   jest.restoreAllMocks();
 });
 
@@ -112,7 +113,7 @@ it("the public preset application rejects a foreign world before creating actors
   const f = fixture();
   f.indexed.push({ name: ObjectNames.SkaduweeWarriorMale });
   window.sessionStorage.setItem(
-    AI_RUNTIME_BROWSER_TEST_CONFIG_KEY_V1,
+    AI_RUNTIME_BROWSER_TEST_CONFIG_KEY,
     JSON.stringify({
       schemaVersion: 1,
       enabled: true,
@@ -122,7 +123,7 @@ it("the public preset application rejects a foreign world before creating actors
     })
   );
   const createFinishedActor = jest.fn();
-  expect(() => applyAiRuntimePresetWorldV1(f.scene, { createFinishedActor } as unknown as SceneActorCreator)).toThrow(
+  expect(() => applyAiRuntimePresetWorld(f.scene, { createFinishedActor } as unknown as SceneActorCreator)).toThrow(
     "runtime_preset_foreign_faction_actor:indexed"
   );
   expect(createFinishedActor).not.toHaveBeenCalled();

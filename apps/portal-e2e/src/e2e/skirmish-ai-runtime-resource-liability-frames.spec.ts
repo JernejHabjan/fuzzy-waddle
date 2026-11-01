@@ -1,6 +1,6 @@
 import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import { expect, test } from "@playwright/test";
-import type { AiRuntimeProductionCaptureV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 import { resourceNeedAccountingFixture } from "./skirmish-ai-runtime-resource-need-accounting-fixture";
 import { projectRuntimeResourceNeedAccounting } from "./skirmish-ai-runtime-resource-need-accounting-projection";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
@@ -32,7 +32,7 @@ function fixture(beforeAmount = 0, acceptingAmount = 0) {
     recipientResourceFacts: f.capture.recipientResourceFacts.map(
       (fact) => facts.find((root) => root.sequence === fact.sequence) ?? fact
     )
-  } satisfies AiRuntimeProductionCaptureV1;
+  } satisfies AiRuntimeProductionSnapshot;
   return { ...f, capture };
 }
 
@@ -120,7 +120,7 @@ for (const route of ["gap", "due", "restore", "unknown-restore", "lost", "initia
         lossEpoch: route === "lost" ? 1 : 0,
         losses: route === "lost" ? ["named_mutation"] : []
       }
-    } satisfies AiRuntimeProductionCaptureV1;
+    } satisfies AiRuntimeProductionSnapshot;
     const result = projectRuntimeResourceNeedAccounting(capture, [f.need], []);
     expect(result.failures).toEqual([]);
     expect(requireAiTestEntry(result.records, 0).liabilityFrames?.status).toBe("unavailable");
@@ -145,7 +145,7 @@ for (const value of [-1, NaN, Infinity]) {
             }
           : fact
       )
-    } satisfies AiRuntimeProductionCaptureV1;
+    } satisfies AiRuntimeProductionSnapshot;
     expect(projectRuntimeResourceNeedAccounting(capture, [], []).failures).toContain(
       "production_need_liability_frame_value_invalid"
     );

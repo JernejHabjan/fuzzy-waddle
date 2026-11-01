@@ -5,8 +5,8 @@ import { encodeRuntimeArtifact } from "./skirmish-ai-runtime-artifact-codec.mjs"
 export function publishRuntimeResult(report: { readonly schemaVersion: 1 }, artifactPath?: string): void {
   if (artifactPath) {
     writeFileSync(artifactPath, JSON.stringify(encodeRuntimeArtifact(report, artifactPath)));
-    console.log(`AI_SKIRMISH_RUNTIME_RESULT_ARTIFACT_V1:${artifactPath}`);
+    console.log(`AI_SKIRMISH_RUNTIME_RESULT_ARTIFACT:${artifactPath}`);
   } else {
-    console.log(`AI_SKIRMISH_RUNTIME_RESULT_V1:${JSON.stringify(report)}`);
+    console.log(`AI_SKIRMISH_RUNTIME_RESULT:${JSON.stringify(report)}`);
   }
 }

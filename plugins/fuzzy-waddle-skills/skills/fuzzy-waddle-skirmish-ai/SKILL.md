@@ -12,6 +12,8 @@ description: Implement, diagnose or validate the Probable Waffle skirmish AI, de
    when evidence status or unfinished work matters. GitHub issues contain self-contained follow-up acceptance; there is
    no active #759 handoff queue. Multiplayer and extended save/load certification are deferred; difficulty calibration
    is cancelled. Automatic AI CI jobs/tag triggers are disabled until explicitly requested otherwise.
+   Use descriptive unsuffixed AI filenames and symbols; do not add a generation suffix to a source name.
+   Validate save/fixture/report shape at its existing boundary independently of source naming.
 2. Read only the named manifest rows/fixtures implicated by the task. Use the [RTS source index](../fuzzy-waddle-phaser/references/rts-source-index.md) once, then navigate exact symbols and adjacent specs.
    If a JetBrains semantic tool is available, probe it once with a known symbol and use it for bounded symbol/call
    lookup; otherwise use narrow `rg` in the indexed owner. Do not repeat repository-wide searches after ownership is known.

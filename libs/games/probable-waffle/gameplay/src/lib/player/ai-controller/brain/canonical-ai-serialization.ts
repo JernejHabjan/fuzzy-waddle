@@ -1,5 +1,5 @@
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiObservation } from "../contracts/ai-observation";
 import { canonicalizeAiSquads, canonicalizeAiTransport, canonicalizeAiFortifications } from "./canonical-ai-mission-state";
 import type { CanonicalValue } from "./canonical-ai-value";
 
@@ -24,7 +24,7 @@ export function canonicalizeAiValue(value: unknown, path = "$"): CanonicalValue 
 }
 
 /** Canonicalizes observation arrays that have set semantics before serialization. */
-export function canonicalizeAiObservationV1(observation: AiObservationV1): AiObservationV1 {
+export function canonicalizeAiObservation(observation: AiObservation): AiObservation {
   return {
     ...observation,
     actors: [...observation.actors]
@@ -143,7 +143,7 @@ export function canonicalizeAiObservationV1(observation: AiObservationV1): AiObs
 }
 
 /** Canonicalizes persisted arrays that represent keyed sets while preserving ordered RNG/history sequences. */
-export function canonicalizeAiBrainStateV1(state: AiBrainStateV1): AiBrainStateV1 {
+export function canonicalizeAiBrainState(state: AiBrainState): AiBrainState {
   return {
     ...state,
     strategy: { ...state.strategy, evidenceIds: [...state.strategy.evidenceIds].sort() },

@@ -10,13 +10,13 @@ import { productionContract } from "./skirmish-ai-runtime-production-contract-fi
 import { projectRuntimeProductionEvidenceV2 } from "./skirmish-ai-runtime-production-evidence-projection";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
 import { projectRuntimeProductionLifecycleV2 } from "./skirmish-ai-runtime-production-lifecycle-projection";
-import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
+import type { RuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality";
 
 test("paused finished initialization is separate from runtime restore, work and cash claims", () => {
   const { raw, setup } = productionAuthorityFixture();
   const capture = { ...raw.capture, setup };
   const causal = normalizeRuntimeProductionCausality(capture);
-  const initialization: RuntimeProductionCausalityV1["constructionLineage"][number] = {
+  const initialization: RuntimeProductionCausality["constructionLineage"][number] = {
     boundary: {
       sequence: 0,
       tick: 0,

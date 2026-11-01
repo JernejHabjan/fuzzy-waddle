@@ -1,14 +1,14 @@
 import type { ActorId, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type {
-  AiBrainStateV1,
-  AiFortificationNodeStateV1,
-  AiFortificationStateV1
-} from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogEntryV1, AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
+  AiBrainState,
+  AiFortificationNodeState,
+  AiFortificationState
+} from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalogEntry, AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
 
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
+import type { AiObservation } from "../contracts/ai-observation";
+import type { AiProfileConfig } from "../contracts/ai-profile-config";
 
 import {
   isDefensiveArchetype,
@@ -21,8 +21,8 @@ import {
 } from "./ai-fortification-support";
 import { createFortificationLayout } from "./ai-fortification-layout";
 function sumCost(
-  nodes: readonly AiFortificationNodeStateV1[],
-  entries: ReadonlyMap<string, AiCapabilityCatalogEntryV1>
+  nodes: readonly AiFortificationNodeState[],
+  entries: ReadonlyMap<string, AiCapabilityCatalogEntry>
 ): Partial<Record<ResourceType, number>> {
   const result: Partial<Record<ResourceType, number>> = {};
   for (const current of nodes) {
@@ -36,14 +36,14 @@ function sumCost(
 
 /** Creates one justified layout and prices its actual definition-backed nodes against protected macro funds. */
 export function createFortificationPlan(
-  profile: AiProfileConfigV1,
+  profile: AiProfileConfig,
   gateObjectName: ObjectNames | null,
-  observation: AiObservationV1,
-  state: AiBrainStateV1,
-  baseId: AiFortificationStateV1["protectedBaseIds"][number],
+  observation: AiObservation,
+  state: AiBrainState,
+  baseId: AiFortificationState["protectedBaseIds"][number],
   anchor: Vector3Simple,
-  catalog: AiCapabilityCatalogV1
-): AiFortificationStateV1 | null {
+  catalog: AiCapabilityCatalog
+): AiFortificationState | null {
   const incident = state.skirmish.incidents
     .filter((candidate) => candidate.baseId === null || candidate.baseId === baseId)
     .sort((left, right) => right.severity - left.severity || left.incidentId.localeCompare(right.incidentId))[0];
@@ -86,7 +86,7 @@ export function createFortificationPlan(
   )
     return null;
 
-  const planId = `fortification:${baseId}` as AiFortificationStateV1["planId"];
+  const planId = `fortification:${baseId}` as AiFortificationState["planId"];
   const layout = createFortificationLayout(
     observation,
     anchor,

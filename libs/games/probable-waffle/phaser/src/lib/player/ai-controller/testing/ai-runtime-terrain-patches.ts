@@ -1,5 +1,5 @@
 import type Phaser from "phaser";
-import type { AiRuntimePresetWorldV1 } from "./ai-runtime-preset-world-v1";
+import type { AiRuntimePresetWorld } from "./ai-runtime-preset-world";
 import { hasOnlyKeys, isRecord } from "./ai-runtime-fixture-values";
 import { getGameObjectCurrentTile } from "../../../data/game-object-helper";
 import { getTileCoordsUnderObject } from "../../../library/tile-under-object";
@@ -24,7 +24,7 @@ export function validAiRuntimeTerrainPatches(value: unknown): boolean {
 /** Validate every addressed real tile before mutation. Texture assets are unchanged; geometry is fixture-declared. */
 export function applyAiRuntimeTerrainPatches(
   tilemap: Phaser.Tilemaps.Tilemap,
-  preset: Pick<AiRuntimePresetWorldV1, "terrainPatches" | "terrainPreserveFootprints">,
+  preset: Pick<AiRuntimePresetWorld, "terrainPatches" | "terrainPreserveFootprints">,
   actors: readonly Phaser.GameObjects.GameObject[] = []
 ): void {
   if (preset.terrainPreserveFootprints && (!actors.length || actors.length > 256))

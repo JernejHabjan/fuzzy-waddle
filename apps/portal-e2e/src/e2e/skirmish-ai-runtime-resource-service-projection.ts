@@ -2,11 +2,11 @@
 import { AI_RUNTIME_MAX_FACTS } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/append-ai-runtime-production-fact";
 // prettier-ignore
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { RuntimeResourceCreditV1 } from "./skirmish-ai-runtime-resource-credit";
-import type { RuntimeResourceNeedV1 } from "./skirmish-ai-runtime-resource-need";
-import type { RuntimeResourceServiceIntervalV1 } from "./skirmish-ai-runtime-resource-service-interval";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { RuntimeResourceCredit } from "./skirmish-ai-runtime-resource-credit";
+import type { RuntimeResourceNeed } from "./skirmish-ai-runtime-resource-need";
+import type { RuntimeResourceServiceInterval } from "./skirmish-ai-runtime-resource-service-interval";
 import { normalizeRuntimeResourceNeeds } from "./skirmish-ai-runtime-resource-need-normalization";
 import { validateRuntimeResourceCoverage } from "./skirmish-ai-runtime-resource-coverage-validation";
 import { validateRuntimeResourceIntervals } from "./skirmish-ai-runtime-resource-interval-validation";
@@ -15,8 +15,8 @@ import { projectRuntimeResourceApplications } from "./skirmish-ai-runtime-resour
 
 /** Compose fail-closed diagnostic quantities. Complete unresolved need, throughput and capacity authority are still unsupported. */
 export function projectRuntimeResourceServices(
-  capture: AiRuntimeProductionCaptureV1,
-  credits: readonly RuntimeResourceCreditV1[]
+  capture: AiRuntimeProductionSnapshot,
+  credits: readonly RuntimeResourceCredit[]
 ) {
   const selections = normalizeRuntimeResourceNeeds(capture),
     coverage = validateRuntimeResourceCoverage(capture);
@@ -42,7 +42,7 @@ export function projectRuntimeResourceServices(
     ...accounting.gaps,
     ...applications.gaps
   ]);
-  const intervals: RuntimeResourceServiceIntervalV1[] = [];
+  const intervals: RuntimeResourceServiceInterval[] = [];
   const remaining = new Map<number, number>();
   const transfers = new Set<number>();
   for (const credit of credits) {
@@ -77,7 +77,7 @@ export function projectRuntimeResourceServices(
     if (need?.selection.forecast && interval.endTick > need.selection.forecast.horizonTick) {
       failures.push("production_resource_interval_horizon_exceeded");
     }
-    const windows: RuntimeResourceServiceIntervalV1["windows"][number][] = [];
+    const windows: RuntimeResourceServiceInterval["windows"][number][] = [];
     let totalIncome: number | null = 0,
       totalEligible: number | null = 0,
       totalPotential: number | null = 0;
@@ -205,10 +205,10 @@ export function projectRuntimeResourceServices(
 
 /** Whole-pile provenance must name one earlier selected generation; a newer decision conservatively closes the old input. */
 function eligibleForNeed(
-  capture: AiRuntimeProductionCaptureV1,
-  credit: RuntimeResourceCreditV1,
-  need: RuntimeResourceNeedV1,
-  end: NonNullable<AiRuntimeProductionCaptureV1["resourceCoverage"]>
+  capture: AiRuntimeProductionSnapshot,
+  credit: RuntimeResourceCredit,
+  need: RuntimeResourceNeed,
+  end: NonNullable<AiRuntimeProductionSnapshot["resourceCoverage"]>
 ): boolean {
   const value = credit.fact.spatial;
   if (

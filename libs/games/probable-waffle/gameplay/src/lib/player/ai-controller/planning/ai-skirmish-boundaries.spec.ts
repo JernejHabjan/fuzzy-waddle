@@ -1,12 +1,12 @@
 import { FactionType } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
 
 import { AI_CONCESSION_HOPELESS_TICKS } from "./ai-skirmish-manager";
 import { homeNode, enemyNode, unit, observation, profile, manager } from "./ai-skirmish-test-fixtures";
 
 describe("AiSkirmishManager", () => {
   it("keeps the chosen opponent focus and does not recall a defender for a distant bait contact", () => {
-    const initial = createAiBrainStateV1({
+    const initial = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -68,7 +68,7 @@ describe("AiSkirmishManager", () => {
   });
 
   it("requires sustained hopelessness, then emits exactly one authoritative concession intent", () => {
-    const initial = createAiBrainStateV1({
+    const initial = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,

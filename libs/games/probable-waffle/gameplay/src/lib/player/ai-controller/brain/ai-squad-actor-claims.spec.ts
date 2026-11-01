@@ -5,16 +5,16 @@ import {
   ProbableWaffleAiDifficulty
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { aiDeadline } from "../contracts/ai-core-types";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
+import type { AiIntent } from "../contracts/ai-intent";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
-import { createAiBrainStateV1 } from "./create-ai-brain-state-v1";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
+import { createAiBrainState } from "./create-ai-brain-state";
 import { arbitrateAiIntents } from "./ai-intent-arbiter";
 
 function fixture() {
-  const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+  const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
   const state = {
-    ...createAiBrainStateV1({
+    ...createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -42,7 +42,7 @@ function fixture() {
       }
     ]
   };
-  const intent: AiIntentV1 = {
+  const intent: AiIntent = {
     kind: "move",
     actorIds: ["guard"],
     logicalPosition: { x: 1, y: 1, z: 0 },
@@ -72,7 +72,7 @@ describe("squad actor leases permit tactical correction without stealing ownersh
 
   it("lets a scout mission renew its own provisional actor lease", () => {
     const f = fixture();
-    const scout: AiIntentV1 = {
+    const scout: AiIntent = {
       ...f.intent,
       kind: "scout",
       intentId: "intent:scout",
@@ -86,7 +86,7 @@ describe("squad actor leases permit tactical correction without stealing ownersh
 
   it("allows a squad's useful cast to replace its own provisional attack lease", () => {
     const f = fixture();
-    const cast: AiIntentV1 = {
+    const cast: AiIntent = {
       ...f.intent,
       kind: "cast",
       intentId: "intent:support-cast",
@@ -104,7 +104,7 @@ describe("squad actor leases permit tactical correction without stealing ownersh
 
   it("prioritizes a useful squad cast over its broad same-tick defense attack", () => {
     const f = fixture();
-    const cast: AiIntentV1 = {
+    const cast: AiIntent = {
       ...f.intent,
       kind: "cast",
       intentId: "intent:support-cast",
@@ -117,7 +117,7 @@ describe("squad actor leases permit tactical correction without stealing ownersh
       claims: [{ claimId: "claim:support-caster", kind: "actor", actorId: "guard" }],
       reasonCode: "tactical_support_cast"
     };
-    const legacyDefenseAttack: AiIntentV1 = {
+    const legacyDefenseAttack: AiIntent = {
       ...f.intent,
       kind: "attack",
       intentId: "intent:legacy-defense-attack",
@@ -165,7 +165,7 @@ describe("squad actor leases permit tactical correction without stealing ownersh
         state: { kind: "applied_spending" as const, appliedTick: 1 }
       }))
     };
-    const construct: AiIntentV1 = {
+    const construct: AiIntent = {
       ...f.intent,
       kind: "construct",
       intentId: "intent:retask-builder",
@@ -185,7 +185,7 @@ describe("squad actor leases permit tactical correction without stealing ownersh
 
   it("does not let construction retask a builder or gatherer with unresolved work", () => {
     const f = fixture();
-    const construct: AiIntentV1 = {
+    const construct: AiIntent = {
       ...f.intent,
       kind: "construct",
       intentId: "intent:retask-builder",
@@ -301,7 +301,7 @@ describe("squad actor leases permit tactical correction without stealing ownersh
         state: { kind: "dispatched" as const, commandId: "old-command" }
       }))
     };
-    const cast: AiIntentV1 = {
+    const cast: AiIntent = {
       ...f.intent,
       kind: "cast",
       intentId: "intent:support-cast",

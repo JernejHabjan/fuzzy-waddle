@@ -2,8 +2,8 @@ import { expect, test } from "@playwright/test";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { execFileSync } from "node:child_process";
-import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
-import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
+import type { RuntimeFixture } from "./skirmish-ai-runtime-fixture";
+import type { RuntimeVariant } from "./skirmish-ai-runtime-variant";
 import { digestRuntimeValue } from "./skirmish-ai-runtime-digest";
 import { runVariant } from "./skirmish-ai-runtime-variant-runner";
 import { captureRuntimeProductionAuthority } from "./skirmish-ai-runtime-production-capture";
@@ -20,14 +20,14 @@ test("both faction worlds lose the pinned original while preserving another same
   const root = resolve(__dirname, "../../../..");
   const source = JSON.parse(
     readFileSync(resolve(root, "tools/ai/fixtures/production-economy-runtime.json"), "utf8")
-  ) as RuntimeFixtureV1;
+  ) as RuntimeFixture;
   const revision = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
   const results: unknown[] = [];
   for (const base of source.recipe.variants) {
     const preset = base.presetWorld!;
     const producer = preset.actors.find((actor) => actor.fixtureActorId === "producer")!;
     const product = base.aiFaction === "Tivara" ? "TivaraMacemanMale" : "SkaduweeWarriorMale";
-    const variant: RuntimeVariantV1 = {
+    const variant: RuntimeVariant = {
       ...base,
       id: `${base.id}-pinned-loss`,
       scenarioIds: ["PRO-06"],
@@ -53,7 +53,7 @@ test("both faction worlds lose the pinned original while preserving another same
       }
     };
     // PRO-06 enables the existing capture owner. This check asserts setup/loss only, not its full causal scenario oracle.
-    const fixture: RuntimeFixtureV1 = {
+    const fixture: RuntimeFixture = {
       ...source,
       scenarioIds: ["PRO-06"],
       recipe: { ...source.recipe, checkpointTicks: [20, 200, 400], variants: [variant] },
@@ -140,5 +140,5 @@ test("both faction worlds lose the pinned original while preserving another same
     body: JSON.stringify(results, null, 2),
     contentType: "application/json"
   });
-  console.log(`AI_PRESET_LOSS_V1:${JSON.stringify(results)}`);
+  console.log(`AI_PRESET_LOSS:${JSON.stringify(results)}`);
 });

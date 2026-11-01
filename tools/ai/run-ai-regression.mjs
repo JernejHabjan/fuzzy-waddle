@@ -10,8 +10,8 @@ import { executeAiRegressionCases } from "./ai-regression-execution.mjs";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const args = parseArgs(process.argv.slice(2));
 const fixtureDirectory = join(root, "tools/ai/fixtures");
-const pack = readJson(join(fixtureDirectory, "ai-regression-v1.json"));
-const manifest = readJson(join(fixtureDirectory, "skirmish-v1.json"));
+const pack = readJson(join(fixtureDirectory, "ai-regression.json"));
+const manifest = readJson(join(fixtureDirectory, "skirmish.json"));
 const selection = resolveAiRegressionSelection(pack, manifest, (reference) => readJson(join(fixtureDirectory, reference)), args.profile);
 
 if (args.help) {

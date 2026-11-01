@@ -1,7 +1,7 @@
 import { FactionType, ObjectNames, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
-import { AiTransportManager, createAiTransportPlanV1 } from "./ai-transport-manager";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
+import { AiTransportManager, createAiTransportPlan } from "./ai-transport-manager";
 import {
   actor,
   built,
@@ -15,15 +15,15 @@ import {
 
 describe("AiTransportManager CommonBoat lifecycle", () => {
   it("reserves, gathers, boards, travels, unloads, regroups and releases mission ownership", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    let state = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    let state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
       tick: 0,
       archetypeId: "balanced"
     });
-    const plan = createAiTransportPlanV1({
+    const plan = createAiTransportPlan({
       planId: "transport:island-1",
       routeRequest,
       route,
@@ -130,15 +130,15 @@ describe("AiTransportManager CommonBoat lifecycle", () => {
   });
 
   it("bounds a lost indispensable passenger instead of producing endless boats", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const initial = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const initial = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
       tick: 0,
       archetypeId: "balanced"
     });
-    const plan = createAiTransportPlanV1({
+    const plan = createAiTransportPlan({
       planId: "transport:loss",
       routeRequest,
       route,
@@ -157,8 +157,8 @@ describe("AiTransportManager CommonBoat lifecycle", () => {
   });
 
   it("cancels a second plan that tries to own the same passenger and destination", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const initial = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const initial = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -168,7 +168,7 @@ describe("AiTransportManager CommonBoat lifecycle", () => {
     const passengers = [
       { actorId: "worker-1", role: "combat" as const, indispensable: true, handoff: "squad" as const }
     ];
-    const first = createAiTransportPlanV1({
+    const first = createAiTransportPlan({
       planId: "transport:a",
       routeRequest,
       route,
@@ -177,7 +177,7 @@ describe("AiTransportManager CommonBoat lifecycle", () => {
       estimatedTravelTicks: 40,
       passengers
     });
-    const second = createAiTransportPlanV1({
+    const second = createAiTransportPlan({
       planId: "transport:b",
       routeRequest,
       route,
@@ -199,15 +199,15 @@ describe("AiTransportManager CommonBoat lifecycle", () => {
 
 describe("AiTransportManager CommonBoat recovery and handoff", () => {
   it("revalidates an unsafe landing and enters bounded recovery without unloading", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const initial = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const initial = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
       tick: 0,
       archetypeId: "balanced"
     });
-    const source = createAiTransportPlanV1({
+    const source = createAiTransportPlan({
       planId: "transport:unsafe",
       routeRequest,
       route,
@@ -263,15 +263,15 @@ describe("AiTransportManager CommonBoat recovery and handoff", () => {
   });
 
   it("hands off surviving cargo already ashore after its transport is lost", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const initial = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const initial = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
       tick: 0,
       archetypeId: "balanced"
     });
-    const source = createAiTransportPlanV1({
+    const source = createAiTransportPlan({
       planId: "transport:survivor",
       routeRequest,
       route,

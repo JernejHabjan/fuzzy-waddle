@@ -59,7 +59,7 @@ export type AiSupportPlanId = `support:${string}`;
 export type AiQueryId = `query:${string}`;
 
 /** A persisted simulation deadline; wall-clock time is never valid here. */
-export interface AiDeadlineV1 {
+export interface AiDeadline {
   readonly clock: "simulation";
   readonly unit: "tick";
   readonly dueTick: AiSimulationTick;
@@ -67,12 +67,12 @@ export interface AiDeadlineV1 {
 }
 
 /** Explicitly represents unavailable knowledge instead of fabricating a zero. */
-export type AiKnownValueV1<T> =
+export type AiKnownValue<T> =
   | { readonly status: "known"; readonly value: T; readonly observedTick: AiSimulationTick }
   | { readonly status: "unknown"; readonly reason: "not_observed" | "not_supported" | "query_pending" };
 
 /** Creates a persisted simulation-tick deadline. */
-export function aiDeadline(dueTick: AiSimulationTick): AiDeadlineV1 {
+export function aiDeadline(dueTick: AiSimulationTick): AiDeadline {
   assertAiNonNegativeInteger(dueTick, "dueTick");
   return { clock: "simulation", unit: "tick", dueTick, persistence: "save" };
 }

@@ -18,7 +18,7 @@ import { getSceneService } from "../../../world/services/scene-component-helpers
 import { AiRuntimeProductionCapture } from "./ai-runtime-production-capture";
 import { prepareAiMultiplayerSharedQueueWorld } from "./prepare-ai-multiplayer-shared-queue-world";
 import { AiMultiplayerSharedQueueWorld } from "./ai-multiplayer-shared-queue-world";
-import type { AiMultiplayerSharedQueueWorldV1 } from "./ai-multiplayer-shared-queue-world-v1";
+import type { AiMultiplayerSharedQueueWorldSnapshot } from "./ai-multiplayer-shared-queue-world-snapshot";
 
 jest.mock("./ai-runtime-production-capture");
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
@@ -29,7 +29,7 @@ jest.mock("./prepare-ai-multiplayer-shared-queue-world", () => ({
 }));
 jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
-function fixture(branch: AiMultiplayerSharedQueueWorldV1["branch"], localPlayerNumber = 1) {
+function fixture(branch: AiMultiplayerSharedQueueWorldSnapshot["branch"], localPlayerNumber = 1) {
   const outcomes = new Subject<GameCommandOutcome>();
   const commands = new Subject<GameCommand>();
   const ticks = { currentTick: 0, tick$: new Subject<number>() };

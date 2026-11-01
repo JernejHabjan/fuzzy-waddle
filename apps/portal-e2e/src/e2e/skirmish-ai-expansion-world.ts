@@ -1,10 +1,10 @@
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
+import type { RuntimeFixture } from "./skirmish-ai-runtime-fixture";
 import type { ExpansionBranch } from "./skirmish-ai-expansion-branch";
 import { EXPANSION_HOME_RAIDER_ROLES } from "./skirmish-ai-expansion-branch";
 
 /** Deplete actual inherited stocks, fairly reveal two remote choices and let the ordinary AI own all expansion work. */
-export function expansionWorld(faction: "Tivara" | "Skaduwee", branch: ExpansionBranch): RuntimeFixtureV1 {
+export function expansionWorld(faction: "Tivara" | "Skaduwee", branch: ExpansionBranch): RuntimeFixture {
   const tivara = faction === "Tivara", pressure = !["expand", "served"].includes(branch);
   const inherited = [
     [ObjectNames.Tree6, -672, 640], [ObjectNames.Tree6, -960, 736], [ObjectNames.Tree6, 288, 752],

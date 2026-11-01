@@ -1,8 +1,8 @@
 import { ObjectNames, ProbableWaffleAiDifficulty, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservation } from "../contracts/ai-observation";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 import { proposeAiGeneralGathering } from "./ai-general-gathering-proposal";
 import { readAiGatheringSelection } from "./ai-gathering-selection-observation";
@@ -18,13 +18,13 @@ function fixture() {
       available: { status: "known", value: 100, observedTick: base.tick },
       carried: { status: "unknown", reason: "not_observed" }, growthReadyTick: { status: "unknown", reason: "not_observed" },
       serviceCapacity: { status: "known", value: 4, observedTick: base.tick } } } } as const;
-  const observation = { ...base, actors: [worker, source] } satisfies AiObservationV1;
+  const observation = { ...base, actors: [worker, source] } satisfies AiObservation;
   const catalog = { schemaVersion: 1, generation: 1, unsupported: [], entries: [{ capabilityId: "gather", family: "worker",
     sourceObjectName: ObjectNames.TivaraWorker, effectiveLevel: 1, movementDomains: ["ground"], targetDomains: [],
     produces: [], constructs: [], researches: [], gathers: [ResourceType.Wood], housingCapacity: null,
-    housingCost: 1, cargoCapacity: null }] } satisfies AiCapabilityCatalogV1;
-  const initial = createAiBrainStateV1({ playerNumber: 1, faction: base.faction, tick: base.tick, archetypeId: "balanced",
-    profile: createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium) });
+    housingCost: 1, cargoCapacity: null }] } satisfies AiCapabilityCatalog;
+  const initial = createAiBrainState({ playerNumber: 1, faction: base.faction, tick: base.tick, archetypeId: "balanced",
+    profile: createAiProfileConfig(ProbableWaffleAiDifficulty.Medium) });
   const state = { ...initial, economyProduction: { ...initial.economyProduction, forecasts: [
     { resourceType: ResourceType.Wood, amount: 100, horizonTick: 620, confidencePermille: 800 },
     { resourceType: ResourceType.Wood, amount: 200, horizonTick: 620, confidencePermille: 800 }

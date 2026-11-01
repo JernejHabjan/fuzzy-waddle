@@ -1,48 +1,48 @@
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
-import type { AiRouteCapabilityV1 } from "../contracts/ai-access-graph-v1";
+import type { AiRouteCapability } from "../contracts/ai-access-graph";
 import type {
-  AiBrainStateV1,
-  AiKnowledgeStateV1,
-  AiSkirmishStateV1,
-  AiThreatIncidentV1
-} from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
+  AiBrainState,
+  AiKnowledgeState,
+  AiSkirmishState,
+  AiThreatIncident
+} from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
 import type { AiAccessNodeId, AiPlanId } from "../contracts/ai-core-types";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiDomainV1, AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import type { AiIntent } from "../contracts/ai-intent";
+import type { AiDomain, AiObservation, AiObservedActor } from "../contracts/ai-observation";
 
 const MAX_TIMELINE_ENTRIES = 128;
 
-export function position(actor: AiObservedActorV1 | undefined): Vector3Simple | undefined {
+export function position(actor: AiObservedActor | undefined): Vector3Simple | undefined {
   return actor?.logicalPosition.status === "known" ? actor.logicalPosition.value : undefined;
 }
 
-export function node(actor: AiObservedActorV1 | undefined): AiAccessNodeId | undefined {
+export function node(actor: AiObservedActor | undefined): AiAccessNodeId | undefined {
   return actor?.accessNodeId.status === "known" ? actor.accessNodeId.value : undefined;
 }
 
-export function domains(actor: AiObservedActorV1): readonly AiDomainV1[] {
+export function domains(actor: AiObservedActor): readonly AiDomain[] {
   return [...new Set(actor.capabilities.flatMap((capability) => capability.domains))].sort();
 }
 
-export function targetDomains(actor: AiObservedActorV1): readonly AiDomainV1[] {
+export function targetDomains(actor: AiObservedActor): readonly AiDomain[] {
   return [...new Set(actor.capabilities.flatMap((capability) => capability.targetDomains))].sort();
 }
 
-export function canFight(actor: AiObservedActorV1): boolean {
+export function canFight(actor: AiObservedActor): boolean {
   return actor.housingCost.status === "known" && actor.housingCost.value > 0 && targetDomains(actor).length > 0;
 }
 
 /** Both sides of the domain check are required: a ranged ground unit is not anti-air by name alone. */
-export function canTarget(attacker: AiObservedActorV1, target: AiObservedActorV1): boolean {
+export function canTarget(attacker: AiObservedActor, target: AiObservedActor): boolean {
   const supported = new Set(targetDomains(attacker));
   const targetMovementDomains = domains(target);
-  const effectiveTargetDomains: readonly AiDomainV1[] =
+  const effectiveTargetDomains: readonly AiDomain[] =
     targetMovementDomains.length > 0 ? targetMovementDomains : ["ground"];
   return effectiveTargetDomains.some((domain) => supported.has(domain));
 }
 
-export function ownedCombat(observation: AiObservationV1, catalog: AiCapabilityCatalogV1): AiObservedActorV1[] {
+export function ownedCombat(observation: AiObservation, catalog: AiCapabilityCatalog): AiObservedActor[] {
   return observation.actors
     .filter(
       (actor) =>
@@ -67,17 +67,17 @@ export function ownedCombat(observation: AiObservationV1, catalog: AiCapabilityC
     });
 }
 
-export function hostileContacts(observation: AiObservationV1): AiObservedActorV1[] {
+export function hostileContacts(observation: AiObservation): AiObservedActor[] {
   return observation.actors
     .filter((actor) => actor.relation === "enemy")
     .sort((left, right) => left.actorId.localeCompare(right.actorId));
 }
 
-export function regionId(actor: AiObservedActorV1): string | null {
+export function regionId(actor: AiObservedActor): string | null {
   return node(actor) ?? null;
 }
 
-export function incidentKind(actor: AiObservedActorV1): AiThreatIncidentV1["kind"] {
+export function incidentKind(actor: AiObservedActor): AiThreatIncident["kind"] {
   const movement = domains(actor);
   if (movement.includes("air")) return "flyer";
   if (movement.includes("water")) return actor.containerState?.status === "known" ? "transport_landing" : "naval";
@@ -86,11 +86,11 @@ export function incidentKind(actor: AiObservedActorV1): AiThreatIncidentV1["kind
   return "unknown";
 }
 
-export function baseId(state: AiBrainStateV1): `base:${string}` {
+export function baseId(state: AiBrainState): `base:${string}` {
   return state.bases.find((base) => base.active)?.baseId ?? "base:home";
 }
 
-export function homeActor(observation: AiObservationV1): AiObservedActorV1 | undefined {
+export function homeActor(observation: AiObservation): AiObservedActor | undefined {
   return observation.actors
     .filter((actor) => actor.relation === "self" && actor.visibility === "owned")
     .sort((left, right) => {
@@ -100,11 +100,11 @@ export function homeActor(observation: AiObservationV1): AiObservedActorV1 | und
     })[0];
 }
 
-export function homePosition(observation: AiObservationV1): Vector3Simple | undefined {
+export function homePosition(observation: AiObservation): Vector3Simple | undefined {
   return position(homeActor(observation));
 }
 
-export function homeNode(observation: AiObservationV1): AiAccessNodeId | undefined {
+export function homeNode(observation: AiObservation): AiAccessNodeId | undefined {
   return node(homeActor(observation));
 }
 
@@ -113,17 +113,17 @@ export function distance(left: Vector3Simple, right: Vector3Simple): number {
 }
 
 export function intentBase(
-  state: AiBrainStateV1,
+  state: AiBrainState,
   planId: AiPlanId,
   tick: number,
   suffix: string,
-  lane: AiIntentV1["lane"],
+  lane: AiIntent["lane"],
   utility: number
 ) {
   const ordinal = state.scheduler.decisionSequence;
   return {
-    intentId: `intent:stage9:${ordinal}:${suffix}` as AiIntentV1["intentId"],
-    effectId: `effect:stage9:${ordinal}:${suffix}` as AiIntentV1["effectId"],
+    intentId: `intent:stage9:${ordinal}:${suffix}` as AiIntent["intentId"],
+    effectId: `effect:stage9:${ordinal}:${suffix}` as AiIntent["effectId"],
     planId,
     demandId: null,
     lane,
@@ -137,12 +137,12 @@ export function intentBase(
 }
 
 export function withTimeline(
-  current: AiSkirmishStateV1,
+  current: AiSkirmishState,
   tick: number,
-  kind: AiSkirmishStateV1["timeline"][number]["kind"],
+  kind: AiSkirmishState["timeline"][number]["kind"],
   subjectId: string,
   detail: string
-): AiSkirmishStateV1 {
+): AiSkirmishState {
   const eventId = `timeline:${tick}:${kind}:${subjectId}`;
   const event = { eventId, tick, kind, subjectId, detail } as const;
   return {
@@ -161,8 +161,8 @@ export function withTimeline(
 }
 
 function canProduceTransport(
-  observation: AiObservationV1,
-  catalog: AiCapabilityCatalogV1,
+  observation: AiObservation,
+  catalog: AiCapabilityCatalog,
   domain: "water" | "air"
 ): boolean {
   const carrierNames = new Set(
@@ -181,14 +181,14 @@ function canProduceTransport(
 }
 
 export function routeCapability(
-  observation: AiObservationV1,
-  members: readonly AiObservedActorV1[],
-  catalog: AiCapabilityCatalogV1
-): AiRouteCapabilityV1 {
+  observation: AiObservation,
+  members: readonly AiObservedActor[],
+  catalog: AiCapabilityCatalog
+): AiRouteCapability {
   const transports = observation.actors.filter(
     (actor) => actor.relation === "self" && actor.containerState?.status === "known"
   );
-  const seats = (domain: AiDomainV1) =>
+  const seats = (domain: AiDomain) =>
     transports
       .filter(
         (actor) => actor.containerState?.status === "known" && actor.containerState.value.mobileDomains.includes(domain)
@@ -210,9 +210,9 @@ export function routeCapability(
 }
 
 export function nextQuestion(
-  observation: AiObservationV1,
-  knowledge: AiKnowledgeStateV1
-): AiKnowledgeStateV1["questions"][number] | undefined {
+  observation: AiObservation,
+  knowledge: AiKnowledgeState
+): AiKnowledgeState["questions"][number] | undefined {
   if (observation.map?.scoutSearchPoints) {
     const point = [...observation.map.scoutSearchPoints]
       .sort((left, right) => left.pointId.localeCompare(right.pointId))
@@ -224,7 +224,7 @@ export function nextQuestion(
           )
       );
     if (!point) return undefined;
-    const questionId = `question:${point.pointId}` as AiKnowledgeStateV1["questions"][number]["questionId"];
+    const questionId = `question:${point.pointId}` as AiKnowledgeState["questions"][number]["questionId"];
     return (
       knowledge.questions.find((question) => question.questionId === questionId) ?? {
         questionId,
@@ -245,7 +245,7 @@ export function nextQuestion(
     )
     .sort()[0];
   if (!frontier) return undefined;
-  const questionId = `question:frontier:${frontier}` as AiKnowledgeStateV1["questions"][number]["questionId"];
+  const questionId = `question:frontier:${frontier}` as AiKnowledgeState["questions"][number]["questionId"];
   return (
     knowledge.questions.find((question) => question.questionId === questionId) ?? {
       questionId,

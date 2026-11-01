@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test";
 import { ConstructionStateEnum, ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionCaptureV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import type { AiRuntimeConstructionV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-construction-v1";
+import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
+import type { AiRuntimeConstruction } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-construction";
 import { constructionLineageFixture as fixture } from "./skirmish-ai-runtime-construction-lineage-fixture";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
 import { normalizeRuntimeConstructionAuthority } from "./skirmish-ai-runtime-construction-authority";
@@ -14,7 +14,7 @@ test("automatic sites join exact accepted construction without a builder path an
   const facts = f.base.facts
     .filter((fact) => fact.kind !== "spatial_authority" || fact.spatial.kind !== "builder_path")
     .map(
-      (fact): AiRuntimeProductionFactV1 =>
+      (fact): AiRuntimeProductionFact =>
         fact.kind === "spatial_authority" && fact.spatial.kind === "placement"
           ? {
               ...fact,
@@ -96,7 +96,7 @@ test("native callbacks before applied outcome and receipt can retain retrospecti
     f.boundary(skipped),
     ...native.slice(placementIndex + 1),
     receipt
-  ].map((fact, index): AiRuntimeProductionFactV1 => {
+  ].map((fact, index): AiRuntimeProductionFact => {
     if (fact.kind === "decision_selected")
       return {
         ...fact,
@@ -153,14 +153,14 @@ test("started and finish-before-effects boundaries retain command identity witho
     sceneActive: true,
     clockTick: 20,
     transition: "started"
-  } satisfies AiRuntimeConstructionV1;
+  } satisfies AiRuntimeConstruction;
   const finished = {
     ...started,
     site: { ...started.site, finished: true },
     state: ConstructionStateEnum.Finished,
     remainingWorkMs: -5,
     transition: "finished"
-  } satisfies AiRuntimeConstructionV1;
+  } satisfies AiRuntimeConstruction;
   const result = normalizeRuntimeProductionCausality({
     ...f.base,
     facts: [...f.base.facts, f.boundary(started), f.boundary(finished, 11)]
@@ -175,7 +175,7 @@ test("illegal native placement retains exact admission but cannot supply applied
   const f = fixture();
   const facts = f.base.facts
     .filter((fact) => fact.kind !== "spatial_authority" || fact.spatial.kind !== "builder_path")
-    .map((fact): AiRuntimeProductionFactV1 => {
+    .map((fact): AiRuntimeProductionFact => {
       if (fact.kind === "spatial_authority" && fact.spatial.kind === "placement") {
         return { ...fact, spatial: { ...fact.spatial, legal: false } };
       }
@@ -205,7 +205,7 @@ test("restore and subsequent callbacks cannot reuse an earlier placement, includ
     sceneActive: true,
     clockTick: 20,
     transition: "restored"
-  } satisfies AiRuntimeConstructionV1;
+  } satisfies AiRuntimeConstruction;
   const result = normalizeRuntimeProductionCausality({
     ...f.base,
     facts: [...f.base.facts, f.boundary(restored), f.boundary(f.resource, 11)]
@@ -243,13 +243,13 @@ test("unregister/re-registration fences reused IDs while repeated teardown bound
     sceneActive: true,
     clockTick: 20,
     transition: "teardown"
-  } satisfies AiRuntimeConstructionV1;
+  } satisfies AiRuntimeConstruction;
   const repeated = normalizeRuntimeProductionCausality({
     ...f.base,
     facts: [...f.base.facts, f.boundary(teardown), f.boundary(teardown, 11)]
   });
   expect(repeated.constructionLineage).toHaveLength(2);
-  const lost: AiRuntimeProductionFactV1 = {
+  const lost: AiRuntimeProductionFact = {
     sequence: 10,
     tick: 20,
     playerNumber: 1,
@@ -257,7 +257,7 @@ test("unregister/re-registration fences reused IDs while repeated teardown bound
     actorId: "site",
     objectName: f.resource.site.objectName
   };
-  const reused: AiRuntimeProductionFactV1 = {
+  const reused: AiRuntimeProductionFact = {
     sequence: 11,
     tick: 20,
     playerNumber: 1,
@@ -299,7 +299,7 @@ test("future placement never backfills an earlier callback and missing applicati
 
 test("contradictory initial membership, native application and site lineage suppress all normalized groups", () => {
   const f = fixture();
-  const captures: AiRuntimeProductionCaptureV1[] = [
+  const captures: AiRuntimeProductionSnapshot[] = [
     { ...f.base, initialConstruction: { ...f.initialConstruction, tick: 999 } },
     { ...f.base, initialConstruction: { ...f.initialConstruction, sites: [f.initialSite, f.initialSite] } },
     {

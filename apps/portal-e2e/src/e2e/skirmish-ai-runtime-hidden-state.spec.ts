@@ -1,11 +1,11 @@
 import { expect, test } from "@playwright/test";
-import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { evaluateScenario } from "./skirmish-ai-runtime-evaluation";
 import { productionCheckpoint } from "./skirmish-ai-runtime-digest-fixtures";
-import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeFixture } from "./skirmish-ai-runtime-fixture";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 
-const fixture: RuntimeFixtureV1 = {
+const fixture: RuntimeFixture = {
   schemaVersion: 1,
   evidenceKind: "runtime",
   scenarioIds: ["SCOUT-05"],
@@ -34,7 +34,7 @@ const fixture: RuntimeFixtureV1 = {
     }
   }
 };
-const intent: AiIntentV1 = {
+const intent: AiIntent = {
   kind: "move",
   intentId: "intent:scout",
   effectId: "effect:scout",
@@ -52,7 +52,7 @@ const intent: AiIntentV1 = {
 };
 
 /** Synthetic reader controls only; real hidden-world and decision parity come from the native paired recipe. */
-function variant(id: string): RuntimeVariantResultV1 {
+function variant(id: string): RuntimeVariantResult {
   return {
     variantId: id,
     mapLabel: "test",

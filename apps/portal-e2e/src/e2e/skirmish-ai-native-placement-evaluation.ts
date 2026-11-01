@@ -1,5 +1,5 @@
 import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
-import type { RuntimePresetWorldV1 } from "./skirmish-ai-runtime-preset-world";
+import type { RuntimePresetWorld } from "./skirmish-ai-runtime-preset-world";
 import { nativeCompletedPlacements, nativeInitialFieldSites } from "./skirmish-ai-native-construction-evidence";
 import { evaluateRuntimePlacementPrefixes } from "./skirmish-ai-placement-prefix-evaluation";
 import { evaluateFieldPlacementWorld } from "./skirmish-ai-field-placement-evaluation";
@@ -11,7 +11,7 @@ export function evaluateNativePlacement(
   id: string,
   branch: string,
   context: ReturnType<typeof nativeScenarioContext>,
-  preset: RuntimePresetWorldV1
+  preset: RuntimePresetWorld
 ): string[] {
   const failures: string[] = [],
     placed = nativeCompletedPlacements(context);
@@ -108,7 +108,7 @@ export function evaluateNativePlacement(
 /** Retain each declared original probe's stamped command and actual endpoint. A route query alone never suffices. */
 export function nativeProtectedTransits(
   context: ReturnType<typeof nativeScenarioContext>,
-  preset: RuntimePresetWorldV1
+  preset: RuntimePresetWorld
 ) {
   const capture = context.capture;
   if (!capture) return ["placement_native_transit_history_missing"];

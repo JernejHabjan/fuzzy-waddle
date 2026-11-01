@@ -6,16 +6,16 @@ import { getSceneService, getSceneSystem } from "../../../world/services/scene-c
 import { AiPlayerHandler } from "../ai-player-handler";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { StateHashService } from "../../../world/services/recovery/state-hash.service";
-import { digestAiWorldProjectionV1 } from "../../../world/services/recovery/authoritative-state-projection";
-import type { AiReproBundleV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
-import { AiIncidentCaptureStoreV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import { digestAiWorldProjection } from "../../../world/services/recovery/authoritative-state-projection";
+import type { AiReproBundle } from "@fuzzy-waddle/probable-waffle-gameplay";
+import { AiIncidentCaptureStore } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { digestAiReproJson as digestJson } from
   "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/debug/ai-repro-json-digest";
 
 const MAX_ADVANCE_TICKS = 20_000;
 
 /** One safe runtime boundary captured after command application and observation commit. */
-export interface AiRuntimeScenarioBoundaryV1 {
+export interface AiRuntimeScenarioBoundary {
   readonly tick: number;
   readonly observationDigest: string;
   readonly worldDigest: string;
@@ -25,14 +25,14 @@ export interface AiRuntimeScenarioBoundaryV1 {
 }
 
 /** Explicit construction options keep this bridge out of ordinary client authority and lobby surfaces. */
-export interface AiRuntimeScenarioBridgeOptionsV1 {
+export interface AiRuntimeScenarioBridgeOptions {
   readonly developerTestMode: true;
   readonly maximumAdvanceTicks?: number;
 }
 
 /** Host-confidential full-world artifact; only the manifest is safe for general debug display. */
-export interface AiRuntimeReproArtifactV1 {
-  readonly manifest: AiReproBundleV1 & { readonly kind: "runtime" };
+export interface AiRuntimeReproArtifact {
+  readonly manifest: AiReproBundle & { readonly kind: "runtime" };
   readonly payload: {
     readonly controllerState: AIBehaviorTreeStateData;
     readonly observation: unknown;
@@ -42,7 +42,7 @@ export interface AiRuntimeReproArtifactV1 {
 }
 
 /** Exact source/content/config provenance supplied by the developer harness, never inferred from labels. */
-export interface AiRuntimeReproProvenanceV1 {
+export interface AiRuntimeReproProvenance {
   readonly sourceRevision: string;
   readonly dirtySourceDigest: string | null;
   readonly mapId: string;
@@ -61,14 +61,14 @@ export interface AiRuntimeReproProvenanceV1 {
  * SimulationTickService and normal command subscribers execute in their production order.
  * It never injects commands, edits resources, exposes hidden observations or registers a live UI command.
  */
-export class AiRuntimeScenarioBridgeV1 {
+export class AiRuntimeScenarioBridge {
   private readonly maximumAdvanceTicks: number;
-  private readonly incidentCaptures = new AiIncidentCaptureStoreV1();
+  private readonly incidentCaptures = new AiIncidentCaptureStore();
   private disposed = false;
 
   constructor(
     private readonly scene: ProbableWaffleScene,
-    options: AiRuntimeScenarioBridgeOptionsV1
+    options: AiRuntimeScenarioBridgeOptions
   ) {
     if (options.developerTestMode !== true) throw new Error("ai_runtime_bridge_not_authorized");
     this.maximumAdvanceTicks = Math.min(options.maximumAdvanceTicks ?? MAX_ADVANCE_TICKS, MAX_ADVANCE_TICKS);
@@ -81,7 +81,7 @@ export class AiRuntimeScenarioBridgeV1 {
   async advanceToCommittedObservation(
     playerNumber: PlayerNumber,
     targetTick: number
-  ): Promise<AiRuntimeScenarioBoundaryV1> {
+  ): Promise<AiRuntimeScenarioBoundary> {
     this.assertUsable();
     const tickService = this.requireTickService();
     if (!Number.isSafeInteger(targetTick) || targetTick < tickService.currentTick)
@@ -109,7 +109,7 @@ export class AiRuntimeScenarioBridgeV1 {
     return {
       tick: tickService.currentTick,
       observationDigest: digestJson(observation),
-      worldDigest: digestAiWorldProjectionV1(projection),
+      worldDigest: digestAiWorldProjection(projection),
       controllerState: structuredClone(controller.getSaveState()),
       authorityEpoch: bridge?.authority.authorityEpoch ?? 0,
       outcomeCount: bridge?.outcomes.length ?? 0
@@ -126,8 +126,8 @@ export class AiRuntimeScenarioBridgeV1 {
   async captureRuntimeArtifact(
     playerNumber: PlayerNumber,
     targetTick: number,
-    provenance: AiRuntimeReproProvenanceV1
-  ): Promise<AiRuntimeReproArtifactV1> {
+    provenance: AiRuntimeReproProvenance
+  ): Promise<AiRuntimeReproArtifact> {
     if (!this.scene.isHost) throw new Error("runtime_capture_access_denied");
     const boundary = await this.advanceToCommittedObservation(playerNumber, targetTick);
     const controller = this.requireController(playerNumber);
@@ -144,7 +144,7 @@ export class AiRuntimeScenarioBridgeV1 {
     };
     const snapshotDigest = digestJson(payload);
     const inputDigest = digestJson({ observation: payload.observation, outcomes: payload.outcomes });
-    const artifact: AiRuntimeReproArtifactV1 = {
+    const artifact: AiRuntimeReproArtifact = {
       manifest: {
         schemaVersion: 1,
         kind: "runtime",

@@ -1,8 +1,8 @@
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 import { evaluateNativeDebugComparison } from "./skirmish-ai-native-debug-comparison-evaluation";
 
 /** Full physical continuation and its decision fingerprints must both reproduce; pure equality alone is insufficient. */
-export function nativeReproProofFailures(id: string, branch: string, result: RuntimeVariantResultV1) {
+export function nativeReproProofFailures(id: string, branch: string, result: RuntimeVariantResult) {
   const proof = result.nativeRepro;
   if (!proof || proof.branch !== branch || proof.sourceRevision !== result.productionPreset?.sourceRevision ||
       proof.fixtureDigest !== result.productionPreset?.fixtureDigest) return ["native_repro_source_or_proof_missing"];
@@ -37,7 +37,7 @@ export function nativeReproProofFailures(id: string, branch: string, result: Run
   return [...new Set(failures)];
 }
 
-function workbenchFailures(result: RuntimeVariantResultV1) {
+function workbenchFailures(result: RuntimeVariantResult) {
   const proof = result.nativeRepro, live = result.nativeLiveWorkbench;
   if (!proof || proof.steps.length !== 3) return ["native_workbench_named_safe_steps_missing"];
   const failures: string[] = [];

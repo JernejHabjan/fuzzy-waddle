@@ -1,7 +1,7 @@
-import type { AiBlockerId, AiDeadlineV1, AiPlanId, AiRecoveryEpisodeId, AiSimulationTick } from "./ai-core-types";
+import type { AiBlockerId, AiDeadline, AiPlanId, AiRecoveryEpisodeId, AiSimulationTick } from "./ai-core-types";
 
 /** Independent evidence that a plan changed the world in a useful way. */
-export interface AiProgressEvidenceV1 {
+export interface AiProgressEvidence {
   readonly kind:
     | "income_delivered"
     | "production_ready"
@@ -15,7 +15,7 @@ export interface AiProgressEvidenceV1 {
 }
 
 /** Causal blocker with an absolute simulation deadline and explicit owner. */
-export interface AiBlockerV1 {
+export interface AiBlocker {
   readonly blockerId: AiBlockerId;
   readonly planId: AiPlanId;
   readonly cause:
@@ -30,27 +30,27 @@ export interface AiBlockerV1 {
     | "technical_fault";
   readonly causeId: string;
   readonly enteredTick: AiSimulationTick;
-  readonly deadline: AiDeadlineV1;
+  readonly deadline: AiDeadline;
   readonly status: "waiting" | "recovering" | "failed_optional" | "technical_fault";
 }
 
 /** Recovery attempt linked to the blocker and evidence that can close it. */
-export interface AiRecoveryEpisodeV1 {
+export interface AiRecoveryEpisode {
   readonly episodeId: AiRecoveryEpisodeId;
   readonly blockerId: AiBlockerId;
   readonly startedTick: AiSimulationTick;
   readonly attempt: number;
   readonly action: string;
-  readonly deadline: AiDeadlineV1;
+  readonly deadline: AiDeadline;
   readonly result: "active" | "progressed" | "failed" | "superseded";
 }
 
 /** Persisted progress contract for a goal, child plan or command commitment. */
-export interface AiProgressContractV1 {
+export interface AiProgressContract {
   readonly planId: AiPlanId;
-  readonly expectedEvidenceKinds: readonly AiProgressEvidenceV1["kind"][];
-  readonly lastUsefulProgress: AiProgressEvidenceV1 | null;
-  readonly milestoneDeadline: AiDeadlineV1;
+  readonly expectedEvidenceKinds: readonly AiProgressEvidence["kind"][];
+  readonly lastUsefulProgress: AiProgressEvidence | null;
+  readonly milestoneDeadline: AiDeadline;
   readonly blockerId: AiBlockerId | null;
   readonly recoveryEpisodeIds: readonly AiRecoveryEpisodeId[];
 }

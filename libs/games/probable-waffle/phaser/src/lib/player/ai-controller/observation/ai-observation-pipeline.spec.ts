@@ -1,8 +1,8 @@
 import {
-  canonicalizeAiObservationV1,
+  canonicalizeAiObservation,
   digestCanonicalAiValue,
-  type AiObservedActorV1,
-  type AiObservationV1
+  type AiObservedActor,
+  type AiObservation
 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { FactionType, ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import {
@@ -21,7 +21,7 @@ import type Phaser from "phaser";
 
 const unknown = { status: "unknown", reason: "not_observed" } as const;
 
-function accessActor(actorId: string, x: number, y: number): AiObservedActorV1 {
+function accessActor(actorId: string, x: number, y: number): AiObservedActor {
   return {
     actorId,
     objectName: ObjectNames.TivaraWorker,
@@ -29,7 +29,7 @@ function accessActor(actorId: string, x: number, y: number): AiObservedActorV1 {
     relation: "self",
     visibility: "owned",
     logicalPosition: { status: "known", value: { x, y, z: 0 }, observedTick: 220 }
-  } as AiObservedActorV1;
+  } as AiObservedActor;
 }
 
 describe("bounded access product ordering", () => {
@@ -75,8 +75,8 @@ describe("observation actor eligibility", () => {
     const pipeline = Object.assign(Object.create(AiObservationPipeline.prototype), {
       memory,
       knowledgeRevision: 0
-    }) as unknown as { remember(actor: AiObservedActorV1, tick: number): void };
-    const visibleEnemy: AiObservedActorV1 = {
+    }) as unknown as { remember(actor: AiObservedActor, tick: number): void };
+    const visibleEnemy: AiObservedActor = {
       ...observation().actors[0]!,
       objectName: ObjectNames.TivaraMacemanMale,
       visibility: "visible",
@@ -128,7 +128,7 @@ describe("observation restore invalidations", () => {
   });
 });
 
-function observation(): AiObservationV1 {
+function observation(): AiObservation {
   return {
     schemaVersion: 1,
     generation: 7,
@@ -227,8 +227,8 @@ describe("Stage 4 observation generation guards", () => {
   });
 
   it("keeps map/frontier and last-seen data deterministic under input permutation", () => {
-    const first = canonicalizeAiObservationV1(observation());
-    const second = canonicalizeAiObservationV1({
+    const first = canonicalizeAiObservation(observation());
+    const second = canonicalizeAiObservation({
       ...observation(),
       actors: [...observation().actors].reverse(),
       map: {

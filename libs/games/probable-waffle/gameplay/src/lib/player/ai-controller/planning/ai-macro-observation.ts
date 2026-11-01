@@ -1,13 +1,13 @@
 import { ObjectNames, OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiIntent } from "../contracts/ai-intent";
+import type { AiObservation } from "../contracts/ai-observation";
 import type { OpeningCheckpoint } from "./ai-opening-catalog";
 
 /** Prefer public geometry and use a stable local identity as the final within-run tie-break. */
 export function compareAiActorsByVisibleGeometry(
-  left: AiObservationV1["actors"][number],
-  right: AiObservationV1["actors"][number]
+  left: AiObservation["actors"][number],
+  right: AiObservation["actors"][number]
 ): number {
   const leftPosition = left.logicalPosition.status === "known" ? left.logicalPosition.value : null;
   const rightPosition = right.logicalPosition.status === "known" ? right.logicalPosition.value : null;
@@ -20,16 +20,16 @@ export function compareAiActorsByVisibleGeometry(
   return left.objectName.localeCompare(right.objectName) || left.actorId.localeCompare(right.actorId);
 }
 
-export function owned(observation: AiObservationV1) {
+export function owned(observation: AiObservation) {
   return observation.actors
     .filter((actor) => actor.relation === "self" && actor.visibility === "owned")
     .sort(compareAiActorsByVisibleGeometry);
 }
 
 export function checkpointActors(
-  observation: AiObservationV1,
+  observation: AiObservation,
   checkpoint: OpeningCheckpoint,
-  catalog: AiCapabilityCatalogV1
+  catalog: AiCapabilityCatalog
 ) {
   const actors = owned(observation);
   if (checkpoint.id !== "bootstrap-worker") {
@@ -41,21 +41,21 @@ export function checkpointActors(
   });
 }
 
-export function isFinishedActor(actor: AiObservationV1["actors"][number]): boolean {
+export function isFinishedActor(actor: AiObservation["actors"][number]): boolean {
   return actor.constructionProgress?.status !== "known" || actor.constructionProgress.value >= 100;
 }
 
-export function queueFree(actor: AiObservationV1["actors"][number]): boolean {
+export function queueFree(actor: AiObservation["actors"][number]): boolean {
   return actor.queue.status !== "known" || actor.queue.value.occupied === 0;
 }
 
-export function claimedActorIds(intents: readonly AiIntentV1[]): ReadonlySet<string> {
+export function claimedActorIds(intents: readonly AiIntent[]): ReadonlySet<string> {
   return new Set(
     intents.flatMap((intent) => intent.claims.flatMap((claim) => (claim.kind === "actor" ? [claim.actorId] : [])))
   );
 }
 
-export function queuedProduction(observation: AiObservationV1, objectNames: ReadonlySet<ObjectNames>) {
+export function queuedProduction(observation: AiObservation, objectNames: ReadonlySet<ObjectNames>) {
   return owned(observation)
     .flatMap((actor) =>
       actor.queue.status === "known"
@@ -70,7 +70,7 @@ export function queuedProduction(observation: AiObservationV1, objectNames: Read
     .sort((left, right) => left.itemId.localeCompare(right.itemId));
 }
 
-export function queuedObjectIds(observation: AiObservationV1, objectName: ObjectNames): string[] {
+export function queuedObjectIds(observation: AiObservation, objectName: ObjectNames): string[] {
   return owned(observation)
     .flatMap((actor) =>
       actor.queue.status === "known"
@@ -82,7 +82,7 @@ export function queuedObjectIds(observation: AiObservationV1, objectName: Object
     .sort();
 }
 
-export function isAvailableBuilder(actor: AiObservationV1["actors"][number]): boolean {
+export function isAvailableBuilder(actor: AiObservation["actors"][number]): boolean {
   if (actor.resourceTransferInFlight || (actor.carriedResourceAmount ?? 0) > 0) return false;
   // Construction replacement must not strand cargo from a gather/delivery cycle, including partial old-save packs.
   if (
@@ -95,7 +95,7 @@ export function isAvailableBuilder(actor: AiObservationV1["actors"][number]): bo
   return order !== OrderType.Build && order !== OrderType.ReturnResources && order !== OrderType.Repair;
 }
 
-export function hasAssignedBuilder(observation: AiObservationV1, siteActorId: string): boolean {
+export function hasAssignedBuilder(observation: AiObservation, siteActorId: string): boolean {
   return owned(observation).some(
     (actor) =>
       actor.activeOrder?.status === "known" &&

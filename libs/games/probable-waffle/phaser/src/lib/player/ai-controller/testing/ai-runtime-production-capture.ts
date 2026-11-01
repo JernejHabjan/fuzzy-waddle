@@ -17,8 +17,8 @@ import { CommandBusService } from "../../../world/services/multiplayer/command-b
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { captureAiRuntimeProductionQueue } from "./ai-runtime-production-queues";
-import type { AiRuntimeProductionCaptureV1 } from "./ai-runtime-production-capture-v1";
-import type { AiRuntimeProductionFactV1 } from "./ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionSnapshot } from "./ai-runtime-production-snapshot";
+import type { AiRuntimeProductionFact } from "./ai-runtime-production-fact";
 import {
   AI_INTENT_COMMAND_DISPATCH_EVENT,
   type AiIntentCommandDispatchEvent
@@ -30,9 +30,9 @@ import { projectAiRuntimeProductionBoundaryState } from "./project-ai-runtime-pr
 import { captureAiRuntimeProductionSnapshot } from "./capture-ai-runtime-production-snapshot";
 import { AiRuntimeProductionSpatialCapture } from "./ai-runtime-production-spatial-capture";
 import { captureAiRuntimeInitialConstruction } from "./capture-ai-runtime-initial-construction";
-import type { AiRuntimeInitialConstructionV1 } from "./ai-runtime-initial-construction-v1";
+import type { AiRuntimeInitialConstruction } from "./ai-runtime-initial-construction";
 import { AiRuntimeResourceCoverageCapture } from "./ai-runtime-resource-coverage-capture";
-import type { AiRuntimeResourceServiceIntervalV1 } from "./ai-runtime-resource-service-interval-v1";
+import type { AiRuntimeResourceServiceInterval } from "./ai-runtime-resource-service-interval";
 import { AiRuntimeRecipientResourceCapture } from "./ai-runtime-recipient-resource-capture";
 import { AiRuntimeResourceInputCapture } from "./ai-runtime-resource-input-capture";
 import { AI_RUNTIME_MAX_FACTS as MAX_FACTS, appendAiRuntimeProductionFact } from "./append-ai-runtime-production-fact";
@@ -44,7 +44,7 @@ import {
 import { AiRuntimeProductionProofCapture } from "./ai-runtime-production-proof-capture";
 
 import { AiRuntimeProductionQueueCapture } from "./ai-runtime-production-queue-capture";
-import type { AiRuntimeProtectedRouteV1 } from "./ai-runtime-protected-route-v1";
+import type { AiRuntimeProtectedRoute } from "./ai-runtime-protected-route";
 
 const MAX_SNAPSHOTS = 256;
 
@@ -53,8 +53,8 @@ export class AiRuntimeProductionCapture {
   private readonly subscriptions = new Subscription();
   private readonly queueSubscriptions = new Map<Phaser.GameObjects.GameObject, Subscription>();
   private readonly localItemIds = new WeakMap<UnifiedQueueItem, string>();
-  private readonly facts: AiRuntimeProductionFactV1[] = [];
-  private readonly snapshots = new Map<number, AiRuntimeProductionCaptureV1["snapshots"][number][]>();
+  private readonly facts: AiRuntimeProductionFact[] = [];
+  private readonly snapshots = new Map<number, AiRuntimeProductionSnapshot["snapshots"][number][]>();
   private readonly snapshotDrops = new Map<number, number>();
   private readonly startedTick: number;
   private nextItemId = 1;
@@ -64,9 +64,9 @@ export class AiRuntimeProductionCapture {
   private readonly unspentClaims = new AiRuntimeUnspentClaims();
   private disposed = false;
   private readonly spatialCapture: AiRuntimeProductionSpatialCapture;
-  private readonly initialConstruction: Map<number, AiRuntimeInitialConstructionV1>;
+  private readonly initialConstruction: Map<number, AiRuntimeInitialConstruction>;
   private readonly resourceCoverage: AiRuntimeResourceCoverageCapture;
-  private readonly resourceIntervalDeclaration: AiRuntimeProductionCaptureV1["resourceIntervalDeclaration"];
+  private readonly resourceIntervalDeclaration: AiRuntimeProductionSnapshot["resourceIntervalDeclaration"];
   private readonly recipientResources: AiRuntimeRecipientResourceCapture;
   private readonly resourceInputs: AiRuntimeResourceInputCapture;
   private readonly proof: AiRuntimeProductionProofCapture;
@@ -76,8 +76,8 @@ export class AiRuntimeProductionCapture {
 
   constructor(
     private readonly scene: ProbableWaffleScene,
-    intervals: readonly AiRuntimeResourceServiceIntervalV1[] = [],
-    protectedRoutes: readonly AiRuntimeProtectedRouteV1[] = [],
+    intervals: readonly AiRuntimeResourceServiceInterval[] = [],
+    protectedRoutes: readonly AiRuntimeProtectedRoute[] = [],
     captureCombat = false
   ) {
     const ticks = getSceneService(scene, SimulationTickService);
@@ -206,7 +206,7 @@ export class AiRuntimeProductionCapture {
   }
 
   /** Appends one detached snapshot at a settled decision boundary; tick zero permits no committed AI input yet. */
-  capture(playerNumber: number, latestTick?: number): AiRuntimeProductionCaptureV1 {
+  capture(playerNumber: number, latestTick?: number): AiRuntimeProductionSnapshot {
     if (this.disposed) throw new Error("production_capture_disposed");
     if (latestTick !== undefined) {
       const clock = getSceneService(this.scene, SimulationTickService);
@@ -217,7 +217,7 @@ export class AiRuntimeProductionCapture {
   }
 
   /** Human fixture authority has no AI input. Optional history arms only at paused tick zero, like the AI path. */
-  captureHumanQueueBoundary(playerNumber: number, latestTick?: number): AiRuntimeProductionCaptureV1 {
+  captureHumanQueueBoundary(playerNumber: number, latestTick?: number): AiRuntimeProductionSnapshot {
     if (this.disposed) throw new Error("production_capture_disposed");
     const player = getPlayer(this.scene, playerNumber);
     if (player?.playerController.data.playerDefinition?.playerType !== ProbableWafflePlayerType.Human) {
@@ -231,7 +231,7 @@ export class AiRuntimeProductionCapture {
     return this.captureBoundary(playerNumber, false);
   }
 
-  private captureBoundary(playerNumber: number, requireDecision: boolean): AiRuntimeProductionCaptureV1 {
+  private captureBoundary(playerNumber: number, requireDecision: boolean): AiRuntimeProductionSnapshot {
     if (this.disposed) throw new Error("production_capture_disposed");
     try {
       return this.readBoundary(playerNumber, requireDecision);
@@ -241,7 +241,7 @@ export class AiRuntimeProductionCapture {
     }
   }
 
-  private readBoundary(playerNumber: number, requireDecision: boolean): AiRuntimeProductionCaptureV1 {
+  private readBoundary(playerNumber: number, requireDecision: boolean): AiRuntimeProductionSnapshot {
     let phaseStartedAt = performance.now();
     traceProductionCapturePhase("recipient-reconcile", "start");
     this.recipientResources.reconcile();
@@ -314,7 +314,7 @@ export class AiRuntimeProductionCapture {
       facts,
       snapshots,
       recipientResourceFacts
-    } satisfies AiRuntimeProductionCaptureV1);
+    } satisfies AiRuntimeProductionSnapshot);
     traceProductionCapturePhase("final-clone", "complete", performance.now() - phaseStartedAt, facts.length);
     return result;
   }
@@ -430,7 +430,7 @@ export class AiRuntimeProductionCapture {
     return { sequence: 0, tick: getSceneService(this.scene, SimulationTickService)?.currentTick ?? 0, playerNumber };
   }
 
-  private append(fact: AiRuntimeProductionFactV1, exhaustedProgressItem?: UnifiedQueueItem): void {
+  private append(fact: AiRuntimeProductionFact, exhaustedProgressItem?: UnifiedQueueItem): void {
     if (this.disposed) return;
     this.proof.observe({ ...fact, sequence: this.nextSequence });
     appendAiRuntimeProductionFact(

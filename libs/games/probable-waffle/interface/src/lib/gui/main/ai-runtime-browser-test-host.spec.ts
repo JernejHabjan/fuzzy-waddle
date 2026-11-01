@@ -1,24 +1,24 @@
 import type Phaser from "phaser";
 import {
-  AI_RUNTIME_BROWSER_TEST_CONFIG_KEY_V1,
-  clearAiRuntimeBrowserTestHostV1,
-  publishAiRuntimeBrowserTestHostV1,
-  readAiRuntimeBrowserTestConfigV1
+  AI_RUNTIME_BROWSER_TEST_CONFIG_KEY,
+  clearAiRuntimeBrowserTestHost,
+  publishAiRuntimeBrowserTestHost,
+  readAiRuntimeBrowserTestConfig
 } from "./ai-runtime-browser-test-host";
 
 describe("AI runtime browser test host", () => {
   afterEach(() => {
-    window.sessionStorage.removeItem(AI_RUNTIME_BROWSER_TEST_CONFIG_KEY_V1);
-    delete window.__fuzzyWaddleAiRuntimeBrowserTestV1;
+    window.sessionStorage.removeItem(AI_RUNTIME_BROWSER_TEST_CONFIG_KEY);
+    delete window.__fuzzyWaddleAiRuntimeBrowserTest;
   });
 
   it("requires a complete explicit deterministic test configuration", () => {
     window.sessionStorage.setItem(
-      AI_RUNTIME_BROWSER_TEST_CONFIG_KEY_V1,
+      AI_RUNTIME_BROWSER_TEST_CONFIG_KEY,
       JSON.stringify({ schemaVersion: 1, enabled: true, seed: 759008, startPaused: true })
     );
 
-    expect(readAiRuntimeBrowserTestConfigV1()).toEqual({
+    expect(readAiRuntimeBrowserTestConfig()).toEqual({
       schemaVersion: 1,
       enabled: true,
       seed: 759008,
@@ -26,16 +26,16 @@ describe("AI runtime browser test host", () => {
     });
 
     window.sessionStorage.setItem(
-      AI_RUNTIME_BROWSER_TEST_CONFIG_KEY_V1,
+      AI_RUNTIME_BROWSER_TEST_CONFIG_KEY,
       JSON.stringify({ schemaVersion: 1, enabled: true, seed: -1, startPaused: true })
     );
-    expect(readAiRuntimeBrowserTestConfigV1()).toBeNull();
+    expect(readAiRuntimeBrowserTestConfig()).toBeNull();
 
     window.sessionStorage.setItem(
-      AI_RUNTIME_BROWSER_TEST_CONFIG_KEY_V1,
+      AI_RUNTIME_BROWSER_TEST_CONFIG_KEY,
       JSON.stringify({ schemaVersion: 1, enabled: true, seed: 759008 })
     );
-    expect(readAiRuntimeBrowserTestConfigV1()).toBeNull();
+    expect(readAiRuntimeBrowserTestConfig()).toBeNull();
   });
 
   it("fails closed for malformed preset actors, provenance, resources, and zero-work setups", () => {
@@ -61,8 +61,8 @@ describe("AI runtime browser test host", () => {
         resourceGrants: [{ playerNumber: 2, amounts: { food: 500 } }]
       }
     } as const;
-    window.sessionStorage.setItem(AI_RUNTIME_BROWSER_TEST_CONFIG_KEY_V1, JSON.stringify(valid));
-    expect(readAiRuntimeBrowserTestConfigV1()).toEqual(valid);
+    window.sessionStorage.setItem(AI_RUNTIME_BROWSER_TEST_CONFIG_KEY, JSON.stringify(valid));
+    expect(readAiRuntimeBrowserTestConfig()).toEqual(valid);
 
     for (const presetWorld of [
       { ...valid.presetWorld, actors: [{ ...valid.presetWorld.actors[0], actorName: "FakeSuccessUnit" }] },
@@ -76,10 +76,10 @@ describe("AI runtime browser test host", () => {
       { ...valid.presetWorld, actors: [], resourceGrants: [] }
     ]) {
       window.sessionStorage.setItem(
-        AI_RUNTIME_BROWSER_TEST_CONFIG_KEY_V1,
+        AI_RUNTIME_BROWSER_TEST_CONFIG_KEY,
         JSON.stringify({ ...valid, presetWorld })
       );
-      expect(readAiRuntimeBrowserTestConfigV1()).toBeNull();
+      expect(readAiRuntimeBrowserTestConfig()).toBeNull();
     }
   });
 
@@ -88,12 +88,12 @@ describe("AI runtime browser test host", () => {
     const replacement = {} as Phaser.Game;
     const config = { schemaVersion: 1, enabled: true, seed: 759008, startPaused: true } as const;
 
-    publishAiRuntimeBrowserTestHostV1(first, config);
-    clearAiRuntimeBrowserTestHostV1(replacement);
-    expect(window.__fuzzyWaddleAiRuntimeBrowserTestV1?.game).toBe(first);
-    expect(window.__fuzzyWaddleAiRuntimeBrowserTestV1?.initialStateByPlayer).toEqual({});
+    publishAiRuntimeBrowserTestHost(first, config);
+    clearAiRuntimeBrowserTestHost(replacement);
+    expect(window.__fuzzyWaddleAiRuntimeBrowserTest?.game).toBe(first);
+    expect(window.__fuzzyWaddleAiRuntimeBrowserTest?.initialStateByPlayer).toEqual({});
 
-    clearAiRuntimeBrowserTestHostV1(first);
-    expect(window.__fuzzyWaddleAiRuntimeBrowserTestV1).toBeUndefined();
+    clearAiRuntimeBrowserTestHost(first);
+    expect(window.__fuzzyWaddleAiRuntimeBrowserTest).toBeUndefined();
   });
 });

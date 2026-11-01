@@ -2,19 +2,19 @@
 import { AI_RUNTIME_MAX_FACTS } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/append-ai-runtime-production-fact";
 import { isDeepStrictEqual } from "node:util";
-import type { AiRuntimeProductionCaptureV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { RuntimeMovementV1 } from "./skirmish-ai-runtime-movement";
+import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { RuntimeMovement } from "./skirmish-ai-runtime-movement";
 import { validateRuntimeRouteOrders } from "./skirmish-ai-runtime-route-order-validation";
 import { runtimeRouteOrderFenced } from "./skirmish-ai-runtime-route-order-fence";
 
 export const RUNTIME_MOVEMENT_EXECUTION_LIMIT = 2048;
 
 /** Inspect all supplied executions, including contradictory overflow tails, before exposing physical arrival. */
-export function normalizeRuntimeMovement(capture: AiRuntimeProductionCaptureV1) {
+export function normalizeRuntimeMovement(capture: AiRuntimeProductionSnapshot) {
   if (capture.facts.length > AI_RUNTIME_MAX_FACTS || capture.droppedFactCount) {
     return { movements: [], failures: ["production_movement_capture_dropped"], gaps: [] };
   }
-  const groups = new Map<number, RuntimeMovementV1["observations"][number][]>();
+  const groups = new Map<number, RuntimeMovement["observations"][number][]>();
   const failures: string[] = [],
     gaps = new Set([
       "production_movement_service_effect_missing",
@@ -86,7 +86,7 @@ export function normalizeRuntimeMovement(capture: AiRuntimeProductionCaptureV1) 
     observations.push({ ...fact, spatial: value });
     groups.set(value.executionId, observations);
   }
-  const movements: RuntimeMovementV1[] = [];
+  const movements: RuntimeMovement[] = [];
   for (const [executionId, observations] of groups) {
     const started = observations[0],
       last = observations.at(-1);
@@ -141,7 +141,7 @@ export function normalizeRuntimeMovement(capture: AiRuntimeProductionCaptureV1) 
             ? "threw"
             : null;
     if (!returnedFact) localGaps.add("production_movement_return_missing");
-    let arrival: RuntimeMovementV1["arrival"] = "unavailable";
+    let arrival: RuntimeMovement["arrival"] = "unavailable";
     if (physical?.spatial.phase === "stopped") {
       arrival = ready && !fenced && !physical.spatial.fallback && physical.spatial.actualTile &&
         physical.spatial.originalDestination &&

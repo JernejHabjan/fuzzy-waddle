@@ -1,12 +1,12 @@
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservation } from "../contracts/ai-observation";
 import type { AiAdaptationRole } from "./ai-adaptation-role";
 import { matchesAdaptationRole } from "./ai-adaptation-role-match";
 
 /** Compatible queued units satisfy role demand before further production is proposed. */
 export function queuedAdaptationRoleItemIds(
-  observation: AiObservationV1,
-  catalog: AiCapabilityCatalogV1,
+  observation: AiObservation,
+  catalog: AiCapabilityCatalog,
   role: AiAdaptationRole
 ): readonly string[] {
   return [...new Set(observation.actors

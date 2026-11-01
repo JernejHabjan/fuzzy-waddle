@@ -1,6 +1,6 @@
 import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import { expect, test } from "@playwright/test";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { productionDecisionFixture } from "./skirmish-ai-runtime-production-decision-fixture";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
 import { evaluateRuntimeProductionContract } from "./skirmish-ai-runtime-production-contract-evaluation";
@@ -36,7 +36,7 @@ test.describe("production AI decision synthetic contract tests", () => {
       decisions: selected.flatMap((fact) => fact.decision.decisions)
     };
     const facts = raw.facts
-      .flatMap((fact): AiRuntimeProductionFactV1[] => {
+      .flatMap((fact): AiRuntimeProductionFact[] => {
         if (fact.kind === "decision_selected") return fact === first ? [{ ...fact, decision }] : [];
         if (fact.kind === "intent_dispatch" && fact.event.kind === "requested")
           return [
@@ -79,7 +79,7 @@ test.describe("production AI decision synthetic contract tests", () => {
     for (const mutation of ["missing", "duplicate", "rejected", "changed", "future", "epoch", "sequence"] as const) {
       const raw = productionDecisionFixture();
       const facts = raw.facts
-        .flatMap((fact): AiRuntimeProductionFactV1[] => {
+        .flatMap((fact): AiRuntimeProductionFact[] => {
           if (fact.kind !== "decision_selected") return [fact];
           if (mutation === "missing") return [];
           if (mutation === "duplicate") return [fact, fact];

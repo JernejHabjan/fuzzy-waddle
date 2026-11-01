@@ -1,21 +1,21 @@
 import { OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
-import type { AiManagerProposalV1 } from "./ai-manager-proposal";
-import { queryAiAccessRouteV1 } from "./ai-access-graph-v1";
-import { createAiTransportPlanV1 } from "./ai-transport-plan-creation";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservation, AiObservedActor } from "../contracts/ai-observation";
+import type { AiManagerProposal } from "./ai-manager-proposal";
+import { queryAiAccessRoute } from "./ai-access-graph";
+import { createAiTransportPlan } from "./ai-transport-plan-creation";
 import { canAffordAiEconomyCost, hasCredibleAiEconomyThreat } from "./ai-economy-policy";
 import { node, ownedCombat, routeCapability } from "./ai-skirmish-support";
 
 const terminal = (phase: string) => ["completed", "cancelled", "failed"].includes(phase);
-const available = (actor: AiObservedActorV1) => actor.resourceState.status === "known" &&
+const available = (actor: AiObservedActor) => actor.resourceState.status === "known" &&
   actor.resourceState.value.available.status === "known" ? actor.resourceState.value.available.value : 0;
 
 /** Seed a real protected builder transfer only for observed offshore resources needed after local exhaustion. */
 export function proposeAiIslandEstablishment(
-  observation: AiObservationV1, state: AiBrainStateV1, catalog: AiCapabilityCatalogV1
-): AiManagerProposalV1 | undefined {
+  observation: AiObservation, state: AiBrainState, catalog: AiCapabilityCatalog
+): AiManagerProposal | undefined {
   const graph = observation.map?.accessGraph;
   if (!graph || graph.status !== "ready" || hasCredibleAiEconomyThreat(observation) ||
     state.transport.some((plan) => !terminal(plan.phase))) return;
@@ -56,9 +56,9 @@ export function proposeAiIslandEstablishment(
       const members = [builder, protection, ...optionalWorkers];
       const request = { queryId: `query:${planId}`, kind: "movement" as const, fromNodeId: from, toNodeId: destination,
         capabilities: routeCapability(observation, members, catalog), firingNodeIds: [] };
-      const route = queryAiAccessRouteV1(graph, request);
+      const route = queryAiAccessRoute(graph, request);
       if (route.kind !== "water_transport") continue;
-      const plan = createAiTransportPlanV1({ planId, routeRequest: request, route, tick: observation.tick,
+      const plan = createAiTransportPlan({ planId, routeRequest: request, route, tick: observation.tick,
         establishment: { sourceActorId: source.actorId, serviceObjectName: service.sourceObjectName,
           resourceCost: service.constructionProfile!.resourceCost },
         missionKind: "island_establishment", estimatedTravelTicks: Math.max(1, route.distanceCost), passengers: [

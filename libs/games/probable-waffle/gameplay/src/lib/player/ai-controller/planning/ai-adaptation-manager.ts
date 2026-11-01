@@ -1,39 +1,39 @@
 import type { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogEntryV1, AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalogEntry, AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiDemand } from "../contracts/ai-plan-contracts";
+import type { AiIntent } from "../contracts/ai-intent";
+import type { AiObservation } from "../contracts/ai-observation";
+import type { AiProfileConfig } from "../contracts/ai-profile-config";
 import type { AiEffectId } from "../contracts/ai-core-types";
-import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
+import type { AiManagerProposal, AiProposalManager } from "./ai-manager-proposal";
 import { adaptationRoleTargets, mergeAdaptationEvidence } from "./ai-adaptation-evidence";
 import { MIN_RESEARCH_UTILITY, scoreAdaptationResearch } from "./ai-adaptation-research-score";
 import type { AiAdaptationRole } from "./ai-adaptation-role";
 import { matchesAdaptationRole } from "./ai-adaptation-role-match";
 import { queuedAdaptationRoleItemIds } from "./ai-adaptation-queued-role";
 
-function owned(observation: AiObservationV1) {
+function owned(observation: AiObservation) {
   return observation.actors.filter((actor) => actor.relation === "self" && actor.visibility === "owned");
 }
 
-function ids(state: AiBrainStateV1, prefix: string, ordinal: number) {
+function ids(state: AiBrainState, prefix: string, ordinal: number) {
   const suffix = `${state.scheduler.decisionSequence}:${ordinal}`;
   return {
-    intentId: `intent:stage14:${prefix}:${suffix}` as AiIntentV1["intentId"],
-    effectId: `effect:stage14:${prefix}:${suffix}` as AiIntentV1["effectId"],
-    claimId: `claim:stage14:${prefix}:${suffix}` as AiIntentV1["claims"][number]["claimId"]
+    intentId: `intent:stage14:${prefix}:${suffix}` as AiIntent["intentId"],
+    effectId: `effect:stage14:${prefix}:${suffix}` as AiIntent["effectId"],
+    claimId: `claim:stage14:${prefix}:${suffix}` as AiIntent["claims"][number]["claimId"]
   };
 }
 
-function entryFor(catalog: AiCapabilityCatalogV1, objectName: ObjectNames): AiCapabilityCatalogEntryV1 | undefined {
+function entryFor(catalog: AiCapabilityCatalog, objectName: ObjectNames): AiCapabilityCatalogEntry | undefined {
   return catalog.entries.find((entry) => entry.sourceObjectName === objectName);
 }
 
 function currentRoleActorIds(
-  observation: AiObservationV1,
-  catalog: AiCapabilityCatalogV1,
+  observation: AiObservation,
+  catalog: AiCapabilityCatalog,
   role: AiAdaptationRole
 ): readonly ActorId[] {
   return owned(observation)
@@ -46,13 +46,13 @@ function currentRoleActorIds(
 }
 
 /** Accepted counter production remains a counted commitment until shared reconciliation releases it. */
-function pendingRoleCommitments(state: AiBrainStateV1, role: AiAdaptationRole): number {
+function pendingRoleCommitments(state: AiBrainState, role: AiAdaptationRole): number {
   return state.reservations.filter(
     (reservation) => reservation.subjectKey?.startsWith(`effect:effect:stage14:${role}:`) === true
   ).length;
 }
 
-function pendingRoleEffectIds(state: AiBrainStateV1, role: AiAdaptationRole): readonly AiEffectId[] {
+function pendingRoleEffectIds(state: AiBrainState, role: AiAdaptationRole): readonly AiEffectId[] {
   return state.reservations
     .map((reservation) => reservation.subjectKey)
     .filter((subjectKey): subjectKey is string => subjectKey?.startsWith(`effect:effect:stage14:${role}:`) === true)
@@ -61,8 +61,8 @@ function pendingRoleEffectIds(state: AiBrainStateV1, role: AiAdaptationRole): re
 }
 
 function producerForRole(
-  observation: AiObservationV1,
-  catalog: AiCapabilityCatalogV1,
+  observation: AiObservation,
+  catalog: AiCapabilityCatalog,
   role: AiAdaptationRole,
   remainingResources: ReadonlyMap<ResourceType, number>
 ):
@@ -78,7 +78,7 @@ function producerForRole(
     const product = producerEntry?.produces
       .map((candidate) => ({ candidate, entry: entryFor(catalog, candidate) }))
       .filter(
-        (candidate): candidate is { candidate: ObjectNames; entry: AiCapabilityCatalogEntryV1 } =>
+        (candidate): candidate is { candidate: ObjectNames; entry: AiCapabilityCatalogEntry } =>
           candidate.entry !== undefined
       )
       .filter((candidate) => matchesAdaptationRole(candidate.entry, role))
@@ -88,7 +88,7 @@ function producerForRole(
         )
       )
       .sort((left, right) => {
-        const totalCost = (entry: AiCapabilityCatalogEntryV1) =>
+        const totalCost = (entry: AiCapabilityCatalogEntry) =>
           Object.values(entry.constructionProfile?.resourceCost ?? {}).reduce<number>(
             (total, amount) => total + (amount ?? 0),
             0
@@ -106,9 +106,9 @@ function producerForRole(
 }
 
 function archetypeFallback(
-  state: AiBrainStateV1,
-  observation: AiObservationV1,
-  catalog: AiCapabilityCatalogV1
+  state: AiBrainState,
+  observation: AiObservation,
+  catalog: AiCapabilityCatalog
 ): { readonly id: string; readonly reason: string } | undefined {
   const archetypeParts = state.opening.archetypeId.split(":");
   const purpose = archetypeParts[archetypeParts.length - 1];
@@ -143,15 +143,15 @@ function archetypeFallback(
  * runtime-legal tech candidates, preserving useful production commitments while
  * adding bounded counter roles or a demonstrably valuable upgrade.
  */
-export class AiAdaptationManager implements AiProposalManagerV1 {
+export class AiAdaptationManager implements AiProposalManager {
   readonly managerId = "stagez14.adaptation";
 
   constructor(
-    private readonly profile: AiProfileConfigV1,
-    private readonly getCatalog: () => AiCapabilityCatalogV1 | undefined
+    private readonly profile: AiProfileConfig,
+    private readonly getCatalog: () => AiCapabilityCatalog | undefined
   ) {}
 
-  propose(observation: AiObservationV1, state: AiBrainStateV1): AiManagerProposalV1 {
+  propose(observation: AiObservation, state: AiBrainState): AiManagerProposal {
     const catalog = this.getCatalog();
     if (!catalog || catalog.generation !== observation.generation) {
       return {
@@ -168,8 +168,8 @@ export class AiAdaptationManager implements AiProposalManagerV1 {
     const canTransition =
       prior.lastTransitionTick === null ||
       observation.tick - prior.lastTransitionTick >= this.profile.compositionReconsiderationTicks;
-    const adaptationDemands: AiDemandV1[] = [];
-    const intents: AiIntentV1[] = [];
+    const adaptationDemands: AiDemand[] = [];
+    const intents: AiIntent[] = [];
     const remainingResources = new Map(
       observation.resources.map(
         (resource) =>
@@ -193,7 +193,7 @@ export class AiAdaptationManager implements AiProposalManagerV1 {
       const current = currentActorIds.length;
       const committed = pendingRoleCommitments(state, target.role);
       adaptationDemands.push({
-        demandId: `demand:adapt:${target.role}` as AiDemandV1["demandId"],
+        demandId: `demand:adapt:${target.role}` as AiDemand["demandId"],
         purpose: "evidence_backed_counter",
         capabilityOrRole: target.role,
         unit: "actor_count",
@@ -213,7 +213,7 @@ export class AiAdaptationManager implements AiProposalManagerV1 {
         .filter((entry): entry is [ResourceType, number] => entry[1] !== undefined && entry[1] > 0)
         .sort(([left], [right]) => left.localeCompare(right))
         .map(([resourceType, amount]) => ({
-          claimId: `${next.claimId}:${resourceType}` as AiIntentV1["claims"][number]["claimId"],
+          claimId: `${next.claimId}:${resourceType}` as AiIntent["claims"][number]["claimId"],
           kind: "resource" as const,
           resourceType,
           amount
@@ -223,7 +223,7 @@ export class AiAdaptationManager implements AiProposalManagerV1 {
         kind: "produce",
         spendingCategory: "defense",
         planId: state.opening.plan.planId,
-        demandId: `demand:adapt:${target.role}` as AiDemandV1["demandId"],
+        demandId: `demand:adapt:${target.role}` as AiDemand["demandId"],
         lane: "supply_production",
         proposedTick: observation.tick,
         urgencyClass: 2,
@@ -233,7 +233,7 @@ export class AiAdaptationManager implements AiProposalManagerV1 {
           { claimId: next.claimId, kind: "production_slot", producerId: producer.producerId, slot: 0 },
           ...resourceClaims,
           {
-            claimId: `${next.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
+            claimId: `${next.claimId}:effect` as AiIntent["claims"][number]["claimId"],
             kind: "effect",
             effectId: next.effectId
           }
@@ -274,7 +274,7 @@ export class AiAdaptationManager implements AiProposalManagerV1 {
         .filter((entry): entry is [ResourceType, number] => entry[1] !== undefined && entry[1] > 0)
         .sort(([left], [right]) => left.localeCompare(right))
         .map(([resourceType, amount]) => ({
-          claimId: `${next.claimId}:${resourceType}` as AiIntentV1["claims"][number]["claimId"],
+          claimId: `${next.claimId}:${resourceType}` as AiIntent["claims"][number]["claimId"],
           kind: "resource" as const,
           resourceType,
           amount
@@ -294,7 +294,7 @@ export class AiAdaptationManager implements AiProposalManagerV1 {
           { claimId: next.claimId, kind: "production_slot", producerId: scoredResearch.candidate.producerId, slot: 0 },
           ...resourceClaims,
           {
-            claimId: `${next.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
+            claimId: `${next.claimId}:effect` as AiIntent["claims"][number]["claimId"],
             kind: "effect",
             effectId: next.effectId
           }

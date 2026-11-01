@@ -4,7 +4,7 @@ import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getSceneInitializers, getSceneService } from "../../../world/services/scene-component-helpers";
 import { isSceneActive } from "../../../data/game-object-helper";
 import { scheduleAiRuntimePresetSetup } from "./schedule-ai-runtime-preset-setup";
-import { AI_RUNTIME_BROWSER_TEST_HOST_KEY_V1 } from "./ai-runtime-browser-test-config";
+import { AI_RUNTIME_BROWSER_TEST_HOST_KEY } from "./ai-runtime-browser-test-config";
 
 jest.mock("../../../world/services/scene-component-helpers", () => ({
   getSceneInitializers: jest.fn(), getSceneService: jest.fn()
@@ -23,7 +23,7 @@ function setup() {
   jest.mocked(getSceneInitializers).mockReturnValue({ sceneInitialized: ready } as never);
   jest.mocked(getSceneService).mockReturnValue(ticks as never);
   jest.mocked(isSceneActive).mockReturnValue(true);
-  window[AI_RUNTIME_BROWSER_TEST_HOST_KEY_V1] = { schemaVersion: 1, game, initialStateByPlayer: {},
+  window[AI_RUNTIME_BROWSER_TEST_HOST_KEY] = { schemaVersion: 1, game, initialStateByPlayer: {},
     config: { schemaVersion: 1, enabled: true, startPaused: true, seed: 1 } };
   const apply = jest.fn();
   scheduleAiRuntimePresetSetup(scene, apply);
@@ -31,7 +31,7 @@ function setup() {
   return { ready, timer, delayedCall, events, ticks, apply, run };
 }
 
-afterEach(() => { delete window[AI_RUNTIME_BROWSER_TEST_HOST_KEY_V1]; });
+afterEach(() => { delete window[AI_RUNTIME_BROWSER_TEST_HOST_KEY]; });
 
 it("waits for the scene-ready signal and earlier initialization timers before applying once at paused tick zero", () => {
   const f = setup();
@@ -65,7 +65,7 @@ it("disposes both readiness subscriptions and pending timers on either teardown 
 it("fences replaced/inactive games and rejects a clock that advanced or resumed before setup", () => {
   const replaced = setup();
   replaced.ready.next(true);
-  delete window[AI_RUNTIME_BROWSER_TEST_HOST_KEY_V1];
+  delete window[AI_RUNTIME_BROWSER_TEST_HOST_KEY];
   replaced.run();
   expect(replaced.apply).not.toHaveBeenCalled();
   const inactive = setup();

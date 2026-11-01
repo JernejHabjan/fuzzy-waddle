@@ -1,21 +1,21 @@
 // prettier-ignore
-import type { AiRuntimePresetWorldV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-world-v1";
+import type { AiRuntimePresetWorld } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-world";
 // prettier-ignore
-import type { AiRuntimePresetControlV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-control-v1";
-export interface RuntimePresetWorldV1 {
+import type { AiRuntimePresetControl } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-control";
+export interface RuntimePresetWorld {
   readonly fixtureId: string;
   /** Permutes real emitted proposer batches before arbitration; never supplies fixture intents. */
   readonly proposalOrder?: "forward" | "reverse";
   /** Definition-priced scarce recovery, applied only at pre-tick setup. */
   readonly recoveryStart?: "one_worker" | "bootstrap" | "infeasible";
   readonly requireFactionRoster?: true;
-  readonly terrainPatches?: AiRuntimePresetWorldV1["terrainPatches"];
+  readonly terrainPatches?: AiRuntimePresetWorld["terrainPatches"];
   readonly terrainPreserveFootprints?: true;
-  readonly routeOutages?: AiRuntimePresetWorldV1["routeOutages"];
-  readonly receiptFault?: AiRuntimePresetWorldV1["receiptFault"];
-  readonly brainFault?: AiRuntimePresetWorldV1["brainFault"];
+  readonly routeOutages?: AiRuntimePresetWorld["routeOutages"];
+  readonly receiptFault?: AiRuntimePresetWorld["receiptFault"];
+  readonly brainFault?: AiRuntimePresetWorld["brainFault"];
   readonly actors: readonly {
     readonly fixtureActorId: string;
     readonly actorName: string;
@@ -33,10 +33,10 @@ export interface RuntimePresetWorldV1 {
     readonly playerNumber: number;
     readonly amounts: Readonly<Record<string, number>>;
   }[];
-  readonly sourceStocks?: AiRuntimePresetWorldV1["sourceStocks"];
-  readonly healthStarts?: AiRuntimePresetWorldV1["healthStarts"];
-  readonly constructionOrders?: AiRuntimePresetWorldV1["constructionOrders"];
-  readonly protectedRoutes?: AiRuntimePresetWorldV1["protectedRoutes"];
+  readonly sourceStocks?: AiRuntimePresetWorld["sourceStocks"];
+  readonly healthStarts?: AiRuntimePresetWorld["healthStarts"];
+  readonly constructionOrders?: AiRuntimePresetWorld["constructionOrders"];
+  readonly protectedRoutes?: AiRuntimePresetWorld["protectedRoutes"];
   /** Exact pre-tick balances applied through resource events after grants and queue charges. */
   readonly resourceStarts?: readonly {
     readonly playerNumber: number;
@@ -57,8 +57,8 @@ export interface RuntimePresetWorldV1 {
     readonly sourceFixtureActorId: string;
     readonly kind: "gather";
   }[];
-  readonly productionRallies?: AiRuntimePresetWorldV1["productionRallies"];
-  readonly controls?: readonly AiRuntimePresetControlV1[];
+  readonly productionRallies?: AiRuntimePresetWorld["productionRallies"];
+  readonly controls?: readonly AiRuntimePresetControl[];
   readonly events?: readonly {
     readonly id: string;
     readonly tick: number;

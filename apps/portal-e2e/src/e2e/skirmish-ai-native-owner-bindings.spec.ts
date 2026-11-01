@@ -1,13 +1,13 @@
 import { evaluateNativeBundles } from "./skirmish-ai-native-bundle-evaluation";
 import { expect, test } from "@playwright/test";
-import type { AiRuntimeProductionCaptureV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 import { runtimeClosedHistoryFailures } from "./skirmish-ai-runtime-closed-history";
 import { runtimeControlTransitFailures } from "./skirmish-ai-runtime-control-transit";
 import { evaluateFortificationAccessWorld } from "./skirmish-ai-fortification-access-evaluation";
 import { evaluateExpansionWorld } from "./skirmish-ai-expansion-world-evaluation";
 import { evaluateNativeAuthority } from "./skirmish-ai-native-authority-evaluation";
 import { backlogFailures, nativeIntentOperation } from "./skirmish-ai-native-authority-evaluation";
-import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/contracts/ai-intent-v1";
+import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/contracts/ai-intent";
 import { evaluateNativeResourcePriority } from "./skirmish-ai-native-resource-priority-evaluation";
 import { evaluateNativeFault, nativeFaultReceiptReconciled } from "./skirmish-ai-native-fault-evaluation";
 import { evaluateNativeScarceRecovery } from "./skirmish-ai-native-scarce-recovery-evaluation";
@@ -120,7 +120,7 @@ test("authority retry matching distinguishes different operations under one dema
       objectName: "Field",
       logicalPosition: { x: 29, y: 22, z: 0 },
       siteKey
-    }) as unknown as AiIntentV1;
+    }) as unknown as AiIntent;
   expect(nativeIntentOperation(construction("29,22"))).toBe(nativeIntentOperation(construction("29,22")));
   expect(nativeIntentOperation(construction("29,22"))).not.toBe(nativeIntentOperation(construction("29,19")));
 });
@@ -214,7 +214,7 @@ test("a delayed consumer receipt may remain pending until the native terminal re
 });
 
 /** Synthetic negative inputs test evidence readers; no native scenario execution is implied. */
-function receiptOnly(): AiRuntimeProductionCaptureV1 {
+function receiptOnly(): AiRuntimeProductionSnapshot {
   const execution = {
     schemaVersion: 1 as const,
     commandId: "move-one",

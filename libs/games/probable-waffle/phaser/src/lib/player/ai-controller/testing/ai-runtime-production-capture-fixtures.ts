@@ -10,8 +10,8 @@ import {
   type GameCommand,
   type GameCommandOutcome
 } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-brain-state-v1";
-import { createAiProfileConfigV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-profile-defaults";
+import { createAiBrainState } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-brain-state";
+import { createAiProfileConfig } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-profile-defaults";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
 import {
@@ -72,12 +72,12 @@ export function productionCaptureFixture() {
     queueChangedObservable: queueChanges.asObservable()
   };
   const state = {
-    ...createAiBrainStateV1({
+    ...createAiBrainState({
       playerNumber: 2,
       faction: FactionType.Tivara,
       tick: 0,
       archetypeId: "balanced",
-      profile: createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium)
+      profile: createAiProfileConfig(ProbableWaffleAiDifficulty.Medium)
     })
   };
   const controller = {

@@ -1,8 +1,8 @@
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiProductionTransitionV1 } from "../contracts/brain-state/ai-production-transition-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiProductionTransition } from "../contracts/brain-state/ai-production-transition";
+import type { AiObservation } from "../contracts/ai-observation";
 import { canAffordAiEconomyCost, hasCredibleAiEconomyThreat } from "./ai-economy-policy";
 import { producerMilitaryProducts } from "./ai-military-catalog";
 import { isAvailableBuilder, isFinishedActor, owned } from "./ai-macro-observation";
@@ -20,14 +20,14 @@ const CONSTRUCTION_ADMISSION_TICKS = 40;
  * The terminal record prevents repeatedly reviving the same objective. A different objective may establish a new schedule.
  */
 export function observeAiProductionTransition(args: {
-  readonly observation: AiObservationV1;
-  readonly state: AiBrainStateV1;
-  readonly catalog: AiCapabilityCatalogV1;
+  readonly observation: AiObservation;
+  readonly state: AiBrainState;
+  readonly catalog: AiCapabilityCatalog;
   readonly domain: "ground" | "air";
   readonly readyForce: number;
   readonly queuedForce: number;
   readonly openingComplete: boolean;
-}): AiProductionTransitionV1 | undefined {
+}): AiProductionTransition | undefined {
   const { observation, state, catalog, domain, readyForce, queuedForce, openingComplete } = args;
   const previous = state.economyProduction.transition;
   const assessment = state.strategy.assessment;
@@ -121,7 +121,7 @@ export function observeAiProductionTransition(args: {
         : [];
     })
     .sort((left, right) => {
-      const total = (entry: AiCapabilityCatalogV1["entries"][number]) =>
+      const total = (entry: AiCapabilityCatalog["entries"][number]) =>
         Object.values(entry.constructionProfile?.resourceCost ?? {}).reduce<number>(
           (sum, amount) => sum + (amount ?? 0),
           0

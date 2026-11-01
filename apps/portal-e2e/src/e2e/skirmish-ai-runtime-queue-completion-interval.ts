@@ -1,12 +1,12 @@
 import { isDeepStrictEqual } from "node:util";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
+import type { RuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality";
 
 /** Checks the actual live-handle scope without deriving identity from a completed outcome or a later queue snapshot. */
 export function validateRuntimeQueueCompletionInterval(
-  group: readonly Extract<AiRuntimeProductionFactV1, { kind: "queue_completion" }>[],
-  commands: RuntimeProductionCausalityV1["commands"]
+  group: readonly Extract<AiRuntimeProductionFact, { kind: "queue_completion" }>[],
+  commands: RuntimeProductionCausality["commands"]
 ) {
   const failures: string[] = [];
   const gaps: string[] = [];

@@ -1,15 +1,15 @@
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiManagerProposalV1 } from "../planning/ai-manager-proposal";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiManagerProposal } from "../planning/ai-manager-proposal";
 import { projectAiSquadMembership } from "./project-ai-squad-membership";
 
 /** Applies manager-owned state projections without allowing a later narrow update to resurrect an earlier removal. */
 export function projectAiManagerState(
-  initialState: AiBrainStateV1,
-  proposalBatches: readonly AiManagerProposalV1[]
-): AiBrainStateV1 {
+  initialState: AiBrainState,
+  proposalBatches: readonly AiManagerProposal[]
+): AiBrainState {
   const initialSquadIds = new Set(initialState.squads.map((squad) => squad.squadId));
   let primaryProjectionSeen = false;
-  return proposalBatches.reduce<AiBrainStateV1>((state, batch) => {
+  return proposalBatches.reduce<AiBrainState>((state, batch) => {
     const patch = batch.statePatch;
     if (!patch) return state;
     const {

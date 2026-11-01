@@ -1,6 +1,6 @@
 import { ProbableWaffleGameCommandTypes } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 import { normalizeRuntimeMovement } from "./skirmish-ai-runtime-movement-normalization";
 
 /**
@@ -8,7 +8,7 @@ import { normalizeRuntimeMovement } from "./skirmish-ai-runtime-movement-normali
  * Receipts, true returns and fallback arrivals are insufficient.
  */
 export function runtimeControlTransitFailures(
-  capture: AiRuntimeProductionCaptureV1, controlId: string, latestTick: number, expected: "arrive" | "blocked"
+  capture: AiRuntimeProductionSnapshot, controlId: string, latestTick: number, expected: "arrive" | "blocked"
 ): string[] {
   const controls = capture.facts.filter((fact) => fact.kind === "preset_control" && fact.control.id === controlId &&
     fact.control.phase === "applied"

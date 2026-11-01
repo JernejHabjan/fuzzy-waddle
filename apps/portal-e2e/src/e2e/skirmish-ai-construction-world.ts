@@ -1,4 +1,4 @@
-import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
+import type { RuntimeFixture } from "./skirmish-ai-runtime-fixture";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 
 // At 50 ms/tick, 20 s of native work cannot finish by tick 80 even with the maximum four builders from tick zero.
@@ -8,7 +8,7 @@ export const CONSTRUCTION_INTERRUPTION_TICK = 80;
  * Concrete native owner controls for unfinished-site bindings, not full PLACE-03 clearance acceptance.
  * The real shared build command creates AnkGuard; the fixture supplies neither site progress nor completion.
  */
-export function constructionRecoveryWorld(branch: "builder_loss" | "intact" | "cancel_site"): RuntimeFixtureV1 {
+export function constructionRecoveryWorld(branch: "builder_loss" | "intact" | "cancel_site"): RuntimeFixture {
   return {
     schemaVersion: 1, evidenceKind: "runtime", scenarioIds: ["PLACE-03"],
     recipe: {

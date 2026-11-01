@@ -10,8 +10,8 @@ import { SimulationTickService } from "../../../world/services/simulation-tick.s
 import { NavigationService } from "../../../world/services/navigation.service";
 import { IsoHelper } from "../../../world/tilemap/iso-helper";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import type { AiRuntimePresetWorldV1 } from "./ai-runtime-preset-world-v1";
-import type { AiRuntimePresetControlV1 } from "./ai-runtime-preset-control-v1";
+import type { AiRuntimePresetWorld } from "./ai-runtime-preset-world";
+import type { AiRuntimePresetControl } from "./ai-runtime-preset-control";
 import { AI_RUNTIME_PRESET_CONTROL_EVENT, type AiRuntimePresetControlEvent } from "./ai-runtime-preset-control-event";
 import { installAiRuntimePresetControls } from "./install-ai-runtime-preset-controls";
 
@@ -21,7 +21,7 @@ jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneSe
 jest.mock("../../../world/tilemap/iso-helper", () => ({ IsoHelper: { isometricWorldToTileXY: jest.fn() } }));
 
 /** Isolated command seam: assertions cover authority/identity and teardown, not physical movement acceptance. */
-function setup(action: AiRuntimePresetControlV1["action"], active = true, targetOwner = 2, applicationTick = 1) {
+function setup(action: AiRuntimePresetControl["action"], active = true, targetOwner = 2, applicationTick = 1) {
   const tick$ = new Subject<number>(), onShutdown = new Subject<void>();
   const clock = { currentTick: 0, tick$ };
   const scene = { events: new Phaser.Events.EventEmitter(), onShutdown } as unknown as ProbableWaffleScene;
@@ -45,7 +45,7 @@ function setup(action: AiRuntimePresetControlV1["action"], active = true, target
   );
   const records: AiRuntimePresetControlEvent[] = [];
   scene.events.on(AI_RUNTIME_PRESET_CONTROL_EVENT, (event: AiRuntimePresetControlEvent) => records.push(event));
-  const preset: AiRuntimePresetWorldV1 = { fixtureId: "native-movement", actors: [], resourceGrants: [],
+  const preset: AiRuntimePresetWorld = { fixtureId: "native-movement", actors: [], resourceGrants: [],
     provenance: { sourceRevision: "a".repeat(40), fixtureDigest: "fnv1a32:00000000" },
     controls: [{ id: "move-probe", requestTick: 0, applicationTick, producerFixtureActorId: "source", action }] };
   installAiRuntimePresetControls(scene, preset, new Map([["source", source], ["target", target]]));

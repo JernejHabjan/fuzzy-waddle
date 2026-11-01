@@ -1,9 +1,9 @@
-import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import type { AiObservedActor } from "../contracts/ai-observation";
 import type { AiSkirmishProposalContext } from "./ai-skirmish-proposal-context";
-import { queryAiAccessRouteV1 } from "./ai-access-graph-v1";
+import { queryAiAccessRoute } from "./ai-access-graph";
 import { canTarget, distance, domains, node, position, routeCapability } from "./ai-skirmish-support";
 
-function targetAccessNode(context: AiSkirmishProposalContext, opponent: AiObservedActorV1) {
+function targetAccessNode(context: AiSkirmishProposalContext, opponent: AiObservedActor) {
   const observedNode = node(opponent);
   if (observedNode) return observedNode;
   if (opponent.visibility !== "last_seen") return undefined;
@@ -27,11 +27,11 @@ function targetAccessNode(context: AiSkirmishProposalContext, opponent: AiObserv
     )[0]?.nodeId;
 }
 
-function routeDomain(route: ReturnType<typeof queryAiAccessRouteV1>): "air" | "ground" | "water" | undefined {
+function routeDomain(route: ReturnType<typeof queryAiAccessRoute>): "air" | "ground" | "water" | undefined {
   return route.kind === "direct" || route.kind === "air_or_naval_objective" ? route.domain : undefined;
 }
 
-function navalTargetFiringRange(attackers: readonly AiObservedActorV1[], opponent: AiObservedActorV1): number {
+function navalTargetFiringRange(attackers: readonly AiObservedActor[], opponent: AiObservedActor): number {
   const targetDomains = domains(opponent);
   return Math.max(
     0,
@@ -51,7 +51,7 @@ function navalTargetFiringRange(attackers: readonly AiObservedActorV1[], opponen
 
 export function selectAiNavalShoreFiringPosition(
   context: AiSkirmishProposalContext,
-  opponent: AiObservedActorV1,
+  opponent: AiObservedActor,
   waterNodeId: string
 ) {
   const graph = context.observation.map?.accessGraph;
@@ -80,7 +80,7 @@ export function selectAiNavalShoreFiringPosition(
 
 function selectAiNavalWaterFiringPosition(
   context: AiSkirmishProposalContext,
-  opponent: AiObservedActorV1
+  opponent: AiObservedActor
 ) {
   const targetPosition = position(opponent);
   if (!targetPosition) return undefined;
@@ -114,7 +114,7 @@ function selectAiNavalWaterFiringPosition(
 
 export function selectAiNavalFiringPosition(
   context: AiSkirmishProposalContext,
-  opponent: AiObservedActorV1,
+  opponent: AiObservedActor,
   waterNodeId: string
 ) {
   return domains(opponent).includes("water")
@@ -127,14 +127,14 @@ export function selectAiNavalFiringPosition(
  */
 export function selectAiOffensiveForce(
   context: AiSkirmishProposalContext,
-  opponent: AiObservedActorV1,
-  attackers: readonly AiObservedActorV1[]
+  opponent: AiObservedActor,
+  attackers: readonly AiObservedActor[]
 ) {
   const graph = context.observation.map?.accessGraph;
   const targetNode = targetAccessNode(context, opponent);
   if (!graph || !targetNode) return undefined;
   const targetPosition = position(opponent);
-  const groups = new Map<string, AiObservedActorV1[]>();
+  const groups = new Map<string, AiObservedActor[]>();
   for (const actor of attackers) {
     if (!canTarget(actor, opponent) || !node(actor)) continue;
     const key = `${domains(actor).join(",")}:${node(actor)}`;
@@ -165,7 +165,7 @@ export function selectAiOffensiveForce(
     return [
       {
         group,
-        route: queryAiAccessRouteV1(graph, {
+        route: queryAiAccessRoute(graph, {
           queryId: `query:strategy:${opponent.actorId}:${leader.actorId}:${context.observation.generation}`,
           kind: "firing_position",
           fromNodeId: sourceNode,

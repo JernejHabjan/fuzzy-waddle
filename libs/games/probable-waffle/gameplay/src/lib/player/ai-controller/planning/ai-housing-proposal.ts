@@ -1,8 +1,8 @@
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiIntent } from "../contracts/ai-intent";
+import type { AiObservation } from "../contracts/ai-observation";
+import type { AiDemand } from "../contracts/ai-plan-contracts";
 import { selectConstructionPosition } from "./ai-construction-site-selector";
 import { canAffordAiEconomyCost } from "./ai-economy-policy";
 import { calculateAiHousingDemand } from "./ai-housing-demand";
@@ -13,16 +13,16 @@ import { createAiResourceCostClaims } from "./ai-resource-cost-claims";
 
 /** Prices queued population and proposes only the missing committed housing capacity. */
 export function proposeAiHousing(
-  observation: AiObservationV1,
-  state: AiBrainStateV1,
-  catalog: AiCapabilityCatalogV1,
+  observation: AiObservation,
+  state: AiBrainState,
+  catalog: AiCapabilityCatalog,
   checkpoints: readonly OpeningCheckpoint[],
-  self: readonly AiObservationV1["actors"][number][],
+  self: readonly AiObservation["actors"][number][],
   canProposeHousing: boolean,
   supplyBuffer: number,
   reservedActorIds: ReadonlySet<string>,
   selectedConstructionTileKeys: Set<string>,
-  priorIntents: readonly AiIntentV1[],
+  priorIntents: readonly AiIntent[],
   initialOrdinal: number
 ) {
   const housing = calculateAiHousingDemand(
@@ -33,14 +33,14 @@ export function proposeAiHousing(
     unresolvedReservedEffectIds(state, "effect:supply:effect:")
   );
   const freeSupply = housing.freeSupply;
-  const intents: AiIntentV1[] = [];
+  const intents: AiIntent[] = [];
   let ordinal = initialOrdinal;
   if (!canProposeHousing || housing.neededBuildings <= 0 || !housing.housingEntry) {
     return { demand: null, intents, freeSupply, ordinal };
   }
   const housingObject = housing.housingEntry.sourceObjectName;
-  const demand: AiDemandV1 = {
-    demandId: "demand:supply:buffer" as AiDemandV1["demandId"],
+  const demand: AiDemand = {
+    demandId: "demand:supply:buffer" as AiDemand["demandId"],
     purpose: "supply_buffer",
     capabilityOrRole: "housing",
     unit: "actor_count",
@@ -94,14 +94,14 @@ export function proposeAiHousing(
       preconditions: [{ kind: "actor_exists", actorId: builder.actorId }],
       claims: [
         {
-          claimId: `${ids.claimId}:builder` as AiIntentV1["claims"][number]["claimId"],
+          claimId: `${ids.claimId}:builder` as AiIntent["claims"][number]["claimId"],
           kind: "actor",
           actorId: builder.actorId
         },
         { claimId: ids.claimId, kind: "site", siteKey: `supply:${housingObject}:${position.x}:${position.y}` },
         ...createAiResourceCostClaims(ids.claimId, housing.housingEntry.constructionProfile?.resourceCost ?? {}),
         {
-          claimId: `${ids.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
+          claimId: `${ids.claimId}:effect` as AiIntent["claims"][number]["claimId"],
           kind: "effect",
           effectId: ids.effectId
         }

@@ -1,16 +1,16 @@
 import { FactionType, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-brain-state-v1";
-import { createAiProfileConfigV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-profile-defaults";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import { createAiBrainState } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-brain-state";
+import { createAiProfileConfig } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-profile-defaults";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { productionCausalityFixture } from "./skirmish-ai-runtime-production-causality-fixture";
 
 /** Invented decision shape for pure contract tests only. It supplies no fair setup, real leases or AI usefulness. */
 export function productionDecisionFixture() {
   const raw = productionCausalityFixture();
-  const state = createAiBrainStateV1({ playerNumber: 1, faction: FactionType.Tivara, tick: 1, archetypeId: "balanced",
-    profile: createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium) });
-  const facts: AiRuntimeProductionFactV1[] = [];
+  const state = createAiBrainState({ playerNumber: 1, faction: FactionType.Tivara, tick: 1, archetypeId: "balanced",
+    profile: createAiProfileConfig(ProbableWaffleAiDifficulty.Medium) });
+  const facts: AiRuntimeProductionFact[] = [];
   let decisionSequence = 1;
   for (const fact of raw.facts) {
     if (fact.kind !== "intent_dispatch" || fact.event.kind !== "requested" || !fact.event.acceptedIntent) {

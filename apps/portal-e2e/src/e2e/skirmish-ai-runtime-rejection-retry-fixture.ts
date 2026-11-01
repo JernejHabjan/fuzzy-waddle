@@ -1,5 +1,5 @@
 import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import type { AiRuntimeProductionBoundaryState } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-boundary-state";
 import { productionRejectionFixture } from "./skirmish-ai-runtime-production-rejection-fixture";
 
@@ -29,7 +29,7 @@ export function rejectionRetryFixture() {
             : undefined
         }
       : undefined;
-  const facts: AiRuntimeProductionFactV1[] = [
+  const facts: AiRuntimeProductionFact[] = [
     ...first.facts,
     {
       ...selected,

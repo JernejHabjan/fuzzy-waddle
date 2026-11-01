@@ -1,9 +1,9 @@
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionQueueV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-queue-v1";
+import type { AiRuntimeProductionQueue } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-queue";
 
 /** Independent raw-lane arithmetic; unknown/invalid items cannot supply a complete remaining-charge vector. */
-export function calculateRuntimeQueueLiabilities(queues: readonly AiRuntimeProductionQueueV1[], exhaustedItemId?: string) {
+export function calculateRuntimeQueueLiabilities(queues: readonly AiRuntimeProductionQueue[], exhaustedItemId?: string) {
   const due: Record<ResourceType, number> = { food: 0, wood: 0, stone: 0, minerals: 0 };
   const identities = new Set<string>();
   let exhaustedFound = exhaustedItemId === undefined;

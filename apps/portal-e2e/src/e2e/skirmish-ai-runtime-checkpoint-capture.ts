@@ -1,5 +1,5 @@
 import type { Page } from "@playwright/test";
-import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
+import type { RuntimeCheckpoint } from "./skirmish-ai-runtime-checkpoint";
 import { captureRuntimeEconomyCheckpoint } from "./skirmish-ai-runtime-economy-checkpoint";
 import { captureRuntimeStrategyCheckpoint } from "./skirmish-ai-runtime-strategy-checkpoint";
 import { captureRuntimeTransportCheckpoint } from "./skirmish-ai-runtime-transport-checkpoint";
@@ -9,7 +9,7 @@ export async function captureCheckpoint(
   aiPlayerNumber: number,
   targetTick: number,
   captureFairness = false
-): Promise<RuntimeCheckpointV1> {
+): Promise<RuntimeCheckpoint> {
   if (process.env.AI_SKIRMISH_DIAGNOSTIC_CHECKPOINT_TRACE === "1" && targetTick >= 4000) {
     const capture = async <T>(phase: string, run: () => Promise<T>): Promise<T> => {
       const startedAt = performance.now();
@@ -40,12 +40,12 @@ export async function captureCheckpoint(
       captureRuntimeStrategyCheckpoint(page, aiPlayerNumber, captureFairness)
     );
     const transport = await capture("transport", () => captureRuntimeTransportCheckpoint(page, aiPlayerNumber));
-    return { ...economy, ...strategy, ...transport } as RuntimeCheckpointV1;
+    return { ...economy, ...strategy, ...transport } as RuntimeCheckpoint;
   }
   const [economy, strategy, transport] = await Promise.all([
     captureRuntimeEconomyCheckpoint(page, aiPlayerNumber, targetTick),
     captureRuntimeStrategyCheckpoint(page, aiPlayerNumber, captureFairness),
     captureRuntimeTransportCheckpoint(page, aiPlayerNumber)
   ]);
-  return { ...economy, ...strategy, ...transport } as RuntimeCheckpointV1;
+  return { ...economy, ...strategy, ...transport } as RuntimeCheckpoint;
 }

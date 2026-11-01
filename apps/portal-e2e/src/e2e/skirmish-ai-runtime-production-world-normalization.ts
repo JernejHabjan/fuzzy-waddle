@@ -1,11 +1,11 @@
 import { ResearchType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { RuntimeProductionWorldSnapshotV1 } from "./skirmish-ai-runtime-production-world-snapshot";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { RuntimeProductionWorldSnapshot } from "./skirmish-ai-runtime-production-world-snapshot";
 
 /** Normalizes exact owned snapshots without borrowing a later observation, effective price or navigation answer. */
-export function normalizeRuntimeProductionWorld(capture: AiRuntimeProductionCaptureV1) {
-  const snapshots: RuntimeProductionWorldSnapshotV1[] = [];
+export function normalizeRuntimeProductionWorld(capture: AiRuntimeProductionSnapshot) {
+  const snapshots: RuntimeProductionWorldSnapshot[] = [];
   const failures: string[] = [];
   const gaps = new Set<string>();
   if (capture.snapshots.length > 256) return { snapshots, failures: ["production_world_snapshot_overflow"], gaps: [] };
@@ -62,7 +62,7 @@ export function normalizeRuntimeProductionWorld(capture: AiRuntimeProductionCapt
     const current = observation?.tick === snapshot.tick;
     if (!current) gaps.add("production_world_current_observation_missing");
     gaps.add("production_world_reachability_missing");
-    const producers: RuntimeProductionWorldSnapshotV1["producers"][number][] = [];
+    const producers: RuntimeProductionWorldSnapshot["producers"][number][] = [];
     const physicalItems = snapshot.queues.flatMap((queue) => queue.lanes.flatMap((lane) => lane.items));
     if (snapshot.queues.length > 256 || physicalItems.length > 2048 ||
       new Set(snapshot.queues.map((queue) => queue.actorId)).size !== snapshot.queues.length ||

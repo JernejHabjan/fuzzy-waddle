@@ -1,10 +1,10 @@
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiIntent } from "../contracts/ai-intent";
+import type { AiObservation } from "../contracts/ai-observation";
+import type { AiDemand } from "../contracts/ai-plan-contracts";
 import { selectConstructionPosition } from "./ai-construction-site-selector";
-import { reachableAiAccessNodeIdsV1 } from "./ai-access-graph-v1";
+import { reachableAiAccessNodeIds } from "./ai-access-graph";
 import { canAffordAiEconomyCost } from "./ai-economy-policy";
 import { nextIds, unresolvedReservedEffectIds } from "./ai-macro-effect-identity";
 import { claimedActorIds, isAvailableBuilder, isFinishedActor } from "./ai-macro-observation";
@@ -13,15 +13,15 @@ import { ObjectNames, type ResourceType } from "@fuzzy-waddle/probable-waffle-pr
 
 /** Keeps food drop-off throughput proportional to demanded Field capacity. */
 export function proposeAiFoodPrerequisite(
-  observation: AiObservationV1,
-  state: AiBrainStateV1,
-  catalog: AiCapabilityCatalogV1,
-  self: readonly AiObservationV1["actors"][number][],
-  foodSourceEntry: AiCapabilityCatalogV1["entries"][number] | undefined,
+  observation: AiObservation,
+  state: AiBrainState,
+  catalog: AiCapabilityCatalog,
+  self: readonly AiObservation["actors"][number][],
+  foodSourceEntry: AiCapabilityCatalog["entries"][number] | undefined,
   desiredFoodSources: number,
   reservedActorIds: ReadonlySet<string>,
   selectedConstructionTileKeys: Set<string>,
-  priorIntents: readonly AiIntentV1[],
+  priorIntents: readonly AiIntent[],
   ordinal: number,
   resourceReserve: Readonly<Partial<Record<ResourceType, number>>> = {}
 ) {
@@ -39,8 +39,8 @@ export function proposeAiFoodPrerequisite(
   if (desired <= 0 || !objectName || !entry) {
     return { objectName, ready, demand: null, intent: null };
   }
-  const demandId = "demand:economy:food-prerequisite" as AiDemandV1["demandId"];
-  const demand: AiDemandV1 = {
+  const demandId = "demand:economy:food-prerequisite" as AiDemand["demandId"];
+  const demand: AiDemand = {
     demandId,
     purpose: "food_drop_off_capacity",
     capabilityOrRole: objectName,
@@ -88,7 +88,7 @@ export function proposeAiFoodPrerequisite(
   const reachableFieldService = enforceFieldService
     ? readyFieldService.map((field) => ({
         ...field,
-        reachableNodeIds: reachableAiAccessNodeIdsV1(
+        reachableNodeIds: reachableAiAccessNodeIds(
           observation.map!.accessGraph!,
           [field.accessNodeId],
           "ground",
@@ -111,7 +111,7 @@ export function proposeAiFoodPrerequisite(
   );
   if (!position) return { objectName, ready, demand, intent: null };
   const next = nextIds(state, `food-prerequisite:${objectName}`, ordinal);
-  const intent: AiIntentV1 = {
+  const intent: AiIntent = {
     ...next,
     kind: "construct",
     spendingCategory: ready.length === 0 ? "survival" : "economy",
@@ -124,14 +124,14 @@ export function proposeAiFoodPrerequisite(
     preconditions: [{ kind: "actor_exists", actorId: builder.actorId }],
     claims: [
       {
-        claimId: `${next.claimId}:builder` as AiIntentV1["claims"][number]["claimId"],
+        claimId: `${next.claimId}:builder` as AiIntent["claims"][number]["claimId"],
         kind: "actor",
         actorId: builder.actorId
       },
       { claimId: next.claimId, kind: "site", siteKey: `food-prerequisite:${objectName}:${position.x}:${position.y}` },
       ...createAiResourceCostClaims(next.claimId, entry.constructionProfile?.resourceCost ?? {}),
       {
-        claimId: `${next.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
+        claimId: `${next.claimId}:effect` as AiIntent["claims"][number]["claimId"],
         kind: "effect",
         effectId: next.effectId
       }

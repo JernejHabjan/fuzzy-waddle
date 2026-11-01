@@ -1,11 +1,11 @@
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeConstructionCatalogV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-construction-catalog-v1";
+import type { AiRuntimeConstructionCatalog } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-construction-catalog";
 
 /** Checks even an unbound/illegal placement's catalog; missing legacy data stays loss rather than invented pricing. */
-export function validateRuntimeConstructionCatalog(catalog: AiRuntimeConstructionCatalogV1 | undefined) {
+export function validateRuntimeConstructionCatalog(catalog: AiRuntimeConstructionCatalog | undefined) {
   if (!catalog) return [];
-  const costValid = (cost: AiRuntimeConstructionCatalogV1["admissionCost"]) =>
+  const costValid = (cost: AiRuntimeConstructionCatalog["admissionCost"]) =>
     Object.entries(cost).every(([resource, amount]) => Object.values(ResourceType).includes(resource as ResourceType) &&
       Number.isFinite(amount) && amount >= 0);
   const definition = catalog.siteDefinition;

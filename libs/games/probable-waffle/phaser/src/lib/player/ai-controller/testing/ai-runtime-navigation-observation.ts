@@ -1,7 +1,7 @@
 import type Phaser from "phaser";
 import { NavigationService } from "../../../world/services/navigation.service";
 import type { HeightNavigationGraph } from "../../../world/services/height-navigation-graph-builder";
-import type { AiRuntimeNavigationBoundaryV1 } from "./ai-runtime-navigation-boundary-v1";
+import type { AiRuntimeNavigationBoundary } from "./ai-runtime-navigation-boundary";
 import { AiRuntimeNativeQueryObservation } from "./ai-runtime-native-query-observation";
 
 /** Marked-test owner of graph identity, native milestones and scoped existing lookups; no extra world queries or timers. */
@@ -20,7 +20,7 @@ export class AiRuntimeNavigationObservation {
   }
 
   /** O(1) sample of the existing graph reference. An unavailable graph breaks the consecutive-reference interval. */
-  sample(): AiRuntimeNavigationBoundaryV1 {
+  sample(): AiRuntimeNavigationBoundary {
     if (this.disposed || this.lost) return { graphObservationId: null, updateRequestCount: null };
     let graph: HeightNavigationGraph | undefined;
     try {
@@ -39,7 +39,7 @@ export class AiRuntimeNavigationObservation {
       this.graphObservationId++;
     }
     this.previousGraph = graph;
-    let native: AiRuntimeNavigationBoundaryV1["native"];
+    let native: AiRuntimeNavigationBoundary["native"];
     try { native = this.nativeLost ? null : this.navigation.getNativeNavigationBoundary?.(); }
     catch { native = null; }
     if (native === null) this.nativeLost = true;

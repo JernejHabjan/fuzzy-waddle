@@ -9,11 +9,11 @@ import { QueueComponent } from "../../../entity/components/queue/queue-component
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
-import type { AiRuntimeProductionFactV1 } from "./ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "./ai-runtime-production-fact";
 import { AiRuntimeProductionFrontiers } from "./ai-runtime-production-frontiers";
 import { captureAiRuntimeProductionFrontier } from "./capture-ai-runtime-production-frontier";
 import { captureAiRuntimeProductionSetup } from "./capture-ai-runtime-production-setup";
-import type { AiRuntimeProductionSetupV1 } from "./ai-runtime-production-setup-v1";
+import type { AiRuntimeProductionSetup } from "./ai-runtime-production-setup";
 import { AiRuntimeExposureBinding } from "./ai-runtime-exposure-binding";
 import { AttackComponent } from "../../../entity/components/combat/components/attack-component";
 import { ResourceDrainComponent } from "../../../entity/components/resource/resource-drain-component";
@@ -23,7 +23,7 @@ import { HealthComponent } from "../../../entity/components/combat/components/he
 export class AiRuntimeProductionProofCapture {
   private readonly frontiers = new Map<number, AiRuntimeProductionFrontiers>();
   private readonly tracked = new Map<number, Set<string>>();
-  private setup?: AiRuntimeProductionSetupV1;
+  private setup?: AiRuntimeProductionSetup;
   private readonly setupGaps: string[] = [];
   private detach?: () => void;
   private readonly exposure = new Map<number, AiRuntimeExposureBinding>();
@@ -94,7 +94,7 @@ export class AiRuntimeProductionProofCapture {
     this.tracked.set(playerNumber, ids);
   }
 
-  observe(fact: AiRuntimeProductionFactV1): void {
+  observe(fact: AiRuntimeProductionFact): void {
     if (fact.kind === "actor_unregistered")
       this.exposure.forEach((binding) => binding.invalidate(fact.actorId, fact.actor));
     if (fact.kind === "command_delivered" && fact.command.type === "SET_RALLY_POINT" && fact.command.targetObjectId) {

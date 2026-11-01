@@ -4,15 +4,15 @@ import {
   type GameCommand,
   type GameCommandOutcome
 } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiMultiplayerSharedQueueWorldV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-multiplayer-shared-queue-world-v1";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import type { AiRuntimeProductionQueueV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-queue-v1";
+import type { AiMultiplayerSharedQueueWorldSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-multiplayer-shared-queue-world-snapshot";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
+import type { AiRuntimeProductionQueue } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-queue";
 import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 
 /** Synthetic adapter contract input, with deliberately synthetic prices. Never a legal-world or runtime report fixture. */
 export function multiplayerSharedQueueFixture(
-  branch: AiMultiplayerSharedQueueWorldV1["branch"]
-): AiMultiplayerSharedQueueWorldV1 {
+  branch: AiMultiplayerSharedQueueWorldSnapshot["branch"]
+): AiMultiplayerSharedQueueWorldSnapshot {
   const money = (food: number) => ({ food, wood: 0, stone: 0, minerals: 0 });
   const source = ResearchType.TivaraSlingshotUpgradeLevel2;
   const target = ResearchType.TivaraMacemanUpgradeLevel2;
@@ -68,8 +68,8 @@ export function multiplayerSharedQueueFixture(
     if (!command) throw new Error("synthetic_shared_command_missing");
     return command;
   };
-  const facts: AiRuntimeProductionFactV1[] = [];
-  const append = (fact: AiRuntimeProductionFactV1) => facts.push({ ...fact, sequence: facts.length + 1 });
+  const facts: AiRuntimeProductionFact[] = [];
+  const append = (fact: AiRuntimeProductionFact) => facts.push({ ...fact, sequence: facts.length + 1 });
   const report = (role: string, kind: GameCommandOutcome["kind"], tick: number, worldLinkIds: string[] = []) => {
     const command = commandFor(role);
     append({
@@ -104,7 +104,7 @@ export function multiplayerSharedQueueFixture(
     const command = commandFor(role);
     append({ sequence: 0, tick: command.tick, playerNumber: 1, kind: "command_delivered", command });
   };
-  const item = (role: string): AiRuntimeProductionQueueV1["lanes"][number]["items"][number] => {
+  const item = (role: string): AiRuntimeProductionQueue["lanes"][number]["items"][number] => {
     return {
       itemId: `queue:producer:${role}`,
       identitySource: "command",
@@ -185,9 +185,9 @@ export function multiplayerSharedQueueFixture(
       }
     });
   };
-  const checkpoints: AiMultiplayerSharedQueueWorldV1["checkpoints"][number][] = [];
+  const checkpoints: AiMultiplayerSharedQueueWorldSnapshot["checkpoints"][number][] = [];
   const boundary = (
-    name: AiMultiplayerSharedQueueWorldV1["checkpoints"][number]["boundary"],
+    name: AiMultiplayerSharedQueueWorldSnapshot["checkpoints"][number]["boundary"],
     tick: number,
     food: number,
     queueRoles: string[] = [],

@@ -1,8 +1,8 @@
 import { ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiProfileConfigV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiProfileConfig } from "@fuzzy-waddle/probable-waffle-gameplay";
 
 /** Pinned D-01 contract, deliberately independent of the runtime profile factory so fallback/default drift fails. */
-export function nativeDifficultyProfile(branch: string): AiProfileConfigV1 {
+export function nativeDifficultyProfile(branch: string): AiProfileConfig {
   const policies = {
     easy: {
       sourceDifficulty: ProbableWaffleAiDifficulty.Easy, difficulty: "easy", decisionIntervalTicks: 40,
@@ -28,6 +28,6 @@ export function nativeDifficultyProfile(branch: string): AiProfileConfigV1 {
   } as const;
   if (branch !== "easy" && branch !== "normal" && branch !== "hard")
     throw new Error(`native_difficulty_branch_unknown:${branch}`);
-  return { schemaVersion: 1, profileVersion: "skirmish-ai-v1", archetypeVersion: "opening-archetypes-v1",
+  return { schemaVersion: 1, profileVersion: "skirmish-ai", archetypeVersion: "opening-archetypes",
     intentionalErrors: false, cheats: false, ...policies[branch] };
 }

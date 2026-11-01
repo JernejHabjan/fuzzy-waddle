@@ -1,21 +1,21 @@
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
-import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiIntent } from "../contracts/ai-intent";
+import type { AiObservation, AiObservedActor } from "../contracts/ai-observation";
+import type { AiManagerProposal, AiProposalManager } from "./ai-manager-proposal";
 import { canAffordAiEconomyCost, hasCredibleAiHomeThreat } from "./ai-economy-policy";
 import { createAiResourceCostClaims } from "./ai-resource-cost-claims";
 import { aiEconomySiteSafety } from "./ai-economy-site-safety";
 import { node, routeCapability } from "./ai-skirmish-support";
-import { queryAiAccessRouteV1 } from "./ai-access-graph-v1";
+import { queryAiAccessRoute } from "./ai-access-graph";
 
 export const AI_RESOURCE_SERVICE_RADIUS = 10;
 const SITE_RADIUS = 6;
 const MAX_PENDING_TICKS = 1200;
 
-function position(actor: AiObservedActorV1): Vector3Simple | null {
+function position(actor: AiObservedActor): Vector3Simple | null {
   return actor.logicalPosition.status === "known" ? actor.logicalPosition.value : null;
 }
 
@@ -23,11 +23,11 @@ function distance(left: Vector3Simple, right: Vector3Simple): number {
   return Math.abs(left.x - right.x) + Math.abs(left.y - right.y);
 }
 
-function ready(actor: AiObservedActorV1): boolean {
+function ready(actor: AiObservedActor): boolean {
   return actor.constructionProgress?.status !== "known" || actor.constructionProgress.value >= 100;
 }
 
-function pendingSite(state: AiBrainStateV1, sourceId: string, tick: number): boolean {
+function pendingSite(state: AiBrainState, sourceId: string, tick: number): boolean {
   return state.reservations.some((reservation) => {
     if (!reservation.subjectKey?.startsWith(`site:resource-service:${sourceId}:`)) return false;
     if (reservation.state.kind === "applied_spending") return false;
@@ -37,7 +37,7 @@ function pendingSite(state: AiBrainStateV1, sourceId: string, tick: number): boo
 }
 
 function selectSite(
-  observation: AiObservationV1,
+  observation: AiObservation,
   sourcePosition: Vector3Simple,
   nearestServiceDistance: number,
   footprintRadius: number,
@@ -80,12 +80,12 @@ function selectSite(
 }
 
 /** Adds local resource service only where a visible source and legal definition justify its marginal travel value. */
-export class AiResourceServiceManager implements AiProposalManagerV1 {
+export class AiResourceServiceManager implements AiProposalManager {
   readonly managerId = "resource-service";
 
-  constructor(private readonly getCatalog: () => AiCapabilityCatalogV1 | undefined) {}
+  constructor(private readonly getCatalog: () => AiCapabilityCatalog | undefined) {}
 
-  propose(observation: AiObservationV1, state: AiBrainStateV1): AiManagerProposalV1 {
+  propose(observation: AiObservation, state: AiBrainState): AiManagerProposal {
     const catalog = this.getCatalog();
     if (!catalog || catalog.generation !== observation.generation) {
       return {
@@ -190,7 +190,7 @@ export class AiResourceServiceManager implements AiProposalManagerV1 {
         .filter((actor) => {
           const graph = observation.map?.accessGraph, from = node(actor), to = node(source);
           if (!graph || !from || !to || from === to) return true;
-          return queryAiAccessRouteV1(graph, { queryId: `query:resource-builder:${actor.actorId}:${source.actorId}`,
+          return queryAiAccessRoute(graph, { queryId: `query:resource-builder:${actor.actorId}:${source.actorId}`,
             kind: "movement", fromNodeId: from, toNodeId: to, capabilities: routeCapability(observation, [actor], catalog),
             firingNodeIds: [] }).kind === "direct";
         })
@@ -224,17 +224,17 @@ export class AiResourceServiceManager implements AiProposalManagerV1 {
       );
       if (!site) continue;
       const suffix = `${source.actorId}:${state.scheduler.decisionSequence}`;
-      const intentId = `intent:resource-service:${suffix}` as AiIntentV1["intentId"];
-      const effectId = `effect:resource-service:${suffix}` as AiIntentV1["effectId"];
-      const claimId = `claim:resource-service:${suffix}` as AiIntentV1["claims"][number]["claimId"];
+      const intentId = `intent:resource-service:${suffix}` as AiIntent["intentId"];
+      const effectId = `effect:resource-service:${suffix}` as AiIntent["effectId"];
+      const claimId = `claim:resource-service:${suffix}` as AiIntent["claims"][number]["claimId"];
       const siteKey = `resource-service:${source.actorId}:${site.x},${site.y}`;
-      const intent: AiIntentV1 = {
+      const intent: AiIntent = {
         intentId,
         effectId,
         kind: "construct",
         spendingCategory: "economy",
-        planId: `plan:resource-service:${source.actorId}` as AiIntentV1["planId"],
-        demandId: `demand:resource-service:${source.actorId}` as AiIntentV1["demandId"],
+        planId: `plan:resource-service:${source.actorId}` as AiIntent["planId"],
+        demandId: `demand:resource-service:${source.actorId}` as AiIntent["demandId"],
         lane: "optional_infrastructure_tech",
         proposedTick: observation.tick,
         urgencyClass: 4,

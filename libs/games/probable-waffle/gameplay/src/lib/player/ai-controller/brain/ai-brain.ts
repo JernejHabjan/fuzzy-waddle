@@ -1,27 +1,27 @@
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
 import { aiTransportReleasedClaimIds } from "./ai-transport-released-claims";
-import type { AiCommandOutcomeV1 } from "../contracts/ai-command-contracts";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
-import { assertAiBrainStateV1, assertAiObservationV1 } from "../contracts/validate-ai-contracts-v1";
-import type { AiProposalManagerV1 } from "../planning/ai-manager-proposal";
+import type { AiCommandOutcome } from "../contracts/ai-command-contracts";
+import type { AiIntent } from "../contracts/ai-intent";
+import type { AiObservation } from "../contracts/ai-observation";
+import type { AiProfileConfig } from "../contracts/ai-profile-config";
+import { assertAiBrainState, assertAiObservation } from "../contracts/validate-ai-contracts";
+import type { AiProposalManager } from "../planning/ai-manager-proposal";
 import { projectAiDebugSafely } from "../debug/project-ai-debug-safely";
 import { collectAiProposals } from "./ai-optional-boundaries";
 import type { AiBrainBoundaryHooks } from "./ai-brain-boundary-hooks";
 import { planAiDecisions, reconcileAiDecisionReservations } from "../planning/ai-decision-planner";
-import { AI_PROVISIONAL_LEASE_DURATION_TICKS } from "./create-ai-brain-state-v1";
+import { AI_PROVISIONAL_LEASE_DURATION_TICKS } from "./create-ai-brain-state";
 import { aiDeadline } from "../contracts/ai-core-types";
-import type { AiBrainV1 } from "./ai-brain-v1";
-import type { AiBrainStepResultV1 } from "./ai-brain-step-result-v1";
+import type { AiBrain } from "./ai-brain-contract";
+import type { AiBrainStepResult } from "./ai-brain-step-result";
 import { projectAiManagerState } from "./project-ai-manager-state";
 import { aiClaimKey, arbitrateAiIntents } from "./ai-intent-arbiter";
 
-export type { AiBrainV1 } from "./ai-brain-v1";
-export type { AiBrainStepResultV1 } from "./ai-brain-step-result-v1";
+export type { AiBrain } from "./ai-brain-contract";
+export type { AiBrainStepResult } from "./ai-brain-step-result";
 
-function normalizePrimarySquadOwnership(squads: AiBrainStateV1["squads"]): AiBrainStateV1["squads"] {
-  const rolePriority: Record<AiBrainStateV1["squads"][number]["role"], number> = {
+function normalizePrimarySquadOwnership(squads: AiBrainState["squads"]): AiBrainState["squads"] {
+  const rolePriority: Record<AiBrainState["squads"][number]["role"], number> = {
     defense: 0,
     escort: 1,
     attack: 2,
@@ -64,21 +64,21 @@ function normalizePrimarySquadOwnership(squads: AiBrainStateV1["squads"]): AiBra
  * Minimal deterministic Stage 2 reducer. It collects read-only manager proposals, applies
  * observation preconditions and claims, and publishes one immutable decision/debug result.
  */
-export class PureAiBrain implements AiBrainV1 {
+export class PureAiBrain implements AiBrain {
   constructor(
-    private readonly profile: AiProfileConfigV1,
-    private readonly managers: readonly AiProposalManagerV1[],
+    private readonly profile: AiProfileConfig,
+    private readonly managers: readonly AiProposalManager[],
     private readonly boundaryHooks?: AiBrainBoundaryHooks
   ) {}
 
   step(
-    observation: AiObservationV1,
-    previousState: AiBrainStateV1,
-    orderedOutcomes: readonly AiCommandOutcomeV1[]
-  ): AiBrainStepResultV1 {
+    observation: AiObservation,
+    previousState: AiBrainState,
+    orderedOutcomes: readonly AiCommandOutcome[]
+  ): AiBrainStepResult {
     this.boundaryHooks?.assertAuthority?.(observation);
-    assertAiObservationV1(observation);
-    assertAiBrainStateV1(previousState);
+    assertAiObservation(observation);
+    assertAiBrainState(previousState);
     if (observation.playerNumber !== previousState.playerNumber || observation.faction !== previousState.faction) {
       throw new Error("ai_observation_owner_mismatch");
     }
@@ -97,7 +97,7 @@ export class PureAiBrain implements AiBrainV1 {
       }
     }
 
-    const proposalState: AiBrainStateV1 = {
+    const proposalState: AiBrainState = {
       ...previousState,
       reservations: reconcileAiDecisionReservations(previousState, orderedOutcomes, observation.tick)
     };
@@ -187,7 +187,7 @@ export class PureAiBrain implements AiBrainV1 {
       )
     );
     const normalizedSquads = normalizePrimarySquadOwnership(projectedState.squads);
-    const nextState: AiBrainStateV1 = {
+    const nextState: AiBrainState = {
       ...projectedState,
       lanes: projectedState.lanes.map((lane) =>
         accepted.some((intent) => intent.lane === lane.lane) ? { ...lane, lastServicedTick: observation.tick } : lane
@@ -196,7 +196,7 @@ export class PureAiBrain implements AiBrainV1 {
         (plan) =>
           previousSupportIds.has(plan.planId) ||
           plan.effectId == null ||
-          acceptedEffectIds.has(plan.effectId as AiIntentV1["effectId"])
+          acceptedEffectIds.has(plan.effectId as AiIntent["effectId"])
       ),
       squads: normalizedSquads.map((squad) => {
         if (!squad.tactics) return squad;
@@ -222,7 +222,7 @@ export class PureAiBrain implements AiBrainV1 {
               (reservation) =>
                 reservation.effectId === undefined ||
                 previousDamageEffectIds.has(reservation.effectId) ||
-                acceptedEffectIds.has(reservation.effectId as AiIntentV1["effectId"])
+                acceptedEffectIds.has(reservation.effectId as AiIntent["effectId"])
             )
           }
         };

@@ -1,9 +1,9 @@
 import { FactionType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { PureAiBrain } from "../brain/ai-brain";
 import { digestCanonicalAiValue } from "../brain/canonical-ai-serialization";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCommandIdentityV1, AiCommandOutcomeV1 } from "../contracts/ai-command-contracts";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiCommandIdentity, AiCommandOutcome } from "../contracts/ai-command-contracts";
+import type { AiIntent } from "../contracts/ai-intent";
 import { AiMacroManager } from "../planning/ai-macro-manager";
 import { createAiProductionPolicyFixture } from "./ai-production-policy-fixture";
 import { repeatedArmy } from "./ai-production-scenario-test-fixtures";
@@ -27,15 +27,15 @@ describe.each([FactionType.Tivara, FactionType.Skaduwee])("production capacity c
         }
       }
     ]);
-    let state: AiBrainStateV1 = fixture.state;
+    let state: AiBrainState = fixture.state;
     let tick = 200;
     let actors = [...fixture.observation.actors];
-    const step = (outcomes: readonly AiCommandOutcomeV1[] = []) => {
+    const step = (outcomes: readonly AiCommandOutcome[] = []) => {
       const result = brain.step({ ...fixture.observation, tick: tick++, actors }, state, outcomes);
       state = result.nextState;
       return result;
     };
-    const identity = (intent: AiIntentV1, sequence: number): AiCommandIdentityV1 => ({
+    const identity = (intent: AiIntent, sequence: number): AiCommandIdentity => ({
       matchId: "capacity-certification",
       authorityEpoch: 0,
       playerNumber: 1,
@@ -59,7 +59,7 @@ describe.each([FactionType.Tivara, FactionType.Skaduwee])("production capacity c
       get state() {
         return state;
       },
-      setState: (value: AiBrainStateV1) => {
+      setState: (value: AiBrainState) => {
         state = value;
       },
       setForce: (count: number) => {
@@ -121,8 +121,8 @@ describe.each([FactionType.Tivara, FactionType.Skaduwee])("production capacity c
         ...h.state,
         strategy: { ...h.state.strategy, assessment: { ...h.fixture.state.strategy.assessment, requiredForce: 24 } }
       });
-      const accepted: AiIntentV1[] = [];
-      let nextIntent: AiIntentV1 | undefined;
+      const accepted: AiIntent[] = [];
+      let nextIntent: AiIntent | undefined;
       for (let sequence = 0; sequence < 2; sequence++) {
         const intent = nextIntent ?? h.step().acceptedIntents[0];
         expect(intent?.kind).toBe("construct");
@@ -184,7 +184,7 @@ describe.each([FactionType.Tivara, FactionType.Skaduwee])("production capacity c
     const started = brain.step({ ...f.observation, tick: 390, actors }, first.nextState, []);
     const output = started.acceptedIntents.find((intent) => intent.kind === "produce");
     if (!output) throw new Error("useful_output_missing");
-    const identity: AiCommandIdentityV1 = {
+    const identity: AiCommandIdentity = {
       matchId: "blocked-output",
       authorityEpoch: 0,
       playerNumber: 1,
@@ -197,7 +197,7 @@ describe.each([FactionType.Tivara, FactionType.Skaduwee])("production capacity c
       { kind: "applied", identity, tick: 390, worldLinkIds: ["queue:blocked"] }
     ]);
     expect(applied.nextState.reservations.some((lease) => lease.subjectKey === `effect:${output.effectId}`)).toBe(true);
-    const failedOutput: AiCommandOutcomeV1 = { kind: "failed", identity, tick: 392, reason: "no_legal_spawn_location" };
+    const failedOutput: AiCommandOutcome = { kind: "failed", identity, tick: 392, reason: "no_legal_spawn_location" };
     const input = {
       ...applied.nextState,
       strategy: {

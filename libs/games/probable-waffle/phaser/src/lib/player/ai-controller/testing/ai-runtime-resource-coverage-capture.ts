@@ -1,4 +1,4 @@
-import type { AiRuntimeResourceCoverageV1 } from "./ai-runtime-resource-coverage-v1";
+import type { AiRuntimeResourceCoverage } from "./ai-runtime-resource-coverage";
 
 /** Capture-owned partial coverage; every loss fences before any fallible record write. Never a gameplay clock or registry. */
 export class AiRuntimeResourceCoverageCapture {
@@ -6,12 +6,12 @@ export class AiRuntimeResourceCoverageCapture {
   private lossEpoch = 0;
   private lastTick: number;
   private readonly losses = new Set<string>();
-  private readonly cohorts: AiRuntimeResourceCoverageV1["cohorts"][number][] = [];
+  private readonly cohorts: AiRuntimeResourceCoverage["cohorts"][number][] = [];
   private readonly components = new WeakMap<object, number>();
 
   constructor(
     private readonly startedTick: number,
-    private readonly boundary: () => AiRuntimeResourceCoverageV1["frontier"]
+    private readonly boundary: () => AiRuntimeResourceCoverage["frontier"]
   ) {
     this.lastTick = startedTick;
   }
@@ -53,7 +53,7 @@ export class AiRuntimeResourceCoverageCapture {
   }
 
   /** Actual detached read position; unsupported mutation and global beneficiary authority remain explicit. */
-  read(): AiRuntimeResourceCoverageV1 {
+  read(): AiRuntimeResourceCoverage {
     const frontier = this.boundary();
     return structuredClone({
       captureEpoch: 1,
@@ -76,6 +76,6 @@ export class AiRuntimeResourceCoverageCapture {
         "resource_continuous_capacity_predicates_missing",
         "resource_recipient_mutable_alias_history_incomplete"
       ]
-    } satisfies AiRuntimeResourceCoverageV1);
+    } satisfies AiRuntimeResourceCoverage);
   }
 }

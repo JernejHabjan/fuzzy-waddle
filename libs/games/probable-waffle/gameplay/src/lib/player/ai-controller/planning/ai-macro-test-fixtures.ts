@@ -5,14 +5,14 @@ import {
   ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
 
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
 
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
 
 /** Shared authored capability facts for macro controls; this is not a runtime definition catalog. */
-export const catalog: AiCapabilityCatalogV1 = {
+export const catalog: AiCapabilityCatalog = {
   schemaVersion: 1,
   generation: 1,
   unsupported: [],
@@ -143,8 +143,8 @@ export const catalog: AiCapabilityCatalogV1 = {
 
 /** Marks only opening completion; each test supplies the current workforce/force/queue evidence it needs. */
 export function completedOpeningState() {
-  const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-  return createAiBrainStateV1({
+  const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+  return createAiBrainState({
     playerNumber: 1,
     faction: FactionType.Tivara,
     profile,

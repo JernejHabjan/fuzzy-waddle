@@ -1,4 +1,4 @@
-import type { AiAuthorityStateV1, AiCommandOutcomeV1, AiDeadlineV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiAuthorityState, AiCommandOutcome, AiDeadline } from "@fuzzy-waddle/probable-waffle-gameplay";
 import type { GameCommandOutcome } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
 import { isSettlingCommandOutcome } from "../../world/services/multiplayer/is-settling-command-outcome";
@@ -7,7 +7,7 @@ import { isSettlingCommandOutcome } from "../../world/services/multiplayer/is-se
 export function adaptGameCommandOutcomeToBrain(
   outcome: GameCommandOutcome,
   matchId: GameInstanceId
-): AiCommandOutcomeV1 {
+): AiCommandOutcome {
   const identity = {
     matchId,
     authorityEpoch: outcome.authorityEpoch,
@@ -44,7 +44,7 @@ export function adaptGameCommandOutcomeToBrain(
 export function adaptGameCommandOutcomesToBrain(
   outcomes: readonly GameCommandOutcome[],
   matchId: GameInstanceId
-): AiCommandOutcomeV1[] {
+): AiCommandOutcome[] {
   return [...outcomes]
     // Delivery diagnostics are not a terminal verdict on the original effect. Keep them out of pure claim release.
     .filter((outcome) => !["rejected", "cancelled", "failed"].includes(outcome.kind) || isSettlingCommandOutcome(outcome))
@@ -65,9 +65,9 @@ export function adaptCommandAuthorityToBrain(input: {
   readonly processedSequenceWatermark: number;
   readonly pendingCommandIds: readonly string[];
   readonly pendingLimit: number;
-  readonly reconciliationDeadline: AiDeadlineV1 | null;
-  readonly health: AiAuthorityStateV1["health"];
-}): AiAuthorityStateV1 {
+  readonly reconciliationDeadline: AiDeadline | null;
+  readonly health: AiAuthorityState["health"];
+}): AiAuthorityState {
   return {
     authorityEpoch: input.authorityEpoch,
     processedSequenceWatermark: input.processedSequenceWatermark,

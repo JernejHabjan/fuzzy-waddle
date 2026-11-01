@@ -1,10 +1,10 @@
-import type { AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiSquadState } from "../contracts/ai-brain-state";
 
 /** Drops per-actor tactical orders and reservations when a strategic mission changes squad membership. */
 export function retainAiSquadTacticsForActors(
-  tactics: AiSquadStateV1["tactics"],
+  tactics: AiSquadState["tactics"],
   actorIds: readonly string[]
-): AiSquadStateV1["tactics"] {
+): AiSquadState["tactics"] {
   if (!tactics) return undefined;
   const members = new Set(actorIds);
   return {

@@ -1,10 +1,10 @@
-import type { AiDecisionInputV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/ai-decision-input-v1";
-import type { RuntimeProductionFairInputV1 } from "./skirmish-ai-runtime-production-fair-input";
+import type { AiDecisionInput } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/ai-decision-input";
+import type { RuntimeProductionFairInput } from "./skirmish-ai-runtime-production-fair-input";
 import { validateRuntimeProductionFairGraph } from "./skirmish-ai-runtime-production-fair-graph";
 import { normalizeRuntimeProducerExposure } from "./skirmish-ai-runtime-producer-exposure";
 
 /** Preserves exact visible/remembered semantics and real query statuses, without reading the live opponent world. */
-export function normalizeRuntimeProductionFairInput(input: AiDecisionInputV1) {
+export function normalizeRuntimeProductionFairInput(input: AiDecisionInput) {
   const failures: string[] = [];
   const gaps = new Set<string>();
   const exposure = normalizeRuntimeProducerExposure(input);
@@ -140,7 +140,7 @@ export function normalizeRuntimeProductionFairInput(input: AiDecisionInputV1) {
     if (query.status !== "ready") gaps.add(`production_decision_query_${query.status}`);
   }
   gaps.add("production_decision_producer_reachability_missing");
-  const visibleThreats: RuntimeProductionFairInputV1["visibleThreats"][number][] = actors
+  const visibleThreats: RuntimeProductionFairInput["visibleThreats"][number][] = actors
     .filter((actor) => actor.relation === "enemy" && actor.visibility === "visible")
     .map((actor) => {
       const position = actor.logicalPosition.status === "known" ? actor.logicalPosition.value : null;
@@ -154,7 +154,7 @@ export function normalizeRuntimeProductionFairInput(input: AiDecisionInputV1) {
     accessProducts: queries,
     visibleThreats,
     producerExposure: exposure.exposure
-  } satisfies RuntimeProductionFairInputV1;
+  } satisfies RuntimeProductionFairInput;
   return structuredClone({
     fairInput: failures.length ? null : fairInput,
     failures: [...new Set(failures)],

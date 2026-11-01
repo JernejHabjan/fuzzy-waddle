@@ -1,9 +1,9 @@
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeQueueResourceV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-queue-resource-v1";
+import type { AiRuntimeQueueResource } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-queue-resource";
 
 /** Mirrors the native stored-item policy; per-tick refunds use one stored vector, never cumulative paid charges. */
-export function validateRuntimeQueueRefundPolicy(value: AiRuntimeQueueResourceV1): string[] {
+export function validateRuntimeQueueRefundPolicy(value: AiRuntimeQueueResource): string[] {
   if (value.operation !== "cancellation_refund") return [];
   const { storedPrice, refundFactor, totalTimeMs, remainingTimeMs } = value;
   if (!storedPrice || refundFactor === null || !Number.isFinite(refundFactor) || refundFactor < 0 || refundFactor > 1 ||

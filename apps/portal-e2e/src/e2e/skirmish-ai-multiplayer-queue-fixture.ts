@@ -4,13 +4,13 @@ import {
   type GameCommand,
   type GameCommandOutcome
 } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiMultiplayerQueueWorldV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-multiplayer-queue-world-v1";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import type { AiRuntimeProductionCaptureV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { AiMultiplayerQueueWorldSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-multiplayer-queue-world-snapshot";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
+import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 
 /** Synthetic normalizer regression input only; never passed to a browser, recipe, manifest or runtime evidence report. */
-export function multiplayerQueueBoundaryFixture(): AiMultiplayerQueueWorldV1 {
+export function multiplayerQueueBoundaryFixture(): AiMultiplayerQueueWorldSnapshot {
   const money = (food: number) => ({ food, wood: 0, stone: 0, minerals: 0 });
   const price = { [ResourceType.Food]: 50 };
   const roles = ["purchase", "probe", "cancel", "resume"] as const;
@@ -38,8 +38,8 @@ export function multiplayerQueueBoundaryFixture(): AiMultiplayerQueueWorldV1 {
     if (!command) throw new Error("synthetic_command_missing");
     return command;
   };
-  const facts: AiRuntimeProductionFactV1[] = [];
-  const append = (fact: AiRuntimeProductionFactV1) => facts.push({ ...fact, sequence: facts.length + 1 });
+  const facts: AiRuntimeProductionFact[] = [];
+  const append = (fact: AiRuntimeProductionFact) => facts.push({ ...fact, sequence: facts.length + 1 });
   const report = (
     role: (typeof roles)[number],
     kind: GameCommandOutcome["kind"],
@@ -162,11 +162,11 @@ export function multiplayerQueueBoundaryFixture(): AiMultiplayerQueueWorldV1 {
   deliver("resume");
   report("resume", "completed", 115, ["new-worker"]);
   const checkpoint = (
-    boundary: AiMultiplayerQueueWorldV1["checkpoints"][number]["boundary"],
+    boundary: AiMultiplayerQueueWorldSnapshot["checkpoints"][number]["boundary"],
     tick: number,
     food: number,
     role?: "purchase" | "resume"
-  ): AiMultiplayerQueueWorldV1["checkpoints"][number] => ({
+  ): AiMultiplayerQueueWorldSnapshot["checkpoints"][number] => ({
     boundary,
     snapshot: {
       tick,
@@ -222,7 +222,7 @@ export function multiplayerQueueBoundaryFixture(): AiMultiplayerQueueWorldV1 {
     checkpoint("resumed", 15, 0, "resume"),
     checkpoint("complete", 115, 0)
   ];
-  const capture: AiRuntimeProductionCaptureV1 = {
+  const capture: AiRuntimeProductionSnapshot = {
     schemaVersion: 1,
     kind: "production_authority_capture",
     startedTick: 0,

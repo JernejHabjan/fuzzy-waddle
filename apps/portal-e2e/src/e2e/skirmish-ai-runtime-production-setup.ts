@@ -1,11 +1,11 @@
 // prettier-ignore
-import type { AiRuntimeProductionSetupV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-setup-v1";
+import type { AiRuntimeProductionSetup } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-setup";
 import { createHash } from "node:crypto";
 
 /** Canonicalizes independently read setup; duplicate physical roles and missing authored bindings fail closed. */
 export function normalizeRuntimeProductionSetup(
-  setup: AiRuntimeProductionSetupV1,
+  setup: AiRuntimeProductionSetup,
   bindings: Readonly<Record<string, string>>
 ) {
   const roles = new Map<string, string>();

@@ -1,4 +1,4 @@
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 import { createAiTestOwnedActor } from "../testing/ai-test-fixtures";
@@ -51,7 +51,7 @@ describe("fastest credible offense", () => {
       ...producer("distant-producer"),
       logicalPosition: { status: "known" as const, value: { x: 40, y: 0, z: 0 }, observedTick: 20 }
     };
-    const state: AiBrainStateV1 = {
+    const state: AiBrainState = {
       ...brain(),
       squads: [
         {
@@ -126,7 +126,7 @@ describe("fastest credible offense", () => {
 
   it("changes plan when the same force has lost its worker economy", () => {
     const initial = brain();
-    const completedOpening: AiBrainStateV1 = {
+    const completedOpening: AiBrainState = {
       ...initial,
       opening: { ...initial.opening, plan: { ...initial.opening.plan, lifecycle: "completed" } }
     };
@@ -158,7 +158,7 @@ describe("fastest credible offense", () => {
     const first = manager.propose(world([guard("a", "self", 0), guard("b", "self", 0), core("enemy-core")]), initial);
     const completed = first.statePatch?.squads?.find((squad) => squad.role === "attack");
     expect(completed).toBeDefined();
-    const later: AiBrainStateV1 = {
+    const later: AiBrainState = {
       ...initial,
       squads: [{ ...completed!, actorIds: [], state: "completed" }],
       skirmish: first.statePatch!.skirmish!

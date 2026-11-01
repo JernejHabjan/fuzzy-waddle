@@ -1,5 +1,5 @@
-import type { AiReservationV1 } from "../contracts/ai-dependency-contracts";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
+import type { AiReservation } from "../contracts/ai-dependency-contracts";
+import type { AiIntent } from "../contracts/ai-intent";
 import { aiDeadline } from "../contracts/ai-core-types";
 import { ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { createAiProductionPolicyFixture } from "../testing/ai-production-policy-fixture";
@@ -22,7 +22,7 @@ it.each([0, 1])(
             state: { kind: "provisional" as const, expiresAt: aiDeadline(f.observation.tick + remaining) },
             prerequisites: [],
             createdTick: 0
-          }) satisfies AiReservationV1
+          }) satisfies AiReservation
       );
     const previous = { ...f.state, reservations };
     const manager = new AiMacroManager(() => f.catalog);
@@ -61,7 +61,7 @@ it("transfers a gatherer actor lease to accepted construction but retains the pr
         : actor
     )
   };
-  const intent: AiIntentV1 = {
+  const intent: AiIntent = {
     kind: "construct",
     intentId: "intent:retask-construction",
     effectId: "effect:retask-construction",
@@ -101,7 +101,7 @@ it("transfers a gatherer actor lease to accepted construction but retains the pr
         prerequisites: [],
         createdTick: observation.tick - 10
       }
-    ] satisfies AiReservationV1[]
+    ] satisfies AiReservation[]
   };
   const manager = {
     managerId: "retask-test",
@@ -161,7 +161,7 @@ it("transfers an applied wood-gather lease to an empty Field so crop growth can 
       }
     ]
   };
-  const intent: AiIntentV1 = {
+  const intent: AiIntent = {
     kind: "assign_gatherers",
     intentId: "intent:retask-food-labor",
     effectId: "effect:retask-food-labor",
@@ -203,7 +203,7 @@ it("transfers an applied wood-gather lease to an empty Field so crop growth can 
         prerequisites: [],
         createdTick: observation.tick - 10
       }
-    ] satisfies AiReservationV1[]
+    ] satisfies AiReservation[]
   };
   const manager = {
     managerId: "food-retask-test",

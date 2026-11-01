@@ -1,9 +1,9 @@
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { HIGH_GROUND_THRESHOLD } from "../../../entity/components/combat/high-ground-constants";
-import type { AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiObservedActor, AiObservation } from "../contracts/ai-observation";
 
 /** Only current visible weapon facts may justify resilient capacity; remembered contacts never become live weapons. */
-export function observedAiProducerThreats(observation: AiObservationV1): readonly AiObservedActorV1[] {
+export function observedAiProducerThreats(observation: AiObservation): readonly AiObservedActor[] {
   if (observation.threatSummary.observedTick !== observation.tick) return [];
   const ids = new Set(observation.threatSummary.visibleEnemyActorIds);
   return observation.actors.filter(
@@ -20,7 +20,7 @@ export function observedAiProducerThreats(observation: AiObservationV1): readonl
 }
 
 /** Buildings are ground targets under the shared attack rule. Distances/ranges use logical tiles. */
-export function isAiProducerPositionExposed(position: Vector3Simple, threats: readonly AiObservedActorV1[]): boolean {
+export function isAiProducerPositionExposed(position: Vector3Simple, threats: readonly AiObservedActor[]): boolean {
   return threats.some((threat) => {
     if (threat.logicalPosition.status !== "known" || threat.combatProfile?.status !== "known") return false;
     const origin = threat.logicalPosition.value;
@@ -39,8 +39,8 @@ export function isAiProducerPositionExposed(position: Vector3Simple, threats: re
 
 /** Bounded conservative ground flood; unknown cells and height transitions require another authority and are excluded. */
 export function reachableAiConstructionTiles(
-  observation: AiObservationV1,
-  builder: AiObservedActorV1
+  observation: AiObservation,
+  builder: AiObservedActor
 ): ReadonlySet<string> {
   const reachable = new Set<string>();
   if (builder.logicalPosition.status !== "known") return reachable;
@@ -71,8 +71,8 @@ export function reachableAiConstructionTiles(
 
 /** A known safe finished alternative already serves the compatible demand, so exposure alone never multiplies producers. */
 export function needsAiProducerResilience(
-  observation: AiObservationV1,
-  producers: readonly AiObservedActorV1[],
+  observation: AiObservation,
+  producers: readonly AiObservedActor[],
   usefulDeficit: number
 ): boolean {
   if (usefulDeficit <= 0 || producers.length === 0) return false;

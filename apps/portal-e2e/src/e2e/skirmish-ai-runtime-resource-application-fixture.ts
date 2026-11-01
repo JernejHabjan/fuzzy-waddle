@@ -1,4 +1,4 @@
-import type { AiRuntimeProductionCaptureV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 import { resourceAdmissionFixture } from "./skirmish-ai-runtime-resource-admission-fixture";
 import { resourceServiceFixture } from "./skirmish-ai-runtime-resource-service-fixture";
 import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
@@ -50,6 +50,6 @@ export function resourceApplicationFixture() {
       afterSequence: sequence,
       resourceCoverage: coverage(tick, sequence)
     }))
-  } satisfies AiRuntimeProductionCaptureV1;
+  } satisfies AiRuntimeProductionSnapshot;
   return { ...f, credit, capture, declaration, coverage };
 }

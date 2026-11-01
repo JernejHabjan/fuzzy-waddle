@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
 import { routeOrderFixture } from "./skirmish-ai-runtime-route-order-fixture";
 import { runtimeRouteServiceOutcomeActors, validateRuntimeRouteServiceLifecycle } from "./skirmish-ai-runtime-route-service-outcomes";
@@ -31,7 +31,7 @@ test("unstamped native rally orders retain exact output/admission identity witho
 
 test("native multi-pawn application preserves exact full command context and separate per-actor outcomes", () => {
   const f = routeOrderFixture(), actors = [...f.command.actorIds, "another_actor"];
-  const facts = f.capture.facts.flatMap((fact): AiRuntimeProductionFactV1[] => {
+  const facts = f.capture.facts.flatMap((fact): AiRuntimeProductionFact[] => {
     if (fact.kind === "spatial_authority" && fact.spatial.kind === "route_order" && fact.spatial.order.commandContext) {
       return [{ ...fact, spatial: { ...fact.spatial, order: { ...fact.spatial.order,
         commandContext: { ...fact.spatial.order.commandContext, actorIds: actors } } } }];
@@ -85,7 +85,7 @@ test("a future dispatch receipt cannot fill an already-resolved query's service 
 
 test("retargeted current orders retain original admission/demand without claiming that the new query serves that demand", () => {
   const f = routeOrderFixture();
-  const facts = f.capture.facts.map((fact): AiRuntimeProductionFactV1 =>
+  const facts = f.capture.facts.map((fact): AiRuntimeProductionFact =>
     fact.kind === "spatial_authority" && fact.spatial.kind === "producer_path" ? { ...fact, spatial: { ...fact.spatial,
       currentOrder: { ...f.currentOrder, targetTile: { x: 99, y: 99, z: 0 } } } } : fact);
   const result = normalizeRuntimeProductionCausality({ ...f.capture, facts });
@@ -98,7 +98,7 @@ test("retargeted current orders retain original admission/demand without claimin
 for (const missing of ["admission", "decision", "demand", "current", "legacy", "receipt", "delivery"] as const) {
   test(`missing ${missing} cannot be repaired from purchase lineage or a later world snapshot`, () => {
     const f = routeOrderFixture();
-    const facts = f.capture.facts.flatMap((fact): AiRuntimeProductionFactV1[] => {
+    const facts = f.capture.facts.flatMap((fact): AiRuntimeProductionFact[] => {
       if (missing === "admission" && fact.kind === "spatial_authority" && fact.spatial.kind === "route_order") return [];
       if (missing === "delivery" && fact.kind === "command_delivered" && fact.command.execution?.commandId === "service") return [];
       if (missing === "receipt" && fact.kind === "intent_dispatch" && fact.event.kind === "finished" &&
@@ -131,7 +131,7 @@ for (const missing of ["admission", "decision", "demand", "current", "legacy", "
 for (const fence of ["restore", "reuse", "replacement_order", "mutated_target", "awaited"] as const) {
   test(`${fence} keeps sampled order continuity distinct from useful service`, () => {
     const f = routeOrderFixture();
-    const facts = f.capture.facts.flatMap((fact): AiRuntimeProductionFactV1[] => {
+    const facts = f.capture.facts.flatMap((fact): AiRuntimeProductionFact[] => {
       if (fact.kind !== "spatial_authority" || fact.spatial.kind !== "producer_path" || fact.spatial.phase !== "resolved") return [fact];
       const spatial = { ...fact.spatial };
       if (fence === "replacement_order") spatial.currentOrder = { ...f.currentOrder, orderId: 2, admissionObserved: false };
@@ -159,7 +159,7 @@ for (const defect of ["stamp", "actors", "payload", "selected_intent", "selected
   "orphan_terminal_stamp", "duplicate_rally_output"] as const) {
   test(`contradictory ${defect} suppresses routes and other normalized authority groups`, () => {
     const f = routeOrderFixture(defect === "duplicate_rally_output");
-    let facts = f.capture.facts.flatMap((fact): AiRuntimeProductionFactV1[] => {
+    let facts = f.capture.facts.flatMap((fact): AiRuntimeProductionFact[] => {
       if (fact.kind === "spatial_authority" && fact.spatial.kind === "route_order") {
         const order = { ...fact.spatial.order }, context = order.commandContext;
         if (context && defect === "stamp") order.commandContext = { ...context, execution: { ...context.execution, sequence: 42 } };

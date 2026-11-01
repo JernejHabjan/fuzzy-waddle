@@ -1,13 +1,13 @@
 import { isDeepStrictEqual } from "node:util";
 import { ResourceType, type GameCommand } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionCaptureV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { calculateRuntimeQueueLiabilities } from "./skirmish-ai-runtime-queue-liabilities";
 import { sameRuntimeQueueVector } from "./skirmish-ai-runtime-scoped-queue-payments";
 
 /** Checks actual attempt/payment/progress order. This narrow diagnostic does not supply full production evidence. */
 export function validateRuntimeProductionProgress(
-  capture: AiRuntimeProductionCaptureV1,
+  capture: AiRuntimeProductionSnapshot,
   commands: readonly GameCommand[]
 ) {
   const failures: string[] = [];
@@ -131,7 +131,7 @@ export function validateRuntimeProductionProgress(
       failures.push("production_ai_progress_after_head_invalid");
     }
     const resources = capture.facts.filter(
-      (fact): fact is Extract<AiRuntimeProductionFactV1, { kind: "queue_resource" }> =>
+      (fact): fact is Extract<AiRuntimeProductionFact, { kind: "queue_resource" }> =>
         fact.kind === "queue_resource" && fact.sequence > start.sequence && fact.sequence < end.sequence
     );
     const charged = item.payment === "per_successful_tick" && after.phase === "advanced";

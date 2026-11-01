@@ -1,10 +1,10 @@
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
-import type { AiBrainStateV1, AiSquadStateV1, AiSupportStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
-import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
+import type { AiBrainState, AiSquadState, AiSupportState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiIntent } from "../contracts/ai-intent";
+import type { AiObservation } from "../contracts/ai-observation";
+import type { AiProfileConfig } from "../contracts/ai-profile-config";
+import type { AiManagerProposal, AiProposalManager } from "./ai-manager-proposal";
 import { knownPosition, distance, movementDomains } from "./ai-tactics-geometry";
 import { isEconomicActor } from "./ai-tactics-combat";
 import { splitDomainSquads, boundedTacticalIntents } from "./ai-tactics-orders";
@@ -15,15 +15,15 @@ import { proposeAiTacticalOrders } from "./ai-tactics-mission-orders";
 
 import type { AiTacticsContext } from "./ai-tactics-context";
 /** Owns deterministic local combat preservation, focus reservations, support windows and tactical recovery. */
-export class AiTacticsManager implements AiProposalManagerV1 {
+export class AiTacticsManager implements AiProposalManager {
   readonly managerId = "stagez13.tactics";
 
   constructor(
-    private readonly profile: AiProfileConfigV1,
-    private readonly getCatalog?: () => AiCapabilityCatalogV1 | undefined
+    private readonly profile: AiProfileConfig,
+    private readonly getCatalog?: () => AiCapabilityCatalog | undefined
   ) {}
 
-  propose(observation: AiObservationV1, state: AiBrainStateV1): AiManagerProposalV1 {
+  propose(observation: AiObservation, state: AiBrainState): AiManagerProposal {
     const catalog = this.getCatalog?.();
     const actorById = new Map(observation.actors.map((actor) => [actor.actorId, actor]));
     const transportOwned = new Set(
@@ -64,7 +64,7 @@ export class AiTacticsManager implements AiProposalManagerV1 {
       if (destination) destination.actorIds = [...destination.actorIds, actor.actorId];
     }
     const claimedActors = new Set<ActorId>();
-    const priority: Record<AiSquadStateV1["role"], number> = {
+    const priority: Record<AiSquadState["role"], number> = {
       defense: 0,
       escort: 1,
       attack: 2,
@@ -75,8 +75,8 @@ export class AiTacticsManager implements AiProposalManagerV1 {
     const squads = splitDomainSquads(augmentedSquads, actorById).sort(
       (left, right) => priority[left.role] - priority[right.role] || left.squadId.localeCompare(right.squadId)
     );
-    const updates: AiSquadStateV1[] = [];
-    const intents: AiIntentV1[] = [];
+    const updates: AiSquadState[] = [];
+    const intents: AiIntent[] = [];
     const terminalEffectIds = new Set(
       state.pendingOutcomes
         .filter(
@@ -88,9 +88,9 @@ export class AiTacticsManager implements AiProposalManagerV1 {
         )
         .map((outcome) => outcome.identity.effectId)
     );
-    const support: AiSupportStateV1[] = state.support
+    const support: AiSupportState[] = state.support
       .filter((plan) => plan.expiresAt === null || plan.expiresAt.dueTick > observation.tick)
-      .filter((plan) => plan.effectId == null || !terminalEffectIds.has(plan.effectId as AiIntentV1["effectId"]))
+      .filter((plan) => plan.effectId == null || !terminalEffectIds.has(plan.effectId as AiIntent["effectId"]))
       .slice(0, 32);
     const existingSupportIds = new Set(support.map((plan) => plan.planId));
 
@@ -122,7 +122,7 @@ export class AiTacticsManager implements AiProposalManagerV1 {
       .filter(
         (plan) =>
           existingSupportIds.has(plan.planId) ||
-          (plan.effectId != null && issuedEffectIds.has(plan.effectId as AiIntentV1["effectId"]))
+          (plan.effectId != null && issuedEffectIds.has(plan.effectId as AiIntent["effectId"]))
       )
       .slice(-32);
     const issuedActorsByPlan = new Map<string, ActorId[]>();
@@ -163,7 +163,7 @@ export class AiTacticsManager implements AiProposalManagerV1 {
   }
 }
 
-export { estimateAiEngagementV1 } from "./ai-tactics-combat";
+export { estimateAiEngagement } from "./ai-tactics-combat";
 export {
   AI_TACTICS_ATTACK_RATIO_PERMILLE,
   AI_TACTICS_RETREAT_RATIO_PERMILLE,

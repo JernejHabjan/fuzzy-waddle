@@ -28,7 +28,7 @@ try {
   if (execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim() !== args.candidate ||
       execFileSync("git", ["status", "--porcelain", "--untracked-files=normal"], { cwd: root, encoding: "utf8" }).trim())
     throw new Error("calibration_requires_clean_pinned_candidate_source");
-  const specificationText = readFileSync(join(root, "tools/ai/fixtures/difficulty-calibration-v1.json"), "utf8");
+  const specificationText = readFileSync(join(root, "tools/ai/fixtures/difficulty-calibration.json"), "utf8");
   const specification = JSON.parse(specificationText), fixtureText = readFileSync(resolve(args.fixture), "utf8");
   const fixture = JSON.parse(fixtureText), manifestText = readFileSync(resolve(args.manifest), "utf8");
   if (specification.baseline.sourceRevision !== args.baseline || !validNativeScenarioFixture(fixture, "D-06"))

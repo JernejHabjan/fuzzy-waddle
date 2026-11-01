@@ -6,14 +6,14 @@ import { getActorComponent } from "../../../data/actor-component";
 import type { QueueResourceEmissionEvent } from "../../../data/queue-resource-emission-event";
 import { sampleQueueResourceVector } from "../../../data/queue-resource-samples";
 import { OwnerComponent } from "../../../entity/components/owner-component";
-import type { AiRuntimeQueueResourceV1 } from "./ai-runtime-queue-resource-v1";
+import type { AiRuntimeQueueResource } from "./ai-runtime-queue-resource";
 
 /** Project live handles immediately, including before first insertion/after removal; never search by equal amounts. */
 export function projectAiRuntimeQueueResource(
   event: QueueResourceEmissionEvent,
   identify: (actorId: string, item: UnifiedQueueItem) => string,
   tick: number
-): AiRuntimeQueueResourceV1 {
+): AiRuntimeQueueResource {
   const { scope, ...emission } = event;
   const { item, producer, playerNumber } = scope;
   const actorId = getActorComponent(producer, IdComponent)?.id ?? null;
@@ -71,5 +71,5 @@ export function projectAiRuntimeQueueResource(
     payment: cost ? cost.costType === PaymentType.PayOverTime ? "per_successful_tick" : "immediate"
       : research ? "immediate" : "unknown",
     originatingCommandContext: context, cancellationCommand: cancellation, emission, gaps
-  } satisfies AiRuntimeQueueResourceV1);
+  } satisfies AiRuntimeQueueResource);
 }

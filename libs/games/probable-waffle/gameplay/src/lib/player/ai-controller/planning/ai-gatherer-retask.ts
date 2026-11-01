@@ -1,8 +1,8 @@
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import type { AiObservedActor } from "../contracts/ai-observation";
 
 /** Only an unloaded gatherer with no conflicting pending order can be safely reassigned. */
-export function isSafeAiGathererRetask(actor: AiObservedActorV1): boolean {
+export function isSafeAiGathererRetask(actor: AiObservedActor): boolean {
   if (
     actor.activeOrder?.status !== "known" ||
     actor.activeOrder.value?.orderType !== OrderType.Gather ||

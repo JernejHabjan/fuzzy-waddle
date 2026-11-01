@@ -9,7 +9,7 @@ import { OwnerComponent } from "../../../entity/components/owner-component";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
-import type { AiRuntimeProductionFactV1 } from "./ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "./ai-runtime-production-fact";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { ProbableWaffleSceneEventName } from "../../../world/services/recovery/probable-waffle-scene-events";
@@ -23,7 +23,7 @@ export class AiRuntimeProductionWorldCapture {
     private readonly callbacks: {
       readonly resources: (player: number) => Record<ResourceType, number>;
       readonly boundary: (player: number) => { sequence: number; tick: number; playerNumber: number };
-      readonly append: (fact: AiRuntimeProductionFactV1) => void;
+      readonly append: (fact: AiRuntimeProductionFact) => void;
       readonly watchQueue: (actor: Phaser.GameObjects.GameObject) => void;
       readonly unwatchActor: (actor: Phaser.GameObjects.GameObject) => void;
     },

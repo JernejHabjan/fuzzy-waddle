@@ -28,7 +28,7 @@ describe("MapBrowserComponent", () => {
   let fixture: ComponentFixture<MapBrowserComponent>;
 
   beforeEach(async () => {
-    window.sessionStorage.removeItem("fuzzy-waddle:ai-runtime-browser-test-v1");
+    window.sessionStorage.removeItem("fuzzy-waddle:ai-runtime-browser-test");
     await TestBed.configureTestingModule({
       imports: [MapBrowserComponent, CommonModule],
       providers: [
@@ -53,10 +53,10 @@ describe("MapBrowserComponent", () => {
   });
 
   it("offers the frozen AI map only to the explicit local runtime-test lobby", () => {
-    window.sessionStorage.setItem("fuzzy-waddle:ai-runtime-browser-test-v1", "test");
+    window.sessionStorage.setItem("fuzzy-waddle:ai-runtime-browser-test", "test");
     component.ngOnInit();
     expect(component.maps.some((map) => map.id === ProbableWaffleMapEnum.AiOpenEconomy)).toBe(!environment.production);
     expect(component.maps.some((map) => map.id === ProbableWaffleMapEnum.AiMultiplayer)).toBe(!environment.production);
-    window.sessionStorage.removeItem("fuzzy-waddle:ai-runtime-browser-test-v1");
+    window.sessionStorage.removeItem("fuzzy-waddle:ai-runtime-browser-test");
   });
 });

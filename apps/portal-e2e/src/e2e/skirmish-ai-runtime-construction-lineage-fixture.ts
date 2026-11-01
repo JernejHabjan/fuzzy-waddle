@@ -1,6 +1,6 @@
 import { ConstructionStateEnum, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import type { AiRuntimeConstructionV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-construction-v1";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
+import type { AiRuntimeConstruction } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-construction";
 import { constructionDecisionFixture } from "./skirmish-ai-runtime-construction-decision-fixture";
 
 /** Synthetic construction/refund boundaries shared by lineage controls; no real placement or payment evidence. */
@@ -33,8 +33,8 @@ export function constructionLineageFixture() {
     callbackCount: 1,
     nestedEmission: false,
     balanceMatches: true
-  } satisfies AiRuntimeConstructionV1;
-  const boundary = (construction: AiRuntimeConstructionV1, sequence = 10): AiRuntimeProductionFactV1 => ({
+  } satisfies AiRuntimeConstruction;
+  const boundary = (construction: AiRuntimeConstruction, sequence = 10): AiRuntimeProductionFact => ({
     kind: "construction_authority",
     tick: 20,
     playerNumber: 1,

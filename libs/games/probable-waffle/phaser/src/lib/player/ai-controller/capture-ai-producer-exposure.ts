@@ -1,5 +1,5 @@
 import type Phaser from "phaser";
-import type { AiObservedActorV1, AiObservationV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiObservedActor, AiObservation } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { getActorComponent } from "../../data/actor-component";
 import { getGameObjectCurrentTile, getGameObjectLogicalTransform } from "../../data/game-object-helper";
@@ -17,16 +17,16 @@ import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { AiObservationVisibilityPolicy } from "./observation/ai-observation-visibility-policy";
 import { millisecondsToSimulationTicks } from "./observation/ai-observation-values";
-import type { AiDecisionProducerExposureV1 } from "./ai-decision-producer-exposure-v1";
+import type { AiDecisionProducerExposure } from "./ai-decision-producer-exposure";
 
 /** Called only by listener-gated decision capture; known current contacts are bound before target-specific reads. */
 export function captureAiProducerExposure(
   scene: Phaser.Scene,
-  observation: AiObservationV1,
+  observation: AiObservation,
   currentTick: number | null,
   restoring: boolean
-): AiDecisionProducerExposureV1 {
-  const pairs: AiDecisionProducerExposureV1["pairs"][number][] = [];
+): AiDecisionProducerExposure {
+  const pairs: AiDecisionProducerExposure["pairs"][number][] = [];
   const gaps = new Set<string>();
   const result = () => ({ tick: observation.tick, generation: observation.generation, pairs, gaps: [...gaps].sort() });
   if (restoring || currentTick !== observation.tick) {
@@ -145,7 +145,7 @@ export function captureAiProducerExposure(
 function matchesConsumedActor(
   scene: Phaser.Scene,
   live: Phaser.GameObjects.GameObject,
-  observed: AiObservedActorV1
+  observed: AiObservedActor
 ): boolean {
   if (
     live.scene !== scene ||
@@ -168,7 +168,7 @@ function matchesConsumedActor(
 /** Weapon arrays have set semantics at the consumed canonical boundary; the chosen profile retains its exact values. */
 function matchesWeapon(
   weapon: ReturnType<AttackComponent["getAttacks"]>[number],
-  value: NonNullable<Extract<AiObservedActorV1["combatProfile"], { status: "known" }>>["value"]["attacks"][number]
+  value: NonNullable<Extract<AiObservedActor["combatProfile"], { status: "known" }>>["value"]["attacks"][number]
 ): boolean {
   return (
     weapon.damage === value.damage &&

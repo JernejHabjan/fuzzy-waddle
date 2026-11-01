@@ -1,6 +1,6 @@
 import type Phaser from "phaser";
 import type { UnifiedQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
-import type { AiRuntimeProductionFactV1 } from "./ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "./ai-runtime-production-fact";
 import type { AiRuntimeUnspentClaims } from "./ai-runtime-unspent-claims";
 import { getActorComponent } from "../../../data/actor-component";
 import { isSnapshotApplyInProgress } from "../../../data/scene-data";
@@ -29,7 +29,7 @@ export class AiRuntimeProductionQueueCapture {
     private readonly identify: (actorId: string, item: UnifiedQueueItem) => string,
     private readonly unspentClaims: AiRuntimeUnspentClaims,
     private readonly boundary: (playerNumber: number) => { sequence: number; tick: number; playerNumber: number },
-    private readonly append: (fact: AiRuntimeProductionFactV1, item?: UnifiedQueueItem) => void
+    private readonly append: (fact: AiRuntimeProductionFact, item?: UnifiedQueueItem) => void
   ) {
     scene.events.on(QUEUE_MUTATION_EVENT, this.observeMutation, this);
     scene.events.on(QUEUE_COMPLETION_AUTHORITY_EVENT, this.observeCompletion, this);

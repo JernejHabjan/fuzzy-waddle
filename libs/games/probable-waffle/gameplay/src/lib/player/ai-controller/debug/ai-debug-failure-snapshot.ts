@@ -1,10 +1,10 @@
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import type { AiDebugSnapshotV1, AiDebugSectionStateV1 } from "../contracts/ai-debug-snapshot-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiObservation } from "../contracts/ai-observation";
+import type { AiDebugSnapshot, AiDebugSectionState } from "../contracts/ai-debug-snapshot";
 
 /** Honest empty diagnostic projection. Never retries the failing projector or re-runs a planner to fill missing panels. */
-export function aiDebugFailureSnapshot(observation: AiObservationV1, state: AiBrainStateV1): AiDebugSnapshotV1 {
-  const missing = { status: "not_ready", ownerSubsystem: "debug", reason: "debug_projection_fault" } satisfies AiDebugSectionStateV1;
+export function aiDebugFailureSnapshot(observation: AiObservation, state: AiBrainState): AiDebugSnapshot {
+  const missing = { status: "not_ready", ownerSubsystem: "debug", reason: "debug_projection_fault" } satisfies AiDebugSectionState;
   return {
     schemaVersion: 1, playerNumber: state.playerNumber, faction: state.faction, profileVersion: state.profileVersion,
     profileDifficulty: state.profileDifficulty ?? "unknown", archetypeId: state.opening.archetypeId,

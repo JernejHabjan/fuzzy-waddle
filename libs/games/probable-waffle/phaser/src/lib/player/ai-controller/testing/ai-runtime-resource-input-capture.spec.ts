@@ -4,8 +4,8 @@ import { ProbableWafflePlayer, ProbableWafflePlayerState, ProbableWafflePlayerCo
 import { beginAiResourceDecision, beginAiResourceInputRead, fenceAiResourceNeed } from "../observation/ai-resource-input-observation";
 import { readAiResourceInputRead } from
   "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-resource-input-observation";
-import type { AiObservationV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
-import type { AiRuntimeProductionFactV1 } from "./ai-runtime-production-fact-v1";
+import type { AiObservation } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiRuntimeProductionFact } from "./ai-runtime-production-fact";
 import { AiRuntimeResourceCoverageCapture } from "./ai-runtime-resource-coverage-capture";
 import { AiRuntimeResourceInputCapture } from "./ai-runtime-resource-input-capture";
 import { AiRuntimeUnspentClaims } from "./ai-runtime-unspent-claims";
@@ -15,7 +15,7 @@ describe("exact consumed resource input boundary", () => {
   it("snapshots claims once at read begin and never substitutes claims selected before read finish", () => {
     const player = new ProbableWafflePlayer(new ProbableWafflePlayerState(), new ProbableWafflePlayerController());
     Object.defineProperty(player, "playerNumber", { value: 2 });
-    const scene = { players: [player] } as ProbableWaffleScene, facts: AiRuntimeProductionFactV1[] = [];
+    const scene = { players: [player] } as ProbableWaffleScene, facts: AiRuntimeProductionFact[] = [];
     const coverage = new AiRuntimeResourceCoverageCapture(0, () => ({ tick: 100, captureSequence: facts.length }));
     const claims = new AiRuntimeUnspentClaims(), { decision } = unspentClaimFixture();
     claims.observeDecision({ ...decision, acceptedIntents: [], decisions: [], reservations: [] });
@@ -25,7 +25,7 @@ describe("exact consumed resource input boundary", () => {
       (fact) => facts.push({ ...fact, sequence: facts.length + 1 }), snapshot);
     const finish = beginAiResourceInputRead(scene, player);
     claims.observeDecision(decision);
-    const observation = { generation: 7, resources: [] } as unknown as AiObservationV1;
+    const observation = { generation: 7, resources: [] } as unknown as AiObservation;
     finish?.(observation);
     expect(snapshot).toHaveBeenCalledTimes(1);
     expect(facts[0]).toMatchObject({ kind: "resource_input_read", unspentClaimsAtRead: { resources: { food: 0 }, gaps: [] } });
@@ -50,12 +50,12 @@ describe("exact consumed resource input boundary", () => {
     const player = new ProbableWafflePlayer(new ProbableWafflePlayerState(), new ProbableWafflePlayerController());
     Object.defineProperty(player, "playerNumber", { value: 1 });
     const scene = { players: [player] } as ProbableWaffleScene;
-    const facts: AiRuntimeProductionFactV1[] = [];
+    const facts: AiRuntimeProductionFact[] = [];
     const coverage = new AiRuntimeResourceCoverageCapture(0, () => ({ tick: 0, captureSequence: facts.length }));
     const capture = new AiRuntimeResourceInputCapture(scene, coverage, () => undefined, () => facts.length,
       (playerNumber) => ({ tick: 0, sequence: 0, playerNumber }),
       (fact) => facts.push({ ...fact, sequence: facts.length + 1 }));
-    const observation = { generation: 7, resources: [] } as unknown as AiObservationV1;
+    const observation = { generation: 7, resources: [] } as unknown as AiObservation;
     beginAiResourceInputRead(scene, player)?.(observation);
     expect(readAiResourceInputRead(observation)).toMatchObject({ sequence: 1, generation: 7, playerNumber: 1 });
     expect(readAiResourceInputRead(structuredClone(observation))).toBeUndefined();

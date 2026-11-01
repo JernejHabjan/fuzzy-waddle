@@ -1,6 +1,6 @@
 import type { AiPlanId } from "../contracts/ai-core-types";
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
+import type { AiIntent } from "../contracts/ai-intent";
 import { canTarget } from "./ai-tactics-combat";
 import { distance } from "./ai-tactics-geometry";
 import { intentBase } from "./ai-tactics-orders";
@@ -190,7 +190,7 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
       const single = { ...updated, actorIds: [attacker.actorId] };
       intents.push({
         ...intentBase(observation, single, `focus:${visibleTarget.actorId}:${attacker.actorId}`, 820),
-        ...(reservation.effectId ? { effectId: reservation.effectId as AiIntentV1["effectId"] } : {}),
+        ...(reservation.effectId ? { effectId: reservation.effectId as AiIntent["effectId"] } : {}),
         preconditions: [
           { kind: "plan_active", planId: `plan:${updated.squadId}` as AiPlanId },
           { kind: "target_visible", actorId: reservedTarget.actorId }

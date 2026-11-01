@@ -30,8 +30,8 @@ test("a disconnected peer rejoins the same match and converges with the live AI 
     await resumed.goto(sameMatchUrl);
     await expect(resumed).toHaveURL(/\/aota\/game/);
     await resumed.waitForFunction(() => !!(
-      window as unknown as { __fuzzyWaddleAiMultiplayerBrowserTestV1?: unknown }
-    ).__fuzzyWaddleAiMultiplayerBrowserTestV1);
+      window as unknown as { __fuzzyWaddleAiMultiplayerBrowserTest?: unknown }
+    ).__fuzzyWaddleAiMultiplayerBrowserTest);
 
     await expect.poll(async () => {
       const [host, peer] = await Promise.all([

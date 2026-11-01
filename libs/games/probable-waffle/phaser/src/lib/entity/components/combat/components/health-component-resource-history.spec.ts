@@ -12,7 +12,7 @@ import { applyCampaignProgressionModifiers } from "../../../../campaign/campaign
 import { subscribeSceneResourceLoss } from "../../../../data/scene-resource-observation";
 import { AiRuntimeRecipientResourceCapture } from "../../../../player/ai-controller/testing/ai-runtime-recipient-resource-capture";
 import { AiRuntimeResourceCoverageCapture } from "../../../../player/ai-controller/testing/ai-runtime-resource-coverage-capture";
-import type { AiRuntimeProductionFactV1 } from "../../../../player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "../../../../player/ai-controller/testing/ai-runtime-production-fact";
 import type { ProbableWaffleScene } from "../../../../core/probable-waffle.scene";
 
 jest.mock("./health-presentation", () => ({
@@ -81,7 +81,7 @@ function fixture() {
     actor.emit(Phaser.GameObjects.Events.DESTROY);
   });
   const health = new HealthComponent(actor, { maxHealth: 100, maxArmour: 10 });
-  const facts: AiRuntimeProductionFactV1[] = [];
+  const facts: AiRuntimeProductionFact[] = [];
   const coverage = new AiRuntimeResourceCoverageCapture(0, () => ({ tick: 0, captureSequence: facts.length }));
   const journal = new AiRuntimeRecipientResourceCapture(
     scene,

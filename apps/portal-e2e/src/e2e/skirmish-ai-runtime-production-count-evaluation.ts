@@ -1,8 +1,8 @@
-import type { RuntimeAssertionV1 } from "./skirmish-ai-runtime-assertion";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeAssertion } from "./skirmish-ai-runtime-assertion";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 
 /** Supplementary aggregate limits; PRO-03/06/07 still require their separate causal evidence contracts. */
-export function evaluateRuntimeProductionCounts(assertion: RuntimeAssertionV1, variant: RuntimeVariantResultV1): string[] {
+export function evaluateRuntimeProductionCounts(assertion: RuntimeAssertion, variant: RuntimeVariantResult): string[] {
   const failures: string[] = [];
   const maximumProducerCount = Math.max(
     ...variant.checkpoints.map((checkpoint) => checkpoint.militaryProducerNames.length)

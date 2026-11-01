@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { mkdirSync, writeFileSync } from "node:fs";
-import { dirname, relative, resolve } from "node:path";
+import { dirname, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { compactOutput, validateCommandResult } from "./command-contracts.mjs";
 import { findIssuePlan, inspectRepository } from "./repository-inspection.mjs";
@@ -176,10 +176,10 @@ export function runAgentCommand(
 
 export function writePacket(root, packet, output) {
   const path = output ? resolve(root, output) : null;
-  if (!path || !path.startsWith(`${resolve(root)}/`)) throw new Error("invalid_packet_output");
+  if (!path || !path.startsWith(`${resolve(root)}${sep}`)) throw new Error("invalid_packet_output");
   mkdirSync(dirname(path), { recursive: true });
   writeFileSync(path, `${JSON.stringify(packet, null, 2)}\n`);
-  return relative(root, path);
+  return relative(root, path).split(sep).join("/");
 }
 
 function standardSelection(inspection, plan, options) {

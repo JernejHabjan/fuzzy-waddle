@@ -221,7 +221,7 @@ orders can target neutral or same-owner sources. Enemy sources remain invalid.
 
 ## Native production authority
 
-Full PRO-03/06/07 runtime evaluation consumes `productionEvidenceV2`. Legacy V1 captures and pure oracle controls
+Full PRO-03/06/07 runtime evaluation consumes `productionEvidenceV2`. Legacy current captures and pure oracle controls
 remain diagnostic regressions; they cannot satisfy the runtime gate. V2 separates paused actual setup, exact consumed
 and selected decisions, operation-time definitions, native lifecycle callbacks and closed physical intervals.
 
@@ -477,7 +477,7 @@ observation -> demand/mission -> intent/claim -> command application -> outcome 
 
 ## Scenario authority
 
-`tools/ai/fixtures/skirmish-v1.json` owns the required IDs, driver requirement, fixture registration and baseline compatibility. Typed fixture builders and assertions own setup and expected behavior. The coverage gate must fail when a supported required row is missing rather than reducing the denominator.
+`tools/ai/fixtures/skirmish.json` owns the required IDs, driver requirement, fixture registration and baseline compatibility. Typed fixture builders and assertions own setup and expected behavior. The coverage gate must fail when a supported required row is missing rather than reducing the denominator.
 
 The [generated scenario catalog](scenario-catalog.md) joins every manifest ID to its requirement, registered pure fixture,
 ID-referencing specs, and real-game recipe/map/checkpoint data. It reports wiring, not passing evidence. Edit the
@@ -630,7 +630,7 @@ This is registration, not difficulty calibration, quota saturation or D-03 hidde
 
 Difficulty calibration was cancelled on 2026-11-01 (#817); D-06 is not a current delivery requirement.
 Retained experimental tooling uses tools/ai/run-difficulty-calibration.mjs through dedicated matrix dispatch when explicitly requested.
-The six native fixture descriptors expand difficulty-calibration-v1.json; they are not six physical matches.
+The six native fixture descriptors expand difficulty-calibration.json; they are not six physical matches.
 The frozen workload covers both maps/factions, five existing fixed Normal openings, both sides and three policies,
 20 initial seed clusters with up to80 reserved extension seeds,5 isolated holdout seeds and3 full72000-tick soaks.
 Whole native frames advance both actual controllers; authoritative results, legal-start parity, actual selected

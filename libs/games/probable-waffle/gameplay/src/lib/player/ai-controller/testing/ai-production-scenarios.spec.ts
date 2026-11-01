@@ -2,13 +2,13 @@ import { FactionType, ObjectNames, ResourceType } from "@fuzzy-waddle/probable-w
 import { digestCanonicalAiValue } from "../brain/canonical-ai-serialization";
 
 import { aiDeadline } from "../contracts/ai-core-types";
-import type { AiReservationV1 } from "../contracts/ai-dependency-contracts";
+import type { AiReservation } from "../contracts/ai-dependency-contracts";
 import { AiMacroManager } from "../planning/ai-macro-manager";
 
 import { createAiProductionPolicyFixture } from "./ai-production-policy-fixture";
 import { createAiTestObservation } from "./ai-test-fixtures";
 import {
-  type AiProductionPureScenarioV1,
+  type AiProductionPureScenario,
   catalog,
   completedOpeningState,
   workers,
@@ -21,7 +21,7 @@ import {
   queuedProducer
 } from "./ai-production-scenario-test-fixtures";
 
-const scenarios: readonly AiProductionPureScenarioV1[] = [
+const scenarios: readonly AiProductionPureScenario[] = [
   {
     scenarioId: "PRO-01",
     purpose: "A dated twelve-unit force prebuilds exactly one additional producer when one cannot provide throughput.",
@@ -138,7 +138,7 @@ describe("typed deterministic production scenarios", () => {
               state: { kind: "provisional", expiresAt: aiDeadline(400) },
               prerequisites: [],
               createdTick: 200
-            }) satisfies AiReservationV1
+            }) satisfies AiReservation
         )
       };
       return {

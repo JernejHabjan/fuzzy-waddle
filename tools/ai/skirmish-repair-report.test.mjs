@@ -16,7 +16,7 @@ function shard(id, fixture, digest, failure = null) {
       runId: "run-42",
       candidate: "a".repeat(40),
       dirtySourceDigest: null,
-      manifestVersion: "skirmish-v1",
+      manifestVersion: "skirmish",
       fixtureDigest: `aggregate-${id}`,
       fixtureIdentityDigests: [{ reference: fixture, digest }],
       scenarioSources: [{ scenarioId: id, reference: fixture, group: "economy", map: "frozen-open" }],

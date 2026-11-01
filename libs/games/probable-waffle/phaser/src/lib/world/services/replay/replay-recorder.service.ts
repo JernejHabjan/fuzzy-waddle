@@ -21,7 +21,7 @@ import { ProbableWaffleSceneEventName } from "../recovery/probable-waffle-scene-
 import { CampaignMissionDirector } from "../../../campaign/campaign-mission-director";
 
 const REPLAY_FORMAT_VERSION = "2";
-const REPLAY_COMPATIBILITY_VERSION = "lockstep-v1";
+const REPLAY_COMPATIBILITY_VERSION = "lockstep";
 const CAMPAIGN_REPLAY_COMPATIBILITY_VERSION = "campaign-lockstep-v2";
 
 /**

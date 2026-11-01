@@ -2,8 +2,8 @@ import type Phaser from "phaser";
 import type { OrderData } from "../../../ai/OrderData";
 import type { PawnAiBlackboard } from "../../../prefabs/ai-agents/pawn-ai-blackboard";
 import { PawnResourceServiceObservation } from "../../../prefabs/ai-agents/pawn-resource-service-observation";
-import type { AiRuntimeRouteOrderV1 } from "./ai-runtime-route-order-v1";
-import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spatial-v1";
+import type { AiRuntimeRouteOrder } from "./ai-runtime-route-order";
+import type { AiRuntimeProductionSpatial } from "./ai-runtime-production-spatial";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
 import { AiRuntimeResourceServiceCapture } from "./ai-runtime-resource-service-capture";
 import { getActorComponent } from "../../../data/actor-component";
@@ -15,14 +15,14 @@ export class AiRuntimeServiceAttemptCapture {
   private nextId = 1;
   private readonly resources: AiRuntimeResourceServiceCapture;
   private readonly identities = new WeakMap<object,
-    { id: number; order: AiRuntimeRouteOrderV1 | undefined; restoreToken: object | undefined;
+    { id: number; order: AiRuntimeRouteOrder | undefined; restoreToken: object | undefined;
       token: () => object | undefined }>();
 
   constructor(private readonly scene: Phaser.Scene,
-    private readonly boundary: () => Pick<AiRuntimeProductionSpatialV1,
+    private readonly boundary: () => Pick<AiRuntimeProductionSpatial,
       "clockTick" | "snapshotRestoreInProgress" | "sceneActive">,
-    private readonly snapshot: (actor: Phaser.GameObjects.GameObject, order: OrderData) => AiRuntimeRouteOrderV1 | undefined,
-    private readonly append: (owner: number, value: AiRuntimeProductionSpatialV1) => void,
+    private readonly snapshot: (actor: Phaser.GameObjects.GameObject, order: OrderData) => AiRuntimeRouteOrder | undefined,
+    private readonly append: (owner: number, value: AiRuntimeProductionSpatial) => void,
     private readonly coverage?: AiRuntimeResourceCoverageCapture) {
     this.resources = new AiRuntimeResourceServiceCapture(scene, boundary, (execution) => {
       const identity = execution ? this.identities.get(execution) : undefined;
@@ -52,7 +52,7 @@ export class AiRuntimeServiceAttemptCapture {
           source, target: captureAiRuntimeCreatedActor(event.target), sourceInCaptureScene: actor.scene === this.scene,
           targetInCaptureScene: event.target.scene === this.scene, order: identity.order,
           lifetimeValid: !!identity.restoreToken && token() === identity.restoreToken,
-          gaps: identity.order ? [] : ["production_service_attempt_order_missing"] } satisfies AiRuntimeProductionSpatialV1));
+          gaps: identity.order ? [] : ["production_service_attempt_order_missing"] } satisfies AiRuntimeProductionSpatial));
       } catch { this.coverage?.lose("service_attempt_projection_failed"); }
     }, this.coverage?.lose);
     return () => { releaseAttempts(); releaseResources(); };

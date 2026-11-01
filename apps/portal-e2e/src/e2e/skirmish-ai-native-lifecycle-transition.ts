@@ -1,6 +1,6 @@
 import type { Page } from "@playwright/test";
-import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
-import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
+import type { RuntimeFixture } from "./skirmish-ai-runtime-fixture";
+import type { RuntimeVariant } from "./skirmish-ai-runtime-variant";
 import { leaveNativeMatchInSameRealm } from "./skirmish-ai-native-game-menu";
 import { prepareRuntimeVariant } from "./skirmish-ai-runtime-variant-setup";
 import { readNativeSceneOwnership } from "./skirmish-ai-native-scene-ownership";
@@ -11,16 +11,16 @@ import type { NativeLifecycleProof } from "./skirmish-ai-native-lifecycle-proof"
 
 /** End through the game UI and start the next native scene in the original JavaScript realm. */
 export async function transitionNativeLifecycle(
-  page: Page, fixture: RuntimeFixtureV1, variant: RuntimeVariantV1, branch: string,
+  page: Page, fixture: RuntimeFixture, variant: RuntimeVariant, branch: string,
   originalPlayer: number, sourceRevision: string, fixtureDigest: string
 ): Promise<NativeLifecycleProof> {
   const original = await readNativeSceneOwnership(page, originalPlayer);
   await leaveNativeMatchInSameRealm(page);
-  const nextVariant: RuntimeVariantV1 = { ...variant, id: `${variant.id}-next`, seed: original.seed + 1,
+  const nextVariant: RuntimeVariant = { ...variant, id: `${variant.id}-next`, seed: original.seed + 1,
     mapLabel: "AI Open Economy (test only)", executionKind: "focused_preset",
     presetWorld: { ...(variant.nextMatchPresetWorld ?? variant.presetWorld!), fixtureId: `${variant.id}-next`,
       events: [], routeOutages: [] }, checkpointTicks: [200] };
-  const nextFixture: RuntimeFixtureV1 = { ...fixture, recipe: { ...fixture.recipe, aiPlayerNumber: 2,
+  const nextFixture: RuntimeFixture = { ...fixture, recipe: { ...fixture.recipe, aiPlayerNumber: 2,
     mapLabel: nextVariant.mapLabel!, variants: [nextVariant] } };
   const nextAiErrors: string[] = [];
   await prepareRuntimeVariant(page, nextFixture, nextVariant, nextVariant.seed, sourceRevision, fixtureDigest,
@@ -30,10 +30,10 @@ export async function transitionNativeLifecycle(
   const retained = await deliverRetainedNativeSceneWork(page);
   let retainedAuthorityUnchanged: boolean | undefined;
   if (branch === "host_replacement") retainedAuthorityUnchanged = await page.evaluate(() => {
-    const realm = window as unknown as { __fuzzyWaddleRetainedAuthorityReplayV1?: () => boolean };
-    if (!realm.__fuzzyWaddleRetainedAuthorityReplayV1) throw new Error("lifecycle_original_authority_callback_missing");
-    const unchanged = realm.__fuzzyWaddleRetainedAuthorityReplayV1();
-    delete realm.__fuzzyWaddleRetainedAuthorityReplayV1;
+    const realm = window as unknown as { __fuzzyWaddleRetainedAuthorityReplay?: () => boolean };
+    if (!realm.__fuzzyWaddleRetainedAuthorityReplay) throw new Error("lifecycle_original_authority_callback_missing");
+    const unchanged = realm.__fuzzyWaddleRetainedAuthorityReplay();
+    delete realm.__fuzzyWaddleRetainedAuthorityReplay;
     return unchanged;
   });
   const nativeAfterLateWork = await nativeDebugWorldDigest(page);

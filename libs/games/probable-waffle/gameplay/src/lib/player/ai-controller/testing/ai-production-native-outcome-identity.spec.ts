@@ -1,5 +1,5 @@
 import { FactionType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiCommandOutcomeV1 } from "../contracts/ai-command-contracts";
+import type { AiCommandOutcome } from "../contracts/ai-command-contracts";
 import { PureAiBrain } from "../brain/ai-brain";
 import { AiMacroManager } from "../planning/ai-macro-manager";
 import { reconcileAiCommandReservations } from "../planning/reconcile-ai-command-reservations";
@@ -14,7 +14,7 @@ describe.each([FactionType.Tivara, FactionType.Skaduwee])("native outcome produc
     const admitted = brain.step({ ...f.observation, tick: 390 }, first.nextState, []);
     const unit = admitted.acceptedIntents.find((intent) => intent.kind === "produce");
     if (!unit) throw new Error("production_identity_unit_missing");
-    const outcome: AiCommandOutcomeV1 = {
+    const outcome: AiCommandOutcome = {
       kind: "completed",
       tick: 400,
       resultingActorIds: [],

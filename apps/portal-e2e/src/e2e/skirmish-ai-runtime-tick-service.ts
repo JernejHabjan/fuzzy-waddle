@@ -1,4 +1,4 @@
-export interface RuntimePageTickServiceV1 {
+export interface RuntimePageTickService {
   currentTick: number;
   readonly tick$: { subscribe(callback: (tick: number) => void): { unsubscribe(): void } };
   setSimulationTimeScale(scale: number): void;

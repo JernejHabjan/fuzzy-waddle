@@ -1,9 +1,9 @@
-import type { RuntimePageControllerV1 } from "./skirmish-ai-runtime-controller";
-import type { RuntimePageTickServiceV1 } from "./skirmish-ai-runtime-tick-service";
+import type { RuntimePageController } from "./skirmish-ai-runtime-controller";
+import type { RuntimePageTickService } from "./skirmish-ai-runtime-tick-service";
 
-export interface RuntimePagePartsV1 {
-  readonly controller: RuntimePageControllerV1;
-  readonly tickService: RuntimePageTickServiceV1;
+export interface RuntimePageParts {
+  readonly controller: RuntimePageController;
+  readonly tickService: RuntimePageTickService;
   readonly sceneComponentNames: readonly string[];
   getScore(playerNumber: number): { metrics: Readonly<Record<string, number>>; gameResult: string | null };
   getRawOwnedActorNames(playerNumber: number): readonly string[];

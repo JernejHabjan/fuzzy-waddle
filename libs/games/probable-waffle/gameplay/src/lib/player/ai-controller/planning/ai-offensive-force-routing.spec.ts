@@ -1,10 +1,10 @@
-import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
-import { buildAiAccessGraphV1 } from "./ai-access-graph-v1";
+import type { AiObservedActor } from "../contracts/ai-observation";
+import { buildAiAccessGraph } from "./ai-access-graph";
 import { guard, core, producer, world, brain, manager } from "./ai-offensive-opportunity-test-fixtures";
 import { createAiSkirmishProposalContext } from "./ai-skirmish-proposal-draft";
 import { selectAiOffensiveOpportunity } from "./select-ai-offensive-opportunity";
 
-function flyer(id: string): AiObservedActorV1 {
+function flyer(id: string): AiObservedActor {
   const actor = guard(id, "self", 0);
   return {
     ...actor,
@@ -88,7 +88,7 @@ describe("offensive force routing and domain readiness", () => {
   });
 
   it("prioritizes a nearby water attacker that threatens friendly units", () => {
-    const access = buildAiAccessGraphV1({
+    const access = buildAiAccessGraph({
       generation: 1,
       staticRevision: 1,
       dynamicRevision: 1,
@@ -103,7 +103,7 @@ describe("offensive force routing and domain readiness", () => {
         { x: 1, y: 1, ground: false, water: true, elevation: 0, groundNeighborKeys: [], knowledge: "known_static", clearance: 2 }
       ]
     });
-    const navalActor = (id: string, relation: "self" | "enemy", x: number): AiObservedActorV1 => ({
+    const navalActor = (id: string, relation: "self" | "enemy", x: number): AiObservedActor => ({
       ...guard(id, relation, x),
       objectName: "VikingBoat",
       accessNodeId: { status: "known", value: access.waterNodeByTileKey.get(`${x},1`)!, observedTick: 20 },
@@ -146,7 +146,7 @@ describe("offensive force routing and domain readiness", () => {
   });
 
   it("uses a water firing position for a remembered coastal producer", () => {
-    const access = buildAiAccessGraphV1({
+    const access = buildAiAccessGraph({
       generation: 1, staticRevision: 1, dynamicRevision: 1, threatRevision: 0, builtTick: 0,
       continuationCursor: 0, includeAirRegion: true,
       cells: [

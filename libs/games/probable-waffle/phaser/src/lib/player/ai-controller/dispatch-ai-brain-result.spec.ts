@@ -1,11 +1,11 @@
 import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import Phaser from "phaser";
 import { FactionType, ProbableWaffleAiDifficulty, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { rememberAiGatheringSelection } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-gathering-selection-observation";
-import type { AiBrainStepResultV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain-step-result-v1";
-import { createAiBrainStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-brain-state-v1";
-import { createAiProfileConfigV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-profile-defaults";
+import type { AiBrainStepResult } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain-step-result";
+import { createAiBrainState } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-brain-state";
+import { createAiProfileConfig } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-profile-defaults";
 import { createAiTestObservation } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import { projectAiDebugSnapshot } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/debug/project-ai-debug-snapshot";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
@@ -18,12 +18,12 @@ jest.mock("./ai-intent-dispatcher", () => ({ dispatchAiIntents: jest.fn() }));
 
 /** Synthetic result shape, deliberately separate from proof that the real planner selected useful runtime work. */
 function fixture(empty = false) {
-  const state = createAiBrainStateV1({
+  const state = createAiBrainState({
     playerNumber: 2,
     faction: FactionType.Tivara,
     tick: 99,
     archetypeId: "balanced",
-    profile: createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium)
+    profile: createAiProfileConfig(ProbableWaffleAiDifficulty.Medium)
   });
   const acceptedIntents = empty ? [] : [pendingCommandIntent()];
   const decisions = acceptedIntents.map((intent) => ({
@@ -41,7 +41,7 @@ function fixture(empty = false) {
       state,
       decisions
     )
-  } satisfies AiBrainStepResultV1;
+  } satisfies AiBrainStepResult;
   const events = new Phaser.Events.EventEmitter();
   const scene = { events } as unknown as ProbableWaffleScene;
   return { scene, events, result, authority: { ...state.authority, authorityEpoch: 3 } };
@@ -110,8 +110,8 @@ describe("dispatchAiBrainResult", () => {
       demandId: null,
       resourceType: ResourceType.Wood,
       sourceActorId: "source"
-    } satisfies AiIntentV1;
-    const rejected = { ...intent, intentId: "intent:rejected", effectId: "effect:rejected" } satisfies AiIntentV1;
+    } satisfies AiIntent;
+    const rejected = { ...intent, intentId: "intent:rejected", effectId: "effect:rejected" } satisfies AiIntent;
     for (const proposal of [intent, rejected])
       rememberAiGatheringSelection(proposal, () => ({
         intentId: proposal.intentId,

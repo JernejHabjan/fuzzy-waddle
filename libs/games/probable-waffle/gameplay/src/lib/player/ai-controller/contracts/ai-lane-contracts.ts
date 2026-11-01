@@ -1,7 +1,7 @@
 import type { AiSimulationTick } from "./ai-core-types";
 
 /** Fair service lanes; urgency arbitration happens after every lane is considered. */
-export type AiServiceLaneV1 =
+export type AiServiceLane =
   | "essential_economy"
   | "supply_production"
   | "scouting"
@@ -9,8 +9,8 @@ export type AiServiceLaneV1 =
   | "optional_infrastructure_tech";
 
 /** Persisted deficit/age state for deterministic lane service. */
-export interface AiLaneServiceStateV1 {
-  readonly lane: AiServiceLaneV1;
+export interface AiLaneServiceState {
+  readonly lane: AiServiceLane;
   readonly deficit: number;
   readonly lastConsideredTick: AiSimulationTick;
   readonly lastServicedTick: AiSimulationTick;

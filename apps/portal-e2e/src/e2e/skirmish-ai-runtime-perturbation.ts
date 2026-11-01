@@ -1,4 +1,4 @@
-export interface RuntimePerturbationV1 {
+export interface RuntimePerturbation {
   readonly id: string;
   readonly tick: number;
   readonly kind: "human_attack_ai_home";

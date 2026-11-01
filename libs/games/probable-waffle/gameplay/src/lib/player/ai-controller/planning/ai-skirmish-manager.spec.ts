@@ -1,5 +1,5 @@
 import { FactionType, OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
 import { createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 
 import { AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS } from "./ai-skirmish-manager";
@@ -8,7 +8,7 @@ import { nextQuestion } from "./ai-skirmish-support";
 
 describe("AiSkirmishManager", () => {
   it("keeps the home building threat ahead of a separate worker-side threat", () => {
-    const state = createAiBrainStateV1({
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -64,7 +64,7 @@ describe("AiSkirmishManager", () => {
   });
 
   it("releases a vanished defensive objective instead of freezing the next economy in defend", () => {
-    const state = createAiBrainStateV1({
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -99,7 +99,7 @@ describe("AiSkirmishManager", () => {
     expect(next?.state).toBe("open");
   });
   it("asks a reachable question and sends a legal scout instead of treating coverage as success", () => {
-    const state = createAiBrainStateV1({
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -121,7 +121,7 @@ describe("AiSkirmishManager", () => {
   });
 
   it("keeps the last combat unit near home instead of sending it on a frontier trip", () => {
-    const state = createAiBrainStateV1({
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -135,7 +135,7 @@ describe("AiSkirmishManager", () => {
   });
 
   it("advances an existing scout to the next uncovered frontier and closes the prior question", () => {
-    const state = createAiBrainStateV1({
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -168,7 +168,7 @@ describe("AiSkirmishManager", () => {
   });
 
   it("keeps a repeated visible contact as one incident rather than inflating enemy confidence", () => {
-    const state = createAiBrainStateV1({
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -195,7 +195,7 @@ describe("AiSkirmishManager", () => {
   });
 
   it("retires an old last-seen objective and sends a bounded scout to the next frontier", () => {
-    const state = createAiBrainStateV1({
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -225,7 +225,7 @@ describe("AiSkirmishManager", () => {
   });
 
   it("keeps a question scout separate from the force assigned to a visible contact", () => {
-    const state = createAiBrainStateV1({
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -258,7 +258,7 @@ describe("AiSkirmishManager", () => {
   });
 
   it("preserves an active question scout when another defender can cover the local threat", () => {
-    const state = createAiBrainStateV1({
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -297,7 +297,7 @@ describe("AiSkirmishManager", () => {
   });
 
   it("anchors local defense to the main building instead of a distant roaming combat unit", () => {
-    const state = createAiBrainStateV1({
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -324,7 +324,7 @@ describe("AiSkirmishManager", () => {
   });
 
   it("forms a defense squad for a visible raider explicitly ordered against a protected base", () => {
-    const state = createAiBrainStateV1({
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,

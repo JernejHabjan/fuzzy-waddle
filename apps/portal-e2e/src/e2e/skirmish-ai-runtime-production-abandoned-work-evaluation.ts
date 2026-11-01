@@ -1,10 +1,10 @@
 import type { RuntimeProductionEvidenceV2 } from "./skirmish-ai-runtime-production-evidence-v2";
-import type { RuntimeProductionContractV1 } from "./skirmish-ai-runtime-production-contract";
+import type { RuntimeProductionContract } from "./skirmish-ai-runtime-production-contract";
 import { productionWorldAt } from "./skirmish-ai-runtime-production-authority-evaluation";
 
 /** Optional forecasts release at abandonment; already admitted work keeps its exact native terminal or retained identity. */
 export function evaluateRuntimeProductionAbandonedWork(
-  contract: RuntimeProductionContractV1,
+  contract: RuntimeProductionContract,
   evidence: RuntimeProductionEvidenceV2,
   committed: RuntimeProductionEvidenceV2["decisions"][number]
 ): string[] {

@@ -1,5 +1,5 @@
 import type { AiCommandReconciliationStateData, GameCommandOutcome } from "@fuzzy-waddle/probable-waffle-protocol";
-import { aiDeadline, type AiAuthorityStateV1, type AiCommandOutcomeV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import { aiDeadline, type AiAuthorityState, type AiCommandOutcome } from "@fuzzy-waddle/probable-waffle-gameplay";
 import type { GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
 import type { Subscription } from "rxjs";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
@@ -111,7 +111,7 @@ export class AiCommandReconciliation {
   }
 
   /** Supplies the Stage 2 pure brain with canonical, runtime-free command outcomes. */
-  getBrainOutcomes(matchId: GameInstanceId): AiCommandOutcomeV1[] {
+  getBrainOutcomes(matchId: GameInstanceId): AiCommandOutcome[] {
     return adaptGameCommandOutcomesToBrain(
       this.recentOutcomes,
       matchId
@@ -119,7 +119,7 @@ export class AiCommandReconciliation {
   }
 
   /** Supplies the pure brain with the same authority fence used by live application. */
-  getBrainAuthorityState(): AiAuthorityStateV1 {
+  getBrainAuthorityState(): AiAuthorityState {
     const oldestPending = [...this.pending.values()].sort(
       (left, right) =>
         left.lastProgressTick - right.lastProgressTick || left.dispatched.sequence - right.dispatched.sequence

@@ -17,17 +17,17 @@ import {
   type GameCommandDispatchReceipt
 } from "../../../world/services/multiplayer/command-bus.service";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import type { AiRuntimePresetWorldV1 } from "./ai-runtime-preset-world-v1";
-import type { AiRuntimePresetApplicationV1 } from "./ai-runtime-preset-application-v1";
+import type { AiRuntimePresetWorld } from "./ai-runtime-preset-world";
+import type { AiRuntimePresetApplication } from "./ai-runtime-preset-application";
 import { assertAiRuntimePresetQueuePayment } from "./assert-ai-runtime-preset-queue-payment";
-import type { AiRuntimePresetQueueApplicationV1 } from "./ai-runtime-preset-queue-application-v1";
+import type { AiRuntimePresetQueueApplication } from "./ai-runtime-preset-queue-application";
 
 /** Seeds real paid production/research through shared commands. Rejection or missing physical application aborts setup. */
 export function applyAiRuntimePresetQueues(
   scene: ProbableWaffleScene,
-  preset: AiRuntimePresetWorldV1,
+  preset: AiRuntimePresetWorld,
   actors: ReadonlyMap<string, Phaser.GameObjects.GameObject>
-): Pick<AiRuntimePresetApplicationV1, "queuedItemCount" | "initialQueueItems" | "queueApplications"> {
+): Pick<AiRuntimePresetApplication, "queuedItemCount" | "initialQueueItems" | "queueApplications"> {
   const bus = getSceneService(scene, CommandBusService);
   const requests = [
     ...(preset.queues ?? []).flatMap((queue) =>
@@ -47,8 +47,8 @@ export function applyAiRuntimePresetQueues(
       } satisfies Pick<ResearchCommand, "type" | "researchType">
     }))
   ];
-  const initialQueueItems: AiRuntimePresetApplicationV1["initialQueueItems"][number][] = [];
-  const queueApplications: AiRuntimePresetQueueApplicationV1[] = [];
+  const initialQueueItems: AiRuntimePresetApplication["initialQueueItems"][number][] = [];
+  const queueApplications: AiRuntimePresetQueueApplication[] = [];
   if (requests.length && !bus) throw new Error("runtime_preset_queue_bus_missing");
   for (const request of requests) {
     if (!bus) throw new Error("runtime_preset_queue_bus_missing");

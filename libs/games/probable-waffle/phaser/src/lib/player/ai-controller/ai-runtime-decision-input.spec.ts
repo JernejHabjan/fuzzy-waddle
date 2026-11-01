@@ -1,12 +1,12 @@
 import Phaser from "phaser";
-import type { AiCapabilityCatalogV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiCapabilityCatalog } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { FactionType, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
 import {
   createAiTestObservation,
   requireAiTestEntry
 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
-import { createAiBrainStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-brain-state-v1";
-import { createAiProfileConfigV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-profile-defaults";
+import { createAiBrainState } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-brain-state";
+import { createAiProfileConfig } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-profile-defaults";
 import { projectAiDebugSnapshot } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/debug/project-ai-debug-snapshot";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { isSnapshotApplyInProgress } from "../../data/scene-data";
@@ -48,7 +48,7 @@ function fixture() {
     ],
     threatSummary: { ...base.threatSummary, observedTick: 99 }
   };
-  const catalog = { schemaVersion: 1, generation: 7, entries: [], unsupported: [] } satisfies AiCapabilityCatalogV1;
+  const catalog = { schemaVersion: 1, generation: 7, entries: [], unsupported: [] } satisfies AiCapabilityCatalog;
   const ticks = { currentTick: 101 };
   jest
     .mocked(getSceneService)
@@ -76,8 +76,8 @@ describe("consumed AI decision inputs", () => {
 
   it("captures empty selected steps from the real controller seam before dispatch and later debug/state adoption", () => {
     const f = fixture();
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainState({
       playerNumber: 2,
       faction: FactionType.Tivara,
       tick: 99,
@@ -142,8 +142,8 @@ describe("consumed AI decision inputs", () => {
     expect(input?.gaps).toContain("production_decision_observation_overflow");
     const records: AiDecisionDispatchEvent[] = [];
     f.events.on(AI_DECISION_DISPATCH_EVENT, (event: AiDecisionDispatchEvent) => records.push(event));
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainState({
       playerNumber: 2,
       faction: FactionType.Tivara,
       tick: 99,

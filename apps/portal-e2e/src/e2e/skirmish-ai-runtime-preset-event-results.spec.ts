@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test";
 import { assertRuntimePresetEvents } from "./skirmish-ai-runtime-preset-event-results";
-import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
+import type { RuntimeVariant } from "./skirmish-ai-runtime-variant";
 
-const variant: RuntimeVariantV1 = {
+const variant: RuntimeVariant = {
   id: "pinned-loss",
   seed: 759,
   aiFaction: "Tivara",
@@ -95,7 +95,7 @@ test("includes expected and observed actor details when a pinned event misses it
 });
 
 test("a route outage must actually intercept an original actor within its fixed interval", () => {
-  const fault: RuntimeVariantV1 = { ...variant, presetWorld: {
+  const fault: RuntimeVariant = { ...variant, presetWorld: {
     fixtureId: "route-fault", actors: [{ fixtureActorId: "mover", actorName: "TivaraMacemanMale", owner: 2,
       position: { x: 800, y: 800, z: 0 } }], resourceGrants: [],
     routeOutages: [{ id: "route-outage", fromTick: 400, throughTick: 800, fixtureActorIds: ["mover"] }]

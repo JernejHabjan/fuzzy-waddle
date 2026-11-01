@@ -1,8 +1,8 @@
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import type { AiDemandV1, AiPlanStepV1 } from "../contracts/ai-plan-contracts";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiIntent } from "../contracts/ai-intent";
+import type { AiObservation } from "../contracts/ai-observation";
+import type { AiDemand, AiPlanStep } from "../contracts/ai-plan-contracts";
 import { createAiResourceCostClaims } from "./ai-resource-cost-claims";
 import { selectConstructionPosition } from "./ai-construction-site-selector";
 import { nextIds } from "./ai-macro-effect-identity";
@@ -23,7 +23,7 @@ import { isSafeAiGathererRetask } from "./ai-gatherer-retask";
 /** Two workers unlock renewable food without exhausting the common 200-food start. */
 const MINIMUM_OPENING_WORKERS = 2;
 
-function captureOpeningStatus(observation: AiObservationV1, state: AiBrainStateV1, catalog: AiCapabilityCatalogV1) {
+function captureOpeningStatus(observation: AiObservation, state: AiBrainState, catalog: AiCapabilityCatalog) {
   return factionOpenings[observation.faction].map((checkpoint) => {
     const matchingActors = checkpointActors(observation, checkpoint, catalog);
     const previousStep = state.opening.plan.steps.find((step) => step.stepId === `step:opening:${checkpoint.id}`);
@@ -55,19 +55,19 @@ function captureOpeningStatus(observation: AiObservationV1, state: AiBrainStateV
 type OpeningStatus = ReturnType<typeof captureOpeningStatus>[number];
 
 function proposeOpeningCheckpointIntent(
-  observation: AiObservationV1,
-  state: AiBrainStateV1,
-  catalog: AiCapabilityCatalogV1,
+  observation: AiObservation,
+  state: AiBrainState,
+  catalog: AiCapabilityCatalog,
   status: OpeningStatus,
   activeCheckpointId: string | undefined,
   reservedActorIds: ReadonlySet<string>,
   selectedConstructionTileKeys: Set<string>,
   ordinal: number
-): AiIntentV1 | null {
+): AiIntent | null {
   const { checkpoint, desired, satisfiedActors, constructingActors, queuedIds, fulfilled } = status;
   if (fulfilled || checkpoint.id !== activeCheckpointId || satisfiedActors.length + queuedIds.length >= desired)
     return null;
-  const demandId = `demand:opening:${checkpoint.id}` as AiDemandV1["demandId"];
+  const demandId = `demand:opening:${checkpoint.id}` as AiDemand["demandId"];
   const stalledSite = [...constructingActors]
     .find((site) => !hasAssignedBuilder(observation, site.actorId));
   if (stalledSite) {
@@ -96,17 +96,17 @@ function proposeOpeningCheckpointIntent(
       ],
       claims: [
         {
-          claimId: `${ids.claimId}:builder` as AiIntentV1["claims"][number]["claimId"],
+          claimId: `${ids.claimId}:builder` as AiIntent["claims"][number]["claimId"],
           kind: "actor",
           actorId: builder.actorId
         },
         {
-          claimId: `${ids.claimId}:site` as AiIntentV1["claims"][number]["claimId"],
+          claimId: `${ids.claimId}:site` as AiIntent["claims"][number]["claimId"],
           kind: "site",
           siteKey: `observed-site:${stalledSite.actorId}`
         },
         {
-          claimId: `${ids.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
+          claimId: `${ids.claimId}:effect` as AiIntent["claims"][number]["claimId"],
           kind: "effect",
           effectId: ids.effectId
         }
@@ -144,7 +144,7 @@ function proposeOpeningCheckpointIntent(
             ?.resourceCost ?? {}
         ),
         {
-          claimId: `${ids.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
+          claimId: `${ids.claimId}:effect` as AiIntent["claims"][number]["claimId"],
           kind: "effect",
           effectId: ids.effectId
         }
@@ -192,7 +192,7 @@ function proposeOpeningCheckpointIntent(
     preconditions: [{ kind: "actor_exists", actorId: builder.actorId }],
     claims: [
       {
-        claimId: `${ids.claimId}:builder` as AiIntentV1["claims"][number]["claimId"],
+        claimId: `${ids.claimId}:builder` as AiIntent["claims"][number]["claimId"],
         kind: "actor",
         actorId: builder.actorId
       },
@@ -203,7 +203,7 @@ function proposeOpeningCheckpointIntent(
           ?.resourceCost ?? {}
       ),
       {
-        claimId: `${ids.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
+        claimId: `${ids.claimId}:effect` as AiIntent["claims"][number]["claimId"],
         kind: "effect",
         effectId: ids.effectId
       }
@@ -217,11 +217,11 @@ function proposeOpeningCheckpointIntent(
 }
 
 /** Produces historical opening steps and at most one current legal opening action. */
-export function proposeAiOpening(observation: AiObservationV1, state: AiBrainStateV1, catalog: AiCapabilityCatalogV1) {
+export function proposeAiOpening(observation: AiObservation, state: AiBrainState, catalog: AiCapabilityCatalog) {
   const checkpoints = factionOpenings[observation.faction];
-  const demands: AiDemandV1[] = [];
-  const intents: AiIntentV1[] = [];
-  const steps: AiPlanStepV1[] = [];
+  const demands: AiDemand[] = [];
+  const intents: AiIntent[] = [];
+  const steps: AiPlanStep[] = [];
   const selectedConstructionTileKeys = new Set<string>();
   const reservedActorIds = new Set(
     state.reservations
@@ -247,7 +247,7 @@ export function proposeAiOpening(observation: AiObservationV1, state: AiBrainSta
   const activeCheckpointId = checkpointStatus.find(({ fulfilled }) => !fulfilled)?.checkpoint.id;
   for (const status of checkpointStatus) {
     const { checkpoint, desired, satisfiedActors, constructingActors, queuedIds, fulfilled, completedTick } = status;
-    const demandId = `demand:opening:${checkpoint.id}` as AiDemandV1["demandId"];
+    const demandId = `demand:opening:${checkpoint.id}` as AiDemand["demandId"];
     demands.push({
       demandId,
       purpose: checkpoint.purpose,
@@ -262,7 +262,7 @@ export function proposeAiOpening(observation: AiObservationV1, state: AiBrainSta
       resourceObligations: {}
     });
     steps.push({
-      stepId: `step:opening:${checkpoint.id}` as AiPlanStepV1["stepId"],
+      stepId: `step:opening:${checkpoint.id}` as AiPlanStep["stepId"],
       state: fulfilled ? "completed" : checkpoint.id === activeCheckpointId ? "current" : "pending",
       demandIds: [demandId],
       deadline: null,

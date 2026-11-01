@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
 import { evaluateNativeStrategy } from "./skirmish-ai-native-strategy-evaluation";
 
@@ -26,7 +26,7 @@ const weapon = {
   cooldown: 1000
 } as never;
 
-function attackFacts(sequence: number, tick: number, targetId: string): AiRuntimeProductionFactV1[] {
+function attackFacts(sequence: number, tick: number, targetId: string): AiRuntimeProductionFact[] {
   const source = actor("attacker", 2), target = actor(targetId, 1);
   const operation = (kind: "attack_requested" | "attack_committed") => ({
     kind,
@@ -66,10 +66,10 @@ function attackFacts(sequence: number, tick: number, targetId: string): AiRuntim
         snapshotRestoreInProgress: false
       }
     }
-  ] as unknown as AiRuntimeProductionFactV1[];
+  ] as unknown as AiRuntimeProductionFact[];
 }
 
-function context(facts: AiRuntimeProductionFactV1[], frames: unknown[] = []) {
+function context(facts: AiRuntimeProductionFact[], frames: unknown[] = []) {
   const roles = {
     "contact-group": "contact-group",
     "front-target-a": "front-target-a",

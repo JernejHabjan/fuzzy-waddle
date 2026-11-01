@@ -1,12 +1,12 @@
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { sameRuntimeProductionCommand } from "./skirmish-ai-runtime-production-command-equality";
 
 /** Capture-wide application linkage. Native start callbacks may precede the applied outcome and dispatch receipt. */
 export function matchRuntimeConstructionApplication(
-  capture: AiRuntimeProductionCaptureV1, placement: Extract<AiRuntimeProductionFactV1, { kind: "spatial_authority" }>
+  capture: AiRuntimeProductionSnapshot, placement: Extract<AiRuntimeProductionFact, { kind: "spatial_authority" }>
 ) {
   const failures: string[] = [];
   const gaps: string[] = [];

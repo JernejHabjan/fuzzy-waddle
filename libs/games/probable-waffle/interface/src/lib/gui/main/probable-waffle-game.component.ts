@@ -23,9 +23,9 @@ import { environment } from "@fuzzy-waddle/environments/environment";
 import { prepareAiRuntimeCalibrationPlayers } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-calibration";
 import {
-  clearAiRuntimeBrowserTestHostV1,
-  publishAiRuntimeBrowserTestHostV1,
-  readAiRuntimeBrowserTestConfigV1
+  clearAiRuntimeBrowserTestHost,
+  publishAiRuntimeBrowserTestHost,
+  readAiRuntimeBrowserTestConfig
 } from "./ai-runtime-browser-test-host";
 import {
   clearMultiplayerBrowserTestHost,
@@ -80,7 +80,7 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
     const gameInstance = this.gameInstanceClientService.gameInstance;
     if (!gameInstance) return;
 
-    const runtimeTestConfig = environment.production ? null : readAiRuntimeBrowserTestConfigV1();
+    const runtimeTestConfig = environment.production ? null : readAiRuntimeBrowserTestConfig();
     if (runtimeTestConfig?.calibration) prepareAiRuntimeCalibrationPlayers(gameInstance, runtimeTestConfig);
     if (runtimeTestConfig && !gameInstance.gameInstanceMetadata.data.startOptions.loadFromSave) {
       gameInstance.gameInstanceMetadata.data.rndSeed = runtimeTestConfig.seed;
@@ -103,7 +103,7 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
               postBoot: (game: Game) => {
                 configuredPostBoot?.(game);
                 this.runtimeTestGame = game;
-                if (runtimeTestConfig) publishAiRuntimeBrowserTestHostV1(game, runtimeTestConfig);
+                if (runtimeTestConfig) publishAiRuntimeBrowserTestHost(game, runtimeTestConfig);
                 else publishMultiplayerBrowserTestHost(game);
               }
             }
@@ -124,7 +124,7 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
   }
 
   private clearRuntimeTestHost(): void {
-    clearAiRuntimeBrowserTestHostV1(this.runtimeTestGame);
+    clearAiRuntimeBrowserTestHost(this.runtimeTestGame);
     clearMultiplayerBrowserTestHost(this.runtimeTestGame);
     this.runtimeTestGame = undefined;
   }

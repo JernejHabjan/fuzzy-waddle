@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import { getGameModeFromScene } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
 import { type ProbableWaffleGameMode, type ProbableWafflePlayer } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiObservedActorV1, AiObservedEffectV1, AiObservationV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiObservedActor, AiObservedEffect, AiObservation } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { getActorComponent } from "../../../data/actor-component";
 import { ResearchComponent } from "../../../entity/components/research/research-component";
 import { researchDefinitions } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/research/research-definitions";
@@ -17,10 +17,10 @@ type GameObject = Phaser.GameObjects.GameObject;
 
 /** Projects only runtime-legal owned research; unavailable prerequisites do not become AI wishes. */
 export function projectResearchCandidates(
-  actors: readonly AiObservedActorV1[],
+  actors: readonly AiObservedActor[],
   liveById: ReadonlyMap<ActorId, GameObject>
-): AiObservationV1["researchCandidates"] {
-  const candidates: AiObservationV1["researchCandidates"][number][] = [];
+): AiObservation["researchCandidates"] {
+  const candidates: AiObservation["researchCandidates"][number][] = [];
   for (const observed of actors.filter((actor) => actor.relation === "self" && actor.visibility === "owned")) {
     if (observed.constructionProgress?.status === "known" && observed.constructionProgress.value < 100) continue;
     const actor = liveById.get(observed.actorId);
@@ -54,9 +54,9 @@ export function projectResearchCandidates(
 }
 
 export function projectThreatSummary(
-  actors: readonly AiObservedActorV1[],
+  actors: readonly AiObservedActor[],
   tick: number
-): AiObservationV1["threatSummary"] {
+): AiObservation["threatSummary"] {
   const enemies = actors.filter((actor) => actor.relation === "enemy");
   return {
     observedTick: tick,
@@ -80,8 +80,8 @@ export function projectThreatSummary(
 export function projectModeGoals(
   scene: Phaser.Scene,
   player: ProbableWafflePlayer,
-  actors: readonly AiObservedActorV1[]
-): AiObservationV1["modeGoals"] {
+  actors: readonly AiObservedActor[]
+): AiObservation["modeGoals"] {
   const data = getGameModeFromScene<ProbableWaffleGameMode>(scene).data;
   const selfFailed = player.playerController.data.leftOrKilled === true;
   const selfActors = actors
@@ -99,7 +99,7 @@ export function projectModeGoals(
     .map((actor) => (actor.accessNodeId.status === "known" ? actor.accessNodeId.value : undefined))
     .filter((node): node is NonNullable<typeof node> => node !== undefined)
     .sort();
-  const goals: AiObservationV1["modeGoals"][number][] = [];
+  const goals: AiObservation["modeGoals"][number][] = [];
   if (data.winConditions.noEnemyPlayersLeft === true) {
     goals.push({
       id: "mode:win:no_enemy_players_left",
@@ -136,7 +136,7 @@ export function projectModeGoals(
   return goals.sort((left, right) => left.id.localeCompare(right.id));
 }
 
-export function countUnknownFacts(observation: AiObservationV1 | undefined): number {
+export function countUnknownFacts(observation: AiObservation | undefined): number {
   if (!observation) return 0;
   const actorUnknownFacts = observation.actors.reduce(
     (count, actor) =>
@@ -163,7 +163,7 @@ export function projectPermittedZones(
   player: ProbableWafflePlayer,
   policy: AiObservationVisibilityPolicy,
   tick: number
-): AiObservationV1["effects"] {
+): AiObservation["effects"] {
   const zones = getSceneService(scene, AoeZoneManager)?.getData() ?? [];
   return zones
     .map((zone) => ({
@@ -202,7 +202,7 @@ export function projectPermittedZones(
         expiresAt: knownValue(Math.max(tick, tick + millisecondsToSimulationTicks(zone.remainingTime)), tick),
         radius: zone.radius,
         influence
-      } satisfies AiObservedEffectV1;
+      } satisfies AiObservedEffect;
     })
     .sort((left, right) => left.effectId.localeCompare(right.effectId));
 }

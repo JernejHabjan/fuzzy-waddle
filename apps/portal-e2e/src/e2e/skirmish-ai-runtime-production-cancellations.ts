@@ -1,24 +1,24 @@
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
-import type { RuntimeProductionCancellationV1 } from "./skirmish-ai-runtime-production-cancellation";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { RuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality";
+import type { RuntimeProductionCancellation } from "./skirmish-ai-runtime-production-cancellation";
 import { matchRuntimeCancellationPaidLineage } from "./skirmish-ai-runtime-cancellation-paid-lineage";
 import { sameRuntimeQueueVector } from "./skirmish-ai-runtime-scoped-queue-payments";
 
 /** Joins distinct accepted cancel execution to original paid item, exact removal/refund and both native terminals. */
 export function projectRuntimeProductionCancellations(
-  capture: AiRuntimeProductionCaptureV1, commands: RuntimeProductionCausalityV1["commands"],
-  mutations: RuntimeProductionCausalityV1["queueMutations"], operations: RuntimeProductionCausalityV1["operations"]
+  capture: AiRuntimeProductionSnapshot, commands: RuntimeProductionCausality["commands"],
+  mutations: RuntimeProductionCausality["queueMutations"], operations: RuntimeProductionCausality["operations"]
 ) {
   const failures: string[] = [];
   const gaps: string[] = [];
-  const cancellations: RuntimeProductionCancellationV1[] = [];
+  const cancellations: RuntimeProductionCancellation[] = [];
   const usedRefunds = new Set<number>();
   for (const removal of mutations.filter((entry) => entry.operation === "cancel_remove")) {
     const origin = commands.find((entry) => entry.command.execution?.commandId === removal.originatingCommandId);
     const cancel = commands.find((entry) => entry.command.execution?.commandId === removal.commandId);
     if (!origin || !cancel) { gaps.push("production_ai_cancel_native_scope_missing"); continue; }
-    const terminals = (scope: RuntimeProductionCausalityV1["commands"][number]) => scope.outcomes.filter((entry) =>
+    const terminals = (scope: RuntimeProductionCausality["commands"][number]) => scope.outcomes.filter((entry) =>
       ["completed", "cancelled", "failed", "rejected"].includes(entry.outcome.kind));
     const originalTerminals = terminals(origin);
     const cancelTerminals = terminals(cancel);

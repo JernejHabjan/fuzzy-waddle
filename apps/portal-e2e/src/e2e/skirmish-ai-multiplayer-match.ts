@@ -20,8 +20,8 @@ async function openOnlineLobby(page: Page): Promise<void> {
 async function waitForMultiplayerGame(page: Page): Promise<void> {
   await expect(page).toHaveURL(/\/aota\/game/);
   await page.waitForFunction(() => !!(
-    window as unknown as { __fuzzyWaddleAiMultiplayerBrowserTestV1?: unknown }
-  ).__fuzzyWaddleAiMultiplayerBrowserTestV1);
+    window as unknown as { __fuzzyWaddleAiMultiplayerBrowserTest?: unknown }
+  ).__fuzzyWaddleAiMultiplayerBrowserTest);
 }
 
 /** Creates an ordinary public custom lobby with two real humans and one host-owned AI. */
@@ -44,19 +44,19 @@ export async function startMultiplayerTestMatch(
     if (options.runtimeImport) for (const context of [hostContext, peerContext])
       await context.addInitScript(() => {
         if (window.location.origin === "http://127.0.0.1:4200")
-          sessionStorage.setItem("fuzzy-waddle:ai-runtime-import-v1", "1");
+          sessionStorage.setItem("fuzzy-waddle:ai-runtime-import", "1");
       });
     if (options.authorityProbe) for (const context of [hostContext, peerContext]) {
       await context.addInitScript(() => {
         if (window.location.origin === "http://127.0.0.1:4200")
-          window.sessionStorage.setItem("fuzzy-waddle:ai-multiplayer-authority-probe-v1", "1");
+          window.sessionStorage.setItem("fuzzy-waddle:ai-multiplayer-authority-probe", "1");
       });
     }
     if (options.queueWorld) {
       for (const context of [hostContext, peerContext]) {
         await context.addInitScript(() => {
           if (window.location.origin === "http://127.0.0.1:4200") {
-            window.sessionStorage.setItem("fuzzy-waddle:ai-multiplayer-queue-world-v1", "cancel-refund");
+            window.sessionStorage.setItem("fuzzy-waddle:ai-multiplayer-queue-world-snapshot", "cancel-refund");
           }
         });
       }
@@ -65,7 +65,7 @@ export async function startMultiplayerTestMatch(
       for (const context of [hostContext, peerContext]) {
         await context.addInitScript((branch) => {
           if (window.location.origin === "http://127.0.0.1:4200") {
-            window.sessionStorage.setItem("fuzzy-waddle:ai-multiplayer-shared-queue-world-v1", branch);
+            window.sessionStorage.setItem("fuzzy-waddle:ai-multiplayer-shared-queue-world-snapshot", branch);
           }
         }, options.sharedQueueWorld);
       }

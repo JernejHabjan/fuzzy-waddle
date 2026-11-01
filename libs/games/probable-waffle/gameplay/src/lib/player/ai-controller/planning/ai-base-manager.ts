@@ -1,11 +1,11 @@
 import type { ActorId, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
-import type { AiBaseStateV1, AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
-import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
-import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
+import type { AiBaseState, AiBrainState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiDemand } from "../contracts/ai-plan-contracts";
+import type { AiIntent } from "../contracts/ai-intent";
+import type { AiObservation, AiObservedActor } from "../contracts/ai-observation";
+import type { AiProfileConfig } from "../contracts/ai-profile-config";
+import type { AiManagerProposal, AiProposalManager } from "./ai-manager-proposal";
 import { createAiResourceCostClaims } from "./ai-resource-cost-claims";
 import { findAiExpansionBuilder } from "./ai-expansion-site";
 import { hasCredibleAiEconomyThreat } from "./ai-economy-policy";
@@ -16,11 +16,11 @@ export const AI_EXPANSION_SATURATION_TICKS = 600;
 const BASE_MEMBER_RADIUS = 12;
 const EXPANSION_SITE_RADIUS = 10;
 
-function selfOwned(observation: AiObservationV1): AiObservedActorV1[] {
+function selfOwned(observation: AiObservation): AiObservedActor[] {
   return observation.actors.filter((actor) => actor.relation === "self" && actor.visibility === "owned");
 }
 
-function position(actor: AiObservedActorV1): Vector3Simple | null {
+function position(actor: AiObservedActor): Vector3Simple | null {
   return actor.logicalPosition.status === "known" ? actor.logicalPosition.value : null;
 }
 
@@ -28,19 +28,19 @@ function distance(left: Vector3Simple, right: Vector3Simple): number {
   return Math.abs(left.x - right.x) + Math.abs(left.y - right.y);
 }
 
-function baseId(anchorActorId: ActorId): AiBaseStateV1["baseId"] {
+function baseId(anchorActorId: ActorId): AiBaseState["baseId"] {
   return `base:main:${anchorActorId}`;
 }
 
-function stableSiteKey(base: AiBaseStateV1, candidate: Vector3Simple): string {
+function stableSiteKey(base: AiBaseState, candidate: Vector3Simple): string {
   return `${base.baseId}:${candidate.x}:${candidate.y}:${candidate.z}`;
 }
 
-function isMainBuilding(actor: AiObservedActorV1): boolean {
+function isMainBuilding(actor: AiObservedActor): boolean {
   return actor.mainBuilding?.status === "known" && actor.mainBuilding.value;
 }
 
-function resourceActors(observation: AiObservationV1): AiObservedActorV1[] {
+function resourceActors(observation: AiObservation): AiObservedActor[] {
   return observation.actors
     .filter((actor) => actor.relation !== "enemy" && actor.visibility !== "last_seen")
     .filter(
@@ -54,9 +54,9 @@ function resourceActors(observation: AiObservationV1): AiObservedActorV1[] {
 }
 
 function hasOwnedResourceService(
-  resource: AiObservedActorV1,
-  owned: readonly AiObservedActorV1[],
-  catalog: AiCapabilityCatalogV1
+  resource: AiObservedActor,
+  owned: readonly AiObservedActor[],
+  catalog: AiCapabilityCatalog
 ): boolean {
   if (resource.resourceState.status !== "known") return false;
   const resourcePosition = position(resource);
@@ -74,9 +74,9 @@ function hasOwnedResourceService(
 
 function hasUnservedResourceNearExpansionSite(
   site: Vector3Simple,
-  resources: readonly AiObservedActorV1[],
-  owned: readonly AiObservedActorV1[],
-  catalog: AiCapabilityCatalogV1
+  resources: readonly AiObservedActor[],
+  owned: readonly AiObservedActor[],
+  catalog: AiCapabilityCatalog
 ): boolean {
   return resources.some((resource) => {
     const resourcePosition = position(resource);
@@ -86,7 +86,7 @@ function hasUnservedResourceNearExpansionSite(
   });
 }
 
-function siteCandidates(anchor: Vector3Simple, profile: AiProfileConfigV1): Vector3Simple[] {
+function siteCandidates(anchor: Vector3Simple, profile: AiProfileConfig): Vector3Simple[] {
   const rings = [4, 6, 8, 10];
   const candidates: Vector3Simple[] = [];
   for (const radius of rings) {
@@ -108,15 +108,15 @@ function siteCandidates(anchor: Vector3Simple, profile: AiProfileConfigV1): Vect
  * creates only deterministic candidate reservations; the shared construction application
  * remains the authoritative footprint, terrain, collision and builder revalidation owner.
  */
-export class AiBaseManager implements AiProposalManagerV1 {
+export class AiBaseManager implements AiProposalManager {
   readonly managerId = "stage-10-bases";
 
   constructor(
-    private readonly profile: AiProfileConfigV1,
-    private readonly getCatalog: () => AiCapabilityCatalogV1 | undefined
+    private readonly profile: AiProfileConfig,
+    private readonly getCatalog: () => AiCapabilityCatalog | undefined
   ) {}
 
-  propose(observation: AiObservationV1, state: AiBrainStateV1): AiManagerProposalV1 {
+  propose(observation: AiObservation, state: AiBrainState): AiManagerProposal {
     const catalog = this.getCatalog();
     if (!catalog || catalog.generation !== observation.generation) {
       return {
@@ -141,7 +141,7 @@ export class AiBaseManager implements AiProposalManagerV1 {
     const priorByAnchor = new Map(
       state.bases.filter((base) => base.anchorActorId).map((base) => [base.anchorActorId!, base])
     );
-    const bases: AiBaseStateV1[] = anchors.map((anchor, anchorIndex) => {
+    const bases: AiBaseState[] = anchors.map((anchor, anchorIndex) => {
       const anchorPosition = position(anchor)!;
       const prior = priorByAnchor.get(anchor.actorId);
       const establishedExpansion = state.bases
@@ -251,7 +251,7 @@ export class AiBaseManager implements AiProposalManagerV1 {
           distance(primary.anchorPosition!, position(left)!) - distance(primary.anchorPosition!, position(right)!) ||
           left.actorId.localeCompare(right.actorId)
       );
-    const intents: AiIntentV1[] = [];
+    const intents: AiIntent[] = [];
     const existingExpansion = bases.find(
       (base) =>
         base.baseId.startsWith("base:expansion:") &&
@@ -320,14 +320,14 @@ export class AiBaseManager implements AiProposalManagerV1 {
   }
   /** Converts a reserved candidate into a shared construction proposal; native application revalidates the site. */
   private proposeExpansion(
-    observation: AiObservationV1,
-    owned: readonly AiObservedActorV1[],
-    anchors: readonly AiObservedActorV1[],
-    bases: readonly AiBaseStateV1[],
-    state: AiBrainStateV1,
-    catalog: AiCapabilityCatalogV1
-  ): readonly AiIntentV1[] {
-    const intents: AiIntentV1[] = [];
+    observation: AiObservation,
+    owned: readonly AiObservedActor[],
+    anchors: readonly AiObservedActor[],
+    bases: readonly AiBaseState[],
+    state: AiBrainState,
+    catalog: AiCapabilityCatalog
+  ): readonly AiIntent[] {
+    const intents: AiIntent[] = [];
     const expansion = bases.find(
       (base) => base.lifecycle === "proposed" && base.anchorPosition && base.reservedSiteKey
     );
@@ -365,14 +365,14 @@ export class AiBaseManager implements AiProposalManagerV1 {
       // Unknown prices cannot bypass the shared arbiter's stockpile reservation.
       if (canConstructMain && construction) {
         const ordinal = state.identities.nextIntent;
-        const intentId = `intent:expansion:${ordinal}` as AiIntentV1["intentId"];
-        const effectId = `effect:expansion:${ordinal}` as AiIntentV1["effectId"];
-        const claimId = `claim:expansion:${ordinal}` as AiIntentV1["claims"][number]["claimId"];
+        const intentId = `intent:expansion:${ordinal}` as AiIntent["intentId"];
+        const effectId = `effect:expansion:${ordinal}` as AiIntent["effectId"];
+        const claimId = `claim:expansion:${ordinal}` as AiIntent["claims"][number]["claimId"];
         intents.push({
           intentId,
           effectId,
-          planId: `plan:expansion:${expansion.baseId}` as AiIntentV1["planId"],
-          demandId: `demand:expansion:${expansion.baseId}` as AiDemandV1["demandId"],
+          planId: `plan:expansion:${expansion.baseId}` as AiIntent["planId"],
+          demandId: `demand:expansion:${expansion.baseId}` as AiDemand["demandId"],
           kind: "construct",
           lane: "optional_infrastructure_tech",
           proposedTick: observation.tick,
@@ -383,11 +383,11 @@ export class AiBaseManager implements AiProposalManagerV1 {
             ...createAiResourceCostClaims(claimId, construction.resourceCost),
             { claimId, kind: "site", siteKey: expansion.reservedSiteKey! },
             {
-              claimId: `${claimId}:builder` as AiIntentV1["claims"][number]["claimId"],
+              claimId: `${claimId}:builder` as AiIntent["claims"][number]["claimId"],
               kind: "actor",
               actorId: builder.actorId
             },
-            { claimId: `${claimId}:effect` as AiIntentV1["claims"][number]["claimId"], kind: "effect", effectId }
+            { claimId: `${claimId}:effect` as AiIntent["claims"][number]["claimId"], kind: "effect", effectId }
           ],
           reasonCode: `expansion:${expansion.expansion?.trigger ?? "unknown"}:${macroOpening ? "macro_priority" : "candidate_reserved"}`,
           builderIds: [builder.actorId],

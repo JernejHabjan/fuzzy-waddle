@@ -1,8 +1,8 @@
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import type { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservedActor, AiObservation } from "../contracts/ai-observation";
 import { canReachAiConstructionSite } from "./ai-construction-recovery-proposal";
 import { constructionAccessPolicy } from "./ai-construction-access";
 import { aiEconomySiteSafety } from "./ai-economy-site-safety";
@@ -10,13 +10,13 @@ import { isAvailableBuilder } from "./ai-macro-observation";
 
 /** Reuses recovery route facts and current fair placement cells; native application owns final admission. */
 export function findAiExpansionBuilder(args: {
-  observation: AiObservationV1;
-  state: AiBrainStateV1;
-  catalog: AiCapabilityCatalogV1;
+  observation: AiObservation;
+  state: AiBrainState;
+  catalog: AiCapabilityCatalog;
   objectName: ObjectNames;
   position: Vector3Simple;
   accessNodeId: string | null;
-}): AiObservedActorV1 | undefined {
+}): AiObservedActor | undefined {
   const { observation, state, catalog, objectName, position } = args;
   const radius =
     catalog.entries.find((entry) => entry.sourceObjectName === objectName)?.constructionProfile?.footprintRadiusTiles ??
@@ -52,7 +52,7 @@ export function findAiExpansionBuilder(args: {
     )
     .sort((left, right) => left.actorId.localeCompare(right.actorId))
     .find((builder) => {
-      const target: AiObservedActorV1 = {
+      const target: AiObservedActor = {
         ...builder,
         actorId: `expansion-site:${position.x}:${position.y}:${position.z}`,
         observedTick: observation.tick,

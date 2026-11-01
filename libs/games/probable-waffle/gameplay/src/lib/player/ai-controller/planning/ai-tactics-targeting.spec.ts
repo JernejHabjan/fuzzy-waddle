@@ -1,4 +1,4 @@
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
 
 import { combatActor, squad, fixtureState, observation, manager } from "./ai-tactics-test-fixtures";
 
@@ -186,7 +186,7 @@ describe("AiTacticsManager", () => {
         defenders.map((actor) => actor.actorId)
       )
     ]);
-    const fortified: AiBrainStateV1 = {
+    const fortified: AiBrainState = {
       ...current,
       fortifications: [
         {

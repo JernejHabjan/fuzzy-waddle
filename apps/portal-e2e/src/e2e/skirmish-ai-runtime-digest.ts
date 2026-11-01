@@ -1,6 +1,6 @@
-import type { AiRuntimePresetApplicationV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application-v1";
-import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
+import type { AiRuntimePresetApplication } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application";
+import type { RuntimeCheckpoint } from "./skirmish-ai-runtime-checkpoint";
 
 export function digestRuntimeValue(value: unknown): string {
   const text = JSON.stringify(value);
@@ -14,7 +14,7 @@ export function digestRuntimeValue(value: unknown): string {
 
 /** Adds composition milestones only for declared composition variants; other fixture signatures retain their existing shape. */
 export function projectRuntimeOutcomeDigestInput(
-  checkpoints: readonly RuntimeCheckpointV1[],
+  checkpoints: readonly RuntimeCheckpoint[],
   includeTerminalResult: boolean,
   includeComposition = false
 ): unknown {
@@ -87,7 +87,7 @@ export function projectRuntimeOutcomeDigestInput(
 }
 
 /** Setup order and semantic products are deterministic; per-match stamped command and runtime actor IDs stay in raw evidence. */
-export function projectRuntimePresetQueueDigest(items: AiRuntimePresetApplicationV1["initialQueueItems"]) {
+export function projectRuntimePresetQueueDigest(items: AiRuntimePresetApplication["initialQueueItems"]) {
   return items.map((item, setupOrdinal) => ({ producerFixtureActorId: item.producerFixtureActorId, kind: item.kind,
     objectName: item.objectName, researchType: item.researchType, setupOrdinal }));
 }

@@ -1,22 +1,22 @@
 import type {
-  AiBrainStateV1,
-  AiFortificationNodeStateV1,
-  AiFortificationStateV1
-} from "../contracts/ai-brain-state-v1";
+  AiBrainState,
+  AiFortificationNodeState,
+  AiFortificationState
+} from "../contracts/ai-brain-state";
 
-import type { AiCommandOutcomeV1 } from "../contracts/ai-command-contracts";
+import type { AiCommandOutcome } from "../contracts/ai-command-contracts";
 
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiObservation } from "../contracts/ai-observation";
 
 import { tileKey, positionOf } from "./ai-fortification-support";
 const BREACH_RETRY_TICKS = 100;
 const MAX_BREACH_RECOVERY_ATTEMPTS = 2;
 function reconcileNode(
-  current: AiFortificationNodeStateV1,
-  observation: AiObservationV1,
-  outcomes: readonly AiCommandOutcomeV1[],
+  current: AiFortificationNodeState,
+  observation: AiObservation,
+  outcomes: readonly AiCommandOutcome[],
   reserved: boolean
-): AiFortificationNodeStateV1 {
+): AiFortificationNodeState {
   if (!current.objectName) return current;
   const observed = observation.actors.find((actor) => {
     const position = positionOf(actor);
@@ -87,10 +87,10 @@ function reconcileNode(
 
 /** Reconciles native sites and terminal effects without reopening abandoned plans or recycling replacement identities. */
 export function reconcileFortificationPlan(
-  plan: AiFortificationStateV1,
-  observation: AiObservationV1,
-  state: AiBrainStateV1
-): AiFortificationStateV1 {
+  plan: AiFortificationState,
+  observation: AiObservation,
+  state: AiBrainState
+): AiFortificationState {
   if (!plan.graph || plan.lifecycle === "abandoned") return plan;
   if (!state.bases.some((base) => base.baseId === plan.graph?.baseId && base.active && base.lifecycle !== "lost")) {
     return {

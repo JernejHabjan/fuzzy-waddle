@@ -8,8 +8,8 @@ import { AiPlayerHandler } from "../ai-player-handler";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { isRecord, hasOnlyKeys } from "./ai-runtime-fixture-values";
-import type { AiRuntimePresetWorldV1 } from "./ai-runtime-preset-world-v1";
-import { recordAiRuntimePresetEventV1 } from "./ai-runtime-browser-test-config";
+import type { AiRuntimePresetWorld } from "./ai-runtime-preset-world";
+import { recordAiRuntimePresetEvent } from "./ai-runtime-browser-test-config";
 
 /** Finite actor-scoped route-service failures/delays; never native map connectivity or consumed strategic state. */
 export function validAiRuntimeRouteOutages(value: unknown, roles: ReadonlySet<string>): boolean {
@@ -35,7 +35,7 @@ export function validAiRuntimeRouteOutages(value: unknown, roles: ReadonlySet<st
 
 /** Fixed simulation deadlines release retained native calls; shutdown resolves null without invoking a dead scene. */
 export function installAiRuntimeRouteOutages(
-  scene: ProbableWaffleScene, preset: AiRuntimePresetWorldV1,
+  scene: ProbableWaffleScene, preset: AiRuntimePresetWorld,
   actors: ReadonlyMap<string, Phaser.GameObjects.GameObject>
 ): void {
   if (!preset.routeOutages?.length) return;
@@ -69,7 +69,7 @@ export function installAiRuntimeRouteOutages(
     if (!entry) return undefined;
     if (!entry.observed) {
       entry.observed = true;
-      recordAiRuntimePresetEventV1({ id: entry.id, tick: clock.currentTick, affectedActors: 1,
+      recordAiRuntimePresetEvent({ id: entry.id, tick: clock.currentTick, affectedActors: 1,
         subjectName: actor.name, affectedActorId: getActorComponent(actor, IdComponent)?.id ?? null });
     }
     return entry;

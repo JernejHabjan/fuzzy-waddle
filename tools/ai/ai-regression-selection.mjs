@@ -1,7 +1,7 @@
 const safeCaseId = /^[a-z0-9][a-z0-9-]{0,99}$/;
 
 export function resolveAiRegressionSelection(pack, manifest, readFixture, profile = "core") {
-  if (pack?.schemaVersion !== 1 || pack.packId !== "ai-regression-v1" || !Array.isArray(pack.selection) ||
+  if (pack?.schemaVersion !== 1 || pack.packId !== "ai-regression" || !Array.isArray(pack.selection) ||
       pack.selection.length === 0 || !Number.isSafeInteger(pack.runtimeBudgetMs) || pack.runtimeBudgetMs < 1 ||
       !pack.omissionPolicy || typeof pack.omissionPolicy !== "object" ||
       !pack.preflight || typeof pack.preflight.project !== "string" || typeof pack.preflight.testPathPattern !== "string" ||

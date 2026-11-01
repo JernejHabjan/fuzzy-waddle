@@ -1,21 +1,21 @@
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiIntent } from "../contracts/ai-intent";
+import type { AiObservation } from "../contracts/ai-observation";
+import type { AiDemand } from "../contracts/ai-plan-contracts";
 import { nextIds } from "./ai-macro-effect-identity";
 import { queueFree } from "./ai-macro-observation";
 import { producerMilitaryProducts, productionRoleDeficit, roleFor } from "./ai-military-catalog";
-import type { AiProductionTransitionV1 } from "../contracts/brain-state/ai-production-transition-v1";
+import type { AiProductionTransition } from "../contracts/brain-state/ai-production-transition";
 
 /** Fills the bounded force deficit with affordable, role-balanced production. */
 export function proposeAiMilitaryUnits(args: {
-  readonly observation: AiObservationV1;
-  readonly state: AiBrainStateV1;
-  readonly catalog: AiCapabilityCatalogV1;
-  readonly producers: readonly AiObservationV1["actors"][number][];
-  readonly military: readonly AiObservationV1["actors"][number][];
+  readonly observation: AiObservation;
+  readonly state: AiBrainState;
+  readonly catalog: AiCapabilityCatalog;
+  readonly producers: readonly AiObservation["actors"][number][];
+  readonly military: readonly AiObservation["actors"][number][];
   readonly queuedMilitary: readonly { readonly objectName: ObjectNames }[];
   readonly acceptedEffectCount: number;
   readonly targetMilitary: number;
@@ -23,10 +23,10 @@ export function proposeAiMilitaryUnits(args: {
   readonly pressureDomain: "ground" | "air";
   readonly compositionPrefix: string;
   readonly workforceRecoveryOwnsFood: boolean;
-  readonly priorIntents: readonly AiIntentV1[];
+  readonly priorIntents: readonly AiIntent[];
   readonly ordinal: number;
-  readonly transition?: AiProductionTransitionV1;
-}): readonly AiIntentV1[] {
+  readonly transition?: AiProductionTransition;
+}): readonly AiIntent[] {
   const {
     observation,
     state,
@@ -61,7 +61,7 @@ export function proposeAiMilitaryUnits(args: {
         [resource.resourceType, resource.stockpile - resource.reservedUnspent - resource.obligationsDue] as const
     )
   );
-  const proposals: AiIntentV1[] = [];
+  const proposals: AiIntent[] = [];
   let remaining = targetMilitary - projectedCount;
   const objective =
     transition?.status === "committed"
@@ -127,7 +127,7 @@ export function proposeAiMilitaryUnits(args: {
       .filter((entry): entry is [ResourceType, number] => entry[1] !== undefined && entry[1] > 0)
       .sort(([left], [right]) => left.localeCompare(right))
       .map(([resourceType, amount]) => ({
-        claimId: `${next.claimId}:${resourceType}` as AiIntentV1["claims"][number]["claimId"],
+        claimId: `${next.claimId}:${resourceType}` as AiIntent["claims"][number]["claimId"],
         kind: "resource" as const,
         resourceType,
         amount
@@ -142,7 +142,7 @@ export function proposeAiMilitaryUnits(args: {
       kind: "produce",
       spendingCategory: "defense",
       planId: transition?.planId ?? state.opening.plan.planId,
-      demandId: transition?.demandId ?? ("demand:composition:first-squad" as AiDemandV1["demandId"]),
+      demandId: transition?.demandId ?? ("demand:composition:first-squad" as AiDemand["demandId"]),
       lane: "supply_production",
       proposedTick: observation.tick,
       urgencyClass: 3,
@@ -152,7 +152,7 @@ export function proposeAiMilitaryUnits(args: {
         { claimId: next.claimId, kind: "production_slot", producerId: producer.actorId, slot },
         ...resourceClaims,
         {
-          claimId: `${next.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
+          claimId: `${next.claimId}:effect` as AiIntent["claims"][number]["claimId"],
           kind: "effect",
           effectId: next.effectId
         }

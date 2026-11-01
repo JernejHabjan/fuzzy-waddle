@@ -1,9 +1,9 @@
-import type { AiRuntimePresetWorldV1 } from "./ai-runtime-preset-world-v1";
+import type { AiRuntimePresetWorld } from "./ai-runtime-preset-world";
 
 /** HealthComponent initialization is deferred, so durability starts must run from the paused setup callback. */
 export function requiresScheduledAiRuntimePresetSetup(
   preset: Pick<
-    AiRuntimePresetWorldV1,
+    AiRuntimePresetWorld,
     | "queues"
     | "constructionOrders"
     | "researchQueues"

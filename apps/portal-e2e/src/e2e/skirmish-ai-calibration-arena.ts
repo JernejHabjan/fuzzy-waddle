@@ -1,8 +1,8 @@
 import type { Page } from "@playwright/test";
 import type Phaser from "phaser";
 import type { ProbableWaffleScene } from "@fuzzy-waddle/probable-waffle-phaser/core/probable-waffle.scene";
-import type { AiBrainStateV1 } from
-  "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/contracts/ai-brain-state-v1";
+import type { AiBrainState } from
+  "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/contracts/ai-brain-state";
 import type { AiRuntimeDecisionRepro } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-decision-repro";
 import type { AiCalibrationJob } from "./skirmish-ai-calibration-job";
@@ -10,11 +10,11 @@ import type { AiCalibrationJob } from "./skirmish-ai-calibration-job";
 /** Read native services and advance whole frames with both actual controllers settled; retain only bounded metrics. */
 export async function runCalibrationArena(page: Page, job: AiCalibrationJob) {
   return page.evaluate(async (job) => {
-    type Controller = { player: { playerNumber?: number }; getBrainState?(): AiBrainStateV1;
+    type Controller = { player: { playerNumber?: number }; getBrainState?(): AiBrainState;
       isDecisionBoundarySettled?(): boolean; stepInFlight?: boolean; telemetry?: { snapshot(): { frame: number } } };
-    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: { game: Phaser.Game };
+    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: { game: Phaser.Game };
       __nativeCalibrationLegacy?: { game: Phaser.Game } };
-    const game = (job.revision === "candidate" ? realm.__fuzzyWaddleAiRuntimeBrowserTestV1 : realm.__nativeCalibrationLegacy)?.game;
+    const game = (job.revision === "candidate" ? realm.__fuzzyWaddleAiRuntimeBrowserTest : realm.__nativeCalibrationLegacy)?.game;
     const scene = game?.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
       ProbableWaffleScene | undefined;
     const services: readonly object[] = scene?.getSceneGameData().services ?? [], systems: readonly object[] =

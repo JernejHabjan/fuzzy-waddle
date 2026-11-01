@@ -20,13 +20,13 @@ export async function observeMultiplayerPeer(page: Page, aiPlayerNumber: number)
     type Relay = MultiplayerPeerObservation["relay"];
     type Hashes = MultiplayerPeerObservation["hashes"];
     const host = (window as unknown as {
-      __fuzzyWaddleAiMultiplayerBrowserTestV1?: {
+      __fuzzyWaddleAiMultiplayerBrowserTest?: {
         game: { scene: { getScenes(active: boolean): {
           scene: { key: string };
           getSceneGameData(): { services: unknown[]; systems: unknown[] };
         }[] } };
       };
-    }).__fuzzyWaddleAiMultiplayerBrowserTestV1;
+    }).__fuzzyWaddleAiMultiplayerBrowserTest;
     const scene = host?.game.scene.getScenes(true).find((candidate) => candidate.scene.key === "MapAiMultiplayer");
     if (!scene) throw new Error("multiplayer_test_scene_missing");
     const graph = scene.getSceneGameData();

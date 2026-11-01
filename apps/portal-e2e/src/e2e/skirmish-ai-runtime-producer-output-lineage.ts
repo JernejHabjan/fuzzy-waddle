@@ -1,21 +1,21 @@
 import { isDeepStrictEqual } from "node:util";
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
-import type { RuntimeProductionSpatialAuthorityV1 } from "./skirmish-ai-runtime-production-spatial-authority";
-import type { RuntimeProducerRoutesV1 } from "./skirmish-ai-runtime-producer-routes";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { RuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality";
+import type { RuntimeProductionSpatialAuthority } from "./skirmish-ai-runtime-production-spatial-authority";
+import type { RuntimeProducerRoutes } from "./skirmish-ai-runtime-producer-routes";
 
 /** Require exact native item/product/completion identity; names, prices and nearest timestamps cannot select a demand. */
 export function matchRuntimeProducerOutput(
-  capture: AiRuntimeProductionCaptureV1, boundary: RuntimeProducerRoutesV1["outputs"][number]["boundary"],
-  commands: RuntimeProductionCausalityV1["commands"], completions: RuntimeProductionCausalityV1["completions"],
-  spatial: RuntimeProductionSpatialAuthorityV1
+  capture: AiRuntimeProductionSnapshot, boundary: RuntimeProducerRoutes["outputs"][number]["boundary"],
+  commands: RuntimeProductionCausality["commands"], completions: RuntimeProductionCausality["completions"],
+  spatial: RuntimeProductionSpatialAuthority
 ) {
   const failures: string[] = [];
   const gaps = ["production_route_rally_command_identity_missing", "production_route_useful_arrival_missing"];
-  let completion: RuntimeProducerRoutesV1["outputs"][number]["completion"] = null;
-  let commandScope: RuntimeProducerRoutesV1["outputs"][number]["commandScope"] = null;
-  let spawn: RuntimeProducerRoutesV1["outputs"][number]["spawn"] = null;
+  let completion: RuntimeProducerRoutes["outputs"][number]["completion"] = null;
+  let commandScope: RuntimeProducerRoutes["outputs"][number]["commandScope"] = null;
+  let spawn: RuntimeProducerRoutes["outputs"][number]["spawn"] = null;
   const value = boundary.spatial;
   if (value.kind !== "output") return { boundary, completion, commandScope, spawn, failures, gaps };
   const candidates = completions.filter((entry) => entry.itemId === value.item.itemId &&

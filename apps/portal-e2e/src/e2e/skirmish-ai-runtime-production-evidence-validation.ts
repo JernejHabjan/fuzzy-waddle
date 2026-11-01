@@ -1,5 +1,5 @@
-import type { RuntimeProductionContractV1 } from "./skirmish-ai-runtime-production-contract";
-import type { RuntimeProductionEvidenceV1 } from "./skirmish-ai-runtime-production-evidence";
+import type { RuntimeProductionContract } from "./skirmish-ai-runtime-production-contract";
+import type { RuntimeProductionEvidence } from "./skirmish-ai-runtime-production-evidence";
 
 function unique(values: readonly string[]): boolean {
   return values.every((value) => value.length > 0) && new Set(values).size === values.length;
@@ -7,8 +7,8 @@ function unique(values: readonly string[]): boolean {
 
 /** Rejects malformed identities and numeric facts before geometric, timing or payment predicates can accept them. */
 export function validateRuntimeProductionEvidence(
-  contract: RuntimeProductionContractV1,
-  evidence: RuntimeProductionEvidenceV1
+  contract: RuntimeProductionContract,
+  evidence: RuntimeProductionEvidence
 ): string[] {
   const failures: string[] = [];
   const initial = evidence.snapshots[0];

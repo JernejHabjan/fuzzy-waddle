@@ -1,11 +1,11 @@
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { runtimeResourceCreditMatches } from "./skirmish-ai-runtime-resource-service-validation";
 import type { RuntimeSourceDeliveryContract } from "./skirmish-ai-source-delivery-contract";
 
 /** Bind actual extraction to the next offered cargo and its exact successful deposit, refusing mixed-source/reset attribution. */
 export function hasNativeSourceDelivery(
-  facts: readonly AiRuntimeProductionFactV1[], contract: RuntimeSourceDeliveryContract
+  facts: readonly AiRuntimeProductionFact[], contract: RuntimeSourceDeliveryContract
 ): boolean {
   const { sourceActorId, sourceOwner, playerNumber, resourceType, fromTick, throughTick, workerActorId, depositActorId } = contract;
   const service = facts.flatMap((fact) => fact.tick >= fromTick && fact.tick <= throughTick &&
@@ -52,7 +52,7 @@ export function hasNativeSourceDelivery(
 
 /** Use for cases where an owner may switch among neutral sources or owned drop-offs during recovery. */
 export function hasNativeSourceDeliveryToAnyDropOff(
-  facts: readonly AiRuntimeProductionFactV1[],
+  facts: readonly AiRuntimeProductionFact[],
   contract: Omit<RuntimeSourceDeliveryContract, "sourceActorId" | "depositActorId">
 ): boolean {
   const service = facts.flatMap((fact) => fact.tick >= contract.fromTick && fact.tick <= contract.throughTick &&

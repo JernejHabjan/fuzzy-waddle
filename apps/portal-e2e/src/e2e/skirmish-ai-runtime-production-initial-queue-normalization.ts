@@ -3,19 +3,19 @@ import { AI_RUNTIME_MAX_FACTS } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/append-ai-runtime-production-fact";
 import { appendRuntimeInitialQueueApplication } from "./skirmish-ai-runtime-initial-queue-application";
 // prettier-ignore
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 // prettier-ignore
-import type { AiRuntimePresetApplicationV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application-v1";
-import type { RuntimeProductionInitialQueueV1 } from "./skirmish-ai-runtime-production-initial-queue";
+import type { AiRuntimePresetApplication } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application";
+import type { RuntimeProductionInitialQueue } from "./skirmish-ai-runtime-production-initial-queue";
 
 /** Joins actual setup commands to captured physical insertion/money and the tick-zero item, before resource resets. */
 export function normalizeRuntimeProductionInitialQueues(
-  capture: AiRuntimeProductionCaptureV1,
-  setup: AiRuntimePresetApplicationV1 | undefined
+  capture: AiRuntimeProductionSnapshot,
+  setup: AiRuntimePresetApplication | undefined
 ) {
-  const items: RuntimeProductionInitialQueueV1[] = [];
+  const items: RuntimeProductionInitialQueue[] = [];
   const failures: string[] = [];
   const gaps = new Set<string>();
   if (

@@ -1,13 +1,13 @@
 import { isDeepStrictEqual } from "node:util";
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import type { validateRuntimeQueueCompletionInterval } from "./skirmish-ai-runtime-queue-completion-interval";
 
 /** Actual service/index registration inside the creation call plus its later native terminal; never a useful-effect oracle. */
 export function matchRuntimeCompletedEffectAuthority(
-  capture: AiRuntimeProductionCaptureV1,
+  capture: AiRuntimeProductionSnapshot,
   scope: NonNullable<ReturnType<typeof validateRuntimeQueueCompletionInterval>["scope"]>
 ) {
   const { before, after, origin } = scope;
@@ -35,7 +35,7 @@ export function matchRuntimeCompletedEffectAuthority(
       terminal.outcome.worldLinkIds[0] !== actor.actorId) {
       return { effect: null, failures: ["production_ai_completion_actor_authority_invalid"], gaps: [] };
     }
-    const registrations = capture.facts.filter((fact): fact is Extract<AiRuntimeProductionFactV1, { kind: "actor_registered" }> =>
+    const registrations = capture.facts.filter((fact): fact is Extract<AiRuntimeProductionFact, { kind: "actor_registered" }> =>
       fact.kind === "actor_registered" && fact.actor.actorId === actor.actorId);
     const registered = registrations[0];
     if (!registered) return { effect: null, failures: [], gaps: ["production_ai_completion_actor_registration_missing"] };
@@ -55,7 +55,7 @@ export function matchRuntimeCompletedEffectAuthority(
       terminal.outcome.worldLinkIds[0] !== `research:${command.researchType}`) {
       return { effect: null, failures: ["production_ai_completion_tech_authority_invalid"], gaps: [] };
     }
-    const registrations = capture.facts.filter((fact): fact is Extract<AiRuntimeProductionFactV1, { kind: "research_completed" }> =>
+    const registrations = capture.facts.filter((fact): fact is Extract<AiRuntimeProductionFact, { kind: "research_completed" }> =>
       fact.kind === "research_completed" && fact.researchType === command.researchType);
     const registered = registrations[0];
     if (before.completion.researchRegistered !== null && value.researchRegistered !== null &&

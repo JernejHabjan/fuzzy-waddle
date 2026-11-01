@@ -1,15 +1,15 @@
 import { FactionType, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-brain-state-v1";
-import { createAiProfileConfigV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-profile-defaults";
+import { createAiBrainState } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-brain-state";
+import { createAiProfileConfig } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-profile-defaults";
 import type { AiDecisionDispatchEvent } from "../ai-decision-dispatch-event";
-import type { AiRuntimeQueueResourceV1 } from "./ai-runtime-queue-resource-v1";
+import type { AiRuntimeQueueResource } from "./ai-runtime-queue-resource";
 import { pendingCommandIntent, pendingCommandRequest, pendingCommandFinished } from "./ai-runtime-pending-command-fixtures";
 
 /** Invented contracts, never runtime proof; retain native-shaped leases, request scope and full payment samples. */
 export function unspentClaimFixture() {
   const intent = pendingCommandIntent();
-  const state = createAiBrainStateV1({ playerNumber: 2, faction: FactionType.Tivara, tick: 100, archetypeId: "balanced",
-    profile: createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium) });
+  const state = createAiBrainState({ playerNumber: 2, faction: FactionType.Tivara, tick: 100, archetypeId: "balanced",
+    profile: createAiProfileConfig(ProbableWaffleAiDifficulty.Medium) });
   const decision = { identity: { playerNumber: 2, tick: 100, generation: 7, decisionSequence: 1, authorityEpoch: 1 },
     acceptedIntents: [intent], decisions: [{ intent, outcome: "accepted", reason: "accepted" }],
     economyProduction: state.economyProduction, reservations: intent.claims.flatMap((claim) => claim.kind === "resource" ? [{
@@ -26,6 +26,6 @@ export function unspentClaimFixture() {
     originatingCommandContext: { playerNumber: 2, actorIds: ["producer"], execution: receipt.receipt.command.execution },
     cancellationCommand: null, gaps: [], emission: { operationId: 1, phase: "started", requested: { food: 35 },
       before: { food: 100, wood: 100, stone: 100, minerals: 100 }, snapshotRestoreInProgress: false }
-  } satisfies AiRuntimeQueueResourceV1;
+  } satisfies AiRuntimeQueueResource;
   return { intent, decision, request, receipt, resource };
 }

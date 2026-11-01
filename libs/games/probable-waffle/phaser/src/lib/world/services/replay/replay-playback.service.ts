@@ -18,7 +18,7 @@ import {
 } from "@fuzzy-waddle/probable-waffle-campaign";
 import { CampaignMissionDirector } from "../../../campaign/campaign-mission-director";
 
-const SUPPORTED_REPLAY_COMPATIBILITY_VERSIONS = new Set(["lockstep-v1", "campaign-lockstep-v2"]);
+const SUPPORTED_REPLAY_COMPATIBILITY_VERSIONS = new Set(["lockstep", "campaign-lockstep-v2"]);
 const SUPPORTED_REPLAY_FORMAT_VERSIONS = new Set(["1", "2"]);
 
 /**

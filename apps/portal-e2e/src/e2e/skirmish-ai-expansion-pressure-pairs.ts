@@ -1,12 +1,12 @@
-import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeFixture } from "./skirmish-ai-runtime-fixture";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 import { validExpansionPressureRecipe } from "@fuzzy-waddle/skirmish-ai-tools/skirmish-runtime-expansion-pressure-fixture.mjs";
 import { evaluateExpansionWorld } from "./skirmish-ai-expansion-world-evaluation";
 import { expansionHomeDanger } from "./skirmish-ai-expansion-home-danger";
 import { expansionServiceFailures } from "./skirmish-ai-expansion-service-evaluation";
 
 /** Full-case pair presence and aligned positive action prevent absent expansion demand from impersonating suppression. */
-export function evaluateExpansionPressurePairs(fixture: RuntimeFixtureV1, results: readonly RuntimeVariantResultV1[]): string[] {
+export function evaluateExpansionPressurePairs(fixture: RuntimeFixture, results: readonly RuntimeVariantResult[]): string[] {
   const assertion = fixture.assertions["EXP-02"], contract = assertion?.requiredExpansionPressure;
   if (!assertion || !contract || !validExpansionPressureRecipe(fixture.recipe, assertion, "EXP-02")) {
     return ["expansion_pressure_binding_invalid"];

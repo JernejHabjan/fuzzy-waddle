@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import type { AiRuntimeProductionSpatialV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-spatial-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
+import type { AiRuntimeProductionSpatial } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-spatial";
 import { routeOrderFixture } from "./skirmish-ai-runtime-route-order-fixture";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
 import { normalizeRuntimeServiceAttempts } from "./skirmish-ai-runtime-service-attempt-normalization";
@@ -12,8 +12,8 @@ function fixture(rally = false) {
   const started = { kind: "service_attempt", attemptId: 1, operation: "drop_off", phase: "started", amount: null,
     source: f.product, target: f.producer, sourceInCaptureScene: true, targetInCaptureScene: true,
     order: f.currentOrder, lifetimeValid: true, clockTick: 10, sceneActive: true, snapshotRestoreInProgress: false, gaps: []
-  } satisfies AiRuntimeProductionSpatialV1;
-  const resolved = { ...started, phase: "resolved", amount: 3 } satisfies AiRuntimeProductionSpatialV1;
+  } satisfies AiRuntimeProductionSpatial;
+  const resolved = { ...started, phase: "resolved", amount: 3 } satisfies AiRuntimeProductionSpatial;
   const facts = [...f.capture.facts, f.fact(started), f.fact(resolved)].map((fact, index) => ({ ...fact, sequence: index + 1 }));
   return { ...f, started, resolved, capture: { ...f.capture, facts } };
 }
@@ -49,7 +49,7 @@ test("a replacement order cannot supply purpose to the retained original service
 
 for (const phase of ["resolved", "rejected", "threw"] as const) {
   test(`native ${phase} preserves caller ownership and separates zero or failed results`, () => {
-    const f = fixture(), facts = f.capture.facts.map((fact): AiRuntimeProductionFactV1 =>
+    const f = fixture(), facts = f.capture.facts.map((fact): AiRuntimeProductionFact =>
       fact.kind === "spatial_authority" && fact.spatial.kind === "service_attempt" && fact.spatial.phase !== "started" ?
         { ...fact, spatial: { ...fact.spatial, phase, amount: phase === "resolved" ? 0 : null } } : fact);
     const result = normalizeRuntimeProductionCausality({ ...f.capture, facts });
@@ -61,7 +61,7 @@ for (const phase of ["resolved", "rejected", "threw"] as const) {
 
 for (const missing of ["order", "admission", "terminal", "clock", "target_scene", "pre_admission"] as const) {
   test(`missing ${missing} cannot receive native attempt ownership`, () => {
-    const f = fixture(), facts = f.capture.facts.flatMap((fact): AiRuntimeProductionFactV1[] => {
+    const f = fixture(), facts = f.capture.facts.flatMap((fact): AiRuntimeProductionFact[] => {
       if (missing === "admission" && fact.kind === "spatial_authority" && fact.spatial.kind === "route_order") return [];
       if (fact.kind !== "spatial_authority" || fact.spatial.kind !== "service_attempt") return [fact];
       const value = fact.spatial;
@@ -79,21 +79,21 @@ for (const missing of ["order", "admission", "terminal", "clock", "target_scene"
 
 test("restore/reuse fences the original attempt and a true lifetime revival is contradictory", () => {
   const f = fixture();
-  const facts = f.capture.facts.flatMap((fact): AiRuntimeProductionFactV1[] => {
+  const facts = f.capture.facts.flatMap((fact): AiRuntimeProductionFact[] => {
     if (fact.kind !== "spatial_authority" || fact.spatial.kind !== "service_attempt" || fact.spatial.phase === "started") return [fact];
     return [f.fact({ ...f.requested, kind: "route_order_restore", source: f.product, reason: "restore_attempt" }),
       { ...fact, spatial: { ...fact.spatial, lifetimeValid: false } }];
   }).map((fact, index) => ({ ...fact, sequence: index + 1 }));
   const result = normalizeRuntimeProductionCausality({ ...f.capture, facts });
   expect(result.failures).toEqual([]); expect(result.serviceAttempts[0]).toMatchObject({ callerAttributed: false, admission: null });
-  const revived = facts.map((fact): AiRuntimeProductionFactV1 => fact.kind === "spatial_authority" &&
+  const revived = facts.map((fact): AiRuntimeProductionFact => fact.kind === "spatial_authority" &&
     fact.spatial.kind === "service_attempt" ? { ...fact, spatial: { ...fact.spatial, lifetimeValid: true } } : fact);
   expect(normalizeRuntimeServiceAttempts({ ...f.capture, facts: revived }).failures)
     .toContain("production_service_attempt_lifetime_revived");
 });
 
 test("unregistered/reused target prevents ownership without inventing source lifetime loss", () => {
-  const f = fixture(), fence: AiRuntimeProductionFactV1 = { sequence: 0, tick: 10, playerNumber: 1,
+  const f = fixture(), fence: AiRuntimeProductionFact = { sequence: 0, tick: 10, playerNumber: 1,
     kind: "actor_unregistered", actorId: f.producer.actorId ?? "", objectName: f.producer.objectName };
   const facts = f.capture.facts.flatMap((fact) => fact.kind === "spatial_authority" && fact.spatial.kind === "service_attempt" &&
     fact.spatial.phase === "resolved" ? [fence, fact] : [fact]).map((fact, index) => ({ ...fact, sequence: index + 1 }));
@@ -117,7 +117,7 @@ for (const invalid of ["orphan", "duplicate", "amount", "target", "stamp", "phas
       target: invalid === "target" ? { ...f.producer, actorId: "other_target" } : f.producer,
       operation: invalid === "operation" ? "gather" : "drop_off",
       order: invalid === "stamp" ? { ...f.currentOrder, commandContext: null } : f.currentOrder
-    } satisfies AiRuntimeProductionSpatialV1;
+    } satisfies AiRuntimeProductionSpatial;
     const existing = invalid === "duplicate" ? f.capture.facts : f.capture.facts.slice(0, -1);
     const facts = [...existing, f.fact(terminal)].map((fact, index) => ({ ...fact, sequence: index + 1 }));
     const result = normalizeRuntimeProductionCausality({ ...f.capture, facts });

@@ -1,16 +1,16 @@
 import { FactionType, ObjectNames, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
 import { aiDeadline } from "../contracts/ai-core-types";
-import type { AiBrainStateV1, AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observation-v1";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import type { AiBrainState, AiSquadState } from "../contracts/ai-brain-state";
+import type { AiObservedActor, AiObservation } from "../contracts/ai-observation";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 import { AiTacticsManager } from "./ai-tactics-manager";
 
-const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
 const manager = new AiTacticsManager(profile);
 
-function actor(actorId: string, relation: "self" | "enemy", health: number, attackDamage: number): AiObservedActorV1 {
+function actor(actorId: string, relation: "self" | "enemy", health: number, attackDamage: number): AiObservedActor {
   const own = createAiTestOwnedActor(actorId);
   return {
     ...own,
@@ -67,7 +67,7 @@ function actor(actorId: string, relation: "self" | "enemy", health: number, atta
   };
 }
 
-function squad(): AiSquadStateV1 {
+function squad(): AiSquadState {
   return {
     squadId: "squad:attack:pressure",
     role: "attack",
@@ -91,8 +91,8 @@ function squad(): AiSquadStateV1 {
   };
 }
 
-function state(current: AiSquadStateV1): AiBrainStateV1 {
-  const initial = createAiBrainStateV1({
+function state(current: AiSquadState): AiBrainState {
+  const initial = createAiBrainState({
     playerNumber: 1,
     faction: FactionType.Tivara,
     profile,
@@ -114,7 +114,7 @@ function state(current: AiSquadStateV1): AiBrainStateV1 {
   };
 }
 
-function observation(tick: number, actors: readonly AiObservedActorV1[]): AiObservationV1 {
+function observation(tick: number, actors: readonly AiObservedActor[]): AiObservation {
   return {
     ...createAiTestObservation(),
     tick,
@@ -265,7 +265,7 @@ describe("AiTacticsManager pressure liveness", () => {
     const friendly = actor("guard", "self", 1000, 10);
     const passiveCore = actor("core", "enemy", 1000, 0);
     const initialSquad = squad();
-    const recovering: AiSquadStateV1 = {
+    const recovering: AiSquadState = {
       ...initialSquad,
       state: "recover",
       lifecycle: { ...initialSquad.lifecycle!, effectDeadline: aiDeadline(1000) }

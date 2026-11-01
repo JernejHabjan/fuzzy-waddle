@@ -1,6 +1,6 @@
 import { ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
 
 import { unknownAiValue } from "./ai-test-fixtures";
 import { catalog, demand, world, proposal } from "./ai-economy-forecast-test-fixtures";
@@ -87,7 +87,7 @@ describe("typed deterministic economy forecast scenarios", () => {
 
   it("ECO-05: skips an idle worker unable to gather the shortage resource", () => {
     const baseline = world(0, 1000);
-    const limitedCatalog: AiCapabilityCatalogV1 = {
+    const limitedCatalog: AiCapabilityCatalog = {
       ...catalog,
       entries: [
         ...catalog.entries

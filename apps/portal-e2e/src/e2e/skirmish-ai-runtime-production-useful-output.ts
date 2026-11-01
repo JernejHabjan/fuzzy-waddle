@@ -1,12 +1,12 @@
 import { runtimeProductionRouteCurrent } from "./skirmish-ai-runtime-production-route-current";
 import type { RuntimeProductionEvidenceV2 } from "./skirmish-ai-runtime-production-evidence-v2";
 import { productionActorRetained } from "./skirmish-ai-runtime-production-authority-evaluation";
-import type { RuntimeProductionContractV1 } from "./skirmish-ai-runtime-production-contract";
+import type { RuntimeProductionContract } from "./skirmish-ai-runtime-production-contract";
 
 /** Exact completion -> legal spawn -> normal attributed rally query -> actual original-destination arrival and stable actor. */
 export function runtimeProductionUsefulOutputs(
   evidence: RuntimeProductionEvidenceV2,
-  contract: RuntimeProductionContractV1
+  contract: RuntimeProductionContract
 ) {
   const { stableForTicks, usefulRallyActorRole } = contract;
   const horizon = evidence.coverage?.latestTick ?? -1;

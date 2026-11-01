@@ -1,10 +1,10 @@
-import type { RuntimeAssertionV1 } from "./skirmish-ai-runtime-assertion";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
-import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
+import type { RuntimeAssertion } from "./skirmish-ai-runtime-assertion";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeCheckpoint } from "./skirmish-ai-runtime-checkpoint";
 
 /** Only authoritative composition facts are needed, allowing focused oracle examples without unrelated world fields. */
 type CompositionEvidence = Pick<
-  RuntimeVariantResultV1,
+  RuntimeVariantResult,
   | "aiFaction"
   | "productionCompositionBranch"
   | "presetFixtureId"
@@ -15,7 +15,7 @@ type CompositionEvidence = Pick<
   | "stopReason"
 > & {
   readonly checkpoints: readonly Pick<
-    RuntimeCheckpointV1,
+    RuntimeCheckpoint,
     "targetTick" | "tick" | "militaryActors" | "appliedCommands" | "demands" | "militaryProducerQueues"
   >[];
 };
@@ -25,7 +25,7 @@ type CompositionEvidence = Pick<
  * Every branch retains its horizon: counters or a transient fulfilled checkpoint cannot prove stopping.
  */
 export function evaluateRuntimeProductionComposition(
-  assertion: RuntimeAssertionV1["requiredProductionComposition"],
+  assertion: RuntimeAssertion["requiredProductionComposition"],
   variant: CompositionEvidence
 ): string[] {
   if (!assertion) return [];

@@ -6,11 +6,11 @@ import { runtimeFixtureReference } from "./skirmish-matrix-fixtures.mjs";
 import { nativeScenarioBindings } from "./native-scenario-registration.mjs";
 
 const fixture = JSON.parse(readFileSync(new URL("./fixtures/native-scenario-recipes.json", import.meta.url), "utf8"));
-const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish-v1.json", import.meta.url), "utf8"));
+const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish.json", import.meta.url), "utf8"));
 const readerFixture = { ...fixture, scenarioIds: ["D-06"], cases: [{ ...nativeScenarioBindings.cases["D-06"].acceptance,
   scenarioId: "D-06", status: "authored_not_executed", world: "calibration", maximumTick: 18000,
   branches: ["paired native calibration"], executionBlockers: ["native_case_binding"],
-  reuse: ["tools/ai/fixtures/difficulty-calibration-v1.json"], checkpointTicks: [0, 18000],
+  reuse: ["tools/ai/fixtures/difficulty-calibration.json"], checkpointTicks: [0, 18000],
   checkpointPolicy: "An isolated reader unit control, not a missing runtime registration or executed evidence." }] };
 
 test("every missing supported runtime case has a distinct authored specification without executable registration", () => {

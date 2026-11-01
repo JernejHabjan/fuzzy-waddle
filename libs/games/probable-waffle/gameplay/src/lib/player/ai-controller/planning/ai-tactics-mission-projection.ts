@@ -1,8 +1,8 @@
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { aiDeadline } from "../contracts/ai-core-types";
-import type { AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import type { AiSquadState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservedActor } from "../contracts/ai-observation";
 import { selectAiAttackApproachPositions, targetFootprintRadiusTiles } from "./ai-tactics-approach-positions";
 import { knownPosition, distance, legalForMembers, formationPositions, movementDomains } from "./ai-tactics-geometry";
 import { assignDamage } from "./ai-tactics-combat";
@@ -16,9 +16,9 @@ import type { decideAiTacticalSquad } from "./ai-tactics-mission-decision";
 import { aiTacticalScoutDestination } from "./ai-tactics-scout-destination";
 
 function hasNavalFiringMove(
-  actor: AiObservedActorV1,
-  target: AiObservedActorV1 | undefined,
-  catalog: AiCapabilityCatalogV1 | undefined
+  actor: AiObservedActor,
+  target: AiObservedActor | undefined,
+  catalog: AiCapabilityCatalog | undefined
 ): boolean {
   const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
   const targetPosition = knownPosition(target);
@@ -132,7 +132,7 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
             ))
       ];
   const safeFiringActorIds = new Set(input.safeFiringPositions.map((assignment) => assignment.actorId));
-  const finalState: AiSquadStateV1["state"] = oscillationCount >= 2 && nextState === "engage" ? "regroup" : nextState;
+  const finalState: AiSquadState["state"] = oscillationCount >= 2 && nextState === "engage" ? "regroup" : nextState;
   const assignedPositions =
     finalState === "retreat" && retreat && squad.role === "scout"
       ? members.map((member) => ({ actorId: member.actorId, position: retreat }))
@@ -272,7 +272,7 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
     .map((actor) => actor.actorId);
   const materiallyChanged = squad.tactics?.orderSignature !== orderSignature || actorsNeedingOrder.length > 0;
   const previousMemberCount = squad.tactics?.lastObservedMemberCount ?? members.length;
-  const updated: AiSquadStateV1 = {
+  const updated: AiSquadState = {
     ...squad,
     actorIds: finalState === "completed" ? [] : members.map((actor) => actor.actorId),
     objectiveId: squad.role === "attack" ? squad.objectiveId : (targetId ?? squad.objectiveId),

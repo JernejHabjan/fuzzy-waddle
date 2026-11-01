@@ -1,4 +1,4 @@
-import { AiReproBundleValidationError, parseAiReproBundleV1 } from "./parse-ai-repro-bundle";
+import { AiReproBundleValidationError, parseAiReproBundle } from "./parse-ai-repro-bundle";
 import { digestAiReproJson } from "./ai-repro-json-digest";
 
 /** Explicit runtime-import boundary. It reads no references, executes no payload and never applies imported state. */
@@ -13,7 +13,7 @@ export function parseAiRuntimeArtifact(json: string, access: "player" | "host" |
   if (!record(value) || Object.keys(value).some((key) => key !== "manifest" && key !== "payload") ||
       !record(value.manifest) || !record(value.payload))
     throw new AiReproBundleValidationError("malformed_bundle");
-  const manifest = parseAiReproBundleV1(JSON.stringify(value.manifest), { access, maxBytes: 128 * 1024 });
+  const manifest = parseAiReproBundle(JSON.stringify(value.manifest), { access, maxBytes: 128 * 1024 });
   if (manifest.kind !== "runtime" || manifest.privacy !== "host_confidential")
     throw new AiReproBundleValidationError("malformed_bundle");
   const payload = value.payload;

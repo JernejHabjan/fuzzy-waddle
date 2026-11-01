@@ -1,5 +1,5 @@
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import type { AiRuntimeProductionFactV1 } from "./ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "./ai-runtime-production-fact";
 import { getActorComponent } from "../../../data/actor-component";
 import { getGameObjectCurrentTile, getGameObjectLogicalTransform } from "../../../data/game-object-helper";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
@@ -12,7 +12,7 @@ import { DistanceHelper } from "../../../library/distance-helper";
 import { getActorElevation, getHighGroundRangeBonus } from "../../../entity/components/combat/high-ground.helper";
 import { RepresentableComponent } from "../../../entity/components/representable-component";
 import type Phaser from "phaser";
-import type { AiRuntimeCreatedActorV1 } from "./ai-runtime-created-actor-v1";
+import type { AiRuntimeCreatedActor } from "./ai-runtime-created-actor";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 
 /** Preserves only the measured exposure class of already-fair identities. Band/profile changes invalidate until a fresh decision. */
@@ -28,7 +28,7 @@ export class AiRuntimeExposureBinding {
   constructor(
     private readonly scene: ProbableWaffleScene,
     private readonly playerNumber: number,
-    fact: Extract<AiRuntimeProductionFactV1, { kind: "decision_selected" }>
+    fact: Extract<AiRuntimeProductionFact, { kind: "decision_selected" }>
   ) {
     const input = fact.decision.input;
     const observation = input?.observation;
@@ -69,7 +69,7 @@ export class AiRuntimeExposureBinding {
   }
 
   /** A still-visible native death retires only that fair threat. Unknown removal and reuse stay sticky. */
-  invalidate(actorId: string, removal?: AiRuntimeCreatedActorV1): void {
+  invalidate(actorId: string, removal?: AiRuntimeCreatedActor): void {
     const actor = this.knownThreats.get(actorId);
     if (
       actor &&

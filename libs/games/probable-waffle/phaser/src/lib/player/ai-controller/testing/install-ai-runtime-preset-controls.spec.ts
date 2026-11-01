@@ -8,7 +8,7 @@ import { QueueComponent } from "../../../entity/components/queue/queue-component
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import type { AiRuntimePresetWorldV1 } from "./ai-runtime-preset-world-v1";
+import type { AiRuntimePresetWorld } from "./ai-runtime-preset-world";
 import { AI_RUNTIME_PRESET_CONTROL_EVENT, type AiRuntimePresetControlEvent } from "./ai-runtime-preset-control-event";
 import { installAiRuntimePresetControls } from "./install-ai-runtime-preset-controls";
 
@@ -49,7 +49,7 @@ function fixture(research = false) {
     .mockImplementation((_scene, service) => (service === SimulationTickService ? clock : bus) as never);
   const records: AiRuntimePresetControlEvent[] = [];
   scene.events.on(AI_RUNTIME_PRESET_CONTROL_EVENT, (event: AiRuntimePresetControlEvent) => records.push(event));
-  const preset: AiRuntimePresetWorldV1 = {
+  const preset: AiRuntimePresetWorld = {
     fixtureId: "controlled-refund",
     actors: [],
     resourceGrants: [],

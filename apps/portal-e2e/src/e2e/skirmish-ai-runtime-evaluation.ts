@@ -1,5 +1,5 @@
-import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeFixture } from "./skirmish-ai-runtime-fixture";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 import { evaluateRuntimeVariant } from "./skirmish-ai-runtime-variant-evaluation";
 import { evaluateRuntimePressureResponse } from "./skirmish-ai-runtime-pressure-evaluation";
 import { evaluateRuntimeProductionPairs } from "./skirmish-ai-runtime-production-pair-evaluation";
@@ -8,8 +8,8 @@ import { evaluateNativeScenarioPairs } from "./skirmish-ai-native-scenario-pairs
 
 export function evaluateScenario(
   scenarioId: string,
-  fixture: RuntimeFixtureV1,
-  variants: readonly RuntimeVariantResultV1[]
+  fixture: RuntimeFixture,
+  variants: readonly RuntimeVariantResult[]
 ): string[] {
   const assertion = fixture.assertions[scenarioId];
   if (!assertion) return [`runtime_assertions_missing:${scenarioId}`];
@@ -106,7 +106,7 @@ export function evaluateScenario(
       }
     }
   }
-  const determinismGroups = new Map<string, RuntimeVariantResultV1[]>();
+  const determinismGroups = new Map<string, RuntimeVariantResult[]>();
   for (const variant of selectedVariants) {
     if (!variant.determinismGroup) continue;
     determinismGroups.set(variant.determinismGroup, [

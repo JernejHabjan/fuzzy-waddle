@@ -216,7 +216,7 @@ function resolveRuntimeVariant(runtime, artifactPath, reference) {
   if (reference !== null && typeof reference === "object" && !Array.isArray(reference)) return reference;
   if (
     !Number.isSafeInteger(reference) ||
-    runtime?.artifactEncoding !== "external-runtime-variants-v1" ||
+    runtime?.artifactEncoding !== "external-runtime-variants" ||
     !artifactPath ||
     !runtime.artifactVariantFiles?.[reference]
   )
@@ -323,9 +323,9 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     else {
       if (options.repairList) {
         const manifest = options.requireSupported
-          ? JSON.parse(readFileSync(join(workspaceRoot, "tools/ai/fixtures/skirmish-v1.json"), "utf8"))
+          ? JSON.parse(readFileSync(join(workspaceRoot, "tools/ai/fixtures/skirmish.json"), "utf8"))
           : null;
-        if (manifest && (!Array.isArray(manifest.rows) || manifest.manifestVersion !== "skirmish-v1"))
+        if (manifest && (!Array.isArray(manifest.rows) || manifest.manifestVersion !== "skirmish"))
           throw new Error("repair_report_invalid_manifest");
         const entries = resolveRepairReportPaths(options.input).map((path) => ({
           path: relative(workspaceRoot, path) || path,

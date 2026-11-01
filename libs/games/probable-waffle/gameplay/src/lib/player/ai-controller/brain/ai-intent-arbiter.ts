@@ -1,13 +1,13 @@
 import { ObjectNames, OrderType, type ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
 import type {
-  AiIntentClaimV1,
-  AiIntentDecisionV1,
-  AiIntentPreconditionV1,
-  AiIntentV1
-} from "../contracts/ai-intent-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
+  AiIntentClaim,
+  AiIntentDecision,
+  AiIntentPrecondition,
+  AiIntent
+} from "../contracts/ai-intent";
+import type { AiObservation } from "../contracts/ai-observation";
+import type { AiProfileConfig } from "../contracts/ai-profile-config";
 import { aiSpendingBudgetConflict, type AiSpendingBudget } from "./ai-spending-budget";
 import { aiIslandResourceReserve } from "./ai-island-resource-reserve";
 import { canRenewAiSquadActorClaim } from "./ai-squad-actor-claims";
@@ -15,11 +15,11 @@ import { isSafeAiGathererRetask } from "../planning/ai-gatherer-retask";
 
 /** One deterministic admission pass across proposals from all managers. */
 export interface AiIntentArbitrationResult {
-  readonly accepted: readonly AiIntentV1[];
-  readonly decisions: readonly AiIntentDecisionV1[];
+  readonly accepted: readonly AiIntent[];
+  readonly decisions: readonly AiIntentDecision[];
 }
 
-function compareIntents(left: AiIntentV1, right: AiIntentV1): number {
+function compareIntents(left: AiIntent, right: AiIntent): number {
   return (
     left.urgencyClass - right.urgencyClass ||
     right.utility - left.utility ||
@@ -28,9 +28,9 @@ function compareIntents(left: AiIntentV1, right: AiIntentV1): number {
 }
 
 function preconditionSatisfied(
-  precondition: AiIntentPreconditionV1,
-  observation: AiObservationV1,
-  state: AiBrainStateV1
+  precondition: AiIntentPrecondition,
+  observation: AiObservation,
+  state: AiBrainState
 ): boolean {
   switch (precondition.kind) {
     case "actor_exists":
@@ -86,10 +86,10 @@ function preconditionSatisfied(
 
 /** A worker's applied gather lease may transfer to safe construction or a new gathering target. */
 function canRetaskGatherer(
-  intent: AiIntentV1,
-  claim: AiIntentClaimV1,
-  state: AiBrainStateV1,
-  observation: AiObservationV1
+  intent: AiIntent,
+  claim: AiIntentClaim,
+  state: AiBrainState,
+  observation: AiObservation
 ): boolean {
   if ((intent.kind !== "construct" && intent.kind !== "assign_gatherers") || claim.kind !== "actor") return false;
   const actor = observation.actors.find(
@@ -128,7 +128,7 @@ function canRetaskGatherer(
 }
 
 /** Stable exclusive-claim identity shared by admission and provisional reservation. */
-export function aiClaimKey(claim: AiIntentClaimV1): string {
+export function aiClaimKey(claim: AiIntentClaim): string {
   switch (claim.kind) {
     case "actor":
       return `actor:${claim.actorId}`;
@@ -145,7 +145,7 @@ export function aiClaimKey(claim: AiIntentClaimV1): string {
   }
 }
 
-function validateIntentNumbers(intent: AiIntentV1): boolean {
+function validateIntentNumbers(intent: AiIntent): boolean {
   if (!Number.isSafeInteger(intent.proposedTick) || intent.proposedTick < 0) return false;
   if (!Number.isSafeInteger(intent.urgencyClass) || intent.urgencyClass < 0) return false;
   if (!Number.isSafeInteger(intent.utility) || intent.utility < 0 || intent.utility > 1000) return false;
@@ -157,7 +157,7 @@ function validateIntentNumbers(intent: AiIntentV1): boolean {
   });
 }
 
-function pendingResourceClaims(state: AiBrainStateV1, resourceType: ResourceType): number {
+function pendingResourceClaims(state: AiBrainState, resourceType: ResourceType): number {
   let total = 0;
   for (const reservation of state.reservations) {
     if (
@@ -177,7 +177,7 @@ function pendingResourceClaims(state: AiBrainStateV1, resourceType: ResourceType
   return total;
 }
 
-function availableResource(observation: AiObservationV1, state: AiBrainStateV1, resourceType: ResourceType): number {
+function availableResource(observation: AiObservation, state: AiBrainState, resourceType: ResourceType): number {
   const entry = observation.resources.find((resource) => resource.resourceType === resourceType);
   return entry
     ? entry.stockpile - entry.reservedUnspent - entry.obligationsDue - pendingResourceClaims(state, resourceType)
@@ -186,16 +186,16 @@ function availableResource(observation: AiObservationV1, state: AiBrainStateV1, 
 
 /** Applies preconditions, exclusive claims, shared stockpile and current strategic spending posture in that order. */
 export function arbitrateAiIntents(
-  observation: AiObservationV1,
-  state: AiBrainStateV1,
-  proposals: readonly AiIntentV1[],
-  preDecisions: readonly AiIntentDecisionV1[],
-  profile: AiProfileConfigV1,
+  observation: AiObservation,
+  state: AiBrainState,
+  proposals: readonly AiIntent[],
+  preDecisions: readonly AiIntentDecision[],
+  profile: AiProfileConfig,
   spendingBudget: AiSpendingBudget | undefined
 ): AiIntentArbitrationResult {
   const intents = [...proposals].sort(compareIntents);
-  const decisions: AiIntentDecisionV1[] = [...preDecisions];
-  const accepted: AiIntentV1[] = [];
+  const decisions: AiIntentDecision[] = [...preDecisions];
+  const accepted: AiIntent[] = [];
   const existingClaims = new Set<string>(
     state.reservations.flatMap((reservation) =>
       [reservation.claimId, reservation.subjectKey].filter((key): key is string => key !== undefined)

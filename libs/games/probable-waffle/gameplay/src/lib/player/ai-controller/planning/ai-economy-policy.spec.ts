@@ -1,6 +1,6 @@
 import { ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservedActor } from "../contracts/ai-observation";
 import {
   createAiTestObservation,
   createAiTestOwnedActor,
@@ -9,7 +9,7 @@ import {
 } from "../testing/ai-test-fixtures";
 import { canAffordAiEconomyCost, decideAiEconomyPolicy, observedAiEconomyThreats } from "./ai-economy-policy";
 
-const catalog: AiCapabilityCatalogV1 = {
+const catalog: AiCapabilityCatalog = {
   schemaVersion: 1,
   generation: 1,
   unsupported: [],
@@ -41,7 +41,7 @@ const catalog: AiCapabilityCatalogV1 = {
 };
 
 /** Observed gathering capability makes the worker a protected economy position, as in the native projection. */
-function economyWorker(actorId: string): AiObservedActorV1 {
+function economyWorker(actorId: string): AiObservedActor {
   return {
     ...createAiTestOwnedActor(actorId),
     capabilities: [
@@ -238,7 +238,7 @@ describe("decideAiEconomyPolicy", () => {
       ...createAiTestOwnedActor("guard"),
       objectName: ObjectNames.TivaraMacemanMale
     };
-    const defenseCatalog: AiCapabilityCatalogV1 = {
+    const defenseCatalog: AiCapabilityCatalog = {
       ...catalog,
       entries: [
         ...catalog.entries,
@@ -258,7 +258,7 @@ describe("decideAiEconomyPolicy", () => {
     };
     expect(decideAiEconomyPolicy(observation, defenseCatalog, []).posture).toBe("emergency");
 
-    const airDefenseCatalog: AiCapabilityCatalogV1 = {
+    const airDefenseCatalog: AiCapabilityCatalog = {
       ...defenseCatalog,
       entries: defenseCatalog.entries.map((entry) =>
         entry.capabilityId === "ground-guard" ? { ...entry, targetDomains: ["ground", "air"] } : entry

@@ -1,13 +1,13 @@
 import { expect, test } from "@playwright/test";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionFactV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { hasNativeFieldFoodDelivery } from "./skirmish-ai-field-food-delivery";
 import { nativeAuthoredWorkerRecoveryIncome } from "./skirmish-ai-native-recovery-evidence";
 import { hasNativeSourceDelivery, hasNativeSourceDeliveryToAnyDropOff } from "./skirmish-ai-source-delivery";
 
 /** Synthetic causality controls, never native recipe evidence. */
-function stream(): AiRuntimeProductionFactV1[] {
+function stream(): AiRuntimeProductionFact[] {
   const identity = { actorId: "worker", objectName: "TivaraWorkerMale", canonicalObjectName: ObjectNames.TivaraWorker,
     playerNumber: 2, active: true, alive: true, indexed: true, finished: true };
   const field = { ...identity, actorId: "field", objectName: "Field", canonicalObjectName: ObjectNames.Field };

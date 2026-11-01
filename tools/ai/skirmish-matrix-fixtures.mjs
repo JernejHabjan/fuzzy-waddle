@@ -10,7 +10,7 @@ import { validExpansionPressureRecipe } from "./shared/skirmish-runtime-expansio
 import { validNativeScenarioFixture } from "./skirmish-runtime-native-scenario-fixture.mjs";
 
 export function validateManifest(value, fixtureDirectory) {
-  if (!value || value.schemaVersion !== 1 || value.manifestVersion !== "skirmish-v1" || !Array.isArray(value.rows))
+  if (!value || value.schemaVersion !== 1 || value.manifestVersion !== "skirmish" || !Array.isArray(value.rows))
     throw new Error("malformed_manifest");
   if (value.rows.length !== value.requiredCaseCount || value.requiredCaseCount !== 121)
     throw new Error(`manifest_case_count:${value.rows.length}`);

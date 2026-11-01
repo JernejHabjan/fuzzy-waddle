@@ -18,11 +18,11 @@ import { NavigationService } from "../../../world/services/navigation.service";
 import { spellDefinitions } from "../../../entity/components/combat/spell-definitions";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import type { AiRuntimePresetControlV1 } from "./ai-runtime-preset-control-v1";
+import type { AiRuntimePresetControl } from "./ai-runtime-preset-control";
 
 /** Translate explicit fixture controls to the same native commands used by human players; never apply effects here. */
 export function createAiRuntimePresetCommand(
-  scene: ProbableWaffleScene, fixtureId: string, control: AiRuntimePresetControlV1,
+  scene: ProbableWaffleScene, fixtureId: string, control: AiRuntimePresetControl,
   actors: ReadonlyMap<string, Phaser.GameObjects.GameObject>, producer: Phaser.GameObjects.GameObject,
   actorId: string, owner: number, setupItem?: UnifiedQueueItem
 ): GameCommandInput {

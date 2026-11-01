@@ -1,21 +1,21 @@
 import { FactionType, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
 import { PureAiBrain } from "../brain/ai-brain";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation } from "./ai-test-fixtures";
 import {
-  AiOfflineDecisionStepperV1,
-  captureAiDecisionBundleV1,
-  compareAiDecisionBundlesV1,
-  replayAiDecisionBundleV1,
-  runAiOfflineWhatIfV1,
-  type AiDecisionReproArtifactV1
-} from "./ai-repro-runner-v1";
+  AiOfflineDecisionStepper,
+  captureAiDecisionBundle,
+  compareAiDecisionBundles,
+  replayAiDecisionBundle,
+  runAiOfflineWhatIf,
+  type AiDecisionReproArtifact
+} from "./ai-repro-runner";
 import { readFileSync } from "node:fs";
-import { parseAiReproBundleV1 } from "../debug/parse-ai-repro-bundle";
+import { parseAiReproBundle } from "../debug/parse-ai-repro-bundle";
 
-const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-const priorState = createAiBrainStateV1({
+const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+const priorState = createAiBrainState({
   playerNumber: 1,
   faction: FactionType.Tivara,
   profile,
@@ -23,8 +23,8 @@ const priorState = createAiBrainStateV1({
   archetypeId: "opening:test"
 });
 
-function artifact(sourceRevision = "source-a"): AiDecisionReproArtifactV1 {
-  return captureAiDecisionBundleV1(
+function artifact(sourceRevision = "source-a"): AiDecisionReproArtifact {
+  return captureAiDecisionBundle(
     { observation: createAiTestObservation(), priorState, outcomes: [] },
     {
       sourceRevision,
@@ -54,7 +54,7 @@ describe("Stage 5 reproduction runner / DBG-01,03,04,05", () => {
 
   it("blocks incomplete history and incompatible source instead of claiming exact replay", () => {
     const incomplete = artifact();
-    const replay = replayAiDecisionBundleV1(
+    const replay = replayAiDecisionBundle(
       {
         ...incomplete,
         manifest: {
@@ -73,7 +73,7 @@ describe("Stage 5 reproduction runner / DBG-01,03,04,05", () => {
     );
     expect(replay).toEqual({ status: "blocked", blocker: "missing_outcome_history" });
     expect(
-      replayAiDecisionBundleV1(artifact(), brain, {
+      replayAiDecisionBundle(artifact(), brain, {
         sourceRevision: "source-b",
         configVersion: "config:1",
         mapDigest: "map:1",
@@ -87,7 +87,7 @@ describe("Stage 5 reproduction runner / DBG-01,03,04,05", () => {
   });
 
   it("labels changed provenance separately from same-input divergence", () => {
-    expect(compareAiDecisionBundlesV1(artifact("source-a"), artifact("source-b")).classification).toBe("changed_input");
+    expect(compareAiDecisionBundles(artifact("source-a"), artifact("source-b")).classification).toBe("changed_input");
     const original = artifact();
     const candidate = {
       ...artifact(),
@@ -96,11 +96,11 @@ describe("Stage 5 reproduction runner / DBG-01,03,04,05", () => {
         expectedResult: brain.step(createAiTestObservation(), priorState, [])
       }
     };
-    expect(compareAiDecisionBundlesV1(original, candidate).classification).toBe("same_input_divergence");
+    expect(compareAiDecisionBundles(original, candidate).classification).toBe("same_input_divergence");
   });
 
   it("steps an isolated decision once and stops on a named safe boundary", () => {
-    const stepper = new AiOfflineDecisionStepperV1(artifact(), brain);
+    const stepper = new AiOfflineDecisionStepper(artifact(), brain);
     expect(stepper.stepDecision("decision_complete").status).toBe("breakpoint");
     expect(stepper.stepDecision().status).toBe("exhausted");
   });
@@ -108,7 +108,7 @@ describe("Stage 5 reproduction runner / DBG-01,03,04,05", () => {
   it("DBG-04 runs a pure what-if without mutating the captured observation, state or RNG", () => {
     const original = artifact();
     const before = JSON.stringify(original);
-    const result = runAiOfflineWhatIfV1(original, brain, {
+    const result = runAiOfflineWhatIf(original, brain, {
       ...original.payload,
       observation: { ...original.payload.observation, tick: original.payload.observation.tick + 1 }
     });
@@ -121,9 +121,9 @@ describe("Stage 5 reproduction runner / DBG-01,03,04,05", () => {
     if (!rawRequest) return;
     const request = JSON.parse(rawRequest) as { suite?: string; replayArtifactPath?: string | null };
     if (request.suite !== "replay" || !request.replayArtifactPath) return;
-    const rawArtifact = JSON.parse(readFileSync(request.replayArtifactPath, "utf8")) as AiDecisionReproArtifactV1;
-    parseAiReproBundleV1(JSON.stringify(rawArtifact.manifest), { access: "developer" });
-    const replay = replayAiDecisionBundleV1(rawArtifact, brain, {
+    const rawArtifact = JSON.parse(readFileSync(request.replayArtifactPath, "utf8")) as AiDecisionReproArtifact;
+    parseAiReproBundle(JSON.stringify(rawArtifact.manifest), { access: "developer" });
+    const replay = replayAiDecisionBundle(rawArtifact, brain, {
       sourceRevision: rawArtifact.manifest.replayInputs.sourceRevision,
       configVersion: rawArtifact.manifest.replayInputs.configVersion,
       mapDigest: rawArtifact.manifest.replayInputs.mapDigest,

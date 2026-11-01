@@ -1,16 +1,16 @@
 import { RUNTIME_ROUTE_HISTORY_LIMIT } from "./skirmish-ai-runtime-route-history-budget";
 import { isDeepStrictEqual } from "node:util";
-import type { AiRuntimeProductionCaptureV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { AiRuntimeRouteCallerV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-route-caller-v1";
+import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { AiRuntimeRouteCaller } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-route-caller";
 import { runtimeRouteOrderFenced } from "./skirmish-ai-runtime-route-order-fence";
 
 /** Capture-wide inspection includes orphan, failed, nested and overflow tails before any caller receives credit. */
-export function validateRuntimeRouteCallers(capture: AiRuntimeProductionCaptureV1) {
+export function validateRuntimeRouteCallers(capture: AiRuntimeProductionSnapshot) {
   const identities = new Map<
     number,
-    { actorId: string | null; canonical: string; caller: AiRuntimeRouteCallerV1; sequence: number; fenced: boolean }
+    { actorId: string | null; canonical: string; caller: AiRuntimeRouteCaller; sequence: number; fenced: boolean }
   >();
-  const requests = new Map<number, AiRuntimeRouteCallerV1 | undefined>();
+  const requests = new Map<number, AiRuntimeRouteCaller | undefined>();
   const failures: string[] = [];
   for (const fact of capture.facts) {
     if (

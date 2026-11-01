@@ -1,12 +1,12 @@
 import type { Page } from "@playwright/test";
-import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
+import type { RuntimeCheckpoint } from "./skirmish-ai-runtime-checkpoint";
 
 export async function captureRuntimeTransportCheckpoint(
   page: Page,
   aiPlayerNumber: number
-): Promise<Partial<RuntimeCheckpointV1>> {
+): Promise<Partial<RuntimeCheckpoint>> {
   return page.evaluate((playerNumber) => {
-    const parts = window.__fuzzyWaddleAiRuntimePartsV1?.(playerNumber);
+    const parts = window.__fuzzyWaddleAiRuntimeParts?.(playerNumber);
     if (!parts) throw new Error("runtime_controller_unavailable");
     const observation = parts.controller.getCommittedObservation();
     const state = parts.controller.getBrainState();

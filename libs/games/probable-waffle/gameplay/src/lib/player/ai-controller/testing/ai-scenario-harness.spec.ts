@@ -1,23 +1,23 @@
 import { FactionType, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
 import { PureAiBrain } from "../brain/ai-brain";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
-import type { AiProposalManagerV1 } from "../planning/ai-manager-proposal";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
+import type { AiProposalManager } from "../planning/ai-manager-proposal";
 import { createAiTestObservation } from "./ai-test-fixtures";
-import { compareAiScenarioReportsV1, findFirstAiDifferenceV1 } from "./ai-first-difference-v1";
-import { assertPairedAiScenariosV1, buildAiScenarioV1 } from "./ai-scenario-builder-v1";
-import { runPureAiScenarioV1 } from "./ai-pure-scenario-runner-v1";
-import type { AiScenarioV1 } from "./ai-scenario-v1";
+import { compareAiScenarioReports, findFirstAiDifference } from "./ai-first-difference";
+import { assertPairedAiScenarios, buildAiScenario } from "./ai-scenario-builder";
+import { runPureAiScenario } from "./ai-pure-scenario-runner";
+import type { AiScenario } from "./ai-scenario";
 
-const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-const state = createAiBrainStateV1({
+const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+const state = createAiBrainState({
   playerNumber: 1,
   faction: FactionType.Tivara,
   profile,
   tick: 20,
   archetypeId: "opening:test"
 });
-const manager: AiProposalManagerV1 = {
+const manager: AiProposalManager = {
   managerId: "fixture-manager",
   propose: (observation) => ({
     managerId: "fixture-manager",
@@ -44,8 +44,8 @@ const manager: AiProposalManagerV1 = {
   })
 };
 
-function scenario(expectedMinimum = 1): AiScenarioV1 {
-  return buildAiScenarioV1({
+function scenario(expectedMinimum = 1): AiScenario {
+  return buildAiScenario({
     schemaVersion: 1,
     scenarioId: "DBG-01",
     purpose: "deterministic harness bootstrap",
@@ -95,14 +95,14 @@ describe("Stage 5 deterministic scenario harness", () => {
           counterpartVariantIds: ["subject"]
         }
       };
-      expect(() => assertPairedAiScenariosV1(subject, control)).not.toThrow();
+      expect(() => assertPairedAiScenarios(subject, control)).not.toThrow();
     }
   });
 
   it("produces identical command and AI digests for three identical repetitions", () => {
     const brain = new PureAiBrain(profile, [manager]);
     const reports = [0, 1, 2].map(() =>
-      runPureAiScenarioV1(scenario(), brain, { sourceRevision: "candidate", worldDigest: "world:stable" })
+      runPureAiScenario(scenario(), brain, { sourceRevision: "candidate", worldDigest: "world:stable" })
     );
     expect(reports.map((report) => report.records[0]?.commandDigest)).toEqual([
       reports[0]?.records[0]?.commandDigest,
@@ -118,7 +118,7 @@ describe("Stage 5 deterministic scenario harness", () => {
   });
 
   it("reports the first canonical AI field when state diverges", () => {
-    const difference = findFirstAiDifferenceV1(state, {
+    const difference = findFirstAiDifference(state, {
       ...state,
       strategy: { ...state.strategy, stance: "defend" }
     });
@@ -126,7 +126,7 @@ describe("Stage 5 deterministic scenario harness", () => {
   });
 
   it("reports the first divergent tick and retained normalized field path", () => {
-    const report = runPureAiScenarioV1(scenario(), new PureAiBrain(profile, [manager]), {
+    const report = runPureAiScenario(scenario(), new PureAiBrain(profile, [manager]), {
       sourceRevision: "candidate"
     });
     const changed = {
@@ -136,12 +136,12 @@ describe("Stage 5 deterministic scenario harness", () => {
         diagnosticState: { ai: { stance: "defend" }, commands: [] }
       }))
     };
-    expect(compareAiScenarioReportsV1(report, changed)?.tick).toBe(20);
-    expect(compareAiScenarioReportsV1(report, changed)?.difference.path).toBe("$.ai.authority");
+    expect(compareAiScenarioReports(report, changed)?.tick).toBe(20);
+    expect(compareAiScenarioReports(report, changed)?.difference.path).toBe("$.ai.authority");
   });
 
   it("rejects a deliberately broken semantic oracle instead of trusting planner trace", () => {
-    const report = runPureAiScenarioV1(scenario(2), new PureAiBrain(profile, [manager]), {
+    const report = runPureAiScenario(scenario(2), new PureAiBrain(profile, [manager]), {
       sourceRevision: "candidate"
     });
     expect(report.assertionResults[0]?.passed).toBe(false);

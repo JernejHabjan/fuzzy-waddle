@@ -1,19 +1,19 @@
 import { selectAiCycleVictim } from "./ai-cycle-victim";
 import { preservesAiFriendlyRally } from "./ai-friendly-rally";
 import { aiDeadline } from "../contracts/ai-core-types";
-import type { AiBrainStateV1, AiStrategyStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCommandOutcomeV1 } from "../contracts/ai-command-contracts";
-import type { AiIntentDecisionV1, AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
-import type { AiManagerProposalV1 } from "./ai-manager-proposal";
+import type { AiBrainState, AiStrategyState } from "../contracts/ai-brain-state";
+import type { AiCommandOutcome } from "../contracts/ai-command-contracts";
+import type { AiIntentDecision, AiIntent } from "../contracts/ai-intent";
+import type { AiObservation } from "../contracts/ai-observation";
+import type { AiProfileConfig } from "../contracts/ai-profile-config";
+import type { AiManagerProposal } from "./ai-manager-proposal";
 import { reconcileAiCommandReservations } from "./reconcile-ai-command-reservations";
 
 /** The shared, deterministic Stage 6 reducer result. It owns only durable planning state. */
 export interface AiDecisionPlanningResult {
-  readonly state: AiBrainStateV1;
-  readonly proposals: readonly AiIntentV1[];
-  readonly preDecisions: readonly AiIntentDecisionV1[];
+  readonly state: AiBrainState;
+  readonly proposals: readonly AiIntent[];
+  readonly preDecisions: readonly AiIntentDecision[];
 }
 
 const LANE_ORDER = [
@@ -24,7 +24,7 @@ const LANE_ORDER = [
   "optional_infrastructure_tech"
 ] as const;
 
-function strategyFor(observation: AiObservationV1, state: AiBrainStateV1): AiStrategyStateV1 {
+function strategyFor(observation: AiObservation, state: AiBrainState): AiStrategyState {
   const previous = state.strategy;
   const visibleThreat = observation.threatSummary.visibleEnemyActorIds.length > 0;
   const activeObjective = observation.modeGoals.find((goal) => goal.state === "active")?.id ?? null;
@@ -46,7 +46,7 @@ function strategyFor(observation: AiObservationV1, state: AiBrainStateV1): AiStr
   };
 }
 
-function isTerminal(outcome: AiCommandOutcomeV1): boolean {
+function isTerminal(outcome: AiCommandOutcome): boolean {
   return (
     outcome.kind === "completed" ||
     outcome.kind === "rejected" ||
@@ -57,8 +57,8 @@ function isTerminal(outcome: AiCommandOutcomeV1): boolean {
 
 /** Proposers and arbitration must see the same current leases and terminal command outcomes. */
 export function reconcileAiDecisionReservations(
-  state: AiBrainStateV1,
-  outcomes: readonly AiCommandOutcomeV1[],
+  state: AiBrainState,
+  outcomes: readonly AiCommandOutcome[],
   tick: number
 ) {
   const terminalCommands = new Set<string>(outcomes.filter(isTerminal).map((outcome) => outcome.identity.commandId));
@@ -89,11 +89,11 @@ export function reconcileAiDecisionReservations(
  * It deliberately does not invent domain actions: Stage 7+ managers supply those proposals through this boundary.
  */
 export function planAiDecisions(
-  observation: AiObservationV1,
-  previous: AiBrainStateV1,
-  outcomes: readonly AiCommandOutcomeV1[],
-  batches: readonly AiManagerProposalV1[],
-  profile: AiProfileConfigV1
+  observation: AiObservation,
+  previous: AiBrainState,
+  outcomes: readonly AiCommandOutcome[],
+  batches: readonly AiManagerProposal[],
+  profile: AiProfileConfig
 ): AiDecisionPlanningResult {
   const sortedBatches = [...batches].sort((left, right) => left.managerId.localeCompare(right.managerId));
   const considered = new Set(
@@ -136,7 +136,7 @@ export function planAiDecisions(
     reservations,
     pendingOutcomes: [...previous.pendingOutcomes, ...outcomes]
   });
-  const preDecisions: AiIntentDecisionV1[] = [];
+  const preDecisions: AiIntentDecision[] = [];
   if (cyclicPlan) {
     const reversible = reservations
       .filter((reservation) => reservation.ownerPlanId === cyclicPlan && reservation.state.kind === "provisional")

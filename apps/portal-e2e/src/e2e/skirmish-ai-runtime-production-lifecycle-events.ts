@@ -2,20 +2,20 @@
 import { AI_RUNTIME_MAX_FACTS } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/append-ai-runtime-production-fact";
 // prettier-ignore
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
-import type { RuntimeProductionEvidenceV1 } from "./skirmish-ai-runtime-production-evidence";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { RuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality";
+import type { RuntimeProductionEvidence } from "./skirmish-ai-runtime-production-evidence";
 
 /** Projects checked queue intervals in native observer order. Missing cash/claim boundaries never become zero. */
 export function projectRuntimeProductionLifecycleEvents(
-  capture: AiRuntimeProductionCaptureV1,
+  capture: AiRuntimeProductionSnapshot,
   causal: Pick<
-    RuntimeProductionCausalityV1,
+    RuntimeProductionCausality,
     "enqueues" | "operations" | "queueMutations" | "completions" | "cancellations"
   >
 ) {
-  const events: RuntimeProductionEvidenceV1["events"][number][] = [...(causal.enqueues ?? [])];
+  const events: RuntimeProductionEvidence["events"][number][] = [...(causal.enqueues ?? [])];
   const failures: string[] = [],
     gaps: string[] = [];
   const zero = { food: 0, wood: 0, stone: 0, minerals: 0 };

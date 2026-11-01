@@ -1,6 +1,6 @@
 import type { Page } from "@playwright/test";
-import type { AiRuntimeBrowserTestHostV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host-v1";
+import type { AiRuntimeBrowserTestHost } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host";
 import type { ProbableWaffleScene } from "@fuzzy-waddle/probable-waffle-phaser/core/probable-waffle.scene";
 import type { NavigationService } from "@fuzzy-waddle/probable-waffle-phaser/world/services/navigation.service";
 import type { ActorIndexSystem } from "@fuzzy-waddle/probable-waffle-phaser/world/services/ActorIndexSystem";
@@ -9,8 +9,8 @@ import type { NativeDisposalEvidence } from "./skirmish-ai-native-disposal-evide
 /** Retain a genuine pending native call, stop its owning scene, and await cancellation in that same realm. */
 export async function captureNativeDisposal(page: Page): Promise<NativeDisposalEvidence> {
   return page.evaluate(async () => {
-    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: AiRuntimeBrowserTestHostV1 };
-    const host = realm.__fuzzyWaddleAiRuntimeBrowserTestV1;
+    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost };
+    const host = realm.__fuzzyWaddleAiRuntimeBrowserTest;
     const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
       ProbableWaffleScene | undefined;
     if (!scene || !host) throw new Error("disposal_live_scene_missing");
@@ -33,7 +33,7 @@ export async function captureNativeDisposal(page: Page): Promise<NativeDisposalE
     const outcome = await pending;
     const after = navigation.getNativeNavigationBoundary();
     return { pendingBeforeShutdown, settledWithNull: outcome === null, sceneInactive: !scene.scene.isActive(),
-      controllerDetached: !window.__fuzzyWaddleAiRuntimePartsV1?.(2),
+      controllerDetached: !window.__fuzzyWaddleAiRuntimeParts?.(2),
       nativeCacheCleared: !!before && !!after && after.groundCacheClear > before.groundCacheClear };
   });
 }

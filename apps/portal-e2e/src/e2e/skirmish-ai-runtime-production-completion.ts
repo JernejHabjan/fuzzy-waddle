@@ -1,9 +1,9 @@
 import type { ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeCreatedActorV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-created-actor-v1";
+import type { AiRuntimeCreatedActor } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-created-actor";
 
 /** Actual created/indexed actor or newly registered tech. No strategic usefulness, stability, fair setup or full event proof. */
-export interface RuntimeProductionCompletionV1 {
+export interface RuntimeProductionCompletion {
   readonly completionId: number;
   readonly originatingCommandId: string;
   readonly effectId: string;
@@ -21,7 +21,7 @@ export interface RuntimeProductionCompletionV1 {
   readonly registeredSequence: number;
   readonly terminalSequence: number;
   readonly terminalTick: number;
-  readonly createdActor: AiRuntimeCreatedActorV1 | null;
+  readonly createdActor: AiRuntimeCreatedActor | null;
   readonly researchType: ResearchType | null;
   /** Actual native world link, checked against the separate creation/registration authority. */
   readonly worldLinkId: string;

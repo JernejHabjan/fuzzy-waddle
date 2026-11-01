@@ -3,7 +3,7 @@ import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { SpellType } from "../../../entity/components/combat/spell-type";
 
 import { requireValue, combatActor, squad, fixtureState, observation, manager } from "./ai-tactics-test-fixtures";
-import { canSeeTarget, estimateAiEngagementV1 } from "./ai-tactics-combat";
+import { canSeeTarget, estimateAiEngagement } from "./ai-tactics-combat";
 
 describe("AiTacticsManager", () => {
   it("uses an owned actor's native visibility evidence when it is available", () => {
@@ -330,8 +330,8 @@ describe("AiTacticsManager", () => {
         value: { ...enemy.combatProfile.value, maxHealth: 460 }
       }
     };
-    expect(estimateAiEngagementV1(guards.slice(0, 4), [durableEnemy], 64).ratioPermille).toBe(1000);
-    expect(estimateAiEngagementV1(guards, [durableEnemy], 64).ratioPermille).toBeGreaterThanOrEqual(1200);
+    expect(estimateAiEngagement(guards.slice(0, 4), [durableEnemy], 64).ratioPermille).toBe(1000);
+    expect(estimateAiEngagement(guards, [durableEnemy], 64).ratioPermille).toBeGreaterThanOrEqual(1200);
   });
 
   it("keeps a retreat stable against its visible threat outside the local engagement radius", () => {

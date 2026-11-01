@@ -1,14 +1,14 @@
 import type Phaser from "phaser";
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
-import type { AiAccessGraphV1, AiObservedActorV1, AiObservationV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiAccessGraph, AiObservedActor, AiObservation } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { getActorComponent } from "../../../data/actor-component";
 import { getGameObjectCurrentTile } from "../../../data/game-object-helper";
 import { VisionComponent } from "../../../entity/components/vision-component";
 
 /** Region presence is not vision coverage. Test each static representative against actual owned vision geometry. */
 export function projectAiScoutCoverage(
-  graph: AiAccessGraphV1 | undefined,
-  actors: readonly AiObservedActorV1[],
+  graph: AiAccessGraph | undefined,
+  actors: readonly AiObservedActor[],
   liveById: ReadonlyMap<ActorId, Phaser.GameObjects.GameObject>
 ) {
   const sources = ownedVisionSources(actors, liveById);
@@ -29,8 +29,8 @@ export function projectAiScoutCoverage(
 
 /** Samples current owned vision at cached search destinations; remembered coverage belongs to knowledge questions. */
 export function observeAiScoutSearchPoints(
-  points: NonNullable<NonNullable<AiObservationV1["map"]>["scoutSearchPoints"]>,
-  actors: readonly AiObservedActorV1[],
+  points: NonNullable<NonNullable<AiObservation["map"]>["scoutSearchPoints"]>,
+  actors: readonly AiObservedActor[],
   liveById: ReadonlyMap<ActorId, Phaser.GameObjects.GameObject>
 ) {
   const sources = ownedVisionSources(actors, liveById);
@@ -44,7 +44,7 @@ export function observeAiScoutSearchPoints(
 }
 
 function ownedVisionSources(
-  actors: readonly AiObservedActorV1[],
+  actors: readonly AiObservedActor[],
   liveById: ReadonlyMap<ActorId, Phaser.GameObjects.GameObject>
 ) {
   return actors

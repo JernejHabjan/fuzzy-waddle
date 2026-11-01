@@ -1,23 +1,23 @@
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservation } from "../contracts/ai-observation";
+import type { AiManagerProposal, AiProposalManager } from "./ai-manager-proposal";
 import { advanceAiTransportPlan } from "./ai-transport-plan-advancer";
 import { proposeAiIslandEstablishment } from "./ai-island-establishment";
 
 export { AI_TRANSPORT_BOARDING_TIMEOUT_TICKS, AI_TRANSPORT_MINIMUM_DEPARTURE_PERMILLE } from "./ai-transport-constants";
-export { createAiTransportPlanV1 } from "./ai-transport-plan-creation";
-export type { CreateAiTransportPlanV1Input } from "./ai-transport-plan-input";
-export { scoreAiTransportTransferV1 } from "./ai-transport-transfer";
+export { createAiTransportPlan } from "./ai-transport-plan-creation";
+export type { CreateAiTransportPlanInput } from "./ai-transport-plan-input";
+export { scoreAiTransportTransfer } from "./ai-transport-transfer";
 
 /** Advances saved transport operations and emits only shared command intents. */
-export class AiTransportManager implements AiProposalManagerV1 {
+export class AiTransportManager implements AiProposalManager {
   readonly managerId = "stage8.transport";
 
-  constructor(private readonly getCatalog: () => AiCapabilityCatalogV1 | undefined) {}
+  constructor(private readonly getCatalog: () => AiCapabilityCatalog | undefined) {}
 
-  propose(observation: AiObservationV1, state: AiBrainStateV1): AiManagerProposalV1 {
+  propose(observation: AiObservation, state: AiBrainState): AiManagerProposal {
     const candidateCatalog = this.getCatalog();
     const context = {
       observation,

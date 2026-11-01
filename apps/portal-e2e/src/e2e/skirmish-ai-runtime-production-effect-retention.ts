@@ -1,10 +1,10 @@
 import type { AiDecisionIdentity } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/ai-decision-identity";
-import type { RuntimeProductionCompletionV1 } from "./skirmish-ai-runtime-production-completion";
+import type { RuntimeProductionCompletion } from "./skirmish-ai-runtime-production-completion";
 
 /** Sampled native effect persistence. Accepted demand attribution supplies no strategic utility or continuous stability verdict. */
-export interface RuntimeProductionEffectRetentionV1 {
-  readonly completion: RuntimeProductionCompletionV1;
+export interface RuntimeProductionEffectRetention {
+  readonly completion: RuntimeProductionCompletion;
   readonly acceptedDecision: AiDecisionIdentity | null;
   readonly acceptedDemandId: string | null;
   readonly samples: readonly {

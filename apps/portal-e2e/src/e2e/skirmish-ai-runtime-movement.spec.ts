@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import type { AiRuntimeProductionSpatialV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-spatial-v1";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
+import type { AiRuntimeProductionSpatial } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-spatial";
 import { routeOrderFixture } from "./skirmish-ai-runtime-route-order-fixture";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
 import {
@@ -34,8 +34,8 @@ function fixture(fallback = false, stopped = false) {
     snapshotRestoreInProgress: false,
     gaps: [],
     phase: "started"
-  } satisfies AiRuntimeProductionSpatialV1;
-  const boundaries: AiRuntimeProductionSpatialV1[] = [
+  } satisfies AiRuntimeProductionSpatial;
+  const boundaries: AiRuntimeProductionSpatial[] = [
     value,
     { ...value, phase: "destination", selectedDestination: destination },
     ...(fallback ? [{ ...value, phase: "destination" as const, selectedDestination: selected, fallback: true }] : []),
@@ -87,7 +87,7 @@ test("native cancellation can return true while remaining stopped", () => {
 
 test("an order replacement after physical endpoint contact preserves arrival evidence", () => {
   const f = fixture(false, true);
-  const facts = f.capture.facts.map((fact): AiRuntimeProductionFactV1 => {
+  const facts = f.capture.facts.map((fact): AiRuntimeProductionFact => {
     if (fact.kind !== "spatial_authority" || fact.spatial.kind !== "movement") return fact;
     const value = fact.spatial;
     return {
@@ -107,7 +107,7 @@ test("an order replacement after physical endpoint contact preserves arrival evi
 for (const missing of ["caller", "admission", "terminal", "clock", "actual_tile", "return"] as const) {
   test(`missing ${missing} cannot be backfilled from route success`, () => {
     const f = fixture();
-    const facts = f.capture.facts.flatMap((fact): AiRuntimeProductionFactV1[] => {
+    const facts = f.capture.facts.flatMap((fact): AiRuntimeProductionFact[] => {
       if (missing === "admission" && fact.kind === "spatial_authority" && fact.spatial.kind === "route_order")
         return [];
       if (fact.kind !== "spatial_authority" || fact.spatial.kind !== "movement") return [fact];
@@ -141,7 +141,7 @@ for (const missing of ["caller", "admission", "terminal", "clock", "actual_tile"
 test("callback failure keeps the earlier physical arrival separate from the false return", () => {
   const f = fixture(),
     facts = f.capture.facts.map(
-      (fact): AiRuntimeProductionFactV1 =>
+      (fact): AiRuntimeProductionFact =>
         fact.kind === "spatial_authority" && fact.spatial.kind === "movement" && fact.spatial.phase === "returned_true"
           ? { ...fact, spatial: { ...fact.spatial, phase: "returned_false" } }
           : fact
@@ -155,7 +155,7 @@ test("callback failure keeps the earlier physical arrival separate from the fals
 test("restore fences movement ownership and prevents physical arrival credit across the lifetime", () => {
   const f = fixture();
   const facts = f.capture.facts
-    .flatMap((fact): AiRuntimeProductionFactV1[] => {
+    .flatMap((fact): AiRuntimeProductionFact[] => {
       if (fact.kind !== "spatial_authority" || fact.spatial.kind !== "movement") return [fact];
       const value = fact.spatial;
       if (value.phase === "arrived")
@@ -179,7 +179,7 @@ test("restore fences movement ownership and prevents physical arrival credit acr
   expect(result.failures).toEqual([]);
   expect(result.movements[0]).toMatchObject({ callerAttributed: false, admission: null, arrival: "unavailable" });
   const revived = facts.map(
-    (fact): AiRuntimeProductionFactV1 =>
+    (fact): AiRuntimeProductionFact =>
       fact.kind === "spatial_authority" && fact.spatial.kind === "movement"
         ? { ...fact, spatial: { ...fact.spatial, caller: f.value.caller } }
         : fact
@@ -200,7 +200,7 @@ for (const invalid of ["orphan", "probe", "endpoint", "duplicate_terminal", "aft
       executionId: invalid === "orphan" ? 2 : 1,
       originalDestination: invalid === "endpoint" ? { x: 9, y: 9 } : f.value.originalDestination,
       caller: invalid === "probe" ? { ...f.value.caller, caller: "range_probe" } : f.value.caller
-    } satisfies AiRuntimeProductionSpatialV1;
+    } satisfies AiRuntimeProductionSpatial;
     const existing =
       invalid === "after_return"
         ? f.capture.facts

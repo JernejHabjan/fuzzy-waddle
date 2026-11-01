@@ -1,10 +1,10 @@
 import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import { FactionType, ProbableWaffleAiDifficulty, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
-import { createAiBrainStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-brain-state-v1";
-import { createAiProfileConfigV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-profile-defaults";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import type { AiRuntimeUnspentClaimsV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-unspent-claims-v1";
+import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
+import { createAiBrainState } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-brain-state";
+import { createAiProfileConfig } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-profile-defaults";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
+import type { AiRuntimeUnspentClaimsSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-unspent-claims-snapshot";
 import { productionProgressFixture } from "./skirmish-ai-runtime-production-progress-fixture";
 import { calculateRuntimeQueueLiabilities } from "./skirmish-ai-runtime-queue-liabilities";
 /** Invented native-shaped decisions, claims and cash intervals; never a runtime setup or useful AI world. */
@@ -26,13 +26,13 @@ export function productionOperationFixture(kind: "immediate" | "tick" | "denied"
     preconditions: [],
     claims: [{ kind: "resource", claimId: "claim:purchase:food", resourceType: ResourceType.Food, amount: 7 }],
     reasonCode: "synthetic_force"
-  } satisfies AiIntentV1;
-  const state = createAiBrainStateV1({
+  } satisfies AiIntent;
+  const state = createAiBrainState({
     playerNumber: 1,
     faction: FactionType.Tivara,
     tick: 4,
     archetypeId: "balanced",
-    profile: createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium)
+    profile: createAiProfileConfig(ProbableWaffleAiDifficulty.Medium)
   });
   const correlation = { intentId: "purchase", effectId: "purchase", commitmentKey: command.execution.commitmentKey };
   const admission = {
@@ -44,13 +44,13 @@ export function productionOperationFixture(kind: "immediate" | "tick" | "denied"
     actorIds: ["producer"],
     worldLinkIds: []
   } satisfies Extract<
-    AiRuntimeProductionFactV1,
+    AiRuntimeProductionFact,
     {
       kind: "outcome";
     }
   >["outcome"];
   const base = { sequence: 0, tick: 4, playerNumber: 1 };
-  const facts: AiRuntimeProductionFactV1[] = [
+  const facts: AiRuntimeProductionFact[] = [
     {
       ...base,
       kind: "decision_selected",
@@ -96,7 +96,7 @@ export function productionOperationFixture(kind: "immediate" | "tick" | "denied"
     }
   ];
   const zero = { food: 0, wood: 0, stone: 0, minerals: 0 };
-  const ledger = (status: AiRuntimeUnspentClaimsV1["entries"][number]["state"]): AiRuntimeUnspentClaimsV1 => ({
+  const ledger = (status: AiRuntimeUnspentClaimsSnapshot["entries"][number]["state"]): AiRuntimeUnspentClaimsSnapshot => ({
     resources: { ...zero, food: status === "admitted" ? 7 : 0 },
     gaps: [],
     entries: [{ identity, intent, commandId: "purchase", state: status }]
@@ -111,7 +111,7 @@ export function productionOperationFixture(kind: "immediate" | "tick" | "denied"
       { ...base, tick: 6, kind: "outcome", scheduledTick: null, outcome: { ...admission, kind: "applied", tick: 6 } },
       { ...base, tick: 6, kind: "command_delivered", command }
     );
-  const operationFacts: AiRuntimeProductionFactV1[] = capture.facts.flatMap((fact): AiRuntimeProductionFactV1[] => {
+  const operationFacts: AiRuntimeProductionFact[] = capture.facts.flatMap((fact): AiRuntimeProductionFact[] => {
     if (kind !== "immediate")
       return [
         {

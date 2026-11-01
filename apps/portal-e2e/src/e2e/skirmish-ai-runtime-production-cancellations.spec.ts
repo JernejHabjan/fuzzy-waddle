@@ -1,6 +1,6 @@
 import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import { expect, test } from "@playwright/test";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { productionQueueMutationFixture } from "./skirmish-ai-runtime-production-queue-mutation-fixture";
 import { productionPerTickCancellationFixture } from "./skirmish-ai-runtime-per-tick-cancellation-fixture";
 import { researchQueueMutationFixture } from "./skirmish-ai-runtime-research-queue-mutation-fixture";
@@ -109,7 +109,7 @@ test.describe("native cancellation lifecycle synthetic contracts", () => {
   ] as const) {
     test(`contradictory ${defect} suppresses every normalized effect`, () => {
       const source = productionPerTickCancellationFixture();
-      let facts = source.facts.map((entry): AiRuntimeProductionFactV1 => {
+      let facts = source.facts.map((entry): AiRuntimeProductionFact => {
         if (entry.kind === "queue_resource" && entry.resource.operation === "cancellation_refund") {
           const value = entry.resource;
           if (defect === "different_item") return { ...entry, resource: { ...value, itemId: "foreign" } };
@@ -187,7 +187,7 @@ test.describe("native cancellation lifecycle synthetic contracts", () => {
         facts = [
           ...facts,
           ...refunds.map(
-            (entry): AiRuntimeProductionFactV1 =>
+            (entry): AiRuntimeProductionFact =>
               entry.kind === "queue_resource"
                 ? {
                     ...entry,

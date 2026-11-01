@@ -1,11 +1,11 @@
 import { FactionType, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiBrainStateV1, AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiManagerProposalV1 } from "../planning/ai-manager-proposal";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
-import { createAiBrainStateV1 } from "./create-ai-brain-state-v1";
+import type { AiBrainState, AiSquadState } from "../contracts/ai-brain-state";
+import type { AiManagerProposal } from "../planning/ai-manager-proposal";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
+import { createAiBrainState } from "./create-ai-brain-state";
 import { projectAiManagerState } from "./project-ai-manager-state";
 
-function createSquad(overrides: Partial<AiSquadStateV1> = {}): AiSquadStateV1 {
+function createSquad(overrides: Partial<AiSquadState> = {}): AiSquadState {
   return {
     squadId: "squad:attack:primary",
     role: "attack",
@@ -17,12 +17,12 @@ function createSquad(overrides: Partial<AiSquadStateV1> = {}): AiSquadStateV1 {
   };
 }
 
-function createState(squads: readonly AiSquadStateV1[]) {
+function createState(squads: readonly AiSquadState[]) {
   return {
-    ...createAiBrainStateV1({
+    ...createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
-      profile: createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium),
+      profile: createAiProfileConfig(ProbableWaffleAiDifficulty.Medium),
       tick: 0,
       archetypeId: "balanced"
     }),
@@ -30,7 +30,7 @@ function createState(squads: readonly AiSquadStateV1[]) {
   };
 }
 
-function createProposal(statePatch: NonNullable<AiManagerProposalV1["statePatch"]>): AiManagerProposalV1 {
+function createProposal(statePatch: NonNullable<AiManagerProposal["statePatch"]>): AiManagerProposal {
   return {
     managerId: "fixture",
     lane: "army_threat",
@@ -83,7 +83,7 @@ describe("projectAiManagerState", () => {
         ]
       })
     ];
-    let state: AiBrainStateV1 = createState([parent]);
+    let state: AiBrainState = createState([parent]);
     for (let decision = 0; decision < 3; decision++) {
       state = projectAiManagerState(state, batches);
       expect(state.squads.map((squad) => squad.actorIds)).toEqual([["flyer"], ["guard"]]);

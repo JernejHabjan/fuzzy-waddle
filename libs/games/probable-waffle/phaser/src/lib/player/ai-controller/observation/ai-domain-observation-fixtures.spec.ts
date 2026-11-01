@@ -1,4 +1,4 @@
-import { buildAiAccessGraphV1, queryAiAccessRouteV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import { buildAiAccessGraph, queryAiAccessRoute } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { MovementTerrainType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/movement-terrain-type";
 import { commonBoatDefinition } from "../../../prefabs/characters/shared/CommonBoat/common_boat.definition";
 
@@ -18,7 +18,7 @@ describe("Stage 8 runtime domain fixtures", () => {
   });
 
   it("routes a synthetic flying container without a shore-only assumption", () => {
-    const built = buildAiAccessGraphV1({
+    const built = buildAiAccessGraph({
       generation: 1,
       staticRevision: 1,
       dynamicRevision: 1,
@@ -49,7 +49,7 @@ describe("Stage 8 runtime domain fixtures", () => {
         }
       ]
     });
-    const result = queryAiAccessRouteV1(built.graph, {
+    const result = queryAiAccessRoute(built.graph, {
       queryId: "query:synthetic-air-container",
       kind: "movement",
       fromNodeId: built.groundNodeByTileKey.get("0,0")!,

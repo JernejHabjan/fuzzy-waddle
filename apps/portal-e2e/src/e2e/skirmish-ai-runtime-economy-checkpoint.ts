@@ -1,5 +1,5 @@
 import type { Page } from "@playwright/test";
-import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
+import type { RuntimeCheckpoint } from "./skirmish-ai-runtime-checkpoint";
 
 type RuntimeMacroDecision = {
   readonly outcome: string;
@@ -34,10 +34,10 @@ export async function captureRuntimeEconomyCheckpoint(
   page: Page,
   aiPlayerNumber: number,
   targetTick: number
-): Promise<Partial<RuntimeCheckpointV1>> {
+): Promise<Partial<RuntimeCheckpoint>> {
   const checkpoint = await page.evaluate(
     ({ playerNumber, expectedTick }) => {
-      const parts = window.__fuzzyWaddleAiRuntimePartsV1?.(playerNumber);
+      const parts = window.__fuzzyWaddleAiRuntimeParts?.(playerNumber);
       if (!parts) throw new Error("runtime_controller_unavailable");
       const observation = parts.controller.getCommittedObservation();
       const state = parts.controller.getBrainState();

@@ -1,10 +1,10 @@
 import { aiDeadline, type AiPlanId, type AiSquadId } from "../contracts/ai-core-types";
-import type { AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
+import type { AiSquadState } from "../contracts/ai-brain-state";
+import type { AiProfileConfig } from "../contracts/ai-profile-config";
+import type { AiIntent } from "../contracts/ai-intent";
 import type { AiSkirmishProposalContext } from "./ai-skirmish-proposal-context";
 import { observedAiEconomyThreats } from "./ai-economy-policy";
-import { canSeeTarget, estimateAiEngagementV1 } from "./ai-tactics-combat";
+import { canSeeTarget, estimateAiEngagement } from "./ai-tactics-combat";
 import { AI_TACTICS_ATTACK_RATIO_PERMILLE } from "./ai-tactics-rules";
 import { retainAiSquadTacticsForActors } from "./ai-skirmish-tactics-ownership";
 import {
@@ -21,7 +21,7 @@ import {
 export const AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS = 1200;
 export const AI_PURSUIT_LEASH_TICKS = 200;
 
-export function advanceAiSkirmishDefense(context: AiSkirmishProposalContext, profile: AiProfileConfigV1): void {
+export function advanceAiSkirmishDefense(context: AiSkirmishProposalContext, profile: AiProfileConfig): void {
   const { localThreat, combat, activeDefense, state, observation, homeAccess } = context;
   if (!localThreat || combat.length === 0) return;
   let eligibleDefenders = combat.filter((actor) => canTarget(actor, localThreat));
@@ -58,7 +58,7 @@ export function advanceAiSkirmishDefense(context: AiSkirmishProposalContext, pro
   );
   // A head-count reserve can remain too weak forever even while an idle army could remove the threat.
   while (defenseCount < Math.min(eligibleDefenders.length, profile.maxLocalEngagementPairsPerStep)) {
-    const estimate = estimateAiEngagementV1(
+    const estimate = estimateAiEngagement(
       eligibleDefenders.slice(0, defenseCount),
       [localThreat],
       profile.maxLocalEngagementPairsPerStep
@@ -72,7 +72,7 @@ export function advanceAiSkirmishDefense(context: AiSkirmishProposalContext, pro
   const defenseId = activeDefense?.squadId ?? ("squad:defense:home" as AiSquadId);
   const defensePlanId = `plan:${defenseId}` as AiPlanId;
   const existingLifecycle = activeDefense?.lifecycle;
-  const defense: AiSquadStateV1 = {
+  const defense: AiSquadState = {
     squadId: defenseId,
     role: "defense",
     domain: domains(defenders[0] ?? combat[0]!).includes("air") ? "air" : "ground",
@@ -99,7 +99,7 @@ export function advanceAiSkirmishDefense(context: AiSkirmishProposalContext, pro
   };
   context.nextSquads.push(defense);
   const actorClaims = defense.actorIds.map((actorId) => ({
-    claimId: `claim:stage9:actor:${actorId}` as AiIntentV1["claims"][number]["claimId"],
+    claimId: `claim:stage9:actor:${actorId}` as AiIntent["claims"][number]["claimId"],
     kind: "actor" as const,
     actorId
   }));

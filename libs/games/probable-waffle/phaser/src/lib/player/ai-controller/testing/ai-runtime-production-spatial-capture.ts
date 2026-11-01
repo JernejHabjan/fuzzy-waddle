@@ -15,12 +15,12 @@ import {
 } from "../../../world/services/multiplayer/production-spatial-authority-event";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
 import { captureAiRuntimeProductionItem } from "./ai-runtime-production-item";
-import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spatial-v1";
+import type { AiRuntimeProductionSpatial } from "./ai-runtime-production-spatial";
 import { captureAiRuntimeConstructionCatalog } from "./capture-ai-runtime-construction-catalog";
 import { AiRuntimeProducerRouteCapture } from "./ai-runtime-producer-route-capture";
 import { AiRuntimeNavigationObservation } from "./ai-runtime-navigation-observation";
 import type { AiRuntimeResourceCoverageCapture } from "./ai-runtime-resource-coverage-capture";
-import type { AiRuntimeProtectedRouteV1 } from "./ai-runtime-protected-route-v1";
+import type { AiRuntimeProtectedRoute } from "./ai-runtime-protected-route";
 import { captureAiRuntimePlacementClearance } from "./capture-ai-runtime-placement-clearance";
 
 /** Test-owned service observation. Queries run once, return their original Promise and never feed an AI planner. */
@@ -37,9 +37,9 @@ export class AiRuntimeProductionSpatialCapture {
   constructor(
     private readonly scene: Phaser.Scene,
     private readonly identify: (actorId: string, item: UnifiedQueueItem) => string,
-    private readonly append: (playerNumber: number, spatial: AiRuntimeProductionSpatialV1) => void,
+    private readonly append: (playerNumber: number, spatial: AiRuntimeProductionSpatial) => void,
     coverage?: AiRuntimeResourceCoverageCapture,
-    private readonly protectedRoutes: readonly AiRuntimeProtectedRouteV1[] = []
+    private readonly protectedRoutes: readonly AiRuntimeProtectedRoute[] = []
   ) {
     scene.events.on(PRODUCTION_SPATIAL_AUTHORITY_EVENT, this.observeNative, this);
     const navigation = getSceneService(scene, NavigationService);
@@ -132,7 +132,7 @@ export class AiRuntimeProductionSpatialCapture {
       let playerNumber: number | undefined;
       let snapshot:
         | (() => Pick<
-            Extract<AiRuntimeProductionSpatialV1, { kind: "builder_path" }>,
+            Extract<AiRuntimeProductionSpatial, { kind: "builder_path" }>,
             | "clockTick"
             | "snapshotRestoreInProgress"
             | "sceneActive"
@@ -246,7 +246,7 @@ export class AiRuntimeProductionSpatialCapture {
     source: { readonly x: number; readonly y: number } | null,
     target: { readonly x: number; readonly y: number } | null
   ): Pick<
-    Extract<AiRuntimeProductionSpatialV1, { kind: "builder_path" }>,
+    Extract<AiRuntimeProductionSpatial, { kind: "builder_path" }>,
     "sourceNavigable" | "targetNavigable" | "heightGraphReachable"
   > {
     if (

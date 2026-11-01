@@ -3,7 +3,7 @@ import { ResourceType, ObjectNames } from "@fuzzy-waddle/probable-waffle-protoco
 import { ResourceServiceObservation } from "../../../entity/components/resource/resource-service-observation";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
 import { AiRuntimeResourceServiceCapture } from "./ai-runtime-resource-service-capture";
-import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spatial-v1";
+import type { AiRuntimeProductionSpatial } from "./ai-runtime-production-spatial";
 
 jest.mock("./capture-ai-runtime-created-actor", () => ({ captureAiRuntimeCreatedActor: jest.fn() }));
 
@@ -12,7 +12,7 @@ describe("detached cargo/credit capture (unrun until final gate)", () => {
     const scene = {} as Phaser.Scene, actor = { scene } as Phaser.GameObjects.GameObject;
     jest.mocked(captureAiRuntimeCreatedActor).mockReturnValue({ actorId: "worker", objectName: ObjectNames.TivaraWorker,
       canonicalObjectName: ObjectNames.TivaraWorker, playerNumber: 1, active: true, alive: true, finished: true, indexed: true });
-    const owner = {}, token = {}, execution = {}, records: AiRuntimeProductionSpatialV1[] = [];
+    const owner = {}, token = {}, execution = {}, records: AiRuntimeProductionSpatial[] = [];
     const capture = new AiRuntimeResourceServiceCapture(scene,
       () => ({ clockTick: 10, sceneActive: true, snapshotRestoreInProgress: false }),
       () => ({ attemptId: 1, lifetimeValid: true }), (_owner, value) => {
@@ -33,7 +33,7 @@ describe("detached cargo/credit capture (unrun until final gate)", () => {
     const scene = {} as Phaser.Scene, actor = { scene } as Phaser.GameObjects.GameObject;
     jest.mocked(captureAiRuntimeCreatedActor).mockReturnValue({ actorId: "worker", objectName: ObjectNames.TivaraWorker,
       canonicalObjectName: ObjectNames.TivaraWorker, playerNumber: 1, active: true, alive: true, finished: true, indexed: true });
-    const owner = {}, token = {}, records: AiRuntimeProductionSpatialV1[] = [];
+    const owner = {}, token = {}, records: AiRuntimeProductionSpatial[] = [];
     const capture = new AiRuntimeResourceServiceCapture(scene,
       () => ({ clockTick: 10, sceneActive: true, snapshotRestoreInProgress: false }), () => undefined,
       (_owner, value) => records.push(value), () => owner);
@@ -51,7 +51,7 @@ describe("detached cargo/credit capture (unrun until final gate)", () => {
     const scene = {} as Phaser.Scene, actor = { scene } as Phaser.GameObjects.GameObject;
     jest.mocked(captureAiRuntimeCreatedActor).mockReturnValue({ actorId: "worker", objectName: ObjectNames.TivaraWorker,
       canonicalObjectName: ObjectNames.TivaraWorker, playerNumber: 1, active: true, alive: true, finished: true, indexed: true });
-    const token = {}, records: AiRuntimeProductionSpatialV1[] = [];
+    const token = {}, records: AiRuntimeProductionSpatial[] = [];
     const capture = new AiRuntimeResourceServiceCapture(scene,
       () => ({ clockTick: 10, sceneActive: true, snapshotRestoreInProgress: false }), () => undefined,
       (_owner, value) => records.push(value));
@@ -64,7 +64,7 @@ describe("detached cargo/credit capture (unrun until final gate)", () => {
     const scene = {} as Phaser.Scene, actor = { scene } as Phaser.GameObjects.GameObject, owner = {};
     jest.mocked(captureAiRuntimeCreatedActor).mockReturnValue({ actorId: "worker", objectName: ObjectNames.TivaraWorker,
       canonicalObjectName: ObjectNames.TivaraWorker, playerNumber: 1, active: true, alive: true, finished: true, indexed: true });
-    const token = {}, records: AiRuntimeProductionSpatialV1[] = [];
+    const token = {}, records: AiRuntimeProductionSpatial[] = [];
     let live = owner;
     const capture = new AiRuntimeResourceServiceCapture(scene,
       () => ({ clockTick: 10, sceneActive: true, snapshotRestoreInProgress: false }), () => undefined,
@@ -94,7 +94,7 @@ describe("detached cargo/credit capture (unrun until final gate)", () => {
     jest.mocked(captureAiRuntimeCreatedActor).mockReturnValue({ actorId: "worker", objectName: ObjectNames.TivaraWorker,
       canonicalObjectName: ObjectNames.TivaraWorker, playerNumber: 1, active: true, alive: true, finished: true, indexed: true });
     let token = {}; const originalToken = token;
-    const records: AiRuntimeProductionSpatialV1[] = [];
+    const records: AiRuntimeProductionSpatial[] = [];
     const capture = new AiRuntimeResourceServiceCapture(scene,
       () => ({ clockTick: 10, sceneActive: true, snapshotRestoreInProgress: false }),
       (value) => value === execution ? { attemptId: 7, lifetimeValid: token === originalToken } : undefined,

@@ -1,7 +1,7 @@
 // prettier-ignore
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { RuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality";
 import {
   normalizeRuntimeScopedQueuePayments,
   sameRuntimeQueueVector
@@ -10,8 +10,8 @@ import { validateRuntimeQueueRefundPolicy } from "./skirmish-ai-runtime-refund-p
 
 /** Validates scoped native cash intervals; per-tick progress remains a separate operation authority. */
 export function normalizeRuntimeProductionPayments(
-  capture: AiRuntimeProductionCaptureV1,
-  commands: RuntimeProductionCausalityV1["commands"]
+  capture: AiRuntimeProductionSnapshot,
+  commands: RuntimeProductionCausality["commands"]
 ) {
   const failures: string[] = [];
   const gaps = new Set<string>();

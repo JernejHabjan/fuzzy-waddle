@@ -1,10 +1,10 @@
-import type { RuntimeProductionEvidenceV1 } from "./skirmish-ai-runtime-production-evidence";
+import type { RuntimeProductionEvidence } from "./skirmish-ai-runtime-production-evidence";
 
 /** Only the exact train/research pair observed sharing a physical lane can supply its useful completion proof. */
 export function evaluateRuntimeSharedContention(
-  evidence: RuntimeProductionEvidenceV1,
-  enqueued: RuntimeProductionEvidenceV1["events"],
-  usefulCompleted: RuntimeProductionEvidenceV1["events"]
+  evidence: RuntimeProductionEvidence,
+  enqueued: RuntimeProductionEvidence["events"],
+  usefulCompleted: RuntimeProductionEvidence["events"]
 ): string[] {
   const { snapshots } = evidence;
   const failures: string[] = [];

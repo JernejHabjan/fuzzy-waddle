@@ -1,17 +1,17 @@
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
-import type { RuntimeProductionWorldSnapshotV1 } from "./skirmish-ai-runtime-production-world-snapshot";
-import type { RuntimeProductionEffectRetentionV1 } from "./skirmish-ai-runtime-production-effect-retention";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { RuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality";
+import type { RuntimeProductionWorldSnapshot } from "./skirmish-ai-runtime-production-world-snapshot";
+import type { RuntimeProductionEffectRetention } from "./skirmish-ai-runtime-production-effect-retention";
 
 /** Connects exact native completions to subsequent owned actor/tech samples. It never interpolates the unsampled interval. */
 export function projectRuntimeProductionEffectRetention(
-  capture: AiRuntimeProductionCaptureV1,
-  commands: RuntimeProductionCausalityV1["commands"],
-  completions: RuntimeProductionCausalityV1["completions"],
-  snapshots: readonly RuntimeProductionWorldSnapshotV1[]
+  capture: AiRuntimeProductionSnapshot,
+  commands: RuntimeProductionCausality["commands"],
+  completions: RuntimeProductionCausality["completions"],
+  snapshots: readonly RuntimeProductionWorldSnapshot[]
 ) {
-  const effects: RuntimeProductionEffectRetentionV1[] = [];
+  const effects: RuntimeProductionEffectRetention[] = [];
   const failures: string[] = [];
   const gaps = new Set<string>();
   // Bound report expansion as well as raw input; omitted samples cannot contribute oracle evidence.
@@ -27,14 +27,14 @@ export function projectRuntimeProductionEffectRetention(
   }
   for (const completion of completions) {
     const origin = commands.find((entry) => entry.command.execution?.commandId === completion.originatingCommandId);
-    const samples: RuntimeProductionEffectRetentionV1["samples"][number][] = [];
+    const samples: RuntimeProductionEffectRetention["samples"][number][] = [];
     if (!origin?.decision) gaps.add("production_effect_accepted_decision_missing");
     for (const snapshot of snapshots) {
       if (snapshot.tick < completion.terminalTick) continue;
       const afterSequence = snapshot.afterSequence;
       if (afterSequence === null) { gaps.add("production_effect_snapshot_order_missing"); continue; }
       if (afterSequence < completion.terminalSequence) continue;
-      let state: RuntimeProductionEffectRetentionV1["samples"][number]["state"] = "unavailable";
+      let state: RuntimeProductionEffectRetention["samples"][number]["state"] = "unavailable";
       let currentLevel: number | null = null;
       if (completion.createdActor) {
         const identity = completion.createdActor;

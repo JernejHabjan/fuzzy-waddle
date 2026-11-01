@@ -1,7 +1,7 @@
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { createAiProductionPolicyFixture } from "../testing/ai-production-policy-fixture";
 import { createAiTestOwnedActor } from "../testing/ai-test-fixtures";
-import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import type { AiObservedActor } from "../contracts/ai-observation";
 import { adaptationRoleTargets, mergeAdaptationEvidence } from "./ai-adaptation-evidence";
 import { combatActor, fixtureState, manager, observation, squad } from "./ai-tactics-test-fixtures";
 
@@ -92,7 +92,7 @@ describe("technology and counter scenario contracts", () => {
       ...combatActor("ranged-counter", "self", 2, "ground", 1000, { damage: 200 }),
       objectName: ObjectNames.TivaraSlingshotFemale
     };
-    const evaluate = (actors: readonly AiObservedActorV1[]) =>
+    const evaluate = (actors: readonly AiObservedActor[]) =>
       manager.propose(
         observation(actors, 200),
         fixtureState([

@@ -3,26 +3,26 @@ import { AI_RUNTIME_MAX_FACTS } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/append-ai-runtime-production-fact";
 import { isDeepStrictEqual } from "node:util";
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { AiRuntimeRouteOrderV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-route-order-v1";
-import type { AiRuntimeCreatedActorV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-created-actor-v1";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { AiRuntimeRouteOrder } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-route-order";
+import type { AiRuntimeCreatedActor } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-created-actor";
 import { matchRuntimeRouteServiceLineage } from "./skirmish-ai-runtime-route-service-lineage";
 import { validateRuntimeRouteCallers } from "./skirmish-ai-runtime-route-caller-validation";
 import { RUNTIME_ROUTE_ORDER_IDENTITY_LIMIT } from "./skirmish-ai-runtime-route-history-budget";
 
 /** Inspect every admission/current/caller sample and orphan rally claim, including overflow tails and failure terminals. */
-export function validateRuntimeRouteOrders(capture: AiRuntimeProductionCaptureV1) {
+export function validateRuntimeRouteOrders(capture: AiRuntimeProductionSnapshot) {
   const facts = capture.facts.filter((fact) => fact.kind === "spatial_authority");
   const admissions = new Map<number, typeof facts[number]>(), rallies = new Map<number, typeof facts[number]>();
-  const identities = new Map<number, { source: AiRuntimeCreatedActorV1; order: AiRuntimeRouteOrderV1 }>();
+  const identities = new Map<number, { source: AiRuntimeCreatedActor; order: AiRuntimeRouteOrder }>();
   const rallyOutputs = new Set<number>(), commandActors = new Set<string>();
   const failures: string[] = [];
   const integer = (value: number) => Number.isSafeInteger(value) && value >= 0;
   const id = (value: number) => integer(value) && value > 0 && value <= 8192;
-  const actor = (value: AiRuntimeCreatedActorV1) => !!value.actorId && !!value.objectName && !!value.canonicalObjectName &&
+  const actor = (value: AiRuntimeCreatedActor) => !!value.actorId && !!value.objectName && !!value.canonicalObjectName &&
     (value.playerNumber === null || integer(value.playerNumber)) &&
     [value.active, value.alive, value.finished, value.indexed].every((flag) => typeof flag === "boolean");
   for (const fact of facts) {

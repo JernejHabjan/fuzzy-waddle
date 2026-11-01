@@ -1,5 +1,5 @@
 import type { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
-import type { RuntimePresetWorldV1 } from "./skirmish-ai-runtime-preset-world";
+import type { RuntimePresetWorld } from "./skirmish-ai-runtime-preset-world";
 import { nativeCompletedPlacements } from "./skirmish-ai-native-construction-evidence";
 import { nativeProtectedTransits } from "./skirmish-ai-native-placement-evaluation";
 import { nativePaidMissionOutputs } from "./skirmish-ai-native-mission-evidence";
@@ -8,7 +8,7 @@ import { nativeFortificationBudgetFailures } from "./skirmish-ai-native-fortific
 
 /** Defense must repair a real breach, preserve friendly passage, withdraw physically and create outside pressure. */
 export function evaluateNativeFortificationSequence(
-  branch: string, context: ReturnType<typeof nativeScenarioContext>, preset: RuntimePresetWorldV1
+  branch: string, context: ReturnType<typeof nativeScenarioContext>, preset: RuntimePresetWorld
 ) {
   const failures = nativeProtectedTransits(context, preset);
   failures.push(...nativeFortificationBudgetFailures(context, true));

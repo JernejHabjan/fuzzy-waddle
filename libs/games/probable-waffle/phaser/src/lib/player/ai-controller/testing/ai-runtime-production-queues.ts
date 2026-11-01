@@ -4,13 +4,13 @@ import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/compo
 import type { UnifiedQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
 import { getActorComponent } from "../../../data/actor-component";
 import { QueueComponent } from "../../../entity/components/queue/queue-component";
-import type { AiRuntimeProductionQueueV1 } from "./ai-runtime-production-queue-v1";
+import type { AiRuntimeProductionQueue } from "./ai-runtime-production-queue";
 
 /** Reads real lane indices and item handles; the caller owns the capture-local identity lifetime. */
 export function captureAiRuntimeProductionQueue(
   actor: Phaser.GameObjects.GameObject,
   identify: (actorId: string, item: UnifiedQueueItem) => string
-): AiRuntimeProductionQueueV1 | null {
+): AiRuntimeProductionQueue | null {
   const actorId = getActorComponent(actor, IdComponent)?.id;
   const queue = getActorComponent(actor, QueueComponent);
   if (!actorId || !queue) return null;

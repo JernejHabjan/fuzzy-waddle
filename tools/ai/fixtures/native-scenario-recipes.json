@@ -65,7 +65,7 @@
         "Ember Enclave"
       ],
       "topology": "existing_difficulty_calibration_matrix",
-      "precondition": "Preserve difficulty-calibration-v1.json paired seeds, holdout, factions, opponents and map matrix. Pin both builds, profile versions and exact map/content digests. Frozen-map migration requires a separate explicit fixture change; soak ceiling is separate from each short-match ceiling."
+      "precondition": "Preserve difficulty-calibration.json paired seeds, holdout, factions, opponents and map matrix. Pin both builds, profile versions and exact map/content digests. Frozen-map migration requires a separate explicit fixture change; soak ceiling is separate from each short-match ceiling."
     },
     "workbench": {
       "mapLabel": "AI Open Economy (test only)",
@@ -156,7 +156,7 @@
       "missing": "C-06 uses the existing three-spawn map, native third-player capture, real defeat and initial team controls. No in-match diplomacy command exists; dynamic diplomacy is explicitly unsupported. Real socket peers and host migration remain separate acceptance."
     },
     "calibration_driver": {
-      "owner": "tools/ai/fixtures/difficulty-calibration-v1.json",
+      "owner": "tools/ai/fixtures/difficulty-calibration.json",
       "missing": "Bind isolated pinned baseline/candidate builds, paired/holdout seed declarations, terminal metrics and uncertainty to the existing calibration gate; unsupported baseline cannot fall back to candidate. No calibration runs in this authoring pass."
     },
     "repro_driver": {
@@ -180,7 +180,7 @@
       "missing": "Pair a real small-unit traversal with a definition-backed larger-unit/formation clearance failure or alternate transit. Static protected-route tileMargin envelopes and compact graph clearance cannot alone certify physical unit clearance."
     },
     "recovery_binding_h_23": {
-      "owner": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-runtime-preset-world-v1.ts",
+      "owner": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-runtime-preset-world.ts",
       "missing": "Native AI-owned indispensable transport-worker duty and original departure deadline, contrasted with optional late/lost support. Human-scripted board/unload membership is available but cannot establish AI mission ownership; Skaduwee has no ship producer."
     },
     "authority_binding_h_08": {

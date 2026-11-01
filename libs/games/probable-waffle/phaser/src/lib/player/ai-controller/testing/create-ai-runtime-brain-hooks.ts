@@ -4,9 +4,9 @@ import type { AiBrainBoundaryHooks } from
   "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain-boundary-hooks";
 import { projectAiDebugSnapshot } from
   "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/debug/project-ai-debug-snapshot";
-import { readAiRuntimeBrowserTestConfigV1 } from "./ai-runtime-browser-test-config";
+import { readAiRuntimeBrowserTestConfig } from "./ai-runtime-browser-test-config";
 import type { AiRuntimeBrainFault } from "./ai-runtime-brain-fault";
-import type { AiManagerProposalV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-manager-proposal";
+import type { AiManagerProposal } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-manager-proposal";
 import { AI_RUNTIME_PROPOSAL_ORDER_EVENT, type AiRuntimeProposalOrder } from "./ai-runtime-proposal-order";
 
 export const AI_RUNTIME_BRAIN_FAULT_EVENT = "ai-runtime-brain-fault";
@@ -14,7 +14,7 @@ export const AI_RUNTIME_BRAIN_FAULT_EVENT = "ai-runtime-brain-fault";
 /** No ambient/global hook: the controller owns this finite wrapper, disposed with its brain/scene. */
 export function createAiRuntimeBrainHooks(scene: ProbableWaffleScene, playerNumber: number | undefined): AiBrainBoundaryHooks | undefined {
   if (environment.production || typeof window === "undefined") return undefined;
-  const preset = readAiRuntimeBrowserTestConfigV1()?.presetWorld, fault = preset?.brainFault, order = preset?.proposalOrder;
+  const preset = readAiRuntimeBrowserTestConfig()?.presetWorld, fault = preset?.brainFault, order = preset?.proposalOrder;
   if (playerNumber !== 2 || !fault && !order) return undefined;
   let active = true, emitted = 0;
   const recordedOwners = new Set<string>();
@@ -25,7 +25,7 @@ export function createAiRuntimeBrainHooks(scene: ProbableWaffleScene, playerNumb
     if (++emitted > 128) throw new Error("ai_runtime_brain_fault_evidence_overflow");
     scene.events.emit(AI_RUNTIME_BRAIN_FAULT_EVENT, { tick, playerNumber: fault.playerNumber, owner, kind: fault.kind });
   };
-  const ordered = (batch: AiManagerProposalV1, tick: number): AiManagerProposalV1 => {
+  const ordered = (batch: AiManagerProposal, tick: number): AiManagerProposal => {
     if (!active || !order || batch.intents.length < 2) return batch;
     const before = batch.intents.map((intent) => intent.intentId);
     const intents = order === "reverse" ? [...batch.intents].reverse() : batch.intents;

@@ -12,7 +12,7 @@ import { ResearchComponent } from "../../../entity/components/research/research-
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
-import type { AiMultiplayerSharedQueueWorldV1 } from "./ai-multiplayer-shared-queue-world-v1";
+import type { AiMultiplayerSharedQueueWorldSnapshot } from "./ai-multiplayer-shared-queue-world-snapshot";
 
 /** At most one second of actual research progress may precede cancellation in this bounded experiment. */
 export const SHARED_QUEUE_CANCEL_WINDOW_TICKS = 20;
@@ -21,8 +21,8 @@ export const SHARED_QUEUE_STABILITY_TICKS = 20;
 
 /** Selects an existing single-lane producer; no spawned buildings, queued handles, completed tech or AI state are injected. */
 export function prepareAiMultiplayerSharedQueueWorld(
-  scene: ProbableWaffleScene, tick: number, branch: AiMultiplayerSharedQueueWorldV1["branch"]
-): NonNullable<AiMultiplayerSharedQueueWorldV1["setup"]> {
+  scene: ProbableWaffleScene, tick: number, branch: AiMultiplayerSharedQueueWorldSnapshot["branch"]
+): NonNullable<AiMultiplayerSharedQueueWorldSnapshot["setup"]> {
   const playerNumber = 1;
   const player = getPlayer(scene, playerNumber);
   const index = getSceneService(scene, ActorIndexSystem);

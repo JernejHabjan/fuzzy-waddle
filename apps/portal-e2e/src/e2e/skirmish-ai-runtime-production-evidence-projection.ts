@@ -1,19 +1,19 @@
 // prettier-ignore
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 // prettier-ignore
-import type { AiRuntimePresetApplicationV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application-v1";
-import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
+import type { AiRuntimePresetApplication } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application";
+import type { RuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality";
 import type { RuntimeProductionEvidenceV2 } from "./skirmish-ai-runtime-production-evidence-v2";
 import { normalizeRuntimeProductionSetup } from "./skirmish-ai-runtime-production-setup";
 import { projectRuntimeProductionLifecycleV2 } from "./skirmish-ai-runtime-production-lifecycle-projection";
 
 /** Projects separate authority channels. No poll-time planner state, predicted refund or fabricated spatial verdict enters V2. */
 export function projectRuntimeProductionEvidenceV2(
-  capture: AiRuntimeProductionCaptureV1,
-  causal: RuntimeProductionCausalityV1,
-  preset?: AiRuntimePresetApplicationV1
+  capture: AiRuntimeProductionSnapshot,
+  causal: RuntimeProductionCausality,
+  preset?: AiRuntimePresetApplication
 ): RuntimeProductionEvidenceV2 {
   const failures = [...causal.failures];
   const gaps = new Set<string>(capture.setupGaps);

@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { isAiRuntimeBrowserTestConfigV1 } from "./validate-ai-runtime-browser-test-config-v1";
-import type { AiRuntimePresetWorldV1 } from "./ai-runtime-preset-world-v1";
+import { isAiRuntimeBrowserTestConfig } from "./validate-ai-runtime-browser-test-config";
+import type { AiRuntimePresetWorld } from "./ai-runtime-preset-world";
 
 describe("technology native fixture inputs", () => {
   const fixture: {
@@ -10,14 +10,14 @@ describe("technology native fixture inputs", () => {
         id: string;
         seed: number;
         scenarioIds: string[];
-        presetWorld: Omit<AiRuntimePresetWorldV1, "provenance">;
+        presetWorld: Omit<AiRuntimePresetWorld, "provenance">;
       }[];
     };
     assertions: Record<string, { requiredTechnologyContracts: Record<string, unknown> }>;
   } = JSON.parse(readFileSync(resolve(process.cwd(), "tools/ai/fixtures/technology-runtime.json"), "utf8"));
   it.each(fixture.recipe.variants)("validates $id through the actual browser configuration gate", (variant) => {
     expect(
-      isAiRuntimeBrowserTestConfigV1({
+      isAiRuntimeBrowserTestConfig({
         schemaVersion: 1,
         enabled: true,
         seed: variant.seed,

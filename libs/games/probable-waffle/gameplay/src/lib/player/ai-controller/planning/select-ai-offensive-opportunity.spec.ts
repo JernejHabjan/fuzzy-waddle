@@ -1,4 +1,4 @@
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 import { createAiTestOwnedActor } from "../testing/ai-test-fixtures";
@@ -39,7 +39,7 @@ describe("fastest credible offense", () => {
     const launched = first.statePatch?.squads?.find((squad) => squad.role === "attack");
     if (!launched?.lifecycle || !first.statePatch?.strategy || !first.statePatch.skirmish)
       throw new Error("missing_initial_attack_mission");
-    const failed: AiBrainStateV1 = {
+    const failed: AiBrainState = {
       ...initial,
       squads: [
         {
@@ -85,7 +85,7 @@ describe("fastest credible offense", () => {
     const launched = first.statePatch?.squads?.find((squad) => squad.role === "attack");
     const strategy = first.statePatch?.strategy;
     if (!launched?.lifecycle || !strategy?.assessment) throw new Error("missing_initial_attack_mission");
-    const state: AiBrainStateV1 = {
+    const state: AiBrainState = {
       ...initial,
       squads: [
         {
@@ -494,7 +494,7 @@ describe("fastest credible offense", () => {
     );
     expect(first.statePatch?.skirmish?.timeline.some((event) => event.detail.startsWith("launch:"))).toBe(false);
 
-    const state: AiBrainStateV1 = {
+    const state: AiBrainState = {
       ...initial,
       squads: first.statePatch!.squads!,
       skirmish: first.statePatch!.skirmish!

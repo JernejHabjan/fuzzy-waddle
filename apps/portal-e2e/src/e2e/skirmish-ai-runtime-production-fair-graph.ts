@@ -1,7 +1,7 @@
-import type { AiAccessGraphV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiAccessGraph } from "@fuzzy-waddle/probable-waffle-gameplay";
 
 /** Checks supplied committed topology only; no new pathfinding or inferred connectivity is permitted. */
-export function validateRuntimeProductionFairGraph(graph: AiAccessGraphV1, tick: number): string[] {
+export function validateRuntimeProductionFairGraph(graph: AiAccessGraph, tick: number): string[] {
   if (graph.nodes.length > 512 || graph.links.length > 2048 || graph.transferPoints.length > 512 ||
     graph.unknownNodeIds.length > 512) return ["production_decision_graph_invalid"];
   const integer = (value: number) => Number.isSafeInteger(value) && value >= 0;

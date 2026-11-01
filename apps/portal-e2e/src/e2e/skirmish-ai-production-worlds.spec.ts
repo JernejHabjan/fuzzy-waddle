@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import { readFileSync, mkdirSync, writeFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { execFileSync } from "node:child_process";
-import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
+import type { RuntimeFixture } from "./skirmish-ai-runtime-fixture";
 import { runVariant } from "./skirmish-ai-runtime-variant-runner";
 import { digestRuntimeValue } from "./skirmish-ai-runtime-digest";
 import { evaluateRuntimeVariant } from "./skirmish-ai-runtime-variant-evaluation";
@@ -13,7 +13,7 @@ import type { RuntimeProductionPairInput } from "./skirmish-ai-runtime-productio
 const root = resolve(__dirname, "../../../..");
 const source = JSON.parse(
   readFileSync(resolve(root, "tools/ai/fixtures/production-authority-runtime.json"), "utf8")
-) as RuntimeFixtureV1;
+) as RuntimeFixture;
 const requested = process.env.AI_PRODUCTION_WORLD_HORIZON;
 test.skip(
   !requested,
@@ -42,7 +42,7 @@ for (const authored of source.recipe.variants) {
         ? { ...authored.presetWorld, events: authored.presetWorld.events?.filter((event) => event.tick <= horizon) }
         : undefined
     };
-    const fixture: RuntimeFixtureV1 = {
+    const fixture: RuntimeFixture = {
       ...source,
       recipe: { ...source.recipe, variants: [variant] },
       assertions: {

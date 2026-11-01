@@ -1,12 +1,12 @@
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 import { nativeDamageMatches } from "./skirmish-ai-native-damage";
 import { runtimeControlTransitFailures } from "./skirmish-ai-runtime-control-transit";
 import { normalizeRuntimeMovement } from "./skirmish-ai-runtime-movement-normalization";
 
 /** Every original attacker must actually leave or die. Combat recovery requires exact AI-owned lethal native damage. */
 export function expansionPressureResolution(
-  human: AiRuntimeProductionCaptureV1, raiderIds: readonly string[], combatOnly: boolean
+  human: AiRuntimeProductionSnapshot, raiderIds: readonly string[], combatOnly: boolean
 ): { resolvedTick: number | undefined; resolvedSequence: number | undefined; failures: string[] } {
   const failures: string[] = [], resolved: { tick: number; sequence: number }[] = [];
   let observedRetreat = false;

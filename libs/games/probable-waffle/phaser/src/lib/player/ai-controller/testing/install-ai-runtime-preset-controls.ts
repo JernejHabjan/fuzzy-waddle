@@ -11,13 +11,13 @@ import { getSceneService } from "../../../world/services/scene-component-helpers
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import type { AiRuntimePresetWorldV1 } from "./ai-runtime-preset-world-v1";
+import type { AiRuntimePresetWorld } from "./ai-runtime-preset-world";
 import { AI_RUNTIME_PRESET_CONTROL_EVENT, type AiRuntimePresetControlEvent } from "./ai-runtime-preset-control-event";
 
 /** Explicit test controller. Delays dispatch, not refunds or gameplay; exact paid setup handles survive index changes. */
 export function installAiRuntimePresetControls(
   scene: ProbableWaffleScene,
-  preset: AiRuntimePresetWorldV1,
+  preset: AiRuntimePresetWorld,
   actors: ReadonlyMap<string, Phaser.GameObjects.GameObject>
 ): void {
   if (!preset.controls?.length) return;

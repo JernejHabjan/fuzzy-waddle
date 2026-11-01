@@ -17,7 +17,7 @@ import { SimulationTickService } from "../../../world/services/simulation-tick.s
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { AiRuntimeRecipientResourceCapture } from "../../../player/ai-controller/testing/ai-runtime-recipient-resource-capture";
 import { AiRuntimeResourceCoverageCapture } from "../../../player/ai-controller/testing/ai-runtime-resource-coverage-capture";
-import type { AiRuntimeProductionFactV1 } from "../../../player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "../../../player/ai-controller/testing/ai-runtime-production-fact";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 
 jest.mock("../combat/components/health-presentation", () => ({ HealthPresentation: class {
@@ -64,7 +64,7 @@ export function constructionHistoryFixture(overrides: Partial<ConstructionSiteDe
     return undefined;
   });
   const component = new ConstructionSiteComponent(object, policy);
-  const facts: AiRuntimeProductionFactV1[] = [];
+  const facts: AiRuntimeProductionFact[] = [];
   const coverage = new AiRuntimeResourceCoverageCapture(0, () => ({ tick: 0, captureSequence: facts.length }));
   const journal = new AiRuntimeRecipientResourceCapture(scene, coverage,
     (playerNumber) => ({ playerNumber, tick: 0, sequence: 0 }), () => facts.length,

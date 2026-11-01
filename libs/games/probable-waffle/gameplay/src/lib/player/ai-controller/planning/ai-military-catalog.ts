@@ -1,7 +1,7 @@
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
 
-export function roleFor(objectName: ObjectNames, catalog: AiCapabilityCatalogV1): "frontline" | "ranged" | "support" {
+export function roleFor(objectName: ObjectNames, catalog: AiCapabilityCatalog): "frontline" | "ranged" | "support" {
   const entry = catalog.entries.find((candidate) => candidate.sourceObjectName === objectName);
   const family = entry?.family.toLowerCase() ?? "";
   if (family.includes("heal") || family.includes("support")) return "support";
@@ -9,13 +9,13 @@ export function roleFor(objectName: ObjectNames, catalog: AiCapabilityCatalogV1)
   return "frontline";
 }
 
-export function isMilitaryCatalogEntry(entry: AiCapabilityCatalogV1["entries"][number]): boolean {
+export function isMilitaryCatalogEntry(entry: AiCapabilityCatalog["entries"][number]): boolean {
   return entry.gathers.length === 0 && entry.targetDomains.length > 0;
 }
 
 export function producerMilitaryProducts(
   objectName: ObjectNames,
-  catalog: AiCapabilityCatalogV1,
+  catalog: AiCapabilityCatalog,
   movementDomain?: "ground" | "air" | "water"
 ): readonly ObjectNames[] {
   const producer = catalog.entries.find((entry) => entry.sourceObjectName === objectName);

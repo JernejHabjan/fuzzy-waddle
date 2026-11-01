@@ -1,7 +1,7 @@
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { RuntimeProductionSpatialAuthorityV1 } from "./skirmish-ai-runtime-production-spatial-authority";
-import type { RuntimeConstructionLineageV1 } from "./skirmish-ai-runtime-construction-lineage";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { RuntimeProductionSpatialAuthority } from "./skirmish-ai-runtime-production-spatial-authority";
+import type { RuntimeConstructionLineage } from "./skirmish-ai-runtime-construction-lineage";
 import { normalizeRuntimeInitialConstruction } from "./skirmish-ai-runtime-initial-construction";
 import { matchRuntimeConstructionDecision } from "./skirmish-ai-runtime-construction-decision-lineage";
 import { matchRuntimeConstructionApplication } from "./skirmish-ai-runtime-construction-application";
@@ -12,13 +12,13 @@ import { matchRuntimeConstructionApplication } from "./skirmish-ai-runtime-const
  * This retrospective report is not an online AI observation or a completed/paid/useful-effect ledger.
  */
 export function projectRuntimeConstructionLineage(
-  capture: AiRuntimeProductionCaptureV1, spatial: RuntimeProductionSpatialAuthorityV1,
-  records: readonly RuntimeConstructionLineageV1["boundary"][]
+  capture: AiRuntimeProductionSnapshot, spatial: RuntimeProductionSpatialAuthority,
+  records: readonly RuntimeConstructionLineage["boundary"][]
 ) {
   const initial = normalizeRuntimeInitialConstruction(capture);
   const failures = [...initial.failures];
   const gaps = new Set(initial.gaps);
-  const entries: RuntimeConstructionLineageV1[] = [];
+  const entries: RuntimeConstructionLineage[] = [];
   if (records.length > 256 || spatial.placements.length > 256) {
     gaps.add("production_construction_lineage_overflow");
     return { entries, initial: initial.initial, failures, gaps: [...gaps].sort() };

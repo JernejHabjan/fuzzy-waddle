@@ -2,7 +2,7 @@ import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/playe
 import { rejectionRetryFixture } from "./skirmish-ai-runtime-rejection-retry-fixture";
 import { productionQueueMutationFixture } from "./skirmish-ai-runtime-production-queue-mutation-fixture";
 import { expect, test } from "@playwright/test";
-import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact";
 import { productionRejectionFixture } from "./skirmish-ai-runtime-production-rejection-fixture";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
 
@@ -85,7 +85,7 @@ test.describe("production native rejection synthetic contracts", () => {
     const facts = raw.facts
       .filter((fact) => fact !== finish)
       .concat(finish)
-      .map((fact, index): AiRuntimeProductionFactV1 => {
+      .map((fact, index): AiRuntimeProductionFact => {
         const base = { ...fact, sequence: index + 1, tick: 4 };
         if (fact.kind === "outcome")
           return {
@@ -139,7 +139,7 @@ test.describe("production native rejection synthetic contracts", () => {
   test("forged selection, correlation, cash, liabilities, release and restore suppress normalized evidence", () => {
     for (const change of ["selection", "correlation", "cash", "liability", "release", "restore"] as const) {
       const raw = productionRejectionFixture();
-      const facts = raw.facts.map((fact): AiRuntimeProductionFactV1 => {
+      const facts = raw.facts.map((fact): AiRuntimeProductionFact => {
         if (change === "selection" && fact.kind === "decision_selected")
           return {
             ...fact,
@@ -186,8 +186,8 @@ test.describe("production native rejection synthetic contracts", () => {
       const raw = productionRejectionFixture("application");
       const rejected = raw.facts.find((fact) => fact.kind === "outcome" && fact.outcome.kind === "rejected");
       if (!rejected || rejected.kind !== "outcome") throw new Error("synthetic_rejection_missing");
-      const facts: AiRuntimeProductionFactV1[] = raw.facts
-        .flatMap((fact): AiRuntimeProductionFactV1[] => {
+      const facts: AiRuntimeProductionFact[] = raw.facts
+        .flatMap((fact): AiRuntimeProductionFact[] => {
           if (fact !== rejected) return [fact];
           if (change === "success") return [fact, { ...rejected, outcome: { ...rejected.outcome, kind: "applied" } }];
           if (change === "duplicate") return [fact, fact];

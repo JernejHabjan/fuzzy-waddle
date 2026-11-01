@@ -1,17 +1,17 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import type { AiRuntimePresetWorldV1 } from "./ai-runtime-preset-world-v1";
-import { isAiRuntimeBrowserTestConfigV1 } from "./validate-ai-runtime-browser-test-config-v1";
+import type { AiRuntimePresetWorld } from "./ai-runtime-preset-world";
+import { isAiRuntimeBrowserTestConfig } from "./validate-ai-runtime-browser-test-config";
 import { validAiRuntimeSourceStocks } from "./ai-runtime-source-stocks";
 
 for (const name of ["economy-delivery-runtime", "resource-recovery-runtime"]) {
   const fixture: {
-    recipe: { variants: { id: string; seed: number; presetWorld: Omit<AiRuntimePresetWorldV1, "provenance"> }[] };
+    recipe: { variants: { id: string; seed: number; presetWorld: Omit<AiRuntimePresetWorld, "provenance"> }[] };
   } = JSON.parse(readFileSync(resolve(process.cwd(), `tools/ai/fixtures/${name}.json`), "utf8"));
   describe(`${name} native setup`, () => {
     it.each(fixture.recipe.variants)("admits $id through the actual browser gate", (variant) => {
       expect(
-        isAiRuntimeBrowserTestConfigV1({
+        isAiRuntimeBrowserTestConfig({
           schemaVersion: 1,
           enabled: true,
           seed: variant.seed,

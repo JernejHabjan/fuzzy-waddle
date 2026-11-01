@@ -1,13 +1,13 @@
 // prettier-ignore
-import type { AiRuntimePresetApplicationV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application-v1";
+import type { AiRuntimePresetApplication } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application";
 // prettier-ignore
-import type { AiRuntimePresetQueueApplicationV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-queue-application-v1";
-import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
-import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
-import type { RuntimeProductionEvidenceV1 } from "./skirmish-ai-runtime-production-evidence";
-import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
+import type { AiRuntimePresetQueueApplication } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-queue-application";
+import type { RuntimeCheckpoint } from "./skirmish-ai-runtime-checkpoint";
+import type { RuntimeVariant } from "./skirmish-ai-runtime-variant";
+import type { RuntimeProductionEvidence } from "./skirmish-ai-runtime-production-evidence";
+import type { RuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality";
 import type { RuntimeProductionEvidenceV2 } from "./skirmish-ai-runtime-production-evidence-v2";
 import type { NativeDisposalEvidence } from "./skirmish-ai-native-disposal-evidence";
 import type { NativeDebugComparisonProof } from "./skirmish-ai-native-debug-comparison-proof";
@@ -22,10 +22,10 @@ import type { NativeSequenceProof } from "./skirmish-ai-native-sequence-runner";
 import type { NativeReproProof } from "./skirmish-ai-native-repro-runner";
 import type { exerciseNativeLiveWorkbench } from "./skirmish-ai-native-live-workbench";
 // prettier-ignore
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 
-export interface RuntimeVariantResultV1 {
+export interface RuntimeVariantResult {
   readonly nativeSave?: NativeSaveProof;
   readonly nativeProfileTransfer?: Awaited<ReturnType<typeof runNativeProfileTransfer>>;
   readonly nativeCancellation?: Awaited<ReturnType<typeof cancelNativeOriginalProduction>>;
@@ -41,19 +41,19 @@ export interface RuntimeVariantResultV1 {
   readonly nativeDebugComparison?: NativeDebugComparisonProof;
   readonly nativeDebugParity?: NativeDebugParityProof;
   /** Exact paused native application permits re-projecting raw world artifacts without inferred setup. */
-  readonly productionPreset?: AiRuntimePresetApplicationV1;
+  readonly productionPreset?: AiRuntimePresetApplication;
   /** Absent until a real runtime adapter has retained ordered production/resource authority facts. */
-  readonly productionEvidence?: RuntimeProductionEvidenceV1;
+  readonly productionEvidence?: RuntimeProductionEvidence;
   /** Full authority channels keep setup, selected clocks and closed physical history separate from legacy diagnostics. */
   readonly productionEvidenceV2?: RuntimeProductionEvidenceV2;
   /** Raw authority diagnostics retain explicit gaps and cannot satisfy the independent evidence contract. */
-  readonly productionCapture?: AiRuntimeProductionCaptureV1;
+  readonly productionCapture?: AiRuntimeProductionSnapshot;
   /** Only explicitly bound cases retain the opponent's closed native history; never supplied to the AI. */
-  readonly opponentCapture?: AiRuntimeProductionCaptureV1;
+  readonly opponentCapture?: AiRuntimeProductionSnapshot;
   /** Extra real lobby opponents share the same observer, clock and fact budget. */
-  readonly otherOpponentCaptures?: readonly AiRuntimeProductionCaptureV1[];
+  readonly otherOpponentCaptures?: readonly AiRuntimeProductionSnapshot[];
   /** Checked AI intent/authority lineage with unresolved gaps; never substitutes for full productionEvidence. */
-  readonly productionCausality?: RuntimeProductionCausalityV1;
+  readonly productionCausality?: RuntimeProductionCausality;
   /** Retained diagnostic failures when the duplicate normalized payload is omitted beside full raw/V2 authority. */
   readonly productionCausalityFailures?: readonly string[];
   readonly variantId: string;
@@ -61,7 +61,7 @@ export interface RuntimeVariantResultV1 {
   readonly mapLabel: string;
   readonly stopReason: "terminal_result" | "evidence_satisfied" | "checkpoint_ceiling";
   readonly seed: number;
-  readonly aiFaction: RuntimeVariantV1["aiFaction"];
+  readonly aiFaction: RuntimeVariant["aiFaction"];
   readonly initialOwnedActorCount: number;
   readonly initialWorkerCount: number;
   readonly presetFixtureId: string | null;
@@ -80,7 +80,7 @@ export interface RuntimeVariantResultV1 {
     readonly researchType: string | null;
   }[];
   /** Detached real setup application records; absent in natural worlds and older synthetic oracle fixtures. */
-  readonly presetQueueApplications?: readonly AiRuntimePresetQueueApplicationV1[];
+  readonly presetQueueApplications?: readonly AiRuntimePresetQueueApplication[];
   readonly presetInitialOrderCount: number;
   readonly determinismGroup: string | null;
   readonly supplyBranch?: "prebuild" | "ample_control";
@@ -91,7 +91,7 @@ export interface RuntimeVariantResultV1 {
   readonly productionCompositionBranch?: "fill_deficit" | "satisfied_control" | "seeded_queue_control";
   readonly initialWorldDigest: string;
   readonly outcomeDigest: string;
-  readonly checkpoints: readonly RuntimeCheckpointV1[];
+  readonly checkpoints: readonly RuntimeCheckpoint[];
   readonly perturbations: readonly {
     readonly id: string;
     readonly tick: number;

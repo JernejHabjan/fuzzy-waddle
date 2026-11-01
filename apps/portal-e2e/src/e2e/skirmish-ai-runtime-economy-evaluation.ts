@@ -1,11 +1,11 @@
 import type { RuntimeEconomyContract } from "./skirmish-ai-runtime-economy-contract";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 import { runtimeResourceCreditMatches } from "./skirmish-ai-runtime-resource-service-validation";
 
 /** Uses exact consumed ledgers and actual scoped receipts; a rising balance or a gather command is insufficient. */
 export function evaluateRuntimeEconomy(
   contract: RuntimeEconomyContract | undefined,
-  variant: Pick<RuntimeVariantResultV1, "productionCapture" | "presetInitialOrderCount" | "presetResourceGrantCount">
+  variant: Pick<RuntimeVariantResult, "productionCapture" | "presetInitialOrderCount" | "presetResourceGrantCount">
 ): string[] {
   if (!contract) return [];
   const capture = variant.productionCapture;

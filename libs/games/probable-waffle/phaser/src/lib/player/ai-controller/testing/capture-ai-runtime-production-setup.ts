@@ -10,12 +10,12 @@ import { CommandBusService } from "../../../world/services/multiplayer/command-b
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { TilemapComponent } from "../../../world/tilemap/tilemap.component";
 import { getSceneComponent, getSceneService } from "../../../world/services/scene-component-helpers";
-import type { AiRuntimeProductionSetupV1 } from "./ai-runtime-production-setup-v1";
+import type { AiRuntimeProductionSetup } from "./ai-runtime-production-setup";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import { getTileCoordsUnderObject } from "../../../library/tile-under-object";
 
 /** One bounded native read at the first paused tick-zero poll, after preset applications and before any decision. */
-export function captureAiRuntimeProductionSetup(scene: ProbableWaffleScene): AiRuntimeProductionSetupV1 {
+export function captureAiRuntimeProductionSetup(scene: ProbableWaffleScene): AiRuntimeProductionSetup {
   const clock = getSceneService(scene, SimulationTickService);
   const index = getSceneService(scene, ActorIndexSystem);
   const tech = getSceneService(scene, TechTreeService);
@@ -87,5 +87,5 @@ export function captureAiRuntimeProductionSetup(scene: ProbableWaffleScene): AiR
         row.map((tile) => ({ index: tile.index, collides: tile.collides, properties: tile.properties }))
       )
     }))
-  } satisfies AiRuntimeProductionSetupV1);
+  } satisfies AiRuntimeProductionSetup);
 }

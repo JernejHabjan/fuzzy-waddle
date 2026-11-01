@@ -5,8 +5,8 @@ import { fileURLToPath } from "node:url";
 import { resolveAiRegressionSelection } from "./ai-regression-selection.mjs";
 
 const directory = join(dirname(fileURLToPath(import.meta.url)), "fixtures");
-const pack = readJson("ai-regression-v1.json");
-const manifest = readJson("skirmish-v1.json");
+const pack = readJson("ai-regression.json");
+const manifest = readJson("skirmish.json");
 const selection = resolveAiRegressionSelection(pack, manifest, readJson, process.env.AI_REGRESSION_PROFILE ?? "core");
 const matrix = JSON.stringify({ include: selection.selected.map(({ caseId, scenarioId, variantId }) => ({
   id: caseId,

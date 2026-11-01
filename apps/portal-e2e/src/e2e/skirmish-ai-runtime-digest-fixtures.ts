@@ -1,7 +1,7 @@
-import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
+import type { RuntimeCheckpoint } from "./skirmish-ai-runtime-checkpoint";
 
 /** Synthetic digest input only; never an application/world fixture or accepted production evidence. */
-export function productionCheckpoint(tick: number, itemId: string): RuntimeCheckpointV1 {
+export function productionCheckpoint(tick: number, itemId: string): RuntimeCheckpoint {
   return {
     targetTick: tick, tick, observationTick: tick, decisionSequence: 1, faction: 1, openingPlanId: "opening",
     openingSteps: {}, workerCount: 0, deliveredIncome: 0, appliedCommands: [], terminalFailureCount: 0,

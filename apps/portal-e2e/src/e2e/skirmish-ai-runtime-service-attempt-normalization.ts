@@ -2,21 +2,21 @@
 import { AI_RUNTIME_MAX_FACTS } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/append-ai-runtime-production-fact";
 import { isDeepStrictEqual } from "node:util";
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { AiRuntimeCreatedActorV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-created-actor-v1";
-import type { RuntimeServiceAttemptV1 } from "./skirmish-ai-runtime-service-attempt";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { AiRuntimeCreatedActor } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-created-actor";
+import type { RuntimeServiceAttempt } from "./skirmish-ai-runtime-service-attempt";
 import { validateRuntimeRouteOrders } from "./skirmish-ai-runtime-route-order-validation";
 import { runtimeRouteOrderFenced } from "./skirmish-ai-runtime-route-order-fence";
 import { matchRuntimeRouteServiceLineage } from "./skirmish-ai-runtime-route-service-lineage";
 
 /** Scan every supplied attempt, including orphan/error/overflow tails, before assigning native caller ownership. */
-export function normalizeRuntimeServiceAttempts(capture: AiRuntimeProductionCaptureV1) {
+export function normalizeRuntimeServiceAttempts(capture: AiRuntimeProductionSnapshot) {
   if (capture.facts.length > AI_RUNTIME_MAX_FACTS || capture.droppedFactCount) {
     return { attempts: [], failures: ["production_service_attempt_capture_dropped"], gaps: [] };
   }
-  const groups = new Map<number, RuntimeServiceAttemptV1["started"][]>();
+  const groups = new Map<number, RuntimeServiceAttempt["started"][]>();
   const failures: string[] = [], gaps = new Set(["production_service_actual_credit_missing",
     "production_service_resource_type_and_beneficiary_missing", "production_service_cargo_history_missing",
     "production_service_useful_fulfillment_missing", "production_service_continuous_stability_missing",
@@ -24,10 +24,10 @@ export function normalizeRuntimeServiceAttempts(capture: AiRuntimeProductionCapt
   const orders = validateRuntimeRouteOrders(capture);
   failures.push(...orders.failures);
   const integer = (value: number) => Number.isSafeInteger(value) && value >= 0;
-  const actorValid = (actor: AiRuntimeCreatedActorV1) => !!actor && !!actor.actorId && !!actor.objectName &&
+  const actorValid = (actor: AiRuntimeCreatedActor) => !!actor && !!actor.actorId && !!actor.objectName &&
     !!actor.canonicalObjectName && (actor.playerNumber === null || integer(actor.playerNumber)) &&
     [actor.active, actor.alive, actor.finished, actor.indexed].every((flag) => typeof flag === "boolean");
-  const actorReady = (actor: AiRuntimeCreatedActorV1) => actor.active && actor.alive && actor.finished && actor.indexed;
+  const actorReady = (actor: AiRuntimeCreatedActor) => actor.active && actor.alive && actor.finished && actor.indexed;
   for (const fact of capture.facts) {
     if (fact.kind !== "spatial_authority" || fact.spatial.kind !== "service_attempt") continue;
     const value = fact.spatial;
@@ -60,7 +60,7 @@ export function normalizeRuntimeServiceAttempts(capture: AiRuntimeProductionCapt
     }
     records.push(fact); groups.set(value.attemptId, records);
   }
-  const attempts: RuntimeServiceAttemptV1[] = [];
+  const attempts: RuntimeServiceAttempt[] = [];
   for (const [attemptId, records] of groups) {
     const started = records[0], candidate = records[1];
     if (!started || started.spatial.kind !== "service_attempt" || started.spatial.phase !== "started") continue;
@@ -86,8 +86,8 @@ export function normalizeRuntimeServiceAttempts(capture: AiRuntimeProductionCapt
     if (!terminal) localGaps.add("production_service_attempt_terminal_missing");
     const callerAttributed = !!terminal && !!admission && !orders.overflow && !orders.failures.length;
     if (!callerAttributed) localGaps.add("production_service_attempt_caller_unattributed");
-    let serviceCommand: RuntimeServiceAttemptV1["serviceCommand"] = null;
-    let selectedDemand: RuntimeServiceAttemptV1["selectedDemand"] = null;
+    let serviceCommand: RuntimeServiceAttempt["serviceCommand"] = null;
+    let selectedDemand: RuntimeServiceAttempt["selectedDemand"] = null;
     if (callerAttributed) {
       const service = matchRuntimeRouteServiceLineage(capture, admission, started.sequence);
       failures.push(...service.failures); service.gaps.forEach((gap) => localGaps.add(gap));

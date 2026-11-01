@@ -1,12 +1,12 @@
 import bindings from "@fuzzy-waddle/skirmish-ai-tools/native-scenario-bindings.json";
-import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeFixture } from "./skirmish-ai-runtime-fixture";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 import { nativeScenarioContext } from "./skirmish-ai-native-scenario-context";
 import { nativeCompletedPlacements } from "./skirmish-ai-native-construction-evidence";
 import { evaluateDifficultyFairnessPairs } from "./skirmish-ai-native-difficulty-fairness";
 
 /** Full-case coverage and counterfactual comparisons; a successful individual diagnostic world remains partial. */
-export function evaluateNativeScenarioPairs(id: string, fixture: RuntimeFixtureV1, results: readonly RuntimeVariantResultV1[]): string[] {
+export function evaluateNativeScenarioPairs(id: string, fixture: RuntimeFixture, results: readonly RuntimeVariantResult[]): string[] {
   const definition = Object.entries(bindings.cases).find(([scenarioId]) => scenarioId === id)?.[1];
   if (!definition) return [];
   const contract = fixture.assertions[id]?.requiredNativeScenario;
@@ -67,7 +67,7 @@ export function evaluateNativeScenarioPairs(id: string, fixture: RuntimeFixtureV
     if (id === "WALL-01") {
       const assisted = find("terrain"), free = find("freestanding");
       if (!assisted || !free) continue;
-      const walls = (world: RuntimeVariantResultV1) => nativeCompletedPlacements(nativeScenarioContext(world, definition.latestTick))
+      const walls = (world: RuntimeVariantResult) => nativeCompletedPlacements(nativeScenarioContext(world, definition.latestTick))
         .filter((node) => node.value.site.canonicalObjectName === "Wall").length;
       if (!walls(assisted) || walls(assisted) >= walls(free))
         failures.push("fortification_terrain_anchor_does_not_reduce_native_wall_length");
@@ -78,7 +78,7 @@ export function evaluateNativeScenarioPairs(id: string, fixture: RuntimeFixtureV
 
 /** Compare complete permitted inputs and exact selected intents until genuine permitted contact first differs. */
 function hiddenParity(
-  a: RuntimeVariantResultV1 | undefined, b: RuntimeVariantResultV1 | undefined, latestTick: number, differentSetup = false
+  a: RuntimeVariantResult | undefined, b: RuntimeVariantResult | undefined, latestTick: number, differentSetup = false
 ): string[] {
   if (!a || !b || differentSetup && a.initialWorldDigest === b.initialWorldDigest)
     return ["scouting_hidden_counterfactual_world_missing"];

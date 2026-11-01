@@ -5,12 +5,12 @@ import {
   ProbableWaffleAiDifficulty,
   ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "../testing/ai-test-fixtures";
-import { buildAiAccessGraphV1 } from "./ai-access-graph-v1";
+import { buildAiAccessGraph } from "./ai-access-graph";
 import { AiMacroManager } from "./ai-macro-manager";
 
 const constructionCells = Array.from({ length: 36 }, (_, index) => {
@@ -26,7 +26,7 @@ const constructionCells = Array.from({ length: 36 }, (_, index) => {
   };
 });
 
-const catalog: AiCapabilityCatalogV1 = {
+const catalog: AiCapabilityCatalog = {
   schemaVersion: 1,
   generation: 1,
   unsupported: [],
@@ -98,11 +98,11 @@ const catalog: AiCapabilityCatalogV1 = {
   ]
 };
 
-function state(): AiBrainStateV1 {
-  return createAiBrainStateV1({
+function state(): AiBrainState {
+  return createAiBrainState({
     playerNumber: 1,
     faction: FactionType.Tivara,
-    profile: createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium),
+    profile: createAiProfileConfig(ProbableWaffleAiDifficulty.Medium),
     tick: 200,
     archetypeId: "balanced",
     completedOpeningStepIds: [
@@ -137,7 +137,7 @@ describe("AI food infrastructure", () => {
   it.each([60, 159, 160])("H-18: saves pending housing cash before expanding existing food at %i wood", (wood) => {
     const fieldEntry = catalog.entries.find((entry) => entry.sourceObjectName === ObjectNames.Field);
     if (!fieldEntry?.constructionProfile) throw new Error("field_price_missing");
-    const withHousing: AiCapabilityCatalogV1 = {
+    const withHousing: AiCapabilityCatalog = {
       ...catalog,
       entries: [
         ...catalog.entries.map((entry) =>
@@ -212,10 +212,10 @@ describe("AI food infrastructure", () => {
     ).toBe(true);
   });
   it("bootstraps a food prerequisite during an unfinished opening without completing its historical step", () => {
-    const initial = createAiBrainStateV1({
+    const initial = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
-      profile: createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium),
+      profile: createAiProfileConfig(ProbableWaffleAiDifficulty.Medium),
       tick: 200,
       archetypeId: "balanced"
     });
@@ -369,7 +369,7 @@ describe("AI food infrastructure", () => {
     const base = observation(1);
     const baseMap = base.map;
     if (!baseMap) throw new Error("test_map_missing");
-    const access = buildAiAccessGraphV1({
+    const access = buildAiAccessGraph({
       generation: 1,
       staticRevision: 1,
       dynamicRevision: 1,

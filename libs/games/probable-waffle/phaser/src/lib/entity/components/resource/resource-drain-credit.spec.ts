@@ -10,7 +10,7 @@ import {
 import { OwnerComponent } from "../owner-component";
 import { AiRuntimeRecipientResourceCapture } from "../../../player/ai-controller/testing/ai-runtime-recipient-resource-capture";
 import { AiRuntimeResourceCoverageCapture } from "../../../player/ai-controller/testing/ai-runtime-resource-coverage-capture";
-import type { AiRuntimeProductionFactV1 } from "../../../player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { AiRuntimeProductionFact } from "../../../player/ai-controller/testing/ai-runtime-production-fact";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import {
   ResourceType,
@@ -123,7 +123,7 @@ describe("native drain credit policy", () => {
       jest
         .mocked(getActorComponent)
         .mockImplementation((_actor, token) => (token === OwnerComponent ? (owner as never) : undefined));
-      const facts: AiRuntimeProductionFactV1[] = [];
+      const facts: AiRuntimeProductionFact[] = [];
       const coverage = new AiRuntimeResourceCoverageCapture(0, () => ({ tick: 0, captureSequence: facts.length }));
       const journal = new AiRuntimeRecipientResourceCapture(
         scene,

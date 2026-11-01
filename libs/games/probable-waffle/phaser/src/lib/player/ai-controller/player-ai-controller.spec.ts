@@ -1,5 +1,5 @@
 import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
-import type { AiIntentV1, AiObservationV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiIntent, AiObservation } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { FactionType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { OrderType } from "../../ai/order-type";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
@@ -12,7 +12,7 @@ import { installAiResourceInputObserver } from "./observation/ai-resource-input-
 import { rememberAiResourceInputRead } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-resource-input-observation";
 import { createAiProductionPolicyFixture } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-production-policy-fixture";
 import { PureAiBrain } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain";
-import type { AiAuthorityStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiAuthorityState } from "@fuzzy-waddle/probable-waffle-gameplay";
 
 jest.mock("../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
@@ -36,7 +36,7 @@ describe("PlayerAiController pure planner integration", () => {
   it("uses current authority for admission and saves the frontier after synchronous dispatch callbacks", () => {
     const f = createAiProductionPolicyFixture(),
       controller = Object.create(PlayerAiController.prototype) as PlayerAiController;
-    let live: AiAuthorityStateV1 = { ...f.state.authority, pendingCommandIds: ["command:before"] };
+    let live: AiAuthorityState = { ...f.state.authority, pendingCommandIds: ["command:before"] };
     const brain = new PureAiBrain(f.profile, []),
       step = jest.fn(brain.step.bind(brain));
     Reflect.set(controller, "scene", { events: { listenerCount: () => 0 } });
@@ -111,7 +111,7 @@ describe("PlayerAiController pure planner integration", () => {
         rememberedEnemyActorIds: [],
         observedCapabilityFamilies: []
       }
-    } satisfies AiObservationV1;
+    } satisfies AiObservation;
     const read = { captureEpoch: 1, lossEpoch: 0, sequence: 2, playerNumber: 1, generation: 7 };
     rememberAiResourceInputRead(observation, read);
     const scene = {} as Phaser.Scene,
@@ -122,7 +122,7 @@ describe("PlayerAiController pure planner integration", () => {
     Reflect.set(controller, "getBrainCommandBridgeSnapshot", () => undefined);
     Reflect.set(controller, "brainState", {});
     Reflect.set(controller, "pureBrain", {
-      step: (input: AiObservationV1) => {
+      step: (input: AiObservation) => {
         order.push("reconcile");
         expect(input).toBe(observation);
         throw new Error("pure_failed");
@@ -214,7 +214,7 @@ describe("PlayerAiController pure planner integration", () => {
 
     controller.setAuthorityActive(false);
     invokeDecisionPlanner(controller);
-    invokeDispatch(controller, [{ ...baseIntent, kind: "stop", actorIds: ["worker"] } as AiIntentV1]);
+    invokeDispatch(controller, [{ ...baseIntent, kind: "stop", actorIds: ["worker"] } as AiIntent]);
     expect(pureStep).not.toHaveBeenCalled();
     expect(getSceneService).not.toHaveBeenCalled();
     expect(policy.campaignAiEnabled).toBe(true);
@@ -268,7 +268,7 @@ describe("PlayerAiController pure planner integration", () => {
         kind: "stop",
         actorIds: ["worker"]
       }
-    ] as AiIntentV1[]);
+    ] as AiIntent[]);
 
     expect(dispatchAi).toHaveBeenNthCalledWith(
       1,
@@ -297,8 +297,8 @@ function invokeDecisionPlanner(controller: PlayerAiController): void {
   (controller as unknown as { stepDecisionPlanner(): void }).stepDecisionPlanner();
 }
 
-function invokeDispatch(controller: PlayerAiController, intents: readonly AiIntentV1[]): void {
-  (controller as unknown as { dispatchAcceptedIntents(values: readonly AiIntentV1[]): void }).dispatchAcceptedIntents(
+function invokeDispatch(controller: PlayerAiController, intents: readonly AiIntent[]): void {
+  (controller as unknown as { dispatchAcceptedIntents(values: readonly AiIntent[]): void }).dispatchAcceptedIntents(
     intents
   );
 }

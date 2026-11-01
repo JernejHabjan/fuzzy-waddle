@@ -3,38 +3,38 @@ import { AI_RUNTIME_MAX_FACTS } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/append-ai-runtime-production-fact";
 import { projectRuntimeNativeNavigation } from "./skirmish-ai-runtime-native-navigation";
 import { runtimeNativeQueryFingerprint, validateRuntimeNativeQuery } from "./skirmish-ai-runtime-native-navigation-validation";
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { AiRuntimeCreatedActorV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-created-actor-v1";
-import type { RuntimeProductionSpatialAuthorityV1 } from "./skirmish-ai-runtime-production-spatial-authority";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { AiRuntimeCreatedActor } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-created-actor";
+import type { RuntimeProductionSpatialAuthority } from "./skirmish-ai-runtime-production-spatial-authority";
 import { matchRuntimeConstructionPath } from "./skirmish-ai-runtime-construction-path-lineage";
 import { matchRuntimeConstructionDecision } from "./skirmish-ai-runtime-construction-decision-lineage";
 import { validateRuntimeConstructionCatalog } from "./skirmish-ai-runtime-construction-catalog-validation";
-import type { AiRuntimeNavigationBoundaryV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-navigation-boundary-v1";
+import type { AiRuntimeNavigationBoundary } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-navigation-boundary";
 import { projectRuntimeNavigationInterval, validateRuntimeNavigationBoundary } from "./skirmish-ai-runtime-navigation-boundary";
 
 /** Bounded native spatial lineage. Future checkpoints, placement acceptance and endpoint checks never fill a route. */
-export function normalizeRuntimeProductionSpatial(capture: AiRuntimeProductionCaptureV1) {
-  const authority: { placements: RuntimeProductionSpatialAuthorityV1["placements"][number][];
-    spawns: RuntimeProductionSpatialAuthorityV1["spawns"][number][];
-    paths: RuntimeProductionSpatialAuthorityV1["paths"][number][] } = { placements: [], spawns: [], paths: [] };
+export function normalizeRuntimeProductionSpatial(capture: AiRuntimeProductionSnapshot) {
+  const authority: { placements: RuntimeProductionSpatialAuthority["placements"][number][];
+    spawns: RuntimeProductionSpatialAuthority["spawns"][number][];
+    paths: RuntimeProductionSpatialAuthority["paths"][number][] } = { placements: [], spawns: [], paths: [] };
   const failures: string[] = [];
   const gaps = new Set<string>();
   const integer = (value: number) => Number.isSafeInteger(value) && value >= 0;
   const tile = (value: { readonly x: number; readonly y: number }) => integer(value.x) && integer(value.y);
-  const actorValid = (actor: AiRuntimeCreatedActorV1) => !!actor.actorId && !!actor.objectName &&
+  const actorValid = (actor: AiRuntimeCreatedActor) => !!actor.actorId && !!actor.objectName &&
     !!actor.canonicalObjectName && actor.playerNumber === capture.playerNumber &&
     [actor.active, actor.alive, actor.finished, actor.indexed].every((value) => typeof value === "boolean");
-  const actorReady = (actor: AiRuntimeCreatedActorV1) => actor.active && actor.alive && actor.indexed;
+  const actorReady = (actor: AiRuntimeCreatedActor) => actor.active && actor.alive && actor.indexed;
   if (capture.facts.length > AI_RUNTIME_MAX_FACTS || capture.droppedFactCount) {
     return { authority, failures: ["production_spatial_capture_dropped"], gaps: [] };
   }
   const facts = capture.facts.filter((fact) => fact.kind === "spatial_authority");
   const requests = new Map<number, typeof facts[number]>();
   const completed = new Set<number>();
-  let lastNavigation: AiRuntimeNavigationBoundaryV1 | undefined;
+  let lastNavigation: AiRuntimeNavigationBoundary | undefined;
   const nativeQueries = new Map<number, string>();
   for (const fact of facts) {
     const value = fact.spatial;

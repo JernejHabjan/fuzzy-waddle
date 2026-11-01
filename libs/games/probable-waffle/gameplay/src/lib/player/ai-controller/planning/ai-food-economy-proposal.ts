@@ -1,9 +1,9 @@
 import { ObjectNames, type ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiIntent } from "../contracts/ai-intent";
+import type { AiObservation } from "../contracts/ai-observation";
+import type { AiDemand } from "../contracts/ai-plan-contracts";
 import { decideAiEconomyPolicy } from "./ai-economy-policy";
 import { proposeAiFieldCapacity } from "./ai-field-capacity-proposal";
 import { hasUnstaffedAiFoodSource, proposeAiFieldLabor } from "./ai-field-labor-proposal";
@@ -18,17 +18,17 @@ export const WORKER_RECOVERY_FLOOR = 6;
 
 /** Appends workforce and renewable-food proposals in their original priority and ordinal order. */
 export function proposeAiFoodEconomy(args: {
-  readonly observation: AiObservationV1;
-  readonly state: AiBrainStateV1;
-  readonly catalog: AiCapabilityCatalogV1;
-  readonly self: readonly AiObservationV1["actors"][number][];
+  readonly observation: AiObservation;
+  readonly state: AiBrainState;
+  readonly catalog: AiCapabilityCatalog;
+  readonly self: readonly AiObservation["actors"][number][];
   readonly pressureForecast: ReturnType<typeof projectAiResourceForecasts>;
   readonly openingComplete: boolean;
   readonly workerRequiredObject: ObjectNames | undefined;
   readonly reservedActorIds: ReadonlySet<string>;
   readonly selectedConstructionTileKeys: Set<string>;
-  readonly demands: AiDemandV1[];
-  readonly intents: AiIntentV1[];
+  readonly demands: AiDemand[];
+  readonly intents: AiIntent[];
   readonly ordinal: number;
   readonly militarySpendingReserve?: Readonly<Partial<Record<ResourceType, number>>>;
 }): { readonly policy: ReturnType<typeof decideAiEconomyPolicy>; readonly ordinal: number } {

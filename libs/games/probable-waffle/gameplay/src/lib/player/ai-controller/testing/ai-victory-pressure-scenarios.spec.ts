@@ -1,15 +1,15 @@
 import { FactionType, ObjectNames, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
 import { digestCanonicalAiValue } from "../brain/canonical-ai-serialization";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
-import { buildAiAccessGraphV1 } from "../planning/ai-access-graph-v1";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiObservation, AiObservedActor } from "../contracts/ai-observation";
+import { buildAiAccessGraph } from "../planning/ai-access-graph";
 import { AiSkirmishManager } from "../planning/ai-skirmish-manager";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "./ai-test-fixtures";
 
-const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-const catalog: AiCapabilityCatalogV1 = {
+const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+const catalog: AiCapabilityCatalog = {
   schemaVersion: 1 as const,
   generation: 1,
   unsupported: [],
@@ -32,7 +32,7 @@ const catalog: AiCapabilityCatalogV1 = {
   ]
 };
 const manager = new AiSkirmishManager(profile, () => catalog);
-const connected = buildAiAccessGraphV1({
+const connected = buildAiAccessGraph({
   generation: 1,
   staticRevision: 1,
   dynamicRevision: 1,
@@ -66,7 +66,7 @@ const connected = buildAiAccessGraphV1({
 const sourceNode = connected.groundNodeByTileKey.get("0,0")!;
 const targetNode = connected.groundNodeByTileKey.get("1,0")!;
 
-function combatActor(actorId: string, relation: "self" | "enemy", x: number): AiObservedActorV1 {
+function combatActor(actorId: string, relation: "self" | "enemy", x: number): AiObservedActor {
   return {
     ...createAiTestOwnedActor(actorId),
     objectName: ObjectNames.TivaraMacemanMale,
@@ -90,7 +90,7 @@ function combatActor(actorId: string, relation: "self" | "enemy", x: number): Ai
   };
 }
 
-function strategyWorld(forceCount: number, workerCount: number, defenderCount: number): AiObservationV1 {
+function strategyWorld(forceCount: number, workerCount: number, defenderCount: number): AiObservation {
   const guards = Array.from({ length: forceCount }, (_, index) => combatActor(`guard-${index}`, "self", 0));
   const workers = Array.from({ length: workerCount }, (_, index) => ({
     ...combatActor(`worker-${index}`, "self", 0),
@@ -106,7 +106,7 @@ function strategyWorld(forceCount: number, workerCount: number, defenderCount: n
       }
     ]
   }));
-  const core: AiObservedActorV1 = {
+  const core: AiObservedActor = {
     ...combatActor("enemy-core", "enemy", 1),
     capabilities: [],
     housingCost: { status: "known", value: 0, observedTick: 200 },
@@ -138,7 +138,7 @@ function strategyWorld(forceCount: number, workerCount: number, defenderCount: n
 }
 
 function strategyProposal(forceCount: number, workerCount: number, defenderCount: number) {
-  const initial = createAiBrainStateV1({
+  const initial = createAiBrainState({
     playerNumber: 1,
     faction: FactionType.Tivara,
     profile,

@@ -1,11 +1,11 @@
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeQueueResourceV1 } from "./ai-runtime-queue-resource-v1";
+import type { AiRuntimeQueueResource } from "./ai-runtime-queue-resource";
 import type { AiRuntimeUnspentClaimEntry } from "./ai-runtime-unspent-claim-entry";
 
 /** Only the exact immediate native queue operation retires its selected cash ownership. */
 export function observeAiRuntimeQueueClaimPayment(
   playerNumber: number,
-  resource: AiRuntimeQueueResourceV1,
+  resource: AiRuntimeQueueResource,
   owner: { entries: Map<string, AiRuntimeUnspentClaimEntry>; gaps: Set<string> },
   sameClaims: (intent: AiRuntimeUnspentClaimEntry["intent"], price: Partial<Record<ResourceType, number>>) => boolean
 ): void {

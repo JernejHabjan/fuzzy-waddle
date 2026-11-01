@@ -1,16 +1,16 @@
-import type { RuntimeAssertionV1 } from "./skirmish-ai-runtime-assertion";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
-import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
+import type { RuntimeAssertion } from "./skirmish-ai-runtime-assertion";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeCheckpoint } from "./skirmish-ai-runtime-checkpoint";
 
 /** Requires an actual ready producer for deficit cases and a full-window absence for ample-capacity controls. */
 export function evaluateRuntimeProductionCapacity(
   scenarioId: string,
-  assertion: RuntimeAssertionV1["requiredProductionCapacity"],
+  assertion: RuntimeAssertion["requiredProductionCapacity"],
   variant: Pick<
-    RuntimeVariantResultV1,
+    RuntimeVariantResult,
     "aiFaction" | "presetCreatedActorNames" | "presetFixtureId" | "productionCapacityBranch"
   > & {
-    readonly checkpoints: readonly Pick<RuntimeCheckpointV1, "tick" | "militaryProducerNames" | "demands">[];
+    readonly checkpoints: readonly Pick<RuntimeCheckpoint, "tick" | "militaryProducerNames" | "demands">[];
   }
 ): string[] {
   if (!assertion) return [];

@@ -6,11 +6,11 @@ import type { PawnAiBlackboard } from "../../../prefabs/ai-agents/pawn-ai-blackb
 import { PawnOrderObservation } from "../../../prefabs/ai-agents/pawn-order-observation";
 import type { ProductionSpatialAuthorityEvent } from "../../../world/services/multiplayer/production-spatial-authority-event";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
-import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spatial-v1";
-import type { AiRuntimeRouteOrderV1 } from "./ai-runtime-route-order-v1";
+import type { AiRuntimeProductionSpatial } from "./ai-runtime-production-spatial";
+import type { AiRuntimeRouteOrder } from "./ai-runtime-route-order";
 import { MovementQueryObservation } from "../../../entity/systems/movement-query-observation";
 import type { MovementQueryContext } from "../../../entity/systems/movement-query-context";
-import type { AiRuntimeRouteCallerV1 } from "./ai-runtime-route-caller-v1";
+import type { AiRuntimeRouteCaller } from "./ai-runtime-route-caller";
 import { AiRuntimeMovementCapture } from "./ai-runtime-movement-capture";
 import { AiRuntimeServiceAttemptCapture } from "./ai-runtime-service-attempt-capture";
 import type { AiRuntimeResourceCoverageCapture } from "./ai-runtime-resource-coverage-capture";
@@ -24,7 +24,7 @@ export class AiRuntimeRouteOrderCapture {
   private readonly movement: AiRuntimeMovementCapture;
   private readonly services: AiRuntimeServiceAttemptCapture;
   private callers = new WeakMap<MovementQueryContext,
-    { invocationId: number; order: AiRuntimeRouteOrderV1 | null; lifetime: object; restoreToken: object }>();
+    { invocationId: number; order: AiRuntimeRouteOrder | null; lifetime: object; restoreToken: object }>();
   private identities = new WeakMap<OrderData,
     { orderId: number; actor: Phaser.GameObjects.GameObject; lifetime: object; restoreToken: object;
       admissionObserved: boolean; outputId: number | null }>();
@@ -34,9 +34,9 @@ export class AiRuntimeRouteOrderCapture {
     { board: PawnAiBlackboard; restoreToken: object; release: () => void }>();
 
   constructor(private readonly scene: Phaser.Scene,
-    private readonly boundary: () => Pick<AiRuntimeProductionSpatialV1,
+    private readonly boundary: () => Pick<AiRuntimeProductionSpatial,
       "clockTick" | "snapshotRestoreInProgress" | "sceneActive">,
-    private readonly append: (owner: number, value: AiRuntimeProductionSpatialV1) => void,
+    private readonly append: (owner: number, value: AiRuntimeProductionSpatial) => void,
     private readonly coverage?: AiRuntimeResourceCoverageCapture) {
     this.movement = new AiRuntimeMovementCapture(scene, boundary,
       (actor, context) => this.caller(actor, { context, stage: "initial" }), append);
@@ -136,7 +136,7 @@ export class AiRuntimeRouteOrderCapture {
     this.actors.get(actor)?.release(); this.actors.delete(actor); this.outputs.delete(actor);
   }
 
-  sample(actor: Phaser.GameObjects.GameObject): AiRuntimeRouteOrderV1 | null | undefined {
+  sample(actor: Phaser.GameObjects.GameObject): AiRuntimeRouteOrder | null | undefined {
     if (this.disposed) return undefined;
     try {
       this.watchActor(actor);
@@ -149,7 +149,7 @@ export class AiRuntimeRouteOrderCapture {
 
   /** Uses the invocation's detached order, never the current order after an await or restore. */
   caller(actor: Phaser.GameObjects.GameObject,
-    active: ReturnType<typeof MovementQueryObservation.current>): AiRuntimeRouteCallerV1 | undefined {
+    active: ReturnType<typeof MovementQueryObservation.current>): AiRuntimeRouteCaller | undefined {
     if (this.disposed || !active || active.context.actor !== actor) return undefined;
     try {
       this.watchActor(actor);
@@ -169,7 +169,7 @@ export class AiRuntimeRouteOrderCapture {
     this.callers = new WeakMap();
   }
 
-  private snapshot(actor: Phaser.GameObjects.GameObject, order: OrderData, admitted: boolean): AiRuntimeRouteOrderV1 | undefined {
+  private snapshot(actor: Phaser.GameObjects.GameObject, order: OrderData, admitted: boolean): AiRuntimeRouteOrder | undefined {
     const state = this.actors.get(actor);
     if (!state) return undefined;
     let identity = this.identities.get(order);
@@ -187,7 +187,7 @@ export class AiRuntimeRouteOrderCapture {
       originOutputId: identity.outputId, admissionObserved: identity.admissionObserved });
   }
 
-  private emit(owner: number, value: AiRuntimeProductionSpatialV1): void {
+  private emit(owner: number, value: AiRuntimeProductionSpatial): void {
     try { this.append(owner, structuredClone(value)); } catch { this.coverage?.lose("route_append_failed"); }
   }
 }

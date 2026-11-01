@@ -1,9 +1,9 @@
 import { FactionType, ObjectNames, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import { canonicalizeAiBrainStateV1, digestCanonicalAiValue } from "../brain/canonical-ai-serialization";
-import { assertAiBrainStateV1 } from "../contracts/validate-ai-contracts-v1";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
-import { AiTransportManager, createAiTransportPlanV1 } from "./ai-transport-manager";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
+import { canonicalizeAiBrainState, digestCanonicalAiValue } from "../brain/canonical-ai-serialization";
+import { assertAiBrainState } from "../contracts/validate-ai-contracts";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
+import { AiTransportManager, createAiTransportPlan } from "./ai-transport-manager";
 import {
   actor,
   built,
@@ -16,15 +16,15 @@ import {
 
 describe("AiTransportManager route continuity and persistence", () => {
   it("continues an in-flight operation when a newer graph preserves its route kind", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const initial = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const initial = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
       tick: 0,
       archetypeId: "balanced"
     });
-    const source = createAiTransportPlanV1({
+    const source = createAiTransportPlan({
       planId: "transport:stale-route",
       routeRequest,
       route,
@@ -79,15 +79,15 @@ describe("AiTransportManager route continuity and persistence", () => {
   });
 
   it("keeps an in-flight operation active during a transient graph rebuild", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const initial = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const initial = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
       tick: 0,
       archetypeId: "balanced"
     });
-    const source = createAiTransportPlanV1({
+    const source = createAiTransportPlan({
       planId: "transport:pending-graph",
       routeRequest,
       route,
@@ -135,15 +135,15 @@ describe("AiTransportManager route continuity and persistence", () => {
   });
 
   it.each(["boarding", "transit", "unloading"] as const)("preserves canonical save identity during %s", (phase) => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const initial = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const initial = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
       tick: 0,
       archetypeId: "balanced"
     });
-    const plan = createAiTransportPlanV1({
+    const plan = createAiTransportPlan({
       planId: `transport:save:${phase}`,
       routeRequest,
       route,
@@ -165,10 +165,10 @@ describe("AiTransportManager route continuity and persistence", () => {
         landingTransferId: route.landingCandidates[0]!.transferId
       }
     };
-    const state = canonicalizeAiBrainStateV1({ ...initial, transport: [operation] });
+    const state = canonicalizeAiBrainState({ ...initial, transport: [operation] });
     const restored = JSON.parse(JSON.stringify(state));
-    assertAiBrainStateV1(restored);
-    expect(canonicalizeAiBrainStateV1(restored)).toEqual(state);
+    assertAiBrainState(restored);
+    expect(canonicalizeAiBrainState(restored)).toEqual(state);
     expect(digestCanonicalAiValue(restored)).toBe(digestCanonicalAiValue(state));
     const atLanding = phase === "unloading";
     const loaded = phase !== "boarding";

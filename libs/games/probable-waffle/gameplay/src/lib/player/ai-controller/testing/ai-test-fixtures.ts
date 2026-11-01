@@ -1,6 +1,6 @@
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
 import { FactionType, ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiObservedActor, AiObservation } from "../contracts/ai-observation";
 
 /** Creates an explicit unknown value for Stage 2 pure fixtures. */
 export const unknownAiValue = { status: "unknown", reason: "not_observed" } as const;
@@ -13,7 +13,7 @@ export function requireAiTestEntry<T>(entries: readonly T[] | null | undefined, 
 }
 
 /** Creates a fully shaped owned actor without inventing unavailable capability values. */
-export function createAiTestOwnedActor(actorId: ActorId): AiObservedActorV1 {
+export function createAiTestOwnedActor(actorId: ActorId): AiObservedActor {
   return {
     actorId,
     objectName: ObjectNames.TivaraWorker,
@@ -36,7 +36,7 @@ export function createAiTestOwnedActor(actorId: ActorId): AiObservedActorV1 {
 }
 
 /** Creates a canonical Stage 2 observation with one worker and a wood budget. */
-export function createAiTestObservation(): AiObservationV1 {
+export function createAiTestObservation(): AiObservation {
   return {
     schemaVersion: 1,
     generation: 1,

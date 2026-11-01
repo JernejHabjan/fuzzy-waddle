@@ -4,15 +4,15 @@ import {
   ProbableWaffleAiDifficulty,
   ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
 import { digestCanonicalAiValue } from "../brain/canonical-ai-serialization";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor, requireAiTestEntry } from "../testing/ai-test-fixtures";
 import { calculateAiHousingDemand } from "./ai-housing-demand";
 import { AiMacroManager } from "./ai-macro-manager";
 
-const catalog: AiCapabilityCatalogV1 = {
+const catalog: AiCapabilityCatalog = {
   schemaVersion: 1,
   generation: 1,
   unsupported: [],
@@ -108,7 +108,7 @@ function queuedProducer(itemCount: number) {
 describe("housing capacity demand", () => {
   it("rebuilds a legal housing core when the preferred house loses its prerequisite", () => {
     const house = catalog.entries[1]!;
-    const recoveryCatalog: AiCapabilityCatalogV1 = {
+    const recoveryCatalog: AiCapabilityCatalog = {
       ...catalog,
       entries: [
         { ...catalog.entries[0]!, constructs: [ObjectNames.Olival, ObjectNames.Sandhold] },
@@ -241,8 +241,8 @@ describe("housing capacity demand", () => {
   });
 
   it("ECO-07: prebuilds legal housing for queued population but not the ample-supply control", () => {
-    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainStateV1({
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,

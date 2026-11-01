@@ -20,7 +20,7 @@ Proposed new files, to be implemented rather than assumed present:
 - Gameplay `src/lib/player/ai-controller/testing/`: typed scenario contracts, immutable observation/event builders, pure driver, independent assertion helpers and semantic reports; substantive exported types in their own files.
 - Gameplay AI test fixtures grouped by `economy`, `production`, `strategy`, `scouting`, `combat`, `access`, `placement`, `recovery`, `lifecycle`.
 - Phaser tests/runtime bridge: world setup through real actor definitions, normal components and shared commands, fixed-tick execution, permitted observation projection and independently measured results.
-- `tools/ai/fixtures/skirmish-v1.json`: manifest linking stable IDs below to fixture files, responsible subsystem, pure/runtime coverage, roster support, expected assertions, baseline compatibility and evidence.
+- `tools/ai/fixtures/skirmish.json`: manifest linking stable IDs below to fixture files, responsible subsystem, pure/runtime coverage, roster support, expected assertions, baseline compatibility and evidence.
 - `tools/ai/run-skirmish-matrix.mjs`: one-command suite plus single-case replay/filter support. Unknown IDs and failed/missing mandatory coverage return nonzero.
 
 Each scenario requires:

@@ -1,17 +1,17 @@
 import { isDeepStrictEqual } from "node:util";
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
-import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
-import type { RuntimeProductionCompletionV1 } from "./skirmish-ai-runtime-production-completion";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
+import type { RuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality";
+import type { RuntimeProductionCompletion } from "./skirmish-ai-runtime-production-completion";
 import { validateRuntimeQueueCompletionInterval } from "./skirmish-ai-runtime-queue-completion-interval";
 import { matchRuntimeCompletedEffectAuthority } from "./skirmish-ai-runtime-completed-effect-authority";
 
 /** Joins native purchase -> consumed-head removal -> actual creator/tech registration -> terminal, retaining every gap. */
 export function projectRuntimeProductionCompletions(
-  capture: AiRuntimeProductionCaptureV1, commands: RuntimeProductionCausalityV1["commands"],
-  mutations: RuntimeProductionCausalityV1["queueMutations"]
+  capture: AiRuntimeProductionSnapshot, commands: RuntimeProductionCausality["commands"],
+  mutations: RuntimeProductionCausality["queueMutations"]
 ) {
-  const completions: RuntimeProductionCompletionV1[] = [];
+  const completions: RuntimeProductionCompletion[] = [];
   const failures: string[] = [];
   const gaps: string[] = [];
   const facts = capture.facts.filter((fact) => fact.kind === "queue_completion");

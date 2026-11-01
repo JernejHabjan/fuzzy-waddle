@@ -1,29 +1,29 @@
-import type { RuntimeProductionContractV1 } from "./skirmish-ai-runtime-production-contract";
-import type { RuntimeProductionEvidenceV1 } from "./skirmish-ai-runtime-production-evidence";
+import type { RuntimeProductionContract } from "./skirmish-ai-runtime-production-contract";
+import type { RuntimeProductionEvidence } from "./skirmish-ai-runtime-production-evidence";
 
 /** Synthetic oracle-only records, never browser outcome evidence or preset-world injection. */
 export function productionContract(
-  scenarioId: RuntimeProductionContractV1["scenarioId"], branch: RuntimeProductionContractV1["branch"]
-): RuntimeProductionContractV1 {
+  scenarioId: RuntimeProductionContract["scenarioId"], branch: RuntimeProductionContract["branch"]
+): RuntimeProductionContract {
   return { scenarioId, branch, latestTick: 600, stableForTicks: 200, producerObjectName: "AnkGuard",
     productKey: "TivaraMacemanMale", pairId: `${scenarioId}:pair` };
 }
 
-export function productionSnapshot(tick: number): RuntimeProductionEvidenceV1["snapshots"][number] {
+export function productionSnapshot(tick: number): RuntimeProductionEvidence["snapshots"][number] {
   return { tick, transition: null, leases: [], usefulDemand: 2, completedResearchKeys: [],
     producers: [proofProducer("producer-1", 4)], products: [],
     visibleThreats: [{ actorId: "visible-attacker", observedTick: tick, position: { x: 5, y: 5 }, buildingRange: 3 }] };
 }
 
-export function proofProducer(actorId: string, x: number): RuntimeProductionEvidenceV1["snapshots"][number]["producers"][number] {
+export function proofProducer(actorId: string, x: number): RuntimeProductionEvidence["snapshots"][number]["producers"][number] {
   return { actorId, objectName: "AnkGuard", ready: true, reachable: true, position: { x, y: 5 },
     lanes: [{ laneId: "shared-0", capacity: 2, itemIds: [] }] };
 }
 
 export function productionEvent(
-  sequence: number, tick: number, kind: RuntimeProductionEvidenceV1["events"][number]["kind"],
-  extra: Partial<RuntimeProductionEvidenceV1["events"][number]> = {}
-): RuntimeProductionEvidenceV1["events"][number] {
+  sequence: number, tick: number, kind: RuntimeProductionEvidence["events"][number]["kind"],
+  extra: Partial<RuntimeProductionEvidence["events"][number]> = {}
+): RuntimeProductionEvidence["events"][number] {
   return { sequence, tick, kind, commandId: `command:${sequence}`, effectId: `effect:${sequence}`, planId: "future-plan",
     actorId: "producer-1", productKey: "TivaraMacemanMale", itemId: null, laneId: null, createdActorId: null,
     resourcesBefore: { wood: 100 }, resourcesAfter: { wood: 100 }, reservedUnspent: { wood: 0 },
@@ -32,8 +32,8 @@ export function productionEvent(
 }
 
 export function productionEvidence(
-  snapshots: RuntimeProductionEvidenceV1["snapshots"], events: RuntimeProductionEvidenceV1["events"]
-): RuntimeProductionEvidenceV1 {
+  snapshots: RuntimeProductionEvidence["snapshots"], events: RuntimeProductionEvidence["events"]
+): RuntimeProductionEvidence {
   return { pairedSetupDigest: "sha256:causal-world", initialProducerIds: ["producer-1"], initialProductActorIds: [],
     initialPaidItemIds: [], catalog: [
       { productKey: "AnkGuard", kind: "construction", cost: { wood: 50 }, payment: "immediate", durationTicks: 50 },

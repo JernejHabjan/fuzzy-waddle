@@ -1,18 +1,18 @@
 import { aiDeadline } from "../contracts/ai-core-types";
 import type { AiPlanId } from "../contracts/ai-core-types";
-import type { AiSquadStateV1, AiSupportStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import type { AiSquadState, AiSupportState } from "../contracts/ai-brain-state";
+import type { AiIntent } from "../contracts/ai-intent";
+import type { AiObservation, AiObservedActor } from "../contracts/ai-observation";
 import { knownPosition, distance, movementDomains } from "./ai-tactics-geometry";
 import { intentBase } from "./ai-tactics-orders";
 
 export function proposeAiTacticalSupport(
-  observation: AiObservationV1,
-  squad: AiSquadStateV1,
-  members: readonly AiObservedActorV1[],
-  enemies: readonly AiObservedActorV1[],
-  support: AiSupportStateV1[],
-  intents: AiIntentV1[]
+  observation: AiObservation,
+  squad: AiSquadState,
+  members: readonly AiObservedActor[],
+  enemies: readonly AiObservedActor[],
+  support: AiSupportState[],
+  intents: AiIntent[]
 ): void {
   const wounded = members
     .filter((actor) => actor.healthPermille?.status === "known" && actor.healthPermille.value < 900)
@@ -49,7 +49,7 @@ export function proposeAiTacticalSupport(
         .reduce((total, plan) => total + (plan.usefulCapacity ?? 0), 0);
       const usefulCapacity = Math.min(heal.amount, Math.max(0, missingHealth - pendingHealing));
       if (usefulCapacity <= 0) continue;
-      const planId = `support:heal:${healer.actorId}` as AiSupportStateV1["planId"];
+      const planId = `support:heal:${healer.actorId}` as AiSupportState["planId"];
       if (!support.some((plan) => plan.planId === planId)) {
         const effectId = `effect:stage13:${squad.squadId}:heal:${healer.actorId}:${target.actorId}:${observation.tick}`;
         support.push({
@@ -66,7 +66,7 @@ export function proposeAiTacticalSupport(
         });
         intents.push({
           ...intentBase(observation, { ...squad, actorIds: [healer.actorId] }, `heal:${target.actorId}`, 900),
-          effectId: effectId as AiIntentV1["effectId"],
+          effectId: effectId as AiIntent["effectId"],
           preconditions: [
             { kind: "plan_active", planId: `plan:${squad.squadId}` as AiPlanId },
             { kind: "actor_exists", actorId: target.actorId }
@@ -120,7 +120,7 @@ export function proposeAiTacticalSupport(
                 : spell.instantHeal + spell.periodicHeal
             );
       if (usefulCapacity <= 0) continue;
-      const planId = `support:spell:${healer.actorId}:${spell.spellType}` as AiSupportStateV1["planId"];
+      const planId = `support:spell:${healer.actorId}:${spell.spellType}` as AiSupportState["planId"];
       if (support.some((plan) => plan.planId === planId)) continue;
       const effectId = `effect:stage13:${squad.squadId}:spell:${healer.actorId}:${spell.spellType}:${target.actorId}:${observation.tick}`;
       support.push({
@@ -144,18 +144,18 @@ export function proposeAiTacticalSupport(
           `cast:${spell.spellType}:${target.actorId}`,
           960
         ),
-        effectId: effectId as AiIntentV1["effectId"],
+        effectId: effectId as AiIntent["effectId"],
         preconditions: [{ kind: "plan_active", planId: `plan:${squad.squadId}` as AiPlanId }],
         claims: [
           {
-            claimId: `claim:stage13:caster:${healer.actorId}` as AiIntentV1["claims"][number]["claimId"],
+            claimId: `claim:stage13:caster:${healer.actorId}` as AiIntent["claims"][number]["claimId"],
             kind: "actor",
             actorId: healer.actorId
           },
           {
-            claimId: `claim:stage13:effect:${effectId}` as AiIntentV1["claims"][number]["claimId"],
+            claimId: `claim:stage13:effect:${effectId}` as AiIntent["claims"][number]["claimId"],
             kind: "effect",
-            effectId: effectId as AiIntentV1["effectId"]
+            effectId: effectId as AiIntent["effectId"]
           }
         ],
         kind: "cast",

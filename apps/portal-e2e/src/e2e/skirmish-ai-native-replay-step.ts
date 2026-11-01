@@ -1,8 +1,8 @@
 import type { Page } from "@playwright/test";
 import type Phaser from "phaser";
 import { ProbableWaffleGameInstanceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeBrowserTestHostV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host-v1";
+import type { AiRuntimeBrowserTestHost } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host";
 import type GameProbableWaffleScene from
   "@fuzzy-waddle/probable-waffle-phaser/world/scenes/GameProbableWaffleScene";
 import { advanceRuntimeFrames } from "./skirmish-ai-runtime-frame-driver";
@@ -15,8 +15,8 @@ export async function stepNativeReplay(page: Page, kind: NativeReplayStep, maxim
     throw new Error("native_replay_step_predicate_or_ceiling_invalid");
   await page.evaluate((supportedType) => {
     const realm = window as unknown as { __nativeIsolatedReplay?: boolean;
-      __fuzzyWaddleAiRuntimeBrowserTestV1?: AiRuntimeBrowserTestHostV1 };
-    const scene = realm.__fuzzyWaddleAiRuntimeBrowserTestV1?.game.scene.getScenes(true)
+      __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost };
+    const scene = realm.__fuzzyWaddleAiRuntimeBrowserTest?.game.scene.getScenes(true)
       .find((entry) => entry.scene.key.startsWith("Map")) as GameProbableWaffleScene | undefined;
     if (realm.__nativeIsolatedReplay !== true ||
         scene?.baseGameData.gameInstance.gameInstanceMetadata.data.type !== supportedType)
@@ -28,7 +28,7 @@ export async function stepNativeReplay(page: Page, kind: NativeReplayStep, maxim
   const ceiling = Math.min(before.tick + 200, maximumTick);
   for (let tick = before.tick + 1; tick <= ceiling; tick++) {
     await advanceRuntimeFrames(page, 2, tick);
-    await page.waitForFunction(() => window.__fuzzyWaddleAiRuntimePartsV1?.(2)?.controller.isDecisionBoundarySettled());
+    await page.waitForFunction(() => window.__fuzzyWaddleAiRuntimeParts?.(2)?.controller.isDecisionBoundarySettled());
     const after = await readNativeStepBoundary(page);
     const progress = queue ? await readNativeQueueProgress(page, queue.id) : null;
     if (kind === "tick" || kind === "decision" && after.sequence === before.sequence + 1 ||
@@ -45,7 +45,7 @@ export async function stepNativeReplay(page: Page, kind: NativeReplayStep, maxim
 
 async function readNativeStepBoundary(page: Page) {
   return page.evaluate(() => {
-    const parts = window.__fuzzyWaddleAiRuntimePartsV1?.(2), brain = parts?.controller.getBrainState();
+    const parts = window.__fuzzyWaddleAiRuntimeParts?.(2), brain = parts?.controller.getBrainState();
     if (!parts || !brain || !parts.controller.isDecisionBoundarySettled()) throw new Error("native_replay_unsafe_step_boundary");
     return { tick: parts.tickService.currentTick, sequence: brain.scheduler.decisionSequence, settled: true as const };
   });
@@ -53,8 +53,8 @@ async function readNativeStepBoundary(page: Page) {
 
 async function readNativeQueueProgress(page: Page, originalId?: string) {
   return page.evaluate((originalId) => {
-    const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: AiRuntimeBrowserTestHostV1 })
-      .__fuzzyWaddleAiRuntimeBrowserTestV1;
+    const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
+      .__fuzzyWaddleAiRuntimeBrowserTest;
     const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
       GameProbableWaffleScene | undefined;
     const services: readonly object[] = scene?.getSceneGameData().services ?? [];

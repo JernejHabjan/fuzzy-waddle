@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test";
 import { checkRuntimeProductionReportBridge } from "./skirmish-ai-runtime-production-report";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 
-function variant(overrides: Partial<RuntimeVariantResultV1> = {}): RuntimeVariantResultV1 {
+function variant(overrides: Partial<RuntimeVariantResult> = {}): RuntimeVariantResult {
   return {
     variantId: "marked",
     mapLabel: "fixture",

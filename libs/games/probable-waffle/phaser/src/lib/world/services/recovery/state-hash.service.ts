@@ -12,7 +12,7 @@ import { SnapshotService } from "./snapshot.service";
 import type { ReconnectSnapshotAppliedSceneEvent } from "./probable-waffle-scene-events";
 import { ProbableWaffleSceneEventName } from "./probable-waffle-scene-events";
 import { createMultiplayerClientLogger } from "../multiplayer/multiplayer-client-logger";
-import { digestAuthoritativeStateProjectionV1, type AuthoritativeStateProjectionV1 } from "./authoritative-state-projection";
+import { digestAuthoritativeStateProjection, type AuthoritativeStateProjection } from "./authoritative-state-projection";
 import { StateHashProjection } from "./state-hash-projection";
 import { StateHashDiagnostics } from "./state-hash-diagnostics";
 import type { HashSnapshot } from "./hash-snapshot";
@@ -52,7 +52,7 @@ export class StateHashService {
   private readonly diagnostics = new StateHashDiagnostics();
 
   /** Shared projection used by peers, saves and native scenario assertions. */
-  captureAuthoritativeProjection(scene: Phaser.Scene): AuthoritativeStateProjectionV1 {
+  captureAuthoritativeProjection(scene: Phaser.Scene): AuthoritativeStateProjection {
     return this.projection.captureAuthoritativeProjection(scene);
   }
 
@@ -131,7 +131,7 @@ export class StateHashService {
       ? Object.fromEntries(projection.actors.map((actor) => [actor.actorId, actor.digest]))
       : undefined;
     return {
-      hash: digestAuthoritativeStateProjectionV1(projection),
+      hash: digestAuthoritativeStateProjection(projection),
       diagnostics: includeDiagnostics
         ? {
             actorDigests: actorDigests ?? {},

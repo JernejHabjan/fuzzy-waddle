@@ -1,14 +1,14 @@
-import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeCheckpoint } from "./skirmish-ai-runtime-checkpoint";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 
 export type PressureVariant = Pick<
-  RuntimeVariantResultV1,
+  RuntimeVariantResult,
   "variantId" | "pressureBranch" | "initialWorldDigest" | "initialOwnedActorCount" | "presetFixtureId" |
   "presetCreatedActorNames" | "presetResourceStartCount" | "presetInitialResourceBalances" |
   "initialWorkerCount" | "perturbations"
 > & {
   readonly checkpoints: readonly Pick<
-    RuntimeCheckpointV1,
+    RuntimeCheckpoint,
     "tick" | "visibleEnemyFacts" | "economyPosture" | "workforcePolicy" | "squads" |
     "appliedCommands" | "workerCount" | "deliveredIncome"
   >[];

@@ -1,8 +1,8 @@
-import type { AiRuntimeProductionCaptureV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
+import type { AiRuntimeProductionSnapshot } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-snapshot";
 
 /** One fair danger predicate serves individual suppression and aligned positive-pair checks. */
-export function expansionHomeDanger(capture: AiRuntimeProductionCaptureV1, homeId: string, raiderIds: readonly string[]) {
+export function expansionHomeDanger(capture: AiRuntimeProductionSnapshot, homeId: string, raiderIds: readonly string[]) {
   return capture.facts.flatMap((fact) => {
     if (fact.kind !== "decision_selected" || fact.tick > 3000) return [];
     const input = fact.decision.input, observation = input?.observation;

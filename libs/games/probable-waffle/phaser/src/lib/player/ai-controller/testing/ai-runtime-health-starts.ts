@@ -1,7 +1,7 @@
 import type Phaser from "phaser";
 import { getActorComponent } from "../../../data/actor-component";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
-import type { AiRuntimePresetWorldV1 } from "./ai-runtime-preset-world-v1";
+import type { AiRuntimePresetWorld } from "./ai-runtime-preset-world";
 import { hasOnlyKeys, isRecord } from "./ai-runtime-fixture-values";
 
 /** Initial damaged-unit controls use real saved component durability, never counterfeit combat callbacks. */
@@ -22,7 +22,7 @@ export function validAiRuntimeHealthStarts(value: unknown, actorIds: ReadonlySet
 
 /** Called before queues, orders and the first observation. Zero/dead setups are deliberately unsupported. */
 export function applyAiRuntimeHealthStarts(
-  preset: AiRuntimePresetWorldV1, actors: ReadonlyMap<string, Phaser.GameObjects.GameObject>
+  preset: AiRuntimePresetWorld, actors: ReadonlyMap<string, Phaser.GameObjects.GameObject>
 ): void {
   for (const start of preset.healthStarts ?? []) {
     const actor = actors.get(start.fixtureActorId), health = actor && getActorComponent(actor, HealthComponent);

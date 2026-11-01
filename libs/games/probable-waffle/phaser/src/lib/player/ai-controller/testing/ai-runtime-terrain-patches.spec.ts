@@ -1,6 +1,6 @@
 import type Phaser from "phaser";
 import { applyAiRuntimeTerrainPatches, validAiRuntimeTerrainPatches } from "./ai-runtime-terrain-patches";
-import type { AiRuntimePresetWorldV1 } from "./ai-runtime-preset-world-v1";
+import type { AiRuntimePresetWorld } from "./ai-runtime-preset-world";
 
 describe("native preset terrain", () => {
   it("rejects duplicates, invented fields, unbounded coordinates and coerced values", () => {
@@ -18,7 +18,7 @@ describe("native preset terrain", () => {
     const tilemap = { getTileAt } as unknown as Phaser.Tilemaps.Tilemap;
     const patches = [{ x: 1, y: 2, terrain: "water" as const, blocked: false },
       { x: 3, y: 2, terrain: "grass" as const, blocked: true }];
-    const preset = { terrainPatches: patches } satisfies Pick<AiRuntimePresetWorldV1, "terrainPatches">;
+    const preset = { terrainPatches: patches } satisfies Pick<AiRuntimePresetWorld, "terrainPatches">;
     expect(() => applyAiRuntimeTerrainPatches(tilemap, preset)).toThrow("runtime_preset_terrain_tile_missing");
     expect(first.properties.terrainType).toBe("grass");
     applyAiRuntimeTerrainPatches(tilemap, { ...preset, terrainPatches: patches.slice(0, 1) });

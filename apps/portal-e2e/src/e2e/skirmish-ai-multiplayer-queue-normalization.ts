@@ -1,10 +1,10 @@
 import { ResourceType, type GameCommandOutcomeKind } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiMultiplayerQueueWorldV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-multiplayer-queue-world-v1";
+import type { AiMultiplayerQueueWorldSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-multiplayer-queue-world-snapshot";
 
 import { sameRuntimeQueueCommand as sameQueueCommand } from "./skirmish-ai-runtime-queue-command-equality";
 
-/** Normalizes this narrow real queue experiment. It cannot populate RuntimeProductionEvidenceV1 or clear its AI/fairness gaps. */
-export function normalizeMultiplayerQueueBoundary(world: AiMultiplayerQueueWorldV1, requireSenderRequest: boolean) {
+/** Normalizes this narrow real queue experiment. It cannot populate RuntimeProductionEvidence or clear its AI/fairness gaps. */
+export function normalizeMultiplayerQueueBoundary(world: AiMultiplayerQueueWorldSnapshot, requireSenderRequest: boolean) {
   const failures: string[] = [];
   const setup = world.setup;
   const capture = world.capture;
@@ -13,7 +13,7 @@ export function normalizeMultiplayerQueueBoundary(world: AiMultiplayerQueueWorld
   const [, probe, cancel, resume] = commands;
   const ids = commands.map((command) => command?.execution?.commandId);
   const itemId = (id: string | undefined) => (setup && id ? `queue:${setup.producerActorId}:${id}` : null);
-  const boundary = (name: AiMultiplayerQueueWorldV1["checkpoints"][number]["boundary"]) =>
+  const boundary = (name: AiMultiplayerQueueWorldSnapshot["checkpoints"][number]["boundary"]) =>
     world.checkpoints.find((entry) => entry.boundary === name)?.snapshot;
   const [ready, paid, rejected, refunded, resumed, complete] = [
     boundary("ready"),

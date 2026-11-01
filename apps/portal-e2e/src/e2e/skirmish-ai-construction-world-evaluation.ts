@@ -1,11 +1,11 @@
-import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
+import type { RuntimeVariantResult } from "./skirmish-ai-runtime-variant-result";
 import { runtimeResourceCreditMatches } from "./skirmish-ai-runtime-resource-service-validation";
 import { CONSTRUCTION_INTERRUPTION_TICK as interruptionTick } from "./skirmish-ai-construction-world";
 
 /** Independent native lifecycle/identity checks. No debug explanation or different replacement site can satisfy recovery. */
 export function evaluateConstructionRecoveryWorld(
   branch: "builder_loss" | "intact" | "cancel_site",
-  result: Pick<RuntimeVariantResultV1,
+  result: Pick<RuntimeVariantResult,
     "productionPreset" | "presetCreatedActorIds" | "productionCapture" | "perturbations" | "checkpoints">
 ): string[] {
   const failures: string[] = [];

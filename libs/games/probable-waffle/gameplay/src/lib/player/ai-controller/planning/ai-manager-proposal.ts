@@ -1,30 +1,30 @@
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiObservation } from "../contracts/ai-observation";
+import type { AiIntent } from "../contracts/ai-intent";
+import type { AiBrainState } from "../contracts/ai-brain-state";
 import type {
-  AiBaseStateV1,
-  AiEconomyProductionStateV1,
-  AiFortificationStateV1,
-  AiOpeningStateV1,
-  AiSkirmishStateV1,
-  AiStrategyStateV1,
-  AiSquadStateV1,
-  AiSupportStateV1,
-  AiTransportStateV1
-} from "../contracts/ai-brain-state-v1";
-import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
-import type { AiServiceLaneV1 } from "../contracts/ai-lane-contracts";
-import type { AiReservationV1 } from "../contracts/ai-dependency-contracts";
+  AiBaseState,
+  AiEconomyProductionState,
+  AiFortificationState,
+  AiOpeningState,
+  AiSkirmishState,
+  AiStrategyState,
+  AiSquadState,
+  AiSupportState,
+  AiTransportState
+} from "../contracts/ai-brain-state";
+import type { AiDemand } from "../contracts/ai-plan-contracts";
+import type { AiServiceLane } from "../contracts/ai-lane-contracts";
+import type { AiReservation } from "../contracts/ai-dependency-contracts";
 import type { AiPlanId } from "../contracts/ai-core-types";
 
 /** Deterministic proposal batch produced by one narrow manager. */
-export interface AiManagerProposalV1 {
+export interface AiManagerProposal {
   readonly managerId: string;
-  readonly lane: AiServiceLaneV1;
+  readonly lane: AiServiceLane;
   /** Additional lanes this manager actually evaluated in the same deterministic proposal pass. */
-  readonly evaluatedLanes?: readonly AiServiceLaneV1[];
+  readonly evaluatedLanes?: readonly AiServiceLane[];
   readonly evaluated: boolean;
-  readonly intents: readonly AiIntentV1[];
+  readonly intents: readonly AiIntent[];
   readonly reasons: readonly string[];
   /** The macro owner publishes the current posture to shared resource arbitration. */
   readonly spendingBudget?: Readonly<{ economyPermille: number; defensePermille: number }>;
@@ -36,39 +36,39 @@ export interface AiManagerProposalV1 {
    */
   readonly statePatch?: Readonly<{
     /** Macro may append optional forecasts; they neither reserve cash nor prove command application. */
-    forecastReservations?: readonly AiReservationV1[];
+    forecastReservations?: readonly AiReservation[];
     /** Release only forecast/provisional claims. Dispatched, paid and refundable work remains authoritative. */
     releasedOptionalPlanIds?: readonly AiPlanId[];
-    opening?: AiOpeningStateV1;
+    opening?: AiOpeningState;
     /** Stage 14 may change only the opening archetype; Stage 7 remains the plan/progress owner. */
-    openingArchetypeId?: AiOpeningStateV1["archetypeId"];
-    economyProduction?: AiEconomyProductionStateV1;
+    openingArchetypeId?: AiOpeningState["archetypeId"];
+    economyProduction?: AiEconomyProductionState;
     /** Stage 14 replaces only its durable adaptation rationale after macro has projected the current ledger. */
-    adaptation?: AiEconomyProductionStateV1["adaptation"];
+    adaptation?: AiEconomyProductionState["adaptation"];
     /** Stage 14 replaces only demand rows whose identity starts with `demand:adapt:`. */
-    adaptationDemands?: readonly AiDemandV1[];
+    adaptationDemands?: readonly AiDemand[];
     /** Stage 12 owns durable causal recovery, retry and release facts. */
-    recovery?: AiBrainStateV1["recovery"];
-    transport?: AiBrainStateV1["transport"];
+    recovery?: AiBrainState["recovery"];
+    transport?: AiBrainState["transport"];
     /** Appended after the transport owner advances its lifecycle, preventing route-plan races. */
-    transportAppend?: readonly AiTransportStateV1[];
-    knowledge?: AiBrainStateV1["knowledge"];
-    squads?: readonly AiSquadStateV1[];
+    transportAppend?: readonly AiTransportState[];
+    knowledge?: AiBrainState["knowledge"];
+    squads?: readonly AiSquadState[];
     /** Narrow replacements merged by squad identity after Stage 9 mission ownership. */
-    squadUpdates?: readonly AiSquadStateV1[];
+    squadUpdates?: readonly AiSquadState[];
     /** Stage 13 owns caster/healer windows and temporary-support accounting. */
-    support?: readonly AiSupportStateV1[];
-    strategy?: AiStrategyStateV1;
-    skirmish?: AiSkirmishStateV1;
+    support?: readonly AiSupportState[];
+    strategy?: AiStrategyState;
+    skirmish?: AiSkirmishState;
     /** Stage 10 is the only owner of stable base identity and expansion lifecycle. */
-    bases?: readonly AiBaseStateV1[];
+    bases?: readonly AiBaseState[];
     /** Stage 11 is the sole owner of persistent fortification graphs. */
-    fortifications?: readonly AiFortificationStateV1[];
+    fortifications?: readonly AiFortificationState[];
   }>;
 }
 
 /** Read-only manager boundary; managers propose and never mutate the brain or runtime. */
-export interface AiProposalManagerV1 {
+export interface AiProposalManager {
   readonly managerId: string;
-  propose(observation: AiObservationV1, state: AiBrainStateV1): AiManagerProposalV1;
+  propose(observation: AiObservation, state: AiBrainState): AiManagerProposal;
 }

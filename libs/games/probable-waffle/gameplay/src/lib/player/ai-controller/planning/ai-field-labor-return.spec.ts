@@ -1,12 +1,12 @@
 import { ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import type { AiObservedActor } from "../contracts/ai-observation";
 import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "../testing/ai-test-fixtures";
 import { catalog, completedOpeningState } from "./ai-macro-test-fixtures";
 import { proposeAiFieldLabor } from "./ai-field-labor-proposal";
 
 function fixture(resource: ResourceType | null, fieldCount = 1, targetObjectName = ObjectNames.Sandhold) {
   const observation = createAiTestObservation();
-  const returned: { -readonly [K in keyof AiObservedActorV1]: AiObservedActorV1[K] } = {
+  const returned: { -readonly [K in keyof AiObservedActor]: AiObservedActor[K] } = {
     ...createAiTestOwnedActor("returning"),
     activeOrder: {
       status: "known",
@@ -27,7 +27,7 @@ function fixture(resource: ResourceType | null, fieldCount = 1, targetObjectName
               serviceCapacity: unknownAiValue
             }
           }
-  } satisfies AiObservedActorV1;
+  } satisfies AiObservedActor;
   const woodWorker = {
     ...createAiTestOwnedActor("wood-worker"),
     activeOrder: {
@@ -35,7 +35,7 @@ function fixture(resource: ResourceType | null, fieldCount = 1, targetObjectName
       observedTick: observation.tick,
       value: { orderType: OrderType.Gather, targetActorId: "tree" }
     }
-  } satisfies AiObservedActorV1;
+  } satisfies AiObservedActor;
   const fields = Array.from({ length: fieldCount }, (_, index) => ({
     ...createAiTestOwnedActor(index === 0 ? "field" : `field-${index + 1}`),
     objectName: ObjectNames.Field,
@@ -76,7 +76,7 @@ function fixture(resource: ResourceType | null, fieldCount = 1, targetObjectName
   return { propose, self, farmer: returned };
 }
 
-function requiredActor(actors: readonly AiObservedActorV1[], actorId: string): AiObservedActorV1 {
+function requiredActor(actors: readonly AiObservedActor[], actorId: string): AiObservedActor {
   const actor = actors.find((candidate) => candidate.actorId === actorId);
   if (!actor) throw new Error(`Missing expected actor ${actorId}`);
   return actor;

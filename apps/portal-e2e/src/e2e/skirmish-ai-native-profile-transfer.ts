@@ -25,7 +25,7 @@ export async function runNativeProfileTransfer(browser: Browser, options: {
     await match.hostContext.close();
     await expect.poll(async () => (await nativeTransferHookAction(match.peer)).promoted,
       { timeout: 60_000 }).toBe(true);
-    await match.peer.waitForFunction(() => window.__fuzzyWaddleAiRuntimePartsV1?.(3)?.controller.isDecisionBoundarySettled());
+    await match.peer.waitForFunction(() => window.__fuzzyWaddleAiRuntimeParts?.(3)?.controller.isDecisionBoundarySettled());
     const promoted = await captureNativeContinuationBoundary(match.peer, 3);
     const promotedEpoch = (await observeMultiplayerPeer(match.peer, 3)).relay.authorityEpoch;
     let lateEpochReplay: { order: NonNullable<typeof options.lateDeliveryOrder>;
@@ -50,7 +50,7 @@ export async function runNativeProfileTransfer(browser: Browser, options: {
     await nativeTransferHookAction(match.peer, "resume");
     await expect.poll(async () => (await nativeTransferHookAction(match.peer)).nextDecision !== null,
       { timeout: 30_000 }).toBe(true);
-    await match.peer.waitForFunction(() => window.__fuzzyWaddleAiRuntimePartsV1?.(3)?.controller.isDecisionBoundarySettled());
+    await match.peer.waitForFunction(() => window.__fuzzyWaddleAiRuntimeParts?.(3)?.controller.isDecisionBoundarySettled());
     const next = await captureNativeContinuationBoundary(match.peer, 3);
     const hook = await nativeTransferHookAction(match.peer);
     await afterTransfer?.(match.peer);

@@ -5,20 +5,20 @@ import {
   ResearchType,
   ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
 import { digestCanonicalAiValue } from "../brain/canonical-ai-serialization";
 import { aiDeadline } from "../contracts/ai-core-types";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiObservation, AiObservedActor } from "../contracts/ai-observation";
+import { createAiProfileConfig } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
-import { buildAiAccessGraphV1 } from "./ai-access-graph-v1";
+import { buildAiAccessGraph } from "./ai-access-graph";
 import { AiAdaptationManager } from "./ai-adaptation-manager";
 
-const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
 
-const catalog: AiCapabilityCatalogV1 = {
+const catalog: AiCapabilityCatalog = {
   schemaVersion: 1,
   generation: 1,
   entries: [
@@ -79,7 +79,7 @@ const catalog: AiCapabilityCatalogV1 = {
   unsupported: []
 };
 
-const airPressureCatalog: AiCapabilityCatalogV1 = {
+const airPressureCatalog: AiCapabilityCatalog = {
   ...catalog,
   entries: [
     ...catalog.entries,
@@ -129,7 +129,7 @@ function actor(
   objectName: ObjectNames,
   relation: "self" | "enemy",
   domains: readonly ("ground" | "water" | "air")[]
-): AiObservedActorV1 {
+): AiObservedActor {
   return {
     ...createAiTestOwnedActor(id),
     objectName,
@@ -152,9 +152,9 @@ function actor(
 
 function observation(
   tick: number,
-  actors: AiObservationV1["actors"],
-  researchCandidates: AiObservationV1["researchCandidates"] = []
-): AiObservationV1 {
+  actors: AiObservation["actors"],
+  researchCandidates: AiObservation["researchCandidates"] = []
+): AiObservation {
   return {
     ...createAiTestObservation(),
     tick,
@@ -175,7 +175,7 @@ describe("AiAdaptationManager", () => {
   it("TECH-03/04 records one visible flyer as persisted evidence before it changes composition", () => {
     const main = actor("main", ObjectNames.Sandhold, "self", []);
     const flyer = actor("flyer", ObjectNames.TivaraSlingshotFemale, "enemy", ["air"]);
-    const initial = createAiBrainStateV1({
+    const initial = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -208,7 +208,7 @@ describe("AiAdaptationManager", () => {
 
   it("DOMAIN-02 treats a visible valuable shoreline objective as evidence for bounded naval control", () => {
     const base = createAiTestObservation();
-    const access = buildAiAccessGraphV1({
+    const access = buildAiAccessGraph({
       generation: 1,
       staticRevision: 1,
       dynamicRevision: 1,
@@ -259,7 +259,7 @@ describe("AiAdaptationManager", () => {
         }
       ]
     };
-    const navalCatalog: AiCapabilityCatalogV1 = {
+    const navalCatalog: AiCapabilityCatalog = {
       ...catalog,
       entries: [
         ...catalog.entries.map((entry) =>
@@ -308,7 +308,7 @@ describe("AiAdaptationManager", () => {
         accessGraph: access.graph
       }
     });
-    const initial = createAiBrainStateV1({
+    const initial = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -342,7 +342,7 @@ describe("AiAdaptationManager", () => {
   it("does not propose an evidence-backed counter that the current resource ledger cannot afford", () => {
     const main = actor("main", ObjectNames.Sandhold, "self", []);
     const flyer = actor("flyer", ObjectNames.TivaraSlingshotFemale, "enemy", ["air"]);
-    const initial = createAiBrainStateV1({
+    const initial = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -350,7 +350,7 @@ describe("AiAdaptationManager", () => {
       archetypeId: "opening:1:balanced"
     });
     const first = manager.propose(observation(100, [main, flyer]), initial);
-    const poor: AiObservationV1 = {
+    const poor: AiObservation = {
       ...observation(140, [main, flyer]),
       resources: [
         {
@@ -374,7 +374,7 @@ describe("AiAdaptationManager", () => {
   it("TECH-04 decays last-seen evidence without treating memory as another sighting", () => {
     const main = actor("main", ObjectNames.Sandhold, "self", []);
     const flyer = actor("flyer", ObjectNames.TivaraSlingshotFemale, "enemy", ["air"]);
-    const initial = createAiBrainStateV1({
+    const initial = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -409,7 +409,7 @@ describe("AiAdaptationManager", () => {
         observedTick: 100
       }
     };
-    const initial = createAiBrainStateV1({
+    const initial = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -425,7 +425,7 @@ describe("AiAdaptationManager", () => {
   it("TECH-01 TECH-02 delays expensive small-army research, funds useful mass, and protects survival", () => {
     const main = actor("main", ObjectNames.Sandhold, "self", []);
     const slingshot = actor("slingshot", ObjectNames.TivaraSlingshotFemale, "self", ["ground"]);
-    const candidate: AiObservationV1["researchCandidates"][number] = {
+    const candidate: AiObservation["researchCandidates"][number] = {
       producerId: "main",
       researchType: ResearchType.TivaraSlingshotUpgradeLevel2,
       cost: { [ResourceType.Minerals]: 200, [ResourceType.Wood]: 150 },
@@ -438,14 +438,14 @@ describe("AiAdaptationManager", () => {
         spellType: null
       }
     };
-    const state = createAiBrainStateV1({
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
       tick: 0,
       archetypeId: "opening:1:tech"
     });
-    const funded = (actors: AiObservationV1["actors"]): AiObservationV1 => ({
+    const funded = (actors: AiObservation["actors"]): AiObservation => ({
       ...observation(100, actors, [candidate]),
       resources: [ResourceType.Wood, ResourceType.Minerals].map((resourceType) => ({
         resourceType,
@@ -460,7 +460,7 @@ describe("AiAdaptationManager", () => {
     );
     const early = Array.from({ length: 3 }, () => manager.propose(funded([main, slingshot]), state));
     const quiet = Array.from({ length: 3 }, () => manager.propose(funded([main, ...army]), state));
-    const queuedMain: AiObservedActorV1 = {
+    const queuedMain: AiObservedActor = {
       ...main,
       queue: {
         status: "known",
@@ -504,7 +504,7 @@ describe("AiAdaptationManager", () => {
   it("PRO-06/07 counts accepted counter production until reconciliation observes the completed actor", () => {
     const main = actor("main", ObjectNames.Sandhold, "self", []);
     const flyer = actor("flyer", ObjectNames.TivaraSlingshotFemale, "enemy", ["air"]);
-    const initial = createAiBrainStateV1({
+    const initial = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -516,12 +516,12 @@ describe("AiAdaptationManager", () => {
       ...initial,
       economyProduction: { ...initial.economyProduction, adaptation: first.statePatch!.adaptation! }
     });
-    const withAcceptedCounter: AiBrainStateV1 = {
+    const withAcceptedCounter: AiBrainState = {
       ...initial,
       economyProduction: { ...initial.economyProduction, adaptation: second.statePatch!.adaptation! },
       reservations: [
         {
-          claimId: "claim:stage14:anti_air:accepted" as AiBrainStateV1["reservations"][number]["claimId"],
+          claimId: "claim:stage14:anti_air:accepted" as AiBrainState["reservations"][number]["claimId"],
           subjectKey: "effect:effect:stage14:anti_air:accepted",
           ownerPlanId: initial.opening.plan.planId,
           state: { kind: "provisional" as const, expiresAt: aiDeadline(220) },
@@ -545,7 +545,7 @@ describe("AiAdaptationManager", () => {
 
   it("DOMAIN-01/02 and D-05 fall back from an unsupported saved naval personality without rerolling a supported one", () => {
     const main = actor("main", ObjectNames.Sandhold, "self", []);
-    const naval = createAiBrainStateV1({
+    const naval = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -554,7 +554,7 @@ describe("AiAdaptationManager", () => {
     });
     const fallback = manager.propose(observation(100, [main]), naval);
     expect(fallback.statePatch?.openingArchetypeId).toBe(`opening:${FactionType.Tivara}:balanced`);
-    const balanced = createAiBrainStateV1({
+    const balanced = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -587,7 +587,7 @@ describe("AiAdaptationManager", () => {
         }
       ]
     };
-    const initial = createAiBrainStateV1({
+    const initial = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -680,7 +680,7 @@ describe("AiAdaptationManager", () => {
         }
       }
     };
-    const initial = createAiBrainStateV1({
+    const initial = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,

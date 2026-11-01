@@ -1,29 +1,29 @@
 import { ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiIntent } from "../contracts/ai-intent";
+import type { AiObservation } from "../contracts/ai-observation";
 import { nextIds } from "./ai-macro-effect-identity";
 import { aiResourceForecastDeficit, selectAiForecastEntry } from "./ai-resource-forecast";
 import { rememberAiGatheringSelection } from "./ai-gathering-selection-observation";
 import { selectAiSurplusLaborTransfer } from "./ai-surplus-labor-transfer";
 import { readAiResourceInputRead } from "./ai-resource-input-observation";
 import { claimedActorIds, compareAiActorsByVisibleGeometry } from "./ai-macro-observation";
-import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
+import type { AiDemand } from "../contracts/ai-plan-contracts";
 import { housingFundingResourceTypes, selectAiHousingFundingWorker } from "./ai-housing-funding";
 import { aiEconomySiteSafety } from "./ai-economy-site-safety";
 
 /** Proposes a non-Field gathering assignment from aggregate forecasts or the native stockpile fallback. */
 export function proposeAiGeneralGathering(
-  observation: AiObservationV1,
-  state: AiBrainStateV1,
-  catalog: AiCapabilityCatalogV1,
-  self: readonly AiObservationV1["actors"][number][],
-  priorIntents: readonly AiIntentV1[],
+  observation: AiObservation,
+  state: AiBrainState,
+  catalog: AiCapabilityCatalog,
+  self: readonly AiObservation["actors"][number][],
+  priorIntents: readonly AiIntent[],
   reservedActorIds: ReadonlySet<string>,
   ordinal: number,
-  currentDemands: readonly AiDemandV1[] = state.economyProduction.demands
-): AiIntentV1 | null {
+  currentDemands: readonly AiDemand[] = state.economyProduction.demands
+): AiIntent | null {
   const claimedWorkers = claimedActorIds(priorIntents);
   const idleWorkers = self
     .filter((actor) =>
@@ -133,12 +133,12 @@ export function proposeAiGeneralGathering(
     ],
     claims: [
       ...selectedWorkers.map((worker, index) => ({
-        claimId: `${ids.claimId}:worker:${index}` as AiIntentV1["claims"][number]["claimId"],
+        claimId: `${ids.claimId}:worker:${index}` as AiIntent["claims"][number]["claimId"],
         kind: "actor" as const,
         actorId: worker.actorId
       })),
       {
-        claimId: `${ids.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
+        claimId: `${ids.claimId}:effect` as AiIntent["claims"][number]["claimId"],
         kind: "effect",
         effectId: ids.effectId
       }
@@ -149,7 +149,7 @@ export function proposeAiGeneralGathering(
     actorIds: selectedWorkers.map((worker) => worker.actorId),
     resourceType: constrainedResource,
     sourceActorId: gatherSource.actorId
-  } satisfies AiIntentV1;
+  } satisfies AiIntent;
   rememberAiGatheringSelection(intent, () => ({
     intentId: intent.intentId,
     effectId: intent.effectId,

@@ -1,11 +1,11 @@
 import { expect, test } from "@playwright/test";
-import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
-import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
+import type { RuntimeFixture } from "./skirmish-ai-runtime-fixture";
+import type { RuntimeVariant } from "./skirmish-ai-runtime-variant";
 import { prepareRuntimeVariant } from "./skirmish-ai-runtime-variant-setup";
 
 const enabled = process.env.AI_SKIRMISH_MAP_PREFLIGHT === "1";
 const mapLabel = "AI Open Economy (test only)";
-const variant: RuntimeVariantV1 = {
+const variant: RuntimeVariant = {
   id: "open-economy-map-preflight",
   executionKind: "focused_natural",
   role: "standalone",
@@ -15,7 +15,7 @@ const variant: RuntimeVariantV1 = {
   humanFaction: "Skaduwee",
   difficulty: "Normal"
 };
-const fixture: RuntimeFixtureV1 = {
+const fixture: RuntimeFixture = {
   schemaVersion: 1,
   evidenceKind: "runtime",
   scenarioIds: [],
@@ -50,10 +50,10 @@ test("starts the frozen AI economy map with indexed resources and an open ground
       getSceneGameData(): { services: unknown[] };
     };
     const host = (window as unknown as {
-      __fuzzyWaddleAiRuntimeBrowserTestV1?: {
+      __fuzzyWaddleAiRuntimeBrowserTest?: {
         game: { scene: { getScenes(active: boolean): MapScene[] } };
       };
-    }).__fuzzyWaddleAiRuntimeBrowserTestV1;
+    }).__fuzzyWaddleAiRuntimeBrowserTest;
     const scene = host?.game.scene.getScenes(true).find((candidate) => candidate.scene.key === "MapAiOpenEconomy");
     if (!scene) throw new Error("open_economy_scene_not_active");
     const services = scene.getSceneGameData().services;
@@ -103,5 +103,5 @@ test("starts the frozen AI economy map with indexed resources and an open ground
   expect(result.resourceCounts).toEqual({ wood: 4, stone: 2, minerals: 2 });
   expect(result.openPatches).toEqual([4, 4]);
   expect(result.groundPathLength).toBeGreaterThan(0);
-  console.log(`AI_SKIRMISH_MAP_PREFLIGHT_V1:${JSON.stringify(result)}`);
+  console.log(`AI_SKIRMISH_MAP_PREFLIGHT:${JSON.stringify(result)}`);
 });

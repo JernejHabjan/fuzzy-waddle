@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { calibrationJobs, calibrationSeedRounds, calibrationSoakJobs } from "./difficulty-calibration-plan.mjs";
 import { analyzeCalibration, calibrationVerdict } from "./difficulty-calibration-analysis.mjs";
 
-const specification = JSON.parse(readFileSync(new URL("./fixtures/difficulty-calibration-v1.json", import.meta.url)));
+const specification = JSON.parse(readFileSync(new URL("./fixtures/difficulty-calibration.json", import.meta.url)));
 test("frozen cells cover maps/factions/opponents, real side swaps and all policies without tuning on holdout", () => {
   const rounds = calibrationSeedRounds(specification);
   assert.deepEqual(rounds.map((round) => round.length), [20, 20, 20, 20, 20]);

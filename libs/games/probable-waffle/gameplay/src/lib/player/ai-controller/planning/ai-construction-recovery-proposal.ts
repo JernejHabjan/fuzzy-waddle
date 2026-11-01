@@ -1,24 +1,24 @@
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
+import type { AiObservation } from "../contracts/ai-observation";
+import type { AiBrainState } from "../contracts/ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
+import type { AiIntent } from "../contracts/ai-intent";
 import { claimedActorIds, isAvailableBuilder, owned } from "./ai-macro-observation";
 import { nextIds } from "./ai-macro-effect-identity";
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
-import { queryAiAccessRouteV1 } from "./ai-access-graph-v1";
+import { queryAiAccessRoute } from "./ai-access-graph";
 import { node, routeCapability } from "./ai-skirmish-support";
 
 /** Repairs one abandoned worker-built site even after its original opening checkpoint has completed.
  * Existing sites retain their native payment/work; this proposal claims no construction resources.
  */
 export function proposeAiConstructionRecovery(
-  observation: AiObservationV1,
-  state: AiBrainStateV1,
-  catalog: AiCapabilityCatalogV1,
+  observation: AiObservation,
+  state: AiBrainState,
+  catalog: AiCapabilityCatalog,
   reservedActorIds: ReadonlySet<string>,
-  priorIntents: readonly AiIntentV1[],
+  priorIntents: readonly AiIntent[],
   ordinal: number
-): AiIntentV1 | null {
+): AiIntent | null {
   const self = owned(observation);
   const claimed = claimedActorIds(priorIntents);
   const blockedBuilders = new Set(
@@ -134,10 +134,10 @@ export function proposeAiConstructionRecovery(
 
 /** Reject known impossible routes, while leaving missing advisory topology to shared native validation. */
 export function canReachAiConstructionSite(
-  observation: AiObservationV1,
-  catalog: AiCapabilityCatalogV1,
-  builder: AiObservationV1["actors"][number],
-  site: AiObservationV1["actors"][number]
+  observation: AiObservation,
+  catalog: AiCapabilityCatalog,
+  builder: AiObservation["actors"][number],
+  site: AiObservation["actors"][number]
 ): boolean {
   const from = node(builder),
     to = node(site);
@@ -153,7 +153,7 @@ export function canReachAiConstructionSite(
   if (!graph || graph.status !== "ready") return true;
   if (!graph.nodes.some((region) => region.nodeId === from) || !graph.nodes.some((region) => region.nodeId === to))
     return true;
-  const result = queryAiAccessRouteV1(graph, {
+  const result = queryAiAccessRoute(graph, {
     queryId: `query:construction:${builder.actorId}:${site.actorId}:${observation.generation}`,
     kind: "movement",
     fromNodeId: from,
@@ -165,7 +165,7 @@ export function canReachAiConstructionSite(
 }
 
 /** Unknown locations sort last without inventing native reachability. */
-function distance(actor: AiObservationV1["actors"][number], target: AiObservationV1["actors"][number]): number {
+function distance(actor: AiObservation["actors"][number], target: AiObservation["actors"][number]): number {
   if (actor.logicalPosition.status !== "known" || target.logicalPosition.status !== "known")
     return Number.MAX_SAFE_INTEGER;
   return (

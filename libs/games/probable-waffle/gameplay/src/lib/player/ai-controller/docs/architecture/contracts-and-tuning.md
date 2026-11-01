@@ -14,15 +14,15 @@ All paths below are repository-relative. Resolve against the checkout, not a fix
 | Commands      | `libs/games/probable-waffle/protocol/src/lib/game-instance/probable-waffle/game-command.ts`                                                                      | Explicit command payloads and serialization guards, shared by human/AI execution           |
 | Authorization | `libs/games/probable-waffle/server/src/lib/probable-waffle/game-instance/multiplayer/game-command-validator.service.ts`, gateway/state-server consumers          | Transport/schema/player authorization; world preconditions also checked at runtime apply   |
 | Application   | Phaser `world/services/multiplayer/command-bus.service.ts`, `entity/systems/{queue-command,action}.system.ts`, `dispatch-ai-order.ts`                            | Typed dispatch/outcomes and application identity; eliminate silent drops                   |
-| Saves/hashes  | Phaser `data/{save-game,load-game,actor-data}.ts`, `world/services/recovery/{state-hash,snapshot,host-migration}.service.ts`                                     | Reuse canonical world projection plus versioned AI brain/knowledge/outcome projection      |
+| Saves/hashes  | Phaser `data/{save-game,load-game,actor-data}.ts`, `world/services/recovery/{state-hash,snapshot,host-migration}.service.ts`                                     | Reuse canonical world projection plus validated AI brain/knowledge/outcome projection      |
 | Navigation    | Phaser `world/services/navigation.service.ts`, water/height graph and occupancy helpers                                                                          | Cached region/route inputs; pure brain gets data, not mutable pathfinder                   |
 | Debug         | Phaser `prefabs/gui/debug/ai-controller/AiControllerDebugPanel.ts`, `AiControllerDebugLabel.ts`, associated `.scene` files, `world/services/DebuggingService.ts` | Read-only view model and bounded UI/overlay adapters; see debug packet                     |
 | Final harness | existing Phaser/server/interface Jest configs, `tools/testing/jest-node-preset.cjs`, `apps/portal-e2e/`                                                          | Pure Jest target, real runtime scenario bridge, deterministic batch runner/report          |
 
 Use one exported substantive type/class per file and existing path aliases. Reuse `PlayerNumber`, actor ID, `ObjectNames`, `ResourceType`, faction/order/command types rather than copying the illustrative string IDs from the research document. Add named plan/squad/claim IDs where needed. Stable collections serialize as sorted arrays; convert to lookup maps inside pure reducers if useful.
 
-The persisted brain-state import surface is `contracts/ai-brain-state-v1.ts`; each state slice is defined in one
-`contracts/brain-state/` file. `contracts/validate-ai-contracts-v1.ts` retains the validation import surface,
+The persisted brain-state import surface is `contracts/ai-brain-state.ts`; each state slice is defined in one
+`contracts/brain-state/` file. `contracts/validate-ai-contracts.ts` retains the validation import surface,
 delegating to focused brain, observation, dependency-edge, transport and squad validators. Canonical JSON values live
 in `brain/canonical-ai-value.ts`, while `brain/canonical-ai-serialization.ts` owns deterministic ordering and digests.
 These boundaries do not change persisted schema names or serialized field order.
@@ -31,7 +31,7 @@ These boundaries do not change persisted schema names or serialized field order.
 
 One host-owned brain per AI player. `PlayerAiController` owns cadence and lifecycle; `AiBrain.step(observation, previousState, orderedOutcomes)` is the pure decision boundary and returns `{nextState, acceptedIntents, trace, debugSnapshot}`. Managers receive read-only data and produce proposals. The runtime adapter applies no strategic choice after arbitration except revalidation/rejection.
 
-Create `AiBrainStateV1` and `AiObservationV1` as named subcontracts instead of growing a new god blackboard. Required brain slices: strategy/opening, knowledge, bases, economy/production demand, reservations/pending outcomes, squads, transport, fortification, support, recovery, scheduler/RNG, and monotonically increasing IDs. Each slice has a default, migration policy, and serializer. A named reducer owns writes to each slice. The pure production brain schedules these owners; the legacy player MDSL tree and action managers are retired. Pawn behavior trees remain native order executors.
+Create `AiBrainState` and `AiObservation` as named subcontracts instead of growing a new god blackboard. Required brain slices: strategy/opening, knowledge, bases, economy/production demand, reservations/pending outcomes, squads, transport, fortification, support, recovery, scheduler/RNG, and monotonically increasing IDs. Each slice has a default, migration policy, and serializer. A named reducer owns writes to each slice. The pure production brain schedules these owners; the legacy player MDSL tree and action managers are retired. Pawn behavior trees remain native order executors.
 
 Fixed update order: reconcile applied outcomes/ownership/deaths -> commit permitted observation -> update knowledge/capabilities -> update existing plan phases -> score goals -> collect proposals -> arbitrate -> record pending execution -> emit shared commands -> publish trace/debug snapshot. Command feedback received after a decision is consumed at the next decision in stable tick/sequence order. Never double-spend the same observation's resources.
 
@@ -70,7 +70,7 @@ Failure retry defaults: 40, 80, 160, then 320 ticks for equivalent failed candid
 
 ## Initial profiles and budgets
 
-The [difficulty specification](../testing/classic-rts-and-difficulty-scenarios.md#d--difficulty-already-exists-make-it-real-and-testable) owns exact behavioral differences, offensive mission caps, composition cooldowns and calibration. Keep its versioned profile connected to lobby, host, save/replay and results. Intentional errors stay off in initial delivery; a future opt-in policy is separate. Contact memory remains identical across profiles.
+The [difficulty specification](../testing/classic-rts-and-difficulty-scenarios.md#d--difficulty-already-exists-make-it-real-and-testable) owns exact behavioral differences, offensive mission caps, composition cooldowns and calibration. Keep its profile connected to lobby, host, save/replay and results. Intentional errors stay off in initial delivery; a future opt-in policy is separate. Contact memory remains identical across profiles.
 
 The macro manager derives total army demand and dated economic obligations using [C1/C2](../testing/classic-rts-and-difficulty-scenarios.md#c2--desired-army-size-and-spending-have-a-source) before assigning role shares. Reproduction manifests and diagnostic completeness are typed contracts; they cannot be retrofitted as untyped live-world debug queries.
 

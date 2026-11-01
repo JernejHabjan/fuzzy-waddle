@@ -1,6 +1,6 @@
 import { expect, type Page } from "@playwright/test";
-import type { AiRuntimeBrowserTestHostV1 } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host-v1";
+import type { AiRuntimeBrowserTestHost } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-browser-test-host";
 import { continueNativeEndGameDialog, openNativeGameAction } from "./skirmish-ai-native-game-menu";
 import { installRuntimeAccessor } from "./skirmish-ai-runtime-browser-accessor";
 import { ProbableWaffleGameInstanceType } from "@fuzzy-waddle/probable-waffle-protocol";
@@ -11,10 +11,10 @@ import type GameProbableWaffleScene from
 export async function saveNativeMatch(page: Page, playerNumber: number) {
   const previous = await readNativeQuicksaveHeaders(page);
   const boundary = await page.evaluate(({ playerNumber, supportedType }) => {
-    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: AiRuntimeBrowserTestHostV1;
-      __nativeSavedGameOwner?: AiRuntimeBrowserTestHostV1["game"]; __nativeSaveRealm?: string };
-    const host = realm.__fuzzyWaddleAiRuntimeBrowserTestV1;
-    const parts = window.__fuzzyWaddleAiRuntimePartsV1?.(playerNumber);
+    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost;
+      __nativeSavedGameOwner?: AiRuntimeBrowserTestHost["game"]; __nativeSaveRealm?: string };
+    const host = realm.__fuzzyWaddleAiRuntimeBrowserTest;
+    const parts = window.__fuzzyWaddleAiRuntimeParts?.(playerNumber);
     if (!host || !parts) throw new Error("native_save_original_owner_missing");
     const scene = host.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
       GameProbableWaffleScene | undefined;
@@ -55,18 +55,18 @@ export async function reloadNativeMatch(
   await expect(row).toHaveCount(1);
   await row.getByRole("button", { name: "Load", exact: true }).click();
   await page.waitForFunction(() => {
-    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: AiRuntimeBrowserTestHostV1;
-      __nativeSavedGameOwner?: AiRuntimeBrowserTestHostV1["game"] };
-    const current = realm.__fuzzyWaddleAiRuntimeBrowserTestV1;
+    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost;
+      __nativeSavedGameOwner?: AiRuntimeBrowserTestHost["game"] };
+    const current = realm.__fuzzyWaddleAiRuntimeBrowserTest;
     return !!current && current.game !== realm.__nativeSavedGameOwner;
   }, undefined, { timeout: 120_000 });
   await installRuntimeAccessor(page);
   await page.waitForFunction(({ playerNumber, tick, sequence }) => {
-    const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: AiRuntimeBrowserTestHostV1 })
-      .__fuzzyWaddleAiRuntimeBrowserTestV1;
+    const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
+      .__fuzzyWaddleAiRuntimeBrowserTest;
     const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
       GameProbableWaffleScene | undefined;
-    const parts = window.__fuzzyWaddleAiRuntimePartsV1?.(playerNumber);
+    const parts = window.__fuzzyWaddleAiRuntimeParts?.(playerNumber);
     return scene?.getSceneGameData().initializers.sceneInitialized.getValue() === true &&
       parts?.tickService.currentTick === tick && parts.controller.getBrainState()?.scheduler.decisionSequence === sequence &&
       parts.controller.isDecisionBoundarySettled();

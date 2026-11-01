@@ -1,6 +1,6 @@
 import { FactionType, ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
+import { createAiBrainState } from "../brain/create-ai-brain-state";
+import type { AiCapabilityCatalog } from "../contracts/ai-capability-catalog";
 
 import { AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS, AiSkirmishManager } from "./ai-skirmish-manager";
 import { homeNode, enemyNode, catalog, unit, observation, profile, manager } from "./ai-skirmish-test-fixtures";
@@ -38,7 +38,7 @@ describe("AiSkirmishManager", () => {
         ]
       }
     };
-    const state = createAiBrainStateV1({
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -57,7 +57,7 @@ describe("AiSkirmishManager", () => {
   });
 
   it("does not classify a nearby static enemy building as a home raid", () => {
-    const state = createAiBrainStateV1({
+    const state = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -87,7 +87,7 @@ describe("AiSkirmishManager", () => {
   });
 
   it("keeps armed gatherers out of standing attack and scout squads", () => {
-    const workerCatalog: AiCapabilityCatalogV1 = {
+    const workerCatalog: AiCapabilityCatalog = {
       ...catalog,
       entries: [
         ...catalog.entries,
@@ -100,7 +100,7 @@ describe("AiSkirmishManager", () => {
       ]
     };
     const workerManager = new AiSkirmishManager(profile, () => workerCatalog);
-    const initial = createAiBrainStateV1({
+    const initial = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,
@@ -122,7 +122,7 @@ describe("AiSkirmishManager", () => {
   });
 
   it("launches a bounded smaller mission after an impossible full assembly wait", () => {
-    const initial = createAiBrainStateV1({
+    const initial = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
       profile,

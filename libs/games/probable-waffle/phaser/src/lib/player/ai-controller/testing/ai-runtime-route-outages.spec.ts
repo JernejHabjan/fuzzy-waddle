@@ -6,11 +6,11 @@ import { NavigationService } from "../../../world/services/navigation.service";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { installAiRuntimeRouteOutages, validAiRuntimeRouteOutages } from "./ai-runtime-route-outages";
-import { recordAiRuntimePresetEventV1 } from "./ai-runtime-browser-test-config";
+import { recordAiRuntimePresetEvent } from "./ai-runtime-browser-test-config";
 
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: () => ({ id: "original-mover" }) }));
 jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("./ai-runtime-browser-test-config", () => ({ recordAiRuntimePresetEventV1: jest.fn() }));
+jest.mock("./ai-runtime-browser-test-config", () => ({ recordAiRuntimePresetEvent: jest.fn() }));
 
 it("rejects missing roles, duplicate IDs and moving/unbounded outage deadlines", () => {
   const fault = { id: "finite-route-outage", fromTick: 400, throughTick: 800, fixtureActorIds: ["mover"] };
@@ -41,7 +41,7 @@ it("scopes null responses to the original actor/window and restores owned method
   expect(await retained(mover, { x: 1, y: 2 })).toBeNull();
   expect(await retained(other, { x: 1, y: 2 })).toBe(nativePath);
   expect(await retained(mover, { x: 1, y: 2 })).toBeNull();
-  expect(recordAiRuntimePresetEventV1).toHaveBeenCalledTimes(1);
+  expect(recordAiRuntimePresetEvent).toHaveBeenCalledTimes(1);
   const later = jest.fn(async () => nativePath);
   nav.findPathFromGameObjectToTile = later;
   clock.currentTick = 801;
