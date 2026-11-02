@@ -1,3 +1,5 @@
+import { FogOfWarGraphics } from "./fog-of-war/fog-of-war-graphics";
+import { FogOfWarViewport } from "./fog-of-war/fog-of-war-viewport";
 import Phaser from "phaser";
 import { NavigationService } from "../services/navigation.service";
 import { throttle } from "../../library/throttle";
@@ -48,6 +50,7 @@ export enum FogOfWarMode {
 export class FogOfWarComponent {
   private fowMode: FogOfWarMode = FogOfWarMode.PRE_EXPLORED;
   private readonly fowLayer: Phaser.GameObjects.Graphics;
+  private readonly renderViewport: FogOfWarViewport;
   private exploredTiles: Set<number> = new Set();
   private visibleTiles: Set<number> = new Set();
   private readonly tileWidth: number;
@@ -100,7 +103,8 @@ export class FogOfWarComponent {
     this.gridHeight = this.tilemap.height + this.margin * 2;
 
     // Create graphics layer for fog of war
-    this.fowLayer = this.scene.add.graphics();
+    this.renderViewport = new FogOfWarViewport(this.tileWidth, this.tileHeight);
+    this.fowLayer = this.scene.add.existing(new FogOfWarGraphics(scene, (camera) => this.refreshFogForCamera(camera)));
     this.fowLayer.setDepth(FogOfWarComponent.depth);
 
     // Pre-cache all tile world positions to avoid repeated coordinate transformations
@@ -256,6 +260,7 @@ export class FogOfWarComponent {
   public setMode(mode: FogOfWarMode): void {
     this.fowMode = mode;
     this.updateFogOfWar();
+    this.redrawFogOfWar(true);
   }
 
   public getMode(): FogOfWarMode {
@@ -263,7 +268,7 @@ export class FogOfWarComponent {
   }
 
   private drawInitialFog(): void {
-    this.redrawFogOfWar();
+    this.redrawFogOfWar(true);
   }
 
   private throttleUpdateFogOfWarFrameNonDeterministic = throttle(this.updateFogOfWar.bind(this), 100);
@@ -490,11 +495,15 @@ export class FogOfWarComponent {
     this.fowLayer.fillPath();
   }
 
-  private redrawFogOfWar(): void {
-    // Only clear and redraw if there are dirty tiles
-    if (this.dirtyTiles.size === 0) {
+  private refreshFogForCamera(camera: Phaser.Cameras.Scene2D.Camera): void {
+    if (this.renderViewport.needsRedraw(camera)) this.redrawFogOfWar(true, camera);
+  }
+
+  private redrawFogOfWar(force = false, camera = this.scene.cameras.main): void {
+    if (!force && this.dirtyTiles.size === 0) {
       return;
     }
+    this.renderViewport.capture(camera);
     let alphaUnexplored = 0;
     switch (this.fowMode) {
       case FogOfWarMode.FULL_EXPLORATION:
@@ -509,9 +518,8 @@ export class FogOfWarComponent {
         return;
     }
 
-    // Full redraw: clear everything and redraw all tiles
-    // Note: Due to overlapping isometric tiles, we always do a full clear and redraw
-    // The performance gain comes from the early exit above when there are no dirty tiles
+    // Clear the previous coverage: newly transparent tiles cannot be painted over old fog.
+    // Logical fog still covers the whole map; only submitted polygons are bounded to this camera.
     this.fowLayer.clear();
 
     const endX = this.startX + this.gridWidth;
@@ -521,7 +529,7 @@ export class FogOfWarComponent {
         const tileKey = this.getTileKey(x, y);
         const worldPos = this.tileWorldPosCache.get(tileKey);
 
-        if (worldPos) {
+        if (worldPos && this.renderViewport.intersectsTile(worldPos.x, worldPos.y)) {
           this.drawTileAtWorldPos(worldPos.x, worldPos.y, tileKey, alphaUnexplored);
         }
       }

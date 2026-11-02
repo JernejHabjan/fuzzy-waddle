@@ -4,7 +4,8 @@
 
 - Execution authorized and goal active on `feature/759-skirmish-ai`, PR [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814).
   Completed packets: **0/8**. Required gameplay/performance acceptance remains open despite implemented slices.
-- Next: continuous pursuit/load-elevation reproduction and actual three-flyer counter production/assignment.
+- Current: measure camera-bounded fog rendering against the frozen three-sample combat baseline, then continue
+  continuous pursuit/load-elevation reproduction and actual three-flyer counter production/assignment.
   Quiet formation/interception fixes are `06ad7a214`; do not repeat the retained FIGHT-01 quiet run for reassurance.
   One runner; maximum 30 minutes per invocation/batch. Do not repeat unchanged full matches.
 - R2 published: teardown `2c7844410` (3 regressions), offline unique-human binding `927c5b84b`
@@ -27,12 +28,14 @@
   No projection adjustment is justified by the isolated controls; investigate the actual scene/save/load boundary next.
 - Review R3 before closure: eight-slot tactical formation ceiling and failure-prefix matching across reassigned
   slots need focused controls. The latter is an identified risk, not yet a reproduced stale-failure defect.
-- R1: sampler targets 240 ticks at real 1x (40 warmup, 60s ceiling); optional CDP traces rank costs without heavy
-  authority capture. Flags: `AI_GAMEPLAY_PROFILE=1`, `AI_GAMEPLAY_PROFILE_WORKLOAD=opening|combat|multi_ai`,
-  `AI_GAMEPLAY_PROFILE_CPU=1`. Profiles get a fresh 4201 server. First combat authoring probe failed before gameplay:
-  SHA fixture provenance did not match the native FNV contract. Shared pure provenance preflight now catches it;
-  19 config/provenance tests and owner types/lints pass. Repeat only sample 1 after this causal correction, then use
-  samples 2/3 on unchanged source/config if collecting variance. Old 22s/171-tick probe is not a completed baseline.
+- R1/R8: three clean `b42a89066` combat samples each completed 240 ticks/12 decisions at 1x, 8 workers/12 army,
+  no browser errors. Median elapsed 23358.8ms; frame p50 50ms/p95 66.7ms. Render profiling identifies full-map fog
+  geometry as a major cost. Frozen baseline/targets: `tmp/ai-gameplay-reliability/fog-performance-baseline.json`;
+  require >=20% lower median elapsed and >=50% lower combined polygon-render self time on matched samples.
+  Camera-bounded geometry is under review; logical visibility/exploration and AI observations remain whole-map.
+  Eleven focused controls pass; owning checks and measured after evidence pending. Final canonical/gameplay
+  comparison remains required after R2–R7. Sampler: `AI_GAMEPLAY_PROFILE=1`, workload `combat|opening|multi_ai`,
+  `AI_GAMEPLAY_PROFILE_CPU=1`; fresh 4201, 40 warmup ticks, 60s ceiling. Keep three samples on stable source/config.
 - Default evidence directories are junctions to full D:. Preserve historical artifacts; use
   `AI_SKIRMISH_RUNTIME_RESULTS_DIRECTORY` and matrix `--output` under workspace `tmp/ai-gameplay-reliability/`.
   Runner diagnostics `8e3eae635` retain malformed-artifact/process failures (9 tests/tools types/lint passed).
@@ -85,7 +88,7 @@ and controls. Record an evidence gap separately from a code defect. A blocker do
 | R5 AI mission ownership and defense | R1, R3, R4 | in_progress | Quiet-slot ownership and local reserve interception repaired; 96 tactical controls pass. Ground/air gameplay acceptance remains. |
 | R6 Emergency counter production | R1, R5 defender contract | in_progress | Cooldown suppression reproduced and repaired in pure manager; physical output/assignment remains. |
 | R7 Retreat and re-engagement | R1, R4, R5 | in_progress | Native quiet favorable target defeated at tick 118; corrected oracle replay passes. Minor injury, loss/reinforcement and oscillation controls remain. |
-| R8 Measured performance improvement | baseline in R1; final comparison after R2–R7 | not_started | Optimize measured owners; matched before/after proof and regression guard. |
+| R8 Measured performance improvement | baseline in R1; final comparison after R2–R7 | in_progress | Three combat baselines frozen on b42a89066. Camera-bounded fog under review; matched after measurement and final gameplay proof remain. |
 
 Record each packet in its row: commit/diff identity, exact focused command, result, workload/fixture identity and
 one bounded artifact pointer. Keep only the newest meaningful result and unresolved gap; Git preserves history.
