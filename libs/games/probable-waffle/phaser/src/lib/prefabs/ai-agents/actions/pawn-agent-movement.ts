@@ -38,19 +38,22 @@ export class PawnAgentMovement {
     private readonly closestAttackableEnemy: () => Phaser.GameObjects.GameObject | null
   ) {}
 
-  /** A native range probe; a returned route is used only for distance, never executed here. */
-  async InRange(type: PlayerPawnRangeType): Promise<State> {
-    const currentOrder = this.blackboard.getCurrentOrder();
-    if (!currentOrder) {
-      // console.log("[Build] InRange: No current order");
-      return State.FAILED;
+  /** Attack range and weapon admission share one behavior update; physical checks must not yield. */
+  InRange(type: PlayerPawnRangeType): State | Promise<State> {
+    const target = this.blackboard.getCurrentOrder()?.data.targetGameObject;
+    if (type === "attack" && target) {
+      const attack = getActorComponent(this.gameObject, AttackComponent)?.getAttack(target) ?? null;
+      return isWithinAttackRange(this.gameObject, target, attack) ? State.SUCCEEDED : State.FAILED;
     }
+    return this.probeInteractionRange(type);
+  }
+
+  /** Non-combat interactions retain their native reachability probe. No route is executed here. */
+  private async probeInteractionRange(type: PlayerPawnRangeType): Promise<State> {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
     const targetGameObject = currentOrder.data.targetGameObject;
     const targetLocation = currentOrder.data.targetTileLocation;
-    if (type === "attack" && targetGameObject) {
-      const attack = getActorComponent(this.gameObject, AttackComponent)?.getAttack(targetGameObject) ?? null;
-      return isWithinAttackRange(this.gameObject, targetGameObject, attack) ? State.SUCCEEDED : State.FAILED;
-    }
     const range = this.getRangeToTarget(type);
     if (range === undefined) {
       // console.log("[Build] InRange: Range undefined for type", type);

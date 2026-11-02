@@ -76,7 +76,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     return this.status.IsSlowed();
   }
 
-  InRange(type: PlayerPawnRangeType): Promise<State> {
+  InRange(type: PlayerPawnRangeType): State | Promise<State> {
     return this.movement.InRange(type);
   }
 

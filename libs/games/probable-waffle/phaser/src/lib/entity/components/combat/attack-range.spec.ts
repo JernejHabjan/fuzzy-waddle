@@ -1,5 +1,7 @@
 import type Phaser from "phaser";
-import { State } from "mistreevous";
+import { BehaviourTree, State } from "mistreevous";
+import { PawnAgentMovement } from "../../../prefabs/ai-agents/actions/pawn-agent-movement";
+import { PlayerPawnAiControllerMdsl } from "../../../prefabs/ai-agents/behaviors/player-pawn-ai-controller.mdsl";
 import { isWithinAttackRange } from "./attack-range";
 import { getGameObjectCurrentTile, isGameObjectActiveInActiveScene } from "../../../data/game-object-helper";
 import { getActorComponent } from "../../../data/actor-component";
@@ -126,4 +128,58 @@ it("rechecks physical range at pawn attack admission after a target moves away",
     .mockImplementation((actor) => (actor === attacker ? { x: 0, y: 0 } : { x: 10, y: 0 }));
   expect(combat.Attack()).toBe(State.FAILED);
   expect(useAttack).toHaveBeenCalledTimes(1);
+});
+
+it("checks range and starts a ready attack in one behavior update instead of yielding to a moving target", () => {
+  const useAttack = jest.fn();
+  const component = { getAttack: () => weapon, remainingCooldown: 0, useAttack };
+  jest
+    .mocked(getActorComponent)
+    .mockImplementation((actor, token) =>
+      token === AttackComponent && actor === attacker
+        ? (component as never)
+        : token === HealthComponent
+          ? ({ alive: true } as never)
+          : undefined
+    );
+  const board = new PawnAiBlackboard();
+  board.setCurrentOrder(new OrderData(OrderType.Attack, { targetGameObject: target }));
+  const combat = new PawnAgentCombat(attacker, board, { SelfIsAlive: () => true });
+  const movement = new PawnAgentMovement(
+    attacker,
+    board,
+    {
+      Stop: () => State.SUCCEEDED,
+      MoveToTarget: async () => State.FAILED,
+      MoveToLocation: async () => State.FAILED
+    },
+    () => null
+  );
+  const agent = {
+    PlayerOrderIs: () => true,
+    TargetOrLocationExists: () => true,
+    HasAttackComponent: () => true,
+    TargetExists: () => true,
+    TargetIsAlive: () => true,
+    SelfIsAlive: () => true,
+    CanAttackCurrentTarget: () => true,
+    LeaveConstructionSiteOrCurrentContainer: () => State.SUCCEEDED,
+    CooldownReady: () => true,
+    InRange: () => {
+      const result = movement.InRange("attack");
+      // Normalize native async promises across the Jest Zone boundary; browsers use one promise realm.
+      return typeof result === "string" ? result : Promise.resolve(result);
+    },
+    MoveToTargetOrLocation: jest.fn(async () => State.SUCCEEDED),
+    Stop: jest.fn(() => State.SUCCEEDED),
+    Attack: combat.Attack.bind(combat)
+  };
+  const branch = PlayerPawnAiControllerMdsl.slice(
+    PlayerPawnAiControllerMdsl.indexOf("root [Attack]"),
+    PlayerPawnAiControllerMdsl.indexOf("root [Move]")
+  );
+  const tree = new BehaviourTree(`root { branch [Attack] }\n${branch}`, agent);
+  tree.step();
+  expect(useAttack).toHaveBeenCalledTimes(1);
+  expect(agent.MoveToTargetOrLocation).not.toHaveBeenCalled();
 });
