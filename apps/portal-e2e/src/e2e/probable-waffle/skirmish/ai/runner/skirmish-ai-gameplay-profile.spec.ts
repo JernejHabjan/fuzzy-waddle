@@ -1,3 +1,5 @@
+import { digestCanonicalAiValue } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/persistence/canonical-ai-serialization";
+import { validAiRuntimePresetProvenance } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/validation/validate-ai-runtime-preset-provenance";
 import { expect, test } from "@playwright/test";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
@@ -22,20 +24,22 @@ for (let repetition = 1; repetition <= 3; repetition++) {
       .update(execFileSync("git", ["diff", "HEAD", "--", "libs", "apps"]))
       .digest("hex");
     const fixturePath =
-      workload === "opening"
+      workload !== "combat"
         ? "economy/opening-workforce-native-gameplay.json"
         : "combat/fight-01-reassess-and-retreat-regroup-within-bound-runtime.json";
     const fixture: RuntimeFixture = JSON.parse(
       readFileSync(join(root, "tools/probable-waffle/skirmish/ai/testing/fixtures/native", fixturePath), "utf8")
     );
     const selected = fixture.recipe.variants.find(
-      (candidate) => candidate.id === (workload === "opening" ? "tivara-no-worker-opening" : "fight-01-tivara-quiet")
+      (candidate) => candidate.id === (workload !== "combat" ? "tivara-no-worker-opening" : "fight-01-tivara-quiet")
     );
     if (!selected) throw new Error("profile_workload_missing");
     // Broad authority capture is a separate evidence workload; it must not dominate rendered gameplay profiling.
     const variant = { ...selected, captureConstruction: undefined, captureCombat: undefined };
     const errors: string[] = [];
-    const fixtureDigest = `sha256:${createHash("sha256").update(JSON.stringify(fixture)).digest("hex")}`;
+    const fixtureDigest = digestCanonicalAiValue(fixture);
+    if (!validAiRuntimePresetProvenance({ sourceRevision: source, fixtureDigest }))
+      throw new Error("profile_preset_provenance_invalid");
     const configurationDigest = createHash("sha256")
       .update(
         JSON.stringify({

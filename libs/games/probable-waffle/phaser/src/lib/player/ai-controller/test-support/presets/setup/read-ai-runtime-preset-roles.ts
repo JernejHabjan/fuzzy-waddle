@@ -1,3 +1,4 @@
+import { validAiRuntimePresetProvenance } from "../validation/validate-ai-runtime-preset-provenance";
 import { validAiRuntimeBrainFault } from "../../authority/controls/ai-runtime-brain-fault";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { validAiRuntimeExistingBindings } from "../validation/validate-ai-runtime-existing-bindings";
@@ -50,17 +51,7 @@ export function readAiRuntimePresetRoles(value: unknown) {
   if (!validAiRuntimeTerrainPatches(value["terrainPatches"])) return null;
   if (value["terrainPreserveFootprints"] !== undefined &&
       (value["terrainPreserveFootprints"] !== true || !Array.isArray(value["terrainPatches"]))) return null;
-  const provenance = value["provenance"];
-  if (
-    !isRecord(provenance) ||
-    !hasOnlyKeys(provenance, ["sourceRevision", "fixtureDigest"]) ||
-    typeof provenance["sourceRevision"] !== "string" ||
-    !/^[a-f0-9]{40}$/.test(provenance["sourceRevision"]) ||
-    typeof provenance["fixtureDigest"] !== "string" ||
-    !/^fnv1a32:[a-f0-9]{8}$/.test(provenance["fixtureDigest"])
-  ) {
-    return null;
-  }
+  if (!validAiRuntimePresetProvenance(value["provenance"])) return null;
   if (!Array.isArray(value["actors"]) || value["actors"].length > 100) return null;
   const fixtureActorIds = new Set<string>();
   const actorOwners = new Map<string, number | null>();

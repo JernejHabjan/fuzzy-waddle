@@ -27,12 +27,12 @@
   No projection adjustment is justified by the isolated controls; investigate the actual scene/save/load boundary next.
 - Review R3 before closure: eight-slot tactical formation ceiling and failure-prefix matching across reassigned
   slots need focused controls. The latter is an identified risk, not yet a reproduced stale-failure defect.
-- R1 profiler now measures 240 ticks at real 1x, discards the first 40 ticks and stops after at most 60s. Its progress
-  guard is stronger than the old >200 check. Opening/combat/multi-AI workloads reuse existing presets without heavy
-  authority capture; optional CDP sampling records raw traces and bounded hotspots, renderer/engine deltas and source
-  digests. Types/lint pass; runtime baseline pending. Flags: `AI_GAMEPLAY_PROFILE=1`, `AI_GAMEPLAY_PROFILE_WORKLOAD`
-  (`opening|combat|multi_ai`), `AI_GAMEPLAY_PROFILE_CPU=1`. Reuse successful sample 1 and collect only samples 2/3 on
-  unchanged source/config. Old 22s/171-tick probe failed; retain it as diagnostic. Stepped throughput is not FPS.
+- R1: sampler targets 240 ticks at real 1x (40 warmup, 60s ceiling); optional CDP traces rank costs without heavy
+  authority capture. Flags: `AI_GAMEPLAY_PROFILE=1`, `AI_GAMEPLAY_PROFILE_WORKLOAD=opening|combat|multi_ai`,
+  `AI_GAMEPLAY_PROFILE_CPU=1`. Profiles get a fresh 4201 server. First combat authoring probe failed before gameplay:
+  SHA fixture provenance did not match the native FNV contract. Shared pure provenance preflight now catches it;
+  19 config/provenance tests and owner types/lints pass. Repeat only sample 1 after this causal correction, then use
+  samples 2/3 on unchanged source/config if collecting variance. Old 22s/171-tick probe is not a completed baseline.
 - Default evidence directories are junctions to full D:. Preserve historical artifacts; use
   `AI_SKIRMISH_RUNTIME_RESULTS_DIRECTORY` and matrix `--output` under workspace `tmp/ai-gameplay-reliability/`.
   Runner diagnostics `8e3eae635` retain malformed-artifact/process failures (9 tests/tools types/lint passed).
