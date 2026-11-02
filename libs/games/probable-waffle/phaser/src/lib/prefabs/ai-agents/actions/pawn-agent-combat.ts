@@ -1,3 +1,4 @@
+import { isWithinAttackRange } from "../../../entity/components/combat/attack-range";
 import Phaser from "phaser";
 import { State } from "mistreevous";
 import type { PlayerPawnAiControllerAgent } from "../controller/player-pawn-ai-controller.agent";
@@ -41,7 +42,7 @@ export class PawnAgentCombat {
     if (targetHealth && !targetHealth.alive) return State.FAILED;
     const attackComponent = getActorComponent(this.gameObject, AttackComponent);
     if (!attackComponent) return State.FAILED;
-    if (!attackComponent.getAttack(target)) return State.FAILED;
+    if (!isWithinAttackRange(this.gameObject, target, attackComponent.getAttack(target))) return State.FAILED;
     if (attackComponent.remainingCooldown > 0) return State.FAILED;
     attackComponent.useAttack(target);
     return State.SUCCEEDED;
@@ -204,5 +205,4 @@ export class PawnAgentCombat {
     if (!attackComponent) return false;
     return !!attackComponent.getAttack(target);
   }
-
 }

@@ -11,11 +11,16 @@ import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/compo
 import { PawnAiBlackboard } from "../controller/pawn-ai-blackboard";
 import { PawnAgentMovement } from "./pawn-agent-movement";
 import { PawnAgentOrders } from "../orders/pawn-agent-orders";
+import { AttackComponent } from "../../../entity/components/combat/components/attack-component";
+import * as gameObjectHelpers from "../../../data/game-object-helper";
 import { DistanceHelper } from "../../../library/distance-helper";
 
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 jest.mock("../../../data/actor-system", () => ({ getActorSystem: jest.fn() }));
-jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../world/services/scene-component-helpers", () => ({
+  getSceneService: jest.fn(),
+  getSceneComponent: jest.fn()
+}));
 
 function fixture(orderType = OrderType.Move) {
   const scene = { sys: { isActive: () => true, queueDepthSort: () => undefined } } as unknown as Phaser.Scene;
@@ -115,6 +120,32 @@ describe("native Move refusal settles its command", () => {
     jest.spyOn(DistanceHelper, "getTileDistanceBetweenGameObjectAndTile").mockReturnValue(1);
 
     expect(await f.move.InRange("move")).toBe(State.SUCCEEDED);
+  });
+
+  it("does not confuse a short remaining approach path with being in weapon range", async () => {
+    const f = fixture(OrderType.Attack);
+    const target = new Phaser.GameObjects.GameObject(f.actor.scene, "target");
+    f.order.data.targetGameObject = target;
+    jest.spyOn(gameObjectHelpers, "isGameObjectActiveInActiveScene").mockReturnValue(true);
+    jest
+      .spyOn(gameObjectHelpers, "getGameObjectCurrentTile")
+      .mockImplementation((actor) => (actor === f.actor ? { x: 0, y: 0 } : { x: 10, y: 0 }));
+    const lookup = jest.mocked(getActorComponent).getMockImplementation();
+    jest
+      .mocked(getActorComponent)
+      .mockImplementation((actor, token) =>
+        token === AttackComponent
+          ? ({ getAttackRange: () => 6, getAttack: () => ({ range: 6, minRange: 0, canTargetAir: true }) } as never)
+          : lookup?.(actor, token)
+      );
+    const rangeProbe = jest.fn(async () => [
+      { x: 0, y: 0 },
+      { x: 1, y: 0 }
+    ]);
+    Object.assign(f.movementSystem, { getPathToClosestNavigableTileBetweenGameObjectsInRadius: rangeProbe });
+    jest.spyOn(DistanceHelper, "getTileDistanceBetweenGameObjects").mockReturnValue(10);
+    expect(await f.move.InRange("attack")).toBe(State.FAILED);
+    expect(rangeProbe).not.toHaveBeenCalled();
   });
 
   it.each(["probe", "movement"] as const)("settles the target Move when its %s returns false", async (boundary) => {

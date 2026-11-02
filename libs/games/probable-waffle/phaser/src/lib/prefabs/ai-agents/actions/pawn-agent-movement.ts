@@ -1,7 +1,11 @@
+import { isWithinAttackRange } from "../../../entity/components/combat/attack-range";
 import { MovementQueryObservation } from "../../../entity/systems/movement-query-observation";
 import Phaser from "phaser";
 import { State } from "mistreevous";
-import type { IPlayerPawnControllerAgent, PlayerPawnRangeType } from "../controller/player-pawn-ai-controller.agent.interface";
+import type {
+  IPlayerPawnControllerAgent,
+  PlayerPawnRangeType
+} from "../controller/player-pawn-ai-controller.agent.interface";
 import { getActorComponent } from "../../../data/actor-component";
 import { DistanceHelper } from "../../../library/distance-helper";
 import { AttackComponent } from "../../../entity/components/combat/components/attack-component";
@@ -43,6 +47,10 @@ export class PawnAgentMovement {
     }
     const targetGameObject = currentOrder.data.targetGameObject;
     const targetLocation = currentOrder.data.targetTileLocation;
+    if (type === "attack" && targetGameObject) {
+      const attack = getActorComponent(this.gameObject, AttackComponent)?.getAttack(targetGameObject) ?? null;
+      return isWithinAttackRange(this.gameObject, targetGameObject, attack) ? State.SUCCEEDED : State.FAILED;
+    }
     const range = this.getRangeToTarget(type);
     if (range === undefined) {
       // console.log("[Build] InRange: Range undefined for type", type);

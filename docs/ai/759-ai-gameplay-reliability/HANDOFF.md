@@ -8,7 +8,7 @@
 - Previous [ordinary CI](https://github.com/JernejHabjan/fuzzy-waddle/actions/runs/41323002450) passed that base.
   It does not establish that the newly reported gameplay defects are resolved.
 - Goal controller is active. Completed packets: **0/8**; implemented slices are not full gameplay acceptance.
-- Next: trace pursuit/range admission and mission churn, then elevation restoration. Anti-air cooldown slice
+- Next: implement continuous order-owned pursuit over native movement steps, then mission churn and elevation restoration. Anti-air cooldown slice
   is committed at `c6f8180e3`; 14 focused tests pass (physical output/assignment still open).
   Do not rerun unchanged full matches. Use one focused runner and a 30-minute maximum verification batch.
 - Published fixes: teardown lifecycle `2c7844410` (3 regressions, Phaser types/lint); offline unique-human binding
@@ -30,9 +30,15 @@
   Full gameplay types fail on existing fixture typing outside this repair (gameplay-types.log); the touched
   adaptation files have no diagnostics. R6 output/assignment acceptance remains open. Ordinary CI 41350712579 passed.
 
-- Formation arrival slice: rejected empty arrival routes made an already positioned unit pick a neighboring slot.
+- Published at `a2dca643f` (including profiler/anti-air slices); formation arrival slice: rejected empty arrival routes made an already positioned unit pick a neighboring slot.
   Repaired with live tile/disposal checks; 6 focused tests, Phaser full types and lint pass. Evidence:
   `tmp/ai-gameplay-reliability/formation-{before,after,types,lint}.log`. Wider slot stability/collision remains open.
+
+- Attack range slice: a 2-tile remaining approach route incorrectly admitted a 6-range attack against a target
+  10 tiles away. Shared physical range now gates pawn range/attack admission without a path query, preserving
+  whole-tile distance, footprint edge, flight height, min range and high-ground bonus. 19 focused tests and Phaser
+  types/lint pass. Ordinary CI 41393833931 passed the prior published movement/anti-air batch. Evidence `tmp/ai-gameplay-reliability/attack-range-{before,after,types,lint}.log`.
+  Pursuit still snapshots the destination and needs a native step owner; this slice alone does not close R4.
 
 Cold-start instruction:
 
@@ -76,7 +82,7 @@ and controls. Record an evidence gap separately from a code defect. A blocker do
 | R1 Focused reproductions and baseline | none | in_progress | Teardown reproduction established; army churn and matched performance workload remain. |
 | R2 Restore and teardown lifecycle | R1 relevant reproduction | in_progress | Teardown and offline human-slot binding repaired with focused controls. Full load/elevation evidence and interface fixture types remain. |
 | R3 Movement and formation stability | R1 | in_progress | Arrived-slot churn repaired; 6 controls/types/lint pass. Stable membership slots and obstruction acceptance remain. |
-| R4 Pursuit and attack execution | R1, R3 relevant contract | not_started | Faster pursuer lands legal hits; no perpetual approach/abort cycle. |
+| R4 Pursuit and attack execution | R1, R3 relevant contract | in_progress | Physical range misclassification repaired with 19 controls; continuous pursuit and physical hits remain. |
 | R5 AI mission ownership and defense | R1, R3, R4 | not_started | Calm assembly; effective ground/air defense and deliberate preemption. |
 | R6 Emergency counter production | R1, R5 defender contract | in_progress | Cooldown suppression reproduced and repaired in pure manager; physical output/assignment remains. |
 | R7 Retreat and re-engagement | R1, R4, R5 | not_started | Favorable fights persist; losing fights withdraw without oscillation. |
