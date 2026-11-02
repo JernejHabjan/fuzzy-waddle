@@ -17,9 +17,13 @@ export function evaluateNativeCombat(id: string, branch: string, context: Return
       (value.stunned || value.targetFlying && !value.weapon.canTargetAir)))
     failures.push("combat_attack_started_with_illegal_status_range_or_domain");
   if (id === "FIGHT-01") {
-    if (!nativeWeaponHits(context, target).some((fact) => fact.tick < 400)) failures.push("combat_initial_favorable_fight_missing");
-    if (branch !== "quiet" && !nativeRetreats(context, 400).length) failures.push("combat_changed_risk_has_no_physical_regroup");
-    if (branch === "quiet" && !nativeWeaponHits(context, target, 400).length)
+    const hits = target ? nativeWeaponHits(context, target) : [];
+    if (!hits.some((fact) => fact.tick < 400)) failures.push("combat_initial_favorable_fight_missing");
+    if (branch !== "quiet" && !nativeRetreats(context, 400).length)
+      failures.push("combat_changed_risk_has_no_physical_regroup");
+    // A legally matched lethal weapon hit completes this target; disappearance alone cannot replace continued fighting.
+    const defeated = hits.some((fact) => fact.damage.healthAfter === 0 && !fact.damage.target.alive);
+    if (branch === "quiet" && !defeated && !hits.some((fact) => fact.tick >= 400))
       failures.push("combat_favorable_control_did_not_continue_useful_fighting");
   }
   if (id === "FIGHT-02") {

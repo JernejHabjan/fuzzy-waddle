@@ -372,6 +372,106 @@ it.describe("native weapon hits against building footprints", () => {
     }]
   }) as unknown as ReturnType<typeof nativeScenarioContext>;
 
+  const quietContext = (lethal: boolean) => {
+    const start = {
+      sequence: 1,
+      tick: 10,
+      playerNumber: 2,
+      kind: "native_combat",
+      operation: {
+        kind: "attack_requested",
+        actor: actor("attacker", "TivaraMacemanMale", 2),
+        target: actor("target", "SkaduweeWarriorMale", 1),
+        weapon,
+        distance: 1,
+        highGroundRangeBonus: 0,
+        targetFlying: false,
+        stunned: false,
+        gaps: [],
+        sceneActive: true,
+        snapshotRestoreInProgress: false,
+        clockTick: 10
+      }
+    };
+    const commit = { ...start, sequence: 2, operation: { ...start.operation, kind: "attack_committed" } };
+    const hit = damage({
+      sequence: 3,
+      tick: 20,
+      playerNumber: 1,
+      damage: {
+        ...damage().damage,
+        target: { ...actor("target", "SkaduweeWarriorMale", 1), alive: !lethal },
+        initiator: actor("attacker", "TivaraMacemanMale", 2),
+        amount: 6,
+        damageType: 0,
+        healthAfter: lethal ? 0 : 94,
+        damageTick: 20
+      }
+    });
+    return { ...contextFor([start, commit, hit], "SkaduweeWarriorMale", 0), roles: { "contact-group": "target" } };
+  };
+
+  it("accepts native weapon defeat as completion of a quiet favorable fight before the continuation window", () => {
+    expect(evaluateNativeCombat("FIGHT-01", "quiet", quietContext(true))).toEqual([]);
+  });
+
+  it("still requires continuing useful combat against a surviving quiet control target", () => {
+    expect(evaluateNativeCombat("FIGHT-01", "quiet", quietContext(false))).toContain(
+      "combat_favorable_control_did_not_continue_useful_fighting"
+    );
+  });
+
+  it("accepts continued native weapon hits against a surviving control target after the window", () => {
+    const context = quietContext(false);
+    const later = context.facts.map((fact) => {
+      const boundary = { ...fact, sequence: fact.sequence + 3, tick: fact.tick + 400 };
+      if (fact.kind === "native_combat") {
+        if (fact.operation.clockTick === null) throw new Error("fixture_native_clock_missing");
+        return { ...boundary, kind: fact.kind, operation: { ...fact.operation, clockTick: fact.operation.clockTick + 400 } };
+      }
+      if (fact.kind === "native_damage") {
+        if (fact.damage.damageTick === null) throw new Error("fixture_damage_clock_missing");
+        return { ...boundary, kind: fact.kind, damage: { ...fact.damage, damageTick: fact.damage.damageTick + 400 } };
+      }
+      return boundary;
+    });
+    expect(evaluateNativeCombat("FIGHT-01", "quiet", { ...context, facts: [...context.facts, ...later] })).toEqual([]);
+  });
+
+  it("does not turn target disappearance or inconsistent zero health into favorable completion", () => {
+    const context = quietContext(false);
+    expect(
+      evaluateNativeCombat("FIGHT-01", "quiet", {
+        ...context,
+        facts: [...context.facts, { kind: "actor_unregistered", tick: 21, actorId: "target" } as never]
+      })
+    ).toContain("combat_favorable_control_did_not_continue_useful_fighting");
+    const inconsistent = {
+      ...context,
+      facts: context.facts.map((fact) =>
+        fact.kind === "native_damage" ? { ...fact, damage: { ...fact.damage, healthAfter: 0 } } : fact
+      )
+    };
+    expect(evaluateNativeCombat("FIGHT-01", "quiet", inconsistent)).toContain(
+      "combat_favorable_control_did_not_continue_useful_fighting"
+    );
+  });
+
+  it("rejects uncommitted lethal damage and missing control target bindings", () => {
+    const context = quietContext(true);
+    expect(
+      evaluateNativeCombat("FIGHT-01", "quiet", {
+        ...context,
+        facts: context.facts.filter(
+          (fact) => fact.kind !== "native_combat" || fact.operation.kind !== "attack_committed"
+        )
+      })
+    ).toContain("combat_favorable_control_did_not_continue_useful_fighting");
+    expect(evaluateNativeCombat("FIGHT-01", "quiet", { ...context, roles: {} })).toContain(
+      "combat_favorable_control_did_not_continue_useful_fighting"
+    );
+  });
+
   it("accepts a physical hit at a building's adjacent footprint edge", () => {
     const facts = hitFacts("FrostForge", 2);
     const context = contextFor(facts, "FrostForge", 1);
