@@ -4,7 +4,13 @@ import type { AiSquadState } from "../../../contracts/state/ai-state-contracts";
 import type { AiCapabilityCatalog } from "../../../contracts/observation/ai-capability-catalog";
 import type { AiObservedActor } from "../../../contracts/observation/ai-observation";
 import { selectAiAttackApproachPositions, targetFootprintRadiusTiles } from "../combat/ai-tactics-approach-positions";
-import { knownPosition, distance, legalForMembers, formationPositions, movementDomains } from "../combat/ai-tactics-geometry";
+import {
+  knownPosition,
+  distance,
+  legalForMembers,
+  formationPositions,
+  movementDomains
+} from "../combat/ai-tactics-geometry";
 import { assignDamage } from "../combat/ai-tactics-combat";
 import {
   MISSION_EFFECT_EXTENSION_TICKS,
@@ -112,6 +118,10 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
     return legalForMembers(position, observation, [actor]) ? [{ actorId: actor.actorId, position }] : [];
   });
   const postedActorIds = new Set(postAssignments.map((assignment) => assignment.actorId));
+  const retainedQuietAssignments =
+    squad.state === nextState && ["assemble", "rally", "reserve"].includes(nextState) && localEnemies.length === 0
+      ? (squad.tactics?.assignedPositions ?? [])
+      : [];
   const formationAssignments = retainedRetreatAssignments.length
     ? retainedRetreatAssignments
     : [
@@ -128,7 +138,8 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
               postMembers.filter((actor) => !postedActorIds.has(actor.actorId)),
               anchor,
               observation,
-              failedPositionByActor
+              failedPositionByActor,
+              retainedQuietAssignments
             ))
       ];
   const safeFiringActorIds = new Set(input.safeFiringPositions.map((assignment) => assignment.actorId));
@@ -256,6 +267,17 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
       if (activeOrder?.orderType === OrderType.Move && activeOrder.targetPosition && desiredPosition) {
         return distance(activeOrder.targetPosition, desiredPosition) > 4;
       }
+      const settledPosition = retainedQuietAssignments.find((entry) => entry.actorId === actor.actorId)?.position;
+      const actorPosition = knownPosition(actor);
+      if (
+        activeOrder === null &&
+        settledPosition &&
+        desiredPosition &&
+        actorPosition &&
+        distance(settledPosition, desiredPosition) === 0 &&
+        distance(actorPosition, settledPosition) <= 1
+      )
+        return false;
       if (!previouslyOrderedActorIds.includes(actor.actorId)) return true;
       if (
         visibleTarget &&

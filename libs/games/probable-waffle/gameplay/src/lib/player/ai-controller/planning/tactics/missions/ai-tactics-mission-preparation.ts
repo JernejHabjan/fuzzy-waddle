@@ -2,7 +2,13 @@ import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
 import type { AiSquadState } from "../../../contracts/state/ai-state-contracts";
 import type { AiObservedActor } from "../../../contracts/observation/ai-observation";
 import { knownPosition, distance, legalForMembers, safeRetreatPosition } from "../combat/ai-tactics-geometry";
-import { canTarget, canSeeTarget, isEconomicActor, estimateAiEngagement, objectiveScore } from "../combat/ai-tactics-combat";
+import {
+  canTarget,
+  canSeeTarget,
+  isEconomicActor,
+  estimateAiEngagement,
+  objectiveScore
+} from "../combat/ai-tactics-combat";
 import {
   AI_TACTICS_TARGET_SWITCH_IMPROVEMENT_PERMILLE,
   MAX_LOCAL_ENEMIES,
@@ -22,7 +28,8 @@ function isCredibleThreatToMembers(enemy: AiObservedActor, members: readonly AiO
     if (memberProfile?.status !== "known") return true;
     const maxHealth = Math.max(
       1,
-      (memberProfile.value.maxHealth * (member.healthPermille?.status === "known" ? member.healthPermille.value : 1000)) /
+      (memberProfile.value.maxHealth *
+        (member.healthPermille?.status === "known" ? member.healthPermille.value : 1000)) /
         1000
     );
     // Treat an attacker as relevant when it could remove a quarter of this member's health in 20 seconds.
@@ -104,9 +111,8 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
     .filter((enemy) => !origin || distance(origin, knownPosition(enemy)!) <= 18)
     .slice(0, MAX_LOCAL_ENEMIES);
   // Recon units keep searching through harmless contacts; only a credible attacker should interrupt scouting.
-  const localEnemies = squad.role === "scout"
-    ? nearbyEnemies.filter((enemy) => isCredibleThreatToMembers(enemy, members))
-    : nearbyEnemies;
+  const localEnemies =
+    squad.role === "scout" ? nearbyEnemies.filter((enemy) => isCredibleThreatToMembers(enemy, members)) : nearbyEnemies;
   const sourceNodeId = members[0]?.accessNodeId.status === "known" ? members[0].accessNodeId.value : null;
   const alternatives = visibleEnemies
     .slice(0, MAX_STRATEGIC_CONTACTS)
@@ -147,16 +153,22 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
     committedTarget?.mainBuilding?.status === "known" &&
     committedTarget.mainBuilding.value &&
     (committedTarget.visibility === "visible" || committedTarget.visibility === "last_seen");
-  const immediateThreat =
-    (squad.role === "scout" || (squad.role === "attack" && committedTarget && !committedCoreObjective)
+  const immediateThreat = (
+    squad.role === "scout" ||
+    (squad.role !== "attack" && !committedTarget) ||
+    (squad.role === "attack" && committedTarget && !committedCoreObjective)
       ? localEnemies
-      : [])
-    .filter(
-      (enemy) =>
-        canPursueAiTacticalObjective(members, enemy, observation) &&
-        enemy.combatProfile?.status === "known" &&
-        isCredibleThreatToMembers(enemy, members)
-    )
+      : []
+  )
+    .filter((enemy) => {
+      const combat = enemy.combatProfile;
+      if (!canPursueAiTacticalObjective(members, enemy, observation) || combat?.status !== "known") return false;
+      if (squad.role === "scout" || squad.role === "attack") return isCredibleThreatToMembers(enemy, members);
+      // A local defender does not need a high strategic target score to answer an armed intruder.
+      return (
+        combat.value.attacks.some((attack) => attack.damage > 0) && members.some((member) => canTarget(enemy, member))
+      );
+    })
     .flatMap((enemy) => {
       const enemyPosition = knownPosition(enemy);
       if (!enemyPosition) return [];
@@ -169,19 +181,17 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
       return distances.length > 0 ? [{ enemy, nearest: Math.min(...distances) }] : [];
     })
     .filter(({ nearest }) => nearest <= 8)
-    .sort(
-      (left, right) => {
-        const leftPosition = knownPosition(left.enemy);
-        const rightPosition = knownPosition(right.enemy);
-        return (
-          left.nearest - right.nearest ||
-          (leftPosition?.x ?? Number.POSITIVE_INFINITY) - (rightPosition?.x ?? Number.POSITIVE_INFINITY) ||
-          (leftPosition?.y ?? Number.POSITIVE_INFINITY) - (rightPosition?.y ?? Number.POSITIVE_INFINITY) ||
-          (leftPosition?.z ?? Number.POSITIVE_INFINITY) - (rightPosition?.z ?? Number.POSITIVE_INFINITY) ||
-          left.enemy.actorId.localeCompare(right.enemy.actorId)
-        );
-      }
-    )[0]?.enemy;
+    .sort((left, right) => {
+      const leftPosition = knownPosition(left.enemy);
+      const rightPosition = knownPosition(right.enemy);
+      return (
+        left.nearest - right.nearest ||
+        (leftPosition?.x ?? Number.POSITIVE_INFINITY) - (rightPosition?.x ?? Number.POSITIVE_INFINITY) ||
+        (leftPosition?.y ?? Number.POSITIVE_INFINITY) - (rightPosition?.y ?? Number.POSITIVE_INFINITY) ||
+        (leftPosition?.z ?? Number.POSITIVE_INFINITY) - (rightPosition?.z ?? Number.POSITIVE_INFINITY) ||
+        left.enemy.actorId.localeCompare(right.enemy.actorId)
+      );
+    })[0]?.enemy;
   const retainPrevious = Boolean(
     previousTarget &&
       canPursueAiTacticalObjective(members, previousTarget, observation) &&
@@ -227,25 +237,22 @@ export function prepareAiTacticalSquad(context: AiTacticsContext, squad: AiSquad
         !isEconomicActor(actor, catalog) &&
         (!origin || (knownPosition(actor) !== null && distance(origin, knownPosition(actor)!) <= 18))
     );
-  const estimate = estimateAiEngagement(
-    coordinatedMembers,
-    engagementEnemies,
-    profile.maxLocalEngagementPairsPerStep
-  );
+  const estimate = estimateAiEngagement(coordinatedMembers, engagementEnemies, profile.maxLocalEngagementPairsPerStep);
   const retainedRetreat =
-    squad.role === "scout" &&
-    ["retreat", "recover"].includes(squad.state)
+    squad.role === "scout" && ["retreat", "recover"].includes(squad.state)
       ? squad.tactics?.assignedPositions.find((assignment) => {
           const member = members.find((candidate) => candidate.actorId === assignment.actorId);
           return member && legalForMembers(assignment.position, observation, [member]);
         })?.position
       : undefined;
-  const retreat = retainedRetreat ?? safeRetreatPosition(
-    observation,
-    state,
-    members,
-    squad.role === "defense" ? squad.lifecycle?.protectedBaseId : undefined
-  );
+  const retreat =
+    retainedRetreat ??
+    safeRetreatPosition(
+      observation,
+      state,
+      members,
+      squad.role === "defense" ? squad.lifecycle?.protectedBaseId : undefined
+    );
   return {
     ...context,
     squad,

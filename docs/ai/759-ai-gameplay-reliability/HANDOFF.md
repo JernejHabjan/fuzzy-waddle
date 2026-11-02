@@ -2,43 +2,38 @@
 
 ## Resume cursor
 
-- State: execution authorized by user **go**; R1/R2/R3/R6 in progress. Completed packets: **0/8**.
-- Branch: `feature/759-skirmish-ai`; preparation base: `aa82c347223d63165d4ee52a8f5b31480749af81`.
-- PR: [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814), ready for review before this batch.
-- Previous [ordinary CI](https://github.com/JernejHabjan/fuzzy-waddle/actions/runs/41323002450) passed that base.
-  It does not establish that the newly reported gameplay defects are resolved.
-- Goal controller is active. Completed packets: **0/8**; implemented slices are not full gameplay acceptance.
-- Next: implement continuous order-owned pursuit over native movement steps, then mission churn and elevation restoration. Anti-air cooldown slice
-  is committed at `c6f8180e3`; 14 focused tests pass (physical output/assignment still open).
-  Do not rerun unchanged full matches. Use one focused runner and a 30-minute maximum verification batch.
-- Published fixes: teardown lifecycle `2c7844410` (3 regressions, Phaser types/lint); offline unique-human binding
-  `927c5b84b` (4 scene + 7 service tests, Phaser types and owner lints). Ordinary CI 41350341383 passed.
-  Full autosave/elevation acceptance remains open; full interface types still expose save/component fixture errors
-  (`tmp/ai-layout/player-binding-interface-types.log`). Source-only types are narrower evidence.
-- Runner diagnostics `8e3eae635`: malformed artifacts retain process errors; 9 tests and tools types/lint pass.
-  Default result/matrix directories are junctions to full D:. Preserve historical evidence; set
-  `AI_SKIRMISH_RUNTIME_RESULTS_DIRECTORY` and `--output` under `tmp/ai-gameplay-reliability/` for new runs.
-- Throughput diagnostic: `matrix/1793567546332-diagnostic_passed.json` in that directory; 3000 ticks/150 decisions,
-  play 17925ms, 10 long tasks. Manually stepped headless throughput is not rendered 1x frame performance.
-- Rendered profiler `9626a9879` plus tick-zero repair: actual 22s sample recorded 377 frames, p50 50ms/p95 66.7ms,
-  171 ticks/8 decisions/1 worker and no runtime errors. It FAILED the >200 tick progress guard; do not lower it or
-  call this a completed baseline. Log `rendered-profile-focused.log` and JSON under `rendered-opening/` in that
-  evidence directory. No runner remains active. Three matched samples and combat/multi-AI profiling remain.
-- Anti-air focused reproduction: new confirmed flyers during the 40-tick composition cooldown yielded no target
-  (or stayed capped at one). Repair admits confirmed live anti-air growth while retaining other roles and their
-  cooldown; producer clues/memory remain gated. 14 focused tests and owner lint pass; portal-e2e types pass.
-  Full gameplay types fail on existing fixture typing outside this repair (gameplay-types.log); the touched
-  adaptation files have no diagnostics. R6 output/assignment acceptance remains open. Ordinary CI 41350712579 passed.
-
-- Published at `a2dca643f` (including profiler/anti-air slices); formation arrival slice: rejected empty arrival routes made an already positioned unit pick a neighboring slot.
-  Repaired with live tile/disposal checks; 6 focused tests, Phaser full types and lint pass. Evidence:
-  `tmp/ai-gameplay-reliability/formation-{before,after,types,lint}.log`. Wider slot stability/collision remains open.
-
-- Attack range slice: a 2-tile remaining approach route incorrectly admitted a 6-range attack against a target
-  10 tiles away. Shared physical range now gates pawn range/attack admission without a path query, preserving
-  whole-tile distance, footprint edge, flight height, min range and high-ground bonus. 19 focused tests and Phaser
-  types/lint pass. Ordinary CI 41393833931 passed the prior published movement/anti-air batch. Evidence `tmp/ai-gameplay-reliability/attack-range-{before,after,types,lint}.log`.
-  Pursuit still snapshots the destination and needs a native step owner; this slice alone does not close R4.
+- Execution authorized and goal active on `feature/759-skirmish-ai`, PR [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814).
+  Completed packets: **0/8**. Required gameplay/performance acceptance remains open despite implemented slices.
+- Next: short gameplay reproduction of quiet assembly/ground-air defense and pursuit after these causal repairs;
+  continue native pursuit ownership, full load/elevation restoration, collision recovery and retreat controls.
+  One runner; maximum 30 minutes per invocation/batch. Do not repeat unchanged full matches.
+- R2 published: teardown `2c7844410` (3 regressions), offline unique-human binding `927c5b84b`
+  (4 scene + 7 service tests). Phaser types/owner lints pass. Full load/elevation acceptance remains open.
+- R3/R6 published: arrived native formation slots `a2dca643f` (6 controls) and confirmed anti-air cooldown admission
+  `c6f8180e3` (14 controls). Physical large-group movement, produced counters and assignment remain open.
+- R4: physical weapon range `18b58f4ce`; ready attack admission `c812f1a88` removes an unnecessary Promise/tree
+  update between a physical range check and attack. Real attack-branch regression failed before; 20 focused native
+  controls and Phaser full types/lint pass. Continuous pursuit/hit outcomes still require gameplay acceptance.
+- R5 current batch: quiet formations swapped guards' slots as arrival reversed spatial sorting. Retain legal quiet
+  slots across arrival/reinforcement; invalidate blocked or displaced slots. A mixed ranged reinforcement no longer
+  reorders settled melee units. Uncommitted reserve forces can intercept armed local threats without a strategic
+  score threshold; committed worker-defense targets and scout/core-objective policies remain preserved.
+  All 96 tactical tests (12 suites), Phaser full types and owner lints pass. Evidence:
+  `tmp/ai-gameplay-reliability/quiet-formation-{before,tactics,phaser-types,lint}.log` and `quiet-mixed-before.log`.
+- Full gameplay/interface typechecks expose existing fixture errors outside these repairs; current touched files
+  have no diagnostics. Logs: `quiet-formation-gameplay-types.log` in that evidence root and
+  `tmp/ai-layout/player-binding-interface-types.log`. Do not report narrower checks as a clean full typecheck.
+- Review R3 before closure: eight-slot tactical formation ceiling and failure-prefix matching across reassigned
+  slots need focused controls. The latter is an identified risk, not yet a reproduced stale-failure defect.
+- R1 profiling: stepped throughput report `matrix/1793567546332-diagnostic_passed.json` (3000 ticks/150 decisions)
+  is not rendered FPS. Rendered 22s probe: 377 frames, p50 50ms/p95 66.7ms, 171 ticks/8 decisions/1 worker/no errors.
+  It FAILED the >200 tick progress guard; retain it as a diagnostic. Three matched samples, combat/multi-AI profiles
+  and measured improvement remain. Profiler `9626a9879`; `rendered-profile-focused.log`, JSON in `rendered-opening/`.
+- Default evidence directories are junctions to full D:. Preserve historical artifacts; use
+  `AI_SKIRMISH_RUNTIME_RESULTS_DIRECTORY` and matrix `--output` under workspace `tmp/ai-gameplay-reliability/`.
+  Runner diagnostics `8e3eae635` retain malformed-artifact/process failures (9 tests/tools types/lint passed).
+- Ordinary CI [41394721593](https://github.com/JernejHabjan/fuzzy-waddle/actions/runs/41394721593) passed `18b58f4ce`.
+  No game runner is active. Subsequent batches need their own ordinary CI; automatic extended AI CI stays disabled.
 
 Cold-start instruction:
 
@@ -57,13 +52,11 @@ fair observation, deterministic decision contracts, save validation and human-co
 - This user-requested implementation batch belongs to #759/#814. Save/load defects are required here even though
   broader continuation certification remains deferred in #823. The performance complaint activates focused #828
   investigation; it does not schedule broad soaks or an unrelated optimization platform.
-- Preparation changes documentation/routing and creates the goal only. Start implementation after the next **go**.
 - After go, the approved implementation includes focused regressions, short gameplay reproductions, profiling,
   owning lint/types/tests and relevant ordinary CI. Do not repeatedly request approval for this accepted work.
 - Keep the selected model. No automatic model switching, subagents or new goals. Goal status stays honest.
 - Existing permission to commit/push task-owned fixes on this branch continues for execution. Review coherent
   batches before committing/pushing. Do not merge, force-push, change PR readiness, or enable automatic AI CI/jobs.
-  This preparation does not itself commit or push.
 - Multiplayer certification, difficulty calibration, island content and broad strategy/economy feature expansion
   remain out of scope. Shared gameplay fixes must retain their existing authority/ownership contracts.
 - Fix the owner across its real callers; do not add per-fixture exceptions, weaken outcomes, remove collision
@@ -83,7 +76,7 @@ and controls. Record an evidence gap separately from a code defect. A blocker do
 | R2 Restore and teardown lifecycle | R1 relevant reproduction | in_progress | Teardown and offline human-slot binding repaired with focused controls. Full load/elevation evidence and interface fixture types remain. |
 | R3 Movement and formation stability | R1 | in_progress | Arrived-slot churn repaired; 6 controls/types/lint pass. Stable membership slots and obstruction acceptance remain. |
 | R4 Pursuit and attack execution | R1, R3 relevant contract | in_progress | Physical range misclassification repaired with 19 controls; continuous pursuit and physical hits remain. |
-| R5 AI mission ownership and defense | R1, R3, R4 | not_started | Calm assembly; effective ground/air defense and deliberate preemption. |
+| R5 AI mission ownership and defense | R1, R3, R4 | in_progress | Quiet-slot ownership and local reserve interception repaired; 96 tactical controls pass. Ground/air gameplay acceptance remains. |
 | R6 Emergency counter production | R1, R5 defender contract | in_progress | Cooldown suppression reproduced and repaired in pure manager; physical output/assignment remains. |
 | R7 Retreat and re-engagement | R1, R4, R5 | not_started | Favorable fights persist; losing fights withdraw without oscillation. |
 | R8 Measured performance improvement | baseline in R1; final comparison after R2–R7 | not_started | Optimize measured owners; matched before/after proof and regression guard. |

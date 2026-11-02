@@ -98,7 +98,8 @@ export function formationPositions(
   members: readonly AiObservedActor[],
   anchor: Vector3Simple | null,
   observation: AiObservation,
-  rejectedPositionByActor: ReadonlyMap<string, string> = new Map()
+  rejectedPositionByActor: ReadonlyMap<string, string> = new Map(),
+  previousAssignments: NonNullable<AiSquadState["tactics"]>["assignedPositions"] = []
 ): NonNullable<AiSquadState["tactics"]>["assignedPositions"] {
   if (!anchor) return [];
   const spacing = formationSpacing(members);
@@ -113,24 +114,46 @@ export function formationPositions(
     { x: -spacing, y: -spacing }
   ];
   const used = new Set<string>();
-  return members.slice(0, offsets.length).flatMap((actor, index) => {
+  const assignments: { actorId: string; position: Vector3Simple }[] = [];
+  const previousByActor = new Map(previousAssignments.map((assignment) => [assignment.actorId, assignment.position]));
+  // Arrival changes spatial sorting. A settled actor owns its legal slot before newcomers choose free positions.
+  for (const actor of members) {
+    const position = previousByActor.get(actor.actorId);
+    if (!position) continue;
+    const key = `${position.x},${position.y}`;
+    if (
+      used.has(key) ||
+      rejectedPositionByActor.get(actor.actorId) === key ||
+      distance(position, anchor) > spacing * 2 ||
+      !legalForMembers(position, observation, [actor])
+    )
+      continue;
+    used.add(key);
+    assignments.push({ actorId: actor.actorId, position });
+  }
+  const assignedActors = new Set(assignments.map((assignment) => assignment.actorId));
+  members.slice(0, offsets.length).forEach((actor, index) => {
+    if (assignedActors.has(actor.actorId)) return;
     const rejectedPosition = rejectedPositionByActor.get(actor.actorId);
     const fallbackOffset = offsets[index];
-    const candidateOffsets = rejectedPosition ? offsets.slice(index) : fallbackOffset ? [fallbackOffset] : [];
+    const candidateOffsets = previousAssignments.length
+      ? [...offsets.slice(index), ...offsets.slice(0, index)]
+      : rejectedPosition
+        ? offsets.slice(index)
+        : fallbackOffset
+          ? [fallbackOffset]
+          : [];
     const candidate = candidateOffsets
-      .map((offset) => ({
-        x: anchor.x + offset.x,
-        y: anchor.y + offset.y,
-        z: anchor.z
-      }))
+      .map((offset) => ({ x: anchor.x + offset.x, y: anchor.y + offset.y, z: anchor.z }))
       .find((position) => {
         const key = `${position.x},${position.y}`;
         return !used.has(key) && rejectedPosition !== key && legalForMembers(position, observation, [actor]);
       });
-    if (!candidate) return [];
+    if (!candidate) return;
     used.add(`${candidate.x},${candidate.y}`);
-    return [{ actorId: actor.actorId, position: candidate }];
+    assignments.push({ actorId: actor.actorId, position: candidate });
   });
+  return assignments;
 }
 
 function formationSpacing(members: readonly AiObservedActor[]): number {
