@@ -8,9 +8,12 @@
   Quiet formation/interception fixes are `06ad7a214`; do not repeat the retained FIGHT-01 quiet run for reassurance.
   One runner; maximum 30 minutes per invocation/batch. Do not repeat unchanged full matches.
 - R2 published: teardown `2c7844410` (3 regressions), offline unique-human binding `927c5b84b`
-  (4 scene + 7 service tests). Three elevation-component controls preserve ground/flying projection across repeated
-  serialized restores and both ready orderings; the reported full-load offset is not reproduced at that boundary.
-  Save fixture repair: 18 interface tests, full interface/Phaser types and owner lints pass; full load acceptance remains.
+  (4 scene + 7 service tests). Component controls and now an actual encrypted quicksave/Load UI test preserve
+  elevated worker/Temple/Banshee logical/rendered coordinates through three loads; local human slot stays 1.
+  `load-projection-native.log` passes in 24.4s. This does not yet prove click/command usability or autosave/manual
+  variants, and the reported offset remains unreproduced. Optional user question requests original map/actor.
+  Save fixture repair: 18 interface tests/full types/lints pass. New test opt-in: `AI_GAMEPLAY_RELIABILITY=1`;
+  spec `E/reproduction/save/skirmish-gameplay-load.spec.ts`, fresh 4201, 4-minute ceiling.
 - R3/R6 published: arrived native formation slots `a2dca643f` (6 controls) and confirmed anti-air cooldown admission
   `c6f8180e3` (14 controls). Physical large-group movement, produced counters and assignment remain open.
 - R4: physical weapon range `18b58f4ce`; synchronous ready attack admission `c812f1a88` (20 controls).
@@ -24,9 +27,8 @@
   score threshold; committed worker-defense targets and scout/core-objective policies remain preserved.
   All 96 tactical tests (12 suites), Phaser full types and owner lints pass. Evidence:
   `tmp/ai-gameplay-reliability/quiet-formation-{before,tactics,phaser-types,lint}.log` and `quiet-mixed-before.log`.
-- Full gameplay types still expose existing fixture errors outside these repairs (`quiet-formation-gameplay-types.log`).
-  Interface fixtures are now valid: `save-fixture-{types,tests,lint}.log`; projection controls: `elevation-{roundtrip,types}.log`.
-  No projection adjustment is justified by the isolated controls; investigate the actual scene/save/load boundary next.
+- Full gameplay types still expose existing fixture errors (`quiet-formation-gameplay-types.log`); interface types
+  pass. No speculative elevation adjustment: isolated and real scene/save/load projection controls both pass.
 - Review R3 before closure: eight-slot tactical formation ceiling and failure-prefix matching across reassigned
   slots need focused controls. The latter is an identified risk, not yet a reproduced stale-failure defect.
 - R1/R8: three clean `b42a89066` combat samples each completed 240 ticks/12 decisions at 1x, 8 workers/12 army,
@@ -44,15 +46,13 @@
 - Default evidence directories are junctions to full D:. Preserve historical artifacts; use
   `AI_SKIRMISH_RUNTIME_RESULTS_DIRECTORY` and matrix `--output` under workspace `tmp/ai-gameplay-reliability/`.
   Runner diagnostics `8e3eae635` retain malformed-artifact/process failures (9 tests/tools types/lint passed).
-- FIGHT-01 quiet capture on `06ad7a214`, seed 759940: 2401 ticks/120 decisions, 1693 damage/5 enemy losses;
-  control target killed by a legal weapon at tick 118. The old oracle incorrectly demanded another hit after 400.
-  Defeat now needs a matched lethal native weapon hit; disappearance/uncommitted damage cannot substitute.
-  All 21 oracle controls pass; retained full capture replay has no context/combat failures (`quiet-combat-replay.json`).
-  Raw evidence: `results/run-Uwfzrx/runtime.json.variants/variant-0.json`, summary/replay logs in the evidence root.
-  Historical report `matrix/1793599166043-diagnostic_failed.json` is preserved; replay does not rewrite its status.
-  Earlier `1793598919302` lacks full capture due to the movement-only diagnostic flag; do not use that flag for
-  scenarios requiring decision/setup/history evidence. This is one favorable-fight control, not complete R7.
-- No game runner is active. Subsequent batches need their own ordinary CI; automatic extended AI CI stays disabled.
+- FIGHT-01 quiet `06ad7a214`, seed 759940: 2401 ticks/120 decisions, 1693 damage/5 losses; target legally killed
+  at tick 118. Corrected oracle accepts matched lethal hits (21 controls), retained replay has no context/combat
+  failures (`quiet-combat-replay.json`). Raw: `results/run-Uwfzrx/runtime.json.variants/variant-0.json`.
+  Preserve historical failed report `matrix/1793599166043-diagnostic_failed.json`. Earlier `1793598919302` lacks
+  full capture: don't use movement-only capture on context/combat cases. This proves one favorable fight, not R7.
+- Ordinary CI [41525864918](https://github.com/JernejHabjan/fuzzy-waddle/actions/runs/41525864918) passed
+  `7c63a2d22` (fog/pursuit fixes). Automatic extended AI CI stays disabled. No game runner is active.
 
 Cold start: read AGENTS.md, applicable skills and this handoff. Resume unfinished packets; require verified acceptance.
 
@@ -277,24 +277,10 @@ G `brain/`, affected `planning/` owner; E `runner/skirmish-ai-runtime-variant-ru
 - Keep raw profiles/traces in ignored `tmp/ai-gameplay-reliability/`; report bounded projections. Missing infrastructure,
   zero work or unavailable evidence is not a pass. Use one owned runner/server and clean it up on stop/failure.
 
-Command routes (discover exact test files/configs before invocation; placeholders are not executable proof):
-
-```text
-node node_modules/jest/bin/jest.js --config libs/games/probable-waffle/gameplay/jest.config.cts --runInBand --runTestsByPath <specs>
-node node_modules/jest/bin/jest.js --config libs/games/probable-waffle/phaser/jest.config.cts --runInBand --runTestsByPath <specs>
-node node_modules/jest/bin/jest.js --config libs/games/probable-waffle/interface/jest.config.cts --runInBand --runTestsByPath <specs>
-pnpm exec nx run-many -t lint -p <touched-projects>
-pnpm exec tsc --project <owning-tsconfig> --noEmit
-pnpm ai:tools:typecheck
-pnpm ai:skirmish:catalog -- --check
-pnpm skills:check
-git diff --check
-```
-
-Relevant projects: `probable-waffle-gameplay`, `probable-waffle-phaser`, `probable-waffle-interface`,
-`probable-waffle-protocol`, `platform-game-host`, `portal-e2e`, `skirmish-ai-tools`. Shared host changes need affected
-consumer checks. Use existing Playwright config/manifest selection for the chosen cases; do not launch the generic
-runner without its exact request. Profile mode is opt-in and must not alter gameplay. Node 24/pnpm are pinned in repo.
+Use the workflow skill's existing verification reference for owner Jest/type/lint/tool routes and shared consumers.
+Use owning `tsconfig.json` (Phaser has no `tsconfig.lib.json`), focused Jest `--runTestsByPath`, and existing Playwright
+config/manifest selection. Never launch the generic runtime runner without its exact request. Profile/reliability
+checks are opt-in; automatic AI CI remains disabled. Node 24/pnpm are pinned in repo.
 
 ## Completion and handoff maintenance
 
