@@ -1,6 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const skirmishRuntime = Boolean(process.env.AI_SKIRMISH_RUNTIME_REQUEST_PATH);
+const skirmishRuntime = Boolean(process.env.AI_SKIRMISH_RUNTIME_REQUEST_PATH) || process.env.AI_GAMEPLAY_PROFILE === "1";
 // Runtime evidence must come from the checked-out source, not a developer's older server on 4200.
 const portalPort = skirmishRuntime ? 4201 : 4200;
 

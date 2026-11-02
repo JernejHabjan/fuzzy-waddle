@@ -27,9 +27,12 @@
   No projection adjustment is justified by the isolated controls; investigate the actual scene/save/load boundary next.
 - Review R3 before closure: eight-slot tactical formation ceiling and failure-prefix matching across reassigned
   slots need focused controls. The latter is an identified risk, not yet a reproduced stale-failure defect.
-- R1: rendered 22s probe had 377 frames, p50 50ms/p95 66.7ms, 171 ticks/8 decisions/1 worker/no errors.
-  It FAILED the >200 tick guard. Three matched samples, combat/multi-AI profiles and improvement remain.
-  Profiler `9626a9879`; `rendered-profile-focused.log`, JSON in `rendered-opening/`. Stepped throughput is not FPS.
+- R1 profiler now measures 240 ticks at real 1x, discards the first 40 ticks and stops after at most 60s. Its progress
+  guard is stronger than the old >200 check. Opening/combat/multi-AI workloads reuse existing presets without heavy
+  authority capture; optional CDP sampling records raw traces and bounded hotspots, renderer/engine deltas and source
+  digests. Types/lint pass; runtime baseline pending. Flags: `AI_GAMEPLAY_PROFILE=1`, `AI_GAMEPLAY_PROFILE_WORKLOAD`
+  (`opening|combat|multi_ai`), `AI_GAMEPLAY_PROFILE_CPU=1`. Reuse successful sample 1 and collect only samples 2/3 on
+  unchanged source/config. Old 22s/171-tick probe failed; retain it as diagnostic. Stepped throughput is not FPS.
 - Default evidence directories are junctions to full D:. Preserve historical artifacts; use
   `AI_SKIRMISH_RUNTIME_RESULTS_DIRECTORY` and matrix `--output` under workspace `tmp/ai-gameplay-reliability/`.
   Runner diagnostics `8e3eae635` retain malformed-artifact/process failures (9 tests/tools types/lint passed).
