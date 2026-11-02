@@ -374,6 +374,18 @@ export class MovementSystem {
     range?: number,
     queryContext?: MovementQueryContext
   ): Promise<boolean> {
+    if (
+      !isGameObjectActiveInActiveScene(this.gameObject) ||
+      !isGameObjectActiveInActiveScene(targetGameObject) ||
+      this.gameObject.scene !== targetGameObject.scene
+    )
+      return false;
+    // Match the direct native flight executor: blocked ground does not make an air target unreachable.
+    // This is admission only; it must not move the actor or reserve a ground destination.
+    if (getActorComponent(this.gameObject, FlyingComponent)) {
+      const tile = getGameObjectCurrentTile(targetGameObject);
+      return !!tile && Number.isFinite(tile.x) && Number.isFinite(tile.y);
+    }
     const path = await this.getPathToClosestNavigableTileBetweenGameObjectsInRadius(
       targetGameObject,
       range,

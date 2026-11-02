@@ -12,7 +12,7 @@ import { OrderData } from "../../ai/OrderData";
 import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { getActorComponent } from "../../data/actor-component";
 import { getSceneService } from "../../world/services/scene-component-helpers";
-import { onObjectReady } from "../../data/game-object-helper";
+import { getGameObjectCurrentTile, isGameObjectActiveInActiveScene, onObjectReady } from "../../data/game-object-helper";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { FlyingComponent } from "../components/movement/flying-component";
 import { HealthComponent } from "../components/combat/components/health-component";
@@ -62,7 +62,7 @@ function fixture() {
   return { ...f, system, commandBus, unsubscribe, deliver };
 }
 
-describe("movement facade extraction boundaries (unrun until final gate)", () => {
+describe("movement facade boundaries", () => {
   beforeEach(() => jest.clearAllMocks());
   afterEach(() => jest.restoreAllMocks());
 
@@ -230,7 +230,47 @@ describe("movement facade extraction boundaries (unrun until final gate)", () =>
     expect(f.occupancy.releaseDestination).toHaveBeenCalledTimes(1);
   });
 
-  it("keeps flying movement direct and radius queries as probes with no path execution", async () => {
+  it("admits a flying pursuit when ground routing is impossible without executing or reserving movement", async () => {
+    const f = fixture(),
+      target = { scene: f.scene } as Phaser.GameObjects.GameObject;
+    const lookup = jest.mocked(getActorComponent).getMockImplementation();
+    jest
+      .mocked(getActorComponent)
+      .mockImplementation((actor, component) =>
+        component === FlyingComponent && actor === f.actor ? ({} as never) : lookup?.(actor, component)
+      );
+    const direct = jest.spyOn(MovementTween.prototype, "moveDirectlyToLocationWithoutPathfinding");
+    expect(await f.system.canMoveTo(target, 1)).toBe(true);
+    expect(f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius).not.toHaveBeenCalled();
+    expect(direct).not.toHaveBeenCalled();
+    expect(f.occupancy.reserveDestination).not.toHaveBeenCalled();
+  });
+
+  it("keeps unreachable ground targets refused", async () => {
+    const f = fixture();
+    expect(await f.system.canMoveTo(f.actor, 1)).toBe(false);
+    expect(f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius).toHaveBeenCalledTimes(1);
+  });
+
+  it("refuses invalid flying pursuit targets before querying tiles or paths", async () => {
+    const f = fixture(),
+      target = { scene: f.scene } as Phaser.GameObjects.GameObject;
+    jest
+      .mocked(getActorComponent)
+      .mockImplementation((_actor, component) => (component === FlyingComponent ? ({} as never) : undefined));
+    jest.mocked(isGameObjectActiveInActiveScene).mockReturnValue(false);
+    expect(await f.system.canMoveTo(target)).toBe(false);
+    expect(getGameObjectCurrentTile).not.toHaveBeenCalled();
+    jest.mocked(isGameObjectActiveInActiveScene).mockReturnValue(true);
+    expect(await f.system.canMoveTo({ scene: {} } as Phaser.GameObjects.GameObject)).toBe(false);
+    jest.mocked(getGameObjectCurrentTile).mockReturnValue(undefined);
+    expect(await f.system.canMoveTo(target)).toBe(false);
+    jest.mocked(getGameObjectCurrentTile).mockReturnValue({ x: NaN, y: 1 });
+    expect(await f.system.canMoveTo(target)).toBe(false);
+    expect(f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius).not.toHaveBeenCalled();
+  });
+
+  it("keeps flying movement direct and explicit ground radius queries as read-only probes", async () => {
     const f = fixture(),
       target = { scene: f.scene } as Phaser.GameObjects.GameObject;
     const direct = jest.spyOn(MovementTween.prototype, "moveDirectlyToLocationWithoutPathfinding").mockResolvedValue();

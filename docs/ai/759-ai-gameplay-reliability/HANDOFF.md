@@ -4,8 +4,7 @@
 
 - Execution authorized and goal active on `feature/759-skirmish-ai`, PR [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814).
   Completed packets: **0/8**. Required gameplay/performance acceptance remains open despite implemented slices.
-- Current: measure camera-bounded fog rendering against the frozen three-sample combat baseline, then continue
-  continuous pursuit/load-elevation reproduction and actual three-flyer counter production/assignment.
+- Current: continuous pursuit/load-elevation reproduction and actual three-flyer counter production/assignment.
   Quiet formation/interception fixes are `06ad7a214`; do not repeat the retained FIGHT-01 quiet run for reassurance.
   One runner; maximum 30 minutes per invocation/batch. Do not repeat unchanged full matches.
 - R2 published: teardown `2c7844410` (3 regressions), offline unique-human binding `927c5b84b`
@@ -14,9 +13,11 @@
   Save fixture repair: 18 interface tests, full interface/Phaser types and owner lints pass; full load acceptance remains.
 - R3/R6 published: arrived native formation slots `a2dca643f` (6 controls) and confirmed anti-air cooldown admission
   `c6f8180e3` (14 controls). Physical large-group movement, produced counters and assignment remain open.
-- R4: physical weapon range `18b58f4ce`; ready attack admission `c812f1a88` removes an unnecessary Promise/tree
-  update between a physical range check and attack. Real attack-branch regression failed before; 20 focused native
-  controls and Phaser full types/lint pass. Continuous pursuit/hit outcomes still require gameplay acceptance.
+- R4: physical weapon range `18b58f4ce`; synchronous ready attack admission `c812f1a88` (20 controls).
+  Flying reachability incorrectly demanded a ground path despite direct flight execution. Two red regressions;
+  repaired admission preserves ground routing and rejects disposed/cross-scene/missing-position targets. All 23
+  native movement-boundary tests, full Phaser types and owning lint pass (`flying-reachability-*.log`).
+  Continuous pursuit/hit outcomes still require gameplay acceptance.
 - R5 `06ad7a214`: quiet formations swapped guards' slots as arrival reversed spatial sorting. Retain legal quiet
   slots across arrival/reinforcement; invalidate blocked or displaced slots. A mixed ranged reinforcement no longer
   reorders settled melee units. Uncommitted reserve forces can intercept armed local threats without a strategic
@@ -32,10 +33,14 @@
   no browser errors. Median elapsed 23358.8ms; frame p50 50ms/p95 66.7ms. Render profiling identifies full-map fog
   geometry as a major cost. Frozen baseline/targets: `tmp/ai-gameplay-reliability/fog-performance-baseline.json`;
   require >=20% lower median elapsed and >=50% lower combined polygon-render self time on matched samples.
-  Camera-bounded geometry is under review; logical visibility/exploration and AI observations remain whole-map.
-  Eleven focused controls pass; owning checks and measured after evidence pending. Final canonical/gameplay
-  comparison remains required after R2–R7. Sampler: `AI_GAMEPLAY_PROFILE=1`, workload `combat|opening|multi_ai`,
-  `AI_GAMEPLAY_PROFILE_CPU=1`; fresh 4201, 40 warmup ticks, 60s ceiling. Keep three samples on stable source/config.
+  Camera-bounded fog `e76a01f09` preserves logical visibility/exploration/AI observations. Eleven controls, full
+  Phaser types/lint pass. Three matched clean samples: median elapsed 18010ms (-22.90%); polygon self time
+  233.863ms versus 1766.42ms (-86.76%). Identical config `8d255ca2dcd9`, fixture `fnv1a32:a4cea355`, 240 ticks/
+  12 decisions/8 workers/12 army, no errors; both frozen targets pass. `fog-performance-comparison.json` and
+  `rendered-combat/` retain reports/traces. Frame p50 median 50->33.4ms; p95 median 66.7->66.6ms, so tail-frame
+  performance still needs work. Opening/multiple-AI controls and final canonical/gameplay equivalence remain.
+  Sampler: `AI_GAMEPLAY_PROFILE=1`, workload `combat|opening|multi_ai`, `AI_GAMEPLAY_PROFILE_CPU=1`; fresh 4201,
+  40 warmup ticks, 60s ceiling. Keep samples on stable source/config; don't rerun the proven combat comparison.
 - Default evidence directories are junctions to full D:. Preserve historical artifacts; use
   `AI_SKIRMISH_RUNTIME_RESULTS_DIRECTORY` and matrix `--output` under workspace `tmp/ai-gameplay-reliability/`.
   Runner diagnostics `8e3eae635` retain malformed-artifact/process failures (9 tests/tools types/lint passed).
@@ -47,8 +52,7 @@
   Historical report `matrix/1793599166043-diagnostic_failed.json` is preserved; replay does not rewrite its status.
   Earlier `1793598919302` lacks full capture due to the movement-only diagnostic flag; do not use that flag for
   scenarios requiring decision/setup/history evidence. This is one favorable-fight control, not complete R7.
-- Ordinary CI [41396579710](https://github.com/JernejHabjan/fuzzy-waddle/actions/runs/41396579710) passed `06ad7a214`.
-  No game runner is active. Subsequent batches need their own ordinary CI; automatic extended AI CI stays disabled.
+- No game runner is active. Subsequent batches need their own ordinary CI; automatic extended AI CI stays disabled.
 
 Cold start: read AGENTS.md, applicable skills and this handoff. Resume unfinished packets; require verified acceptance.
 
@@ -88,7 +92,7 @@ and controls. Record an evidence gap separately from a code defect. A blocker do
 | R5 AI mission ownership and defense | R1, R3, R4 | in_progress | Quiet-slot ownership and local reserve interception repaired; 96 tactical controls pass. Ground/air gameplay acceptance remains. |
 | R6 Emergency counter production | R1, R5 defender contract | in_progress | Cooldown suppression reproduced and repaired in pure manager; physical output/assignment remains. |
 | R7 Retreat and re-engagement | R1, R4, R5 | in_progress | Native quiet favorable target defeated at tick 118; corrected oracle replay passes. Minor injury, loss/reinforcement and oscillation controls remain. |
-| R8 Measured performance improvement | baseline in R1; final comparison after R2–R7 | in_progress | Three combat baselines frozen on b42a89066. Camera-bounded fog under review; matched after measurement and final gameplay proof remain. |
+| R8 Measured performance improvement | baseline in R1; final comparison after R2–R7 | in_progress | e76a01f09: matched three-sample combat comparison meets elapsed/polygon targets. Opening/multiple-AI and final gameplay equivalence remain. |
 
 Record each packet in its row: commit/diff identity, exact focused command, result, workload/fixture identity and
 one bounded artifact pointer. Keep only the newest meaningful result and unresolved gap; Git preserves history.
