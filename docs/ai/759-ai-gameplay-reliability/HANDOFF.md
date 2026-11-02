@@ -4,8 +4,8 @@
 
 - Execution authorized and goal active on `feature/759-skirmish-ai`, PR [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814).
   Completed packets: **0/8**. Required gameplay/performance acceptance remains open despite implemented slices.
-- Current: finish the isolated native pawn pursuit control, investigate strategic chase replacement, then actual
-  three-flyer counter production/assignment and restored human click/command usability.
+- Next: review strategic chase replacement against mission ownership, then actual three-flyer counter production/
+  assignment and restored human click/command usability. Isolated pawn pursuit and repeated load controls pass.
   Quiet formation/interception fixes are `06ad7a214`; do not repeat the retained FIGHT-01 quiet run for reassurance.
   One runner; maximum 30 minutes per invocation/batch. Do not repeat unchanged full matches.
 - R2 published: teardown `2c7844410` (3 regressions), offline unique-human binding `927c5b84b`
@@ -22,8 +22,8 @@
   repaired admission preserves ground routing and rejects disposed/cross-scene/missing-position targets. All 23
   native movement-boundary tests, full Phaser types and owning lint pass (`flying-reachability-*.log`).
   Continuous pursuit/hit outcomes still require gameplay acceptance.
-- R3/R5: `06ad7a214` retains legal quiet membership slots across arrival/reinforcement and admits armed local
-  reserve interception. The eight-slot ceiling is now reproduced for 12/24/40 units and repaired with complete
+- R3/R5: `06ad7a214` retains legal quiet membership slots and admits armed local reserve interception.
+  `26e38635e` reproduces the eight-slot ceiling for 12/24/40 units and repairs it with complete
   deterministic rings, stable outer slots and matching retreat footprint. The existing order quota still bounds
   dispatch; a 40-unit control serves 32 then the remaining 8. All 100 tactical tests (12 suites), Phaser types and
   owning lints pass (`large-formation-{before,tactics,types,final-lint}.log`). Gameplay project types still fail in
@@ -32,11 +32,12 @@
   pass. No speculative elevation adjustment: isolated and real scene/save/load projection controls both pass.
 - Review R3 before closure: failure-prefix matching across reassigned slots needs focused controls; it remains a
   risk rather than a reproduced defect. Large-group physical/collision acceptance remains after the slot repair.
-- R4 diagnostic: `E/reproduction/movement/skirmish-gameplay-pursuit.spec.ts` is local pending work. Real human-side
-  worker flees on a legal 50x50-map corridor, but the AI Banshee's Attack is replaced by a strategic Move near tick 40;
-  no hits through 240 (`pursuit-strategic-retask-trace.log`). Native owner control now pauses only the strategic
-  controller through its existing campaign API; pawn trees/movement/weapons remain active. Its result is pending;
-  it cannot prove autonomous R5 behavior or performance. Don't repeat the autonomous case without a causal change.
+- R4 native control: `E/reproduction/movement/skirmish-gameplay-pursuit.spec.ts` passes in 8.3s/240 ticks, with six
+  Banshee hits while the human worker moves (ticks 74/106/128/160/182/214). Only the strategic coordinator is paused
+  through its public campaign API; native pawn trees/weapons/movement run. This cannot prove autonomous R5 behavior
+  or performance. The autonomous trace replaces the chase with a strategic Move near tick 40 and yields no hits
+  (`pursuit-strategic-retask-trace.log`); review mission purpose before declaring that replacement a bug.
+  Don't repeat without a causal change. The mob control explicitly omits the faction-production roster premise.
 - R1/R8: three clean `b42a89066` combat samples each completed 240 ticks/12 decisions at 1x, 8 workers/12 army,
   no browser errors. Median elapsed 23358.8ms; frame p50 50ms/p95 66.7ms. Render profiling identifies full-map fog
   geometry as a major cost. Frozen baseline/targets: `tmp/ai-gameplay-reliability/fog-performance-baseline.json`;
