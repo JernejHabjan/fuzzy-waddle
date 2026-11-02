@@ -8,7 +8,9 @@
   Quiet formation/interception fixes are `06ad7a214`; do not repeat the retained FIGHT-01 quiet run for reassurance.
   One runner; maximum 30 minutes per invocation/batch. Do not repeat unchanged full matches.
 - R2 published: teardown `2c7844410` (3 regressions), offline unique-human binding `927c5b84b`
-  (4 scene + 7 service tests). Phaser types/owner lints pass. Full load/elevation acceptance remains open.
+  (4 scene + 7 service tests). Three elevation-component controls preserve ground/flying projection across repeated
+  serialized restores and both ready orderings; the reported full-load offset is not reproduced at that boundary.
+  Save fixture repair: 18 interface tests, full interface/Phaser types and owner lints pass; full load acceptance remains.
 - R3/R6 published: arrived native formation slots `a2dca643f` (6 controls) and confirmed anti-air cooldown admission
   `c6f8180e3` (14 controls). Physical large-group movement, produced counters and assignment remain open.
 - R4: physical weapon range `18b58f4ce`; ready attack admission `c812f1a88` removes an unnecessary Promise/tree
@@ -20,9 +22,9 @@
   score threshold; committed worker-defense targets and scout/core-objective policies remain preserved.
   All 96 tactical tests (12 suites), Phaser full types and owner lints pass. Evidence:
   `tmp/ai-gameplay-reliability/quiet-formation-{before,tactics,phaser-types,lint}.log` and `quiet-mixed-before.log`.
-- Full gameplay/interface typechecks expose existing fixture errors outside these repairs; current touched files
-  have no diagnostics. Logs: `quiet-formation-gameplay-types.log` in that evidence root and
-  `tmp/ai-layout/player-binding-interface-types.log`. Do not report narrower checks as a clean full typecheck.
+- Full gameplay types still expose existing fixture errors outside these repairs (`quiet-formation-gameplay-types.log`).
+  Interface fixtures are now valid: `save-fixture-{types,tests,lint}.log`; projection controls: `elevation-{roundtrip,types}.log`.
+  No projection adjustment is justified by the isolated controls; investigate the actual scene/save/load boundary next.
 - Review R3 before closure: eight-slot tactical formation ceiling and failure-prefix matching across reassigned
   slots need focused controls. The latter is an identified risk, not yet a reproduced stale-failure defect.
 - R1: rendered 22s probe had 377 frames, p50 50ms/p95 66.7ms, 171 ticks/8 decisions/1 worker/no errors.
@@ -74,7 +76,7 @@ and controls. Record an evidence gap separately from a code defect. A blocker do
 | Packet | Depends on | State | Evidence / next boundary |
 | --- | --- | --- | --- |
 | R1 Focused reproductions and baseline | none | in_progress | Teardown reproduction established; army churn and matched performance workload remain. |
-| R2 Restore and teardown lifecycle | R1 relevant reproduction | in_progress | Teardown and offline human-slot binding repaired with focused controls. Full load/elevation evidence and interface fixture types remain. |
+| R2 Restore and teardown lifecycle | R1 relevant reproduction | in_progress | Teardown and offline human-slot binding repaired with focused controls. Full scene/save/load and elevation acceptance remain; interface fixture types repaired. |
 | R3 Movement and formation stability | R1 | in_progress | Arrived-slot churn repaired; 6 controls/types/lint pass. Stable membership slots and obstruction acceptance remain. |
 | R4 Pursuit and attack execution | R1, R3 relevant contract | in_progress | Physical range misclassification repaired with 19 controls; continuous pursuit and physical hits remain. |
 | R5 AI mission ownership and defense | R1, R3, R4 | in_progress | Quiet-slot ownership and local reserve interception repaired; 96 tactical controls pass. Ground/air gameplay acceptance remains. |

@@ -13,6 +13,7 @@ import {
   CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION,
   GameSaveScope,
   ProbableWaffleGameInstance,
+  ProbableWaffleGameState,
   ProbableWafflePlayerType,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility
@@ -87,9 +88,10 @@ describe("GameInstanceClientService", () => {
   });
 
   it("uses the captured world rather than later live state after thumbnail and naming delays", async () => {
-    const instance = { data: { gameStateData: { actors: [], pause: false, score: 0, simulationTick: 900 } } };
-    service.gameInstance = instance as ProbableWaffleGameInstance;
-    const captured = structuredClone(instance.data);
+    const instance = new ProbableWaffleGameInstance();
+    instance.gameState = new ProbableWaffleGameState({ actors: [], pause: false, score: 0, simulationTick: 900 });
+    service.gameInstance = instance;
+    const captured = { ...instance.data, gameStateData: structuredClone(instance.gameState.data) };
     captured.gameStateData.simulationTick = 200;
     await service.saveGameInstance({
       kind: "manual",
@@ -106,17 +108,16 @@ describe("GameInstanceClientService", () => {
   });
 
   it("persists instant-game saves through the shared game-save service", async () => {
-    service.gameInstance = {
-      data: {
-        gameInstanceMetadataData: {
-          name: "Instant game",
-          type: ProbableWaffleGameInstanceType.InstantGame,
-          visibility: ProbableWaffleGameInstanceVisibility.Private,
-          startOptions: {},
-          rndSeed: 1
-        }
+    service.gameInstance = new ProbableWaffleGameInstance({
+      gameInstanceMetadataData: {
+        createdBy: null,
+        name: "Instant game",
+        type: ProbableWaffleGameInstanceType.InstantGame,
+        visibility: ProbableWaffleGameInstanceVisibility.Private,
+        startOptions: {},
+        rndSeed: 1
       }
-    } as ProbableWaffleGameInstance;
+    });
 
     await service.saveGameInstance({ kind: "manual", name: "Instant save", thumbnail: "thumbnail" });
 
@@ -126,27 +127,26 @@ describe("GameInstanceClientService", () => {
   });
 
   it("persists campaign content identity in the searchable save context", async () => {
-    service.gameInstance = {
-      data: {
-        gameInstanceMetadataData: {
-          name: "Dreams",
-          type: ProbableWaffleGameInstanceType.Campaign,
-          visibility: ProbableWaffleGameInstanceVisibility.Private,
-          startOptions: {},
-          rndSeed: 1,
-          campaignContext: {
-            campaignId: "ashes-of-the-ancients",
-            catalogVersion: 1,
-            chapterId: "prologue",
-            missionId: "dreams",
-            missionRevision: 1,
-            runId: "run-1",
-            selectedLoadoutIds: ["primary"],
-            loadoutSnapshotHash: "12345678"
-          }
+    service.gameInstance = new ProbableWaffleGameInstance({
+      gameInstanceMetadataData: {
+        createdBy: null,
+        name: "Dreams",
+        type: ProbableWaffleGameInstanceType.Campaign,
+        visibility: ProbableWaffleGameInstanceVisibility.Private,
+        startOptions: {},
+        rndSeed: 1,
+        campaignContext: {
+          campaignId: "ashes-of-the-ancients",
+          catalogVersion: 1,
+          chapterId: "prologue",
+          missionId: "dreams",
+          missionRevision: 1,
+          runId: "run-1",
+          selectedLoadoutIds: ["primary"],
+          loadoutSnapshotHash: "12345678"
         }
       }
-    } as ProbableWaffleGameInstance;
+    });
 
     await service.saveGameInstance({ kind: "manual", name: "Dream checkpoint", thumbnail: "" });
 

@@ -64,7 +64,7 @@ describe("ProbableWaffleGameComponent", () => {
     const instance = gameInstanceClientServiceStub.gameInstance!;
     instance.addPlayer(instance.initPlayer({ userId: "1", playerDefinition: { playerType: ProbableWafflePlayerType.Human,
       factionType: FactionType.Tivara, player: { playerNumber: 1, joined: true } } }));
-    instance.addPlayer(instance.initPlayer({ playerDefinition: { playerType: ProbableWafflePlayerType.AI,
+    instance.addPlayer(instance.initPlayer({ userId: null, playerDefinition: { playerType: ProbableWafflePlayerType.AI,
       factionType: FactionType.Skaduwee, player: { playerNumber: 2, joined: true } } }));
     const banks = JSON.stringify(instance.players.map((player) => player.playerState.data.resources));
     window.sessionStorage.setItem(AI_RUNTIME_BROWSER_TEST_CONFIG_KEY, JSON.stringify({

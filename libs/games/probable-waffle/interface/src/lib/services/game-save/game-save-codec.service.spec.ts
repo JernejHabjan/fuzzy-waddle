@@ -64,15 +64,15 @@ describe("GameSaveCodecService", () => {
           commandId: "unsent-original", commitmentKey: "unsent", authorityEpoch: 4, sequence: 18,
           effectId: "effect:unsent", intentId: "intent:unsent" } }] }] });
     const player = new ProbableWafflePlayer(new ProbableWafflePlayerState(), new ProbableWafflePlayerController());
-    player.playerState.data.aiBehaviorTreeState = { brainState: brain, controllerCadence: { schemaVersion: 1,
+    player.playerState.data.aiBehaviorTreeState = { blackboard: {}, brainState: brain, controllerCadence: { schemaVersion: 1,
       elapsedMilliseconds: 50, queuedAfterBoundary: true, completedDecisionSequence: 17 } };
     game.players = [player];
     const codec = TestBed.inject(GameSaveCodecService);
     const encoded = await codec.encode(game.data);
     const restored = new ProbableWaffleGameInstance(await codec.decode(encoded));
     expect(restored.gameState?.data.simulationTick).toBe(1999);
-    expect(restored.gameState?.data.actors[0].sharedQueue).toEqual(sharedQueue);
+    expect(restored.gameState?.data.actors[0]?.sharedQueue).toEqual(sharedQueue);
     expect(restored.gameState?.data.pendingCommandBatches).toEqual(game.gameState.data.pendingCommandBatches);
-    expect(restored.players[0].playerState.data.aiBehaviorTreeState).toEqual(player.playerState.data.aiBehaviorTreeState);
+    expect(restored.players[0]?.playerState.data.aiBehaviorTreeState).toEqual(player.playerState.data.aiBehaviorTreeState);
   });
 });
