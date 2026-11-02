@@ -1,6 +1,7 @@
 import type { ActorId, Vector2Simple, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { MovementTerrainType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/movement-terrain-type";
+import { getGameObjectCurrentTile, isGameObjectActiveInActiveScene } from "../../data/game-object-helper";
 import { getActorComponent } from "../../data/actor-component";
 import { FlyingComponent } from "../components/movement/flying-component";
 import type { MovementRuntime } from "./movement-runtime";
@@ -103,7 +104,12 @@ export class MovementFormation {
             destinationTile,
             dynamicBlockers
           );
-          if (path !== null && path.length > 0) {
+          // EasyStar returns [] at the destination. Keep that legal slot instead of moving an arrived unit aside.
+          // Recheck after the asynchronous query: a stale empty path cannot prove arrival or survive disposal.
+          if (!isGameObjectActiveInActiveScene(this.runtime.gameObject)) return tileVec3;
+          const currentTile = path?.length === 0 ? getGameObjectCurrentTile(this.runtime.gameObject) : undefined;
+          const arrived = currentTile?.x === destinationTile.x && currentTile?.y === destinationTile.y;
+          if (path !== null && (path.length > 0 || arrived)) {
             const footprint = movementOccupancy?.getActorFootprintAtTile(this.runtime.gameObject, destinationTile);
             if (footprint && !movementOccupancy?.reserveDestination(ownId, footprint, destinationHeight)) {
               continue;
