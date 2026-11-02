@@ -1,11 +1,65 @@
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { AiIntent } from "../../../contracts/commands/ai-intent";
 
 import { SpellType } from "../../../../../entity/components/combat/spell-type";
 
-import { requireValue, combatActor, squad, fixtureState, observation, manager } from "../../../testing/fixtures/tactics/ai-tactics-test-fixtures";
+import {
+  requireValue,
+  combatActor,
+  squad,
+  fixtureState,
+  observation,
+  manager,
+  profile
+} from "../../../testing/fixtures/tactics/ai-tactics-test-fixtures";
 import { canSeeTarget, estimateAiEngagement } from "./ai-tactics-combat";
 
 describe("AiTacticsManager", () => {
+  it("serves a large formation over bounded decisions without losing the deferred members", () => {
+    const members = Array.from({ length: profile.maxActorOrdersPerStep + 8 }, (_, index) =>
+      combatActor(`large-${index}`, "self", 0, "air")
+    );
+    const state = fixtureState([
+      {
+        ...squad(
+          "squad:large",
+          "attack",
+          members.map((actor) => actor.actorId)
+        ),
+        domain: "air"
+      }
+    ]);
+    const first = manager.propose(observation(members), state);
+    const projected = requireValue(first.statePatch?.squadUpdates?.[0], "large_squad_missing");
+    expect(projected.tactics?.assignedPositions).toHaveLength(members.length);
+    const issued = first.intents.filter(
+      (intent): intent is Extract<AiIntent, { kind: "move" | "scout" }> => intent.kind === "move"
+    );
+    expect(issued).toHaveLength(profile.maxActorOrdersPerStep);
+    const continuing = members.map((actor) => {
+      const move = issued.find((intent) => intent.actorIds.includes(actor.actorId));
+      return move
+        ? {
+            ...actor,
+            activeOrder: {
+              status: "known" as const,
+              observedTick: 120,
+              value: { orderType: OrderType.Move, targetActorId: null, targetPosition: move.logicalPosition }
+            }
+          }
+        : actor;
+    });
+    const next = manager.propose(observation(continuing, 120), { ...state, squads: [projected] });
+    expect(next.intents.filter((intent) => intent.kind === "move")).toHaveLength(8);
+    expect(next.intents.flatMap((intent) => ("actorIds" in intent ? intent.actorIds : []))).toEqual(
+      expect.arrayContaining(
+        members
+          .filter((actor) => !issued.some((intent) => intent.actorIds.includes(actor.actorId)))
+          .map((actor) => actor.actorId)
+      )
+    );
+  });
+
   it("uses an owned actor's native visibility evidence when it is available", () => {
     const attacker = {
       ...combatActor("attacker", "self", 0, "ground", 1000, { damage: 10 }),
@@ -38,9 +92,9 @@ describe("AiTacticsManager", () => {
     expect(result.intents.some((intent) => intent.kind === "attack" && intent.targetActorId === harmless.actorId)).toBe(
       false
     );
-    expect(
-      result.intents.some((intent) => intent.kind === "move" && intent.actorIds.includes(recon.actorId))
-    ).toBe(false);
+    expect(result.intents.some((intent) => intent.kind === "move" && intent.actorIds.includes(recon.actorId))).toBe(
+      false
+    );
   });
 
   it("moves a distant reinforcement while locally aware members continue fighting", () => {
@@ -110,7 +164,11 @@ describe("AiTacticsManager", () => {
     const objective = combatActor("front-objective", "enemy", 20, "ground", 1000, { damage: 1 });
     const harmlessScout = combatActor("harmless-scout", "enemy", 3, "ground", 1000, { damage: 1 });
     const mission = {
-      ...squad("squad:attack", "attack", attackers.map((attacker) => attacker.actorId)),
+      ...squad(
+        "squad:attack",
+        "attack",
+        attackers.map((attacker) => attacker.actorId)
+      ),
       objectiveId: objective.actorId
     };
 
@@ -122,9 +180,9 @@ describe("AiTacticsManager", () => {
         tactics: expect.objectContaining({ targetActorId: objective.actorId })
       })
     );
-    expect(result.intents.some((intent) => intent.kind === "attack" && intent.targetActorId === harmlessScout.actorId)).toBe(
-      false
-    );
+    expect(
+      result.intents.some((intent) => intent.kind === "attack" && intent.targetActorId === harmlessScout.actorId)
+    ).toBe(false);
   });
 
   it("keeps a last-seen core hypothesis as the approach target when a different core is visible", () => {

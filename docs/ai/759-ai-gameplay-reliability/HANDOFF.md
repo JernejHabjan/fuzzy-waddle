@@ -4,7 +4,8 @@
 
 - Execution authorized and goal active on `feature/759-skirmish-ai`, PR [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814).
   Completed packets: **0/8**. Required gameplay/performance acceptance remains open despite implemented slices.
-- Current: continuous pursuit/load-elevation reproduction and actual three-flyer counter production/assignment.
+- Current: finish the isolated native pawn pursuit control, investigate strategic chase replacement, then actual
+  three-flyer counter production/assignment and restored human click/command usability.
   Quiet formation/interception fixes are `06ad7a214`; do not repeat the retained FIGHT-01 quiet run for reassurance.
   One runner; maximum 30 minutes per invocation/batch. Do not repeat unchanged full matches.
 - R2 published: teardown `2c7844410` (3 regressions), offline unique-human binding `927c5b84b`
@@ -21,16 +22,21 @@
   repaired admission preserves ground routing and rejects disposed/cross-scene/missing-position targets. All 23
   native movement-boundary tests, full Phaser types and owning lint pass (`flying-reachability-*.log`).
   Continuous pursuit/hit outcomes still require gameplay acceptance.
-- R5 `06ad7a214`: quiet formations swapped guards' slots as arrival reversed spatial sorting. Retain legal quiet
-  slots across arrival/reinforcement; invalidate blocked or displaced slots. A mixed ranged reinforcement no longer
-  reorders settled melee units. Uncommitted reserve forces can intercept armed local threats without a strategic
-  score threshold; committed worker-defense targets and scout/core-objective policies remain preserved.
-  All 96 tactical tests (12 suites), Phaser full types and owner lints pass. Evidence:
-  `tmp/ai-gameplay-reliability/quiet-formation-{before,tactics,phaser-types,lint}.log` and `quiet-mixed-before.log`.
+- R3/R5: `06ad7a214` retains legal quiet membership slots across arrival/reinforcement and admits armed local
+  reserve interception. The eight-slot ceiling is now reproduced for 12/24/40 units and repaired with complete
+  deterministic rings, stable outer slots and matching retreat footprint. The existing order quota still bounds
+  dispatch; a 40-unit control serves 32 then the remaining 8. All 100 tactical tests (12 suites), Phaser types and
+  owning lints pass (`large-formation-{before,tactics,types,final-lint}.log`). Gameplay project types still fail in
+  unrelated fixtures; touched tactical specs are repaired and have no remaining diagnostics.
 - Full gameplay types still expose existing fixture errors (`quiet-formation-gameplay-types.log`); interface types
   pass. No speculative elevation adjustment: isolated and real scene/save/load projection controls both pass.
-- Review R3 before closure: eight-slot tactical formation ceiling and failure-prefix matching across reassigned
-  slots need focused controls. The latter is an identified risk, not yet a reproduced stale-failure defect.
+- Review R3 before closure: failure-prefix matching across reassigned slots needs focused controls; it remains a
+  risk rather than a reproduced defect. Large-group physical/collision acceptance remains after the slot repair.
+- R4 diagnostic: `E/reproduction/movement/skirmish-gameplay-pursuit.spec.ts` is local pending work. Real human-side
+  worker flees on a legal 50x50-map corridor, but the AI Banshee's Attack is replaced by a strategic Move near tick 40;
+  no hits through 240 (`pursuit-strategic-retask-trace.log`). Native owner control now pauses only the strategic
+  controller through its existing campaign API; pawn trees/movement/weapons remain active. Its result is pending;
+  it cannot prove autonomous R5 behavior or performance. Don't repeat the autonomous case without a causal change.
 - R1/R8: three clean `b42a89066` combat samples each completed 240 ticks/12 decisions at 1x, 8 workers/12 army,
   no browser errors. Median elapsed 23358.8ms; frame p50 50ms/p95 66.7ms. Render profiling identifies full-map fog
   geometry as a major cost. Frozen baseline/targets: `tmp/ai-gameplay-reliability/fog-performance-baseline.json`;
@@ -51,8 +57,8 @@
   failures (`quiet-combat-replay.json`). Raw: `results/run-Uwfzrx/runtime.json.variants/variant-0.json`.
   Preserve historical failed report `matrix/1793599166043-diagnostic_failed.json`. Earlier `1793598919302` lacks
   full capture: don't use movement-only capture on context/combat cases. This proves one favorable fight, not R7.
-- Ordinary CI [41525864918](https://github.com/JernejHabjan/fuzzy-waddle/actions/runs/41525864918) passed
-  `7c63a2d22` (fog/pursuit fixes). Automatic extended AI CI stays disabled. No game runner is active.
+- Ordinary CI [41527396527](https://github.com/JernejHabjan/fuzzy-waddle/actions/runs/41527396527) passed
+  `07bb63dc0` (fog/flying fixes and load control). Automatic extended AI CI stays disabled.
 
 Cold start: read AGENTS.md, applicable skills and this handoff. Resume unfinished packets; require verified acceptance.
 
@@ -85,9 +91,9 @@ and controls. Record an evidence gap separately from a code defect. A blocker do
 
 | Packet | Depends on | State | Evidence / next boundary |
 | --- | --- | --- | --- |
-| R1 Focused reproductions and baseline | none | in_progress | Teardown reproduction established; army churn and matched performance workload remain. |
+| R1 Focused reproductions and baseline | none | in_progress | Teardown/churn/large-slot defects reproduced and combat baseline frozen; remaining targeted gameplay controls open. |
 | R2 Restore and teardown lifecycle | R1 relevant reproduction | in_progress | Teardown and offline human-slot binding repaired with focused controls. Full scene/save/load and elevation acceptance remain; interface fixture types repaired. |
-| R3 Movement and formation stability | R1 | in_progress | Arrived-slot churn repaired; 6 controls/types/lint pass. Stable membership slots and obstruction acceptance remain. |
+| R3 Movement and formation stability | R1 | in_progress | Arrived slots, quiet membership and eight-slot ceiling repaired; 100 tactical controls pass. Stale failure identity and large-group physical recovery remain. |
 | R4 Pursuit and attack execution | R1, R3 relevant contract | in_progress | Physical range misclassification repaired with 19 controls; continuous pursuit and physical hits remain. |
 | R5 AI mission ownership and defense | R1, R3, R4 | in_progress | Quiet-slot ownership and local reserve interception repaired; 96 tactical controls pass. Ground/air gameplay acceptance remains. |
 | R6 Emergency counter production | R1, R5 defender contract | in_progress | Cooldown suppression reproduced and repaired in pure manager; physical output/assignment remains. |

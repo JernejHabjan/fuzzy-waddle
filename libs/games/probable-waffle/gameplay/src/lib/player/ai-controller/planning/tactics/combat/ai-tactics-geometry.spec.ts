@@ -1,6 +1,10 @@
 import type { AiBrainState } from "../../../contracts/state/ai-state-contracts";
 import type { AiObservation } from "../../../contracts/observation/ai-observation";
-import { createAiTestObservation, createAiTestOwnedActor } from "../../../testing/fixtures/coordination/ai-test-fixtures";
+import { createAiTestOwnedActor } from "../../../testing/fixtures/coordination/ai-test-fixtures";
+import {
+  observation as createTacticsObservation,
+  requireValue
+} from "../../../testing/fixtures/tactics/ai-tactics-test-fixtures";
 import { distance, formationPositions, safeRetreatPosition } from "./ai-tactics-geometry";
 
 describe("safeRetreatPosition", () => {
@@ -87,8 +91,36 @@ describe("safeRetreatPosition", () => {
 });
 
 describe("formationPositions", () => {
+  it.each([12, 24, 40])("assigns and retains a distinct legal slot for every member of a %i-unit army", (count) => {
+    const base = createTacticsObservation([]);
+    const cells = Array.from({ length: 17 * 17 }, (_, index) => {
+      const x = (index % 17) - 8,
+        y = Math.floor(index / 17) - 8;
+      return {
+        tileKey: `${x},${y}`,
+        position: { x, y, z: 0 },
+        groundPassable: true,
+        waterPassable: false,
+        elevation: 0,
+        observedBlocked: false
+      };
+    });
+    const observation = {
+      ...base,
+      map: { ...requireValue(base.map, "formation_map_missing"), constructionCells: cells }
+    } satisfies AiObservation;
+    const members = Array.from({ length: count }, (_, index) => createAiTestOwnedActor(`guard-${index}`));
+    const anchor = { x: 0, y: 0, z: 0 };
+    const first = formationPositions(members, anchor, observation);
+    expect(first).toHaveLength(count);
+    expect(new Set(first.map(({ position }) => `${position.x},${position.y}`)).size).toBe(count);
+    const afterArrival = formationPositions([...members].reverse(), anchor, observation, new Map(), first);
+    expect(afterArrival).toEqual(expect.arrayContaining(first));
+    expect(afterArrival).toHaveLength(count);
+  });
+
   it("uses the next legal retreat slot after a native move to the prior slot fails", () => {
-    const base = createAiTestObservation();
+    const base = createTacticsObservation([]);
     const cells = [
       { x: 1, y: 0 },
       { x: -1, y: 0 },
@@ -104,7 +136,7 @@ describe("formationPositions", () => {
     }));
     const observation = {
       ...base,
-      map: { ...(base.map ?? {}), constructionCells: cells }
+      map: { ...requireValue(base.map, "formation_map_missing"), constructionCells: cells }
     } satisfies AiObservation;
 
     expect(

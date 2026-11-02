@@ -66,7 +66,7 @@ export function safeRetreatPosition(
         : undefined))
     : undefined;
   const protectedBasePosition = protectedBase?.anchorPosition;
-  const formationFootprint = formationSpacing(members) * 2;
+  const formationFootprint = formationSpacing(members) * formationRings(members.length) * 2;
   // Keep the whole retreat formation inside the base's local defense radius, not just its anchor tile.
   const localDefenseRadius = Math.max(0, 12 - formationFootprint);
   const localDefenseCandidates = protectedBasePosition
@@ -103,6 +103,7 @@ export function formationPositions(
 ): NonNullable<AiSquadState["tactics"]>["assignedPositions"] {
   if (!anchor) return [];
   const spacing = formationSpacing(members);
+  const rings = formationRings(Math.max(members.length, previousAssignments.length));
   const offsets = [
     { x: spacing, y: 0 },
     { x: -spacing, y: 0 },
@@ -113,6 +114,11 @@ export function formationPositions(
     { x: spacing, y: -spacing },
     { x: -spacing, y: -spacing }
   ];
+  // Retain the original inner-ring order; larger armies get complete additional rings, not eight shared slots.
+  for (let ring = 2; ring <= rings; ring++)
+    for (let y = -ring; y <= ring; y++)
+      for (let x = -ring; x <= ring; x++)
+        if (Math.max(Math.abs(x), Math.abs(y)) === ring) offsets.push({ x: x * spacing, y: y * spacing });
   const used = new Set<string>();
   const assignments: { actorId: string; position: Vector3Simple }[] = [];
   const previousByActor = new Map(previousAssignments.map((assignment) => [assignment.actorId, assignment.position]));
@@ -124,7 +130,7 @@ export function formationPositions(
     if (
       used.has(key) ||
       rejectedPositionByActor.get(actor.actorId) === key ||
-      distance(position, anchor) > spacing * 2 ||
+      distance(position, anchor) > spacing * rings * 2 ||
       !legalForMembers(position, observation, [actor])
     )
       continue;
@@ -132,7 +138,7 @@ export function formationPositions(
     assignments.push({ actorId: actor.actorId, position });
   }
   const assignedActors = new Set(assignments.map((assignment) => assignment.actorId));
-  members.slice(0, offsets.length).forEach((actor, index) => {
+  members.forEach((actor, index) => {
     if (assignedActors.has(actor.actorId)) return;
     const rejectedPosition = rejectedPositionByActor.get(actor.actorId);
     const fallbackOffset = offsets[index];
@@ -154,6 +160,11 @@ export function formationPositions(
     assignments.push({ actorId: actor.actorId, position: candidate });
   });
   return assignments;
+}
+
+/** A square perimeter supplies 8r slots; complete rings supply (2r + 1)^2 - 1 distinct positions. */
+function formationRings(count: number): number {
+  return Math.max(1, Math.ceil((Math.sqrt(count + 1) - 1) / 2));
 }
 
 function formationSpacing(members: readonly AiObservedActor[]): number {
