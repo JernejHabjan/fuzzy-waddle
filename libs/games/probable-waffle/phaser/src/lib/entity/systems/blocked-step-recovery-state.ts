@@ -6,4 +6,6 @@ export interface BlockedStepRecoveryState {
   sideStepAttempts: number;
   /** Direct repath escalations used across recursive recovery; per-repath wait retries are separate. */
   repathAttempts: number;
+  /** A fallback must stay near the original target and may be selected only once per order. */
+  fallbackAttempted: boolean;
 }

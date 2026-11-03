@@ -55,6 +55,10 @@
 - R3 stale failure: movement effect identity now includes the assigned destination. Failures for an old slot or
   legacy effect without destination no longer invalidate the current assignment. Current-slot failures still
   trigger recovery. All 121 tactics/brain/canonical controls pass. Large-group physical acceptance remains.
+- R3 path recovery now permits one fallback destination per execution, while retaining bounded waits and repaths.
+  The regression keeps the first fallback blocked while another replacement is available. All 31 focused native
+  movement tests pass. H-01 clears-early diagnostic stopped at tick zero with `runtime_frame_driver_unavailable`;
+  it provides no recovery evidence. Diagnose the frame driver before retrying that case.
 - R4 native control: `E/reproduction/movement/skirmish-gameplay-pursuit.spec.ts` passes in 8.3s/240 ticks, with six
   Banshee hits while the human worker moves (ticks 74/106/128/160/182/214). Only the strategic coordinator is paused
   through its public campaign API; native pawn trees/weapons/movement run. This cannot prove autonomous R5 behavior

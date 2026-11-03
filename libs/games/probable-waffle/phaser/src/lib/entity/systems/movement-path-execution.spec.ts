@@ -151,6 +151,33 @@ describe("native static path execution/recovery extraction", () => {
     release();
   });
 
+  it("does not pick another fallback around an already substituted destination", async () => {
+    const f = fixture();
+    const destination = { x: 1, y: 0 };
+    const fallback = { x: 1, y: -1 };
+    const blocked = new MovementStepBlockedError(destination, ["actor:2"]);
+    const fallbackBlocked = new MovementStepBlockedError(fallback, ["actor:3"]);
+    let fallbackReached = false;
+    f.move.mockImplementation(async (tile) => {
+      if (tile.x === fallback.x && tile.y === fallback.y) {
+        fallbackReached = true;
+        throw fallbackBlocked;
+      }
+      if (!fallbackReached) throw blocked;
+    });
+    f.occupancy.hasAnyActiveStepReservation.mockReturnValue(false);
+    jest.mocked(getGameObjectCurrentTile).mockReturnValue(undefined);
+    f.navigation.isWithinGridBounds.mockReturnValue(true);
+    f.navigation.findPathFromGameObjectToTileAvoidingDynamicBlockers.mockImplementation(async (_actor, target) => {
+      const available = fallbackReached ? destination : fallback;
+      return target.x === available.x && target.y === available.y ? [{ x: 0, y: 0 }, available] : null;
+    });
+    await expect(f.execution.moveAlongPathByFollowingPreCalculatedStaticPath([destination])).rejects.toBe(
+      fallbackBlocked
+    );
+    expect(f.occupancy.reserveDestination).toHaveBeenCalledTimes(1);
+  });
+
   it("does not turn arbitrary movement or native repath errors into congestion retries", async () => {
     const f = fixture(),
       tile = { x: 1, y: 0 },

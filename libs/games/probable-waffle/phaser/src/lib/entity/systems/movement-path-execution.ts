@@ -63,7 +63,8 @@ export class MovementPathExecution {
     recoveryState: BlockedStepRecoveryState = {
       waitAttemptsByTile: new Map<string, number>(),
       sideStepAttempts: 0,
-      repathAttempts: 0
+      repathAttempts: 0,
+      fallbackAttempted: false
     },
     queryContext?: MovementQueryContext,
     completion?: MovementCompletionObservation
@@ -163,6 +164,8 @@ export class MovementPathExecution {
       if (recovered) return;
     }
 
+    if (recoveryState.fallbackAttempted) throw error;
+    recoveryState.fallbackAttempted = true;
     const fallbackTile = await this.findReachableFallbackTile(finalDestination, queryContext);
     if (!fallbackTile) throw error;
     await this.moveToFallbackTile(fallbackTile, config, recoveryState, queryContext, completion);
