@@ -21,12 +21,13 @@ import { nativeWeaponHits } from "../../combat/effects/skirmish-ai-native-combat
 test.skip(process.env.AI_GAMEPLAY_RELIABILITY !== "1", "Explicit bounded gameplay reliability checks only");
 test.setTimeout(240_000);
 
-for (const { faction, readyCounter } of [
-  { faction: "Tivara", readyCounter: false },
-  { faction: "Tivara", readyCounter: true },
-  { faction: "Skaduwee", readyCounter: false }
+for (const { faction, readyCounter, groundOnly } of [
+  { faction: "Tivara", readyCounter: false, groundOnly: false },
+  { faction: "Tivara", readyCounter: true, groundOnly: false },
+  { faction: "Skaduwee", readyCounter: false, groundOnly: false },
+  { faction: "Tivara", readyCounter: false, groundOnly: true }
 ] as const) {
-  test(`three-flyer raid produces and uses compatible ${faction} counters (ready counter=${readyCounter})`, async ({
+  test(`${groundOnly ? "ground-only raid does not request anti-air" : `three-flyer raid produces and uses compatible ${faction} counters (ready counter=${readyCounter})`}`, async ({
     browser
   }, testInfo) => {
     const root = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
@@ -42,7 +43,10 @@ for (const { faction, readyCounter } of [
     );
     const selected = original.recipe.variants.find((variant) => variant.id === "technology-air-four");
     if (!selected?.presetWorld) throw new Error("air_counter_fixture_missing");
-    const flyers = selected.presetWorld.actors.filter((actor) => actor.fixtureActorId.startsWith("flyer-")).slice(0, 3);
+    const raiders = selected.presetWorld.actors
+      .filter((actor) => actor.fixtureActorId.startsWith("flyer-"))
+      .slice(0, 3)
+      .map((actor) => (groundOnly ? { ...actor, actorName: ObjectNames.SkaduweeWarriorMale } : actor));
     const counter = faction === "Tivara" ? ObjectNames.TivaraSlingshotFemale : ObjectNames.SkaduweeRangedFemale;
     const skaduweeEquivalents = new Map<ObjectNames, ObjectNames>([
       [ObjectNames.AnkGuard, ObjectNames.InfantryInn],
@@ -73,7 +77,7 @@ for (const { faction, readyCounter } of [
                 ? { ...actor, actorName: skaduweeEquivalents.get(actor.actorName as ObjectNames) ?? actor.actorName }
                 : actor
             ),
-          ...flyers,
+          ...raiders,
           ...(readyCounter
             ? [
                 {
@@ -85,7 +89,7 @@ for (const { faction, readyCounter } of [
               ]
             : [])
         ],
-        controls: flyers.map((actor, index) => ({
+        controls: raiders.map((actor, index) => ({
           id: `air-raid-${index}`,
           producerFixtureActorId: actor.fixtureActorId,
           requestTick: 100,
@@ -113,7 +117,7 @@ for (const { faction, readyCounter } of [
         if (index === -1) {
           await captureRuntimeHumanAuthority(page, 1, 1000);
           await page.evaluate(
-            (roles) => {
+            ({ roles, groundOnly }) => {
               const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
                 .__fuzzyWaddleAiRuntimeBrowserTest;
               const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map"));
@@ -134,11 +138,13 @@ for (const { faction, readyCounter } of [
                 const components = actor?.getData("actorData")?.components as
                   | Map<unknown, { flightDefinition?: { height: number } }>
                   | undefined;
-                if (!components || ![...components.values()].some((value) => (value.flightDefinition?.height ?? 0) > 0))
-                  throw new Error(`air_counter_actor_is_not_flying:${role}:${actor?.name}`);
+                const flies =
+                  components && [...components.values()].some((value) => (value.flightDefinition?.height ?? 0) > 0);
+                if (!components || flies === groundOnly)
+                  throw new Error(`air_counter_unexpected_flight_capability:${role}:${actor?.name}`);
               }
             },
-            flyers.map((actor) => actor.fixtureActorId)
+            { roles: raiders.map((actor) => actor.fixtureActorId), groundOnly }
           );
         }
         if (index === fixture.recipe.checkpointTicks.length - 1)
@@ -166,22 +172,22 @@ for (const { faction, readyCounter } of [
           counterEffects.has(event.effectId)
       ) ?? [];
     const produced = new Set(counters.map((event) => event.createdActorId));
-    const flyerIds = new Set(flyers.map((actor) => result.presetCreatedActorIds[actor.fixtureActorId]));
-    const observedFlyers = new Set(
+    const raiderIds = new Set(raiders.map((actor) => result.presetCreatedActorIds[actor.fixtureActorId]));
+    const observedRaiders = new Set(
       result.productionEvidenceV2?.decisions.flatMap(
         (decision) =>
           decision.result.input?.observation?.actors
             .filter(
               (actor) =>
-                flyerIds.has(actor.actorId) &&
+                raiderIds.has(actor.actorId) &&
                 actor.relation === "enemy" &&
                 actor.visibility === "visible" &&
-                actor.capabilities.some((capability) => capability.domains.includes("air"))
+                (groundOnly || actor.capabilities.some((capability) => capability.domains.includes("air")))
             )
             .map((actor) => actor.actorId) ?? []
       ) ?? []
     );
-    const hits = nativeWeaponHits(context).filter((fact) => flyerIds.has(fact.damage.target.actorId ?? ""));
+    const hits = nativeWeaponHits(context).filter((fact) => raiderIds.has(fact.damage.target.actorId ?? ""));
     const producedHits = hits.filter((fact) => produced.has(fact.damage.initiator?.actorId ?? ""));
     const readyId = result.presetCreatedActorIds["ready-counter"];
     const readyHits = hits.filter((fact) => fact.damage.initiator?.actorId === readyId);
@@ -191,6 +197,8 @@ for (const { faction, readyCounter } of [
       "GAMEPLAY_AIR_COUNTER",
       JSON.stringify({
         source,
+        groundOnly,
+        emergencyOrders: counterEffects.size,
         readyCounter,
         counters: counters.length,
         compatibleHits: hits.length,
@@ -212,7 +220,11 @@ for (const { faction, readyCounter } of [
     expect(result.productionEvidenceV2?.failures).toEqual([]);
     expect(result.productionEvidenceV2?.lifecycle.gaps).toEqual([]);
     expect(result.productionEvidenceV2?.lifecycle.failures).toEqual([]);
-    expect(observedFlyers.size, "all three real flyers are observed through fair input").toBe(3);
+    expect(observedRaiders.size, "all three raiders are observed through fair input").toBe(3);
+    if (groundOnly) {
+      expect(counterEffects.size, "ground-only raid must not cause emergency anti-air orders").toBe(0);
+      return;
+    }
     expect(counters.length, "actual completed anti-air production").toBeGreaterThan(0);
     expect(producedHits.length, "newly produced counter physically damages the real flying attackers").toBeGreaterThan(
       0
