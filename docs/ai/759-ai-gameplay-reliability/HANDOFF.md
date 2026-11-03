@@ -4,8 +4,8 @@
 
 - Execution authorized and goal active on `feature/759-skirmish-ai`, PR [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814).
   Completed packets: **0/8**. Required gameplay/performance acceptance remains open despite implemented slices.
-- Next: verify restored human click/command usability through autosave and complete remaining faction/negative
-  defense controls. Review strategic chase replacement against mission ownership.
+- Next: complete remaining faction/negative defense controls and review strategic chase replacement against
+  mission ownership. Verify the manual save variant separately.
 - R5/R6/R7: three real Skaduwee Owls provoke two completed Tivara counters in both ready-counter branches.
   The no-ready branch landed seven verified hits before the tactical repair. The ready branch landed zero until
   planned tower posts were excluded from topology loss. After the repair the ready defender landed three hits
@@ -24,7 +24,9 @@
   (`editor-stone-after-container.log`, 32.4s). The extra stone offset did not reproduce in this setup.
   The same stones and human binding also survived an encrypted autosave and ordinary Load UI
   (`editor-stone-autosave.log`, 44s). The test sends the production timer's request at a settled boundary.
-  Actual click/command usability and the manual save variant remain open.
+  After loading an autosave, real browser mouse input selected the restored human worker and its world position
+  moved more than 32 units toward a right-clicked destination (`autosave-human-input.log`, 32.7s).
+  The manual save variant remains open.
   Save fixture repair: 18 interface tests/full types/lints pass. New test opt-in: `AI_GAMEPLAY_RELIABILITY=1`;
   spec `E/reproduction/save/skirmish-gameplay-load.spec.ts`, fresh 4201, 4-minute ceiling.
 - R3/R6 published: arrived native formation slots `a2dca643f` (6 controls) and confirmed anti-air cooldown admission

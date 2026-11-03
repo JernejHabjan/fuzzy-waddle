@@ -60,6 +60,15 @@ test("preserves elevated ground, building and flying projections through repeate
       } => typeof (entry as { createActorFromDefinition?: unknown })?.createActorFromDefinition === "function"
     );
     if (!creator) throw new Error("load_projection_creator_missing");
+    if (
+      !creator.createActorFromDefinition({
+        name: ObjectNames.SkaduweeWorkerMale,
+        id: { id: "load-human-worker" },
+        owner: { ownerId: scene.player.playerNumber },
+        representable: { logicalWorldTransform: { x: -640, y: 800, z: 0 } }
+      })
+    )
+      throw new Error("load_human_worker_missing");
     return names.map((name, index) => {
       const id = `load-projection-${index}`;
       const actor = creator.createActorFromDefinition({
@@ -83,6 +92,42 @@ test("preserves elevated ground, building and flying projections through repeate
     await saveAndReloadNativeMatch(page, fixture.recipe.aiPlayerNumber);
     expect(await projection(page, ids), `save/load cycle ${cycle + 1}`).toEqual(original);
   }
+  const autosave = await saveNativeMatch(page, fixture.recipe.aiPlayerNumber, "autosave");
+  await reloadNativeMatch(page, fixture.recipe.aiPlayerNumber, autosave);
+  const workerId = "load-human-worker";
+  const restoredWorker = await projection(page, [workerId]);
+  const [worker] = restoredWorker.actors;
+  if (!worker) throw new Error("load_restored_worker_missing");
+  const points = await page.evaluate(async ({ x, y }) => {
+    const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
+      .__fuzzyWaddleAiRuntimeBrowserTest;
+    const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map"));
+    if (!host || !scene) throw new Error("load_input_scene_missing");
+    const camera = scene.cameras.main;
+    camera.centerOn(x, y);
+    host.game.loop.wake();
+    await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
+    const canvas = host.game.canvas;
+    const bounds = canvas.getBoundingClientRect();
+    return ([
+      [x, y - 12],
+      [x - 128, y + 64]
+    ] as const).map(([worldX, worldY]) => {
+      const point = camera.matrixCombined.transformPoint(worldX, worldY);
+      return {
+        x: bounds.left + (point.x * bounds.width) / canvas.width,
+        y: bounds.top + (point.y * bounds.height) / canvas.height
+      };
+    });
+  }, worker.rendered);
+  const [selectionPoint, movePoint] = points;
+  if (!selectionPoint || !movePoint) throw new Error("load_input_points_missing");
+  await page.mouse.click(selectionPoint.x, selectionPoint.y);
+  await expect.poll(async () => (await projection(page, [workerId])).actors[0]?.selected).toBe(true);
+  await page.mouse.click(movePoint.x, movePoint.y, { button: "right" });
+  await advanceRuntimeFrames(page, fixture.recipe.aiPlayerNumber, 100);
+  const moved = (await projection(page, [workerId])).actors[0];
+  expect(moved?.logical.x).toBeLessThan(worker.logical.x - 32);
   expect(errors).toEqual([]);
 });
 
@@ -173,7 +218,13 @@ async function projection(page: Page, ids: readonly string[]) {
             id: identity.id,
             name: actor.name,
             logical: { ...component.logicalWorldTransform },
-            rendered: { x: transform.x, y: transform.y }
+            rendered: { x: transform.x, y: transform.y },
+            selected:
+              (
+                components.find(([token]) => token.name === "SelectableComponent")?.[1] as
+                  | { getSelected(): boolean }
+                  | undefined
+              )?.getSelected() ?? false
           }
         ];
       })
