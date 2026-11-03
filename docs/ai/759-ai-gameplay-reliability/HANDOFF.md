@@ -57,8 +57,13 @@
   trigger recovery. All 121 tactics/brain/canonical controls pass. Large-group physical acceptance remains.
 - R3 path recovery now permits one fallback destination per execution, while retaining bounded waits and repaths.
   The regression keeps the first fallback blocked while another replacement is available. All 31 focused native
-  movement tests pass. H-01 clears-early diagnostic stopped at tick zero with `runtime_frame_driver_unavailable`;
-  it provides no recovery evidence. Diagnose the frame driver before retrying that case.
+  movement tests pass. H-01 first run lost the frame driver after a development reload at tick 2000.
+  Stable rerun captured 4001 ticks and 200 decisions. The trapped maceman escaped after the wall fell at
+  tick 400 and first reached an original destination at tick 1212. Its trace has 35 stopped movement
+  executions and eight arrivals. The evaluator still reports `native_capture_channel_lost` and capture
+  gaps, so this is partial evidence. The retained trace shows repeated same-destination scout orders 20 ticks
+  apart. The planner now preserves a matching active Move even without a tactics record, while still reissuing
+  after an interruption. Red/green regression and 56 scouting/skirmish tests pass.
 - R4 native control: `E/reproduction/movement/skirmish-gameplay-pursuit.spec.ts` passes in 8.3s/240 ticks, with six
   Banshee hits while the human worker moves (ticks 74/106/128/160/182/214). Only the strategic coordinator is paused
   through its public campaign API; native pawn trees/weapons/movement run. This cannot prove autonomous R5 behavior

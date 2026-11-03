@@ -1,7 +1,13 @@
 import { FactionType, OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { createAiBrainState } from "../../../brain/state/create-ai-brain-state";
 import { buildAiAccessGraph } from "../../access/ai-access-graph";
-import { homeNode, unit, observation, profile, manager } from "../../../testing/fixtures/strategy/ai-skirmish-test-fixtures";
+import {
+  homeNode,
+  unit,
+  observation,
+  profile,
+  manager
+} from "../../../testing/fixtures/strategy/ai-skirmish-test-fixtures";
 
 const access = buildAiAccessGraph({
   generation: 1,
@@ -77,42 +83,45 @@ describe("scouting search questions", () => {
     expect(later.intents.some((intent) => intent.kind === "scout" && intent.logicalPosition.x === 4)).toBe(false);
   });
 
-  it("redispatches an active scout mission when combat replaced its native search move", () => {
-    const state = createAiBrainState({
-      playerNumber: 1,
-      faction: FactionType.Tivara,
-      profile,
-      tick: 0,
-      archetypeId: "balanced"
-    });
-    const first = manager.propose(world(20, false), state);
-    const knowledge = first.statePatch?.knowledge, squads = first.statePatch?.squads;
-    if (!knowledge || !squads) throw new Error("scout_search_fixture_missing");
-    const retainedSquads = squads.map((squad) => squad.squadId === "squad:scout:primary"
-      ? { ...squad, tactics: {} as never }
-      : squad);
-    const base = world(40, false);
-    const interrupted = {
-      ...base,
-      actors: base.actors.map((actor) => actor.actorId === "scout"
-        ? {
-            ...actor,
-            activeOrder: {
-              status: "known" as const,
-              observedTick: 40,
-              value: { orderType: OrderType.Attack, targetActorId: "visible-enemy" }
-            }
-          }
-        : actor)
-    };
+  it.each([OrderType.Attack, OrderType.Move])(
+    "only redispatches when %s interrupts the native search move",
+    (orderType) => {
+      const state = createAiBrainState({
+        playerNumber: 1,
+        faction: FactionType.Tivara,
+        profile,
+        tick: 0,
+        archetypeId: "balanced"
+      });
+      const first = manager.propose(world(20, false), state);
+      const knowledge = first.statePatch?.knowledge,
+        squads = first.statePatch?.squads;
+      if (!knowledge || !squads) throw new Error("scout_search_fixture_missing");
+      const base = world(40, false);
+      const interrupted = {
+        ...base,
+        actors: base.actors.map((actor) =>
+          actor.actorId === "scout"
+            ? {
+                ...actor,
+                activeOrder: {
+                  status: "known" as const,
+                  observedTick: 40,
+                  value:
+                    orderType === OrderType.Move
+                      ? { orderType, targetActorId: null, targetPosition: { x: 4, y: 0, z: 0 } }
+                      : { orderType, targetActorId: "visible-enemy" }
+                }
+              }
+            : actor
+        )
+      };
 
-    const next = manager.propose(interrupted, { ...state, knowledge, squads: retainedSquads });
+      const next = manager.propose(interrupted, { ...state, knowledge, squads });
 
-    expect(next.intents).toContainEqual(expect.objectContaining({
-      kind: "scout",
-      actorIds: ["scout"],
-      logicalPosition: { x: 4, y: 0, z: 0 }
-    }));
-  });
-
+      expect(next.intents.some((intent) => intent.kind === "scout" && intent.actorIds.includes("scout"))).toBe(
+        orderType === OrderType.Attack
+      );
+    }
+  );
 });

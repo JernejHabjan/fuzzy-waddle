@@ -330,7 +330,7 @@ function appendFrontierScout(context: AiSkirmishProposalContext): void {
   };
   scout.actorIds.forEach((actorId) => context.primaryOwnedActors.add(actorId));
   context.nextSquads.push(scout);
-  if (!sameMembers || !activeScout?.tactics || (!activeSearchRoute && !tacticalWithdrawal))
+  if (!sameMembers || (!activeSearchRoute && !tacticalWithdrawal))
     context.intents.push({
       ...intentBase(
         context.state,
