@@ -21,8 +21,12 @@ import { nativeWeaponHits } from "../../combat/effects/skirmish-ai-native-combat
 test.skip(process.env.AI_GAMEPLAY_RELIABILITY !== "1", "Explicit bounded gameplay reliability checks only");
 test.setTimeout(240_000);
 
-for (const readyCounter of [false, true]) {
-  test(`three-flyer raid produces and uses compatible counters (ready counter=${readyCounter})`, async ({
+for (const { faction, readyCounter } of [
+  { faction: "Tivara", readyCounter: false },
+  { faction: "Tivara", readyCounter: true },
+  { faction: "Skaduwee", readyCounter: false }
+] as const) {
+  test(`three-flyer raid produces and uses compatible ${faction} counters (ready counter=${readyCounter})`, async ({
     browser
   }, testInfo) => {
     const root = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
@@ -39,22 +43,42 @@ for (const readyCounter of [false, true]) {
     const selected = original.recipe.variants.find((variant) => variant.id === "technology-air-four");
     if (!selected?.presetWorld) throw new Error("air_counter_fixture_missing");
     const flyers = selected.presetWorld.actors.filter((actor) => actor.fixtureActorId.startsWith("flyer-")).slice(0, 3);
+    const counter = faction === "Tivara" ? ObjectNames.TivaraSlingshotFemale : ObjectNames.SkaduweeRangedFemale;
+    const skaduweeEquivalents = new Map<ObjectNames, ObjectNames>([
+      [ObjectNames.AnkGuard, ObjectNames.InfantryInn],
+      [ObjectNames.Olival, ObjectNames.Emberstone],
+      [ObjectNames.TivaraWorkerMale, ObjectNames.SkaduweeWorkerMale],
+      [ObjectNames.TivaraMacemanMale, ObjectNames.SkaduweeWarriorMale]
+    ]);
     const variant = {
       ...selected,
+      aiFaction: faction,
       id: `gameplay-three-air-${readyCounter ? "ready" : "unready"}`,
       captureConstruction: true as const,
       captureCombat: true as const,
       presetWorld: {
         ...selected.presetWorld,
+        existingActorBindings: selected.presetWorld.existingActorBindings?.map((binding) =>
+          faction === "Skaduwee" && binding.owner === 2 && binding.actorName === ObjectNames.Sandhold
+            ? { ...binding, actorName: ObjectNames.FrostForge }
+            : binding
+        ),
         fixtureId: `gameplay-three-air-${readyCounter ? "ready" : "unready"}`,
         actors: [
-          ...selected.presetWorld.actors.filter((actor) => !actor.fixtureActorId.startsWith("flyer-")),
+          ...selected.presetWorld.actors
+            .filter((actor) => !actor.fixtureActorId.startsWith("flyer-"))
+            .filter((actor) => faction === "Tivara" || actor.actorName !== ObjectNames.Temple)
+            .map((actor) =>
+              faction === "Skaduwee" && actor.owner === 2
+                ? { ...actor, actorName: skaduweeEquivalents.get(actor.actorName as ObjectNames) ?? actor.actorName }
+                : actor
+            ),
           ...flyers,
           ...(readyCounter
             ? [
                 {
                   fixtureActorId: "ready-counter",
-                  actorName: ObjectNames.TivaraSlingshotFemale,
+                  actorName: counter,
                   owner: 2,
                   position: { x: 896, y: 736, z: 0 }
                 }
@@ -137,7 +161,7 @@ for (const readyCounter of [false, true]) {
       result.productionEvidenceV2?.lifecycle.queues.filter(
         (event) =>
           event.kind === "complete" &&
-          event.productKey === ObjectNames.TivaraSlingshotFemale &&
+          event.productKey === counter &&
           event.createdActorId &&
           counterEffects.has(event.effectId)
       ) ?? [];

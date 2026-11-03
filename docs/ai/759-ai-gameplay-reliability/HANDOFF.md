@@ -14,6 +14,8 @@
   `unbuilt-post-ready-native-after.runtime.json.gz`. Static guards distinguish ground Banshees from real flyers.
   The legacy defense fixture now uses Owls. The post-repair no-ready control completed two counters
   and landed 22 compatible hits, with no gaps or page errors (`air-counter-unready-native-after.runtime.json.gz`).
+  Skaduwee mirror raid without a ready archer completed one emergency archer whose weapon landed 16 hits
+  against the Owls. No trace gaps or page errors (`air-counter-skaduwee.runtime.json.gz`).
   Quiet formation/interception fixes are `06ad7a214`; do not repeat the retained FIGHT-01 quiet run for reassurance.
   One runner; maximum 30 minutes per invocation/batch. Do not repeat unchanged full matches.
 - R2 published: teardown `2c7844410` (3 regressions), offline unique-human binding `927c5b84b`
