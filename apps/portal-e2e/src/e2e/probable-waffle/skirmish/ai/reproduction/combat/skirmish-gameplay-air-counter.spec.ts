@@ -21,15 +21,19 @@ import { nativeWeaponHits } from "../../combat/effects/skirmish-ai-native-combat
 test.skip(process.env.AI_GAMEPLAY_RELIABILITY !== "1", "Explicit bounded gameplay reliability checks only");
 test.setTimeout(240_000);
 
-for (const { faction, readyCounter, groundOnly } of [
+for (const { faction, readyCounter, groundOnly, hidden = false } of [
   { faction: "Tivara", readyCounter: false, groundOnly: false },
   { faction: "Tivara", readyCounter: true, groundOnly: false },
   { faction: "Skaduwee", readyCounter: false, groundOnly: false },
-  { faction: "Tivara", readyCounter: false, groundOnly: true }
+  { faction: "Tivara", readyCounter: false, groundOnly: true },
+  { faction: "Tivara", readyCounter: false, groundOnly: false, hidden: true }
 ] as const) {
-  test(`${groundOnly ? "ground-only raid does not request anti-air" : `three-flyer raid produces and uses compatible ${faction} counters (ready counter=${readyCounter})`}`, async ({
-    browser
-  }, testInfo) => {
+  const title = hidden
+    ? "flyers do not request anti-air before discovery"
+    : groundOnly
+      ? "ground-only raid does not request anti-air"
+      : `three-flyer raid produces and uses compatible ${faction} counters (ready counter=${readyCounter})`;
+  test(title, async ({ browser }, testInfo) => {
     const root = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
     const source = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
     const original: RuntimeFixture = JSON.parse(
@@ -46,7 +50,10 @@ for (const { faction, readyCounter, groundOnly } of [
     const raiders = selected.presetWorld.actors
       .filter((actor) => actor.fixtureActorId.startsWith("flyer-"))
       .slice(0, 3)
-      .map((actor) => (groundOnly ? { ...actor, actorName: ObjectNames.SkaduweeWarriorMale } : actor));
+      .map((actor, index) => {
+        if (hidden) return { ...actor, position: { x: -768, y: 800 + 64 * index, z: 0 } };
+        return groundOnly ? { ...actor, actorName: ObjectNames.SkaduweeWarriorMale } : actor;
+      });
     const counter = faction === "Tivara" ? ObjectNames.TivaraSlingshotFemale : ObjectNames.SkaduweeRangedFemale;
     const skaduweeEquivalents = new Map<ObjectNames, ObjectNames>([
       [ObjectNames.AnkGuard, ObjectNames.InfantryInn],
@@ -89,13 +96,15 @@ for (const { faction, readyCounter, groundOnly } of [
               ]
             : [])
         ],
-        controls: raiders.map((actor, index) => ({
-          id: `air-raid-${index}`,
-          producerFixtureActorId: actor.fixtureActorId,
-          requestTick: 100,
-          applicationTick: 100,
-          action: { kind: "attack" as const, targetFixtureActorId: `worker-${index + 1}` }
-        }))
+        controls: hidden
+          ? []
+          : raiders.map((actor, index) => ({
+              id: `air-raid-${index}`,
+              producerFixtureActorId: actor.fixtureActorId,
+              requestTick: 100,
+              applicationTick: 100,
+              action: { kind: "attack" as const, targetFixtureActorId: `worker-${index + 1}` }
+            }))
       }
     };
     // Preserve the original 1000-tick ceiling, using complete normal-speed simulation frames for this control.
@@ -173,6 +182,12 @@ for (const { faction, readyCounter, groundOnly } of [
       ) ?? [];
     const produced = new Set(counters.map((event) => event.createdActorId));
     const raiderIds = new Set(raiders.map((actor) => result.presetCreatedActorIds[actor.fixtureActorId]));
+    const decisions = result.productionEvidenceV2?.decisions ?? [];
+    const firstSighting = decisions.find((decision) =>
+      decision.result.input?.observation?.actors.some(
+        (actor) => raiderIds.has(actor.actorId) && actor.relation === "enemy" && actor.visibility === "visible"
+      )
+    )?.inputTick;
     const observedRaiders = new Set(
       result.productionEvidenceV2?.decisions.flatMap(
         (decision) =>
@@ -198,6 +213,9 @@ for (const { faction, readyCounter, groundOnly } of [
       JSON.stringify({
         source,
         groundOnly,
+        hidden,
+        firstSighting,
+        observedRaiders: observedRaiders.size,
         emergencyOrders: counterEffects.size,
         readyCounter,
         counters: counters.length,
@@ -220,9 +238,20 @@ for (const { faction, readyCounter, groundOnly } of [
     expect(result.productionEvidenceV2?.failures).toEqual([]);
     expect(result.productionEvidenceV2?.lifecycle.gaps).toEqual([]);
     expect(result.productionEvidenceV2?.lifecycle.failures).toEqual([]);
-    expect(observedRaiders.size, "all three raiders are observed through fair input").toBe(3);
+    expect(observedRaiders.size, "all raiders are eventually observed through fair input").toBe(3);
+    if (hidden) {
+      expect(firstSighting, "flyers remain unseen through the opening").toBeGreaterThan(400);
+      expect(
+        decisions
+          .filter((decision) => decision.inputTick < (firstSighting ?? Infinity))
+          .flatMap((decision) => decision.result.acceptedIntents)
+          .filter((intent) => intent.kind === "produce" && intent.demandId === "demand:adapt:anti_air")
+      ).toEqual([]);
+      expect(counters.length, "discovered flyers trigger actual production").toBeGreaterThan(0);
+      return;
+    }
     if (groundOnly) {
-      expect(counterEffects.size, "ground-only raid must not cause emergency anti-air orders").toBe(0);
+      expect(counterEffects.size, "no visible air threat must yield no emergency anti-air orders").toBe(0);
       return;
     }
     expect(counters.length, "actual completed anti-air production").toBeGreaterThan(0);
