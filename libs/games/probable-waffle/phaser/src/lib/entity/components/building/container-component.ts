@@ -128,7 +128,15 @@ export class ContainerComponent {
   }
 
   destroy() {
-    this.onKilled();
+    const scene = this.gameObject.scene;
+    if (scene?.cameras?.main && scene.sys.settings.status < Phaser.Scenes.SHUTDOWN) {
+      this.onKilled();
+    } else {
+      // The scene disposes its actors separately. Unloading requires live navigation and cameras.
+      this.containedGameObjects.clear();
+      this.pendingBoarders.clear();
+      this.pendingBoarderShores.clear();
+    }
     this.simulationTickSub?.unsubscribe();
     this.commandSubscription?.unsubscribe();
     this.containerChanged.complete();

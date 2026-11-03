@@ -44,7 +44,7 @@ test("preserves elevated ground, building and flying projections through repeate
     errors
   );
   await advanceRuntimeFrames(page, fixture.recipe.aiPlayerNumber, 20);
-  const names = [ObjectNames.TivaraWorkerMale, ObjectNames.Temple, ObjectNames.Banshee];
+  const names = [ObjectNames.TivaraWorkerMale, ObjectNames.Temple, ObjectNames.SkaduweeOwl];
   const ids = await page.evaluate((names) => {
     const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
       .__fuzzyWaddleAiRuntimeBrowserTest;
@@ -82,6 +82,55 @@ test("preserves elevated ground, building and flying projections through repeate
   for (let cycle = 0; cycle < 3; cycle++) {
     await saveAndReloadNativeMatch(page, fixture.recipe.aiPlayerNumber);
     expect(await projection(page, ids), `save/load cycle ${cycle + 1}`).toEqual(original);
+  }
+  expect(errors).toEqual([]);
+});
+
+test("preserves editor-authored elevated stone blocks on River Crossing", async ({ page }) => {
+  const root = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
+  const source = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
+  const fixture: RuntimeFixture = JSON.parse(
+    readFileSync(
+      join(
+        root,
+        "tools/probable-waffle/skirmish/ai/testing/fixtures/native/continuous/continuous-land-native-gameplay.json"
+      ),
+      "utf8"
+    )
+  );
+  const variant = fixture.recipe.variants.find((entry) => entry.id === "skaduwee-home-raid");
+  if (!variant) throw new Error("river_crossing_fixture_missing");
+  const errors: string[] = [];
+  await prepareRuntimeVariant(
+    page,
+    fixture,
+    variant,
+    variant.seed,
+    source,
+    digestCanonicalAiValue(fixture),
+    false,
+    errors
+  );
+  await advanceRuntimeFrames(page, fixture.recipe.aiPlayerNumber, 20);
+  const ids = await page.evaluate(() => {
+    const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
+      .__fuzzyWaddleAiRuntimeBrowserTest;
+    const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key === "MapRiverCrossing");
+    if (!scene) throw new Error("river_crossing_scene_missing");
+    return scene.children.getChildren().flatMap((actor) => {
+      if (!actor.name.startsWith("BlockStone") || !(Number(Reflect.get(actor, "z")) > 0)) return [];
+      const data = actor.getData("actorData") as { components: Map<{ name: string }, { id?: string }> } | undefined;
+      const id = data && [...data.components.entries()].find(([token]) => token.name === "IdComponent")?.[1].id;
+      if (!id) throw new Error("elevated_stone_missing_saved_identity");
+      return [id];
+    });
+  });
+  expect(ids.length).toBeGreaterThan(0);
+  const original = await projection(page, ids);
+  expect(original.actors).toHaveLength(ids.length);
+  for (let cycle = 0; cycle < 3; cycle++) {
+    await saveAndReloadNativeMatch(page, fixture.recipe.aiPlayerNumber);
+    expect(await projection(page, ids), `editor stone reload ${cycle + 1}`).toEqual(original);
   }
   expect(errors).toEqual([]);
 });

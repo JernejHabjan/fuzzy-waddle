@@ -4,8 +4,8 @@
 
 - Execution authorized and goal active on `feature/759-skirmish-ai`, PR [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814).
   Completed packets: **0/8**. Required gameplay/performance acceptance remains open despite implemented slices.
-- Next: verify editor-authored River Crossing stones through real save/load, then restored human click/command
-  usability and remaining faction/negative defense controls. Review strategic chase replacement against mission ownership.
+- Next: verify restored human click/command usability through autosave and complete remaining faction/negative
+  defense controls. Review strategic chase replacement against mission ownership.
 - R5/R6/R7: three real Skaduwee Owls provoke two completed Tivara counters in both ready-counter branches.
   The no-ready branch landed seven verified hits before the tactical repair. The ready branch landed zero until
   planned tower posts were excluded from topology loss. After the repair the ready defender landed three hits
@@ -17,11 +17,12 @@
   One runner; maximum 30 minutes per invocation/batch. Do not repeat unchanged full matches.
 - R2 published: teardown `2c7844410` (3 regressions), offline unique-human binding `927c5b84b`
   (4 scene + 7 service tests). Component controls and now an actual encrypted quicksave/Load UI test preserve
-  elevated worker/Temple/Banshee logical/rendered coordinates through three loads; local human slot stays 1.
-  Banshee is ground. The flying control now uses Owl. User identified editor-elevated stone blocks; River Crossing
-  has the matching authored prefab fields and a dedicated roundtrip is underway.
-  `load-projection-native.log` passes in 24.4s. This does not yet prove click/command usability or autosave/manual
-  variants, and the reported offset remains unreproduced. Optional user question requests original map/actor.
+  elevated worker, Temple and real flying Owl coordinates through three loads. Local human slot stays 1.
+  River Crossing reproduced the `scrollY` crash through transport container teardown in
+  `editor-stone-native.log`. After separating live unloading from shutdown, the authored elevated stones
+  kept their logical and rendered coordinates across all three loads without page errors
+  (`editor-stone-after-container.log`, 32.4s). The extra stone offset did not reproduce in this setup.
+  Actual click/command usability and autosave/manual variants remain open.
   Save fixture repair: 18 interface tests/full types/lints pass. New test opt-in: `AI_GAMEPLAY_RELIABILITY=1`;
   spec `E/reproduction/save/skirmish-gameplay-load.spec.ts`, fresh 4201, 4-minute ceiling.
 - R3/R6 published: arrived native formation slots `a2dca643f` (6 controls) and confirmed anti-air cooldown admission
