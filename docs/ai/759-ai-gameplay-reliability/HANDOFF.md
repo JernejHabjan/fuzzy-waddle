@@ -22,7 +22,9 @@
   `editor-stone-native.log`. After separating live unloading from shutdown, the authored elevated stones
   kept their logical and rendered coordinates across all three loads without page errors
   (`editor-stone-after-container.log`, 32.4s). The extra stone offset did not reproduce in this setup.
-  Actual click/command usability and autosave/manual variants remain open.
+  The same stones and human binding also survived an encrypted autosave and ordinary Load UI
+  (`editor-stone-autosave.log`, 44s). The test sends the production timer's request at a settled boundary.
+  Actual click/command usability and the manual save variant remain open.
   Save fixture repair: 18 interface tests/full types/lints pass. New test opt-in: `AI_GAMEPLAY_RELIABILITY=1`;
   spec `E/reproduction/save/skirmish-gameplay-load.spec.ts`, fresh 4201, 4-minute ceiling.
 - R3/R6 published: arrived native formation slots `a2dca643f` (6 controls) and confirmed anti-air cooldown admission

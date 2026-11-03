@@ -11,7 +11,7 @@ import type GameProbableWaffleScene from "@fuzzy-waddle/probable-waffle-phaser/w
 import type { RuntimeFixture } from "../../contracts/skirmish-ai-runtime-fixture";
 import { prepareRuntimeVariant } from "../../setup/skirmish-ai-runtime-variant-setup";
 import { advanceRuntimeFrames } from "../../runner/skirmish-ai-runtime-frame-driver";
-import { saveAndReloadNativeMatch } from "./skirmish-ai-native-save-reload";
+import { reloadNativeMatch, saveAndReloadNativeMatch, saveNativeMatch } from "./skirmish-ai-native-save-reload";
 
 test.skip(process.env.AI_GAMEPLAY_RELIABILITY !== "1", "Explicit bounded gameplay reliability checks only");
 test.setTimeout(240_000);
@@ -132,6 +132,9 @@ test("preserves editor-authored elevated stone blocks on River Crossing", async 
     await saveAndReloadNativeMatch(page, fixture.recipe.aiPlayerNumber);
     expect(await projection(page, ids), `editor stone reload ${cycle + 1}`).toEqual(original);
   }
+  const autosave = await saveNativeMatch(page, fixture.recipe.aiPlayerNumber, "autosave");
+  await reloadNativeMatch(page, fixture.recipe.aiPlayerNumber, autosave);
+  expect(await projection(page, ids), "editor stone autosave reload").toEqual(original);
   expect(errors).toEqual([]);
 });
 

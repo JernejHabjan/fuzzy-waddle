@@ -8,9 +8,9 @@ import type GameProbableWaffleScene from
   "@fuzzy-waddle/probable-waffle-phaser/world/scenes/GameProbableWaffleScene";
 
 /** Native shortcut -> renderer snapshot -> encrypted repository. The original world can continue before reload. */
-export async function saveNativeMatch(page: Page, playerNumber: number) {
-  const previous = await readNativeQuicksaveHeaders(page);
-  const boundary = await page.evaluate(({ playerNumber, supportedType }) => {
+export async function saveNativeMatch(page: Page, playerNumber: number, kind: "quicksave" | "autosave" = "quicksave") {
+  const previous = await readNativeSaveHeaders(page, kind);
+  const boundary = await page.evaluate(({ playerNumber, supportedType, kind }) => {
     const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost;
       __nativeSavedGameOwner?: AiRuntimeBrowserTestHost["game"]; __nativeSaveRealm?: string };
     const host = realm.__fuzzyWaddleAiRuntimeBrowserTest;
@@ -24,20 +24,26 @@ export async function saveNativeMatch(page: Page, playerNumber: number) {
     const decisionSequence = parts.controller.getBrainState()?.scheduler.decisionSequence;
     if (decisionSequence === undefined || !Number.isSafeInteger(decisionSequence))
       throw new Error("native_save_original_decision_boundary_missing");
-    parts.tickService.pauseTick("manual");
     host.game.loop.wake();
     realm.__nativeSavedGameOwner = host.game;
     realm.__nativeSaveRealm = crypto.randomUUID();
-    return { tick: parts.tickService.currentTick, realmId: realm.__nativeSaveRealm, decisionSequence };
-  }, { playerNumber, supportedType: ProbableWaffleGameInstanceType.Skirmish });
-  await page.keyboard.press("Control+s");
+    const tick = parts.tickService.currentTick;
+    if (kind === "autosave") {
+      // Send the timer's real request at a settled boundary without waiting for the interval.
+      parts.tickService.resumeTick("manual");
+      scene.communicator.allScenes.emit({ name: "save-game", data: { kind } });
+    }
+    parts.tickService.pauseTick("manual");
+    return { tick, realmId: realm.__nativeSaveRealm, decisionSequence, kind };
+  }, { playerNumber, supportedType: ProbableWaffleGameInstanceType.Skirmish, kind });
+  if (kind === "quicksave") await page.keyboard.press("Control+s");
   await expect.poll(async () => {
-    const headers = await readNativeQuicksaveHeaders(page);
+    const headers = await readNativeSaveHeaders(page, kind);
     return headers.some((entry) => !previous.some((old) => old.id === entry.id && old.revision === entry.revision));
   }, { timeout: 30_000 }).toBe(true);
-  const saved = (await readNativeQuicksaveHeaders(page)).find((entry) =>
+  const saved = (await readNativeSaveHeaders(page, kind)).find((entry) =>
     !previous.some((old) => old.id === entry.id && old.revision === entry.revision));
-  if (!saved) throw new Error("native_encrypted_quicksave_missing");
+  if (!saved) throw new Error(`native_encrypted_${kind}_missing`);
   return { ...boundary, saveId: saved.id, revision: saved.revision };
 }
 
@@ -50,8 +56,7 @@ export async function reloadNativeMatch(
     await page.getByRole("button", { name: "Leave", exact: true }).click();
     await page.getByRole("button", { name: /Load Game.*Continue saved game/ }).click();
   } else await openNativeGameAction(page, "load");
-  // A fresh runtime context owns exactly one quicksave. Never silently load another row from a reused profile.
-  const row = page.locator(".aota-save-row").filter({ hasText: "Quick Save" });
+  const row = page.locator(".aota-save-row").filter({ hasText: boundary.kind === "autosave" ? "Autosave" : "Quick Save" });
   await expect(row).toHaveCount(1);
   await row.getByRole("button", { name: "Load", exact: true }).click();
   await page.waitForFunction(() => {
@@ -86,8 +91,8 @@ export async function saveAndReloadNativeMatch(page: Page, playerNumber: number)
 }
 
 /** Read metadata only; decoding and migration must still run through the actual game save service on Load. */
-async function readNativeQuicksaveHeaders(page: Page): Promise<{ id: string; revision: number }[]> {
-  return page.evaluate(async () => {
+async function readNativeSaveHeaders(page: Page, kind: "quicksave" | "autosave"): Promise<{ id: string; revision: number }[]> {
+  return page.evaluate(async (kind) => {
     const databases = await indexedDB.databases();
     if (!databases.some((database) => database.name === "probable-waffle-db")) return [];
     return new Promise<{ id: string; revision: number }[]>((resolve, reject) => {
@@ -102,9 +107,9 @@ async function readNativeQuicksaveHeaders(page: Page): Promise<{ id: string; rev
         read.onerror = () => reject(read.error);
         read.onsuccess = () => resolve((read.result as { id: string; revision: number; kind: string;
           syncState: string; encodedGameInstanceData?: unknown }[])
-          .filter((record) => record.kind === "quicksave" && record.syncState !== "deleted" && !!record.encodedGameInstanceData)
+          .filter((record) => record.kind === kind && record.syncState !== "deleted" && !!record.encodedGameInstanceData)
           .map(({ id, revision }) => ({ id, revision })));
       };
     });
-  });
+  }, kind);
 }
