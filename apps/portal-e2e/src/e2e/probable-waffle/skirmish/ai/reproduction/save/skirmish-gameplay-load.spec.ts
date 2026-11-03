@@ -109,10 +109,12 @@ test("preserves elevated ground, building and flying projections through repeate
     await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
     const canvas = host.game.canvas;
     const bounds = canvas.getBoundingClientRect();
-    return ([
-      [x, y - 12],
-      [x - 128, y + 64]
-    ] as const).map(([worldX, worldY]) => {
+    return (
+      [
+        [x, y - 12],
+        [x - 128, y + 64]
+      ] as const
+    ).map(([worldX, worldY]) => {
       const point = camera.matrixCombined.transformPoint(worldX, worldY);
       return {
         x: bounds.left + (point.x * bounds.width) / canvas.width,
