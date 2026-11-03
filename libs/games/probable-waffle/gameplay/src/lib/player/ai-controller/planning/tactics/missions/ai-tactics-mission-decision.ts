@@ -21,8 +21,16 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
             plan.protectedBaseIds.includes(squad.lifecycle.protectedBaseId)
         ) ?? state.fortifications.find((plan) => plan.lifecycle !== "abandoned"))
       : undefined;
-  const reachableDefenderPosts = fortificationPlan?.graph?.defenderPosts.filter((post) => post.reachable) ?? [];
-  const topologyLost = Boolean(fortificationPlan?.graph?.defenderPosts.length && reachableDefenderPosts.length === 0);
+  const postNodes = new Map(fortificationPlan?.graph?.nodes.map((node) => [node.nodeId, node]));
+  // Unfinished posts describe future construction, not positions whose loss can force the mobile defense to retreat.
+  const establishedPosts =
+    fortificationPlan?.graph?.defenderPosts.filter((post) =>
+      ["finished", "destroyed"].includes(postNodes.get(post.nodeId)?.lifecycle ?? "")
+    ) ?? [];
+  const reachableDefenderPosts = establishedPosts.filter(
+    (post) => post.reachable && postNodes.get(post.nodeId)?.lifecycle === "finished"
+  );
+  const topologyLost = establishedPosts.length > 0 && reachableDefenderPosts.length === 0;
   const landedForRegroup = state.transport.some(
     (plan) => plan.phase === "handoff" && plan.passengerIds.some((actorId) => squad.actorIds.includes(actorId))
   );
@@ -46,7 +54,8 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
   const scoutUnderFire = members.some(
     (member) => member.healthPermille?.status === "known" && member.healthPermille.value < 1000
   );
-  const scoutNeedsSafeWithdrawal = squad.role === "scout" && scoutUnderFire && localEnemies.length > 0 && retreat !== null;
+  const scoutNeedsSafeWithdrawal =
+    squad.role === "scout" && scoutUnderFire && localEnemies.length > 0 && retreat !== null;
   const safeFiringPositions = selectAiSafeFiringPositions(members, localEnemies, visibleTarget, observation);
   const criticalRangedActorIds = members
     .filter((member) => {
@@ -156,31 +165,31 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
           : scoutNeedsSafeWithdrawal
             ? "retreat"
             : criticalRangedThreat
-            ? members.some(
-                (member) =>
-                  !criticalRangedActorIds.includes(member.actorId) &&
-                  member.combatProfile?.status === "known" &&
-                  member.combatProfile.value.attacks.length > 0
-              ) && localEnemies.length > 0
-              ? "engage"
-              : "retreat"
-            : committedPressure
-              ? localEnemies.length > 0
+              ? members.some(
+                  (member) =>
+                    !criticalRangedActorIds.includes(member.actorId) &&
+                    member.combatProfile?.status === "known" &&
+                    member.combatProfile.value.attacks.length > 0
+                ) && localEnemies.length > 0
                 ? "engage"
-                : "advance"
-              : (unfavorable ||
-                    topologyLost ||
-                    (recoveringFromRetreat && localEnemies.length > 0 && !favorableRecovery)) &&
-                  retreat
-                ? "retreat"
-                : awaitingStrategicLaunch
-                  ? "assemble"
-                  : localEnemies.length > 0 &&
-                      ((recoveringFromRetreat ? favorableRecovery : favorable) || forcedDecision)
-                    ? "engage"
-                    : localEnemies.length > 0
-                      ? "regroup"
-                      : quietState;
+                : "retreat"
+              : committedPressure
+                ? localEnemies.length > 0
+                  ? "engage"
+                  : "advance"
+                : (unfavorable ||
+                      topologyLost ||
+                      (recoveringFromRetreat && localEnemies.length > 0 && !favorableRecovery)) &&
+                    retreat
+                  ? "retreat"
+                  : awaitingStrategicLaunch
+                    ? "assemble"
+                    : localEnemies.length > 0 &&
+                        ((recoveringFromRetreat ? favorableRecovery : favorable) || forcedDecision)
+                      ? "engage"
+                      : localEnemies.length > 0
+                        ? "regroup"
+                        : quietState;
   const holdRetreat =
     !criticalRangedThreat &&
     !committedPressure &&

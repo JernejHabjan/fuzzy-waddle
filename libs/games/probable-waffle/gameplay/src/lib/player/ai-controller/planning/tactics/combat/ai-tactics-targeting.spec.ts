@@ -1,6 +1,12 @@
 import type { AiBrainState } from "../../../contracts/state/ai-state-contracts";
 
-import { combatActor, squad, fixtureState, observation, manager } from "../../../testing/fixtures/tactics/ai-tactics-test-fixtures";
+import {
+  combatActor,
+  squad,
+  fixtureState,
+  observation,
+  manager
+} from "../../../testing/fixtures/tactics/ai-tactics-test-fixtures";
 
 describe("AiTacticsManager", () => {
   it("withdraws a scout from a sustained low-damage attacker when a legal retreat exists", () => {
@@ -231,6 +237,26 @@ describe("AiTacticsManager", () => {
         }
       ]
     };
+    for (const nodeState of ["planned", "requested", "abandoned"] as const) {
+      const unavailableFuturePosts = manager.propose(observation([...defenders, enemy]), {
+        ...fortified,
+        fortifications: fortified.fortifications.map((plan) => ({
+          ...plan,
+          completedNodeIds: [],
+          graph: plan.graph
+            ? {
+                ...plan.graph,
+                nodes: plan.graph.nodes.map((node) => ({ ...node, lifecycle: nodeState })),
+                defenderPosts: plan.graph.defenderPosts.map((post) => ({ ...post, reachable: false }))
+              }
+            : plan.graph
+        }))
+      });
+      const update = unavailableFuturePosts.statePatch?.squadUpdates?.[0];
+      expect({ nodeState, state: update?.state }).toEqual({ nodeState, state: "engage" });
+      expect(update?.tactics?.script).not.toBe("rampart_withdraw");
+      expect(update?.tactics?.assignedPositions.some((assignment) => assignment.position.z === 1)).toBe(false);
+    }
     const proposal = manager.propose(observation([...defenders, enemy]), fortified);
     const tactics = proposal.statePatch?.squadUpdates?.[0]?.tactics;
     expect(tactics).toEqual(expect.objectContaining({ script: "rampart_defend", mobileReserveActorIds: ["guard-3"] }));
@@ -265,5 +291,19 @@ describe("AiTacticsManager", () => {
         tactics: expect.objectContaining({ script: "rampart_withdraw" })
       })
     );
+    const destroyedPost = manager.propose(observation([...defenders, enemy], 160), {
+      ...fortified,
+      fortifications: fortified.fortifications.map((plan) => ({
+        ...plan,
+        completedNodeIds: [],
+        graph: plan.graph ? { ...plan.graph,
+          nodes: plan.graph.nodes.map((node) => ({ ...node, lifecycle: "destroyed" as const })),
+          defenderPosts: plan.graph.defenderPosts.map((post) => ({ ...post, reachable: false }))
+        } : plan.graph
+      }))
+    });
+    expect(destroyedPost.statePatch?.squadUpdates?.[0]).toEqual(expect.objectContaining({
+      state: "retreat", tactics: expect.objectContaining({ script: "rampart_withdraw" })
+    }));
   });
 });

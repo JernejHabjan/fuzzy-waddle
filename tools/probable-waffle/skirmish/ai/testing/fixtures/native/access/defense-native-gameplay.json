@@ -82,22 +82,22 @@
               "position": { "x": 608, "y": 904, "z": 0 }
             },
             {
-              "fixtureActorId": "human-banshee-1",
-              "actorName": "Banshee",
+              "fixtureActorId": "human-flyer-1",
+              "actorName": "SkaduweeOwl",
               "owner": 1,
-              "position": { "x": 0, "y": 840, "z": 64 }
+              "position": { "x": 0, "y": 840, "z": 0 }
             },
             {
-              "fixtureActorId": "human-banshee-2",
-              "actorName": "Banshee",
+              "fixtureActorId": "human-flyer-2",
+              "actorName": "SkaduweeOwl",
               "owner": 1,
-              "position": { "x": 32, "y": 864, "z": 64 }
+              "position": { "x": 32, "y": 864, "z": 0 }
             },
             {
-              "fixtureActorId": "human-banshee-3",
-              "actorName": "Banshee",
+              "fixtureActorId": "human-flyer-3",
+              "actorName": "SkaduweeOwl",
               "owner": 1,
-              "position": { "x": 64, "y": 888, "z": 64 }
+              "position": { "x": 64, "y": 888, "z": 0 }
             }
           ],
           "resourceGrants": [
@@ -110,7 +110,7 @@
             "tick": 500,
             "kind": "human_attack_ai_home",
             "maximumAttackers": 3,
-            "attackerObjectNames": ["Banshee"]
+            "attackerObjectNames": ["SkaduweeOwl"]
           }
         ]
       }
@@ -123,7 +123,7 @@
       "minimumAppliedCommands": 3,
       "requiredAiFactions": ["Tivara"],
       "requiredPresetFixtureId": "air-defense-recovery",
-      "requiredDefenseTargetName": "Banshee",
+      "requiredDefenseTargetName": "SkaduweeOwl",
       "requiredDefenseActorName": "TivaraSlingshotFemale"
     },
     "RAID-02": {

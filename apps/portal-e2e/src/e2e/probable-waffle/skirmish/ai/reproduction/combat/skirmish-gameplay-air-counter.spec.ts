@@ -1,0 +1,198 @@
+import { expect, test } from "@playwright/test";
+import { execFileSync } from "node:child_process";
+import { createWriteStream, readFileSync } from "node:fs";
+import { Readable } from "node:stream";
+import { pipeline } from "node:stream/promises";
+import { createGzip } from "node:zlib";
+import { stringifyChunked } from "@discoveryjs/json-ext";
+import { join } from "node:path";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
+import { digestCanonicalAiValue } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/persistence/canonical-ai-serialization";
+import type { RuntimeFixture } from "../../contracts/skirmish-ai-runtime-fixture";
+import type { AiRuntimeBrowserTestHost } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/browser/ai-runtime-browser-test-host";
+import { runVariant } from "../../runner/skirmish-ai-runtime-variant-runner";
+import { captureRuntimeHumanAuthority } from "../../capture/skirmish-ai-runtime-human-capture";
+import {
+  nativeScenarioContext,
+  nativeScenarioRequiresResourceCoverage
+} from "../../contracts/skirmish-ai-native-scenario-context";
+import { nativeWeaponHits } from "../../combat/effects/skirmish-ai-native-combat-effects";
+
+test.skip(process.env.AI_GAMEPLAY_RELIABILITY !== "1", "Explicit bounded gameplay reliability checks only");
+test.setTimeout(240_000);
+
+for (const readyCounter of [false, true]) {
+  test(`three-flyer raid produces and uses compatible counters (ready counter=${readyCounter})`, async ({
+    browser
+  }, testInfo) => {
+    const root = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
+    const source = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
+    const original: RuntimeFixture = JSON.parse(
+      readFileSync(
+        join(
+          root,
+          "tools/probable-waffle/skirmish/ai/testing/fixtures/native/technology/technology-native-gameplay.json"
+        ),
+        "utf8"
+      )
+    );
+    const selected = original.recipe.variants.find((variant) => variant.id === "technology-air-four");
+    if (!selected?.presetWorld) throw new Error("air_counter_fixture_missing");
+    const flyers = selected.presetWorld.actors.filter((actor) => actor.fixtureActorId.startsWith("flyer-")).slice(0, 3);
+    const variant = {
+      ...selected,
+      id: `gameplay-three-air-${readyCounter ? "ready" : "unready"}`,
+      captureConstruction: true as const,
+      captureCombat: true as const,
+      presetWorld: {
+        ...selected.presetWorld,
+        fixtureId: `gameplay-three-air-${readyCounter ? "ready" : "unready"}`,
+        actors: [
+          ...selected.presetWorld.actors.filter((actor) => !actor.fixtureActorId.startsWith("flyer-")),
+          ...flyers,
+          ...(readyCounter
+            ? [
+                {
+                  fixtureActorId: "ready-counter",
+                  actorName: ObjectNames.TivaraSlingshotFemale,
+                  owner: 2,
+                  position: { x: 896, y: 736, z: 0 }
+                }
+              ]
+            : [])
+        ],
+        controls: flyers.map((actor, index) => ({
+          id: `air-raid-${index}`,
+          producerFixtureActorId: actor.fixtureActorId,
+          requestTick: 100,
+          applicationTick: 100,
+          action: { kind: "attack" as const, targetFixtureActorId: `worker-${index + 1}` }
+        }))
+      }
+    };
+    // Preserve the original 1000-tick ceiling, using complete normal-speed simulation frames for this control.
+    const fixture: RuntimeFixture = {
+      ...original,
+      recipe: { ...original.recipe, simulationTimeScale: 1, fixedStepFrames: true, variants: [variant] }
+    };
+    const fixtureDigest = digestCanonicalAiValue({ fixture, variant });
+    let opponentCapture: Awaited<ReturnType<typeof captureRuntimeHumanAuthority>> | undefined;
+    const result = await runVariant(
+      browser,
+      fixture,
+      variant,
+      selected.seed,
+      ["TECH-03"],
+      source,
+      fixtureDigest,
+      async (page, index) => {
+        if (index === -1) {
+          await captureRuntimeHumanAuthority(page, 1, 1000);
+          await page.evaluate(
+            (roles) => {
+              const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
+                .__fuzzyWaddleAiRuntimeBrowserTest;
+              const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map"));
+              if (!scene || !host?.presetApplication) throw new Error("air_counter_native_setup_missing");
+              for (const role of roles) {
+                const id = host.presetApplication.createdActorIds[role];
+                const actor = scene.children.getChildren().find((entry) => {
+                  const data = entry.getData("actorData") as
+                    | { components: Map<{ name: string }, { id?: string }> }
+                    | undefined;
+                  return (
+                    data &&
+                    [...data.components.entries()].some(
+                      ([token, value]) => token.name === "IdComponent" && value.id === id
+                    )
+                  );
+                });
+                const components = actor?.getData("actorData")?.components as
+                  | Map<unknown, { flightDefinition?: { height: number } }>
+                  | undefined;
+                if (!components || ![...components.values()].some((value) => (value.flightDefinition?.height ?? 0) > 0))
+                  throw new Error(`air_counter_actor_is_not_flying:${role}:${actor?.name}`);
+              }
+            },
+            flyers.map((actor) => actor.fixtureActorId)
+          );
+        }
+        if (index === fixture.recipe.checkpointTicks.length - 1)
+          opponentCapture = await captureRuntimeHumanAuthority(page, 1);
+      }
+    );
+    const full = { ...result, opponentCapture };
+    // Use the existing combat coverage policy; production still requires its separate complete queue authority below.
+    const context = nativeScenarioContext(full, 1000, undefined, {
+      requireResourceCoverage: nativeScenarioRequiresResourceCoverage("DOMAIN-06")
+    });
+    const counterEffects = new Set(
+      result.productionEvidenceV2?.decisions.flatMap((decision) =>
+        decision.result.acceptedIntents
+          .filter((intent) => intent.kind === "produce" && intent.demandId === "demand:adapt:anti_air")
+          .map((intent) => intent.effectId.replace(/^effect:/, ""))
+      ) ?? []
+    );
+    const counters =
+      result.productionEvidenceV2?.lifecycle.queues.filter(
+        (event) =>
+          event.kind === "complete" &&
+          event.productKey === ObjectNames.TivaraSlingshotFemale &&
+          event.createdActorId &&
+          counterEffects.has(event.effectId)
+      ) ?? [];
+    const produced = new Set(counters.map((event) => event.createdActorId));
+    const flyerIds = new Set(flyers.map((actor) => result.presetCreatedActorIds[actor.fixtureActorId]));
+    const observedFlyers = new Set(
+      result.productionEvidenceV2?.decisions.flatMap(
+        (decision) =>
+          decision.result.input?.observation?.actors
+            .filter(
+              (actor) =>
+                flyerIds.has(actor.actorId) &&
+                actor.relation === "enemy" &&
+                actor.visibility === "visible" &&
+                actor.capabilities.some((capability) => capability.domains.includes("air"))
+            )
+            .map((actor) => actor.actorId) ?? []
+      ) ?? []
+    );
+    const hits = nativeWeaponHits(context).filter((fact) => flyerIds.has(fact.damage.target.actorId ?? ""));
+    const producedHits = hits.filter((fact) => produced.has(fact.damage.initiator?.actorId ?? ""));
+    const readyId = result.presetCreatedActorIds["ready-counter"];
+    const readyHits = hits.filter((fact) => fact.damage.initiator?.actorId === readyId);
+    const { productionCausality, ...retained } = full;
+    void productionCausality;
+    console.log(
+      "GAMEPLAY_AIR_COUNTER",
+      JSON.stringify({
+        source,
+        readyCounter,
+        counters: counters.length,
+        compatibleHits: hits.length,
+        producedHits: producedHits.length,
+        readyHits: readyHits.length,
+        failures: context.failures,
+        gaps: result.productionEvidenceV2?.gaps,
+        errors: result.aiErrors
+      })
+    );
+    await pipeline(
+      Readable.from(stringifyChunked({ source, fixtureDigest, readyCounter, result: retained })),
+      createGzip(),
+      createWriteStream(testInfo.outputPath("air-counter-runtime.json.gz"))
+    );
+    expect(result.aiErrors).toEqual([]);
+    expect(context.failures).toEqual([]);
+    expect(result.productionEvidenceV2?.gaps).toEqual([]);
+    expect(result.productionEvidenceV2?.failures).toEqual([]);
+    expect(result.productionEvidenceV2?.lifecycle.gaps).toEqual([]);
+    expect(result.productionEvidenceV2?.lifecycle.failures).toEqual([]);
+    expect(observedFlyers.size, "all three real flyers are observed through fair input").toBe(3);
+    expect(counters.length, "actual completed anti-air production").toBeGreaterThan(0);
+    expect(producedHits.length, "newly produced counter physically damages the real flying attackers").toBeGreaterThan(
+      0
+    );
+    if (readyCounter) expect(readyHits.length, "the existing compatible defender is actually used").toBeGreaterThan(0);
+  });
+}
