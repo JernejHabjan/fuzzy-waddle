@@ -80,6 +80,8 @@
   versus 14758.7ms camera-bounded (-26.44%). Opening full-map median 19671.4ms versus 15062.4ms
   (-23.43%); opening runs span the profiler/perspective changes, so treat this as corroboration.
   Full-map logs: `full-map-opening-profile.log` and `full-map-multi_ai-profile.log`. Source restored cleanly.
+  A separate same-revision two-AI pair without sampling overhead matched the native authoritative state
+  hash `d9f51b4d` at 240 ticks and 12 decisions per side (`fog-native-state-{bounded,full}.log`).
   Sampler: `AI_GAMEPLAY_PROFILE=1`, workload `combat|opening|multi_ai`, `AI_GAMEPLAY_PROFILE_CPU=1`; fresh 4201,
   40 warmup ticks, 60s ceiling. Keep samples on stable source/config; don't rerun the proven combat comparison.
 - Default evidence directories are junctions to full D:. Preserve historical artifacts; use

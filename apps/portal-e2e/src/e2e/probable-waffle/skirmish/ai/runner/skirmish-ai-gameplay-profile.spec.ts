@@ -8,6 +8,10 @@ import { join } from "node:path";
 import { prepareRuntimeVariant } from "../setup/skirmish-ai-runtime-variant-setup";
 import { captureCheckpoint } from "../capture/skirmish-ai-runtime-checkpoint-capture";
 import type { RuntimeFixture } from "../contracts/skirmish-ai-runtime-fixture";
+import type { AiRuntimeBrowserTestHost } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/browser/ai-runtime-browser-test-host";
+import type { StateHashService } from "@fuzzy-waddle/probable-waffle-phaser/world/services/recovery/state-hash.service";
+import { digestAuthoritativeStateProjection } from "@fuzzy-waddle/probable-waffle-phaser/world/services/recovery/authoritative-state-projection";
+import type { ProbableWaffleScene } from "@fuzzy-waddle/probable-waffle-phaser/core/probable-waffle.scene";
 import { SkirmishGameplayCpuProfile } from "./profiling/skirmish-ai-gameplay-cpu-profile";
 
 test.skip(process.env.AI_GAMEPLAY_PROFILE !== "1", "Explicit real-time gameplay profiling only");
@@ -144,6 +148,18 @@ for (let repetition = 1; repetition <= 3; repetition++) {
     })();
     const after = await captureCheckpoint(page, fixture.recipe.aiPlayerNumber, frames.tick);
     const finalSequences = await readControllerSequences();
+    const authoritativeState = await page.evaluate(() => {
+      const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
+        .__fuzzyWaddleAiRuntimeBrowserTest;
+      const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
+        | ProbableWaffleScene
+        | undefined;
+      const hashService = scene
+        ?.getSceneGameData()
+        .services.find((service): service is StateHashService => "captureAuthoritativeProjection" in service);
+      if (!scene || !hashService) throw new Error("profile_authoritative_state_missing");
+      return hashService.captureAuthoritativeProjection(scene);
+    });
     const sorted = [...frames.deltas].sort((a, b) => a - b);
     const percentile = (fraction: number) => sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * fraction))];
     const report = {
@@ -151,6 +167,7 @@ for (let repetition = 1; repetition <= 3; repetition++) {
       dirtySourceDigest,
       fixtureDigest,
       configurationDigest,
+      authoritativeStateDigest: digestAuthoritativeStateProjection(authoritativeState),
       workload,
       repetition,
       seed: variant.seed,
