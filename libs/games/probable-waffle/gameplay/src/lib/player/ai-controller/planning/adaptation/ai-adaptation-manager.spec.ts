@@ -172,6 +172,62 @@ function observation(
 describe("AiAdaptationManager", () => {
   const manager = new AiAdaptationManager(profile, () => catalog);
 
+  it.each(["missing", "busy"] as const)(
+    "waits for a %s counter producer and resumes when it is available",
+    (constraint) => {
+      const main = actor("main", ObjectNames.Sandhold, "self", []);
+      const flyers = [1, 2, 3].map((id) => actor(`owl-${id}`, ObjectNames.SkaduweeOwl, "enemy", ["air"]));
+      const initial = createAiBrainState({
+        playerNumber: 1,
+        faction: FactionType.Tivara,
+        profile,
+        tick: 0,
+        archetypeId: "opening:1:balanced"
+      });
+      const busy: AiObservedActor = {
+        ...main,
+        queue: {
+          status: "known",
+          observedTick: 140,
+          value: {
+            capacity: 1,
+            occupied: 1,
+            itemIds: ["paid-worker"],
+            items: [
+              {
+                itemId: "paid-worker",
+                kind: "production",
+                objectName: ObjectNames.TivaraWorkerMale,
+                researchType: null
+              }
+            ]
+          }
+        }
+      };
+      const withAdaptation = (tick: number, actors: AiObservedActor[], state: AiBrainState) => {
+        const proposal = manager.propose(observation(tick, actors), state);
+        return {
+          proposal,
+          state: {
+            ...state,
+            economyProduction: { ...state.economyProduction, adaptation: proposal.statePatch!.adaptation! }
+          }
+        };
+      };
+      const first = withAdaptation(100, [main, ...flyers], initial);
+      const constrained = withAdaptation(140, constraint === "missing" ? flyers : [busy, ...flyers], first.state);
+      expect(constrained.proposal.intents).toEqual([]);
+      const recovered = manager.propose(observation(180, [main, ...flyers]), constrained.state);
+      expect(recovered.intents).toContainEqual(
+        expect.objectContaining({
+          kind: "produce",
+          producerId: main.actorId,
+          objectName: ObjectNames.TivaraSlingshotFemale
+        })
+      );
+    }
+  );
+
   it("TECH-03/04 records one visible flyer as persisted evidence before it changes composition", () => {
     const main = actor("main", ObjectNames.Sandhold, "self", []);
     const flyer = actor("flyer", ObjectNames.TivaraSlingshotFemale, "enemy", ["air"]);
