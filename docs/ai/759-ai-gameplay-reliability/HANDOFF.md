@@ -64,6 +64,12 @@
   gaps, so this is partial evidence. The retained trace shows repeated same-destination scout orders 20 ticks
   apart. The planner now preserves a matching active Move even without a tactics record, while still reissuing
   after an interruption. Red/green regression and 56 scouting/skirmish tests pass.
+  Matched `h01-scout-runtime/` trace after the fix: same actor, 4001 ticks, nine same-destination
+  scout restarts at 20-tick cadence reduced to zero, movement stops 35 to 26, eight arrivals in both
+  runs and first original arrival still at tick 1212. The diagnostic remains failed on capture coverage.
+  The failure is the resource-history gate, not a dropped movement trace. Both sides report partial
+  resource coverage after actor/service changes. H-01 explicitly requires unrelated native income;
+  retain its gate and use a focused movement-only case for the remaining collision acceptance.
 - R4 native control: `E/reproduction/movement/skirmish-gameplay-pursuit.spec.ts` passes in 8.3s/240 ticks, with six
   Banshee hits while the human worker moves (ticks 74/106/128/160/182/214). Only the strategic coordinator is paused
   through its public campaign API; native pawn trees/weapons/movement run. This cannot prove autonomous R5 behavior
