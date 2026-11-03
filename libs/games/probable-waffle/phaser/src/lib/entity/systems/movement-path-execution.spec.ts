@@ -95,6 +95,23 @@ describe("native static path execution/recovery extraction", () => {
     expect(f.occupancy.reserveDestination).not.toHaveBeenCalled();
   });
 
+  it("repaths to the original destination when another unit claims the sidestep", async () => {
+    const f = fixture();
+    const blocked = { x: 1, y: 0 };
+    const sideStep = { x: 0, y: 1 };
+    const end = { x: 2, y: 0 };
+    jest
+      .spyOn(f.execution as unknown as { getBestSideStepTile(): Vector2Simple }, "getBestSideStepTile")
+      .mockReturnValue(sideStep);
+    f.occupancy.hasAnyActiveStepReservation.mockReturnValue(false);
+    f.move
+      .mockRejectedValueOnce(new MovementStepBlockedError(blocked, ["actor:2"]))
+      .mockRejectedValueOnce(new MovementStepBlockedError(sideStep, ["actor:3"]));
+    f.navigation.findPathFromGameObjectToTileAvoidingDynamicBlockers.mockResolvedValue([{ x: 0, y: 0 }, end]);
+    await f.execution.moveAlongPathByFollowingPreCalculatedStaticPath([blocked, end]);
+    expect(f.move.mock.calls.map(([tile]) => tile)).toEqual([blocked, sideStep, end]);
+  });
+
   it("reserves a ranked same-height fallback before the final repath", async () => {
     const f = fixture(),
       tile = { x: 1, y: 0 },

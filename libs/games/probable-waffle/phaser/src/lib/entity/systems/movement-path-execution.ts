@@ -152,7 +152,13 @@ export class MovementPathExecution {
       if (sideStepTile) {
         recoveryState.sideStepAttempts++;
         config?.onPathUpdate?.(sideStepTile);
-        await this.tween.moveActorToTileWithTween(sideStepTile, config, undefined, undefined, completion);
+        try {
+          await this.tween.moveActorToTileWithTween(sideStepTile, config, undefined, undefined, completion);
+        } catch (error) {
+          if (!(error instanceof MovementStepBlockedError)) throw error;
+          // Another actor can claim the sidestep between selection and execution.
+          // Continue with the bounded repath budget for the original destination.
+        }
         const recovered = await this.repathToDestination(finalDestination, config, recoveryState, queryContext, "repath", completion);
         if (recovered) return;
       }

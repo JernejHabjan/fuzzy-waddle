@@ -70,6 +70,12 @@
   The failure is the resource-history gate, not a dropped movement trace. Both sides report partial
   resource coverage after actor/service changes. H-01 explicitly requires unrelated native income;
   retain its gate and use a focused movement-only case for the remaining collision acceptance.
+  The local 12-worker opposing-traffic reproduction now checks exact native tiles after correcting its
+  authored world offset. Ten reach their original destinations; two terminate short on occupied steps,
+  and one reports arrival two tiles early before resuming the same order. Traces:
+  `opposing-traffic-exact.json`, `opposing-traffic-sidestep.json`, `opposing-traffic-failures.log`.
+  A claimed sidestep now falls through to bounded repathing (32 focused tests), but the corridor result
+  is unchanged. Keep the failing local browser assertion and diagnose blocker identity/endpoint handling.
 - R4 native control: `E/reproduction/movement/skirmish-gameplay-pursuit.spec.ts` passes in 8.3s/240 ticks, with six
   Banshee hits while the human worker moves (ticks 74/106/128/160/182/214). Only the strategic coordinator is paused
   through its public campaign API; native pawn trees/weapons/movement run. This cannot prove autonomous R5 behavior
