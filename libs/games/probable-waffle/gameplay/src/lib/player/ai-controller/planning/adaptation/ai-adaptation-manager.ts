@@ -1,0 +1,362 @@
+import type { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
+import type { AiBrainState } from "../../contracts/state/ai-state-contracts";
+import type { AiCapabilityCatalogEntry, AiCapabilityCatalog } from "../../contracts/observation/ai-capability-catalog";
+import type { AiDemand } from "../../contracts/planning/ai-plan-contracts";
+import type { AiIntent } from "../../contracts/commands/ai-intent";
+import type { AiObservation } from "../../contracts/observation/ai-observation";
+import type { AiProfileConfig } from "../../contracts/ai-profile-config";
+import type { AiEffectId } from "../../contracts/ai-core-types";
+import type { AiManagerProposal, AiProposalManager } from "../coordination/ai-manager-proposal";
+import { adaptationRoleTargets, mergeAdaptationEvidence } from "./ai-adaptation-evidence";
+import { MIN_RESEARCH_UTILITY, scoreAdaptationResearch } from "./ai-adaptation-research-score";
+import type { AiAdaptationRole } from "./ai-adaptation-role";
+import { matchesAdaptationRole } from "./ai-adaptation-role-match";
+import { queuedAdaptationRoleItemIds } from "./ai-adaptation-queued-role";
+
+function owned(observation: AiObservation) {
+  return observation.actors.filter((actor) => actor.relation === "self" && actor.visibility === "owned");
+}
+
+function ids(state: AiBrainState, prefix: string, ordinal: number) {
+  const suffix = `${state.scheduler.decisionSequence}:${ordinal}`;
+  return {
+    intentId: `intent:stage14:${prefix}:${suffix}` as AiIntent["intentId"],
+    effectId: `effect:stage14:${prefix}:${suffix}` as AiIntent["effectId"],
+    claimId: `claim:stage14:${prefix}:${suffix}` as AiIntent["claims"][number]["claimId"]
+  };
+}
+
+function entryFor(catalog: AiCapabilityCatalog, objectName: ObjectNames): AiCapabilityCatalogEntry | undefined {
+  return catalog.entries.find((entry) => entry.sourceObjectName === objectName);
+}
+
+function currentRoleActorIds(
+  observation: AiObservation,
+  catalog: AiCapabilityCatalog,
+  role: AiAdaptationRole
+): readonly ActorId[] {
+  return owned(observation)
+    .filter((actor) => {
+      const entry = entryFor(catalog, actor.objectName);
+      return entry !== undefined && matchesAdaptationRole(entry, role);
+    })
+    .map((actor) => actor.actorId)
+    .sort();
+}
+
+/** Accepted counter production remains a counted commitment until shared reconciliation releases it. */
+function pendingRoleCommitments(state: AiBrainState, role: AiAdaptationRole): number {
+  return state.reservations.filter(
+    (reservation) => reservation.subjectKey?.startsWith(`effect:effect:stage14:${role}:`) === true
+  ).length;
+}
+
+function pendingRoleEffectIds(state: AiBrainState, role: AiAdaptationRole): readonly AiEffectId[] {
+  return state.reservations
+    .map((reservation) => reservation.subjectKey)
+    .filter((subjectKey): subjectKey is string => subjectKey?.startsWith(`effect:effect:stage14:${role}:`) === true)
+    .map((subjectKey) => subjectKey.slice("effect:".length) as AiEffectId)
+    .sort();
+}
+
+function producerForRole(
+  observation: AiObservation,
+  catalog: AiCapabilityCatalog,
+  role: AiAdaptationRole,
+  remainingResources: ReadonlyMap<ResourceType, number>
+):
+  | {
+      readonly producerId: ActorId;
+      readonly objectName: ObjectNames;
+      readonly resourceCost: Readonly<Partial<Record<ResourceType, number>>>;
+    }
+  | undefined {
+  for (const producer of owned(observation).sort((left, right) => left.actorId.localeCompare(right.actorId))) {
+    if (producer.queue.status === "known" && producer.queue.value.occupied >= producer.queue.value.capacity) continue;
+    const producerEntry = entryFor(catalog, producer.objectName);
+    const product = producerEntry?.produces
+      .map((candidate) => ({ candidate, entry: entryFor(catalog, candidate) }))
+      .filter(
+        (candidate): candidate is { candidate: ObjectNames; entry: AiCapabilityCatalogEntry } =>
+          candidate.entry !== undefined
+      )
+      .filter((candidate) => matchesAdaptationRole(candidate.entry, role))
+      .filter((candidate) =>
+        Object.entries(candidate.entry.constructionProfile?.resourceCost ?? {}).every(
+          ([resourceType, amount]) => (remainingResources.get(resourceType as ResourceType) ?? 0) >= (amount ?? 0)
+        )
+      )
+      .sort((left, right) => {
+        const totalCost = (entry: AiCapabilityCatalogEntry) =>
+          Object.values(entry.constructionProfile?.resourceCost ?? {}).reduce<number>(
+            (total, amount) => total + (amount ?? 0),
+            0
+          );
+        return totalCost(left.entry) - totalCost(right.entry) || left.candidate.localeCompare(right.candidate);
+      })[0];
+    if (product)
+      return {
+        producerId: producer.actorId,
+        objectName: product.candidate,
+        resourceCost: product.entry.constructionProfile?.resourceCost ?? {}
+      };
+  }
+  return undefined;
+}
+
+function archetypeFallback(
+  state: AiBrainState,
+  observation: AiObservation,
+  catalog: AiCapabilityCatalog
+): { readonly id: string; readonly reason: string } | undefined {
+  const archetypeParts = state.opening.archetypeId.split(":");
+  const purpose = archetypeParts[archetypeParts.length - 1];
+  const producerPathAvailable = (role: AiAdaptationRole) =>
+    catalog.entries.some((entry) =>
+      entry.produces.some((candidate) => {
+        const product = entryFor(catalog, candidate);
+        return product !== undefined && matchesAdaptationRole(product, role);
+      })
+    );
+  const mapHasWater = observation.map?.accessGraph?.nodes.some((node) => node.domain === "water") ?? false;
+  const transport = catalog.entries.some((entry) =>
+    entry.produces.some((candidate) => {
+      const product = entryFor(catalog, candidate);
+      return product !== undefined && (product.cargoCapacity ?? 0) > 0 && product.movementDomains.length > 0;
+    })
+  );
+  const unsupported =
+    (purpose === "air_control" && !producerPathAvailable("anti_air")) ||
+    (purpose === "naval" && (!mapHasWater || !producerPathAvailable("water_control"))) ||
+    (purpose === "expeditionary" && !transport);
+  return unsupported
+    ? {
+        id: `opening:${observation.faction}:balanced`,
+        reason: `archetype_fallback:${purpose}:capability_or_access_unavailable`
+      }
+    : undefined;
+}
+
+/**
+ * Stage-14 pure adaptation owner. It consumes only recorded visible evidence and
+ * runtime-legal tech candidates, preserving useful production commitments while
+ * adding bounded counter roles or a demonstrably valuable upgrade.
+ */
+export class AiAdaptationManager implements AiProposalManager {
+  readonly managerId = "stagez14.adaptation";
+
+  constructor(
+    private readonly profile: AiProfileConfig,
+    private readonly getCatalog: () => AiCapabilityCatalog | undefined
+  ) {}
+
+  propose(observation: AiObservation, state: AiBrainState): AiManagerProposal {
+    const catalog = this.getCatalog();
+    if (!catalog || catalog.generation !== observation.generation) {
+      return {
+        managerId: this.managerId,
+        lane: "optional_infrastructure_tech",
+        evaluated: false,
+        intents: [],
+        reasons: ["catalog_not_ready"]
+      };
+    }
+    const evidence = mergeAdaptationEvidence(state, observation);
+    const targets = adaptationRoleTargets(evidence, state);
+    const prior = state.economyProduction.adaptation;
+    const canTransition =
+      prior.lastTransitionTick === null ||
+      observation.tick - prior.lastTransitionTick >= this.profile.compositionReconsiderationTicks;
+    // Confirmed live flyers may grow the counterforce without reopening unrelated composition choices.
+    // A producer clue or remembered contact alone must still respect the normal transition cooldown.
+    const emergencyAntiAir = targets.find(
+      (target) =>
+        target.role === "anti_air" &&
+        target.desired > (prior.activeRoleTargets.find((entry) => entry.role === "anti_air")?.desired ?? 0) &&
+        evidence.some(
+          (entry) =>
+            target.evidenceIds.includes(entry.evidenceId) && entry.permittedFacts.includes("visible_air_movement")
+        )
+    );
+    const activeRoleTargets = canTransition
+      ? targets
+      : emergencyAntiAir
+        ? [...prior.activeRoleTargets.filter((target) => target.role !== "anti_air"), emergencyAntiAir]
+        : prior.activeRoleTargets;
+    const adaptationDemands: AiDemand[] = [];
+    const intents: AiIntent[] = [];
+    const remainingResources = new Map(
+      observation.resources.map(
+        (resource) =>
+          [resource.resourceType, resource.stockpile - resource.reservedUnspent - resource.obligationsDue] as const
+      )
+    );
+    let ordinal = 0;
+
+    for (const target of targets) {
+      // Cooldown gates changing composition, not filling an already admitted counterforce.
+      const desired = canTransition
+        ? target.desired
+        : Math.min(
+            target.desired,
+            activeRoleTargets.find((priorTarget) => priorTarget.role === target.role)?.desired ?? 0
+          );
+      if (desired === 0) continue;
+      const currentActorIds = currentRoleActorIds(observation, catalog, target.role);
+      const queuedIds = queuedAdaptationRoleItemIds(observation, catalog, target.role);
+      const acceptedEffectIds = pendingRoleEffectIds(state, target.role);
+      const current = currentActorIds.length;
+      const committed = pendingRoleCommitments(state, target.role);
+      adaptationDemands.push({
+        demandId: `demand:adapt:${target.role}` as AiDemand["demandId"],
+        purpose: "evidence_backed_counter",
+        capabilityOrRole: target.role,
+        unit: "actor_count",
+        desired,
+        satisfiedActorIds: currentActorIds,
+        queuedIds,
+        constructingIds: [],
+        acceptedNotObservedEffectIds: acceptedEffectIds,
+        preferredObjectNames: [],
+        resourceObligations: {}
+      });
+      if (current + queuedIds.length + committed >= desired) continue;
+      const producer = producerForRole(observation, catalog, target.role, remainingResources);
+      if (!producer) continue;
+      const next = ids(state, target.role, ordinal++);
+      const resourceClaims = Object.entries(producer.resourceCost)
+        .filter((entry): entry is [ResourceType, number] => entry[1] !== undefined && entry[1] > 0)
+        .sort(([left], [right]) => left.localeCompare(right))
+        .map(([resourceType, amount]) => ({
+          claimId: `${next.claimId}:${resourceType}` as AiIntent["claims"][number]["claimId"],
+          kind: "resource" as const,
+          resourceType,
+          amount
+        }));
+      intents.push({
+        ...next,
+        kind: "produce",
+        spendingCategory: "defense",
+        planId: state.opening.plan.planId,
+        demandId: `demand:adapt:${target.role}` as AiDemand["demandId"],
+        lane: "supply_production",
+        proposedTick: observation.tick,
+        urgencyClass: 2,
+        utility: target.role === "fortification_breaker" && state.opening.archetypeId.endsWith(":rush") ? 800 : 760,
+        preconditions: [{ kind: "actor_exists", actorId: producer.producerId }],
+        claims: [
+          { claimId: next.claimId, kind: "production_slot", producerId: producer.producerId, slot: 0 },
+          ...resourceClaims,
+          {
+            claimId: `${next.claimId}:effect` as AiIntent["claims"][number]["claimId"],
+            kind: "effect",
+            effectId: next.effectId
+          }
+        ],
+        reasonCode:
+          `adapt:${target.role}:confirmed=${target.evidenceIds.join(",")}:` +
+          `current=${current}:queued=${queuedIds.length}:committed=${committed}/${desired}`,
+        producerId: producer.producerId,
+        objectName: producer.objectName
+      });
+      for (const [resourceType, amount] of Object.entries(producer.resourceCost)) {
+        remainingResources.set(
+          resourceType as ResourceType,
+          Math.max(0, (remainingResources.get(resourceType as ResourceType) ?? 0) - (amount ?? 0))
+        );
+      }
+    }
+
+    const pendingResearch = state.reservations.some(
+      (reservation) => reservation.subjectKey?.startsWith("effect:effect:stage14:research:") === true
+    );
+    const survivalThreatVisible = observation.threatSummary.visibleEnemyActorIds.length > 0;
+    const scoredResearch =
+      pendingResearch || survivalThreatVisible
+        ? undefined
+        : observation.researchCandidates
+            .map((candidate) => ({ candidate, score: scoreAdaptationResearch(candidate, observation, state) }))
+            .filter((entry) => entry.score >= MIN_RESEARCH_UTILITY)
+            .sort(
+              (left, right) =>
+                right.score - left.score ||
+                left.candidate.researchType.localeCompare(right.candidate.researchType) ||
+                left.candidate.producerId.localeCompare(right.candidate.producerId)
+            )[0];
+    if (scoredResearch) {
+      const next = ids(state, "research", ordinal++);
+      const resourceClaims = Object.entries(scoredResearch.candidate.cost)
+        .filter((entry): entry is [ResourceType, number] => entry[1] !== undefined && entry[1] > 0)
+        .sort(([left], [right]) => left.localeCompare(right))
+        .map(([resourceType, amount]) => ({
+          claimId: `${next.claimId}:${resourceType}` as AiIntent["claims"][number]["claimId"],
+          kind: "resource" as const,
+          resourceType,
+          amount
+        }));
+      intents.push({
+        ...next,
+        kind: "research",
+        spendingCategory: "defense",
+        planId: state.opening.plan.planId,
+        demandId: null,
+        lane: "optional_infrastructure_tech",
+        proposedTick: observation.tick,
+        urgencyClass: 4,
+        utility: scoredResearch.score,
+        preconditions: [{ kind: "actor_exists", actorId: scoredResearch.candidate.producerId }],
+        claims: [
+          { claimId: next.claimId, kind: "production_slot", producerId: scoredResearch.candidate.producerId, slot: 0 },
+          ...resourceClaims,
+          {
+            claimId: `${next.claimId}:effect` as AiIntent["claims"][number]["claimId"],
+            kind: "effect",
+            effectId: next.effectId
+          }
+        ],
+        reasonCode: `research:${scoredResearch.candidate.researchType}:benefit_over_1200_ticks=${scoredResearch.score}`,
+        producerId: scoredResearch.candidate.producerId,
+        researchType: scoredResearch.candidate.researchType
+      });
+    }
+
+    const fallback = archetypeFallback(state, observation, catalog);
+    const researchReason = scoredResearch
+      ? `research_score:${scoredResearch.score}`
+      : survivalThreatVisible
+        ? "research:survival_threat"
+        : pendingResearch
+          ? "research:already_pending"
+          : "research:no_sufficient_legal_value";
+    return {
+      managerId: this.managerId,
+      lane: "optional_infrastructure_tech",
+      evaluated: true,
+      intents,
+      reasons: [
+        `adaptation_evidence:${evidence.length}`,
+        `composition_transition:${canTransition ? "eligible" : "cooldown"}`,
+        `committed_production:${prior.cancellationPolicy}`,
+        researchReason,
+        fallback?.reason ?? `archetype:${state.opening.archetypeId}`
+      ],
+      statePatch: {
+        ...(fallback ? { openingArchetypeId: fallback.id } : {}),
+        adaptationDemands,
+        adaptation: {
+          evidence,
+          activeRoleTargets,
+          lastTransitionTick: canTransition && targets.length > 0 ? observation.tick : prior.lastTransitionTick,
+          lastTransitionReason:
+            canTransition && targets.length > 0
+              ? targets.map((target) => target.role).join(",")
+              : prior.lastTransitionReason,
+          selectedResearchType: scoredResearch?.candidate.researchType ?? null,
+          selectedResearchScore: scoredResearch?.score ?? null,
+          cancellationPolicy: "retain_committed_production"
+        }
+      }
+    };
+  }
+}

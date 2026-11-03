@@ -18,7 +18,7 @@ import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { SoundType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-type";
 import { ActorPhysicalType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/actor-physical-type";
 import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
-import { AiType } from "../../../ai-agents/ai-type";
+import { AiType } from "../../../ai-agents/controller/ai-type";
 
 export const tivaraMacemanMaleDefinition = {
   components: {
@@ -61,7 +61,7 @@ export const tivaraMacemanMaleDefinition = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Food]: 100
+        [ResourceType.Food]: 60
       },
       refundFactor: 0.5,
       productionTime: 5000,

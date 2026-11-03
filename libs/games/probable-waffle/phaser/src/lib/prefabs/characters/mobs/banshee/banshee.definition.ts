@@ -4,7 +4,7 @@ import { ActorPhysicalType } from "@fuzzy-waddle/probable-waffle-gameplay/entity
 import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
-import { AiType } from "../../../ai-agents/ai-type";
+import { AiType } from "../../../ai-agents/controller/ai-type";
 import { SpellType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/spell-type";
 
 export const bansheeDefinition = {

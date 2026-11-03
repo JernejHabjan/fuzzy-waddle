@@ -5,7 +5,7 @@ describe("CampaignTrustedHookRegistry", () => {
   it("requires one explicit executor per hook id", () => {
     const registry = new CampaignTrustedHookRegistry();
     const executor = {
-      hookId: asCampaignContentId<"mission-trusted-hook">("open-secret-door"),
+      hookId: asCampaignContentId<"trusted-hook">("open-secret-door"),
       execute: () => ({ status: "completed" as const })
     };
     registry.register(executor);

@@ -5,7 +5,7 @@ import { getSceneService } from "../../../world/services/scene-component-helpers
 import { canActorTraverseTile, onObjectReady } from "../../../data/game-object-helper";
 import { getActorComponent } from "../../../data/actor-component";
 import { SelectableComponent } from "../selectable-component";
-import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
+import { PawnAiController } from "../../../prefabs/ai-agents/controller/pawn-ai-controller";
 import type { Subscription } from "rxjs";
 import { OrderType } from "../../../ai/order-type";
 import { OwnerComponent } from "../owner-component";

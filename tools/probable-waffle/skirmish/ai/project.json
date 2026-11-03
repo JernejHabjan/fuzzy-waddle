@@ -1,0 +1,26 @@
+{
+  "name": "skirmish-ai-tools",
+  "projectType": "library",
+  "sourceRoot": "tools/probable-waffle/skirmish/ai",
+  "tags": ["scope:probable-waffle", "type:tooling"],
+  "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec tsc --project tools/probable-waffle/skirmish/ai/tsconfig.json"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node --test \"tools/probable-waffle/skirmish/ai/**/*.test.ts\""
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {
+        "lintFilePatterns": ["tools/probable-waffle/skirmish/ai/**/*.ts"]
+      }
+    }
+  }
+}

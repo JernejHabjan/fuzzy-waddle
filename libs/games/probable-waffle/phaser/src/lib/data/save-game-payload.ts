@@ -1,9 +1,13 @@
+import type { ProbableWaffleGameInstanceData } from "@fuzzy-waddle/probable-waffle-protocol";
+
 /**
  * Defines the structured save game payload contract for this module. Its declared surface makes thumbnail,
  * kind, name, checkpoint id explicit to every consumer. Use this shared shape rather than an ad-hoc object so
  * adapters, persistence, and callers remain compatible.
  */
 export interface SaveGamePayload {
+  /** Detached completed-boundary world, captured before asynchronous thumbnail/name/codec work. */
+  gameInstanceData?: ProbableWaffleGameInstanceData;
   /**
    * string thumbnail carried by {@link SaveGamePayload}. Treat it according to the owning contract’s validation
    * and presentation rules rather than assuming it is a stable identifier.

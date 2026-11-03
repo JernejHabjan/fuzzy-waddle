@@ -11,10 +11,11 @@ import { type Vector2Simple, type Vector3Simple } from "@fuzzy-waddle/platform-g
 import type { MapAnalysis } from "./ai-behavior/map-analyzer";
 import { ReservationPool } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/resource-reservations";
 import { getActorComponent } from "../../data/actor-component";
-import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
+import { PawnAiController } from "../../prefabs/ai-agents/controller/pawn-ai-controller";
 import { RandomService } from "../../world/services/random.service";
 import { getSceneService } from "../../world/services/scene-component-helpers";
-import { getSimulationNow } from "./ai-time";
+import { getSimulationNow } from "./decision/ai-time";
+import { getMostNeededResource } from "./decision/ai-static-decisions";
 type GameObject = Phaser.GameObjects.GameObject;
 
 export interface EnemyIntel {
@@ -154,11 +155,11 @@ export class PlayerAiBlackboard extends Blackboard {
   }
 
   getMostNeededResource(): { type: ResourceType; amount: number } | null {
-    // This method is kept for backward compatibility but currently returns null
-    // The actual logic is in LogisticsManager.getMostConstrainedResource()
-    // If you need urgency calculation here, pass the logistics manager as a parameter
-    // to methods that call this, or refactor to use LogisticsManager directly
-    return null;
+    return getMostNeededResource({
+      resources: this.economy.resources,
+      reserved: this.economy.reserved,
+      incomeSmoothed: this.economy.incomeSmoothed
+    });
   }
 
   getTotalResources(): number {

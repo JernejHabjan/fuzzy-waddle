@@ -1,0 +1,84 @@
+import { expect, test } from "@playwright/test";
+import { evaluateRuntimeProductionCapacity } from "./skirmish-ai-runtime-production-capacity-evaluation";
+
+const assertion = {
+  latestTick: 2000,
+  producerObjectNameByFaction: {
+    Tivara: "AnkGuard",
+    Skaduwee: "InfantryInn"
+  }
+} as const;
+
+function checkpoint(
+  tick: number,
+  producerCount: number,
+  desired = 2
+): Parameters<typeof evaluateRuntimeProductionCapacity>[2]["checkpoints"][number] {
+  return {
+    tick,
+    militaryProducerNames: Array.from({ length: producerCount }, () => "AnkGuard"),
+    demands: [
+      {
+        demandId: "demand:capacity:first-army",
+        desired,
+        purpose: "dated_military_throughput",
+        satisfied: producerCount,
+        queued: 0,
+        constructing: 0,
+        accepted: 0
+      },
+      {
+        demandId: "demand:composition:first-squad",
+        desired: 12,
+        purpose: "dated_land_pressure",
+        satisfied: 3,
+        queued: 2,
+        constructing: 0,
+        accepted: 0
+      }
+    ]
+  };
+}
+
+function variant(
+  branch: "build" | "already_sufficient",
+  checkpoints: Parameters<typeof evaluateRuntimeProductionCapacity>[2]["checkpoints"]
+): Parameters<typeof evaluateRuntimeProductionCapacity>[2] {
+  return {
+    aiFaction: "Tivara",
+    presetFixtureId: "capacity",
+    productionCapacityBranch: branch,
+    presetCreatedActorNames: branch === "build" ? ["AnkGuard"] : ["AnkGuard", "AnkGuard"],
+    checkpoints
+  };
+}
+
+test("capacity subject needs a real ready second producer", () => {
+  const ready = variant("build", [checkpoint(20, 1), checkpoint(600, 2)]);
+  expect(evaluateRuntimeProductionCapacity("PRO-01", assertion, ready)).toEqual([]);
+  expect(evaluateRuntimeProductionCapacity("PRO-01", assertion, variant("build", [checkpoint(20, 1)]))).toContain(
+    "production_capacity_not_ready"
+  );
+});
+
+test("ample-capacity control must not construct a cash-only third producer", () => {
+  const safe = variant("already_sufficient", [checkpoint(20, 2), checkpoint(2000, 2)]);
+  expect(evaluateRuntimeProductionCapacity("PRO-02", assertion, safe)).toEqual([]);
+  expect(
+    evaluateRuntimeProductionCapacity(
+      "PRO-02",
+      assertion,
+      variant("already_sufficient", [checkpoint(20, 2), checkpoint(2000, 3)])
+    )
+  ).toContain("production_capacity_unnecessary_duplicate");
+});
+
+test("capacity claim without a dated two-producer demand does not count", () => {
+  expect(
+    evaluateRuntimeProductionCapacity(
+      "PRO-01",
+      assertion,
+      variant("build", [checkpoint(20, 1, 1), checkpoint(600, 2, 1)])
+    )
+  ).toContain("production_capacity_dated_demand_missing");
+});

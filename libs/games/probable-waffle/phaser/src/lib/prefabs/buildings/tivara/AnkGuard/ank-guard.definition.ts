@@ -69,6 +69,7 @@ export const ankGuardDefinition = {
     },
     research: {
       availableResearch: [
+        ResearchType.TivaraMacemanUpgradeLevel2,
         ResearchType.FirestormSpell,
         ResearchType.FrostNovaSpell,
         ResearchType.WendigoBranches,

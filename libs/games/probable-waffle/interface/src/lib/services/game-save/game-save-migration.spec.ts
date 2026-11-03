@@ -2,6 +2,8 @@ import {
   GameSaveKind,
   GameSaveScope,
   GameSaveSyncState,
+  ProbableWaffleGameInstanceType,
+  ProbableWaffleGameInstanceVisibility,
   type EncodedGameSaveRecord,
   type ProbableWaffleGameInstanceData
 } from "@fuzzy-waddle/probable-waffle-protocol";
@@ -31,6 +33,8 @@ describe("migrateGameSaveRecord", () => {
   } as EncodedGameSaveRecord;
   const data = {
     gameInstanceMetadataData: {
+      name: "Dreams", type: ProbableWaffleGameInstanceType.Campaign,
+      visibility: ProbableWaffleGameInstanceVisibility.Private, startOptions: {}, rndSeed: 1, createdBy: null,
       campaignContext: {
         campaignId: ASHES_OF_THE_ANCIENTS_CAMPAIGN_ID,
         catalogVersion: 1,
@@ -40,9 +44,9 @@ describe("migrateGameSaveRecord", () => {
         runId: "run-1"
       }
     },
-    gameStateData: { campaignMission: runtime },
+    gameStateData: { actors: [], pause: false, score: 0, campaignMission: runtime },
     players: []
-  } as ProbableWaffleGameInstanceData;
+  } satisfies ProbableWaffleGameInstanceData;
 
   it("upgrades legacy searchable metadata from the decoded campaign runtime", () => {
     const result = migrateGameSaveRecord(stored, data);

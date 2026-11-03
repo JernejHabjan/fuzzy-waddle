@@ -19,9 +19,10 @@ describe("SingleSelectionHandler", () => {
   let hudScene: object;
 
   beforeEach(() => {
-    (Phaser.Input as typeof Phaser.Input & { Events: { POINTER_UP: string } }).Events = {
-      POINTER_UP: pointerUpEvent
-    };
+    Object.defineProperty(Phaser.Input, "Events", {
+      value: { ...Phaser.Input.Events, POINTER_UP: pointerUpEvent },
+      configurable: true
+    });
     emittedEvents = [];
     scene = {
       input: {

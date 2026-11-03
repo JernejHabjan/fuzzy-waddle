@@ -12,7 +12,9 @@ import { NavigationService } from "../../../world/services/navigation.service";
 import { getActorComponent } from "../../../data/actor-component";
 import { RepresentableComponent } from "../representable-component";
 import type { IsoDirection } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/iso-directions";
-import type { ActorTranslateDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/actor-translate-definition";
+// prettier-ignore
+import type { ActorTranslateDefinition } from
+  "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/actor-translate-definition";
 
 export class ActorTranslateComponent {
   private _actorMovedLogicalPosition: Subject<Vector3Simple> = new Subject<Vector3Simple>();
@@ -80,6 +82,8 @@ export class ActorTranslateComponent {
    * This is to update all listeners in clients world about small movement changes - not to broadcast this across network
    */
   moveActorToLogicalPosition(logicalPosition: Vector3Simple) {
+    // A spawn rally can start before the scheduled ready callback; its live transform is already authoritative.
+    this.representableComponent ??= getActorComponent(this.gameObject, RepresentableComponent);
     this._actorMovedLogicalPosition.next(logicalPosition);
     if (this.representableComponent) {
       this.representableComponent.logicalWorldTransform = logicalPosition;

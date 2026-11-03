@@ -99,6 +99,9 @@ export const Types: {
 };
 
 export const Scenes: {
+  RUNNING: number;
+  PAUSED: number;
+  SHUTDOWN: number;
   Events: {
     SHUTDOWN: string;
   };

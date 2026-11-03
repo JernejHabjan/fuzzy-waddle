@@ -50,9 +50,13 @@ export class StatusEffectComponent {
     if (existingEffect) {
       // Refresh the effect - reset remaining time to full duration
       existingEffect.remainingTime = effect.duration;
-      existingEffect.lastTickTime = getSimulationNow(this.gameObject.scene);
       // Update other properties if the new effect is different
-      Object.assign(existingEffect, { ...effect, remainingTime: effect.duration });
+      // Keep the tick clock: repeatedly refreshing a zone must not postpone its periodic effect forever.
+      Object.assign(existingEffect, {
+        ...effect,
+        remainingTime: effect.duration,
+        lastTickTime: existingEffect.lastTickTime
+      });
     } else {
       // Add new effect
       const newEffect: StatusEffectData = {

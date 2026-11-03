@@ -56,6 +56,7 @@ describe("CampaignPhaserWorldAdapter AI ownership", () => {
     const playerDefinition = {
       player: createPlayerLobbyDefinition(2),
       playerType: ProbableWafflePlayerType.AI,
+      team: 2,
       campaignController: "full-ai" as const,
       campaignAiEnabled: true
     };
@@ -92,7 +93,12 @@ describe("CampaignPhaserWorldAdapter AI ownership", () => {
     expect(
       adapter.releaseOwnedResources(
         "mission:phase:test",
-        resumed.status === "completed" ? (resumed.ownedResources ?? []) : [],
+        resumed.status === "completed"
+          ? (resumed.ownedResources ?? []).map((resource) => ({
+              ...resource,
+              ownerToken: context.ownerToken
+            }))
+          : [],
         "phase-exited"
       )
     ).toEqual([]);

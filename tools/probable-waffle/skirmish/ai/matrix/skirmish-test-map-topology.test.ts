@@ -1,0 +1,168 @@
+import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import test from "node:test";
+
+import { workspaceRoot as root } from "../shared/workspace-paths.ts";
+const contract = JSON.parse(
+  readFileSync(
+    resolve(root, "tools/probable-waffle/skirmish/ai/testing/fixtures/maps/frozen-skirmish-test-map-topology.json"),
+    "utf8"
+  )
+);
+
+function frozenJson(path, expectedDigest) {
+  return parseFrozenJson(readFileSync(resolve(root, path), "utf8"), expectedDigest, path);
+}
+
+/** JSON text hashes use Git's LF representation, independently of local checkout line endings. */
+function parseFrozenJson(text: string, expectedDigest: string, path: string) {
+  const content = text.replaceAll("\r\n", "\n");
+  assert.equal(createHash("sha256").update(content).digest("hex"), expectedDigest, `${path} changed intentionally?`);
+  return JSON.parse(content);
+}
+
+test("frozen JSON hashes ignore checkout line endings while rejecting changed content", () => {
+  const text = '{\n  "frozen": true\n}\n';
+  const digest = createHash("sha256").update(text).digest("hex");
+  assert.deepEqual(parseFrozenJson(text, digest, "fixture"), { frozen: true });
+  assert.deepEqual(parseFrozenJson(text.replaceAll("\n", "\r\n"), digest, "fixture"), { frozen: true });
+  assert.throws(() => parseFrozenJson(text.replace("true", "false"), digest, "fixture"), /changed intentionally/);
+});
+
+test("continuous victory uses frozen bridge terrain without inherited campaign armies", () => {
+  const map = contract.maps.find((candidate) => candidate.id === "ai-bridge-crossing");
+  assert.ok(map);
+  const scene = frozenJson(map.scene, map.sceneSha256);
+  const tilemap = frozenJson(map.tilemap, map.tilemapSha256);
+  const pack = frozenJson(`${map.assetPackDirectory}/${map.assetPack}`, map.assetPackSha256);
+  assert.equal(scene.settings.sceneKey, "MapAiBridgeCrossing");
+  const owned = scene.displayList.filter((entry) => entry["EditorOwner.owner_id"]);
+  assert.deepEqual(
+    owned.map((entry) => entry["EditorOwner.owner_id"]),
+    ["1", "2"]
+  );
+  assert.ok(owned.every((entry) => entry.prefabId === "c91c72f2-a5b5-4fea-abde-27ebfc228ae5"));
+  assert.ok(scene.displayList.every((entry) => !entry.components?.includes("EditorScenarioReference")));
+  assert.equal(scene.displayList.filter((entry) => entry.label === "bridgeStone").length, 1);
+  assert.deepEqual(
+    scene.displayList.filter((entry) => entry.type === "Zone").map((entry) => [entry.label, entry.x, entry.y]),
+    [
+      ["opponent_producer_a", -224, 672],
+      ["opponent_producer_b", -160, 464]
+    ]
+  );
+  assert.equal(tilemap.width, 50);
+  assert.equal(tilemap.height, 50);
+  assert.equal(scene.plainObjects[0].key, "tiles_ai_bridge_crossing");
+  assert.equal(pack.section1.files[0].key, "tiles_ai_bridge_crossing");
+  const fixture = JSON.parse(
+    readFileSync(
+      resolve(
+        root,
+        "tools/probable-waffle/skirmish/ai/testing/fixtures/native/continuous/continuous-land-native-gameplay.json"
+      ),
+      "utf8"
+    )
+  );
+  const variants = fixture.recipe.variants.filter((variant) => variant.scenarioIds.includes("SEQ-01"));
+  assert.equal(variants.length, 2);
+  assert.deepEqual(variants.map((variant) => variant.aiFaction).sort(), ["Skaduwee", "Tivara"]);
+  for (const variant of variants) {
+    assert.equal(variant.mapLabel, "AI Bridge Crossing (test only)");
+    assert.equal(variant.executionKind, "continuous");
+    assert.equal(variant.presetWorld, undefined);
+  }
+  assert.equal(fixture.assertions["SEQ-01"].requireAiVictory, true);
+  assert.equal(fixture.assertions["SEQ-01"].minimumMilitaryCount, 8);
+  assert.equal(fixture.assertions["SEQ-01"].maximumTick, 20000);
+});
+
+test("the open-economy scene has only two owned spawns and symmetric neutral resources", () => {
+  const map = contract.maps.find((candidate) => candidate.id === "ai-open-economy");
+  assert.ok(map);
+  const scene = frozenJson(map.scene, map.sceneSha256);
+  const tilemap = frozenJson(map.tilemap, map.tilemapSha256);
+  const pack = frozenJson(`${map.assetPackDirectory}/${map.assetPack}`, map.assetPackSha256);
+  assert.equal(scene.settings.sceneKey, "MapAiOpenEconomy");
+  assert.deepEqual(
+    scene.displayList.filter((entry) => entry["EditorOwner.owner_id"]).map((entry) => entry["EditorOwner.owner_id"]),
+    ["1", "2"]
+  );
+  assert.deepEqual(
+    scene.displayList.map((entry) => entry.label).sort(),
+    [
+      "tilemap_level_1",
+      "spawn_1",
+      "spawn_2",
+      "tree_west_1",
+      "tree_west_2",
+      "stone_west",
+      "minerals_west",
+      "tree_east_1",
+      "tree_east_2",
+      "stone_east",
+      "minerals_east"
+    ].sort()
+  );
+  const objects = new Map<string, { prefabId: string }>(scene.displayList.map((entry) => [entry.label, entry]));
+  for (const label of ["spawn_1", "spawn_2"]) {
+    assert.equal(objects.get(label).prefabId, "c91c72f2-a5b5-4fea-abde-27ebfc228ae5");
+  }
+  for (const label of ["tree_west_1", "tree_west_2", "tree_east_1", "tree_east_2"]) {
+    assert.equal(objects.get(label).prefabId, "ec58b20e-e04f-4bd4-8401-856e1e433f46");
+  }
+  for (const label of ["stone_west", "stone_east"]) {
+    assert.equal(objects.get(label).prefabId, "e208af37-5101-4cbf-adca-93d59373fc09");
+  }
+  for (const label of ["minerals_west", "minerals_east"]) {
+    assert.equal(objects.get(label).prefabId, "3ffd00fc-90c4-4b37-b00e-9cf62e16c80c");
+  }
+  assert.equal(tilemap.width, 50);
+  assert.equal(tilemap.height, 50);
+  assert.equal(tilemap.layers.length, 1);
+  assert.equal(tilemap.layers[0].data.length, 2500);
+  assert.deepEqual([...new Set(tilemap.layers[0].data)], [12]);
+  const grass = tilemap.tilesets[0].tiles.find((entry) => entry.id === 11);
+  assert.ok(grass.properties.some((property) => property.name === "terrainType" && property.value === "grass"));
+  assert.equal(scene.plainObjects[0].key, "tiles_ai_open_economy");
+  assert.equal(pack.section1.files[0].key, "tiles_ai_open_economy");
+});
+
+test("the frozen multiplayer scene has three owned spawns and local resources without campaign actors", () => {
+  const map = contract.maps.find((candidate) => candidate.id === "ai-multiplayer");
+  assert.ok(map);
+  const scene = frozenJson(map.scene, map.sceneSha256);
+  const tilemap = frozenJson(map.tilemap, map.tilemapSha256);
+  const pack = frozenJson(`${map.assetPackDirectory}/${map.assetPack}`, map.assetPackSha256);
+  assert.equal(scene.settings.sceneKey, "MapAiMultiplayer");
+  assert.deepEqual(
+    scene.displayList.filter((entry) => entry["EditorOwner.owner_id"]).map((entry) => entry["EditorOwner.owner_id"]),
+    ["1", "2", "3"]
+  );
+  assert.deepEqual(
+    scene.displayList.map((entry) => entry.label).sort(),
+    [
+      "tilemap_level_1",
+      "spawn_1",
+      "spawn_2",
+      "spawn_3",
+      "tree_west_1",
+      "tree_west_2",
+      "stone_west",
+      "minerals_west",
+      "tree_east_1",
+      "tree_east_2",
+      "stone_east",
+      "minerals_east",
+      "tree_south",
+      "stone_south",
+      "minerals_south"
+    ].sort()
+  );
+  assert.equal(tilemap.width, 50);
+  assert.equal(tilemap.height, 50);
+  assert.deepEqual([...new Set(tilemap.layers[0].data)], [12]);
+  assert.equal(pack.section1.files[0].key, scene.plainObjects[0].key);
+});

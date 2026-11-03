@@ -71,6 +71,7 @@ export const infantryInnDefinition = {
     },
     research: {
       availableResearch: [
+        ResearchType.SkaduweeWarriorUpgradeLevel2,
         ResearchType.SnowstormSpell,
         ResearchType.HealingLightSpell,
         ResearchType.HealingTotemSpell,
