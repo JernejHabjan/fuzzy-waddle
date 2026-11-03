@@ -70,6 +70,11 @@
   12 decisions/8 workers/12 army, no errors; both frozen targets pass. `fog-performance-comparison.json` and
   `rendered-combat/` retain reports/traces. Frame p50 median 50->33.4ms; p95 median 66.7->66.6ms, so tail-frame
   performance still needs work. Opening/multiple-AI controls and final canonical/gameplay equivalence remain.
+  Current opening control (`ce6443406`, three clean 1x runs): 240 ticks/12 decisions each, two workers
+  and one military actor, median elapsed 15062.4ms and median frame p95 50.1ms. Earlier opening sample
+  stopped at 171 ticks and cannot be used as a matched baseline. The corrected two-AI smoke sample
+  recorded 12 decisions per side across 240 ticks, 14172ms elapsed and 50ms p95. Collect three clean
+  samples on the committed source. The failed initial batch mixed startup failures and hot-reloaded source.
   Sampler: `AI_GAMEPLAY_PROFILE=1`, workload `combat|opening|multi_ai`, `AI_GAMEPLAY_PROFILE_CPU=1`; fresh 4201,
   40 warmup ticks, 60s ceiling. Keep samples on stable source/config; don't rerun the proven combat comparison.
 - Default evidence directories are junctions to full D:. Preserve historical artifacts; use

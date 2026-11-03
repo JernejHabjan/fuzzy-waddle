@@ -69,14 +69,18 @@ for (let repetition = 1; repetition <= 3; repetition++) {
         ? { targetPlayerNumber: 1, difficulty: "Normal", opponentArchetype: "balanced" }
         : undefined
     );
-    const before = await page.evaluate((playerNumber) => {
-      const parts = window.__fuzzyWaddleAiRuntimeParts?.(playerNumber);
-      if (!parts) throw new Error("profile_runtime_missing");
-      return {
-        tick: parts.tickService.currentTick,
-        decisionSequence: parts.controller.getBrainState()?.scheduler.decisionSequence ?? 0
-      };
-    }, fixture.recipe.aiPlayerNumber);
+    const readControllerSequences = () =>
+      page.evaluate((playerNumber) => {
+        const parts = window.__fuzzyWaddleAiRuntimeParts?.(playerNumber);
+        if (!parts) throw new Error("profile_runtime_missing");
+        return {
+          tick: parts.tickService.currentTick,
+          decisionSequence: parts.controller.getBrainState()?.scheduler.decisionSequence ?? 0,
+          opponentSequence: window.__fuzzyWaddleAiRuntimeParts?.(3 - playerNumber)?.controller.getBrainState()
+            ?.scheduler.decisionSequence
+        };
+      }, fixture.recipe.aiPlayerNumber);
+    const before = await readControllerSequences();
     const cpu = sampleCpu ? await SkirmishGameplayCpuProfile.start(page) : undefined;
     const cpuResult: { value?: Awaited<ReturnType<SkirmishGameplayCpuProfile["finish"]>> } = {};
     const frames = await (async () => {
@@ -139,6 +143,7 @@ for (let repetition = 1; repetition <= 3; repetition++) {
       }
     })();
     const after = await captureCheckpoint(page, fixture.recipe.aiPlayerNumber, frames.tick);
+    const finalSequences = await readControllerSequences();
     const sorted = [...frames.deltas].sort((a, b) => a - b);
     const percentile = (fraction: number) => sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * fraction))];
     const report = {
@@ -162,6 +167,10 @@ for (let repetition = 1; repetition <= 3; repetition++) {
       pauseReasons: frames.pauseReasons,
       ticks: after.tick - before.tick,
       decisions: after.decisionSequence - before.decisionSequence,
+      opponentDecisions:
+        before.opponentSequence === undefined || finalSequences.opponentSequence === undefined
+          ? undefined
+          : finalSequences.opponentSequence - before.opponentSequence,
       workers: after.workerCount,
       army: after.militaryActorNames.length,
       cpu: cpuResult.value,
@@ -176,5 +185,6 @@ for (let repetition = 1; repetition <= 3; repetition++) {
     expect(report.frames).toBeGreaterThan(100);
     expect(report.ticks).toBeGreaterThanOrEqual(240);
     expect(report.decisions).toBeGreaterThan(0);
+    if (workload === "multi_ai") expect(report.opponentDecisions).toBeGreaterThan(0);
   });
 }

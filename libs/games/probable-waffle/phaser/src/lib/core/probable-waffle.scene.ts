@@ -17,6 +17,7 @@ import {
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { ProbableWaffleCommunicatorServiceInterface } from "./ports/probable-waffle-communicator";
 import { BehaviorSubject } from "rxjs";
+import { hasAiRuntimeCalibrationPerspective } from "../player/ai-controller/test-support/browser/ai-runtime-calibration";
 
 import type { ProbableWaffleSceneData } from "../world/scenes/probable-waffle-scene-data";
 
@@ -43,11 +44,13 @@ export class ProbableWaffleScene extends BaseScene<
       ProbableWaffleGameInstanceType.InstantGame
     ].includes(type);
     if (!local || this.baseGameData.user.playerNumber === undefined) return null;
+    const calibrationPerspective = hasAiRuntimeCalibrationPerspective(this.baseGameData.gameInstance);
     return (
       this.players.find(
         (player) =>
           player.playerNumber === this.baseGameData.user.playerNumber &&
-          player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human
+          (calibrationPerspective ||
+            player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human)
       ) ?? null
     );
   }
