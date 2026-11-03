@@ -69,12 +69,17 @@
   233.863ms versus 1766.42ms (-86.76%). Identical config `8d255ca2dcd9`, fixture `fnv1a32:a4cea355`, 240 ticks/
   12 decisions/8 workers/12 army, no errors; both frozen targets pass. `fog-performance-comparison.json` and
   `rendered-combat/` retain reports/traces. Frame p50 median 50->33.4ms; p95 median 66.7->66.6ms, so tail-frame
-  performance still needs work. Matched opening/multiple-AI comparisons and final canonical/gameplay equivalence remain.
+  performance still needs work. Final canonical/gameplay equivalence remains.
   Current opening control (`ce6443406`, three clean 1x runs): 240 ticks/12 decisions each, two workers
   and one military actor, median elapsed 15062.4ms and median frame p95 50.1ms. Earlier opening sample
   stopped at 171 ticks and cannot be used as a matched baseline. Three clean two-AI runs on `da96d6af6`
   each recorded 240 ticks, 12 decisions per side and no page errors. Elapsed 14320.1–14844.5ms,
   median 14758.7ms, frame p95 50ms in all three. Reports and traces in `rendered-multi_ai/`.
+  Reversing only the fog component on docs-only descendant `e1352c2b1` gave three full-map two-AI runs
+  with the same fixture/config, ticks, both decision counts and actor counts. Median 20062.3ms full-map
+  versus 14758.7ms camera-bounded (-26.44%). Opening full-map median 19671.4ms versus 15062.4ms
+  (-23.43%); opening runs span the profiler/perspective changes, so treat this as corroboration.
+  Full-map logs: `full-map-opening-profile.log` and `full-map-multi_ai-profile.log`. Source restored cleanly.
   Sampler: `AI_GAMEPLAY_PROFILE=1`, workload `combat|opening|multi_ai`, `AI_GAMEPLAY_PROFILE_CPU=1`; fresh 4201,
   40 warmup ticks, 60s ceiling. Keep samples on stable source/config; don't rerun the proven combat comparison.
 - Default evidence directories are junctions to full D:. Preserve historical artifacts; use
