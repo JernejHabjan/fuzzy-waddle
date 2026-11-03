@@ -52,8 +52,9 @@
   unrelated fixtures; touched tactical specs are repaired and have no remaining diagnostics.
 - Full gameplay types still expose existing fixture errors (`quiet-formation-gameplay-types.log`); interface types
   pass. No speculative elevation adjustment: isolated and real scene/save/load projection controls both pass.
-- Review R3 before closure: failure-prefix matching across reassigned slots needs focused controls; it remains a
-  risk rather than a reproduced defect. Large-group physical/collision acceptance remains after the slot repair.
+- R3 stale failure: movement effect identity now includes the assigned destination. Failures for an old slot or
+  legacy effect without destination no longer invalidate the current assignment. Current-slot failures still
+  trigger recovery. All 121 tactics/brain/canonical controls pass. Large-group physical acceptance remains.
 - R4 native control: `E/reproduction/movement/skirmish-gameplay-pursuit.spec.ts` passes in 8.3s/240 ticks, with six
   Banshee hits while the human worker moves (ticks 74/106/128/160/182/214). Only the strategic coordinator is paused
   through its public campaign API; native pawn trees/weapons/movement run. This cannot prove autonomous R5 behavior

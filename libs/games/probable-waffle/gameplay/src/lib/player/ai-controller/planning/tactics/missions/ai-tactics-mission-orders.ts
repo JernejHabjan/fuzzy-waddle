@@ -3,7 +3,7 @@ import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiIntent } from "../../../contracts/commands/ai-intent";
 import { canTarget } from "../combat/ai-tactics-combat";
 import { distance } from "../combat/ai-tactics-geometry";
-import { intentBase } from "../orders/ai-tactics-orders";
+import { intentBase, tacticalPositionEffectSuffix } from "../orders/ai-tactics-orders";
 import { proposeAiTacticalSupport } from "../orders/ai-tactics-support";
 
 import type { projectAiTacticalSquad } from "./ai-tactics-mission-projection";
@@ -215,7 +215,8 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
           observation,
           { ...updated, actorIds: [assignment.actorId] },
           `position:${assignment.actorId}`,
-          updated.role === "defense" ? 860 : 720
+          updated.role === "defense" ? 860 : 720,
+          tacticalPositionEffectSuffix(assignment)
         ),
         kind: "move",
         actorIds: [assignment.actorId],
@@ -238,7 +239,8 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
             observation,
             positioned,
             `position:${assignment.actorId}`,
-            updated.role === "defense" ? 860 : 720
+            updated.role === "defense" ? 860 : 720,
+            tacticalPositionEffectSuffix(assignment)
           ),
           kind: "move",
           actorIds: [assignment.actorId],

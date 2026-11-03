@@ -20,6 +20,7 @@ import {
 
 import type { decideAiTacticalSquad } from "./ai-tactics-mission-decision";
 import { aiTacticalScoutDestination } from "../orders/ai-tactics-scout-destination";
+import { tacticalPositionEffectSuffix } from "../orders/ai-tactics-orders";
 
 function hasNavalFiringMove(
   actor: AiObservedActor,
@@ -81,7 +82,9 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
         state.pendingOutcomes.some(
           (outcome) =>
             outcome.kind === "failed" &&
-            outcome.identity.effectId.startsWith(`effect:stage13:${squad.squadId}:position:${assignment.actorId}:`) &&
+            outcome.identity.effectId.startsWith(
+              `effect:stage13:${squad.squadId}:${tacticalPositionEffectSuffix(assignment)}:`
+            ) &&
             observation.tick >= outcome.tick &&
             observation.tick - outcome.tick <= TACTICAL_FAILED_POSITION_RETRY_TICKS
         )

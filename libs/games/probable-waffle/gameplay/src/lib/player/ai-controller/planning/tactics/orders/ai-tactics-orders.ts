@@ -41,11 +41,20 @@ export function splitDomainSquads(
   return [...merged.values()];
 }
 
+export function tacticalPositionEffectSuffix(assignment: {
+  actorId: string;
+  position: { x: number; y: number; z: number };
+}): string {
+  const { x, y, z } = assignment.position;
+  return `position:${assignment.actorId}:${x},${y},${z}`;
+}
+
 export function intentBase(
   observation: AiObservation,
   squad: AiSquadState,
   suffix: string,
-  utility: number
+  utility: number,
+  effectSuffix = suffix
 ): Pick<
   AiIntent,
   | "intentId"
@@ -63,7 +72,7 @@ export function intentBase(
   const planId = `plan:${squad.squadId}` as AiPlanId;
   return {
     intentId: `intent:stage13:${observation.generation}:${squad.squadId}:${suffix}` as AiIntent["intentId"],
-    effectId: `effect:stage13:${squad.squadId}:${suffix}:${observation.tick}` as AiIntent["effectId"],
+    effectId: `effect:stage13:${squad.squadId}:${effectSuffix}:${observation.tick}` as AiIntent["effectId"],
     planId,
     demandId: null,
     lane: "army_threat",
