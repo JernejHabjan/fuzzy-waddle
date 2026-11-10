@@ -3,7 +3,7 @@
 ## Resume cursor
 
 - Execution authorized and goal active on `feature/759-skirmish-ai`, PR [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814).
-  Completed packets **1/8 (R2)**. Next validate pursuit recovery when a route opens, then resume R3.
+  Completed packets **1/8 (R2)**. Next resolve opposing traffic in R3 and audit remaining R4 controls.
   Read AGENTS.md, applicable skills and the next unfinished packet.
 - R1/R8: normal-speed, clean 240-tick combat runs at baseline `b42a89066` logged 12 decisions and 8 workers/12 army each.
   Camera-bounded fog `e76a01f09` met both frozen targets in three matched runs: elapsed −22.90% (23.36→18.01s)
@@ -35,7 +35,9 @@
   The visible blocked-ring pursuit now retains its Attack order and limits route probes to one per 20 simulation
   ticks, retrying immediately when either endpoint changes tile. Applied command, no phantom damage, no movement
   and bounded route calls through tick 240 passed alongside the six-hit moving-worker control (pursuit-paced.log).
-  Unit controls cover target movement and a later successful route. A real route opening remains to verify.
+  When the exact blocking wall was destroyed at tick 120, the retained pursuit moved by tick 125 and landed its
+  first hit at tick 162. The worker remained unhurt and the order retained through tick 115. The browser control
+  passes with exact wall identity and tile assertions (pursuit-door-final.log).
   Run `E/reproduction/movement/skirmish-gameplay-pursuit.spec.ts` with `AI_GAMEPLAY_RELIABILITY=1`, Chromium and one
   worker. Traces: `pursuit-{human-replacement,equal-speed,target-loss}.json`, `local-engagement-pursuit-observations.json`.
 - R5/R6: three real Owls, Tivara no-ready defense produces two counters/22 hits, ready defense existing archer
@@ -85,7 +87,7 @@ and controls. Record an evidence gap separately from a code defect. A blocker do
 | R1 Focused reproductions and baseline | none | in_progress | Teardown/churn/large-slot defects reproduced and combat baseline frozen; remaining targeted gameplay controls open. |
 | R2 Restore and teardown lifecycle | R1 relevant reproduction | complete | All save types restore input, camera and elevation. Fresh start, live topology removal and teardown controls pass. See the R2 resume entry. |
 | R3 Movement and formation stability | R1 | in_progress | Arrived slots, quiet membership and eight-slot ceiling repaired; 100 tactical controls pass. Exact opposing traffic and large-group physical settling remain. |
-| R4 Pursuit and attack execution | R1, R3 relevant contract | in_progress | Pursuit, equal-speed escape, replacement and removal pass. Visible unreachable target exposes a stuck Attack. |
+| R4 Pursuit and attack execution | R1, R3 relevant contract | in_progress | Pursuit, escape, replacement, removal, bounded unreachable retries and route reopening pass; audit remaining controls. |
 | R5 AI mission ownership and defense | R1, R3, R4 | in_progress | Ground and air defenders land native hits. Harmless contact and stable large-army movement remain. |
 | R6 Emergency counter production | R1, R5 defender contract | in_progress | Both factions produce counters that land native hits. Legal missing-prerequisite planning remains to audit. |
 | R7 Retreat and re-engagement | R1, R4, R5 | in_progress | Native quiet favorable target defeated at tick 118; corrected oracle replay passes. Minor injury, loss/reinforcement and oscillation controls remain. |

@@ -23,7 +23,8 @@ const pursuitCases = {
   autonomous: "the attack squad preserves native pursuit into engagement",
   "equal speed": "an equally fast runner takes no pursuit damage while escaping",
   "removed target": "native pursuit releases a worker removed during the chase",
-  unreachable: "native pursuit paces retries for an unreachable worker without phantom hits"
+  unreachable: "native pursuit paces retries for an unreachable worker without phantom hits",
+  "route opens": "native pursuit resumes when a blocking wall is destroyed"
 } as const;
 
 for (const mode of Object.keys(pursuitCases) as (keyof typeof pursuitCases)[]) {
@@ -31,6 +32,8 @@ for (const mode of Object.keys(pursuitCases) as (keyof typeof pursuitCases)[]) {
   const equalSpeed = mode === "equal speed";
   const removeTarget = mode === "removed target";
   const unreachable = mode === "unreachable";
+  const routeOpens = mode === "route opens";
+  const enclosed = unreachable || routeOpens;
   test(pursuitCases[mode], async ({ page }, testInfo) => {
     const root = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
     const source = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
@@ -76,7 +79,17 @@ for (const mode of Object.keys(pursuitCases) as (keyof typeof pursuitCases)[]) {
             actorName: equalSpeed ? ObjectNames.Banshee : ObjectNames.TivaraWorkerMale,
             owner: replaceOrder ? 2 : 1,
             position: { x: 384, y: 1280, z: 0 }
-          }
+          },
+          ...(routeOpens
+            ? [
+                {
+                  fixtureActorId: "pursuit-door",
+                  actorName: ObjectNames.Wall,
+                  owner: 1,
+                  position: { x: 448, y: 1312, z: 0 }
+                }
+              ]
+            : [])
         ],
         ...(removeTarget
           ? {
@@ -91,10 +104,25 @@ for (const mode of Object.keys(pursuitCases) as (keyof typeof pursuitCases)[]) {
                 }
               ]
             }
-          : {}),
-        terrainPatches: unreachable ? enclosure : world.terrainPatches,
+          : routeOpens
+            ? {
+                events: [
+                  {
+                    id: "open-pursuit-door",
+                    tick: 120,
+                    kind: "destroy_owned_actor" as const,
+                    owner: 1,
+                    objectName: ObjectNames.Wall,
+                    fixtureActorId: "pursuit-door"
+                  }
+                ]
+              }
+            : {}),
+        terrainPatches: enclosed
+          ? enclosure.filter((tile) => !routeOpens || tile.x !== 47 || tile.y !== 34)
+          : world.terrainPatches,
         controls: [
-          ...(!unreachable
+          ...(!enclosed
             ? [
                 {
                   id: "flee",
@@ -156,6 +184,35 @@ for (const mode of Object.keys(pursuitCases) as (keyof typeof pursuitCases)[]) {
         );
         if (!handler?.setPlayerEnabled(2, false)) throw new Error("pursuit_strategic_pause_missing");
       });
+    if (routeOpens) {
+      const geometry = await page.evaluate(() => {
+        const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
+          .__fuzzyWaddleAiRuntimeBrowserTest;
+        const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
+          | GameProbableWaffleScene
+          | undefined;
+        const services = scene?.getSceneGameData().services;
+        const index = services?.find((service): service is ActorIndexSystem => "getActorById" in service);
+        const nav = services?.find(
+          (service): service is NavigationService => "getCenterTileCoordUnderObject" in service
+        );
+        const wallId = host?.presetApplication?.createdActorIds["pursuit-door"];
+        const wall = wallId && index?.getActorById(wallId);
+        if (!wall || !nav) throw new Error("pursuit_door_geometry_missing");
+        return {
+          wall: nav.getCenterTileCoordUnderObject(wall),
+          ring: Array.from({ length: 5 }, (_, x) =>
+            Array.from({ length: 5 }, (_, y) => ({
+              x: x + 43,
+              y: y + 32,
+              open: nav.isTileNavigable({ x: x + 43, y: y + 32 })
+            }))
+          ).flat()
+        };
+      });
+      writeFileSync(testInfo.outputPath("pursuit-door-geometry.json"), JSON.stringify(geometry));
+      expect(geometry.wall).toEqual({ x: 47, y: 34 });
+    }
     const observations: Awaited<ReturnType<typeof capturePursuit>>[] = [];
     const routeProbe = unreachable
       ? await page.evaluateHandle(() => {
@@ -275,6 +332,25 @@ for (const mode of Object.keys(pursuitCases) as (keyof typeof pursuitCases)[]) {
         expect(row.pursuer).toEqual(first.pursuer);
         expect([row.x, row.y, row.health, row.hitTick]).toEqual([first.x, first.y, first.health, undefined]);
       }
+      expect(errors).toEqual([]);
+      return;
+    }
+    if (routeOpens) {
+      const before = observations.filter((row) => (row.tick ?? 0) < 120);
+      const after = observations.filter((row) => (row.tick ?? 0) > 120);
+      const removal = await page.evaluate(() => {
+        const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
+          .__fuzzyWaddleAiRuntimeBrowserTest;
+        return {
+          wallId: host?.presetApplication?.createdActorIds["pursuit-door"],
+          event: host?.presetApplication?.eventResults.find((event) => event.id === "open-pursuit-door")
+        };
+      });
+      expect(removal.wallId).toBeTruthy();
+      expect(removal.event).toMatchObject({ tick: 120, affectedActors: 1, affectedActorId: removal.wallId });
+      expect(before.every((row) => row.health === 50 && row.pursuer?.x === 576 && row.chasingRunner)).toBe(true);
+      expect(after.some((row) => (row.pursuer?.x ?? 576) < 560)).toBe(true);
+      expect(after.some((row) => row.health < 50 && row.hitByPursuer)).toBe(true);
       expect(errors).toEqual([]);
       return;
     }
