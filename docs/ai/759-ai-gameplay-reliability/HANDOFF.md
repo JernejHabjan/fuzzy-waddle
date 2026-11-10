@@ -15,7 +15,9 @@
   and landed 22 compatible hits, with no gaps or page errors (`air-counter-unready-native-after.runtime.json.gz`).
   Skaduwee mirror raid without a ready archer completed one emergency archer whose weapon landed 16 hits
   against the Owls. No trace gaps or page errors (`air-counter-skaduwee.runtime.json.gz`).
-  Ground-only raid observed all three attackers and issued zero emergency anti-air orders. Hidden Owls
+  Ground-only raid observed all three attackers and issued zero emergency anti-air orders. It recorded
+  29 post-raid weapon hits across all three raiders linked to applied home-defense orders, with no capture
+  gaps or page errors (`ground-defense-authority.runtime.json.gz`). Hidden Owls
   caused no such orders before discovery at tick 580 and one completed counter after discovery.
   Retained traces: `ground-raid-negative.runtime.json.gz` and `hidden-air-discovery.runtime.json.gz`.
   Adaptation controls verify no proposal with a missing or full producer and resumed counter demand when

@@ -252,6 +252,47 @@ for (const { faction, readyCounter, groundOnly, hidden = false } of [
     }
     if (groundOnly) {
       expect(counterEffects.size, "no visible air threat must yield no emergency anti-air orders").toBe(0);
+      const defenseEffects = new Set(
+        context.frames.flatMap(({ decision }) =>
+          decision.acceptedIntents
+            .filter((intent) => intent.kind === "attack" && intent.planId === "plan:squad:defense:home")
+            .map((intent) => intent.effectId.replace(/^effect:/, ""))
+        )
+      );
+      const applied = new Set<string>();
+      const lastOrders = new Map<string, { commandId?: string; targetId?: string | null }>();
+      const weaponHitSequences = new Set(hits.filter(({ tick }) => tick >= 100).map(({ sequence }) => sequence));
+      const defendedRaiders = new Set<string>();
+      let defenseHits = 0;
+      for (const fact of context.facts) {
+        if (
+          fact.kind === "outcome" &&
+          fact.outcome.kind === "applied" &&
+          defenseEffects.has(fact.outcome.effectId ?? "")
+        ) {
+          applied.add(fact.outcome.commandId);
+        } else if (fact.kind === "spatial_authority" && fact.spatial.kind === "route_order") {
+          const { source, order } = fact.spatial;
+          if (source.playerNumber === 2 && source.actorId) {
+            lastOrders.set(source.actorId, {
+              commandId: order.commandContext?.execution.commandId,
+              targetId: order.orderType === "Attack" ? order.target?.actorId : undefined
+            });
+          }
+        } else if (fact.kind === "native_damage" && weaponHitSequences.has(fact.sequence)) {
+          const order = lastOrders.get(fact.damage.initiator?.actorId ?? "");
+          const targetId = fact.damage.target.actorId;
+          if (targetId && order?.targetId === targetId && order.commandId && applied.has(order.commandId)) {
+            defendedRaiders.add(targetId);
+            defenseHits++;
+          }
+        }
+      }
+      console.log("GAMEPLAY_GROUND_DEFENSE", JSON.stringify({ defenseHits, raidersHit: defendedRaiders.size }));
+      expect(
+        defendedRaiders.size,
+        "applied home-defense orders produce weapon hits on multiple raiders"
+      ).toBeGreaterThan(1);
       return;
     }
     expect(counters.length, "actual completed anti-air production").toBeGreaterThan(0);
