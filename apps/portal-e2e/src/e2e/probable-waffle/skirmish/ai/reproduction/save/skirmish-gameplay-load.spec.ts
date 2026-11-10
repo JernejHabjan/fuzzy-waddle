@@ -16,122 +16,142 @@ import { reloadNativeMatch, saveAndReloadNativeMatch, saveNativeMatch } from "./
 test.skip(process.env.AI_GAMEPLAY_RELIABILITY !== "1", "Explicit bounded gameplay reliability checks only");
 test.setTimeout(240_000);
 
-test("preserves elevated ground, building and flying projections through repeated real encrypted save/load", async ({
-  page
-}) => {
-  const root = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
-  const source = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
-  const fixture: RuntimeFixture = JSON.parse(
-    readFileSync(
-      join(
-        root,
-        "tools/probable-waffle/skirmish/ai/testing/fixtures/native/combat/fight-01-reassess-and-retreat-regroup-within-bound-runtime.json"
-      ),
-      "utf8"
-    )
-  );
-  const selected = fixture.recipe.variants.find((variant) => variant.id === "fight-01-tivara-quiet");
-  if (!selected) throw new Error("load_projection_fixture_missing");
-  const errors: string[] = [];
-  await prepareRuntimeVariant(
-    page,
-    fixture,
-    { ...selected, captureCombat: undefined, captureConstruction: undefined },
-    selected.seed,
-    source,
-    digestCanonicalAiValue(fixture),
-    false,
-    errors
-  );
-  await advanceRuntimeFrames(page, fixture.recipe.aiPlayerNumber, 20);
-  const names = [ObjectNames.TivaraWorkerMale, ObjectNames.Temple, ObjectNames.SkaduweeOwl];
-  const ids = await page.evaluate((names) => {
-    const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
-      .__fuzzyWaddleAiRuntimeBrowserTest;
-    const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
-      | GameProbableWaffleScene
-      | undefined;
-    if (!scene) throw new Error("load_projection_scene_missing");
-    const creator = scene.getSceneGameData().services.find(
-      (
-        entry
-      ): entry is {
-        createActorFromDefinition(data: ActorDefinition): Phaser.GameObjects.GameObject | undefined;
-      } => typeof (entry as { createActorFromDefinition?: unknown })?.createActorFromDefinition === "function"
+for (const kind of ["fresh start", "quicksave", "autosave", "manual"] as const) {
+  test(`preserves elevation, camera and human input after ${kind}`, async ({ page }) => {
+    const root = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
+    const source = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
+    const fixture: RuntimeFixture = JSON.parse(
+      readFileSync(
+        join(
+          root,
+          "tools/probable-waffle/skirmish/ai/testing/fixtures/native/combat/fight-01-reassess-and-retreat-regroup-within-bound-runtime.json"
+        ),
+        "utf8"
+      )
     );
-    if (!creator) throw new Error("load_projection_creator_missing");
-    if (
-      !creator.createActorFromDefinition({
-        name: ObjectNames.SkaduweeWorkerMale,
-        id: { id: "load-human-worker" },
-        owner: { ownerId: scene.player.playerNumber },
-        representable: { logicalWorldTransform: { x: -640, y: 800, z: 0 } }
-      })
-    )
-      throw new Error("load_human_worker_missing");
-    return names.map((name, index) => {
-      const id = `load-projection-${index}`;
-      const actor = creator.createActorFromDefinition({
-        name,
-        id: { id },
-        owner: { ownerId: 2 },
-        representable: { logicalWorldTransform: { x: 384 + index * 160, y: 864, z: 64 } }
+    const selected = fixture.recipe.variants.find((variant) => variant.id === "fight-01-tivara-quiet");
+    if (!selected) throw new Error("load_projection_fixture_missing");
+    const errors: string[] = [];
+    await prepareRuntimeVariant(
+      page,
+      fixture,
+      { ...selected, captureCombat: undefined, captureConstruction: undefined },
+      selected.seed,
+      source,
+      digestCanonicalAiValue(fixture),
+      false,
+      errors
+    );
+    await advanceRuntimeFrames(page, fixture.recipe.aiPlayerNumber, 20);
+    const names = [ObjectNames.TivaraWorkerMale, ObjectNames.Temple, ObjectNames.SkaduweeOwl];
+    const ids = await page.evaluate(
+      ({ names, humanWorker }) => {
+        const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
+          .__fuzzyWaddleAiRuntimeBrowserTest;
+        const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
+          | GameProbableWaffleScene
+          | undefined;
+        if (!scene) throw new Error("load_projection_scene_missing");
+        const creator = scene.getSceneGameData().services.find(
+          (
+            entry
+          ): entry is {
+            createActorFromDefinition(data: ActorDefinition): Phaser.GameObjects.GameObject | undefined;
+          } => typeof (entry as { createActorFromDefinition?: unknown })?.createActorFromDefinition === "function"
+        );
+        if (!creator) throw new Error("load_projection_creator_missing");
+        if (
+          !creator.createActorFromDefinition({
+            name: humanWorker,
+            id: { id: "load-human-worker" },
+            owner: { ownerId: scene.player.playerNumber },
+            representable: { logicalWorldTransform: { x: -640, y: 800, z: 0 } }
+          })
+        )
+          throw new Error("load_human_worker_missing");
+        return names.map((name, index) => {
+          const id = `load-projection-${index}`;
+          const actor = creator.createActorFromDefinition({
+            name,
+            id: { id },
+            owner: { ownerId: 2 },
+            representable: { logicalWorldTransform: { x: 384 + index * 160, y: 864, z: 64 } }
+          });
+          if (!actor) throw new Error("load_projection_actor_missing");
+          return id;
+        });
+      },
+      { names, humanWorker: ObjectNames.SkaduweeWorkerMale }
+    );
+    const original = await projection(page, ids);
+    expect(original.actors).toHaveLength(3);
+    expect(original.humanPlayerNumber).toBe(1);
+    for (const actor of original.actors) {
+      expect(actor.logical.z).toBe(64);
+      expect(actor.rendered.y).toBeLessThan(actor.logical.y);
+    }
+    if (kind !== "fresh start") {
+      const cameraBefore = await readCamera(page, true);
+      for (let cycle = 0; cycle < (kind === "quicksave" ? 3 : 1); cycle++) {
+        const save = await saveNativeMatch(page, fixture.recipe.aiPlayerNumber, kind);
+        await reloadNativeMatch(page, fixture.recipe.aiPlayerNumber, save);
+        expect(await projection(page, ids), `save/load cycle ${cycle + 1}`).toEqual(original);
+        const restoredCamera = await readCamera(page);
+        expect(restoredCamera.x).toBeCloseTo(cameraBefore.x);
+        expect(restoredCamera.y).toBeCloseTo(cameraBefore.y);
+        expect(restoredCamera.zoom).toBeCloseTo(cameraBefore.zoom);
+      }
+    }
+    const workerId = "load-human-worker";
+    const restoredWorker = await projection(page, [workerId]);
+    const [worker] = restoredWorker.actors;
+    if (!worker) throw new Error("load_restored_worker_missing");
+    const points = await page.evaluate(async ({ x, y }) => {
+      const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
+        .__fuzzyWaddleAiRuntimeBrowserTest;
+      const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map"));
+      if (!host || !scene) throw new Error("load_input_scene_missing");
+      const camera = scene.cameras.main;
+      camera.centerOn(x, y);
+      host.game.loop.wake();
+      await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
+      const canvas = host.game.canvas;
+      const bounds = canvas.getBoundingClientRect();
+      return (
+        [
+          [x, y - 12],
+          [x - 128, y + 64]
+        ] as const
+      ).map(([worldX, worldY]) => {
+        const point = camera.matrixCombined.transformPoint(worldX, worldY);
+        return {
+          x: bounds.left + (point.x * bounds.width) / canvas.width,
+          y: bounds.top + (point.y * bounds.height) / canvas.height
+        };
       });
-      if (!actor) throw new Error("load_projection_actor_missing");
-      return id;
-    });
-  }, names);
-  const original = await projection(page, ids);
-  expect(original.actors).toHaveLength(3);
-  expect(original.humanPlayerNumber).toBe(1);
-  for (const actor of original.actors) {
-    expect(actor.logical.z).toBe(64);
-    expect(actor.rendered.y).toBeLessThan(actor.logical.y);
-  }
-  for (let cycle = 0; cycle < 3; cycle++) {
-    await saveAndReloadNativeMatch(page, fixture.recipe.aiPlayerNumber);
-    expect(await projection(page, ids), `save/load cycle ${cycle + 1}`).toEqual(original);
-  }
-  const autosave = await saveNativeMatch(page, fixture.recipe.aiPlayerNumber, "autosave");
-  await reloadNativeMatch(page, fixture.recipe.aiPlayerNumber, autosave);
-  const workerId = "load-human-worker";
-  const restoredWorker = await projection(page, [workerId]);
-  const [worker] = restoredWorker.actors;
-  if (!worker) throw new Error("load_restored_worker_missing");
-  const points = await page.evaluate(async ({ x, y }) => {
+    }, worker.rendered);
+    const [selectionPoint, movePoint] = points;
+    if (!selectionPoint || !movePoint) throw new Error("load_input_points_missing");
+    await page.mouse.click(selectionPoint.x, selectionPoint.y);
+    await expect.poll(async () => (await projection(page, [workerId])).actors[0]?.selected).toBe(true);
+    await page.mouse.click(movePoint.x, movePoint.y, { button: "right" });
+    await advanceRuntimeFrames(page, fixture.recipe.aiPlayerNumber, 100);
+    const moved = (await projection(page, [workerId])).actors[0];
+    expect(moved?.logical.x).toBeLessThan(worker.logical.x - 32);
+    expect(errors).toEqual([]);
+  });
+}
+
+async function readCamera(page: Page, move = false) {
+  return page.evaluate((move) => {
     const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
       .__fuzzyWaddleAiRuntimeBrowserTest;
-    const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map"));
-    if (!host || !scene) throw new Error("load_input_scene_missing");
-    const camera = scene.cameras.main;
-    camera.centerOn(x, y);
-    host.game.loop.wake();
-    await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
-    const canvas = host.game.canvas;
-    const bounds = canvas.getBoundingClientRect();
-    return (
-      [
-        [x, y - 12],
-        [x - 128, y + 64]
-      ] as const
-    ).map(([worldX, worldY]) => {
-      const point = camera.matrixCombined.transformPoint(worldX, worldY);
-      return {
-        x: bounds.left + (point.x * bounds.width) / canvas.width,
-        y: bounds.top + (point.y * bounds.height) / canvas.height
-      };
-    });
-  }, worker.rendered);
-  const [selectionPoint, movePoint] = points;
-  if (!selectionPoint || !movePoint) throw new Error("load_input_points_missing");
-  await page.mouse.click(selectionPoint.x, selectionPoint.y);
-  await expect.poll(async () => (await projection(page, [workerId])).actors[0]?.selected).toBe(true);
-  await page.mouse.click(movePoint.x, movePoint.y, { button: "right" });
-  await advanceRuntimeFrames(page, fixture.recipe.aiPlayerNumber, 100);
-  const moved = (await projection(page, [workerId])).actors[0];
-  expect(moved?.logical.x).toBeLessThan(worker.logical.x - 32);
-  expect(errors).toEqual([]);
-});
+    const camera = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map"))?.cameras.main;
+    if (!camera) throw new Error("load_camera_missing");
+    if (move) camera.centerOn(-608, 816);
+    return { x: camera.scrollX, y: camera.scrollY, zoom: camera.zoom };
+  }, move);
+}
 
 test("preserves editor-authored elevated stone blocks on River Crossing", async ({ page }) => {
   const root = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
@@ -182,6 +202,9 @@ test("preserves editor-authored elevated stone blocks on River Crossing", async 
   const autosave = await saveNativeMatch(page, fixture.recipe.aiPlayerNumber, "autosave");
   await reloadNativeMatch(page, fixture.recipe.aiPlayerNumber, autosave);
   expect(await projection(page, ids), "editor stone autosave reload").toEqual(original);
+  const manual = await saveNativeMatch(page, fixture.recipe.aiPlayerNumber, "manual");
+  await reloadNativeMatch(page, fixture.recipe.aiPlayerNumber, manual);
+  expect(await projection(page, ids), "editor stone manual reload").toEqual(original);
   expect(errors).toEqual([]);
 });
 

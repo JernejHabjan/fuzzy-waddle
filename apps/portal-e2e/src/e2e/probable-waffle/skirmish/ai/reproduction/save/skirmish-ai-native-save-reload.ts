@@ -7,8 +7,11 @@ import { ProbableWaffleGameInstanceType } from "@fuzzy-waddle/probable-waffle-pr
 import type GameProbableWaffleScene from
   "@fuzzy-waddle/probable-waffle-phaser/world/scenes/GameProbableWaffleScene";
 
-/** Native shortcut -> renderer snapshot -> encrypted repository. The original world can continue before reload. */
-export async function saveNativeMatch(page: Page, playerNumber: number, kind: "quicksave" | "autosave" = "quicksave") {
+type NativeSaveKind = "quicksave" | "autosave" | "manual";
+const manualSaveName = "Reliability manual save";
+
+/** Native save actions capture the renderer snapshot and write through the encrypted repository. */
+export async function saveNativeMatch(page: Page, playerNumber: number, kind: NativeSaveKind = "quicksave") {
   const previous = await readNativeSaveHeaders(page, kind);
   const boundary = await page.evaluate(({ playerNumber, supportedType, kind }) => {
     const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost;
@@ -37,6 +40,11 @@ export async function saveNativeMatch(page: Page, playerNumber: number, kind: "q
     return { tick, realmId: realm.__nativeSaveRealm, decisionSequence, kind };
   }, { playerNumber, supportedType: ProbableWaffleGameInstanceType.Skirmish, kind });
   if (kind === "quicksave") await page.keyboard.press("Control+s");
+  if (kind === "manual") {
+    await openNativeGameAction(page, "save");
+    await page.getByLabel("Save name").fill(manualSaveName);
+    await page.getByRole("button", { name: "Save", exact: true }).click();
+  }
   await expect.poll(async () => {
     const headers = await readNativeSaveHeaders(page, kind);
     return headers.some((entry) => !previous.some((old) => old.id === entry.id && old.revision === entry.revision));
@@ -56,7 +64,8 @@ export async function reloadNativeMatch(
     await page.getByRole("button", { name: "Leave", exact: true }).click();
     await page.getByRole("button", { name: /Load Game.*Continue saved game/ }).click();
   } else await openNativeGameAction(page, "load");
-  const row = page.locator(".aota-save-row").filter({ hasText: boundary.kind === "autosave" ? "Autosave" : "Quick Save" });
+  const rowName = { autosave: "Autosave", quicksave: "Quick Save", manual: manualSaveName }[boundary.kind];
+  const row = page.locator(".aota-save-row").filter({ hasText: rowName });
   await expect(row).toHaveCount(1);
   await row.getByRole("button", { name: "Load", exact: true }).click();
   await page.waitForFunction(() => {
@@ -91,7 +100,7 @@ export async function saveAndReloadNativeMatch(page: Page, playerNumber: number)
 }
 
 /** Read metadata only; decoding and migration must still run through the actual game save service on Load. */
-async function readNativeSaveHeaders(page: Page, kind: "quicksave" | "autosave"): Promise<{ id: string; revision: number }[]> {
+async function readNativeSaveHeaders(page: Page, kind: NativeSaveKind): Promise<{ id: string; revision: number }[]> {
   return page.evaluate(async (kind) => {
     const databases = await indexedDB.databases();
     if (!databases.some((database) => database.name === "probable-waffle-db")) return [];

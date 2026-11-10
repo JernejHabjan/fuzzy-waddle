@@ -4,7 +4,7 @@ import type { AiRuntimeBrowserTestHost } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/browser/ai-runtime-browser-test-host";
 
 /** Use actual visible Phaser menu hitboxes, preserving the app realm and its ordinary scene/dialog/Angular route handlers. */
-export async function openNativeGameAction(page: Page, action: "load" | "quit") {
+export async function openNativeGameAction(page: Page, action: "load" | "quit" | "save") {
   await clickNativeGameMenuButton(page, "menu");
   await page.waitForFunction(() => {
     const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost;
@@ -16,7 +16,7 @@ export async function openNativeGameAction(page: Page, action: "load" | "quit") 
   if (action === "load") await expect(page.getByRole("button", { name: "Load", exact: true }).first()).toBeVisible();
 }
 
-async function clickNativeGameMenuButton(page: Page, action: "menu" | "load" | "quit") {
+async function clickNativeGameMenuButton(page: Page, action: "menu" | "load" | "quit" | "save") {
   const target = await page.evaluate((action) => {
     const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost;
       __fuzzyWaddleAiMultiplayerBrowserTest?: { game: Phaser.Game } };
@@ -27,9 +27,10 @@ async function clickNativeGameMenuButton(page: Page, action: "menu" | "load" | "
       (action === "menu" ? "HudProbableWaffle" : "GameActionsLayer")) as unknown as {
         game_actions_container?: { game_action_menu?: Phaser.GameObjects.Container };
         game_action_load?: Phaser.GameObjects.Container; game_action_quit?: Phaser.GameObjects.Container;
+        game_action_save?: Phaser.GameObjects.Container;
       } | undefined;
     const button = action === "menu" ? scene?.game_actions_container?.game_action_menu :
-      action === "load" ? scene?.game_action_load : scene?.game_action_quit;
+      action === "load" ? scene?.game_action_load : action === "save" ? scene?.game_action_save : scene?.game_action_quit;
     if (!button?.visible || !button.active) throw new Error(`lifecycle_native_${action}_button_unavailable`);
     const bounds = button.getBounds(), canvas = game.canvas.getBoundingClientRect();
     if (!canvas.width || !canvas.height) throw new Error("lifecycle_native_canvas_not_visible");

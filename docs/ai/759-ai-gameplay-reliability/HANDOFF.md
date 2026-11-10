@@ -3,9 +3,8 @@
 ## Resume cursor
 
 - Execution authorized and goal active on `feature/759-skirmish-ai`, PR [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814).
-  Completed packets: **0/8**. Required gameplay/performance acceptance remains open despite implemented slices.
-- Next: complete remaining faction/negative defense controls and review strategic chase replacement against
-  mission ownership. Verify the manual save variant separately.
+  Completed packets: **1/8 (R2)**.
+- Next: resolve opposing traffic in R3 and review strategic chase replacement against R4/R5 mission ownership.
 - R5/R6/R7: three real Skaduwee Owls provoke two completed Tivara counters in both ready-counter branches.
   The no-ready branch landed seven verified hits before the tactical repair. The ready branch landed zero until
   planned tower posts were excluded from topology loss. After the repair the ready defender landed three hits
@@ -23,20 +22,15 @@
   capacity returns. All 20 adaptation tests pass, including scarcity, paid queue and fading evidence controls.
   Quiet formation/interception fixes are `06ad7a214`; do not repeat the retained FIGHT-01 quiet run for reassurance.
   One runner; maximum 30 minutes per invocation/batch. Do not repeat unchanged full matches.
-- R2 published: teardown `2c7844410` (3 regressions), offline unique-human binding `927c5b84b`
-  (4 scene + 7 service tests). Component controls and now an actual encrypted quicksave/Load UI test preserve
-  elevated worker, Temple and real flying Owl coordinates through three loads. Local human slot stays 1.
-  River Crossing reproduced the `scrollY` crash through transport container teardown in
-  `editor-stone-native.log`. After separating live unloading from shutdown, the authored elevated stones
-  kept their logical and rendered coordinates across all three loads without page errors
-  (`editor-stone-after-container.log`, 32.4s). The extra stone offset did not reproduce in this setup.
-  The same stones and human binding also survived an encrypted autosave and ordinary Load UI
-  (`editor-stone-autosave.log`, 44s). The test sends the production timer's request at a settled boundary.
-  After loading an autosave, real browser mouse input selected the restored human worker and its world position
-  moved more than 32 units toward a right-clicked destination (`autosave-human-input.log`, 32.7s).
-  The manual save variant remains open.
-  Save fixture repair: 18 interface tests/full types/lints pass. New test opt-in: `AI_GAMEPLAY_RELIABILITY=1`;
-  spec `E/reproduction/save/skirmish-gameplay-load.spec.ts`, fresh 4201, 4-minute ceiling.
+- R2 complete. Teardown `2c7844410`, transport shutdown `5f7024011`, and offline human-slot binding
+  `927c5b84b` repair the reproduced failures. The editor stone offset did not reproduce. River Crossing's
+  elevated editor stones retained exact logical/rendered coordinates across quicksave, autosave and named
+  manual reloads without page errors (`editor-stone-manual.log`). The three load variants restored the camera,
+  elevated worker/Temple/Owl, and human ownership. Actual left-click selected the human worker and right-click
+  moved it more than 32 units. Quicksave repeated three times. Fresh-start input and 17 focused Phaser tests
+  passed (`load-all-kinds-input-browser-arg.log`, `load-fresh-start-control.log`). Autosave uses the
+  production timer's request at a settled boundary. Run `E/reproduction/save/skirmish-gameplay-load.spec.ts`
+  with `AI_GAMEPLAY_RELIABILITY=1`, Chromium and one worker. Each case has a four-minute ceiling.
 - R3/R6 published: arrived native formation slots `a2dca643f` (6 controls) and confirmed anti-air cooldown admission
   `c6f8180e3` (14 controls). Physical large-group movement, produced counters and assignment remain open.
 - R4: physical weapon range `18b58f4ce`; synchronous ready attack admission `c812f1a88` (20 controls).
@@ -75,7 +69,13 @@
   and one reports arrival two tiles early before resuming the same order. Traces:
   `opposing-traffic-exact.json`, `opposing-traffic-sidestep.json`, `opposing-traffic-failures.log`.
   A claimed sidestep now falls through to bounded repathing (32 focused tests), but the corridor result
-  is unchanged. Keep the failing local browser assertion and diagnose blocker identity/endpoint handling.
+  is unchanged. The temporary blocker probe showed a later step's rejection propagated through the
+  recursive completion callbacks and triggered recovery on tiles already crossed. The local
+  step-ownership guard passes 33 focused tests and removes the early arrival/restart, but its exact
+  corridor run (`opposing-traffic-step-owner.json`) drops from ten arrivals to six. The leading three
+  workers on each side stop at adjacent x=27/28 across lanes y=29–31 by tick 88. Keep both changes
+  local until a bounded yielding rule clears that head-on standstill without borrowing recovery from
+  completed steps. The six rear workers still reach their original tiles.
 - R4 native control: `E/reproduction/movement/skirmish-gameplay-pursuit.spec.ts` passes in 8.3s/240 ticks, with six
   Banshee hits while the human worker moves (ticks 74/106/128/160/182/214). Only the strategic coordinator is paused
   through its public campaign API; native pawn trees/weapons/movement run. This cannot prove autonomous R5 behavior
@@ -149,7 +149,7 @@ and controls. Record an evidence gap separately from a code defect. A blocker do
 | Packet | Depends on | State | Evidence / next boundary |
 | --- | --- | --- | --- |
 | R1 Focused reproductions and baseline | none | in_progress | Teardown/churn/large-slot defects reproduced and combat baseline frozen; remaining targeted gameplay controls open. |
-| R2 Restore and teardown lifecycle | R1 relevant reproduction | in_progress | Teardown and offline human-slot binding repaired with focused controls. Full scene/save/load and elevation acceptance remain; interface fixture types repaired. |
+| R2 Restore and teardown lifecycle | R1 relevant reproduction | complete | All save types restore input, camera and elevation. Fresh start, live topology removal and teardown controls pass. See the R2 resume entry. |
 | R3 Movement and formation stability | R1 | in_progress | Arrived slots, quiet membership and eight-slot ceiling repaired; 100 tactical controls pass. Stale failure identity and large-group physical recovery remain. |
 | R4 Pursuit and attack execution | R1, R3 relevant contract | in_progress | Physical range misclassification repaired with 19 controls; continuous pursuit and physical hits remain. |
 | R5 AI mission ownership and defense | R1, R3, R4 | in_progress | Quiet-slot ownership and local reserve interception repaired; 96 tactical controls pass. Ground/air gameplay acceptance remains. |
