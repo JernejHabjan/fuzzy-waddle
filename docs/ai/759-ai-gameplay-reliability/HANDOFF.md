@@ -44,7 +44,10 @@
   three hits and new counters 20, Skaduwee one counter/16 hits. A ground raid took 29 hits across all three raiders
   tied to applied home-defense orders and no emergency anti-air orders (`42c1a00d6`). Hidden air produced no demand
   until discovery at tick 580, then one counter. Twenty adaptation controls cover full/missing producer, capacity
-  return, scarcity, paid queue and fading evidence. Audit legal prerequisite construction, harmless contact and
+  return, scarcity, paid queue and fading evidence. An unfinished producer was incorrectly offered anti-air
+  production. The adaptation manager now waits for completion and excludes unfinished counters from ready counts.
+  All 21 adaptation tests and owning lint pass. Gameplay project types still report unrelated fixture errors
+  (unfinished-counter-final-types.log), with no adaptation diagnostics. Audit legal prerequisite construction, harmless contact and
   large-army movement. Raw captures: `air-counter-{unready-native-after,skaduwee}.runtime.json.gz`,
   `unbuilt-post-ready-native-after.runtime.json.gz`, `{ground-defense-authority,hidden-air-discovery}.runtime.json.gz`.
 - R7: retained FIGHT-01 quiet `06ad7a214` seed 759940, 2401 ticks/120 decisions, legal kill at tick 118 and no

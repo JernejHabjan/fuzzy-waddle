@@ -13,6 +13,7 @@ import { MIN_RESEARCH_UTILITY, scoreAdaptationResearch } from "./ai-adaptation-r
 import type { AiAdaptationRole } from "./ai-adaptation-role";
 import { matchesAdaptationRole } from "./ai-adaptation-role-match";
 import { queuedAdaptationRoleItemIds } from "./ai-adaptation-queued-role";
+import { isFinishedActor } from "../production/macro/ai-macro-observation";
 
 function owned(observation: AiObservation) {
   return observation.actors.filter((actor) => actor.relation === "self" && actor.visibility === "owned");
@@ -37,6 +38,7 @@ function currentRoleActorIds(
   role: AiAdaptationRole
 ): readonly ActorId[] {
   return owned(observation)
+    .filter(isFinishedActor)
     .filter((actor) => {
       const entry = entryFor(catalog, actor.objectName);
       return entry !== undefined && matchesAdaptationRole(entry, role);
@@ -73,6 +75,7 @@ function producerForRole(
     }
   | undefined {
   for (const producer of owned(observation).sort((left, right) => left.actorId.localeCompare(right.actorId))) {
+    if (!isFinishedActor(producer)) continue;
     if (producer.queue.status === "known" && producer.queue.value.occupied >= producer.queue.value.capacity) continue;
     const producerEntry = entryFor(catalog, producer.objectName);
     const product = producerEntry?.produces

@@ -172,6 +172,53 @@ function observation(
 describe("AiAdaptationManager", () => {
   const manager = new AiAdaptationManager(profile, () => catalog);
 
+  it("waits for an unfinished counter producer to complete before assigning production", () => {
+    const main = actor("main", ObjectNames.Sandhold, "self", []);
+    const building: AiObservedActor = {
+      ...main,
+      constructionProgress: { status: "known", value: 50, observedTick: 140 }
+    };
+    const flyers = [1, 2, 3].map((id) => actor(`owl-${id}`, ObjectNames.SkaduweeOwl, "enemy", ["air"]));
+    const initial = createAiBrainState({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "opening:1:balanced"
+    });
+    const first = manager.propose(observation(100, [building, ...flyers]), initial);
+    if (!first.statePatch?.adaptation) throw new Error("missing_adaptation_state");
+    const state = {
+      ...initial,
+      economyProduction: { ...initial.economyProduction, adaptation: first.statePatch.adaptation }
+    };
+    const incomplete = manager.propose(observation(140, [building, ...flyers]), state);
+    expect(incomplete.intents.filter((intent) => intent.kind === "produce")).toEqual([]);
+    const finished = manager.propose(observation(160, [main, ...flyers]), state);
+    expect(finished.intents).toContainEqual(
+      expect.objectContaining({
+        kind: "produce",
+        producerId: main.actorId,
+        objectName: ObjectNames.TivaraSlingshotFemale
+      })
+    );
+    const unfinishedCounter: AiObservedActor = {
+      ...actor("unfinished-counter", ObjectNames.TivaraSlingshotFemale, "self", ["ground"]),
+      constructionProgress: { status: "known", value: 50, observedTick: 160 }
+    };
+    const underConstruction = manager.propose(observation(160, [main, unfinishedCounter, ...flyers]), state);
+    expect(
+      underConstruction.statePatch?.adaptationDemands?.find((demand) => demand.capabilityOrRole === "anti_air")
+        ?.satisfiedActorIds
+    ).toEqual([]);
+    expect(underConstruction.intents).toContainEqual(
+      expect.objectContaining({
+        kind: "produce",
+        producerId: main.actorId
+      })
+    );
+  });
+
   it.each(["missing", "busy"] as const)(
     "waits for a %s counter producer and resumes when it is available",
     (constraint) => {
