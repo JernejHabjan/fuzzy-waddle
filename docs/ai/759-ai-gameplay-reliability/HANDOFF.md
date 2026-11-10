@@ -64,8 +64,15 @@
   production. The adaptation manager now waits for completion and excludes unfinished counters from ready counts.
   Counter selection also checks finished actor prerequisites, preserves demand while unavailable and chooses an
   available alternative. All 22 adaptation tests pass. Gameplay project types still report unrelated fixture errors
-  (counter-prerequisite-types.log), with no adaptation diagnostics. Plan missing prerequisite construction, and check
-  harmless contact and
+  (counter-prerequisite-types.log), with no adaptation diagnostics. Missing counter infrastructure needs a real
+  prerequisite chain: Tivara's ranged Banshee needs Temple; Temple needs AnkGuard and can itself produce the Banshee.
+  Workers can construct both. Macro capacity currently follows its ordinary force target, not counter demand; ordinary
+  military product selection now waits for finished product prerequisites and chooses an available alternative;
+  the focused missing/unfinished/ready/alternative check and six capacity controls pass. Next use fresh confirmed adaptation evidence,
+  current counter/queue commitments and catalog recipes to select a feasible construction chain through the existing
+  macro site, builder, cost and effect-claim machinery. Avoid duplicates for unfinished/accepted construction and
+  avoid building for stale demand, a legal alternative or a full queue. Test both the normal production guard and
+  construction chain, including completion, resources, builder/site legality and fading evidence. Check harmless contact and
   large-army movement. Raw captures: `air-counter-{unready-native-after,skaduwee}.runtime.json.gz`,
   `unbuilt-post-ready-native-after.runtime.json.gz`, `{ground-defense-authority,hidden-air-discovery}.runtime.json.gz`.
 - R7: retained FIGHT-01 quiet `06ad7a214` seed 759940, 2401 ticks/120 decisions, legal kill at tick 118 and no

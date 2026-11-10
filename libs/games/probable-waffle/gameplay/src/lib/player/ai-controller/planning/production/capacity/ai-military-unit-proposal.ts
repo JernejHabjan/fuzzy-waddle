@@ -5,7 +5,7 @@ import type { AiIntent } from "../../../contracts/commands/ai-intent";
 import type { AiObservation } from "../../../contracts/observation/ai-observation";
 import type { AiDemand } from "../../../contracts/planning/ai-plan-contracts";
 import { nextIds } from "../macro/ai-macro-effect-identity";
-import { queueFree } from "../macro/ai-macro-observation";
+import { isFinishedActor, queueFree } from "../macro/ai-macro-observation";
 import { producerMilitaryProducts, productionRoleDeficit, roleFor } from "./ai-military-catalog";
 import type { AiProductionTransition } from "../../../contracts/state/ai-production-transition";
 
@@ -62,6 +62,11 @@ export function proposeAiMilitaryUnits(args: {
     )
   );
   const proposals: AiIntent[] = [];
+  const readyNames = new Set(
+    observation.actors
+      .filter((actor) => actor.relation === "self" && actor.visibility === "owned" && isFinishedActor(actor))
+      .map((actor) => actor.objectName)
+  );
   let remaining = targetMilitary - projectedCount;
   const objective =
     transition?.status === "committed"
@@ -99,6 +104,12 @@ export function proposeAiMilitaryUnits(args: {
     if (slot === undefined) continue;
     const candidate = [...producerMilitaryProducts(producer.objectName, catalog, pressureDomain)]
       .filter((objectName) => !transition || objectName === transition.productObjectName)
+      .filter((objectName) =>
+        (
+          catalog.entries.find((entry) => entry.sourceObjectName === objectName)?.constructionProfile
+            ?.requiredObjectNames ?? []
+        ).every((name) => readyNames.has(name))
+      )
       .filter((objectName) => {
         const cost = catalog.entries.find((entry) => entry.sourceObjectName === objectName)?.constructionProfile
           ?.resourceCost;
