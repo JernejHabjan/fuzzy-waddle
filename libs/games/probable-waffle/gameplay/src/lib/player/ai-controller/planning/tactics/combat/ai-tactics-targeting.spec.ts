@@ -149,7 +149,11 @@ describe("AiTacticsManager", () => {
     };
     const mixedDefense = { ...defense, actorIds: [defender.actorId, melee.actorId] };
     const mixed = manager.propose(observation([defender, melee, workers, ...raiders]), fixtureState([mixedDefense]));
-    expect(mixed.statePatch?.squadUpdates?.[0]?.state).toBe("retreat");
+    expect(mixed.statePatch?.squadUpdates?.[0]?.state).toBe("engage");
+    expect(mixed.intents).toContainEqual(expect.objectContaining({ kind: "move", actorIds: [melee.actorId] }));
+    expect(mixed.intents.some((intent) => intent.kind === "attack" && intent.actorIds.includes(melee.actorId))).toBe(
+      false
+    );
     const unthreatened = {
       ...workers,
       logicalPosition: { status: "known" as const, value: { x: 25, y: 0, z: 0 }, observedTick: 100 }

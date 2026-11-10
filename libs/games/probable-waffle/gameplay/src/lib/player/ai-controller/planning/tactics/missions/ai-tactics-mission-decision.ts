@@ -58,16 +58,17 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
   const scoutNeedsSafeWithdrawal =
     squad.role === "scout" && scoutUnderFire && localEnemies.length > 0 && retreat !== null;
   const safeFiringPositions = selectAiSafeFiringPositions(members, localEnemies, visibleTarget, observation);
-  const criticalRangedActorIds = members
+  const endangeredActorIds = members
     .filter((member) => {
       const memberHealth = member.healthPermille;
       const memberCombat = member.combatProfile;
       const memberPosition = knownPosition(member);
       if (
         memberHealth?.status !== "known" ||
-        memberHealth.value > 400 ||
         memberCombat?.status !== "known" ||
-        !memberCombat.value.attacks.some((attack) => attack.minRange > 0) ||
+        (memberHealth.value > 250 &&
+          (memberHealth.value > 400 || !memberCombat.value.attacks.some((attack) => attack.minRange > 0))) ||
+        !memberCombat.value.attacks.some((attack) => attack.damage > 0) ||
         !memberPosition
       )
         return false;
@@ -94,7 +95,7 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
       });
     })
     .map((member) => member.actorId);
-  const criticalRangedThreat = criticalRangedActorIds.length > 0;
+  const endangeredMemberThreat = endangeredActorIds.length > 0;
   // A healthy home defender should contest an attacker already threatening the economy, even when
   // the full fight is unfavorable. Once injured it returns to the normal retreat policy.
   const urgentHomeDefense =
@@ -195,10 +196,10 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
             : "recover"
           : scoutNeedsSafeWithdrawal
             ? "retreat"
-            : criticalRangedThreat
+            : endangeredMemberThreat
               ? members.some(
                   (member) =>
-                    !criticalRangedActorIds.includes(member.actorId) &&
+                    !endangeredActorIds.includes(member.actorId) &&
                     member.combatProfile?.status === "known" &&
                     member.combatProfile.value.attacks.length > 0
                 ) && localEnemies.length > 0
@@ -224,7 +225,7 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
                           ? "regroup"
                           : quietState;
   const holdRetreat =
-    !criticalRangedThreat &&
+    !endangeredMemberThreat &&
     !urgentHomeDefense &&
     !committedPressure &&
     recoveringFromRetreat &&
@@ -288,7 +289,7 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
     missionExpired,
     missionRecoveryExhausted,
     emptyRecoveryExhausted,
-    criticalRangedActorIds,
+    endangeredActorIds,
     safeFiringPositions,
     holdRetreat,
     quietState,

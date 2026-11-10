@@ -30,7 +30,7 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
     updated,
     visibleTarget
   } = input;
-  const protectedIds = new Set(input.criticalRangedActorIds);
+  const protectedIds = new Set(input.endangeredActorIds);
   const safeFiringPositionByActor = new Map(
     safeFiringPositions.map((assignment) => [assignment.actorId, assignment.position])
   );

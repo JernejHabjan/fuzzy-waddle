@@ -81,9 +81,10 @@
   started intercepting, then tactical retreat and blocker recovery alternated Move and Attack orders at 900–1000.
   Local recovery change respects an actively retreating defense squad. A healthy defender now contests its visible
   target when that attacker directly threatens owned workers or the main building; injured units retain withdrawal.
-  Thirty-one tactical/recovery controls pass. A follow-up mixed-health regression found that one healthy defender could
-  keep a critically wounded melee unit in the emergency fight; the exception now yields to normal withdrawal if any
-  squad member is critically injured. The focused red-before/passing-after check and 31 related controls pass.
+  Thirty-one tactical/recovery controls pass. Mixed-health follow-up found that the previous all-squad retreat fix
+  withdrew healthy fighters with a critically wounded melee unit. The shared individual-withdrawal policy now protects
+  endangered melee too, letting remaining fighters engage while the injured unit moves away. Focused regression
+  proves the injured member receives a move, not an attack; 31 tactical/recovery controls pass.
   Catalog excludes research-locked recipes (five controls pass).
   Native run 3 had no hit by tick 1000: the counter spawned at 879 and advanced from (41,17) to (31,16) with a retained
   Attack. Extending this missing-building case to 1200 ticks preserves the hit assertion and passes: one Temple, two
