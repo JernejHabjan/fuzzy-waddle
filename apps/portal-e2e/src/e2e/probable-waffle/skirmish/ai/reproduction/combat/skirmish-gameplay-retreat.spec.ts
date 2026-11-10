@@ -8,6 +8,7 @@ import type { AiRuntimeBrowserTestHost } from "@fuzzy-waddle/probable-waffle-pha
 import type GameProbableWaffleScene from "@fuzzy-waddle/probable-waffle-phaser/world/scenes/GameProbableWaffleScene";
 import type { ActorIndexSystem } from "@fuzzy-waddle/probable-waffle-phaser/world/services/ActorIndexSystem";
 import type { RuntimeFixture } from "../../contracts/skirmish-ai-runtime-fixture";
+import type { AiObservedActor } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/contracts/observation/ai-observation";
 import { prepareRuntimeVariant } from "../../setup/skirmish-ai-runtime-variant-setup";
 import { advanceRuntimeFrames } from "../../runner/skirmish-ai-runtime-frame-driver";
 
@@ -125,4 +126,205 @@ test("a minor infantry injury does not abandon a favorable fight", async ({ page
   expect(samples.some((sample) => sample.hitByArmy && (sample.hitTick ?? 0) > 5)).toBe(true);
   expect(samples.at(-1)?.enemyHealth).toBe(0);
   expect(errors).toEqual([]);
+});
+
+test("a losing squad withdraws and re-engages when nearby reinforcements arrive", async ({ page }, testInfo) => {
+  const root = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
+  const source = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
+  const fixture: RuntimeFixture = JSON.parse(
+    readFileSync(
+      join(
+        root,
+        "tools/probable-waffle/skirmish/ai/testing/fixtures/native/combat/fight-01-reassess-and-retreat-regroup-within-bound-runtime.json"
+      ),
+      "utf8"
+    )
+  );
+  const selected = fixture.recipe.variants.find((variant) => variant.id === "fight-01-tivara-quiet");
+  if (!selected?.presetWorld) throw new Error("retreat_fixture_missing");
+  const enemies = Array.from({ length: 7 }, (_, index) => ({
+    fixtureActorId: `enemy-force-${index}`,
+    actorName: ObjectNames.SkaduweeWarriorMale,
+    owner: 1,
+    position: { x: 64 + (index % 4) * 32, y: 800 + Math.floor(index / 4) * 32, z: 0 }
+  }));
+  const reserves = Array.from({ length: 8 }, (_, index) => ({
+    fixtureActorId: `own-reserve-${index}`,
+    actorName: ObjectNames.TivaraMacemanMale,
+    owner: 2,
+    position: {
+      x: (45 + (index % 4) - (42 + Math.floor(index / 4))) * 32 + 32,
+      y: (45 + (index % 4) + 42 + Math.floor(index / 4)) * 16 + 16,
+      z: 0
+    }
+  }));
+  const variant = {
+    ...selected,
+    captureConstruction: true as const,
+    presetWorld: {
+      ...selected.presetWorld,
+      fixtureId: "gameplay-retreat-reinforcement",
+      actors: [
+        ...selected.presetWorld.actors.filter(
+          (actor) =>
+            (!actor.fixtureActorId.startsWith("army-") || ["army-0", "army-1"].includes(actor.fixtureActorId)) &&
+            !["scout-probe", "ranged-probe", "support-probe"].includes(actor.fixtureActorId)
+        ),
+        ...enemies,
+        ...reserves
+      ],
+      controls: reserves.map((actor, index) => ({
+        id: `reserve-move-${index}`,
+        producerFixtureActorId: actor.fixtureActorId,
+        requestTick: 120,
+        applicationTick: 120,
+        action: {
+          kind: "move" as const,
+          worldPosition: { x: 128 + (index % 4) * 32, y: 896 + Math.floor(index / 4) * 32, z: 0 }
+        }
+      }))
+    }
+  };
+  const errors: string[] = [];
+  await prepareRuntimeVariant(
+    page,
+    fixture,
+    variant,
+    selected.seed,
+    source,
+    digestCanonicalAiValue({ fixture, presetWorld: variant.presetWorld }),
+    false,
+    errors
+  );
+  const samples: Array<{
+    tick: number | undefined;
+    roles: Readonly<Record<string, string>>;
+    squads: { id: string; state: string; actorIds: readonly string[] }[];
+    observed: {
+      id: string;
+      relation: string;
+      position: AiObservedActor["logicalPosition"];
+      health: AiObservedActor["healthPermille"];
+    }[];
+  }> = [];
+  for (let tick = 20; tick <= 400; tick += 20) {
+    await advanceRuntimeFrames(page, fixture.recipe.aiPlayerNumber, tick);
+    samples.push(
+      await page.evaluate(() => {
+        const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
+          .__fuzzyWaddleAiRuntimeBrowserTest;
+        const roles = host?.presetApplication?.createdActorIds;
+        const controller = window.__fuzzyWaddleAiRuntimeParts?.(2)?.controller;
+        if (!roles || !controller) throw new Error("retreat_roles_missing");
+        const initial = [roles["army-0"], roles["army-1"]];
+        return {
+          tick: window.__fuzzyWaddleAiRuntimeParts?.(2)?.tickService.currentTick,
+          roles,
+          squads:
+            controller
+              .getBrainState()
+              ?.squads.filter((squad) => squad.actorIds.some((id) => initial.includes(id)))
+              .map((squad) => ({ id: squad.squadId, state: squad.state, actorIds: squad.actorIds })) ?? [],
+          observed:
+            controller
+              .getCommittedObservation()
+              ?.actors.filter((actor) => Object.values(roles).includes(actor.actorId))
+              .map((actor) => ({
+                id: actor.actorId,
+                relation: actor.relation,
+                position: actor.logicalPosition,
+                health: actor.healthPermille
+              })) ?? []
+        };
+      })
+    );
+  }
+  const authority = await page.evaluate(() => {
+    const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
+      .__fuzzyWaddleAiRuntimeBrowserTest;
+    const capture = host?.productionCapture?.capture(2, 400);
+    const opponent = host?.productionCapture?.captureHuman?.(1, 400);
+    if (!capture || !opponent) throw new Error("retreat_authority_missing");
+    return {
+      dropped: capture.droppedFactCount,
+      opponentDropped: opponent.droppedFactCount,
+      facts: capture.facts.filter(
+        (fact) => fact.kind === "native_damage" || fact.kind === "preset_control" || fact.kind === "intent_dispatch"
+      ),
+      opponentDamage: opponent.facts.filter((fact) => fact.kind === "native_damage")
+    };
+  });
+  writeFileSync(
+    testInfo.outputPath("retreat-reinforcement.json"),
+    JSON.stringify({ source, samples, authority, errors })
+  );
+  expect(errors).toEqual([]);
+  expect(authority.dropped).toBe(0);
+  expect(authority.opponentDropped).toBe(0);
+  expect(
+    samples.some((sample) => (sample.tick ?? 0) < 120 && sample.squads.some((squad) => squad.state === "retreat"))
+  ).toBe(true);
+  expect(
+    samples.some((sample) => (sample.tick ?? 0) > 120 && sample.squads.some((squad) => squad.state === "engage"))
+  ).toBe(true);
+  expect(
+    samples
+      .filter((sample) => (sample.tick ?? 0) >= 40 && (sample.tick ?? 0) <= 120)
+      .every((sample) => sample.squads.some((squad) => squad.state === "retreat"))
+  ).toBe(true);
+  expect(
+    samples
+      .filter((sample) => (sample.tick ?? 0) >= 140)
+      .every((sample) => sample.squads.some((squad) => squad.state === "engage"))
+  ).toBe(true);
+  const roles = samples[0]?.roles;
+  if (!roles) throw new Error("retreat_fixture_roles_missing");
+  const initialIds = [roles["army-0"], roles["army-1"]].filter((id): id is string => !!id);
+  const reserveIds = Object.entries(roles)
+    .filter(([role]) => role.startsWith("own-reserve-"))
+    .map(([, id]) => id);
+  const enemyIds = Object.entries(roles)
+    .filter(([role]) => role.startsWith("enemy-force-"))
+    .map(([, id]) => id);
+  expect(initialIds).toHaveLength(2);
+  expect(reserveIds).toHaveLength(8);
+  expect(
+    authority.facts.some(
+      (fact) =>
+        fact.kind === "intent_dispatch" &&
+        fact.event.kind === "requested" &&
+        fact.event.acceptedIntent?.kind === "move" &&
+        fact.event.acceptedIntent.reasonCode.includes("protected_retreat") &&
+        initialIds.some(
+          (id) =>
+            fact.event.kind === "requested" &&
+            fact.event.acceptedIntent?.kind === "move" &&
+            fact.event.acceptedIntent.actorIds.includes(id)
+        )
+    )
+  ).toBe(true);
+  const position = (tick: number, id: string) => {
+    const value = samples.find((sample) => sample.tick === tick)?.observed.find((actor) => actor.id === id)?.position;
+    return value?.status === "known" ? value.value : undefined;
+  };
+  const moved = (id: string, fromTick: number, toTick: number) => {
+    const from = position(fromTick, id),
+      to = position(toTick, id);
+    return from && to ? Math.hypot(to.x - from.x, to.y - from.y) : 0;
+  };
+  expect(initialIds.some((id) => moved(id, 80, 120) >= 1)).toBe(true);
+  expect(reserveIds.some((id) => moved(id, 20, 140) >= 5)).toBe(true);
+  expect(reserveIds.some((id) => moved(id, 120, 200) >= 2)).toBe(true);
+  expect(
+    authority.opponentDamage.some(
+      (fact) =>
+        fact.kind === "native_damage" &&
+        fact.tick >= 140 &&
+        fact.damage.amount > 0 &&
+        fact.damage.initiator?.actorId != null &&
+        [...initialIds, ...reserveIds].includes(fact.damage.initiator.actorId) &&
+        fact.damage.target.actorId != null &&
+        enemyIds.includes(fact.damage.target.actorId)
+    )
+  ).toBe(true);
 });

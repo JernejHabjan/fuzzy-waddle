@@ -70,7 +70,11 @@
   context/combat failure on corrected oracle replay (21 controls). A separate 200-tick browser check applies one
   point of damage to a named infantry unit at tick 5. Its squad does not retreat through tick 100, army hits the
   opponent and the opponent is absent or at zero health by tick 120 (minor-injury-final.log). This run includes
-  the local, uncommitted R3 path changes. Losing withdrawal and reinforcement-driven return remain. Retained `quiet-combat-replay.json`; use full combat capture for this check.
+  the local, uncommitted R3 path changes. A second short native case recorded retreat at ticks 40–120,
+  a selected protected-retreat move and actual infantry movement, followed by engagement from tick 140 and
+  eight native hits. Reinforcements also moved from reserve, with fixture-issued move commands at tick 120.
+  This run also includes local R3 changes (retreat-verified.log). Verify applied-command attribution and remaining
+  scout, damaged ranged and mixed-domain controls before closing R7. Retained `quiet-combat-replay.json`; use full combat capture for this check.
 - Artifacts above are in ignored `tmp/ai-gameplay-reliability/`. Default result junctions point to full D:.
   Set `AI_SKIRMISH_RUNTIME_RESULTS_DIRECTORY` and matrix `--output` under workspace tmp. One runner, 30 min
   maximum per batch. Use an exact scenario selector and avoid repeats of retained evidence. Ordinary CI green on
