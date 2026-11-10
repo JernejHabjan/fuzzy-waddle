@@ -4,7 +4,7 @@
 
 - Execution authorized and goal active on `feature/759-skirmish-ai`, PR [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814).
   Completed packets: **1/8 (R2)**.
-- Next: resolve opposing traffic in R3 and review strategic chase replacement against R4/R5 mission ownership.
+- Next: resolve opposing traffic in R3, verify R4 loss/unreachable controls, and audit the ground-defense trace for R5.
 - R5/R6/R7: three real Skaduwee Owls provoke two completed Tivara counters in both ready-counter branches.
   The no-ready branch landed seven verified hits before the tactical repair. The ready branch landed zero until
   planned tower posts were excluded from topology loss. After the repair the ready defender landed three hits
@@ -81,9 +81,12 @@
   through its public campaign API; native pawn trees/weapons/movement run. This cannot prove autonomous R5 behavior
   or performance. A human-owned Banshee also lands two hits before a tick-120 replacement Move, follows the new
   direction, and never hits the old target again through tick 240 (`pursuit-human-replacement.json`).
-  The autonomous trace replaces the chase with a strategic Move near tick 40 and yields no hits
-  (`pursuit-strategic-retask-trace.log`); review mission purpose before declaring that replacement a bug.
-  Don't repeat without a causal change. The mob control explicitly omits the faction-production roster premise.
+  In the autonomous case, the attack squad's formation Move interrupted the Banshee's active local chase at
+  tick 40, yielding zero hits. The committed input showed a visible chased worker and a different squad
+  focus beyond the Banshee's local awareness. Preserving the compatible local engagement kept the chase
+  through ticks 40–60 and landed three moving-target hits at 72/106/128. All 140 tactics/skirmish tests pass.
+  Evidence: `pursuit-owner-trace.log`, `pursuit-decision-input.json`, `local-engagement-pursuit-observations.json`.
+  The mob fixture isolates the behavior and does not exercise faction-production legality.
 - R1/R8: three clean `b42a89066` combat samples each completed 240 ticks/12 decisions at 1x, 8 workers/12 army,
   no browser errors. Median elapsed 23358.8ms; frame p50 50ms/p95 66.7ms. Render profiling identifies full-map fog
   geometry as a major cost. Frozen baseline/targets: `tmp/ai-gameplay-reliability/fog-performance-baseline.json`;

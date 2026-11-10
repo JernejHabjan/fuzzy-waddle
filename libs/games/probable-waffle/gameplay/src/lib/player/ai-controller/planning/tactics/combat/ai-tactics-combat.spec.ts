@@ -127,6 +127,26 @@ describe("AiTacticsManager", () => {
     expect(continuing.intents.flatMap((intent) => ("actorIds" in intent ? intent.actorIds : []))).not.toContain(
       front.actorId
     );
+
+    const pursuingReinforcement = { ...reinforcement, activeOrder: attackingFront.activeOrder };
+    const pursuing = manager.propose(observation([front, pursuingReinforcement, enemy]), state);
+    expect(pursuing.intents.flatMap((intent) => (intent.kind === "move" ? intent.actorIds : []))).not.toContain(
+      reinforcement.actorId
+    );
+
+    const localEnemy = combatActor("local-enemy", "enemy", 22, "ground", 1000, { damage: 1 });
+    const locallyEngaged = {
+      ...pursuingReinforcement,
+      activeOrder: {
+        ...attackingFront.activeOrder,
+        value: { ...attackingFront.activeOrder.value, targetActorId: localEnemy.actorId }
+      }
+    };
+    const split = manager.propose(observation([front, locallyEngaged, enemy, localEnemy]), state);
+    expect(split.statePatch?.squadUpdates?.[0]?.tactics?.targetActorId).toBe(enemy.actorId);
+    expect(split.intents.flatMap((intent) => (intent.kind === "move" ? intent.actorIds : []))).not.toContain(
+      reinforcement.actorId
+    );
   });
 
   it("keeps an attack on a visible main building focused when a defender is nearby", () => {

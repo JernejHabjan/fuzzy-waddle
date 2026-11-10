@@ -11,7 +11,7 @@ import {
   formationPositions,
   movementDomains
 } from "../combat/ai-tactics-geometry";
-import { assignDamage } from "../combat/ai-tactics-combat";
+import { assignDamage, canSeeTarget, canTarget } from "../combat/ai-tactics-combat";
 import {
   MISSION_EFFECT_EXTENSION_TICKS,
   TACTICAL_FAILED_POSITION_RETRY_TICKS,
@@ -256,6 +256,26 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
             distance(activeOrder.targetPosition, safeFiringPosition.position) > 1)
         )
           return true;
+      }
+      // A compatible native chase already serves this mission, even beyond the member's local firing awareness.
+      if (
+        visibleTarget &&
+        (finalState === "engage" || finalState === "advance") &&
+        activeOrder?.orderType === OrderType.Attack &&
+        activeOrder.targetActorId
+      ) {
+        if (activeOrder.targetActorId === visibleTarget.actorId && canTarget(actor, visibleTarget)) return false;
+        // A formation approach should not interrupt a local fight just because another part of the squad has a target.
+        if (squad.role === "attack" && !targetAwareMembers.some((member) => member.actorId === actor.actorId)) {
+          const engagedEnemy = observation.actors.find(
+            (candidate) =>
+              candidate.actorId === activeOrder.targetActorId &&
+              candidate.relation === "enemy" &&
+              candidate.visibility === "visible"
+          );
+          if (engagedEnemy && canTarget(actor, engagedEnemy) && canSeeTarget(actor, engagedEnemy, input.catalog))
+            return false;
+        }
       }
       // Attack-move is the legal approach before this member sees the mission's player-visible target.
       if (

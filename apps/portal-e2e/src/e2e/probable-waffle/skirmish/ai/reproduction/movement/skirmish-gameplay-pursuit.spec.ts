@@ -12,11 +12,14 @@ import { advanceRuntimeFrames } from "../../runner/skirmish-ai-runtime-frame-dri
 test.skip(process.env.AI_GAMEPLAY_RELIABILITY !== "1", "Explicit bounded gameplay reliability checks only");
 test.setTimeout(180_000);
 
-for (const replaceOrder of [false, true]) {
+for (const mode of ["isolated", "human replacement", "autonomous"] as const) {
+  const replaceOrder = mode === "human replacement";
   test(
     replaceOrder
       ? "a new human move cancels native pursuit"
-      : "native pawn pursuit lands repeated hits on a moving worker with the strategic coordinator paused",
+      : mode === "autonomous"
+        ? "the attack squad preserves native pursuit into engagement"
+        : "native pawn pursuit lands repeated hits on a moving worker with the strategic coordinator paused",
     async ({ page }, testInfo) => {
       const root = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
       const source = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
@@ -96,29 +99,46 @@ for (const replaceOrder of [false, true]) {
         false,
         errors
       );
-      // Isolate the native pawn owner through the existing campaign API. Movement, weapons and pawn trees still run.
-      // Autonomous mission replacement is a separate R5 acceptance boundary, retained in the diagnostic evidence.
-      await page.evaluate(() => {
-        const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
-          .__fuzzyWaddleAiRuntimeBrowserTest;
-        const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
-          | {
-              getSceneGameData(): { systems: unknown[] };
-            }
-          | undefined;
-        const handler = scene?.getSceneGameData().systems.find(
-          (
-            entry
-          ): entry is {
-            setPlayerEnabled(playerNumber: number, enabled: boolean): boolean;
-          } => typeof (entry as { setPlayerEnabled?: unknown })?.setPlayerEnabled === "function"
-        );
-        if (!handler?.setPlayerEnabled(2, false)) throw new Error("pursuit_strategic_pause_missing");
-      });
+      // The isolated controls leave movement and weapons active while pausing the strategic coordinator.
+      if (mode !== "autonomous")
+        await page.evaluate(() => {
+          const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
+            .__fuzzyWaddleAiRuntimeBrowserTest;
+          const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
+            | {
+                getSceneGameData(): { systems: unknown[] };
+              }
+            | undefined;
+          const handler = scene?.getSceneGameData().systems.find(
+            (
+              entry
+            ): entry is {
+              setPlayerEnabled(playerNumber: number, enabled: boolean): boolean;
+            } => typeof (entry as { setPlayerEnabled?: unknown })?.setPlayerEnabled === "function"
+          );
+          if (!handler?.setPlayerEnabled(2, false)) throw new Error("pursuit_strategic_pause_missing");
+        });
       const observations: Awaited<ReturnType<typeof capturePursuit>>[] = [];
       for (let tick = 5; tick <= 240; tick += 5) {
         await advanceRuntimeFrames(page, fixture.recipe.aiPlayerNumber, tick);
         observations.push(await capturePursuit(page));
+        if (mode === "autonomous" && tick === 40) {
+          const decision = await page.evaluate(() => {
+            const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
+              .__fuzzyWaddleAiRuntimeBrowserTest;
+            const bindings = host?.presetApplication?.createdActorIds;
+            const controller = window.__fuzzyWaddleAiRuntimeParts?.(2)?.controller;
+            const observation = controller?.getCommittedObservation();
+            const ids = [bindings?.["pursuer"], bindings?.["runner"]];
+            return {
+              ids,
+              tick: observation?.tick,
+              actors: observation?.actors.filter((actor) => ids.some((id) => id === actor.actorId)),
+              squads: controller?.getBrainState()?.squads.filter((squad) => squad.actorIds.some((id) => id === ids[0]))
+            };
+          });
+          writeFileSync(testInfo.outputPath("pursuit-decision.json"), JSON.stringify(decision));
+        }
       }
       const movingHits = observations.filter((row, index) => {
         const previous = observations[index - 1];
@@ -133,7 +153,7 @@ for (const replaceOrder of [false, true]) {
         testInfo.outputPath("pursuit-observations.json"),
         JSON.stringify({
           source,
-          strategicCoordinatorPaused: true,
+          mode,
           replaceOrder,
           movingHits,
           observations
@@ -143,7 +163,7 @@ for (const replaceOrder of [false, true]) {
         "GAMEPLAY_PURSUIT",
         JSON.stringify({
           source,
-          strategicCoordinatorPaused: true,
+          mode,
           movingHits: movingHits.length,
           hitTicks: movingHits.map((row) => row.hitTick),
           final: observations.at(-1)
@@ -153,6 +173,11 @@ for (const replaceOrder of [false, true]) {
         movingHits.filter((row) => !replaceOrder || (row.hitTick ?? Infinity) < 120).length,
         "repeated damage while the real target moves, not only after arrival"
       ).toBeGreaterThanOrEqual(2);
+      if (mode === "autonomous") {
+        const engagement = observations.filter((row) => (row.tick ?? 0) >= 40 && (row.tick ?? 0) <= 60);
+        expect(engagement).toHaveLength(5);
+        expect(engagement.every((row) => row.chasingRunner)).toBe(true);
+      }
       if (replaceOrder) {
         const after = observations.filter((row) => (row.tick ?? 0) >= 125);
         expect(after.some((row) => row.order === "Move")).toBe(true);
