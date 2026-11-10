@@ -26,7 +26,10 @@
   three lanes. Ten reach original tiles and one reports arrival two tiles early then restarts. A later tween rejection
   cascaded through completed ancestors. Local step-ownership guard passes 33 tests and removes false arrival, but six
   front workers deadlock at x=27/28, y=29–31 by tick 88. Six others arrive. Keep both local until a bounded yielding
-  rule clears the standstill while preserving each original destination and collision legality. Inspect
+  rule clears the standstill while preserving each original destination and collision legality. A separate
+  ownership regression showed a completed step's later callback rejection could release a newer step's reservation.
+  The tween now releases only once. Its focused controls and Phaser types/lint pass. The exact corridor still has
+  six arrivals and six failures after this repair (traffic-owned-step.log). Inspect
   `opposing-traffic-{exact,step-owner}.json` and `opposing-traffic-failures.log`.
 - R4: physical attack range `18b58f4ce`, synchronous admission `c812f1a88`, flying reachability and lifecycle controls
   (23 native movement checks). The isolated Banshee hits a moving worker six times. A human replacement Move after

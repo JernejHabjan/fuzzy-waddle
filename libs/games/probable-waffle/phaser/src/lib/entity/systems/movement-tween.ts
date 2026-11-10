@@ -74,15 +74,22 @@ export class MovementTween {
       }
     }
 
-    const wrappedOnComplete = async () => {
+    let stepReleased = false;
+    const releaseStep = () => {
+      if (stepReleased) return;
+      stepReleased = true;
       if (actorId) movementOccupancy?.releaseStep(actorId);
+    };
+
+    const wrappedOnComplete = async () => {
+      releaseStep();
       if (onComplete) {
         await onComplete();
       }
     };
 
     const wrappedOnStop = () => {
-      if (actorId) movementOccupancy?.releaseStep(actorId);
+      releaseStep();
       completion?.terminal("stopped");
       onStop?.();
     };
@@ -95,7 +102,7 @@ export class MovementTween {
       1,
       new MovementStepInterruptedError(tile)
     ).catch((error) => {
-      if (actorId) movementOccupancy?.releaseStep(actorId);
+      releaseStep();
       throw error;
     });
   }

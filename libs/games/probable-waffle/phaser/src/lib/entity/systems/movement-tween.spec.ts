@@ -104,6 +104,26 @@ describe("movement interpolation/reservation extraction (unrun until final gate)
     expect(f.events.off).toHaveBeenCalledWith(Phaser.Scenes.Events.UPDATE, expect.any(Function));
   });
 
+  it("does not release a newer step when an earlier completion callback rejects", async () => {
+    const f = fixture();
+    const error = new Error("later path failed");
+    let newer: Promise<void> | undefined;
+    const earlier = f.tween.moveActorToTileWithTween({ x: 1, y: 0 }, undefined, async () => {
+      newer = f.tween.moveActorToTileWithTween({ x: 2, y: 0 });
+      throw error;
+    });
+    const rejected = expect(earlier).rejects.toBe(error);
+    jest.mocked(getInterpolatedSimulationNow).mockReturnValue(100);
+    update(f);
+    await rejected;
+    expect(newer).toBeDefined();
+    expect(f.occupancy.tryReserveStep).toHaveBeenCalledTimes(2);
+    expect(f.occupancy.releaseStep).toHaveBeenCalledTimes(1);
+    const interrupted = expect(newer).rejects.toEqual(new MovementStepInterruptedError({ x: 2, y: 0 }));
+    f.tween.cancelMovement();
+    await interrupted;
+  });
+
   it("records direct cancellation before the user callback and keeps the native resolved Promise", async () => {
     const f = fixture(),
       board = new PawnAiBlackboard(),
