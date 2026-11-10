@@ -5,6 +5,9 @@ import { join } from "node:path";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { digestCanonicalAiValue } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/persistence/canonical-ai-serialization";
 import type { AiRuntimeBrowserTestHost } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/browser/ai-runtime-browser-test-host";
+import type GameProbableWaffleScene from "@fuzzy-waddle/probable-waffle-phaser/world/scenes/GameProbableWaffleScene";
+import type { ActorIndexSystem } from "@fuzzy-waddle/probable-waffle-phaser/world/services/ActorIndexSystem";
+import type { PawnAiBlackboard } from "@fuzzy-waddle/probable-waffle-phaser/prefabs/ai-agents/controller/pawn-ai-blackboard";
 import type { RuntimeFixture } from "../../contracts/skirmish-ai-runtime-fixture";
 import { prepareRuntimeVariant } from "../../setup/skirmish-ai-runtime-variant-setup";
 import { advanceRuntimeFrames } from "../../runner/skirmish-ai-runtime-frame-driver";
@@ -16,12 +19,14 @@ const pursuitCases = {
   isolated: "native pawn pursuit lands repeated hits on a moving worker with the strategic coordinator paused",
   "human replacement": "a new human move cancels native pursuit",
   autonomous: "the attack squad preserves native pursuit into engagement",
-  "equal speed": "an equally fast runner takes no pursuit damage while escaping"
+  "equal speed": "an equally fast runner takes no pursuit damage while escaping",
+  "removed target": "native pursuit releases a worker removed during the chase"
 } as const;
 
 for (const mode of Object.keys(pursuitCases) as (keyof typeof pursuitCases)[]) {
   const replaceOrder = mode === "human replacement";
   const equalSpeed = mode === "equal speed";
+  const removeTarget = mode === "removed target";
   test(pursuitCases[mode], async ({ page }, testInfo) => {
     const root = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
     const source = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
@@ -61,6 +66,20 @@ for (const mode of Object.keys(pursuitCases) as (keyof typeof pursuitCases)[]) {
             position: { x: 384, y: 1280, z: 0 }
           }
         ],
+        ...(removeTarget
+          ? {
+              events: [
+                {
+                  id: "remove-pursuit-target",
+                  tick: 120,
+                  kind: "destroy_owned_actor" as const,
+                  owner: 1,
+                  objectName: ObjectNames.TivaraWorkerMale,
+                  fixtureActorId: "runner"
+                }
+              ]
+            }
+          : {}),
         controls: [
           {
             id: "flee",
@@ -121,7 +140,7 @@ for (const mode of Object.keys(pursuitCases) as (keyof typeof pursuitCases)[]) {
         if (!handler?.setPlayerEnabled(2, false)) throw new Error("pursuit_strategic_pause_missing");
       });
     const observations: Awaited<ReturnType<typeof capturePursuit>>[] = [];
-    for (let tick = 5; tick <= (equalSpeed ? 90 : 240); tick += 5) {
+    for (let tick = 5; tick <= (equalSpeed ? 90 : removeTarget ? 115 : 240); tick += 5) {
       await advanceRuntimeFrames(page, fixture.recipe.aiPlayerNumber, tick);
       observations.push(await capturePursuit(page));
       if (mode === "autonomous" && tick === 40) {
@@ -186,6 +205,42 @@ for (const mode of Object.keys(pursuitCases) as (keyof typeof pursuitCases)[]) {
       movingHits.filter((row) => !replaceOrder || (row.hitTick ?? Infinity) < 120).length,
       "repeated damage while the real target moves, not only after arrival"
     ).toBeGreaterThanOrEqual(2);
+    if (removeTarget) {
+      expect(observations.at(-1)?.chasingRunner).toBe(true);
+      await advanceRuntimeFrames(page, fixture.recipe.aiPlayerNumber, 240);
+      const loss = await page.evaluate(() => {
+        const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
+          .__fuzzyWaddleAiRuntimeBrowserTest;
+        const application = host?.presetApplication;
+        const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
+          | GameProbableWaffleScene
+          | undefined;
+        const index = scene
+          ?.getSceneGameData()
+          .services.find((service): service is ActorIndexSystem => "getActorById" in service);
+        const pursuerId = application?.createdActorIds["pursuer"];
+        const runnerId = application?.createdActorIds["runner"];
+        if (!application || !index || !pursuerId || !runnerId) throw new Error("pursuit_loss_roles_missing");
+        const pursuer = index.getActorById(pursuerId);
+        if (!pursuer?.active) throw new Error("pursuit_loss_pursuer_missing");
+        const components = pursuer.getData("actorData").components as Map<unknown, object>;
+        const pawn = [...components.values()].find(
+          (value): value is { blackboard: PawnAiBlackboard } => "blackboard" in value
+        );
+        if (!pawn) throw new Error("pursuit_loss_order_missing");
+        const target = pawn.blackboard.getCurrentOrder()?.data.targetGameObject;
+        return {
+          runnerId,
+          removal: application.eventResults.find((event) => event.id === "remove-pursuit-target"),
+          runnerIndexed: !!index.getActorById(runnerId),
+          targetValid: !target || (target.active && target.scene === scene)
+        };
+      });
+      writeFileSync(testInfo.outputPath("pursuit-loss.json"), JSON.stringify(loss));
+      expect(loss.removal).toMatchObject({ tick: 120, affectedActorId: loss.runnerId });
+      expect(loss.runnerIndexed).toBe(false);
+      expect(loss.targetValid).toBe(true);
+    }
     if (mode === "autonomous") {
       const engagement = observations.filter((row) => (row.tick ?? 0) >= 40 && (row.tick ?? 0) <= 60);
       expect(engagement).toHaveLength(5);

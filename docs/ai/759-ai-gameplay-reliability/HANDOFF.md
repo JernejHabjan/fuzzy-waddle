@@ -4,7 +4,7 @@
 
 - Execution authorized and goal active on `feature/759-skirmish-ai`, PR [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814).
   Completed packets: **1/8 (R2)**.
-- Next: resolve opposing traffic in R3, verify R4 loss/unreachable controls, and audit the ground-defense trace for R5.
+- Next: resolve opposing traffic in R3, verify the R4 unreachable control, and cover harmless-contact defense for R5.
 - R5/R6/R7: three real Skaduwee Owls provoke two completed Tivara counters in both ready-counter branches.
   The no-ready branch landed seven verified hits before the tactical repair. The ready branch landed zero until
   planned tower posts were excluded from topology loss. After the repair the ready defender landed three hits
@@ -26,8 +26,9 @@
   One runner; maximum 30 minutes per invocation/batch. Do not repeat unchanged full matches.
 - R2 complete. Teardown `2c7844410`, transport shutdown `5f7024011`, and offline human-slot binding
   `927c5b84b` repair the reproduced failures. The editor stone offset did not reproduce. River Crossing's
-  elevated editor stones retained exact logical/rendered coordinates across quicksave, autosave and named
-  manual reloads without page errors (`editor-stone-manual.log`). The three load variants restored the camera,
+  elevated editor stones (authored z overrides up to 128) retained exact logical/rendered coordinates across quicksave, autosave and named
+  manual reloads without page errors (`editor-stone-manual.log`). GrasslandScene is only a comment in this checkout.
+  The three load variants restored the camera,
   elevated worker/Temple/Owl, and human ownership. Actual left-click selected the human worker and right-click
   moved it more than 32 units. Quicksave repeated three times. Fresh-start input and 17 focused Phaser tests
   passed (`load-all-kinds-input-browser-arg.log`, `load-fresh-start-control.log`). Autosave uses the
@@ -84,7 +85,9 @@
   or performance. A human-owned Banshee also lands two hits before a tick-120 replacement Move, follows the new
   direction, and never hits the old target again through tick 240 (`pursuit-human-replacement.json`).
   In the equal-speed control, both Banshees move over 256 world units while the fleeing unit retains all 200 HP
-  through tick 90 (`pursuit-equal-speed.json`). Unreachable/removed-target native controls remain.
+  through tick 90 (`pursuit-equal-speed.json`). Exact runner removed at tick 120 after two legal hits, absent
+  from the index at tick 240, with the Banshee still live and no stale target (`pursuit-target-loss.json`).
+  The unreachable-target control remains.
   In the autonomous case, the attack squad's formation Move interrupted the Banshee's active local chase at
   tick 40, yielding zero hits. The committed input showed a visible chased worker and a different squad
   focus beyond the Banshee's local awareness. Preserving the compatible local engagement kept the chase
@@ -160,11 +163,11 @@ and controls. Record an evidence gap separately from a code defect. A blocker do
 | R1 Focused reproductions and baseline | none | in_progress | Teardown/churn/large-slot defects reproduced and combat baseline frozen; remaining targeted gameplay controls open. |
 | R2 Restore and teardown lifecycle | R1 relevant reproduction | complete | All save types restore input, camera and elevation. Fresh start, live topology removal and teardown controls pass. See the R2 resume entry. |
 | R3 Movement and formation stability | R1 | in_progress | Arrived slots, quiet membership and eight-slot ceiling repaired; 100 tactical controls pass. Stale failure identity and large-group physical recovery remain. |
-| R4 Pursuit and attack execution | R1, R3 relevant contract | in_progress | Physical range misclassification repaired with 19 controls; continuous pursuit and physical hits remain. |
-| R5 AI mission ownership and defense | R1, R3, R4 | in_progress | Quiet-slot ownership and local reserve interception repaired; 96 tactical controls pass. Ground/air gameplay acceptance remains. |
-| R6 Emergency counter production | R1, R5 defender contract | in_progress | Cooldown suppression reproduced and repaired in pure manager; physical output/assignment remains. |
+| R4 Pursuit and attack execution | R1, R3 relevant contract | in_progress | Physical pursuit, equal-speed escape, replacement and removal pass. Unreachable target remains. |
+| R5 AI mission ownership and defense | R1, R3, R4 | in_progress | Ground and air defenders land native hits. Harmless contact and stable large-army movement remain. |
+| R6 Emergency counter production | R1, R5 defender contract | in_progress | Both factions produce counters that land native hits. Legal missing-prerequisite planning remains to audit. |
 | R7 Retreat and re-engagement | R1, R4, R5 | in_progress | Native quiet favorable target defeated at tick 118; corrected oracle replay passes. Minor injury, loss/reinforcement and oscillation controls remain. |
-| R8 Measured performance improvement | baseline in R1; final comparison after R2–R7 | in_progress | e76a01f09: matched three-sample combat comparison meets elapsed/polygon targets. Opening/multiple-AI and final gameplay equivalence remain. |
+| R8 Measured performance improvement | baseline in R1; final comparison after R2–R7 | in_progress | Combat and two-AI comparisons meet targets. Same-revision two-AI state matches; final review remains. |
 
 Record each packet in its row: commit/diff identity, exact focused command, result, workload/fixture identity and
 one bounded artifact pointer. Keep only the newest meaningful result and unresolved gap; Git preserves history.
