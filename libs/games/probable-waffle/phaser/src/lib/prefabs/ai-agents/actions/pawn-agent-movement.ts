@@ -23,6 +23,11 @@ import { HealingComponent } from "../../../entity/components/combat/components/h
 import type { PathMoveConfig } from "@fuzzy-waddle/probable-waffle-gameplay/entity/systems/path-move-config";
 import { ColliderComponent } from "../../../entity/components/movement/collider-component";
 import { NavigableComponent } from "../../../entity/components/movement/navigable-component";
+import { getGameObjectCurrentTile } from "../../../data/game-object-helper";
+import { getSceneService } from "../../../world/services/scene-component-helpers";
+import { SimulationTickService } from "../../../world/services/simulation-tick.service";
+
+const ATTACK_APPROACH_RETRY_TICKS = 20;
 
 /** Owns native range/reachability probes and movement actions. Each method keeps its own order reads across awaits.
  * Actor-local collaborators own no subscriptions, timers or saved state; the controller owns their lifetime.
@@ -30,6 +35,13 @@ import { NavigableComponent } from "../../../entity/components/movement/navigabl
 export class PawnAgentMovement {
   private activeMovementOrder?: OrderData;
   private activeMovementPromise?: Promise<State>;
+  private failedAttackApproach?: {
+    order: OrderData;
+    target: Phaser.GameObjects.GameObject;
+    from: Vector2Simple;
+    to: Vector2Simple;
+    retryTick: number;
+  };
 
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
@@ -170,6 +182,26 @@ export class PawnAgentMovement {
       return State.FAILED;
     }
     try {
+      const clock = type === "attack" ? getSceneService(this.gameObject.scene, SimulationTickService) : undefined;
+      const from = clock && this.gameObject.scene && getGameObjectCurrentTile(this.gameObject);
+      const to = clock && target.active && target.scene === this.gameObject.scene && getGameObjectCurrentTile(target);
+      const failed = this.failedAttackApproach;
+      if (
+        clock &&
+        from &&
+        to &&
+        failed?.order === currentOrder &&
+        failed.target === target &&
+        failed.from.x === from.x &&
+        failed.from.y === from.y &&
+        failed.to.x === to.x &&
+        failed.to.y === to.y &&
+        clock.currentTick < failed.retryTick
+      ) {
+        // Preserve the attack intent while waiting. The tree still checks physical weapon range first.
+        return State.SUCCEEDED;
+      }
+      this.failedAttackApproach = undefined;
       const canMoveToTarget = await this.CanMoveToTarget(range);
       if (
         this.blackboard.getCurrentOrder() !== currentOrder ||
@@ -179,7 +211,18 @@ export class PawnAgentMovement {
       )
         return State.FAILED;
       if (!canMoveToTarget) {
-        // console.log("[Build] MoveToTarget: Cannot move to target (unreachable), type=", type);
+        // The native probe also accounts for temporary occupancy. Retry in simulation time, or
+        // immediately after an endpoint or order changes, without cycling Stop and auto-acquire.
+        if (clock && from && to) {
+          this.failedAttackApproach = {
+            order: currentOrder,
+            target,
+            from,
+            to,
+            retryTick: clock.currentTick + ATTACK_APPROACH_RETRY_TICKS
+          };
+          return State.SUCCEEDED;
+        }
         this.stopFailedMove(currentOrder);
         return State.FAILED;
       }

@@ -3,7 +3,7 @@
 ## Resume cursor
 
 - Execution authorized and goal active on `feature/759-skirmish-ai`, PR [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814).
-  Completed packets **1/8 (R2)**. Next repair unreachable pursuit, then resume R3.
+  Completed packets **1/8 (R2)**. Next validate pursuit recovery when a route opens, then resume R3.
   Read AGENTS.md, applicable skills and the next unfinished packet.
 - R1/R8: normal-speed, clean 240-tick combat runs at baseline `b42a89066` logged 12 decisions and 8 workers/12 army each.
   Camera-bounded fog `e76a01f09` met both frozen targets in three matched runs: elapsed −22.90% (23.36→18.01s)
@@ -31,14 +31,11 @@
 - R4: physical attack range `18b58f4ce`, synchronous admission `c812f1a88`, flying reachability and lifecycle controls
   (23 native movement checks). The isolated Banshee hits a moving worker six times. A human replacement Move after
   two hits stops stale hits; equal-speed escape takes no damage; exact target removal clears the invalid target.
-  The autonomous case went from zero hits to three after retaining local compatible pursuit at tick 40
-  (7d8b8642, 140 tactics/skirmish tests). In the visible blocked-ring control, the attack is applied at tick 2,
-  but the Banshee stays at its start and retains Attack through tick 240. The earlier 384-unit separation exceeded
-  pawn-local sight.
-  Use the 192-unit case under `playwright-pursuit-unreachable-local-sight/`. Keep the red spec local.
-  Diagnose failed approach ownership: `stopFailedMove` handles Move only, and idle vision/retaliation can reacquire
-  a target if Attack is merely stopped. Bound failed pursuit work, invalidate on meaningful route/target changes,
-  and preserve explicit replacement, attack-move recovery and reachable combat.
+  The autonomous case went from zero hits to three after retaining compatible local pursuit at tick 40.
+  The visible blocked-ring pursuit now retains its Attack order and limits route probes to one per 20 simulation
+  ticks, retrying immediately when either endpoint changes tile. Applied command, no phantom damage, no movement
+  and bounded route calls through tick 240 passed alongside the six-hit moving-worker control (pursuit-paced.log).
+  Unit controls cover target movement and a later successful route. A real route opening remains to verify.
   Run `E/reproduction/movement/skirmish-gameplay-pursuit.spec.ts` with `AI_GAMEPLAY_RELIABILITY=1`, Chromium and one
   worker. Traces: `pursuit-{human-replacement,equal-speed,target-loss}.json`, `local-engagement-pursuit-observations.json`.
 - R5/R6: three real Owls, Tivara no-ready defense produces two counters/22 hits, ready defense existing archer

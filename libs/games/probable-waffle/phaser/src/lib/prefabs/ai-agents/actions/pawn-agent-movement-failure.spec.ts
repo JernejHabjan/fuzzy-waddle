@@ -157,6 +157,47 @@ describe("native Move refusal settles its command", () => {
     expect(f.board.anyOrderInQueue()).toBe(false);
   });
 
+  it("paces failed attack approaches and retries immediately when the target changes tiles", async () => {
+    const f = fixture(OrderType.Attack);
+    const target = new Phaser.GameObjects.GameObject(f.actor.scene, "target");
+    f.order.data.targetGameObject = target;
+    const clock = { currentTick: 53 };
+    const services = jest.mocked(getSceneService).getMockImplementation();
+    jest
+      .mocked(getSceneService)
+      .mockImplementation((scene, token) =>
+        token === SimulationTickService ? (clock as never) : services?.(scene, token)
+      );
+    let targetX = 10;
+    jest
+      .spyOn(gameObjectHelpers, "getGameObjectCurrentTile")
+      .mockImplementation((actor) => (actor === target ? { x: targetX, y: 0 } : { x: 0, y: 0 }));
+    const components = jest.mocked(getActorComponent).getMockImplementation();
+    jest
+      .mocked(getActorComponent)
+      .mockImplementation((actor, token) =>
+        token === AttackComponent ? ({ getAttackRange: () => 1 } as never) : components?.(actor, token)
+      );
+
+    await f.move.MoveToTarget("attack");
+    clock.currentTick++;
+    await f.move.MoveToTarget("attack");
+    expect(f.canMoveTo).toHaveBeenCalledTimes(1);
+
+    targetX++;
+    await f.move.MoveToTarget("attack");
+    expect(f.canMoveTo).toHaveBeenCalledTimes(2);
+    expect(f.board.getCurrentOrder()).toBe(f.order);
+    expect(f.report).not.toHaveBeenCalled();
+
+    // The same position gets another chance after the cooldown, since traffic or topology can change.
+    clock.currentTick += 20;
+    f.canMoveTo.mockResolvedValue(true);
+    f.nativeMove.mockResolvedValue(true);
+    await expect(f.move.MoveToTarget("attack")).resolves.toBe(State.SUCCEEDED);
+    expect(f.nativeMove).toHaveBeenCalledTimes(1);
+  });
+
   it("does not terminate a replacement order when an earlier movement resolves false", async () => {
     const f = fixture();
     let resolve: ((result: boolean) => void) | undefined;

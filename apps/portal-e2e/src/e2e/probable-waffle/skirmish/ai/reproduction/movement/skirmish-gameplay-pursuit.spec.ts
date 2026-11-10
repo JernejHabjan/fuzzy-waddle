@@ -7,8 +7,10 @@ import { digestCanonicalAiValue } from "@fuzzy-waddle/probable-waffle-gameplay/p
 import type { AiRuntimeBrowserTestHost } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/browser/ai-runtime-browser-test-host";
 import type GameProbableWaffleScene from "@fuzzy-waddle/probable-waffle-phaser/world/scenes/GameProbableWaffleScene";
 import type { ActorIndexSystem } from "@fuzzy-waddle/probable-waffle-phaser/world/services/ActorIndexSystem";
+import type { NavigationService } from "@fuzzy-waddle/probable-waffle-phaser/world/services/navigation.service";
 import type { PawnAiBlackboard } from "@fuzzy-waddle/probable-waffle-phaser/prefabs/ai-agents/controller/pawn-ai-blackboard";
 import type { RuntimeFixture } from "../../contracts/skirmish-ai-runtime-fixture";
+import { nativePresetControlSucceeded } from "../../combat/missions/skirmish-ai-native-mission-evidence";
 import { prepareRuntimeVariant } from "../../setup/skirmish-ai-runtime-variant-setup";
 import { advanceRuntimeFrames } from "../../runner/skirmish-ai-runtime-frame-driver";
 
@@ -20,13 +22,15 @@ const pursuitCases = {
   "human replacement": "a new human move cancels native pursuit",
   autonomous: "the attack squad preserves native pursuit into engagement",
   "equal speed": "an equally fast runner takes no pursuit damage while escaping",
-  "removed target": "native pursuit releases a worker removed during the chase"
+  "removed target": "native pursuit releases a worker removed during the chase",
+  unreachable: "native pursuit paces retries for an unreachable worker without phantom hits"
 } as const;
 
 for (const mode of Object.keys(pursuitCases) as (keyof typeof pursuitCases)[]) {
   const replaceOrder = mode === "human replacement";
   const equalSpeed = mode === "equal speed";
   const removeTarget = mode === "removed target";
+  const unreachable = mode === "unreachable";
   test(pursuitCases[mode], async ({ page }, testInfo) => {
     const root = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
     const source = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
@@ -44,10 +48,18 @@ for (const mode of Object.keys(pursuitCases) as (keyof typeof pursuitCases)[]) {
     // A mob pursuit is a native pawn control, not a faction-production acceptance case.
     const world = { ...selected.presetWorld };
     delete world.requireFactionRoster;
+    const enclosure = Array.from({ length: 5 }, (_, dx) =>
+      Array.from({ length: 5 }, (_, dy) => ({
+        x: 43 + dx,
+        y: 32 + dy,
+        terrain: "grass" as const,
+        blocked: true
+      })).filter((_, dy) => dx === 0 || dx === 4 || dy === 0 || dy === 4)
+    ).flat();
     const variant = {
       ...selected,
       captureCombat: undefined,
-      captureConstruction: undefined,
+      captureConstruction: unreachable ? (true as const) : undefined,
       presetWorld: {
         ...world,
         fixtureId: "gameplay-banshee-worker-pursuit",
@@ -80,14 +92,19 @@ for (const mode of Object.keys(pursuitCases) as (keyof typeof pursuitCases)[]) {
               ]
             }
           : {}),
+        terrainPatches: unreachable ? enclosure : world.terrainPatches,
         controls: [
-          {
-            id: "flee",
-            producerFixtureActorId: "runner",
-            requestTick: 1,
-            applicationTick: 1,
-            action: { kind: "move" as const, worldPosition: { x: -384, y: 1280, z: 0 } }
-          },
+          ...(!unreachable
+            ? [
+                {
+                  id: "flee",
+                  producerFixtureActorId: "runner",
+                  requestTick: 1,
+                  applicationTick: 1,
+                  action: { kind: "move" as const, worldPosition: { x: -384, y: 1280, z: 0 } }
+                }
+              ]
+            : []),
           {
             id: "pursue",
             producerFixtureActorId: "pursuer",
@@ -140,6 +157,36 @@ for (const mode of Object.keys(pursuitCases) as (keyof typeof pursuitCases)[]) {
         if (!handler?.setPlayerEnabled(2, false)) throw new Error("pursuit_strategic_pause_missing");
       });
     const observations: Awaited<ReturnType<typeof capturePursuit>>[] = [];
+    const routeProbe = unreachable
+      ? await page.evaluateHandle(() => {
+          const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
+            .__fuzzyWaddleAiRuntimeBrowserTest;
+          const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
+            | GameProbableWaffleScene
+            | undefined;
+          const services = scene?.getSceneGameData().services;
+          const index = services?.find((service): service is ActorIndexSystem => "getActorById" in service);
+          const pursuerId = host?.presetApplication?.createdActorIds["pursuer"];
+          const pursuer = pursuerId && index?.getActorById(pursuerId);
+          const navigation = services?.find(
+            (service): service is NavigationService => "findAndUseNavigablePathBetweenGameObjectsWithRadius" in service
+          );
+          if (!navigation || !pursuer) throw new Error("unreachable_route_probe_missing");
+          const original = navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius;
+          const ticks: number[] = [];
+          navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius = function (...args) {
+            if (args[0] === pursuer) ticks.push(window.__fuzzyWaddleAiRuntimeParts?.(2)?.tickService.currentTick ?? -1);
+            return original.apply(this, args);
+          };
+          return {
+            ticks,
+            restore: () => {
+              navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius = original;
+            }
+          };
+        })
+      : undefined;
+    if (unreachable) observations.push(await capturePursuit(page));
     for (let tick = 5; tick <= (equalSpeed ? 90 : removeTarget ? 115 : 240); tick += 5) {
       await advanceRuntimeFrames(page, fixture.recipe.aiPlayerNumber, tick);
       observations.push(await capturePursuit(page));
@@ -190,6 +237,47 @@ for (const mode of Object.keys(pursuitCases) as (keyof typeof pursuitCases)[]) {
         final: observations.at(-1)
       })
     );
+    if (unreachable) {
+      const first = observations[0];
+      if (!first?.pursuer) throw new Error("unreachable_pursuer_position_missing");
+      const authority = await page.evaluate(() => {
+        const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
+          .__fuzzyWaddleAiRuntimeBrowserTest;
+        const capture = host?.productionCapture?.capture(2, 240);
+        const pursuerId = host?.presetApplication?.createdActorIds["pursuer"];
+        if (!capture || !pursuerId) throw new Error("unreachable_pursuit_capture_missing");
+        return {
+          pursuerId,
+          dropped: capture.droppedFactCount,
+          controls: capture.facts.filter((fact) => fact.kind === "preset_control" && fact.control.id === "pursue")
+        };
+      });
+      writeFileSync(testInfo.outputPath("pursuit-unreachable-authority.json"), JSON.stringify(authority));
+      expect(authority.dropped).toBe(0);
+      const applied = authority.controls.filter(
+        (fact) =>
+          fact.kind === "preset_control" &&
+          fact.control.actorId === authority.pursuerId &&
+          nativePresetControlSucceeded(fact, "pursue")
+      );
+      expect(applied.map((fact) => fact.tick)).toEqual([2]);
+      if (!routeProbe) throw new Error("unreachable_route_probe_missing");
+      const routeTicks = await routeProbe.evaluate((probe) => {
+        probe.restore();
+        return probe.ticks;
+      });
+      writeFileSync(testInfo.outputPath("pursuit-unreachable-route-ticks.json"), JSON.stringify(routeTicks));
+      expect(routeTicks.length).toBeGreaterThan(1);
+      expect(routeTicks.length).toBeLessThanOrEqual(13);
+      expect(routeTicks.slice(1).every((tick, index) => tick - (routeTicks[index] ?? tick) >= 20)).toBe(true);
+      expect(observations.at(-1)?.tick).toBe(240);
+      for (const row of observations) {
+        expect(row.pursuer).toEqual(first.pursuer);
+        expect([row.x, row.y, row.health, row.hitTick]).toEqual([first.x, first.y, first.health, undefined]);
+      }
+      expect(errors).toEqual([]);
+      return;
+    }
     if (equalSpeed) {
       const first = observations[0];
       const last = observations.at(-1);
