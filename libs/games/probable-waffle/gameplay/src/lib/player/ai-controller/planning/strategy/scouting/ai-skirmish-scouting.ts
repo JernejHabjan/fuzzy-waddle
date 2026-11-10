@@ -56,8 +56,13 @@ function compareScoutActors(
       const routeProximity = distance(leftPosition, destination) - distance(rightPosition, destination);
       if (routeProximity !== 0) return routeProximity;
     }
-    return leftPosition.y - rightPosition.y || leftPosition.x - rightPosition.x || leftPosition.z - rightPosition.z ||
-      left.objectName.localeCompare(right.objectName) || left.actorId.localeCompare(right.actorId);
+    return (
+      leftPosition.y - rightPosition.y ||
+      leftPosition.x - rightPosition.x ||
+      leftPosition.z - rightPosition.z ||
+      left.objectName.localeCompare(right.objectName) ||
+      left.actorId.localeCompare(right.actorId)
+    );
   }
   if (leftPosition) return -1;
   if (rightPosition) return 1;
@@ -75,9 +80,7 @@ function recallScout(context: AiSkirmishProposalContext, scout: AiSquadState): v
     ...scout,
     actorIds: [],
     state: "cancelled",
-    ...(scout.lifecycle
-      ? { lifecycle: { ...scout.lifecycle, terminalReason: "known_opponent_low_force" } }
-      : {})
+    ...(scout.lifecycle ? { lifecycle: { ...scout.lifecycle, terminalReason: "known_opponent_low_force" } } : {})
   });
   if (members.length === 0 || !homePosition) return;
   members.forEach((actor) => context.primaryOwnedActors.add(actor.actorId));
@@ -169,8 +172,12 @@ function appendNeutralClaim(context: AiSkirmishProposalContext, allowNewClaim = 
     .sort((left, right) => {
       const leftPosition = position(left)!;
       const rightPosition = position(right)!;
-      return leftPosition.y - rightPosition.y || leftPosition.x - rightPosition.x ||
-        left.objectName.localeCompare(right.objectName) || left.actorId.localeCompare(right.actorId);
+      return (
+        leftPosition.y - rightPosition.y ||
+        leftPosition.x - rightPosition.x ||
+        left.objectName.localeCompare(right.objectName) ||
+        left.actorId.localeCompare(right.actorId)
+      );
     });
   const neutral = candidates.find((actor) => {
     const targetNode = node(actor);
@@ -179,7 +186,10 @@ function appendNeutralClaim(context: AiSkirmishProposalContext, allowNewClaim = 
   const targetNode = node(neutral);
   const destination = context.observation.map?.accessGraph?.nodes.find((entry) => entry.nodeId === targetNode);
   const member = targetNode
-    ? context.combat.slice().sort(compareScoutActors).find((actor) => canScoutNode(context, actor, targetNode))
+    ? context.combat
+        .slice()
+        .sort(compareScoutActors)
+        .find((actor) => canScoutNode(context, actor, targetNode))
     : undefined;
   if (!neutral || !member || !destination) return;
   const claimantId = "squad:scout:neutral" as AiSquadId;
@@ -245,6 +255,20 @@ function appendFrontierScout(context: AiSkirmishProposalContext): void {
     if (activeScout) recallScout(context, activeScout);
     return;
   }
+  // A new information question must not replace a scout's active tactical withdrawal.
+  if (
+    activeScout &&
+    ["protected_retreat", "rampart_withdraw", "land_regroup"].includes(activeScout.tactics?.script ?? "")
+  ) {
+    const retained = activeScout.actorIds.filter(
+      (actorId) => combat.some((actor) => actor.actorId === actorId) && !context.primaryOwnedActors.has(actorId)
+    );
+    if (retained.length > 0) {
+      retained.forEach((actorId) => context.primaryOwnedActors.add(actorId));
+      context.nextSquads.push({ ...activeScout, actorIds: retained });
+      return;
+    }
+  }
   // Keep one defender home until another combat unit can cover it during a frontier trip.
   if (!activeScout && combat.length <= 1) return;
   if (!currentQuestion || !combat[0] || !observation.map?.accessGraph) return;
@@ -266,20 +290,24 @@ function appendFrontierScout(context: AiSkirmishProposalContext): void {
   if (!target) return;
   const scoutPosition = target.representativePosition;
   const continuingActorIds = new Set(activeScout?.actorIds ?? []);
-  const assignedActorIds = new Set(context.nextSquads
-    .filter((squad) => !["completed", "cancelled"].includes(squad.state))
-    .flatMap((squad) => squad.actorIds));
+  const assignedActorIds = new Set(
+    context.nextSquads
+      .filter((squad) => !["completed", "cancelled"].includes(squad.state))
+      .flatMap((squad) => squad.actorIds)
+  );
   for (const squad of context.state.squads) {
     if (context.nextSquads.some((candidate) => candidate.squadId === squad.squadId)) continue;
     if (!["completed", "cancelled"].includes(squad.state))
       squad.actorIds.forEach((actorId) => assignedActorIds.add(actorId));
   }
-  const eligible = combat.filter(
-    (actor) =>
-      !context.primaryOwnedActors.has(actor.actorId) &&
-      (!assignedActorIds.has(actor.actorId) || continuingActorIds.has(actor.actorId)) &&
-      canScoutNode(context, actor, target.nodeId)
-  ).sort((left, right) => compareScoutActors(left, right, scoutPosition));
+  const eligible = combat
+    .filter(
+      (actor) =>
+        !context.primaryOwnedActors.has(actor.actorId) &&
+        (!assignedActorIds.has(actor.actorId) || continuingActorIds.has(actor.actorId)) &&
+        canScoutNode(context, actor, target.nodeId)
+    )
+    .sort((left, right) => compareScoutActors(left, right, scoutPosition));
   const scoutId = activeScout?.squadId ?? ("squad:scout:primary" as AiSquadId);
   const scoutPlanId = `plan:${scoutId}` as AiPlanId;
   const continuingScout = activeScout?.objectiveId === currentQuestion.questionId;
@@ -297,7 +325,11 @@ function appendFrontierScout(context: AiSkirmishProposalContext): void {
     scoutMembers.every((actor) => activeScout.actorIds.includes(actor.actorId));
   const activeSearchRoute = scoutMembers.every((actor) => {
     const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
-    return order?.orderType === OrderType.Move && !!order.targetPosition && distance(order.targetPosition, scoutPosition) <= 4;
+    return (
+      order?.orderType === OrderType.Move &&
+      !!order.targetPosition &&
+      distance(order.targetPosition, scoutPosition) <= 4
+    );
   });
   const tacticalWithdrawal = ["protected_retreat", "rampart_withdraw", "land_regroup"].includes(
     activeScout?.tactics?.script ?? ""

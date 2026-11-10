@@ -3,7 +3,14 @@ import { createAiBrainState } from "../../../brain/state/create-ai-brain-state";
 import { createAiTestOwnedActor } from "../../../testing/fixtures/coordination/ai-test-fixtures";
 
 import { AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS } from "./ai-skirmish-manager";
-import { homeNode, enemyNode, unit, observation, profile, manager } from "../../../testing/fixtures/strategy/ai-skirmish-test-fixtures";
+import {
+  homeNode,
+  enemyNode,
+  unit,
+  observation,
+  profile,
+  manager
+} from "../../../testing/fixtures/strategy/ai-skirmish-test-fixtures";
 import { nextQuestion } from "./ai-skirmish-support";
 
 describe("AiSkirmishManager", () => {
@@ -22,14 +29,16 @@ describe("AiSkirmishManager", () => {
     const worker = {
       ...createAiTestOwnedActor("worker"),
       logicalPosition: { status: "known" as const, value: { x: 10, y: 10, z: 0 }, observedTick: 20 },
-      capabilities: [{
-        id: "worker:gather",
-        family: "gather",
-        level: 1,
-        domains: ["ground" as const],
-        targetDomains: [],
-        capacity: { status: "known" as const, value: 1, observedTick: 20 }
-      }]
+      capabilities: [
+        {
+          id: "worker:gather",
+          family: "gather",
+          level: 1,
+          domains: ["ground" as const],
+          targetDomains: [],
+          capacity: { status: "known" as const, value: 1, observedTick: 20 }
+        }
+      ]
     };
     const homeRaider = {
       ...unit("z-home-raider", enemyNode, 1),
@@ -45,22 +54,29 @@ describe("AiSkirmishManager", () => {
       logicalPosition: { status: "known" as const, value: { x: 10, y: 11, z: 0 }, observedTick: 20 }
     };
     const input = observation(20, [home, worker, homeRaider, workerRaider]);
-    const proposal = manager.propose({
-      ...input,
-      threatSummary: {
-        ...input.threatSummary,
-        visibleEnemyActorIds: [homeRaider.actorId, workerRaider.actorId]
-      }
-    }, state);
+    const proposal = manager.propose(
+      {
+        ...input,
+        threatSummary: {
+          ...input.threatSummary,
+          visibleEnemyActorIds: [homeRaider.actorId, workerRaider.actorId]
+        }
+      },
+      state
+    );
 
-    expect(proposal.intents).toContainEqual(expect.objectContaining({
-      kind: "attack",
-      targetActorId: homeRaider.actorId
-    }));
-    expect(proposal.intents).not.toContainEqual(expect.objectContaining({
-      kind: "attack",
-      targetActorId: workerRaider.actorId
-    }));
+    expect(proposal.intents).toContainEqual(
+      expect.objectContaining({
+        kind: "attack",
+        targetActorId: homeRaider.actorId
+      })
+    );
+    expect(proposal.intents).not.toContainEqual(
+      expect.objectContaining({
+        kind: "attack",
+        targetActorId: workerRaider.actorId
+      })
+    );
   });
 
   it("releases a vanished defensive objective instead of freezing the next economy in defend", () => {
@@ -72,7 +88,10 @@ describe("AiSkirmishManager", () => {
       archetypeId: "balanced"
     });
     const defended = { ...state, strategy: { ...state.strategy, stance: "defend" as const, objectiveId: "gone" } };
-    const proposal = manager.propose(observation(2000, [unit("guard", homeNode, 0), unit("reserve", homeNode, 1)]), defended);
+    const proposal = manager.propose(
+      observation(2000, [unit("guard", homeNode, 0), unit("reserve", homeNode, 1)]),
+      defended
+    );
     expect(proposal.statePatch?.strategy).toMatchObject({ stance: "stabilize", objectiveId: null, goalId: null });
     expect(proposal.intents.some((intent) => intent.kind === "scout")).toBe(true);
   });
@@ -142,13 +161,15 @@ describe("AiSkirmishManager", () => {
       tick: 0,
       archetypeId: "balanced"
     });
-    const first = manager.propose(
-      observation(20, [unit("guard-1", homeNode, 0), unit("guard-2", homeNode, 1)]),
-      state
-    );
+    const first = manager.propose(observation(20, [unit("guard-1", homeNode, 0), unit("guard-2", homeNode, 1)]), state);
     const priorScout = first.statePatch!.squads!.find((squad) => squad.role === "scout")!;
     const continued = manager.propose(
-      observation(40, [unit("guard-1", enemyNode, 1), unit("guard-2", homeNode, 0)], [enemyNode, homeNode], [enemyNode]),
+      observation(
+        40,
+        [unit("guard-1", enemyNode, 1), unit("guard-2", homeNode, 0)],
+        [enemyNode, homeNode],
+        [enemyNode]
+      ),
       {
         ...state,
         knowledge: first.statePatch!.knowledge!,
@@ -294,6 +315,55 @@ describe("AiSkirmishManager", () => {
     expect(scout?.actorIds).toEqual(["scout-guard"]);
     expect(defense?.actorIds).toContain("home-guard");
     expect(defense?.actorIds).not.toContain("scout-guard");
+  });
+
+  it("keeps an actively withdrawing scout when the information question changes", () => {
+    const state = createAiBrainState({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const tactics = {
+      taskForceId: "scout",
+      script: "protected_retreat" as const,
+      targetActorId: null,
+      targetScore: 0,
+      engagementRatioPermille: 1000,
+      confidencePermille: 1000,
+      predictedFriendlyLossPermille: 0,
+      predictedEnemyLossPermille: 0,
+      lastObservedMemberCount: 1,
+      observedLossCount: 0,
+      lastTransitionTick: 20,
+      nextReconsiderTick: 60,
+      oscillationCount: 0,
+      orderSignature: "retreat",
+      orderedActorIds: ["scout-guard"],
+      assignedPositions: [],
+      damageReservations: [],
+      protectedRouteNodeIds: [],
+      mobileReserveActorIds: [],
+      objectiveAlternatives: []
+    };
+    const scout = {
+      squadId: "squad:scout:primary" as const,
+      role: "scout" as const,
+      domain: "ground" as const,
+      actorIds: ["scout-guard"],
+      objectiveId: "question:old-frontier",
+      state: "retreat" as const,
+      tactics
+    };
+    const proposal = manager.propose(
+      observation(40, [unit("scout-guard", homeNode, 0), unit("home-guard", homeNode, 0)]),
+      { ...state, squads: [scout] }
+    );
+    expect(proposal.statePatch?.squads).toContainEqual(scout);
+    expect(proposal.intents.some((intent) => intent.kind === "scout" && intent.actorIds.includes("scout-guard"))).toBe(
+      false
+    );
   });
 
   it("anchors local defense to the main building instead of a distant roaming combat unit", () => {

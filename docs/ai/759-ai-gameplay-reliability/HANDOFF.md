@@ -34,7 +34,10 @@
   arrivals from six to nine, but three workers fail or repeatedly visit fallback tiles and the final group does not
   settle (traffic-admission.log). Their requested footprints are twelve distinct legal tiles (traffic-geometry.json
   under playwright-traffic-footprints). The three x=18 destinations settle before the x=19 destinations on the left,
-  sealing the only corridor entry and forcing the latter to repeatedly retry fallback positions. Keep the admission code, three focused controls and geometry probe local
+  sealing the only corridor entry and forcing the latter to repeatedly retry fallback positions. Local experiment also
+  tries an alternate approach when the requested endpoint is occupied; 34 movement controls pass and a fresh corridor
+  run improved from nine to ten exact arrivals, but two units still repeat fallback orders (`traffic-endpoint.log`).
+  Keep the admission code, focused controls and geometry probe local
   until recovery and destination ownership clear all twelve without repeated orders. Recovery fallback search also
   repeatedly queried previously unreachable cells in every wider ring. It now skips repeated searches under the same
   dynamic blockers but retries a closer tile if those blockers change; both cases and 21 movement controls pass. This reduces wasted
@@ -113,9 +116,13 @@
   unit from 150 to 30 health: it starts withdrawing by tick 80 and moves afterward while its squad remains engaged
   and allies damage the enemy after withdrawal. A threatened ranged unit reduced to 20/100 health also moves away by
   tick 40 while allies fight. All three injury controls pass (`injury-controls.log`); these runs include local R3
-  changes. Scout harmless-contact and mixed-domain tactical controls pass within 47 focused tests. A follow-up regression
+  changes. A recorded H-01 scout took damage at tick 351, but scouting questions repeatedly replaced its retreat at
+  ticks 380 and 520. Scouting now preserves an active withdrawal across question changes. In a focused 600-tick
+  current-world run, an explicit pursuer damages the scout, which keeps one retreat route and physically moves;
+  no scout order replaces it during retreat (`scout-threat-final.log`). This uses local R3 changes. Sixty-five
+  planner/ownership controls pass. Scout harmless-contact and mixed-domain tactical controls pass within 47 focused tests. A follow-up regression
   found emergency home defense could use an anti-air weapon's range to infer a threat to a ground worker; threat range
-  now requires the same weapon to target the worker's domain. Real scout and mixed-domain evidence remains open.
+  now requires the same weapon to target the worker's domain. Real mixed-domain evidence remains open.
   Retained `quiet-combat-replay.json`;
   use full combat capture for this check.
 - Artifacts above are in ignored `tmp/ai-gameplay-reliability/`. Default result junctions point to full D:.
