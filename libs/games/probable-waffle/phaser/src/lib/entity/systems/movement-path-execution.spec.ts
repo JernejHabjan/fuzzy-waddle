@@ -136,6 +136,21 @@ describe("native static path execution/recovery extraction", () => {
     expect(f.occupancy.reserveDestination).not.toHaveBeenCalled();
   });
 
+  it("does not recover an earlier completed step when a later step exhausts recovery", async () => {
+    const f = fixture();
+    const first = { x: 1, y: 0 };
+    const blocked = { x: 2, y: 0 };
+    const error = new MovementStepBlockedError(blocked, ["actor:2"]);
+    f.move.mockImplementation(async (tile, _config, complete) => {
+      if (tile.x === blocked.x) throw error;
+      await complete?.();
+    });
+    f.occupancy.hasAnyActiveStepReservation.mockReturnValue(true);
+    jest.mocked(getGameObjectCurrentTile).mockReturnValue(undefined);
+    await expect(f.execution.moveAlongPathByFollowingPreCalculatedStaticPath([first, blocked])).rejects.toBe(error);
+    expect(f.move.mock.calls.map(([tile]) => tile)).toEqual([first, blocked, blocked, blocked]);
+  });
+
   it("repaths to the original destination when another unit claims the sidestep", async () => {
     const f = fixture();
     const blocked = { x: 1, y: 0 };

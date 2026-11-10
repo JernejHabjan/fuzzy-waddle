@@ -93,7 +93,9 @@ export class MovementPathExecution {
     this.tween.cancelMovement();
     config?.onPathUpdate?.(nextTile);
 
+    let stepCompleted = false;
     const onComplete = async () => {
+      stepCompleted = true;
       await this.moveAlongPathByFollowingPreCalculatedStaticPath(path, config, recoveryState, queryContext, completion);
     };
 
@@ -105,7 +107,7 @@ export class MovementPathExecution {
     try {
       await this.tween.moveActorToTileWithTween(nextTile, config, onComplete, onStop, completion);
     } catch (error) {
-      if (!(error instanceof MovementStepBlockedError)) {
+      if (stepCompleted || !(error instanceof MovementStepBlockedError)) {
         throw error;
       }
       await this.recoverFromBlockedPathStep(error, nextTile, path, config, recoveryState, queryContext, completion);

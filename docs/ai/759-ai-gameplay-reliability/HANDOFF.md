@@ -24,8 +24,8 @@
   fails unrelated income-history coverage. Preserve its gate and use focused movement evidence.
 - R3 next: local `E/reproduction/movement/skirmish-gameplay-congestion.spec.ts` reproduces 12 opposing workers in
   three lanes. Ten reach original tiles and one reports arrival two tiles early then restarts. A later tween rejection
-  cascaded through completed ancestors. Local step-ownership guard passes 33 tests and removes false arrival, but six
-  front workers deadlock at x=27/28, y=29–31 by tick 88. Six others arrive. Keep both local until a bounded yielding
+  cascaded through completed ancestors. Step-ownership guard removes false arrival and passes 12 focused controls, but six
+  front workers deadlock at x=27/28, y=29–31 by tick 88. Six others arrive. Keep the corridor reproducer local until a bounded yielding
   rule clears the standstill while preserving each original destination and collision legality. A separate
   ownership regression showed a completed step's later callback rejection could release a newer step's reservation.
   The tween now releases only once. Its focused controls and Phaser types/lint pass. The exact corridor still has
@@ -33,7 +33,8 @@
   around actors already on the static path and keeps the original route if no detour exists. It improves exact
   arrivals from six to nine, but three workers fail or repeatedly visit fallback tiles and the final group does not
   settle (traffic-admission.log). Their requested footprints are twelve distinct legal tiles (traffic-geometry.json
-  under playwright-traffic-footprints). Keep the admission code, three focused controls and geometry probe local
+  under playwright-traffic-footprints). The three x=18 destinations settle before the x=19 destinations on the left,
+  sealing the only corridor entry and forcing the latter to repeatedly retry fallback positions. Keep the admission code, three focused controls and geometry probe local
   until recovery and destination ownership clear all twelve without repeated orders. A cancelled blocked movement could
   previously resume after its wait or a pending repath. Path execution now checks its cancellation generation at
   async boundaries. Two focused regressions, 35 movement tests, Phaser types and the human replacement browser
