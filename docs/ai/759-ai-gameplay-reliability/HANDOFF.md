@@ -83,6 +83,8 @@
   through its public campaign API; native pawn trees/weapons/movement run. This cannot prove autonomous R5 behavior
   or performance. A human-owned Banshee also lands two hits before a tick-120 replacement Move, follows the new
   direction, and never hits the old target again through tick 240 (`pursuit-human-replacement.json`).
+  In the equal-speed control, both Banshees move over 256 world units while the fleeing unit retains all 200 HP
+  through tick 90 (`pursuit-equal-speed.json`). Unreachable/removed-target native controls remain.
   In the autonomous case, the attack squad's formation Move interrupted the Banshee's active local chase at
   tick 40, yielding zero hits. The committed input showed a visible chased worker and a different squad
   focus beyond the Banshee's local awareness. Preserving the compatible local engagement kept the chase

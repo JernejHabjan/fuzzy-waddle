@@ -12,185 +12,197 @@ import { advanceRuntimeFrames } from "../../runner/skirmish-ai-runtime-frame-dri
 test.skip(process.env.AI_GAMEPLAY_RELIABILITY !== "1", "Explicit bounded gameplay reliability checks only");
 test.setTimeout(180_000);
 
-for (const mode of ["isolated", "human replacement", "autonomous"] as const) {
+const pursuitCases = {
+  isolated: "native pawn pursuit lands repeated hits on a moving worker with the strategic coordinator paused",
+  "human replacement": "a new human move cancels native pursuit",
+  autonomous: "the attack squad preserves native pursuit into engagement",
+  "equal speed": "an equally fast runner takes no pursuit damage while escaping"
+} as const;
+
+for (const mode of Object.keys(pursuitCases) as (keyof typeof pursuitCases)[]) {
   const replaceOrder = mode === "human replacement";
-  test(
-    replaceOrder
-      ? "a new human move cancels native pursuit"
-      : mode === "autonomous"
-        ? "the attack squad preserves native pursuit into engagement"
-        : "native pawn pursuit lands repeated hits on a moving worker with the strategic coordinator paused",
-    async ({ page }, testInfo) => {
-      const root = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
-      const source = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
-      const fixture: RuntimeFixture = JSON.parse(
-        readFileSync(
-          join(
-            root,
-            "tools/probable-waffle/skirmish/ai/testing/fixtures/native/combat/fight-01-reassess-and-retreat-regroup-within-bound-runtime.json"
-          ),
-          "utf8"
-        )
-      );
-      const selected = fixture.recipe.variants.find((variant) => variant.id === "fight-01-tivara-quiet");
-      if (!selected?.presetWorld) throw new Error("pursuit_fixture_missing");
-      // A mob pursuit is a native pawn control, not a faction-production acceptance case.
-      const world = { ...selected.presetWorld };
-      delete world.requireFactionRoster;
-      const variant = {
-        ...selected,
-        captureCombat: undefined,
-        captureConstruction: undefined,
-        presetWorld: {
-          ...world,
-          fixtureId: "gameplay-banshee-worker-pursuit",
-          actors: [
-            ...selected.presetWorld.actors,
-            {
-              fixtureActorId: "pursuer",
-              actorName: ObjectNames.Banshee,
-              owner: replaceOrder ? 1 : 2,
-              position: { x: 576, y: 1280, z: 0 }
-            },
-            {
-              fixtureActorId: "runner",
-              actorName: ObjectNames.TivaraWorkerMale,
-              owner: replaceOrder ? 2 : 1,
-              position: { x: 384, y: 1280, z: 0 }
+  const equalSpeed = mode === "equal speed";
+  test(pursuitCases[mode], async ({ page }, testInfo) => {
+    const root = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
+    const source = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
+    const fixture: RuntimeFixture = JSON.parse(
+      readFileSync(
+        join(
+          root,
+          "tools/probable-waffle/skirmish/ai/testing/fixtures/native/combat/fight-01-reassess-and-retreat-regroup-within-bound-runtime.json"
+        ),
+        "utf8"
+      )
+    );
+    const selected = fixture.recipe.variants.find((variant) => variant.id === "fight-01-tivara-quiet");
+    if (!selected?.presetWorld) throw new Error("pursuit_fixture_missing");
+    // A mob pursuit is a native pawn control, not a faction-production acceptance case.
+    const world = { ...selected.presetWorld };
+    delete world.requireFactionRoster;
+    const variant = {
+      ...selected,
+      captureCombat: undefined,
+      captureConstruction: undefined,
+      presetWorld: {
+        ...world,
+        fixtureId: "gameplay-banshee-worker-pursuit",
+        actors: [
+          ...selected.presetWorld.actors,
+          {
+            fixtureActorId: "pursuer",
+            actorName: ObjectNames.Banshee,
+            owner: replaceOrder ? 1 : 2,
+            position: { x: 576, y: 1280, z: 0 }
+          },
+          {
+            fixtureActorId: "runner",
+            actorName: equalSpeed ? ObjectNames.Banshee : ObjectNames.TivaraWorkerMale,
+            owner: replaceOrder ? 2 : 1,
+            position: { x: 384, y: 1280, z: 0 }
+          }
+        ],
+        controls: [
+          {
+            id: "flee",
+            producerFixtureActorId: "runner",
+            requestTick: 1,
+            applicationTick: 1,
+            action: { kind: "move" as const, worldPosition: { x: -384, y: 1280, z: 0 } }
+          },
+          {
+            id: "pursue",
+            producerFixtureActorId: "pursuer",
+            requestTick: 2,
+            applicationTick: 2,
+            action: { kind: "attack" as const, targetFixtureActorId: "runner" }
+          },
+          ...(replaceOrder
+            ? [
+                {
+                  id: "replace-pursuit",
+                  producerFixtureActorId: "pursuer",
+                  requestTick: 120,
+                  applicationTick: 120,
+                  action: { kind: "move" as const, worldPosition: { x: 576, y: 1280, z: 0 } }
+                }
+              ]
+            : [])
+        ]
+      }
+    };
+    const errors: string[] = [];
+    await prepareRuntimeVariant(
+      page,
+      fixture,
+      variant,
+      selected.seed,
+      source,
+      digestCanonicalAiValue({ fixture, presetWorld: variant.presetWorld }),
+      false,
+      errors
+    );
+    // The isolated controls leave movement and weapons active while pausing the strategic coordinator.
+    if (mode !== "autonomous")
+      await page.evaluate(() => {
+        const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
+          .__fuzzyWaddleAiRuntimeBrowserTest;
+        const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
+          | {
+              getSceneGameData(): { systems: unknown[] };
             }
-          ],
-          controls: [
-            {
-              id: "flee",
-              producerFixtureActorId: "runner",
-              requestTick: 1,
-              applicationTick: 1,
-              action: { kind: "move" as const, worldPosition: { x: -384, y: 1280, z: 0 } }
-            },
-            {
-              id: "pursue",
-              producerFixtureActorId: "pursuer",
-              requestTick: 2,
-              applicationTick: 2,
-              action: { kind: "attack" as const, targetFixtureActorId: "runner" }
-            },
-            ...(replaceOrder
-              ? [
-                  {
-                    id: "replace-pursuit",
-                    producerFixtureActorId: "pursuer",
-                    requestTick: 120,
-                    applicationTick: 120,
-                    action: { kind: "move" as const, worldPosition: { x: 576, y: 1280, z: 0 } }
-                  }
-                ]
-              : [])
-          ]
-        }
-      };
-      const errors: string[] = [];
-      await prepareRuntimeVariant(
-        page,
-        fixture,
-        variant,
-        selected.seed,
-        source,
-        digestCanonicalAiValue({ fixture, presetWorld: variant.presetWorld }),
-        false,
-        errors
-      );
-      // The isolated controls leave movement and weapons active while pausing the strategic coordinator.
-      if (mode !== "autonomous")
-        await page.evaluate(() => {
+          | undefined;
+        const handler = scene?.getSceneGameData().systems.find(
+          (
+            entry
+          ): entry is {
+            setPlayerEnabled(playerNumber: number, enabled: boolean): boolean;
+          } => typeof (entry as { setPlayerEnabled?: unknown })?.setPlayerEnabled === "function"
+        );
+        if (!handler?.setPlayerEnabled(2, false)) throw new Error("pursuit_strategic_pause_missing");
+      });
+    const observations: Awaited<ReturnType<typeof capturePursuit>>[] = [];
+    for (let tick = 5; tick <= (equalSpeed ? 90 : 240); tick += 5) {
+      await advanceRuntimeFrames(page, fixture.recipe.aiPlayerNumber, tick);
+      observations.push(await capturePursuit(page));
+      if (mode === "autonomous" && tick === 40) {
+        const decision = await page.evaluate(() => {
           const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
             .__fuzzyWaddleAiRuntimeBrowserTest;
-          const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
-            | {
-                getSceneGameData(): { systems: unknown[] };
-              }
-            | undefined;
-          const handler = scene?.getSceneGameData().systems.find(
-            (
-              entry
-            ): entry is {
-              setPlayerEnabled(playerNumber: number, enabled: boolean): boolean;
-            } => typeof (entry as { setPlayerEnabled?: unknown })?.setPlayerEnabled === "function"
-          );
-          if (!handler?.setPlayerEnabled(2, false)) throw new Error("pursuit_strategic_pause_missing");
+          const bindings = host?.presetApplication?.createdActorIds;
+          const controller = window.__fuzzyWaddleAiRuntimeParts?.(2)?.controller;
+          const observation = controller?.getCommittedObservation();
+          const ids = [bindings?.["pursuer"], bindings?.["runner"]];
+          return {
+            ids,
+            tick: observation?.tick,
+            actors: observation?.actors.filter((actor) => ids.some((id) => id === actor.actorId)),
+            squads: controller?.getBrainState()?.squads.filter((squad) => squad.actorIds.some((id) => id === ids[0]))
+          };
         });
-      const observations: Awaited<ReturnType<typeof capturePursuit>>[] = [];
-      for (let tick = 5; tick <= 240; tick += 5) {
-        await advanceRuntimeFrames(page, fixture.recipe.aiPlayerNumber, tick);
-        observations.push(await capturePursuit(page));
-        if (mode === "autonomous" && tick === 40) {
-          const decision = await page.evaluate(() => {
-            const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
-              .__fuzzyWaddleAiRuntimeBrowserTest;
-            const bindings = host?.presetApplication?.createdActorIds;
-            const controller = window.__fuzzyWaddleAiRuntimeParts?.(2)?.controller;
-            const observation = controller?.getCommittedObservation();
-            const ids = [bindings?.["pursuer"], bindings?.["runner"]];
-            return {
-              ids,
-              tick: observation?.tick,
-              actors: observation?.actors.filter((actor) => ids.some((id) => id === actor.actorId)),
-              squads: controller?.getBrainState()?.squads.filter((squad) => squad.actorIds.some((id) => id === ids[0]))
-            };
-          });
-          writeFileSync(testInfo.outputPath("pursuit-decision.json"), JSON.stringify(decision));
-        }
+        writeFileSync(testInfo.outputPath("pursuit-decision.json"), JSON.stringify(decision));
       }
-      const movingHits = observations.filter((row, index) => {
-        const previous = observations[index - 1];
-        return (
-          previous &&
-          row.health < previous.health &&
-          row.hitByPursuer &&
-          Math.hypot(row.x - previous.x, row.y - previous.y) > 0.1
-        );
-      });
-      writeFileSync(
-        testInfo.outputPath("pursuit-observations.json"),
-        JSON.stringify({
-          source,
-          mode,
-          replaceOrder,
-          movingHits,
-          observations
-        })
-      );
-      console.log(
-        "GAMEPLAY_PURSUIT",
-        JSON.stringify({
-          source,
-          mode,
-          movingHits: movingHits.length,
-          hitTicks: movingHits.map((row) => row.hitTick),
-          final: observations.at(-1)
-        })
-      );
-      expect(
-        movingHits.filter((row) => !replaceOrder || (row.hitTick ?? Infinity) < 120).length,
-        "repeated damage while the real target moves, not only after arrival"
-      ).toBeGreaterThanOrEqual(2);
-      if (mode === "autonomous") {
-        const engagement = observations.filter((row) => (row.tick ?? 0) >= 40 && (row.tick ?? 0) <= 60);
-        expect(engagement).toHaveLength(5);
-        expect(engagement.every((row) => row.chasingRunner)).toBe(true);
-      }
-      if (replaceOrder) {
-        const after = observations.filter((row) => (row.tick ?? 0) >= 125);
-        expect(after.some((row) => row.order === "Move")).toBe(true);
-        expect(after.every((row) => !row.chasingRunner)).toBe(true);
-        expect(after.at(-1)?.hitTick).toBeLessThan(120);
-        const firstX = after[0]?.pursuer?.x;
-        const finalX = after.at(-1)?.pursuer?.x;
-        if (firstX === undefined || finalX === undefined) throw new Error("pursuit_replacement_position_missing");
-        expect(finalX).toBeGreaterThan(firstX + 64);
-      }
-      expect(errors).toEqual([]);
     }
-  );
+    const movingHits = observations.filter((row, index) => {
+      const previous = observations[index - 1];
+      return (
+        previous &&
+        row.health < previous.health &&
+        row.hitByPursuer &&
+        Math.hypot(row.x - previous.x, row.y - previous.y) > 0.1
+      );
+    });
+    writeFileSync(
+      testInfo.outputPath("pursuit-observations.json"),
+      JSON.stringify({
+        source,
+        mode,
+        replaceOrder,
+        movingHits,
+        observations
+      })
+    );
+    console.log(
+      "GAMEPLAY_PURSUIT",
+      JSON.stringify({
+        source,
+        mode,
+        movingHits: movingHits.length,
+        hitTicks: movingHits.map((row) => row.hitTick),
+        final: observations.at(-1)
+      })
+    );
+    if (equalSpeed) {
+      const first = observations[0];
+      const last = observations.at(-1);
+      if (!first?.pursuer || !last?.pursuer) throw new Error("equal_speed_positions_missing");
+      expect(first.chasingRunner).toBe(true);
+      expect(last.x).toBeLessThan(first.x - 256);
+      expect(last.pursuer.x).toBeLessThan(first.pursuer.x - 256);
+      expect(observations.every((row) => row.health === first.health && !row.hitByPursuer)).toBe(true);
+      expect(errors).toEqual([]);
+      return;
+    }
+    expect(
+      movingHits.filter((row) => !replaceOrder || (row.hitTick ?? Infinity) < 120).length,
+      "repeated damage while the real target moves, not only after arrival"
+    ).toBeGreaterThanOrEqual(2);
+    if (mode === "autonomous") {
+      const engagement = observations.filter((row) => (row.tick ?? 0) >= 40 && (row.tick ?? 0) <= 60);
+      expect(engagement).toHaveLength(5);
+      expect(engagement.every((row) => row.chasingRunner)).toBe(true);
+    }
+    if (replaceOrder) {
+      const after = observations.filter((row) => (row.tick ?? 0) >= 125);
+      expect(after.some((row) => row.order === "Move")).toBe(true);
+      expect(after.every((row) => !row.chasingRunner)).toBe(true);
+      expect(after.at(-1)?.hitTick).toBeLessThan(120);
+      const firstX = after[0]?.pursuer?.x;
+      const finalX = after.at(-1)?.pursuer?.x;
+      if (firstX === undefined || finalX === undefined) throw new Error("pursuit_replacement_position_missing");
+      expect(finalX).toBeGreaterThan(firstX + 64);
+    }
+    expect(errors).toEqual([]);
+  });
 }
 
 /** Independent physical reader; no receipt or tactical mission label counts as a weapon hit. */
