@@ -106,7 +106,10 @@
   a selected protected-retreat move and actual infantry movement, followed by engagement from tick 140 and
   eight native hits. Reinforcements also moved from reserve, with fixture-issued move commands at tick 120.
   The selected retreat effect was applied to the original infantry and matched a live movement execution whose
-  position changed by tick 114 (retreat-attributed.log). These runs include local R3 changes. Verify remaining
+  position changed by tick 114 (retreat-attributed.log). A separate 200-tick mixed-health run reduces one infantry
+  unit from 150 to 30 health: it starts withdrawing by tick 80 and moves afterward while its squad remains engaged
+  and allies damage the enemy after withdrawal. Both it and the minor-injury control pass (mixed-withdrawal-final.log).
+  These runs include local R3 changes. Verify remaining
   scout, damaged ranged and mixed-domain controls before closing R7. Retained `quiet-combat-replay.json`; use full combat capture for this check.
 - Artifacts above are in ignored `tmp/ai-gameplay-reliability/`. Default result junctions point to full D:.
   Set `AI_SKIRMISH_RUNTIME_RESULTS_DIRECTORY` and matrix `--output` under workspace tmp. One runner, 30 min
