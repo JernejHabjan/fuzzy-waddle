@@ -67,8 +67,10 @@
   large-army movement. Raw captures: `air-counter-{unready-native-after,skaduwee}.runtime.json.gz`,
   `unbuilt-post-ready-native-after.runtime.json.gz`, `{ground-defense-authority,hidden-air-discovery}.runtime.json.gz`.
 - R7: retained FIGHT-01 quiet `06ad7a214` seed 759940, 2401 ticks/120 decisions, legal kill at tick 118 and no
-  context/combat failure on corrected oracle replay (21 controls). Cover minor injury, losing withdrawal and
-  reinforcement-driven return. Retained `quiet-combat-replay.json`; use full combat capture for this check.
+  context/combat failure on corrected oracle replay (21 controls). A separate 200-tick browser check applies one
+  point of damage to a named infantry unit at tick 5. Its squad does not retreat through tick 100, army hits the
+  opponent and the opponent is absent or at zero health by tick 120 (minor-injury-final.log). This run includes
+  the local, uncommitted R3 path changes. Losing withdrawal and reinforcement-driven return remain. Retained `quiet-combat-replay.json`; use full combat capture for this check.
 - Artifacts above are in ignored `tmp/ai-gameplay-reliability/`. Default result junctions point to full D:.
   Set `AI_SKIRMISH_RUNTIME_RESULTS_DIRECTORY` and matrix `--output` under workspace tmp. One runner, 30 min
   maximum per batch. Use an exact scenario selector and avoid repeats of retained evidence. Ordinary CI green on
