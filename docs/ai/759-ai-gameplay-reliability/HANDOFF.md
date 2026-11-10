@@ -122,7 +122,9 @@
   no scout order replaces it during retreat (`scout-threat-final.log`). This uses local R3 changes. Sixty-five
   planner/ownership controls pass. Scout harmless-contact and mixed-domain tactical controls pass within 47 focused tests. A follow-up regression
   found emergency home defense could use an anti-air weapon's range to infer a threat to a ground worker; threat range
-  now requires the same weapon to target the worker's domain. Real mixed-domain evidence remains open.
+  now requires the same weapon to target the worker's domain. A 240-tick native mixed-force run adds two legal Tivara
+  flyers: both air and ground units damage the same enemy, with an air squad observed (`mixed-force.log`; retained
+  native facts confirm the common target). It includes local R3 changes and does not yet prove mixed-force retreat.
   Retained `quiet-combat-replay.json`;
   use full combat capture for this check.
 - Artifacts above are in ignored `tmp/ai-gameplay-reliability/`. Default result junctions point to full D:.
