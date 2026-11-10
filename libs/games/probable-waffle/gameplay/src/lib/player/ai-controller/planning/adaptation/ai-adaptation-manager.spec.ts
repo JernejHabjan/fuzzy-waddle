@@ -172,6 +172,93 @@ function observation(
 describe("AiAdaptationManager", () => {
   const manager = new AiAdaptationManager(profile, () => catalog);
 
+  it("waits for a counter unit's required building to be finished before proposing production", () => {
+    const counterCatalog: AiCapabilityCatalog = {
+      ...catalog,
+      entries: catalog.entries.map((entry) =>
+        entry.sourceObjectName === ObjectNames.TivaraSlingshotFemale && entry.constructionProfile
+          ? {
+              ...entry,
+              constructionProfile: { ...entry.constructionProfile, requiredObjectNames: [ObjectNames.Temple] }
+            }
+          : entry
+      )
+    };
+    const planner = new AiAdaptationManager(profile, () => counterCatalog);
+    const main = actor("main", ObjectNames.Sandhold, "self", []);
+    const temple = actor("temple", ObjectNames.Temple, "self", []);
+    const unfinished: AiObservedActor = {
+      ...temple,
+      constructionProgress: { status: "known", value: 50, observedTick: 140 }
+    };
+    const flyers = [1, 2, 3].map((id) => actor(`owl-${id}`, ObjectNames.SkaduweeOwl, "enemy", ["air"]));
+    const initial = createAiBrainState({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "opening:1:balanced"
+    });
+    const first = planner.propose(observation(100, [main, ...flyers]), initial);
+    if (!first.statePatch?.adaptation) throw new Error("missing_adaptation_state");
+    const state = {
+      ...initial,
+      economyProduction: { ...initial.economyProduction, adaptation: first.statePatch.adaptation }
+    };
+    for (const actors of [
+      [main, ...flyers],
+      [main, unfinished, ...flyers]
+    ]) {
+      const proposal = planner.propose(observation(140, actors), state);
+      expect(proposal.intents.filter((intent) => intent.kind === "produce")).toEqual([]);
+      expect(
+        proposal.statePatch?.adaptationDemands?.find((demand) => demand.capabilityOrRole === "anti_air")?.desired
+      ).toBe(3);
+    }
+    const counter = counterCatalog.entries.find(
+      (entry) => entry.sourceObjectName === ObjectNames.TivaraSlingshotFemale
+    );
+    if (!counter?.constructionProfile) throw new Error("counter_catalog_missing");
+    const alternatives: AiCapabilityCatalog = {
+      ...counterCatalog,
+      entries: [
+        ...counterCatalog.entries.map((entry) =>
+          entry.sourceObjectName === ObjectNames.Sandhold
+            ? { ...entry, produces: [...entry.produces, ObjectNames.TivaraAlchemist] }
+            : entry
+        ),
+        {
+          ...counter,
+          sourceObjectName: ObjectNames.TivaraAlchemist,
+          capabilityId: "alternative-counter",
+          constructionProfile: {
+            ...counter.constructionProfile,
+            requiredObjectNames: [],
+            resourceCost: { [ResourceType.Wood]: 50 }
+          }
+        }
+      ]
+    };
+    const alternative = new AiAdaptationManager(profile, () => alternatives).propose(
+      observation(140, [main, ...flyers]),
+      state
+    );
+    expect(alternative.intents).toContainEqual(
+      expect.objectContaining({
+        kind: "produce",
+        objectName: ObjectNames.TivaraAlchemist
+      })
+    );
+    const ready = planner.propose(observation(160, [main, temple, ...flyers]), state);
+    expect(ready.intents).toContainEqual(
+      expect.objectContaining({
+        kind: "produce",
+        producerId: main.actorId,
+        objectName: ObjectNames.TivaraSlingshotFemale
+      })
+    );
+  });
+
   it("waits for an unfinished counter producer to complete before assigning production", () => {
     const main = actor("main", ObjectNames.Sandhold, "self", []);
     const building: AiObservedActor = {

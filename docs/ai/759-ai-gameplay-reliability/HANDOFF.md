@@ -62,8 +62,10 @@
   until discovery at tick 580, then one counter. Twenty adaptation controls cover full/missing producer, capacity
   return, scarcity, paid queue and fading evidence. An unfinished producer was incorrectly offered anti-air
   production. The adaptation manager now waits for completion and excludes unfinished counters from ready counts.
-  All 21 adaptation tests and owning lint pass. Gameplay project types still report unrelated fixture errors
-  (unfinished-counter-final-types.log), with no adaptation diagnostics. Audit legal prerequisite construction, harmless contact and
+  Counter selection also checks finished actor prerequisites, preserves demand while unavailable and chooses an
+  available alternative. All 22 adaptation tests pass. Gameplay project types still report unrelated fixture errors
+  (counter-prerequisite-types.log), with no adaptation diagnostics. Plan missing prerequisite construction, and check
+  harmless contact and
   large-army movement. Raw captures: `air-counter-{unready-native-after,skaduwee}.runtime.json.gz`,
   `unbuilt-post-ready-native-after.runtime.json.gz`, `{ground-defense-authority,hidden-air-discovery}.runtime.json.gz`.
 - R7: retained FIGHT-01 quiet `06ad7a214` seed 759940, 2401 ticks/120 decisions, legal kill at tick 118 and no

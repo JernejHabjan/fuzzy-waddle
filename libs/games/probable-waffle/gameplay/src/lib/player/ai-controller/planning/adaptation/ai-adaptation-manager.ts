@@ -74,7 +74,9 @@ function producerForRole(
       readonly resourceCost: Readonly<Partial<Record<ResourceType, number>>>;
     }
   | undefined {
-  for (const producer of owned(observation).sort((left, right) => left.actorId.localeCompare(right.actorId))) {
+  const ownedActors = owned(observation);
+  const readyNames = new Set(ownedActors.filter(isFinishedActor).map((actor) => actor.objectName));
+  for (const producer of ownedActors.sort((left, right) => left.actorId.localeCompare(right.actorId))) {
     if (!isFinishedActor(producer)) continue;
     if (producer.queue.status === "known" && producer.queue.value.occupied >= producer.queue.value.capacity) continue;
     const producerEntry = entryFor(catalog, producer.objectName);
@@ -85,6 +87,9 @@ function producerForRole(
           candidate.entry !== undefined
       )
       .filter((candidate) => matchesAdaptationRole(candidate.entry, role))
+      .filter((candidate) =>
+        (candidate.entry.constructionProfile?.requiredObjectNames ?? []).every((name) => readyNames.has(name))
+      )
       .filter((candidate) =>
         Object.entries(candidate.entry.constructionProfile?.resourceCost ?? {}).every(
           ([resourceType, amount]) => (remainingResources.get(resourceType as ResourceType) ?? 0) >= (amount ?? 0)
