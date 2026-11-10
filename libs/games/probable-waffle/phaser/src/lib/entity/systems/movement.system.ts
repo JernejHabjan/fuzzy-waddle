@@ -42,6 +42,7 @@ export class MovementSystem {
   private readonly tween: MovementTween;
   private readonly pathExecution: MovementPathExecution;
   private readonly formation: MovementFormation;
+  private movementRequest = 0;
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     this.runtime = new MovementRuntime(gameObject);
@@ -117,6 +118,7 @@ export class MovementSystem {
     queryContext?: MovementQueryContext,
     allowReachableApproach = false
   ): Promise<boolean> {
+    const request = ++this.movementRequest;
     if (!isGameObjectActiveInActiveScene(this.gameObject)) {
       MovementCompletionObservation.begin(
         queryContext?.actor === this.gameObject ? queryContext : undefined,
@@ -160,6 +162,10 @@ export class MovementSystem {
       completion?.threw();
       throw error;
     }
+    if (request !== this.movementRequest || !isGameObjectActiveInActiveScene(this.gameObject)) {
+      completion?.returned(false);
+      return false;
+    }
     // EasyStar returns [] when start equals destination. Confirm the live position after the async query;
     // missing/no-route results remain failures. A singleton uses normal arrival callbacks and reservation cleanup.
     if (path?.length === 0 && isGameObjectActiveInActiveScene(this.gameObject)) {
@@ -177,6 +183,10 @@ export class MovementSystem {
         completion?.threw();
         throw error;
       }
+      if (request !== this.movementRequest || !isGameObjectActiveInActiveScene(this.gameObject)) {
+        completion?.returned(false);
+        return false;
+      }
     }
     if (!path || !path.length) {
       completion?.returned(false);
@@ -191,7 +201,9 @@ export class MovementSystem {
     try {
       if (path.length) {
         // A zero-step route must also stop older movement, even without a pawn order owning Stop cleanup.
-        if (path.length === 1) this.cancelMovement();
+        if (path.length === 1) {
+          this.cancelMovement();
+        }
         completion?.destination(path[path.length - 1]);
         // Remove the first tile, as it's the current tile
         path.shift();
@@ -228,6 +240,7 @@ export class MovementSystem {
     pathMoveConfig?: Partial<PathMoveConfig>,
     queryContext?: MovementQueryContext
   ): Promise<boolean> {
+    const request = ++this.movementRequest;
     const flyingComponent = getActorComponent(this.gameObject, FlyingComponent);
     const usePathfinding = !flyingComponent;
     const completion = MovementCompletionObservation.begin(
@@ -280,6 +293,7 @@ export class MovementSystem {
         if (
           !isGameObjectActiveInActiveScene(this.gameObject) ||
           !isGameObjectActiveInActiveScene(destinationGameObject) ||
+          request !== this.movementRequest ||
           (owningOrder && board?.getCurrentOrder() !== owningOrder)
         )
           break;
@@ -313,6 +327,7 @@ export class MovementSystem {
           !candidate?.length ||
           !isGameObjectActiveInActiveScene(this.gameObject) ||
           !isGameObjectActiveInActiveScene(destinationGameObject) ||
+          request !== this.movementRequest ||
           (owningOrder && board?.getCurrentOrder() !== owningOrder)
         )
           break;
@@ -430,6 +445,7 @@ export class MovementSystem {
   }
 
   cancelMovement() {
+    this.movementRequest++;
     this.pathExecution.cancel();
     this.tween.cancelMovement();
   }
@@ -458,7 +474,10 @@ export class MovementSystem {
         for (let x = destination.x - radius; x <= destination.x + radius; x++) {
           if (Math.abs(x - destination.x) + Math.abs(y - destination.y) !== radius) continue;
           const candidate = { x, y };
-          if (!navigation.isWithinGridBounds(candidate, terrainType) || !navigation.isTileNavigable(candidate, terrainType))
+          if (
+            !navigation.isWithinGridBounds(candidate, terrainType) ||
+            !navigation.isTileNavigable(candidate, terrainType)
+          )
             continue;
           candidates.push(candidate);
         }
@@ -466,7 +485,8 @@ export class MovementSystem {
     }
     candidates.sort(
       (left, right) =>
-        Math.abs(left.x - destination.x) + Math.abs(left.y - destination.y) -
+        Math.abs(left.x - destination.x) +
+          Math.abs(left.y - destination.y) -
           (Math.abs(right.x - destination.x) + Math.abs(right.y - destination.y)) ||
         left.y - right.y ||
         left.x - right.x

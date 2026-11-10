@@ -12,7 +12,11 @@ import { OrderData } from "../../ai/OrderData";
 import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { getActorComponent } from "../../data/actor-component";
 import { getSceneService } from "../../world/services/scene-component-helpers";
-import { getGameObjectCurrentTile, isGameObjectActiveInActiveScene, onObjectReady } from "../../data/game-object-helper";
+import {
+  getGameObjectCurrentTile,
+  isGameObjectActiveInActiveScene,
+  onObjectReady
+} from "../../data/game-object-helper";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { FlyingComponent } from "../components/movement/flying-component";
 import { HealthComponent } from "../components/combat/components/health-component";
@@ -132,6 +136,61 @@ describe("movement facade boundaries", () => {
     expect(await f.system.moveToActorByAdjustingPathDynamically(f.actor)).toBe(false);
     expect(execute).not.toHaveBeenCalled();
     expect(f.occupancy.reserveDestination).not.toHaveBeenCalled();
+  });
+
+  it.each(["cancel", "new move"] as const)(
+    "does not execute an initial location path after %s",
+    async (replacement) => {
+      const f = fixture();
+      let resolvePath: ((path: Vector2Simple[]) => void) | undefined;
+      f.navigation.findPathFromGameObjectToTile.mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            resolvePath = resolve;
+          })
+      );
+      const execute = jest
+        .spyOn(MovementPathExecution.prototype, "moveAlongPathByFollowingPreCalculatedStaticPath")
+        .mockResolvedValue(undefined);
+      const first = f.system.moveToLocationByFollowingStaticPath({ x: 1, y: 0, z: 0 });
+      if (!resolvePath) throw new Error("initial_path_not_pending");
+      if (replacement === "cancel") f.system.cancelMovement();
+      else {
+        f.navigation.findPathFromGameObjectToTile.mockResolvedValue([
+          { x: 0, y: 0 },
+          { x: 2, y: 0 }
+        ]);
+        expect(await f.system.moveToLocationByFollowingStaticPath({ x: 2, y: 0, z: 0 })).toBe(true);
+      }
+      resolvePath([
+        { x: 0, y: 0 },
+        { x: 1, y: 0 }
+      ]);
+      expect(await first).toBe(false);
+      expect(execute).toHaveBeenCalledTimes(replacement === "cancel" ? 0 : 1);
+    }
+  );
+
+  it("does not reserve an object-target path that resolves after cancellation without a pawn order", async () => {
+    const f = fixture();
+    let resolvePath: ((path: Vector2Simple[]) => void) | undefined;
+    f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          resolvePath = resolve;
+        })
+    );
+    const execute = jest.spyOn(MovementPathExecution.prototype, "moveAlongPathByFollowingPreCalculatedStaticPath");
+    const pending = f.system.moveToActorByAdjustingPathDynamically(f.actor);
+    if (!resolvePath) throw new Error("object_path_not_pending");
+    f.system.cancelMovement();
+    resolvePath([
+      { x: 0, y: 0 },
+      { x: 1, y: 0 }
+    ]);
+    expect(await pending).toBe(false);
+    expect(f.occupancy.reserveDestination).not.toHaveBeenCalled();
+    expect(execute).not.toHaveBeenCalled();
   });
 
   it("bounds endpoint-contention retries without moving to an unreserved slot", async () => {
