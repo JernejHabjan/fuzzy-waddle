@@ -34,8 +34,10 @@
   async boundaries. Two focused regressions, 35 movement tests, Phaser types and the human replacement browser
   control pass (movement-cancel-boundary.log). Initial location and object route queries now also discard results
   after cancellation or a newer request. Three focused controls, 38 movement tests, Phaser types and both native
-  pursuit/replacement checks pass (initial-route-boundary.log). Audit old movement destination-reservation cleanup
-  when a newer movement has acquired a reservation. Inspect
+  pursuit/replacement checks pass (initial-route-boundary.log). A separate regression confirmed that older movement
+  cleanup could release a newer destination or formation reservation. Destination ownership now follows the latest
+  started path or incoming command. Newer failed queries preserve the old cleanup. All 37 movement boundary/arrival
+  controls, Phaser types and human replacement pass (destination-generation.log). Inspect
   `opposing-traffic-{exact,step-owner}.json` and `opposing-traffic-failures.log`.
 - R4: physical attack range `18b58f4ce`, synchronous admission `c812f1a88`, flying reachability and lifecycle controls
   (23 native movement checks). The isolated Banshee hits a moving worker six times. A human replacement Move after

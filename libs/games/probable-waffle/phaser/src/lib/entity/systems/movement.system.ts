@@ -43,6 +43,7 @@ export class MovementSystem {
   private readonly pathExecution: MovementPathExecution;
   private readonly formation: MovementFormation;
   private movementRequest = 0;
+  private destinationGeneration = 0;
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     this.runtime = new MovementRuntime(gameObject);
@@ -75,6 +76,8 @@ export class MovementSystem {
       if (!actorId || !cmd.actorIds.includes(actorId)) return;
 
       try {
+        if (!cmd.queue) this.movementRequest++;
+        this.destinationGeneration++;
         this.runtime.movementOccupancyService?.releaseDestination(actorId);
         const newWorldVec3 = await this.formation.getTileVec3ByDynamicFlocking(cmd.tileVec3, cmd.actorIds as ActorId[]);
         const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
@@ -197,6 +200,7 @@ export class MovementSystem {
 
     if (this.DEBUG) this.runtime.navigationService.drawDebugPath(path);
 
+    const destinationGeneration = ++this.destinationGeneration;
     let success = false;
     try {
       if (path.length) {
@@ -220,7 +224,8 @@ export class MovementSystem {
       // console.error("Error moving along path", e);
     } finally {
       const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
-      if (actorId) this.runtime.movementOccupancyService?.releaseDestination(actorId);
+      if (actorId && destinationGeneration === this.destinationGeneration)
+        this.runtime.movementOccupancyService?.releaseDestination(actorId);
     }
 
     completion?.returned(success);
@@ -355,6 +360,7 @@ export class MovementSystem {
 
     this.cancelMovement();
 
+    const destinationGeneration = ++this.destinationGeneration;
     let success = false;
     try {
       completion?.destination(path[path.length - 1]);
@@ -371,7 +377,8 @@ export class MovementSystem {
       // Preserve the native false result after destination cleanup; cleanup errors still reject.
     } finally {
       const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
-      if (actorId) this.runtime.movementOccupancyService?.releaseDestination(actorId);
+      if (actorId && destinationGeneration === this.destinationGeneration)
+        this.runtime.movementOccupancyService?.releaseDestination(actorId);
     }
     completion?.returned(success);
     return success;

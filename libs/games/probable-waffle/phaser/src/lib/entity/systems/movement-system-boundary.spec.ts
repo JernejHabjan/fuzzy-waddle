@@ -193,6 +193,129 @@ describe("movement facade boundaries", () => {
     expect(execute).not.toHaveBeenCalled();
   });
 
+  it("does not release a newer destination when an older path settles", async () => {
+    const f = fixture();
+    const complete: Array<() => void> = [];
+    f.navigation.findPathFromGameObjectToTile.mockImplementation(async (_actor, tile) => [{ x: 0, y: 0 }, tile]);
+    jest.spyOn(MovementPathExecution.prototype, "moveAlongPathByFollowingPreCalculatedStaticPath").mockImplementation(
+      () =>
+        new Promise<void>((resolve) => {
+          complete.push(resolve);
+        })
+    );
+    const first = f.system.moveToLocationByFollowingStaticPath({ x: 1, y: 0, z: 0 });
+    await Promise.resolve();
+    const second = f.system.moveToLocationByFollowingStaticPath({ x: 2, y: 0, z: 0 });
+    await Promise.resolve();
+    if (complete.length !== 2) throw new Error("movement_paths_not_started");
+    complete[0]?.();
+    expect(await first).toBe(true);
+    expect(f.occupancy.releaseDestination).not.toHaveBeenCalled();
+    complete[1]?.();
+    expect(await second).toBe(true);
+    expect(f.occupancy.releaseDestination).toHaveBeenCalledTimes(1);
+  });
+
+  it("releases the old destination if a newer path request fails before starting", async () => {
+    const f = fixture();
+    let finish: (() => void) | undefined;
+    f.navigation.findPathFromGameObjectToTile
+      .mockResolvedValueOnce([
+        { x: 0, y: 0 },
+        { x: 1, y: 0 }
+      ])
+      .mockResolvedValueOnce(null);
+    jest.spyOn(MovementPathExecution.prototype, "moveAlongPathByFollowingPreCalculatedStaticPath").mockImplementation(
+      () =>
+        new Promise<void>((resolve) => {
+          finish = resolve;
+        })
+    );
+    const first = f.system.moveToLocationByFollowingStaticPath({ x: 1, y: 0, z: 0 });
+    await Promise.resolve();
+    expect(await f.system.moveToLocationByFollowingStaticPath({ x: 2, y: 0, z: 0 })).toBe(false);
+    if (!finish) throw new Error("movement_path_not_started");
+    finish();
+    expect(await first).toBe(true);
+    expect(f.occupancy.releaseDestination).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not release a formation reservation installed by a newer move command", async () => {
+    const f = fixture();
+    let finish: (() => void) | undefined;
+    f.navigation.findPathFromGameObjectToTile.mockResolvedValue([
+      { x: 0, y: 0 },
+      { x: 1, y: 0 }
+    ]);
+    jest.spyOn(MovementPathExecution.prototype, "moveAlongPathByFollowingPreCalculatedStaticPath").mockImplementation(
+      () =>
+        new Promise<void>((resolve) => {
+          finish = resolve;
+        })
+    );
+    const old = f.system.moveToLocationByFollowingStaticPath({ x: 1, y: 0, z: 0 });
+    await Promise.resolve();
+    if (!finish) throw new Error("movement_path_not_started");
+    const board = new PawnAiBlackboard();
+    const lookup = jest.mocked(getActorComponent).getMockImplementation();
+    jest
+      .mocked(getActorComponent)
+      .mockImplementation((actor, component) =>
+        component === PawnAiController ? ({ blackboard: board } as never) : lookup?.(actor, component)
+      );
+    jest.spyOn(MovementFormation.prototype, "getTileVec3ByDynamicFlocking").mockResolvedValue({ x: 4, y: 5, z: 0 });
+    await f.deliver({
+      type: "MOVE",
+      tick: 10,
+      playerNumber: 1,
+      actorIds: ["actor:1"],
+      queue: false,
+      tileVec3: { x: 4, y: 5, z: 0 },
+      worldVec3: { x: 4, y: 5, z: 0 }
+    } satisfies MoveCommand);
+    expect(f.occupancy.releaseDestination).toHaveBeenCalledTimes(1);
+    finish();
+    await old;
+    expect(f.occupancy.releaseDestination).toHaveBeenCalledTimes(1);
+  });
+
+  it("discards an initial path once a newer move command is admitted", async () => {
+    const f = fixture();
+    let resolvePath: ((path: Vector2Simple[]) => void) | undefined;
+    f.navigation.findPathFromGameObjectToTile.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          resolvePath = resolve;
+        })
+    );
+    const execute = jest.spyOn(MovementPathExecution.prototype, "moveAlongPathByFollowingPreCalculatedStaticPath");
+    const old = f.system.moveToLocationByFollowingStaticPath({ x: 1, y: 0, z: 0 });
+    if (!resolvePath) throw new Error("initial_path_not_pending");
+    const board = new PawnAiBlackboard();
+    const lookup = jest.mocked(getActorComponent).getMockImplementation();
+    jest
+      .mocked(getActorComponent)
+      .mockImplementation((actor, component) =>
+        component === PawnAiController ? ({ blackboard: board } as never) : lookup?.(actor, component)
+      );
+    jest.spyOn(MovementFormation.prototype, "getTileVec3ByDynamicFlocking").mockResolvedValue({ x: 4, y: 5, z: 0 });
+    await f.deliver({
+      type: "MOVE",
+      tick: 10,
+      playerNumber: 1,
+      actorIds: ["actor:1"],
+      queue: false,
+      tileVec3: { x: 4, y: 5, z: 0 },
+      worldVec3: { x: 4, y: 5, z: 0 }
+    } satisfies MoveCommand);
+    resolvePath([
+      { x: 0, y: 0 },
+      { x: 1, y: 0 }
+    ]);
+    expect(await old).toBe(false);
+    expect(execute).not.toHaveBeenCalled();
+  });
+
   it("bounds endpoint-contention retries without moving to an unreserved slot", async () => {
     const f = fixture();
     f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius.mockResolvedValue([
