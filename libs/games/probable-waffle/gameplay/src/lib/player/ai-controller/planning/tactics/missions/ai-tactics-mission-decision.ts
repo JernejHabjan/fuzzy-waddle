@@ -100,6 +100,7 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
   const urgentHomeDefense =
     squad.role === "defense" &&
     visibleTarget &&
+    members.every((member) => member.healthPermille?.status === "known" && member.healthPermille.value > 250) &&
     members.some(
       (member) =>
         member.healthPermille?.status === "known" &&

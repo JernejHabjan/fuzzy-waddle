@@ -135,6 +135,21 @@ describe("AiTacticsManager", () => {
     const injured = { ...defender, healthPermille: { status: "known" as const, value: 300, observedTick: 100 } };
     const weak = manager.propose(observation([injured, workers, ...raiders]), fixtureState([defense]));
     expect(weak.statePatch?.squadUpdates?.[0]).toEqual(expect.objectContaining({ state: "retreat" }));
+    const woundedFighter = combatActor("wounded", "self", 3, "ground", 200, { damage: 5 });
+    if (woundedFighter.combatProfile?.status !== "known") throw new Error("Missing combat fixture");
+    const melee = {
+      ...woundedFighter,
+      combatProfile: {
+        ...woundedFighter.combatProfile,
+        value: {
+          ...woundedFighter.combatProfile.value,
+          attacks: woundedFighter.combatProfile.value.attacks.map((attack) => ({ ...attack, minRange: 0 }))
+        }
+      }
+    };
+    const mixedDefense = { ...defense, actorIds: [defender.actorId, melee.actorId] };
+    const mixed = manager.propose(observation([defender, melee, workers, ...raiders]), fixtureState([mixedDefense]));
+    expect(mixed.statePatch?.squadUpdates?.[0]?.state).toBe("retreat");
     const unthreatened = {
       ...workers,
       logicalPosition: { status: "known" as const, value: { x: 25, y: 0, z: 0 }, observedTick: 100 }
