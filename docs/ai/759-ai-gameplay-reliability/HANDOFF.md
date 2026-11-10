@@ -110,7 +110,10 @@
   unit from 150 to 30 health: it starts withdrawing by tick 80 and moves afterward while its squad remains engaged
   and allies damage the enemy after withdrawal. A threatened ranged unit reduced to 20/100 health also moves away by
   tick 40 while allies fight. All three injury controls pass (`injury-controls.log`); these runs include local R3
-  changes. Verify remaining scout and mixed-domain controls before closing R7. Retained `quiet-combat-replay.json`;
+  changes. Scout harmless-contact and mixed-domain tactical controls pass within 47 focused tests. A follow-up regression
+  found emergency home defense could use an anti-air weapon's range to infer a threat to a ground worker; threat range
+  now requires the same weapon to target the worker's domain. Real scout and mixed-domain evidence remains open.
+  Retained `quiet-combat-replay.json`;
   use full combat capture for this check.
 - Artifacts above are in ignored `tmp/ai-gameplay-reliability/`. Default result junctions point to full D:.
   Set `AI_SKIRMISH_RUNTIME_RESULTS_DIRECTORY` and matrix `--output` under workspace tmp. One runner, 30 min

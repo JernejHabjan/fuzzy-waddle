@@ -160,6 +160,32 @@ describe("AiTacticsManager", () => {
     };
     const noEmergency = manager.propose(observation([defender, unthreatened, ...raiders]), fixtureState([defense]));
     expect(noEmergency.statePatch?.squadUpdates?.[0]?.state).toBe("retreat");
+    const firstRaider = raiders[0];
+    if (firstRaider?.combatProfile?.status !== "known") throw new Error("Missing raider combat fixture");
+    const weapon = firstRaider.combatProfile.value.attacks[0];
+    if (!weapon) throw new Error("Missing raider weapon");
+    const domainSpecific = {
+      ...firstRaider,
+      combatProfile: {
+        ...firstRaider.combatProfile,
+        value: {
+          ...firstRaider.combatProfile.value,
+          attacks: [
+            { ...weapon, range: 0, targetDomains: ["ground" as const] },
+            { ...weapon, range: 10, targetDomains: ["air" as const] }
+          ]
+        }
+      }
+    };
+    const distantWorker = {
+      ...workers,
+      logicalPosition: { status: "known" as const, value: { x: 3, y: 0, z: 0 }, observedTick: 100 }
+    };
+    const wrongDomain = manager.propose(
+      observation([defender, distantWorker, domainSpecific, ...raiders.slice(1)]),
+      fixtureState([defense])
+    );
+    expect(wrongDomain.statePatch?.squadUpdates?.[0]?.state).toBe("retreat");
   });
 
   it("moves toward a player-visible target until the member has local vision to attack", () => {

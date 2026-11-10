@@ -122,7 +122,12 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
           ((actor.mainBuilding?.status === "known" && actor.mainBuilding.value) ||
             actor.capabilities.some((capability) => capability.family === "gather")) &&
           canTarget(enemy, actor) &&
-          attacks.some((attack) => attack.damage > 0 && distance(enemyPosition, actorPosition) <= attack.range + 1)
+          attacks.some(
+            (attack) =>
+              attack.damage > 0 &&
+              movementDomains(actor).some((domain) => attack.targetDomains.includes(domain)) &&
+              distance(enemyPosition, actorPosition) <= attack.range + 1
+          )
         );
       });
     });
