@@ -55,7 +55,7 @@ export function projectCatalogEntry(
   );
 }
 
-/** Adds permitted current-tech options plus the renewable-food definition needed to plan its missing prerequisite. */
+/** Adds current-tech options and permitted locked recipes needed to plan their prerequisites. */
 export function projectAvailableCatalogEntries(
   scene: Phaser.Scene,
   player: ProbableWafflePlayer,
@@ -67,13 +67,19 @@ export function projectAvailableCatalogEntries(
   // Never enumerate the global graph here: that would expose another faction's
   // roster even when no opponent actor has been observed.
   for (const objectName of techTree.getFactionActorIds(player.factionType!)) {
-    // Hiding a locked Field also hides its Granary price/dependency, creating a circular food/worker wait.
-    // Food planning checks the ready prerequisite; shared construction still owns final eligibility and payment.
-    if (!techTree.isAvailable(playerNumber, objectName) &&
-        (objectName !== ObjectNames.Field || !techTree.isContentAllowed(playerNumber, "actor", objectName))) continue;
     const level = techTree.getResearchedLevelForUnit(playerNumber, objectName);
     const definition = getPwActorDefinition(objectName, level);
     if (!definition) continue;
+    // Planners need permitted locked recipes to identify missing food and anti-air prerequisites.
+    // Native validation and planner prerequisite checks still gate construction and production.
+    if (
+      !techTree.isAvailable(playerNumber, objectName) &&
+      (!techTree.isContentAllowed(playerNumber, "actor", objectName) ||
+        (objectName !== ObjectNames.Field &&
+          (!targetDomains(definition).includes("air") ||
+            techTree.getPrerequisites(playerNumber, objectName).prereqs.researchTypes.length > 0)))
+    )
+      continue;
     const entry = projectCatalogDefinition(
       scene,
       objectName,

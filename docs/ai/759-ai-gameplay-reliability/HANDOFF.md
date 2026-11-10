@@ -68,11 +68,29 @@
   prerequisite chain: Tivara's ranged Banshee needs Temple; Temple needs AnkGuard and can itself produce the Banshee.
   Workers can construct both. Macro capacity currently follows its ordinary force target, not counter demand; ordinary
   military product selection now waits for finished product prerequisites and chooses an available alternative;
-  the focused missing/unfinished/ready/alternative check and six capacity controls pass. Next use fresh confirmed adaptation evidence,
-  current counter/queue commitments and catalog recipes to select a feasible construction chain through the existing
-  macro site, builder, cost and effect-claim machinery. Avoid duplicates for unfinished/accepted construction and
-  avoid building for stale demand, a legal alternative or a full queue. Test both the normal production guard and
-  construction chain, including completion, resources, builder/site legality and fading evidence. Check harmless contact and
+  the focused missing/unfinished/ready/alternative check and six capacity controls pass (`d2828acb3`). Local, uncommitted
+  counter-infrastructure proposal now selects a catalog-derived prerequisite chain and uses macro builder/site/cost
+  claims. Initial focused tests cover a chain, cycles, missing builders, finished alternatives, stale evidence,
+  unfinished buildings and insufficient resources. Adaptation and macro controls pass (27 tests), as does lint.
+  Gameplay type check has no new infrastructure diagnostics (unrelated fixture errors remain). Native missing-Temple
+  run first produced nothing because its locked Banshee recipe was absent from the permitted catalog. Local catalog
+  change exposes allowed locked anti-air recipes; four catalog controls pass. A second native run sees all three flyers,
+  orders one Temple at tick 60, produces counters at 680/880 and completes one at 879, but lands no hit by tick 1000.
+  It remains a failing gameplay check (`counter-infrastructure-native-{,2}.log`): the unit joined home defense at 880,
+  started intercepting, then tactical retreat and blocker recovery alternated Move and Attack orders at 900–1000.
+  Local recovery change respects an actively retreating defense squad. A healthy defender now contests its visible
+  target when that attacker directly threatens owned workers or the main building; injured units retain withdrawal.
+  Thirty-one tactical/recovery controls pass. Local catalog excludes research-locked recipes (five controls pass).
+  Native run 3 had no hit by tick 1000: the counter spawned at 879 and advanced from (41,17) to (31,16) with a retained
+  Attack. Extending this missing-building case to 1200 ticks preserves the hit assertion and passes: one Temple, two
+  completed counters, six native hits, no gaps or AI errors (`counter-infrastructure-native-5.log`). The previous
+  extension attempt stopped at the original assertion ceiling and is invalid evidence. Both runs include local R3
+  changes. A separate run with committed movement code also passed with one Temple, two counters and six hits
+  (`counter-committed-native.log`); local R3 files were restored. The planner now also counts outstanding capacity
+  reservations even if the other planner's demand changed. Fifty-eight related AI controls and five catalog controls
+  pass; lint has pre-existing warnings, and gameplay type checking reports unrelated existing errors but none in the
+  changed AI files. Review the staged changes and publish this bounded slice; other packet acceptance remains open.
+  Check harmless contact and
   large-army movement. Raw captures: `air-counter-{unready-native-after,skaduwee}.runtime.json.gz`,
   `unbuilt-post-ready-native-after.runtime.json.gz`, `{ground-defense-authority,hidden-air-discovery}.runtime.json.gz`.
 - R7: retained FIGHT-01 quiet `06ad7a214` seed 759940, 2401 ticks/120 decisions, legal kill at tick 118 and no

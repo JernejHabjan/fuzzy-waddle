@@ -7,6 +7,7 @@ import {
   TACTICAL_RECONSIDERATION_TICKS
 } from "../combat/ai-tactics-rules";
 import { selectAiSafeFiringPositions } from "../combat/ai-tactics-approach-positions";
+import { canTarget } from "../combat/ai-tactics-combat";
 
 import type { prepareAiTacticalSquad } from "./ai-tactics-mission-preparation";
 /** Chooses bounded mission state and recovery. */
@@ -94,6 +95,35 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
     })
     .map((member) => member.actorId);
   const criticalRangedThreat = criticalRangedActorIds.length > 0;
+  // A healthy home defender should contest an attacker already threatening the economy, even when
+  // the full fight is unfavorable. Once injured it returns to the normal retreat policy.
+  const urgentHomeDefense =
+    squad.role === "defense" &&
+    visibleTarget &&
+    members.some(
+      (member) =>
+        member.healthPermille?.status === "known" &&
+        member.healthPermille.value > 700 &&
+        canTarget(member, visibleTarget)
+    ) &&
+    localEnemies.some((enemy) => {
+      if (enemy.actorId !== visibleTarget.actorId) return false;
+      const enemyPosition = knownPosition(enemy);
+      const attacks = enemy.combatProfile?.status === "known" ? enemy.combatProfile.value.attacks : [];
+      if (!enemyPosition || !attacks.length) return false;
+      return observation.actors.some((actor) => {
+        const actorPosition = knownPosition(actor);
+        return (
+          actor.relation === "self" &&
+          actor.visibility === "owned" &&
+          actorPosition &&
+          ((actor.mainBuilding?.status === "known" && actor.mainBuilding.value) ||
+            actor.capabilities.some((capability) => capability.family === "gather")) &&
+          canTarget(enemy, actor) &&
+          attacks.some((attack) => attack.damage > 0 && distance(enemyPosition, actorPosition) <= attack.range + 1)
+        );
+      });
+    });
   const awaitingLaunch = ["forming", "assemble", "rally", "ready", "advance", "moving"].includes(squad.state);
   const forcedDecision =
     awaitingLaunch && (squad.lifecycle?.assemblyDeadline.dueTick ?? observation.tick) <= observation.tick;
@@ -173,25 +203,28 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
                 ) && localEnemies.length > 0
                 ? "engage"
                 : "retreat"
-              : committedPressure
-                ? localEnemies.length > 0
-                  ? "engage"
-                  : "advance"
-                : (unfavorable ||
-                      topologyLost ||
-                      (recoveringFromRetreat && localEnemies.length > 0 && !favorableRecovery)) &&
-                    retreat
-                  ? "retreat"
-                  : awaitingStrategicLaunch
-                    ? "assemble"
-                    : localEnemies.length > 0 &&
-                        ((recoveringFromRetreat ? favorableRecovery : favorable) || forcedDecision)
-                      ? "engage"
-                      : localEnemies.length > 0
-                        ? "regroup"
-                        : quietState;
+              : urgentHomeDefense
+                ? "engage"
+                : committedPressure
+                  ? localEnemies.length > 0
+                    ? "engage"
+                    : "advance"
+                  : (unfavorable ||
+                        topologyLost ||
+                        (recoveringFromRetreat && localEnemies.length > 0 && !favorableRecovery)) &&
+                      retreat
+                    ? "retreat"
+                    : awaitingStrategicLaunch
+                      ? "assemble"
+                      : localEnemies.length > 0 &&
+                          ((recoveringFromRetreat ? favorableRecovery : favorable) || forcedDecision)
+                        ? "engage"
+                        : localEnemies.length > 0
+                          ? "regroup"
+                          : quietState;
   const holdRetreat =
     !criticalRangedThreat &&
+    !urgentHomeDefense &&
     !committedPressure &&
     recoveringFromRetreat &&
     squad.tactics !== undefined &&

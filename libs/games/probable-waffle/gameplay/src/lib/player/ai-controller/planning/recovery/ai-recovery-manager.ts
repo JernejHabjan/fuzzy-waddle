@@ -31,8 +31,13 @@ function compareVisibleActors(left: AiObservedActor, right: AiObservedActor): nu
   const leftPosition = position(left);
   const rightPosition = position(right);
   if (leftPosition && rightPosition) {
-    return leftPosition.y - rightPosition.y || leftPosition.x - rightPosition.x || leftPosition.z - rightPosition.z ||
-      left.objectName.localeCompare(right.objectName) || left.actorId.localeCompare(right.actorId);
+    return (
+      leftPosition.y - rightPosition.y ||
+      leftPosition.x - rightPosition.x ||
+      leftPosition.z - rightPosition.z ||
+      left.objectName.localeCompare(right.objectName) ||
+      left.actorId.localeCompare(right.actorId)
+    );
   }
   if (leftPosition) return -1;
   if (rightPosition) return 1;
@@ -216,19 +221,21 @@ export class AiRecoveryManager implements AiProposalManager {
       .filter((entry) => entry.status === "known");
     const lowIncome = knownIncome.length > 0 && knownIncome.reduce((total, entry) => total + entry.value, 0) <= 0;
     const source = sourceActors(observation)[0];
-    const workers = self.filter(
-      (actor) =>
-        isGatherer(actor, catalog) &&
-        !actor.resourceTransferInFlight &&
-        (actor.carriedResourceAmount ?? 0) === 0 &&
-        (actor.containedInActorId === null || actor.containedInActorId === undefined) &&
-        (actor.activeOrder?.status !== "known" || actor.activeOrder.value === null) &&
-        !(
-          actor.resourceState.status === "known" &&
-          actor.resourceState.value.carried.status === "known" &&
-          actor.resourceState.value.carried.value > 0
-        )
-    ).sort(compareVisibleActors);
+    const workers = self
+      .filter(
+        (actor) =>
+          isGatherer(actor, catalog) &&
+          !actor.resourceTransferInFlight &&
+          (actor.carriedResourceAmount ?? 0) === 0 &&
+          (actor.containedInActorId === null || actor.containedInActorId === undefined) &&
+          (actor.activeOrder?.status !== "known" || actor.activeOrder.value === null) &&
+          !(
+            actor.resourceState.status === "known" &&
+            actor.resourceState.value.carried.status === "known" &&
+            actor.resourceState.value.carried.value > 0
+          )
+      )
+      .sort(compareVisibleActors);
     if (lowIncome && source && workers.length > 0) {
       const key = `economy:source:${source.actorId}`;
       const old = prior.get(key);
@@ -291,16 +298,20 @@ export class AiRecoveryManager implements AiProposalManager {
         .sort((a, b) => a.actorId.localeCompare(b.actorId))[0];
       if (!blocker) continue;
       const squad = state.squads
-        .filter((candidate) => candidate.role === "defense" && candidate.actorIds.length > 0)
+        .filter(
+          (candidate) => candidate.role === "defense" && candidate.actorIds.length > 0 && candidate.state !== "retreat"
+        )
         .sort((a, b) => a.squadId.localeCompare(b.squadId))[0];
       if (!squad) continue;
       const capableDefenders = squad.actorIds
         .map((actorId) => self.find((actor) => actor.actorId === actorId))
         .filter((actor): actor is AiObservedActor => actor !== undefined)
-        .filter((actor) =>
-          actor.healthPermille?.status !== "known" || actor.healthPermille.value > 400 ||
-          actor.combatProfile?.status !== "known" ||
-          !actor.combatProfile.value.attacks.some((attack) => attack.minRange > 0)
+        .filter(
+          (actor) =>
+            actor.healthPermille?.status !== "known" ||
+            actor.healthPermille.value > 400 ||
+            actor.combatProfile?.status !== "known" ||
+            !actor.combatProfile.value.attacks.some((attack) => attack.minRange > 0)
         )
         .filter((actor) => canTarget(actor, blocker) && canSee(actor, blocker, catalog));
       if (capableDefenders.length === 0) continue;
@@ -428,8 +439,11 @@ export class AiRecoveryManager implements AiProposalManager {
           state: "abandoned",
           alternate: "release_optional_commitments",
           releasedClaimIds: state.reservations
-            .filter((reservation) => reservation.ownerPlanId === old.planId &&
-              (reservation.state.kind === "provisional" || reservation.state.kind === "forecast"))
+            .filter(
+              (reservation) =>
+                reservation.ownerPlanId === old.planId &&
+                (reservation.state.kind === "provisional" || reservation.state.kind === "forecast")
+            )
             .map((reservation) => reservation.claimId)
             .sort(),
           nextRetryTick: observation.tick

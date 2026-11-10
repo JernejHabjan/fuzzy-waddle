@@ -68,7 +68,7 @@ describe("AiTacticsManager", () => {
     const first = manager.propose(world, fixtureState([squad("squad:scout", "scout", [scout.actorId])]));
     const updated = first.statePatch?.squadUpdates?.[0];
     expect(updated?.state).toBe("retreat");
-    if (!updated) throw new Error("Expected updated scout squad");
+    if (!updated?.tactics) throw new Error("Expected updated scout squad tactics");
     const originalDestination = updated.tactics?.assignedPositions[0]?.position;
     expect(originalDestination).toEqual({ x: 100, y: 0, z: 0 });
     const scoutAfterProgress = {
@@ -118,6 +118,29 @@ describe("AiTacticsManager", () => {
     expect(
       proposal.intents.some((intent) => intent.kind === "attack" && intent.targetActorId === nearerBystander.actorId)
     ).toBe(false);
+  });
+
+  it("contests a raid threatening workers while healthy, but withdraws when critically wounded", () => {
+    const defender = combatActor("guard", "self", 3, "ground", 1000, { damage: 5 });
+    const workerActor = combatActor("worker", "self", 5, "ground", 1000, { damage: 0, capabilityFamilies: ["gather"] });
+    const workers = {
+      ...workerActor,
+      capabilities: workerActor.capabilities.filter((entry) => entry.family === "gather"),
+      combatProfile: { status: "unknown" as const, reason: "not_supported" as const }
+    };
+    const raiders = [6, 7, 8].map((x) => combatActor(`raider-${x}`, "enemy", x, "air", 1000, { damage: 20 }));
+    const defense = { ...squad("squad:defense:home", "defense", [defender.actorId]), objectiveId: "raider-6" };
+    const healthy = manager.propose(observation([defender, workers, ...raiders]), fixtureState([defense]));
+    expect(healthy.statePatch?.squadUpdates?.[0]?.state).toBe("engage");
+    const injured = { ...defender, healthPermille: { status: "known" as const, value: 300, observedTick: 100 } };
+    const weak = manager.propose(observation([injured, workers, ...raiders]), fixtureState([defense]));
+    expect(weak.statePatch?.squadUpdates?.[0]).toEqual(expect.objectContaining({ state: "retreat" }));
+    const unthreatened = {
+      ...workers,
+      logicalPosition: { status: "known" as const, value: { x: 25, y: 0, z: 0 }, observedTick: 100 }
+    };
+    const noEmergency = manager.propose(observation([defender, unthreatened, ...raiders]), fixtureState([defense]));
+    expect(noEmergency.statePatch?.squadUpdates?.[0]?.state).toBe("retreat");
   });
 
   it("moves toward a player-visible target until the member has local vision to attack", () => {
@@ -296,14 +319,20 @@ describe("AiTacticsManager", () => {
       fortifications: fortified.fortifications.map((plan) => ({
         ...plan,
         completedNodeIds: [],
-        graph: plan.graph ? { ...plan.graph,
-          nodes: plan.graph.nodes.map((node) => ({ ...node, lifecycle: "destroyed" as const })),
-          defenderPosts: plan.graph.defenderPosts.map((post) => ({ ...post, reachable: false }))
-        } : plan.graph
+        graph: plan.graph
+          ? {
+              ...plan.graph,
+              nodes: plan.graph.nodes.map((node) => ({ ...node, lifecycle: "destroyed" as const })),
+              defenderPosts: plan.graph.defenderPosts.map((post) => ({ ...post, reachable: false }))
+            }
+          : plan.graph
       }))
     });
-    expect(destroyedPost.statePatch?.squadUpdates?.[0]).toEqual(expect.objectContaining({
-      state: "retreat", tactics: expect.objectContaining({ script: "rampart_withdraw" })
-    }));
+    expect(destroyedPost.statePatch?.squadUpdates?.[0]).toEqual(
+      expect.objectContaining({
+        state: "retreat",
+        tactics: expect.objectContaining({ script: "rampart_withdraw" })
+      })
+    );
   });
 });

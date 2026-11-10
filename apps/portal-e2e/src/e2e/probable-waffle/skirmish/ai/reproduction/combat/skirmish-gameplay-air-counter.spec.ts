@@ -21,18 +21,21 @@ import { nativeWeaponHits } from "../../combat/effects/skirmish-ai-native-combat
 test.skip(process.env.AI_GAMEPLAY_RELIABILITY !== "1", "Explicit bounded gameplay reliability checks only");
 test.setTimeout(240_000);
 
-for (const { faction, readyCounter, groundOnly, hidden = false } of [
+for (const { faction, readyCounter, groundOnly, hidden = false, missingTemple = false } of [
   { faction: "Tivara", readyCounter: false, groundOnly: false },
   { faction: "Tivara", readyCounter: true, groundOnly: false },
   { faction: "Skaduwee", readyCounter: false, groundOnly: false },
   { faction: "Tivara", readyCounter: false, groundOnly: true },
-  { faction: "Tivara", readyCounter: false, groundOnly: false, hidden: true }
+  { faction: "Tivara", readyCounter: false, groundOnly: false, hidden: true },
+  { faction: "Tivara", readyCounter: false, groundOnly: false, missingTemple: true }
 ] as const) {
-  const title = hidden
-    ? "flyers do not request anti-air before discovery"
-    : groundOnly
-      ? "ground-only raid does not request anti-air"
-      : `three-flyer raid produces and uses compatible ${faction} counters (ready counter=${readyCounter})`;
+  const title = missingTemple
+    ? "three-flyer raid builds missing counter infrastructure and produces counters"
+    : hidden
+      ? "flyers do not request anti-air before discovery"
+      : groundOnly
+        ? "ground-only raid does not request anti-air"
+        : `three-flyer raid produces and uses compatible ${faction} counters (ready counter=${readyCounter})`;
   test(title, async ({ browser }, testInfo) => {
     const root = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
     const source = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
@@ -78,6 +81,7 @@ for (const { faction, readyCounter, groundOnly, hidden = false } of [
         actors: [
           ...selected.presetWorld.actors
             .filter((actor) => !actor.fixtureActorId.startsWith("flyer-"))
+            .filter((actor) => !missingTemple || actor.actorName !== ObjectNames.Temple)
             .filter((actor) => faction === "Tivara" || actor.actorName !== ObjectNames.Temple)
             .map((actor) =>
               faction === "Skaduwee" && actor.owner === 2
@@ -107,10 +111,24 @@ for (const { faction, readyCounter, groundOnly, hidden = false } of [
             }))
       }
     };
-    // Preserve the original 1000-tick ceiling, using complete normal-speed simulation frames for this control.
+    // Building a missing Temple delays the first counter until tick 879; leave time for it to reach combat.
+    const finalTick = missingTemple ? 1200 : 1000;
     const fixture: RuntimeFixture = {
       ...original,
-      recipe: { ...original.recipe, simulationTimeScale: 1, fixedStepFrames: true, variants: [variant] }
+      assertions: missingTemple
+        ? Object.fromEntries(
+            Object.entries(original.assertions).map(([id, assertion]) => [id, { ...assertion, maximumTick: finalTick }])
+          )
+        : original.assertions,
+      recipe: {
+        ...original.recipe,
+        simulationTimeScale: 1,
+        fixedStepFrames: true,
+        checkpointTicks: missingTemple
+          ? [...original.recipe.checkpointTicks, finalTick]
+          : original.recipe.checkpointTicks,
+        variants: [variant]
+      }
     };
     const fixtureDigest = digestCanonicalAiValue({ fixture, variant });
     let opponentCapture: Awaited<ReturnType<typeof captureRuntimeHumanAuthority>> | undefined;
@@ -124,7 +142,7 @@ for (const { faction, readyCounter, groundOnly, hidden = false } of [
       fixtureDigest,
       async (page, index) => {
         if (index === -1) {
-          await captureRuntimeHumanAuthority(page, 1, 1000);
+          await captureRuntimeHumanAuthority(page, 1, finalTick);
           await page.evaluate(
             ({ roles, groundOnly }) => {
               const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
@@ -162,7 +180,7 @@ for (const { faction, readyCounter, groundOnly, hidden = false } of [
     );
     const full = { ...result, opponentCapture };
     // Use the existing combat coverage policy; production still requires its separate complete queue authority below.
-    const context = nativeScenarioContext(full, 1000, undefined, {
+    const context = nativeScenarioContext(full, finalTick, undefined, {
       requireResourceCoverage: nativeScenarioRequiresResourceCoverage("DOMAIN-06")
     });
     const counterEffects = new Set(
@@ -183,6 +201,14 @@ for (const { faction, readyCounter, groundOnly, hidden = false } of [
     const produced = new Set(counters.map((event) => event.createdActorId));
     const raiderIds = new Set(raiders.map((actor) => result.presetCreatedActorIds[actor.fixtureActorId]));
     const decisions = result.productionEvidenceV2?.decisions ?? [];
+    const counterBuildingIntents = decisions
+      .flatMap((decision) => decision.result.acceptedIntents)
+      .filter(
+        (intent) =>
+          intent.kind === "construct" &&
+          intent.objectName === ObjectNames.Temple &&
+          intent.reasonCode.startsWith("counter_infrastructure:")
+      );
     const firstSighting = decisions.find((decision) =>
       decision.result.input?.observation?.actors.some(
         (actor) => raiderIds.has(actor.actorId) && actor.relation === "enemy" && actor.visibility === "visible"
@@ -214,6 +240,8 @@ for (const { faction, readyCounter, groundOnly, hidden = false } of [
         source,
         groundOnly,
         hidden,
+        missingTemple,
+        counterBuildings: counterBuildingIntents.length,
         firstSighting,
         observedRaiders: observedRaiders.size,
         emergencyOrders: counterEffects.size,
@@ -239,6 +267,7 @@ for (const { faction, readyCounter, groundOnly, hidden = false } of [
     expect(result.productionEvidenceV2?.lifecycle.gaps).toEqual([]);
     expect(result.productionEvidenceV2?.lifecycle.failures).toEqual([]);
     expect(observedRaiders.size, "all raiders are eventually observed through fair input").toBe(3);
+    if (missingTemple) expect(counterBuildingIntents.length, "the AI orders its missing prerequisite").toBe(1);
     if (hidden) {
       expect(firstSighting, "flyers remain unseen through the opening").toBeGreaterThan(400);
       expect(

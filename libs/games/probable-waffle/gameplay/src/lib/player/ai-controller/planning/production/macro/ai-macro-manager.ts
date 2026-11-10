@@ -17,6 +17,7 @@ import { projectAiMacroEconomyState } from "./project-ai-macro-economy-state";
 import { productionTransitionClaims } from "./ai-production-transition-claims";
 import { proposeAiConstructionRecovery } from "../../construction/ai-construction-recovery-proposal";
 import { nextAiMilitarySpendingReserve } from "../capacity/ai-military-spending-reserve";
+import { proposeAiCounterInfrastructure } from "../../adaptation/ai-counter-infrastructure-proposal";
 
 /**
  * Macro proposal owner. It derives opening, supply and composition demand
@@ -129,6 +130,23 @@ export class AiMacroManager implements AiProposalManager {
       intents.push(capacity.intent);
       if (capacity.intent.kind === "construct") {
         capacity.intent.builderIds.forEach((actorId) => reservedActorIds.add(actorId));
+      }
+      ordinal += 1;
+    }
+    const counterInfrastructure = proposeAiCounterInfrastructure({
+      observation,
+      state,
+      catalog,
+      self,
+      reservedActorIds,
+      selectedConstructionTileKeys,
+      priorIntents: intents,
+      ordinal
+    });
+    if (counterInfrastructure) {
+      intents.push(counterInfrastructure);
+      if (counterInfrastructure.kind === "construct") {
+        counterInfrastructure.builderIds.forEach((actorId) => reservedActorIds.add(actorId));
       }
       ordinal += 1;
     }
