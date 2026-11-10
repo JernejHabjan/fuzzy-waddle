@@ -79,7 +79,9 @@
 - R4 native control: `E/reproduction/movement/skirmish-gameplay-pursuit.spec.ts` passes in 8.3s/240 ticks, with six
   Banshee hits while the human worker moves (ticks 74/106/128/160/182/214). Only the strategic coordinator is paused
   through its public campaign API; native pawn trees/weapons/movement run. This cannot prove autonomous R5 behavior
-  or performance. The autonomous trace replaces the chase with a strategic Move near tick 40 and yields no hits
+  or performance. A human-owned Banshee also lands two hits before a tick-120 replacement Move, follows the new
+  direction, and never hits the old target again through tick 240 (`pursuit-human-replacement.json`).
+  The autonomous trace replaces the chase with a strategic Move near tick 40 and yields no hits
   (`pursuit-strategic-retask-trace.log`); review mission purpose before declaring that replacement a bug.
   Don't repeat without a causal change. The mob control explicitly omits the faction-production roster premise.
 - R1/R8: three clean `b42a89066` combat samples each completed 240 ticks/12 decisions at 1x, 8 workers/12 army,
