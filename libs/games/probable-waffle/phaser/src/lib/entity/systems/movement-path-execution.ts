@@ -274,10 +274,11 @@ export class MovementPathExecution {
     if (!navigationService || !movementOccupancy || !actorId) return undefined;
 
     const destinationHeight = navigationService.getNavigableHeightAtTile(destinationTile);
+    const candidates: Vector2Simple[] = [];
+    const attemptedWithBlockers = new Map<string, string>();
     // Search outward in Manhattan rings so the first accepted tile is the
     // closest deterministic fallback on the destination's height layer.
     for (let radius = 1; radius <= BLOCKED_STEP_FALLBACK_RADIUS; radius++) {
-      const candidates: Vector2Simple[] = [];
       for (let dy = -radius; dy <= radius; dy++) {
         for (let dx = -radius; dx <= radius; dx++) {
           if (Math.abs(dx) + Math.abs(dy) !== radius) continue;
@@ -296,7 +297,7 @@ export class MovementPathExecution {
           candidates.push(candidate);
         }
       }
-      const fallback = await this.getFirstReachableCandidate(candidates, destinationTile, queryContext);
+      const fallback = await this.getFirstReachableCandidate(candidates, destinationTile, attemptedWithBlockers, queryContext);
       if (fallback) return fallback;
     }
     return undefined;
@@ -312,6 +313,7 @@ export class MovementPathExecution {
   private async getFirstReachableCandidate(
     candidates: Vector2Simple[],
     destinationTile: Vector2Simple,
+    attemptedWithBlockers: Map<string, string>,
     queryContext?: MovementQueryContext
   ): Promise<Vector2Simple | undefined> {
     const navigationService = this.runtime.navigationService;
@@ -321,6 +323,7 @@ export class MovementPathExecution {
     const dynamicBlockers = movementOccupancy.getDynamicBlockersForActor(actorId, {
       includeDestinationReservations: false
     });
+    const blockerSignature = JSON.stringify(dynamicBlockers);
     const orderedCandidates = [...candidates].sort((a, b) => {
       const distanceDelta = this.getTileDistance(a, destinationTile) - this.getTileDistance(b, destinationTile);
       if (distanceDelta !== 0) return distanceDelta;
@@ -328,6 +331,9 @@ export class MovementPathExecution {
       return a.x - b.x;
     });
     for (const candidate of orderedCandidates) {
+      const key = `${candidate.x},${candidate.y}`;
+      if (attemptedWithBlockers.get(key) === blockerSignature) continue;
+      attemptedWithBlockers.set(key, blockerSignature);
       const path = await MovementQueryObservation.invoke(this.runtime.gameObject, queryContext, "fallback",
         () => navigationService.findPathFromGameObjectToTileAvoidingDynamicBlockers(
           this.runtime.gameObject, candidate, dynamicBlockers));

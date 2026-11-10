@@ -237,6 +237,22 @@ describe("native static path execution/recovery extraction", () => {
     ]);
   });
 
+  it("retries a closer fallback when dynamic blockers change during the search", async () => {
+    const f = fixture();
+    const candidate = { x: 1, y: 0 };
+    f.navigation.isWithinGridBounds.mockImplementation((tile) => tile.x === candidate.x && tile.y === candidate.y);
+    f.occupancy.getDynamicBlockersForActor
+      .mockReturnValueOnce([{ tile: { x: 2, y: 0 }, heightLayer: 0 }])
+      .mockReturnValue([]);
+    f.navigation.findPathFromGameObjectToTileAvoidingDynamicBlockers.mockResolvedValueOnce(null)
+      .mockResolvedValue([{ x: 0, y: 0 }, candidate]);
+    const search = f.execution as unknown as {
+      findReachableFallbackTile(destination: Vector2Simple): Promise<Vector2Simple | undefined>;
+    };
+    expect(await search.findReachableFallbackTile({ x: 0, y: 0 })).toEqual(candidate);
+    expect(f.navigation.findPathFromGameObjectToTileAvoidingDynamicBlockers).toHaveBeenCalledTimes(2);
+  });
+
   it("does not pick another fallback around an already substituted destination", async () => {
     const f = fixture();
     const destination = { x: 1, y: 0 };

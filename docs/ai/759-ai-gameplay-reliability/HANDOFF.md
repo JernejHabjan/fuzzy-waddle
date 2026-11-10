@@ -36,8 +36,8 @@
   under playwright-traffic-footprints). The three x=18 destinations settle before the x=19 destinations on the left,
   sealing the only corridor entry and forcing the latter to repeatedly retry fallback positions. Keep the admission code, three focused controls and geometry probe local
   until recovery and destination ownership clear all twelve without repeated orders. Recovery fallback search also
-  repeatedly queried previously unreachable cells in every wider ring. It now searches
-  each ring's cells once; a red-before/passing-after regression and 20 movement controls pass. This reduces wasted
+  repeatedly queried previously unreachable cells in every wider ring. It now skips repeated searches under the same
+  dynamic blockers but retries a closer tile if those blockers change; both cases and 21 movement controls pass. This reduces wasted
   path searches but does not solve the corridor ordering failure. A cancelled blocked movement could previously resume
   after its wait or a pending repath. Path execution now checks its cancellation generation at
   async boundaries. Two focused regressions, 35 movement tests, Phaser types and the human replacement browser
