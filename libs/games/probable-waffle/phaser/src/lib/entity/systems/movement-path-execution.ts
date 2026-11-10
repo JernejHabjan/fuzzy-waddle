@@ -274,10 +274,10 @@ export class MovementPathExecution {
     if (!navigationService || !movementOccupancy || !actorId) return undefined;
 
     const destinationHeight = navigationService.getNavigableHeightAtTile(destinationTile);
-    const candidates: Vector2Simple[] = [];
     // Search outward in Manhattan rings so the first accepted tile is the
     // closest deterministic fallback on the destination's height layer.
     for (let radius = 1; radius <= BLOCKED_STEP_FALLBACK_RADIUS; radius++) {
+      const candidates: Vector2Simple[] = [];
       for (let dy = -radius; dy <= radius; dy++) {
         for (let dx = -radius; dx <= radius; dx++) {
           if (Math.abs(dx) + Math.abs(dy) !== radius) continue;

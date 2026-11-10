@@ -224,6 +224,19 @@ describe("native static path execution/recovery extraction", () => {
     release();
   });
 
+  it("does not retry unreachable fallback candidates from earlier search rings", async () => {
+    const f = fixture();
+    f.navigation.isWithinGridBounds.mockImplementation((tile) => tile.y === 0 && (tile.x === 1 || tile.x === 2));
+    const search = f.execution as unknown as {
+      findReachableFallbackTile(destination: Vector2Simple): Promise<Vector2Simple | undefined>;
+    };
+    expect(await search.findReachableFallbackTile({ x: 0, y: 0 })).toBeUndefined();
+    expect(f.navigation.findPathFromGameObjectToTileAvoidingDynamicBlockers.mock.calls.map((call) => call[1])).toEqual([
+      { x: 1, y: 0 },
+      { x: 2, y: 0 }
+    ]);
+  });
+
   it("does not pick another fallback around an already substituted destination", async () => {
     const f = fixture();
     const destination = { x: 1, y: 0 };
