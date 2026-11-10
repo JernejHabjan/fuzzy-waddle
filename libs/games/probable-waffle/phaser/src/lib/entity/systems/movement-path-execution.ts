@@ -30,6 +30,16 @@ const BLOCKED_STEP_FALLBACK_RADIUS = 6;
 
 /** Executes a mutable native path and its bounded wait/sidestep/repath/fallback recovery. */
 export class MovementPathExecution {
+  private generation = 0;
+
+  cancel(): void {
+    this.generation++;
+  }
+
+  private ensureCurrent(recoveryState: BlockedStepRecoveryState): void {
+    if (recoveryState.generation !== this.generation) throw new Error("Movement cancelled");
+  }
+
   constructor(
     private readonly runtime: MovementRuntime,
     private readonly tween: MovementTween,
@@ -69,6 +79,8 @@ export class MovementPathExecution {
     queryContext?: MovementQueryContext,
     completion?: MovementCompletionObservation
   ): Promise<void> {
+    recoveryState.generation ??= this.generation;
+    this.ensureCurrent(recoveryState);
     if (!path.length) {
       completion?.terminal("arrived");
       config?.onComplete?.();
@@ -159,6 +171,7 @@ export class MovementPathExecution {
           // Another actor can claim the sidestep between selection and execution.
           // Continue with the bounded repath budget for the original destination.
         }
+        this.ensureCurrent(recoveryState);
         const recovered = await this.repathToDestination(finalDestination, config, recoveryState, queryContext, "repath", completion);
         if (recovered) return;
       }
@@ -173,6 +186,7 @@ export class MovementPathExecution {
     if (recoveryState.fallbackAttempted) throw error;
     recoveryState.fallbackAttempted = true;
     const fallbackTile = await this.findReachableFallbackTile(finalDestination, queryContext);
+    this.ensureCurrent(recoveryState);
     if (!fallbackTile) throw error;
     await this.moveToFallbackTile(fallbackTile, config, recoveryState, queryContext, completion);
   }
@@ -226,6 +240,7 @@ export class MovementPathExecution {
       newPath = await MovementQueryObservation.invoke(this.runtime.gameObject, queryContext, queryStage,
         () => this.runtime.navigationService!.findPathFromGameObjectToTileAvoidingDynamicBlockers(
           this.runtime.gameObject, destinationTile, dynamicBlockers));
+      this.ensureCurrent(recoveryState);
       if (newPath && newPath.length) break;
 
       // Congestion can temporarily make every route around a large obstacle look closed.

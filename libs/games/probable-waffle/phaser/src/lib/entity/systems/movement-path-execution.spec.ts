@@ -82,6 +82,47 @@ describe("native static path execution/recovery extraction", () => {
     expect(f.navigation.findPathFromGameObjectToTileAvoidingDynamicBlockers).toHaveBeenCalledWith(f.actor, end, []);
   });
 
+  it("does not resume a blocked step after its movement is cancelled during the wait", async () => {
+    const f = fixture();
+    const blocked = { x: 1, y: 0 };
+    let finishWait: (() => void) | undefined;
+    f.delayedCall.mockImplementation((_delay, callback) => {
+      finishWait = callback;
+    });
+    f.move.mockRejectedValueOnce(new MovementStepBlockedError(blocked, ["actor:2"]));
+    const pending = f.execution.moveAlongPathByFollowingPreCalculatedStaticPath([blocked]);
+    await Promise.resolve();
+    await Promise.resolve();
+    if (!finishWait) throw new Error("blocked_wait_missing");
+    f.execution.cancel();
+    finishWait();
+    await expect(pending).rejects.toThrow("Movement cancelled");
+    expect(f.move).toHaveBeenCalledTimes(1);
+  });
+
+  it("discards a repath that resolves after cancellation", async () => {
+    const f = fixture();
+    const blocked = { x: 1, y: 0 };
+    let resolvePath: ((path: Vector2Simple[]) => void) | undefined;
+    f.move.mockRejectedValueOnce(new MovementStepBlockedError(blocked, ["actor:2"]));
+    f.occupancy.hasAnyActiveStepReservation.mockReturnValue(false);
+    jest.mocked(getGameObjectCurrentTile).mockReturnValue(undefined);
+    f.navigation.findPathFromGameObjectToTileAvoidingDynamicBlockers.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolvePath = resolve;
+        })
+    );
+    const pending = f.execution.moveAlongPathByFollowingPreCalculatedStaticPath([blocked]);
+    await Promise.resolve();
+    await Promise.resolve();
+    if (!resolvePath) throw new Error("repath_missing");
+    f.execution.cancel();
+    resolvePath([{ x: 0, y: 0 }, blocked]);
+    await expect(pending).rejects.toThrow("Movement cancelled");
+    expect(f.move).toHaveBeenCalledTimes(1);
+  });
+
   it("retains bounded repath waits and the original blocked error when fallback has no candidate", async () => {
     const f = fixture(),
       tile = { x: 1, y: 0 },

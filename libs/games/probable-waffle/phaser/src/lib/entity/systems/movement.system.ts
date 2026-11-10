@@ -430,6 +430,7 @@ export class MovementSystem {
   }
 
   cancelMovement() {
+    this.pathExecution.cancel();
     this.tween.cancelMovement();
   }
 
