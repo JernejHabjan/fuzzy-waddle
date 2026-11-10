@@ -249,7 +249,12 @@ test("a losing squad withdraws and re-engages when nearby reinforcements arrive"
       dropped: capture.droppedFactCount,
       opponentDropped: opponent.droppedFactCount,
       facts: capture.facts.filter(
-        (fact) => fact.kind === "native_damage" || fact.kind === "preset_control" || fact.kind === "intent_dispatch"
+        (fact) =>
+          fact.kind === "native_damage" ||
+          fact.kind === "preset_control" ||
+          fact.kind === "intent_dispatch" ||
+          fact.kind === "outcome" ||
+          (fact.kind === "spatial_authority" && fact.spatial.kind === "movement")
       ),
       opponentDamage: opponent.facts.filter((fact) => fact.kind === "native_damage")
     };
@@ -288,18 +293,55 @@ test("a losing squad withdraws and re-engages when nearby reinforcements arrive"
     .map(([, id]) => id);
   expect(initialIds).toHaveLength(2);
   expect(reserveIds).toHaveLength(8);
+  const retreatEffects = authority.facts.flatMap((fact) => {
+    if (
+      fact.kind !== "intent_dispatch" ||
+      fact.event.kind !== "requested" ||
+      fact.event.acceptedIntent?.kind !== "move" ||
+      !fact.event.acceptedIntent.reasonCode.includes("protected_retreat") ||
+      !initialIds.some(
+        (id) =>
+          fact.event.kind === "requested" &&
+          fact.event.acceptedIntent?.kind === "move" &&
+          fact.event.acceptedIntent.actorIds.includes(id)
+      )
+    )
+      return [];
+    return [fact.event.correlation.effectId];
+  });
+  expect(retreatEffects.length).toBeGreaterThan(0);
+  const applied = authority.facts.flatMap((fact) =>
+    fact.kind === "outcome" &&
+    fact.outcome.kind === "applied" &&
+    fact.outcome.reason === "applied" &&
+    fact.outcome.effectId &&
+    retreatEffects.includes(fact.outcome.effectId)
+      ? fact.outcome.actorIds
+      : []
+  );
+  const movement = authority.facts.flatMap((fact) =>
+    fact.kind === "spatial_authority" &&
+    fact.spatial.kind === "movement" &&
+    fact.spatial.caller?.order?.commandContext?.execution.effectId &&
+    retreatEffects.includes(fact.spatial.caller.order.commandContext.execution.effectId) &&
+    fact.spatial.source.actorId &&
+    initialIds.includes(fact.spatial.source.actorId) &&
+    applied.includes(fact.spatial.source.actorId) &&
+    fact.spatial.actualTile
+      ? [{ tick: fact.tick, ...fact.spatial }]
+      : []
+  );
   expect(
-    authority.facts.some(
-      (fact) =>
-        fact.kind === "intent_dispatch" &&
-        fact.event.kind === "requested" &&
-        fact.event.acceptedIntent?.kind === "move" &&
-        fact.event.acceptedIntent.reasonCode.includes("protected_retreat") &&
-        initialIds.some(
-          (id) =>
-            fact.event.kind === "requested" &&
-            fact.event.acceptedIntent?.kind === "move" &&
-            fact.event.acceptedIntent.actorIds.includes(id)
+    movement.some(
+      (start) =>
+        start.phase === "started" &&
+        start.actualTile &&
+        movement.some(
+          (later) =>
+            later.executionId === start.executionId &&
+            later.tick <= 140 &&
+            later.actualTile &&
+            (later.actualTile.x !== start.actualTile?.x || later.actualTile.y !== start.actualTile?.y)
         )
     )
   ).toBe(true);
