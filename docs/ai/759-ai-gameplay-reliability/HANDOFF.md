@@ -29,7 +29,12 @@
   rule clears the standstill while preserving each original destination and collision legality. A separate
   ownership regression showed a completed step's later callback rejection could release a newer step's reservation.
   The tween now releases only once. Its focused controls and Phaser types/lint pass. The exact corridor still has
-  six arrivals and six failures after this repair (traffic-owned-step.log). A cancelled blocked movement could
+  six arrivals and six failures after this repair (traffic-owned-step.log). A local admission experiment routes
+  around actors already on the static path and keeps the original route if no detour exists. It improves exact
+  arrivals from six to nine, but three workers fail or repeatedly visit fallback tiles and the final group does not
+  settle (traffic-admission.log). Their requested footprints are twelve distinct legal tiles (traffic-geometry.json
+  under playwright-traffic-footprints). Keep the admission code, three focused controls and geometry probe local
+  until recovery and destination ownership clear all twelve without repeated orders. A cancelled blocked movement could
   previously resume after its wait or a pending repath. Path execution now checks its cancellation generation at
   async boundaries. Two focused regressions, 35 movement tests, Phaser types and the human replacement browser
   control pass (movement-cancel-boundary.log). Initial location and object route queries now also discard results
