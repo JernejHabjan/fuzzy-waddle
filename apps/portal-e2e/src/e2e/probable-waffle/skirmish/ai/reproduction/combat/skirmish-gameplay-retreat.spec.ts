@@ -15,11 +15,17 @@ import { advanceRuntimeFrames } from "../../runner/skirmish-ai-runtime-frame-dri
 test.skip(process.env.AI_GAMEPLAY_RELIABILITY !== "1", "Explicit bounded gameplay reliability checks only");
 test.setTimeout(180_000);
 
-for (const severe of [false, true])
+for (const { severe, ranged } of [
+  { severe: false, ranged: false },
+  { severe: true, ranged: false },
+  { severe: true, ranged: true }
+])
   test(
-    severe
-      ? "a critically wounded infantry fighter withdraws while healthy allies keep fighting"
-      : "a minor infantry injury does not abandon a favorable fight",
+    ranged
+      ? "a critically wounded ranged fighter stays protected during combat"
+      : severe
+        ? "a critically wounded infantry fighter withdraws while healthy allies keep fighting"
+        : "a minor infantry injury does not abandon a favorable fight",
     async ({ page }, testInfo) => {
       const root = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
       const source = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
@@ -34,11 +40,27 @@ for (const severe of [false, true])
       );
       const selected = fixture.recipe.variants.find((variant) => variant.id === "fight-01-tivara-quiet");
       if (!selected?.presetWorld) throw new Error("minor_injury_fixture_missing");
+      const injuredRole = ranged ? "ranged-probe" : "army-0";
+      const damage = ranged ? 80 : severe ? 120 : 1;
       const variant = {
         ...selected,
         ...(severe ? { captureConstruction: true as const } : {}),
         presetWorld: {
           ...selected.presetWorld,
+          actors: ranged
+            ? selected.presetWorld.actors.map((actor) => {
+                const replacementRole =
+                  actor.fixtureActorId === "army-0"
+                    ? "ranged-probe"
+                    : actor.fixtureActorId === "ranged-probe"
+                      ? "army-0"
+                      : undefined;
+                const replacement = selected.presetWorld?.actors.find(
+                  (candidate) => candidate.fixtureActorId === replacementRole
+                );
+                return replacement ? { ...actor, position: replacement.position } : actor;
+              })
+            : selected.presetWorld.actors,
           fixtureId: "gameplay-minor-injury-favorable-fight",
           events: [
             {
@@ -46,9 +68,9 @@ for (const severe of [false, true])
               tick: 5,
               kind: "damage_owned_actor" as const,
               owner: 2,
-              objectName: ObjectNames.TivaraMacemanMale,
-              fixtureActorId: "army-0",
-              damage: severe ? 120 : 1
+              objectName: ranged ? ObjectNames.TivaraSlingshotFemale : ObjectNames.TivaraMacemanMale,
+              fixtureActorId: injuredRole,
+              damage
             }
           ]
         }
@@ -68,7 +90,7 @@ for (const severe of [false, true])
       for (const tick of [0, 5, 20, 40, 60, 80, 100, 120, 160, 200]) {
         if (tick) await advanceRuntimeFrames(page, fixture.recipe.aiPlayerNumber, tick);
         samples.push(
-          await page.evaluate(() => {
+          await page.evaluate((role) => {
             const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
               .__fuzzyWaddleAiRuntimeBrowserTest;
             const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
@@ -80,7 +102,7 @@ for (const severe of [false, true])
             const roles = host?.presetApplication?.createdActorIds;
             if (!index || !roles) throw new Error("minor_injury_roles_missing");
             const enemy = index.getActorById(roles["contact-group"] ?? "");
-            const injured = index.getActorById(roles["army-0"] ?? "");
+            const injured = index.getActorById(roles[role] ?? "");
             const injuredHealth =
               injured &&
               ([...((injured.getData("actorData")?.components as Map<unknown, unknown>) ?? []).values()].find(
@@ -103,12 +125,12 @@ for (const severe of [false, true])
             return {
               tick: window.__fuzzyWaddleAiRuntimeParts?.(2)?.tickService.currentTick,
               injury: host.presetApplication?.eventResults.find((event) => event.id === "minor-infantry-injury"),
-              injuredId: roles["army-0"],
+              injuredId: roles[role],
               injuredHealth: injuredHealth?.healthComponentData.health,
               injuredArmour: injuredHealth?.healthComponentData.armour,
               injuredObservation: controller
                 ?.getCommittedObservation()
-                ?.actors.find((actor) => actor.actorId === roles["army-0"]),
+                ?.actors.find((actor) => actor.actorId === roles[role]),
               enemyHealth: health?.healthComponentData.health ?? 0,
               hitTick: health?.latestDamage?.simulationTick,
               hitByArmy:
@@ -120,13 +142,13 @@ for (const severe of [false, true])
                   ?.squads.filter((squad) => squad.actorIds.some((id) => armyIds.includes(id)))
                   .map((squad) => ({ state: squad.state, actorIds: squad.actorIds })) ?? []
             };
-          })
+          }, injuredRole)
         );
       }
       writeFileSync(testInfo.outputPath("minor-injury.json"), JSON.stringify({ source, samples, errors }));
       expect(samples[1]?.injury).toMatchObject({ tick: 5, affectedActors: 1, affectedActorId: samples[1]?.injuredId });
       expect((samples[1]?.injuredHealth ?? 0) + (samples[1]?.injuredArmour ?? 0)).toBe(
-        (samples[0]?.injuredHealth ?? 0) + (samples[0]?.injuredArmour ?? 0) - (severe ? 120 : 1)
+        (samples[0]?.injuredHealth ?? 0) + (samples[0]?.injuredArmour ?? 0) - damage
       );
       expect(samples[0]?.enemyHealth).toBeGreaterThan(0);
       const combat = samples.filter((sample) => (sample.tick ?? 0) >= 20 && (sample.tick ?? 0) <= 100);

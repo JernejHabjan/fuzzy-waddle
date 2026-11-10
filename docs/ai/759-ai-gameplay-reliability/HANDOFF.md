@@ -94,7 +94,7 @@
   (`counter-committed-native.log`); local R3 files were restored. The planner now also counts outstanding capacity
   reservations even if the other planner's demand changed. Fifty-eight related AI controls and five catalog controls
   pass; lint has pre-existing warnings, and gameplay type checking reports unrelated existing errors but none in the
-  changed AI files. Review the staged changes and publish this bounded slice; other packet acceptance remains open.
+  changed AI files. Published as `160080af5`; other packet acceptance remains open.
   Check harmless contact and
   large-army movement. Raw captures: `air-counter-{unready-native-after,skaduwee}.runtime.json.gz`,
   `unbuilt-post-ready-native-after.runtime.json.gz`, `{ground-defense-authority,hidden-air-discovery}.runtime.json.gz`.
@@ -108,9 +108,10 @@
   The selected retreat effect was applied to the original infantry and matched a live movement execution whose
   position changed by tick 114 (retreat-attributed.log). A separate 200-tick mixed-health run reduces one infantry
   unit from 150 to 30 health: it starts withdrawing by tick 80 and moves afterward while its squad remains engaged
-  and allies damage the enemy after withdrawal. Both it and the minor-injury control pass (mixed-withdrawal-final.log).
-  These runs include local R3 changes. Verify remaining
-  scout, damaged ranged and mixed-domain controls before closing R7. Retained `quiet-combat-replay.json`; use full combat capture for this check.
+  and allies damage the enemy after withdrawal. A threatened ranged unit reduced to 20/100 health also moves away by
+  tick 40 while allies fight. All three injury controls pass (`injury-controls.log`); these runs include local R3
+  changes. Verify remaining scout and mixed-domain controls before closing R7. Retained `quiet-combat-replay.json`;
+  use full combat capture for this check.
 - Artifacts above are in ignored `tmp/ai-gameplay-reliability/`. Default result junctions point to full D:.
   Set `AI_SKIRMISH_RUNTIME_RESULTS_DIRECTORY` and matrix `--output` under workspace tmp. One runner, 30 min
   maximum per batch. Use an exact scenario selector and avoid repeats of retained evidence. Ordinary CI green on
