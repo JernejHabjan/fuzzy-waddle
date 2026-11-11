@@ -110,6 +110,46 @@ function world(tick: number, queuedItemCount: number): AiObservation {
 }
 
 describe("adaptation queue commitments", () => {
+  it.each(["gone", "last_seen"] as const)(
+    "stops requesting counters when a confirmed air threat is %s without cancelling paid units",
+    (visibility) => {
+      const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+      const manager = new AiAdaptationManager(profile, () => catalog);
+      const initial = createAiBrainState({
+        playerNumber: 1,
+        faction: FactionType.Tivara,
+        profile,
+        tick: 0,
+        archetypeId: "opening:1:balanced"
+      });
+      const first = manager.propose(world(100, 0), initial);
+      const stateAfter = (state: typeof initial, adaptation: NonNullable<typeof first.statePatch>["adaptation"]) => {
+        if (!adaptation) throw new Error("adaptation_patch_missing");
+        return { ...state, economyProduction: { ...state.economyProduction, adaptation } };
+      };
+      const confirmed = manager.propose(world(140, 1), stateAfter(initial, first.statePatch?.adaptation));
+      expect(confirmed.statePatch?.adaptationDemands).toContainEqual(
+        expect.objectContaining({ demandId: "demand:adapt:anti_air", desired: 2, queuedIds: ["queued-0"] })
+      );
+      const nextWorld = world(180, 1);
+      const quietWorld: AiObservation = {
+        ...nextWorld,
+        actors: nextWorld.actors.flatMap((actor) =>
+          actor.relation !== "enemy" ? [actor] : visibility === "last_seen" ? [{ ...actor, visibility }] : []
+        ),
+        threatSummary: {
+          ...nextWorld.threatSummary,
+          visibleEnemyActorIds: [],
+          rememberedEnemyActorIds: visibility === "last_seen" ? ["flyer-a", "flyer-b"] : []
+        }
+      };
+      const quiet = manager.propose(quietWorld, stateAfter(initial, confirmed.statePatch?.adaptation));
+      expect(quiet.intents.some((intent) => intent.kind === "produce" || intent.kind === "cancel")).toBe(false);
+      expect(quiet.statePatch?.adaptation?.activeRoleTargets.some((target) => target.role === "anti_air")).toBe(false);
+      expect(quietWorld.actors[0]?.queue).toMatchObject({ status: "known", value: { itemIds: ["queued-0"] } });
+    }
+  );
+
   it("PRO-07 / TECH-05: counts queued counters without redundant production or cancellation loops", () => {
     const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
     const manager = new AiAdaptationManager(profile, () => catalog);

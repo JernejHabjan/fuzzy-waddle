@@ -30,8 +30,10 @@
 - **R5/R6 open for final audit:** real three-Owl attacks trigger Tivara and Skaduwee counters and damage; existing
   defenders engage, ground-only and hidden-air controls pass. Missing Temple is constructed and two counters land six
   hits with committed movement code (`counter-committed-native.log`, `160080af5`). Recovery respects tactical
-  withdrawal, healthy defenders contest direct threats, and weapon range is matched to target domain. Check remaining
-  large-army/harmless-contact and production ownership requirements below.
+  withdrawal, healthy defenders contest direct threats, and weapon range is matched to target domain. Focused
+  adaptation checks cover missing/busy producers, scarcity, queued commitments and disappeared/remembered threats
+  (`adaptation-audit.log`, 22 passing). Gameplay spec typecheck reports 64 errors in other existing test files; none
+  in the changed queue spec (`adaptation-type.log`). Check remaining large-army/harmless-contact requirements below.
 - **R7 open:** minor injury, actual withdrawal/re-engagement and individual wounded infantry/ranged controls pass;
   scout withdrawal persists across new search questions and produces physical movement (`scout-threat-final.log`).
   Mixed ground/air forces both damage the same enemy and continue after an injured fighter withdraws
