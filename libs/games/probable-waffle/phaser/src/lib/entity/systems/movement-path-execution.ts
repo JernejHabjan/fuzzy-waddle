@@ -83,7 +83,8 @@ export class MovementPathExecution {
     this.ensureCurrent(recoveryState);
     if (!path.length) {
       completion?.terminal("arrived");
-      config?.onComplete?.();
+      // A safe fallback is physical movement, but cannot complete the original destination's action.
+      if (!recoveryState.fallbackAttempted) config?.onComplete?.();
       this.presentation.playMovementAnimation(false, config);
       return;
     }

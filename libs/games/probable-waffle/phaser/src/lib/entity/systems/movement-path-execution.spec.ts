@@ -184,6 +184,7 @@ describe("native static path execution/recovery extraction", () => {
     const events: MovementCompletionEvent[] = [];
     const release = MovementCompletionObservation.subscribe(context.board, (event) => events.push(event));
     const completion = MovementCompletionObservation.begin(context, "path", tile);
+    const onComplete = jest.fn();
     completion?.destination(tile);
     f.move.mockImplementation(async (destination, _config, complete) => {
       jest.mocked(getGameObjectCurrentTile).mockReturnValue({ ...destination });
@@ -203,8 +204,9 @@ describe("native static path execution/recovery extraction", () => {
       return true;
     });
     await expect(
-      f.execution.moveAlongPathByFollowingPreCalculatedStaticPath([tile], undefined, undefined, context, completion)
+      f.execution.moveAlongPathByFollowingPreCalculatedStaticPath([tile], { onComplete }, undefined, context, completion)
     ).rejects.toThrow("Movement reached fallback instead of destination");
+    expect(onComplete).not.toHaveBeenCalled();
     expect(callers.map((caller) => caller?.stage)).toEqual(["repath", "repath", "repath", "fallback", "fallback"]);
     expect(callers.every((caller) => caller?.context === context)).toBe(true);
     expect(MovementQueryObservation.current(f.actor)).toBeUndefined();

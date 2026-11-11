@@ -17,8 +17,9 @@
   `movement-system-boundary.spec.ts` are intentionally local. Twelve opposing workers request distinct legal tiles.
   Committed recovery and ownership fixes remove false arrivals and stale cleanup; the local detour reaches 10/12,
   but two destinations become sealed by arrived units. Fallback now reports failure rather than restarting that same
-  order: all twelve settled with one start each, 10 exactly and two at fallback (`traffic-fallback-failed.log`, with
-  the local detour). The exact-arrival assertion still fails. A same-lane priority experiment also reached 10/12,
+  order and cannot fire the requested destination's completion callback. All twelve settled with one start each,
+  10 exactly and two at fallback (`traffic-fallback-failed.log`, with the local detour). The exact-arrival assertion
+  still fails. A same-lane priority experiment also reached 10/12,
   delayed starts and was removed (`traffic-priority.log`). Resolve destination access without overriding human orders;
   retain the exact-destination, collision and settling oracle. Failed alternatives and geometry are under tmp.
 - **R4 open for final audit:** native Banshee pursues and hits a moving worker; human replacement stops stale hits,
