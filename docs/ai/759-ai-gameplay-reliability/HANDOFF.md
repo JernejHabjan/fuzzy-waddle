@@ -124,7 +124,9 @@
   found emergency home defense could use an anti-air weapon's range to infer a threat to a ground worker; threat range
   now requires the same weapon to target the worker's domain. A 240-tick native mixed-force run adds two legal Tivara
   flyers: both air and ground units damage the same enemy, with an air squad observed (`mixed-force.log`; retained
-  native facts confirm the common target). It includes local R3 changes and does not yet prove mixed-force retreat.
+  native facts confirm the common target). In a separate mixed-force run, one infantry unit drops to 20% health and
+  moves away from tick 80, while both ground and air allies subsequently inflict native damage (`mixed-injury.log`).
+  Both include local R3 changes. Squad-wide mixed-force retreat/re-entry is not established by this individual case.
   Retained `quiet-combat-replay.json`;
   use full combat capture for this check.
 - Artifacts above are in ignored `tmp/ai-gameplay-reliability/`. Default result junctions point to full D:.
