@@ -16,10 +16,11 @@
 - **R3 open:** `E/reproduction/movement/skirmish-gameplay-congestion.spec.ts` and changes in `movement.system.ts` /
   `movement-system-boundary.spec.ts` are intentionally local. Twelve opposing workers request distinct legal tiles.
   Committed recovery and ownership fixes remove false arrivals and stale cleanup; the local detour reaches 10/12,
-  but two repeatedly fall back because arrived units seal the corridor (`traffic-endpoint.log`). A same-lane priority
-  experiment also reached 10/12, delayed starts and was removed (`traffic-priority.log`). Do not publish the detour as
-  complete. Resolve access and stop repeated orders without overriding human commands; retain the exact-destination,
-  collision and settling oracle. The failed alternatives and geometry are in ignored `tmp/ai-gameplay-reliability/`.
+  but two destinations become sealed by arrived units. Fallback now reports failure rather than restarting that same
+  order: all twelve settled with one start each, 10 exactly and two at fallback (`traffic-fallback-failed.log`, with
+  the local detour). The exact-arrival assertion still fails. A same-lane priority experiment also reached 10/12,
+  delayed starts and was removed (`traffic-priority.log`). Resolve destination access without overriding human orders;
+  retain the exact-destination, collision and settling oracle. Failed alternatives and geometry are under tmp.
 - **R4 open for final audit:** native Banshee pursues and hits a moving worker; human replacement stops stale hits,
   equal-speed escape takes no phantom damage, and target removal clears the order. An unreachable target retains its
   order, limits probes and becomes hittable after the exact wall is removed (`pursuit-door-final.log`). Check remaining
@@ -44,8 +45,9 @@
   include local R3 changes. `quiet-combat-replay.json` retains earlier favorable-fight evidence; final R7 audit remains.
 - All artifacts above are under ignored `tmp/ai-gameplay-reliability/`. Set `AI_SKIRMISH_RUNTIME_RESULTS_DIRECTORY`
   and matrix output under workspace tmp; one match runner at a time, at most 30 minutes per invocation. Ordinary CI
-  passed on [`21a9090e8`](https://github.com/JernejHabjan/fuzzy-waddle/actions/runs/43059208190); later runs may be
-  in progress. Automatic extended AI CI stays disabled.
+  passed on [`21a9090e8`](https://github.com/JernejHabjan/fuzzy-waddle/actions/runs/43059208190). Later CI found
+  producer-exposure test mocks missing helpers used by weapon selection; fixed in `7836c8a4a`, rerun pending.
+  Automatic extended AI CI stays disabled.
 
 ## Goal and operating authority
 

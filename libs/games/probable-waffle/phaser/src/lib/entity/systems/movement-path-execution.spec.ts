@@ -202,13 +202,9 @@ describe("native static path execution/recovery extraction", () => {
       ordering.push("reserve");
       return true;
     });
-    await f.execution.moveAlongPathByFollowingPreCalculatedStaticPath(
-      [tile],
-      undefined,
-      undefined,
-      context,
-      completion
-    );
+    await expect(
+      f.execution.moveAlongPathByFollowingPreCalculatedStaticPath([tile], undefined, undefined, context, completion)
+    ).rejects.toThrow("Movement reached fallback instead of destination");
     expect(callers.map((caller) => caller?.stage)).toEqual(["repath", "repath", "repath", "fallback", "fallback"]);
     expect(callers.every((caller) => caller?.context === context)).toBe(true);
     expect(MovementQueryObservation.current(f.actor)).toBeUndefined();

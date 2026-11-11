@@ -191,6 +191,9 @@ export class MovementPathExecution {
     this.ensureCurrent(recoveryState);
     if (!fallbackTile) throw error;
     await this.moveToFallbackTile(fallbackTile, config, recoveryState, queryContext, completion);
+    // Reaching a nearby safe tile is not reaching the requested destination. Propagate the failed
+    // order so the pawn can settle instead of starting the same impossible route again each tick.
+    throw new Error("Movement reached fallback instead of destination");
   }
 
   private waitForBlockedStep(): Promise<void> {
