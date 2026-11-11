@@ -23,9 +23,13 @@ import { captureAiProducerExposure } from "./capture-ai-producer-exposure";
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 jest.mock("../../../data/game-object-helper", () => ({
   getGameObjectCurrentTile: jest.fn(),
-  getGameObjectLogicalTransform: jest.fn()
+  getGameObjectLogicalTransform: jest.fn(),
+  isGameObjectActiveInActiveScene: jest.fn(() => true)
 }));
-jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../world/services/scene-component-helpers", () => ({
+  getSceneService: jest.fn(),
+  getSceneComponent: jest.fn()
+}));
 
 /** Uses real attack choice/range and high-ground methods behind synthetic index/visibility/position authority. */
 function fixture() {
