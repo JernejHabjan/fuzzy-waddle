@@ -33,7 +33,8 @@
   withdrawal, healthy defenders contest direct threats, and weapon range is matched to target domain. Focused
   adaptation checks cover missing/busy producers, scarcity, queued commitments and disappeared/remembered threats
   (`adaptation-audit.log`, 22 passing). Gameplay spec typecheck reports 64 errors in other existing test files; none
-  in the changed queue spec (`adaptation-type.log`). Check remaining large-army/harmless-contact requirements below.
+  in the changed queue spec (`adaptation-type.log`). A 12-unit strategy control leaves most troops free against a
+  harmless contact (`defense-audit.log`); large-army physical stability remains open.
 - **R7 open:** minor injury, actual withdrawal/re-engagement and individual wounded infantry/ranged controls pass;
   scout withdrawal persists across new search questions and produces physical movement (`scout-threat-final.log`).
   Mixed ground/air forces both damage the same enemy and continue after an injured fighter withdraws

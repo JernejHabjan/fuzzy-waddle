@@ -4,7 +4,10 @@ import type { AiCapabilityCatalog } from "../../../contracts/observation/ai-capa
 import type { AiObservedActor } from "../../../contracts/observation/ai-observation";
 import type { AiSkirmishProposalContext } from "./ai-skirmish-proposal-context";
 import { createAiProfileConfig } from "../../../profiles/ai-profile-defaults";
-import { createAiTestObservation, createAiTestOwnedActor } from "../../../testing/fixtures/coordination/ai-test-fixtures";
+import {
+  createAiTestObservation,
+  createAiTestOwnedActor
+} from "../../../testing/fixtures/coordination/ai-test-fixtures";
 import { advanceAiSkirmishDefense } from "./ai-skirmish-defense";
 import { createAiSkirmishProposalContext } from "./ai-skirmish-proposal-draft";
 
@@ -43,7 +46,8 @@ function defenseContextFor(
   raiderCount: number,
   distantFirstDefender = false,
   exactEmptyVision = false,
-  defenderCount = 8
+  defenderCount = 8,
+  harmlessContact = false
 ): AiSkirmishProposalContext {
   const home: AiObservedActor = {
     ...createAiTestOwnedActor("main"),
@@ -55,7 +59,29 @@ function defenseContextFor(
   const defenders = Array.from({ length: defenderCount }, (_, index) =>
     combatant(`guard-${index}`, "self", distantFirstDefender && index === 0 ? 20 : 1, exactEmptyVision ? [] : undefined)
   );
-  const raiders = Array.from({ length: raiderCount }, (_, index) => combatant(`raider-${index}`, "enemy", 3 + index));
+  const raiders = Array.from({ length: raiderCount }, (_, index) => {
+    const actor = combatant(`raider-${index}`, "enemy", 3 + index);
+    return harmlessContact
+      ? {
+          ...actor,
+          capabilities: [],
+          combatProfile: {
+            status: "known" as const,
+            observedTick: 20,
+            value: {
+              attacks: [],
+              maxHealth: 100,
+              maxArmour: 0,
+              armourPermille: 0,
+              passiveRegenerationPerSecond: 0,
+              healing: null,
+              spells: [],
+              statuses: []
+            }
+          }
+        }
+      : actor;
+  });
   const observation = { ...createAiTestObservation(), actors: [home, ...defenders, ...raiders] };
   const state = createAiBrainState({
     playerNumber: 1,
@@ -77,6 +103,14 @@ function defendersFor(raiderCount: number): number {
 describe("AI local defense sizing", () => {
   it("uses a bounded pair of defenders against one mobile home raider", () => {
     expect(defendersFor(1)).toBe(2);
+  });
+
+  it("keeps most of a large army available when a harmless mobile contact approaches home", () => {
+    const context = defenseContextFor(1, false, false, 12, true);
+    const defenders = context.nextSquads.find((squad) => squad.role === "defense")?.actorIds ?? [];
+    expect(defenders.length).toBeGreaterThan(0);
+    expect(defenders.length).toBeLessThan(12);
+    expect(context.primaryOwnedActors.size).toBe(defenders.length);
   });
 
   it("scales defense to visible multi-unit home pressure instead of recalling only a quarter of the army", () => {
