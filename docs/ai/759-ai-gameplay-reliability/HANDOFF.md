@@ -15,8 +15,8 @@
   Evidence `editor-stone-manual.log`, `load-all-kinds-input-browser-arg.log`; fixes through `ec38d7785`.
 - **R3 open:** `E/reproduction/movement/skirmish-gameplay-congestion.spec.ts` and changes in `movement.system.ts` /
   `movement-system-boundary.spec.ts` are intentionally local. Twelve opposing workers request distinct legal tiles.
-  Committed recovery and ownership fixes remove false arrivals and stale cleanup; the local detour reaches 10/12,
-  but two destinations become sealed by arrived units. Fallback now reports failure rather than restarting that same
+  Committed code reaches 6/12 exact destinations (`traffic-committed.log`); the local detour reaches 10/12,
+  but two destinations become sealed by arrived units. All settle in both runs. Fallback reports failure rather than restarting that same
   order and cannot fire the requested destination's completion callback. All twelve settled with one start each,
   10 exactly and two at fallback (`traffic-fallback-failed.log`, with the local detour). The exact-arrival assertion
   still fails. A same-lane priority experiment also reached 10/12,
@@ -37,9 +37,10 @@
   (`adaptation-audit.log`, 22 passing). Gameplay spec typecheck reports 64 errors in other existing test files; none
   in the changed queue spec (`adaptation-type.log`). A 12-unit strategy control leaves most troops free against a
   harmless contact (`defense-audit.log`). A live 12-fighter scenario starts on navigable terrain, moves all 12 and
-  records 19 hits without repeated failures at one tile (`large-army-final.log`); it includes the local R3 detour.
+  records 19 hits without repeated failures at one tile; both large-army cases pass on committed movement code
+  (`army-committed.log`).
   A fixture-issued paid command then completes a fighter at tick 140; all 12 original fighters move and deal damage
-  afterward (`army-production-final.log`, local R3 detour). This demonstrates the production transition, not that the
+  afterward (`army-committed.log`). This demonstrates the production transition, not that the
   AI chose the command. The earlier failed setup placed two units on blocked tiles (`large-army-geometry.log`).
 - **R7 open:** minor injury, actual withdrawal/re-engagement and individual wounded infantry/ranged controls pass;
   scout withdrawal persists across new search questions and produces physical movement (`scout-threat-final.log`).
@@ -50,7 +51,7 @@
   include local R3 changes. `quiet-combat-replay.json` retains earlier favorable-fight evidence; final R7 audit remains.
 - All artifacts above are under ignored `tmp/ai-gameplay-reliability/`. Set `AI_SKIRMISH_RUNTIME_RESULTS_DIRECTORY`
   and matrix output under workspace tmp; one match runner at a time, at most 30 minutes per invocation. Ordinary CI
-  passed on [`b9139c101`](https://github.com/JernejHabjan/fuzzy-waddle/actions/runs/43065573201).
+  passed on [`b6b50efdb`](https://github.com/JernejHabjan/fuzzy-waddle/actions/runs/43066672427).
   Automatic extended AI CI stays disabled.
 
 ## Goal and operating authority
