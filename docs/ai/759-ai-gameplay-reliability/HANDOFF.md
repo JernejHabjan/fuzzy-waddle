@@ -37,6 +37,8 @@
   sealing the only corridor entry and forcing the latter to repeatedly retry fallback positions. Local experiment also
   tries an alternate approach when the requested endpoint is occupied; 34 movement controls pass and a fresh corridor
   run improved from nine to ten exact arrivals, but two units still repeat fallback orders (`traffic-endpoint.log`).
+  A same-lane arrival-priority experiment still produced ten arrivals, delayed some starts until tick 434, and caused
+  a repeated start (`traffic-priority.log`); it was removed. The two-sided blockage needs a different approach.
   Keep the admission code, focused controls and geometry probe local
   until recovery and destination ownership clear all twelve without repeated orders. Recovery fallback search also
   repeatedly queried previously unreachable cells in every wider ring. It now skips repeated searches under the same
