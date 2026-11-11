@@ -2,139 +2,44 @@
 
 ## Resume cursor
 
-- Execution authorized and goal active on `feature/759-skirmish-ai`, PR [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814).
-  Completed packets **1/8 (R2)**. Next resolve opposing traffic in R3 and audit remaining R4 controls.
-  Read AGENTS.md, applicable skills and the next unfinished packet.
-- R1/R8: normal-speed, clean 240-tick combat runs at baseline `b42a89066` logged 12 decisions and 8 workers/12 army each.
-  Camera-bounded fog `e76a01f09` met both frozen targets in three matched runs: elapsed −22.90% (23.36→18.01s)
-  and polygon self-time −86.76%. Median frame p95 remained about 67ms. Two-AI matched medians improved 20.06→14.76s
-  (−26.44%), with the same counts and 12 decisions per side. Opening −23.43% corroborates across profiler revisions.
-  Same-revision two-AI bounded/full-fog runs at 240 ticks match native state hash `d9f51b4d` (`b9e81c54c`).
-  Eleven fog controls plus Phaser types/lint passed. Retain final semantic audit. Artifacts:
+- Active on `feature/759-skirmish-ai`, PR [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814).
+  **1/8 packets complete (R2)**. Preserve the local R3 experiment and reproducer; next resolve its corridor failure,
+  then verify the remaining controls and perform the separate omission and closure audits. Read the packet below.
+- **R1/R8:** Three matched 240-tick normal-speed combat runs: camera-bounded fog reduced median elapsed time
+  23.36→18.01s (−22.90%) and polygon self-time 86.76%; two-AI runs improved 20.06→14.76s (−26.44%).
+  Both sides retained 12 decisions; same-revision full/bounded fog state hash `d9f51b4d` matched. Evidence:
   `fog-performance-{baseline,comparison}.json`, `rendered-{combat,multi_ai}/`, `fog-native-state-{bounded,full}.log`.
-- R2 complete. Teardown `2c7844410`, transport shutdown `5f7024011`, human-slot binding `927c5b84b`, browser controls
-  `ec38d7785`. Manual/quick/auto reloads restore camera, actors, ownership and actual mouse selection/move. Elevated
-  worker/Temple/Owl and real River Crossing stones retain logical/rendered coordinates. Stone editor z overrides reach
-  128. GrasslandScene is only a config comment. No drift reproduced across three quick reloads and both other save
-  kinds. Fresh start and 17 Phaser controls pass. Artifacts: `editor-stone-manual.log`, `load-all-kinds-input-browser-arg.log`.
-- R3/R5: quiet slots, local reserve interception, stable 40-unit formations and destination-specific failure identity
-  published (`06ad7a214`, `a2dca643f`, `26e38635e`, `dcdfc0f68`). Bounded fallback and claimed-sidestep recovery
-  published (`3af53f596`, `4cfe90637`). Matching scout moves now stay active (`1a8405f52`); matched H-01 went from nine
-  same-destination restarts to zero, 35 to 26 stops, eight arrivals in both and original arrival tick 1212. H-01 still
-  fails unrelated income-history coverage. Preserve its gate and use focused movement evidence.
-- R3 next: local `E/reproduction/movement/skirmish-gameplay-congestion.spec.ts` reproduces 12 opposing workers in
-  three lanes. Ten reach original tiles and one reports arrival two tiles early then restarts. A later tween rejection
-  cascaded through completed ancestors. Step-ownership guard removes false arrival and passes 12 focused controls, but six
-  front workers deadlock at x=27/28, y=29–31 by tick 88. Six others arrive. Keep the corridor reproducer local until a bounded yielding
-  rule clears the standstill while preserving each original destination and collision legality. A separate
-  ownership regression showed a completed step's later callback rejection could release a newer step's reservation.
-  The tween now releases only once. Its focused controls and Phaser types/lint pass. The exact corridor still has
-  six arrivals and six failures after this repair (traffic-owned-step.log). A local admission experiment routes
-  around actors already on the static path and keeps the original route if no detour exists. It improves exact
-  arrivals from six to nine, but three workers fail or repeatedly visit fallback tiles and the final group does not
-  settle (traffic-admission.log). Their requested footprints are twelve distinct legal tiles (traffic-geometry.json
-  under playwright-traffic-footprints). The three x=18 destinations settle before the x=19 destinations on the left,
-  sealing the only corridor entry and forcing the latter to repeatedly retry fallback positions. Local experiment also
-  tries an alternate approach when the requested endpoint is occupied; 34 movement controls pass and a fresh corridor
-  run improved from nine to ten exact arrivals, but two units still repeat fallback orders (`traffic-endpoint.log`).
-  A same-lane arrival-priority experiment still produced ten arrivals, delayed some starts until tick 434, and caused
-  a repeated start (`traffic-priority.log`); it was removed. The two-sided blockage needs a different approach.
-  Keep the admission code, focused controls and geometry probe local
-  until recovery and destination ownership clear all twelve without repeated orders. Recovery fallback search also
-  repeatedly queried previously unreachable cells in every wider ring. It now skips repeated searches under the same
-  dynamic blockers but retries a closer tile if those blockers change; both cases and 21 movement controls pass. This reduces wasted
-  path searches but does not solve the corridor ordering failure. A cancelled blocked movement could previously resume
-  after its wait or a pending repath. Path execution now checks its cancellation generation at
-  async boundaries. Two focused regressions, 35 movement tests, Phaser types and the human replacement browser
-  control pass (movement-cancel-boundary.log). Initial location and object route queries now also discard results
-  after cancellation or a newer request. Three focused controls, 38 movement tests, Phaser types and both native
-  pursuit/replacement checks pass (initial-route-boundary.log). A separate regression confirmed that older movement
-  cleanup could release a newer destination or formation reservation. Destination ownership now follows the latest
-  started path or incoming command. Newer failed queries preserve the old cleanup. All 37 movement boundary/arrival
-  controls, Phaser types and human replacement pass (destination-generation.log). Inspect
-  `opposing-traffic-{exact,step-owner}.json` and `opposing-traffic-failures.log`.
-- R4: physical attack range `18b58f4ce`, synchronous admission `c812f1a88`, flying reachability and lifecycle controls
-  (23 native movement checks). The isolated Banshee hits a moving worker six times. A human replacement Move after
-  two hits stops stale hits; equal-speed escape takes no damage; exact target removal clears the invalid target.
-  The autonomous case went from zero hits to three after retaining compatible local pursuit at tick 40.
-  The visible blocked-ring pursuit now retains its Attack order and limits route probes to one per 20 simulation
-  ticks, retrying immediately when either endpoint changes tile. Applied command, no phantom damage, no movement
-  and bounded route calls through tick 240 passed alongside the six-hit moving-worker control (pursuit-paced.log).
-  When the exact blocking wall was destroyed at tick 120, the retained pursuit moved by tick 125 and landed its
-  first hit at tick 162. The worker remained unhurt and the order retained through tick 115. The browser control
-  passes with exact wall identity and tile assertions (pursuit-door-final.log).
-  Run `E/reproduction/movement/skirmish-gameplay-pursuit.spec.ts` with `AI_GAMEPLAY_RELIABILITY=1`, Chromium and one
-  worker. Traces: `pursuit-{human-replacement,equal-speed,target-loss}.json`, `local-engagement-pursuit-observations.json`.
-- R5/R6: three real Owls, Tivara no-ready defense produces two counters/22 hits, ready defense existing archer
-  three hits and new counters 20, Skaduwee one counter/16 hits. A ground raid took 29 hits across all three raiders
-  tied to applied home-defense orders and no emergency anti-air orders (`42c1a00d6`). Hidden air produced no demand
-  until discovery at tick 580, then one counter. Twenty adaptation controls cover full/missing producer, capacity
-  return, scarcity, paid queue and fading evidence. An unfinished producer was incorrectly offered anti-air
-  production. The adaptation manager now waits for completion and excludes unfinished counters from ready counts.
-  Counter selection also checks finished actor prerequisites, preserves demand while unavailable and chooses an
-  available alternative. All 22 adaptation tests pass. Gameplay project types still report unrelated fixture errors
-  (counter-prerequisite-types.log), with no adaptation diagnostics. Missing counter infrastructure needs a real
-  prerequisite chain: Tivara's ranged Banshee needs Temple; Temple needs AnkGuard and can itself produce the Banshee.
-  Workers can construct both. Macro capacity currently follows its ordinary force target, not counter demand; ordinary
-  military product selection now waits for finished product prerequisites and chooses an available alternative;
-  the focused missing/unfinished/ready/alternative check and six capacity controls pass (`d2828acb3`). Local, uncommitted
-  counter-infrastructure proposal now selects a catalog-derived prerequisite chain and uses macro builder/site/cost
-  claims. Initial focused tests cover a chain, cycles, missing builders, finished alternatives, stale evidence,
-  unfinished buildings and insufficient resources. Adaptation and macro controls pass (27 tests), as does lint.
-  Gameplay type check has no new infrastructure diagnostics (unrelated fixture errors remain). Native missing-Temple
-  run first produced nothing because its locked Banshee recipe was absent from the permitted catalog. Local catalog
-  change exposes allowed locked anti-air recipes; four catalog controls pass. A second native run sees all three flyers,
-  orders one Temple at tick 60, produces counters at 680/880 and completes one at 879, but lands no hit by tick 1000.
-  It remains a failing gameplay check (`counter-infrastructure-native-{,2}.log`): the unit joined home defense at 880,
-  started intercepting, then tactical retreat and blocker recovery alternated Move and Attack orders at 900–1000.
-  Local recovery change respects an actively retreating defense squad. A healthy defender now contests its visible
-  target when that attacker directly threatens owned workers or the main building; injured units retain withdrawal.
-  Thirty-one tactical/recovery controls pass. Mixed-health follow-up found that the previous all-squad retreat fix
-  withdrew healthy fighters with a critically wounded melee unit. The shared individual-withdrawal policy now protects
-  endangered melee too, letting remaining fighters engage while the injured unit moves away. Focused regression
-  proves the injured member receives a move, not an attack; 31 tactical/recovery controls pass.
-  Catalog excludes research-locked recipes (five controls pass).
-  Native run 3 had no hit by tick 1000: the counter spawned at 879 and advanced from (41,17) to (31,16) with a retained
-  Attack. Extending this missing-building case to 1200 ticks preserves the hit assertion and passes: one Temple, two
-  completed counters, six native hits, no gaps or AI errors (`counter-infrastructure-native-5.log`). The previous
-  extension attempt stopped at the original assertion ceiling and is invalid evidence. Both runs include local R3
-  changes. A separate run with committed movement code also passed with one Temple, two counters and six hits
-  (`counter-committed-native.log`); local R3 files were restored. The planner now also counts outstanding capacity
-  reservations even if the other planner's demand changed. Fifty-eight related AI controls and five catalog controls
-  pass; lint has pre-existing warnings, and gameplay type checking reports unrelated existing errors but none in the
-  changed AI files. Published as `160080af5`; other packet acceptance remains open.
-  Check harmless contact and
-  large-army movement. Raw captures: `air-counter-{unready-native-after,skaduwee}.runtime.json.gz`,
-  `unbuilt-post-ready-native-after.runtime.json.gz`, `{ground-defense-authority,hidden-air-discovery}.runtime.json.gz`.
-- R7: retained FIGHT-01 quiet `06ad7a214` seed 759940, 2401 ticks/120 decisions, legal kill at tick 118 and no
-  context/combat failure on corrected oracle replay (21 controls). A separate 200-tick browser check applies one
-  point of damage to a named infantry unit at tick 5. Its squad does not retreat through tick 100, army hits the
-  opponent and the opponent is absent or at zero health by tick 120 (minor-injury-final.log). This run includes
-  the local, uncommitted R3 path changes. A second short native case recorded retreat at ticks 40–120,
-  a selected protected-retreat move and actual infantry movement, followed by engagement from tick 140 and
-  eight native hits. Reinforcements also moved from reserve, with fixture-issued move commands at tick 120.
-  The selected retreat effect was applied to the original infantry and matched a live movement execution whose
-  position changed by tick 114 (retreat-attributed.log). A separate 200-tick mixed-health run reduces one infantry
-  unit from 150 to 30 health: it starts withdrawing by tick 80 and moves afterward while its squad remains engaged
-  and allies damage the enemy after withdrawal. A threatened ranged unit reduced to 20/100 health also moves away by
-  tick 40 while allies fight. All three injury controls pass (`injury-controls.log`); these runs include local R3
-  changes. A recorded H-01 scout took damage at tick 351, but scouting questions repeatedly replaced its retreat at
-  ticks 380 and 520. Scouting now preserves an active withdrawal across question changes. In a focused 600-tick
-  current-world run, an explicit pursuer damages the scout, which keeps one retreat route and physically moves;
-  no scout order replaces it during retreat (`scout-threat-final.log`). This uses local R3 changes. Sixty-five
-  planner/ownership controls pass. Scout harmless-contact and mixed-domain tactical controls pass within 47 focused tests. A follow-up regression
-  found emergency home defense could use an anti-air weapon's range to infer a threat to a ground worker; threat range
-  now requires the same weapon to target the worker's domain. A 240-tick native mixed-force run adds two legal Tivara
-  flyers: both air and ground units damage the same enemy, with an air squad observed (`mixed-force.log`; retained
-  native facts confirm the common target). In a separate mixed-force run, one infantry unit drops to 20% health and
-  moves away from tick 80, while both ground and air allies subsequently inflict native damage (`mixed-injury.log`).
-  Both include local R3 changes. Squad-wide mixed-force retreat/re-entry is not established by this individual case.
-  Retained `quiet-combat-replay.json`;
-  use full combat capture for this check.
-- Artifacts above are in ignored `tmp/ai-gameplay-reliability/`. Default result junctions point to full D:.
-  Set `AI_SKIRMISH_RUNTIME_RESULTS_DIRECTORY` and matrix `--output` under workspace tmp. One runner, 30 min
-  maximum per batch. Use an exact scenario selector and avoid repeats of retained evidence. Ordinary CI green on
-  [8ef1723ff](https://github.com/JernejHabjan/fuzzy-waddle/actions/runs/42768697426). Extended AI CI stays disabled.
+  Final semantic/affected-owner review remains after functional changes; the current measurements are not closure.
+- **R2 validated:** manual, quick and auto load restore human ownership, camera, selection and movement; three reloads
+  preserve elevated workers, Temple, Owl and real River Crossing stones. Teardown and fresh-start controls pass.
+  Evidence `editor-stone-manual.log`, `load-all-kinds-input-browser-arg.log`; fixes through `ec38d7785`.
+- **R3 open:** `E/reproduction/movement/skirmish-gameplay-congestion.spec.ts` and changes in `movement.system.ts` /
+  `movement-system-boundary.spec.ts` are intentionally local. Twelve opposing workers request distinct legal tiles.
+  Committed recovery and ownership fixes remove false arrivals and stale cleanup; the local detour reaches 10/12,
+  but two repeatedly fall back because arrived units seal the corridor (`traffic-endpoint.log`). A same-lane priority
+  experiment also reached 10/12, delayed starts and was removed (`traffic-priority.log`). Do not publish the detour as
+  complete. Resolve access and stop repeated orders without overriding human commands; retain the exact-destination,
+  collision and settling oracle. The failed alternatives and geometry are in ignored `tmp/ai-gameplay-reliability/`.
+- **R4 open for final audit:** native Banshee pursues and hits a moving worker; human replacement stops stale hits,
+  equal-speed escape takes no phantom damage, and target removal clears the order. An unreachable target retains its
+  order, limits probes and becomes hittable after the exact wall is removed (`pursuit-door-final.log`). Check remaining
+  acceptance controls in R4; do not repeat retained cases without changed inputs.
+- **R5/R6 open for final audit:** real three-Owl attacks trigger Tivara and Skaduwee counters and damage; existing
+  defenders engage, ground-only and hidden-air controls pass. Missing Temple is constructed and two counters land six
+  hits with committed movement code (`counter-committed-native.log`, `160080af5`). Recovery respects tactical
+  withdrawal, healthy defenders contest direct threats, and weapon range is matched to target domain. Check remaining
+  large-army/harmless-contact and production ownership requirements below.
+- **R7 open:** minor injury, actual withdrawal/re-engagement and individual wounded infantry/ranged controls pass;
+  scout withdrawal persists across new search questions and produces physical movement (`scout-threat-final.log`).
+  Mixed ground/air forces both damage the same enemy and continue after an injured fighter withdraws
+  (`mixed-force.log`, `mixed-injury.log`). Both ground-only and mixed air/ground reinforcement cases now prove an
+  applied retreat and physical movement followed by stable re-engagement and damage (`reinforcement-final.log`).
+  The mixed flyers begin damaging attackers before re-engagement; both domains hit afterward. These recent controls
+  include local R3 changes. `quiet-combat-replay.json` retains earlier favorable-fight evidence; final R7 audit remains.
+- All artifacts above are under ignored `tmp/ai-gameplay-reliability/`. Set `AI_SKIRMISH_RUNTIME_RESULTS_DIRECTORY`
+  and matrix output under workspace tmp; one match runner at a time, at most 30 minutes per invocation. Ordinary CI
+  passed on [`a81ac85ac`](https://github.com/JernejHabjan/fuzzy-waddle/actions/runs/43056470436); later runs may be
+  in progress. Automatic extended AI CI stays disabled.
 
 ## Goal and operating authority
 
@@ -170,8 +75,8 @@ and controls. Record an evidence gap separately from a code defect. A blocker do
 | R3 Movement and formation stability | R1 | in_progress | Arrived slots, quiet membership and eight-slot ceiling repaired; 100 tactical controls pass. Exact opposing traffic and large-group physical settling remain. |
 | R4 Pursuit and attack execution | R1, R3 relevant contract | in_progress | Pursuit, escape, replacement, removal, bounded unreachable retries and route reopening pass; audit remaining controls. |
 | R5 AI mission ownership and defense | R1, R3, R4 | in_progress | Ground and air defenders land native hits. Harmless contact and stable large-army movement remain. |
-| R6 Emergency counter production | R1, R5 defender contract | in_progress | Both factions produce counters that land native hits. Legal missing-prerequisite planning remains to audit. |
-| R7 Retreat and re-engagement | R1, R4, R5 | in_progress | Native quiet favorable target defeated at tick 118; corrected oracle replay passes. Minor injury, loss/reinforcement and oscillation controls remain. |
+| R6 Emergency counter production | R1, R5 defender contract | in_progress | Both factions produce counters that land native hits; missing Temple is built in the real scenario. Audit remaining ownership and prerequisites. |
+| R7 Retreat and re-engagement | R1, R4, R5 | in_progress | Minor injury, individual/scout withdrawal, and ground/mixed-force retreat and reinforcement have native evidence; final audit remains. |
 | R8 Measured performance improvement | baseline in R1; final comparison after R2–R7 | in_progress | Combat and two-AI comparisons meet targets. Same-revision two-AI state matches; final review remains. |
 
 Record each packet in its row: commit/diff identity, exact focused command, result, workload/fixture identity and
