@@ -40,7 +40,7 @@ export function movementTestFixture() {
         { x: 1, y: 0 }
       ]
     ),
-    isWithinGridBounds: jest.fn(() => false),
+    isWithinGridBounds: jest.fn((_tile: Vector2Simple) => false),
     isTileNavigable: jest.fn((_tile: Vector2Simple) => true),
     canTraverseBetweenTiles: jest.fn(() => true),
     getClosestUnoccupiedTile: jest.fn(async () => undefined),

@@ -73,6 +73,48 @@ it("respects minimum range and the existing whole-tile boundary", () => {
   expect(isWithinAttackRange(attacker, target, weapon)).toBe(true);
 });
 
+it("selects a usable close-range weapon when a stronger ranged weapon is inside its minimum range", () => {
+  const ranged = { range: 6, minRange: 2, canTargetAir: true, damage: 10 };
+  const melee = { range: 2, minRange: 0, canTargetAir: false, damage: 2 };
+  const component = Object.create(AttackComponent.prototype) as AttackComponent;
+  Object.assign(component, { gameObject: attacker, attackDefinition: { attacks: [ranged, melee] } });
+  jest
+    .mocked(getGameObjectCurrentTile)
+    .mockImplementation((actor) => (actor === attacker ? { x: 0, y: 0 } : { x: 1, y: 0 }));
+  expect(component.getAttack(target)).toBe(melee);
+  const useAttack = jest.spyOn(component, "useAttack").mockImplementation(() => undefined);
+  jest
+    .mocked(getActorComponent)
+    .mockImplementation((actor, token) =>
+      actor === attacker && token === AttackComponent
+        ? (component as never)
+        : actor === target && token === HealthComponent
+          ? ({ alive: true } as never)
+          : undefined
+    );
+  component.remainingCooldown = 0;
+  const board = new PawnAiBlackboard();
+  board.setCurrentOrder(new OrderData(OrderType.Attack, { targetGameObject: target }));
+  expect(new PawnAgentCombat(attacker, board, { SelfIsAlive: () => true }).Attack()).toBe(State.SUCCEEDED);
+  expect(useAttack).toHaveBeenCalledWith(target);
+  jest
+    .mocked(getGameObjectCurrentTile)
+    .mockImplementation((actor) => (actor === attacker ? { x: 0, y: 0 } : { x: 4, y: 0 }));
+  expect(component.getAttack(target)).toBe(ranged);
+  jest
+    .mocked(getGameObjectCurrentTile)
+    .mockImplementation((actor) => (actor === attacker ? { x: 0, y: 0 } : { x: 10, y: 0 }));
+  expect(component.getAttack(target)).toBe(ranged);
+  jest
+    .mocked(getGameObjectCurrentTile)
+    .mockImplementation((actor) => (actor === attacker ? { x: 0, y: 0 } : { x: 1, y: 0 }));
+  jest
+    .mocked(getActorComponent)
+    .mockImplementation((actor, token) => (actor === target && token === FlyingComponent ? ({} as never) : undefined));
+  expect(component.getAttack(target)).toBe(ranged);
+  expect(isWithinAttackRange(attacker, target, component.getAttack(target))).toBe(false);
+});
+
 it("counts flight height once and rejects a weapon that cannot target air", () => {
   jest
     .mocked(getActorComponent)

@@ -23,7 +23,10 @@
 - **R4 open for final audit:** native Banshee pursues and hits a moving worker; human replacement stops stale hits,
   equal-speed escape takes no phantom damage, and target removal clears the order. An unreachable target retains its
   order, limits probes and becomes hittable after the exact wall is removed (`pursuit-door-final.log`). Check remaining
-  acceptance controls in R4; do not repeat retained cases without changed inputs.
+  acceptance controls in R4; do not repeat retained cases without changed inputs. A focused regression found ranged
+  units selected their high-damage ranged weapon even inside its minimum range instead of a usable melee weapon.
+  Native selection now prefers an in-range compatible weapon; focused combat and pursuit controls pass. The real
+  adjacent-unit check proves melee selection and damage (`close-range-final.log`); it includes the local R3 changes.
 - **R5/R6 open for final audit:** real three-Owl attacks trigger Tivara and Skaduwee counters and damage; existing
   defenders engage, ground-only and hidden-air controls pass. Missing Temple is constructed and two counters land six
   hits with committed movement code (`counter-committed-native.log`, `160080af5`). Recovery respects tactical
@@ -38,7 +41,7 @@
   include local R3 changes. `quiet-combat-replay.json` retains earlier favorable-fight evidence; final R7 audit remains.
 - All artifacts above are under ignored `tmp/ai-gameplay-reliability/`. Set `AI_SKIRMISH_RUNTIME_RESULTS_DIRECTORY`
   and matrix output under workspace tmp; one match runner at a time, at most 30 minutes per invocation. Ordinary CI
-  passed on [`a81ac85ac`](https://github.com/JernejHabjan/fuzzy-waddle/actions/runs/43056470436); later runs may be
+  passed on [`21a9090e8`](https://github.com/JernejHabjan/fuzzy-waddle/actions/runs/43059208190); later runs may be
   in progress. Automatic extended AI CI stays disabled.
 
 ## Goal and operating authority

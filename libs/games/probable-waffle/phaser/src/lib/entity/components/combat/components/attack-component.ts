@@ -6,6 +6,7 @@ import { getActorComponent } from "../../../../data/actor-component";
 import type { Subscription } from "rxjs";
 import { AnimationActorComponent } from "../../animation/animation-actor-component";
 import { getHighGroundRangeBonus } from "../high-ground.helper";
+import { isWithinAttackRange } from "../attack-range";
 import {
   getGameObjectBounds,
   getGameObjectDepth,
@@ -151,23 +152,13 @@ export class AttackComponent {
 
     const isFlying = this.isTargetFlying(enemy);
 
-    // Filter attacks based on:
-    // 1. Range - attack can reach the target
-    // 2. Flying capability - if target is flying, we need weapons that can focus air targets
+    // Prefer a weapon that can fire now. Keep an out-of-range compatible weapon as an approach target.
     const availableAttacks = attacks
-      .filter((attack) => {
-        // Check if target is in range
-        // const inRange = distance <= attack.range && distance >= attack.minRange;
-
-        // Check if we can hit flying targets if target is flying
-        // noinspection UnnecessaryLocalVariableJS
-        const canHitTarget = !isFlying || attack.canTargetAir;
-
-        return /*inRange &&*/ canHitTarget;
-      })
+      .filter((attack) => !isFlying || attack.canTargetAir)
       .sort((a, b) => {
-        // Sort by damage (highest first)
-        return b.damage - a.damage;
+        const usableA = isWithinAttackRange(this.gameObject, enemy, a) ? 1 : 0;
+        const usableB = isWithinAttackRange(this.gameObject, enemy, b) ? 1 : 0;
+        return usableB - usableA || b.damage - a.damage;
       });
 
     if (availableAttacks.length === 0) return null;
