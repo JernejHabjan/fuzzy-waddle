@@ -52,7 +52,9 @@
 - All artifacts above are under ignored `tmp/ai-gameplay-reliability/`. Set `AI_SKIRMISH_RUNTIME_RESULTS_DIRECTORY`
   and matrix output under workspace tmp; one match runner at a time, at most 30 minutes per invocation. Ordinary CI
   passed on [`b6b50efdb`](https://github.com/JernejHabjan/fuzzy-waddle/actions/runs/43066672427).
-  Automatic extended AI CI stays disabled.
+  Final closure audit found the later source commit's catalog check failing because the generated C-03 catalog still
+  described the pre-deficit fixture. Regenerated `scenario-catalog.md`; `pnpm ai:skirmish:catalog` now passes. Await
+  the remediation commit's ordinary CI. Automatic extended AI CI stays disabled.
 
 ## Goal and operating authority
 
