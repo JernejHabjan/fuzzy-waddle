@@ -3,13 +3,19 @@
 ## Resume cursor
 
 - Active on `feature/759-skirmish-ai`, PR [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814).
-  **6/8 packets complete (R2–R7)**. Finish R1 closure and the R8 post-fix comparison, then perform
-  separate omission and closure audits.
-- **R1/R8:** Three matched 240-tick normal-speed combat runs: camera-bounded fog reduced median elapsed time
-  23.36→18.01s (−22.90%) and polygon self-time 86.76%; two-AI runs improved 20.06→14.76s (−26.44%).
-  Both sides retained 12 decisions; same-revision full/bounded fog state hash `d9f51b4d` matched. Evidence:
-  `fog-performance-{baseline,comparison}.json`, `rendered-{combat,multi_ai}/`, `fog-native-state-{bounded,full}.log`.
-  Final semantic/affected-owner review remains after functional changes; the current measurements are not closure.
+  **8/8 packets validated (R1–R8)**. The independent omission and final closure audits remain.
+- **R1/R8 final:** baseline and current commit `33b9c5680` use matched seed, fixture, 240 ticks and 12 decisions.
+  Combat median: 23.36→17.41s (−25.5%); two-AI median: 20.06→14.95s (−25.5%), retaining 12 decisions per AI.
+  Current p95/p99 frame times are no worse than baseline in either workload, and all six final samples report no
+  errors. Baseline run-to-run spread is at most 3.5%; both reductions are well beyond it. Earlier profiling traced
+  86.76% of polygon self-time to fog rendering; camera-bounded drawing now stays under 2,000 tiles on a 144×144
+  map while complete logical visibility/exploration sets remain intact. Same-revision full/bounded fog state hash
+  `d9f51b4d` matched. Evidence: `fog-performance-{baseline,comparison}.json`, current reports under
+  `rendered-{combat,multi_ai}/33b9c5680f1cd6deabc2bfebe244a940d9a5e4b2-*`,
+  `fog-native-state-{bounded,full}.log`; current rendered repetitions contain two state digests per workload, while
+  the controlled full/bounded fog pair is equal. Focused fog work-bound tests pass in Phaser's 1,286-test suite.
+  The earlier handoff did not preserve a numeric minimum target; use the measured 3.5% baseline spread as the
+  closure threshold and retain the original frame-work controls, without adding a wall-clock CI gate.
 - **R2 validated:** manual, quick and auto load restore human ownership, camera, selection and movement; three reloads
   preserve elevated workers, Temple, Owl and real River Crossing stones. Teardown and fresh-start controls pass.
   Evidence `editor-stone-manual.log`, `load-all-kinds-input-browser-arg.log`; fixes through `ec38d7785`.
@@ -77,14 +83,14 @@ and controls. Record an evidence gap separately from a code defect. A blocker do
 
 | Packet | Depends on | State | Evidence / next boundary |
 | --- | --- | --- | --- |
-| R1 Focused reproductions and baseline | none | in_progress | Teardown/churn/large-slot defects reproduced and combat baseline frozen; remaining targeted gameplay controls open. |
+| R1 Focused reproductions and baseline | none | complete | All original playtest reports have bounded repro/evidence in R2–R7; matched rendered combat/two-AI baselines and current comparisons are recorded above. |
 | R2 Restore and teardown lifecycle | R1 relevant reproduction | complete | All save types restore input, camera and elevation. Fresh start, live topology removal and teardown controls pass. See the R2 resume entry. |
 | R3 Movement and formation stability | R1 | complete | Stable slots, quiet membership and eight-slot ceiling; 12 opposing workers exact-arrive and settle through the clear corridor; bounded waits/repaths and cleanup have focused coverage. |
 | R4 Pursuit and attack execution | R1, R3 relevant contract | complete | Seven current-commit native pursuit modes pass; adjacent ranged-unit melee selection/damage passes. |
 | R5 AI mission ownership and defense | R1, R3, R4 | complete | Ready defender hits without duplicate orders; ground defense hits all three raiders; four AI-paid C-03 units complete and deal native damage; large-army control confirms plan-slot reassignment does not reissue moves. Owner audit complete; see resume evidence and scope. |
 | R6 Emergency counter production | R1, R5 defender contract | complete | Six native controls pass: Tivara/Skaduwee counters, existing defender, ground-only defense, hidden-air timing and missing Temple. Exact command and artifact are in the resume entry. |
 | R7 Retreat and re-engagement | R1, R4, R5 | complete | Five current native retreat cases pass. Scout withdrawal, mixed-force support and continued damage after re-engagement have prior native evidence. Exact command/artifact are in the resume entry. |
-| R8 Measured performance improvement | baseline in R1; final comparison after R2–R7 | in_progress | Combat and two-AI comparisons meet targets. Same-revision two-AI state matches; final review remains. |
+| R8 Measured performance improvement | baseline in R1; final comparison after R2–R7 | complete | Three matched post-fix samples per workload show 25.5% lower median elapsed time in combat and two-AI; same-revision full/bounded fog hash matches, frame percentiles do not regress, and camera-bounded fog has a work-count guard. |
 
 Record each packet in its row: commit/diff identity, exact focused command, result, workload/fixture identity and
 one bounded artifact pointer. Keep only the newest meaningful result and unresolved gap; Git preserves history.
