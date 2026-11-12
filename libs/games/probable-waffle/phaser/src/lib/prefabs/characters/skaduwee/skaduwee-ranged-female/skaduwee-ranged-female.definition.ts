@@ -13,7 +13,7 @@ import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { SoundType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-type";
 import { ActorPhysicalType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/actor-physical-type";
 import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
-import { AiType } from "../../../ai-agents/ai-type";
+import { AiType } from "../../../ai-agents/controller/ai-type";
 import {
   ANIM_SKADUWEE_RANGED_FEMALE_DEFINITION_LEVEL_1,
   ANIM_SKADUWEE_RANGED_FEMALE_DEFINITION_LEVEL_2,
@@ -61,7 +61,7 @@ export const skaduweeRangedFemaleDefinition = {
     productionCost: {
       resources: {
         [ResourceType.Wood]: 25,
-        [ResourceType.Food]: 100
+        [ResourceType.Food]: 70
       },
       refundFactor: 0.5,
       productionTime: 10000,

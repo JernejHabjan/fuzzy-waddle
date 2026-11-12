@@ -13,11 +13,17 @@ export interface StructureTopologyChangedPayload {
   tile: Vector2Simple;
 }
 
+/** Paused setup may update topology, but shutdown cannot query scene-owned projection resources. */
+function canReadStructureTopology(scene?: Phaser.Scene): scene is Phaser.Scene {
+  return !!scene?.cameras?.main && scene.sys.settings.status < Phaser.Scenes.SHUTDOWN;
+}
+
 /**
  * Emits a topology refresh anchored to the structure's logical center tile.
  * Neighbor-driven wall/stairs recomputes use tile adjacency only.
  */
 export function emitStructureTopologyChanged(gameObject: Phaser.GameObjects.GameObject): void {
+  if (!canReadStructureTopology(gameObject.scene)) return;
   const tilemap = getSceneComponent(gameObject.scene, TilemapComponent)?.tilemap;
   if (!tilemap) return;
   const tile = getCenterTileCoordUnderObject(tilemap, gameObject);
@@ -32,6 +38,7 @@ export function emitStructureTopologyChangedAtTile(
   gameObject: Phaser.GameObjects.GameObject,
   tile: Vector2Simple
 ): void {
+  if (!canReadStructureTopology(gameObject.scene)) return;
   gameObject.scene.events.emit(StructureTopologyChangedEvent, {
     source: gameObject,
     tile
@@ -46,6 +53,7 @@ export function isStructureTopologyChangeAdjacent(
   gameObject: Phaser.GameObjects.GameObject,
   payload: StructureTopologyChangedPayload
 ): boolean {
+  if (!canReadStructureTopology(gameObject.scene)) return false;
   if (payload.source === gameObject) return false;
   const tilemap = getSceneComponent(gameObject.scene, TilemapComponent)?.tilemap;
   if (!tilemap) return false;
@@ -62,6 +70,8 @@ export function isStructureTopologyChangeAdjacent(
  */
 export class StructureTopologyService {
   private initialRefreshTimer?: Phaser.Time.TimerEvent;
+  private disposed = false;
+  private readonly scene: Phaser.Scene;
 
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
@@ -69,14 +79,19 @@ export class StructureTopologyService {
       onInitialRefresh?: () => void;
       onAdjacentTopologyChanged?: () => void;
     }
-  ) {}
+  ) {
+    this.scene = gameObject.scene;
+  }
 
   init(): void {
+    if (this.disposed) return;
+    this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.handleShutdown, this);
     this.gameObject.once(HealthComponent.KilledEvent, this.handleKilled, this);
     onObjectReady(this.gameObject, this.handleReady, this);
   }
 
   notify(): void {
+    if (this.disposed) return;
     emitStructureTopologyChanged(this.gameObject);
   }
 
@@ -96,13 +111,27 @@ export class StructureTopologyService {
   }
 
   destroy(): void {
+    this.dispose(true);
+  }
+
+  private handleShutdown(): void {
+    this.dispose(false);
+  }
+
+  /** Live removal invalidates neighbors once; scene teardown only releases the original subscriptions. */
+  private dispose(notifyNeighbors: boolean): void {
+    if (this.disposed) return;
+    this.disposed = true;
     this.gameObject.off(HealthComponent.KilledEvent, this.handleKilled, this);
-    this.gameObject.scene?.events.off(StructureTopologyChangedEvent, this.handleStructureTopologyChanged, this);
+    this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.handleShutdown, this);
+    this.scene.events.off(StructureTopologyChangedEvent, this.handleStructureTopologyChanged, this);
     this.initialRefreshTimer?.destroy();
-    this.notify();
+    this.initialRefreshTimer = undefined;
+    if (notifyNeighbors) emitStructureTopologyChanged(this.gameObject);
   }
 
   private handleReady(): void {
+    if (this.disposed) return;
     if (this.options.onAdjacentTopologyChanged) {
       this.gameObject.scene.events.on(StructureTopologyChangedEvent, this.handleStructureTopologyChanged, this);
     }
@@ -111,13 +140,13 @@ export class StructureTopologyService {
   }
 
   private handleInitialRefresh(): void {
-    if (!this.gameObject.active) return;
+    if (this.disposed || !this.gameObject.active) return;
     this.options.onInitialRefresh?.();
     this.notify();
   }
 
   private handleStructureTopologyChanged(payload: StructureTopologyChangedPayload): void {
-    if (!this.gameObject.active || !this.options.onAdjacentTopologyChanged) return;
+    if (this.disposed || !this.gameObject.active || !this.options.onAdjacentTopologyChanged) return;
     if (!isStructureTopologyChangeAdjacent(this.gameObject, payload)) return;
     this.options.onAdjacentTopologyChanged();
   }

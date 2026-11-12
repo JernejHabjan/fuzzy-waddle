@@ -39,7 +39,7 @@ import { IndexedScenarioReferenceRegistry } from "../scenario/scenario-reference
 
 const DEFAULT_LINE_TICKS = 40;
 const DEFAULT_CINEMATIC_TIMEOUT_TICKS = 2_400;
-const SEEN_CINEMATICS_KEY = "probable-waffle-campaign-seen-cinematics-v1";
+const SEEN_CINEMATICS_KEY = "probable-waffle-campaign-seen-cinematics";
 
 /**
  * Defines the structured campaign cinematic view state contract for this module. Its declared surface makes

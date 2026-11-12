@@ -8,6 +8,8 @@ import {
   ProbableWaffleLevels,
   type ProbableWaffleMapData,
   ProbableWafflePlayer,
+  ProbableWafflePlayerType,
+  ProbableWaffleGameInstanceType,
   type ProbableWafflePlayerControllerData,
   type ProbableWafflePlayerStateData,
   ProbableWaffleSpectator,
@@ -15,6 +17,7 @@ import {
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { ProbableWaffleCommunicatorServiceInterface } from "./ports/probable-waffle-communicator";
 import { BehaviorSubject } from "rxjs";
+import { hasAiRuntimeCalibrationPerspective } from "../player/ai-controller/test-support/browser/ai-runtime-calibration";
 
 import type { ProbableWaffleSceneData } from "../world/scenes/probable-waffle-scene-data";
 
@@ -31,6 +34,27 @@ export class ProbableWaffleScene extends BaseScene<
   ProbableWaffleSpectator,
   ProbableWaffleCommunicatorServiceInterface
 > {
+  /** Offline AI and human slots share null user IDs; only the restored local human slot owns input. */
+  override get playerOrNull(): ProbableWafflePlayer | null {
+    if (this.baseGameData.user.userId) return super.playerOrNull;
+    const type = this.baseGameData.gameInstance.gameInstanceMetadata.data.type;
+    const local = [
+      ProbableWaffleGameInstanceType.Skirmish,
+      ProbableWaffleGameInstanceType.Campaign,
+      ProbableWaffleGameInstanceType.InstantGame
+    ].includes(type);
+    if (!local || this.baseGameData.user.playerNumber === undefined) return null;
+    const calibrationPerspective = hasAiRuntimeCalibrationPerspective(this.baseGameData.gameInstance);
+    return (
+      this.players.find(
+        (player) =>
+          player.playerNumber === this.baseGameData.user.playerNumber &&
+          (calibrationPerspective ||
+            player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human)
+      ) ?? null
+    );
+  }
+
   override getSceneGameData() {
     this.sceneGameData.baseGameData = this.baseGameData;
     return this.sceneGameData;

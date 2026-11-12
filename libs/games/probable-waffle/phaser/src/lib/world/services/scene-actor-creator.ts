@@ -32,11 +32,6 @@ import { LoadGame } from "../../data/load-game";
 import type { InitialActorConfig } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { LevelComponent } from "../../entity/components/level/level-component";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
-/**
- * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
- * storage boundaries do not drift into an unconstrained primitive.
- */
-type GameObject = Phaser.GameObjects.GameObject;
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { upgradeActorToLevel } from "../../data/actor-level-utils";
 import { ActorIdAuthorityService } from "./multiplayer/actor-id-authority.service";
@@ -46,10 +41,11 @@ import {
 } from "../../campaign/scenario/scenario-actor-reference.component";
 import { IndexedScenarioReferenceRegistry } from "../../campaign/scenario/scenario-reference-registry";
 
+/** Materializes editor/definition actors, assigns stable identity and owns actor registration/save lifecycle. */
 export class SceneActorCreator {
   private readonly loadGame: LoadGame;
   private readonly actorIdAuthority: ActorIdAuthorityService;
-  private readonly lifecycleBoundActors = new WeakSet<GameObject>();
+  private readonly lifecycleBoundActors = new WeakSet<Phaser.GameObjects.GameObject>();
   constructor(private readonly scene: GameProbableWaffleScene) {
     this.loadGame = new LoadGame(scene as GameProbableWaffleScene);
     this.actorIdAuthority = new ActorIdAuthorityService(scene);
@@ -78,7 +74,8 @@ export class SceneActorCreator {
   /**
    * Consumes editor `Spawn` placeholders and normalizes direct editor actors into the
    * same component/index/save path used by runtime-created actors. It applies authored
-   * owner/level/scenario-role metadata before registration, then destroys placeholders
+   * owner/level/scenario-role metadata before registration, excludes actors belonging to absent player slots,
+   * then destroys placeholders
    * only after all required world objects have been materialized.
    *
    * @see {@link createActorFromDefinition} for the corresponding data-driven creation path.
@@ -95,17 +92,29 @@ export class SceneActorCreator {
       // ensure that game objects are fully created
       const definition = getPwActorDefinition(gameObject.name as ObjectNames, null);
       if (definition) {
+        const ownerId = EditorOwner.getComponent(gameObject)?.owner_id;
+        const ownerNumber = ownerId ? parseInt(ownerId) : undefined;
+        // Match the spawn-marker roster boundary before owner/component callbacks can publish player changes.
+        if (
+          ownerNumber !== undefined &&
+          ownerNumber > 0 &&
+          !this.scene.players.some(
+            (player) => player.playerController.data.playerDefinition?.player.playerNumber === ownerNumber
+          )
+        ) {
+          toDestroy.push(gameObject);
+          return;
+        }
         const idComponent = getActorComponent(gameObject, IdComponent);
         // only initialize those, that haven't been initialized yet
         if (!idComponent) {
-          const ownerId = EditorOwner.getComponent(gameObject)?.owner_id;
           const editorLevel = EditorActorLevel.getComponent(gameObject)?.level ?? 1;
           const actorDefinition = {
             constructionSite: {
               state: ConstructionStateEnum.Finished
             },
             owner: {
-              ownerId: ownerId ? parseInt(ownerId) : undefined
+              ownerId: ownerNumber
             },
             level: editorLevel > 1 ? { level: editorLevel } : undefined
           } satisfies ActorDefinition;
@@ -144,7 +153,7 @@ export class SceneActorCreator {
     if (!actorDefinition.name) return undefined;
 
     const shouldConstructFully = this.shouldConstructActorFully(actorDefinition);
-    let actor: GameObject;
+    let actor: Phaser.GameObjects.GameObject;
     if (shouldConstructFully) {
       actor = ActorManager.createActorFully(this.scene, actorDefinition.name as ObjectNames, actorDefinition);
     } else {

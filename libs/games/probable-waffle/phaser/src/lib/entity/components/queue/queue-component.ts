@@ -1,11 +1,19 @@
+import { HealthComponent } from "../combat/components/health-component";
+import { SharedQueueCancellation } from "./cancel-shared-queue-item";
+import { mutateSharedQueueItem } from "./mutate-shared-queue-item";
+import { advanceSharedQueueItem } from "./advance-shared-queue-item";
+import { projectSharedQueueItems } from "./project-shared-queue-items";
+import { restoreSharedQueues, snapshotSharedQueues } from "./shared-queue-snapshot";
+import type { SharedQueueSnapshotData } from "@fuzzy-waddle/probable-waffle-protocol";
 import { Subject } from "rxjs";
 import type { SharedQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/shared-queue-item";
-import { SharedQueueItemType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/shared-queue-item-type";
 import { ProductionComponent } from "../production/production-component";
 import { ResearchComponent } from "../research/research-component";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
-import { researchDefinitions } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/research/research-definitions";
-import { QueueItemType, type UnifiedQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
+import {
+  QueueItemType,
+  type UnifiedQueueItem
+} from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
 import { SharedQueue } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/shared-queue";
 import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
 import type { ProductionQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/game-object";
@@ -16,6 +24,13 @@ import { getActorComponent } from "../../../data/actor-component";
 import { addActorComponent } from "../../../data/actor-data";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
+import { reportQueueTerminalOutcome } from "./report-queue-terminal-outcome";
+import type {
+  CancelProductionCommand,
+  CancelResearchCommand,
+  GameCommandOutcomeKind
+} from "@fuzzy-waddle/probable-waffle-protocol";
+import { fenceSceneResourceHistory } from "../../../data/scene-resource-observation";
 
 /**
  * SharedQueueComponent is the queue owner and processor.
@@ -34,6 +49,11 @@ export class QueueComponent {
   private productionComponent?: ProductionComponent;
   private researchComponent?: ResearchComponent;
   private simulationTickSub?: Subscription;
+  private disposed = false;
+  /** Invalidates pre-restore completion continuations; callback reentry never advances or cancels a second handle. */
+  private generation = 0;
+  private updating = false;
+  private cancelling = false;
 
   constructor(
     readonly gameObject: Phaser.GameObjects.GameObject,
@@ -50,6 +70,8 @@ export class QueueComponent {
       this.update()
     );
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
+    gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
+    gameObject.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
   }
 
   static createSharedQueue(gameObject: Phaser.GameObjects.GameObject): QueueComponent {
@@ -74,25 +96,36 @@ export class QueueComponent {
    * Main update loop - processes all queue items
    */
   private update(): void {
-    if (!this.gameObject.scene) return;
+    if (this.disposed || this.updating || !this.gameObject.scene) return;
+    if (getActorComponent(this.gameObject, HealthComponent)?.killed) {
+      this.destroy();
+      return;
+    }
     const deltaWithTimeScale = SimulationTickService.TICK_INTERVAL_MS;
     if (deltaWithTimeScale <= 0) return;
 
-    // Process each queue's first item
-    for (let queueIndex = 0; queueIndex < this.sharedQueues.length; queueIndex++) {
-      const queue = this.sharedQueues[queueIndex]!;
-      if (queue.queuedItems.length === 0) continue;
+    this.updating = true;
+    const generation = this.generation;
+    try {
+      // Process each queue's first item
+      for (let queueIndex = 0; queueIndex < this.sharedQueues.length; queueIndex++) {
+        if (this.disposed || this.generation !== generation) break;
+        const queue = this.sharedQueues[queueIndex]!;
+        if (queue.queuedItems.length === 0) continue;
 
-      const firstItem = queue.queuedItems[0]!;
+        const firstItem = queue.queuedItems[0]!;
 
-      // Handle production items
-      if (firstItem.type === QueueItemType.Production) {
-        this.processProductionItem(queue, queueIndex, deltaWithTimeScale);
+        // Handle production items
+        if (firstItem.type === QueueItemType.Production) {
+          this.processProductionItem(queue, queueIndex, deltaWithTimeScale);
+        }
+        // Handle research items
+        else if (firstItem.type === QueueItemType.Research) {
+          this.processResearchItem(queue, queueIndex, deltaWithTimeScale);
+        }
       }
-      // Handle research items
-      else if (firstItem.type === QueueItemType.Research) {
-        this.processResearchItem(queue, queueIndex, deltaWithTimeScale);
-      }
+    } finally {
+      this.updating = false;
     }
   }
 
@@ -101,24 +134,26 @@ export class QueueComponent {
    */
   private processProductionItem(queue: SharedQueue, queueIndex: number, delta: number): void {
     const firstItem = queue.queuedItems[0]!;
-    if (!firstItem.productionData) return;
+    const generation = this.generation;
+    if (!firstItem.productionData || !this.productionComponent) return;
 
     const { costData } = firstItem.productionData;
 
-    // Handle payment
-    let paid = true;
-    if (costData.costType === PaymentType.PayOverTime) {
-      if (!this.productionComponent) return;
-      paid = this.productionComponent.handlePayOverTimePayment(costData.resources);
-    }
+    if (costData.costType === PaymentType.PayOverTime && !this.productionComponent) return;
 
-    if (!paid) return;
+    // Shared affordability and progress retain their existing ordering; the diagnostic finish samples the real decrement.
+    if (
+      firstItem.remainingTime > 0 &&
+      !advanceSharedQueueItem(this.gameObject, firstItem, delta, () => {
+        if (costData.costType !== PaymentType.PayOverTime) return true;
+        return this.productionComponent?.handlePayOverTimePayment(costData.resources, firstItem) ?? false;
+      })
+    )
+      return;
 
-    // Update progress on the item itself
-    firstItem.remainingTime -= delta;
-    firstItem.remainingTime = Math.max(firstItem.remainingTime, 0);
-
-    const progress = ((firstItem.totalTime - firstItem.remainingTime) / firstItem.totalTime) * 100;
+    if (!this.isCurrentHead(queue, firstItem, generation)) return;
+    const progress =
+      firstItem.totalTime === 0 ? 100 : ((firstItem.totalTime - firstItem.remainingTime) / firstItem.totalTime) * 100;
 
     // Emit progress event via ProductionComponent
     if (this.productionComponent) {
@@ -130,7 +165,7 @@ export class QueueComponent {
     }
 
     // Check completion
-    if (firstItem.remainingTime <= 0) {
+    if (firstItem.remainingTime <= 0 && this.isCurrentHead(queue, firstItem, generation)) {
       this.completeProductionItem(queue, queueIndex);
     }
   }
@@ -140,13 +175,14 @@ export class QueueComponent {
    */
   private processResearchItem(queue: SharedQueue, queueIndex: number, delta: number): void {
     const firstItem = queue.queuedItems[0]!;
-    if (!firstItem.researchData) return;
+    const generation = this.generation;
+    if (!firstItem.researchData || !this.researchComponent) return;
 
-    // Update progress on the item itself
-    firstItem.remainingTime -= delta;
-    firstItem.remainingTime = Math.max(firstItem.remainingTime, 0);
+    advanceSharedQueueItem(this.gameObject, firstItem, delta, () => true);
+    if (!this.isCurrentHead(queue, firstItem, generation)) return;
 
-    const progress = ((firstItem.totalTime - firstItem.remainingTime) / firstItem.totalTime) * 100;
+    const progress =
+      firstItem.totalTime === 0 ? 100 : ((firstItem.totalTime - firstItem.remainingTime) / firstItem.totalTime) * 100;
 
     // Emit progress for research
     if (this.researchComponent) {
@@ -161,7 +197,7 @@ export class QueueComponent {
     }
 
     // Check completion
-    if (firstItem.remainingTime <= 0) {
+    if (firstItem.remainingTime <= 0 && this.isCurrentHead(queue, firstItem, generation)) {
       this.completeResearchItem(queue, queueIndex);
     }
   }
@@ -169,17 +205,37 @@ export class QueueComponent {
   /**
    * Complete a production item - delegate to ProductionComponent for spawning
    */
-  private async completeProductionItem(queue: SharedQueue, queueIndex: number): Promise<void> {
+  private completeProductionItem(queue: SharedQueue, queueIndex: number): void {
+    const generation = this.generation;
     const item = queue.queuedItems[0]!;
     if (item.type !== QueueItemType.Production || !item.productionData) return;
 
     // Remove from queue
-    queue.queuedItems.splice(0, 1);
+    mutateSharedQueueItem(
+      { producer: this.gameObject, item, queueIndex, itemIndex: 0, operation: "complete_remove" },
+      () => {
+        queue.queuedItems.splice(0, 1);
+      }
+    );
 
     // Delegate to ProductionComponent for spawning logic
-    if (this.productionComponent) {
-      await this.productionComponent.handleProductionComplete(item.productionData);
+    if (this.disposed || generation !== this.generation) return;
+    let producedActorId: string | null = null;
+    let failure: string | undefined;
+    try {
+      if (this.productionComponent) {
+        producedActorId = this.productionComponent.handleProductionComplete(item.productionData, item);
+      }
+    } catch {
+      failure = "production_completion_failed";
     }
+    if (this.disposed || generation !== this.generation) return;
+    this.reportTerminalOutcome(
+      item,
+      producedActorId ? "completed" : "failed",
+      producedActorId ? [producedActorId] : [],
+      producedActorId ? undefined : (failure ?? "no_legal_spawn_location")
+    );
 
     // No need to reset queue - items are self-contained with their own remainingTime
 
@@ -198,16 +254,25 @@ export class QueueComponent {
    * Complete a research item - delegate to ResearchComponent for tech tree registration
    */
   private completeResearchItem(queue: SharedQueue, queueIndex: number): void {
+    const generation = this.generation;
     const item = queue.queuedItems[0]!;
     if (item.type !== QueueItemType.Research || !item.researchData) return;
 
     // Remove from queue
-    queue.queuedItems.splice(0, 1);
+    mutateSharedQueueItem(
+      { producer: this.gameObject, item, queueIndex, itemIndex: 0, operation: "complete_remove" },
+      () => {
+        queue.queuedItems.splice(0, 1);
+      }
+    );
 
     // Delegate to ResearchComponent for tech tree registration
+    if (this.disposed || generation !== this.generation) return;
     if (this.researchComponent) {
-      this.researchComponent.handleResearchComplete(item.researchData);
+      this.researchComponent.handleResearchComplete(item.researchData, item);
     }
+    if (this.disposed || generation !== this.generation) return;
+    this.reportTerminalOutcome(item, "completed", [`research:${item.researchData}`]);
 
     // No need to reset queue - items are self-contained with their own remainingTime
 
@@ -225,18 +290,31 @@ export class QueueComponent {
   /**
    * Public API: Add an item to the queue with least remaining time
    */
-  addItem(item: UnifiedQueueItem): void {
+  addItem(item: UnifiedQueueItem, expectedGeneration = this.generation): void {
+    if (this.disposed) throw new Error("Queue owner is disposed");
+    if (expectedGeneration !== this.generation) throw new Error("Queue owner changed during purchase");
     const queue = this.findQueueWithLeastTime();
     if (!queue) {
       throw new Error("No queue available");
     }
 
     // Initialize remainingTime if not set
-    if (item.remainingTime === undefined || item.remainingTime === 0) {
+    if (item.remainingTime === undefined) {
       item.remainingTime = item.totalTime;
     }
 
-    queue.queuedItems.push(item);
+    mutateSharedQueueItem(
+      {
+        producer: this.gameObject,
+        item,
+        queueIndex: this.sharedQueues.indexOf(queue),
+        itemIndex: queue.queuedItems.length,
+        operation: "enqueue"
+      },
+      () => {
+        queue.queuedItems.push(item);
+      }
+    );
 
     // Emit queue change
     if (this.productionComponent) {
@@ -252,84 +330,36 @@ export class QueueComponent {
   /**
    * Public API: Cancel a production item
    */
-  cancelProductionItem(item: ProductionQueueItem): boolean {
-    for (let i = 0; i < this.sharedQueues.length; i++) {
-      const queue = this.sharedQueues[i]!;
-      const index = queue.queuedItems.findIndex(
-        (queueItem) =>
-          queueItem.type === QueueItemType.Production && queueItem.productionData?.actorName === item.actorName
-      );
-
-      if (index !== -1) {
-        const cancelledItem = queue.queuedItems[index]!;
-        if (cancelledItem.type !== QueueItemType.Production || !cancelledItem.productionData) {
-          continue;
-        }
-
-        // Remove from queue
-        queue.queuedItems.splice(index, 1);
-
-        // Delegate refund to ProductionComponent
-        if (this.productionComponent) {
-          this.productionComponent.handleProductionRefund(cancelledItem.productionData.costData, cancelledItem);
-          this.productionComponent.emitQueueChange({
-            itemsFromAllQueues: this.allItems,
-            type: "remove"
-          });
-
-          // Reset progress if queue is empty
-          if (queue.queuedItems.length === 0) {
-            this.productionComponent.emitProductionProgress({
-              queueIndex: i,
-              queueItemIndex: 0,
-              progressInPercentage: 0
-            });
-          }
-        }
-
-        this.notifyQueueChanged();
-        return true;
-      }
+  cancelProductionItem(item: ProductionQueueItem, cancellationCommand?: CancelProductionCommand): boolean {
+    if (this.disposed || this.cancelling) return false;
+    this.cancelling = true;
+    try {
+      return this.cancellation().cancelProductionItem(item, cancellationCommand);
+    } finally {
+      this.cancelling = false;
     }
-    return false;
   }
 
-  /**
-   * Public API: Cancel the first research item
-   */
-  cancelResearchItem(): boolean {
-    for (const queue of this.sharedQueues) {
-      const firstItem = queue.queuedItems[0];
-      if (firstItem && firstItem.type === QueueItemType.Research && firstItem.researchData) {
-        const type = firstItem.researchData;
-
-        // Delegate refund to ResearchComponent
-        if (this.researchComponent) {
-          this.researchComponent.handleResearchRefund(type, firstItem.remainingTime, firstItem.totalTime);
-        }
-
-        // Remove from queue
-        queue.queuedItems.splice(0, 1);
-
-        // Emit cancellation
-        if (this.researchComponent) {
-          this.researchComponent.researchCancelled.emit(type);
-          this.gameObject.emit(ResearchComponent.ResearchCancelledEvent, type);
-        }
-
-        // Emit queue change
-        if (this.productionComponent) {
-          this.productionComponent.emitQueueChange({
-            itemsFromAllQueues: this.allItems,
-            type: "remove"
-          });
-        }
-
-        this.notifyQueueChanged();
-        return true;
-      }
+  /** Public API: cancel the currently addressed research head through its native refund path. */
+  cancelResearchItem(cancellationCommand?: CancelResearchCommand): boolean {
+    if (this.disposed || this.cancelling) return false;
+    this.cancelling = true;
+    try {
+      return this.cancellation().cancelResearchItem(cancellationCommand);
+    } finally {
+      this.cancelling = false;
     }
-    return false;
+  }
+
+  private cancellation(): SharedQueueCancellation {
+    return new SharedQueueCancellation(
+      this.gameObject,
+      this.sharedQueues,
+      this.productionComponent,
+      this.researchComponent,
+      (item, kind, links, detail) => this.reportTerminalOutcome(item, kind, links, detail),
+      () => this.notifyQueueChanged()
+    );
   }
 
   /**
@@ -356,33 +386,21 @@ export class QueueComponent {
    * Get total remaining time for a queue
    */
   private getTotalRemainingTimeForQueue(queue: SharedQueue): number {
-    if (queue.queuedItems.length === 0) return 0;
-
-    let totalTime = 0;
-
-    for (const item of queue.queuedItems) {
-      totalTime += item.remainingTime;
-    }
-
-    return totalTime;
+    return queue.queuedItems.reduce((total, item) => total + item.remainingTime, 0);
   }
 
   /**
    * Public API: Get queue with least remaining time (for validation)
    */
   findQueueForNewItem(): SharedQueue | undefined {
-    return this.findQueueWithLeastTime();
+    return this.disposed ? undefined : this.findQueueWithLeastTime();
   }
 
   /**
    * Public API: Get total remaining production time across all queues
    */
   getTotalRemainingProductionTime(): number {
-    let totalTime = 0;
-    for (const queue of this.sharedQueues) {
-      totalTime += this.getTotalRemainingTimeForQueue(queue);
-    }
-    return totalTime;
+    return this.sharedQueues.reduce((total, queue) => total + this.getTotalRemainingTimeForQueue(queue), 0);
   }
 
   /**
@@ -395,19 +413,14 @@ export class QueueComponent {
     const totalTime = firstItem.totalTime;
     const remainingTime = firstItem.remainingTime;
 
-    return ((totalTime - remainingTime) / totalTime) * 100;
+    return totalTime === 0 ? 100 : ((totalTime - remainingTime) / totalTime) * 100;
   }
 
   /**
    * Public API: Check if any queue is producing
    */
   get isProducing(): boolean {
-    for (const queue of this.sharedQueues) {
-      if (queue.queuedItems.length > 0) {
-        return true;
-      }
-    }
-    return false;
+    return this.sharedQueues.some((queue) => queue.queuedItems.length > 0);
   }
 
   /**
@@ -452,57 +465,7 @@ export class QueueComponent {
    * Computed on-demand from sharedQueues
    */
   get items(): SharedQueueItem[] {
-    const items: SharedQueueItem[] = [];
-    let displayIndex = 0;
-
-    for (const queue of this.sharedQueues) {
-      for (let i = 0; i < queue.queuedItems.length; i++) {
-        const item = queue.queuedItems[i]!;
-
-        // Calculate progress (only for first item in queue)
-        const progress = i === 0 ? (this.getQueueProgress(queue) ?? 0) : 0;
-
-        // Handle production items
-        if (item.type === QueueItemType.Production && item.productionData) {
-          const actorDefinition = getPwActorDefinition(item.productionData.actorName, null);
-          const infoComponent = actorDefinition?.components?.info;
-          if (infoComponent?.smallImage) {
-            items.push({
-              type: SharedQueueItemType.Production,
-              id: `production-${displayIndex}`,
-              iconData: {
-                key: infoComponent.smallImage.key,
-                frame: infoComponent.smallImage.frame,
-                origin: infoComponent.smallImage.origin
-              },
-              progressPercent: progress,
-              displayIndex: displayIndex++,
-              productionData: item.productionData
-            });
-          }
-        }
-        // Handle research items
-        else if (item.type === QueueItemType.Research && item.researchData) {
-          const researchData = researchDefinitions[item.researchData];
-          if (researchData && researchData.icon) {
-            items.push({
-              type: SharedQueueItemType.Research,
-              id: `research-${item.researchData}`,
-              iconData: {
-                key: researchData.icon.key,
-                frame: researchData.icon.frame,
-                origin: { x: 0.5, y: 0.5 }
-              },
-              progressPercent: progress,
-              displayIndex: displayIndex++,
-              researchData: item.researchData
-            });
-          }
-        }
-      }
-    }
-
-    return items;
+    return projectSharedQueueItems(this.sharedQueues, (queue) => this.getQueueProgress(queue));
   }
 
   /**
@@ -526,17 +489,49 @@ export class QueueComponent {
     this.queueChangedSubject.next(this.items);
   }
 
+  private reportTerminalOutcome(
+    item: UnifiedQueueItem,
+    kind: Extract<GameCommandOutcomeKind, "completed" | "cancelled" | "failed">,
+    worldLinkIds: readonly string[],
+    detail?: string
+  ): void {
+    reportQueueTerminalOutcome(this.gameObject, item, kind, worldLinkIds, detail);
+  }
+
   /**
    * Get serialized data for save/load
    */
   getData(): UnifiedQueueItem[] {
-    return this.allItems;
+    return structuredClone(this.allItems);
+  }
+
+  /** Local lifetime token for a synchronous payment-to-insertion boundary; it is not persisted command authority. */
+  get workGeneration(): number {
+    return this.generation;
+  }
+
+  /** Preferred actor save: preserves mixed lane order, original payment policy and command lineage. */
+  getSnapshotData(): SharedQueueSnapshotData {
+    return snapshotSharedQueues(this.sharedQueues);
+  }
+
+  /** Replaces every lane atomically without charging or emitting completion callbacks. */
+  setSnapshotData(data: SharedQueueSnapshotData): void {
+    if (this.disposed) return;
+    const replacement = restoreSharedQueues(data, this.sharedQueues.length, this.capacityPerQueue);
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_queue_restore");
+    this.generation += 1;
+    this.sharedQueues = replacement;
+    this.notifyQueueChanged();
   }
 
   /**
    * Set data from save/load
    */
   setData(items: UnifiedQueueItem[]): void {
+    if (this.disposed) return;
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_queue_restore");
+    this.generation += 1;
     // Clear existing queues
     this.sharedQueues.forEach((queue) => {
       queue.queuedItems = [];
@@ -546,20 +541,45 @@ export class QueueComponent {
     items.forEach((item) => {
       const queue = this.findQueueWithLeastTime();
       if (queue) {
-        queue.queuedItems.push(item);
+        queue.queuedItems.push(structuredClone(item));
       }
     });
 
     this.notifyQueueChanged();
   }
 
+  /** Compatibility for old component saves: repeated type-specific restores replace that work, retaining the other kind. */
+  replaceLegacyItems(type: QueueItemType, items: UnifiedQueueItem[]): void {
+    this.setData([...this.allItems.filter((item) => item.type !== type), ...items]);
+  }
+
   /**
    * Cleanup
    */
   private destroy(): void {
+    if (this.disposed) return;
+    this.disposed = true;
+    this.generation += 1;
+    if (this.gameObject.scene?.sys.isActive()) {
+      for (const item of this.allItems) {
+        this.reportTerminalOutcome(item, "failed", [], "queue_owner_destroyed");
+      }
+    }
     this.simulationTickSub?.unsubscribe();
+    this.gameObject.scene?.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+    this.gameObject.off(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
+    this.gameObject.off(HealthComponent.KilledEvent, this.destroy, this);
+    this.sharedQueues.forEach((queue) => {
+      queue.queuedItems = [];
+    });
     this.productionComponent = undefined;
     this.researchComponent = undefined;
     this.queueChangedSubject.next([]);
+    this.queueChangedSubject.complete();
+  }
+
+  /** A progress observer may synchronously cancel/restore; completion must still refer to the exact live head. */
+  private isCurrentHead(queue: SharedQueue, item: UnifiedQueueItem, generation: number): boolean {
+    return !this.disposed && generation === this.generation && queue.queuedItems[0] === item;
   }
 }

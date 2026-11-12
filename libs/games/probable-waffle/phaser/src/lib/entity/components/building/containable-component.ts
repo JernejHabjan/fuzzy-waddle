@@ -3,6 +3,7 @@ import { ContainerComponent } from "./container-component";
 import { getActorComponent } from "../../../data/actor-component";
 type GameObject = Phaser.GameObjects.GameObject;
 import { HealthComponent } from "../combat/components/health-component";
+import { fenceSceneResourceHistory } from "../../../data/scene-resource-observation";
 
 /**
  * Apply on actor that can be loaded into a container - for example enter a mine to gather resources or enter a tower to repair or shoot
@@ -20,25 +21,34 @@ export class ContainableComponent {
     return !!this.containerOwner;
   }
 
+  /** Returns the physical container for observation adapters; callers must persist only its stable ID. */
+  getContainerOwner(): GameObject | null {
+    return this.containerOwner;
+  }
+
   leaveContainer() {
     if (!this.containerOwner) return;
     const owner = this.containerOwner;
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_container_change");
     this.containerOwner = null; // clear before calling to prevent infinite recursion
     getActorComponent(owner, ContainerComponent)?.unloadGameObject(this.gameObject);
   }
 
   /** Clears the container reference without triggering unload (called by ContainerComponent during unload). */
   clearContainerReference() {
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_container_change");
     this.containerOwner = null;
   }
 
   setContainer(containerOwner: GameObject) {
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_container_change");
     this.containerOwner = containerOwner;
   }
 
   /** Cancel any pending boarding request registered on a container (called when unit takes a new order). */
   cancelAnyPendingBoardingRequest() {
     if (!this.pendingContainerBoardingRequest) return;
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_container_change");
     getActorComponent(this.pendingContainerBoardingRequest, ContainerComponent)?.cancelBoardingRequest(this.gameObject);
     this.pendingContainerBoardingRequest = null;
   }
@@ -49,6 +59,7 @@ export class ContainableComponent {
   onKilled() {
     if (!this.containerOwner) return;
     const owner = this.containerOwner;
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_container_change");
     this.containerOwner = null; // clear before calling to prevent infinite recursion
     getActorComponent(owner, ContainerComponent)?.unloadGameObject(this.gameObject);
   }

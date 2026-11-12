@@ -26,7 +26,7 @@ describe("CampaignProfileService", () => {
 
   it("migrates completion-only guest progress without losing the original record", async () => {
     localStorage.setItem(
-      "aota-campaign-progress-v1",
+      "aota-campaign-progress",
       JSON.stringify({ completedMissions: [{ missionId: "dreams", completedAt: "2026-07-20T10:00:00.000Z" }] })
     );
     service = TestBed.inject(CampaignProfileService);
@@ -36,7 +36,7 @@ describe("CampaignProfileService", () => {
     expect(service.profileData().completedMissions).toEqual([
       { missionId: "dreams", completedAt: "2026-07-20T10:00:00.000Z" }
     ]);
-    expect(localStorage.getItem("aota-campaign-progress-v1")).not.toBeNull();
+    expect(localStorage.getItem("aota-campaign-progress")).not.toBeNull();
   });
 
   it("loads, merges, and starts an authenticated run with profile/loadout identity", async () => {

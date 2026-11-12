@@ -45,6 +45,17 @@ describe("GameSaveService", () => {
     });
     service = TestBed.inject(GameSaveService);
   });
+  it("freezes the world before repository awaits while the caller resumes simulation", async () => {
+    const input = structuredClone(data);
+    const state = input.gameStateData;
+    if (!state) throw new Error("missing test game state");
+    state.simulationTick = 200;
+    const pending = service.save({ scope: "campaign", kind: "quicksave", gameInstanceData: input, campaign: campaign() });
+    state.simulationTick = 900;
+    const saved = await pending;
+    expect(saved.gameInstanceData.gameStateData?.simulationTick).toBe(200);
+    expect(saved.gameInstanceData).not.toBe(input);
+  });
   it("continues from the newest valid manual or automatic campaign save", async () => {
     await service.save({
       scope: "campaign",

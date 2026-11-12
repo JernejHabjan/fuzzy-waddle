@@ -21,7 +21,7 @@ describe("ActorIndexSystem ownership conversion", () => {
     let owner = 1;
     const ownerComponent = { getOwner: () => owner } as OwnerComponent;
     const actorData = new ActorData(
-      new Map([
+      new Map<any, any>([
         [IdComponent, id],
         [OwnerComponent, ownerComponent]
       ]),
@@ -32,6 +32,8 @@ describe("ActorIndexSystem ownership conversion", () => {
       active: true,
       name: ObjectNames.TivaraWorker,
       once: jest.fn(),
+      on: jest.fn(),
+      off: jest.fn(),
       getData: (key: string) => (key === ActorDataKey ? actorData : undefined)
     } as unknown as Phaser.GameObjects.GameObject;
     const ownershipChanged = jest.fn();
@@ -44,5 +46,20 @@ describe("ActorIndexSystem ownership conversion", () => {
     expect(index.getOwnedActors(1)).toEqual([]);
     expect(index.getOwnedActors(2)).toEqual([actor]);
     expect(ownershipChanged).toHaveBeenCalledWith({ actor, oldOwner: 1, newOwner: 2 });
+  });
+
+  it("rejects actors owned by another scene", () => {
+    const scene = Object.assign(Object.create(ProbableWaffleScene.prototype), {
+      events: { once: jest.fn() }
+    }) as ProbableWaffleScene;
+    const index = new ActorIndexSystem(scene);
+    const actor = {
+      scene: Object.assign(Object.create(ProbableWaffleScene.prototype), {}),
+      active: true
+    } as Phaser.GameObjects.GameObject;
+
+    index.registerActor(actor);
+
+    expect(index.getAllIdActors()).toEqual([]);
   });
 });

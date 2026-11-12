@@ -1,5 +1,5 @@
-import Phaser from "phaser";
-import { type EnemyIntel, PlayerAiBlackboard } from "../player-ai-blackboard";
+import type Phaser from "phaser";
+import { PlayerAiBlackboard } from "../player-ai-blackboard";
 import { ObjectNames, ProbableWafflePlayer } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
@@ -8,23 +8,16 @@ import { GathererComponent } from "../../../entity/components/resource/gatherer-
 import { ProductionComponent } from "../../../entity/components/production/production-component";
 import { AttackComponent } from "../../../entity/components/combat/components/attack-component";
 import { ResourceDrainComponent } from "../../../entity/components/resource/resource-drain-component";
-import { OwnerComponent } from "../../../entity/components/owner-component";
-import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
-import { getUnitStrength } from "../ai-utils";
-import { DistanceHelper } from "../../../library/distance-helper";
+import { getUnitStrength } from "../decision/ai-utils";
 import { AI_CONFIG } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/ai-config";
 import { getResearchedLevelForActor } from "../../../data/actor-level-utils";
-import { ContainableComponent } from "../../../entity/components/building/containable-component";
-import { getGameObjectLogicalTransform, isSceneActive } from "../../../data/game-object-helper";
-import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
-/**
- * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
- * storage boundaries do not drift into an unconstrained primitive.
- */
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
+
 type GameObject = Phaser.GameObjects.GameObject;
 
+/** Refreshes owned compatibility data. Enemy knowledge belongs exclusively to the fair observation pipeline. */
 export class WorldStateSnapshotManager {
   private lastOwnedRefreshAt = 0;
 
@@ -34,22 +27,25 @@ export class WorldStateSnapshotManager {
     private readonly blackboard: PlayerAiBlackboard
   ) {}
 
-  update(now: number) {
+  /** Pure planning needs current owned resources/supply, without waiting for legacy enemy routes. */
+  updateOwned(now: number): void {
     if (now - this.lastOwnedRefreshAt < AI_CONFIG.ownedRefreshIntervalMs) return;
-    // noinspection JSIgnoredPromiseFromCall
-    this.refreshWorldState(now);
+    this.refreshOwnedState();
     this.lastOwnedRefreshAt = now;
   }
 
-  private async refreshWorldState(now: number) {
+  private refreshOwnedState() {
     const index = getSceneService(this.scene, ActorIndexSystem);
     if (!index) return;
 
-    const owned = index.getOwnedActors(this.player.playerNumber);
+    const owned = index
+      .getOwnedActors(this.player.playerNumber)
+      .filter(hasStableAiActorId)
+      .sort(compareAiActorsByStableId);
 
     this.refreshOwnedActors(owned);
     this.refreshEconomyAndSupply();
-    await this.refreshEnemyState(owned, index);
+    return { owned, index };
   }
 
   // ---------------------------------------------------------------------------
@@ -71,7 +67,6 @@ export class WorldStateSnapshotManager {
     const gathering: GameObject[] = [];
 
     const techTree = getSceneService(this.scene, TechTreeService);
-    const faction = this.player.factionType!;
 
     owned.forEach((go) => {
       const actorName = go.name as ObjectNames;
@@ -139,175 +134,24 @@ export class WorldStateSnapshotManager {
 
     this.blackboard.production.supply.pendingFromQueued = queued;
   }
-
-  // ---------------------------------------------------------------------------
-  // ENEMIES / VISIBILITY / DEFENSE
-  // ---------------------------------------------------------------------------
-
-  /**
-   * Refreshes visible enemy intelligence and defensive assignments from indexed actors.
-   * It waits for path/distance queries before committing blackboard state, then verifies
-   * the scene is still active so a destroyed scene cannot receive late async results.
-   *
-   * @see {@link extractEnemyCandidates} for visibility-aware candidate selection.
-   */
-  private async refreshEnemyState(owned: GameObject[], index: ActorIndexSystem) {
-    const enemyCandidates = await this.extractEnemyCandidates(owned, index, this.blackboard.units);
-
-    const enemyIntel: Record<number, EnemyIntel> = {};
-    let totalEnemyStrength = 0;
-
-    for (const enemy of enemyCandidates) {
-      const owner = getActorComponent(enemy, OwnerComponent)?.getOwner();
-      if (owner === undefined || owner === this.player.playerNumber) continue;
-
-      if (!enemyIntel[owner]) {
-        enemyIntel[owner] = {
-          strength: 0,
-          unitsInCombat: 0,
-          flankOpen: false
-        };
-      }
-
-      const isCombatUnit = getActorComponent(enemy, AttackComponent) && !getActorComponent(enemy, GathererComponent);
-
-      if (isCombatUnit) {
-        const strength = getUnitStrength(enemy);
-        enemyIntel[owner].strength += strength;
-        totalEnemyStrength += strength;
-      }
-    }
-
-    this.blackboard.enemyIntel = enemyIntel;
-    this.blackboard.visibleEnemies = enemyCandidates;
-    this.blackboard.enemyMilitaryStrength = totalEnemyStrength;
-
-    const baseCenter = this.blackboard.baseCenterTile;
-    if (baseCenter) {
-      this.blackboard.enemiesNearBase = await this.getEnemiesNearBase(enemyCandidates, baseCenter);
-    } else {
-      console.warn("AI Blackboard: No base center tile defined for enemy proximity check.");
-      this.blackboard.enemiesNearBase = [];
-    }
-    if (!isSceneActive(this.scene)) {
-      // after long async action, scene might be destroyed
-      return;
-    }
-    this.blackboard.enemyBase = this.blackboard.primaryTarget;
-    this.blackboard.enemyFlankOpen = false;
-
-    this.assignDefenders(baseCenter);
-  }
-
-  private async getEnemiesNearBase(enemies: GameObject[], baseCenter: { x: number; y: number; z: number }) {
-    const near: GameObject[] = [];
-    const distances = await DistanceHelper.batchGetTileDistancesToTile(enemies, baseCenter);
-
-    for (let i = 0; i < enemies.length; i++) {
-      const d = distances[i];
-      if (typeof d === "number" && d <= AI_CONFIG.enemyNearBaseRadiusTiles) {
-        near.push(enemies[i]!);
-      }
-    }
-    return near;
-  }
-
-  private assignDefenders(baseCenter: { x: number; y: number; z: number } | null) {
-    const defenders: GameObject[] = [];
-
-    if (baseCenter) {
-      this.blackboard.units.forEach((u) => {
-        const d = DistanceHelper.getTileDistanceBetweenGameObjectAndTile(u, baseCenter);
-        if (d !== null && d <= AI_CONFIG.defenderAssignmentRadiusTiles) {
-          defenders.push(u);
-        }
-      });
-    }
-
-    if (defenders.length === 0) {
-      defenders.push(...this.blackboard.units.slice(0, AI_CONFIG.defenderFallbackMaxCount));
-    }
-
-    this.blackboard.defendingUnits = defenders;
-  }
-
-  // ---------------------------------------------------------------------------
-  // VISIBILITY
-  // ---------------------------------------------------------------------------
-
-  private async extractEnemyCandidates(
-    owned: GameObject[],
-    index: ActorIndexSystem,
-    units: GameObject[]
-  ): Promise<GameObject[]> {
-    const ownedSet = new Set(owned);
-    const allActors = index.getAllIdActors();
-    const baseCenter = this.blackboard.baseCenterTile;
-    const visionRadius = AI_CONFIG.enemyVisionRadiusTiles;
-
-    const candidates = allActors.filter((obj) => {
-      if (ownedSet.has(obj)) return false;
-      if (!getActorComponent(obj, OwnerComponent)) return false;
-      // Skip actors that are inside a container — they are not targetable
-      // noinspection RedundantIfStatementJS
-      if (getActorComponent(obj, ContainableComponent)?.isContained()) return false;
-      return true;
-    });
-
-    // Campaign normal fog uses a stable logical-radius view; skirmish keeps its existing behavior.
-    if (this.player.playerController.data.playerDefinition?.campaignFogPolicy === "normal") {
-      const visionSources = owned
-        .map((actor) => getGameObjectLogicalTransform(actor))
-        .filter((position): position is Vector3Simple => position !== null);
-      return candidates.filter((candidate) => {
-        const position = getGameObjectLogicalTransform(candidate);
-        return (
-          position !== null && isCampaignAiTargetVisible(position, visionSources, baseCenter ?? undefined, visionRadius)
-        );
-      });
-    }
-
-    // ignore visibility checks atm
-    // const visibilityChecks = candidates.map(async (obj) => {
-    //   if (baseCenter) {
-    //     const anyObj: any = obj.body || obj;
-    //     if (anyObj?.x != null) {
-    //       const dx = anyObj.x - baseCenter.x;
-    //       const dy = anyObj.y - baseCenter.y;
-    //       if (dx * dx + dy * dy <= visionRadius * visionRadius) {
-    //         return obj;
-    //       }
-    //     }
-    //   }
-    //
-    //   for (const u of units) {
-    //     const d = await DistanceHelper.getTileDistanceBetweenGameObjectsNavigation(u, obj);
-    //     if (d !== null && d <= visionRadius) {
-    //       return obj;
-    //     }
-    //   }
-    //   return null;
-    // });
-    //
-    // const visible = await Promise.all(visibilityChecks);
-    // return visible.filter((v): v is GameObject => v !== null);
-
-    return candidates;
-  }
 }
 
-/** Documents the is campaign ai target visible member and its declared contract at this boundary. */
-export function isCampaignAiTargetVisible(
-  target: Vector3Simple,
-  visionSources: readonly Vector3Simple[],
-  baseCenter: Vector3Simple | undefined,
-  radius: number
-): boolean {
-  const radiusSquared = radius * radius;
-  return [baseCenter, ...visionSources].some((source) => {
-    if (!source) return false;
-    const deltaX = source.x - target.x;
-    const deltaY = source.y - target.y;
-    return deltaX * deltaX + deltaY * deltaY <= radiusSquared;
-  });
+/**
+ * Orders indexed AI actors by the stable ID required by command and replay contracts.
+ * Snapshot inputs come from {@link ActorIndexSystem}, so a missing ID indicates a broken
+ * indexing invariant rather than a candidate that may be ordered by runtime insertion.
+ */
+export function compareAiActorsByStableId(left: GameObject, right: GameObject): number {
+  const leftId = getActorComponent(left, IdComponent)?.id;
+  const rightId = getActorComponent(right, IdComponent)?.id;
+  if (!leftId || !rightId) {
+    throw new Error("AI actor ordering requires indexed actors with stable IDs");
+  }
+  if (leftId === rightId) return 0;
+  return leftId < rightId ? -1 : 1;
+}
+
+/** Excludes stale/transitional index entries without allowing them to halt an AI decision boundary. */
+export function hasStableAiActorId(actor: GameObject): boolean {
+  return Boolean(getActorComponent(actor, IdComponent)?.id);
 }

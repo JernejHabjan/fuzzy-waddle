@@ -32,7 +32,8 @@ export const fieldDefinition = {
         "Assign a farmer to tend crops",
         "Goes through seeding and growth phases",
         "Harvest food when crops are ripe",
-        "Requires Granary nearby to drop off food"
+        "Build a Granary to unlock Fields",
+        "Return food to a compatible nearby drop-off"
       ],
       smallImage: {
         key: "factions",
@@ -69,13 +70,13 @@ export const fieldDefinition = {
       resourceType: ResourceType.Food,
       maximumResources: 30,
       maxGatherers: 1,
-      cooldown: 2000,
+      cooldown: 1000,
       gatheringFactor: 1,
       respawnOnDepletion: true,
       needsReturnToDrain: true
     },
     tendable: {
-      growthDurationMs: 45000,
+      growthDurationMs: 30000,
       tenderBoostMultiplier: 2,
       maxTenders: 1,
       autoStart: false
