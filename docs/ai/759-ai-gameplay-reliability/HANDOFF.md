@@ -3,8 +3,8 @@
 ## Resume cursor
 
 - Active on `feature/759-skirmish-ai`, PR [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814).
-  **3/8 packets complete (R2, R4, R6)**. Preserve the local R3 experiment and exact-arrival reproducer; next resolve its
-  corridor failure, then finish R5/R7/R8 and perform the separate omission and closure audits.
+  **4/8 packets complete (R2, R4, R6, R7)**. Preserve the local R3 experiment and exact-arrival reproducer; continue
+  R3/R5, finish the R8 post-fix comparison, then perform separate omission and closure audits.
 - **R1/R8:** Three matched 240-tick normal-speed combat runs: camera-bounded fog reduced median elapsed time
   23.36→18.01s (−22.90%) and polygon self-time 86.76%; two-AI runs improved 20.06→14.76s (−26.44%).
   Both sides retained 12 decisions; same-revision full/bounded fog state hash `d9f51b4d` matched. Evidence:
@@ -47,13 +47,12 @@
   taking a continuing member's valid approach slot. Existing legal slots are now reserved before assigning new
   members. The case asserts stable assignments for unchanged missions and still proves damage and physical progress
   (`army-slot-acceptance-playwright/`, 11 focused selector tests, gameplay lint and browser build pass).
-- **R7 open:** minor injury, actual withdrawal/re-engagement and individual wounded infantry/ranged controls pass;
-  scout withdrawal persists across new search questions and produces physical movement (`scout-threat-final.log`).
-  Mixed ground/air forces both damage the same enemy and continue after an injured fighter withdraws
-  (`mixed-force.log`, `mixed-injury.log`). Both ground-only and mixed air/ground reinforcement cases now prove an
-  applied retreat and physical movement followed by stable re-engagement and damage (`reinforcement-final.log`).
-  The mixed flyers begin damaging attackers before re-engagement; both domains hit afterward. These recent controls
-  include local R3 changes. `quiet-combat-replay.json` retains earlier favorable-fight evidence; final R7 audit remains.
+- **R7 validated:** current five-case retreat file passes on the strategy/movement worktree: minor injury in a favorable
+  fight, critical infantry/ranged withdrawal, and ground/mixed reinforcements re-engaging after retreat. Command:
+  `AI_GAMEPLAY_RELIABILITY=1 pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts apps/portal-e2e/src/e2e/probable-waffle/skirmish/ai/reproduction/combat/skirmish-gameplay-retreat.spec.ts --workers=1`
+  (5 passed, 1.5m; `retreat-post-R6/`). Scout withdrawal persists through new search questions and moves
+  (`scout-threat-final.log`); mixed domains continue damaging after withdrawal (`mixed-force.log`, `mixed-injury.log`);
+  earlier favorable-fight evidence is `quiet-combat-replay.json`.
 - All artifacts above are under ignored `tmp/ai-gameplay-reliability/`. Set `AI_SKIRMISH_RUNTIME_RESULTS_DIRECTORY`
   and matrix output under workspace tmp; one match runner at a time, at most 30 minutes per invocation. Ordinary CI
   passed on [`b6b50efdb`](https://github.com/JernejHabjan/fuzzy-waddle/actions/runs/43066672427).
@@ -94,7 +93,7 @@ and controls. Record an evidence gap separately from a code defect. A blocker do
 | R4 Pursuit and attack execution | R1, R3 relevant contract | complete | Seven current-commit native pursuit modes pass; adjacent ranged-unit melee selection/damage passes. |
 | R5 AI mission ownership and defense | R1, R3, R4 | in_progress | Ready existing air defender now lands a native hit without duplicate same-target orders; ground-only defense hits all three raiders. Stable attack slots pass. AI-selected production continuity and final owner audit remain. |
 | R6 Emergency counter production | R1, R5 defender contract | complete | Six native controls pass: Tivara/Skaduwee counters, existing defender, ground-only defense, hidden-air timing and missing Temple. Exact command and artifact are in the resume entry. |
-| R7 Retreat and re-engagement | R1, R4, R5 | in_progress | Minor injury, individual/scout withdrawal, and ground/mixed-force retreat and reinforcement have native evidence; final audit remains. |
+| R7 Retreat and re-engagement | R1, R4, R5 | complete | Five current native retreat cases pass. Scout withdrawal, mixed-force support and continued damage after re-engagement have prior native evidence. Exact command/artifact are in the resume entry. |
 | R8 Measured performance improvement | baseline in R1; final comparison after R2–R7 | in_progress | Combat and two-AI comparisons meet targets. Same-revision two-AI state matches; final review remains. |
 
 Record each packet in its row: commit/diff identity, exact focused command, result, workload/fixture identity and
