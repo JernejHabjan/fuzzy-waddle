@@ -3,8 +3,8 @@
 ## Resume cursor
 
 - Active on `feature/759-skirmish-ai`, PR [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814).
-  **1/8 packets complete (R2)**. Preserve the local R3 experiment and reproducer; next resolve its corridor failure,
-  then verify the remaining controls and perform the separate omission and closure audits. Read the packet below.
+  **2/8 packets complete (R2, R4)**. Preserve the local R3 experiment and exact-arrival reproducer; next resolve its
+  corridor failure, then verify remaining packets and perform the separate omission and closure audits.
 - **R1/R8:** Three matched 240-tick normal-speed combat runs: camera-bounded fog reduced median elapsed time
   23.36→18.01s (−22.90%) and polygon self-time 86.76%; two-AI runs improved 20.06→14.76s (−26.44%).
   Both sides retained 12 decisions; same-revision full/bounded fog state hash `d9f51b4d` matched. Evidence:
@@ -22,13 +22,10 @@
   still fails. A same-lane priority experiment also reached 10/12,
   delayed starts and was removed (`traffic-priority.log`). Resolve destination access without overriding human orders;
   retain the exact-destination, collision and settling oracle. Failed alternatives and geometry are under tmp.
-- **R4 open for final audit:** native Banshee pursues and hits a moving worker; human replacement stops stale hits,
-  equal-speed escape takes no phantom damage, and target removal clears the order. An unreachable target retains its
-  order, limits probes and becomes hittable after the exact wall is removed (`pursuit-door-final.log`). Check remaining
-  acceptance controls in R4; do not repeat retained cases without changed inputs. A focused regression found ranged
-  units selected their high-damage ranged weapon even inside its minimum range instead of a usable melee weapon.
-  Native selection now prefers an in-range compatible weapon; focused combat and pursuit controls pass. The real
-  adjacent-unit check proves melee selection and damage (`close-range-final.log`); it includes the local R3 changes.
+- **R4 validated:** all seven native pursuit modes pass on `fe5b6f24f`: moving-target hits, human-order replacement,
+  autonomous squad pursuit, equal-speed escape, removed target, bounded unreachable retries and route reopening
+  (`AI_GAMEPLAY_RELIABILITY=1 pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts apps/portal-e2e/src/e2e/probable-waffle/skirmish/ai/reproduction/movement/skirmish-gameplay-pursuit.spec.ts --workers=1`; 7 passed, 1.4m; `test-results/`).
+  Native adjacent melee selection/damage also passes (`close-range-final.log`).
 - **R5/R6 open for final audit:** real three-Owl attacks trigger Tivara and Skaduwee counters and damage; existing
   defenders engage, ground-only and hidden-air controls pass. Missing Temple is constructed and two counters land six
   hits with committed movement code (`counter-committed-native.log`, `160080af5`). Recovery respects tactical
@@ -90,7 +87,7 @@ and controls. Record an evidence gap separately from a code defect. A blocker do
 | R1 Focused reproductions and baseline | none | in_progress | Teardown/churn/large-slot defects reproduced and combat baseline frozen; remaining targeted gameplay controls open. |
 | R2 Restore and teardown lifecycle | R1 relevant reproduction | complete | All save types restore input, camera and elevation. Fresh start, live topology removal and teardown controls pass. See the R2 resume entry. |
 | R3 Movement and formation stability | R1 | in_progress | Arrived slots, quiet membership and eight-slot ceiling repaired; 100 tactical controls pass. Exact opposing traffic and large-group physical settling remain. |
-| R4 Pursuit and attack execution | R1, R3 relevant contract | in_progress | Pursuit, escape, replacement, removal, bounded unreachable retries and route reopening pass; audit remaining controls. |
+| R4 Pursuit and attack execution | R1, R3 relevant contract | complete | Seven current-commit native pursuit modes pass; adjacent ranged-unit melee selection/damage passes. |
 | R5 AI mission ownership and defense | R1, R3, R4 | in_progress | Ground/air defense and harmless-contact controls pass; stable attack slots are retained for same-target members. AI-selected production continuity and final owner audit remain. |
 | R6 Emergency counter production | R1, R5 defender contract | in_progress | Both factions produce counters that land native hits; missing Temple is built in the real scenario. Audit remaining ownership and prerequisites. |
 | R7 Retreat and re-engagement | R1, R4, R5 | in_progress | Minor injury, individual/scout withdrawal, and ground/mixed-force retreat and reinforcement have native evidence; final audit remains. |
