@@ -1,4 +1,4 @@
-import { FactionType, ObjectNames, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
+import { FactionType, ObjectNames, OrderType, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
 import { createAiBrainState } from "../../../brain/state/create-ai-brain-state";
 import type { AiCapabilityCatalog } from "../../../contracts/observation/ai-capability-catalog";
 import type { AiObservedActor } from "../../../contracts/observation/ai-observation";
@@ -129,6 +129,76 @@ describe("AI local defense sizing", () => {
         kind: "actor",
         actorId
       }))
+    );
+  });
+
+  it("preserves an active target while assigning other defenders to a closer raider", () => {
+    const original = defenseContextFor(3);
+    const defendedTarget = original.visibleEnemies[0]!;
+    const newlyCloserTarget = original.visibleEnemies[2]!;
+    const engagedDefender = original.combat[0]!;
+    const engagedCombat = original.combat.map((actor) =>
+      actor.actorId === engagedDefender.actorId
+        ? {
+            ...actor,
+            activeOrder: {
+              status: "known" as const,
+              observedTick: 20,
+              value: { orderType: OrderType.Attack, targetActorId: defendedTarget.actorId }
+            }
+          }
+        : actor
+    );
+    const context: AiSkirmishProposalContext = {
+      ...original,
+      combat: engagedCombat,
+      localThreat: newlyCloserTarget,
+      activeDefense: {
+        squadId: "squad:defense:home",
+        role: "defense",
+        domain: "ground",
+        actorIds: ["guard-0"],
+        objectiveId: defendedTarget.actorId,
+        state: "engaged"
+      },
+      intents: [],
+      nextSquads: [],
+      primaryOwnedActors: new Set()
+    };
+
+    advanceAiSkirmishDefense(context, profile);
+
+    expect(context.nextSquads[0]?.objectiveId).toBe(newlyCloserTarget.actorId);
+    expect(context.intents.find((intent) => intent.kind === "attack")).toMatchObject({
+      targetActorId: newlyCloserTarget.actorId,
+      actorIds: expect.not.arrayContaining([engagedDefender.actorId])
+    });
+  });
+
+  it("does not reissue an identical attack order and cancel its weapon windup", () => {
+    const original = defenseContextFor(1);
+    const target = original.localThreat!;
+    const currentDefender = original.combat[0]!;
+    const defender = {
+      ...currentDefender,
+      activeOrder: {
+        status: "known" as const,
+        observedTick: 20,
+        value: { orderType: OrderType.Attack, targetActorId: target.actorId }
+      }
+    };
+    const context: AiSkirmishProposalContext = {
+      ...original,
+      combat: original.combat.map((actor) => (actor.actorId === defender.actorId ? defender : actor)),
+      intents: [],
+      nextSquads: [],
+      primaryOwnedActors: new Set()
+    };
+
+    advanceAiSkirmishDefense(context, profile);
+
+    expect(context.intents.filter((intent) => intent.kind === "attack").flatMap((intent) => intent.actorIds)).not.toContain(
+      defender.actorId
     );
   });
 

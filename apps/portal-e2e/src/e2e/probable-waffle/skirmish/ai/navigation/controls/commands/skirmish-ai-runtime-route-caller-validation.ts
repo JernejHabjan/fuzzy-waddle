@@ -49,7 +49,7 @@ export function validateRuntimeRouteCallers(capture: AiRuntimeProductionSnapshot
     const admissionOverlay =
       path.kind === "producer_path" &&
       caller.stage === "initial" &&
-      ["actor_movement", "boarding_adjacent"].includes(caller.caller) &&
+      ["actor_movement", "boarding_adjacent", "location_movement", "tending_movement"].includes(caller.caller) &&
       path.method === "tile_dynamic" &&
       (path.dynamicBlockerCount ?? 0) > 0;
     if (

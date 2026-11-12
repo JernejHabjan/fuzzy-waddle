@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { execFileSync } from "node:child_process";
-import { createWriteStream, readFileSync } from "node:fs";
+import { createWriteStream, readFileSync, writeFileSync } from "node:fs";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { createGzip } from "node:zlib";
@@ -232,6 +232,77 @@ for (const { faction, readyCounter, groundOnly, hidden = false, missingTemple = 
     const producedHits = hits.filter((fact) => produced.has(fact.damage.initiator?.actorId ?? ""));
     const readyId = result.presetCreatedActorIds["ready-counter"];
     const readyHits = hits.filter((fact) => fact.damage.initiator?.actorId === readyId);
+    const readyTrace =
+      readyCounter && readyId
+        ? context.frames.map((frame) => {
+            const defender = frame.tacticalBoundary?.actors.find((actor) => actor.identity.actorId === readyId);
+            const squads = frame.decision.missionState?.squads.filter((squad) => squad.actorIds.includes(readyId)) ?? [];
+            return {
+              tick: frame.tick,
+              actor: defender
+                ? {
+                    tile: defender.tile,
+                    visible: defender.visible,
+                    health: defender.health,
+                    alive: defender.identity.alive
+                  }
+                : null,
+              observedOrder: frame.decision.input?.observation?.actors.find((actor) => actor.actorId === readyId)
+                ?.activeOrder,
+              targets: (frame.tacticalBoundary?.actors ?? [])
+                .filter((actor) => raiderIds.has(actor.identity.actorId))
+                .map((actor) => ({ id: actor.identity.actorId, tile: actor.tile, alive: actor.identity.alive })),
+              squads: squads.map((squad) => ({ role: squad.role, objectiveId: squad.objectiveId, state: squad.state })),
+              intents: frame.decision.acceptedIntents
+                .filter((intent) => intent.actorIds?.includes(readyId))
+                .map((intent) => ({
+                  kind: intent.kind,
+                  targetActorId: "targetActorId" in intent ? intent.targetActorId : undefined,
+                  logicalPosition: "logicalPosition" in intent ? intent.logicalPosition : undefined
+                }))
+            };
+          })
+        : [];
+    const readyAttackOps =
+      readyCounter && readyId
+        ? (result.productionCapture?.facts ?? [])
+            .flatMap((fact) => {
+              if (
+                fact.kind !== "native_combat" ||
+                fact.operation.actor.actorId !== readyId ||
+                (fact.operation.kind !== "attack_requested" && fact.operation.kind !== "attack_committed")
+              )
+                return [];
+              return [
+                {
+                  tick: fact.tick,
+                  kind: fact.operation.kind,
+                  target: fact.operation.target.actorId,
+                  actorTile: fact.operation.actorTile,
+                  targetTile: fact.operation.targetTile,
+                  distance: fact.operation.distance,
+                  weapon: fact.operation.weapon.weaponType
+                }
+              ];
+            })
+        : [];
+    const readyRouteOrders =
+      readyCounter && readyId
+        ? (result.productionCapture?.facts ?? []).flatMap((fact) =>
+            fact.kind === "spatial_authority" &&
+            fact.spatial.kind === "route_order" &&
+            fact.spatial.source.actorId === readyId
+              ? [
+                  {
+                    tick: fact.tick,
+                    orderType: fact.spatial.order.orderType,
+                    targetId: fact.spatial.order.target?.actorId,
+                    targetTile: fact.spatial.order.targetTile
+                  }
+                ]
+              : []
+          )
+        : [];
     const { productionCausality, ...retained } = full;
     void productionCausality;
     console.log(
@@ -250,11 +321,19 @@ for (const { faction, readyCounter, groundOnly, hidden = false, missingTemple = 
         compatibleHits: hits.length,
         producedHits: producedHits.length,
         readyHits: readyHits.length,
+        readyTrace,
+        readyAttackOps,
+        readyRouteOrders,
         failures: context.failures,
         gaps: result.productionEvidenceV2?.gaps,
         errors: result.aiErrors
       })
     );
+    if (readyTrace.length)
+      writeFileSync(
+        testInfo.outputPath("ready-counter-trace.json"),
+        JSON.stringify({ decisions: readyTrace, attacks: readyAttackOps, orders: readyRouteOrders })
+      );
     await pipeline(
       Readable.from(stringifyChunked({ source, fixtureDigest, readyCounter, result: retained })),
       createGzip(),

@@ -104,8 +104,21 @@ export function advanceAiSkirmishDefense(context: AiSkirmishProposalContext, pro
     actorId
   }));
   if (!activeDefense?.tactics && targetPosition) {
-    const attackableDefenders = defenders.filter((actor) => canSeeTarget(actor, localThreat, context.catalog));
-    const interceptors = defenders.filter((actor) => !attackableDefenders.includes(actor));
+    const alreadyAttackingVisibleThreat = defenders.filter((actor) => {
+      const activeOrder = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
+      return (
+        activeOrder?.orderType === "Attack" &&
+        context.visibleEnemies.some(
+          (enemy) => enemy.actorId === activeOrder.targetActorId && canTarget(actor, enemy)
+        )
+      );
+    });
+    const attackableDefenders = defenders.filter(
+      (actor) => canSeeTarget(actor, localThreat, context.catalog) && !alreadyAttackingVisibleThreat.includes(actor)
+    );
+    const interceptors = defenders.filter(
+      (actor) => !attackableDefenders.includes(actor) && !alreadyAttackingVisibleThreat.includes(actor)
+    );
     if (attackableDefenders.length > 0)
       context.intents.push({
         ...intentBase(state, defensePlanId, observation.tick, `defend:${localThreat.actorId}`, "army_threat", 940),
@@ -121,7 +134,7 @@ export function advanceAiSkirmishDefense(context: AiSkirmishProposalContext, pro
         kind: "move",
         actorIds: interceptors.map((actor) => actor.actorId),
         claims: actorClaims.filter((claim) => interceptors.some((actor) => actor.actorId === claim.actorId)),
-        logicalPosition: targetPosition
+        logicalPosition: position(localThreat) ?? targetPosition
       });
   }
   context.skirmish = withTimeline(
