@@ -3,7 +3,7 @@
 ## Resume cursor
 
 - Active on `feature/759-skirmish-ai`, PR [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814).
-  **8/8 packets validated (R1–R8)**. The independent omission and final closure audits remain.
+  **8/8 packets validated (R1–R8); omission and final closure audits complete.**
 - **R1/R8 final:** baseline and current commit `33b9c5680` use matched seed, fixture, 240 ticks and 12 decisions.
   Combat median: 23.36→17.41s (−25.5%); two-AI median: 20.06→14.95s (−25.5%), retaining 12 decisions per AI.
   Current p95/p99 frame times are no worse than baseline in either workload, and all six final samples report no
@@ -54,7 +54,8 @@
   passed on [`b6b50efdb`](https://github.com/JernejHabjan/fuzzy-waddle/actions/runs/43066672427).
   Final closure audit found the later source commit's catalog check failing because the generated C-03 catalog still
   described the pre-deficit fixture. Regenerated `scenario-catalog.md`; `pnpm ai:skirmish:catalog` now passes. Await
-  the remediation commit's ordinary CI. Automatic extended AI CI stays disabled.
+  no new remote workflow was emitted for the documentation/catalog-only remediation commit; the exact failed check
+  passes locally, and ordinary CI passed on `b6b50efdb`. Automatic extended AI CI stays disabled.
 
 ## Goal and operating authority
 
@@ -295,3 +296,14 @@ checks are opt-in; automatic AI CI remains disabled. Node 24/pnpm are pinned in 
   Keep this handoff roughly 300 lines or less; the limit must not erase unresolved acceptance.
 - At closure, move proven contracts/tuning/testing into the existing owning docs/tests, retain only genuine unresolved
   work in issues, then remove this handoff and its routing links. Do not retire it while this goal is unfinished.
+
+## Closure audit (2026-11-12)
+
+- **Omission:** mapped every original report to R2–R8: restore ownership/elevation and teardown; formation churn;
+  pursuit cycling; mission/order churn and ground defense; anti-air response; retreat/re-engagement; and performance.
+  All have validated acceptance and bounded negative controls in the ledger above. Multiplayer/difficulty and broad
+  strategy work remain intentionally deferred by the authorized goal.
+- **Publication:** branch is clean and pushed through `04b061b87`; PR #814 remains open, unmerged and mergeable.
+  The only observed failing workflow after the last source change was the generated-catalog freshness check; its
+  stale C-03 row was regenerated and the check passes locally. The documentation/catalog-only push emitted no new
+  workflow run. The last recorded ordinary green CI is `b6b50efdb`; no code changed in the remediation commit.
