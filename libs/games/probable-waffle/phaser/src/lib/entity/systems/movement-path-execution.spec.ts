@@ -123,6 +123,48 @@ describe("native static path execution/recovery extraction", () => {
     expect(f.move).toHaveBeenCalledTimes(1);
   });
 
+  it("supersedes a blocked path when a fresh path starts during its wait", async () => {
+    const f = fixture();
+    const blocked = { x: 1, y: 0 };
+    const replacement = { x: 0, y: 1 };
+    let finishWait: (() => void) | undefined;
+    f.delayedCall.mockImplementation((_delay, callback) => {
+      finishWait = callback;
+    });
+    f.move.mockRejectedValueOnce(new MovementStepBlockedError(blocked, ["actor:2"]));
+    const pending = f.execution.moveAlongPathByFollowingPreCalculatedStaticPath([blocked]);
+    await Promise.resolve();
+    if (!finishWait) throw new Error("blocked_wait_missing");
+    await f.execution.moveAlongPathByFollowingPreCalculatedStaticPath([replacement]);
+    finishWait();
+    await expect(pending).rejects.toThrow("Movement cancelled");
+    expect(f.move.mock.calls.map(([tile]) => tile)).toEqual([blocked, replacement]);
+  });
+
+  it("stops searching for fallback tiles when a pending candidate query is cancelled", async () => {
+    const f = fixture();
+    const blocked = { x: 1, y: 0 };
+    f.move.mockRejectedValueOnce(new MovementStepBlockedError(blocked, ["actor:2"]));
+    f.occupancy.hasAnyActiveStepReservation.mockReturnValue(false);
+    f.navigation.isWithinGridBounds.mockReturnValue(true);
+    jest.mocked(getGameObjectCurrentTile).mockReturnValue(undefined);
+    const candidateStarted = new Promise<() => void>((started) => {
+      f.navigation.findPathFromGameObjectToTileAvoidingDynamicBlockers
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(null)
+        .mockImplementationOnce(() => new Promise((resolve) => started(() => resolve(null))));
+    });
+    const pending = f.execution.moveAlongPathByFollowingPreCalculatedStaticPath([blocked]);
+    const completion = expect(pending).rejects.toThrow("Movement cancelled");
+    const finishCandidate = await candidateStarted;
+    f.execution.cancel();
+    finishCandidate();
+    await completion;
+    expect(f.navigation.findPathFromGameObjectToTileAvoidingDynamicBlockers).toHaveBeenCalledTimes(4);
+    expect(f.occupancy.reserveDestination).not.toHaveBeenCalled();
+  });
+
   it("retains bounded repath waits and the original blocked error when fallback has no candidate", async () => {
     const f = fixture(),
       tile = { x: 1, y: 0 },

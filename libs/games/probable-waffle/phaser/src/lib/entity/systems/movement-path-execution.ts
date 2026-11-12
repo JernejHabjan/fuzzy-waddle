@@ -36,8 +36,9 @@ export class MovementPathExecution {
     this.generation++;
   }
 
-  private ensureCurrent(recoveryState: BlockedStepRecoveryState): void {
-    if (recoveryState.generation !== this.generation) throw new Error("Movement cancelled");
+  private ensureCurrent(generation: number | undefined): void {
+    if (generation !== this.generation || !isGameObjectActiveInActiveScene(this.runtime.gameObject))
+      throw new Error("Movement cancelled");
   }
 
   constructor(
@@ -79,8 +80,9 @@ export class MovementPathExecution {
     queryContext?: MovementQueryContext,
     completion?: MovementCompletionObservation
   ): Promise<void> {
-    recoveryState.generation ??= this.generation;
-    this.ensureCurrent(recoveryState);
+    // A new root path also supersedes recovery that is between tweens and has nothing to stop.
+    recoveryState.generation ??= ++this.generation;
+    this.ensureCurrent(recoveryState.generation);
     if (!path.length) {
       completion?.terminal("arrived");
       // A safe fallback is physical movement, but cannot complete the original destination's action.
@@ -138,6 +140,7 @@ export class MovementPathExecution {
     queryContext?: MovementQueryContext,
     completion?: MovementCompletionObservation
   ): Promise<void> {
+    this.ensureCurrent(recoveryState.generation);
     // Escalate from cheapest to most disruptive recovery:
     // wait -> sidestep -> repath -> same-height fallback tile.
     const finalDestination = remainingPath[remainingPath.length - 1] ?? blockedTile;
@@ -174,7 +177,7 @@ export class MovementPathExecution {
           // Another actor can claim the sidestep between selection and execution.
           // Continue with the bounded repath budget for the original destination.
         }
-        this.ensureCurrent(recoveryState);
+        this.ensureCurrent(recoveryState.generation);
         const recovered = await this.repathToDestination(finalDestination, config, recoveryState, queryContext, "repath", completion);
         if (recovered) return;
       }
@@ -189,7 +192,7 @@ export class MovementPathExecution {
     if (recoveryState.fallbackAttempted) throw error;
     recoveryState.fallbackAttempted = true;
     const fallbackTile = await this.findReachableFallbackTile(finalDestination, queryContext);
-    this.ensureCurrent(recoveryState);
+    this.ensureCurrent(recoveryState.generation);
     if (!fallbackTile) throw error;
     await this.moveToFallbackTile(fallbackTile, config, recoveryState, queryContext, completion);
     // Reaching a nearby safe tile is not reaching the requested destination. Propagate the failed
@@ -230,11 +233,13 @@ export class MovementPathExecution {
     queryStage: "repath" | "fallback" = "repath",
     completion?: MovementCompletionObservation
   ): Promise<boolean> {
-    if (!this.runtime.navigationService) return Promise.reject("No navigationService");
+    const navigationService = this.runtime.navigationService;
+    if (!navigationService) return Promise.reject("No navigationService");
     const actorId = getActorComponent(this.runtime.gameObject, IdComponent)?.id;
     let newPath: Vector2Simple[] | null = null;
     let waitAttempts = 0;
-    while (isGameObjectActiveInActiveScene(this.runtime.gameObject) && waitAttempts <= BLOCKED_STEP_MAX_REPATH_WAIT_ATTEMPTS) {
+    while (waitAttempts <= BLOCKED_STEP_MAX_REPATH_WAIT_ATTEMPTS) {
+      this.ensureCurrent(recoveryState.generation);
       // Repathing overlays only dynamic blockers. Static height edges stay owned
       // by NavigationService so wall/stairs connectivity cannot diverge here.
       const dynamicBlockers =
@@ -243,10 +248,14 @@ export class MovementPathExecution {
               includeDestinationReservations: false
             })
           : [];
-      newPath = await MovementQueryObservation.invoke(this.runtime.gameObject, queryContext, queryStage,
-        () => this.runtime.navigationService!.findPathFromGameObjectToTileAvoidingDynamicBlockers(
-          this.runtime.gameObject, destinationTile, dynamicBlockers));
-      this.ensureCurrent(recoveryState);
+      newPath = await MovementQueryObservation.invoke(this.runtime.gameObject, queryContext, queryStage, () =>
+        navigationService.findPathFromGameObjectToTileAvoidingDynamicBlockers(
+          this.runtime.gameObject,
+          destinationTile,
+          dynamicBlockers
+        )
+      );
+      this.ensureCurrent(recoveryState.generation);
       if (newPath && newPath.length) break;
 
       // Congestion can temporarily make every route around a large obstacle look closed.
@@ -270,8 +279,10 @@ export class MovementPathExecution {
    * - remain reachable when dynamic blockers are overlaid
    * @param destinationTile The original target tile whose height layer and vicinity are preserved.
    */
-  private async findReachableFallbackTile(destinationTile: Vector2Simple,
-    queryContext?: MovementQueryContext): Promise<Vector2Simple | undefined> {
+  private async findReachableFallbackTile(
+    destinationTile: Vector2Simple,
+    queryContext?: MovementQueryContext
+  ): Promise<Vector2Simple | undefined> {
     const navigationService = this.runtime.navigationService;
     const movementOccupancy = this.runtime.movementOccupancyService;
     const actorId = getActorComponent(this.runtime.gameObject, IdComponent)?.id;
@@ -280,9 +291,11 @@ export class MovementPathExecution {
     const destinationHeight = navigationService.getNavigableHeightAtTile(destinationTile);
     const candidates: Vector2Simple[] = [];
     const attemptedWithBlockers = new Map<string, string>();
+    const generation = this.generation;
     // Search outward in Manhattan rings so the first accepted tile is the
     // closest deterministic fallback on the destination's height layer.
     for (let radius = 1; radius <= BLOCKED_STEP_FALLBACK_RADIUS; radius++) {
+      this.ensureCurrent(generation);
       for (let dy = -radius; dy <= radius; dy++) {
         for (let dx = -radius; dx <= radius; dx++) {
           if (Math.abs(dx) + Math.abs(dy) !== radius) continue;
@@ -301,7 +314,13 @@ export class MovementPathExecution {
           candidates.push(candidate);
         }
       }
-      const fallback = await this.getFirstReachableCandidate(candidates, destinationTile, attemptedWithBlockers, queryContext);
+      const fallback = await this.getFirstReachableCandidate(
+        candidates,
+        destinationTile,
+        attemptedWithBlockers,
+        generation,
+        queryContext
+      );
       if (fallback) return fallback;
     }
     return undefined;
@@ -318,6 +337,7 @@ export class MovementPathExecution {
     candidates: Vector2Simple[],
     destinationTile: Vector2Simple,
     attemptedWithBlockers: Map<string, string>,
+    generation: number,
     queryContext?: MovementQueryContext
   ): Promise<Vector2Simple | undefined> {
     const navigationService = this.runtime.navigationService;
@@ -338,9 +358,14 @@ export class MovementPathExecution {
       const key = `${candidate.x},${candidate.y}`;
       if (attemptedWithBlockers.get(key) === blockerSignature) continue;
       attemptedWithBlockers.set(key, blockerSignature);
-      const path = await MovementQueryObservation.invoke(this.runtime.gameObject, queryContext, "fallback",
-        () => navigationService.findPathFromGameObjectToTileAvoidingDynamicBlockers(
-          this.runtime.gameObject, candidate, dynamicBlockers));
+      const path = await MovementQueryObservation.invoke(this.runtime.gameObject, queryContext, "fallback", () =>
+        navigationService.findPathFromGameObjectToTileAvoidingDynamicBlockers(
+          this.runtime.gameObject,
+          candidate,
+          dynamicBlockers
+        )
+      );
+      this.ensureCurrent(generation);
       if (path && path.length > 0) return candidate;
     }
     return undefined;

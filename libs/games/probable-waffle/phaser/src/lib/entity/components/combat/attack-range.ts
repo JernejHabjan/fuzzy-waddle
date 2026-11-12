@@ -17,7 +17,13 @@ export function isWithinAttackRange(
   target: Phaser.GameObjects.GameObject,
   attack: AttackRange | null
 ): boolean {
-  if (!attack || !isGameObjectActiveInActiveScene(attacker) || !isGameObjectActiveInActiveScene(target)) return false;
+  if (
+    !attack ||
+    !isGameObjectActiveInActiveScene(attacker) ||
+    !isGameObjectActiveInActiveScene(target) ||
+    attacker.scene !== target.scene
+  )
+    return false;
   const targetFlying = !!getActorComponent(target, FlyingComponent);
   if (targetFlying && !attack.canTargetAir) return false;
   const from = getGameObjectCurrentTile(attacker);

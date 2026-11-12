@@ -202,6 +202,35 @@ describe("AI local defense sizing", () => {
     );
   });
 
+  it("recalls a defender attacking a visible target far from home", () => {
+    const original = defenseContextFor(1);
+    const distantEnemy = combatant("distant-enemy", "enemy", 30);
+    const context: AiSkirmishProposalContext = {
+      ...original,
+      visibleEnemies: [...original.visibleEnemies, distantEnemy],
+      combat: original.combat.map((actor, index) =>
+        index === 0
+          ? {
+              ...actor,
+              activeOrder: {
+                status: "known",
+                observedTick: 20,
+                value: { orderType: OrderType.Attack, targetActorId: distantEnemy.actorId }
+              }
+            }
+          : actor
+      ),
+      intents: [],
+      nextSquads: [],
+      primaryOwnedActors: new Set()
+    };
+    advanceAiSkirmishDefense(context, profile);
+    expect(context.intents.find((intent) => intent.kind === "attack")).toMatchObject({
+      targetActorId: original.localThreat?.actorId,
+      actorIds: expect.arrayContaining(["guard-0"])
+    });
+  });
+
   it("moves a distant defender to sight while retaining the nearby force needed for a safe attack", () => {
     const context = defenseContextFor(1, true, false, 2);
     const attack = context.intents.find((intent) => intent.kind === "attack");

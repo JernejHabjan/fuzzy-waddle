@@ -47,13 +47,14 @@ export function advanceAiSkirmishDefense(context: AiSkirmishProposalContext, pro
       enemyPosition !== undefined &&
       distance(context.home, enemyPosition) <= 12
     );
-  }).length;
+  });
+  const economyThreats = observedAiEconomyThreats(observation);
   let defenseCount = Math.min(
     eligibleDefenders.length,
     Math.max(
       1,
       Math.ceil(eligibleDefenders.length * 0.25),
-      Math.max(nearbyAttackers, observedAiEconomyThreats(observation).length) * 2
+      Math.max(nearbyAttackers.length, economyThreats.length) * 2
     )
   );
   // A head-count reserve can remain too weak forever even while an idle army could remove the threat.
@@ -104,13 +105,13 @@ export function advanceAiSkirmishDefense(context: AiSkirmishProposalContext, pro
     actorId
   }));
   if (!activeDefense?.tactics && targetPosition) {
+    // A visible offensive target can still be far from the base that this squad was recruited to defend.
+    const homeThreats = [localThreat, ...nearbyAttackers, ...economyThreats];
     const alreadyAttackingVisibleThreat = defenders.filter((actor) => {
       const activeOrder = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
       return (
         activeOrder?.orderType === "Attack" &&
-        context.visibleEnemies.some(
-          (enemy) => enemy.actorId === activeOrder.targetActorId && canTarget(actor, enemy)
-        )
+        homeThreats.some((enemy) => enemy.actorId === activeOrder.targetActorId && canTarget(actor, enemy))
       );
     });
     const attackableDefenders = defenders.filter(
@@ -134,7 +135,7 @@ export function advanceAiSkirmishDefense(context: AiSkirmishProposalContext, pro
         kind: "move",
         actorIds: interceptors.map((actor) => actor.actorId),
         claims: actorClaims.filter((claim) => interceptors.some((actor) => actor.actorId === claim.actorId)),
-        logicalPosition: position(localThreat) ?? targetPosition
+        logicalPosition: targetPosition
       });
   }
   context.skirmish = withTimeline(

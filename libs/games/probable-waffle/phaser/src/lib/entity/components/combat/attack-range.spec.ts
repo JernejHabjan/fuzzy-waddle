@@ -26,8 +26,9 @@ jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneCo
 jest.mock("../../../library/tile-under-object", () => ({ getTileCoordsUnderObject: jest.fn() }));
 jest.mock("./high-ground.helper", () => ({ getHighGroundRangeBonus: jest.fn() }));
 
-const attacker = { scene: {} } as Phaser.GameObjects.GameObject;
-const target = { scene: {} } as Phaser.GameObjects.GameObject;
+const scene = {} as Phaser.Scene;
+const attacker = { scene } as Phaser.GameObjects.GameObject;
+const target = { scene } as Phaser.GameObjects.GameObject;
 const weapon = { range: 6, minRange: 2, canTargetAir: true };
 
 beforeEach(() => {
@@ -147,6 +148,12 @@ it("does not query disposed scenes or actors without a known tile", () => {
   jest.mocked(isGameObjectActiveInActiveScene).mockReturnValue(true);
   jest.mocked(getGameObjectCurrentTile).mockReturnValue(undefined);
   expect(isWithinAttackRange(attacker, target, weapon)).toBe(false);
+});
+
+it("rejects a target from another active scene before reading its coordinates", () => {
+  const foreignTarget = { scene: {} } as Phaser.GameObjects.GameObject;
+  expect(isWithinAttackRange(attacker, foreignTarget, weapon)).toBe(false);
+  expect(getGameObjectCurrentTile).not.toHaveBeenCalled();
 });
 
 it("rechecks physical range at pawn attack admission after a target moves away", () => {
