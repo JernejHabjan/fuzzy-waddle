@@ -3,7 +3,7 @@
 ## Resume cursor
 
 - Active on `feature/759-skirmish-ai`, PR [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814).
-  **5/8 packets complete (R2, R3, R4, R6, R7)**. Continue R5, finish the R8 post-fix comparison, then perform
+  **6/8 packets complete (R2–R7)**. Finish R1 closure and the R8 post-fix comparison, then perform
   separate omission and closure audits.
 - **R1/R8:** Three matched 240-tick normal-speed combat runs: camera-bounded fog reduced median elapsed time
   23.36→18.01s (−22.90%) and polygon self-time 86.76%; two-AI runs improved 20.06→14.76s (−26.44%).
@@ -23,28 +23,20 @@
   autonomous squad pursuit, equal-speed escape, removed target, bounded unreachable retries and route reopening
   (`AI_GAMEPLAY_RELIABILITY=1 pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts apps/portal-e2e/src/e2e/probable-waffle/skirmish/ai/reproduction/movement/skirmish-gameplay-pursuit.spec.ts --workers=1`; 7 passed, 1.4m; `test-results/`).
   Native adjacent melee selection/damage also passes (`close-range-final.log`).
-- **R5 active; R6 validated:** six native air-counter modes pass: Tivara/Skaduwee counter damage, ready archer hit, 18
-  ground-defense hits across all three raiders, hidden-air timing and missing-Temple construction. Strategy preserves
-  in-flight target orders while available defenders respond to current threats. Initial location/tending movement
-  dynamic-blocker route calls pass the 31 caller-contract tests. Run: `AI_GAMEPLAY_RELIABILITY=1 pnpm exec playwright test
+- **R5/R6 validated:** six native counter modes pass (both factions, ready archer, three ground raiders, hidden-air
+  timing, missing Temple); 18 ground-defense hits. Command: `AI_GAMEPLAY_RELIABILITY=1 pnpm exec playwright test
   --config apps/portal-e2e/playwright.config.ts apps/portal-e2e/src/e2e/probable-waffle/skirmish/ai/reproduction/combat/skirmish-gameplay-air-counter.spec.ts
-  --workers=1` (6 passed, 6.4m; `test-results/`, `ready-counter-trace.json`). Earlier Temple evidence:
-  `counter-committed-native.log`, `160080af5`. Recovery respects tactical
-  withdrawal, healthy defenders contest direct threats, and weapon range is matched to target domain. Focused
-  adaptation checks cover missing/busy producers, scarcity, queued commitments and disappeared/remembered threats
-  (`adaptation-audit.log`, 22 passing). Gameplay spec typecheck reports 64 errors in other existing test files; none
-  in the changed queue spec (`adaptation-type.log`). A 12-unit strategy control leaves most troops free against a
-  harmless contact (`defense-audit.log`). A live 12-fighter scenario starts on navigable terrain, moves all 12 and
-  records 19 hits without repeated failures at one tile; both large-army cases pass on committed movement code
-  (`army-committed.log`).
-  A fixture-issued paid command then completes a fighter at tick 140; all 12 original fighters move and deal damage
-  afterward (`army-committed.log`). This demonstrates the production transition, not that the
-  AI chose the command. The earlier failed setup placed two units on blocked tiles (`large-army-geometry.log`).
-  Existing legal approach slots are reserved before assigning newcomers. The native large-army pair passes (2/2):
-  all 12 original fighters move and deal damage after fixture-issued paid production completes; plan-slot changes
-  did not dispatch replacement move orders (`tmp/ai-gameplay-reliability/large-army-order-oracle/`). This proves
-  production-transition continuity, not that AI chose production. AI-selected production continuity and final owner
-  audit remain.
+  --workers=1` (6 passed, 6.4m; `ready-counter-trace.json`). Adaptation checks: 22 pass; a 12-unit control leaves most
+  troops free against harmless contact (`adaptation-audit.log`, `defense-audit.log`). Large-army pair 2/2: original
+  fighters move and damage after fixture-paid production; plan-slot changes issue no replacement Moves
+  (`tmp/ai-gameplay-reliability/large-army-order-oracle/`).
+- Native C-03 Tivara deficit now selects/pays for four Macemen, completes at ticks 119/219/319/419 and records 116
+  native hits by tick 4000 with no drops. Its 2.2m focused run is in
+  `tmp/ai-gameplay-reliability/ai-production-continuity-final/`; the fixture's extra four fighters were removed after
+  evidence showed its original 12-unit force already met the target. Final owner audit reviewed defense, tactics
+  ownership/projection, offense and dispatch; 19 gameplay tests and Phaser's 246 suites/1,286 tests pass. The full
+  C-03 matrix remains unrerun after artifact sealing failed with ENOSPC; this result closes only its Tivara deficit
+  branch.
 - **R7 validated:** current five-case retreat file passes on the strategy/movement worktree: minor injury in a favorable
   fight, critical infantry/ranged withdrawal, and ground/mixed reinforcements re-engaging after retreat. Command:
   `AI_GAMEPLAY_RELIABILITY=1 pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts apps/portal-e2e/src/e2e/probable-waffle/skirmish/ai/reproduction/combat/skirmish-gameplay-retreat.spec.ts --workers=1`
@@ -89,7 +81,7 @@ and controls. Record an evidence gap separately from a code defect. A blocker do
 | R2 Restore and teardown lifecycle | R1 relevant reproduction | complete | All save types restore input, camera and elevation. Fresh start, live topology removal and teardown controls pass. See the R2 resume entry. |
 | R3 Movement and formation stability | R1 | complete | Stable slots, quiet membership and eight-slot ceiling; 12 opposing workers exact-arrive and settle through the clear corridor; bounded waits/repaths and cleanup have focused coverage. |
 | R4 Pursuit and attack execution | R1, R3 relevant contract | complete | Seven current-commit native pursuit modes pass; adjacent ranged-unit melee selection/damage passes. |
-| R5 AI mission ownership and defense | R1, R3, R4 | in_progress | Ready defender hits without duplicate orders; ground defense hits all three raiders; paid-production run confirms plan-slot changes do not reissue moves. AI-selected production continuity and final owner audit remain. |
+| R5 AI mission ownership and defense | R1, R3, R4 | complete | Ready defender hits without duplicate orders; ground defense hits all three raiders; four AI-paid C-03 units complete and deal native damage; large-army control confirms plan-slot reassignment does not reissue moves. Owner audit complete; see resume evidence and scope. |
 | R6 Emergency counter production | R1, R5 defender contract | complete | Six native controls pass: Tivara/Skaduwee counters, existing defender, ground-only defense, hidden-air timing and missing Temple. Exact command and artifact are in the resume entry. |
 | R7 Retreat and re-engagement | R1, R4, R5 | complete | Five current native retreat cases pass. Scout withdrawal, mixed-force support and continued damage after re-engagement have prior native evidence. Exact command/artifact are in the resume entry. |
 | R8 Measured performance improvement | baseline in R1; final comparison after R2–R7 | in_progress | Combat and two-AI comparisons meet targets. Same-revision two-AI state matches; final review remains. |

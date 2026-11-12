@@ -183,46 +183,6 @@
               }
             },
             {
-              "fixtureActorId": "army-4",
-              "actorName": "TivaraMacemanMale",
-              "owner": 2,
-              "position": {
-                "x": 128,
-                "y": 896,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-5",
-              "actorName": "TivaraMacemanMale",
-              "owner": 2,
-              "position": {
-                "x": 160,
-                "y": 912,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-6",
-              "actorName": "TivaraSlingshotFemale",
-              "owner": 2,
-              "position": {
-                "x": 192,
-                "y": 928,
-                "z": 0
-              }
-            },
-            {
-              "fixtureActorId": "army-7",
-              "actorName": "TivaraSlingshotFemale",
-              "owner": 2,
-              "position": {
-                "x": 224,
-                "y": 944,
-                "z": 0
-              }
-            },
-            {
               "fixtureActorId": "ready-producer",
               "actorName": "AnkGuard",
               "owner": 2,
