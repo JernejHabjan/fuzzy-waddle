@@ -54,11 +54,7 @@ function airWeaponRange(member: AiObservedActor, target: Vector3Simple): number 
   );
 }
 
-function airApproachPosition(
-  member: AiObservedActor,
-  target: Vector3Simple,
-  range: number
-): Vector3Simple | undefined {
+function airApproachPosition(member: AiObservedActor, target: Vector3Simple, range: number): Vector3Simple | undefined {
   const origin = member.logicalPosition.status === "known" ? member.logicalPosition.value : null;
   if (!origin) return undefined;
   const dx = target.x - origin.x;
@@ -80,7 +76,8 @@ export function selectAiAttackApproachPositions(
   target: Vector3Simple,
   observation: AiObservation,
   targetFootprintRadiusTiles = 0,
-  rejectedPositionByActor: ReadonlyMap<string, string> = new Map()
+  rejectedPositionByActor: ReadonlyMap<string, string> = new Map(),
+  previousAssignments: NonNullable<AiSquadState["tactics"]>["assignedPositions"] = []
 ): NonNullable<AiSquadState["tactics"]>["assignedPositions"] {
   const positionedMembers = members
     .map((member) => ({ member, position: knownPosition(member) }))
@@ -116,48 +113,103 @@ export function selectAiAttackApproachPositions(
         left.tileKey.localeCompare(right.tileKey)
     );
   const used = new Set<string>();
-  return positionedMembers.flatMap(({ member }) => {
-    const domains = new Set(member.capabilities.flatMap((capability) => capability.domains));
-    const range = airWeaponRange(member, target);
+  const previousByActor = new Map(previousAssignments.map((assignment) => [assignment.actorId, assignment.position]));
+  const assignments: { actorId: string; position: Vector3Simple }[] = [];
+  const actorIdsWithAssignments = new Set<string>();
+  const assignmentMembers = positionedMembers.map(({ member }) => ({
+    member,
+    domains: new Set(member.capabilities.flatMap((capability) => capability.domains)),
+    range: airWeaponRange(member, target)
+  }));
+  const isUsableCell = (
+    member: AiObservedActor,
+    domains: ReadonlySet<string>,
+    candidate: (typeof candidates)[number]
+  ) => {
+    if (used.has(candidate.tileKey)) return false;
+    if (rejectedPositionByActor.get(member.actorId) === candidate.tileKey) return false;
+    if (
+      !(
+        domains.has("air") ||
+        (domains.has("water") && candidate.waterPassable) ||
+        (domains.has("ground") && candidate.groundPassable)
+      )
+    )
+      return false;
+    if (
+      domains.has("ground") &&
+      member.accessNodeId.status === "known" &&
+      observation.map?.accessGraph?.status === "ready"
+    ) {
+      if (!candidate.groundAccessNodeId) return false;
+      if (hasKnownGroundRoute(member.accessNodeId.value, candidate.groundAccessNodeId, observation) !== true)
+        return false;
+    }
+    return !observation.effects.some(
+      (effect) =>
+        effect.influence === "harmful" && distance(effect.position, candidate.position) <= (effect.radius ?? 0) + 1
+    );
+  };
+  // Existing assignments own their legal cells before new or reassigned members fill gaps.
+  for (const { member, domains, range } of assignmentMembers) {
+    const previous = previousByActor.get(member.actorId);
+    const previousCell = previous
+      ? candidates.find(
+          (candidate) =>
+            candidate.position.x === previous.x &&
+            candidate.position.y === previous.y &&
+            candidate.position.z === previous.z &&
+            (range === undefined || Math.hypot(previous.x - target.x, previous.y - target.y) <= range - 1) &&
+            isUsableCell(member, domains, candidate)
+        )
+      : undefined;
+    if (previousCell) {
+      used.add(previousCell.tileKey);
+      assignments.push({ actorId: member.actorId, position: previousCell.position });
+      actorIdsWithAssignments.add(member.actorId);
+      continue;
+    }
+    const previousAirPositionIsUsable =
+      previous &&
+      range !== undefined &&
+      previous.z === target.z &&
+      Math.hypot(previous.x - target.x, previous.y - target.y) <= range - 1 &&
+      rejectedPositionByActor.get(member.actorId) !== `${previous.x},${previous.y}` &&
+      !observation.effects.some(
+        (effect) => effect.influence === "harmful" && distance(effect.position, previous) <= (effect.radius ?? 0) + 1
+      );
+    if (previousAirPositionIsUsable && previous) {
+      const key = `${previous.x},${previous.y}`;
+      if (!used.has(key)) {
+        used.add(key);
+        assignments.push({ actorId: member.actorId, position: previous });
+        actorIdsWithAssignments.add(member.actorId);
+      }
+    }
+  }
+  for (const { member, range, domains } of assignmentMembers) {
+    if (actorIdsWithAssignments.has(member.actorId)) continue;
     const candidatesForMember =
       range === undefined
         ? candidates
         : candidates.filter(
             (candidate) => Math.hypot(candidate.position.x - target.x, candidate.position.y - target.y) <= range - 1
           );
-    const cell = candidatesForMember.find((candidate) => {
-      if (used.has(candidate.tileKey)) return false;
-      if (rejectedPositionByActor.get(member.actorId) === candidate.tileKey) return false;
-      if (
-        !(
-          domains.has("air") ||
-          (domains.has("water") && candidate.waterPassable) ||
-          (domains.has("ground") && candidate.groundPassable)
-        )
-      )
-        return false;
-      if (
-        domains.has("ground") &&
-        member.accessNodeId.status === "known" &&
-        observation.map?.accessGraph?.status === "ready"
-      ) {
-        if (!candidate.groundAccessNodeId) return false;
-        if (hasKnownGroundRoute(member.accessNodeId.value, candidate.groundAccessNodeId, observation) !== true)
-          return false;
-      }
-      return !observation.effects.some(
-        (effect) =>
-          effect.influence === "harmful" && distance(effect.position, candidate.position) <= (effect.radius ?? 0) + 1
-      );
-    });
+    const cell = candidatesForMember.find((candidate) => isUsableCell(member, domains, candidate));
     if (!cell && range !== undefined) {
       const position = airApproachPosition(member, target, range);
-      return position ? [{ actorId: member.actorId, position }] : [];
+      if (position) {
+        assignments.push({ actorId: member.actorId, position });
+        actorIdsWithAssignments.add(member.actorId);
+      }
+      continue;
     }
-    if (!cell) return [];
+    if (!cell) continue;
     used.add(cell.tileKey);
-    return [{ actorId: member.actorId, position: cell.position }];
-  });
+    assignments.push({ actorId: member.actorId, position: cell.position });
+    actorIdsWithAssignments.add(member.actorId);
+  }
+  return assignments;
 }
 
 /** Selects a safe firing position, or a retreat for an isolated critical ranged unit. */

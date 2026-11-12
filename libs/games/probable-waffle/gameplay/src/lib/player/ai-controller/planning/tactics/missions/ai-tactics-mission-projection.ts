@@ -135,7 +135,8 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
               anchor,
               observation,
               targetFootprintRadiusTiles(visibleTarget, input.catalog),
-              failedPositionByActor
+              failedPositionByActor,
+              squad.tactics?.assignedPositions ?? []
             )
           : formationPositions(
               postMembers.filter((actor) => !postedActorIds.has(actor.actorId)),

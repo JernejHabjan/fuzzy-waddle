@@ -20,7 +20,7 @@ for (const addProduction of [false, true])
   test(
     addProduction
       ? "a large army keeps its progress as paid production completes"
-      : "a large army makes physical progress without repeated movement orders",
+      : "a large army makes physical progress and deals damage",
     async ({ page }, testInfo) => {
       const root = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
       const source = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
@@ -126,19 +126,55 @@ for (const addProduction of [false, true])
         const capture = host?.productionCapture?.capture?.(2, finalTick);
         const opposingCapture = host?.productionCapture?.captureHuman?.(1, finalTick);
         if (!roles || !capture || !opposingCapture) throw new Error("large_army_capture_missing");
+        const armyIds = Object.entries(roles)
+          .filter(([id]) => id.startsWith("army-"))
+          .map(([, id]) => id);
         return {
           roles,
           dropped: capture.droppedFactCount + opposingCapture.droppedFactCount,
+          selectedArmyIntents: capture.facts.flatMap((fact) => {
+            if (fact.kind !== "decision_selected") return [];
+            const intents = fact.decision.acceptedIntents.flatMap((intent) => {
+              const actorIds = "actorIds" in intent ? intent.actorIds.filter((id) => armyIds.includes(id)) : [];
+              return actorIds.length
+                ? [
+                    {
+                      intentId: intent.intentId,
+                      effectId: intent.effectId,
+                      planId: intent.planId,
+                      kind: intent.kind,
+                      reasonCode: intent.reasonCode,
+                      actorIds,
+                      targetActorId: "targetActorId" in intent ? intent.targetActorId : null,
+                      logicalPosition: "logicalPosition" in intent ? intent.logicalPosition : null
+                    }
+                  ]
+                : [];
+            });
+            const squads = fact.decision.missionState?.squads.flatMap((squad) => {
+              const members = squad.actorIds.filter((id) => armyIds.includes(id));
+              if (!members.length) return [];
+              return [
+                {
+                  squadId: squad.squadId,
+                  role: squad.role,
+                  state: squad.state,
+                  objectiveId: squad.objectiveId,
+                  targetActorId: squad.tactics?.targetActorId,
+                  orderSignature: squad.tactics?.orderSignature,
+                  assignments:
+                    squad.tactics?.assignedPositions.filter((assignment) => members.includes(assignment.actorId)) ?? []
+                }
+              ];
+            });
+            return intents.length ? [{ tick: fact.tick, intents, squads }] : [];
+          }),
           facts: [
             ...capture.facts.filter((fact) => fact.kind === "spatial_authority" || fact.kind === "queue_completion"),
             ...opposingCapture.facts.filter((fact) => fact.kind === "native_damage")
           ]
         };
       }, finalTick);
-      writeFileSync(
-        testInfo.outputPath("large-army.json"),
-        JSON.stringify({ source, startingGeometry, samples, evidence, errors })
-      );
       expect(
         startingGeometry.every((actor) => actor.navigable),
         "all fighters start on navigable terrain"
@@ -151,6 +187,46 @@ for (const addProduction of [false, true])
       const armyIds = Object.entries(evidence.roles)
         .filter(([id]) => id.startsWith("army-"))
         .map(([, id]) => id);
+      const stableSlotChanges = evidence.selectedArmyIntents.flatMap((current, index) => {
+        const previous = evidence.selectedArmyIntents[index - 1];
+        if (!previous) return [];
+        return previous.squads.flatMap((oldSquad) =>
+          current.squads
+            .filter(
+              (newSquad) =>
+                newSquad.squadId === oldSquad.squadId &&
+                newSquad.objectiveId === oldSquad.objectiveId &&
+                newSquad.targetActorId === oldSquad.targetActorId &&
+                newSquad.orderSignature === oldSquad.orderSignature
+            )
+            .flatMap((newSquad) =>
+              oldSquad.assignments.flatMap((oldAssignment) => {
+                const newAssignment = newSquad.assignments.find(
+                  (assignment) => assignment.actorId === oldAssignment.actorId
+                );
+                return newAssignment &&
+                  (newAssignment.position.x !== oldAssignment.position.x ||
+                    newAssignment.position.y !== oldAssignment.position.y ||
+                    newAssignment.position.z !== oldAssignment.position.z)
+                  ? [
+                      {
+                        fromTick: previous.tick,
+                        toTick: current.tick,
+                        actorId: oldAssignment.actorId,
+                        previousPosition: oldAssignment.position,
+                        replacementPosition: newAssignment.position
+                      }
+                    ]
+                  : [];
+              })
+            )
+        );
+      });
+      writeFileSync(
+        testInfo.outputPath("large-army.json"),
+        JSON.stringify({ source, startingGeometry, samples, evidence, stableSlotChanges, errors })
+      );
+      expect(stableSlotChanges, "continuing attack members keep legal slots for the same objective").toEqual([]);
       expect(armyIds).toHaveLength(12);
       if (addProduction) {
         const created = evidence.facts.filter(

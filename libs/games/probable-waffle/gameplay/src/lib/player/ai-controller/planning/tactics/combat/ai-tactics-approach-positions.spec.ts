@@ -1,5 +1,8 @@
 import type { AiObservedActor, AiObservation } from "../../../contracts/observation/ai-observation";
-import { createAiTestObservation, createAiTestOwnedActor } from "../../../testing/fixtures/coordination/ai-test-fixtures";
+import {
+  createAiTestObservation,
+  createAiTestOwnedActor
+} from "../../../testing/fixtures/coordination/ai-test-fixtures";
 import { selectAiAttackApproachPositions, selectAiSafeFiringPositions } from "./ai-tactics-approach-positions";
 import { combatActor } from "../../../testing/fixtures/tactics/ai-tactics-test-fixtures";
 
@@ -154,6 +157,108 @@ describe("observed attack approach positions", () => {
     expect(first).toEqual(reversed);
     expect(first.map((assignment) => assignment.actorId)).toEqual(["z-west", "a-east"]);
     expect(new Set(first.map((assignment) => `${assignment.position.x},${assignment.position.y}`)).size).toBe(2);
+  });
+
+  it("keeps a still-legal attack slot when the moving formation changes its geometry", () => {
+    const base = createAiTestObservation();
+    const cells = [
+      { tileKey: "9,10", position: { x: 9, y: 10, z: 0 } },
+      { tileKey: "10,9", position: { x: 10, y: 9, z: 0 } },
+      { tileKey: "11,10", position: { x: 11, y: 10, z: 0 } }
+    ].map((cell) => ({
+      ...cell,
+      groundPassable: true,
+      waterPassable: false,
+      elevation: 0,
+      observedBlocked: false
+    }));
+    const observation = {
+      ...base,
+      map: { ...base.map!, constructionCells: cells, tacticalCells: cells }
+    } satisfies AiObservation;
+    const target = { x: 10, y: 10, z: 0 };
+    const member = {
+      ...attacker("a"),
+      logicalPosition: { status: "known" as const, value: { x: 8, y: 10, z: 0 }, observedTick: 100 }
+    };
+    const initial = selectAiAttackApproachPositions([member], target, observation);
+    const advanced = {
+      ...member,
+      logicalPosition: { status: "known" as const, value: { x: 12, y: 10, z: 0 }, observedTick: 120 }
+    };
+
+    expect(selectAiAttackApproachPositions([advanced], target, observation)).not.toEqual(initial);
+    expect(selectAiAttackApproachPositions([advanced], target, observation, 0, new Map(), initial)).toEqual(initial);
+  });
+
+  it("does not let a newly assigned member take an existing member's legal attack slot", () => {
+    const base = createAiTestObservation();
+    const cells = [
+      { tileKey: "9,10", position: { x: 9, y: 10, z: 0 } },
+      { tileKey: "11,10", position: { x: 11, y: 10, z: 0 } }
+    ].map((cell) => ({
+      ...cell,
+      groundPassable: true,
+      waterPassable: false,
+      elevation: 0,
+      observedBlocked: false
+    }));
+    const observation = {
+      ...base,
+      map: { ...base.map!, constructionCells: cells, tacticalCells: cells }
+    } satisfies AiObservation;
+    const target = { x: 10, y: 10, z: 0 };
+    const existing = {
+      ...attacker("existing"),
+      logicalPosition: { status: "known" as const, value: { x: 12, y: 10, z: 0 }, observedTick: 100 }
+    };
+    const previous = selectAiAttackApproachPositions([existing], target, observation);
+    const newcomer = {
+      ...attacker("newcomer"),
+      logicalPosition: { status: "known" as const, value: { x: 8, y: 10, z: 0 }, observedTick: 120 }
+    };
+
+    const assignments = selectAiAttackApproachPositions(
+      [newcomer, existing],
+      target,
+      observation,
+      0,
+      new Map(),
+      previous
+    );
+
+    expect(assignments.find((assignment) => assignment.actorId === "existing")?.position).toEqual(
+      previous[0]?.position
+    );
+    expect(assignments.find((assignment) => assignment.actorId === "newcomer")?.position).toEqual({
+      x: 9,
+      y: 10,
+      z: 0
+    });
+  });
+
+  it("replaces an old attack slot after the target moves beyond its approach range", () => {
+    const base = createAiTestObservation();
+    const cells = [
+      { tileKey: "9,10", position: { x: 9, y: 10, z: 0 } },
+      { tileKey: "29,30", position: { x: 29, y: 30, z: 0 } }
+    ].map((cell) => ({
+      ...cell,
+      groundPassable: true,
+      waterPassable: false,
+      elevation: 0,
+      observedBlocked: false
+    }));
+    const observation = {
+      ...base,
+      map: { ...base.map!, constructionCells: cells, tacticalCells: cells }
+    } satisfies AiObservation;
+    const member = attacker("a");
+    const previous = [{ actorId: member.actorId, position: cells[0]!.position }];
+
+    expect(
+      selectAiAttackApproachPositions([member], { x: 30, y: 30, z: 0 }, observation, 0, new Map(), previous)
+    ).toEqual([{ actorId: member.actorId, position: cells[1]!.position }]);
   });
 
   it("skips a nearer assault cell when the actor's known ground region cannot reach it", () => {

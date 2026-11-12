@@ -42,6 +42,10 @@
   A fixture-issued paid command then completes a fighter at tick 140; all 12 original fighters move and deal damage
   afterward (`army-committed.log`). This demonstrates the production transition, not that the
   AI chose the command. The earlier failed setup placed two units on blocked tiles (`large-army-geometry.log`).
+  The large-army case now captures selected intents and tactical slots; a 240-tick AI run exposed a newcomer
+  taking a continuing member's valid approach slot. Existing legal slots are now reserved before assigning new
+  members. The case asserts stable assignments for unchanged missions and still proves damage and physical progress
+  (`army-slot-acceptance-playwright/`, 11 focused selector tests, gameplay lint and browser build pass).
 - **R7 open:** minor injury, actual withdrawal/re-engagement and individual wounded infantry/ranged controls pass;
   scout withdrawal persists across new search questions and produces physical movement (`scout-threat-final.log`).
   Mixed ground/air forces both damage the same enemy and continue after an injured fighter withdraws
@@ -87,7 +91,7 @@ and controls. Record an evidence gap separately from a code defect. A blocker do
 | R2 Restore and teardown lifecycle | R1 relevant reproduction | complete | All save types restore input, camera and elevation. Fresh start, live topology removal and teardown controls pass. See the R2 resume entry. |
 | R3 Movement and formation stability | R1 | in_progress | Arrived slots, quiet membership and eight-slot ceiling repaired; 100 tactical controls pass. Exact opposing traffic and large-group physical settling remain. |
 | R4 Pursuit and attack execution | R1, R3 relevant contract | in_progress | Pursuit, escape, replacement, removal, bounded unreachable retries and route reopening pass; audit remaining controls. |
-| R5 AI mission ownership and defense | R1, R3, R4 | in_progress | Ground and air defenders land native hits. Harmless contact and stable large-army movement remain. |
+| R5 AI mission ownership and defense | R1, R3, R4 | in_progress | Ground/air defense and harmless-contact controls pass; stable attack slots are retained for same-target members. AI-selected production continuity and final owner audit remain. |
 | R6 Emergency counter production | R1, R5 defender contract | in_progress | Both factions produce counters that land native hits; missing Temple is built in the real scenario. Audit remaining ownership and prerequisites. |
 | R7 Retreat and re-engagement | R1, R4, R5 | in_progress | Minor injury, individual/scout withdrawal, and ground/mixed-force retreat and reinforcement have native evidence; final audit remains. |
 | R8 Measured performance improvement | baseline in R1; final comparison after R2–R7 | in_progress | Combat and two-AI comparisons meet targets. Same-revision two-AI state matches; final review remains. |
