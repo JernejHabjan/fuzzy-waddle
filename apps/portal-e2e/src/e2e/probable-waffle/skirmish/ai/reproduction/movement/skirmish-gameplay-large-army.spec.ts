@@ -151,7 +151,9 @@ for (const addProduction of [false, true])
                   ]
                 : [];
             });
-            const squads = fact.decision.missionState?.squads.flatMap((squad) => {
+            if (!intents.length) return [];
+            if (!fact.decision.missionState) throw new Error("large_army_mission_capture_missing");
+            const squads = fact.decision.missionState.squads.flatMap((squad) => {
               const members = squad.actorIds.filter((id) => armyIds.includes(id));
               if (!members.length) return [];
               return [
@@ -167,7 +169,7 @@ for (const addProduction of [false, true])
                 }
               ];
             });
-            return intents.length ? [{ tick: fact.tick, intents, squads }] : [];
+            return [{ tick: fact.tick, intents, squads }];
           }),
           facts: [
             ...capture.facts.filter((fact) => fact.kind === "spatial_authority" || fact.kind === "queue_completion"),

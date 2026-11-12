@@ -11,7 +11,7 @@ import { advanceRuntimeFrames } from "../../runner/skirmish-ai-runtime-frame-dri
 test.skip(process.env.AI_GAMEPLAY_RELIABILITY !== "1", "Explicit bounded gameplay reliability checks only");
 test.setTimeout(600_000);
 
-test("AI fills C-03's native army deficit with useful paid units", async ({ page }, testInfo) => {
+test("AI fills a Tivara army deficit with useful paid units", async ({ page }, testInfo) => {
   const root = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
   const source = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
   const fixture: RuntimeFixture = JSON.parse(
@@ -24,18 +24,24 @@ test("AI fills C-03's native army deficit with useful paid units", async ({ page
     )
   );
   const selected = fixture.recipe.variants.find((entry) => entry.id === "c-03-tivara-deficit");
-  if (!selected?.presetWorld) throw new Error("ai_production_fixture_missing");
+  if (!selected?.presetWorld?.actors) throw new Error("ai_production_fixture_missing");
+  const presetWorld = selected.presetWorld;
+  // Keep the registered C-03 comparison intact. This focused check needs a smaller starting force.
   const variant = {
     ...selected,
     scenarioIds: ["C-03"],
-    captureCombat: true as const
+    captureCombat: true as const,
+    presetWorld: {
+      ...presetWorld,
+      actors: presetWorld.actors.filter((actor) => !/^army-[4-7]$/.test(actor.fixtureActorId))
+    }
   };
   const errors: string[] = [];
   await prepareRuntimeVariant(
     page,
     fixture,
     variant,
-    selected.seed,
+    variant.seed,
     source,
     digestCanonicalAiValue({ fixture, variant }),
     false,
@@ -83,7 +89,13 @@ test("AI fills C-03's native army deficit with useful paid units", async ({ page
           ]
         : []
     );
-    const completedIds = new Set(completions.flatMap((completion) => (completion.actorId ? [completion.actorId] : [])));
+    const completedIds = new Set(
+      completions.flatMap((completion) =>
+        completion.objectName === "TivaraMacemanMale" && completion.source === "ai" && completion.actorId
+          ? [completion.actorId]
+          : []
+      )
+    );
     const nativeHits = opposingCapture.facts.flatMap((fact) =>
       fact.kind === "native_damage" && fact.damage.initiator?.actorId && completedIds.has(fact.damage.initiator.actorId)
         ? [{ tick: fact.tick, actorId: fact.damage.initiator.actorId, amount: fact.damage.amount }]

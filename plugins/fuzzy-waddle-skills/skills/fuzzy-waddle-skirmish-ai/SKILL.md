@@ -9,10 +9,8 @@ description: Implement, diagnose or validate the Probable Waffle skirmish AI, de
 
 1. Read the [AI documentation index](../../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/README.md).
    Read [coverage and follow-ups](../../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/coverage-status.md)
-   when evidence status or unfinished work matters. The user-requested playtest/performance goal resumes from the single
-   [active handoff](../../../../docs/ai/759-ai-gameplay-reliability/HANDOFF.md); it replaces no historical evidence.
-   GitHub issues own separate follow-ups. Local control/elevation restoration defects are required in this active goal;
-   multiplayer and extended save/load certification remain deferred, and difficulty calibration is cancelled.
+   when evidence status or unfinished work matters. GitHub issues own follow-ups. Multiplayer and extended save/load
+   certification remain deferred, and difficulty calibration is cancelled.
    Automatic AI CI jobs/tag triggers are disabled until explicitly requested otherwise.
    Use descriptive unsuffixed AI filenames and symbols; do not add a generation suffix to a source name.
    Validate save/fixture/report shape at its existing boundary independently of source naming.

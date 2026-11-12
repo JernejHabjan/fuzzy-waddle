@@ -250,11 +250,11 @@ for (const { faction, readyCounter, groundOnly, hidden = false, missingTemple = 
               observedOrder: frame.decision.input?.observation?.actors.find((actor) => actor.actorId === readyId)
                 ?.activeOrder,
               targets: (frame.tacticalBoundary?.actors ?? [])
-                .filter((actor) => raiderIds.has(actor.identity.actorId))
+                .filter((actor) => actor.identity.actorId !== null && raiderIds.has(actor.identity.actorId))
                 .map((actor) => ({ id: actor.identity.actorId, tile: actor.tile, alive: actor.identity.alive })),
               squads: squads.map((squad) => ({ role: squad.role, objectiveId: squad.objectiveId, state: squad.state })),
               intents: frame.decision.acceptedIntents
-                .filter((intent) => intent.actorIds?.includes(readyId))
+                .filter((intent) => "actorIds" in intent && intent.actorIds.includes(readyId))
                 .map((intent) => ({
                   kind: intent.kind,
                   targetActorId: "targetActorId" in intent ? intent.targetActorId : undefined,
