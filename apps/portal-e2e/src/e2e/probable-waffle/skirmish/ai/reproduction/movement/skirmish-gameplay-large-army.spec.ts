@@ -187,9 +187,10 @@ for (const addProduction of [false, true])
       const armyIds = Object.entries(evidence.roles)
         .filter(([id]) => id.startsWith("army-"))
         .map(([, id]) => id);
-      const stableSlotChanges = evidence.selectedArmyIntents.flatMap((current, index) => {
+      const slotChanges = evidence.selectedArmyIntents.flatMap((current, index) => {
         const previous = evidence.selectedArmyIntents[index - 1];
         if (!previous) return [];
+        const currentSample = samples.find((sample) => sample.tick === current.tick);
         return previous.squads.flatMap((oldSquad) =>
           current.squads
             .filter(
@@ -214,7 +215,17 @@ for (const addProduction of [false, true])
                         toTick: current.tick,
                         actorId: oldAssignment.actorId,
                         previousPosition: oldAssignment.position,
-                        replacementPosition: newAssignment.position
+                        replacementPosition: newAssignment.position,
+                        memberStillOwned: currentSample?.ownedIds.includes(oldAssignment.actorId) ?? false,
+                        moveOrderReissued: evidence.facts.some(
+                          (fact) =>
+                            fact.kind === "spatial_authority" &&
+                            fact.spatial.kind === "route_order" &&
+                            fact.spatial.source.actorId === oldAssignment.actorId &&
+                            fact.spatial.order.orderType === "Move" &&
+                            fact.tick > previous.tick &&
+                            fact.tick <= current.tick
+                        )
                       }
                     ]
                   : [];
@@ -224,9 +235,12 @@ for (const addProduction of [false, true])
       });
       writeFileSync(
         testInfo.outputPath("large-army.json"),
-        JSON.stringify({ source, startingGeometry, samples, evidence, stableSlotChanges, errors })
+        JSON.stringify({ source, startingGeometry, samples, evidence, slotChanges, errors })
       );
-      expect(stableSlotChanges, "continuing attack members keep legal slots for the same objective").toEqual([]);
+      expect(
+        slotChanges.filter((change) => change.memberStillOwned && change.moveOrderReissued),
+        "slot reassignment for an unchanged mission does not issue a replacement move"
+      ).toEqual([]);
       expect(armyIds).toHaveLength(12);
       if (addProduction) {
         const created = evidence.facts.filter(

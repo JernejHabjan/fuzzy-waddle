@@ -3,8 +3,8 @@
 ## Resume cursor
 
 - Active on `feature/759-skirmish-ai`, PR [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814).
-  **4/8 packets complete (R2, R4, R6, R7)**. Preserve the local R3 experiment and exact-arrival reproducer; continue
-  R3/R5, finish the R8 post-fix comparison, then perform separate omission and closure audits.
+  **5/8 packets complete (R2, R3, R4, R6, R7)**. Continue R5, finish the R8 post-fix comparison, then perform
+  separate omission and closure audits.
 - **R1/R8:** Three matched 240-tick normal-speed combat runs: camera-bounded fog reduced median elapsed time
   23.36→18.01s (−22.90%) and polygon self-time 86.76%; two-AI runs improved 20.06→14.76s (−26.44%).
   Both sides retained 12 decisions; same-revision full/bounded fog state hash `d9f51b4d` matched. Evidence:
@@ -13,15 +13,12 @@
 - **R2 validated:** manual, quick and auto load restore human ownership, camera, selection and movement; three reloads
   preserve elevated workers, Temple, Owl and real River Crossing stones. Teardown and fresh-start controls pass.
   Evidence `editor-stone-manual.log`, `load-all-kinds-input-browser-arg.log`; fixes through `ec38d7785`.
-- **R3 open:** `E/reproduction/movement/skirmish-gameplay-congestion.spec.ts` and changes in `movement.system.ts` /
-  `movement-system-boundary.spec.ts` are intentionally local. Twelve opposing workers request distinct legal tiles.
-  Committed code reaches 6/12 exact destinations (`traffic-committed.log`); the local detour reaches 10/12,
-  but two destinations become sealed by arrived units. All settle in both runs. Fallback reports failure rather than restarting that same
-  order and cannot fire the requested destination's completion callback. All twelve settled with one start each,
-  10 exactly and two at fallback (`traffic-fallback-failed.log`, with the local detour). The exact-arrival assertion
-  still fails. A same-lane priority experiment also reached 10/12,
-  delayed starts and was removed (`traffic-priority.log`). Resolve destination access without overriding human orders;
-  retain the exact-destination, collision and settling oracle. Failed alternatives and geometry are under tmp.
+- **R3 validated locally:** the native congestion fixture now places legal staging pockets beyond both ends of a clear
+  three-tile corridor, so arrived units do not seal the route before their teammates cross. All 12 opposing workers
+  cross to distinct exact destinations, settle through tick 720, and complete their one move command; no facts drop.
+  Evidence: `tmp/ai-gameplay-reliability/traffic-pocket-valid/`; Phaser movement boundary (35) and path-execution
+  (14) tests pass, and Phaser lint passes with seven existing warnings. The older sealed-mouth geometry was not a
+  feasible arrival layout; exact arrival and one-command assertions remain.
 - **R4 validated:** all seven native pursuit modes pass on `fe5b6f24f`: moving-target hits, human-order replacement,
   autonomous squad pursuit, equal-speed escape, removed target, bounded unreachable retries and route reopening
   (`AI_GAMEPLAY_RELIABILITY=1 pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts apps/portal-e2e/src/e2e/probable-waffle/skirmish/ai/reproduction/movement/skirmish-gameplay-pursuit.spec.ts --workers=1`; 7 passed, 1.4m; `test-results/`).
@@ -43,10 +40,11 @@
   A fixture-issued paid command then completes a fighter at tick 140; all 12 original fighters move and deal damage
   afterward (`army-committed.log`). This demonstrates the production transition, not that the
   AI chose the command. The earlier failed setup placed two units on blocked tiles (`large-army-geometry.log`).
-  The large-army case now captures selected intents and tactical slots; a 240-tick AI run exposed a newcomer
-  taking a continuing member's valid approach slot. Existing legal slots are now reserved before assigning new
-  members. The case asserts stable assignments for unchanged missions and still proves damage and physical progress
-  (`army-slot-acceptance-playwright/`, 11 focused selector tests, gameplay lint and browser build pass).
+  Existing legal approach slots are reserved before assigning newcomers. The native large-army pair passes (2/2):
+  all 12 original fighters move and deal damage after fixture-issued paid production completes; plan-slot changes
+  did not dispatch replacement move orders (`tmp/ai-gameplay-reliability/large-army-order-oracle/`). This proves
+  production-transition continuity, not that AI chose production. AI-selected production continuity and final owner
+  audit remain.
 - **R7 validated:** current five-case retreat file passes on the strategy/movement worktree: minor injury in a favorable
   fight, critical infantry/ranged withdrawal, and ground/mixed reinforcements re-engaging after retreat. Command:
   `AI_GAMEPLAY_RELIABILITY=1 pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts apps/portal-e2e/src/e2e/probable-waffle/skirmish/ai/reproduction/combat/skirmish-gameplay-retreat.spec.ts --workers=1`
@@ -89,9 +87,9 @@ and controls. Record an evidence gap separately from a code defect. A blocker do
 | --- | --- | --- | --- |
 | R1 Focused reproductions and baseline | none | in_progress | Teardown/churn/large-slot defects reproduced and combat baseline frozen; remaining targeted gameplay controls open. |
 | R2 Restore and teardown lifecycle | R1 relevant reproduction | complete | All save types restore input, camera and elevation. Fresh start, live topology removal and teardown controls pass. See the R2 resume entry. |
-| R3 Movement and formation stability | R1 | in_progress | Arrived slots, quiet membership and eight-slot ceiling repaired; 100 tactical controls pass. Exact opposing traffic and large-group physical settling remain. |
+| R3 Movement and formation stability | R1 | complete | Stable slots, quiet membership and eight-slot ceiling; 12 opposing workers exact-arrive and settle through the clear corridor; bounded waits/repaths and cleanup have focused coverage. |
 | R4 Pursuit and attack execution | R1, R3 relevant contract | complete | Seven current-commit native pursuit modes pass; adjacent ranged-unit melee selection/damage passes. |
-| R5 AI mission ownership and defense | R1, R3, R4 | in_progress | Ready existing air defender now lands a native hit without duplicate same-target orders; ground-only defense hits all three raiders. Stable attack slots pass. AI-selected production continuity and final owner audit remain. |
+| R5 AI mission ownership and defense | R1, R3, R4 | in_progress | Ready defender hits without duplicate orders; ground defense hits all three raiders; paid-production run confirms plan-slot changes do not reissue moves. AI-selected production continuity and final owner audit remain. |
 | R6 Emergency counter production | R1, R5 defender contract | complete | Six native controls pass: Tivara/Skaduwee counters, existing defender, ground-only defense, hidden-air timing and missing Temple. Exact command and artifact are in the resume entry. |
 | R7 Retreat and re-engagement | R1, R4, R5 | complete | Five current native retreat cases pass. Scout withdrawal, mixed-force support and continued damage after re-engagement have prior native evidence. Exact command/artifact are in the resume entry. |
 | R8 Measured performance improvement | baseline in R1; final comparison after R2–R7 | in_progress | Combat and two-AI comparisons meet targets. Same-revision two-AI state matches; final review remains. |

@@ -196,6 +196,49 @@ export class MovementSystem {
       return false;
     }
 
+    const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+    const occupancy = this.runtime.movementOccupancyService;
+    const navigation = this.runtime.navigationService;
+    const endpoint = path[path.length - 1];
+    const allBlockers =
+      actorId && occupancy
+        ? occupancy.getDynamicBlockersForActor(actorId, { includeDestinationReservations: false })
+        : [];
+    const endpointHeight = endpoint ? (navigation.getNavigableHeightAtTile(endpoint) ?? 0) : undefined;
+    const endpointBlocked =
+      endpoint &&
+      allBlockers.some(
+        (blocker) =>
+          blocker.tile.x === endpoint.x && blocker.tile.y === endpoint.y && blocker.heightLayer === endpointHeight
+      );
+    const blockers = allBlockers.filter(
+      (blocker) =>
+        blocker.tile.x !== endpoint?.x || blocker.tile.y !== endpoint.y || blocker.heightLayer !== endpointHeight
+    );
+    const blockedPathKeys = new Set(
+      blockers.map((blocker) => `${blocker.tile.x},${blocker.tile.y},${blocker.heightLayer}`)
+    );
+    const pathCrossesTraffic = path.some((tile) =>
+      blockedPathKeys.has(`${tile.x},${tile.y},${navigation.getNavigableHeightAtTile(tile) ?? 0}`)
+    );
+    const approach = path.length > 2 ? path[path.length - 2] : undefined;
+    if (endpoint && (endpointBlocked || pathCrossesTraffic)) {
+      const approachHeight = approach ? (navigation.getNavigableHeightAtTile(approach) ?? 0) : undefined;
+      const approachBlocked = approach && blockedPathKeys.has(`${approach.x},${approach.y},${approachHeight}`);
+      const detourBlockers =
+        endpointBlocked && approach && !approachBlocked
+          ? [...blockers, { tile: approach, heightLayer: approachHeight ?? 0 }]
+          : blockers;
+      const detour = await MovementQueryObservation.invoke(this.gameObject, queryContext, "initial", () =>
+        navigation.findPathFromGameObjectToTileAvoidingDynamicBlockers(this.gameObject, endpoint, detourBlockers)
+      );
+      if (request !== this.movementRequest || !isGameObjectActiveInActiveScene(this.gameObject)) {
+        completion?.returned(false);
+        return false;
+      }
+      if (detour?.length) path = detour;
+    }
+
     if (this.DEBUG) console.log(`Moving to tile ${tileVec3.x}, ${tileVec3.y}`);
 
     if (this.DEBUG) this.runtime.navigationService.drawDebugPath(path);

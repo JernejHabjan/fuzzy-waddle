@@ -70,6 +70,124 @@ describe("movement facade boundaries", () => {
   beforeEach(() => jest.clearAllMocks());
   afterEach(() => jest.restoreAllMocks());
 
+  it("routes a location move around known traffic without changing its destination", async () => {
+    const f = fixture();
+    const destination = { x: 3, y: 0, z: 0 };
+    const blocked = { x: 1, y: 0 };
+    const detour = { x: 1, y: 1 };
+    f.navigation.findPathFromGameObjectToTile.mockResolvedValue([{ x: 0, y: 0 }, blocked, destination]);
+    f.occupancy.getDynamicBlockersForActor.mockReturnValue([
+      { tile: blocked, heightLayer: 0 },
+      { tile: destination, heightLayer: 0 }
+    ]);
+    f.navigation.findPathFromGameObjectToTileAvoidingDynamicBlockers.mockResolvedValue([
+      { x: 0, y: 0 },
+      detour,
+      destination
+    ]);
+    const execute = jest
+      .spyOn(MovementPathExecution.prototype, "moveAlongPathByFollowingPreCalculatedStaticPath")
+      .mockResolvedValue(undefined);
+    expect(await f.system.moveToLocationByFollowingStaticPath(destination)).toBe(true);
+    expect(f.navigation.findPathFromGameObjectToTileAvoidingDynamicBlockers).toHaveBeenCalledWith(
+      f.actor,
+      destination,
+      [{ tile: blocked, heightLayer: 0 }]
+    );
+    expect(execute.mock.calls[0]?.[0]).toEqual([detour, destination]);
+  });
+
+  it("keeps the original route if traffic temporarily closes every detour", async () => {
+    const f = fixture();
+    const destination = { x: 3, y: 0, z: 0 };
+    const blocked = { x: 1, y: 0 };
+    f.navigation.findPathFromGameObjectToTile.mockResolvedValue([{ x: 0, y: 0 }, blocked, destination]);
+    f.occupancy.getDynamicBlockersForActor.mockReturnValue([{ tile: blocked, heightLayer: 0 }]);
+    f.navigation.findPathFromGameObjectToTileAvoidingDynamicBlockers.mockResolvedValue(null);
+    const execute = jest
+      .spyOn(MovementPathExecution.prototype, "moveAlongPathByFollowingPreCalculatedStaticPath")
+      .mockResolvedValue(undefined);
+    expect(await f.system.moveToLocationByFollowingStaticPath(destination)).toBe(true);
+    expect(execute.mock.calls[0]?.[0]).toEqual([blocked, destination]);
+  });
+
+  it("tries another approach when the requested endpoint is currently occupied", async () => {
+    const f = fixture();
+    const destination = { x: 3, y: 0, z: 0 };
+    const approach = { x: 2, y: 0 };
+    const detour = { x: 2, y: 1 };
+    f.navigation.findPathFromGameObjectToTile.mockResolvedValue([{ x: 0, y: 0 }, approach, destination]);
+    f.occupancy.getDynamicBlockersForActor.mockReturnValue([{ tile: destination, heightLayer: 0 }]);
+    f.navigation.findPathFromGameObjectToTileAvoidingDynamicBlockers.mockResolvedValue([
+      { x: 0, y: 0 },
+      detour,
+      destination
+    ]);
+    const execute = jest
+      .spyOn(MovementPathExecution.prototype, "moveAlongPathByFollowingPreCalculatedStaticPath")
+      .mockResolvedValue(undefined);
+    expect(await f.system.moveToLocationByFollowingStaticPath(destination)).toBe(true);
+    expect(f.navigation.findPathFromGameObjectToTileAvoidingDynamicBlockers).toHaveBeenCalledWith(
+      f.actor,
+      destination,
+      [{ tile: approach, heightLayer: 0 }]
+    );
+    expect(execute.mock.calls[0]?.[0]).toEqual([detour, destination]);
+  });
+
+  it("preserves occupants on another height layer at the requested endpoint", async () => {
+    const f = fixture();
+    const destination = { x: 3, y: 0, z: 0 };
+    const blocked = { x: 1, y: 0 };
+    f.navigation.findPathFromGameObjectToTile.mockResolvedValue([{ x: 0, y: 0 }, blocked, destination]);
+    f.occupancy.getDynamicBlockersForActor.mockReturnValue([
+      { tile: blocked, heightLayer: 0 },
+      { tile: destination, heightLayer: 2 }
+    ]);
+    f.navigation.findPathFromGameObjectToTileAvoidingDynamicBlockers.mockResolvedValue([
+      { x: 0, y: 0 },
+      { x: 1, y: 1 },
+      destination
+    ]);
+    jest
+      .spyOn(MovementPathExecution.prototype, "moveAlongPathByFollowingPreCalculatedStaticPath")
+      .mockResolvedValue(undefined);
+
+    expect(await f.system.moveToLocationByFollowingStaticPath(destination)).toBe(true);
+    expect(f.navigation.findPathFromGameObjectToTileAvoidingDynamicBlockers).toHaveBeenCalledWith(
+      f.actor,
+      destination,
+      [
+        { tile: blocked, heightLayer: 0 },
+        { tile: destination, heightLayer: 2 }
+      ]
+    );
+  });
+
+  it("does not execute a traffic detour when the movement is cancelled during the query", async () => {
+    const f = fixture();
+    const destination = { x: 3, y: 0, z: 0 };
+    const blocked = { x: 1, y: 0 };
+    f.navigation.findPathFromGameObjectToTile.mockResolvedValue([{ x: 0, y: 0 }, blocked, destination]);
+    f.occupancy.getDynamicBlockersForActor.mockReturnValue([{ tile: blocked, heightLayer: 0 }]);
+    let resolvePath: ((path: Vector2Simple[]) => void) | undefined;
+    f.navigation.findPathFromGameObjectToTileAvoidingDynamicBlockers.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolvePath = resolve;
+        })
+    );
+    const execute = jest.spyOn(MovementPathExecution.prototype, "moveAlongPathByFollowingPreCalculatedStaticPath");
+    const pending = f.system.moveToLocationByFollowingStaticPath(destination);
+    await Promise.resolve();
+    await Promise.resolve();
+    if (!resolvePath) throw new Error("traffic_path_not_pending");
+    f.system.cancelMovement();
+    resolvePath([{ x: 0, y: 0 }, { x: 1, y: 1 }, destination]);
+    expect(await pending).toBe(false);
+    expect(execute).not.toHaveBeenCalled();
+  });
+
   it("avoids an already occupied corridor at admission while leaving range probes read-only", async () => {
     const f = fixture(),
       blocked = { x: 1, y: 0 },
