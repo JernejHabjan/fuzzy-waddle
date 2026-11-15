@@ -4,6 +4,7 @@ drop type if exists public.achievement_difficulty cascade;
 
 create type public.achievement_difficulty as enum ('easy', 'medium', 'hard');
 
+-- Asset paths are resolved by the client catalogue; the database stores achievement identity and unlocks.
 create table public.achievement_definitions
 (
   id            text primary key,
@@ -12,7 +13,6 @@ create table public.achievement_definitions
   description   text not null,
   category      text null,
   difficulty    public.achievement_difficulty null,
-  image_key     text null,
   is_secret     boolean not null default false,
   is_active     boolean not null default true,
   metadata      jsonb not null default '{}'::jsonb,
@@ -44,27 +44,27 @@ create unique index user_achievement_unlocks_user_achievement_idx
 create index user_achievement_unlocks_user_id_idx
   on public.user_achievement_unlocks (user_id);
 
-insert into public.achievement_definitions (id, game_key, name, description, category, difficulty, image_key, is_secret) values
-('probable-waffle:first_steps', 'probable-waffle', 'First Steps', 'Complete the tutorial.', 'Progression', 'easy', 'actor_info_icons/element.png', false),
-('probable-waffle:campaigner', 'probable-waffle', 'Campaigner', 'Complete the first campaign mission.', 'Progression', 'easy', 'actor_info_icons/element.png', false),
-('probable-waffle:war_hero', 'probable-waffle', 'War Hero', 'Complete the entire campaign.', 'Progression', 'hard', 'actor_info_icons/element.png', false),
-('probable-waffle:first_victory', 'probable-waffle', 'First Victory', 'Win your first skirmish or multiplayer game.', 'Milestones', 'easy', 'actor_info_icons/element.png', false),
-('probable-waffle:the_architect', 'probable-waffle', 'The Architect', 'Construct one of every building type in a single match.', 'Milestones', 'medium', 'actor_info_icons/element.png', false),
-('probable-waffle:unit_collector', 'probable-waffle', 'Unit Collector', 'Train one of every unit type in a single match.', 'Milestones', 'medium', 'actor_info_icons/element.png', false),
-('probable-waffle:hundred_wins', 'probable-waffle', 'Centurion', 'Achieve 100 victories.', 'Milestones', 'hard', 'actor_info_icons/element.png', false),
-('probable-waffle:resourceful', 'probable-waffle', 'Resourceful', 'Gather 10,000 resources in a single game.', 'Economy', 'easy', 'actor_info_icons/element.png', false),
-('probable-waffle:master_economist', 'probable-waffle', 'Master Economist', 'End a match with over 50,000 resources in the bank.', 'Economy', 'medium', 'actor_info_icons/element.png', false),
-('probable-waffle:economic_powerhouse', 'probable-waffle', 'Economic Powerhouse', 'Win a game with double the resource income of all opponents.', 'Economy', 'hard', 'actor_info_icons/element.png', false),
-('probable-waffle:annihilator', 'probable-waffle', 'Annihilator', 'Destroy 1,000 enemy units across all games.', 'Military', 'medium', 'actor_info_icons/element.png', false),
-('probable-waffle:unstoppable_force', 'probable-waffle', 'Unstoppable Force', 'Build an army that reaches the maximum supply limit.', 'Military', 'medium', 'actor_info_icons/element.png', false),
-('probable-waffle:swift_victory', 'probable-waffle', 'Swift Victory', 'Win a game in under 10 minutes.', 'Military', 'medium', 'actor_info_icons/element.png', false),
-('probable-waffle:comeback_king', 'probable-waffle', 'Comeback King', 'Win a game after your main command center has been destroyed.', 'Military', 'hard', 'actor_info_icons/element.png', false),
-('probable-waffle:scouts_honor', 'probable-waffle', 'Scout''s Honor', 'Reveal the entire map in a single game.', 'Challenge', 'easy', 'actor_info_icons/element.png', false),
-('probable-waffle:no_fly_zone', 'probable-waffle', 'No-Fly Zone', 'Destroy 50 enemy air units in a single game.', 'Challenge', 'medium', 'actor_info_icons/element.png', false),
-('probable-waffle:death_from_above', 'probable-waffle', 'Death From Above', 'Win a game by only building air units (and necessary tech buildings).', 'Challenge', 'hard', 'actor_info_icons/element.png', false),
-('probable-waffle:turtle_power', 'probable-waffle', 'Turtle Power', 'Win a game that lasts longer than one hour.', 'Challenge', 'medium', 'actor_info_icons/element.png', false),
-('probable-waffle:master_tactician', 'probable-waffle', 'Master Tactician', 'Win a game without losing a single unit.', 'Secret', 'hard', 'actor_info_icons/element.png', true),
-('probable-waffle:click_happy', 'probable-waffle', 'Click Happy', 'Click on a single unit 50 times in a row.', 'Secret', 'easy', 'actor_info_icons/element.png', true)
+insert into public.achievement_definitions (id, game_key, name, description, category, difficulty, is_secret) values
+('probable-waffle:first_steps', 'probable-waffle', 'First Steps', 'Complete the tutorial.', 'Progression', 'easy', false),
+('probable-waffle:campaigner', 'probable-waffle', 'Campaigner', 'Complete the first campaign mission.', 'Progression', 'easy', false),
+('probable-waffle:war_hero', 'probable-waffle', 'War Hero', 'Complete the entire campaign.', 'Progression', 'hard', false),
+('probable-waffle:first_victory', 'probable-waffle', 'First Victory', 'Win your first skirmish or multiplayer game.', 'Milestones', 'easy', false),
+('probable-waffle:the_architect', 'probable-waffle', 'The Architect', 'Construct one of every building type in a single match.', 'Milestones', 'medium', false),
+('probable-waffle:unit_collector', 'probable-waffle', 'Unit Collector', 'Train one of every unit type in a single match.', 'Milestones', 'medium', false),
+('probable-waffle:hundred_wins', 'probable-waffle', 'Centurion', 'Achieve 100 victories.', 'Milestones', 'hard', false),
+('probable-waffle:resourceful', 'probable-waffle', 'Resourceful', 'Gather 10,000 resources in a single game.', 'Economy', 'easy', false),
+('probable-waffle:master_economist', 'probable-waffle', 'Master Economist', 'End a match with over 50,000 resources in the bank.', 'Economy', 'medium', false),
+('probable-waffle:economic_powerhouse', 'probable-waffle', 'Economic Powerhouse', 'Win a game with double the resource income of all opponents.', 'Economy', 'hard', false),
+('probable-waffle:annihilator', 'probable-waffle', 'Annihilator', 'Destroy 1,000 enemy units across all games.', 'Military', 'medium', false),
+('probable-waffle:unstoppable_force', 'probable-waffle', 'Unstoppable Force', 'Build an army that reaches the maximum supply limit.', 'Military', 'medium', false),
+('probable-waffle:swift_victory', 'probable-waffle', 'Swift Victory', 'Win a game in under 10 minutes.', 'Military', 'medium', false),
+('probable-waffle:comeback_king', 'probable-waffle', 'Comeback King', 'Win a game after your main command center has been destroyed.', 'Military', 'hard', false),
+('probable-waffle:scouts_honor', 'probable-waffle', 'Scout''s Honor', 'Reveal the entire map in a single game.', 'Challenge', 'easy', false),
+('probable-waffle:no_fly_zone', 'probable-waffle', 'No-Fly Zone', 'Destroy 50 enemy air units in a single game.', 'Challenge', 'medium', false),
+('probable-waffle:death_from_above', 'probable-waffle', 'Death From Above', 'Win a game by only building air units (and necessary tech buildings).', 'Challenge', 'hard', false),
+('probable-waffle:turtle_power', 'probable-waffle', 'Turtle Power', 'Win a game that lasts longer than one hour.', 'Challenge', 'medium', false),
+('probable-waffle:master_tactician', 'probable-waffle', 'Master Tactician', 'Win a game without losing a single unit.', 'Secret', 'hard', true),
+('probable-waffle:click_happy', 'probable-waffle', 'Click Happy', 'Click on a single unit 50 times in a row.', 'Secret', 'easy', true)
 on conflict (id) do nothing;
 
 alter table public.achievement_definitions enable row level security;
