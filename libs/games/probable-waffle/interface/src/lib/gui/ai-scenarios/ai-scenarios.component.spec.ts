@@ -23,6 +23,8 @@ describe("AiScenariosComponent", () => {
   const variant = { id: "tivara-bait", seed: 759940, aiFaction: "Tivara", humanFaction: "Skaduwee", difficulty: "Normal" } as const;
   const recipe = {
     purpose: "Bait and pursuit", scenarioIds: ["C-05"],
+    acceptance: { actions: ["Bait the defenders"], required: ["Protect the base"], forbidden: ["Chase too far"],
+      measurements: ["Defender position"] },
     recipe: { mapLabel: "AI Open Economy (test only)", aiPlayerNumber: 2,
       variants: [variant, { ...variant, id: "peer-only", requiresMultiplayer: true }] }
   } satisfies AiScenarioRecipe;
@@ -55,6 +57,10 @@ describe("AiScenariosComponent", () => {
     http.expectOne(`${assetRoot}/recipe-1.json`).flush(recipe);
     await fixture.whenStable();
     fixture.detectChanges();
+    expect(page.textContent).toContain("Bait and pursuit");
+    expect(page.textContent).toContain("Protect the base");
+    expect(page.textContent).toContain("Chase too far");
+    expect(page.textContent).toContain("Defender position");
     const actions = page.querySelectorAll<HTMLButtonElement>(".variants button");
     expect(actions[1].disabled).toBe(true);
     actions[0].click();

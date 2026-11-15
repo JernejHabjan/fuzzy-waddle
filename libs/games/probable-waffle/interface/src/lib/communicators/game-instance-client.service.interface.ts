@@ -101,7 +101,7 @@ export interface GameInstanceClientServiceInterface {
    */
   gameModeChanged(
     property: ProbableWaffleDataChangeEventProperty<ProbableWaffleGameModeData>,
-    gameModeData: ProbableWaffleGameModeData
+    gameModeData: Partial<ProbableWaffleGameModeData>
   ): Promise<void>;
   /**
    * operation exposed by {@link GameInstanceClientServiceInterface}. Its signature is the compatibility boundary

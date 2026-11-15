@@ -73,7 +73,7 @@ export const gameInstanceClientServiceStub = {
   },
   async gameModeChanged(
     property: ProbableWaffleDataChangeEventProperty<ProbableWaffleGameModeData>,
-    gameModeData: ProbableWaffleGameModeData
+    gameModeData: Partial<ProbableWaffleGameModeData>
   ): Promise<void> {
     return Promise.resolve();
   },
