@@ -6,7 +6,7 @@ This index joins the [manifest](../../../../../../../../../../tools/probable-waf
 
 **Registered is not passed:** no row below claims execution evidence. A spec link means the file mentions the ID; the matrix must still execute an ID-specific semantic assertion.
 
-- 121 required scenarios; 111/111 pure fixtures registered; 115/120 real-game recipes registered; 5 runtime cases deferred for absent island-map content.
+- 120 required scenarios; 111/111 pure fixtures registered; 115/120 real-game recipes registered; 5 runtime cases deferred for absent island-map content.
 - 0 additional native recipe specifications authored, not executable or executed. Their setup, actions, assertions and missing bindings are explicit; registered and passed counts are unchanged.
 - Pure cases use Jest without a map. Browser cases use the [Playwright driver](../../../../../../../../../../apps/portal-e2e/src/e2e/probable-waffle/skirmish/ai/runner/skirmish-ai-runtime.spec.ts) and launch a real lobby/Phaser match with authoritative outcomes.
 - Current registered browser recipes still name mutable shipped maps. Their migration to [frozen test maps](test-map-contract.md) is planned, not complete. Keep natural-map playtests separate from deterministic CI.

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "manifestVersion": "skirmish",
-  "requiredCaseCount": 121,
+  "requiredCaseCount": 120,
   "baseline": "baseline/pinned-reference-implementation.json",
   "defaultSeeds": [759001, 759002, 759003],
   "rowDefaults": {

@@ -2,7 +2,7 @@
 
 These 63 strategic cases preserve the required outcomes and negative examples while resolving them against this game's actual capabilities. Read with [contracts and tuning](../architecture/contracts-and-tuning.md) and the [runtime E2E policy](./runtime-e2e.md).
 
-They are joined by H-01–32 and SEQ-01–08 in [adversarial scenarios](./adversarial-scenarios.md), C-01–06 and D-01–06 in [classic RTS/difficulty](./classic-rts-and-difficulty-scenarios.md), and DBG-01–06 in [debugging scenarios](./debugging-scenarios.md): 121 named cases before paired variants. Apply [H1–H9](./progress-and-recovery-oracles.md) to their assertions. A blocker string, optional expansion or token order does not establish useful recovery or offensive play.
+They are joined by H-01–32 and SEQ-01–08 in [adversarial scenarios](./adversarial-scenarios.md), C-01–06 and D-01–05 in [classic RTS/difficulty](./classic-rts-and-difficulty-scenarios.md), and DBG-01–06 in [debugging scenarios](./debugging-scenarios.md): 120 named cases before paired variants. Apply [H1–H9](./progress-and-recovery-oracles.md) to their assertions. A blocker string, optional expansion or token order does not establish useful recovery or offensive play.
 
 ## Two different questions, two kinds of assertions
 

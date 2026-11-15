@@ -1,5 +1,4 @@
 # Combat and strategy
-
 ## Strategic purpose
 
 Every active squad and meaningful spending plan links to an objective, evidence, expected effect, deadline and recovery policy. The controller evaluates state rather than advancing through a time-only script.

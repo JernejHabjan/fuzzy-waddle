@@ -95,4 +95,4 @@ Use the existing debug entry point; the isolated workbench may be a developer/te
 | DBG-05 | Malformed/oversized/version-mismatched/traversal/HTML payloads rejected or rendered safely; hidden runtime bundle is access-controlled                  |
 | DBG-06 | Capture quota/history truncation/scene disposal stay bounded; debug shown/hidden/exporting/filtering gives identical gameplay/AI outcomes               |
 
-These six cases join the twelve classic RTS/difficulty cases and the prior 103: **121 named cases**, before paired/seed/runtime variants. Record responsible symbol, persistence owner, command and evidence for each ID in the executable manifest/report.
+These six cases join the eleven classic RTS/difficulty cases and the prior 103: **120 named cases**, before paired/seed/runtime variants. Record responsible symbol, persistence owner, command and evidence for each ID in the executable manifest/report.

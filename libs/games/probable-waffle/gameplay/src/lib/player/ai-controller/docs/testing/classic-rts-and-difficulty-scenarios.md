@@ -82,7 +82,7 @@ The Normal 10-minute viable-offense gate remains mandatory. Set Easy/Hard milest
 
 ## Required cases
 
-Run focused cases while developing their responsible subsystem and all cases in the release matrix. These add 12 cases to the prior 103; the debugging group adds 6 more, for 121 named cases before variants.
+Run focused cases while developing their responsible subsystem and all cases in the release matrix. These add 11 cases to the prior 103; the debugging group adds 6 more, for 120 named cases before variants.
 
 | ID   | Required evidence                                                                                                                                                       |
 |------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

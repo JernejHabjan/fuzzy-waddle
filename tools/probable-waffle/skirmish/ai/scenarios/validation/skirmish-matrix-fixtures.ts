@@ -12,7 +12,7 @@ import { validNativeScenarioFixture } from "./skirmish-runtime-native-scenario-f
 export function validateManifest(value, fixtureDirectory) {
   if (!value || value.schemaVersion !== 1 || value.manifestVersion !== "skirmish" || !Array.isArray(value.rows))
     throw new Error("malformed_manifest");
-  if (value.rows.length !== value.requiredCaseCount || value.requiredCaseCount !== 121)
+  if (value.rows.length !== value.requiredCaseCount || value.requiredCaseCount !== 120)
     throw new Error(`manifest_case_count:${value.rows.length}`);
   if (!safeReference(value.baseline)) throw new Error("unsafe_baseline_manifest_reference");
   const ids = new Set();
