@@ -35,7 +35,6 @@ Issues contain source anchors, acceptance, constraints and known evidence. They 
 - [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828): profile only a concrete measured slowdown.
 - [#822](https://github.com/JernejHabjan/fuzzy-waddle/issues/822): optional island content/transport-required worlds. No shipped flying-container capability or synthetic fixture establishes native air transport.
 
-Difficulty calibration was cancelled in [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817). Existing configuration/fairness tests remain; D-06 comparisons, difficulty-order campaigns and calibration soaks are not queued.
 
 ### Strategy and economy acceptance audit
 

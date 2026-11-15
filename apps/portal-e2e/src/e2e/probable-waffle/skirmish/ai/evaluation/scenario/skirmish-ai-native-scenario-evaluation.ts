@@ -66,7 +66,6 @@ export function evaluateNativeScenarioVariant(
   if (!fixture && !contract) return [];
   const variant = fixture?.recipe.variants.find((candidate) => candidate.id === result.variantId);
   const branch = contract?.branchByVariant[result.variantId];
-  if (id === "D-06") return ["native_calibration_requires_multi_source_workload_evidence"];
   if (["DBG-01", "DBG-03"].includes(id)) {
     if (
       !contract ||

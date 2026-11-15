@@ -31,9 +31,5 @@ it("admits every registered native world's complete opt-in config before launchi
   }
   expect({ count: rejected.length, first: rejected.slice(0, 40) }).toEqual({ count: 0, first: [] });
   expect(checked).toBe(579);
-  expect(nonPreset.sort()).toEqual([
-    "d-06-skaduwee-holdout", "d-06-skaduwee-long-soaks", "d-06-skaduwee-paired-calibration",
-    "d-06-tivara-holdout", "d-06-tivara-long-soaks", "d-06-tivara-paired-calibration",
-    "h-32-skaduwee-host-replacement", "h-32-tivara-host-replacement"
-  ]);
+  expect(nonPreset.sort()).toEqual(["h-32-skaduwee-host-replacement", "h-32-tivara-host-replacement"]);
 });

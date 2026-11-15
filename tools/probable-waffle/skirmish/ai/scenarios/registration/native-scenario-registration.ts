@@ -1,7 +1,6 @@
 import type { NativeScenarioVariant } from "../../contracts/scenarios/native-scenario-variant.ts";
 import type { NativeScenarioWorld } from "../../contracts/scenarios/native-scenario-world.ts";
 import { readFileSync } from "node:fs";
-import { createHash } from "node:crypto";
 import { nativeScenarioWorld } from "../worlds/native-scenario-worlds.ts";
 import { nativeDomainWorld } from "../worlds/native-domain-worlds.ts";
 import { nativeStrategicWorld } from "../worlds/native-strategic-worlds.ts";
@@ -71,31 +70,11 @@ export function nativeScenarioFixture(id) {
     acceptance: binding.acceptance,
     ...(binding.capabilityLimits
       ? {
-          capabilityLimits:
-            id === "D-06"
-              ? [
-                  ...binding.capabilityLimits,
-                  `Frozen workload specification sha256:${createHash("sha256")
-                    .update(
-                      readFileSync(
-                        new URL(
-                          "../../testing/fixtures/calibration/paired-difficulty-calibration-workload.json",
-                          import.meta.url
-                        )
-                      )
-                    )
-                    .digest("hex")}`
-                ]
-              : binding.capabilityLimits
+          capabilityLimits: binding.capabilityLimits
         }
       : {}),
     recipe: {
-      mapLabel:
-        id === "D-06"
-          ? "River Crossing"
-          : ["C-06", "DOMAIN-02"].includes(id)
-            ? "AI Multiplayer (test only)"
-            : "AI Open Economy (test only)",
+      mapLabel: ["C-06", "DOMAIN-02"].includes(id) ? "AI Multiplayer (test only)" : "AI Open Economy (test only)",
       aiPlayerNumber: 2,
       simulationTimeScale: 1,
       ...(["D-02", "H-08", "H-09", "H-32", "SEQ-08", "DBG-03", "DBG-05"].includes(id)
@@ -254,13 +233,7 @@ function nativeScenarioVariant(
     id: variantId,
     executionKind: "focused_preset",
     role: "standalone",
-    seed: id === "D-06"
-      ? 759061
-      : id === "EXP-01"
-        ? 759933
-        : id === "WALL-02" && faction === "Skaduwee"
-          ? 759941
-          : 759940,
+    seed: id === "EXP-01" ? 759933 : id === "WALL-02" && faction === "Skaduwee" ? 759941 : 759940,
     deadlineRationale:
       "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
     aiFaction: faction,
@@ -291,7 +264,7 @@ function nativeScenarioVariant(
         }
       : {}),
     ...(id === "H-32" ? { requiresMultiplayer: branch === "host_replacement" } : {}),
-    ...(["D-02", "D-06", "H-31", "H-32", "DBG-05"].includes(id)
+    ...(["D-02", "H-31", "H-32", "DBG-05"].includes(id)
       ? {}
       : { captureConstruction: true, captureCombat: true }),
     scenarioIds: [id],
@@ -333,13 +306,6 @@ function nativeScenarioVariant(
             "Actual two-human relay and host-owned AI3; this preset belongs only to the subsequent native AI2 match.",
           nextMatchPresetWorld: world
         }
-      : id === "D-06"
-        ? {
-            executionKind: "focused_natural",
-            mapLabel: "River Crossing",
-            setupRationale:
-              "Dispatch group for the frozen multi-map legal-start calibration driver; no actor/resource preset."
-          }
-        : { presetWorld: world })
+      : { presetWorld: world })
   };
 }

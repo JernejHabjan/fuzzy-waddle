@@ -25,7 +25,6 @@ const difficulty = {
 // The matrix invokes separate save, replay, transport or debug drivers for these cases.
 const driverOnly = new Set([
   "D-02",
-  "D-06",
   "DBG-01",
   "DBG-03",
   "DBG-04",

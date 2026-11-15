@@ -2,13 +2,13 @@
 
 ## Current execution policy
 
-Automatic extended AI CI jobs are disabled, and the dedicated workflow is stored outside GitHub's workflow directory. Local core/scout regression profiles remain available. Multiplayer certification, difficulty calibration and an unchanged complete matrix sweep are outside this single-player iteration. [Coverage and follow-ups](./coverage-status.md) records the retained evidence and scoped acceptance.
+Automatic extended AI CI jobs are disabled, and the dedicated workflow is stored outside GitHub's workflow directory. Local core/scout regression profiles remain available. Multiplayer certification and an unchanged complete matrix sweep are outside this single-player iteration. [Coverage and follow-ups](./coverage-status.md) records the retained evidence and scoped acceptance.
 
 The matrix supports manifest-derived shards for explicitly requested coverage. Keep one isolated game per variant; workflow YAML must not duplicate scenario lists. A requested run must fail on missing fixtures, zero decisions/ticks, missing required outcomes, source/fixture mismatch or browser/runtime failure. Registration is not passing evidence. Unsupported content remains visible with an explicit reason. For a victory row, an authoritative AI-player `win` is required; loss, tie, quit or a completed intermediate mode goal cannot substitute for victory. A terminal world may stop early only after all selected victory assertions and scheduled events are complete. Nonterminal focused cases may separately opt into the guarded `evidenceStop` contract below.
 
 Pure selection requires passing, actually executed Jest assertions bound to each requested scenario ID. Explicit fixture bindings require every declared title in its owning file; legacy rows without bindings use ID-named assertions. The matrix captures separate Jest JSON results for gameplay and Phaser without a cached target; a broad passing spec file or a registered fixture with no matching assertion cannot count as coverage. The compact report lists missing IDs, and the runner exits nonzero. Node contract tests cover exact fixture-bound assertions, missing/pending results and incidental ID matches. This enforcement does not establish that every manifest row already has complete semantic coverage; #815 owns that audit.
 
-Local iteration uses focused owner tests followed by affected native cases when behavior changes. The established core and scout profiles are periodic opt-in regression packs, each bounded to 30 minutes. A complete matrix or additional stress seeds requires a separately requested scope. Difficulty calibration is cancelled. Multiplayer and additional save/load certification are deferred to #819 and #823.
+Local iteration uses focused owner tests followed by affected native cases when behavior changes. The established core and scout profiles are periodic opt-in regression packs, each bounded to 30 minutes. A complete matrix or additional stress seeds requires a separately requested scope. Multiplayer and additional save/load certification are deferred to #819 and #823.
 
 The island-only runtime rows `DOMAIN-03`, `DOMAIN-04`, `H-29`, and `SEQ-05` remain visible as optional
 `deferred_content` under #822. The first three still require pure contracts; `SEQ-05` requires runtime evidence when an island map ships. Do not remove those rows from the manifest or mistake this CI wiring for passing coverage.
@@ -74,7 +74,7 @@ ECO-08 retains both natural 200-resource faction openings and adds a focused Tiv
 
 A natural-map control that cannot satisfy a focused invariant is not an equivalent correctness oracle or a performance baseline. Record that outcome in its issue/handoff without claiming a speedup. The focused fixture remains the authoritative `PRO-05` replacement proof; natural recovery behavior remains runtime/strategy work under #816/#827.
 
-Keep natural lobby/map variants for emergent openings, terminal play, calibration, and soaks. Focused presets complement those matches and must never replace an invariant whose outcome depends on discovering an unauthored world naturally.
+Keep natural lobby/map variants for emergent openings and terminal play. Focused presets complement those matches and must never replace an invariant whose outcome depends on discovering an unauthored world naturally.
 
 ## Tick budgets, repetitions and seeds
 
@@ -87,7 +87,7 @@ The authoritative simulation interval is 50 ms: 20 ticks are one simulated secon
 - Keep hand-maintained TS/JS/MJS test and catalog-tool files at or below 400 non-comment lines, methods at or below 200 non-comment lines, and lines at or below 140 columns. Wrap hand-maintained fixture JSON to the same 140-column style; split large behavior families instead of packing unrelated variants into one file. Do not refresh source-structure baselines to hide size.
 - Keep a small continuous-match execution tier for its existing manifest scenarios, from legal starts. It may take longer than two simulated minutes:
   set each full-match deadline from measured victory/recovery behavior, retain a finite bound and mandatory terminal result, and report why any increase over the current 12,000-tick SEQ request ceiling is necessary. A longer match must not substitute for missing focused coverage or make a losing AI appear to pass.
-- Cover representative factions/sides and seeds 1–5 on authored maps in extended runs; expand selected stress cases to seeds 1–20 only when explicitly requested. Difficulty paired-seed campaigns and calibration soaks are cancelled; retained calibration fixtures do not schedule them automatically.
+- Cover representative factions/sides and seeds 1–5 on authored maps in extended runs; expand selected stress cases to seeds 1–20 only when explicitly requested.
 
 ## Runtime coverage families
 

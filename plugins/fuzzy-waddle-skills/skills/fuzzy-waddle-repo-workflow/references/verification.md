@@ -43,4 +43,4 @@ This snapshot is not an excuse to omit needed tests. Discover other project targ
 - The bundled skill-creator quick_validate.py checks skill schema/names/scaffolds when available. The repo's tools/skills/check-index.mjs checks local skill links, indexed paths and project targets without running the game.
 - Validate workflows by tracing realistic success and failure cases, not just matching prose. Check failed tests, rejected pushes, already-completed prerequisites, unavailable models and interrupted resumes.
 
-Verification evidence must include command, source revision/diff digest, selected tests/fixture versions and outcome. An overview-page smoke is documentation evidence, not gameplay or difficulty calibration.
+Verification evidence must include command, source revision/diff digest, selected tests/fixture versions and outcome. An overview-page smoke is documentation evidence, not gameplay evidence.

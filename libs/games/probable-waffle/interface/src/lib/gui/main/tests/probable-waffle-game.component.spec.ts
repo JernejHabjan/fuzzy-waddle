@@ -16,8 +16,7 @@ import { AI_RUNTIME_BROWSER_TEST_CONFIG_KEY } from "../ai-runtime-browser-test-h
 import { activeAiScenarios } from "../../ai-scenarios/active-ai-scenario";
 import {
   ProbableWaffleGameInstanceType,
-  ProbableWaffleGameInstanceVisibility,
-  ProbableWafflePlayerType, ProbableWaffleAiDifficulty, FactionType
+  ProbableWaffleGameInstanceVisibility
 } from "@fuzzy-waddle/probable-waffle-protocol";
 
 jest.mock("@fuzzy-waddle/probable-waffle-phaser/world/const/game-config", () => ({
@@ -79,32 +78,6 @@ describe("ProbableWaffleGameComponent", () => {
     expect(container.gameConfig()?.seed).toEqual(["759940"]);
     expect(fixture.nativeElement.textContent).toContain("C-05 · bait");
     expect(window.sessionStorage.getItem(AI_RUNTIME_BROWSER_TEST_CONFIG_KEY)).toBeNull();
-  });
-
-  it("configures only two fresh native AI roles for explicit calibration without changing legal banks or factions", async () => {
-    fixture.destroy();
-    await gameInstanceClientServiceStub.createGameInstance("calibration", ProbableWaffleGameInstanceVisibility.Private,
-      ProbableWaffleGameInstanceType.Skirmish);
-    const instance = gameInstanceClientServiceStub.gameInstance!;
-    instance.addPlayer(instance.initPlayer({ userId: "1", playerDefinition: { playerType: ProbableWafflePlayerType.Human,
-      factionType: FactionType.Tivara, player: { playerNumber: 1, joined: true } } }));
-    instance.addPlayer(instance.initPlayer({ userId: null, playerDefinition: { playerType: ProbableWafflePlayerType.AI,
-      factionType: FactionType.Skaduwee, player: { playerNumber: 2, joined: true } } }));
-    const banks = JSON.stringify(instance.players.map((player) => player.playerState.data.resources));
-    window.sessionStorage.setItem(AI_RUNTIME_BROWSER_TEST_CONFIG_KEY, JSON.stringify({
-      schemaVersion: 1, enabled: true, seed: 759061, startPaused: true,
-      calibration: { targetPlayerNumber: 1, difficulty: "Hard", opponentArchetype: "rush" }
-    }));
-    fixture = TestBed.createComponent(ProbableWaffleGameComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-    expect(instance.players.map((player) => player.playerController.data.playerDefinition?.playerType))
-      .toEqual([ProbableWafflePlayerType.AI, ProbableWafflePlayerType.AI]);
-    expect(instance.players.map((player) => player.playerController.data.playerDefinition?.difficulty))
-      .toEqual([ProbableWaffleAiDifficulty.Hard, ProbableWaffleAiDifficulty.Medium]);
-    expect(instance.players.map((player) => player.playerController.data.playerDefinition?.factionType))
-      .toEqual([FactionType.Tivara, FactionType.Skaduwee]);
-    expect(JSON.stringify(instance.players.map((player) => player.playerState.data.resources))).toBe(banks);
   });
 
   it("publishes and clears the real game only for an explicit developer runtime session", async () => {

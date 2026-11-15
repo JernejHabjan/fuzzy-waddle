@@ -5,9 +5,6 @@ import type {
 import type { Page } from "@playwright/test";
 import type { RuntimeFixture } from "../contracts/skirmish-ai-runtime-fixture";
 import type { RuntimeVariant } from "./skirmish-ai-runtime-variant";
-import type {
-  AiRuntimeCalibration
-} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/browser/ai-runtime-calibration-config";
 import { installRuntimeAccessor } from "../runner/skirmish-ai-runtime-browser-accessor";
 import { assertRuntimePresetRoster } from "./skirmish-ai-runtime-preset-roster";
 import { assertRuntimeConstructionSetup } from "../construction/capture/skirmish-ai-runtime-construction-setup";
@@ -25,8 +22,7 @@ export async function prepareRuntimeVariant(
   profiling: boolean,
   aiErrors: string[],
   debugProbe?: (page: Page, checkpointIndex: number) => Promise<void>,
-  sameRealm = false,
-  calibration?: AiRuntimeCalibration
+  sameRealm = false
 ) {
   if (profiling) {
     await page.addInitScript(() => {
@@ -60,7 +56,6 @@ export async function prepareRuntimeVariant(
       enabled: true,
       startPaused: true,
       seed: effectiveSeed,
-      ...(calibration ? { calibration } : {}),
       ...(variant.presetWorld
         ? { presetWorld: { ...variant.presetWorld, provenance: { sourceRevision, fixtureDigest } } }
         : {}),

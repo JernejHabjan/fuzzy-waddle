@@ -14,7 +14,7 @@
     "difficulty": "Normal",
     "seed": 759900,
     "repetitions": 1,
-    "variantPolicy": "Fresh world per branch/faction. Paired controls share seed, deterministic instance identity, logical tick and all inputs except the explicitly declared changed variable. Require equal permitted digests/intents only for hidden-state fairness pairs, not risk, workforce or other deliberately different observed-state controls. D cases override difficulty; multiplayer uses real clients; calibration preserves its own sample matrix.",
+    "variantPolicy": "Fresh world per branch/faction. Paired controls share seed, deterministic instance identity, logical tick and all inputs except the explicitly declared changed variable. Require equal permitted digests/intents only for hidden-state fairness pairs, not risk, workforce or other deliberately different observed-state controls. D cases override difficulty; multiplayer uses real clients.",
     "actorPolicy": "Resolve legal faction-owned capabilities, prices, footprints, durations, source/drain types and weapon domains from pwActorDefinitions/TechTreeService. Bind unique actual inherited actors. Choose concrete passable out-of-footprint positions only after a checked physical map setup; no name-only capability guesses.",
     "inputPolicy": "All preset creation/balances/queues precede first observation. Later events use ordinary opponent/shared commands or pinned native losses. Never inject AI plans, contacts, paid completion, earned income or success flags.",
     "timingPolicy": "maximumTick is an authored outer ceiling, not a measured pass. At binding freeze original per-phase travel/build/train/impact bounds independently before AI decisions and add exact before/after milestones. A missing event or exhausted ceiling fails, never passes vacuously or renews from a planner retry estimate.",
@@ -54,12 +54,6 @@
       "mapLabel": null,
       "topology": "supported_multiplayer_roster_binding_required",
       "precondition": "Select a real supported three-or-more-player map/lobby path. Current two-slot matrix recipe cannot manufacture extra owners."
-    },
-    "calibration": {
-      "mapLabel": null,
-      "mapLabels": ["River Crossing", "Ember Enclave"],
-      "topology": "existing_difficulty_calibration_matrix",
-      "precondition": "Preserve calibration/paired-difficulty-calibration-workload.json paired seeds, holdout, factions, opponents and map matrix. Pin both builds, profile versions and exact map/content digests. Frozen-map migration requires a separate explicit fixture change; soak ceiling is separate from each short-match ceiling."
     },
     "workbench": {
       "mapLabel": "AI Open Economy (test only)",
@@ -148,10 +142,6 @@
     "multi_opponent_script": {
       "owner": "apps/portal-e2e/src/e2e/probable-waffle/skirmish/ai/runner/skirmish-ai-runtime-variant-runner.ts",
       "missing": "C-06 uses the existing three-spawn map, native third-player capture, real defeat and initial team controls. No in-match diplomacy command exists; dynamic diplomacy is explicitly unsupported. Real socket peers and host migration remain separate acceptance."
-    },
-    "calibration_driver": {
-      "owner": "tools/probable-waffle/skirmish/ai/testing/fixtures/calibration/paired-difficulty-calibration-workload.json",
-      "missing": "Bind isolated pinned baseline/candidate builds, paired/holdout seed declarations, terminal metrics and uncertainty to the existing calibration gate; unsupported baseline cannot fall back to candidate. No calibration runs in this authoring pass."
     },
     "repro_driver": {
       "owner": "tools/probable-waffle/skirmish/ai/cli/run-skirmish-matrix.ts",

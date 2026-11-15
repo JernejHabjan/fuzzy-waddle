@@ -35,7 +35,6 @@ export async function runRegisteredRuntimeVariant(
   variant: RuntimeVariant,
   request: RuntimeRequest
 ) {
-  if (request.scenarioIds.includes("D-06")) throw new Error("d06_requires_frozen_calibration_workload_driver");
   for (const id of ["DBG-01", "DBG-03"]) {
     const branch = fixture.assertions[id]?.requiredNativeScenario?.branchByVariant[variant.id];
     if (request.scenarioIds.includes(id) && branch)

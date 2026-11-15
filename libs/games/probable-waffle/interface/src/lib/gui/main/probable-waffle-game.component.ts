@@ -22,8 +22,6 @@ import type { Game, Types } from "phaser";
 import { environment } from "@fuzzy-waddle/environments/environment";
 import { RouterLink } from "@angular/router";
 import { activeAiScenarios } from "../ai-scenarios/active-ai-scenario";
-import { prepareAiRuntimeCalibrationPlayers } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/browser/ai-runtime-calibration";
 import {
   clearAiRuntimeBrowserTestHost,
   publishAiRuntimeBrowserTestHost,
@@ -86,7 +84,6 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
     const scenario = environment.production ? undefined : activeAiScenarios.get(gameInstance);
     this.scenarioTitle = scenario?.title;
     const runtimeTestConfig = environment.production ? null : scenario?.config ?? readAiRuntimeBrowserTestConfig();
-    if (runtimeTestConfig?.calibration) prepareAiRuntimeCalibrationPlayers(gameInstance, runtimeTestConfig);
     if (runtimeTestConfig && !gameInstance.gameInstanceMetadata.data.startOptions.loadFromSave) {
       gameInstance.gameInstanceMetadata.data.rndSeed = runtimeTestConfig.seed;
       // Actor identity includes the session ID, so continuous seeded worlds need the same stable test salt as presets.

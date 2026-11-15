@@ -937,14 +937,6 @@
       "drivers": ["pure", "runtime"]
     },
     {
-      "id": "D-06",
-      "stages": [15],
-      "group": "difficulty",
-      "fixture": "native/difficulty/d-06-paired-calibration-report-identifies-versions-sample-counts-uncertainty-and-challenge-trend-runtime.json",
-      "authoredFixture": "calibration/paired-difficulty-calibration-workload.json",
-      "drivers": ["runtime"]
-    },
-    {
       "id": "DBG-01",
       "stages": [5, 13],
       "group": "debug",

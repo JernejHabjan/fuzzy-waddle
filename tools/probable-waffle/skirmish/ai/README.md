@@ -18,7 +18,6 @@ for gameplay architecture and operating guidance.
 | `shared/`            | Workspace paths, process invocation and runtime request/artifact transport       |
 | `reports/`           | Bounded summaries and source-checked repair lists                                |
 | `integration/agent/` | Game adapter for the generic repository agent tools                              |
-| `calibration/`       | Optional methodology/tools; difficulty calibration is currently cancelled        |
 
 ## Scenario data
 

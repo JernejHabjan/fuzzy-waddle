@@ -16,20 +16,20 @@ const manifest = JSON.parse(
 );
 const readerFixture = {
   ...fixture,
-  scenarioIds: ["D-06"],
+  scenarioIds: ["D-01"],
   cases: [
     {
-      ...nativeScenarioBindings.cases["D-06"].acceptance,
-      scenarioId: "D-06",
+      ...nativeScenarioBindings.cases["D-01"].acceptance,
+      scenarioId: "D-01",
       status: "authored_not_executed",
-      world: "calibration",
-      maximumTick: 18000,
-      branches: ["paired native calibration"],
+      world: "difficulty",
+      maximumTick: 2000,
+      branches: ["normal"],
       executionBlockers: ["native_case_binding"],
       reuse: [
-        "tools/probable-waffle/skirmish/ai/testing/fixtures/calibration/paired-difficulty-calibration-workload.json"
+        "tools/probable-waffle/skirmish/ai/testing/fixtures/native/difficulty/d-01-every-lobby-difficulty-selects-the-exact-versioned-profile-and-expected-cadence-runtime.json"
       ],
-      checkpointTicks: [0, 18000],
+      checkpointTicks: [0, 2000],
       checkpointPolicy: "An isolated reader unit control, not a missing runtime registration or executed evidence."
     }
   ]

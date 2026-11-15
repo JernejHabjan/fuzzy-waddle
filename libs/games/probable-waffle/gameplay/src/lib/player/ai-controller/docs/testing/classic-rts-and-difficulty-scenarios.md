@@ -1,6 +1,6 @@
 # Classic RTS comparison, strategic depth and difficulty
 
-Difficulty configuration/fairness requirements below remain useful correctness contracts. The D-06 statistical calibration campaign is cancelled for the current iteration; it is not a queued test or release gate. See
+Difficulty configuration/fairness requirements below remain useful correctness contracts.
 [coverage and follow-ups](./coverage-status.md) for current evidence and execution scope.
 
 These requirements complement H1–H9 without adding runtime machine learning. Read the [economy/production](../architecture/economy-and-production.md), [combat/strategy](../architecture/combat-and-strategy.md) and [debug workbench](../debugging/README.md) documentation. All numbers below are tuning defaults, not measured results.
@@ -18,7 +18,7 @@ These are primary sources. Historical Blizzard material describes the named game
 | [PETRA AttackManager documentation](https://docs.wildfiregames.com/javascript/petra/PETRA.AttackManager.html)                          | Separate attack lifecycle, target-player choice and diplomacy-aware cancellation                 | Add stable opponent focus and complete mission transitions without whole-army target churn                                               |
 | [SC2 API protocol usage](https://github.com/Blizzard/s2client-proto/blob/master/docs/protocol.md)                                      | Observation/action/step workflow and version-sensitive replays                                   | Add an offline step/replay/diff workbench with exact map/config/engine provenance; don't confuse it with live multiplayer controls       |
 
-The controller covers coherent economy, useful duplicate capacity, squads, access/transport, defenses and recovery. These requirements focus on strategic depth, difficulty calibration and reproducible diagnosis—not unrelated mechanics.
+The controller covers coherent economy, useful duplicate capacity, squads, access/transport, defenses and recovery. These requirements focus on strategic depth and reproducible diagnosis—not unrelated mechanics.
 
 ## C1 — opening branches and timing plans
 
@@ -80,8 +80,6 @@ All levels retain supply/worker bootstrap, useful duplicate accounting, essentia
 
 The Normal 10-minute viable-offense gate remains mandatory. Set Easy/Hard milestone bands from the same real map/opening workload and their measured cadence rather than equating smaller command counts with weakness. H1 deadlines scale with actual expected work; slower Easy cannot reset deadlines forever.
 
-Calibration: use mirrored same-faction/profile-only comparisons, standard probe opponents and shared seeds/maps. Publish decision delay, mission concurrency, reaction/composition latency, macro continuity and outcome distributions. Start with 20 paired seeds; expand to at most 100 per comparison when uncertainty is material. Seek a reliably ordered challenge trend across the tested set, not a guarantee that Hard wins every game. If the bands remain indistinguishable, report calibration unfinished and tune authored choices/budgets without cheats; don't relabel equivalent behavior. Human ratings of predictability/fairness/challenge are separate from automated correctness.
-
 ## Required cases
 
 Run focused cases while developing their responsible subsystem and all cases in the release matrix. These add 12 cases to the prior 103; the debugging group adds 6 more, for 121 named cases before variants.
@@ -99,4 +97,3 @@ Run focused cases while developing their responsible subsystem and all cases in 
 | D-03 | Equal permitted observations/rules across profiles; no hidden current state or unadvertised resource/stat bonuses                                                       |
 | D-04 | Easy still opens, produces useful copies, counters legal threats, retreats and recovers; reduced breadth is not broken behavior                                         |
 | D-05 | Caps and reconsideration cadence affect eligible voluntary activity while independent defense/rescue remains serviced                                                   |
-| D-06 | Paired calibration report identifies versions, sample counts/uncertainty and challenge trend; indistinguishable levels remain an explicit tuning failure                |

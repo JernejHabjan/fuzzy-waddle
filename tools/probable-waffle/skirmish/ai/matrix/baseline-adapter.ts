@@ -11,13 +11,7 @@ export function resolvePinnedBaselineSupport(row, baselineManifest) {
     runtime: row.drivers.includes("runtime")
       ? {
           status: "supported",
-          adapter: "legacy-runtime-command-and-world-projection",
-          ...(row.id === "D-06"
-            ? {
-                scope: "native_legacy_reference_only",
-                unsupported: ["new_difficulty_profiles", "fixed_new_opening_opponents"]
-              }
-            : {})
+          adapter: "legacy-runtime-command-and-world-projection"
         }
       : { status: "not_requested", adapter: null }
   };

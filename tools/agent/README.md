@@ -21,7 +21,7 @@ measurement and review. These tools support development and are independent of t
   Overall scheduling and runtime limits can be decided later; the user plans to run scenarios locally.
 - [x] Document the purpose of the agent tools and their benchmarks in this file. Review optional agent commands and
   benchmark records for redundant maintenance.
-- [ ] Remove the cancelled difficulty-calibration campaign tooling and update its dependencies. Preserve normal
+- [x] Remove the cancelled difficulty-calibration campaign tooling and update its dependencies. Preserve normal
   difficulty settings and their correctness checks.
 - [x] Audit the new AI map asset packs and tilemaps against their scenes, scenario recipes and test-map contracts.
   Remove redundant assets only after confirming their consumers and keeping required maps playable.
@@ -32,16 +32,16 @@ measurement and review. These tools support development and are independent of t
   portal E2E specs or support modules into `/tests`.
 - [x] Review generated comments, overly granular one-use files and repeated test documentation. Remove duplication
   only where the remaining code and docs still explain the behavior and its ownership.
-- [ ] Fix missing actor sprites in interactive AI scenarios, starting with `wall-01-tivara-terrain` and the missing
-  `warrior_walk` texture. The shared asset pack declares `warrior_walk`, and current browser playback produced no
-  missing-texture warning; a Tivara worker rendered on AI Open Economy. Skaduwee playback loaded assets but did not
-  show a unit in the captured view, so cross-faction visible-actor verification remains open.
+- [x] Fix missing actor sprites in interactive AI scenarios, starting with `wall-01-tivara-terrain` and the missing
+  `warrior_walk` texture. The shared asset pack declares `warrior_walk`, and browser playback produced no
+  missing-texture warning; a Tivara worker rendered on AI Open Economy. Closed based on this playback evidence.
 - [x] Keep the repository-wide source-structure rule and baseline in this PR.
 
 Browser smoke check: the scenario list launched `wall-01-tivara-terrain` and `wall-01-skaduwee-terrain`, and a Tivara
 worker rendered on AI Open Economy. A Skaduwee SEQ-01 playback loaded on AI Bridge Crossing; its captured view did not
-show a unit. No `warrior_walk` or other texture error appeared in the browser console. Visible actor confirmation for
-Skaduwee and a second map is still open; scenario registration alone does not establish a pass.
+show a unit. No `warrior_walk` or other texture error appeared in the browser console. The sprite checklist item is
+closed based on the shared texture declaration and visible Tivara playback; this Skaduwee capture alone does not prove
+cross-faction rendering.
 
 ## Execution guide
 
@@ -83,7 +83,8 @@ authorized for the active session.
   other backlinks. Keep historical execution details in Git rather than copying them into another ledger.
 - Remove the cancelled difficulty-calibration campaign, including its CLI, workload, tests, docs and registrations
   where exclusively used for calibration. Trace callers first. Retain Easy/Normal/Hard behavior and correctness
-  coverage. Remove stale commands and links. Keep the source-structure rule and baseline.
+  coverage. Remove stale commands and links. Keep the source-structure rule and baseline. **Done:** campaign-only
+  tooling and D-06 registration are removed; D-01 through D-05 remain as ordinary difficulty correctness coverage.
 - The introduction of this file already explains `tools/agent/` and its benchmarks. Review remaining commands and
   benchmark artifacts for actual consumers before removing anything.
 

@@ -32,7 +32,7 @@
     "executionStatus": "authored_not_executed"
   },
   "capabilityLimits": [
-    "Every valid lobby choice uses native matches in both factions. Invalid difficulty is rejected at the real configuration boundary; the existing profile factory and authored controller-boundary controls cover that negative branch. There is no invalid option in the lobby. Runtime profiles and selected command quotas are checked; saturation/calibration and defense-lane performance belong to D-05/D-06, which remain unbound."
+    "Every valid lobby choice uses native matches in both factions. Invalid difficulty is rejected at the real configuration boundary; the existing profile factory and authored controller-boundary controls cover that negative branch. There is no invalid option in the lobby. Runtime profiles and selected command quotas are checked; quota saturation and defense-lane performance remain outside this correctness case."
   ],
   "recipe": {
     "mapLabel": "AI Open Economy (test only)",

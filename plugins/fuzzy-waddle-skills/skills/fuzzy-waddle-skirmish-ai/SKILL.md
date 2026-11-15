@@ -1,6 +1,6 @@
 ---
 name: fuzzy-waddle-skirmish-ai
-description: Implement, diagnose or validate the Probable Waffle skirmish AI, deterministic scenario matrix, Playwright runtime matches and difficulty calibration. Use for AI-controller work; not for unrelated Phaser gameplay.
+description: Implement, diagnose or validate the Probable Waffle skirmish AI, deterministic scenario matrix and Playwright runtime matches. Use for AI-controller work; not for unrelated Phaser gameplay.
 ---
 
 # Skirmish AI
@@ -10,7 +10,7 @@ description: Implement, diagnose or validate the Probable Waffle skirmish AI, de
 1. Read the [AI documentation index](../../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/README.md).
    Read [coverage and follow-ups](../../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/coverage-status.md)
    when evidence status or unfinished work matters. GitHub issues own follow-ups. Multiplayer and extended save/load
-   certification remain deferred, and difficulty calibration is cancelled.
+   certification remain deferred.
    Automatic AI CI jobs/tag triggers are disabled until explicitly requested otherwise.
    Use descriptive unsuffixed AI filenames and symbols; do not add a generation suffix to a source name.
    Validate save/fixture/report shape at its existing boundary independently of source naming.

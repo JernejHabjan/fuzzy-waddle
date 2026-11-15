@@ -62,7 +62,7 @@ pnpm ai:skirmish-matrix -- --scenario SCOUT-02 --mode runtime
 pnpm ai:skirmish:report -- --failures-only --details
 ```
 
-Ordinary `pnpm e2e` has an extended AI hook enabled by the exact value `RUN_AI_REGRESSION=true`. Automatic AI CI jobs are currently commented out; local commands and manual dispatch remain. Native invocations are bounded to 30 minutes. Difficulty calibration is cancelled for this iteration.
+Ordinary `pnpm e2e` has an extended AI hook enabled by the exact value `RUN_AI_REGRESSION=true`. Automatic AI CI jobs are currently commented out; local commands and manual dispatch remain. Native invocations are bounded to 30 minutes.
 
 ## Source layout
 

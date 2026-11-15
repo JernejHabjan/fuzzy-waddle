@@ -1,6 +1,6 @@
 # Shared implementation decisions
 
-These are the shared implementation defaults for the controller. Read them with the [decision cycle](./decision-cycle.md) and [progress/recovery oracles](../testing/progress-and-recovery-oracles.md). Numbers are initial authored tuning values, not measured optimal balance; calibration must evaluate them with recorded evidence. Preserve actual game costs, damage, capacity and faction rules from definitions.
+These are the shared implementation defaults for the controller. Read them with the [decision cycle](./decision-cycle.md) and [progress/recovery oracles](../testing/progress-and-recovery-oracles.md). Numbers are initial authored tuning values, not measured optimal balance. Preserve actual game costs, damage, capacity and faction rules from definitions.
 
 ## Source and destination map
 
@@ -67,7 +67,7 @@ Failure retry defaults: 40, 80, 160, then 320 ticks for equivalent failed candid
 
 ## Initial profiles and budgets
 
-The [difficulty specification](../testing/classic-rts-and-difficulty-scenarios.md#d--difficulty-already-exists-make-it-real-and-testable) owns exact behavioral differences, offensive mission caps, composition cooldowns and calibration. Keep its profile connected to lobby, host, save/replay and results. Intentional errors stay off in initial delivery; a future opt-in policy is separate. Contact memory remains identical across profiles.
+The [difficulty specification](../testing/classic-rts-and-difficulty-scenarios.md#d--difficulty-already-exists-make-it-real-and-testable) owns exact behavioral differences, offensive mission caps and composition cooldowns. Keep its profile connected to lobby, host, save/replay and results. Intentional errors stay off in initial delivery; a future opt-in policy is separate. Contact memory remains identical across profiles.
 
 The macro manager derives total army demand and dated economic obligations using [C1/C2](../testing/classic-rts-and-difficulty-scenarios.md#c2--desired-army-size-and-spending-have-a-source) before assigning role shares. Reproduction manifests and diagnostic completeness are typed contracts; they cannot be retrofitted as untyped live-world debug queries.
 

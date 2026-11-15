@@ -156,7 +156,6 @@ export function resolveAiRegressionSelection(
 
 function omissionReason(row, variant, fixture, pack) {
   if (row.runtimeSupport?.status === "deferred_content") return pack.omissionPolicy.unsupported;
-  if (row.id === "D-06") return pack.omissionPolicy.calibration;
   if (fixture?.recipe?.requiresMultiplayer === true || variant?.requiresMultiplayer === true)
     return pack.omissionPolicy.multiplayer;
   return pack.omissionPolicy.boundedSelection;

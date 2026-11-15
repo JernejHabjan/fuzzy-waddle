@@ -71,4 +71,3 @@ Research scoring weighs current and likely beneficiaries against cost, queue del
 
 Difficulty changes decision cadence, voluntary activity breadth, uncertainty use and commitment budgets. It does not grant hidden information, free resources, stat bonuses or exemptions from survival/recovery correctness. Easy must still open, produce, defend, retreat and recover; Hard must remain bounded and rules-compliant.
 
-See [difficulty calibration](../testing/difficulty-calibration.md) for evidence requirements.

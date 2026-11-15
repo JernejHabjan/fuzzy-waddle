@@ -130,13 +130,8 @@ function runSuite(options) {
     },
     matrixContext
   );
-  const calibrationBaseline =
-    report.calibration?.runtime?.calibration?.baseline ?? report.runtime?.calibration?.baseline;
   const unexecutedBaselineRuntime = baselineSupport
-    .filter(
-      (support) =>
-        support.runtime.status === "supported" && !(support.id === "D-06" && calibrationBaseline?.completed > 0)
-    )
+    .filter((support) => support.runtime.status === "supported")
     .map((support) => support.id);
   if (report.status === "passed" && unexecutedBaselineRuntime.length > 0) {
     process.exitCode = 1;

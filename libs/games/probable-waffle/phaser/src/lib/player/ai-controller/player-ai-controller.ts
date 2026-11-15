@@ -28,7 +28,6 @@ import type { PureAiBrain } from "@fuzzy-waddle/probable-waffle-gameplay/player/
 import type { AiDebugSnapshot, AiObservation, AiProfileConfig } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { selectAiOpeningArchetype } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-opening-archetypes";
 import { eligibleAiOpeningPurposes } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-opening-eligibility";
-import { readAiRuntimeCalibrationOpening } from "./test-support/browser/ai-runtime-calibration";
 import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
 import type { AiBrainStepResult } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain-step-result";
 import { dispatchAiIntents } from "./commands/ai-intent-dispatcher";
@@ -496,14 +495,13 @@ export class PlayerAiController {
         ? this.scene.baseGameData.gameInstance.gameInstanceMetadata.data.rndSeed
         : playerNumber
     });
-    const calibrationOpening = readAiRuntimeCalibrationOpening(this.scene, playerNumber, faction);
     return {
       playerNumber,
       faction,
       profile,
       tick: getSceneService(this.scene, SimulationTickService)?.currentTick ?? 0,
-      archetypeId: calibrationOpening ?? archetype.id,
-      openingSelectionStatus: calibrationOpening ? ("resolved" as const) : ("pending_eligibility" as const),
+      archetypeId: archetype.id,
+      openingSelectionStatus: "pending_eligibility" as const,
       satisfiedOpeningStepIds: []
     } as const;
   }

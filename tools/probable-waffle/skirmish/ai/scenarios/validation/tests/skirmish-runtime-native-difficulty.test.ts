@@ -42,21 +42,6 @@ test("D-01 binds each actual lobby policy in both factions and rejects a relabel
   assert.equal(validNativeScenarioFixture(fixture, "D-01"), false);
 });
 
-test("D-06 dispatch descriptors bind frozen legal starts without substituting generic preset worlds for calibration", () => {
-  const fixture = nativeScenarioFixture("D-06");
-  assert.equal(fixture.recipe.variants.length, 6);
-  assert.equal(fixture.recipe.mapLabel, "River Crossing");
-  assert.ok(
-    fixture.capabilityLimits.some((entry) => /^Frozen workload specification sha256:[a-f0-9]{64}$/.test(entry))
-  );
-  for (const variant of fixture.recipe.variants) {
-    assert.equal(variant.executionKind, "focused_natural");
-    assert.equal(variant.presetWorld, undefined);
-    assert.equal(variant.captureConstruction, undefined);
-    assert.ok(variant.setupRationale.includes("frozen"));
-  }
-});
-
 test("D-02 retains all selected policies and independent real multiplayer checkpoint transfer", () => {
   const fixture = nativeScenarioFixture("D-02"),
     branches = fixture.assertions["D-02"].requiredNativeScenario.branchByVariant;

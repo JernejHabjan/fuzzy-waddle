@@ -146,7 +146,6 @@
   "omissionPolicy": {
     "unsupported": "Manifest marks this runtime content unsupported or deferred; do not fabricate a native case.",
     "multiplayer": "Real-peer evidence is deferred to issue #819; automatic AI CI jobs remain disabled.",
-    "calibration": "Difficulty calibration is cancelled in issue #817; D-06 is not a current execution gate.",
     "boundedSelection": "Not selected for this approximately 22.5-minute core pack; retained evidence is documented in the AI testing coverage-status.md. Add only after duration and provenance review."
   }
 }

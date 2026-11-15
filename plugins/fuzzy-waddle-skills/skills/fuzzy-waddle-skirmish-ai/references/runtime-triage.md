@@ -1,6 +1,6 @@
 # Runtime triage
 
-Use this after a skirmish runtime or calibration failure. The affected-path review and validation sequencing in
+Use this after a skirmish runtime failure. The affected-path review and validation sequencing in
 steps 4–5 also apply before expensive runtime validation without a prior failure.
 
 1. Summarize the newest artifact with `pnpm ai:skirmish:report -- --failures-only --details`. For a named artifact use

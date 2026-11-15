@@ -18,7 +18,7 @@ Read each selected `SKILL.md` once per logical turn. After compaction, trust the
 - Plan or progress file: `plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-task-tracking/SKILL.md`
 - Explicit stage/phase close and handoff: `plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-stage-delivery/SKILL.md`
 - Phaser gameplay or GUI: `plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-phaser/SKILL.md`
-- Skirmish AI implementation, runtime matrix, or calibration: `plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-skirmish-ai/SKILL.md`
+- Skirmish AI implementation, runtime matrix, or difficulty behavior: `plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-skirmish-ai/SKILL.md`
 - Autonomous issue delivery: `plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-autonomous-delivery/SKILL.md`
 
 For source discovery, use the workflow skill's [source index](./plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-repo-workflow/references/source-index.md). Use the repo-local Angular or NestJS skill only when that framework owns the change. Commit/PR scope and evidence are covered by repo workflow and autonomous delivery.

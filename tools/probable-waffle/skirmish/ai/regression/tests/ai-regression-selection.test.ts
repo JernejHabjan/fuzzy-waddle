@@ -20,9 +20,6 @@ test("AI regression selection binds exact manifest variants and reports every om
     1_347_418
   );
   assert.ok(
-    resolved.omissions.some((entry) => entry.scenarioId === "D-06" && entry.reason.includes("cancelled"))
-  );
-  assert.ok(
     resolved.omissions.some((entry) => entry.scenarioId === "H-32" && entry.reason.includes("#819"))
   );
   assert.ok(
