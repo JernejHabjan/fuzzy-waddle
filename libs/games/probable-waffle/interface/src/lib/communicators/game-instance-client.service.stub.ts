@@ -77,7 +77,7 @@ export const gameInstanceClientServiceStub = {
   ): Promise<void> {
     return Promise.resolve();
   },
-  async playerSlotOpened(playerDefinition: PositionPlayerDefinition): Promise<void> {
+  async playerSlotOpened(playerDefinition?: PositionPlayerDefinition): Promise<void> {
     return Promise.resolve();
   },
   async removePlayer(playerNumber: PlayerNumber): Promise<void> {

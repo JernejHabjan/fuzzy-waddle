@@ -12,6 +12,7 @@ import { SceneCommunicatorClientService } from "../scene-communicator-client.ser
 import { Subscription } from "rxjs";
 import {
   CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION,
+  FactionType,
   GameSaveScope,
   ProbableWaffleGameInstance,
   ProbableWaffleGameState,
@@ -56,6 +57,27 @@ describe("GameInstanceClientService", () => {
     } finally {
       authentication.mockRestore();
       availability.mockRestore();
+    }
+  });
+
+  it("opens a caller-configured player slot without replacing its faction or team", async () => {
+    service.gameInstance = new ProbableWaffleGameInstance();
+    const playerDefinition = {
+      player: { playerNumber: 1, playerName: "Scenario opponent", playerPosition: 0, joined: false },
+      playerType: ProbableWafflePlayerType.NetworkOpen,
+      factionType: FactionType.Skaduwee,
+      team: 1
+    };
+    const changed = jest.spyOn(service, "playerChanged").mockResolvedValue();
+
+    try {
+      await service.playerSlotOpened(playerDefinition);
+
+      expect(changed).toHaveBeenCalledWith("joined", {
+        playerControllerData: { playerDefinition }
+      });
+    } finally {
+      changed.mockRestore();
     }
   });
 

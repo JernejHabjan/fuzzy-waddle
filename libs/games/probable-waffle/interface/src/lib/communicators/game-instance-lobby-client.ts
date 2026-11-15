@@ -273,12 +273,12 @@ export abstract class GameInstanceLobbyClient extends GameInstanceEventClient {
     await this.router.navigate(["aota/game"]);
   }
 
-  async playerSlotOpened(): Promise<void> {
+  async playerSlotOpened(playerDefinition?: PositionPlayerDefinition): Promise<void> {
     const firstFreePlayerNumber = GameSetupHelpers.getFirstFreePlayerNumber(this.gameInstance!.players);
     const firstFreePosition = GameSetupHelpers.getFirstFreePosition(this.gameInstance!.players);
     await this.playerChanged("joined", {
       playerControllerData: {
-        playerDefinition: {
+        playerDefinition: playerDefinition ?? {
           player: {
             playerNumber: firstFreePlayerNumber,
             playerName: "Player " + firstFreePlayerNumber,

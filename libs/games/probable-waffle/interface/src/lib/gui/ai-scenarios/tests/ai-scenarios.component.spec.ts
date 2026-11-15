@@ -2,7 +2,12 @@ import { provideHttpClient } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { provideRouter } from "@angular/router";
-import { ProbableWaffleGameInstance, ProbableWaffleMapEnum } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  FactionType,
+  ProbableWaffleGameInstance,
+  ProbableWaffleMapEnum,
+  ProbableWafflePlayerType
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { activeAiScenarios } from "../active-ai-scenario";
 import type { AiScenarioCatalog } from "../ai-scenario-catalog";
@@ -33,8 +38,12 @@ describe("AiScenariosComponent", () => {
     const match = new ProbableWaffleGameInstance();
     const client = {
       gameInstance: match,
-      createGameInstance: jest.fn(), gameModeChanged: jest.fn(), startGame: jest.fn(),
-      addSelfAsPlayer: jest.fn(), addAiPlayer: jest.fn().mockResolvedValue({ player: { playerNumber: 2 } })
+      createGameInstance: jest.fn().mockResolvedValue(undefined),
+      gameModeChanged: jest.fn().mockResolvedValue(undefined),
+      startGame: jest.fn().mockResolvedValue(undefined),
+      playerSlotOpened: jest.fn().mockResolvedValue(undefined),
+      addSelfAsSpectator: jest.fn().mockResolvedValue(undefined),
+      addAiPlayer: jest.fn().mockResolvedValue({ player: { playerNumber: 2 } })
     };
     TestBed.configureTestingModule({
       imports: [AiScenariosComponent],
@@ -66,6 +75,12 @@ describe("AiScenariosComponent", () => {
     actions[0].click();
     await fixture.whenStable();
     expect(client.gameModeChanged).toHaveBeenCalledWith("map", { map: ProbableWaffleMapEnum.AiOpenEconomy });
+    expect(client.playerSlotOpened).toHaveBeenCalledWith(expect.objectContaining({
+      player: expect.objectContaining({ playerNumber: 1, playerName: "Scenario opponent", joined: false }),
+      playerType: ProbableWafflePlayerType.NetworkOpen,
+      factionType: FactionType.Skaduwee
+    }));
+    expect(client.addSelfAsSpectator).toHaveBeenCalledTimes(1);
     expect(client.startGame).toHaveBeenCalledTimes(1);
     expect(activeAiScenarios.get(match)?.config.seed).toBe(759940);
     http.verify();

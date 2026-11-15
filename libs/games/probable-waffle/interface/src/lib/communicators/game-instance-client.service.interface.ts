@@ -108,7 +108,7 @@ export interface GameInstanceClientServiceInterface {
    * for implementers and callers; keep ordering, return semantics, and error behavior aligned across
    * implementations.
    */
-  playerSlotOpened(playerDefinition: PositionPlayerDefinition): Promise<void>;
+  playerSlotOpened(playerDefinition?: PositionPlayerDefinition): Promise<void>;
   /**
    * operation exposed by {@link GameInstanceClientServiceInterface}. Its signature is the compatibility boundary
    * for implementers and callers; keep ordering, return semantics, and error behavior aligned across

@@ -4,7 +4,10 @@ import {
   ProbableWaffleAiDifficulty,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility,
-  ProbableWaffleLevels
+  ProbableWaffleLevels,
+  ProbableWafflePlayerType,
+  createPlayerLobbyDefinition,
+  type PositionPlayerDefinition
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { isAiRuntimeBrowserTestConfig } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/browser/validate-ai-runtime-browser-test-config";
 import type { GameInstanceClientServiceInterface } from "../../communicators/game-instance-client.service.interface";
@@ -94,8 +97,14 @@ export async function launchAiScenario(
   if (!match) throw new Error("The local match could not be created.");
   const team = (playerNumber: number) =>
     variant.lobbyTeams?.find((player) => player.playerNumber === playerNumber)?.team;
+  await client.playerSlotOpened({
+    player: { ...createPlayerLobbyDefinition(1, 0, "Scenario opponent"), joined: false },
+    playerType: ProbableWafflePlayerType.NetworkOpen,
+    factionType: FactionType[variant.humanFaction],
+    team: team(1)
+  } satisfies PositionPlayerDefinition);
+  await client.addSelfAsSpectator();
   await client.gameModeChanged("map", { map: map.id });
-  await client.addSelfAsPlayer({ factionType: FactionType[variant.humanFaction], team: team(1) });
   const players = [
     { playerNumber: recipe.recipe.aiPlayerNumber, faction: variant.aiFaction, difficulty: variant.difficulty },
     ...(variant.additionalAiPlayers ?? [])
