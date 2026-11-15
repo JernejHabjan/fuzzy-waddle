@@ -197,8 +197,7 @@ export function castTargetObjectId(
   return spell.targetType === SpellTargetType.Actor ? targetActorId ?? undefined : undefined;
 }
 
-/** Translates accepted macro and transport intents through the shared player command authority. */
-/** Stage 13 also routes accepted tactical attack, recovery, healing and manual spell intents here. */
+/** Translates accepted macro, transport, tactical attack, recovery, healing and manual spell intents through the shared player command authority. */
 export function dispatchAiIntents(
   scene: ProbableWaffleScene,
   playerNumber: PlayerNumber,

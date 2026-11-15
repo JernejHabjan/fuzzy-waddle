@@ -3,24 +3,16 @@
  * string so branching, persistence, and diagnostics share the same vocabulary.
  */
 export enum ProbableWaffleMapEnum {
-  /**
-   * Selects the `Sandbox` case of {@link ProbableWaffleMapEnum}. Use this explicit member when the surrounding
-   * flow requires this distinct policy or state; never substitute a free-form string.
-   */
+  /** Freeform development sandbox; never offered as a matchmade choice. */
   Sandbox = 1,
-  /**
-   * Selects the `RiverCrossing` case of {@link ProbableWaffleMapEnum}. Use this explicit member when the
-   * surrounding flow requires this distinct policy or state; never substitute a free-form string.
-   */
+  /** River Crossing shipped skirmish map. */
   RiverCrossing = 2,
-  /**
-   * Selects the `EmberEnclave` case of {@link ProbableWaffleMapEnum}. Use this explicit member when the
-   * surrounding flow requires this distinct policy or state; never substitute a free-form string.
-   */
+  /** Ember Enclave shipped skirmish map. */
   EmberEnclave = 3,
   /** Test-owned, campaign-free economy map; never offered as an ordinary public choice. */
   AiOpenEconomy = 4,
   /** Test-owned three-spawn relay map; never offered as an ordinary public choice. */
   AiMultiplayer = 5,
+  /** Test-owned frozen river-crossing terrain for navigation, combat and scouting cases; never offered as an ordinary public choice. */
   AiBridgeCrossing = 6
 }
