@@ -19,7 +19,7 @@ measurement and review. These tools support development and are independent of t
   the workflow should select all supported scenarios from the manifest, without a separate scout profile or a
   hardcoded scenario list. Preserve local commands and explicitly report unsupported cases and incomplete runs.
   Overall scheduling and runtime limits can be decided later; the user plans to run scenarios locally.
-- [ ] Document the purpose of the agent tools and their benchmarks in this file. Review optional agent commands and
+- [x] Document the purpose of the agent tools and their benchmarks in this file. Review optional agent commands and
   benchmark records for redundant maintenance.
 - [ ] Remove the cancelled difficulty-calibration campaign tooling and update its dependencies. Preserve normal
   difficulty settings and their correctness checks.
@@ -27,19 +27,21 @@ measurement and review. These tools support development and are independent of t
   Remove redundant assets only after confirming their consumers and keeping required maps playable.
 - [ ] Audit unused code introduced by this PR, including `dispatchAiOrder` and related helpers, tests and exports.
   Trace runtime and test consumers before removal.
-- [ ] Move every spec file added or updated by this PR into a `tests/` folder within its current owning directory.
-  For example, move `lib/data/actor-manager-ai-save.spec.ts` and `actor-data-resource-history.spec.ts` into
-  `lib/data/tests/`. Move files used exclusively by specs or E2E tests into the relevant nearby `tests/` folder too,
-  keeping their existing names. Trace all consumers, including developer scenario playback, before classifying a file.
-  Use `git mv` and update imports, aliases, fixtures, references and test discovery. Preserve runtime support used by
-  the scenario browser, including the combat capture path.
+- [ ] Organize added or updated specs under owner-local `tests/` folders where requested. Gameplay, Phaser and AI tool
+  specs remain organized there. Per user direction, keep `apps/portal-e2e` files in their original folders; move no
+  portal E2E specs or support modules into `/tests`.
 - [ ] Review generated comments, overly granular one-use files and repeated test documentation. Remove duplication
   only where the remaining code and docs still explain the behavior and its ownership.
 - [ ] Fix missing actor sprites in interactive AI scenarios, starting with `wall-01-tivara-terrain` and the missing
-  `warrior_walk` texture. Trace asset-pack selection and loading, then verify visible actors across factions and maps.
+  `warrior_walk` texture. The shared asset pack declares `warrior_walk`, and current browser playback produced no
+  missing-texture warning; a Tivara worker rendered on AI Open Economy. Skaduwee playback loaded assets but did not
+  show a unit in the captured view, so cross-faction visible-actor verification remains open.
 - [ ] Keep the repository-wide source-structure rule and baseline in this PR.
 
-The scenario browser and its playback still need verification. Scenario registration alone does not establish a pass.
+Browser smoke check: the scenario list launched `wall-01-tivara-terrain` and `wall-01-skaduwee-terrain`, and a Tivara
+worker rendered on AI Open Economy. A Skaduwee SEQ-01 playback loaded on AI Bridge Crossing; its captured view did not
+show a unit. No `warrior_walk` or other texture error appeared in the browser console. Visible actor confirmation for
+Skaduwee and a second map is still open; scenario registration alone does not establish a pass.
 
 ## Execution guide
 
@@ -89,10 +91,9 @@ authorized for the active session.
 
 - Search PR-added exports and call sites, including `player/ai-controller/commands/dispatch-ai-order.ts`. Trace
   shared helpers separately from unused exports and remove only code with no runtime, test or tool consumer.
-- List added and modified specs using `git diff --name-only origin/develop...HEAD`. Move each into a `tests/`
-  directory under its existing owner using `git mv`. Move files used exclusively by specs or E2E tests likewise,
-  without renaming. Check transitive consumers: developer scenario playback and gated runtime hooks are real
-  consumers. Update imports, Jest/Playwright discovery, fixture paths and any generated references.
+- List added and modified specs using `git diff --name-only origin/develop...HEAD`. Keep portal E2E specs and support
+  modules in their existing owner folders. Other specs and test-only helpers may go under a local `tests/` folder after
+  checking transitive consumers. Update imports, test discovery, fixture paths and generated references as needed.
 - Trim redundant comments and excessive one-use indirection where behavior and ownership remain clear. Review each
   change in its actual call path and avoid unrelated formatting churn.
 

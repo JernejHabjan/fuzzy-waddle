@@ -28,7 +28,7 @@
       "remaining": ["Real same-realm second-match, paid/path and host-replacement runtime branches remain required"],
       "tests": [
         {
-          "file": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/player-ai-controller.spec.ts",
+          "file": "libs/games/probable-waffle/phaser/src/lib/player/ai-controller/tests/player-ai-controller.spec.ts",
           "title": "cannot reactivate a disposed controller through late host toggles, restore or queued steps"
         }
       ]

@@ -30,7 +30,7 @@
       "description": "A focused deterministic AI profile edit and its owning unit test.",
       "contextFiles": [
         "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/profiles/ai-profile-defaults.ts",
-        "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/profiles/ai-profile-defaults.spec.ts",
+        "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/profiles/tests/ai-profile-defaults.spec.ts",
         "libs/games/probable-waffle/gameplay/project.json"
       ],
       "requiredSelections": {
@@ -133,7 +133,7 @@
       "id": "focused-test-repair",
       "description": "A focused pure AI scenario repair in its gameplay owner.",
       "contextFiles": [
-        "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/harness/ai-scenario-harness.spec.ts",
+        "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/harness/tests/ai-scenario-harness.spec.ts",
         "tools/testing/jest-node-preset.cjs"
       ],
       "requiredSelections": {

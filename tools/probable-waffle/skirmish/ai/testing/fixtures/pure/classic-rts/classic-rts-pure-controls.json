@@ -25,7 +25,7 @@
       ],
       "tests": [
         {
-          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/brain/arbitration/ai-optional-release.spec.ts",
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/brain/arbitration/tests/ai-optional-release.spec.ts",
           "title": "H-05 releases the complete terminal optional forecast/lease bundle while preserving paid, unknown and foreign ownership"
         }
       ]
@@ -42,11 +42,11 @@
       ],
       "tests": [
         {
-          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/strategy/offense/select-ai-offensive-opportunity.spec.ts",
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/strategy/offense/tests/select-ai-offensive-opportunity.spec.ts",
           "title": "finishes an exposed reachable core with a small compatible force before the old six-unit gate"
         },
         {
-          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/strategy/offense/select-ai-offensive-opportunity.spec.ts",
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/strategy/offense/tests/select-ai-offensive-opportunity.spec.ts",
           "title": "keeps a visible reachable core as the objective while a force just below its local-threat requirement assembles"
         }
       ]
@@ -62,11 +62,11 @@
       ],
       "tests": [
         {
-          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/strategy/missions/ai-skirmish-manager.spec.ts",
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/strategy/missions/tests/ai-skirmish-manager.spec.ts",
           "title": "advances an existing scout to the next uncovered frontier and closes the prior question"
         },
         {
-          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/strategy/missions/ai-skirmish-manager.spec.ts",
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/strategy/missions/tests/ai-skirmish-manager.spec.ts",
           "title": "keeps a repeated visible contact as one incident rather than inflating enemy confidence"
         }
       ]
@@ -83,11 +83,11 @@
       ],
       "tests": [
         {
-          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/strategy/missions/ai-skirmish-boundaries.spec.ts",
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/strategy/missions/tests/ai-skirmish-boundaries.spec.ts",
           "title": "keeps the chosen opponent focus and does not recall a defender for a distant bait contact"
         },
         {
-          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/strategy/missions/ai-skirmish-manager.spec.ts",
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/strategy/missions/tests/ai-skirmish-manager.spec.ts",
           "title": "anchors local defense to the main building instead of a distant roaming combat unit"
         }
       ]

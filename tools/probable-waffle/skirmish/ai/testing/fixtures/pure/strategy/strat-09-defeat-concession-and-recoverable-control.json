@@ -25,7 +25,7 @@
       ],
       "tests": [
         {
-          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/strategy/offense/select-ai-offensive-opportunity.spec.ts",
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/strategy/offense/tests/select-ai-offensive-opportunity.spec.ts",
           "title": "STRAT-09 chooses an observed exposed producer while a stronger enemy reserve guards its core"
         }
       ]

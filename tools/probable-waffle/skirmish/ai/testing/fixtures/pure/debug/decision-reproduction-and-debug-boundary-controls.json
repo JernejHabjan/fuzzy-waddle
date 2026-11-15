@@ -34,7 +34,7 @@
       ],
       "tests": [
         {
-          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/reproduction/ai-repro-cli.spec.ts",
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/reproduction/tests/ai-repro-cli.spec.ts",
           "title": "blocks incomplete history and incompatible source instead of claiming exact replay"
         }
       ]
@@ -49,7 +49,7 @@
       ],
       "tests": [
         {
-          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/reproduction/ai-repro-cli.spec.ts",
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/reproduction/tests/ai-repro-cli.spec.ts",
           "title": "steps an isolated decision once and stops on a named safe boundary"
         }
       ]
@@ -64,7 +64,7 @@
       ],
       "tests": [
         {
-          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/reproduction/ai-repro-cli.spec.ts",
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/reproduction/tests/ai-repro-cli.spec.ts",
           "title": "DBG-04 runs a pure what-if without mutating the captured observation, state or RNG"
         }
       ]
@@ -79,7 +79,7 @@
       ],
       "tests": [
         {
-          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/debug/ai-incident-capture-store.spec.ts",
+          "file": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/debug/tests/ai-incident-capture-store.spec.ts",
           "title": "DBG-05 stores labels as inert data rather than rendering HTML"
         }
       ]
