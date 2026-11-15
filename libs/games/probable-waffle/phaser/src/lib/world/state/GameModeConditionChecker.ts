@@ -43,7 +43,7 @@ export class GameModeConditionChecker {
   private currentPlayerNumber!: number;
   private players!: ProbableWafflePlayer[];
   private currentPlayer!: ProbableWafflePlayer;
-  private selfQuitSubscription?: Subscription;
+  private quitSubscription?: Subscription;
   private playerLeftOrKilledSubscription?: Subscription;
   private stopped: boolean = false;
   private readonly checkIntervalTicks = 20; // 1 second at the fixed 20 Hz simulation rate.
@@ -58,17 +58,17 @@ export class GameModeConditionChecker {
     this.winConditions = gameModeData.winConditions;
     this.tieConditions = gameModeData.tieConditions;
 
-    if (!scene.baseGameData.gameInstance.gameInstanceMetadata.data.campaignContext) {
+    if (!scene.isSpectator && !scene.baseGameData.gameInstance.gameInstanceMetadata.data.campaignContext) {
       this.currentDelay = new CancelableSimDelay(this.scene, 1000, () => this.startChecking());
       this.listenToPlayerLeftOrKilled();
     }
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
-    this.listenToPlayerQuit();
+    this.listenToQuit();
   }
 
   /** Documents the resolve campaign mission outcome member and its declared contract at this boundary. */
   resolveCampaignMissionOutcome(outcome: "victory" | "defeat"): void {
-    if (this.stopped) return;
+    if (this.stopped || this.scene.isSpectator) return;
     this.prepareOutcomeData();
     if (outcome === "victory") this.winGame();
     else this.loseGame();
@@ -84,7 +84,7 @@ export class GameModeConditionChecker {
 
   private check(tick: number) {
     if (!isSceneActive(this.scene)) return;
-    if (this.stopped) return;
+    if (this.stopped || this.scene.isSpectator) return;
     this.prepareData();
     this.checkAiSurrender(tick);
     if (this.checkWinConditions()) {
@@ -119,11 +119,16 @@ export class GameModeConditionChecker {
     this.currentPlayer = currentPlayer;
   }
 
-  private listenToPlayerQuit() {
-    this.selfQuitSubscription = this.scene.communicator.allScenes
+  private listenToQuit() {
+    this.quitSubscription = this.scene.communicator.allScenes
       .pipe(filter((scene) => scene.name === "quit"))
       .subscribe(() => {
         if (this.stopped) return;
+        if (this.scene.isSpectator) {
+          this.navigateToScoreScreenLocally();
+          this.stop();
+          return;
+        }
         this.selfQuit();
       });
   }
@@ -557,7 +562,7 @@ export class GameModeConditionChecker {
   private destroy() {
     this.simulationTickSub?.unsubscribe();
     this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
-    this.selfQuitSubscription?.unsubscribe();
+    this.quitSubscription?.unsubscribe();
     this.playerLeftOrKilledSubscription?.unsubscribe();
     this.currentDelay?.remove();
   }

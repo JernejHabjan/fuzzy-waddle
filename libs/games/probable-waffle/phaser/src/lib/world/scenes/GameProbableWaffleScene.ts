@@ -177,10 +177,10 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     if (!this.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) {
       this.sceneGameData.systems.push(new AiPlayerHandler(this));
     }
-    // A local preview keeps the human slot for fixture orders while showing every actor to the viewer.
+    // Interactive local-player previews keep their fog bypass; spectators use combined faction vision.
     const runtimeHost = environment.production ? undefined : window.__fuzzyWaddleAiRuntimeBrowserTest;
     const preview = runtimeHost?.interactive && runtimeHost.game === this.game;
-    if (!this.isSpectator && !preview) {
+    if (this.isSpectator || !preview) {
       this.sceneGameData.components.push(new FogOfWarComponent(this, this.tilemap));
     }
 

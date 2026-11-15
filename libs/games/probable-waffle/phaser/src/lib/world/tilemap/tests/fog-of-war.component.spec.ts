@@ -1,5 +1,7 @@
 import { FogOfWarComponent, FogOfWarMode } from "../fog-of-war.component";
 import { FogOfWarViewport } from "../fog-of-war/fog-of-war-viewport";
+import * as actorComponents from "../../../data/actor-component";
+import { BaseScene } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";
 
 /** Render-only boundary: the real fog loop retains its complete logical visibility sets. */
 function fixture() {
@@ -94,4 +96,37 @@ it("preserves transparent visible tiles and distinct explored/unexplored opacity
     [0x777777, 0.5],
     [0x333333, 0.7]
   ]);
+});
+
+it("applies fog visibility to renderable actors that do not provide vision", () => {
+  const f = fixture();
+  const scene = Object.create(BaseScene.prototype);
+  Object.defineProperty(scene, "isSpectator", { value: true });
+  Reflect.set(f.fog, "scene", scene);
+  const actor = {
+    visible: false,
+    setVisible(visible: boolean) {
+      this.visible = visible;
+      return this;
+    }
+  };
+  const componentLookup = jest.spyOn(actorComponents, "getActorComponent").mockReturnValue(undefined);
+
+  try {
+    Reflect.get(f.fog, "setActorVisibleByFow").call(f.fog, actor, true);
+    expect(actor.visible).toBe(true);
+  } finally {
+    componentLookup.mockRestore();
+  }
+});
+
+it("recognizes spectators without requiring a player slot", () => {
+  const { fog } = fixture();
+  const scene = Object.create(BaseScene.prototype);
+  Object.defineProperty(scene, "isSpectator", { value: true });
+  Object.assign(scene, { baseGameData: { gameInstance: { players: [{ playerNumber: 1 }, { playerNumber: 2 }] } } });
+  Reflect.set(fog, "scene", scene);
+
+  expect(Reflect.get(fog, "isSpectator")).toBe(true);
+  expect(Reflect.get(fog, "getVisionPlayerNumbers").call(fog)).toEqual([1, 2]);
 });
