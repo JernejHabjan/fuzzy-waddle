@@ -238,6 +238,8 @@ function nativeScenarioVariant(
           ? `d-03-${faction.toLowerCase()}-${branch.split("_")[0]}`
           : id === "SCOUT-02"
             ? `scout-02-${faction.toLowerCase()}-withdrawal-pair`
+        : id === "WALL-02"
+          ? `wall-02-${faction.toLowerCase()}-shared-match`
             : variantId;
   branches[variantId] = branch;
   // An explicit route declaration requires at least one route; empty factory scratch arrays are not declarations.
@@ -252,7 +254,13 @@ function nativeScenarioVariant(
     id: variantId,
     executionKind: "focused_preset",
     role: "standalone",
-    seed: id === "D-06" ? 759061 : id === "EXP-01" ? 759933 : 759940,
+    seed: id === "D-06"
+      ? 759061
+      : id === "EXP-01"
+        ? 759933
+        : id === "WALL-02" && faction === "Skaduwee"
+          ? 759941
+          : 759940,
     deadlineRationale:
       "Original scenario ceiling; native event-boundary capture supplements polling without extending the deadline.",
     aiFaction: faction,
@@ -260,7 +268,7 @@ function nativeScenarioVariant(
     difficulty:
       id === "DBG-06"
         ? "Hard"
-        : id === "D-04"
+        : ["D-04", "WALL-02"].includes(id)
           ? "Easy"
           : ["D-01", "D-02", "D-03", "D-05"].includes(id)
             ? { easy: "Easy", normal: "Normal", hard: "Hard" }[branch.split("_")[0]]

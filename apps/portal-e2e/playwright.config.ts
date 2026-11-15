@@ -5,7 +5,12 @@ const skirmishRuntime =
   process.env.AI_GAMEPLAY_PROFILE === "1" ||
   process.env.AI_GAMEPLAY_RELIABILITY === "1";
 // Runtime evidence must come from the checked-out source, not a developer's older server on 4200.
-const portalPort = skirmishRuntime ? 4201 : 4200;
+const requestedSkirmishPort = process.env.AI_SKIRMISH_RUNTIME_PORT;
+const skirmishPort = requestedSkirmishPort === undefined ? 4201 : Number(requestedSkirmishPort);
+if (skirmishRuntime && (!Number.isInteger(skirmishPort) || skirmishPort < 1024 || skirmishPort > 65535)) {
+  throw new Error("invalid_ai_skirmish_runtime_port");
+}
+const portalPort = skirmishRuntime ? skirmishPort : 4200;
 
 export default defineConfig({
   testDir: "./src/e2e",

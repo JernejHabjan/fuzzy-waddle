@@ -3,10 +3,11 @@ import { tile } from "../native-world-geometry.ts";
 
 /** Applies the original family controls before the runtime validates and seals the preset. */
 export function configureNativeConstructionControls(context: NativeWorldSetupContext): void {
-  const { id, branch, world, actors, move, attack, loss } = context;
+  const { id, branch, world, actors, move, attack, loss, own } = context;
 
   if (id.startsWith("PLACE-") || id.startsWith("WALL-") || ["H-27", "H-28"].includes(id)) {
     const layoutRetreat = id === "PLACE-03" && branch === "layout";
+    const wall02OpeningTransit = id === "WALL-02";
     world.protectedRoutes = [
       {
         id: "worker-service",
@@ -21,32 +22,66 @@ export function configureNativeConstructionControls(context: NativeWorldSetupCon
       {
         id: id === "PLACE-03" && branch === "completion" ? "army-transit" : "production-army",
         playerNumber: 2,
-        from: id === "PLACE-03" && branch === "completion" ? tile(27, 25) : tile(42, 25),
-        to: id === "PLACE-03" && branch === "completion" ? tile(28, 25) : tile(27, 25),
+        from: id === "PLACE-03" && branch === "completion" ? tile(27, 25) : wall02OpeningTransit ? tile(30, 21) : tile(42, 25),
+        to: id === "PLACE-03" && branch === "completion" ? tile(28, 25) : wall02OpeningTransit ? tile(26, 21) : tile(27, 25),
         tileMargin: ["PLACE-01", "PLACE-03"].includes(id) ? 0 : 1
       },
       {
         id: "retreat",
         playerNumber: 2,
-        from: layoutRetreat ? tile(28, 28) : tile(28, 25),
-        to: layoutRetreat ? tile(33, 28) : tile(33, 25),
+        from: layoutRetreat ? tile(28, 28) : wall02OpeningTransit ? tile(26, 21) : tile(28, 25),
+        to: layoutRetreat ? tile(33, 28) : wall02OpeningTransit ? tile(30, 21) : tile(33, 25),
         tileMargin: ["PLACE-01", "PLACE-03"].includes(id) ? 0 : 1
       }
     ];
     const earlyTransitProbe = ["PLACE-01", "PLACE-03", "WALL-01"].includes(id);
-    const transitTicks = earlyTransitProbe ? [1] : [200, 600, 1000, 1400, 1800, 2200];
+    const transitTicks = earlyTransitProbe
+      ? [1]
+      : wall02OpeningTransit
+        // One alternating crossing per actual prefix avoids repeatedly resetting movement.
+        ? [1041, 1398, 1641, 2363]
+        : [200, 600, 1000, 1400, 1800, 2200];
+    const wall02TransitRoles =
+      branch === "worker" ? ["worker-transit"] :
+      branch === "army" ? ["army-transit"] :
+      branch === "concurrent" ? ["worker-transit", "army-transit"] : [];
     for (const [index, tick] of transitTicks.entries()) {
       if (earlyTransitProbe) {
         // These short, on-route probes must finish before the AI's next order refresh.
         move("worker-transit", tick, 29, 30);
         move("army-transit", tick, 28, branch === "concurrent" ? 24 : 25);
       } else {
-        move("worker-transit", tick, index % 2 ? 28 : 32, index % 2 ? 31 : 23);
-        move("army-transit", tick, index % 2 ? 27 : 42, 25);
+        if (wall02OpeningTransit) {
+          // The military probe proves an army unit can cross the first paid opening. After
+          // that, the AI owns its army's mission; workers exercise physical egress at each prefix.
+          // Probe both sides of the actual entrance. The former y=25 endpoints landed on the
+          // AI's independently selected perimeter instead of exercising its intentional opening.
+          if (wall02TransitRoles.includes("worker-transit"))
+            move("worker-transit", tick, index % 2 ? 26 : 28, 21);
+          if (wall02TransitRoles.includes("army-transit") && index === 0)
+            move("army-transit", tick, index % 2 ? 28 : 26, 21);
+        } else {
+          move("worker-transit", tick, index % 2 ? 28 : 32, index % 2 ? 31 : 23);
+          move("army-transit", tick, index % 2 ? 27 : 42, 25);
+        }
       }
     }
-    if (["WALL-02", "H-27"].includes(id) || ["exposed", "both_exposed"].includes(branch))
+    if (id === "H-27" || ["exposed", "both_exposed"].includes(branch))
       attack("contact-group", "original-home", id === "H-27" ? 20 : 200);
+    if (id === "WALL-02" && branch === "enemy_opening") {
+      // The early contact creates a genuine defense decision. Stage an independent hostile
+      // outside the route, then attack after the paid wall or first fortification prefix completes.
+      move("contact-group", 1, 30, 18);
+      attack("contact-group", "original-home", 200);
+      if (own === "Skaduwee")
+        for (let index = 0; index < 4; index++) {
+          const role = `opening-pressure-${index}`;
+          move(role, 1, 30, 18);
+          attack(role, "original-home", 200);
+        }
+      move("hostile-transit", 1720, 26, 21);
+      attack("hostile-transit", "original-home", 2010);
+    }
     if (["stairs_loss", "stairs_missing", "breach", "unreachable", "loss"].includes(branch))
       loss(
         ["breach", "repair", "loss", "changed_plan"].includes(branch) ? "perimeter-wall" : "perimeter-stair",

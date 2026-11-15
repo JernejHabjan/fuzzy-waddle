@@ -148,3 +148,80 @@ test("WALL-01 probes the protected route early and terrain chokes fund the bound
     ]);
   }
 });
+
+test("WALL-02 retains rally routes while transit probes cross the intentional opening", () => {
+  const fixture = nativeScenarioFixture("WALL-02");
+  assert.equal(fixture.recipe.variants.length, 8);
+  for (const faction of ["Tivara", "Skaduwee"]) {
+    const sameMatchVariants = fixture.recipe.variants.filter((variant) => variant.id.includes(faction.toLowerCase()));
+    assert.equal(new Set(sameMatchVariants.map((variant) => variant.presetWorld.fixtureId)).size, 1);
+  }
+  for (const variant of fixture.recipe.variants) {
+    const armyRoute = variant.presetWorld.protectedRoutes.find((route) => route.id === "production-army");
+    const retreat = variant.presetWorld.protectedRoutes.find((route) => route.id === "retreat");
+    assert.ok(armyRoute);
+    assert.ok(retreat);
+    assert.equal(armyRoute.tileMargin, 1);
+    assert.deepEqual(armyRoute.from, { x: 320, y: 832 });
+    assert.deepEqual(armyRoute.to, { x: 192, y: 768 });
+    assert.deepEqual(retreat.from, { x: 192, y: 768 });
+    assert.deepEqual(retreat.to, { x: 320, y: 832 });
+
+    const transits = variant.presetWorld.controls.filter(
+      (control) =>
+        ["worker-transit", "army-transit"].includes(control.producerFixtureActorId) && control.action.kind === "move"
+    );
+    const expectedRoles = variant.id.includes("-worker")
+      ? ["worker-transit"]
+      : variant.id.includes("-army")
+        ? ["army-transit"]
+        : variant.id.includes("-concurrent")
+          ? ["worker-transit", "army-transit"]
+          : [];
+    assert.deepEqual(
+      [...new Set(transits.map((control) => control.producerFixtureActorId))].sort(),
+      [...expectedRoles].sort(),
+      `${variant.id}: controls must match the branch obligation`
+    );
+    assert.equal(transits.length, expectedRoles.reduce((count, role) => count + (role === "army-transit" ? 1 : 4), 0));
+    assert.ok(transits.every((control) => [768, 800].includes(control.action.worldPosition.y)));
+    assert.deepEqual(
+      [...new Set(transits.map((control) => control.applicationTick))].sort((left, right) => left - right),
+      expectedRoles.includes("worker-transit") ? [1041, 1398, 1641, 2363] : expectedRoles.includes("army-transit") ? [1041] : []
+    );
+    for (const role of expectedRoles) {
+      const positions = transits
+        .filter((control) => control.producerFixtureActorId === role)
+        .map((control) => control.action.kind === "move" ? control.action.worldPosition.x : null);
+      assert.equal(
+        new Set(positions).size,
+        role === "worker-transit" ? 2 : 1,
+        `${variant.id}/${role}: transit probes must match the branch obligation`
+      );
+    }
+    const hostileControls = variant.presetWorld.controls;
+    assert.equal(hostileControls.some((control) => control.id === "move-contact-group-1" && control.action.kind === "move"),
+      variant.id.includes("-enemy-opening"), `${variant.id}: pressure setup must be branch-scoped`);
+    assert.equal(hostileControls.some((control) => control.id === "attack-contact-group-200" && control.action.kind === "attack"),
+      variant.id.includes("-enemy-opening"), `${variant.id}: pressure setup must be branch-scoped`);
+    assert.equal(hostileControls.some((control) => control.id === "move-hostile-transit-1720" && control.action.kind === "move") &&
+      hostileControls.some((control) => control.id === "attack-hostile-transit-2010" && control.action.kind === "attack"),
+      variant.id.includes("-enemy-opening"), `${variant.id}: staged hostile post-wall attack must be branch-scoped`);
+    assert.equal(
+      hostileControls.filter((control) => control.producerFixtureActorId?.startsWith("opening-pressure-")).length,
+      variant.id === "wall-02-skaduwee-enemy-opening" ? 8 : 0,
+      `${variant.id}: stronger approach pressure is limited to the paired Skaduwee branch`
+    );
+    if (variant.id.includes("-enemy-opening")) {
+      const hostileStage = hostileControls.find((control) => control.id === "move-hostile-transit-1720");
+      const enemySideRoute = variant.presetWorld.protectedRoutes.find((route) => route.id === "production-army");
+      assert.deepEqual(
+        hostileStage?.action.kind === "move"
+          ? { x: hostileStage.action.worldPosition.x, y: hostileStage.action.worldPosition.y }
+          : undefined,
+        enemySideRoute ? { x: enemySideRoute.to.x, y: enemySideRoute.to.y } : undefined,
+        `${variant.id}: hostile probe must stage at the outside end of the preserved access route`
+      );
+    }
+  }
+});

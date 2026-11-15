@@ -14,13 +14,19 @@ export function evaluateNativeFortification(
   const failures: string[] = [];
   const capture = context.capture;
   const nodes = nativeCompletedPlacements(context, false).filter((placement) =>
-    ["Wall", "Stairs", "WatchTower"].includes(placement.value.site.canonicalObjectName));
+    ["Wall", "Stairs", "WatchTower"].includes(placement.value.site.canonicalObjectName)
+  ).sort((left, right) => left.completionTick - right.completionTick || left.fact.sequence - right.fact.sequence);
   const controls = ["no_value", "stairs_missing", "unaffordable"].includes(branch);
+  const transitRoles = id === "WALL-02"
+    ? branch === "worker" ? ["worker-transit"]
+      : branch === "army" ? ["army-transit"]
+        : branch === "concurrent" ? ["worker-transit", "army-transit"] : []
+    : undefined;
   if (!controls) {
     if (!nodes.length) failures.push("fortification_no_native_paid_completed_ai_prefix");
     failures.push(...evaluateRuntimePlacementPrefixes(preset, context.result, 1));
   }
-  failures.push(...nativeProtectedTransits(context, preset));
+  failures.push(...nativeProtectedTransits(context, preset, transitRoles, id === "WALL-02"));
   const plans = context.frames.flatMap((frame) => frame.decision.missionState?.fortifications ?? []);
   if (id === "WALL-01") {
     if (branch === "terrain" && !context.capture?.setup?.topology.some((layer) => layer.cells.some((cell) =>
@@ -34,16 +40,47 @@ export function evaluateNativeFortification(
   if (id === "WALL-02") {
     if (!plans.some((plan) => plan.graph?.nodes.some((node) => node.kind === "gate_slot" && node.objectName === null)))
       failures.push("fortification_real_intentional_opening_missing");
-    if (!context.facts.some((fact) => fact.kind === "native_damage" &&
-      fact.damage.target.actorId === context.roles["original-home"] &&
-      fact.damage.initiator?.actorId === context.roles["contact-group"] && fact.damage.amount > 0))
-      failures.push("fortification_opening_not_independently_proven_hostile_passable");
-    // A transit must start after this prefix and finish before the next one changes the measured layout.
+    if (branch === "enemy_opening") {
+      const openingPrefix = nodes.find((node) => node.value.site.canonicalObjectName === "Wall") ?? nodes[0];
+      const openingPrefixTick = openingPrefix?.completionTick ?? Infinity;
+      const hostileStageControl = preset.controls?.find((control) => control.id === "move-hostile-transit-1720");
+      const enemySideRoute = preset.protectedRoutes?.find((route) =>
+        route.id === "production-army" && route.playerNumber === capture?.playerNumber);
+      const hostileTargetsOpening = hostileStageControl?.action.kind === "move" && enemySideRoute &&
+        hostileStageControl.action.worldPosition.x === enemySideRoute.to.x &&
+        hostileStageControl.action.worldPosition.y === enemySideRoute.to.y;
+      const hostileStaging = hostileTargetsOpening && context.opponent && openingPrefixTick > 0 &&
+        context.opponent.facts.some((fact) => fact.kind === "preset_control" &&
+          fact.control.id === "move-hostile-transit-1720" && fact.control.phase === "applied" &&
+          fact.tick < openingPrefixTick && fact.control.command?.execution &&
+          context.opponent?.facts.some((movement) => movement.kind === "spatial_authority" &&
+            movement.spatial.kind === "movement" && movement.spatial.source.actorId === fact.control.actorId &&
+            movement.spatial.caller?.order?.commandContext?.execution.commandId ===
+              fact.control.command?.execution?.commandId && movement.tick < openingPrefixTick &&
+            movement.spatial.phase === "arrived" && movement.spatial.actualTile?.x === fact.control.command.tileVec3.x &&
+            movement.spatial.actualTile?.y === fact.control.command.tileVec3.y));
+      const hostileAttackControl = preset.controls?.find((control) => control.id === "attack-hostile-transit-2010");
+      const hostileAttackTargetsHome = hostileAttackControl?.action.kind === "attack" &&
+        hostileAttackControl.action.targetFixtureActorId === "original-home";
+      const hostileAttack = hostileAttackTargetsHome && context.opponent?.facts.some((fact) => fact.kind === "preset_control" &&
+        fact.control.id === "attack-hostile-transit-2010" && fact.control.phase === "applied" &&
+        fact.tick > openingPrefixTick);
+      const hostileDamage = context.facts.some((fact) => fact.kind === "native_damage" &&
+        fact.tick > openingPrefixTick && fact.damage.target.actorId === context.roles["original-home"] &&
+        fact.damage.initiator?.actorId === context.roles["hostile-transit"] && fact.damage.amount > 0);
+      if (!hostileStaging) failures.push("fortification_opening_hostile_stage_not_physically_proven");
+      if (!hostileAttack) failures.push("fortification_opening_hostile_attack_not_applied_after_prefix");
+      if (!hostileDamage) failures.push("fortification_opening_hostile_damage_not_applied_after_prefix");
+    }
+    // Worker traffic exercises every prefix. A military actor proves the opening once, then
+    // returns to its AI mission instead of being repeatedly commandeered by the test harness.
     for (const [index, node] of nodes.entries()) {
-      const through = nodes[index + 1]?.fact.tick ?? context.capture?.frontiers?.latestTick ?? 0;
-      for (const role of ["worker-transit", "army-transit"]) {
+      const after = node.completionTick;
+      const through = nodes[index + 1]?.completionTick ?? context.capture?.frontiers?.latestTick ?? 0;
+      for (const role of transitRoles ?? ["worker-transit", "army-transit"]) {
+        if (role === "army-transit" && index > 0) continue;
         const commands = preset.controls?.filter((control) => control.producerFixtureActorId === role &&
-          control.requestTick >= node.fact.tick && control.applicationTick < through) ?? [];
+          control.requestTick > after && control.applicationTick < through) ?? [];
         if (!capture || !commands.some((control) =>
           !runtimeControlTransitFailures(capture, control.id, through, "arrive").length))
           failures.push(`fortification_prefix_has_no_physical_friendly_clearance:${index}:${role}`);

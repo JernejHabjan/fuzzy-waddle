@@ -20,7 +20,8 @@ test.setTimeout(180_000);
 const pursuitCases = {
   isolated: "native pawn pursuit lands repeated hits on a moving worker with the strategic coordinator paused",
   "human replacement": "a new human move cancels native pursuit",
-  autonomous: "the attack squad preserves native pursuit into engagement",
+  "AI anchor": "an isolated AI-origin pursuit releases a far target and returns to its attack anchor",
+  "strategic route": "the live AI releases a far lure and resumes its strategic target",
   "equal speed": "an equally fast runner takes no pursuit damage while escaping",
   "removed target": "native pursuit releases a worker removed during the chase",
   unreachable: "native pursuit paces retries for an unreachable worker without phantom hits",
@@ -33,6 +34,8 @@ for (const mode of Object.keys(pursuitCases) as (keyof typeof pursuitCases)[]) {
   const removeTarget = mode === "removed target";
   const unreachable = mode === "unreachable";
   const routeOpens = mode === "route opens";
+  const aiPursuit = mode === "AI anchor" || mode === "strategic route";
+  const strategicRoute = mode === "strategic route";
   const enclosed = unreachable || routeOpens;
   test(pursuitCases[mode], async ({ page }, testInfo) => {
     const root = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
@@ -138,6 +141,7 @@ for (const mode of Object.keys(pursuitCases) as (keyof typeof pursuitCases)[]) {
             producerFixtureActorId: "pursuer",
             requestTick: 2,
             applicationTick: 2,
+            ...(aiPursuit ? { source: "ai" as const } : {}),
             action: { kind: "attack" as const, targetFixtureActorId: "runner" }
           },
           ...(replaceOrder
@@ -166,7 +170,9 @@ for (const mode of Object.keys(pursuitCases) as (keyof typeof pursuitCases)[]) {
       errors
     );
     // The isolated controls leave movement and weapons active while pausing the strategic coordinator.
-    if (mode !== "autonomous")
+    // The AI-origin chase case keeps the strategic coordinator live. Other cases isolate
+    // pawn pursuit mechanics from unrelated squad target selection.
+    if (!strategicRoute)
       await page.evaluate(() => {
         const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
           .__fuzzyWaddleAiRuntimeBrowserTest;
@@ -244,26 +250,10 @@ for (const mode of Object.keys(pursuitCases) as (keyof typeof pursuitCases)[]) {
         })
       : undefined;
     if (unreachable) observations.push(await capturePursuit(page));
-    for (let tick = 5; tick <= (equalSpeed ? 90 : removeTarget ? 115 : 240); tick += 5) {
+    const finalTick = equalSpeed ? 90 : removeTarget ? 115 : aiPursuit ? 360 : 240;
+    for (let tick = 5; tick <= finalTick; tick += 5) {
       await advanceRuntimeFrames(page, fixture.recipe.aiPlayerNumber, tick);
       observations.push(await capturePursuit(page));
-      if (mode === "autonomous" && tick === 40) {
-        const decision = await page.evaluate(() => {
-          const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
-            .__fuzzyWaddleAiRuntimeBrowserTest;
-          const bindings = host?.presetApplication?.createdActorIds;
-          const controller = window.__fuzzyWaddleAiRuntimeParts?.(2)?.controller;
-          const observation = controller?.getCommittedObservation();
-          const ids = [bindings?.["pursuer"], bindings?.["runner"]];
-          return {
-            ids,
-            tick: observation?.tick,
-            actors: observation?.actors.filter((actor) => ids.some((id) => id === actor.actorId)),
-            squads: controller?.getBrainState()?.squads.filter((squad) => squad.actorIds.some((id) => id === ids[0]))
-          };
-        });
-        writeFileSync(testInfo.outputPath("pursuit-decision.json"), JSON.stringify(decision));
-      }
     }
     const movingHits = observations.filter((row, index) => {
       const previous = observations[index - 1];
@@ -355,7 +345,6 @@ for (const mode of Object.keys(pursuitCases) as (keyof typeof pursuitCases)[]) {
       return;
     }
     if (equalSpeed) {
-      const first = observations[0];
       const last = observations.at(-1);
       if (!first?.pursuer || !last?.pursuer) throw new Error("equal_speed_positions_missing");
       expect(first.chasingRunner).toBe(true);
@@ -405,10 +394,31 @@ for (const mode of Object.keys(pursuitCases) as (keyof typeof pursuitCases)[]) {
       expect(loss.runnerIndexed).toBe(false);
       expect(loss.targetValid).toBe(true);
     }
-    if (mode === "autonomous") {
+    if (aiPursuit) {
       const engagement = observations.filter((row) => (row.tick ?? 0) >= 40 && (row.tick ?? 0) <= 60);
       expect(engagement).toHaveLength(5);
       expect(engagement.every((row) => row.chasingRunner)).toBe(true);
+      const first = observations[0];
+      if (!first?.runnerTile) throw new Error("autonomous_pursuit_origin_missing");
+      const releasedIndex = observations.findIndex((row) => {
+        const tile = row.runnerTile;
+        if (!tile) return false;
+        const dx = tile.x - first.runnerTile.x;
+        const dy = tile.y - first.runnerTile.y;
+        return (row.tick ?? 0) > 60 && !row.chasingRunner && Math.floor(Math.hypot(dx, dy)) > 10;
+      });
+      expect(releasedIndex).toBeGreaterThan(0);
+      expect(observations.slice(releasedIndex).every((row) => !row.chasingRunner)).toBe(true);
+      const last = observations.at(-1);
+      if (!first || !last?.pursuer) throw new Error("autonomous_pursuit_positions_missing");
+      expect(last.chasingRunner).toBe(false);
+      if (strategicRoute) {
+        expect(last.order).toBe("Attack");
+        expect(last.targetGameObjectId).toBeTruthy();
+        expect(last.targetGameObjectId).not.toBe(first.runnerId);
+      } else {
+        expect(Math.hypot(last.pursuer.x - first.x, last.pursuer.y - first.y)).toBeLessThan(128);
+      }
     }
     if (replaceOrder) {
       const after = observations.filter((row) => (row.tick ?? 0) >= 125);
@@ -429,7 +439,9 @@ async function capturePursuit(page: Page) {
   return page.evaluate(() => {
     const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
       .__fuzzyWaddleAiRuntimeBrowserTest;
-    const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map"));
+    const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
+      | GameProbableWaffleScene
+      | undefined;
     const bindings = host?.presetApplication?.createdActorIds;
     if (!scene || !bindings) throw new Error("pursuit_scene_missing");
     const actors = scene.children.getChildren();
@@ -446,6 +458,11 @@ async function capturePursuit(page: Page) {
     const runner = actor("runner"),
       pursuer = actor("pursuer");
     if (!runner || !pursuer) throw new Error("pursuit_bound_actor_missing");
+    const navigation = scene
+      .getSceneGameData()
+      .services.find((service): service is NavigationService => "getCenterTileCoordUnderObject" in service);
+    const runnerId = bindings["runner"];
+    if (!runnerId) throw new Error("pursuit_runner_id_missing");
     const pursuerComponents = [...(pursuer.getData("actorData").components as Map<unknown, unknown>).values()];
     const pursuerTransform = pursuerComponents.find(
       (value) => typeof (value as { getActualLogicalZ?: unknown })?.getActualLogicalZ === "function"
@@ -456,7 +473,20 @@ async function capturePursuit(page: Page) {
       | undefined;
     const pawn = pursuerComponents.find((value) => !!(value as { blackboard?: unknown })?.blackboard) as
       | {
-          blackboard: { getCurrentOrder(): { orderType: string; data: { targetGameObject?: unknown } } | undefined };
+          blackboard: {
+            getCurrentOrder():
+              | {
+                  orderType: string;
+                  data: {
+                    targetGameObject?: unknown;
+                    targetGameObjectId?: string;
+                    commandContext?: { execution?: { source?: string } };
+                    pursuitTargetOrigin?: { x: number; y: number; z: number };
+                    pursuitReleasedTargetActorId?: string;
+                  };
+                }
+              | undefined;
+          };
         }
       | undefined;
     const order = pawn?.blackboard.getCurrentOrder();
@@ -476,12 +506,18 @@ async function capturePursuit(page: Page) {
       | undefined;
     if (!health || !transform) throw new Error("pursuit_component_missing");
     return {
+      runnerId,
       tick: window.__fuzzyWaddleAiRuntimeParts?.(2)?.tickService.currentTick,
+      runnerTile: navigation?.getCenterTileCoordUnderObject(runner),
       ...transform.logicalWorldTransform,
       health: health.healthComponentData.health,
       pursuer: pursuerTransform?.logicalWorldTransform,
       order: order?.orderType,
       chasingRunner: order?.data.targetGameObject === runner,
+      targetGameObjectId: order?.data.targetGameObjectId,
+      commandSource: order?.data.commandContext?.execution?.source,
+      pursuitTargetOrigin: order?.data.pursuitTargetOrigin,
+      pursuitReleasedTargetActorId: order?.data.pursuitReleasedTargetActorId,
       hitByPursuer: health.latestDamage?.damageInitiator === pursuer,
       hitTick: health.latestDamage?.simulationTick
     };

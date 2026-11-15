@@ -42,6 +42,12 @@ export function nativeScenarioActors(id: string, own: string, enemy: string, bra
     ),
     actor("ready-producer", producer(own), 2, 37, 23),
     actor("ready-house", own === "Tivara" ? "Olival" : "Emberstone", 2, 39, 18),
+    ...(id === "WALL-02"
+      ? [
+          actor("housing-buffer-a", own === "Tivara" ? "Olival" : "Emberstone", 2, 35, 14),
+          actor("housing-buffer-b", own === "Tivara" ? "Olival" : "Emberstone", 2, 38, 14)
+        ]
+      : []),
     actor("own-deposit", "WorkMill", 2, 32, 30),
     actor("own-source", "Tree1", null, 32, 34),
     actor("ready-granary", "Granary", 2, 38, 29),

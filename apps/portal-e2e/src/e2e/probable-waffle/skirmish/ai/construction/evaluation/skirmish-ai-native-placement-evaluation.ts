@@ -108,22 +108,22 @@ export function evaluateNativePlacement(
 /** Retain each declared original probe's stamped command and actual endpoint. A route query alone never suffices. */
 export function nativeProtectedTransits(
   context: ReturnType<typeof nativeScenarioContext>,
-  preset: RuntimePresetWorld
+  preset: RuntimePresetWorld,
+  requiredRoles: string[] = ["worker-transit", "army-transit"],
+  allowInterruptedAttempts = false
 ) {
   const capture = context.capture;
   if (!capture) return ["placement_native_transit_history_missing"];
   const failures: string[] = [];
-  for (const role of ["worker-transit", "army-transit"]) {
+  for (const role of requiredRoles) {
     const commands =
       preset.controls?.filter((control) => control.producerFixtureActorId === role && control.action.kind === "move") ??
       [];
-    if (
-      !commands.length ||
-      commands.some(
-        (command) =>
-          runtimeControlTransitFailures(capture, command.id, capture.frontiers?.latestTick ?? 0, "arrive").length
-      )
-    )
+    const arrivals = commands.filter(
+      (command) =>
+        !runtimeControlTransitFailures(capture, command.id, capture.frontiers?.latestTick ?? 0, "arrive").length
+    );
+    if (!commands.length || (allowInterruptedAttempts ? !arrivals.length : arrivals.length !== commands.length))
       failures.push(`placement_protected_physical_transit_incomplete:${role}`);
   }
   return failures;

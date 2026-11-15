@@ -47,6 +47,11 @@ export function configureNativePlacementActors(context: NativeActorLayoutContext
     if (branch === "air")
       actors.push(actor("air-threat", enemy === "Skaduwee" ? "SkaduweeOwl" : "TivaraAlchemist", 1, 23, 23));
     if (id === "WALL-05" && branch === "shore") actors.push(actor("shore-transit", `${own}WorkerMale`, 2, 26, 26));
+    if (id === "WALL-02" && branch === "enemy_opening")
+      actors.push(actor("hostile-transit", melee(enemy), 1, 5, 20));
+    if (id === "WALL-02" && branch === "enemy_opening" && own === "Skaduwee")
+      for (let index = 0; index < 4; index++)
+        actors.push(actor(`opening-pressure-${index}`, melee(enemy), 1, 18 + (index % 2), 18 + Math.floor(index / 2)));
     if (branch === "multiple_bases")
       actors.push(actor("second-home", own === "Tivara" ? "Sandhold" : "FrostForge", 2, 38, 36));
   }

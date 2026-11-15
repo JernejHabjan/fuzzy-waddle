@@ -166,6 +166,7 @@
     },
     "WALL-02": {
       "latestTick": 3000,
+      "checkpointTicks": [100, 199, 200, 399, 400, 600, 800, 1000, 1200, 1600, 2000, 2400, 3000],
       "branches": ["worker", "army", "concurrent", "enemy_opening"],
       "acceptance": {
         "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
