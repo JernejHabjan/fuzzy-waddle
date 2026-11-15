@@ -14,7 +14,7 @@ measurement and review. These tools support development and are independent of t
   documentation or issues. Update links before deletion.
 - [ ] Review `ai-controller/docs/` for outdated plans, unfinished work presented as complete, excessive detail and
   duplication. Keep concise current behavior, testing guidance and unresolved follow-ups; update links.
-- [x] Disable the remaining manual trigger of `.github/workflows/ai-regression.yml` and explain in the workflow that
+- [x] Disable the remaining manual trigger of `.github/disabled-workflows/ai-regression.yml` and explain in the workflow that
   extended AI regression is too slow for routine CI. Automatic tag triggering is already disabled. When enabled later,
   the workflow should select all supported scenarios from the manifest, without a separate scout profile or a
   hardcoded scenario list. Preserve local commands and explicitly report unsupported cases and incomplete runs.
@@ -69,7 +69,7 @@ authorized for the active session.
 - Keep the manifest, fixture readers, browser catalog and report consumers in sync. Check representative generated
   setups and scenario IDs against their previous meaning. Record which cases changed; old results remain historical.
 - Retain a local command for all supported scenarios and explicit reporting for deferred or incomplete cases. Adjust
-  `.github/workflows/ai-regression.yml` so it cannot run automatically or manually until deliberately re-enabled,
+  `.github/disabled-workflows/ai-regression.yml` so it cannot run automatically or manually until deliberately re-enabled,
   and note the long runtime there. Its future selection should come from the full manifest, with no scout-only profile.
   The user will run locally and deferred the overall scheduling decision.
 

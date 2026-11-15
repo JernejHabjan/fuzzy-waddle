@@ -2,7 +2,7 @@
 
 ## Current execution policy
 
-Automatic extended AI CI jobs and tag triggers are commented out by user request. Local core/scout regression profiles remain available; the dedicated workflow retains manual dispatch when default-branch registration permits it. Multiplayer certification, difficulty calibration and an unchanged complete matrix sweep are outside this single-player iteration. [Coverage and follow-ups](./coverage-status.md) records the retained evidence and scoped acceptance.
+Automatic extended AI CI jobs are disabled, and the dedicated workflow is stored outside GitHub's workflow directory. Local core/scout regression profiles remain available. Multiplayer certification, difficulty calibration and an unchanged complete matrix sweep are outside this single-player iteration. [Coverage and follow-ups](./coverage-status.md) records the retained evidence and scoped acceptance.
 
 The matrix supports manifest-derived shards for explicitly requested coverage. Keep one isolated game per variant; workflow YAML must not duplicate scenario lists. A requested run must fail on missing fixtures, zero decisions/ticks, missing required outcomes, source/fixture mismatch or browser/runtime failure. Registration is not passing evidence. Unsupported content remains visible with an explicit reason. For a victory row, an authoritative AI-player `win` is required; loss, tie, quit or a completed intermediate mode goal cannot substitute for victory. A terminal world may stop early only after all selected victory assertions and scheduled events are complete. Nonterminal focused cases may separately opt into the guarded `evidenceStop` contract below.
 
