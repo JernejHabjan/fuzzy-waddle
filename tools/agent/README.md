@@ -14,7 +14,7 @@ measurement and review. These tools support development and are independent of t
   documentation or issues. Update links before deletion.
 - [ ] Review `ai-controller/docs/` for outdated plans, unfinished work presented as complete, excessive detail and
   duplication. Keep concise current behavior, testing guidance and unresolved follow-ups; update links.
-- [ ] Disable the remaining manual trigger of `.github/workflows/ai-regression.yml` and explain in the workflow that
+- [x] Disable the remaining manual trigger of `.github/workflows/ai-regression.yml` and explain in the workflow that
   extended AI regression is too slow for routine CI. Automatic tag triggering is already disabled. When enabled later,
   the workflow should select all supported scenarios from the manifest, without a separate scout profile or a
   hardcoded scenario list. Preserve local commands and explicitly report unsupported cases and incomplete runs.
@@ -27,7 +27,7 @@ measurement and review. These tools support development and are independent of t
   Remove redundant assets only after confirming their consumers and keeping required maps playable.
 - [x] Audit unused code introduced by this PR, including `dispatchAiOrder` and related helpers, tests and exports.
   Trace runtime and test consumers before removal.
-- [ ] Organize added or updated specs under owner-local `tests/` folders where requested. Gameplay, Phaser and AI tool
+- [x] Organize added or updated specs under owner-local `tests/` folders where requested. Gameplay, Phaser and AI tool
   specs remain organized there. Per user direction, keep `apps/portal-e2e` files in their original folders; move no
   portal E2E specs or support modules into `/tests`.
 - [x] Review generated comments, overly granular one-use files and repeated test documentation. Remove duplication
@@ -36,7 +36,7 @@ measurement and review. These tools support development and are independent of t
   `warrior_walk` texture. The shared asset pack declares `warrior_walk`, and current browser playback produced no
   missing-texture warning; a Tivara worker rendered on AI Open Economy. Skaduwee playback loaded assets but did not
   show a unit in the captured view, so cross-faction visible-actor verification remains open.
-- [ ] Keep the repository-wide source-structure rule and baseline in this PR.
+- [x] Keep the repository-wide source-structure rule and baseline in this PR.
 
 Browser smoke check: the scenario list launched `wall-01-tivara-terrain` and `wall-01-skaduwee-terrain`, and a Tivara
 worker rendered on AI Open Economy. A Skaduwee SEQ-01 playback loaded on AI Bridge Crossing; its captured view did not
