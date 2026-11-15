@@ -296,6 +296,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
   /** Documents the on build mode key down member and its declared contract at this boundary. */
   private onBuildModeKeyDown(hotkeyIndex: number) {
+    if (this.mainSceneWithActors.isSpectator) return;
     if (!this.buildingMode) return;
 
     if (hotkeyIndex === -1) return;
@@ -662,6 +663,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
 
   /** Documents the can show icons member and its declared contract at this boundary. */
   private canShowIcons(actor: Phaser.GameObjects.GameObject) {
+    if (this.mainSceneWithActors.isSpectator) return true;
     const currentPlayerNr = getCurrentPlayerNumber(this.mainSceneWithActors);
     const actorPlayerNr = getActorComponent(actor, OwnerComponent)?.getOwner();
     return actorPlayerNr === currentPlayerNr;
@@ -1391,7 +1393,10 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     disabledDescription: string | null;
     validation: PreRequirement | null;
   } {
-    const playerNumber = getCurrentPlayerNumber(this.mainSceneWithActors)!;
+    const playerNumber = getCurrentPlayerNumber(this.mainSceneWithActors);
+    if (playerNumber === undefined) {
+      return { disabled: false, disabledDescription: null, validation: null };
+    }
     const validation = ProductionValidator.validateObject(this.mainSceneWithActors, playerNumber, objectName);
     const disabled = !validation.canQueue;
     let disabledDescription: string | null = null;

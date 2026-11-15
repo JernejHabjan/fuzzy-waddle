@@ -12,7 +12,7 @@ import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import type { ProbableWaffleCommunicatorServiceInterface } from "../core/ports/probable-waffle-communicator";
 import { getActorComponent, hasActorComponent } from "./actor-component";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
-import { Observable } from "rxjs";
+import { Observable, Subject } from "rxjs";
 import GameProbableWaffleScene from "../world/scenes/GameProbableWaffleScene";
 import { BaseScene } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";
 import { AttackComponent } from "../entity/components/combat/components/attack-component";
@@ -25,6 +25,35 @@ import { ActorIndexSystem } from "../world/services/ActorIndexSystem";
 import { OwnerComponent } from "../entity/components/owner-component";
 import { getSceneService } from "../world/services/scene-component-helpers";
 import { fenceSceneResourceHistory } from "./scene-resource-observation";
+
+type SpectatorSelectionProperty = "selection.set" | "selection.added" | "selection.removed" | "selection.cleared";
+
+interface SpectatorSelectionState {
+  actorIds: string[];
+  events: Subject<ProbableWafflePlayerDataChangeEvent>;
+  shutdownOwner?: GameProbableWaffleScene;
+}
+
+/** Spectator selection is presentation state and must never enter a player or network state stream. */
+const spectatorSelections = new WeakMap<ProbableWaffleCommunicatorServiceInterface, SpectatorSelectionState>();
+
+function getSpectatorSelectionState(scene: ProbableWaffleScene): SpectatorSelectionState {
+  const communicator = scene.communicator;
+  let state = spectatorSelections.get(communicator);
+  if (!state) {
+    state = { actorIds: [], events: new Subject<ProbableWafflePlayerDataChangeEvent>() };
+    spectatorSelections.set(communicator, state);
+  }
+
+  if (scene instanceof GameProbableWaffleScene && state.shutdownOwner !== scene) {
+    state.shutdownOwner = scene;
+    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      state?.events.complete();
+      spectatorSelections.delete(communicator);
+    });
+  }
+  return state;
+}
 
 /**
  * Defines the closed probable waffle scene data key classification. Use an explicit member rather than a
@@ -85,20 +114,17 @@ export function getAllPlayers(scene: Scene): ProbableWafflePlayer[] {
   return scene.baseGameData.gameInstance.players;
 }
 
-/**
- * Returns the current player number of the human player
- * @param scene
- * @returns {number | undefined}
- */
+/** Returns the local player's number, or `undefined` when this client is only observing. */
 export function getCurrentPlayerNumber(scene: Scene): number | undefined {
   if (!scene) {
     console.error("Scene is undefined");
     return undefined;
   }
   if (!(scene instanceof BaseScene)) throw new Error("scene is not instanceof BaseScene");
+  if (scene.isSpectator) return undefined;
   return (
     scene.baseGameData.gameInstance.gameState?.data.campaignMission?.activeControlPlayerNumber ??
-    scene.player.playerNumber
+    scene.playerOrNull?.playerNumber
   );
 }
 
@@ -148,9 +174,11 @@ export function sendPlayerStateEvent(
   }
 
   const communicator = getCommunicator(scene);
-  const playerNumberToSend = playerNumber ?? scene.player.playerNumber;
+  const playerNumberToSend = playerNumber ?? scene.playerOrNull?.playerNumber;
   if (playerNumberToSend === undefined) {
-    console.warn(`[PlayerState] Skipping ${property} because the local player number is not ready yet.`);
+    if (!scene.isSpectator) {
+      console.warn(`[PlayerState] Skipping ${property} because the local player number is not ready yet.`);
+    }
     return;
   }
   const data = {
@@ -175,10 +203,40 @@ export function sendPlayerStateEvent(
 
 export function emitEventSelection(
   scene: Phaser.Scene,
-  property: "selection.set" | "selection.added" | "selection.removed" | "selection.cleared",
+  property: SpectatorSelectionProperty,
   actorIds?: string[]
 ) {
   if (!(scene instanceof ProbableWaffleScene)) throw new Error("Scene is not of type ProbableWaffleScene");
+  if (scene.isSpectator) {
+    const state = getSpectatorSelectionState(scene);
+    const changedIds = [
+      ...new Set(actorIds?.filter((id): id is string => typeof id === "string" && id.length > 0) ?? [])
+    ];
+    switch (property) {
+      case "selection.set":
+        state.actorIds = changedIds;
+        break;
+      case "selection.added":
+        state.actorIds = [...new Set([...state.actorIds, ...changedIds])];
+        break;
+      case "selection.removed": {
+        const removedIds = new Set(changedIds);
+        state.actorIds = state.actorIds.filter((id) => !removedIds.has(id));
+        break;
+      }
+      case "selection.cleared":
+        state.actorIds = [];
+        break;
+    }
+
+    state.events.next({
+      property,
+      data: { playerStateData: { selection: changedIds } },
+      gameInstanceId: scene.gameInstanceId,
+      emitterUserId: scene.userId
+    });
+    return;
+  }
   const player = getPlayer(scene);
   if (player?.playerNumber === undefined) {
     console.warn(`[Selection] Skipping ${property} because the local player is not ready yet.`);
@@ -291,6 +349,7 @@ export function emitHousing(
 
 export function listenToSelectionEvents(scene: Scene): Observable<ProbableWafflePlayerDataChangeEvent> | undefined {
   if (!(scene instanceof ProbableWaffleScene)) throw new Error("Scene is not of type ProbableWaffleScene");
+  if (scene.isSpectator) return getSpectatorSelectionState(scene).events.asObservable();
   const player = getPlayer(scene);
   return scene.communicator.playerChanged?.onWithFilter(
     (p) => p.data.playerNumber === player?.playerNumber && p.property.startsWith("selection.")
@@ -299,7 +358,9 @@ export function listenToSelectionEvents(scene: Scene): Observable<ProbableWaffle
 
 export function getSelectedActors(scene: Phaser.Scene): Phaser.GameObjects.GameObject[] {
   if (!(scene instanceof GameProbableWaffleScene)) throw new Error("Scene is not of type GameProbableWaffleScene");
-  const selectionGuids = getPlayer(scene)?.getSelection();
+  const selectionGuids = scene.isSpectator
+    ? getSpectatorSelectionState(scene).actorIds
+    : getPlayer(scene)?.getSelection();
   if (!selectionGuids) return [];
   return scene.children.getChildren().filter((child) => {
     const idComponent = getActorComponent(child, IdComponent);

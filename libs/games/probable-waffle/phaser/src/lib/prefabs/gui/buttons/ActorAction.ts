@@ -13,6 +13,7 @@ import { getGameObjectBounds } from "../../../data/game-object-helper";
 import { IconHelper } from "../labels/IconHelper";
 import type { ActorActionSetup } from "./actor-action-setup";
 import type { TooltipInfo } from "../labels/tooltip-info";
+import type HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
 /* END-USER-IMPORTS */
 
 export default class ActorAction extends Phaser.GameObjects.Container {
@@ -285,17 +286,22 @@ export default class ActorAction extends Phaser.GameObjects.Container {
   triggerAction = () => {
     // do not actually disable the button, as we want to react to it on click
     // if (this.disabled) return;
+    if (this.isSpectator()) return;
     this.action?.();
   };
 
   private onPointerDown = (pointer: Phaser.Input.Pointer) => {
     // Right-click (button 2) triggers the right-click action
-    if (pointer.rightButtonDown() && this.onRightClickAction) {
+    if (!this.isSpectator() && pointer.rightButtonDown() && this.onRightClickAction) {
       this.onRightClickAction();
       // Prevent default action
       pointer.event?.preventDefault();
     }
   };
+
+  private isSpectator(): boolean {
+    return (this.scene as HudProbableWaffle).probableWaffleScene?.isSpectator === true;
+  }
 
   private destroyCore = () => {
     this.off("actor-action", this.triggerAction);
