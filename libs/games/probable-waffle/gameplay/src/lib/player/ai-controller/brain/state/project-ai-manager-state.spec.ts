@@ -164,21 +164,24 @@ describe("projectAiManagerState", () => {
     expect(result.squads).toEqual([]);
   });
 
-  it.each(["cancelled", "completed"] as const)("does not reactivate a %s squad from a stale tactical snapshot", (terminalState) => {
-    const neutralScout = createSquad({
-      squadId: "squad:scout:neutral",
-      role: "scout",
-      actorIds: ["scout"],
-      state: "advance"
-    });
-    const terminalScout = { ...neutralScout, actorIds: [], state: terminalState };
-    const result = projectAiManagerState(createState([neutralScout]), [
-      createProposal({ squads: [terminalScout] }),
-      createProposal({ squadUpdates: [neutralScout] })
-    ]);
+  it.each(["cancelled", "completed"] as const)(
+    "does not reactivate a %s squad from a stale tactical snapshot",
+    (terminalState) => {
+      const neutralScout = createSquad({
+        squadId: "squad:scout:neutral",
+        role: "scout",
+        actorIds: ["scout"],
+        state: "advance"
+      });
+      const terminalScout = { ...neutralScout, actorIds: [], state: terminalState };
+      const result = projectAiManagerState(createState([neutralScout]), [
+        createProposal({ squads: [terminalScout] }),
+        createProposal({ squadUpdates: [neutralScout] })
+      ]);
 
-    expect(result.squads).toEqual([expect.objectContaining({ state: terminalState, actorIds: [] })]);
-  });
+      expect(result.squads).toEqual([expect.objectContaining({ state: terminalState, actorIds: [] })]);
+    }
+  );
 
   it("retains a tactical domain child while its strategic parent remains active", () => {
     const parent = createSquad({ domain: "air", actorIds: ["flyer-1"] });
@@ -214,7 +217,9 @@ describe("projectAiManagerState", () => {
     });
     const result = projectAiManagerState(createState([raid]), [
       createProposal({
-        squads: [{ ...raid, state: "retreat", lifecycle: { ...raid.lifecycle!, terminalReason: "raid_counterforce_abort" } }]
+        squads: [
+          { ...raid, state: "retreat", lifecycle: { ...raid.lifecycle!, terminalReason: "raid_counterforce_abort" } }
+        ]
       }),
       createProposal({ squadUpdates: [{ ...raid, state: "engage" }] })
     ]);

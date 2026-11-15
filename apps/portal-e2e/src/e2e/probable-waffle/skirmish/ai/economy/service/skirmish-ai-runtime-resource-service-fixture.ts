@@ -1,10 +1,20 @@
 import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
-import { OrderType, ResourceType, type GameCommand } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiGatheringSelection } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/economy/gathering/ai-gathering-selection";
-import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
-import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
-import type { AiRuntimeResourceCoverage } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/economy/setup/ai-runtime-resource-coverage";
-import type { AiRuntimeResourceServiceInterval } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/economy/setup/ai-runtime-resource-service-interval";
+import { type GameCommand, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import type {
+  AiGatheringSelection
+} from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/economy/gathering/ai-gathering-selection";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type {
+  AiRuntimeResourceCoverage
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/economy/setup/ai-runtime-resource-coverage";
+import type {
+  AiRuntimeResourceServiceInterval
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/economy/setup/ai-runtime-resource-service-interval";
 import { resourceCreditFixture } from "../capture/ownership/skirmish-ai-runtime-resource-credit-fixture";
 
 /** Synthetic exact accounting/control shapes only; every useful/capacity verdict must still be unavailable. */

@@ -75,7 +75,13 @@ describe("AiIncidentCaptureStore", () => {
     expect(store.addAutomatic("episode:1", bundle(1))).toBe("episode_already_captured");
     expect(store.metrics().episodeCount).toBe(7);
     store.dispose();
-    expect(store.metrics()).toMatchObject({ sessionBytes: 0, retainedBytes: 0, retainedCount: 0, episodeCount: 0, disposed: true });
+    expect(store.metrics()).toMatchObject({
+      sessionBytes: 0,
+      retainedBytes: 0,
+      retainedCount: 0,
+      episodeCount: 0,
+      disposed: true
+    });
     expect(() => store.addAutomatic("episode:9", bundle(9))).toThrow("incident_capture_store_disposed");
   });
 });

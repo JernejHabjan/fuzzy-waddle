@@ -7,7 +7,7 @@ import { canAffordAiEconomyCost } from "../../../planning/economy/service/ai-eco
 import { projectAiResourceForecasts } from "../../../planning/economy/forecast/ai-resource-forecast";
 
 import { createAiTestOwnedActor } from "../../fixtures/coordination/ai-test-fixtures";
-import { catalog, demand, source, world, proposal } from "../../fixtures/economy/ai-economy-forecast-test-fixtures";
+import { catalog, demand, proposal, source, world } from "../../fixtures/economy/ai-economy-forecast-test-fixtures";
 
 describe("typed deterministic economy forecast scenarios", () => {
   it("ECO-03: assigns the next worker to spare source capacity, not a saturated source", () => {

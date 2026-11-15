@@ -8,12 +8,23 @@ export function assertAiTransportState(value: AiBrainState): void {
   for (const transport of value.transport) {
     if (!transport.lifecycle) continue;
     const purpose = transport.lifecycle.establishment;
-    if (purpose && (transport.lifecycle.missionKind !== "island_establishment" ||
-      typeof purpose.sourceActorId !== "string" || !purpose.sourceActorId ||
-      !Object.values(ObjectNames).includes(purpose.serviceObjectName) || !purpose.resourceCost ||
-      typeof purpose.resourceCost !== "object" || Array.isArray(purpose.resourceCost) ||
-      Object.entries(purpose.resourceCost).some(([key, amount]) => !Object.values<string>(ResourceType).includes(key) ||
-        typeof amount !== "number" || !Number.isFinite(amount) || amount < 0)))
+    if (
+      purpose &&
+      (transport.lifecycle.missionKind !== "island_establishment" ||
+        typeof purpose.sourceActorId !== "string" ||
+        !purpose.sourceActorId ||
+        !Object.values(ObjectNames).includes(purpose.serviceObjectName) ||
+        !purpose.resourceCost ||
+        typeof purpose.resourceCost !== "object" ||
+        Array.isArray(purpose.resourceCost) ||
+        Object.entries(purpose.resourceCost).some(
+          ([key, amount]) =>
+            !Object.values<string>(ResourceType).includes(key) ||
+            typeof amount !== "number" ||
+            !Number.isFinite(amount) ||
+            amount < 0
+        ))
+    )
       throw new Error(`invalid_ai_island_establishment_purpose:${transport.planId}`);
     if (!["island_establishment", "army_transfer", "evacuation"].includes(transport.lifecycle.missionKind)) {
       throw new Error(`invalid_ai_transport_mission:${transport.planId}`);

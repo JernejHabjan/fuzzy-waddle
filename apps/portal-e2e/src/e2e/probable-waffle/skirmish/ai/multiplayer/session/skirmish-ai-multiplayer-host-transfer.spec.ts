@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { attachMultiplayerEvidence } from "./skirmish-ai-multiplayer-evidence";
 import { startMultiplayerTestMatch } from "./skirmish-ai-multiplayer-match";
-import { observeMultiplayerPeer, type MultiplayerPeerObservation } from "./skirmish-ai-multiplayer-observation";
+import { type MultiplayerPeerObservation, observeMultiplayerPeer } from "./skirmish-ai-multiplayer-observation";
 
 test.skip(process.env.AI_MULTIPLAYER_E2E !== "1", "Requires local Supabase and the local API relay.");
 test.setTimeout(180_000);

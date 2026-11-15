@@ -87,36 +87,42 @@ test("twelve workers clear opposing traffic through a three-tile corridor and se
     false,
     errors
   );
-  const geometry = await page.evaluate((roles) => {
-    const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
-      .__fuzzyWaddleAiRuntimeBrowserTest;
-    const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
-      | GameProbableWaffleScene
-      | undefined;
-    const services = scene?.getSceneGameData().services;
-    const index = services?.find((service): service is ActorIndexSystem => "getActorById" in service);
-    const occupancy = services?.find((service): service is MovementOccupancyService => "getActorFootprintAtTile" in service);
-    const navigation = services?.find((service): service is NavigationService => "isTileNavigable" in service);
-    if (!host?.presetApplication || !index || !occupancy || !navigation) throw new Error("traffic_geometry_missing");
-    return roles.map(({ id, destination }) => {
-      const actorId = host.presetApplication?.createdActorIds[id];
-      const actor = actorId && index.getActorById(actorId);
-      if (!actor) throw new Error("traffic_actor_missing");
-      const start = navigation.getCenterTileCoordUnderObject(actor);
-      return {
-        id,
-        start,
-        startNavigable: !!start && navigation.isTileNavigable(start),
-        destination,
-        destinationNavigable: navigation.isTileNavigable(destination),
-        footprint: occupancy.getActorFootprintAtTile(actor, destination)
-      };
-    });
-  }, traffic.map(({ id, destination }) => ({ id, destination })));
-  writeFileSync(testInfo.outputPath("traffic-geometry.json"), JSON.stringify(geometry));
-  expect(geometry.every((entry) => entry.startNavigable && entry.destinationNavigable), "staging routes are legal").toBe(
-    true
+  const geometry = await page.evaluate(
+    (roles) => {
+      const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
+        .__fuzzyWaddleAiRuntimeBrowserTest;
+      const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
+        | GameProbableWaffleScene
+        | undefined;
+      const services = scene?.getSceneGameData().services;
+      const index = services?.find((service): service is ActorIndexSystem => "getActorById" in service);
+      const occupancy = services?.find(
+        (service): service is MovementOccupancyService => "getActorFootprintAtTile" in service
+      );
+      const navigation = services?.find((service): service is NavigationService => "isTileNavigable" in service);
+      if (!host?.presetApplication || !index || !occupancy || !navigation) throw new Error("traffic_geometry_missing");
+      return roles.map(({ id, destination }) => {
+        const actorId = host.presetApplication?.createdActorIds[id];
+        const actor = actorId && index.getActorById(actorId);
+        if (!actor) throw new Error("traffic_actor_missing");
+        const start = navigation.getCenterTileCoordUnderObject(actor);
+        return {
+          id,
+          start,
+          startNavigable: !!start && navigation.isTileNavigable(start),
+          destination,
+          destinationNavigable: navigation.isTileNavigable(destination),
+          footprint: occupancy.getActorFootprintAtTile(actor, destination)
+        };
+      });
+    },
+    traffic.map(({ id, destination }) => ({ id, destination }))
   );
+  writeFileSync(testInfo.outputPath("traffic-geometry.json"), JSON.stringify(geometry));
+  expect(
+    geometry.every((entry) => entry.startNavigable && entry.destinationNavigable),
+    "staging routes are legal"
+  ).toBe(true);
   const destinationFootprintKeys = geometry.flatMap((entry) =>
     entry.footprint.map((position) => `${position.x},${position.y}`)
   );

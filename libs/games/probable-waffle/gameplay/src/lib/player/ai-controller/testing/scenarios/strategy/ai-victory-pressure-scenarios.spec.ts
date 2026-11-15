@@ -151,7 +151,7 @@ function strategyProposal(forceCount: number, workerCount: number, defenderCount
   });
 }
 
-describe("STRAT-05 visible counterforce interrupts an unsafe finish", () => {
+describe("STRAT-05 visible counterforce interrupts an unsafe finish", () =>
   it("forms instead of launching into a newly visible superior guard force", () => {
     const clear = strategyProposal(4, 8, 0);
     const guarded = strategyProposal(4, 8, 4);
@@ -174,10 +174,9 @@ describe("STRAT-05 visible counterforce interrupts an unsafe finish", () => {
       false
     );
     expect(new Set(Array.from({ length: 3 }, () => digestCanonicalAiValue(strategyProposal(4, 8, 4)))).size).toBe(1);
-  });
-});
+  }));
 
-describe("STRAT-06 equal-tick economy versus recovery policy", () => {
+describe("STRAT-06 equal-tick economy versus recovery policy", () =>
   it("presses a ready force but recovers a depleted workforce without a time-only phase switch", () => {
     const strong = strategyProposal(4, 8, 0);
     const damaged = strategyProposal(1, 1, 0);
@@ -191,5 +190,4 @@ describe("STRAT-06 equal-tick economy versus recovery policy", () => {
     );
     expect(damaged.intents.some((intent) => intent.kind === "attack")).toBe(false);
     expect(new Set(Array.from({ length: 3 }, () => digestCanonicalAiValue(strategyProposal(1, 1, 0)))).size).toBe(1);
-  });
-});
+  }));

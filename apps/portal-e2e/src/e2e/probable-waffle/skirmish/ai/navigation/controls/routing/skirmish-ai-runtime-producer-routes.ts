@@ -1,8 +1,13 @@
 import type { projectRuntimeNativeNavigation } from "./skirmish-ai-runtime-native-navigation";
-import type { AiRuntimeProductionFact } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
-import type { RuntimeProductionCausality } from "../../../production/decisions/skirmish-ai-runtime-production-causality";
-import type { RuntimeProductionCompletion } from "../../../production/completion/skirmish-ai-runtime-production-completion";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type {
+  RuntimeProductionCausality
+} from "../../../production/decisions/skirmish-ai-runtime-production-causality";
+import type {
+  RuntimeProductionCompletion
+} from "../../../production/completion/skirmish-ai-runtime-production-completion";
 import type { RuntimeRouteOrderLineage } from "../commands/skirmish-ai-runtime-route-order-lineage";
 
 /** Query/output diagnostics, never full producer reachability or useful-effect evidence. Capture-wide joins are retrospective. */

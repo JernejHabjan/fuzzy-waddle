@@ -6,7 +6,7 @@ import type { AiManagerProposal, AiProposalManager } from "../../coordination/ai
 import { proposeAiHousing } from "../housing/ai-housing-proposal";
 import { proposeAiFoodEconomy } from "../../economy/food/ai-food-economy-proposal";
 import { proposeAiGeneralGathering } from "../../economy/gathering/ai-general-gathering-proposal";
-import { openingBudget, OPENING_SUPPLY_BUFFER } from "../opening/ai-opening-catalog";
+import { OPENING_SUPPLY_BUFFER, openingBudget } from "../opening/ai-opening-catalog";
 import { proposeAiOpening } from "../opening/ai-opening-proposal";
 import { owned } from "./ai-macro-observation";
 import { unresolvedReservedEffectIds } from "./ai-macro-effect-identity";

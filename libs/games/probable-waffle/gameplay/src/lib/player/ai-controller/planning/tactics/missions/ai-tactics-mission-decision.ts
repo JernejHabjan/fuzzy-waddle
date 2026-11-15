@@ -9,6 +9,7 @@ import { selectAiSafeFiringPositions } from "../combat/ai-tactics-approach-posit
 import { canTarget } from "../combat/ai-tactics-combat";
 
 import type { prepareAiTacticalSquad } from "./ai-tactics-mission-preparation";
+
 /** Chooses bounded mission state and recovery. */
 export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepareAiTacticalSquad>>) {
   const { estimate, localEnemies, members, observation, retreat, squad, state, visibleTarget } = input;
@@ -207,8 +208,7 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
                 : squad.state === "recover" || squad.state === "recovering"
                   ? "rally"
                   : "advance";
-  const shouldWithdrawAfterLosses =
-    majorityOfCommittedForceLost && localEnemies.length > 0 && !favorableRecovery;
+  const shouldWithdrawAfterLosses = majorityOfCommittedForceLost && localEnemies.length > 0 && !favorableRecovery;
   const shouldWithdraw =
     scoutNeedsSafeWithdrawal ||
     (retreat !== null && (entireSquadCriticallyExposed || topologyLost || shouldWithdrawAfterLosses));
@@ -217,7 +217,7 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
     missionRecoveryExhausted ||
     raidTargetLost ||
     raidAbortReachedSafety ||
-      (raidAbortRequested && members.length === 0)
+    (raidAbortRequested && members.length === 0)
       ? "completed"
       : raidAbortRequested && retreat && !missionExpired
         ? "retreat"

@@ -19,7 +19,7 @@ import {
   createAiTestOwnedActor
 } from "../../../testing/fixtures/coordination/ai-test-fixtures";
 
-import { AiMacroManager, aiMacroInfrastructureRoles } from "./ai-macro-manager";
+import { aiMacroInfrastructureRoles, AiMacroManager } from "./ai-macro-manager";
 import { catalog } from "../../../testing/fixtures/production/ai-macro-test-fixtures";
 
 describe("AI macro opening and gathering", () => {

@@ -6,10 +6,10 @@ import type { AiIntent } from "../../contracts/commands/ai-intent";
 import { arbitrateAiIntents } from "../../brain/arbitration/ai-intent-arbiter";
 import { AiFortificationManager, fortificationPreservesConnectivity } from "./ai-fortification-manager";
 import {
-  profile,
-  catalog,
   actor,
+  catalog,
   observation,
+  profile,
   threatenedState
 } from "../../testing/fixtures/fortification/ai-fortification-test-fixture";
 

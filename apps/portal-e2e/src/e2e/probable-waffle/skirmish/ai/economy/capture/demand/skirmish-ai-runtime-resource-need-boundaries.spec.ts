@@ -3,6 +3,7 @@ import { expect, test } from "@playwright/test";
 import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import { resourceAdmissionFixture } from "../ownership/skirmish-ai-runtime-resource-admission-fixture";
 import { projectRuntimeResourceNeedAccounting } from "./skirmish-ai-runtime-resource-need-accounting-projection";
+
 test("exact incoming read survives its start and own gather admission; other income still caps delivery", () => {
   const f = resourceAdmissionFixture(),
     result = projectRuntimeResourceNeedAccounting(f.capture, [f.need], [f.credit]);

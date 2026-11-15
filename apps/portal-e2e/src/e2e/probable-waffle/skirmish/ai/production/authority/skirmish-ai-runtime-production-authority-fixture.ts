@@ -1,10 +1,13 @@
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 // prettier-ignore
-import type { AiRuntimeProductionSetup } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/fixtures/ai-runtime-production-setup";
+import type {
+  AiRuntimeProductionSetup
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/fixtures/ai-runtime-production-setup";
 import type { RuntimeNativeProductionEvidence } from "../evidence/skirmish-ai-runtime-native-production-evidence";
 import { normalizeRuntimeProductionSetup } from "../fixtures/skirmish-ai-runtime-production-setup";
-import { productionConsumedDecisionFixture } from "../decisions/skirmish-ai-runtime-production-consumed-decision-fixture";
+import {
+  productionConsumedDecisionFixture
+} from "../decisions/skirmish-ai-runtime-production-consumed-decision-fixture";
 
 /** Invented authority controls only. They never enter the browser runner or certify a physical world. */
 export function productionAuthorityFixture() {

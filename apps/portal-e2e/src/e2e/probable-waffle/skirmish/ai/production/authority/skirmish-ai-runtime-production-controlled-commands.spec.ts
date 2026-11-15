@@ -1,10 +1,11 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { productionAuthorityFixture } from "./skirmish-ai-runtime-production-authority-fixture";
 import { projectRuntimeControlledCommands } from "./skirmish-ai-runtime-production-controlled-commands";
 // prettier-ignore
-import type { AiRuntimeProductionFact } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 
 function fixture() {
   const {

@@ -1,6 +1,5 @@
 import type { ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeCreatedActor } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/harness/capture/ai-runtime-created-actor";
+import type { AiRuntimeCreatedActor } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/harness/capture/ai-runtime-created-actor";
 
 /** Actual created/indexed actor or newly registered tech. No strategic usefulness, stability, fair setup or full event proof. */
 export interface RuntimeProductionCompletion {

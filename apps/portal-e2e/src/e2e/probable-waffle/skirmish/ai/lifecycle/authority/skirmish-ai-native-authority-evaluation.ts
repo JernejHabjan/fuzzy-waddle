@@ -167,8 +167,11 @@ export function evaluateNativeAuthority(id: string, branch: string, context: Ret
       failures.push("authority_living_output_control_not_alive_at_horizon");
   }
   if (id === "H-10") failures.push(...backlogFailures(branch, context, commands));
-  if (id === "H-10" ? !nativeResourceIncomeAfterRelease(context, 1801) :
-      !["H-06", "H-07"].includes(id) && !nativeRecoveryIncome(context))
+  if (
+    id === "H-10"
+      ? !nativeResourceIncomeAfterRelease(context, 1801)
+      : !["H-06", "H-07"].includes(id) && !nativeRecoveryIncome(context)
+  )
     failures.push("authority_unrelated_native_income_did_not_continue");
   return [...new Set(failures)];
 }

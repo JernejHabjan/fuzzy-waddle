@@ -1,7 +1,6 @@
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiStrategyAssessment } from "../../../contracts/planning/ai-strategy-assessment";
-import type { AiObservedActor } from "../../../contracts/observation/ai-observation";
-import type { AiDomain } from "../../../contracts/observation/ai-observation";
+import type { AiDomain, AiObservedActor } from "../../../contracts/observation/ai-observation";
 import { queryAiAccessRoute } from "../../access/ai-access-graph";
 import type { AiSkirmishProposalContext } from "../missions/ai-skirmish-proposal-context";
 import { canFight, canTarget, distance, domains, position } from "../missions/ai-skirmish-support";

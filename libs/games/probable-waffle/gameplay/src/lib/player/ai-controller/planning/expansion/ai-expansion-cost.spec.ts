@@ -1,9 +1,13 @@
 import { ObjectNames, ProbableWaffleAiDifficulty, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiCapabilityCatalog } from "../../contracts/observation/ai-capability-catalog";
-import type { AiObservedActor, AiObservation } from "../../contracts/observation/ai-observation";
+import type { AiObservation, AiObservedActor } from "../../contracts/observation/ai-observation";
 import { arbitrateAiIntents } from "../../brain/arbitration/ai-intent-arbiter";
 import { createAiProfileConfig } from "../../profiles/ai-profile-defaults";
-import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "../../testing/fixtures/coordination/ai-test-fixtures";
+import {
+  createAiTestObservation,
+  createAiTestOwnedActor,
+  unknownAiValue
+} from "../../testing/fixtures/coordination/ai-test-fixtures";
 import { catalog, completedOpeningState } from "../../testing/fixtures/production/ai-macro-test-fixtures";
 import { AiBaseManager } from "./ai-base-manager";
 
@@ -118,9 +122,8 @@ describe("catalog-priced expansion admission", () => {
     expect(admitted.decisions).toContainEqual(expect.objectContaining({ reason: "resource_conflict" }));
   });
 
-  it("admits the same legal candidate once its full cost is available", () => {
-    expect(fixture(400).admitted.accepted).toHaveLength(1);
-  });
+  it("admits the same legal candidate once its full cost is available", () =>
+    expect(fixture(400).admitted.accepted).toHaveLength(1));
 
   it("keeps an unpriced candidate explicit without dispatching a free construction", () => {
     const { proposal } = fixture(400, 0, false);

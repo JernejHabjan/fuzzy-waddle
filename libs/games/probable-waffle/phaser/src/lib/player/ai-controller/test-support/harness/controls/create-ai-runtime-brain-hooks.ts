@@ -4,7 +4,7 @@ import type { AiBrainBoundaryHooks } from
   "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain-boundary-hooks";
 import { projectAiDebugSnapshot } from
   "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/debug/project-ai-debug-snapshot";
-import { readAiRuntimeBrowserTestConfig } from "../../browser/ai-runtime-browser-test-config";
+import { readAiRuntimeSceneConfig } from "../../browser/ai-runtime-scene-config";
 import type { AiRuntimeBrainFault } from "../../authority/controls/ai-runtime-brain-fault";
 import type { AiManagerProposal } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/coordination/ai-manager-proposal";
 import { AI_RUNTIME_PROPOSAL_ORDER_EVENT, type AiRuntimeProposalOrder } from "../../authority/controls/ai-runtime-proposal-order";
@@ -14,7 +14,7 @@ export const AI_RUNTIME_BRAIN_FAULT_EVENT = "ai-runtime-brain-fault";
 /** No ambient/global hook: the controller owns this finite wrapper, disposed with its brain/scene. */
 export function createAiRuntimeBrainHooks(scene: ProbableWaffleScene, playerNumber: number | undefined): AiBrainBoundaryHooks | undefined {
   if (environment.production || typeof window === "undefined") return undefined;
-  const preset = readAiRuntimeBrowserTestConfig()?.presetWorld, fault = preset?.brainFault, order = preset?.proposalOrder;
+  const preset = readAiRuntimeSceneConfig(scene.game)?.presetWorld, fault = preset?.brainFault, order = preset?.proposalOrder;
   if (playerNumber !== 2 || !fault && !order) return undefined;
   let active = true, emitted = 0;
   const recordedOwners = new Set<string>();

@@ -4,6 +4,7 @@ import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { normalizeRuntimeProductionWorld } from "./skirmish-ai-runtime-production-world-normalization";
 import { normalizeRuntimeProductionCausality } from "../decisions/skirmish-ai-runtime-production-causality-normalization";
 import { productionWorldFixture, productionWorldObservation } from "./skirmish-ai-runtime-production-world-fixture";
+
 test.describe("production world synthetic contract tests", () => {
   test("preserves base queue price and researched level separately, with null navigation and absent full evidence", () => {
     const { capture } = productionWorldFixture();

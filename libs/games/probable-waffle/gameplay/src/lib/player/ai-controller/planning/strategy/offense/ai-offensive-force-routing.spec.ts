@@ -1,12 +1,12 @@
 import type { AiObservedActor } from "../../../contracts/observation/ai-observation";
 import { buildAiAccessGraph } from "../../access/ai-access-graph";
 import {
-  guard,
-  core,
-  producer,
-  world,
   brain,
-  manager
+  core,
+  guard,
+  manager,
+  producer,
+  world
 } from "../../../testing/fixtures/strategy/ai-offensive-opportunity-test-fixtures";
 import { createAiSkirmishProposalContext } from "../missions/ai-skirmish-proposal-draft";
 import { selectAiOffensiveOpportunity } from "./select-ai-offensive-opportunity";

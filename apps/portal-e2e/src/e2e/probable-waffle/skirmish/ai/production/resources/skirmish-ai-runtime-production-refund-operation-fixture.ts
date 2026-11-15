@@ -3,6 +3,7 @@ import type { GameCommand } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
 import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import { productionOperationFixture } from "../fixtures/skirmish-ai-runtime-production-operation-fixture";
+
 /** Invented distinct cancellation command and real-shaped refund interval; it proves no runtime cancellation policy. */
 export function productionRefundOperationFixture() {
   const capture = productionOperationFixture("immediate");

@@ -4,14 +4,13 @@ import { evaluateRuntimeSupplyControl, evaluateRuntimeSupplyPrebuild } from "./s
 const requirement = { minimumBuffer: 3, latestTick: 800, housingObjectName: "Olival" } as const;
 
 test.describe("authoritative queued-supply runtime oracle", () => {
-  test("fails closed when no queued population ever creates a real capacity deficit", () => {
+  test("fails closed when no queued population ever creates a real capacity deficit", () =>
     expect(
       evaluateRuntimeSupplyPrebuild(
         [{ tick: 20, readyHousingCapacity: 16, usedPopulation: 4, queuedPopulation: 0, readyHousingActorNames: [] }],
         requirement
       )
-    ).toEqual(["supply_prebuild_precondition_missing"]);
-  });
+    ).toEqual(["supply_prebuild_precondition_missing"]));
 
   test("requires a real completed housing gain by the authored deadline", () => {
     const pressured = {

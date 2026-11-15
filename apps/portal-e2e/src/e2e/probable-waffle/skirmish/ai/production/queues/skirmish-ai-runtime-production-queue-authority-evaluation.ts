@@ -2,9 +2,14 @@ import type { RuntimeNativeProductionEvidence } from "../evidence/skirmish-ai-ru
 import type { RuntimeProductionContract } from "../lifecycle/skirmish-ai-runtime-production-contract";
 import { runtimeProductionUsefulOutputs } from "../policy/skirmish-ai-runtime-production-useful-output";
 import { evaluateRuntimeProductionPayments } from "../resources/skirmish-ai-runtime-production-refund-evaluation";
-import { researchDefinitions } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/research/research-definitions";
+import {
+  researchDefinitions
+} from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/research/research-definitions";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import { productionActorRetained, productionWorldAt } from "../authority/skirmish-ai-runtime-production-authority-evaluation";
+import {
+  productionActorRetained,
+  productionWorldAt
+} from "../authority/skirmish-ai-runtime-production-authority-evaluation";
 
 /** Joins operation-time producer definitions to individual items; changing global product prices cannot overwrite history. */
 export function evaluateRuntimeProductionQueueAuthority(
@@ -69,8 +74,9 @@ export function evaluateRuntimeProductionQueueAuthority(
       unit.laneId !== research.laneId ||
       !useful.some((output) => output.completion.itemId === unit.itemId) ||
       !evidence.decisions.some((decision) =>
-        decision.result.acceptedIntents.some((intent) => intent.kind === "produce" &&
-          intent.effectId.replace(/^effect:/, "") === unit.effectId)
+        decision.result.acceptedIntents.some(
+          (intent) => intent.kind === "produce" && intent.effectId.replace(/^effect:/, "") === unit.effectId
+        )
       ) ||
       !evidence.decisions.some((decision) =>
         decision.result.acceptedIntents.some(

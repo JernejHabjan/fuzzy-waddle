@@ -12,8 +12,14 @@ it.each([ProbableWaffleAiDifficulty.Easy, ProbableWaffleAiDifficulty.Medium, Pro
   "H-31 preserves absolute expiry, recovery age, service debt and unknown command ownership across %s migration",
   (difficulty) => {
     const profile = createAiProfileConfig(difficulty);
-    const context = { profile, playerNumber: 1, faction: FactionType.Tivara, tick: 199,
-      archetypeId: "opening:1:balanced", satisfiedOpeningStepIds: [] };
+    const context = {
+      profile,
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      tick: 199,
+      archetypeId: "opening:1:balanced",
+      satisfiedOpeningStepIds: []
+    };
     const initial = createAiBrainState(context);
     const ownerPlanId = initial.opening.plan.planId;
     const states: readonly AiBrainState["reservations"][number]["state"][] = [
@@ -22,31 +28,55 @@ it.each([ProbableWaffleAiDifficulty.Easy, ProbableWaffleAiDifficulty.Medium, Pro
       { kind: "applied_spending", appliedTick: 20 },
       { kind: "refundable_work", refundPending: true }
     ];
-    const original: AiBrainState = { ...initial,
+    const original: AiBrainState = {
+      ...initial,
       reservations: states.map((state, index) => ({
         claimId: `claim:saved:${index}` as AiBrainState["reservations"][number]["claimId"],
-        ownerPlanId, state, prerequisites: [], createdTick: 1
+        ownerPlanId,
+        state,
+        prerequisites: [],
+        createdTick: 1
       })),
-      recovery: { records: [{ recoveryKey: "original-blocker", domain: "economy", planId: ownerPlanId,
-        actorId: null, cause: "blocked", enteredTick: 1, lastProgressTick: 2, nextRetryTick: 220,
-        phaseDeadline: aiDeadline(240), attempt: 3, state: "backoff", alternate: null, releasedClaimIds: [] }] },
+      recovery: {
+        records: [
+          {
+            recoveryKey: "original-blocker",
+            domain: "economy",
+            planId: ownerPlanId,
+            actorId: null,
+            cause: "blocked",
+            enteredTick: 1,
+            lastProgressTick: 2,
+            nextRetryTick: 220,
+            phaseDeadline: aiDeadline(240),
+            attempt: 3,
+            state: "backoff",
+            alternate: null,
+            releasedClaimIds: []
+          }
+        ]
+      },
       lanes: initial.lanes.map((lane) => ({ ...lane, deficit: 7, lastConsideredTick: 150, lastServicedTick: 10 })),
-      authority: { ...initial.authority,
-        pendingCommandIds: ["command:unresolved" as AiBrainState["authority"]["pendingCommandIds"][number]] },
+      authority: {
+        ...initial.authority,
+        pendingCommandIds: ["command:unresolved" as AiBrainState["authority"]["pendingCommandIds"][number]]
+      },
       scheduler: { ...initial.scheduler, decisionSequence: 9, accumulatorTicks: 3, rngState: [12345] }
     };
     const encoded = JSON.stringify(original);
     const restored = migrateAiBrainState(JSON.parse(encoded), context);
     expect(restored).toEqual(original);
     const brain = new PureAiBrain(profile, []);
-    let uninterrupted = original, resumed = restored;
+    let uninterrupted = original,
+      resumed = restored;
     for (const tick of [199, 200, 220, 240]) {
       const observation = { ...createAiTestObservation(), tick, generation: tick };
       const control = brain.step(observation, uninterrupted, []);
       const replay = brain.step(observation, resumed, []);
       expect(replay).toEqual(control);
-      expect(replay.nextState.reservations.map((claim) => claim.claimId))
-        .toEqual(original.reservations.slice(tick < 200 ? 0 : 1).map((claim) => claim.claimId));
+      expect(replay.nextState.reservations.map((claim) => claim.claimId)).toEqual(
+        original.reservations.slice(tick < 200 ? 0 : 1).map((claim) => claim.claimId)
+      );
       expect(replay.nextState.recovery).toEqual(original.recovery);
       expect(replay.nextState.authority.pendingCommandIds).toEqual(original.authority.pendingCommandIds);
       uninterrupted = control.nextState;

@@ -1,9 +1,15 @@
 import { isDeepStrictEqual } from "node:util";
-import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
 import type { RuntimeResourceCredit } from "./skirmish-ai-runtime-resource-credit";
 import type { RuntimeResourceNeedAccounting } from "../demand/skirmish-ai-runtime-resource-need-accounting";
-import type { RuntimeResourceApplicationInterval } from "../../delivery/skirmish-ai-runtime-resource-application-interval";
-import { normalizeRuntimeRecipientMutations } from "../../../production/ownership/skirmish-ai-runtime-recipient-mutations";
+import type {
+  RuntimeResourceApplicationInterval
+} from "../../delivery/skirmish-ai-runtime-resource-application-interval";
+import {
+  normalizeRuntimeRecipientMutations
+} from "../../../production/ownership/skirmish-ai-runtime-recipient-mutations";
 import { runtimeResourceCreditMatchesOperation } from "./skirmish-ai-runtime-resource-application-join";
 
 /** Called with validated declarations by the service projection; inspect the complete supplied journal and credit tail. */

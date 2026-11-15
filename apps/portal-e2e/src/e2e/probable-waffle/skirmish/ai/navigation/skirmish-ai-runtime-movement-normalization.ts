@@ -1,6 +1,5 @@
 // prettier-ignore
-import { AI_RUNTIME_MAX_FACTS } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/append-ai-runtime-production-fact";
+import { AI_RUNTIME_MAX_FACTS } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/append-ai-runtime-production-fact";
 import { isDeepStrictEqual } from "node:util";
 import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
 import type { RuntimeMovement } from "./skirmish-ai-runtime-movement";
@@ -143,13 +142,16 @@ export function normalizeRuntimeMovement(capture: AiRuntimeProductionSnapshot) {
     if (!returnedFact) localGaps.add("production_movement_return_missing");
     let arrival: RuntimeMovement["arrival"] = "unavailable";
     if (physical?.spatial.phase === "stopped") {
-      arrival = ready && !fenced && !physical.spatial.fallback && physical.spatial.actualTile &&
+      arrival =
+        ready &&
+        !fenced &&
+        !physical.spatial.fallback &&
+        physical.spatial.actualTile &&
         physical.spatial.originalDestination &&
         isDeepStrictEqual(physical.spatial.actualTile, physical.spatial.originalDestination)
-        ? "original_destination"
-        : "stopped";
-    }
-    else if (
+          ? "original_destination"
+          : "stopped";
+    } else if (
       physical &&
       ready &&
       !fenced &&

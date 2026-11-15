@@ -258,7 +258,7 @@ describe("STRAT-07 credible-route priority", () => {
   });
 });
 
-describe("STRAT-08 reachable exposed-core finish", () => {
+describe("STRAT-08 reachable exposed-core finish", () =>
   it("commits an immediate finishing attack when the core and sufficient ground force share a known route", () => {
     const known = buildAiAccessGraph({
       generation: 1,
@@ -323,5 +323,4 @@ describe("STRAT-08 reachable exposed-core finish", () => {
     );
     expect(result.statePatch?.strategy?.stance).toBe("finish");
     expectKnownApproach(result, "enemy-core", known.graph);
-  });
-});
+  }));

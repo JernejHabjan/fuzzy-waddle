@@ -17,8 +17,8 @@ import { createAiProfileConfig } from "../../../profiles/ai-profile-defaults";
 import {
   createAiTestObservation,
   createAiTestOwnedActor,
-  unknownAiValue,
-  requireAiTestEntry
+  requireAiTestEntry,
+  unknownAiValue
 } from "../coordination/ai-test-fixtures";
 
 export const catalog: AiCapabilityCatalog = {

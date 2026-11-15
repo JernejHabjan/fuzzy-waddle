@@ -44,13 +44,12 @@ describe.each([FactionType.Tivara, FactionType.Skaduwee])("production capacity c
       effectId: intent.effectId,
       intentId: intent.intentId
     });
-    const addProducer = (actorId: string, progress = 100) => {
+    const addProducer = (actorId: string, progress = 100) =>
       actors.push({
         ...fixture.producer,
         actorId,
         constructionProgress: { status: "known", value: progress, observedTick: tick }
       });
-    };
     return {
       fixture,
       step,

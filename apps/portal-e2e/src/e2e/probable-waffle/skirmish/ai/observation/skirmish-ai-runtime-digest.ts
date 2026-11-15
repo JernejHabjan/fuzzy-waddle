@@ -1,5 +1,4 @@
-import type { AiRuntimePresetApplication } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-application";
+import type { AiRuntimePresetApplication } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-application";
 import type { RuntimeCheckpoint } from "../capture/skirmish-ai-runtime-checkpoint";
 
 export function digestRuntimeValue(value: unknown): string {
@@ -56,19 +55,28 @@ export function projectRuntimeOutcomeDigestInput(
       ).length
     })),
     viableArmyRetained: (final?.militaryActorNames.length ?? 0) > 0,
-    ...(includeComposition ? { compositionTrajectory: checkpoints.map((checkpoint) => ({
-      readyTypeCounts: checkpoint.militaryActorNames.reduce<Record<string, number>>((counts, name) => {
-        counts[name] = (counts[name] ?? 0) + 1;
-        return counts;
-      }, {}),
-      queuedTypes: checkpoint.militaryProducerQueues.flatMap((producer) => producer.queuedItems
-        .map((item) => `${producer.actorId}:${queueIdentity(producer.actorId, item.itemId)}:${item.kind}:` +
-          `${item.objectName ?? item.researchType ?? "unknown"}`))
-        .sort(),
-      appliedCompositionCount: checkpoint.appliedCommands.filter((command) =>
-        command.effectId.startsWith("effect:composition:effect:")
-      ).length
-    })) } : {}),
+    ...(includeComposition
+      ? {
+          compositionTrajectory: checkpoints.map((checkpoint) => ({
+            readyTypeCounts: checkpoint.militaryActorNames.reduce<Record<string, number>>((counts, name) => {
+              counts[name] = (counts[name] ?? 0) + 1;
+              return counts;
+            }, {}),
+            queuedTypes: checkpoint.militaryProducerQueues
+              .flatMap((producer) =>
+                producer.queuedItems.map(
+                  (item) =>
+                    `${producer.actorId}:${queueIdentity(producer.actorId, item.itemId)}:${item.kind}:` +
+                    `${item.objectName ?? item.researchType ?? "unknown"}`
+                )
+              )
+              .sort(),
+            appliedCompositionCount: checkpoint.appliedCommands.filter((command) =>
+              command.effectId.startsWith("effect:composition:effect:")
+            ).length
+          }))
+        }
+      : {}),
     producerLifecycle: producerNames.map((objectName) => {
       const counts = producerCounts(objectName);
       const lowestAfterStart = Math.min(...counts.slice(1));
@@ -88,6 +96,11 @@ export function projectRuntimeOutcomeDigestInput(
 
 /** Setup order and semantic products are deterministic; per-match stamped command and runtime actor IDs stay in raw evidence. */
 export function projectRuntimePresetQueueDigest(items: AiRuntimePresetApplication["initialQueueItems"]) {
-  return items.map((item, setupOrdinal) => ({ producerFixtureActorId: item.producerFixtureActorId, kind: item.kind,
-    objectName: item.objectName, researchType: item.researchType, setupOrdinal }));
+  return items.map((item, setupOrdinal) => ({
+    producerFixtureActorId: item.producerFixtureActorId,
+    kind: item.kind,
+    objectName: item.objectName,
+    researchType: item.researchType,
+    setupOrdinal
+  }));
 }

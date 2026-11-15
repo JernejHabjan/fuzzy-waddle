@@ -1,4 +1,6 @@
-import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import type { RuntimeResourceNeed } from "./skirmish-ai-runtime-resource-need";
 import type { RuntimeResourceCredit } from "../ownership/skirmish-ai-runtime-resource-credit";
 import { recipientJournalFixture } from "../../../production/ownership/skirmish-ai-runtime-recipient-journal-fixture";

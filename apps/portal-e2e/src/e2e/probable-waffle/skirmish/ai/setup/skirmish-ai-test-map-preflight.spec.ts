@@ -49,11 +49,13 @@ test("starts the frozen AI economy map with indexed resources and an open ground
       scene: { key: string };
       getSceneGameData(): { services: unknown[] };
     };
-    const host = (window as unknown as {
-      __fuzzyWaddleAiRuntimeBrowserTest?: {
-        game: { scene: { getScenes(active: boolean): MapScene[] } };
-      };
-    }).__fuzzyWaddleAiRuntimeBrowserTest;
+    const host = (
+      window as unknown as {
+        __fuzzyWaddleAiRuntimeBrowserTest?: {
+          game: { scene: { getScenes(active: boolean): MapScene[] } };
+        };
+      }
+    ).__fuzzyWaddleAiRuntimeBrowserTest;
     const scene = host?.game.scene.getScenes(true).find((candidate) => candidate.scene.key === "MapAiOpenEconomy");
     if (!scene) throw new Error("open_economy_scene_not_active");
     const services = scene.getSceneGameData().services;
@@ -63,13 +65,17 @@ test("starts the frozen AI economy map with indexed resources and an open ground
     );
     const navigation = services.find(
       (candidate): candidate is Navigation =>
-        !!candidate && typeof (candidate as Navigation).findPathBetweenTiles === "function" &&
+        !!candidate &&
+        typeof (candidate as Navigation).findPathBetweenTiles === "function" &&
         typeof (candidate as Navigation).isTileGridWithoutBlockingObjectsNavigable === "function"
     );
     if (!index || !navigation) throw new Error("open_economy_services_missing");
 
     const sourceNames = index.getResourceSourcesFiltered().map((source) => source.name);
-    const starts: Tile[] = [{ x: 10, y: 20 }, { x: 30, y: 10 }];
+    const starts: Tile[] = [
+      { x: 10, y: 20 },
+      { x: 30, y: 10 }
+    ];
     const patches = starts.map((start) => {
       const found: Tile[] = [];
       for (let y = start.y - 7; y <= start.y + 7; y += 1) {

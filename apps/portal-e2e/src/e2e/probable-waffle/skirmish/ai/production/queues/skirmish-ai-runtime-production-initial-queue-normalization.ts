@@ -1,13 +1,16 @@
 // prettier-ignore
-import { AI_RUNTIME_MAX_FACTS } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/append-ai-runtime-production-fact";
+import {
+  AI_RUNTIME_MAX_FACTS
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/append-ai-runtime-production-fact";
 import { appendRuntimeInitialQueueApplication } from "../ownership/skirmish-ai-runtime-initial-queue-application";
 // prettier-ignore
-import type { AiRuntimeProductionSnapshot } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
 // prettier-ignore
-import type { AiRuntimePresetApplication } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-application";
+import type {
+  AiRuntimePresetApplication
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-application";
 import type { RuntimeProductionInitialQueue } from "./skirmish-ai-runtime-production-initial-queue";
 
 /** Joins actual setup commands to captured physical insertion/money and the tick-zero item, before resource resets. */

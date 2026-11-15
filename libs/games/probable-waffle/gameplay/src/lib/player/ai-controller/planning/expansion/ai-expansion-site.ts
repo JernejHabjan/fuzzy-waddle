@@ -2,7 +2,7 @@ import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import type { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiBrainState } from "../../contracts/state/ai-state-contracts";
 import type { AiCapabilityCatalog } from "../../contracts/observation/ai-capability-catalog";
-import type { AiObservedActor, AiObservation } from "../../contracts/observation/ai-observation";
+import type { AiObservation, AiObservedActor } from "../../contracts/observation/ai-observation";
 import { canReachAiConstructionSite } from "../construction/ai-construction-recovery-proposal";
 import { constructionAccessPolicy } from "../construction/ai-construction-access";
 import { aiEconomySiteSafety } from "../economy/service/ai-economy-site-safety";

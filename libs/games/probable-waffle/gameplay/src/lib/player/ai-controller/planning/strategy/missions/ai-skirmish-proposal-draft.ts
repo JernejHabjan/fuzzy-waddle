@@ -1,5 +1,5 @@
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
-import { aiDeadline, type AiAccessNodeId } from "../../../contracts/ai-core-types";
+import { type AiAccessNodeId, aiDeadline } from "../../../contracts/ai-core-types";
 import type { AiCapabilityCatalog } from "../../../contracts/observation/ai-capability-catalog";
 import type { AiBrainState, AiSkirmishState, AiThreatIncident } from "../../../contracts/state/ai-state-contracts";
 import type { AiObservation, AiObservedActor } from "../../../contracts/observation/ai-observation";

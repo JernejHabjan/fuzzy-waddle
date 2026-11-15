@@ -1,4 +1,4 @@
-import { aiDeadline, type AiPlanId } from "../../../contracts/ai-core-types";
+import { type AiPlanId } from "../../../contracts/ai-core-types";
 import type { AiIntent } from "../../../contracts/commands/ai-intent";
 import type { AiManagerProposal } from "../../coordination/ai-manager-proposal";
 import type { AiSkirmishProposalContext } from "./ai-skirmish-proposal-context";

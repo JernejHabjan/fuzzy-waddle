@@ -34,4 +34,10 @@ describe("probableWaffleRoutes", () => {
     await expect(result).resolves.toBe(allowed);
     expect(gameInstanceGuard.canActivate).toHaveBeenCalledWith(route, state);
   });
+
+  it("registers a lazy development scenario catalog", () => {
+    const routes: Routes = probableWaffleRoutes;
+    const pages = routes.find((route) => route.path === "aota")?.children?.find((route) => route.path === "")?.children;
+    expect(pages?.find((route) => route.path === "ai-scenarios")?.loadComponent).toEqual(expect.any(Function));
+  });
 });

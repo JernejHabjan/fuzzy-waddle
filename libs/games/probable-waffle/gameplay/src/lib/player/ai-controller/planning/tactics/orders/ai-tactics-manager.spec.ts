@@ -5,13 +5,13 @@ import type { AiBrainState } from "../../../contracts/state/ai-state-contracts";
 import type { AiCapabilityCatalog } from "../../../contracts/observation/ai-capability-catalog";
 
 import {
+  combatActor,
+  fixtureState,
+  manager,
+  observation,
   profile,
   requireValue,
-  combatActor,
-  squad,
-  fixtureState,
-  observation,
-  manager
+  squad
 } from "../../../testing/fixtures/tactics/ai-tactics-test-fixtures";
 
 describe("AiTacticsManager", () => {

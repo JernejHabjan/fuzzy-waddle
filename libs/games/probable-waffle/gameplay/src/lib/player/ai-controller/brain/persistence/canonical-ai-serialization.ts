@@ -1,6 +1,10 @@
 import type { AiBrainState } from "../../contracts/state/ai-state-contracts";
 import type { AiObservation } from "../../contracts/observation/ai-observation";
-import { canonicalizeAiSquads, canonicalizeAiTransport, canonicalizeAiFortifications } from "./canonical-ai-mission-state";
+import {
+  canonicalizeAiFortifications,
+  canonicalizeAiSquads,
+  canonicalizeAiTransport
+} from "./canonical-ai-mission-state";
 import type { CanonicalValue } from "./canonical-ai-value";
 
 /** Recursively sorts object keys and rejects values that cannot cross a deterministic boundary. */
@@ -244,8 +248,13 @@ export function canonicalizeAiBrainState(state: AiBrainState): AiBrainState {
     queries: [...state.queries].sort((left, right) => left.queryId.localeCompare(right.queryId)),
     scheduler: {
       ...state.scheduler,
-      ...(state.scheduler.boundaryFaults ? { boundaryFaults: [...state.scheduler.boundaryFaults]
-        .sort((left, right) => left.owner.localeCompare(right.owner)) } : {}),
+      ...(state.scheduler.boundaryFaults
+        ? {
+            boundaryFaults: [...state.scheduler.boundaryFaults].sort((left, right) =>
+              left.owner.localeCompare(right.owner)
+            )
+          }
+        : {}),
       continuationCursors: [...state.scheduler.continuationCursors].sort((left, right) =>
         left.owner.localeCompare(right.owner)
       )

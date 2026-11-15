@@ -1,7 +1,7 @@
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiBrainState } from "../../contracts/state/ai-state-contracts";
-import type { AiCapabilityCatalogEntry, AiCapabilityCatalog } from "../../contracts/observation/ai-capability-catalog";
+import type { AiCapabilityCatalog, AiCapabilityCatalogEntry } from "../../contracts/observation/ai-capability-catalog";
 
 import type { AiObservation } from "../../contracts/observation/ai-observation";
 

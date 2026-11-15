@@ -3,8 +3,8 @@ import type { RuntimeVariantResult } from "../../runner/skirmish-ai-runtime-vari
 import { productionConsumedDecisionFixture } from "../decisions/skirmish-ai-runtime-production-consumed-decision-fixture";
 import { buildRuntimeProductionReport } from "../evidence/skirmish-ai-runtime-production-report";
 import {
-  encodeRuntimeProductionWorld,
-  decodeRuntimeProductionWorld
+  decodeRuntimeProductionWorld,
+  encodeRuntimeProductionWorld
 } from "./skirmish-ai-runtime-production-world-storage";
 
 test("raw world storage avoids expanding joined views and reprojects exact native facts without dropping failures", () => {

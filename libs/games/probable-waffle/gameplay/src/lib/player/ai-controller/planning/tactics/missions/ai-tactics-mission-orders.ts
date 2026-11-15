@@ -7,6 +7,7 @@ import { intentBase, tacticalPositionEffectSuffix } from "../orders/ai-tactics-o
 import { proposeAiTacticalSupport } from "../orders/ai-tactics-support";
 
 import type { projectAiTacticalSquad } from "./ai-tactics-mission-projection";
+
 /** Emits quota-bound native combat and support intents. */
 export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTacticalSquad>) {
   const {

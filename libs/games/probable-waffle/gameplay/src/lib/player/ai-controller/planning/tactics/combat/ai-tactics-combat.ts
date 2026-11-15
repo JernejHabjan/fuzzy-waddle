@@ -3,7 +3,7 @@ import type { AiBrainState, AiSquadState } from "../../../contracts/state/ai-sta
 import type { AiCapabilityCatalog } from "../../../contracts/observation/ai-capability-catalog";
 import type { AiIntent } from "../../../contracts/commands/ai-intent";
 import type { AiObservation, AiObservedActor } from "../../../contracts/observation/ai-observation";
-import { knownPosition, distance, movementDomains } from "./ai-tactics-geometry";
+import { distance, knownPosition, movementDomains } from "./ai-tactics-geometry";
 import { MAX_LOCAL_ENEMIES } from "./ai-tactics-rules";
 
 export function canTarget(attacker: AiObservedActor, target: AiObservedActor): boolean {

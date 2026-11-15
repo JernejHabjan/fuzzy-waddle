@@ -1,7 +1,8 @@
 import { expect, test } from "@playwright/test";
 // prettier-ignore
-import { AI_RUNTIME_MAX_FACTS } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/append-ai-runtime-production-fact";
+import {
+  AI_RUNTIME_MAX_FACTS
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/append-ai-runtime-production-fact";
 import { routeOrderFixture } from "../navigation/controls/commands/skirmish-ai-runtime-route-order-fixture";
 import { validateRuntimeRouteOrders } from "../navigation/controls/commands/skirmish-ai-runtime-route-order-validation";
 

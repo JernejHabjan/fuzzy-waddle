@@ -1,4 +1,6 @@
-import type { AiDecisionInput } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/decision/ai-decision-input";
+import type {
+  AiDecisionInput
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/decision/ai-decision-input";
 import type { RuntimeProductionFairInput } from "./skirmish-ai-runtime-production-fair-input";
 import { validateRuntimeProductionFairGraph } from "./skirmish-ai-runtime-production-fair-graph";
 import { normalizeRuntimeProducerExposure } from "../../observation/skirmish-ai-runtime-producer-exposure";

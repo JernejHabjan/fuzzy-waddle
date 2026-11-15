@@ -73,12 +73,11 @@ test("ample-capacity control must not construct a cash-only third producer", () 
   ).toContain("production_capacity_unnecessary_duplicate");
 });
 
-test("capacity claim without a dated two-producer demand does not count", () => {
+test("capacity claim without a dated two-producer demand does not count", () =>
   expect(
     evaluateRuntimeProductionCapacity(
       "PRO-01",
       assertion,
       variant("build", [checkpoint(20, 1, 1), checkpoint(600, 2, 1)])
     )
-  ).toContain("production_capacity_dated_demand_missing");
-});
+  ).toContain("production_capacity_dated_demand_missing"));

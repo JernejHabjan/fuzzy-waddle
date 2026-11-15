@@ -1,6 +1,13 @@
 import type { AiBrainState } from "../../../contracts/state/ai-state-contracts";
 
-import { requireValue, combatActor, squad, fixtureState, observation, manager } from "../../../testing/fixtures/tactics/ai-tactics-test-fixtures";
+import {
+  combatActor,
+  fixtureState,
+  manager,
+  observation,
+  requireValue,
+  squad
+} from "../../../testing/fixtures/tactics/ai-tactics-test-fixtures";
 
 describe("AiTacticsManager", () => {
   it("H-29 leaves passengers under transport authority until the explicit squad handoff", () => {

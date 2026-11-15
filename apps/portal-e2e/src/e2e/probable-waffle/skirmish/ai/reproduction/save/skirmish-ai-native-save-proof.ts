@@ -35,9 +35,11 @@ export interface NativeSaveProof {
     readonly completedQueueItems: number;
     readonly nativeDamageEvents: number;
   };
-  readonly firstTraceDifference: { readonly index: number;
+  readonly firstTraceDifference: {
+    readonly index: number;
     readonly control: Awaited<ReturnType<typeof closeNativeDecisionTrace>>["records"][number] | null;
-    readonly resumed: Awaited<ReturnType<typeof closeNativeDecisionTrace>>["records"][number] | null } | null;
+    readonly resumed: Awaited<ReturnType<typeof closeNativeDecisionTrace>>["records"][number] | null;
+  } | null;
   readonly navigationDiagnostics?: {
     readonly saved: import("./skirmish-ai-native-save-navigation-diagnostics").NativeSaveNavigationSummary;
     readonly restored: import("./skirmish-ai-native-save-navigation-diagnostics").NativeSaveNavigationSummary;

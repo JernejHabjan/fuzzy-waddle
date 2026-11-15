@@ -9,7 +9,11 @@ import { createAiBrainState } from "../../../brain/state/create-ai-brain-state";
 import type { AiBrainState } from "../../../contracts/state/ai-state-contracts";
 import type { AiCapabilityCatalog } from "../../../contracts/observation/ai-capability-catalog";
 import { createAiProfileConfig } from "../../../profiles/ai-profile-defaults";
-import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "../../../testing/fixtures/coordination/ai-test-fixtures";
+import {
+  createAiTestObservation,
+  createAiTestOwnedActor,
+  unknownAiValue
+} from "../../../testing/fixtures/coordination/ai-test-fixtures";
 import { buildAiAccessGraph } from "../../access/ai-access-graph";
 import { AiMacroManager } from "../../production/macro/ai-macro-manager";
 
@@ -161,16 +165,18 @@ describe("AI food infrastructure", () => {
     const world = {
       ...base,
       actors: [
-        ...base.actors.map((actor) => actor.actorId === assignedWorker.actorId
-          ? {
-              ...actor,
-              activeOrder: {
-                status: "known" as const,
-                value: { orderType: OrderType.Gather, targetActorId: readyField.actorId },
-                observedTick: 200
+        ...base.actors.map((actor) =>
+          actor.actorId === assignedWorker.actorId
+            ? {
+                ...actor,
+                activeOrder: {
+                  status: "known" as const,
+                  value: { orderType: OrderType.Gather, targetActorId: readyField.actorId },
+                  observedTick: 200
+                }
               }
-            }
-          : actor),
+            : actor
+        ),
         {
           ...createAiTestOwnedActor("home"),
           objectName: ObjectNames.Sandhold,
@@ -201,9 +207,11 @@ describe("AI food infrastructure", () => {
         ...world,
         actors: world.actors
           .filter((actor) => actor.objectName !== ObjectNames.Field)
-          .map((actor) => actor.actorId === assignedWorker.actorId
-            ? { ...actor, activeOrder: { status: "known" as const, value: null, observedTick: 200 } }
-            : actor)
+          .map((actor) =>
+            actor.actorId === assignedWorker.actorId
+              ? { ...actor, activeOrder: { status: "known" as const, value: null, observedTick: 200 } }
+              : actor
+          )
       },
       state()
     );
@@ -284,17 +292,26 @@ describe("AI food infrastructure", () => {
     const world = {
       ...base,
       actors: [
-        ...base.actors.map((actor) => actor.actorId === assignedWorker.actorId
-          ? { ...actor, activeOrder: { status: "known" as const, value: { orderType: OrderType.Gather, targetActorId: field.actorId }, observedTick: 200 } }
-          : actor),
+        ...base.actors.map((actor) =>
+          actor.actorId === assignedWorker.actorId
+            ? {
+                ...actor,
+                activeOrder: {
+                  status: "known" as const,
+                  value: { orderType: OrderType.Gather, targetActorId: field.actorId },
+                  observedTick: 200
+                }
+              }
+            : actor
+        ),
         granary,
         field
       ],
       map: {
         ...base.map!,
-        constructionCells: base.map!.constructionCells!.map((cell) => cell.tileKey === "10,10"
-          ? { ...cell, observedBlocked: true }
-          : cell)
+        constructionCells: base.map!.constructionCells!.map((cell) =>
+          cell.tileKey === "10,10" ? { ...cell, observedBlocked: true } : cell
+        )
       }
     };
     const proposal = new AiMacroManager(() => catalog).propose(world, state());
@@ -304,8 +321,10 @@ describe("AI food infrastructure", () => {
 
     expect(nextField?.kind).toBe("construct");
     if (nextField?.kind !== "construct") return;
-    expect(nextField.logicalPosition.x === field.logicalPosition.value.x ||
-      nextField.logicalPosition.y === field.logicalPosition.value.y).toBe(true);
+    expect(
+      nextField.logicalPosition.x === field.logicalPosition.value.x ||
+        nextField.logicalPosition.y === field.logicalPosition.value.y
+    ).toBe(true);
   });
 
   it("staffs an existing Field before opening another Field construction", () => {
@@ -346,23 +365,27 @@ describe("AI food infrastructure", () => {
     const staffed = {
       ...base,
       actors: [
-        ...base.actors.map((actor, index) => index === 0
-          ? {
-              ...actor,
-              activeOrder: {
-                status: "known" as const,
-                value: { orderType: OrderType.Gather, targetActorId: field.actorId },
-                observedTick: 200
+        ...base.actors.map((actor, index) =>
+          index === 0
+            ? {
+                ...actor,
+                activeOrder: {
+                  status: "known" as const,
+                  value: { orderType: OrderType.Gather, targetActorId: field.actorId },
+                  observedTick: 200
+                }
               }
-            }
-          : actor),
+            : actor
+        ),
         field
       ]
     };
     const proposal = new AiMacroManager(() => catalog).propose(staffed, state());
 
     expect(proposal.intents).not.toContainEqual(expect.objectContaining({ kind: "assign_gatherers" }));
-    expect(proposal.intents).toContainEqual(expect.objectContaining({ kind: "construct", objectName: ObjectNames.Field }));
+    expect(proposal.intents).toContainEqual(
+      expect.objectContaining({ kind: "construct", objectName: ObjectNames.Field })
+    );
   });
 
   it("keeps new Fields in a known ground region reachable from a food drop-off", () => {
@@ -378,9 +401,36 @@ describe("AI food infrastructure", () => {
       continuationCursor: 0,
       includeAirRegion: false,
       cells: [
-        { x: 0, y: 0, ground: true, water: false, elevation: 0, groundNeighborKeys: ["1,0"], knowledge: "known_static", clearance: 1 },
-        { x: 1, y: 0, ground: true, water: false, elevation: 0, groundNeighborKeys: ["0,0"], knowledge: "known_static", clearance: 1 },
-        { x: 4, y: 0, ground: true, water: false, elevation: 0, groundNeighborKeys: [], knowledge: "known_static", clearance: 1 }
+        {
+          x: 0,
+          y: 0,
+          ground: true,
+          water: false,
+          elevation: 0,
+          groundNeighborKeys: ["1,0"],
+          knowledge: "known_static",
+          clearance: 1
+        },
+        {
+          x: 1,
+          y: 0,
+          ground: true,
+          water: false,
+          elevation: 0,
+          groundNeighborKeys: ["0,0"],
+          knowledge: "known_static",
+          clearance: 1
+        },
+        {
+          x: 4,
+          y: 0,
+          ground: true,
+          water: false,
+          elevation: 0,
+          groundNeighborKeys: [],
+          knowledge: "known_static",
+          clearance: 1
+        }
       ]
     });
     const dropOffNodeId = access.groundNodeByTileKey.get("0,0");
@@ -427,8 +477,8 @@ describe("AI food infrastructure", () => {
     const field = proposal.intents.find(
       (intent) => intent.kind === "construct" && intent.objectName === ObjectNames.Field
     );
-    const selectedCell = cells.find((cell) =>
-      field?.kind === "construct" && cell.tileKey === `${field.logicalPosition.x},${field.logicalPosition.y}`
+    const selectedCell = cells.find(
+      (cell) => field?.kind === "construct" && cell.tileKey === `${field.logicalPosition.x},${field.logicalPosition.y}`
     );
 
     expect(field).toBeDefined();

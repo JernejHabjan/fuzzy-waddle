@@ -20,6 +20,8 @@ import { AchievementService } from "../../services/achievement/achievement.servi
 import { GameSaveService } from "../../services/game-save/game-save.service";
 import type { Game, Types } from "phaser";
 import { environment } from "@fuzzy-waddle/environments/environment";
+import { RouterLink } from "@angular/router";
+import { activeAiScenarios } from "../ai-scenarios/active-ai-scenario";
 import { prepareAiRuntimeCalibrationPlayers } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/browser/ai-runtime-calibration";
 import {
@@ -36,12 +38,13 @@ import {
 @Component({
   templateUrl: "./probable-waffle-game.component.html",
   styleUrls: ["./probable-waffle-game.component.scss"],
-  imports: [GameContainerComponent],
+  imports: [GameContainerComponent, RouterLink],
   changeDetection: ChangeDetectionStrategy.Eager,
   host: AngularHost.contentFlexFullHeight
 })
 export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
   protected gameConfig?: Types.Core.GameConfig;
+  protected scenarioTitle?: string;
   protected gameData?: BaseGameData<
     ProbableWaffleCommunicatorService,
     ProbableWaffleGameInstance,
@@ -80,12 +83,17 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
     const gameInstance = this.gameInstanceClientService.gameInstance;
     if (!gameInstance) return;
 
-    const runtimeTestConfig = environment.production ? null : readAiRuntimeBrowserTestConfig();
+    const scenario = environment.production ? undefined : activeAiScenarios.get(gameInstance);
+    this.scenarioTitle = scenario?.title;
+    const runtimeTestConfig = environment.production ? null : scenario?.config ?? readAiRuntimeBrowserTestConfig();
     if (runtimeTestConfig?.calibration) prepareAiRuntimeCalibrationPlayers(gameInstance, runtimeTestConfig);
     if (runtimeTestConfig && !gameInstance.gameInstanceMetadata.data.startOptions.loadFromSave) {
       gameInstance.gameInstanceMetadata.data.rndSeed = runtimeTestConfig.seed;
       // Actor identity includes the session ID, so continuous seeded worlds need the same stable test salt as presets.
-      gameInstance.gameInstanceMetadata.data.gameInstanceId = `runtime-fixture-${runtimeTestConfig.seed}-${runtimeTestConfig.presetWorld?.fixtureId ?? "continuous"}`;
+      if (!scenario) {
+        gameInstance.gameInstanceMetadata.data.gameInstanceId =
+          `runtime-fixture-${runtimeTestConfig.seed}-${runtimeTestConfig.presetWorld?.fixtureId ?? "continuous"}`;
+      }
     }
 
     // Derive seed from rndSeed for deterministic lock-stepping
@@ -103,7 +111,7 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
               postBoot: (game: Game) => {
                 configuredPostBoot?.(game);
                 this.runtimeTestGame = game;
-                if (runtimeTestConfig) publishAiRuntimeBrowserTestHost(game, runtimeTestConfig);
+                if (runtimeTestConfig) publishAiRuntimeBrowserTestHost(game, runtimeTestConfig, !!scenario);
                 else publishMultiplayerBrowserTestHost(game);
               }
             }

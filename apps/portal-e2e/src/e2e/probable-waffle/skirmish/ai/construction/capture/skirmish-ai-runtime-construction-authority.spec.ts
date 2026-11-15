@@ -3,8 +3,9 @@ import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/playe
 import { ConstructionStateEnum, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiRuntimeConstruction } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/construction/ai-runtime-construction";
 // prettier-ignore
-import type { AiRuntimeProductionFact } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import { productionSpatialFixture } from "../../production/world/skirmish-ai-runtime-production-spatial-fixture";
 import { normalizeRuntimeConstructionAuthority } from "./skirmish-ai-runtime-construction-authority";
 import { normalizeRuntimeProductionCausality } from "../../production/decisions/skirmish-ai-runtime-production-causality-normalization";

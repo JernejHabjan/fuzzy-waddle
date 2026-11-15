@@ -1,7 +1,11 @@
 import { RUNTIME_ROUTE_HISTORY_LIMIT } from "../routing/skirmish-ai-runtime-route-history-budget";
 import { isDeepStrictEqual } from "node:util";
-import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
-import type { AiRuntimeRouteCaller } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/navigation/controls/ai-runtime-route-caller";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeRouteCaller
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/navigation/controls/ai-runtime-route-caller";
 import { runtimeRouteOrderFenced } from "./skirmish-ai-runtime-route-order-fence";
 
 /** Capture-wide inspection includes orphan, failed, nested and overflow tails before any caller receives credit. */

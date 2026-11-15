@@ -1,11 +1,15 @@
 // prettier-ignore
-import type { AiRuntimeProductionSnapshot } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
 // prettier-ignore
-import type { AiRuntimePresetApplication } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-application";
+import type {
+  AiRuntimePresetApplication
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-application";
 import { normalizeRuntimeProductionCausality } from "../decisions/skirmish-ai-runtime-production-causality-normalization";
 import { projectRuntimeNativeProductionEvidence } from "./skirmish-ai-runtime-production-evidence-projection";
+import type { RuntimeVariantResult } from "../../runner/skirmish-ai-runtime-variant-result";
+import { normalizeRuntimeProductionSetup } from "../fixtures/skirmish-ai-runtime-production-setup";
 
 /** One projection per final read; both legacy diagnostics and separate V2 authority retain their actual provenance. */
 export function buildRuntimeProductionReport(
@@ -28,9 +32,6 @@ export function compactRuntimeProductionReport(report: ReturnType<typeof buildRu
     productionCausalityFailures: report.productionCausality.failures
   };
 }
-
-import type { RuntimeVariantResult } from "../../runner/skirmish-ai-runtime-variant-result";
-import { normalizeRuntimeProductionSetup } from "../fixtures/skirmish-ai-runtime-production-setup";
 
 /** Verifies the bridge from one marked runtime capture into the retained normalized diagnostic report. */
 export function checkRuntimeProductionReportBridge(scenarioId: string, variant: RuntimeVariantResult): string[] {

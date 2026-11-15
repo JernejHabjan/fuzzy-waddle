@@ -1,6 +1,10 @@
 import { ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiObservedActor } from "../../contracts/observation/ai-observation";
-import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "../../testing/fixtures/coordination/ai-test-fixtures";
+import {
+  createAiTestObservation,
+  createAiTestOwnedActor,
+  unknownAiValue
+} from "../../testing/fixtures/coordination/ai-test-fixtures";
 import { AiMacroManager } from "../production/macro/ai-macro-manager";
 import { isAvailableBuilder } from "../production/macro/ai-macro-observation";
 import { catalog, completedOpeningState } from "../../testing/fixtures/production/ai-macro-test-fixtures";
@@ -23,7 +27,7 @@ function carryingWorker(amount: number): AiObservedActor {
 }
 
 describe("AI builder delivery ownership", () => {
-  it("keeps ReturnResources owned by delivery even without a known cargo amount", () => {
+  it("keeps ReturnResources owned by delivery even without a known cargo amount", () =>
     expect(
       isAvailableBuilder({
         ...createAiTestOwnedActor("worker"),
@@ -33,10 +37,9 @@ describe("AI builder delivery ownership", () => {
           observedTick: 200
         }
       })
-    ).toBe(false);
-  });
+    ).toBe(false));
 
-  it("keeps a repairing worker assigned to repair instead of borrowing it for construction", () => {
+  it("keeps a repairing worker assigned to repair instead of borrowing it for construction", () =>
     expect(
       isAvailableBuilder({
         ...createAiTestOwnedActor("repairer"),
@@ -46,16 +49,14 @@ describe("AI builder delivery ownership", () => {
           observedTick: 200
         }
       })
-    ).toBe(false);
-  });
+    ).toBe(false));
 
-  it.each([1, 5, 10])("preserves %i carried resources while a gather cycle awaits delivery", (amount) => {
-    expect(isAvailableBuilder(carryingWorker(amount))).toBe(false);
-  });
+  it.each([1, 5, 10])("preserves %i carried resources while a gather cycle awaits delivery", (amount) =>
+    expect(isAvailableBuilder(carryingWorker(amount))).toBe(false)
+  );
 
-  it("releases an empty idle worker for construction after delivery", () => {
-    expect(isAvailableBuilder(carryingWorker(0))).toBe(true);
-  });
+  it("releases an empty idle worker for construction after delivery", () =>
+    expect(isAvailableBuilder(carryingWorker(0))).toBe(true));
 
   it("waits for delivery without deleting the dated military-capacity deficit", () => {
     const workers = Array.from({ length: 6 }, (_, index) => ({

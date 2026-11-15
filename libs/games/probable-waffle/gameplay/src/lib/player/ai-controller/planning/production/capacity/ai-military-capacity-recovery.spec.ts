@@ -2,7 +2,7 @@ import { createAiProductionPolicyFixture } from "../../../testing/fixtures/produ
 import { AiMacroManager } from "../macro/ai-macro-manager";
 import { proposeAiMilitaryCapacity } from "./ai-military-capacity-proposal";
 
-describe("lost military production capacity", () => {
+describe("lost military production capacity", () =>
   it("rebuilds a completed opening producer without a prior threat warning and counts its replacement site", () => {
     const f = createAiProductionPolicyFixture();
     const first = new AiMacroManager(() => f.catalog).propose(f.observation, f.state);
@@ -45,5 +45,4 @@ describe("lost military production capacity", () => {
     expect(whileBuilding.intent).toBeNull();
     expect(whileBuilding.demand?.constructingIds).toEqual([site.actorId]);
     expect(proposeAiMilitaryCapacity({ ...args, militaryCount: 4 }).intent).toBeNull();
-  });
-});
+  }));

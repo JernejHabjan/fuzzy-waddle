@@ -1,6 +1,5 @@
 import { expect, test } from "@playwright/test";
-import type { AiRuntimeProductionFact } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import type { nativeScenarioContext } from "../../contracts/skirmish-ai-native-scenario-context";
 import { evaluateNativeStrategy } from "./skirmish-ai-native-strategy-evaluation";
 
@@ -27,7 +26,8 @@ const weapon = {
 } as never;
 
 function attackFacts(sequence: number, tick: number, targetId: string): AiRuntimeProductionFact[] {
-  const source = actor("attacker", 2), target = actor(targetId, 1);
+  const source = actor("attacker", 2),
+    target = actor(targetId, 1);
   const operation = (kind: "attack_requested" | "attack_committed") => ({
     kind,
     actor: source,
@@ -102,18 +102,27 @@ test("STRAT-04 counts progress on the committed objective and permits effect-bac
   const frames = [
     {
       tick: 399,
-      decision: { strategy: { goalId: "goal:attack" }, missionState: { squads: [mission(2420, null)] },
-        input: { observation: { actors: [] } } }
+      decision: {
+        strategy: { goalId: "goal:attack" },
+        missionState: { squads: [mission(2420, null)] },
+        input: { observation: { actors: [] } }
+      }
     },
     {
       tick: 400,
-      decision: { strategy: { goalId: "goal:attack" }, missionState: { squads: [mission(2420, null)] },
-        input: { observation: { actors: [{ actorId: "noise-scout", visibility: "visible" }] } } }
+      decision: {
+        strategy: { goalId: "goal:attack" },
+        missionState: { squads: [mission(2420, null)] },
+        input: { observation: { actors: [{ actorId: "noise-scout", visibility: "visible" }] } }
+      }
     },
     {
       tick: 440,
-      decision: { strategy: { goalId: "goal:attack" }, missionState: { squads: [mission(2820, 400)] },
-        input: { observation: { actors: [{ actorId: "noise-scout", visibility: "visible" }] } } }
+      decision: {
+        strategy: { goalId: "goal:attack" },
+        missionState: { squads: [mission(2820, 400)] },
+        input: { observation: { actors: [{ actorId: "noise-scout", visibility: "visible" }] } }
+      }
     }
   ];
   const effects = attackFacts(1, 380, "front-target-b");
@@ -137,28 +146,43 @@ test("STRAT-04 preserves the attack mission across contact aliases and legitimat
   const frames = [
     {
       tick: 399,
-      decision: { strategy: { goalId: "goal:attack" }, missionState: { squads: [mission("front-target-b", 2420, null)] },
-        input: { observation: { actors: [] } } }
+      decision: {
+        strategy: { goalId: "goal:attack" },
+        missionState: { squads: [mission("front-target-b", 2420, null)] },
+        input: { observation: { actors: [] } }
+      }
     },
     {
       tick: 400,
-      decision: { strategy: { goalId: "goal:attack" }, missionState: { squads: [mission("hypothesis:evidence:contact:front-target-b", 2420, null)] },
-        input: { observation: { actors: [{ actorId: "noise-scout", visibility: "visible" }] } } }
+      decision: {
+        strategy: { goalId: "goal:attack" },
+        missionState: { squads: [mission("hypothesis:evidence:contact:front-target-b", 2420, null)] },
+        input: { observation: { actors: [{ actorId: "noise-scout", visibility: "visible" }] } }
+      }
     },
     {
       tick: 840,
-      decision: { strategy: { goalId: "goal:attack" }, missionState: { squads: [mission("front-target-b", 2420, null)] },
-        input: { observation: { actors: [] } } }
+      decision: {
+        strategy: { goalId: "goal:attack" },
+        missionState: { squads: [mission("front-target-b", 2420, null)] },
+        input: { observation: { actors: [] } }
+      }
     },
     {
       tick: 900,
-      decision: { strategy: { goalId: "goal:attack" }, missionState: { squads: [mission("enemy-home", 2820, 850)] },
-        input: { observation: { actors: [] } } }
+      decision: {
+        strategy: { goalId: "goal:attack" },
+        missionState: { squads: [mission("enemy-home", 2820, 850)] },
+        input: { observation: { actors: [] } }
+      }
     },
     {
       tick: 1200,
-      decision: { strategy: { goalId: "goal:attack" }, missionState: { squads: [mission("enemy-home", 2820, 850)] },
-        input: { observation: { actors: [] } } }
+      decision: {
+        strategy: { goalId: "goal:attack" },
+        missionState: { squads: [mission("enemy-home", 2820, 850)] },
+        input: { observation: { actors: [] } }
+      }
     }
   ];
   const effects = [...attackFacts(1, 410, "front-target-b"), ...attackFacts(2, 840, "enemy-home")];
@@ -182,23 +206,38 @@ test("STRAT-05 blocked-retreat accepts a bounded counterforce response when no r
   const frames = [
     {
       tick: 200,
-      decision: { strategy: { objectiveId: "opening" }, missionState: { squads: [] }, acceptedIntents: [],
-        input: { observation: { actors: [] } } }
+      decision: {
+        strategy: { objectiveId: "opening" },
+        missionState: { squads: [] },
+        acceptedIntents: [],
+        input: { observation: { actors: [] } }
+      }
     },
     {
       tick: 400,
-      decision: { strategy: { objectiveId: "opening" }, missionState: { squads: [] }, acceptedIntents: [],
-        input: { observation: { actors: [{ actorId: "reinforcement-0", relation: "enemy", visibility: "visible" }] } } }
+      decision: {
+        strategy: { objectiveId: "opening" },
+        missionState: { squads: [] },
+        acceptedIntents: [],
+        input: { observation: { actors: [{ actorId: "reinforcement-0", relation: "enemy", visibility: "visible" }] } }
+      }
     },
     {
       tick: 600,
-      decision: { strategy: { objectiveId: "counterforce" }, missionState: { squads: [] }, acceptedIntents: [],
-        input: { observation: { actors: [] } } }
+      decision: {
+        strategy: { objectiveId: "counterforce" },
+        missionState: { squads: [] },
+        acceptedIntents: [],
+        input: { observation: { actors: [] } }
+      }
     }
   ];
-  const initial = attackFacts(1, 200, "front-target-b"), counterforce = attackFacts(4, 700, "reinforcement-0");
+  const initial = attackFacts(1, 200, "front-target-b"),
+    counterforce = attackFacts(4, 700, "reinforcement-0");
 
-  expect(evaluateNativeStrategy("STRAT-05", "blocked_retreat", context([...initial, ...counterforce], frames))).toEqual([]);
+  expect(evaluateNativeStrategy("STRAT-05", "blocked_retreat", context([...initial, ...counterforce], frames))).toEqual(
+    []
+  );
   expect(evaluateNativeStrategy("STRAT-05", "blocked_retreat", context(initial, frames))).toContain(
     "strategy_counterforce_reassessment_or_control_continuation_missing"
   );
@@ -208,24 +247,53 @@ test("STRAT-05 accepts a local defense squad against discovered reinforcements a
   const frames = [
     {
       tick: 200,
-      decision: { strategy: { objectiveId: "opening" }, missionState: { squads: [] }, acceptedIntents: [],
-        input: { observation: { actors: [] } } }
+      decision: {
+        strategy: { objectiveId: "opening" },
+        missionState: { squads: [] },
+        acceptedIntents: [],
+        input: { observation: { actors: [] } }
+      }
     },
     {
       tick: 400,
-      decision: { strategy: { objectiveId: "opening" }, missionState: { squads: [] }, acceptedIntents: [],
-        input: { observation: { actors: [{ actorId: "reinforcement-0", relation: "enemy", visibility: "visible" }] } } }
+      decision: {
+        strategy: { objectiveId: "opening" },
+        missionState: { squads: [] },
+        acceptedIntents: [],
+        input: { observation: { actors: [{ actorId: "reinforcement-0", relation: "enemy", visibility: "visible" }] } }
+      }
     },
     {
       tick: 600,
-      decision: { strategy: { objectiveId: "opening" }, acceptedIntents: [], input: { observation: { actors: [] } },
-        missionState: { squads: [{ role: "defense", state: "engage", objectiveId: "reinforcement-0",
-          actorIds: ["defender"], tactics: { targetActorId: "reinforcement-0" } }] } }
+      decision: {
+        strategy: { objectiveId: "opening" },
+        acceptedIntents: [],
+        input: { observation: { actors: [] } },
+        missionState: {
+          squads: [
+            {
+              role: "defense",
+              state: "engage",
+              objectiveId: "reinforcement-0",
+              actorIds: ["defender"],
+              tactics: { targetActorId: "reinforcement-0" }
+            }
+          ]
+        }
+      }
     }
   ];
-  const initial = attackFacts(1, 200, "front-target-b"), counterforce = attackFacts(4, 700, "reinforcement-0");
+  const initial = attackFacts(1, 200, "front-target-b"),
+    counterforce = attackFacts(4, 700, "reinforcement-0");
 
-  expect(evaluateNativeStrategy("STRAT-05", "blocked_retreat", context([...initial, ...counterforce], frames))).toEqual([]);
-  expect(evaluateNativeStrategy("STRAT-05", "blocked_retreat", context([...initial, ...counterforce], frames.slice(0, 2)))
-    .join(",")).toContain("strategy_counterforce_no_fair_future_plan_response");
+  expect(evaluateNativeStrategy("STRAT-05", "blocked_retreat", context([...initial, ...counterforce], frames))).toEqual(
+    []
+  );
+  expect(
+    evaluateNativeStrategy(
+      "STRAT-05",
+      "blocked_retreat",
+      context([...initial, ...counterforce], frames.slice(0, 2))
+    ).join(",")
+  ).toContain("strategy_counterforce_no_fair_future_plan_response");
 });

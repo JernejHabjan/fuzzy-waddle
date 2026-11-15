@@ -1,8 +1,14 @@
 import { FactionType, ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiObservation, AiObservedActor } from "@fuzzy-waddle/probable-waffle-gameplay";
-import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
-import type { AiRuntimePresetApplication } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-application";
-import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimePresetApplication
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-application";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import { productionQueueMutationFixture } from "../queues/skirmish-ai-runtime-production-queue-mutation-fixture";
 
 /** Synthetic price/readiness/setup joins only; never a legal runtime world, stable useful force or navigation proof. */

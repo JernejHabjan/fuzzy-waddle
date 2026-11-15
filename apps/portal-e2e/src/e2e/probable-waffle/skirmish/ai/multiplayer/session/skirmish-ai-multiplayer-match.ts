@@ -1,4 +1,4 @@
-import { expect, type Browser, type BrowserContext, type Page } from "@playwright/test";
+import { type Browser, type BrowserContext, expect, type Page } from "@playwright/test";
 import { createMultiplayerTestIdentities, installMultiplayerIdentity } from "./skirmish-ai-multiplayer-auth";
 import { setMultiplayerLobbySeed } from "./skirmish-ai-multiplayer-lobby-input";
 
@@ -19,16 +19,24 @@ async function openOnlineLobby(page: Page): Promise<void> {
 
 async function waitForMultiplayerGame(page: Page): Promise<void> {
   await expect(page).toHaveURL(/\/aota\/game/);
-  await page.waitForFunction(() => !!(
-    window as unknown as { __fuzzyWaddleAiMultiplayerBrowserTest?: unknown }
-  ).__fuzzyWaddleAiMultiplayerBrowserTest);
+  await page.waitForFunction(
+    () =>
+      !!(window as unknown as { __fuzzyWaddleAiMultiplayerBrowserTest?: unknown }).__fuzzyWaddleAiMultiplayerBrowserTest
+  );
 }
 
 /** Creates an ordinary public custom lobby with two real humans and one host-owned AI. */
 export async function startMultiplayerTestMatch(
-  browser: Browser, options: { readonly queueWorld?: true; readonly sharedQueueWorld?: "shared_contention" | "cancel_research";
-    readonly authorityProbe?: true; readonly seed?: number; readonly aiFaction?: "Tivara" | "Skaduwee";
-    readonly aiDifficulty?: "Easy" | "Normal" | "Hard"; readonly runtimeImport?: true } = {}
+  browser: Browser,
+  options: {
+    readonly queueWorld?: true;
+    readonly sharedQueueWorld?: "shared_contention" | "cancel_research";
+    readonly authorityProbe?: true;
+    readonly seed?: number;
+    readonly aiFaction?: "Tivara" | "Skaduwee";
+    readonly aiDifficulty?: "Easy" | "Normal" | "Hard";
+    readonly runtimeImport?: true;
+  } = {}
 ): Promise<MultiplayerTestMatch> {
   if (options.queueWorld && options.sharedQueueWorld) throw new Error("multiplayer_queue_world_opt_ins_conflict");
   const provisioned = await createMultiplayerTestIdentities();
@@ -41,17 +49,19 @@ export async function startMultiplayerTestMatch(
   try {
     await installMultiplayerIdentity(hostContext, provisioned.identities[0]);
     await installMultiplayerIdentity(peerContext, provisioned.identities[1]);
-    if (options.runtimeImport) for (const context of [hostContext, peerContext])
-      await context.addInitScript(() => {
-        if (window.location.origin === "http://127.0.0.1:4200")
-          sessionStorage.setItem("fuzzy-waddle:ai-runtime-import", "1");
-      });
-    if (options.authorityProbe) for (const context of [hostContext, peerContext]) {
-      await context.addInitScript(() => {
-        if (window.location.origin === "http://127.0.0.1:4200")
-          window.sessionStorage.setItem("fuzzy-waddle:ai-multiplayer-authority-probe", "1");
-      });
-    }
+    if (options.runtimeImport)
+      for (const context of [hostContext, peerContext])
+        await context.addInitScript(() => {
+          if (window.location.origin === "http://127.0.0.1:4200")
+            sessionStorage.setItem("fuzzy-waddle:ai-runtime-import", "1");
+        });
+    if (options.authorityProbe)
+      for (const context of [hostContext, peerContext]) {
+        await context.addInitScript(() => {
+          if (window.location.origin === "http://127.0.0.1:4200")
+            window.sessionStorage.setItem("fuzzy-waddle:ai-multiplayer-authority-probe", "1");
+        });
+      }
     if (options.queueWorld) {
       for (const context of [hostContext, peerContext]) {
         await context.addInitScript(() => {
@@ -92,8 +102,14 @@ export async function startMultiplayerTestMatch(
     await expect(peer).toHaveURL(/\/aota\/lobby/);
     if (options.seed !== undefined) await setMultiplayerLobbySeed(host, peer, options.seed);
     await peer.getByRole("button", { name: "Mark as Ready" }).click();
-    await expect(host.locator(".player-card").nth(1).locator(".detail-row")
-      .filter({ hasText: "Ready:" }).locator("fa-icon.text-success")).toBeVisible();
+    await expect(
+      host
+        .locator(".player-card")
+        .nth(1)
+        .locator(".detail-row")
+        .filter({ hasText: "Ready:" })
+        .locator("fa-icon.text-success")
+    ).toBeVisible();
     await host.getByRole("button", { name: "Start Game" }).click();
     await Promise.all([waitForMultiplayerGame(host), waitForMultiplayerGame(peer)]);
     return { host, peer, hostContext, peerContext, lobbyName, dispose };

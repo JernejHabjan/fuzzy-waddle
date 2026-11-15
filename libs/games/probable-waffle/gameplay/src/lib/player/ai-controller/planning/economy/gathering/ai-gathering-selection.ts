@@ -13,7 +13,11 @@ export interface AiGatheringSelection {
   readonly tick: number;
   readonly resourceType: ResourceType;
   readonly branch: "forecast" | "stockpile_fallback";
-  readonly forecast: { readonly amount: number; readonly horizonTick: number; readonly confidencePermille: number } | null;
+  readonly forecast: {
+    readonly amount: number;
+    readonly horizonTick: number;
+    readonly confidencePermille: number;
+  } | null;
   readonly ledger: AiObservation["resources"][number] | null;
   /** Exact native deficit, including empirical prediction and unclamped spendable resources. */
   readonly plannerDeficit: number | null;

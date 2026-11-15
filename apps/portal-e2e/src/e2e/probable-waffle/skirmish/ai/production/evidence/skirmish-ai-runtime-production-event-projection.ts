@@ -1,10 +1,12 @@
 // prettier-ignore
-import { AI_RUNTIME_MAX_FACTS } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/append-ai-runtime-production-fact";
+import {
+  AI_RUNTIME_MAX_FACTS
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/append-ai-runtime-production-fact";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 // prettier-ignore
-import type { AiRuntimeProductionSnapshot } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
 import type { RuntimeProductionCausality } from "../decisions/skirmish-ai-runtime-production-causality";
 import type { RuntimeProductionEvidence } from "./skirmish-ai-runtime-production-evidence";
 import { sameRuntimeQueueVector } from "../ownership/skirmish-ai-runtime-scoped-queue-payments";
@@ -19,7 +21,12 @@ export function projectRuntimeProductionEnqueues(
   const events: RuntimeProductionEvidence["events"][number][] = [];
   const failures: string[] = [],
     gaps: string[] = [];
-  if (capture.droppedFactCount || capture.facts.length > AI_RUNTIME_MAX_FACTS || mutations.length > 8192 || operations.length > 8192) {
+  if (
+    capture.droppedFactCount ||
+    capture.facts.length > AI_RUNTIME_MAX_FACTS ||
+    mutations.length > 8192 ||
+    operations.length > 8192
+  ) {
     return { events, failures: ["production_ai_enqueue_event_capture_dropped"], gaps };
   }
   const zero = { food: 0, wood: 0, stone: 0, minerals: 0 };

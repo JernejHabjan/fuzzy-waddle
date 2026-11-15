@@ -78,22 +78,18 @@ export function proposeAiFoodPrerequisite(
   const readyFieldService = self
     .filter((actor) => actor.objectName === ObjectNames.Field && isFinishedActor(actor))
     .flatMap((field) => {
-    const accessNodeId = field.accessNodeId.status === "known" ? field.accessNodeId.value : null;
-    const position = field.logicalPosition.status === "known" ? field.logicalPosition.value : null;
-    return accessNodeId && position ? [{ accessNodeId, position }] : [];
-  });
-  const enforceFieldService = readyFieldService.length > 0 &&
+      const accessNodeId = field.accessNodeId.status === "known" ? field.accessNodeId.value : null;
+      const position = field.logicalPosition.status === "known" ? field.logicalPosition.value : null;
+      return accessNodeId && position ? [{ accessNodeId, position }] : [];
+    });
+  const enforceFieldService =
+    readyFieldService.length > 0 &&
     observation.map?.regionGeneration?.status === "ready" &&
     observation.map.accessGraph?.status === "ready";
   const reachableFieldService = enforceFieldService
     ? readyFieldService.map((field) => ({
         ...field,
-        reachableNodeIds: reachableAiAccessNodeIds(
-          observation.map!.accessGraph!,
-          [field.accessNodeId],
-          "ground",
-          1
-        )
+        reachableNodeIds: reachableAiAccessNodeIds(observation.map!.accessGraph!, [field.accessNodeId], "ground", 1)
       }))
     : [];
   const position = selectConstructionPosition(
@@ -103,11 +99,13 @@ export function proposeAiFoodPrerequisite(
     ordinal,
     selectedConstructionTileKeys,
     entry.constructionProfile?.footprintRadiusTiles ?? 0,
-    (cell) => !enforceFieldService || reachableFieldService.some((field) => {
-      if (!cell.groundAccessNodeId || !field.reachableNodeIds.has(cell.groundAccessNodeId)) return false;
-      const distance = Math.abs(cell.position.x - field.position.x) + Math.abs(cell.position.y - field.position.y);
-      return distance <= fieldServiceRadius;
-    })
+    (cell) =>
+      !enforceFieldService ||
+      reachableFieldService.some((field) => {
+        if (!cell.groundAccessNodeId || !field.reachableNodeIds.has(cell.groundAccessNodeId)) return false;
+        const distance = Math.abs(cell.position.x - field.position.x) + Math.abs(cell.position.y - field.position.y);
+        return distance <= fieldServiceRadius;
+      })
   );
   if (!position) return { objectName, ready, demand, intent: null };
   const next = nextIds(state, `food-prerequisite:${objectName}`, ordinal);

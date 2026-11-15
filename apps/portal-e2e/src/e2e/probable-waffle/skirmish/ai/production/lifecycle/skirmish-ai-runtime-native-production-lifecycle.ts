@@ -4,11 +4,13 @@ import type { projectRuntimeControlledCommands } from "../authority/skirmish-ai-
 import type { RuntimeProductionCausality } from "../decisions/skirmish-ai-runtime-production-causality";
 import type { RuntimeProductionEvidence } from "../evidence/skirmish-ai-runtime-production-evidence";
 // prettier-ignore
-import type { AiRuntimePresetApplication } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-application";
+import type {
+  AiRuntimePresetApplication
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-application";
 // prettier-ignore
-import type { AiRuntimeProductionFact } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 
 /** Native typed joins, retaining requests without fabricated money frames and every distinct teardown/refund callback. */
 export interface RuntimeNativeProductionLifecycle {

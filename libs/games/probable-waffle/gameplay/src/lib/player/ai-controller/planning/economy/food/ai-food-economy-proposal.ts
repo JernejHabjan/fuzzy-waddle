@@ -126,28 +126,30 @@ export function proposeAiFoodEconomy(args: {
     intents.push(prerequisite.intent);
     ordinal += 1;
   }
-  const laborIntent = desiredFoodSources > 0 && foodSourceEntry
-    ? proposeAiFieldLabor(
-        observation,
-        state,
-        catalog,
-        self,
-        readyFoodSources.slice(0, desiredFoodSources),
-        prerequisite.objectName,
-        reservedActorIds,
-        intents,
-        ordinal
-      )
-    : null;
-  const hasUnstaffedReadyFoodSource = desiredFoodSources > 0 && foodSourceEntry
-    ? hasUnstaffedAiFoodSource(
-        observation,
-        self,
-        readyFoodSources.slice(0, desiredFoodSources),
-        prerequisite.objectName,
-        catalog
-      )
-    : false;
+  const laborIntent =
+    desiredFoodSources > 0 && foodSourceEntry
+      ? proposeAiFieldLabor(
+          observation,
+          state,
+          catalog,
+          self,
+          readyFoodSources.slice(0, desiredFoodSources),
+          prerequisite.objectName,
+          reservedActorIds,
+          intents,
+          ordinal
+        )
+      : null;
+  const hasUnstaffedReadyFoodSource =
+    desiredFoodSources > 0 && foodSourceEntry
+      ? hasUnstaffedAiFoodSource(
+          observation,
+          self,
+          readyFoodSources.slice(0, desiredFoodSources),
+          prerequisite.objectName,
+          catalog
+        )
+      : false;
   if (laborIntent) {
     intents.push(laborIntent);
     ordinal += 1;

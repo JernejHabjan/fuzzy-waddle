@@ -1,6 +1,9 @@
-import type { projectRuntimeNativeNavigation } from "../../navigation/controls/routing/skirmish-ai-runtime-native-navigation";
-import type { AiRuntimeProductionFact } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type {
+  projectRuntimeNativeNavigation
+} from "../../navigation/controls/routing/skirmish-ai-runtime-native-navigation";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import type { RuntimeProductionCausality } from "../decisions/skirmish-ai-runtime-production-causality";
 
 /** Actual native checks/query intervals only. No path is promoted to a snapshot-wide producer-reachable verdict. */

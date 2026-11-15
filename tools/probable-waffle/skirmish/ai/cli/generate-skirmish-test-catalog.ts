@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import type { ScenarioManifest } from "../contracts/scenarios/scenario-manifest.ts";
-import { readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { collectRuntimeInventory, renderRuntimeInventory } from "../scenarios/catalog/skirmish-runtime-inventory.ts";
@@ -8,6 +8,7 @@ import { describeRuntimeVariant } from "../scenarios/validation/skirmish-runtime
 import { readNativeRecipeDraft } from "../scenarios/registration/native-recipe-drafts.ts";
 
 import { workspaceRoot } from "../shared/workspace-paths.ts";
+
 const testingDirectory = join(
   workspaceRoot,
   "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing"
@@ -24,7 +25,7 @@ const specDirectories = [
   "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller",
   "libs/games/probable-waffle/phaser/src/lib/player/ai-controller"
 ];
-const groupNames = {
+export const groupNames = {
   economy: "Economy and workers",
   production: "Production and composition",
   technology: "Technology and counters",
@@ -62,7 +63,7 @@ export function parseRequirementRows(source, document) {
   return rows;
 }
 
-function readRequirements() {
+export function readRequirements() {
   const requirements = new Map();
   for (const source of requirementFiles) {
     for (const row of parseRequirementRows(source, readFileSync(join(testingDirectory, source), "utf8"))) {

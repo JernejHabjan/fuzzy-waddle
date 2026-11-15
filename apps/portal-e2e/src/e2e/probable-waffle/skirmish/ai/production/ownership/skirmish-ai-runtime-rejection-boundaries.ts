@@ -1,5 +1,7 @@
 import { isDeepStrictEqual } from "node:util";
-import type { AiRuntimeProductionBoundaryState } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-boundary-state";
+import type {
+  AiRuntimeProductionBoundaryState
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-boundary-state";
 import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { calculateRuntimeQueueLiabilities } from "./skirmish-ai-runtime-queue-liabilities";
 import { isRuntimeProductionBalance } from "../resources/skirmish-ai-runtime-production-unspent";

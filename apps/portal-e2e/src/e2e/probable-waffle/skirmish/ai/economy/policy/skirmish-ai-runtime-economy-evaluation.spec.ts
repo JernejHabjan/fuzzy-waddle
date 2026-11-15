@@ -1,7 +1,11 @@
 import { expect, test } from "@playwright/test";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import { createAiTestObservation } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
-import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import {
+  createAiTestObservation
+} from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import { resourceServiceFixture } from "../service/skirmish-ai-runtime-resource-service-fixture";
 import { evaluateRuntimeEconomy } from "./skirmish-ai-runtime-economy-evaluation";
 import { evaluateRuntimeResourceRecovery } from "../capture/recovery/skirmish-ai-runtime-resource-recovery-evaluation";

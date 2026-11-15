@@ -22,23 +22,24 @@ describe("reconcileAiCommandReservations", () => {
       createdTick: 80
     }
   ];
-  const outcome = (kind: AiCommandOutcome["kind"], tick: number): AiCommandOutcome => ({
-    kind,
-    tick,
-    identity: {
-      matchId: "match" as AiCommandOutcome["identity"]["matchId"],
-      authorityEpoch: 1,
-      playerNumber: 2,
-      sequence: 17,
-      commandId: "command:gather-1" as AiCommandOutcome["identity"]["commandId"],
-      effectId: "effect:food-labor:effect:13:0" as AiCommandOutcome["identity"]["effectId"],
-      intentId: "intent:food-labor:intent:13:0" as AiCommandOutcome["identity"]["intentId"]
-    },
-    ...(kind === "applied" ? { worldLinkIds: [] } : {}),
-    ...(kind === "active" ? { actorIds: ["worker-1"] } : {}),
-    ...(kind === "completed" ? { resultingActorIds: [] } : {}),
-    ...(kind === "failed" || kind === "rejected" || kind === "cancelled" ? { reason: "native failure" } : {})
-  } as AiCommandOutcome);
+  const outcome = (kind: AiCommandOutcome["kind"], tick: number): AiCommandOutcome =>
+    ({
+      kind,
+      tick,
+      identity: {
+        matchId: "match" as AiCommandOutcome["identity"]["matchId"],
+        authorityEpoch: 1,
+        playerNumber: 2,
+        sequence: 17,
+        commandId: "command:gather-1" as AiCommandOutcome["identity"]["commandId"],
+        effectId: "effect:food-labor:effect:13:0" as AiCommandOutcome["identity"]["effectId"],
+        intentId: "intent:food-labor:intent:13:0" as AiCommandOutcome["identity"]["intentId"]
+      },
+      ...(kind === "applied" ? { worldLinkIds: [] } : {}),
+      ...(kind === "active" ? { actorIds: ["worker-1"] } : {}),
+      ...(kind === "completed" ? { resultingActorIds: [] } : {}),
+      ...(kind === "failed" || kind === "rejected" || kind === "cancelled" ? { reason: "native failure" } : {})
+    }) as AiCommandOutcome;
 
   it("keeps every accepted intent claim dispatched until its terminal receipt arrives", () => {
     const dispatched = reconcileAiCommandReservations(reservations, [outcome("dispatched", 80)]);

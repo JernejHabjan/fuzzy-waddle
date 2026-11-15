@@ -4,7 +4,7 @@ import { createAiBrainState } from "../../../brain/state/create-ai-brain-state";
 import { aiDeadline } from "../../../contracts/ai-core-types";
 import type { AiBrainState, AiSquadState } from "../../../contracts/state/ai-state-contracts";
 
-import type { AiDomain, AiObservedActor, AiObservation } from "../../../contracts/observation/ai-observation";
+import type { AiDomain, AiObservation, AiObservedActor } from "../../../contracts/observation/ai-observation";
 import { createAiProfileConfig } from "../../../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "../coordination/ai-test-fixtures";
 import { AiTacticsManager } from "../../../planning/tactics/orders/ai-tactics-manager";

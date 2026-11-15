@@ -7,7 +7,7 @@ Probable Waffle can be built as a standalone desktop app using [Tauri v2](https:
 | Tool                    | Install                                                                                                                         |
 |-------------------------|---------------------------------------------------------------------------------------------------------------------------------|
 | Rust (stable toolchain) | [rustup.rs](https://rustup.rs/)                                                                                                 |
-| Node.js + pnpm          | As for normal web dev (see [Getting Started](./getting-started.md))                                                               |
+| Node.js + pnpm          | As for normal web dev (see [Getting Started](./getting-started.md))                                                             |
 | **Windows**             | [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) + WebView2 (bundled with Windows 10/11) |
 | **macOS**               | Xcode Command Line Tools: `xcode-select --install`                                                                              |
 | **Linux**               | `libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf` (Debian/Ubuntu)                                              |

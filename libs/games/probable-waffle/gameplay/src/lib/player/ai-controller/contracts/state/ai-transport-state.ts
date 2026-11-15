@@ -34,8 +34,11 @@ export interface AiTransportState {
   readonly lifecycle?: Readonly<{
     readonly missionKind: "island_establishment" | "army_transfer" | "evacuation";
     /** Definition-priced foothold budget, retained through landing until the native service purchase is committed. */
-    readonly establishment?: Readonly<{ sourceActorId: ActorId; serviceObjectName: ObjectNames;
-      resourceCost: Readonly<Partial<Record<ResourceType, number>>> }>;
+    readonly establishment?: Readonly<{
+      sourceActorId: ActorId;
+      serviceObjectName: ObjectNames;
+      resourceCost: Readonly<Partial<Record<ResourceType, number>>>;
+    }>;
     readonly route: AiRouteResult;
     readonly routeRequest: AiRouteRequest;
     readonly routeGeneration: number;

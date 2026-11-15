@@ -1,4 +1,4 @@
-import type { Page, ConsoleMessage } from "@playwright/test";
+import type { ConsoleMessage, Page } from "@playwright/test";
 
 const detachByPage = new WeakMap<Page, () => void>();
 
@@ -7,7 +7,8 @@ export function installRuntimeErrorListeners(page: Page, aiErrors: string[]) {
   detachByPage.get(page)?.();
   const consoleListener = (message: ConsoleMessage) => {
     const text = message.text();
-    if (/Error (stepping behaviour tree|updating AI on simulation tick|scheduling next AI step)/i.test(text)) aiErrors.push(text);
+    if (/Error (stepping behaviour tree|updating AI on simulation tick|scheduling next AI step)/i.test(text))
+      aiErrors.push(text);
   };
   const errorListener = (error: Error) => {
     if (/\bAI\b|player-ai|brain/i.test(error.message)) aiErrors.push(error.message);

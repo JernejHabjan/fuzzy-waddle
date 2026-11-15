@@ -1,12 +1,12 @@
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
 import type { AiSquadState } from "../../../contracts/state/ai-state-contracts";
 import type { AiObservedActor } from "../../../contracts/observation/ai-observation";
-import { knownPosition, distance, legalForMembers, safeRetreatPosition } from "../combat/ai-tactics-geometry";
+import { distance, knownPosition, legalForMembers, safeRetreatPosition } from "../combat/ai-tactics-geometry";
 import {
-  canTarget,
   canSeeTarget,
-  isEconomicActor,
+  canTarget,
   estimateAiEngagement,
+  isEconomicActor,
   objectiveScore
 } from "../combat/ai-tactics-combat";
 import {

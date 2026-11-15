@@ -1,0 +1,16 @@
+/* Keeps the return link and selected preset visible above the rendered match. */
+.scenario-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  padding: 0.4rem 0.8rem;
+  background: #1a2128;
+  color: #f3eee3;
+
+  a { color: #ecc584; }
+}
+
+/* The game fills the space below the preview toolbar. */
+.scenario-toolbar + fuzzy-waddle-game-container {
+  min-height: 0;
+}

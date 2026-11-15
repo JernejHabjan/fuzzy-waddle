@@ -1,6 +1,9 @@
 import { FactionType, ObjectNames, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
 import { createAiBrainState } from "../../../brain/state/create-ai-brain-state";
-import { canonicalizeAiBrainState, digestCanonicalAiValue } from "../../../brain/persistence/canonical-ai-serialization";
+import {
+  canonicalizeAiBrainState,
+  digestCanonicalAiValue
+} from "../../../brain/persistence/canonical-ai-serialization";
 import { assertAiBrainState } from "../../../contracts/validation/validate-ai-contracts";
 import { createAiProfileConfig } from "../../../profiles/ai-profile-defaults";
 import { AiTransportManager, createAiTransportPlan } from "./ai-transport-manager";

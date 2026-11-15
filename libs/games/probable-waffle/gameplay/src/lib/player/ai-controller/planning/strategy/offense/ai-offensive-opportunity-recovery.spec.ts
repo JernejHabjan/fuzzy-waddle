@@ -3,7 +3,14 @@ import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 import { createAiTestOwnedActor } from "../../../testing/fixtures/coordination/ai-test-fixtures";
 
-import { guard, core, producer, world, brain, manager } from "../../../testing/fixtures/strategy/ai-offensive-opportunity-test-fixtures";
+import {
+  brain,
+  core,
+  guard,
+  manager,
+  producer,
+  world
+} from "../../../testing/fixtures/strategy/ai-offensive-opportunity-test-fixtures";
 import { squad } from "../../../testing/fixtures/tactics/ai-tactics-test-fixtures";
 
 describe("fastest credible offense", () => {
@@ -104,15 +111,19 @@ describe("fastest credible offense", () => {
     }));
     const defenders = Array.from({ length: 6 }, (_, index) => guard(`defender-${index}`, "enemy", 20 + index));
     const attackSquad = {
-      ...squad("squad:attack", "attack", attackers.map((actor) => actor.actorId)),
+      ...squad(
+        "squad:attack",
+        "attack",
+        attackers.map((actor) => actor.actorId)
+      ),
       objectiveId: currentTarget.actorId,
       state: "advance" as const
     };
 
-    const result = manager.propose(
-      world([...attackers, currentTarget, feasibleTarget, ...defenders], 120),
-      { ...brain(), squads: [attackSquad] }
-    );
+    const result = manager.propose(world([...attackers, currentTarget, feasibleTarget, ...defenders], 120), {
+      ...brain(),
+      squads: [attackSquad]
+    });
 
     expect(result.statePatch?.strategy?.assessment).toEqual(
       expect.objectContaining({

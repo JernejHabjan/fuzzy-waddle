@@ -8,6 +8,8 @@ import type { AiRuntimeReproArtifact, AiRuntimeReproProvenance } from "../reprod
 
 /** Test-only handle to the real Phaser game created by the ordinary Angular game route. */
 export interface AiRuntimeBrowserTestHost {
+  /** A rendered local preview automatically resumes after the authored setup is ready. */
+  readonly interactive?: true;
   readonly schemaVersion: 1;
   readonly config: AiRuntimeBrowserTestConfig;
   readonly game: Phaser.Game;

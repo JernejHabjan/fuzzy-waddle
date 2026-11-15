@@ -1,5 +1,11 @@
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
-import { combatActor, fixtureState, squad, observation, manager } from "../../../testing/fixtures/tactics/ai-tactics-test-fixtures";
+import {
+  combatActor,
+  fixtureState,
+  manager,
+  observation,
+  squad
+} from "../../../testing/fixtures/tactics/ai-tactics-test-fixtures";
 
 it("keeps a healthy native attack on the reserved target instead of restarting its windup", () => {
   const attacker = combatActor("attacker", "self", 0, "ground", 1000, { damage: 100 });

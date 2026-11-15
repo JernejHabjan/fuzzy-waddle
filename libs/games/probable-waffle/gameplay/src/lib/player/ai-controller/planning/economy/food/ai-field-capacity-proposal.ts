@@ -8,7 +8,11 @@ import { selectConstructionPosition } from "../../construction/ai-construction-s
 import { reachableAiAccessNodeIds } from "../../access/ai-access-graph";
 import { canAffordAiEconomyCost } from "../service/ai-economy-policy";
 import { nextIds } from "../../production/macro/ai-macro-effect-identity";
-import { claimedActorIds, compareAiActorsByVisibleGeometry, isAvailableBuilder } from "../../production/macro/ai-macro-observation";
+import {
+  claimedActorIds,
+  compareAiActorsByVisibleGeometry,
+  isAvailableBuilder
+} from "../../production/macro/ai-macro-observation";
 import { createAiResourceCostClaims } from "../forecast/ai-resource-cost-claims";
 import { aiEconomySiteSafety } from "../service/ai-economy-site-safety";
 
@@ -98,22 +102,28 @@ export function proposeAiFieldCapacity(args: {
   if (!builder) return { demand, intent: null };
   const safety = aiEconomySiteSafety(observation);
   const foodDropOffs = self.flatMap((actor) => {
-      const accessNodeId = actor.accessNodeId.status === "known" ? actor.accessNodeId.value : null;
-      const position = actor.logicalPosition.status === "known" ? actor.logicalPosition.value : null;
-      return accessNodeId && catalog.entries.some(
+    const accessNodeId = actor.accessNodeId.status === "known" ? actor.accessNodeId.value : null;
+    const position = actor.logicalPosition.status === "known" ? actor.logicalPosition.value : null;
+    return accessNodeId &&
+      catalog.entries.some(
         (entry) => entry.sourceObjectName === actor.objectName && entry.acceptsResources?.includes(ResourceType.Food)
-      ) ? [{ accessNodeId, position }] : [];
+      )
+      ? [{ accessNodeId, position }]
+      : [];
   });
   const foodDropOffAccessNodeIds = new Set(foodDropOffs.map((dropOff) => dropOff.accessNodeId));
-  const enforceFoodDropOffRegion = observation.map?.regionGeneration?.status === "ready" &&
-    foodDropOffAccessNodeIds.size > 0;
+  const enforceFoodDropOffRegion =
+    observation.map?.regionGeneration?.status === "ready" && foodDropOffAccessNodeIds.size > 0;
   const foodDropOffRoutes = foodDropOffs.map((dropOff) => ({
     ...dropOff,
-    reachableNodeIds: enforceFoodDropOffRegion && observation.map?.accessGraph?.status === "ready"
-      ? reachableAiAccessNodeIds(observation.map.accessGraph, [dropOff.accessNodeId], "ground", 1)
-      : new Set([dropOff.accessNodeId])
+    reachableNodeIds:
+      enforceFoodDropOffRegion && observation.map?.accessGraph?.status === "ready"
+        ? reachableAiAccessNodeIds(observation.map.accessGraph, [dropOff.accessNodeId], "ground", 1)
+        : new Set([dropOff.accessNodeId])
   }));
-  const fieldHasLocalFoodService = (cell: NonNullable<NonNullable<AiObservation["map"]>['constructionCells']>[number]) => {
+  const fieldHasLocalFoodService = (
+    cell: NonNullable<NonNullable<AiObservation["map"]>["constructionCells"]>[number]
+  ) => {
     if (!enforceFoodDropOffRegion) return true;
     if (!cell.groundAccessNodeId) return false;
     return foodDropOffRoutes.some((dropOff) => {
@@ -127,28 +137,31 @@ export function proposeAiFieldCapacity(args: {
   const existingFieldPositions = readyFoodSources.flatMap((field) =>
     field.logicalPosition.status === "known" ? [field.logicalPosition.value] : []
   );
-  const alignedPosition = existingFieldPositions.length > 0
-    ? selectConstructionPosition(
-        observation,
-        builder,
-        state.scheduler.decisionSequence,
-        ordinal,
-        selectedConstructionTileKeys,
-        foodSourceEntry.constructionProfile?.footprintRadiusTiles ?? 0,
-        (cell) => acceptsFieldSite(cell) && existingFieldPositions.some((field) =>
-          field.x === cell.position.x || field.y === cell.position.y
+  const alignedPosition =
+    existingFieldPositions.length > 0
+      ? selectConstructionPosition(
+          observation,
+          builder,
+          state.scheduler.decisionSequence,
+          ordinal,
+          selectedConstructionTileKeys,
+          foodSourceEntry.constructionProfile?.footprintRadiusTiles ?? 0,
+          (cell) =>
+            acceptsFieldSite(cell) &&
+            existingFieldPositions.some((field) => field.x === cell.position.x || field.y === cell.position.y)
         )
-      )
-    : undefined;
-  const position = alignedPosition ?? selectConstructionPosition(
-    observation,
-    builder,
-    state.scheduler.decisionSequence,
-    ordinal,
-    selectedConstructionTileKeys,
-    foodSourceEntry.constructionProfile?.footprintRadiusTiles ?? 0,
-    acceptsFieldSite
-  );
+      : undefined;
+  const position =
+    alignedPosition ??
+    selectConstructionPosition(
+      observation,
+      builder,
+      state.scheduler.decisionSequence,
+      ordinal,
+      selectedConstructionTileKeys,
+      foodSourceEntry.constructionProfile?.footprintRadiusTiles ?? 0,
+      acceptsFieldSite
+    );
   if (!position) return { demand, intent: null };
   const next = nextIds(state, `food-capacity:${ObjectNames.Field}`, ordinal);
   const intent: AiIntent = {

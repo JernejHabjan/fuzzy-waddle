@@ -76,8 +76,10 @@ export function selectAiForecastEntry(
   return [...forecasts]
     .filter((forecast) => availableTypes.has(forecast.resourceType))
     .map((forecast) => ({ forecast, deficit: aiResourceForecastDeficit(observation, forecast) }))
-    .sort((left, right) => right.deficit - left.deficit ||
-      left.forecast.resourceType.localeCompare(right.forecast.resourceType))[0]?.forecast;
+    .sort(
+      (left, right) =>
+        right.deficit - left.deficit || left.forecast.resourceType.localeCompare(right.forecast.resourceType)
+    )[0]?.forecast;
 }
 
 /** Uses empirical delivered income only within the bounded dated horizon; unknown income makes no promise. */
@@ -89,8 +91,6 @@ export function aiResourceForecastDeficit(
   const spendable = (resource?.stockpile ?? 0) - (resource?.reservedUnspent ?? 0) - (resource?.obligationsDue ?? 0);
   const horizon = Math.max(0, Math.min(FORECAST_HORIZON_TICKS, forecast.horizonTick - observation.tick));
   const income = resource?.deliveredIncomePerMinute;
-  const deliveredIncome = income?.status === "known"
-    ? income.value * horizon / 1200
-    : 0;
+  const deliveredIncome = income?.status === "known" ? (income.value * horizon) / 1200 : 0;
   return forecast.amount - spendable - deliveredIncome;
 }

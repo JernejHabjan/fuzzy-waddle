@@ -1,6 +1,7 @@
 // prettier-ignore
-import type { AiRuntimeProductionSnapshot } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
 import type { ResourceCargoSample } from "@fuzzy-waddle/probable-waffle-phaser/entity/components/resource/resource-cargo-sample";
 import type { RuntimeResourceCredit } from "./skirmish-ai-runtime-resource-credit";
 import type { RuntimeCargoContribution } from "../../service/skirmish-ai-runtime-cargo-contribution";

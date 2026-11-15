@@ -4,9 +4,9 @@ import type { AiIntent } from "../../../contracts/commands/ai-intent";
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
 import type { AiProfileConfig } from "../../../contracts/ai-profile-config";
 import {
-  aiDeadline,
   type AiAccessNodeId,
   type AiClaimId,
+  aiDeadline,
   type AiPlanId,
   type AiSquadId
 } from "../../../contracts/ai-core-types";

@@ -6,7 +6,11 @@ const selections = new WeakMap<AiIntent, AiGatheringSelection>();
 
 /** Diagnostic failure never changes proposal acceptance. No live state, callback or strong intent history is retained. */
 export function rememberAiGatheringSelection(intent: AiIntent, selection: () => AiGatheringSelection): void {
-  try { selections.set(intent, structuredClone(selection())); } catch { /* Missing evidence stays unavailable. */ }
+  try {
+    selections.set(intent, structuredClone(selection()));
+  } catch {
+    /* Missing evidence stays unavailable. */
+  }
 }
 
 /** Read before the dispatcher's detached clone. A restored or synthetic intent has no selection authority. */
@@ -14,5 +18,7 @@ export function readAiGatheringSelection(intent: AiIntent): AiGatheringSelection
   try {
     const selection = selections.get(intent);
     return selection ? structuredClone(selection) : undefined;
-  } catch { return undefined; }
+  } catch {
+    return undefined;
+  }
 }

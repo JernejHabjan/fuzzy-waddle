@@ -30,7 +30,7 @@ export function aiSpendingBudgetConflict(
   const opposite: BudgetCategory = category === "economy" ? "defense" : "economy";
   const otherProposals = proposals.filter((candidate) => candidate.spendingCategory === opposite);
   const resourceTypes = new Set(
-    intent.claims.flatMap((claim) => claim.kind === "resource" ? [claim.resourceType] : [])
+    intent.claims.flatMap((claim) => (claim.kind === "resource" ? [claim.resourceType] : []))
   );
   for (const resourceType of resourceTypes) {
     const cost = costFor(intent, resourceType);

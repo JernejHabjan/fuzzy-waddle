@@ -1,8 +1,14 @@
-import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
+import {
+  requireAiTestEntry
+} from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
 import { expect, test } from "@playwright/test";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
-import { normalizeRuntimeProductionCausality } from "../decisions/skirmish-ai-runtime-production-causality-normalization";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import {
+  normalizeRuntimeProductionCausality
+} from "../decisions/skirmish-ai-runtime-production-causality-normalization";
 import { productionRejectionFixture } from "../fixtures/skirmish-ai-runtime-production-rejection-fixture";
 import { productionCompletionFixture } from "./skirmish-ai-runtime-production-completion-fixture";
 

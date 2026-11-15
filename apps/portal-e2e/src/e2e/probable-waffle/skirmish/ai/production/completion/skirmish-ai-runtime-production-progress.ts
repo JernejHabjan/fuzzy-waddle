@@ -1,7 +1,11 @@
 import { isDeepStrictEqual } from "node:util";
-import { ResourceType, type GameCommand } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
-import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import { type GameCommand, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import { calculateRuntimeQueueLiabilities } from "../ownership/skirmish-ai-runtime-queue-liabilities";
 import { sameRuntimeQueueVector } from "../ownership/skirmish-ai-runtime-scoped-queue-payments";
 

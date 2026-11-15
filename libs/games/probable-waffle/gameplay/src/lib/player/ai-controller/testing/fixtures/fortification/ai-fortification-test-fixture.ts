@@ -1,4 +1,3 @@
-import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
 import {
   FactionType,
   ObjectNames,
@@ -9,7 +8,7 @@ import { createAiBrainState } from "../../../brain/state/create-ai-brain-state";
 import type { AiBrainState } from "../../../contracts/state/ai-state-contracts";
 import type { AiCapabilityCatalog } from "../../../contracts/observation/ai-capability-catalog";
 import { aiDeadline } from "../../../contracts/ai-core-types";
-import type { AiObservedActor, AiObservation } from "../../../contracts/observation/ai-observation";
+import type { AiObservation, AiObservedActor } from "../../../contracts/observation/ai-observation";
 import { createAiProfileConfig } from "../../../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "../coordination/ai-test-fixtures";
 

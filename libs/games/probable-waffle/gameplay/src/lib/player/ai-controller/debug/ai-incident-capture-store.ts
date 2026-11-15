@@ -24,8 +24,12 @@ export class AiIncidentCaptureStore {
       "maxRetainedIncidentBundles" | "sessionQuotaBytes"
     > = AI_REPRO_CAPTURE_POLICY
   ) {
-    if (!Number.isSafeInteger(policy.sessionQuotaBytes) || policy.sessionQuotaBytes <= 0 ||
-      policy.maxRetainedIncidentBundles !== 5) throw new Error("invalid_incident_capture_policy");
+    if (
+      !Number.isSafeInteger(policy.sessionQuotaBytes) ||
+      policy.sessionQuotaBytes <= 0 ||
+      policy.maxRetainedIncidentBundles !== 5
+    )
+      throw new Error("invalid_incident_capture_policy");
   }
 
   addAutomatic(
@@ -50,9 +54,14 @@ export class AiIncidentCaptureStore {
 
   /** Cumulative quota includes evicted episodes; eviction cannot buy another automatic capture. */
   metrics() {
-    return { sessionBytes: this.sessionBytes, quotaBytes: this.policy.sessionQuotaBytes,
+    return {
+      sessionBytes: this.sessionBytes,
+      quotaBytes: this.policy.sessionQuotaBytes,
       retainedBytes: this.entries.reduce((sum, entry) => sum + entry.byteLength, 0),
-      retainedCount: this.entries.length, episodeCount: this.capturedEpisodes.size, disposed: this.disposed };
+      retainedCount: this.entries.length,
+      episodeCount: this.capturedEpisodes.size,
+      disposed: this.disposed
+    };
   }
 
   dispose(): void {

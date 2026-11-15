@@ -4,6 +4,7 @@ import type { AiCapabilityCatalog } from "../../../contracts/observation/ai-capa
 import type { AiIntent } from "../../../contracts/commands/ai-intent";
 import type { AiObservation, AiObservedActor } from "../../../contracts/observation/ai-observation";
 import type { AiProfileConfig } from "../../../contracts/ai-profile-config";
+
 /** One proposal's shared read-only inputs and owned output accumulators; never persisted. */
 export interface AiTacticsContext {
   readonly profile: AiProfileConfig;

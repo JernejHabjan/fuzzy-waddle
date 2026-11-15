@@ -1,5 +1,5 @@
 import type { AiBrainState } from "../../contracts/state/ai-state-contracts";
-import type { AiIntentClaim, AiIntent } from "../../contracts/commands/ai-intent";
+import type { AiIntent, AiIntentClaim } from "../../contracts/commands/ai-intent";
 import type { AiObservation } from "../../contracts/observation/ai-observation";
 
 /** A squad may replace its own provisional lease, or interrupt its own dispatched order to cast; other commitments stay exclusive. */

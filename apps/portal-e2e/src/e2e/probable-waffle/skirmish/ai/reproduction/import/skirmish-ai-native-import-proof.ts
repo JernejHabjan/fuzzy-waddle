@@ -6,9 +6,17 @@ export interface NativeImportProof {
   readonly capturedTick: number;
   readonly capturedManifestDigest: string;
   readonly capturedArtifactUnchanged: boolean;
-  readonly attempts: readonly { readonly caseId: string; readonly result: string;
-    readonly nativeWorldUnchanged: boolean; readonly injectedElements: number }[];
-  readonly realPeerAccess?: { readonly humanClients: 2; readonly result: string;
+  readonly attempts: readonly {
+    readonly caseId: string;
+    readonly result: string;
+    readonly nativeWorldUnchanged: boolean;
+    readonly injectedElements: number;
+  }[];
+  readonly realPeerAccess?: {
+    readonly humanClients: 2;
+    readonly result: string;
     readonly captureResult: string;
-    readonly nativeWorldUnchanged: boolean; readonly injectedElements: number };
+    readonly nativeWorldUnchanged: boolean;
+    readonly injectedElements: number;
+  };
 }

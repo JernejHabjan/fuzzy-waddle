@@ -3,7 +3,15 @@ import { createAiBrainState } from "../../../brain/state/create-ai-brain-state";
 import type { AiCapabilityCatalog } from "../../../contracts/observation/ai-capability-catalog";
 
 import { AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS, AiSkirmishManager } from "./ai-skirmish-manager";
-import { homeNode, enemyNode, catalog, unit, observation, profile, manager } from "../../../testing/fixtures/strategy/ai-skirmish-test-fixtures";
+import {
+  catalog,
+  enemyNode,
+  homeNode,
+  manager,
+  observation,
+  profile,
+  unit
+} from "../../../testing/fixtures/strategy/ai-skirmish-test-fixtures";
 
 describe("AiSkirmishManager", () => {
   it.each([3, 30])("launches legally toward a player-visible target at %s with unit-local attack visibility", (x) => {

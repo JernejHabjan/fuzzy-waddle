@@ -1,6 +1,7 @@
 import type { Browser } from "@playwright/test";
-import type { AiRuntimeProductionSnapshot } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
 import type { RuntimeFixture } from "../contracts/skirmish-ai-runtime-fixture";
 import type { RuntimeVariant } from "./skirmish-ai-runtime-variant";
 import type { RuntimeRequest } from "../runner/skirmish-ai-runtime-request";
@@ -20,19 +21,25 @@ import { runNativeImportVariant } from "../reproduction/import/skirmish-ai-nativ
 import { runNativeSaveVariant } from "../reproduction/save/skirmish-ai-native-save-runner";
 import { runNativeProfileVariant } from "../runner/skirmish-ai-native-profile-runner";
 import { runNativeProfileTransfer } from "../lifecycle/transfer/skirmish-ai-native-profile-transfer";
-import { cancelNativeOriginalProduction } from "../production/cancellation/skirmish-ai-native-cancel-original-production";
+import {
+  cancelNativeOriginalProduction
+} from "../production/cancellation/skirmish-ai-native-cancel-original-production";
 import { runNativeRetentionVariant } from "../reproduction/save/skirmish-ai-native-retention-runner";
 import { runNativeSequenceVariant } from "../runner/skirmish-ai-native-sequence-runner";
 import { runNativeReproVariant } from "../reproduction/incident/skirmish-ai-native-repro-runner";
 
 /** The existing runner owns the match. Bound cases additionally arm/read the same observer for the real human opponent. */
 export async function runRegisteredRuntimeVariant(
-  browser: Browser, fixture: RuntimeFixture, variant: RuntimeVariant, request: RuntimeRequest
+  browser: Browser,
+  fixture: RuntimeFixture,
+  variant: RuntimeVariant,
+  request: RuntimeRequest
 ) {
   if (request.scenarioIds.includes("D-06")) throw new Error("d06_requires_frozen_calibration_workload_driver");
   for (const id of ["DBG-01", "DBG-03"]) {
     const branch = fixture.assertions[id]?.requiredNativeScenario?.branchByVariant[variant.id];
-    if (request.scenarioIds.includes(id) && branch) return runNativeReproVariant(browser, fixture, variant, request, branch);
+    if (request.scenarioIds.includes(id) && branch)
+      return runNativeReproVariant(browser, fixture, variant, request, branch);
   }
   const sequenceBranch = fixture.assertions["SEQ-08"]?.requiredNativeScenario?.branchByVariant[variant.id];
   if (request.scenarioIds.includes("SEQ-08") && sequenceBranch)
@@ -52,8 +59,11 @@ export async function runRegisteredRuntimeVariant(
   const importBranch = fixture.assertions["DBG-05"]?.requiredNativeScenario?.branchByVariant[variant.id];
   if (request.scenarioIds.includes("DBG-05") && importBranch)
     return runNativeImportVariant(browser, fixture, variant, request, importBranch);
-  const contract = (request.scenarioIds.includes("EXP-02") ? fixture.assertions["EXP-02"]?.requiredExpansionPressure : undefined) ??
-    request.scenarioIds.map((id) => fixture.assertions[id]?.requiredNativeScenario).find((binding) => binding !== undefined);
+  const contract =
+    (request.scenarioIds.includes("EXP-02") ? fixture.assertions["EXP-02"]?.requiredExpansionPressure : undefined) ??
+    request.scenarioIds
+      .map((id) => fixture.assertions[id]?.requiredNativeScenario)
+      .find((binding) => binding !== undefined);
   let opponentCapture: AiRuntimeProductionSnapshot | undefined;
   let otherOpponentCaptures: AiRuntimeProductionSnapshot[] | undefined;
   let nativeDisposal: NativeDisposalEvidence | undefined;
@@ -64,40 +74,84 @@ export async function runRegisteredRuntimeVariant(
   const lateBranch = fixture.assertions["H-08"]?.requiredNativeScenario?.branchByVariant[variant.id];
   const debugBranch = fixture.assertions["DBG-04"]?.requiredNativeScenario?.branchByVariant[variant.id];
   const parityBranch = fixture.assertions["DBG-06"]?.requiredNativeScenario?.branchByVariant[variant.id];
-  const result = await runVariant(browser, fixture, variant, request.seed, request.scenarioIds,
-    request.sourceRevision, request.fixtureDigest, contract ? async (page, index, checkpoint?: RuntimeCheckpoint) => {
-      if (index === -1) {
-        if (debugBranch) await armNativeDebugComparison(page);
-        if (parityBranch) await armNativeDebugParity(page, request.sourceRevision, request.dirtySourceDigest);
-        await captureRuntimeHumanAuthority(page, contract.humanPlayerNumber, contract.latestTick);
-        for (const player of variant.additionalAiPlayers ?? [])
-          await captureRuntimeProductionAuthority(page, player.playerNumber, contract.latestTick, true);
-      }
-      if (parityBranch) await exerciseDebug(page,
-        parityBranch === "shown" ? "shown" : parityBranch === "filtered" ? "filtered" :
-        parityBranch === "exporting" ? "exported" : "hidden", index, parityBranch === "shown");
-      if (index === 0 && debugBranch) nativeDebugComparison = await captureNativeDebugComparison(
-        page, debugBranch, request.sourceRevision, request.dirtySourceDigest);
-      if (lateBranch === "cancellation_race" && checkpoint?.tick === 199)
-        nativeCancellation = await cancelNativeOriginalProduction(page, fixture.recipe.aiPlayerNumber);
-      if (index === (variant.checkpointTicks ?? fixture.recipe.checkpointTicks).length - 1 ||
-          checkpoint?.gameResult === "win" && request.scenarioIds.some((id) => fixture.assertions[id]?.requireAiVictory)) {
-        opponentCapture = await captureRuntimeHumanAuthority(page, contract.humanPlayerNumber);
-        otherOpponentCaptures = await Promise.all((variant.additionalAiPlayers ?? []).map((player) =>
-          captureRuntimeProductionAuthority(page, player.playerNumber, undefined, true)));
-        if (fixture.assertions["H-20"]?.requiredNativeScenario?.branchByVariant[variant.id] === "dispose")
-          nativeDisposal = await captureNativeDisposal(page);
-        if (parityBranch) ({ nativeDisposal, nativeDebugParity } = await captureNativeDebugParity(page));
-      }
-    } : undefined, lateBranch?.startsWith("host_") ? async () => {
-      nativeProfileTransfer = await runNativeProfileTransfer(browser, { seed: request.seed ?? variant.seed,
-        aiFaction: variant.aiFaction, aiDifficulty: variant.difficulty,
-        lateDeliveryOrder: lateBranch === "host_command_then_receipt" ? "command_then_receipt" : "receipt_then_command" });
-    } : undefined
+  const result = await runVariant(
+    browser,
+    fixture,
+    variant,
+    request.seed,
+    request.scenarioIds,
+    request.sourceRevision,
+    request.fixtureDigest,
+    contract
+      ? async (page, index, checkpoint?: RuntimeCheckpoint) => {
+          if (index === -1) {
+            if (debugBranch) await armNativeDebugComparison(page);
+            if (parityBranch) await armNativeDebugParity(page, request.sourceRevision, request.dirtySourceDigest);
+            await captureRuntimeHumanAuthority(page, contract.humanPlayerNumber, contract.latestTick);
+            for (const player of variant.additionalAiPlayers ?? [])
+              await captureRuntimeProductionAuthority(page, player.playerNumber, contract.latestTick, true);
+          }
+          if (parityBranch)
+            await exerciseDebug(
+              page,
+              parityBranch === "shown"
+                ? "shown"
+                : parityBranch === "filtered"
+                  ? "filtered"
+                  : parityBranch === "exporting"
+                    ? "exported"
+                    : "hidden",
+              index,
+              parityBranch === "shown"
+            );
+          if (index === 0 && debugBranch)
+            nativeDebugComparison = await captureNativeDebugComparison(
+              page,
+              debugBranch,
+              request.sourceRevision,
+              request.dirtySourceDigest
+            );
+          if (lateBranch === "cancellation_race" && checkpoint?.tick === 199)
+            nativeCancellation = await cancelNativeOriginalProduction(page, fixture.recipe.aiPlayerNumber);
+          if (
+            index === (variant.checkpointTicks ?? fixture.recipe.checkpointTicks).length - 1 ||
+            (checkpoint?.gameResult === "win" &&
+              request.scenarioIds.some((id) => fixture.assertions[id]?.requireAiVictory))
+          ) {
+            opponentCapture = await captureRuntimeHumanAuthority(page, contract.humanPlayerNumber);
+            otherOpponentCaptures = await Promise.all(
+              (variant.additionalAiPlayers ?? []).map((player) =>
+                captureRuntimeProductionAuthority(page, player.playerNumber, undefined, true)
+              )
+            );
+            if (fixture.assertions["H-20"]?.requiredNativeScenario?.branchByVariant[variant.id] === "dispose")
+              nativeDisposal = await captureNativeDisposal(page);
+            if (parityBranch) ({ nativeDisposal, nativeDebugParity } = await captureNativeDebugParity(page));
+          }
+        }
+      : undefined,
+    lateBranch?.startsWith("host_")
+      ? async () => {
+          nativeProfileTransfer = await runNativeProfileTransfer(browser, {
+            seed: request.seed ?? variant.seed,
+            aiFaction: variant.aiFaction,
+            aiDifficulty: variant.difficulty,
+            lateDeliveryOrder:
+              lateBranch === "host_command_then_receipt" ? "command_then_receipt" : "receipt_then_command"
+          });
+        }
+      : undefined
   );
-  return contract ? { ...result, opponentCapture, ...(nativeDisposal ? { nativeDisposal } : {}),
-    ...(nativeDebugComparison ? { nativeDebugComparison } : {}),
-    ...(nativeDebugParity ? { nativeDebugParity } : {}),
-    ...(nativeCancellation ? { nativeCancellation } : {}), ...(nativeProfileTransfer ? { nativeProfileTransfer } : {}),
-    ...(otherOpponentCaptures?.length ? { otherOpponentCaptures } : {}) } : result;
+  return contract
+    ? {
+        ...result,
+        opponentCapture,
+        ...(nativeDisposal ? { nativeDisposal } : {}),
+        ...(nativeDebugComparison ? { nativeDebugComparison } : {}),
+        ...(nativeDebugParity ? { nativeDebugParity } : {}),
+        ...(nativeCancellation ? { nativeCancellation } : {}),
+        ...(nativeProfileTransfer ? { nativeProfileTransfer } : {}),
+        ...(otherOpponentCaptures?.length ? { otherOpponentCaptures } : {})
+      }
+    : result;
 }

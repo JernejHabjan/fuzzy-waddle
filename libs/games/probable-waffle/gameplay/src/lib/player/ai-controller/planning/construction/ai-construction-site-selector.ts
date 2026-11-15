@@ -17,13 +17,14 @@ export function selectConstructionPosition(
   const origin = builder.logicalPosition.value;
   const cells = observation.map?.constructionCells ?? [];
   const byKey = new Map(cells.map((cell) => [cell.tileKey, cell]));
-  const builderAccessNodeId = observation.map?.regionGeneration?.status === "ready" &&
-      builder.accessNodeId.status === "known"
-    ? builder.accessNodeId.value
-    : undefined;
-  const builderReachableAccessNodeIds = builderAccessNodeId && observation.map?.accessGraph?.status === "ready"
-    ? reachableAiAccessNodeIds(observation.map.accessGraph, [builderAccessNodeId], "ground", 1)
-    : undefined;
+  const builderAccessNodeId =
+    observation.map?.regionGeneration?.status === "ready" && builder.accessNodeId.status === "known"
+      ? builder.accessNodeId.value
+      : undefined;
+  const builderReachableAccessNodeIds =
+    builderAccessNodeId && observation.map?.accessGraph?.status === "ready"
+      ? reachableAiAccessNodeIds(observation.map.accessGraph, [builderAccessNodeId], "ground", 1)
+      : undefined;
   const preservesAccess = constructionAccessPolicy(observation, builder, selectedTileKeys, footprintRadiusTiles);
   const footprintKeys = (x: number, y: number) => {
     const keys: string[] = [];
@@ -46,7 +47,8 @@ export function selectConstructionPosition(
         if (
           approach.groundAccessNodeId === builderAccessNodeId ||
           builderReachableAccessNodeIds?.has(approach.groundAccessNodeId)
-        ) return true;
+        )
+          return true;
       }
     }
     return !hasKnownApproach;

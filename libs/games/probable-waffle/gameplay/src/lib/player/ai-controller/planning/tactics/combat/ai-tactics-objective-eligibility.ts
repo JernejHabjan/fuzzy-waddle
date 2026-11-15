@@ -1,6 +1,6 @@
 import type { AiObservation, AiObservedActor } from "../../../contracts/observation/ai-observation";
 import { canTarget } from "./ai-tactics-combat";
-import { knownPosition, distance, movementDomains } from "./ai-tactics-geometry";
+import { distance, knownPosition, movementDomains } from "./ai-tactics-geometry";
 
 /** Only targetable objectives with a usable approach compete for this cohort's orders.
  * A blocked movement route does not prevent an already-in-range weapon from firing across terrain.

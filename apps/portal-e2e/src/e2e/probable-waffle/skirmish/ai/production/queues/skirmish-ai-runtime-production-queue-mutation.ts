@@ -1,6 +1,7 @@
 import type { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeQueueMutation } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/queues/ai-runtime-queue-mutation";
+import type {
+  AiRuntimeQueueMutation
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/queues/ai-runtime-queue-mutation";
 
 /** Physical queue interval only. Removal for completion does not prove a created actor, registered tech or useful effect. */
 export interface RuntimeProductionQueueMutation {

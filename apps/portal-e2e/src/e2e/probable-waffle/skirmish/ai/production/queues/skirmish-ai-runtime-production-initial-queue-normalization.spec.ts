@@ -2,6 +2,7 @@ import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/playe
 import { expect, test } from "@playwright/test";
 import { normalizeRuntimeProductionInitialQueues } from "./skirmish-ai-runtime-production-initial-queue-normalization";
 import { productionWorldFixture } from "../world/skirmish-ai-runtime-production-world-fixture";
+
 test.describe("initial production queue synthetic contract tests", () => {
   for (const payment of ["immediate", "tick"] as const) {
     test(`joins native insertion and isolated balances before a reset: ${payment}`, () => {

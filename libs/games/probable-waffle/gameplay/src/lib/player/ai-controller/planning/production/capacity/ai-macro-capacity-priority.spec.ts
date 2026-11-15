@@ -3,7 +3,7 @@ import { createAiProductionPolicyFixture } from "../../../testing/fixtures/produ
 import { createAiTestOwnedActor } from "../../../testing/fixtures/coordination/ai-test-fixtures";
 import { AiMacroManager } from "../macro/ai-macro-manager";
 
-describe.each([FactionType.Tivara, FactionType.Skaduwee])("dated capacity builder priority %s", (faction) => {
+describe.each([FactionType.Tivara, FactionType.Skaduwee])("dated capacity builder priority %s", (faction) =>
   it("secures the only known reachable builder before optional gathering claims it", () => {
     const f = createAiProductionPolicyFixture(faction);
     const source = {
@@ -59,5 +59,5 @@ describe.each([FactionType.Tivara, FactionType.Skaduwee])("dated capacity builde
     expect(proposal.intents.some((intent) => intent.kind === "assign_gatherers" && intent.actorIds.length > 0)).toBe(
       true
     );
-  });
-});
+  })
+);

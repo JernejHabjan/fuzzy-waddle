@@ -36,10 +36,11 @@ export function readAiRuntimeBrowserTestConfig(
   }
 }
 
-export function publishAiRuntimeBrowserTestHost(game: Phaser.Game, config: AiRuntimeBrowserTestConfig): void {
+export function publishAiRuntimeBrowserTestHost(game: Phaser.Game, config: AiRuntimeBrowserTestConfig, interactive = false): void {
   window[AI_RUNTIME_BROWSER_TEST_HOST_KEY] = {
     schemaVersion: 1,
     config,
+    ...(interactive ? { interactive: true } : {}),
     game,
     initialStateByPlayer: {},
     captureRuntimeArtifact: (playerNumber, tick, provenance) => captureAiRuntimeArtifact(game, playerNumber, tick, provenance),

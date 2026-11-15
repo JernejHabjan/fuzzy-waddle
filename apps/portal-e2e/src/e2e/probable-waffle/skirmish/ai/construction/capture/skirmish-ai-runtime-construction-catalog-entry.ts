@@ -1,8 +1,10 @@
 import type { ConstructCommand } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiDecisionIdentity } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/decision/ai-decision-identity";
-import type { AiRuntimeConstructionCatalog } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/construction/ai-runtime-construction-catalog";
+import type {
+  AiDecisionIdentity
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/decision/ai-decision-identity";
+import type {
+  AiRuntimeConstructionCatalog
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/construction/ai-runtime-construction-catalog";
 
 /** Command-specific placement catalog; never a global faction catalog, completed building, or paid commitment. */
 export interface RuntimeConstructionCatalogEntry {

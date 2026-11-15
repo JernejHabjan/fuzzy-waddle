@@ -1,10 +1,16 @@
-import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
+import {
+  requireAiTestEntry
+} from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
 import { expect, test } from "@playwright/test";
-import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import { productionQueueMutationFixture } from "../queues/skirmish-ai-runtime-production-queue-mutation-fixture";
 import { productionPerTickCancellationFixture } from "../ownership/skirmish-ai-runtime-per-tick-cancellation-fixture";
 import { researchQueueMutationFixture } from "../ownership/skirmish-ai-runtime-research-queue-mutation-fixture";
-import { normalizeRuntimeProductionCausality } from "../decisions/skirmish-ai-runtime-production-causality-normalization";
+import {
+  normalizeRuntimeProductionCausality
+} from "../decisions/skirmish-ai-runtime-production-causality-normalization";
 
 /** Synthetic contracts; actual AI policy, useful replacement and both-faction legality remain unproven. */
 test.describe("native cancellation lifecycle synthetic contracts", () => {

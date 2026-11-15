@@ -1,4 +1,10 @@
-import { combatActor, squad, fixtureState, observation, manager } from "../../../testing/fixtures/tactics/ai-tactics-test-fixtures";
+import {
+  combatActor,
+  fixtureState,
+  manager,
+  observation,
+  squad
+} from "../../../testing/fixtures/tactics/ai-tactics-test-fixtures";
 import { canPursueAiTacticalObjective } from "./ai-tactics-objective-eligibility";
 
 describe("tactical objective eligibility", () => {

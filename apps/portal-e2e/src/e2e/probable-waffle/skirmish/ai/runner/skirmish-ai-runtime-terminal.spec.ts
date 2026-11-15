@@ -22,6 +22,5 @@ test("a terminal match may stop after all selected terminal assertions and event
   expect(canStopAfterTerminal(assertions, ["SEQ-01"], { tick: 600, gameResult: "win" }, [700])).toBe(false);
 });
 
-test("shared production and victory variants retain the production observation horizon", () => {
-  expect(canStopAfterTerminal(assertions, ["SEQ-01", "PRO-01"], { tick: 600, gameResult: "win" }, [])).toBe(false);
-});
+test("shared production and victory variants retain the production observation horizon", () =>
+  expect(canStopAfterTerminal(assertions, ["SEQ-01", "PRO-01"], { tick: 600, gameResult: "win" }, [])).toBe(false));

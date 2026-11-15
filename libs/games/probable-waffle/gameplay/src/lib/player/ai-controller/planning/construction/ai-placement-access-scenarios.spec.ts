@@ -172,12 +172,17 @@ describe("observed construction access scenarios", () => {
     builder.accessNodeId = { status: "known", value: "access:region:ground:home" as never, observedTick: 200 };
     const constructionCells = observation.map?.constructionCells?.map((cell) => ({
       ...cell,
-      groundAccessNodeId: cell.position.x < 3 ? ("access:region:ground:home" as never) : ("access:region:ground:outpost" as never)
+      groundAccessNodeId:
+        cell.position.x < 3 ? ("access:region:ground:home" as never) : ("access:region:ground:outpost" as never)
     }));
     const selected = selectConstructionPosition(
       {
         ...observation,
-        map: { ...observation.map!, constructionCells, regionGeneration: { generation: 1, status: "ready", continuationCursor: 0 } }
+        map: {
+          ...observation.map!,
+          constructionCells,
+          regionGeneration: { generation: 1, status: "ready", continuationCursor: 0 }
+        }
       },
       builder,
       1,
@@ -225,16 +230,18 @@ describe("observed construction access scenarios", () => {
               tileCount: 1,
               clearance: 1
             })),
-            links: [{
-              linkId: "test:home-to-outpost",
-              fromNodeId: home,
-              toNodeId: outpost,
-              domain: "ground" as const,
-              clearance: 1,
-              distanceCost: 1,
-              knowledge: "known_static" as const,
-              directional: true
-            }],
+            links: [
+              {
+                linkId: "test:home-to-outpost",
+                fromNodeId: home,
+                toNodeId: outpost,
+                domain: "ground" as const,
+                clearance: 1,
+                distanceCost: 1,
+                knowledge: "known_static" as const,
+                directional: true
+              }
+            ],
             transferPoints: [],
             unknownNodeIds: []
           }

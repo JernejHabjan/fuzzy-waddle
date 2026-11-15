@@ -11,9 +11,7 @@ test("publishes the complete failed report in an artifact with only its location
   const report = { schemaVersion: 1, status: "failed", raw: "native facts", decisions: 16 } as const;
   const logs: string[] = [];
   const original = console.log;
-  console.log = (value: unknown) => {
-    logs.push(String(value));
-  };
+  console.log = (value: unknown) => logs.push(String(value));
   try {
     publishRuntimeResult(report, path);
     expect(JSON.parse(readFileSync(path, "utf8"))).toEqual(report);
@@ -27,9 +25,7 @@ test("publishes the complete failed report in an artifact with only its location
 test("direct callers retain the legacy result prefix", () => {
   const logs: string[] = [];
   const original = console.log;
-  console.log = (value: unknown) => {
-    logs.push(String(value));
-  };
+  console.log = (value: unknown) => logs.push(String(value));
   try {
     publishRuntimeResult({ schemaVersion: 1 });
     expect(logs).toEqual(['AI_SKIRMISH_RUNTIME_RESULT:{"schemaVersion":1}']);

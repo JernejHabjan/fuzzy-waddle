@@ -66,7 +66,8 @@ function selectSite(
             footprint.observedBlocked ||
             occupied.has(footprint.tileKey) ||
             !positionSafe(footprint.position)
-          ) return false;
+          )
+            return false;
         }
       }
       return true;
@@ -145,10 +146,8 @@ export class AiResourceServiceManager implements AiProposalManager {
         Number.POSITIVE_INFINITY,
         ...services.map((service) => distance(position(service)!, sourcePosition))
       );
-      if (
-        nearestServiceDistance <= AI_RESOURCE_SERVICE_RADIUS ||
-        pendingSite(state, source.actorId, observation.tick)
-      ) continue;
+      if (nearestServiceDistance <= AI_RESOURCE_SERVICE_RADIUS || pendingSite(state, source.actorId, observation.tick))
+        continue;
       const serviceEntry = catalog.entries
         .filter((entry) => entry.acceptsResources?.includes(type) && entry.constructionProfile)
         .filter((entry) =>
@@ -188,11 +187,20 @@ export class AiResourceServiceManager implements AiProposalManager {
           );
         })
         .filter((actor) => {
-          const graph = observation.map?.accessGraph, from = node(actor), to = node(source);
+          const graph = observation.map?.accessGraph,
+            from = node(actor),
+            to = node(source);
           if (!graph || !from || !to || from === to) return true;
-          return queryAiAccessRoute(graph, { queryId: `query:resource-builder:${actor.actorId}:${source.actorId}`,
-            kind: "movement", fromNodeId: from, toNodeId: to, capabilities: routeCapability(observation, [actor], catalog),
-            firingNodeIds: [] }).kind === "direct";
+          return (
+            queryAiAccessRoute(graph, {
+              queryId: `query:resource-builder:${actor.actorId}:${source.actorId}`,
+              kind: "movement",
+              fromNodeId: from,
+              toNodeId: to,
+              capabilities: routeCapability(observation, [actor], catalog),
+              firingNodeIds: []
+            }).kind === "direct"
+          );
         })
         .sort(
           (left, right) =>

@@ -9,16 +9,15 @@ import { createAiProductionPolicyFixture } from "../../fixtures/production/ai-pr
 import { createAiTestObservation } from "../../fixtures/coordination/ai-test-fixtures";
 import {
   type AiProductionPureScenario,
-  catalog,
-  completedOpeningState,
-  workers,
-  producer,
-  propose,
-  production,
   capacityConstruction,
+  completedOpeningState,
   oneTypeCatalog,
+  producer,
+  production,
+  propose,
+  queuedProducer,
   repeatedArmy,
-  queuedProducer
+  workers
 } from "../../fixtures/production/ai-production-scenario-test-fixtures";
 
 const scenarios: readonly AiProductionPureScenario[] = [

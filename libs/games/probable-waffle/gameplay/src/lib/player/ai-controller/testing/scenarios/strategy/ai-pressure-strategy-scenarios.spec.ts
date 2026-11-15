@@ -3,7 +3,11 @@ import { digestCanonicalAiValue } from "../../../brain/persistence/canonical-ai-
 import type { AiCapabilityCatalog } from "../../../contracts/observation/ai-capability-catalog";
 import type { AiObservation } from "../../../contracts/observation/ai-observation";
 import { decideAiEconomyPolicy, hasCredibleAiEconomyThreat } from "../../../planning/economy/service/ai-economy-policy";
-import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "../../fixtures/coordination/ai-test-fixtures";
+import {
+  createAiTestObservation,
+  createAiTestOwnedActor,
+  unknownAiValue
+} from "../../fixtures/coordination/ai-test-fixtures";
 
 const catalog: AiCapabilityCatalog = {
   schemaVersion: 1,

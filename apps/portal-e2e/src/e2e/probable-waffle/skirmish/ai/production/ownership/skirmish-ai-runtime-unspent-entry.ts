@@ -9,6 +9,7 @@ import { sameRuntimeQueueVector } from "./skirmish-ai-runtime-scoped-queue-payme
 
 import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
 import type * as Unspent from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/authority/claims/ai-runtime-unspent-claims-snapshot";
+
 /** Reconciles one already validated selection against exact admission, payment, transfer and release boundaries. */
 export function reconcileRuntimeUnspentEntry(
   capture: Capture.AiRuntimeProductionSnapshot,

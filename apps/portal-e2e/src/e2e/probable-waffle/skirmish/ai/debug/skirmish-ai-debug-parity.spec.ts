@@ -9,9 +9,11 @@ import { exerciseDebug } from "./skirmish-ai-debug-panel-exercise";
 import { runVariant } from "../runner/skirmish-ai-runtime-variant-runner";
 
 const repositoryRoot = workspaceRoot;
-const fixturePath = resolve(repositoryRoot, "tools/probable-waffle/skirmish/ai/testing/fixtures/native/scouting/hidden-state-native-gameplay.json");
+const fixturePath = resolve(
+  repositoryRoot,
+  "tools/probable-waffle/skirmish/ai/testing/fixtures/native/scouting/hidden-state-native-gameplay.json"
+);
 const screenshotDirectory = resolve(repositoryRoot, "tmp/ai-debug-parity");
-
 
 test("AI debug hidden, shown, historical and exported views preserve authoritative outcomes", async ({ browser }) => {
   test.setTimeout(600_000);

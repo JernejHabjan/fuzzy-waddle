@@ -7,6 +7,7 @@ import type { AiProfileConfig } from "../../contracts/ai-profile-config";
 
 import { constructionEntry, resourceEntries } from "./ai-fortification-support";
 import { isAvailableBuilder } from "../production/macro/ai-macro-observation";
+
 /** Proposes independent connected-prefix jobs; each available worker belongs to at most one new site. */
 export function createFortificationIntents(
   profile: AiProfileConfig,

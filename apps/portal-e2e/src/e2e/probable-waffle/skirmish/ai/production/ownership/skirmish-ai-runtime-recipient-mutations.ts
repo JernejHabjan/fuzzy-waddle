@@ -1,14 +1,17 @@
 // prettier-ignore
-import { AI_RUNTIME_MAX_FACTS } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/append-ai-runtime-production-fact";
+import {
+  AI_RUNTIME_MAX_FACTS
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/append-ai-runtime-production-fact";
 import { isDeepStrictEqual } from "node:util";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 // prettier-ignore
-import type { AiRuntimeProductionSnapshot } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
 // prettier-ignore
-import type { AiRuntimeProductionFact } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 
 /** Strict bounded all-beneficiary replay. Inspect every supplied tail; never add the older resources_applied observations. */
 export function normalizeRuntimeRecipientMutations(capture: AiRuntimeProductionSnapshot) {

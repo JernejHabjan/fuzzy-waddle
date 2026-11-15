@@ -5,7 +5,13 @@ import type { AiIntent } from "../../contracts/commands/ai-intent";
 import { aiDeadline } from "../../contracts/ai-core-types";
 import { arbitrateAiIntents } from "../../brain/arbitration/ai-intent-arbiter";
 import { AiFortificationManager } from "./ai-fortification-manager";
-import { profile, catalog, actor, observation, threatenedState } from "../../testing/fixtures/fortification/ai-fortification-test-fixture";
+import {
+  actor,
+  catalog,
+  observation,
+  profile,
+  threatenedState
+} from "../../testing/fixtures/fortification/ai-fortification-test-fixture";
 
 describe("fortification recovery ownership", () => {
   const manager = new AiFortificationManager(profile, () => catalog);
@@ -92,7 +98,9 @@ describe("fortification recovery ownership", () => {
     const firstBuild = initial.intents.find((intent) => intent.kind === "construct");
     if (!initialPlan || firstBuild?.kind !== "construct" || !initialPlan.graph)
       throw new Error("missing_initial_build");
-    const root = initialPlan.graph.nodes.find((node) => node.nodeId === firstBuild.siteKey.replace("fortification:", ""));
+    const root = initialPlan.graph.nodes.find(
+      (node) => node.nodeId === firstBuild.siteKey.replace("fortification:", "")
+    );
     if (!root) throw new Error("missing_build_node");
 
     const firstFailure = manager.propose(observation([], 100), {

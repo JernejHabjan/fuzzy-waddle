@@ -50,13 +50,7 @@ export function hasUnstaffedAiFoodSource(
   foodPrerequisiteObject: ObjectNames | undefined,
   catalog: AiCapabilityCatalog
 ): boolean {
-  return nextUnstaffedFoodSource(
-    observation,
-    self,
-    readyFoodSources,
-    foodPrerequisiteObject,
-    catalog
-  ) !== undefined;
+  return nextUnstaffedFoodSource(observation, self, readyFoodSources, foodPrerequisiteObject, catalog) !== undefined;
 }
 
 /** Assigns one free farmer without stealing cargo or a Field's returning worker. */
@@ -119,16 +113,22 @@ export function proposeAiFieldLabor(
       const rightAccessNode = right.accessNodeId.status === "known" ? right.accessNodeId.value : null;
       const leftAccessPenalty = sourceAccessNode && leftAccessNode === sourceAccessNode ? 0 : 1;
       const rightAccessPenalty = sourceAccessNode && rightAccessNode === sourceAccessNode ? 0 : 1;
-      const leftDistance = sourcePosition && leftPosition
-        ? Math.abs(leftPosition.x - sourcePosition.x) + Math.abs(leftPosition.y - sourcePosition.y)
-        : Number.POSITIVE_INFINITY;
-      const rightDistance = sourcePosition && rightPosition
-        ? Math.abs(rightPosition.x - sourcePosition.x) + Math.abs(rightPosition.y - sourcePosition.y)
-        : Number.POSITIVE_INFINITY;
+      const leftDistance =
+        sourcePosition && leftPosition
+          ? Math.abs(leftPosition.x - sourcePosition.x) + Math.abs(leftPosition.y - sourcePosition.y)
+          : Number.POSITIVE_INFINITY;
+      const rightDistance =
+        sourcePosition && rightPosition
+          ? Math.abs(rightPosition.x - sourcePosition.x) + Math.abs(rightPosition.y - sourcePosition.y)
+          : Number.POSITIVE_INFINITY;
       const leftIdle = left.activeOrder?.status === "known" && left.activeOrder.value === null ? 0 : 1;
       const rightIdle = right.activeOrder?.status === "known" && right.activeOrder.value === null ? 0 : 1;
-      return leftAccessPenalty - rightAccessPenalty || leftDistance - rightDistance || leftIdle - rightIdle ||
-        compareAiActorsByVisibleGeometry(left, right);
+      return (
+        leftAccessPenalty - rightAccessPenalty ||
+        leftDistance - rightDistance ||
+        leftIdle - rightIdle ||
+        compareAiActorsByVisibleGeometry(left, right)
+      );
     })[0];
   if (!worker) return null;
   const next = nextIds(state, "food-labor", ordinal);

@@ -4,12 +4,12 @@ import { createAiTestOwnedActor } from "../../../testing/fixtures/coordination/a
 
 import { AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS } from "./ai-skirmish-manager";
 import {
-  homeNode,
   enemyNode,
-  unit,
+  homeNode,
+  manager,
   observation,
   profile,
-  manager
+  unit
 } from "../../../testing/fixtures/strategy/ai-skirmish-test-fixtures";
 import { nextQuestion } from "./ai-skirmish-support";
 

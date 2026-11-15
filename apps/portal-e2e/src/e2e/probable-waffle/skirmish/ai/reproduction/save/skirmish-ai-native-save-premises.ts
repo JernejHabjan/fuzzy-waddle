@@ -52,8 +52,11 @@ export function nativeSavePremises(
       )
     );
   });
-  const paidCommandIds = new Set(paidSetupCommands.flatMap((application) =>
-    application.command.execution?.commandId ? [application.command.execution.commandId] : []));
+  const paidCommandIds = new Set(
+    paidSetupCommands.flatMap((application) =>
+      application.command.execution?.commandId ? [application.command.execution.commandId] : []
+    )
+  );
   const paidTrainingItems = items.filter(
     (item) =>
       item.objectName !== null &&

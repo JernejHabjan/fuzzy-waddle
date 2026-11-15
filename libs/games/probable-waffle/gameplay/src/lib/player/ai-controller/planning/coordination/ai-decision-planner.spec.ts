@@ -147,14 +147,16 @@ it("records every lane evaluated by a multi-lane proposer", () => {
     createAiTestObservation(),
     state,
     [],
-    [{
-      managerId: "skirmish",
-      lane: "army_threat",
-      evaluatedLanes: ["scouting"],
-      evaluated: true,
-      intents: [],
-      reasons: []
-    }],
+    [
+      {
+        managerId: "skirmish",
+        lane: "army_threat",
+        evaluatedLanes: ["scouting"],
+        evaluated: true,
+        intents: [],
+        reasons: []
+      }
+    ],
     profile
   );
 

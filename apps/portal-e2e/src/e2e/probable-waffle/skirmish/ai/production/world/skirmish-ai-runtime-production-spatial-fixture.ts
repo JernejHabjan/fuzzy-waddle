@@ -1,6 +1,10 @@
-import { ObjectNames, type ConstructCommand } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionSpatial } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/world/ai-runtime-production-spatial";
-import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import { type ConstructCommand, ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
+import type {
+  AiRuntimeProductionSpatial
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/world/ai-runtime-production-spatial";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import { productionWorldFixture } from "./skirmish-ai-runtime-production-world-fixture";
 
 /** Synthetic native callback intervals, not an applied construction or fair safe-site proof. */

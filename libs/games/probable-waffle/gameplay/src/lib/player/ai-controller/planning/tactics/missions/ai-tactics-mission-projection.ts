@@ -5,10 +5,10 @@ import type { AiCapabilityCatalog } from "../../../contracts/observation/ai-capa
 import type { AiObservedActor } from "../../../contracts/observation/ai-observation";
 import { selectAiAttackApproachPositions, targetFootprintRadiusTiles } from "../combat/ai-tactics-approach-positions";
 import {
-  knownPosition,
   distance,
-  legalForMembers,
   formationPositions,
+  knownPosition,
+  legalForMembers,
   movementDomains
 } from "../combat/ai-tactics-geometry";
 import { assignDamage, canSeeTarget, canTarget } from "../combat/ai-tactics-combat";

@@ -1,4 +1,4 @@
-import type { AiObservedActor, AiObservation } from "../../../contracts/observation/ai-observation";
+import type { AiObservation, AiObservedActor } from "../../../contracts/observation/ai-observation";
 import {
   createAiTestObservation,
   createAiTestOwnedActor

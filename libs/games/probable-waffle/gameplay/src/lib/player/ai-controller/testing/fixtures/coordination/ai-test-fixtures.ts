@@ -1,6 +1,6 @@
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
 import { FactionType, ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiObservedActor, AiObservation } from "../../../contracts/observation/ai-observation";
+import type { AiObservation, AiObservedActor } from "../../../contracts/observation/ai-observation";
 
 /** Creates an explicit unknown value for Stage 2 pure fixtures. */
 export const unknownAiValue = { status: "unknown", reason: "not_observed" } as const;

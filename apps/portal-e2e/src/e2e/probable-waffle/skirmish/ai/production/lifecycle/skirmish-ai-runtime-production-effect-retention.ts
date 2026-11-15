@@ -1,5 +1,6 @@
-import type { AiDecisionIdentity } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/decision/ai-decision-identity";
+import type {
+  AiDecisionIdentity
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/decision/ai-decision-identity";
 import type { RuntimeProductionCompletion } from "../completion/skirmish-ai-runtime-production-completion";
 
 /** Sampled native effect persistence. Accepted demand attribution supplies no strategic utility or continuous stability verdict. */

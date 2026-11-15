@@ -1,9 +1,12 @@
 import { expect, test } from "@playwright/test";
-import type { AiRuntimeProductionFact } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import type { nativeScenarioContext } from "../../contracts/skirmish-ai-native-scenario-context";
-import { evaluateNativeRaidStrategy, nativeMaximumRaidResponseMembers, nativeRaidOffenseAfterRecall, nativeRaidThreatIds } from
-  "./skirmish-ai-native-raid-strategy-evaluation";
+import {
+  evaluateNativeRaidStrategy,
+  nativeMaximumRaidResponseMembers,
+  nativeRaidOffenseAfterRecall,
+  nativeRaidThreatIds
+} from "./skirmish-ai-native-raid-strategy-evaluation";
 
 const actor = (actorId: string, objectName: string, playerNumber: number) => ({
   actorId,
@@ -34,7 +37,8 @@ function raidContext(targetHealthAfter: number, attackDistance = 2, targetId = "
     ["enemy-home", "enemy-home"],
     ...Array.from({ length: 4 }, (_, index) => [`raider-${index}`, `raider-${index}`])
   ]);
-  const attacker = actor("army-0", "TivaraMacemanMale", 2), target = actor(targetId, "FrostForge", 1);
+  const attacker = actor("army-0", "TivaraMacemanMale", 2),
+    target = actor(targetId, "FrostForge", 1);
   const facts = [
     {
       sequence: 1,
@@ -83,16 +87,20 @@ function raidContext(targetHealthAfter: number, attackDistance = 2, targetId = "
       }
     }
   ] as unknown as AiRuntimeProductionFact[];
-  const frames = [{
-    tick: 800,
-    decision: {
-      missionState: { squads: [] },
-      input: {
-        observation: { actors: [{ actorId: "raider-0", visibility: "visible" }] },
-        capabilityCatalog: { entries: [{ sourceObjectName: "FrostForge", constructionProfile: { footprintRadiusTiles: 1 } }] }
+  const frames = [
+    {
+      tick: 800,
+      decision: {
+        missionState: { squads: [] },
+        input: {
+          observation: { actors: [{ actorId: "raider-0", visibility: "visible" }] },
+          capabilityCatalog: {
+            entries: [{ sourceObjectName: "FrostForge", constructionProfile: { footprintRadiusTiles: 1 } }]
+          }
+        }
       }
     }
-  }];
+  ];
   return {
     facts,
     frames,
@@ -113,8 +121,20 @@ test("STRAT-02 bounds peak simultaneous defense instead of the rotating response
   const raiders = new Set(["raider-0"]);
   const context = {
     frames: [
-      { tick: 440, decision: { missionState: { squads: [{ role: "defense", actorIds: Array.from({ length: 9 }, (_, i) => `unit-${i}`) }] } } },
-      { tick: 460, decision: { missionState: { squads: [{ role: "defense", actorIds: Array.from({ length: 6 }, (_, i) => `unit-${i + 9}`) }] } } }
+      {
+        tick: 440,
+        decision: {
+          missionState: { squads: [{ role: "defense", actorIds: Array.from({ length: 9 }, (_, i) => `unit-${i}`) }] }
+        }
+      },
+      {
+        tick: 460,
+        decision: {
+          missionState: {
+            squads: [{ role: "defense", actorIds: Array.from({ length: 6 }, (_, i) => `unit-${i + 9}`) }]
+          }
+        }
+      }
     ]
   } as unknown as ReturnType<typeof nativeScenarioContext>;
 
@@ -122,7 +142,8 @@ test("STRAT-02 bounds peak simultaneous defense instead of the rotating response
 });
 
 test("serious raid defense is measured against the reinforcing wave", () => {
-  const raiders = ["raider-0", "raider-1"], reinforcements = ["reinforcement-0", "reinforcement-1"];
+  const raiders = ["raider-0", "raider-1"],
+    reinforcements = ["reinforcement-0", "reinforcement-1"];
   expect(nativeRaidThreatIds("minor", raiders, reinforcements)).toEqual(raiders);
   expect(nativeRaidThreatIds("reinforced", raiders, reinforcements)).toEqual([...raiders, ...reinforcements]);
   expect(nativeRaidThreatIds("withdrawn", raiders, reinforcements)).toEqual([...raiders, ...reinforcements]);

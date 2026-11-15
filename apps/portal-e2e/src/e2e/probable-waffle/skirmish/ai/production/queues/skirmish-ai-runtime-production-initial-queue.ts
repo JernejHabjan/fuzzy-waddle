@@ -1,7 +1,9 @@
-import type { AiRuntimeProductionQueue } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/queues/ai-runtime-production-queue";
-import type { AiRuntimePresetQueueApplication } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-queue-application";
+import type {
+  AiRuntimeProductionQueue
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/queues/ai-runtime-production-queue";
+import type {
+  AiRuntimePresetQueueApplication
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-queue-application";
 
 /** Exact paused setup insertion and actual payment; per-tick insertion deliberately carries no paid-item credit. */
 export interface RuntimeProductionInitialQueue {

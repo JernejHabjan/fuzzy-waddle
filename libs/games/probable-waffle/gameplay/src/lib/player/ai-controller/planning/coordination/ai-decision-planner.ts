@@ -3,7 +3,7 @@ import { preservesAiFriendlyRally } from "../tactics/orders/ai-friendly-rally";
 import { aiDeadline } from "../../contracts/ai-core-types";
 import type { AiBrainState, AiStrategyState } from "../../contracts/state/ai-state-contracts";
 import type { AiCommandOutcome } from "../../contracts/commands/ai-command-contracts";
-import type { AiIntentDecision, AiIntent } from "../../contracts/commands/ai-intent";
+import type { AiIntent, AiIntentDecision } from "../../contracts/commands/ai-intent";
 import type { AiObservation } from "../../contracts/observation/ai-observation";
 import type { AiProfileConfig } from "../../contracts/ai-profile-config";
 import type { AiManagerProposal } from "./ai-manager-proposal";
@@ -97,9 +97,7 @@ export function planAiDecisions(
 ): AiDecisionPlanningResult {
   const sortedBatches = [...batches].sort((left, right) => left.managerId.localeCompare(right.managerId));
   const considered = new Set(
-    sortedBatches
-      .filter((batch) => batch.evaluated)
-      .flatMap((batch) => [batch.lane, ...(batch.evaluatedLanes ?? [])])
+    sortedBatches.filter((batch) => batch.evaluated).flatMap((batch) => [batch.lane, ...(batch.evaluatedLanes ?? [])])
   );
   const lanes = LANE_ORDER.map((lane) => {
     const existing = previous.lanes.find((entry) => entry.lane === lane);

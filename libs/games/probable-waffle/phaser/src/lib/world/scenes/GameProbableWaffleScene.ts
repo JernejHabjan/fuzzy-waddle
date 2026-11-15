@@ -62,12 +62,13 @@ import { CampaignContentAllowanceService } from "@fuzzy-waddle/probable-waffle-c
 import { CampaignParticipantSceneAdapter } from "../../campaign/participants/campaign-participant-scene-adapter";
 import { CampaignRestoreCoordinator } from "../../campaign/campaign-restore-coordinator";
 import {
-  readAiRuntimeBrowserTestConfig,
   recordAiRuntimeBrowserInitialState
 } from "../../player/ai-controller/test-support/browser/ai-runtime-browser-test-config";
 import { GathererComponent } from "../../entity/components/resource/gatherer-component";
 import { getActorComponent } from "../../data/actor-component";
 import { applyAiRuntimePresetWorld } from "../../player/ai-controller/test-support/presets/setup/apply-ai-runtime-preset-world";
+import { readAiRuntimeSceneConfig } from "../../player/ai-controller/test-support/browser/ai-runtime-scene-config";
+import { startAiScenarioPreview } from "../../player/ai-controller/test-support/browser/start-ai-scenario-preview";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
@@ -176,7 +177,10 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     if (!this.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) {
       this.sceneGameData.systems.push(new AiPlayerHandler(this));
     }
-    if (!this.isSpectator) {
+    // A local preview keeps the human slot for fixture orders while showing every actor to the viewer.
+    const runtimeHost = environment.production ? undefined : window.__fuzzyWaddleAiRuntimeBrowserTest;
+    const preview = runtimeHost?.interactive && runtimeHost.game === this.game;
+    if (!this.isSpectator && !preview) {
       this.sceneGameData.components.push(new FogOfWarComponent(this, this.tilemap));
     }
 
@@ -184,7 +188,8 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     // Populate the index after initial actors are in place
     actorIndex.scanExistingActors();
     applyAiRuntimePresetWorld(this, creator);
-    if (!environment.production && readAiRuntimeBrowserTestConfig()) {
+    const runtimeConfig = environment.production ? null : readAiRuntimeSceneConfig(this.game);
+    if (runtimeConfig) {
       for (const player of this.players) {
         if (player.playerNumber === undefined) continue;
         const initialActors = actorIndex.getOwnedActors(player.playerNumber);
@@ -219,10 +224,9 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     setTimeout(() => {
       this.scene.scene.data.remove("justCreated");
     });
+    if (preview && simTickService) startAiScenarioPreview(this, simTickService);
     this.sceneGameData.initializers.sceneInitialized.next(true);
-    if (!environment.production && readAiRuntimeBrowserTestConfig()?.startPaused) {
-      simTickService?.pauseTick(SimulationPauseReason.Manual);
-    }
+    if (runtimeConfig?.startPaused) simTickService?.pauseTick(SimulationPauseReason.Manual);
     simTickService?.resumeTick(SimulationPauseReason.SceneBootstrap);
 
     if (!environment.production) {

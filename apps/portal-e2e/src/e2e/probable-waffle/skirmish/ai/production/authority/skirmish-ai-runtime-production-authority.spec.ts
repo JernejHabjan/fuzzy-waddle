@@ -2,8 +2,8 @@ import { expect, test } from "@playwright/test";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { productionAuthorityFixture } from "./skirmish-ai-runtime-production-authority-fixture";
 import {
-  normalizeRuntimeProductionSetup,
-  compareRuntimeProductionSetups
+  compareRuntimeProductionSetups,
+  normalizeRuntimeProductionSetup
 } from "../fixtures/skirmish-ai-runtime-production-setup";
 import { evaluateRuntimeProductionAuthority } from "./skirmish-ai-runtime-production-authority-evaluation";
 import { productionContract } from "../fixtures/skirmish-ai-runtime-production-contract-fixtures";

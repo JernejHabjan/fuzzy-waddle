@@ -1,7 +1,9 @@
 import { expect, test } from "@playwright/test";
 import { captureRuntimeProductionAuthority } from "./skirmish-ai-runtime-production-capture";
 
-test("native production capture streams large JSON into gzip without stringify of the full record", async ({ page }) => {
+test("native production capture streams large JSON into gzip without stringify of the full record", async ({
+  page
+}) => {
   await page.evaluate(() => {
     const record = {
       schemaVersion: 1,

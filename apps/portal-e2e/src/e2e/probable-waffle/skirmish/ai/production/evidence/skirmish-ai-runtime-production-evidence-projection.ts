@@ -1,9 +1,11 @@
 // prettier-ignore
-import type { AiRuntimeProductionSnapshot } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
 // prettier-ignore
-import type { AiRuntimePresetApplication } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-application";
+import type {
+  AiRuntimePresetApplication
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-application";
 import type { RuntimeProductionCausality } from "../decisions/skirmish-ai-runtime-production-causality";
 import type { RuntimeNativeProductionEvidence } from "./skirmish-ai-runtime-native-production-evidence";
 import { normalizeRuntimeProductionSetup } from "../fixtures/skirmish-ai-runtime-production-setup";

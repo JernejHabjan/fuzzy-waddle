@@ -6,7 +6,7 @@ import { aiDeadline } from "../../../contracts/ai-core-types";
 import { createAiProfileConfig } from "../../../profiles/ai-profile-defaults";
 import { AiRecoveryManager } from "../../../planning/recovery/ai-recovery-manager";
 import { planAiDecisions } from "../../../planning/coordination/ai-decision-planner";
-import { projectAiDebugSnapshot, findAiWhyNotExplanation } from "../../../debug/project-ai-debug-snapshot";
+import { findAiWhyNotExplanation, projectAiDebugSnapshot } from "../../../debug/project-ai-debug-snapshot";
 import { createAiProductionPolicyFixture } from "../../fixtures/production/ai-production-policy-fixture";
 import { createAiTestObservation } from "../../fixtures/coordination/ai-test-fixtures";
 

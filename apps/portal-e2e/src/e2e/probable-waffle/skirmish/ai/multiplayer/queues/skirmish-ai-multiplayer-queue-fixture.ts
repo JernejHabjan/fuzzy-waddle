@@ -1,13 +1,21 @@
 import {
-  ObjectNames,
-  ResourceType,
   type GameCommand,
-  type GameCommandOutcome
+  type GameCommandOutcome,
+  ObjectNames,
+  ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiMultiplayerQueueWorldSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/multiplayer/ai-multiplayer-queue-world-snapshot";
-import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
-import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
-import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
+import type {
+  AiMultiplayerQueueWorldSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/multiplayer/ai-multiplayer-queue-world-snapshot";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import {
+  requireAiTestEntry
+} from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
 
 /** Synthetic normalizer regression input only; never passed to a browser, recipe, manifest or runtime evidence report. */
 export function multiplayerQueueBoundaryFixture(): AiMultiplayerQueueWorldSnapshot {

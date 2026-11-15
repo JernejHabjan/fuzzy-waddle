@@ -7,7 +7,10 @@ import {
 import { createAiBrainState } from "../../../brain/state/create-ai-brain-state";
 import type { AiCapabilityCatalog } from "../../../contracts/observation/ai-capability-catalog";
 import { createAiProfileConfig } from "../../../profiles/ai-profile-defaults";
-import { createAiTestObservation, createAiTestOwnedActor } from "../../../testing/fixtures/coordination/ai-test-fixtures";
+import {
+  createAiTestObservation,
+  createAiTestOwnedActor
+} from "../../../testing/fixtures/coordination/ai-test-fixtures";
 import { AiMacroManager } from "../../production/macro/ai-macro-manager";
 import { WORKER_RECOVERY_FLOOR } from "../../economy/food/ai-food-economy-proposal";
 
@@ -72,7 +75,7 @@ const catalog: AiCapabilityCatalog = {
   ]
 };
 
-describe("AI macro domain pressure", () => {
+describe("AI macro domain pressure", () =>
   it("turns an observed air-access objective into an affordable air force instead of more blocked land troops", () => {
     const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
     const initial = createAiBrainState({
@@ -147,5 +150,4 @@ describe("AI macro domain pressure", () => {
     expect(recovering.intents).not.toContainEqual(
       expect.objectContaining({ kind: "produce", objectName: ObjectNames.SkaduweeOwl })
     );
-  });
-});
+  }));

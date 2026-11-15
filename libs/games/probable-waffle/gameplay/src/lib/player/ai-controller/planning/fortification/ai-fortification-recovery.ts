@@ -8,7 +8,8 @@ import type { AiCommandOutcome } from "../../contracts/commands/ai-command-contr
 
 import type { AiObservation } from "../../contracts/observation/ai-observation";
 
-import { tileKey, positionOf } from "./ai-fortification-support";
+import { positionOf, tileKey } from "./ai-fortification-support";
+
 const BREACH_RETRY_TICKS = 100;
 const MAX_BREACH_RECOVERY_ATTEMPTS = 2;
 function reconcileNode(

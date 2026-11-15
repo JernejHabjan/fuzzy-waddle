@@ -1,11 +1,13 @@
 // prettier-ignore
-import type { AiRuntimePresetApplication } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-application";
+import type {
+  AiRuntimePresetApplication
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-application";
 import type { Page } from "@playwright/test";
 import type { RuntimeFixture } from "../contracts/skirmish-ai-runtime-fixture";
 import type { RuntimeVariant } from "./skirmish-ai-runtime-variant";
-import type { AiRuntimeCalibration } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/browser/ai-runtime-calibration-config";
+import type {
+  AiRuntimeCalibration
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/browser/ai-runtime-calibration-config";
 import { installRuntimeAccessor } from "../runner/skirmish-ai-runtime-browser-accessor";
 import { assertRuntimePresetRoster } from "./skirmish-ai-runtime-preset-roster";
 import { assertRuntimeConstructionSetup } from "../construction/capture/skirmish-ai-runtime-construction-setup";
@@ -23,7 +25,8 @@ export async function prepareRuntimeVariant(
   profiling: boolean,
   aiErrors: string[],
   debugProbe?: (page: Page, checkpointIndex: number) => Promise<void>,
-  sameRealm = false, calibration?: AiRuntimeCalibration
+  sameRealm = false,
+  calibration?: AiRuntimeCalibration
 ) {
   if (profiling) {
     await page.addInitScript(() => {
@@ -42,18 +45,31 @@ export async function prepareRuntimeVariant(
     });
   }
   installRuntimeErrorListeners(page, aiErrors);
-  const captureProduction = process.env.AI_SKIRMISH_CAPTURE_MOVEMENT === "1" || variant.captureConstruction === true || (variant.scenarioIds ?? fixture.scenarioIds).some(
-    (id) => ["PRO-03", "PRO-06", "PRO-07", "H-17", "H-18", "ECO-05", "ECO-06", "H-16"].includes(id) || id.startsWith("TECH-"));
-  await installNativeRuntimeInputs(page, {
-      schemaVersion: 1, enabled: true, startPaused: true,
+  const captureProduction =
+    process.env.AI_SKIRMISH_CAPTURE_MOVEMENT === "1" ||
+    variant.captureConstruction === true ||
+    (variant.scenarioIds ?? fixture.scenarioIds).some(
+      (id) =>
+        ["PRO-03", "PRO-06", "PRO-07", "H-17", "H-18", "ECO-05", "ECO-06", "H-16"].includes(id) ||
+        id.startsWith("TECH-")
+    );
+  await installNativeRuntimeInputs(
+    page,
+    {
+      schemaVersion: 1,
+      enabled: true,
+      startPaused: true,
       seed: effectiveSeed,
       ...(calibration ? { calibration } : {}),
-      ...(variant.presetWorld ? { presetWorld: { ...variant.presetWorld,
-        provenance: { sourceRevision, fixtureDigest } } } : {}),
+      ...(variant.presetWorld
+        ? { presetWorld: { ...variant.presetWorld, provenance: { sourceRevision, fixtureDigest } } }
+        : {}),
       ...(variant.captureCombat === true ? { captureCombat: true } : {}),
       ...(captureProduction ? { captureProduction: true } : {}),
       ...(process.env.AI_SKIRMISH_CAPTURE_MOVEMENT === "1" ? { captureMovementOnly: true } : {})
-    }, sameRealm);
+    },
+    sameRealm
+  );
   await configureLobby(page, fixture, variant, sameRealm);
   await installRuntimeAccessor(page);
   const browserErrors: string[] = [];
@@ -70,13 +86,17 @@ export async function prepareRuntimeVariant(
       { timeout: 120_000 }
     );
   } catch (error) {
-    const browserState = await page.evaluate(() => ({
-      url: location.href,
-      title: document.title,
-      body: document.body.innerText.slice(0, 1200)
-    })).catch(() => null);
-    throw new Error(`runtime_accessor_not_ready:${error instanceof Error ? error.message : String(error)}; ` +
-      `browserState=${JSON.stringify(browserState)}; browserErrors=${JSON.stringify(browserErrors.slice(-20))}`);
+    const browserState = await page
+      .evaluate(() => ({
+        url: location.href,
+        title: document.title,
+        body: document.body.innerText.slice(0, 1200)
+      }))
+      .catch(() => null);
+    throw new Error(
+      `runtime_accessor_not_ready:${error instanceof Error ? error.message : String(error)}; ` +
+        `browserState=${JSON.stringify(browserState)}; browserErrors=${JSON.stringify(browserErrors.slice(-20))}`
+    );
   } finally {
     page.off("console", collectConsoleError);
     page.off("pageerror", collectPageError);
@@ -91,46 +111,61 @@ export async function prepareRuntimeVariant(
     page.on("console", collectConstructionError);
     page.on("pageerror", collectConstructionPageError);
     try {
-      await page.waitForFunction((count) => {
-        const host = (window as unknown as {
-          __fuzzyWaddleAiRuntimeBrowserTest?: { presetApplication?: AiRuntimePresetApplication };
-        }).__fuzzyWaddleAiRuntimeBrowserTest;
-        return host?.presetApplication?.constructionApplications?.length === count;
-      },
-        variant.presetWorld.constructionOrders.length, { timeout: 30_000 }
+      await page.waitForFunction(
+        (count) => {
+          const host = (
+            window as unknown as {
+              __fuzzyWaddleAiRuntimeBrowserTest?: { presetApplication?: AiRuntimePresetApplication };
+            }
+          ).__fuzzyWaddleAiRuntimeBrowserTest;
+          return host?.presetApplication?.constructionApplications?.length === count;
+        },
+        variant.presetWorld.constructionOrders.length,
+        { timeout: 30_000 }
       );
     } catch (error) {
-      const setupState = await page.evaluate(() => {
-        const host = (window as unknown as {
-          __fuzzyWaddleAiRuntimeBrowserTest?: {
-            game?: { scene?: { getScenes(active: boolean): {
-              scene: { key: string; sys?: { settings?: { status?: string } } };
-              getSceneGameData?: () => {
-                initializers?: { sceneInitialized?: { value?: boolean } };
-                services?: { currentTick?: number; isPaused?: boolean }[];
+      const setupState = await page
+        .evaluate(() => {
+          const host = (
+            window as unknown as {
+              __fuzzyWaddleAiRuntimeBrowserTest?: {
+                game?: {
+                  scene?: {
+                    getScenes(active: boolean): {
+                      scene: { key: string; sys?: { settings?: { status?: string } } };
+                      getSceneGameData?: () => {
+                        initializers?: { sceneInitialized?: { value?: boolean } };
+                        services?: { currentTick?: number; isPaused?: boolean }[];
+                      };
+                    }[];
+                  };
+                };
+                presetApplication?: { fixtureId: string; constructionApplications?: unknown[] };
               };
-            }[] } };
-            presetApplication?: { fixtureId: string; constructionApplications?: unknown[] };
+            }
+          ).__fuzzyWaddleAiRuntimeBrowserTest;
+          return {
+            presetApplication: host?.presetApplication ?? null,
+            scenes:
+              host?.game?.scene?.getScenes(true).map((candidate) => {
+                const graph = candidate.getSceneGameData?.();
+                const ticks = graph?.services?.find((service) => typeof service.currentTick === "number");
+                return {
+                  key: candidate.scene.key,
+                  status: candidate.scene.sys?.settings?.status ?? null,
+                  initialized: graph?.initializers?.sceneInitialized?.value ?? null,
+                  tick: ticks?.currentTick ?? null,
+                  paused: ticks?.isPaused ?? null
+                };
+              }) ?? [],
+            body: document.body.innerText.slice(0, 600)
           };
-        }).__fuzzyWaddleAiRuntimeBrowserTest;
-        return {
-          presetApplication: host?.presetApplication ?? null,
-          scenes: host?.game?.scene?.getScenes(true).map((candidate) => {
-            const graph = candidate.getSceneGameData?.();
-            const ticks = graph?.services?.find((service) => typeof service.currentTick === "number");
-            return {
-              key: candidate.scene.key,
-              status: candidate.scene.sys?.settings?.status ?? null,
-              initialized: graph?.initializers?.sceneInitialized?.value ?? null,
-              tick: ticks?.currentTick ?? null,
-              paused: ticks?.isPaused ?? null
-            };
-          }) ?? [],
-          body: document.body.innerText.slice(0, 600)
-        };
-      }).catch(() => null);
-      throw new Error(`runtime_preset_construction_not_ready:${error instanceof Error ? error.message : String(error)}; ` +
-        `setupState=${JSON.stringify(setupState)}; browserErrors=${JSON.stringify([...browserErrors, ...constructionErrors].slice(-12))}`);
+        })
+        .catch(() => null);
+      throw new Error(
+        `runtime_preset_construction_not_ready:${error instanceof Error ? error.message : String(error)}; ` +
+          `setupState=${JSON.stringify(setupState)}; browserErrors=${JSON.stringify([...browserErrors, ...constructionErrors].slice(-12))}`
+      );
     } finally {
       page.off("console", collectConstructionError);
       page.off("pageerror", collectConstructionPageError);
@@ -266,7 +301,10 @@ function compareQueueItem(
 }
 
 export async function configureLobby(
-  page: Page, fixture: RuntimeFixture, variant: RuntimeVariant, sameRealm: boolean
+  page: Page,
+  fixture: RuntimeFixture,
+  variant: RuntimeVariant,
+  sameRealm: boolean
 ): Promise<void> {
   if (sameRealm) await page.getByRole("button", { name: /Skirmish.*Custom battles/ }).click();
   else await page.goto("/aota/skirmish");

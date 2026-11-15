@@ -1,6 +1,10 @@
-import { ResourceType, OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionSpatial } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/world/ai-runtime-production-spatial";
-import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import { OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import type {
+  AiRuntimeProductionSpatial
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/world/ai-runtime-production-spatial";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import { routeOrderFixture } from "../../../navigation/controls/commands/skirmish-ai-runtime-route-order-fixture";
 
 /** Synthetic native intervals with one reused admitted order; movement demand supplies identity, never gather usefulness. */

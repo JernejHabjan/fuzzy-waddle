@@ -1,7 +1,6 @@
 # Classic RTS comparison, strategic depth and difficulty
 
-Difficulty configuration/fairness requirements below remain useful correctness contracts. The D-06 statistical
-calibration campaign is cancelled for the current iteration; it is not a queued test or release gate. See
+Difficulty configuration/fairness requirements below remain useful correctness contracts. The D-06 statistical calibration campaign is cancelled for the current iteration; it is not a queued test or release gate. See
 [coverage and follow-ups](./coverage-status.md) for current evidence and execution scope.
 
 These requirements complement H1–H9 without adding runtime machine learning. Read the [economy/production](../architecture/economy-and-production.md), [combat/strategy](../architecture/combat-and-strategy.md) and [debug workbench](../debugging/README.md) documentation. All numbers below are tuning defaults, not measured results.
@@ -11,7 +10,7 @@ These requirements complement H1–H9 without adding runtime machine learning. R
 These are primary sources. Historical Blizzard material describes the named games, not hidden internals of present SC2 bots. Warcraft III player guidance informs desired behavior, not a claim about its AI implementation. Source branches/documentation may evolve; preserve the source/version used if implementation consults them. No external implementation code is to be copied.
 
 | Source                                                                                                                                 | What it supports                                                                                 | Decision for this game                                                                                                                   |
-| -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+|----------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
 | [Blizzard StarCraft AI script FAQ](https://classic.battle.net/scc/faq/aiscripts.shtml)                                                 | Distinct melee/campaign assumptions, authored force compositions and expansion-oriented pressure | Keep skirmish bootstrap and adaptive mission plans; do not copy passive attack triggers or campaign resource assumptions                 |
 | [Blizzard Warcraft III combat guide](https://classic.battle.net/war3/basics/combat.shtml)                                              | Unit preservation, mixed forces, exposed expansion pressure and exploiting a won battle          | Add bounded pursuit and post-battle exploitation; use this game's real spells/geometry, not WC3-specific heroes, damage or terrain rules |
 | [SC2 protocol: Difficulty, AIBuild, PlayerSetup](https://github.com/Blizzard/s2client-proto/blob/master/s2clientprotocol/sc2api.proto) | Separate difficulty and build-style fields; explicit cheat difficulty enum values                | Keep difficulty separate from personality; our Easy/Normal/Hard are fair by default, not mappings of Blizzard internals                  |
@@ -65,7 +64,7 @@ After a won engagement, compare immediate pressure on the exposed core/expansion
 The profile lifecycle spans lobby selection -> profile -> host brain -> save/replay/host transfer -> debug/results. There are three initial fair levels. They vary planning tempo and breadth, not access to hidden state or economic legality. No adaptive rubber-banding or silent mid-match difficulty switching.
 
 | Policy                                            | Easy                                                                  | Normal                                  | Hard                                                  |
-| ------------------------------------------------- | --------------------------------------------------------------------- | --------------------------------------- | ----------------------------------------------------- |
+|---------------------------------------------------|-----------------------------------------------------------------------|-----------------------------------------|-------------------------------------------------------|
 | Decision interval                                 | 40 ticks / 2 s                                                        | 20 ticks / 1 s                          | 10 ticks / 0.5 s                                      |
 | Voluntary simultaneous offensive missions         | 1                                                                     | 2                                       | 3                                                     |
 | Non-emergency composition reconsideration minimum | 80 ticks                                                              | 40 ticks                                | 20 ticks                                              |
@@ -87,17 +86,17 @@ Calibration: use mirrored same-faction/profile-only comparisons, standard probe 
 
 Run focused cases while developing their responsible subsystem and all cases in the release matrix. These add 12 cases to the prior 103; the debugging group adds 6 more, for 121 named cases before variants.
 
-| ID   | Required evidence                                                                                                                                        |
-| ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| C-01 | Both faction branches preserve completed assets/commitments during evidence-backed transition; no opening restart spam                                   |
-| C-02 | Upgrade/batch timing launches within the viable window, or explicitly changes plan when it closes; no perfect-roster wait                                |
-| C-03 | Army total grows with useful affordable mission demand, respects worker/supply obligations and stops at fulfilled demand                                 |
-| C-04 | Question-driven scouting changes a real decision; repeated reading of the same contact does not inflate enemy mass/confidence                            |
-| C-05 | Bait retreat cannot pull asset defenders into a bad pursuit; won battle creates useful follow-up pressure                                                |
-| C-06 | Multiple opponents retain coherent mission focus; diplomacy/defeat cleanly retargets without ignoring local threats                                      |
-| D-01 | Every lobby difficulty selects the exact profile and expected cadence/quotas with no fallback to identical defaults                            |
+| ID   | Required evidence                                                                                                                                                       |
+|------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| C-01 | Both faction branches preserve completed assets/commitments during evidence-backed transition; no opening restart spam                                                  |
+| C-02 | Upgrade/batch timing launches within the viable window, or explicitly changes plan when it closes; no perfect-roster wait                                               |
+| C-03 | Army total grows with useful affordable mission demand, respects worker/supply obligations and stops at fulfilled demand                                                |
+| C-04 | Question-driven scouting changes a real decision; repeated reading of the same contact does not inflate enemy mass/confidence                                           |
+| C-05 | Bait retreat cannot pull asset defenders into a bad pursuit; won battle creates useful follow-up pressure                                                               |
+| C-06 | Multiple opponents retain coherent mission focus; diplomacy/defeat cleanly retargets without ignoring local threats                                                     |
+| D-01 | Every lobby difficulty selects the exact profile and expected cadence/quotas with no fallback to identical defaults                                                     |
 | D-02 | Single-player save/load/replay and independent multiplayer host transfer/reconnect preserve difficulty, archetype, scheduling and active plans; no silent profile drift |
-| D-03 | Equal permitted observations/rules across profiles; no hidden current state or unadvertised resource/stat bonuses                                        |
-| D-04 | Easy still opens, produces useful copies, counters legal threats, retreats and recovers; reduced breadth is not broken behavior                          |
-| D-05 | Caps and reconsideration cadence affect eligible voluntary activity while independent defense/rescue remains serviced                                    |
-| D-06 | Paired calibration report identifies versions, sample counts/uncertainty and challenge trend; indistinguishable levels remain an explicit tuning failure |
+| D-03 | Equal permitted observations/rules across profiles; no hidden current state or unadvertised resource/stat bonuses                                                       |
+| D-04 | Easy still opens, produces useful copies, counters legal threats, retreats and recovers; reduced breadth is not broken behavior                                         |
+| D-05 | Caps and reconsideration cadence affect eligible voluntary activity while independent defense/rescue remains serviced                                                   |
+| D-06 | Paired calibration report identifies versions, sample counts/uncertainty and challenge trend; indistinguishable levels remain an explicit tuning failure                |

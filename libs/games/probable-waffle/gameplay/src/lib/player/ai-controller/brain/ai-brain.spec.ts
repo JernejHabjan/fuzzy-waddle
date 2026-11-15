@@ -10,8 +10,8 @@ import { findAiWhyNotExplanation } from "../debug/project-ai-debug-snapshot";
 import { AiSkirmishManager } from "../planning/strategy/missions/ai-skirmish-manager";
 import {
   catalog as scoutCatalog,
-  homeNode,
   enemyNode,
+  homeNode,
   observation as scoutObservation,
   unit as scoutUnit
 } from "../testing/fixtures/strategy/ai-skirmish-test-fixtures";
@@ -241,46 +241,54 @@ describe("PureAiBrain", () => {
   it.each([
     { tick: 19, expiry: 20, accepted: false },
     { tick: 20, expiry: 20, accepted: true }
-  ])("retains provisional resource escrow until its deadline across a contracted balance: %j", ({ tick, expiry, accepted }) => {
-    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainState({
-      playerNumber: 1,
-      faction: FactionType.Tivara,
-      profile,
-      tick: 0,
-      archetypeId: "balanced"
-    });
-    const oldReservation = {
-      claimId: "claim:old:wood" as const,
-      subjectKey: "resource:wood",
-      resourceAmount: 60,
-      ownerPlanId: "plan:opening" as const,
-      state: { kind: "provisional" as const, expiresAt: aiDeadline(expiry) },
-      prerequisites: [] as const,
-      createdTick: 0
-    };
-    const oldEffect = {
-      claimId: "claim:old:effect" as const,
-      subjectKey: "effect:effect:old",
-      ownerPlanId: "plan:opening" as const,
-      state: { kind: "provisional" as const, expiresAt: aiDeadline(expiry) },
-      prerequisites: [] as const,
-      createdTick: 0
-    };
-    const observation = createAiTestObservation();
-    const contracted = {
-      ...observation,
-      tick,
-      resources: observation.resources.map((resource) => resource.resourceType === ResourceType.Wood
-        ? { ...resource, stockpile: 120, reservedUnspent: 20, obligationsDue: 10 }
-        : resource)
-    };
-    const result = new PureAiBrain(profile, [new DummyManager([stopIntent("after-capacity-change", 900, "worker-1", 50)])])
-      .step(contracted, { ...state, reservations: [oldReservation, oldEffect] }, []);
+  ])(
+    "retains provisional resource escrow until its deadline across a contracted balance: %j",
+    ({ tick, expiry, accepted }) => {
+      const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+      const state = createAiBrainState({
+        playerNumber: 1,
+        faction: FactionType.Tivara,
+        profile,
+        tick: 0,
+        archetypeId: "balanced"
+      });
+      const oldReservation = {
+        claimId: "claim:old:wood" as const,
+        subjectKey: "resource:wood",
+        resourceAmount: 60,
+        ownerPlanId: "plan:opening" as const,
+        state: { kind: "provisional" as const, expiresAt: aiDeadline(expiry) },
+        prerequisites: [] as const,
+        createdTick: 0
+      };
+      const oldEffect = {
+        claimId: "claim:old:effect" as const,
+        subjectKey: "effect:effect:old",
+        ownerPlanId: "plan:opening" as const,
+        state: { kind: "provisional" as const, expiresAt: aiDeadline(expiry) },
+        prerequisites: [] as const,
+        createdTick: 0
+      };
+      const observation = createAiTestObservation();
+      const contracted = {
+        ...observation,
+        tick,
+        resources: observation.resources.map((resource) =>
+          resource.resourceType === ResourceType.Wood
+            ? { ...resource, stockpile: 120, reservedUnspent: 20, obligationsDue: 10 }
+            : resource
+        )
+      };
+      const result = new PureAiBrain(profile, [
+        new DummyManager([stopIntent("after-capacity-change", 900, "worker-1", 50)])
+      ]).step(contracted, { ...state, reservations: [oldReservation, oldEffect] }, []);
 
-    expect(result.acceptedIntents.length > 0).toBe(accepted);
-    expect(result.nextState.reservations.some((reservation) => reservation.claimId === oldReservation.claimId)).toBe(!accepted);
-  });
+      expect(result.acceptedIntents.length > 0).toBe(accepted);
+      expect(result.nextState.reservations.some((reservation) => reservation.claimId === oldReservation.claimId)).toBe(
+        !accepted
+      );
+    }
+  );
 
   it("explains accepted and rejected intents with deterministic claim arbitration", () => {
     const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);

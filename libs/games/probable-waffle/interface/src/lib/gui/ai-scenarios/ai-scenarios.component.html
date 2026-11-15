@@ -1,0 +1,89 @@
+<main class="scenario-page">
+  @let index = catalog();
+  <header class="page-heading">
+    <a routerLink="/aota">← Age of the Ancients</a>
+    <h1>Skirmish AI scenarios</h1>
+    <p>Choose a preset to watch the AI at normal speed. In the match, open <strong>Show AI debugging</strong> to see its decisions.</p>
+  </header>
+
+  @if (catalogError()) {
+    <p role="alert">The scenario catalog could not be loaded. Start the development portal with <code>pnpm start:portal</code>.</p>
+    <button type="button" (click)="loadCatalog()">Retry</button>
+  } @else if (index) {
+    <div class="filters">
+      <label>Search scenarios
+        <input type="search" placeholder="Pursuit, scouting, C-05…" #search (input)="query.set(search.value)" />
+      </label>
+      <label>Group
+        <select #category (change)="group.set(category.value)">
+          <option value="">All groups</option>
+          @for (name of groups(); track name) { <option [value]="name">{{ name }}</option> }
+        </select>
+      </label>
+    </div>
+
+    <div class="layout">
+      <div class="scenario-list" aria-label="Scenario groups">
+        @for (group of visibleGroups(); track group.name) {
+          <section class="scenario-group">
+            <h2>{{ group.name }}</h2>
+            @for (scenario of group.entries; track scenario.id) {
+              <button class="scenario-row" type="button" [attr.aria-pressed]="selected()?.id === scenario.id"
+                      [disabled]="launching() !== null" (click)="select(scenario)">
+                <span class="scenario-id">{{ scenario.id }}</span>
+                <span>{{ scenario.title !== scenario.id ? scenario.title : scenario.outcome ?? scenario.id }}</span>
+              </button>
+            }
+          </section>
+        } @empty {
+          <p>No scenarios match your search.</p>
+        }
+      </div>
+
+      <section class="details" aria-label="Selected scenario" aria-live="polite">
+        @if (selected(); as scenario) {
+          @let authoredSetup = recipe()?.acceptance?.setup;
+          <h2>{{ scenario.title }}</h2>
+          @if (scenario.setup; as setup) {
+            <p>{{ setup }}</p>
+          } @else if (authoredSetup) {
+            <ul>
+              @for (line of authoredSetup; track $index) { <li>{{ line }}</li> }
+            </ul>
+          }
+          @if (scenario.outcome; as outcome) {
+            <h3>What to watch for</h3>
+            <p>{{ outcome }}</p>
+          }
+          @if (scenario.unavailable; as reason) { <p>{{ reason }}</p> }
+          @if (loadingRecipe()) { <p>Loading preset variants…</p> }
+          @if (error(); as message) { <p class="error" role="alert">{{ message }}</p> }
+          @if (recipe() && variants().length > 0) {
+            <h3>Preset variants</h3>
+            <ul class="variants">
+              @for (item of variants(); track item.variant.id) {
+                <li>
+                  <div>
+                    <strong>{{ item.variant.id }}</strong>
+                    <small>{{ item.variant.aiFaction }} AI · {{ item.variant.difficulty }} · {{ item.map }}</small>
+                    @if (item.blocker; as blocker) { <small>{{ blocker }}</small> }
+                  </div>
+                  <button type="button" [disabled]="item.blocker !== null || launching() !== null" (click)="play(item.variant)">
+                    {{ launching() === item.variant.id ? 'Starting…' : 'Watch' }}
+                  </button>
+                </li>
+              }
+            </ul>
+          } @else if (recipe()) {
+            <p>No preset variants are linked to this case.</p>
+          }
+        } @else {
+          <h2>Choose a scenario</h2>
+          <p>Browse {{ index.scenarios.length }} cases by gameplay topic, then pick a preset to launch.</p>
+        }
+      </section>
+    </div>
+  } @else {
+    <p role="status">Loading scenarios…</p>
+  }
+</main>

@@ -1,4 +1,7 @@
-import { createAiProductionPolicyFixture, createAiProducerThreat } from "../../testing/fixtures/production/ai-production-policy-fixture";
+import {
+  createAiProducerThreat,
+  createAiProductionPolicyFixture
+} from "../../testing/fixtures/production/ai-production-policy-fixture";
 import { hasCredibleAiEconomyThreat } from "../economy/service/ai-economy-policy";
 import { isAiProducerPositionExposed } from "./ai-producer-safety";
 

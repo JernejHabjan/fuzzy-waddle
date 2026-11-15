@@ -52,6 +52,10 @@ describe("MainMenuButtonsComponent", () => {
     expect(component).toBeTruthy();
   });
 
+  it("links to the development AI scenario catalog", () => {
+    expect(fixture.nativeElement.textContent).toContain("AI Scenarios");
+  });
+
   it("replaces the desktop sign-in button with a cancel action while OAuth is pending", () => {
     isDesktopSignInPending.set(true);
     fixture.detectChanges();

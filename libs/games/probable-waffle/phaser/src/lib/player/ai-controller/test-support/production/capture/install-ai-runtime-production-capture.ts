@@ -3,14 +3,14 @@ import Phaser from "phaser";
 import type { ProbableWaffleScene } from "../../../../../core/probable-waffle.scene";
 import { AiRuntimeProductionCapture } from "./ai-runtime-production-capture";
 import { AiRuntimeMovementOnlyCapture } from "../../navigation/capture/ai-runtime-movement-only-capture";
-import { readAiRuntimeBrowserTestConfig } from "../../browser/ai-runtime-browser-test-config";
+import { readAiRuntimeSceneConfig } from "../../browser/ai-runtime-scene-config";
 
 /** Installs before preset money/work is applied. Ordinary scenes and unmarked developer worlds have no observer. */
 export function installAiRuntimeProductionCapture(scene: ProbableWaffleScene): void {
   if (environment.production || typeof window === "undefined") return;
   const host = window.__fuzzyWaddleAiRuntimeBrowserTest;
   if (!host || host.game !== scene.game || host.productionCapture) return;
-  const config = readAiRuntimeBrowserTestConfig();
+  const config = readAiRuntimeSceneConfig(scene.game);
   if (!config?.captureProduction) return;
   const capture = config.captureMovementOnly
     ? new AiRuntimeMovementOnlyCapture(scene)

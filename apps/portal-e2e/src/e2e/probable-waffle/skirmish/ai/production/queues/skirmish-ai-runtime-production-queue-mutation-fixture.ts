@@ -1,10 +1,19 @@
-import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
-import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
-import type { AiRuntimeProductionBoundaryState } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-boundary-state";
-import type { AiRuntimeQueueMutation } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/queues/ai-runtime-queue-mutation";
+import {
+  requireAiTestEntry
+} from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type {
+  AiRuntimeProductionBoundaryState
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-boundary-state";
+import type {
+  AiRuntimeQueueMutation
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/queues/ai-runtime-queue-mutation";
 import { productionOperationFixture } from "../fixtures/skirmish-ai-runtime-production-operation-fixture";
 import { productionRefundOperationFixture } from "../resources/skirmish-ai-runtime-production-refund-operation-fixture";
 import { calculateRuntimeQueueLiabilities } from "../ownership/skirmish-ai-runtime-queue-liabilities";
+
 /** Invented physical mutation/native lineage contracts only; no live setup, actor creation or AI strategic outcome. */
 export function productionQueueMutationFixture(
   kind: "immediate" | "tick" | "completion" | "cancel" = "tick",

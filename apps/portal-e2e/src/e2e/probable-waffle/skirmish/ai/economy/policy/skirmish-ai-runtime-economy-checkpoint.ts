@@ -45,7 +45,9 @@ export async function captureRuntimeEconomyCheckpoint(
       const bridge = parts.controller.getBrainCommandBridgeSnapshot();
       const debug = parts.controller.getBrainDebugSnapshot();
       if (!observation || !state || !catalog || !bridge)
-        throw new Error(`runtime_checkpoint_not_committed:observation=${!!observation},state=${!!state},catalog=${!!catalog},bridge=${!!bridge}`);
+        throw new Error(
+          `runtime_checkpoint_not_committed:observation=${!!observation},state=${!!state},catalog=${!!catalog},bridge=${!!bridge}`
+        );
       const selfActors = observation.actors.filter(
         (actor) => actor.relation === "self" && actor.visibility === "owned"
       );

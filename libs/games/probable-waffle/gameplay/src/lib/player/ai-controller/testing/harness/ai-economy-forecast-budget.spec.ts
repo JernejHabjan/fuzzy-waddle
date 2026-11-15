@@ -3,8 +3,11 @@ import { ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waf
 import type { AiCapabilityCatalog } from "../../contracts/observation/ai-capability-catalog";
 
 import { unknownAiValue } from "../fixtures/coordination/ai-test-fixtures";
-import { catalog, demand, world, proposal } from "../fixtures/economy/ai-economy-forecast-test-fixtures";
-import { aiResourceForecastDeficit, projectAiResourceForecasts } from "../../planning/economy/forecast/ai-resource-forecast";
+import { catalog, demand, proposal, world } from "../fixtures/economy/ai-economy-forecast-test-fixtures";
+import {
+  aiResourceForecastDeficit,
+  projectAiResourceForecasts
+} from "../../planning/economy/forecast/ai-resource-forecast";
 import { canAffordAiEconomyCost } from "../../planning/economy/service/ai-economy-policy";
 
 describe("typed deterministic economy forecast scenarios", () => {

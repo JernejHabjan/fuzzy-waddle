@@ -3,7 +3,11 @@ import type { AiTransportPlanContext } from "./ai-transport-plan-context";
 import { createAiTransportCapacityDemand, createAiTransportIntentBase } from "./ai-transport-plan-intents";
 import type { AiTransportPlanWithLifecycle } from "./ai-transport-plan-lifecycle";
 import { hasAiTransportNonTerminalOutcome, withAiTransportPhase } from "./ai-transport-plan-state";
-import { assignAiTransportSeats, chooseAiTransportTransfers, mobileAiTransportActors } from "../coordination/ai-transport-transfer";
+import {
+  assignAiTransportSeats,
+  chooseAiTransportTransfers,
+  mobileAiTransportActors
+} from "../coordination/ai-transport-transfer";
 import { AI_TRANSPORT_BOARDING_TIMEOUT_TICKS } from "../coordination/ai-transport-constants";
 
 function findAiTransportEntries(catalog: AiCapabilityCatalog | undefined, plan: AiTransportPlanWithLifecycle) {

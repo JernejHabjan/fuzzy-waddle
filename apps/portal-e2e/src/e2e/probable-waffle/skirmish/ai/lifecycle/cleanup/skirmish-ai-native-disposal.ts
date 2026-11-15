@@ -1,6 +1,7 @@
 import type { Page } from "@playwright/test";
-import type { AiRuntimeBrowserTestHost } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/browser/ai-runtime-browser-test-host";
+import type {
+  AiRuntimeBrowserTestHost
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/browser/ai-runtime-browser-test-host";
 import type { ProbableWaffleScene } from "@fuzzy-waddle/probable-waffle-phaser/core/probable-waffle.scene";
 import type { NavigationService } from "@fuzzy-waddle/probable-waffle-phaser/world/services/navigation.service";
 import type { ActorIndexSystem } from "@fuzzy-waddle/probable-waffle-phaser/world/services/ActorIndexSystem";
@@ -12,12 +13,17 @@ export async function captureNativeDisposal(page: Page): Promise<NativeDisposalE
     const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost };
     const host = realm.__fuzzyWaddleAiRuntimeBrowserTest;
     const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
-      ProbableWaffleScene | undefined;
+      | ProbableWaffleScene
+      | undefined;
     if (!scene || !host) throw new Error("disposal_live_scene_missing");
     const services: readonly object[] = scene.getSceneGameData().services;
-    const navigation = services.find((entry): entry is NavigationService =>
-      "getNativeNavigationBoundary" in entry && "findPathFromGameObjectToTile" in entry);
-    const index = services.find((entry): entry is ActorIndexSystem => "getOwnedActors" in entry && "getActorById" in entry);
+    const navigation = services.find(
+      (entry): entry is NavigationService =>
+        "getNativeNavigationBoundary" in entry && "findPathFromGameObjectToTile" in entry
+    );
+    const index = services.find(
+      (entry): entry is ActorIndexSystem => "getOwnedActors" in entry && "getActorById" in entry
+    );
     const id = host.presetApplication?.createdActorIds["army-0"];
     const actor = id && index?.getActorById(id);
     if (!navigation || !actor) throw new Error("disposal_original_actor_or_navigation_missing");
@@ -32,8 +38,12 @@ export async function captureNativeDisposal(page: Page): Promise<NativeDisposalE
     scene.scene.stop();
     const outcome = await pending;
     const after = navigation.getNativeNavigationBoundary();
-    return { pendingBeforeShutdown, settledWithNull: outcome === null, sceneInactive: !scene.scene.isActive(),
+    return {
+      pendingBeforeShutdown,
+      settledWithNull: outcome === null,
+      sceneInactive: !scene.scene.isActive(),
       controllerDetached: !window.__fuzzyWaddleAiRuntimeParts?.(2),
-      nativeCacheCleared: !!before && !!after && after.groundCacheClear > before.groundCacheClear };
+      nativeCacheCleared: !!before && !!after && after.groundCacheClear > before.groundCacheClear
+    };
   });
 }

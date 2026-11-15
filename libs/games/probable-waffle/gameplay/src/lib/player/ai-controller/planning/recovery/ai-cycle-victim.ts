@@ -29,14 +29,29 @@ export function selectAiCycleVictim(state: AiBrainState): AiPlanId | null {
     const bundle = state.reservations.filter((claim) => claim.ownerPlanId === planId);
     if (!bundle.length || bundle.some((claim) => claim.state.kind !== "provisional" || !claim.priority)) return [];
     // A provisional label may lag synchronous shared dispatch. Positive original lifecycle evidence fences the whole purpose.
-    if (bundle.some((claim) => claim.subjectKey?.startsWith("effect:") && state.pendingOutcomes.some((outcome) =>
-      claim.subjectKey === `effect:${outcome.identity.effectId}` &&
-      ["dispatched", "applied", "active", "completed"].includes(outcome.kind)))) return [];
-    const priority = bundle.map((claim) => claim.priority).filter((rank) => rank !== undefined)
+    if (
+      bundle.some(
+        (claim) =>
+          claim.subjectKey?.startsWith("effect:") &&
+          state.pendingOutcomes.some(
+            (outcome) =>
+              claim.subjectKey === `effect:${outcome.identity.effectId}` &&
+              ["dispatched", "applied", "active", "completed"].includes(outcome.kind)
+          )
+      )
+    )
+      return [];
+    const priority = bundle
+      .map((claim) => claim.priority)
+      .filter((rank) => rank !== undefined)
       .sort((left, right) => left.urgencyClass - right.urgencyClass || right.utility - left.utility)[0];
     return priority ? [{ planId, priority }] : [];
   });
-  candidates.sort((left, right) => right.priority.urgencyClass - left.priority.urgencyClass ||
-    left.priority.utility - right.priority.utility || left.planId.localeCompare(right.planId));
+  candidates.sort(
+    (left, right) =>
+      right.priority.urgencyClass - left.priority.urgencyClass ||
+      left.priority.utility - right.priority.utility ||
+      left.planId.localeCompare(right.planId)
+  );
   return candidates[0]?.planId ?? null;
 }

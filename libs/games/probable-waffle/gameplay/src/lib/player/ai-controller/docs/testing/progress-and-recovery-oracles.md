@@ -15,7 +15,7 @@ Typed `AiProgressContract`, `AiBlocker`, `AiProgressEvidence` and `AiRecoveryEpi
 - retry/escalation level, cumulative failure age, permitted fallback and claim-release policy.
 
 | Work          | Meaningful evidence                                                                                   | Not evidence                                                                               |
-| ------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+|---------------|-------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------|
 | Economy       | Resource delivered, useful harvest/growth/service progress, improved reachable income route           | Gather order reissued, worker circling, predicted income with no delivery                  |
 | Construction  | Legal site applied, actual build progress, completed usable capacity with access                      | New plan ID, repeated placement proposal, abandoned foundations accumulating               |
 | Production    | Queue item applied and advances, legal unit spawns and joins useful duty                              | Repeated train request, indefinitely reserved resources, blocked spawn reported as success |

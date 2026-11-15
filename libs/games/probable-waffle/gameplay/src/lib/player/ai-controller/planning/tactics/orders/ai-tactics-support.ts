@@ -1,9 +1,9 @@
-import { aiDeadline } from "../../../contracts/ai-core-types";
 import type { AiPlanId } from "../../../contracts/ai-core-types";
+import { aiDeadline } from "../../../contracts/ai-core-types";
 import type { AiSquadState, AiSupportState } from "../../../contracts/state/ai-state-contracts";
 import type { AiIntent } from "../../../contracts/commands/ai-intent";
 import type { AiObservation, AiObservedActor } from "../../../contracts/observation/ai-observation";
-import { knownPosition, distance, movementDomains } from "../combat/ai-tactics-geometry";
+import { distance, knownPosition, movementDomains } from "../combat/ai-tactics-geometry";
 import { intentBase } from "./ai-tactics-orders";
 
 export function proposeAiTacticalSupport(

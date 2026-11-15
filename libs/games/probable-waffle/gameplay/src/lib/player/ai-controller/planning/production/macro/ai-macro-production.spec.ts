@@ -2,7 +2,10 @@ import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protoco
 
 import type { AiCapabilityCatalog } from "../../../contracts/observation/ai-capability-catalog";
 
-import { createAiTestObservation, createAiTestOwnedActor } from "../../../testing/fixtures/coordination/ai-test-fixtures";
+import {
+  createAiTestObservation,
+  createAiTestOwnedActor
+} from "../../../testing/fixtures/coordination/ai-test-fixtures";
 
 import { AiMacroManager } from "./ai-macro-manager";
 import { catalog, completedOpeningState } from "../../../testing/fixtures/production/ai-macro-test-fixtures";

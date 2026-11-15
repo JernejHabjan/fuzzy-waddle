@@ -1,5 +1,8 @@
-import { createAiProductionPolicyFixture, createAiProducerThreat } from "../../testing/fixtures/production/ai-production-policy-fixture";
-import type { AiObservedActor, AiObservation } from "../../contracts/observation/ai-observation";
+import {
+  createAiProducerThreat,
+  createAiProductionPolicyFixture
+} from "../../testing/fixtures/production/ai-production-policy-fixture";
+import type { AiObservation, AiObservedActor } from "../../contracts/observation/ai-observation";
 import { proposeAiMilitaryCapacity } from "../production/capacity/ai-military-capacity-proposal";
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 

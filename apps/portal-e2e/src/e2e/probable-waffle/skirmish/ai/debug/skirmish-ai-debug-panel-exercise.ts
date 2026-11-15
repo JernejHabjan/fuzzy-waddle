@@ -2,7 +2,6 @@ import { resolve } from "node:path";
 import type { Page } from "@playwright/test";
 
 interface DebugPanel {
-  toggleLabels(): void;
   labels: {
     historyOffset: number;
     lastTelemetryAt: number;
@@ -16,6 +15,8 @@ interface DebugPanel {
   backButton?: { emit(event: string): boolean };
   playerBackButton?: { emit(event: string): boolean };
   panelBackdrop: { getBounds(): { left: number; right: number; top: number; bottom: number } };
+
+  toggleLabels(): void;
 }
 
 export async function exerciseDebug(
@@ -26,7 +27,8 @@ export async function exerciseDebug(
   screenshotDirectory?: string
 ): Promise<void> {
   if (mode === "hidden") {
-    if (checkpointIndex === 1 && screenshotDirectory) await page.screenshot({ path: resolve(screenshotDirectory, "hidden.png") });
+    if (checkpointIndex === 1 && screenshotDirectory)
+      await page.screenshot({ path: resolve(screenshotDirectory, "hidden.png") });
     return;
   }
   if (checkpointIndex === -1) {
@@ -35,7 +37,9 @@ export async function exerciseDebug(
         const host = (
           window as unknown as {
             __fuzzyWaddleAiRuntimeBrowserTest?: {
-              game: { scene: { getScenes(active: boolean): { scene: { key: string }; aiControllerDebugPanel?: unknown }[] } };
+              game: {
+                scene: { getScenes(active: boolean): { scene: { key: string }; aiControllerDebugPanel?: unknown }[] };
+              };
             };
           }
         ).__fuzzyWaddleAiRuntimeBrowserTest;
@@ -74,9 +78,10 @@ export async function exerciseDebug(
         const scenes = host?.game.scene.getScenes(false).map((scene) => ({
           key: scene.scene.key,
           hasPanel: !!(scene as { aiControllerDebugPanel?: unknown }).aiControllerDebugPanel,
-          hudChildren: scene.scene.key === "HudProbableWaffle"
-            ? scene.children?.list.map((child) => (child as { constructor: { name: string } }).constructor.name)
-            : undefined
+          hudChildren:
+            scene.scene.key === "HudProbableWaffle"
+              ? scene.children?.list.map((child) => (child as { constructor: { name: string } }).constructor.name)
+              : undefined
         }));
         throw new Error(`debug_panel_missing:${JSON.stringify(scenes)}`);
       }
@@ -84,7 +89,8 @@ export async function exerciseDebug(
         panel.toggleLabels();
         if (panel.playerButtons.size !== 1) throw new Error("debug_player_buttons_missing");
         if (!panel.playerButtons.get(2)?.emit("pointerdown")) throw new Error("debug_player_two_click_missing");
-        if (!panel.categoryButtons.get("overview")?.emit("pointerdown")) throw new Error("debug_overview_click_missing");
+        if (!panel.categoryButtons.get("overview")?.emit("pointerdown"))
+          throw new Error("debug_overview_click_missing");
       }
       if (selectedMode === "historical" && index === 1) {
         const label = panel.labels[0];
@@ -105,7 +111,12 @@ export async function exerciseDebug(
         }
         if (/production_sim|claim_conflict/u.test(text)) throw new Error("overview_leaked_raw_reason_code");
         const bounds = panel.panelBackdrop.getBounds();
-        if (bounds.left < 0 || bounds.right > window.innerWidth || bounds.top < 0 || bounds.bottom > window.innerHeight) {
+        if (
+          bounds.left < 0 ||
+          bounds.right > window.innerWidth ||
+          bounds.top < 0 ||
+          bounds.bottom > window.innerHeight
+        ) {
           throw new Error(`debug_panel_clipped:${JSON.stringify(bounds)}`);
         }
       }
@@ -117,15 +128,18 @@ export async function exerciseDebug(
         if (!panel.backButton?.emit("pointerdown")) throw new Error("debug_category_back_click_missing");
         if (!panel.playerBackButton?.emit("pointerdown")) throw new Error("debug_player_back_click_missing");
         if (!panel.playerButtons.get(2)?.emit("pointerdown")) throw new Error("debug_player_reselect_click_missing");
-        if (!panel.categoryButtons.get("transport")?.emit("pointerdown")) throw new Error("debug_transport_click_missing");
+        if (!panel.categoryButtons.get("transport")?.emit("pointerdown"))
+          throw new Error("debug_transport_click_missing");
         if (!panel.backButton?.emit("pointerdown")) throw new Error("debug_transport_back_click_missing");
-        if (!panel.categoryButtons.get("overview")?.emit("pointerdown")) throw new Error("debug_overview_return_click_missing");
+        if (!panel.categoryButtons.get("overview")?.emit("pointerdown"))
+          throw new Error("debug_overview_return_click_missing");
         if (panel.labels.length !== 1) throw new Error("debug_category_switch_leaked_label");
         if (firstLabel.active || firstLabel.telemetryText.listenerCount("wheel") !== 0) {
           throw new Error("debug_replaced_label_listener_leaked");
         }
         if (overlay.active) throw new Error("debug_replaced_label_overlay_leaked");
-        if (!panel.labels[0]?.playerName.text.includes("Player 2")) throw new Error("debug_player_selection_not_visible");
+        if (!panel.labels[0]?.playerName.text.includes("Player 2"))
+          throw new Error("debug_player_selection_not_visible");
       }
       if (selectedMode === "exported" && index >= 1) {
         const controller = window.__fuzzyWaddleAiRuntimeParts?.(2)?.controller;
@@ -140,4 +154,3 @@ export async function exerciseDebug(
     await page.screenshot({ path: resolve(screenshotDirectory, `${mode}.png`) });
   }
 }
-

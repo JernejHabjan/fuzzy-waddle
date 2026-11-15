@@ -16,26 +16,54 @@ export interface NativeSequenceProof {
 
 /** Independent supported SP and MP chains share actual save/transfer owners, never a fabricated combined reload. */
 export async function runNativeSequenceVariant(
-  browser: Browser, fixture: RuntimeFixture, variant: RuntimeVariant, request: RuntimeRequest, branch: string
+  browser: Browser,
+  fixture: RuntimeFixture,
+  variant: RuntimeVariant,
+  request: RuntimeRequest,
+  branch: string
 ) {
   let singlePlayer: NativeSequenceProof["singlePlayer"] | undefined;
   let controlScore: NativeSequenceProof["controlScore"] | undefined;
   let multiplayer: NativeSequenceProof["multiplayer"];
-  const result = await runNativeSaveVariant(browser, fixture, variant, request,
-    branch === "host_transfer" ? "before_apply" : branch, undefined, async (page) => {
+  const result = await runNativeSaveVariant(
+    browser,
+    fixture,
+    variant,
+    request,
+    branch === "host_transfer" ? "before_apply" : branch,
+    undefined,
+    async (page) => {
       singlePlayer = await runNativeSequenceTail(page, 2, fixture, variant, request, false);
-    }, async (page) => {
+    },
+    async (page) => {
       await advanceRuntimeFrames(page, 2, 18000, 1, true);
       controlScore = await readNativeSequenceScore(page, 2);
       if (!["win", "loss", "tie"].includes(controlScore.result ?? ""))
         throw new Error("native_sequence_original_control_did_not_finish");
-    });
-  const nativeProfileTransfer = branch === "host_transfer" ? await runNativeProfileTransfer(browser, {
-    seed: request.seed ?? variant.seed, aiFaction: variant.aiFaction, aiDifficulty: variant.difficulty,
-    lateDeliveryOrder: "command_then_receipt"
-  }, async (page) => { multiplayer = await runNativeSequenceTail(page, 3, fixture, variant, request, true); }) : undefined;
-  if (!singlePlayer || !controlScore || branch === "host_transfer" && !multiplayer)
+    }
+  );
+  const nativeProfileTransfer =
+    branch === "host_transfer"
+      ? await runNativeProfileTransfer(
+          browser,
+          {
+            seed: request.seed ?? variant.seed,
+            aiFaction: variant.aiFaction,
+            aiDifficulty: variant.difficulty,
+            lateDeliveryOrder: "command_then_receipt"
+          },
+          async (page) => {
+            multiplayer = await runNativeSequenceTail(page, 3, fixture, variant, request, true);
+          }
+        )
+      : undefined;
+  if (!singlePlayer || !controlScore || (branch === "host_transfer" && !multiplayer))
     throw new Error("native_sequence_supported_chain_missing");
-  const nativeSequence: NativeSequenceProof = { branch, controlScore, singlePlayer, ...(multiplayer ? { multiplayer } : {}) };
+  const nativeSequence: NativeSequenceProof = {
+    branch,
+    controlScore,
+    singlePlayer,
+    ...(multiplayer ? { multiplayer } : {})
+  };
   return { ...result, nativeSequence, ...(nativeProfileTransfer ? { nativeProfileTransfer } : {}) };
 }

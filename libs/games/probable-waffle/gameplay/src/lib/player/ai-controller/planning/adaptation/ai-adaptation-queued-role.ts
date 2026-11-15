@@ -9,14 +9,18 @@ export function queuedAdaptationRoleItemIds(
   catalog: AiCapabilityCatalog,
   role: AiAdaptationRole
 ): readonly string[] {
-  return [...new Set(observation.actors
-    .filter((actor) => actor.relation === "self" && actor.visibility === "owned" && actor.queue.status === "known")
-    .flatMap((actor) => actor.queue.status === "known" ? (actor.queue.value.items ?? []) : [])
-    .filter((item) => {
-      if (item.kind !== "production" || item.objectName === null) return false;
-      return catalog.entries.some((entry) =>
-        entry.sourceObjectName === item.objectName && matchesAdaptationRole(entry, role)
-      );
-    })
-    .map((item) => item.itemId))].sort();
+  return [
+    ...new Set(
+      observation.actors
+        .filter((actor) => actor.relation === "self" && actor.visibility === "owned" && actor.queue.status === "known")
+        .flatMap((actor) => (actor.queue.status === "known" ? (actor.queue.value.items ?? []) : []))
+        .filter((item) => {
+          if (item.kind !== "production" || item.objectName === null) return false;
+          return catalog.entries.some(
+            (entry) => entry.sourceObjectName === item.objectName && matchesAdaptationRole(entry, role)
+          );
+        })
+        .map((item) => item.itemId)
+    )
+  ].sort();
 }

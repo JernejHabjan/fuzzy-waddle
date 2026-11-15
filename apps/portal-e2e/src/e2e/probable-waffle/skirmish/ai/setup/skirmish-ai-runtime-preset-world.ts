@@ -1,9 +1,10 @@
 // prettier-ignore
-import type { AiRuntimePresetWorld } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-world";
+import type { AiRuntimePresetWorld } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-world";
 // prettier-ignore
-import type { AiRuntimePresetControl } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/controls/ai-runtime-preset-control";
+import type {
+  AiRuntimePresetControl
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/controls/ai-runtime-preset-control";
+
 export interface RuntimePresetWorld {
   readonly fixtureId: string;
   /** Permutes real emitted proposer batches before arbitration; never supplies fixture intents. */

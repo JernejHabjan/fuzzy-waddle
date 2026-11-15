@@ -78,10 +78,7 @@ export function selectAiNavalShoreFiringPosition(
     )[0]?.carrierPosition;
 }
 
-function selectAiNavalWaterFiringPosition(
-  context: AiSkirmishProposalContext,
-  opponent: AiObservedActor
-) {
+function selectAiNavalWaterFiringPosition(context: AiSkirmishProposalContext, opponent: AiObservedActor) {
   const targetPosition = position(opponent);
   if (!targetPosition) return undefined;
   const attackers = context.combat.filter((actor) => domains(actor).includes("water") && canTarget(actor, opponent));
@@ -103,13 +100,12 @@ function selectAiNavalWaterFiringPosition(
     );
   const distanceFromNavalForce = (candidate: (typeof candidates)[number]) =>
     Math.min(...attackers.map((actor) => distance(position(actor) ?? candidate.position, candidate.position)));
-  return candidates
-    .sort(
-      (left, right) =>
-        distanceFromNavalForce(left) - distanceFromNavalForce(right) ||
-        distance(left.position, targetPosition) - distance(right.position, targetPosition) ||
-        left.tileKey.localeCompare(right.tileKey)
-    )[0]?.position;
+  return candidates.sort(
+    (left, right) =>
+      distanceFromNavalForce(left) - distanceFromNavalForce(right) ||
+      distance(left.position, targetPosition) - distance(right.position, targetPosition) ||
+      left.tileKey.localeCompare(right.tileKey)
+  )[0]?.position;
 }
 
 export function selectAiNavalFiringPosition(

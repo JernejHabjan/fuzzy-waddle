@@ -1,19 +1,20 @@
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiFortificationNodeState, AiFortificationState } from "../../contracts/state/ai-state-contracts";
-import type { AiCapabilityCatalogEntry, AiCapabilityCatalog } from "../../contracts/observation/ai-capability-catalog";
+import type { AiCapabilityCatalog, AiCapabilityCatalogEntry } from "../../contracts/observation/ai-capability-catalog";
 
 import type { AiObservation } from "../../contracts/observation/ai-observation";
 import type { AiProfileConfig } from "../../contracts/ai-profile-config";
 
 import {
   AI_FORTIFICATION_GRAPH_CAPS,
-  tileKey,
-  positionOf,
+  type ConstructionCell,
   constructionEntry,
-  type ConstructionCell
+  positionOf,
+  tileKey
 } from "./ai-fortification-support";
 import { fortificationPreservesConnectivity } from "./ai-fortification-connectivity";
+
 type Axis = "x" | "y";
 export type FortificationLayoutRejection =
   | "fortification_front_unobserved"

@@ -1,11 +1,13 @@
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { isDeepStrictEqual } from "node:util";
 // prettier-ignore
-import type { AiRuntimeProductionFact } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 // prettier-ignore
-import type { AiRuntimeUnspentClaimsSnapshot } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/authority/claims/ai-runtime-unspent-claims-snapshot";
+import type {
+  AiRuntimeUnspentClaimsSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/authority/claims/ai-runtime-unspent-claims-snapshot";
 import { sameRuntimeQueueVector } from "../../production/ownership/skirmish-ai-runtime-scoped-queue-payments";
 
 /** Construction ownership is selected cash until exact admission and native site payment; placement alone never spends it. */

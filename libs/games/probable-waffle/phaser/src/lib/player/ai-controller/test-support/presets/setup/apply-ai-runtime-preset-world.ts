@@ -34,7 +34,8 @@ import { installAiRuntimeProductionCapture } from "../../production/capture/inst
 import { mountAiRuntimeBundleImport } from "../../../../../prefabs/gui/debug/ai-runtime-bundle-import";
 import { installAiRuntimePresetEvents } from "../controls/install-ai-runtime-preset-events";
 import { assertAiRuntimePresetRoster } from "../validation/assert-ai-runtime-preset-roster";
-import { readAiRuntimeBrowserTestConfig, recordAiRuntimePresetApplication } from "../../browser/ai-runtime-browser-test-config";
+import { recordAiRuntimePresetApplication } from "../../browser/ai-runtime-browser-test-config";
+import { readAiRuntimeSceneConfig } from "../../browser/ai-runtime-scene-config";
 
 /** Applies a validated preset after normal map indexing and before the first simulation tick or AI observation. */
 export function applyAiRuntimePresetWorld(scene: GameProbableWaffleScene, creator: SceneActorCreator): void {
@@ -44,14 +45,14 @@ export function applyAiRuntimePresetWorld(scene: GameProbableWaffleScene, creato
   // A save owns actors, balances and queues. Restore only authored fixture terrain, which is map geometry and
   // intentionally is not part of the game save payload; skip actor-sensitive footprint filtering on reload.
   if (scene.baseGameData.gameInstance.gameInstanceMetadata.data.startOptions.loadFromSave) {
-    const savedPreset = readAiRuntimeBrowserTestConfig()?.presetWorld;
+    const savedPreset = readAiRuntimeSceneConfig(scene.game)?.presetWorld;
     if (savedPreset?.terrainPatches?.length) {
       applyAiRuntimeTerrainPatches(scene.tilemap, { terrainPatches: savedPreset.terrainPatches });
       scene.events.emit(NavigationService.UpdateNavigationEvent);
     }
     return;
   }
-  const preset = readAiRuntimeBrowserTestConfig()?.presetWorld;
+  const preset = readAiRuntimeSceneConfig(scene.game)?.presetWorld;
   if (!preset) return;
   assertAiRuntimePresetRoster(scene, preset);
   const validOwners = new Set(

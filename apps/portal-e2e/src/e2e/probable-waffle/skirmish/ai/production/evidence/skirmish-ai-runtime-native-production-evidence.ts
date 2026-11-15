@@ -1,12 +1,14 @@
 import type { RuntimeProductionCausality } from "../decisions/skirmish-ai-runtime-production-causality";
 // prettier-ignore
-import type { AiRuntimeProductionSnapshot } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
 import type { normalizeRuntimeProductionSetup } from "../fixtures/skirmish-ai-runtime-production-setup";
 import type { RuntimeNativeProductionLifecycle } from "../lifecycle/skirmish-ai-runtime-native-production-lifecycle";
 // prettier-ignore
-import type { AiRuntimeQueueCatalogEntry } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/queues/ai-runtime-queue-catalog-entry";
+import type {
+  AiRuntimeQueueCatalogEntry
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/queues/ai-runtime-queue-catalog-entry";
 
 /** Distinct proof clocks and native authority. Diagnostic omissions remain visible and prevent full acceptance. */
 export interface RuntimeNativeProductionEvidence {

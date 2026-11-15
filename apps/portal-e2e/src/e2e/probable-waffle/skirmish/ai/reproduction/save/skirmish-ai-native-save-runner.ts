@@ -15,7 +15,9 @@ import {
   captureNativeSaveNavigationDiagnostics,
   type NativeSaveNavigationDiagnostics
 } from "./skirmish-ai-native-save-navigation-diagnostics";
-import type { AiRuntimeBrowserTestHost } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/browser/ai-runtime-browser-test-host";
+import type {
+  AiRuntimeBrowserTestHost
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/browser/ai-runtime-browser-test-host";
 
 /** Seal the original autonomous SP interval, rewind the real encrypted save and repeat the same logical ticks. */
 export async function runNativeSaveVariant(

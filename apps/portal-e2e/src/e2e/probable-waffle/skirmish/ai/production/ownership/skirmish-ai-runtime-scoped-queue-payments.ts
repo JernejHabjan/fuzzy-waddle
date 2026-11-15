@@ -1,5 +1,7 @@
-import { ResourceType, type GameCommand } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import { type GameCommand, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
 import { sameRuntimeQueueCommand } from "./skirmish-ai-runtime-queue-command-equality";
 
 /** Numeric comparison accepts sparse definition costs and full authority balances, without accepting non-finite money. */

@@ -1,7 +1,8 @@
 import { isDeepStrictEqual } from "node:util";
 // prettier-ignore
-import type { AiRuntimeProductionSnapshot } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
 
 /** Exact test-controller lineage; human/shared commands must never acquire an invented selected AI intent. */
 export function projectRuntimeControlledCommands(capture: AiRuntimeProductionSnapshot) {

@@ -2,8 +2,20 @@ import { FactionType, ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle
 import type { AiObservedActor } from "../../../contracts/observation/ai-observation";
 import { createAiTestOwnedActor, unknownAiValue } from "../../../testing/fixtures/coordination/ai-test-fixtures";
 import { createAiBrainState } from "../../../brain/state/create-ai-brain-state";
-import { combatActor, fixtureState, squad, manager as tacticsManager } from "../../../testing/fixtures/tactics/ai-tactics-test-fixtures";
-import { homeNode, enemyNode, unit, observation, profile, manager } from "../../../testing/fixtures/strategy/ai-skirmish-test-fixtures";
+import {
+  combatActor,
+  fixtureState,
+  manager as tacticsManager,
+  squad
+} from "../../../testing/fixtures/tactics/ai-tactics-test-fixtures";
+import {
+  enemyNode,
+  homeNode,
+  manager,
+  observation,
+  profile,
+  unit
+} from "../../../testing/fixtures/strategy/ai-skirmish-test-fixtures";
 import { aiEconomySiteSafety } from "./ai-economy-site-safety";
 import { proposeAiGeneralGathering } from "../gathering/ai-general-gathering-proposal";
 import { AiRecoveryManager } from "../../recovery/ai-recovery-manager";

@@ -13,8 +13,8 @@ import { createAiProfileConfig } from "../../../profiles/ai-profile-defaults";
 import {
   createAiTestObservation,
   createAiTestOwnedActor,
-  unknownAiValue,
-  requireAiTestEntry
+  requireAiTestEntry,
+  unknownAiValue
 } from "../../../testing/fixtures/coordination/ai-test-fixtures";
 import { AiResourceServiceManager } from "./ai-resource-service-manager";
 import { canAffordAiEconomyCost } from "./ai-economy-policy";
@@ -195,7 +195,12 @@ describe("AiResourceServiceManager", () => {
     expect(baseline?.kind).toBe("construct");
     if (baseline?.kind !== "construct") throw new Error("fixture service proposal missing");
 
-    const occupiedSite = actor("occupant", ObjectNames.TivaraWorker, baseline.logicalPosition.x, baseline.logicalPosition.y);
+    const occupiedSite = actor(
+      "occupant",
+      ObjectNames.TivaraWorker,
+      baseline.logicalPosition.x,
+      baseline.logicalPosition.y
+    );
     const next = proposal(world(20, [occupiedSite])).intents[0];
 
     expect(next).toEqual(expect.objectContaining({ kind: "construct", objectName: ObjectNames.WorkMill }));
@@ -227,43 +232,50 @@ describe("AiResourceServiceManager", () => {
   });
 
   it("defers an optional remote service while credible visible threats pressure the home economy", () => {
-    const attackers = ["raider-a", "raider-b"].map((id, index) => ({
-      ...actor(id, ObjectNames.SkaduweeWarriorMale, 3 + index, 5),
-      owner: 2,
-      relation: "enemy" as const,
-      visibility: "visible" as const,
-      observedTick: 20,
-      combatProfile: {
-        status: "known" as const,
-        observedTick: 20,
-        value: {
-          maxHealth: 100,
-          maxArmour: 0,
-          passiveRegenerationPerSecond: 0,
-          armourPermille: 0,
-          attacks: [{
-            damage: 10,
-            cooldownTicks: 20,
-            remainingCooldownTicks: null,
-            range: 5,
-            minRange: 0,
-            highGroundRangeBonus: 0,
-            impactDelayTicks: 0,
-            areaRadius: 0,
-            targetDomains: ["ground"] as const
-          }],
-          healing: null,
-          spells: [],
-          statuses: []
-        }
-      }
-    } satisfies AiObservedActor));
+    const attackers = ["raider-a", "raider-b"].map(
+      (id, index) =>
+        ({
+          ...actor(id, ObjectNames.SkaduweeWarriorMale, 3 + index, 5),
+          owner: 2,
+          relation: "enemy" as const,
+          visibility: "visible" as const,
+          observedTick: 20,
+          combatProfile: {
+            status: "known" as const,
+            observedTick: 20,
+            value: {
+              maxHealth: 100,
+              maxArmour: 0,
+              passiveRegenerationPerSecond: 0,
+              armourPermille: 0,
+              attacks: [
+                {
+                  damage: 10,
+                  cooldownTicks: 20,
+                  remainingCooldownTicks: null,
+                  range: 5,
+                  minRange: 0,
+                  highGroundRangeBonus: 0,
+                  impactDelayTicks: 0,
+                  areaRadius: 0,
+                  targetDomains: ["ground"] as const
+                }
+              ],
+              healing: null,
+              spells: [],
+              statuses: []
+            }
+          }
+        }) satisfies AiObservedActor
+    );
     const observation = world(20, attackers);
     const pressured: AiObservation = {
       ...observation,
-      actors: observation.actors.map((observed) => observed.actorId === "main"
-        ? { ...observed, mainBuilding: { status: "known" as const, value: true, observedTick: 20 } }
-        : observed),
+      actors: observation.actors.map((observed) =>
+        observed.actorId === "main"
+          ? { ...observed, mainBuilding: { status: "known" as const, value: true, observedTick: 20 } }
+          : observed
+      ),
       threatSummary: {
         observedTick: observation.tick,
         visibleEnemyActorIds: attackers.map((attacker) => attacker.actorId),
@@ -289,17 +301,19 @@ describe("AiResourceServiceManager", () => {
           maxArmour: 0,
           passiveRegenerationPerSecond: 0,
           armourPermille: 0,
-          attacks: [{
-            damage: 20,
-            cooldownTicks: 28,
-            remainingCooldownTicks: null,
-            range: 7,
-            minRange: 0,
-            highGroundRangeBonus: 0,
-            impactDelayTicks: 10,
-            areaRadius: 0,
-            targetDomains: ["ground" as const]
-          }],
+          attacks: [
+            {
+              damage: 20,
+              cooldownTicks: 28,
+              remainingCooldownTicks: null,
+              range: 7,
+              minRange: 0,
+              highGroundRangeBonus: 0,
+              impactDelayTicks: 10,
+              areaRadius: 0,
+              targetDomains: ["ground" as const]
+            }
+          ],
           healing: null,
           spells: [],
           statuses: []
@@ -316,14 +330,16 @@ describe("AiResourceServiceManager", () => {
         if (observed.actorId === "worker-0") {
           return {
             ...observed,
-            capabilities: [{
-              id: "worker-0:gather",
-              family: "gather" as const,
-              level: 1,
-              domains: ["ground" as const],
-              targetDomains: [],
-              capacity: { status: "known" as const, value: 1, observedTick: 20 }
-            }]
+            capabilities: [
+              {
+                id: "worker-0:gather",
+                family: "gather" as const,
+                level: 1,
+                domains: ["ground" as const],
+                targetDomains: [],
+                capacity: { status: "known" as const, value: 1, observedTick: 20 }
+              }
+            ]
           };
         }
         return observed;

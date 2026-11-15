@@ -1,6 +1,8 @@
 import { isDeepStrictEqual } from "node:util";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
 import type { RuntimeResourceNeed } from "./skirmish-ai-runtime-resource-need";
 
 /** Validate every supplied tail before exposing a bounded group. Newer forecast snapshots never supply selection authority. */

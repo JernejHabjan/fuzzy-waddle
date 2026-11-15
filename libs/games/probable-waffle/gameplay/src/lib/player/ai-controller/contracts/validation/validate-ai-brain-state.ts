@@ -55,10 +55,18 @@ export function assertAiBrainState(value: unknown): asserts value is AiBrainStat
   const faults = value.scheduler.boundaryFaults;
   if (faults !== undefined) {
     if (!Array.isArray(faults) || faults.length > 32) throw new Error("invalid_ai_boundary_faults");
-    assertUnique(faults.map((fault) => fault.owner), "scheduler.boundaryFaults.owner");
+    assertUnique(
+      faults.map((fault) => fault.owner),
+      "scheduler.boundaryFaults.owner"
+    );
     for (const fault of faults) {
-      if (typeof fault.owner !== "string" || !fault.owner.length || typeof fault.reason !== "string" ||
-          fault.reason.length > 128) throw new Error("invalid_ai_boundary_fault");
+      if (
+        typeof fault.owner !== "string" ||
+        !fault.owner.length ||
+        typeof fault.reason !== "string" ||
+        fault.reason.length > 128
+      )
+        throw new Error("invalid_ai_boundary_fault");
       assertAiNonNegativeInteger(fault.failures, "boundaryFault.failures");
       if (fault.failures < 1 || fault.failures > 16) throw new Error("invalid_ai_boundary_failures");
       assertAiNonNegativeInteger(fault.lastFailureTick, "boundaryFault.lastFailureTick");

@@ -1,11 +1,11 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
 import type Phaser from "phaser";
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import type { ActorDefinition } from "@fuzzy-waddle/probable-waffle-protocol";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { digestCanonicalAiValue } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/persistence/canonical-ai-serialization";
-import type { ActorDefinition } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiRuntimeBrowserTestHost } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/browser/ai-runtime-browser-test-host";
 import type GameProbableWaffleScene from "@fuzzy-waddle/probable-waffle-phaser/world/scenes/GameProbableWaffleScene";
 import type { RuntimeFixture } from "../../contracts/skirmish-ai-runtime-fixture";

@@ -2,11 +2,13 @@ import { projectRuntimeControlledOutputs } from "../../contracts/skirmish-ai-run
 import { projectRuntimeControlledRefunds } from "../resources/skirmish-ai-runtime-production-controlled-refund";
 import { projectRuntimeControlledCommands } from "../authority/skirmish-ai-runtime-production-controlled-commands";
 // prettier-ignore
-import type { AiRuntimeProductionSnapshot } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
 // prettier-ignore
-import type { AiRuntimePresetApplication } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-application";
+import type {
+  AiRuntimePresetApplication
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-application";
 import type { RuntimeProductionCausality } from "../decisions/skirmish-ai-runtime-production-causality";
 import type { RuntimeNativeProductionLifecycle } from "./skirmish-ai-runtime-native-production-lifecycle";
 import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";

@@ -1,5 +1,5 @@
-import { test as it, expect } from "@playwright/test";
-import { nativeScoutTrips, nativeScoutingObjectiveResponse } from "./skirmish-ai-native-scouting-evaluation";
+import { expect, test as it } from "@playwright/test";
+import { nativeScoutingObjectiveResponse, nativeScoutTrips } from "./skirmish-ai-native-scouting-evaluation";
 
 function contextFor(executionEffectId: string, discoveryTick = 120) {
   const movement = {
@@ -19,7 +19,14 @@ function contextFor(executionEffectId: string, discoveryTick = 120) {
       {
         tick: 20,
         decision: {
-          acceptedIntents: [{ kind: "scout", effectId: "effect:stage9:scout:question", planId: "plan:squad:scout:primary", actorIds: ["scout"] }]
+          acceptedIntents: [
+            {
+              kind: "scout",
+              effectId: "effect:stage9:scout:question",
+              planId: "plan:squad:scout:primary",
+              actorIds: ["scout"]
+            }
+          ]
         },
         tacticalBoundary: { searchPoints: [{ pointId: "frontier", visible: false }] }
       },
@@ -33,21 +40,17 @@ function contextFor(executionEffectId: string, discoveryTick = 120) {
   } as unknown as Parameters<typeof nativeScoutTrips>[0];
 }
 
-it("joins selected scout missions to their native movement and new information", () => {
-  expect(nativeScoutTrips(contextFor("stage13:squad:scout:primary:search:scout:1:1:50"))).toHaveLength(1);
-});
+it("joins selected scout missions to their native movement and new information", () =>
+  expect(nativeScoutTrips(contextFor("stage13:squad:scout:primary:search:scout:1:1:50"))).toHaveLength(1));
 
-it("does not join a native arrival from a different scout mission", () => {
-  expect(nativeScoutTrips(contextFor("stage13:other-mission"))).toHaveLength(0);
-});
+it("does not join a native arrival from a different scout mission", () =>
+  expect(nativeScoutTrips(contextFor("stage13:other-mission"))).toHaveLength(0));
 
-it("counts new geography revealed while the scout is on its physically completed trip", () => {
-  expect(nativeScoutTrips(contextFor("stage13:squad:scout:primary:search:scout:1:1:50", 80))).toHaveLength(1);
-});
+it("counts new geography revealed while the scout is on its physically completed trip", () =>
+  expect(nativeScoutTrips(contextFor("stage13:squad:scout:primary:search:scout:1:1:50", 80))).toHaveLength(1));
 
-it("does not credit information revealed before the selected scout begins moving", () => {
-  expect(nativeScoutTrips(contextFor("stage13:squad:scout:primary:search:scout:1:1:50", 40))).toHaveLength(0);
-});
+it("does not credit information revealed before the selected scout begins moving", () =>
+  expect(nativeScoutTrips(contextFor("stage13:squad:scout:primary:search:scout:1:1:50", 40))).toHaveLength(0));
 
 it("counts a route that is stopped at its original destination by a same-tick replacement", () => {
   const executionEffectId = "stage9:scout:question";
@@ -95,10 +98,9 @@ it("counts new search information revealed during verified physical progress tow
   const base = contextFor(executionEffectId, 120);
   const context = {
     ...base,
-    capture: { facts: [
-      movementFact("started", 50, { x: 24, y: 25 }),
-      movementFact("returned_false", 80, { x: 12, y: 3 })
-    ] },
+    capture: {
+      facts: [movementFact("started", 50, { x: 24, y: 25 }), movementFact("returned_false", 80, { x: 12, y: 3 })]
+    },
     arrived: () => []
   } as unknown as Parameters<typeof nativeScoutTrips>[0];
 
@@ -131,7 +133,7 @@ it("does not count failed scout movement that made no physical progress", () => 
   expect(nativeScoutTrips(context)).toHaveLength(0);
 });
 
-it("counts a newly discovered candidate without preempting a committed strategic objective", () => {
+it("counts a newly discovered candidate without preempting a committed strategic objective", () =>
   expect(
     nativeScoutingObjectiveResponse(
       {
@@ -142,14 +144,14 @@ it("counts a newly discovered candidate without preempting a committed strategic
       },
       "new-producer"
     )
-  ).toBe(true);
-});
+  ).toBe(true));
 
-it("does not treat an unrelated objective change as a response to discovery", () => {
+it("does not treat an unrelated objective change as a response to discovery", () =>
   expect(
     nativeScoutingObjectiveResponse(
-      { strategy: { objectiveId: "unrelated-core", assessment: { targetActorId: "unrelated-core", alternatives: [] } } },
+      {
+        strategy: { objectiveId: "unrelated-core", assessment: { targetActorId: "unrelated-core", alternatives: [] } }
+      },
       "new-producer"
     )
-  ).toBe(false);
-});
+  ).toBe(false));

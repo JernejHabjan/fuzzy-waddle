@@ -5,8 +5,12 @@ export interface NativeDebugParityProof {
   readonly accepted: number;
   readonly repeated: string;
   readonly rejected: boolean;
-  readonly history: { readonly count: number; readonly firstSequence: number; readonly lastSequence: number;
-    readonly missingThroughTick: number };
+  readonly history: {
+    readonly count: number;
+    readonly firstSequence: number;
+    readonly lastSequence: number;
+    readonly missingThroughTick: number;
+  };
   readonly peak: {
     readonly sessionBytes: number;
     readonly quotaBytes: number;

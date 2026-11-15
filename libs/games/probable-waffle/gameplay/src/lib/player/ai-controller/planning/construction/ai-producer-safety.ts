@@ -1,6 +1,6 @@
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { HIGH_GROUND_THRESHOLD } from "../../../../entity/components/combat/high-ground-constants";
-import type { AiObservedActor, AiObservation } from "../../contracts/observation/ai-observation";
+import type { AiObservation, AiObservedActor } from "../../contracts/observation/ai-observation";
 
 /** Only current visible weapon facts may justify resilient capacity; remembered contacts never become live weapons. */
 export function observedAiProducerThreats(observation: AiObservation): readonly AiObservedActor[] {

@@ -1,6 +1,6 @@
 import { AI_HARDENING_COVERAGE } from "./ai-hardening-coverage";
 
-describe("AI_HARDENING_COVERAGE", () => {
+describe("AI_HARDENING_COVERAGE", () =>
   it("accounts for H1-H9 and every H-01 through H-32 final case exactly once", () => {
     expect(AI_HARDENING_COVERAGE.map((entry) => entry.contractId)).toEqual([
       "H1",
@@ -24,5 +24,4 @@ describe("AI_HARDENING_COVERAGE", () => {
       expect(entry.debugField).not.toHaveLength(0);
       expect(entry.focusedTest).not.toHaveLength(0);
     }
-  });
-});
+  }));

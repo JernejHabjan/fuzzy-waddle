@@ -1,6 +1,7 @@
 // prettier-ignore
-import type { AiRuntimeProductionSetup } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/fixtures/ai-runtime-production-setup";
+import type {
+  AiRuntimeProductionSetup
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/fixtures/ai-runtime-production-setup";
 import { createHash } from "node:crypto";
 
 /** Canonicalizes independently read setup; duplicate physical roles and missing authored bindings fail closed. */

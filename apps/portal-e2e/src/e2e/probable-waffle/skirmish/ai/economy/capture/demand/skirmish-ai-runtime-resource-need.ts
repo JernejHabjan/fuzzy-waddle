@@ -1,5 +1,6 @@
-import type { AiGatheringSelection } from
-  "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/economy/gathering/ai-gathering-selection";
+import type {
+  AiGatheringSelection
+} from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/economy/gathering/ai-gathering-selection";
 
 /** Accepted aggregate selection generation, not an individual production-demand obligation or usefulness verdict. */
 export interface RuntimeResourceNeed {

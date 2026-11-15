@@ -2,10 +2,17 @@ import type { RuntimeAssertion } from "../evaluation/controls/skirmish-ai-runtim
 import type { RuntimeVariant } from "../setup/skirmish-ai-runtime-variant";
 
 const monotonicAssertionKeys = new Set([
-  "maximumTick", "minimumDecisions", "minimumAppliedCommands", "requiredAiFactions",
+  "maximumTick",
+  "minimumDecisions",
+  "minimumAppliedCommands",
+  "requiredAiFactions",
   "minimumMilitaryCount",
-  "minimumMilitaryProducerCount", "requireCompositionDemand", "requireCapacityDemand",
-  "minimumDamageDealt", "minimumEnemyLosses", "minimumOffensiveLaunchCount"
+  "minimumMilitaryProducerCount",
+  "requireCompositionDemand",
+  "requireCapacityDemand",
+  "minimumDamageDealt",
+  "minimumEnemyLosses",
+  "minimumOffensiveLaunchCount"
 ]);
 
 /** Fail closed: an absence, deadline, lifecycle, terminal or temporal oracle must run its full observation horizon. */
@@ -26,7 +33,11 @@ export function nextEvidenceStopState(input: {
   if (!config || role === "control" || assertions.length === 0 || !assertions.every(isEvidenceStopSafe)) {
     return { satisfiedSinceTick: null, stop: false };
   }
-  if (pendingEventTicks.some((eventTick) => eventTick > tick) || !allPredicatesSatisfied || tick < config.earliestTick) {
+  if (
+    pendingEventTicks.some((eventTick) => eventTick > tick) ||
+    !allPredicatesSatisfied ||
+    tick < config.earliestTick
+  ) {
     return { satisfiedSinceTick: null, stop: false };
   }
   const since = satisfiedSinceTick ?? tick;

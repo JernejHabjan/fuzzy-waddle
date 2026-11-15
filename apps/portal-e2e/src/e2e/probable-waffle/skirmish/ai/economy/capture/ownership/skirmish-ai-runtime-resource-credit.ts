@@ -1,5 +1,4 @@
-import type { AiRuntimeProductionFact } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import type { RuntimeCargoContribution } from "../../service/skirmish-ai-runtime-cargo-contribution";
 import type { RuntimeServiceAttempt } from "../../service/skirmish-ai-runtime-service-attempt";
 

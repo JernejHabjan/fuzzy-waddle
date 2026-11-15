@@ -1,6 +1,7 @@
 // prettier-ignore
-import type { AiRuntimePresetApplication } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-application";
+import type {
+  AiRuntimePresetApplication
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-application";
 import type { RuntimePresetWorld } from "./skirmish-ai-runtime-preset-world";
 
 /** Strict presets name concrete variants and retain every created identity and owned starting actor. */

@@ -1,9 +1,12 @@
 import { runtimeProductionRouteCurrent } from "../production/world/skirmish-ai-runtime-production-route-current";
 // prettier-ignore
-import type { AiRuntimeProductionSnapshot } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
 import type { RuntimeProductionCausality } from "../production/decisions/skirmish-ai-runtime-production-causality";
-import { projectRuntimeControlledCommands } from "../production/authority/skirmish-ai-runtime-production-controlled-commands";
+import {
+  projectRuntimeControlledCommands
+} from "../production/authority/skirmish-ai-runtime-production-controlled-commands";
 
 /** Shared-controller output keeps native command identity with no AI effect/plan. Usefulness still needs normal route and arrival. */
 export function projectRuntimeControlledOutputs(

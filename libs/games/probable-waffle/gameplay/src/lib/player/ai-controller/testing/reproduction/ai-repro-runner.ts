@@ -4,7 +4,7 @@ import type { AiBrainState } from "../../contracts/state/ai-state-contracts";
 import type { AiCommandOutcome } from "../../contracts/commands/ai-command-contracts";
 import type { AiObservation } from "../../contracts/observation/ai-observation";
 import type { AiReproBundle, AiReproInputs } from "../../contracts/diagnostics/ai-repro-bundle";
-import { findFirstAiDifference, type AiFirstDifference } from "./ai-first-difference";
+import { type AiFirstDifference, findFirstAiDifference } from "./ai-first-difference";
 
 /** Inline data payload stored beside an AiReproBundle manifest by test/developer tooling. */
 export interface AiDecisionReproPayload {

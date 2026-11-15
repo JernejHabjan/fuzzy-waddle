@@ -2,10 +2,10 @@ import type { AiBrainState } from "../../../contracts/state/ai-state-contracts";
 
 import {
   combatActor,
-  squad,
   fixtureState,
+  manager,
   observation,
-  manager
+  squad
 } from "../../../testing/fixtures/tactics/ai-tactics-test-fixtures";
 
 describe("AiTacticsManager", () => {

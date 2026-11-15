@@ -2,7 +2,14 @@ import { FactionType, ObjectNames, ResourceType } from "@fuzzy-waddle/probable-w
 import { createAiBrainState } from "../../../brain/state/create-ai-brain-state";
 import type { AiObservedActor } from "../../../contracts/observation/ai-observation";
 import { unknownAiValue } from "../../../testing/fixtures/coordination/ai-test-fixtures";
-import { enemyNode, homeNode, manager, observation, profile, unit } from "../../../testing/fixtures/strategy/ai-skirmish-test-fixtures";
+import {
+  enemyNode,
+  homeNode,
+  manager,
+  observation,
+  profile,
+  unit
+} from "../../../testing/fixtures/strategy/ai-skirmish-test-fixtures";
 
 function state() {
   return createAiBrainState({
@@ -76,10 +83,18 @@ describe("AI scouting admission", () => {
     const first = manager.propose(observation(20, [...guards(), neutral()], []), initial);
     const squads = first.statePatch?.squads;
     if (!squads?.length) throw new Error("fixture neutral mission missing");
-    const next = manager.propose(observation(40, [unit("guard", enemyNode, 1), unit("z-reserve", homeNode, 0), neutral()], [homeNode], [enemyNode]), {
-      ...initial,
-      squads
-    });
+    const next = manager.propose(
+      observation(
+        40,
+        [unit("guard", enemyNode, 1), unit("z-reserve", homeNode, 0), neutral()],
+        [homeNode],
+        [enemyNode]
+      ),
+      {
+        ...initial,
+        squads
+      }
+    );
     expect(next.statePatch?.squads).toContainEqual(
       expect.objectContaining({
         squadId: "squad:scout:neutral",
@@ -120,17 +135,18 @@ describe("AI scouting admission", () => {
   });
 
   it("selects neutral scout goals by stable visible position instead of runtime actor ID", () => {
-    const proposal = manager.propose(observation(20, [
-      ...guards(),
-      neutral("a-runtime-id", enemyNode, 22),
-      neutral("z-runtime-id", homeNode, 11)
-    ], []), state());
+    const proposal = manager.propose(
+      observation(20, [...guards(), neutral("a-runtime-id", enemyNode, 22), neutral("z-runtime-id", homeNode, 11)], []),
+      state()
+    );
 
-    expect(proposal.intents).toContainEqual(expect.objectContaining({
-      kind: "move",
-      logicalPosition: { x: 0, y: 0, z: 0 },
-      reasonCode: "stage9:neutral:z-runtime-id"
-    }));
+    expect(proposal.intents).toContainEqual(
+      expect.objectContaining({
+        kind: "move",
+        logicalPosition: { x: 0, y: 0, z: 0 },
+        reasonCode: "stage9:neutral:z-runtime-id"
+      })
+    );
   });
 
   it("does not claim scenery or exhausted resources", () => {
@@ -205,10 +221,10 @@ describe("AI scouting admission", () => {
   });
 
   it("selects the frontier scout closest to the information objective rather than runtime actor ID", () => {
-    const proposal = manager.propose(observation(20, [
-      unit("a-far", enemyNode, 1),
-      unit("z-near", homeNode, 0)
-    ]), state());
+    const proposal = manager.propose(
+      observation(20, [unit("a-far", enemyNode, 1), unit("z-near", homeNode, 0)]),
+      state()
+    );
 
     expect(proposal.intents).toContainEqual(expect.objectContaining({ kind: "scout", actorIds: ["a-far"] }));
   });
@@ -217,9 +233,7 @@ describe("AI scouting admission", () => {
     const proposal = manager.propose(observation(20, guards()), state());
     const scout = proposal.intents.find((intent) => intent.kind === "scout");
     expect(scout?.actorIds).toHaveLength(1);
-    expect(scout?.claims).toEqual([
-      expect.objectContaining({ kind: "actor", actorId: scout?.actorIds[0] })
-    ]);
+    expect(scout?.claims).toEqual([expect.objectContaining({ kind: "actor", actorId: scout?.actorIds[0] })]);
   });
 
   it("does not assign a combat unit committed by this proposal to a new frontier scout mission", () => {

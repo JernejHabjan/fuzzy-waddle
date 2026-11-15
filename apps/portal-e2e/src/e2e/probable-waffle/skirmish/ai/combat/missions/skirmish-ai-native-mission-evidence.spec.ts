@@ -1,6 +1,5 @@
 import { expect, test } from "@playwright/test";
-import type { AiRuntimeProductionFact } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import { nativePresetControlSucceeded } from "./skirmish-ai-native-mission-evidence";
 
 function unloadControl(kind: "applied" | "completed" | "rejected", reason: string) {

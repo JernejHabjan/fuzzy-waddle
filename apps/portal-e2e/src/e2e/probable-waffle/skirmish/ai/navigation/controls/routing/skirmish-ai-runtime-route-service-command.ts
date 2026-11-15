@@ -1,7 +1,11 @@
 import { isDeepStrictEqual } from "node:util";
-import { OrderType, ResourceType, type GameCommand } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
-import type { AiRuntimeRouteOrder } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/navigation/controls/ai-runtime-route-order";
+import { type GameCommand, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type {
+  AiRuntimeRouteOrder
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/navigation/controls/ai-runtime-route-order";
 
 /** Complete shared movement/service payload and all eight stamp fields; no target-only command matching. */
 export function sameRuntimeRouteServiceCommand(left: GameCommand, right: GameCommand | undefined): boolean {

@@ -11,7 +11,9 @@ import { GameSaveService } from "../../services/game-save/game-save.service";
 import { GameSaveServiceStub } from "../../services/game-save/game-save.service.stub";
 import type Phaser from "phaser";
 import { By } from "@angular/platform-browser";
+import { provideRouter } from "@angular/router";
 import { AI_RUNTIME_BROWSER_TEST_CONFIG_KEY } from "./ai-runtime-browser-test-host";
+import { activeAiScenarios } from "../ai-scenarios/active-ai-scenario";
 import {
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility,
@@ -32,6 +34,7 @@ describe("ProbableWaffleGameComponent", () => {
     delete window.__fuzzyWaddleAiRuntimeBrowserTest;
     await TestBed.configureTestingModule({
       providers: [
+        provideRouter([]),
         { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
         { provide: AchievementService, useValue: achievementServiceStub },
         { provide: GameSaveService, useValue: new GameSaveServiceStub() }
@@ -55,6 +58,27 @@ describe("ProbableWaffleGameComponent", () => {
 
   it("should create", () => {
     expect(component).toBeTruthy();
+  });
+
+  it("binds interactive playback to the local match without changing its routing identity", async () => {
+    fixture.destroy();
+    await gameInstanceClientServiceStub.createGameInstance("C-05", ProbableWaffleGameInstanceVisibility.Private,
+      ProbableWaffleGameInstanceType.InstantGame);
+    const instance = gameInstanceClientServiceStub.gameInstance!;
+    const id = instance.gameInstanceMetadata.data.gameInstanceId;
+    activeAiScenarios.set(instance, { title: "C-05 · bait", config: {
+      schemaVersion: 1, enabled: true, startPaused: true, seed: 759940
+    } });
+    fixture = TestBed.createComponent(ProbableWaffleGameComponent);
+    fixture.detectChanges();
+    const container = fixture.debugElement.query(By.directive(GameContainerTestingComponent))
+      .componentInstance as GameContainerTestingComponent;
+    container.gameConfig()?.callbacks?.postBoot?.({} as Phaser.Game);
+    expect(window.__fuzzyWaddleAiRuntimeBrowserTest?.interactive).toBe(true);
+    expect(instance.gameInstanceMetadata.data.gameInstanceId).toBe(id);
+    expect(container.gameConfig()?.seed).toEqual(["759940"]);
+    expect(fixture.nativeElement.textContent).toContain("C-05 · bait");
+    expect(window.sessionStorage.getItem(AI_RUNTIME_BROWSER_TEST_CONFIG_KEY)).toBeNull();
   });
 
   it("configures only two fresh native AI roles for explicit calibration without changing legal banks or factions", async () => {

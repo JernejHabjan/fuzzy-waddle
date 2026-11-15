@@ -236,7 +236,8 @@ for (const { faction, readyCounter, groundOnly, hidden = false, missingTemple = 
       readyCounter && readyId
         ? context.frames.map((frame) => {
             const defender = frame.tacticalBoundary?.actors.find((actor) => actor.identity.actorId === readyId);
-            const squads = frame.decision.missionState?.squads.filter((squad) => squad.actorIds.includes(readyId)) ?? [];
+            const squads =
+              frame.decision.missionState?.squads.filter((squad) => squad.actorIds.includes(readyId)) ?? [];
             return {
               tick: frame.tick,
               actor: defender
@@ -265,26 +266,25 @@ for (const { faction, readyCounter, groundOnly, hidden = false, missingTemple = 
         : [];
     const readyAttackOps =
       readyCounter && readyId
-        ? (result.productionCapture?.facts ?? [])
-            .flatMap((fact) => {
-              if (
-                fact.kind !== "native_combat" ||
-                fact.operation.actor.actorId !== readyId ||
-                (fact.operation.kind !== "attack_requested" && fact.operation.kind !== "attack_committed")
-              )
-                return [];
-              return [
-                {
-                  tick: fact.tick,
-                  kind: fact.operation.kind,
-                  target: fact.operation.target.actorId,
-                  actorTile: fact.operation.actorTile,
-                  targetTile: fact.operation.targetTile,
-                  distance: fact.operation.distance,
-                  weapon: fact.operation.weapon.weaponType
-                }
-              ];
-            })
+        ? (result.productionCapture?.facts ?? []).flatMap((fact) => {
+            if (
+              fact.kind !== "native_combat" ||
+              fact.operation.actor.actorId !== readyId ||
+              (fact.operation.kind !== "attack_requested" && fact.operation.kind !== "attack_committed")
+            )
+              return [];
+            return [
+              {
+                tick: fact.tick,
+                kind: fact.operation.kind,
+                target: fact.operation.target.actorId,
+                actorTile: fact.operation.actorTile,
+                targetTile: fact.operation.targetTile,
+                distance: fact.operation.distance,
+                weapon: fact.operation.weapon.weaponType
+              }
+            ];
+          })
         : [];
     const readyRouteOrders =
       readyCounter && readyId

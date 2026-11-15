@@ -20,7 +20,13 @@ test("both faction worlds lose the pinned original while preserving another same
 }, testInfo) => {
   const root = workspaceRoot;
   const source = JSON.parse(
-    readFileSync(resolve(root, "tools/probable-waffle/skirmish/ai/testing/fixtures/native/production/production-economy-native-gameplay.json"), "utf8")
+    readFileSync(
+      resolve(
+        root,
+        "tools/probable-waffle/skirmish/ai/testing/fixtures/native/production/production-economy-native-gameplay.json"
+      ),
+      "utf8"
+    )
   ) as RuntimeFixture;
   const revision = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
   const results: unknown[] = [];

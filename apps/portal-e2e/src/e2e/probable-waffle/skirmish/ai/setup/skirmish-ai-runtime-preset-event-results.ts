@@ -2,8 +2,9 @@ import type { Page } from "@playwright/test";
 import type { RuntimeVariant } from "./skirmish-ai-runtime-variant";
 import type { RuntimeVariantResult } from "../runner/skirmish-ai-runtime-variant-result";
 // prettier-ignore
-import type { AiRuntimePresetApplication } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-application";
+import type {
+  AiRuntimePresetApplication
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-application";
 
 export function assertRuntimePresetEvents(
   variant: RuntimeVariant,
@@ -21,17 +22,27 @@ export function assertRuntimePresetEvents(
   for (const result of application.eventResults) {
     const outage = outages.find((outage) => outage.id === result.id);
     if (outage) {
-      const target = [...(variant.presetWorld?.actors ?? []), ...(variant.presetWorld?.existingActorBindings ?? [])]
-        .find((actor) => outage.fixtureActorIds.includes(actor.fixtureActorId) &&
-          application.createdActorIds[actor.fixtureActorId] === result.affectedActorId);
-      if (!target || result.subjectName !== target.actorName || result.affectedActors !== 1 ||
-          result.tick < outage.fromTick || result.tick > outage.throughTick)
+      const target = [
+        ...(variant.presetWorld?.actors ?? []),
+        ...(variant.presetWorld?.existingActorBindings ?? [])
+      ].find(
+        (actor) =>
+          outage.fixtureActorIds.includes(actor.fixtureActorId) &&
+          application.createdActorIds[actor.fixtureActorId] === result.affectedActorId
+      );
+      if (
+        !target ||
+        result.subjectName !== target.actorName ||
+        result.affectedActors !== 1 ||
+        result.tick < outage.fromTick ||
+        result.tick > outage.throughTick
+      )
         throw new Error(`runtime_route_outage_target_mismatch:${result.id}`);
       continue;
     }
     const event = expected.find((event) => event.id === result.id);
     const expectedActorId = event?.fixtureActorId
-      ? application.createdActorIds[event.fixtureActorId] ?? "missing"
+      ? (application.createdActorIds[event.fixtureActorId] ?? "missing")
       : "unbound";
     if (
       !event ||

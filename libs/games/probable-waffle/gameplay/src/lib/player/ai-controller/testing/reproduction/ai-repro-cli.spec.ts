@@ -4,12 +4,12 @@ import { createAiBrainState } from "../../brain/state/create-ai-brain-state";
 import { createAiProfileConfig } from "../../profiles/ai-profile-defaults";
 import { createAiTestObservation } from "../fixtures/coordination/ai-test-fixtures";
 import {
+  type AiDecisionReproArtifact,
   AiOfflineDecisionStepper,
   captureAiDecisionBundle,
   compareAiDecisionBundles,
   replayAiDecisionBundle,
-  runAiOfflineWhatIf,
-  type AiDecisionReproArtifact
+  runAiOfflineWhatIf
 } from "./ai-repro-runner";
 import { readFileSync } from "node:fs";
 import { parseAiReproBundle } from "../../debug/parse-ai-repro-bundle";

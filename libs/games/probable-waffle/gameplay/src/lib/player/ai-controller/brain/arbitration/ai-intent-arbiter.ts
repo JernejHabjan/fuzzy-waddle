@@ -1,14 +1,14 @@
 import { ObjectNames, OrderType, type ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiBrainState } from "../../contracts/state/ai-state-contracts";
 import type {
+  AiIntent,
   AiIntentClaim,
   AiIntentDecision,
-  AiIntentPrecondition,
-  AiIntent
+  AiIntentPrecondition
 } from "../../contracts/commands/ai-intent";
 import type { AiObservation } from "../../contracts/observation/ai-observation";
 import type { AiProfileConfig } from "../../contracts/ai-profile-config";
-import { aiSpendingBudgetConflict, type AiSpendingBudget } from "./ai-spending-budget";
+import { type AiSpendingBudget, aiSpendingBudgetConflict } from "./ai-spending-budget";
 import { aiIslandResourceReserve } from "./ai-island-resource-reserve";
 import { canRenewAiSquadActorClaim } from "./ai-squad-actor-claims";
 import { isSafeAiGathererRetask } from "../../planning/economy/gathering/ai-gatherer-retask";

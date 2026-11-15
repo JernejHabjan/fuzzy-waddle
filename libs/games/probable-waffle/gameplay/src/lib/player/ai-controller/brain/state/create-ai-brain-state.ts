@@ -1,6 +1,6 @@
 import type { PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import type { FactionType } from "@fuzzy-waddle/probable-waffle-protocol";
-import { aiDeadline, assertAiNonNegativeInteger, type AiPlanStepId } from "../../contracts/ai-core-types";
+import { aiDeadline, type AiPlanStepId, assertAiNonNegativeInteger } from "../../contracts/ai-core-types";
 import type { AiBrainState } from "../../contracts/state/ai-state-contracts";
 import type { AiProfileConfig } from "../../contracts/ai-profile-config";
 import type { AiServiceLane } from "../../contracts/execution/ai-lane-contracts";

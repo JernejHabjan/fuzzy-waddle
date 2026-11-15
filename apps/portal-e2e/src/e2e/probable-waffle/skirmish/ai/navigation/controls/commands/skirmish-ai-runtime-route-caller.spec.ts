@@ -1,11 +1,18 @@
-import { RUNTIME_ROUTE_HISTORY_LIMIT, RUNTIME_ROUTE_ORDER_IDENTITY_LIMIT } from "../routing/skirmish-ai-runtime-route-history-budget";
-import { expect, test } from "@playwright/test";
-// prettier-ignore
-import type { AiRuntimeProductionFact } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
-import type { AiRuntimeRouteCaller } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/navigation/controls/ai-runtime-route-caller";
+import {
+  RUNTIME_ROUTE_HISTORY_LIMIT,
+  RUNTIME_ROUTE_ORDER_IDENTITY_LIMIT
+} from "../routing/skirmish-ai-runtime-route-history-budget";
+import { expect, test } from "@playwright/test"; // prettier-ignore
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type {
+  AiRuntimeRouteCaller
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/navigation/controls/ai-runtime-route-caller";
 import { routeOrderFixture } from "./skirmish-ai-runtime-route-order-fixture";
-import { normalizeRuntimeProductionCausality } from "../../../production/decisions/skirmish-ai-runtime-production-causality-normalization";
+import {
+  normalizeRuntimeProductionCausality
+} from "../../../production/decisions/skirmish-ai-runtime-production-causality-normalization";
 import { validateRuntimeRouteOrders } from "./skirmish-ai-runtime-route-order-validation";
 import { projectRuntimeRouteOrder } from "./skirmish-ai-runtime-route-order-projection";
 import { validateRuntimeRouteCallers } from "./skirmish-ai-runtime-route-caller-validation";
@@ -341,37 +348,50 @@ test("nested unbound observations remain missing, while failed outer queries can
 
 test("native route-order history retains scout-heavy captures through the declared identity bound", () => {
   const f = routeOrderFixture();
-  const sample = f.capture.facts.find((fact) => fact.kind === "spatial_authority" && fact.spatial.kind === "route_order");
+  const sample = f.capture.facts.find(
+    (fact) => fact.kind === "spatial_authority" && fact.spatial.kind === "route_order"
+  );
   if (!sample || sample.kind !== "spatial_authority" || sample.spatial.kind !== "route_order")
     throw new Error("synthetic_route_order_missing");
   const spatial = sample.spatial;
-  const admissions = Array.from({ length: RUNTIME_ROUTE_ORDER_IDENTITY_LIMIT - 1 }, (_, index) =>
-    ({ ...sample, spatial: { ...spatial, order: { ...spatial.order,
-      orderId: index + 2, commandContext: null } } })
-  );
+  const admissions = Array.from({ length: RUNTIME_ROUTE_ORDER_IDENTITY_LIMIT - 1 }, (_, index) => ({
+    ...sample,
+    spatial: { ...spatial, order: { ...spatial.order, orderId: index + 2, commandContext: null } }
+  }));
   const facts = [...f.capture.facts, ...admissions].map((fact, index) => ({ ...fact, sequence: index + 1 }));
   const capture = { ...f.capture, facts };
 
   expect(validateRuntimeRouteOrders(capture).overflow).toBe(false);
 
-  const overflow = { ...capture, facts: [...facts,
-    { ...sample, sequence: facts.length + 1,
-      spatial: { ...spatial, order: { ...spatial.order,
-        orderId: RUNTIME_ROUTE_ORDER_IDENTITY_LIMIT + 1, commandContext: null } } }
-  ] };
+  const overflow = {
+    ...capture,
+    facts: [
+      ...facts,
+      {
+        ...sample,
+        sequence: facts.length + 1,
+        spatial: {
+          ...spatial,
+          order: { ...spatial.order, orderId: RUNTIME_ROUTE_ORDER_IDENTITY_LIMIT + 1, commandContext: null }
+        }
+      }
+    ]
+  };
   expect(validateRuntimeRouteOrders(overflow).overflow).toBe(true);
 });
 
 test("native route-order history retains the measured STRAT-05 count above the previous 512 identity bound", () => {
   const f = routeOrderFixture();
-  const sample = f.capture.facts.find((fact) => fact.kind === "spatial_authority" && fact.spatial.kind === "route_order");
+  const sample = f.capture.facts.find(
+    (fact) => fact.kind === "spatial_authority" && fact.spatial.kind === "route_order"
+  );
   if (!sample || sample.kind !== "spatial_authority" || sample.spatial.kind !== "route_order")
     throw new Error("synthetic_route_order_missing");
   const routeOrder = sample.spatial;
-  const admissions = Array.from({ length: 620 }, (_, index) =>
-    ({ ...sample, spatial: { ...routeOrder, order: { ...routeOrder.order,
-      orderId: index + 2, commandContext: null } } })
-  );
+  const admissions = Array.from({ length: 620 }, (_, index) => ({
+    ...sample,
+    spatial: { ...routeOrder, order: { ...routeOrder.order, orderId: index + 2, commandContext: null } }
+  }));
   const facts = [...f.capture.facts, ...admissions].map((fact, index) => ({ ...fact, sequence: index + 1 }));
   expect(validateRuntimeRouteOrders({ ...f.capture, facts }).overflow).toBe(false);
 });

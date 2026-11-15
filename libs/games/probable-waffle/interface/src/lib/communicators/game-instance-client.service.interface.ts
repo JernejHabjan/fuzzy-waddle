@@ -41,7 +41,8 @@ export interface GameInstanceClientServiceInterface {
   createGameInstance(
     name: string,
     visibility: ProbableWaffleGameInstanceVisibility,
-    type: ProbableWaffleGameInstanceType
+    type: ProbableWaffleGameInstanceType,
+    options?: { localOnly: true }
   ): Promise<void>;
   /**
    * operation exposed by {@link GameInstanceClientServiceInterface}. Its signature is the compatibility boundary

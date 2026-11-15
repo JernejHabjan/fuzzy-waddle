@@ -1,12 +1,23 @@
-import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
+import {
+  requireAiTestEntry
+} from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
 import { FactionType, ProbableWaffleAiDifficulty, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
-import { createAiBrainState } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/state/create-ai-brain-state";
-import { createAiProfileConfig } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-profile-defaults";
-import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
-import type { AiRuntimeUnspentClaimsSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/authority/claims/ai-runtime-unspent-claims-snapshot";
+import {
+  createAiBrainState
+} from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/state/create-ai-brain-state";
+import {
+  createAiProfileConfig
+} from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-profile-defaults";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type {
+  AiRuntimeUnspentClaimsSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/authority/claims/ai-runtime-unspent-claims-snapshot";
 import { productionProgressFixture } from "../completion/skirmish-ai-runtime-production-progress-fixture";
 import { calculateRuntimeQueueLiabilities } from "../ownership/skirmish-ai-runtime-queue-liabilities";
+
 /** Invented native-shaped decisions, claims and cash intervals; never a runtime setup or useful AI world. */
 export function productionOperationFixture(kind: "immediate" | "tick" | "denied" = "tick", remaining = 100) {
   const { capture, command } = productionProgressFixture(kind === "denied" ? "denied" : "advanced", remaining);
@@ -96,7 +107,9 @@ export function productionOperationFixture(kind: "immediate" | "tick" | "denied"
     }
   ];
   const zero = { food: 0, wood: 0, stone: 0, minerals: 0 };
-  const ledger = (status: AiRuntimeUnspentClaimsSnapshot["entries"][number]["state"]): AiRuntimeUnspentClaimsSnapshot => ({
+  const ledger = (
+    status: AiRuntimeUnspentClaimsSnapshot["entries"][number]["state"]
+  ): AiRuntimeUnspentClaimsSnapshot => ({
     resources: { ...zero, food: status === "admitted" ? 7 : 0 },
     gaps: [],
     entries: [{ identity, intent, commandId: "purchase", state: status }]

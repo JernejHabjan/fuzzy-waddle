@@ -59,10 +59,12 @@ describe("Stage 2 AI invariant guards", () => {
       archetypeId: "balanced"
     });
     expect(() => assertAiBrainState(state)).not.toThrow();
-    expect(() => assertAiBrainState({
-      ...state,
-      opening: { ...state.opening, selectionStatus: "maybe" }
-    })).toThrow("malformed_ai_state:opening_selection_status");
+    expect(() =>
+      assertAiBrainState({
+        ...state,
+        opening: { ...state.opening, selectionStatus: "maybe" }
+      })
+    ).toThrow("malformed_ai_state:opening_selection_status");
   });
 
   it("rejects an inconsistent persisted workforce budget", () => {
@@ -73,16 +75,24 @@ describe("Stage 2 AI invariant guards", () => {
       tick: 20,
       archetypeId: "balanced"
     });
-    expect(() => assertAiBrainState({
-      ...state,
-      economyProduction: {
-        ...state.economyProduction,
-        workforce: {
-          workers: 6, queuedWorkers: 0, assignedWorkers: 5, desiredWorkers: 8,
-          desiredFoodSources: 4, foodRunwayTicks: 300, blocker: null,
-          economyPermille: 650, defensePermille: 650
+    expect(() =>
+      assertAiBrainState({
+        ...state,
+        economyProduction: {
+          ...state.economyProduction,
+          workforce: {
+            workers: 6,
+            queuedWorkers: 0,
+            assignedWorkers: 5,
+            desiredWorkers: 8,
+            desiredFoodSources: 4,
+            foodRunwayTicks: 300,
+            blocker: null,
+            economyPermille: 650,
+            defensePermille: 650
+          }
         }
-      }
-    })).toThrow("invalid_ai_economy_budget");
+      })
+    ).toThrow("invalid_ai_economy_budget");
   });
 });

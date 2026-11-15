@@ -4,22 +4,34 @@ import { digestAiReproJson } from "./ai-repro-json-digest";
 /** Explicit runtime-import boundary. It reads no references, executes no payload and never applies imported state. */
 export function parseAiRuntimeArtifact(json: string, access: "player" | "host" | "developer") {
   if (access === "player") throw new AiReproBundleValidationError("access_denied");
-  if (new TextEncoder().encode(json).byteLength > 16 * 1024 * 1024)
-    throw new AiReproBundleValidationError("oversized");
+  if (new TextEncoder().encode(json).byteLength > 16 * 1024 * 1024) throw new AiReproBundleValidationError("oversized");
   let value: unknown;
-  try { value = JSON.parse(json); }
-  catch { throw new AiReproBundleValidationError("malformed_json"); }
+  try {
+    value = JSON.parse(json);
+  } catch {
+    throw new AiReproBundleValidationError("malformed_json");
+  }
   boundRuntimeArtifact(value);
-  if (!record(value) || Object.keys(value).some((key) => key !== "manifest" && key !== "payload") ||
-      !record(value.manifest) || !record(value.payload))
+  if (
+    !record(value) ||
+    Object.keys(value).some((key) => key !== "manifest" && key !== "payload") ||
+    !record(value.manifest) ||
+    !record(value.payload)
+  )
     throw new AiReproBundleValidationError("malformed_bundle");
   const manifest = parseAiReproBundle(JSON.stringify(value.manifest), { access, maxBytes: 128 * 1024 });
   if (manifest.kind !== "runtime" || manifest.privacy !== "host_confidential")
     throw new AiReproBundleValidationError("malformed_bundle");
   const payload = value.payload;
-  if (!record(payload.controllerState) || !record(payload.observation) || !record(payload.authoritativeProjection) ||
-      !Array.isArray(payload.outcomes) || manifest.replayInputs.snapshotDigest !== digestAiReproJson(payload) ||
-      manifest.replayInputs.inputDigest !== digestAiReproJson({ observation: payload.observation, outcomes: payload.outcomes }))
+  if (
+    !record(payload.controllerState) ||
+    !record(payload.observation) ||
+    !record(payload.authoritativeProjection) ||
+    !Array.isArray(payload.outcomes) ||
+    manifest.replayInputs.snapshotDigest !== digestAiReproJson(payload) ||
+    manifest.replayInputs.inputDigest !==
+      digestAiReproJson({ observation: payload.observation, outcomes: payload.outcomes })
+  )
     throw new AiReproBundleValidationError("malformed_bundle");
   return { manifest, payload };
 }

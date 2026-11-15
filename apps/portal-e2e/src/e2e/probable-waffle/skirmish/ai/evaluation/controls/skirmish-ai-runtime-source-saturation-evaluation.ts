@@ -18,7 +18,9 @@ export function evaluateRuntimeSourceSaturation(
   const saturated = sourceSnapshots.find(
     (actor) => actor.actorId === saturatedId && actor.resourceType === requirement.resourceType
   );
-  const spare = sourceSnapshots.find((actor) => actor.actorId === spareId && actor.resourceType === requirement.resourceType);
+  const spare = sourceSnapshots.find(
+    (actor) => actor.actorId === spareId && actor.resourceType === requirement.resourceType
+  );
   const failures: string[] = [];
   if (variant.presetInitialOrderCount !== requirement.capacity) failures.push("source_saturation_preset_not_applied");
   if (!saturated || saturated.serviceCapacity !== requirement.capacity) {
@@ -26,19 +28,26 @@ export function evaluateRuntimeSourceSaturation(
   }
   if (!spare || (spare.serviceCapacity ?? 0) < 1) failures.push("source_saturation_spare_not_observed");
   if (!saturated || !spare) return failures;
-  const assignedTo = (checkpoint: SourceCheckpoint, actorId: string): number => checkpoint.workerOrders.filter(
-    (order) => order.orderType === "Gather" && order.targetActorId === actorId
-  ).length;
+  const assignedTo = (checkpoint: SourceCheckpoint, actorId: string): number =>
+    checkpoint.workerOrders.filter((order) => order.orderType === "Gather" && order.targetActorId === actorId).length;
   if (!checkpoints.some((checkpoint) => assignedTo(checkpoint, saturated.actorId) === requirement.capacity)) {
     failures.push("source_saturation_not_observed");
   }
   if (checkpoints.some((checkpoint) => assignedTo(checkpoint, saturated.actorId) > requirement.capacity)) {
     failures.push("source_saturation_overassigned");
   }
-  if (!checkpoints.some((checkpoint) => checkpoint.workerOrders.some(
-    (order) => order.orderType === "Gather" && order.targetActorId !== saturated.actorId &&
-      sourceSnapshots.some((source) => source.actorId === order.targetActorId &&
-        source.resourceType === requirement.resourceType)
-  ))) failures.push("source_saturation_spare_unused");
+  if (
+    !checkpoints.some((checkpoint) =>
+      checkpoint.workerOrders.some(
+        (order) =>
+          order.orderType === "Gather" &&
+          order.targetActorId !== saturated.actorId &&
+          sourceSnapshots.some(
+            (source) => source.actorId === order.targetActorId && source.resourceType === requirement.resourceType
+          )
+      )
+    )
+  )
+    failures.push("source_saturation_spare_unused");
   return failures;
 }

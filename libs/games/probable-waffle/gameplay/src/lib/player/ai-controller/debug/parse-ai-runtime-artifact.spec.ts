@@ -4,15 +4,46 @@ import { digestAiReproJson } from "./ai-repro-json-digest";
 
 function artifact() {
   const payload = { controllerState: {}, observation: {}, authoritativeProjection: {}, outcomes: [] };
-  return { manifest: { schemaVersion: 1, kind: "runtime", privacy: "host_confidential", display: { label: "Original incident" },
-    completeness: { observation: "complete", priorState: "complete", outcomes: "complete", alternatives: "not_recorded",
-      missingRanges: [], truncatedEventCount: 0 }, replayInputs: { sourceRevision: "a".repeat(40), dirtySourceDigest: null,
-      mapId: "map", mapDigest: "map-digest", contentDigest: "content", configVersion: "config", profileVersion: "profile",
-      archetypeVersion: "archetype", difficulty: "normal", faction: FactionType.Tivara, playerNumber: 2,
-      rulesVersion: "rules", tickInterval: 50, authorityEpoch: 1, tick: 20,
-      snapshotReference: "snapshots/original.json", snapshotDigest: digestAiReproJson(payload),
-      inputReference: "inputs/original.json", inputDigest: digestAiReproJson({ observation: {}, outcomes: [] }),
-      expectedCheckpoints: [], scenarioId: "DBG-05" } }, payload };
+  return {
+    manifest: {
+      schemaVersion: 1,
+      kind: "runtime",
+      privacy: "host_confidential",
+      display: { label: "Original incident" },
+      completeness: {
+        observation: "complete",
+        priorState: "complete",
+        outcomes: "complete",
+        alternatives: "not_recorded",
+        missingRanges: [],
+        truncatedEventCount: 0
+      },
+      replayInputs: {
+        sourceRevision: "a".repeat(40),
+        dirtySourceDigest: null,
+        mapId: "map",
+        mapDigest: "map-digest",
+        contentDigest: "content",
+        configVersion: "config",
+        profileVersion: "profile",
+        archetypeVersion: "archetype",
+        difficulty: "normal",
+        faction: FactionType.Tivara,
+        playerNumber: 2,
+        rulesVersion: "rules",
+        tickInterval: 50,
+        authorityEpoch: 1,
+        tick: 20,
+        snapshotReference: "snapshots/original.json",
+        snapshotDigest: digestAiReproJson(payload),
+        inputReference: "inputs/original.json",
+        inputDigest: digestAiReproJson({ observation: {}, outcomes: [] }),
+        expectedCheckpoints: [],
+        scenarioId: "DBG-05"
+      }
+    },
+    payload
+  };
 }
 
 it("accepts intact host-local data without applying it or changing the original", () => {
@@ -21,17 +52,36 @@ it("accepts intact host-local data without applying it or changing the original"
   expect(JSON.stringify(artifact())).toBe(json);
 });
 
-it("denies a player before parsing confidential bytes", () => {
-  expect(() => parseAiRuntimeArtifact("malformed", "player")).toThrow("access_denied");
-});
+it("denies a player before parsing confidential bytes", () =>
+  expect(() => parseAiRuntimeArtifact("malformed", "player")).toThrow("access_denied"));
 
 it("rejects malformed, traversal, markup, schema and payload tampering", () => {
   expect(() => parseAiRuntimeArtifact("{", "host")).toThrow("malformed_json");
   for (const [code, mutate] of [
-    ["unsafe_reference", (value: ReturnType<typeof artifact>) => { value.manifest.replayInputs.snapshotReference = "../hidden"; }],
-    ["unsafe_label", (value: ReturnType<typeof artifact>) => { value.manifest.display.label = "<img src=x onerror=alert(1)>"; }],
-    ["unsupported_version", (value: ReturnType<typeof artifact>) => { value.manifest.schemaVersion = 2; }],
-    ["malformed_bundle", (value: ReturnType<typeof artifact>) => { value.payload.observation = { changed: true }; }]
+    [
+      "unsafe_reference",
+      (value: ReturnType<typeof artifact>) => {
+        value.manifest.replayInputs.snapshotReference = "../hidden";
+      }
+    ],
+    [
+      "unsafe_label",
+      (value: ReturnType<typeof artifact>) => {
+        value.manifest.display.label = "<img src=x onerror=alert(1)>";
+      }
+    ],
+    [
+      "unsupported_version",
+      (value: ReturnType<typeof artifact>) => {
+        value.manifest.schemaVersion = 2;
+      }
+    ],
+    [
+      "malformed_bundle",
+      (value: ReturnType<typeof artifact>) => {
+        value.payload.observation = { changed: true };
+      }
+    ]
   ] as const) {
     const value = artifact();
     mutate(value);

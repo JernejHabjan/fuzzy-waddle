@@ -1,6 +1,10 @@
 import { isDeepStrictEqual } from "node:util";
-import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
-import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import type { RuntimeResourceNeed } from "./skirmish-ai-runtime-resource-need";
 import {
   sameRuntimeRouteServiceCommand,
@@ -8,10 +12,7 @@ import {
 } from "../../../navigation/controls/routing/skirmish-ai-runtime-route-service-command";
 
 /** One exact start may preserve its incoming read, while the same fence always closes older generations. */
-export function runtimeNeedHasIncomingStart(
-  capture: AiRuntimeProductionSnapshot,
-  need: RuntimeResourceNeed
-): boolean {
+export function runtimeNeedHasIncomingStart(capture: AiRuntimeProductionSnapshot, need: RuntimeResourceNeed): boolean {
   const read = need.selection.resourceInputRead;
   const selected = capture.facts.find((fact) => fact.sequence === need.selectedSequence);
   const starts = capture.facts.filter(

@@ -1,7 +1,11 @@
-import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
 import { resourceAdmissionFixture } from "./skirmish-ai-runtime-resource-admission-fixture";
 import { resourceServiceFixture } from "../../service/skirmish-ai-runtime-resource-service-fixture";
-import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
+import {
+  requireAiTestEntry
+} from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
 
 /** Application at tick 3, publication at tick 15, with real-shaped read frontiers enclosing the native pair. */
 export function resourceApplicationFixture() {

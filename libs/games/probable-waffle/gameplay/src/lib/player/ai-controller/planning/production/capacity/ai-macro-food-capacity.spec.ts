@@ -1,7 +1,11 @@
 import { ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiReservation } from "../../../contracts/execution/ai-dependency-contracts";
 
-import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "../../../testing/fixtures/coordination/ai-test-fixtures";
+import {
+  createAiTestObservation,
+  createAiTestOwnedActor,
+  unknownAiValue
+} from "../../../testing/fixtures/coordination/ai-test-fixtures";
 
 import { AiMacroManager } from "../macro/ai-macro-manager";
 import { proposeAiFoodEconomy } from "../../economy/food/ai-food-economy-proposal";
@@ -223,22 +227,23 @@ describe("AI macro renewable food capacity", () => {
       resourceTransferInFlight: false
     }));
     const fields = ["field-1", "field-2"].map((id) => foodField(id));
-    const reservations = workers.map((worker, index) => ({
-      claimId: `gather:claim:${index}:worker:0`,
-      subjectKey: `actor:${worker.actorId}`,
-      ownerPlanId: "plan:opening",
-      state: { kind: "applied_spending" as const, appliedTick: 180 },
-      prerequisites: [],
-      createdTick: 100
-    } satisfies AiReservation));
+    const reservations = workers.map(
+      (worker, index) =>
+        ({
+          claimId: `gather:claim:${index}:worker:0`,
+          subjectKey: `actor:${worker.actorId}`,
+          ownerPlanId: "plan:opening",
+          state: { kind: "applied_spending" as const, appliedTick: 180 },
+          prerequisites: [],
+          createdTick: 100
+        }) satisfies AiReservation
+    );
     const observation = {
       ...createAiTestObservation(),
       tick: 200,
       actors: [...workers, ...fields],
       resources: createAiTestObservation().resources.map((resource) =>
-        resource.resourceType === ResourceType.Food
-          ? { ...resource, stockpile: 0 }
-          : { ...resource, stockpile: 1000 }
+        resource.resourceType === ResourceType.Food ? { ...resource, stockpile: 0 } : { ...resource, stockpile: 1000 }
       ),
       map: {
         ...createAiTestObservation().map!,
@@ -268,5 +273,4 @@ describe("AI macro renewable food capacity", () => {
       })
     );
   });
-
 });

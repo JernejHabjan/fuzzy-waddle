@@ -1,6 +1,6 @@
 import { AI_BRAIN_SLICE_POLICIES, type AiBrainSliceName } from "./ai-brain-slice-policy";
 
-describe("AI_BRAIN_SLICE_POLICIES", () => {
+describe("AI_BRAIN_SLICE_POLICIES", () =>
   it("assigns every persisted current slice exactly one owner/default/migration/serializer", () => {
     const expected = [
       "strategy",
@@ -34,5 +34,4 @@ describe("AI_BRAIN_SLICE_POLICIES", () => {
       expect(entry.migration).toBe("preserve_current_or_bootstrap_from_current_world");
       expect(entry.serializer).toBe("canonical_ai");
     }
-  });
-});
+  }));

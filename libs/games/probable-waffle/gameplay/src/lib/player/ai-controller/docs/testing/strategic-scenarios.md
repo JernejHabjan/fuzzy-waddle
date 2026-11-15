@@ -26,7 +26,7 @@ The implementation separates the following responsibilities; fixture registratio
 Each scenario requires:
 
 | Field               | Contract                                                                                                                                  |
-| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+|---------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
 | Identity            | Stable ID, schema/version, plain-English purpose, user requirement tags and responsible subsystem                                         |
 | Supported context   | Faction/profile/archetype, map/access pattern, legal capability mapping and explicit synthetic-only flags                                 |
 | Setup               | Initial authoritative world, previous brain/goal state, stockpile/income/queues, ownership/vision, terrain/regions, seed and initial tick |
@@ -62,7 +62,7 @@ Every ID below is mandatory coverage. A row describing paired worlds requires se
 ### Economy, production and legitimate duplicates
 
 | ID     | Setup and perturbation                                                                                                       | Required decision/outcome and forbidden behavior                                                                                                                      |
-| ------ | ---------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|--------|------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | ECO-01 | Goal gathers a forest with no suitable local deposit; legal WorkMill affordable                                              | Plan and build a useful wood-compatible deposit near that forest; path/space bounds pass. No unrelated house/producer substitution                                    |
 | ECO-02 | Existing WorkMill serves forest A; distant forest B has valuable untapped income; control has an already-efficient B deposit | A second same-type deposit is admitted only in the beneficial world. Both remain owned/usable; no per-type uniqueness cap                                             |
 | ECO-03 | Small forest/service route saturated by 12 workers, better nearby source available                                           | Worker 13 uses the alternative or its justified new deposit; do not increase congestion at the saturated source                                                       |
@@ -82,7 +82,7 @@ Every ID below is mandatory coverage. A row describing paired worlds requires se
 ### Technology, counters and information
 
 | ID       | Setup and perturbation                                                                              | Required decision/outcome and forbidden behavior                                                                                                          |
-| -------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|----------|-----------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
 | TECH-01  | Expensive upgrade affects only a few units early; paired large existing/committed eligible army     | Early opportunity cost delays upgrade; larger beneficiary population raises priority and can justify research                                             |
 | TECH-02  | Useful optional upgrade competes with immediate base attack/supply recovery                         | Delay optional spending, preserve emergency capacity; resume only when survival permits                                                                   |
 | TECH-03  | Visible air production capability, no confirmed fleet yet; later actual flyers arrive               | Limited anti-air preparedness plus information gathering, then strength-scaled real anti-air response; not full economy conversion from one clue          |
@@ -98,7 +98,7 @@ Every ID below is mandatory coverage. A row describing paired worlds requires se
 ### Strategic purpose, simultaneous fronts and recovery
 
 | ID       | Setup and perturbation                                                                                      | Required decision/outcome and forbidden behavior                                                                                                      |
-| -------- | ----------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+|----------|-------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
 | STRAT-01 | Early committed attack hits fragile economy                                                                 | Suspend lower-priority spending/offense, protect workers through legal defense/evacuation/emergency production; bounded response and restored economy |
 | STRAT-02 | Main force of 30 attacks expansion; 4 raiders land by boat or air at home, local response sufficient        | Allocate limited compatible defense, protect economy and retain main objective; no whole-army recall or ignoring raid                                 |
 | STRAT-03 | STRAT-02 raid reinforced into serious economic/base-loss threat                                             | Increase defense, partially/fully recall when needed; old offense commitment cannot lock out survival                                                 |
@@ -116,7 +116,7 @@ Every ID below is mandatory coverage. A row describing paired worlds requires se
 ### Air, water, transport and harassment
 
 | ID        | Setup and perturbation                                                                                       | Required decision/outcome and forbidden behavior                                                                                                                                          |
-| --------- | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|-----------|--------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | DOMAIN-01 | Water present, no worthwhile water economy/route/threat/objective                                            | No naval demand solely from water existence                                                                                                                                               |
 | DOMAIN-02 | Supported naval capability can escort transport, control key route, intercept ships or attack valuable coast | Select mission-specific useful fleet; reject unreachable/irrelevant water regions. Water-based economy variant only when an actual or explicitly synthetic fixture supplies that mechanic |
 | DOMAIN-03 | Island objective, costly land detour or defended ground entrance; legal transport alternative                | Compare end-to-end routes, fund needed seats/escort, board/travel/unload/regroup; no impossible direct ground order                                                                       |
@@ -130,7 +130,7 @@ Every ID below is mandatory coverage. A row describing paired worlds requires se
 ### Placement, expansion and fortifications
 
 | ID       | Setup and perturbation                                                                        | Required decision/outcome and forbidden behavior                                                                                                                |
-| -------- | --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|----------|-----------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | PLACE-01 | Food expansion needs multiple fields; central production/defense slots and corridors reserved | Efficient aligned field layout in safe economic space, valid tending/deposit access; no valuable central/corridor occupation when a suitable alternative exists |
 | PLACE-02 | Safe outer fields versus exposed perimeter with safer inner alternative                       | Outer placement only when sensible; avoid a rigid “always outer” policy                                                                                         |
 | PLACE-03 | Several housing/drop-off/producer footprints and simultaneous proposals                       | Preserve production spawn, worker/resource, army/rally, retreat and future building access in whole and incremental layouts                                     |
@@ -145,7 +145,7 @@ Every ID below is mandatory coverage. A row describing paired worlds requires se
 ### Combat preservation and control
 
 | ID       | Setup and perturbation                                                                          | Required decision/outcome and forbidden behavior                                                         |
-| -------- | ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+|----------|-------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
 | FIGHT-01 | Favorable engagement becomes unfavorable due to reinforcements, lost support or goal completion | Reassess and retreat/regroup within bound; do not fight to last unit after purpose/risk changes          |
 | FIGHT-02 | Damaged valuable ranged/support unit with valid escape/heal cover                               | Reposition/preserve without illegal teleport/min-range behavior or constant windup cancellation          |
 | FIGHT-03 | One favorable valuable fight and several minor distant contacts                                 | Reinforce useful front proportionately; don't divide evenly or attack every contact with entire army     |

@@ -8,9 +8,12 @@ test("native hidden-pair canonicalization ignores fixture names embedded in queu
       roles: { "ready-producer": actorId },
       frames: [{ decision: { input: { observation: { actors: [{ actorId }] } } } }]
     } as unknown as ReturnType<typeof nativeScenarioContext>;
-    return canonicalNativePairValue({
-      queue: { itemId: `queue:${actorId}:2:0:2:runtime-fixture-759940-scout-01-tivara-${branch}` }
-    }, context);
+    return canonicalNativePairValue(
+      {
+        queue: { itemId: `queue:${actorId}:2:0:2:runtime-fixture-759940-scout-01-tivara-${branch}` }
+      },
+      context
+    );
   };
 
   expect(make("sim-c6a8f94c", "hidden-a")).toEqual(make("sim-bccd16e1", "hidden-b"));
@@ -19,13 +22,32 @@ test("native hidden-pair canonicalization ignores fixture names embedded in queu
 test("native hidden-pair canonicalization treats access products as an unordered observation set", () => {
   const context = {
     roles: { "scout-probe": "sim-c6a8f94c" },
-    frames: [{ decision: { input: { observation: { actors: [{ actorId: "sim-c6a8f94c", relation: "self",
-      owner: 2, objectName: "TivaraMacemanMale", logicalPosition: { status: "known", value: { x: 4, y: 5, z: 0 } } }] } } } }]
+    frames: [
+      {
+        decision: {
+          input: {
+            observation: {
+              actors: [
+                {
+                  actorId: "sim-c6a8f94c",
+                  relation: "self",
+                  owner: 2,
+                  objectName: "TivaraMacemanMale",
+                  logicalPosition: { status: "known", value: { x: 4, y: 5, z: 0 } }
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
   } as unknown as ReturnType<typeof nativeScenarioContext>;
-  const first = { accessProducts: [
-    { queryId: "query:access:sim-c6a8f94c:sim-c6a8f94c", status: "ready" },
-    { queryId: "query:access:sim-c6a8f94c:sim-c6a8f94c", status: "blocked" }
-  ] };
+  const first = {
+    accessProducts: [
+      { queryId: "query:access:sim-c6a8f94c:sim-c6a8f94c", status: "ready" },
+      { queryId: "query:access:sim-c6a8f94c:sim-c6a8f94c", status: "blocked" }
+    ]
+  };
 
   expect(canonicalNativePairValue(first, context)).toEqual(
     canonicalNativePairValue({ accessProducts: [...first.accessProducts].reverse() }, context)
@@ -68,8 +90,23 @@ test("native hidden-pair canonicalization aliases equivalent actors first seen a
       roles: {},
       frames: [
         { decision: { input: { observation: { actors: [] } } } },
-        { decision: { input: { observation: { actors: [{ actorId, relation: "self", owner: 2,
-          objectName: "TivaraMacemanMale", logicalPosition: { status: "known", value: { x: 4, y: 5, z: 0 } } }] } } } }
+        {
+          decision: {
+            input: {
+              observation: {
+                actors: [
+                  {
+                    actorId,
+                    relation: "self",
+                    owner: 2,
+                    objectName: "TivaraMacemanMale",
+                    logicalPosition: { status: "known", value: { x: 4, y: 5, z: 0 } }
+                  }
+                ]
+              }
+            }
+          }
+        }
       ]
     } as unknown as ReturnType<typeof nativeScenarioContext>;
     return canonicalNativePairValue({ actorId }, context);
@@ -82,8 +119,25 @@ test("native hidden-pair canonicalization treats same-position workers as equiva
   const make = (actorId: string, role: string) => {
     const context = {
       roles: { [role]: actorId },
-      frames: [{ decision: { input: { observation: { actors: [{ actorId, relation: "self", owner: 2,
-        objectName: "TivaraWorkerMale", logicalPosition: { status: "known", value: { x: 4, y: 5, z: 0 } } }] } } } }]
+      frames: [
+        {
+          decision: {
+            input: {
+              observation: {
+                actors: [
+                  {
+                    actorId,
+                    relation: "self",
+                    owner: 2,
+                    objectName: "TivaraWorkerMale",
+                    logicalPosition: { status: "known", value: { x: 4, y: 5, z: 0 } }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
     } as unknown as ReturnType<typeof nativeScenarioContext>;
     return canonicalNativePairValue({ actorId }, context);
   };

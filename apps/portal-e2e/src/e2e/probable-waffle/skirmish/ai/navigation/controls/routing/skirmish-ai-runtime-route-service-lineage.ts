@@ -1,10 +1,18 @@
 import { isDeepStrictEqual } from "node:util";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
-import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import type { RuntimeRouteOrderLineage } from "../commands/skirmish-ai-runtime-route-order-lineage";
-import { matchRuntimeProductionDecision } from "../../../production/decisions/skirmish-ai-runtime-production-decision-lineage";
-import { validateRuntimeProductionCommandLineage } from "../../../production/authority/skirmish-ai-runtime-production-command-lineage";
+import {
+  matchRuntimeProductionDecision
+} from "../../../production/decisions/skirmish-ai-runtime-production-decision-lineage";
+import {
+  validateRuntimeProductionCommandLineage
+} from "../../../production/authority/skirmish-ai-runtime-production-command-lineage";
 import {
   runtimeRouteOrderHasCommandContext,
   runtimeRouteOrderMatchesCommand,

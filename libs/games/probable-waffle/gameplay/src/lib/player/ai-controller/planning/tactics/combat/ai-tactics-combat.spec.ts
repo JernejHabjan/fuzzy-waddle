@@ -4,13 +4,13 @@ import type { AiIntent } from "../../../contracts/commands/ai-intent";
 import { SpellType } from "../../../../../entity/components/combat/spell-type";
 
 import {
-  requireValue,
   combatActor,
-  squad,
   fixtureState,
-  observation,
   manager,
-  profile
+  observation,
+  profile,
+  requireValue,
+  squad
 } from "../../../testing/fixtures/tactics/ai-tactics-test-fixtures";
 import { canSeeTarget, estimateAiEngagement } from "./ai-tactics-combat";
 

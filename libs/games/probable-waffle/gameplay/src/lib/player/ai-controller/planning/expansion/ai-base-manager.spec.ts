@@ -6,7 +6,7 @@ import {
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { createAiBrainState } from "../../brain/state/create-ai-brain-state";
 import type { AiCapabilityCatalog } from "../../contracts/observation/ai-capability-catalog";
-import type { AiObservedActor, AiObservation } from "../../contracts/observation/ai-observation";
+import type { AiObservation, AiObservedActor } from "../../contracts/observation/ai-observation";
 import { createAiProfileConfig } from "../../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "../../testing/fixtures/coordination/ai-test-fixtures";
 import { AI_EXPANSION_SATURATION_TICKS, AiBaseManager } from "./ai-base-manager";

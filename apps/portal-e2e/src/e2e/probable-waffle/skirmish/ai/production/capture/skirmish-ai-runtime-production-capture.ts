@@ -3,8 +3,9 @@ import { createGunzip } from "node:zlib";
 import type { Page } from "@playwright/test";
 import { parseChunked } from "@discoveryjs/json-ext";
 // prettier-ignore
-import type { AiRuntimeProductionSnapshot } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
 
 /** Retains diagnostic authority facts, without converting incomplete provenance into passing production evidence. */
 export async function captureRuntimeProductionAuthority(

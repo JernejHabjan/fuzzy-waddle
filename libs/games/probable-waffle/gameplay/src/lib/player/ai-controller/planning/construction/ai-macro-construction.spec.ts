@@ -10,7 +10,11 @@ import { createAiProfileConfig } from "../../profiles/ai-profile-defaults";
 
 import { createAiBrainState } from "../../brain/state/create-ai-brain-state";
 
-import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "../../testing/fixtures/coordination/ai-test-fixtures";
+import {
+  createAiTestObservation,
+  createAiTestOwnedActor,
+  unknownAiValue
+} from "../../testing/fixtures/coordination/ai-test-fixtures";
 
 import { AiMacroManager } from "../production/macro/ai-macro-manager";
 import { catalog, completedOpeningState } from "../../testing/fixtures/production/ai-macro-test-fixtures";

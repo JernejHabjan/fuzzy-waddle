@@ -7,13 +7,13 @@ import type { AiObservation } from "../../contracts/observation/ai-observation";
 import type { AiProfileConfig } from "../../contracts/ai-profile-config";
 
 import {
-  isDefensiveArchetype,
-  threatPosition,
-  constructionEntry,
-  resourceEntries,
-  positionOf,
+  AI_STANDARD_FORTIFICATION_SPEND_PERMILLE,
   AI_TURTLE_FORTIFICATION_SPEND_PERMILLE,
-  AI_STANDARD_FORTIFICATION_SPEND_PERMILLE
+  constructionEntry,
+  isDefensiveArchetype,
+  positionOf,
+  resourceEntries,
+  threatPosition
 } from "./ai-fortification-support";
 import { createFortificationLayout, type FortificationLayoutRejection } from "./ai-fortification-layout";
 

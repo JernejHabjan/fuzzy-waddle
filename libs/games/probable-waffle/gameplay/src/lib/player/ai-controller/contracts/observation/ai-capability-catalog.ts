@@ -1,4 +1,4 @@
-import type { ObjectNames, ResourceType, ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { ObjectNames, ResearchType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiDomain } from "./ai-observation";
 
 /** Runtime-definition-derived capability; this catalog never copies a balance table. */

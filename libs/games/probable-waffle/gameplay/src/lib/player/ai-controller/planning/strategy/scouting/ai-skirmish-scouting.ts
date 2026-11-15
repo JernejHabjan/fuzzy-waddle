@@ -1,7 +1,7 @@
 import {
-  aiDeadline,
   type AiAccessNodeId,
   type AiClaimId,
+  aiDeadline,
   type AiPlanId,
   type AiSquadId
 } from "../../../contracts/ai-core-types";

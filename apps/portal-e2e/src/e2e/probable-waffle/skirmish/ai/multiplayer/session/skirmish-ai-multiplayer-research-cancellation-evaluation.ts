@@ -1,5 +1,7 @@
-import { ResourceType, type GameCommandOutcomeKind } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiMultiplayerSharedQueueWorldSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/multiplayer/ai-multiplayer-shared-queue-world-snapshot";
+import { type GameCommandOutcomeKind, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import type {
+  AiMultiplayerSharedQueueWorldSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/multiplayer/ai-multiplayer-shared-queue-world-snapshot";
 import {
   normalizeRuntimeScopedQueuePayments,
   sameRuntimeQueueVector

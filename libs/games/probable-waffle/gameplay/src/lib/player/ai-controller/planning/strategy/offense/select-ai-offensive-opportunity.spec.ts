@@ -4,12 +4,12 @@ import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { createAiTestOwnedActor } from "../../../testing/fixtures/coordination/ai-test-fixtures";
 
 import {
-  guard,
-  core,
-  producer,
-  world,
   brain,
-  manager
+  core,
+  guard,
+  manager,
+  producer,
+  world
 } from "../../../testing/fixtures/strategy/ai-offensive-opportunity-test-fixtures";
 
 describe("fastest credible offense", () => {

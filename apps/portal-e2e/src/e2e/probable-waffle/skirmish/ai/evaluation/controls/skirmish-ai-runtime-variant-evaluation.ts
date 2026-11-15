@@ -13,7 +13,10 @@ import {
 import { evaluateRuntimeResourceService } from "../../economy/service/skirmish-ai-runtime-resource-service-evaluation";
 import { evaluateRuntimeSourceSaturation } from "./skirmish-ai-runtime-source-saturation-evaluation";
 import { evaluateRuntimeResourceLabor } from "../../economy/capture/labor/skirmish-ai-runtime-resource-labor-evaluation";
-import { evaluateRuntimeWorkerGrowth, hasRenewableFoodIncome } from "../../economy/policy/skirmish-ai-runtime-worker-growth-evaluation";
+import {
+  evaluateRuntimeWorkerGrowth,
+  hasRenewableFoodIncome
+} from "../../economy/policy/skirmish-ai-runtime-worker-growth-evaluation";
 import { isAiVictory } from "../../runner/skirmish-ai-runtime-terminal";
 import { evaluateRuntimeProductionCapacity } from "../../production/policy/skirmish-ai-runtime-production-capacity-evaluation";
 import { evaluateRuntimeProductionComposition } from "../../production/policy/skirmish-ai-runtime-production-composition-evaluation";
@@ -34,7 +37,9 @@ export function evaluateRuntimeVariant(
   fixture?: RuntimeFixture
 ): string[] {
   if (["D-02", "H-31", "H-32", "DBG-05"].includes(scenarioId))
-    return evaluateNativeScenarioVariant(scenarioId, assertion, variant, fixture).map((failure) => `${variant.variantId}:${failure}`);
+    return evaluateNativeScenarioVariant(scenarioId, assertion, variant, fixture).map(
+      (failure) => `${variant.variantId}:${failure}`
+    );
   const technologyFailures = evaluateRuntimeTechnology(
     scenarioId,
     assertion.requiredTechnologyContracts?.[variant.variantId],
@@ -50,8 +55,11 @@ export function evaluateRuntimeVariant(
       variant.productionEvidenceV2
     )
   ].map((failure) => `${variant.variantId}:${failure}`);
-  failures.push(...evaluateRuntimeNativeContracts(scenarioId, assertion, variant, fixture)
-    .map((failure) => `${variant.variantId}:${failure}`));
+  failures.push(
+    ...evaluateRuntimeNativeContracts(scenarioId, assertion, variant, fixture).map(
+      (failure) => `${variant.variantId}:${failure}`
+    )
+  );
   failures.push(
     ...(variant.productionEvidenceV2
       ? [...(variant.productionCausalityFailures ?? []), ...(variant.productionCausality?.failures ?? [])]
@@ -229,10 +237,16 @@ export function evaluateRuntimeVariant(
     );
   }
   failures.push(...evaluateRuntimeTransport(assertion, variant));
-  const mandatoryFault = scenarioId === "H-30" && assertion.requiredNativeScenario?.branchByVariant[variant.variantId] === "mandatory" &&
-    fixture?.recipe.variants.find((item) => item.id === variant.variantId)?.presetWorld?.brainFault?.kind === "mandatory";
-  failures.push(...variant.aiErrors.filter((error) => !mandatoryFault || !isExpectedNativeMandatoryError(error, variant))
-    .map((error) => `${variant.variantId}:ai_error:${error}`));
+  const mandatoryFault =
+    scenarioId === "H-30" &&
+    assertion.requiredNativeScenario?.branchByVariant[variant.variantId] === "mandatory" &&
+    fixture?.recipe.variants.find((item) => item.id === variant.variantId)?.presetWorld?.brainFault?.kind ===
+      "mandatory";
+  failures.push(
+    ...variant.aiErrors
+      .filter((error) => !mandatoryFault || !isExpectedNativeMandatoryError(error, variant))
+      .map((error) => `${variant.variantId}:ai_error:${error}`)
+  );
   return failures;
 }
 

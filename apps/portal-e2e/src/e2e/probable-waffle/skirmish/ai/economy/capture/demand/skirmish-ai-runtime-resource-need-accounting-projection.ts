@@ -1,5 +1,7 @@
 import { isDeepStrictEqual } from "node:util";
-import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
 import type { RuntimeResourceNeed } from "./skirmish-ai-runtime-resource-need";
 import type { RuntimeResourceCredit } from "../ownership/skirmish-ai-runtime-resource-credit";
 import type { RuntimeResourceNeedAccounting } from "./skirmish-ai-runtime-resource-need-accounting";
@@ -7,7 +9,9 @@ import {
   projectRuntimeResourceLiabilityFrames,
   validateRuntimeResourceLiabilityFrames
 } from "../ownership/skirmish-ai-runtime-resource-liability-frames";
-import { normalizeRuntimeRecipientMutations } from "../../../production/ownership/skirmish-ai-runtime-recipient-mutations";
+import {
+  normalizeRuntimeRecipientMutations
+} from "../../../production/ownership/skirmish-ai-runtime-recipient-mutations";
 import { calculateRuntimeResourceContribution } from "../labor/calculate-runtime-resource-contribution";
 import {
   runtimeNeedHasIncomingStart,

@@ -1,7 +1,11 @@
 import type { GameCommandExecution } from "@fuzzy-waddle/probable-waffle-protocol";
 import { isDeepStrictEqual } from "node:util";
-import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
-import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import type { RuntimeProductionCausality } from "../decisions/skirmish-ai-runtime-production-causality";
 import type { RuntimeProductionRejection } from "./skirmish-ai-runtime-production-rejection";
 import { matchRuntimeRejectedAdmission } from "../../combat/missions/skirmish-ai-runtime-rejected-admission";

@@ -6,7 +6,7 @@ import {
   serializeCanonicalAiValue
 } from "./canonical-ai-serialization";
 import { createAiProfileConfig } from "../../profiles/ai-profile-defaults";
-import { migrateAiBrainState, AiBrainMigrationError } from "./migrate-ai-brain-state";
+import { AiBrainMigrationError, migrateAiBrainState } from "./migrate-ai-brain-state";
 import { createAiTestObservation } from "../../testing/fixtures/coordination/ai-test-fixtures";
 
 describe("Stage 2 canonical state and migration", () => {
@@ -69,9 +69,8 @@ describe("Stage 2 canonical state and migration", () => {
     expect(digestCanonicalAiValue(canonicalSecond)).toBe(digestCanonicalAiValue(canonicalPermuted));
   });
 
-  it("rejects invalid numeric values during canonical serialization", () => {
-    expect(() => serializeCanonicalAiValue({ score: Number.NaN })).toThrow("invalid_ai_number:$.score");
-  });
+  it("rejects invalid numeric values during canonical serialization", () =>
+    expect(() => serializeCanonicalAiValue({ score: Number.NaN })).toThrow("invalid_ai_number:$.score"));
 
   it("migrates a legacy save from current-world satisfied steps", () => {
     const migrated = migrateAiBrainState({ blackboard: {}, enabled: true }, migrationContext);
@@ -112,26 +111,35 @@ describe("Stage 2 canonical state and migration", () => {
         ...state.economyProduction,
         posture: { status: "safe" as const, enteredTick: 40, lastThreatTick: null },
         workforce: {
-          workers: 6, queuedWorkers: 1, assignedWorkers: 5, desiredWorkers: 8,
-          desiredFoodSources: 4, foodRunwayTicks: 300, blocker: null,
-          economyPermille: 650, defensePermille: 350
+          workers: 6,
+          queuedWorkers: 1,
+          assignedWorkers: 5,
+          desiredWorkers: 8,
+          desiredFoodSources: 4,
+          foodRunwayTicks: 300,
+          blocker: null,
+          economyPermille: 650,
+          defensePermille: 350
         }
       }
     };
     const baseline = digestCanonicalAiValue(canonicalizeAiBrainState(withPolicy));
     expect(baseline).not.toBe(digestCanonicalAiValue(canonicalizeAiBrainState(state)));
-    expect(baseline).not.toBe(digestCanonicalAiValue(canonicalizeAiBrainState({
-      ...withPolicy,
-      economyProduction: {
-        ...withPolicy.economyProduction,
-        posture: { status: "pressured" as const, enteredTick: 40, lastThreatTick: 40 }
-      }
-    })));
-  });
-
-  it("rejects unsupported future state instead of silently resetting", () => {
-    expect(() => migrateAiBrainState({ schemaVersion: 2 }, migrationContext)).toThrow(
-      new AiBrainMigrationError("unsupported_future_schema", "2")
+    expect(baseline).not.toBe(
+      digestCanonicalAiValue(
+        canonicalizeAiBrainState({
+          ...withPolicy,
+          economyProduction: {
+            ...withPolicy.economyProduction,
+            posture: { status: "pressured" as const, enteredTick: 40, lastThreatTick: 40 }
+          }
+        })
+      )
     );
   });
+
+  it("rejects unsupported future state instead of silently resetting", () =>
+    expect(() => migrateAiBrainState({ schemaVersion: 2 }, migrationContext)).toThrow(
+      new AiBrainMigrationError("unsupported_future_schema", "2")
+    ));
 });

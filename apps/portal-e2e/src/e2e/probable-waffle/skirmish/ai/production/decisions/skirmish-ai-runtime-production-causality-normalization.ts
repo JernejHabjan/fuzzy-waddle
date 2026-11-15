@@ -1,13 +1,16 @@
 import { runtimeProductionCaptureFailures } from "../capture/skirmish-ai-runtime-production-capture-order";
 import { normalizeRuntimeProductionWorldAuthority } from "../authority/skirmish-ai-runtime-production-world-authority";
-import { normalizeRuntimeProducerRoutes } from "../../navigation/evaluation/skirmish-ai-runtime-producer-route-normalization";
+import {
+  normalizeRuntimeProducerRoutes
+} from "../../navigation/evaluation/skirmish-ai-runtime-producer-route-normalization";
 import { projectRuntimeProductionCancellations } from "../cancellation/skirmish-ai-runtime-production-cancellations";
 import { projectRuntimeProductionCompletions } from "../completion/skirmish-ai-runtime-production-completions";
 import { projectRuntimeProductionRejections } from "../cancellation/skirmish-ai-runtime-production-rejections";
 import { projectRuntimeProductionQueueMutations } from "../queues/skirmish-ai-runtime-production-queue-mutations";
 // prettier-ignore
-import type { AiRuntimeProductionSnapshot } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
 import type { RuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality";
 import { isRuntimeQueueCommand } from "../authority/skirmish-ai-runtime-production-command-lineage";
 import { normalizeRuntimeProductionCommands } from "../authority/skirmish-ai-runtime-production-command-normalization";
@@ -16,13 +19,16 @@ import { normalizeRuntimeProductionPayments } from "../resources/skirmish-ai-run
 import { projectRuntimeProductionOperations } from "../evidence/skirmish-ai-runtime-production-operation-projection";
 import { validateRuntimeProductionProgress } from "../completion/skirmish-ai-runtime-production-progress";
 import { runtimeProductionApplicationGaps } from "../cancellation/skirmish-ai-runtime-production-application-gaps";
-import { projectRuntimeProductionEffectRetention } from "../lifecycle/skirmish-ai-runtime-production-effect-retention-projection";
+import {
+  projectRuntimeProductionEffectRetention
+} from "../lifecycle/skirmish-ai-runtime-production-effect-retention-projection";
 import { projectRuntimeProductionEnqueues } from "../evidence/skirmish-ai-runtime-production-event-projection";
 import { projectRuntimeProductionLifecycleEvents } from "../lifecycle/skirmish-ai-runtime-production-lifecycle-events";
 import { projectRuntimeProductionCatalog } from "../capture/skirmish-ai-runtime-production-catalog-projection";
 // prettier-ignore
-import type { AiRuntimePresetApplication } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-application";
+import type {
+  AiRuntimePresetApplication
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-application";
 
 /**
  * Pure, bounded by the raw capture limits. Links real dispatch scope to stamped queue authority; no nearest

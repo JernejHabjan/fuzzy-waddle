@@ -83,7 +83,7 @@ test("rejects missing, duplicate, foreign, late, failed and substituted loss res
   );
 });
 
-test("includes expected and observed actor details when a pinned event misses its target", () => {
+test("includes expected and observed actor details when a pinned event misses its target", () =>
   expect(() =>
     assertRuntimePresetEvents(variant, {
       ...application,
@@ -91,20 +91,40 @@ test("includes expected and observed actor details when a pinned event misses it
         { id: "producer-loss", tick: 100, affectedActors: 0, subjectName: "AnkGuard", affectedActorId: null }
       ]
     })
-  ).toThrow("runtime_preset_event_target_mismatch:producer-loss:tick=100/100:subject=AnkGuard/AnkGuard:affected=0:actor=missing/native-original");
-});
+  ).toThrow(
+    "runtime_preset_event_target_mismatch:producer-loss:tick=100/100:subject=AnkGuard/AnkGuard:affected=0:actor=missing/native-original"
+  ));
 
 test("a route outage must actually intercept an original actor within its fixed interval", () => {
-  const fault: RuntimeVariant = { ...variant, presetWorld: {
-    fixtureId: "route-fault", actors: [{ fixtureActorId: "mover", actorName: "TivaraMacemanMale", owner: 2,
-      position: { x: 800, y: 800, z: 0 } }], resourceGrants: [],
-    routeOutages: [{ id: "route-outage", fromTick: 400, throughTick: 800, fixtureActorIds: ["mover"] }]
-  } };
-  const observed = { createdActorIds: { mover: "native-mover" }, eventResults: [{ id: "route-outage", tick: 500,
-    affectedActors: 1, subjectName: "TivaraMacemanMale", affectedActorId: "native-mover" }] };
+  const fault: RuntimeVariant = {
+    ...variant,
+    presetWorld: {
+      fixtureId: "route-fault",
+      actors: [
+        { fixtureActorId: "mover", actorName: "TivaraMacemanMale", owner: 2, position: { x: 800, y: 800, z: 0 } }
+      ],
+      resourceGrants: [],
+      routeOutages: [{ id: "route-outage", fromTick: 400, throughTick: 800, fixtureActorIds: ["mover"] }]
+    }
+  };
+  const observed = {
+    createdActorIds: { mover: "native-mover" },
+    eventResults: [
+      {
+        id: "route-outage",
+        tick: 500,
+        affectedActors: 1,
+        subjectName: "TivaraMacemanMale",
+        affectedActorId: "native-mover"
+      }
+    ]
+  };
   expect(() => assertRuntimePresetEvents(fault, observed)).not.toThrow();
-  expect(() => assertRuntimePresetEvents(fault, { ...observed, eventResults: [] })).toThrow("runtime_preset_events_incomplete");
+  expect(() => assertRuntimePresetEvents(fault, { ...observed, eventResults: [] })).toThrow(
+    "runtime_preset_events_incomplete"
+  );
   for (const change of [{ tick: 399 }, { tick: 801 }, { affectedActorId: "replacement" }, { affectedActors: 0 }])
-    expect(() => assertRuntimePresetEvents(fault, { ...observed,
-      eventResults: [{ ...observed.eventResults[0]!, ...change }] })).toThrow("runtime_route_outage_target_mismatch");
+    expect(() =>
+      assertRuntimePresetEvents(fault, { ...observed, eventResults: [{ ...observed.eventResults[0]!, ...change }] })
+    ).toThrow("runtime_route_outage_target_mismatch");
 });

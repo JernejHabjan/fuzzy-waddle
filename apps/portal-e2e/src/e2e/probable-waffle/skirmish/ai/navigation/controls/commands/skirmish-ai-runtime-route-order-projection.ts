@@ -1,27 +1,35 @@
 import { isDeepStrictEqual } from "node:util";
-import type { AiRuntimeProductionSnapshot } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
 import type { RuntimeRouteOrderLineage } from "./skirmish-ai-runtime-route-order-lineage";
 import type { validateRuntimeRouteOrders } from "./skirmish-ai-runtime-route-order-validation";
 import { matchRuntimeRouteServiceLineage } from "../routing/skirmish-ai-runtime-route-service-lineage";
 import { runtimeRouteOrderFenced } from "./skirmish-ai-runtime-route-order-fence";
 
 /** Prefer explicit invocation ownership; legacy current-order samples retain co-observation only. */
-export function projectRuntimeRouteOrder(capture: AiRuntimeProductionSnapshot,
-  request: NonNullable<RuntimeRouteOrderLineage["admission"]>, terminal: typeof request,
-  records: ReturnType<typeof validateRuntimeRouteOrders>) {
-  const gaps = ["production_route_order_useful_effect_missing",
-    "production_route_complete_order_history_missing"];
+export function projectRuntimeRouteOrder(
+  capture: AiRuntimeProductionSnapshot,
+  request: NonNullable<RuntimeRouteOrderLineage["admission"]>,
+  terminal: typeof request,
+  records: ReturnType<typeof validateRuntimeRouteOrders>
+) {
+  const gaps = ["production_route_order_useful_effect_missing", "production_route_complete_order_history_missing"];
   const failures: string[] = [];
-  let admission: RuntimeRouteOrderLineage["admission"] = null, rally: RuntimeRouteOrderLineage["rally"] = null;
+  let admission: RuntimeRouteOrderLineage["admission"] = null,
+    rally: RuntimeRouteOrderLineage["rally"] = null;
   let serviceCommand: RuntimeRouteOrderLineage["serviceCommand"] = null;
   let selectedDemand: RuntimeRouteOrderLineage["selectedDemand"] = null;
   let sameCurrentOrderAtTerminal = false;
-  let queryCaller: RuntimeRouteOrderLineage["queryCaller"] = null, queryCallerAttributed = false;
-  const before = request.spatial, after = terminal.spatial;
+  let queryCaller: RuntimeRouteOrderLineage["queryCaller"] = null,
+    queryCallerAttributed = false;
+  const before = request.spatial,
+    after = terminal.spatial;
   if (before.kind === "producer_path" && after.kind === "producer_path") {
     queryCaller = before.queryCaller ?? null;
-    const pairedCaller = !!queryCaller && !!after.queryCaller &&
+    const pairedCaller =
+      !!queryCaller &&
+      !!after.queryCaller &&
       isDeepStrictEqual({ ...queryCaller, lifetimeValid: false }, { ...after.queryCaller, lifetimeValid: false });
     if (!queryCaller) gaps.push("production_route_query_order_caller_missing");
     else if (!pairedCaller) gaps.push("production_route_query_order_caller_terminal_missing");
@@ -30,51 +38,107 @@ export function projectRuntimeRouteOrder(capture: AiRuntimeProductionSnapshot,
     }
     const order = queryCaller ? queryCaller.order : before.currentOrder;
     const currentAdmission = before.currentOrder && records.admissions.get(before.currentOrder.orderId);
-    const currentFenced = before.snapshotRestoreInProgress || after.snapshotRestoreInProgress ||
-      !!currentAdmission?.spatial.snapshotRestoreInProgress || runtimeRouteOrderFenced(capture, before.source.actorId,
+    const currentFenced =
+      before.snapshotRestoreInProgress ||
+      after.snapshotRestoreInProgress ||
+      !!currentAdmission?.spatial.snapshotRestoreInProgress ||
+      runtimeRouteOrderFenced(
+        capture,
+        before.source.actorId,
         currentAdmission && currentAdmission.sequence < request.sequence ? currentAdmission.sequence : request.sequence,
-        terminal.sequence);
-    sameCurrentOrderAtTerminal = !currentFenced && !!before.currentOrder && !!after.currentOrder &&
+        terminal.sequence
+      );
+    sameCurrentOrderAtTerminal =
+      !currentFenced &&
+      !!before.currentOrder &&
+      !!after.currentOrder &&
       isDeepStrictEqual(before.currentOrder, after.currentOrder);
     if (!sameCurrentOrderAtTerminal) gaps.push("production_route_order_changed_or_unavailable_at_terminal");
     if (order) {
       admission = records.admissions.get(order.orderId) ?? null;
       if (!admission || admission.sequence >= request.sequence) {
-        admission = null; gaps.push("production_route_order_admission_missing");
+        admission = null;
+        gaps.push("production_route_order_admission_missing");
       } else if (!order.admissionObserved) {
         if (queryCaller) {
-          admission = null; gaps.push("production_route_query_caller_admission_unobserved");
+          admission = null;
+          gaps.push("production_route_query_caller_admission_unobserved");
         } else failures.push("production_route_order_admission_claim_invalid");
       }
       const intervalStart = admission?.sequence ?? request.sequence;
-      const fenced = before.snapshotRestoreInProgress || after.snapshotRestoreInProgress ||
+      const fenced =
+        before.snapshotRestoreInProgress ||
+        after.snapshotRestoreInProgress ||
         admission?.spatial.snapshotRestoreInProgress ||
-        !!queryCaller && (!queryCaller.lifetimeValid || !after.queryCaller?.lifetimeValid) ||
+        (!!queryCaller && (!queryCaller.lifetimeValid || !after.queryCaller?.lifetimeValid)) ||
         runtimeRouteOrderFenced(capture, before.source.actorId, intervalStart, terminal.sequence);
-      if (fenced) { admission = null; gaps.push("production_route_order_restore_or_reuse_fence"); }
+      if (fenced) {
+        admission = null;
+        gaps.push("production_route_order_restore_or_reuse_fence");
+      }
       if (admission) {
-        queryCallerAttributed = pairedCaller && !!queryCaller?.lifetimeValid && !!after.queryCaller?.lifetimeValid &&
-          !records.failures.length && !records.overflow &&
-          admission.spatial.sceneActive && admission.spatial.clockTick !== null &&
-          before.sceneActive && after.sceneActive && before.clockTick !== null && after.clockTick !== null &&
-          before.sourceInCaptureScene && after.sourceInCaptureScene &&
-          [before.source, after.source].every((source) => source.indexed && source.active && source.alive && source.finished);
+        queryCallerAttributed =
+          pairedCaller &&
+          !!queryCaller?.lifetimeValid &&
+          !!after.queryCaller?.lifetimeValid &&
+          !records.failures.length &&
+          !records.overflow &&
+          admission.spatial.sceneActive &&
+          admission.spatial.clockTick !== null &&
+          before.sceneActive &&
+          after.sceneActive &&
+          before.clockTick !== null &&
+          after.clockTick !== null &&
+          before.sourceInCaptureScene &&
+          after.sourceInCaptureScene &&
+          [before.source, after.source].every(
+            (source) => source.indexed && source.active && source.alive && source.finished
+          );
         const origin = records.rallies.get(order.orderId);
-        if (origin && origin.sequence < request.sequence && order.originOutputId !== null &&
-          origin.spatial.kind === "route_rally_order" && origin.spatial.outputId === order.originOutputId) rally = origin;
+        if (
+          origin &&
+          origin.sequence < request.sequence &&
+          order.originOutputId !== null &&
+          origin.spatial.kind === "route_rally_order" &&
+          origin.spatial.outputId === order.originOutputId
+        )
+          rally = origin;
         const service = matchRuntimeRouteServiceLineage(capture, admission, request.sequence);
-        failures.push(...service.failures); gaps.push(...service.gaps);
-        serviceCommand = service.serviceCommand; selectedDemand = service.selectedDemand;
-        if (admission.spatial.kind === "route_order" &&
+        failures.push(...service.failures);
+        gaps.push(...service.gaps);
+        serviceCommand = service.serviceCommand;
+        selectedDemand = service.selectedDemand;
+        if (
+          admission.spatial.kind === "route_order" &&
           (!isDeepStrictEqual(admission.spatial.order.target, order.target) ||
             !isDeepStrictEqual(admission.spatial.order.targetTile, order.targetTile) ||
-            admission.spatial.order.orderType !== order.orderType)) gaps.push("production_route_order_retargeted_since_admission");
+            admission.spatial.order.orderType !== order.orderType)
+        )
+          gaps.push("production_route_order_retargeted_since_admission");
       }
-      if (order.originOutputId !== null && before.outputId !== order.originOutputId) gaps.push("production_route_rally_output_scope_changed");
-    } else gaps.push(queryCaller ? "production_route_query_caller_unordered" :
-      order === null ? "production_route_no_current_order" : "production_route_order_observation_unavailable");
+      if (order.originOutputId !== null && before.outputId !== order.originOutputId)
+        gaps.push("production_route_rally_output_scope_changed");
+    } else
+      gaps.push(
+        queryCaller
+          ? "production_route_query_caller_unordered"
+          : order === null
+            ? "production_route_no_current_order"
+            : "production_route_order_observation_unavailable"
+      );
     if (queryCaller && !queryCallerAttributed) gaps.push("production_route_query_order_caller_unattributed");
   }
-  return { failures, lineage: { admission, rally, serviceCommand, selectedDemand, sameCurrentOrderAtTerminal,
-    queryCaller, queryCallerAttributed, gaps: [...new Set(gaps)] } satisfies RuntimeRouteOrderLineage };
+  return {
+    failures,
+    lineage: {
+      admission,
+      rally,
+      serviceCommand,
+      selectedDemand,
+      sameCurrentOrderAtTerminal,
+      queryCaller,
+      queryCallerAttributed,
+      gaps: [...new Set(gaps)]
+    } satisfies RuntimeRouteOrderLineage
+  };
 }

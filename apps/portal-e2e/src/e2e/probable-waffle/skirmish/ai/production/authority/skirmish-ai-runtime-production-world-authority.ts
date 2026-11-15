@@ -1,17 +1,27 @@
 // prettier-ignore
-import type { AiRuntimeProductionSnapshot } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
 // prettier-ignore
-import type { AiRuntimePresetApplication } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-application";
+import type {
+  AiRuntimePresetApplication
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-application";
 import { normalizeRuntimeProductionWorld } from "../world/skirmish-ai-runtime-production-world-normalization";
-import { normalizeRuntimeProductionInitialQueues } from "../queues/skirmish-ai-runtime-production-initial-queue-normalization";
+import {
+  normalizeRuntimeProductionInitialQueues
+} from "../queues/skirmish-ai-runtime-production-initial-queue-normalization";
 import { normalizeRuntimeProductionDecisions } from "../decisions/skirmish-ai-runtime-production-decisions";
 import { normalizeRuntimeProductionSpatial } from "../world/skirmish-ai-runtime-production-spatial-normalization";
 import { normalizeRuntimeNativeServices } from "../../economy/service/skirmish-ai-runtime-native-service-normalization";
-import { normalizeRuntimeConstructionAuthority } from "../../construction/capture/skirmish-ai-runtime-construction-authority";
-import { projectRuntimeConstructionLineage } from "../../construction/capture/skirmish-ai-runtime-construction-lineage-projection";
-import { projectRuntimeConstructionCatalog } from "../../construction/capture/skirmish-ai-runtime-construction-catalog-projection";
+import {
+  normalizeRuntimeConstructionAuthority
+} from "../../construction/capture/skirmish-ai-runtime-construction-authority";
+import {
+  projectRuntimeConstructionLineage
+} from "../../construction/capture/skirmish-ai-runtime-construction-lineage-projection";
+import {
+  projectRuntimeConstructionCatalog
+} from "../../construction/capture/skirmish-ai-runtime-construction-catalog-projection";
 
 /** Groups existing world/setup/definition authority readers; it does not clear any of their omissions. */
 export function normalizeRuntimeProductionWorldAuthority(

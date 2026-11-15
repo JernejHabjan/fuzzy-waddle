@@ -6,7 +6,7 @@ import { reconcileAiCommandReservations } from "../../planning/coordination/reco
 import { unresolvedReservedEffectIds } from "../../planning/production/macro/ai-macro-effect-identity";
 import { createAiProductionPolicyFixture } from "../fixtures/production/ai-production-policy-fixture";
 
-describe.each([FactionType.Tivara, FactionType.Skaduwee])("native outcome production identity %s", (faction) => {
+describe.each([FactionType.Tivara, FactionType.Skaduwee])("native outcome production identity %s", (faction) =>
   it("releases the exact completed work despite the adapter's canonical effect prefix", () => {
     const f = createAiProductionPolicyFixture(faction);
     const brain = new PureAiBrain(f.profile, [new AiMacroManager(() => f.catalog)]);
@@ -40,5 +40,5 @@ describe.each([FactionType.Tivara, FactionType.Skaduwee])("native outcome produc
     );
     const state = { ...admitted.nextState, pendingOutcomes: [outcome] };
     expect(unresolvedReservedEffectIds(state, "effect:composition:")).not.toContain(unit.effectId);
-  });
-});
+  })
+);

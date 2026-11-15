@@ -5,8 +5,11 @@ import { runtimeClosedHistoryFailures } from "../../capture/skirmish-ai-runtime-
 import { runtimeControlTransitFailures } from "../../navigation/skirmish-ai-runtime-control-transit";
 import { evaluateFortificationAccessWorld } from "../../fortification/skirmish-ai-fortification-access-evaluation";
 import { evaluateExpansionWorld } from "../../expansion/skirmish-ai-expansion-world-evaluation";
-import { evaluateNativeAuthority } from "./skirmish-ai-native-authority-evaluation";
-import { backlogFailures, nativeIntentOperation } from "./skirmish-ai-native-authority-evaluation";
+import {
+  backlogFailures,
+  evaluateNativeAuthority,
+  nativeIntentOperation
+} from "./skirmish-ai-native-authority-evaluation";
 import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/contracts/commands/ai-intent";
 import { evaluateNativeResourcePriority } from "../../economy/capture/policy/skirmish-ai-native-resource-priority-evaluation";
 import { evaluateNativeFault, nativeFaultReceiptReconciled } from "../../recovery/skirmish-ai-native-fault-evaluation";
@@ -57,7 +60,11 @@ test("a completed native command may clear pending ownership before its held rec
     }
   });
   const context = {
-    facts: [delivery(120, "held", "applied"), delivery(319, "held", "completed"), delivery(801, "released", "completed")],
+    facts: [
+      delivery(120, "held", "applied"),
+      delivery(319, "held", "completed"),
+      delivery(801, "released", "completed")
+    ],
     frames: [
       {
         tick: 200,
@@ -94,12 +101,17 @@ test("a completed native command may clear pending ownership before its held rec
 test("the H-15 distant-threat control does not require an unrelated delayed production receipt", () => {
   const context = {
     facts: [],
-    frames: [{ tick: 200, decision: {
-      missionState: { lanes: [], waitEdges: [], authority: {} },
-      economyProduction: { posture: { status: "safe" } },
-      input: { observation: { actors: [{ actorId: "distant-attacker", visibility: "visible" }] } },
-      acceptedIntents: []
-    } }],
+    frames: [
+      {
+        tick: 200,
+        decision: {
+          missionState: { lanes: [], waitEdges: [], authority: {} },
+          economyProduction: { posture: { status: "safe" } },
+          input: { observation: { actors: [{ actorId: "distant-attacker", visibility: "visible" }] } },
+          acceptedIntents: []
+        }
+      }
+    ],
     roles: { "lethal-attacker-0": "distant-attacker" },
     capture: undefined,
     result: { perturbations: [] }
@@ -128,26 +140,38 @@ test("authority retry matching distinguishes different operations under one dema
 test("fault recovery accepts a terminal receipt applied between samples once identity drains after release", () => {
   const commandId = "2:0:119:runtime-fixture";
   const outcome = (kind: string, tick: number) => ({
-    kind: "outcome", tick, playerNumber: 2,
+    kind: "outcome",
+    tick,
+    playerNumber: 2,
     outcome: { commandId, kind, sequence: 119, authorityEpoch: 0 }
   });
   const delivery = (tick: number, phase: "held" | "released", kind: string) => ({
-    kind: "authority_delivery", tick, playerNumber: 2,
+    kind: "authority_delivery",
+    tick,
+    playerNumber: 2,
     delivery: { phase, tick, outcome: { commandId, kind, sequence: 119, authorityEpoch: 0 } }
   });
   const decision = (tick: number, pendingCommandIds: string[]) => ({
-    tick, decision: { missionState: { authority: { health: "healthy", pendingCommandIds } } }
+    tick,
+    decision: { missionState: { authority: { health: "healthy", pendingCommandIds } } }
   });
   const pendingId = `command:${commandId}`;
   const context = {
-    facts: [delivery(120, "held", "applied"), delivery(319, "held", "completed"),
-      outcome("completed", 319), delivery(801, "released", "completed")],
+    facts: [
+      delivery(120, "held", "applied"),
+      delivery(319, "held", "completed"),
+      outcome("completed", 319),
+      delivery(801, "released", "completed")
+    ],
     frames: [decision(200, [pendingId]), decision(820, [])]
   } as unknown as ReturnType<typeof nativeScenarioContext>;
 
   expect(nativeFaultReceiptReconciled(context)).toBe(true);
-  expect(nativeFaultReceiptReconciled({ ...context, frames: [decision(200, [pendingId])] } as unknown as
-    ReturnType<typeof nativeScenarioContext>)).toBe(false);
+  expect(
+    nativeFaultReceiptReconciled({ ...context, frames: [decision(200, [pendingId])] } as unknown as ReturnType<
+      typeof nativeScenarioContext
+    >)
+  ).toBe(false);
 });
 
 test("authority backlog drains terminal receipts while preserving live gather commands", () => {

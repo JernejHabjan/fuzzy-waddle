@@ -68,8 +68,7 @@ function proposeOpeningCheckpointIntent(
   if (fulfilled || checkpoint.id !== activeCheckpointId || satisfiedActors.length + queuedIds.length >= desired)
     return null;
   const demandId = `demand:opening:${checkpoint.id}` as AiDemand["demandId"];
-  const stalledSite = [...constructingActors]
-    .find((site) => !hasAssignedBuilder(observation, site.actorId));
+  const stalledSite = [...constructingActors].find((site) => !hasAssignedBuilder(observation, site.actorId));
   if (stalledSite) {
     const builder = owned(observation)
       .filter(isAvailableBuilder)

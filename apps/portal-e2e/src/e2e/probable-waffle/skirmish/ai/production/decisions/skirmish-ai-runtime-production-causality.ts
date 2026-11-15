@@ -2,7 +2,9 @@ import type { RuntimeProducerRoutes } from "../../navigation/controls/routing/sk
 import type { RuntimeMovement } from "../../navigation/skirmish-ai-runtime-movement";
 import type { RuntimeServiceAttempt } from "../../economy/service/skirmish-ai-runtime-service-attempt";
 import type { RuntimeResourceCredit } from "../../economy/capture/ownership/skirmish-ai-runtime-resource-credit";
-import type { projectRuntimeResourceServices } from "../../economy/service/skirmish-ai-runtime-resource-service-projection";
+import type {
+  projectRuntimeResourceServices
+} from "../../economy/service/skirmish-ai-runtime-resource-service-projection";
 import type { RuntimeProductionCancellation } from "../cancellation/skirmish-ai-runtime-production-cancellation";
 import type { RuntimeProductionCompletion } from "../completion/skirmish-ai-runtime-production-completion";
 import type { RuntimeProductionRejection } from "../cancellation/skirmish-ai-runtime-production-rejection";
@@ -10,8 +12,9 @@ import type { RuntimeProductionQueueMutation } from "../queues/skirmish-ai-runti
 import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
 import type { GameCommand } from "@fuzzy-waddle/probable-waffle-protocol";
 // prettier-ignore
-import type { AiRuntimeProductionFact } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import type { RuntimeProductionOperation } from "../evidence/skirmish-ai-runtime-production-operation";
 import type { normalizeRuntimeScopedQueuePayments } from "../ownership/skirmish-ai-runtime-scoped-queue-payments";
 import type { RuntimeProductionWorldSnapshot } from "../world/skirmish-ai-runtime-production-world-snapshot";
@@ -19,11 +22,14 @@ import type { RuntimeProductionInitialQueue } from "../queues/skirmish-ai-runtim
 import type { RuntimeProductionDecision } from "./skirmish-ai-runtime-production-decision";
 import type { RuntimeProductionSpatialAuthority } from "../authority/skirmish-ai-runtime-production-spatial-authority";
 import type { RuntimeProductionEffectRetention } from "../lifecycle/skirmish-ai-runtime-production-effect-retention";
-import type { RuntimeConstructionCatalogEntry } from "../../construction/capture/skirmish-ai-runtime-construction-catalog-entry";
+import type {
+  RuntimeConstructionCatalogEntry
+} from "../../construction/capture/skirmish-ai-runtime-construction-catalog-entry";
 import type { RuntimeConstructionLineage } from "../../construction/capture/skirmish-ai-runtime-construction-lineage";
 // prettier-ignore
-import type { AiRuntimeInitialConstruction } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/construction/ai-runtime-initial-construction";
+import type {
+  AiRuntimeInitialConstruction
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/construction/ai-runtime-initial-construction";
 
 import type { RuntimeProductionEvidence } from "../evidence/skirmish-ai-runtime-production-evidence";
 

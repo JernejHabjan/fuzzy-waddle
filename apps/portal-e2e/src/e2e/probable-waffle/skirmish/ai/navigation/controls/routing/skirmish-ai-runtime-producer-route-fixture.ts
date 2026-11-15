@@ -1,7 +1,13 @@
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
-import type { AiRuntimeProductionSpatial } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/world/ai-runtime-production-spatial";
-import { productionCompletionFixture } from "../../../production/completion/skirmish-ai-runtime-production-completion-fixture";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type {
+  AiRuntimeProductionSpatial
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/world/ai-runtime-production-spatial";
+import {
+  productionCompletionFixture
+} from "../../../production/completion/skirmish-ai-runtime-production-completion-fixture";
 
 /** Invented native creation/branch/query order only. No live movement, cache freshness or useful strategic arrival. */
 export function producerRouteFixture() {

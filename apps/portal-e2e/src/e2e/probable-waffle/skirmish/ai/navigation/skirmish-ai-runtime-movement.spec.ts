@@ -101,7 +101,11 @@ test("an order replacement after physical endpoint contact preserves arrival evi
   });
   const result = normalizeRuntimeProductionCausality({ ...f.capture, facts });
   expect(result.failures).toEqual([]);
-  expect(result.movements[0]).toMatchObject({ callerAttributed: true, arrival: "original_destination", returned: "false" });
+  expect(result.movements[0]).toMatchObject({
+    callerAttributed: true,
+    arrival: "original_destination",
+    returned: "false"
+  });
 });
 
 for (const missing of ["caller", "admission", "terminal", "clock", "actual_tile", "return"] as const) {

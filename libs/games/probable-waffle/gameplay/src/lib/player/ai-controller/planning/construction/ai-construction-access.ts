@@ -102,7 +102,12 @@ export function constructionAccessPolicy(
       }
       const current = cells.get(currentKey);
       if (!current) continue;
-      for (const [dx, dy] of [[-1, 0], [1, 0], [0, -1], [0, 1]] as const) {
+      for (const [dx, dy] of [
+        [-1, 0],
+        [1, 0],
+        [0, -1],
+        [0, 1]
+      ] as const) {
         const nextKey = `${current.position.x + dx},${current.position.y + dy}`;
         const next = cells.get(nextKey);
         if (
@@ -147,38 +152,30 @@ export function constructionAccessPolicy(
         if (target.status === "known") {
           const endpoint = `${Math.round(target.value.x)},${Math.round(target.value.y)}`;
           orderEndpointKeys.add(endpoint);
-          if (originKey)
-            for (const key of findObservedRoute(originKey, endpoint)) orderedRouteKeys.add(key);
+          if (originKey) for (const key of findObservedRoute(originKey, endpoint)) orderedRouteKeys.add(key);
         }
       } else if (target) {
         const endpoint = `${Math.round(target.x)},${Math.round(target.y)}`;
         orderEndpointKeys.add(endpoint);
-        if (originKey)
-          for (const key of findObservedRoute(originKey, endpoint)) orderedRouteKeys.add(key);
+        if (originKey) for (const key of findObservedRoute(originKey, endpoint)) orderedRouteKeys.add(key);
       }
     }
   }
-  const orderSpaceKeys = [...new Set([...orderOriginKeys, ...orderEndpointKeys])].filter(
-    (key) => before.has(key)
-  );
-  const protectedOrderRouteKeys = new Set(
-    [...orderedRouteKeys].filter((key) => before.has(key))
-  );
+  const orderSpaceKeys = [...new Set([...orderOriginKeys, ...orderEndpointKeys])].filter((key) => before.has(key));
+  const protectedOrderRouteKeys = new Set([...orderedRouteKeys].filter((key) => before.has(key)));
   return (footprint) => {
     if (
       !footprint.some((key) => before.has(key)) ||
-      footprint.some((key) =>
-        shoreKeys.has(key) ||
-        orderEndpointKeys.has(key) ||
-        workerClearanceKeys.has(key) ||
-        protectedOrderRouteKeys.has(key)
+      footprint.some(
+        (key) =>
+          shoreKeys.has(key) ||
+          orderEndpointKeys.has(key) ||
+          workerClearanceKeys.has(key) ||
+          protectedOrderRouteKeys.has(key)
       )
     )
       return false;
-    const blocked = new Set([
-      ...staticBlocked,
-      ...clearanceBlocked(new Set([...reserved, ...footprint]))
-    ]);
+    const blocked = new Set([...staticBlocked, ...clearanceBlocked(new Set([...reserved, ...footprint]))]);
     if (blocked.has(start)) return false;
     if (orderSpaceKeys.some((key) => blocked.has(key))) return false;
     const after = flood(blocked);

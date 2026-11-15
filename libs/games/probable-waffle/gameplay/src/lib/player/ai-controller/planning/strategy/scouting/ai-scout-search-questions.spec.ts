@@ -3,10 +3,10 @@ import { createAiBrainState } from "../../../brain/state/create-ai-brain-state";
 import { buildAiAccessGraph } from "../../access/ai-access-graph";
 import {
   homeNode,
-  unit,
+  manager,
   observation,
   profile,
-  manager
+  unit
 } from "../../../testing/fixtures/strategy/ai-skirmish-test-fixtures";
 
 const access = buildAiAccessGraph({

@@ -2,8 +2,8 @@ import { expect, test } from "@playwright/test";
 import { evaluateRuntimeProductionContract } from "../evaluation/skirmish-ai-runtime-production-contract-evaluation";
 import {
   productionContract,
-  productionEvidence,
   productionEvent,
+  productionEvidence,
   productionSnapshot,
   proofProducer
 } from "../fixtures/skirmish-ai-runtime-production-contract-fixtures";
@@ -75,25 +75,23 @@ function future(branch: "future_committed" | "future_abandoned") {
     : evidence;
 }
 
-test("PRO-03 separates future prebuild from current queue saturation and keeps the dated force", () => {
+test("PRO-03 separates future prebuild from current queue saturation and keeps the dated force", () =>
   expect(
     evaluateRuntimeProductionContract(
       "PRO-03",
       productionContract("PRO-03", "future_committed"),
       future("future_committed")
     )
-  ).toEqual([]);
-});
+  ).toEqual([]));
 
-test("PRO-03 abandoned future releases optional unspent claims and retains applied commitments", () => {
+test("PRO-03 abandoned future releases optional unspent claims and retains applied commitments", () =>
   expect(
     evaluateRuntimeProductionContract(
       "PRO-03",
       productionContract("PRO-03", "future_abandoned"),
       future("future_abandoned")
     )
-  ).toEqual([]);
-});
+  ).toEqual([]));
 
 test("PRO-03 accepts the planner's fulfilled terminal state with retained applied force", () => {
   const evidence = future("future_committed");

@@ -242,7 +242,7 @@ export function projectAiDebugSnapshot(
     bases,
     fortifications,
     fortificationPlanningReason:
-      fortifications.length === 0 ? fortificationProposal?.reasons.join(",") ?? null : null,
+      fortifications.length === 0 ? (fortificationProposal?.reasons.join(",") ?? null) : null,
     recovery,
     support,
     adaptation,

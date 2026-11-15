@@ -1,15 +1,18 @@
 import type { RuntimeAssertion } from "../evaluation/controls/skirmish-ai-runtime-assertion";
 import type { RuntimeVariantResult } from "../runner/skirmish-ai-runtime-variant-result";
 
-export function evaluateRuntimePresetWorld(
-  assertion: RuntimeAssertion,
-  variant: RuntimeVariantResult
-): string[] {
+export function evaluateRuntimePresetWorld(assertion: RuntimeAssertion, variant: RuntimeVariantResult): string[] {
   const failures: string[] = [];
   if (assertion.requiredPresetFixtureId !== undefined) {
-    if (variant.presetFixtureId !== assertion.requiredPresetFixtureId) failures.push(`${variant.variantId}:preset_fixture`);
-    if (variant.presetCreatedActorNames.length + variant.presetResourceGrantCount +
-      variant.presetResourceStartCount + variant.presetInitialOrderCount === 0) {
+    if (variant.presetFixtureId !== assertion.requiredPresetFixtureId)
+      failures.push(`${variant.variantId}:preset_fixture`);
+    if (
+      variant.presetCreatedActorNames.length +
+        variant.presetResourceGrantCount +
+        variant.presetResourceStartCount +
+        variant.presetInitialOrderCount ===
+      0
+    ) {
       failures.push(`${variant.variantId}:preset_zero_work`);
     }
   }
@@ -27,9 +30,11 @@ export function evaluateRuntimePresetWorld(
         checkpoint.tick >= (loss?.tick ?? Number.MAX_SAFE_INTEGER) &&
         checkpoint.militaryProducerNames.filter((name) => name === producerName).length < beforeCount
     );
-    const restored = variant.checkpoints.slice(lossIndex + 1).some(
-      (checkpoint) => checkpoint.militaryProducerNames.filter((name) => name === producerName).length >= beforeCount
-    );
+    const restored = variant.checkpoints
+      .slice(lossIndex + 1)
+      .some(
+        (checkpoint) => checkpoint.militaryProducerNames.filter((name) => name === producerName).length >= beforeCount
+      );
     if (!loss || loss.dispatchedActors <= 0 || !producerName || beforeCount === 0) {
       failures.push(`${variant.variantId}:producer_loss_not_applied`);
     }

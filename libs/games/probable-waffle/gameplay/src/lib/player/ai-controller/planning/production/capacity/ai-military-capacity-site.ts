@@ -1,4 +1,4 @@
-import type { AiObservedActor, AiObservation } from "../../../contracts/observation/ai-observation";
+import type { AiObservation, AiObservedActor } from "../../../contracts/observation/ai-observation";
 import { selectConstructionPosition } from "../../construction/ai-construction-site-selector";
 import { isAiProducerPositionExposed, reachableAiConstructionTiles } from "../../construction/ai-producer-safety";
 

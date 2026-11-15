@@ -1,6 +1,6 @@
 import { AI_CAPABILITY_COVERAGE_MANIFEST } from "./ai-capability-coverage-manifest";
 
-describe("AI_CAPABILITY_COVERAGE_MANIFEST", () => {
+describe("AI_CAPABILITY_COVERAGE_MANIFEST", () =>
   it("has unique families and every required seam has an accountable disposition", () => {
     const families = AI_CAPABILITY_COVERAGE_MANIFEST.map((entry) => entry.family);
     expect(new Set(families).size).toBe(families.length);
@@ -24,5 +24,4 @@ describe("AI_CAPABILITY_COVERAGE_MANIFEST", () => {
         }
       }
     }
-  });
-});
+  }));

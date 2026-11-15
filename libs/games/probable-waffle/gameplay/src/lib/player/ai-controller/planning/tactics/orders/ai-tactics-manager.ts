@@ -5,15 +5,16 @@ import type { AiIntent } from "../../../contracts/commands/ai-intent";
 import type { AiObservation } from "../../../contracts/observation/ai-observation";
 import type { AiProfileConfig } from "../../../contracts/ai-profile-config";
 import type { AiManagerProposal, AiProposalManager } from "../../coordination/ai-manager-proposal";
-import { knownPosition, distance, movementDomains } from "../combat/ai-tactics-geometry";
+import { distance, knownPosition, movementDomains } from "../combat/ai-tactics-geometry";
 import { isEconomicActor } from "../combat/ai-tactics-combat";
-import { splitDomainSquads, boundedTacticalIntents } from "./ai-tactics-orders";
+import { boundedTacticalIntents, splitDomainSquads } from "./ai-tactics-orders";
 import { prepareAiTacticalSquad } from "../missions/ai-tactics-mission-preparation";
 import { decideAiTacticalSquad } from "../missions/ai-tactics-mission-decision";
 import { projectAiTacticalSquad } from "../missions/ai-tactics-mission-projection";
 import { proposeAiTacticalOrders } from "../missions/ai-tactics-mission-orders";
 
 import type { AiTacticsContext } from "./ai-tactics-context";
+
 /** Owns deterministic local combat preservation, focus reservations, support windows and tactical recovery. */
 export class AiTacticsManager implements AiProposalManager {
   readonly managerId = "stagez13.tactics";

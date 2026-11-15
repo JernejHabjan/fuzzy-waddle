@@ -7,13 +7,20 @@ import {
 import { HIGH_GROUND_THRESHOLD } from "../../../../entity/components/combat/high-ground-constants";
 import type { AiObservation, AiObservedActor } from "../../contracts/observation/ai-observation";
 import type { AiCapabilityCatalog } from "../../contracts/observation/ai-capability-catalog";
-import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "../../testing/fixtures/coordination/ai-test-fixtures";
-import { completedOpeningState, catalog as macroCatalog } from "../../testing/fixtures/production/ai-macro-test-fixtures";
+import {
+  createAiTestObservation,
+  createAiTestOwnedActor,
+  unknownAiValue
+} from "../../testing/fixtures/coordination/ai-test-fixtures";
+import {
+  catalog as macroCatalog,
+  completedOpeningState
+} from "../../testing/fixtures/production/ai-macro-test-fixtures";
 import { createAiProfileConfig } from "../../profiles/ai-profile-defaults";
 import { AiBaseManager } from "./ai-base-manager";
 import { findAiExpansionBuilder } from "./ai-expansion-site";
 import { aiEconomySiteSafety } from "../economy/service/ai-economy-site-safety";
-import { observedAiProducerThreats, isAiProducerPositionExposed } from "../construction/ai-producer-safety";
+import { isAiProducerPositionExposed, observedAiProducerThreats } from "../construction/ai-producer-safety";
 
 function fixture() {
   const tick = 600;

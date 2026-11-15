@@ -7,7 +7,7 @@ These are the shared implementation defaults for the controller. Read them with 
 All paths below are repository-relative. Resolve against the checkout, not a fixed machine path. Existing symbols are discovery anchors; target directories are deliberate new code destinations.
 
 | Area          | Existing authority                                                                                                                                               | New code destination / responsibility                                                      |
-| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+|---------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------|
 | Pure AI       | `libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/`                                                                                              | `contracts/`, `brain/`, `planning/`, `profiles/`, `debug/`, `testing/`; no Phaser imports  |
 | Runtime AI    | `libs/games/probable-waffle/phaser/src/lib/player/ai-controller/` and `ai-behavior/`                                                                             | `observation/`, `execution/`, `persistence/`; adapters around existing controller/managers |
 | Definitions   | Phaser `prefabs/definitions/actor-definitions.ts`, `prefab-definition.ts`, `data/tech-tree/tech-tree.service.ts`                                                 | Runtime capability projection into pure catalog; no copied balance table                   |
@@ -22,10 +22,7 @@ All paths below are repository-relative. Resolve against the checkout, not a fix
 Use one exported substantive type/class per file and existing path aliases. Reuse `PlayerNumber`, actor ID, `ObjectNames`, `ResourceType`, faction/order/command types rather than copying the illustrative string IDs from the research document. Add named plan/squad/claim IDs where needed. Stable collections serialize as sorted arrays; convert to lookup maps inside pure reducers if useful.
 
 The persisted brain-state import surface is `contracts/state/ai-state-contracts.ts`; each state slice is defined in one
-`contracts/brain-state/` file. `contracts/validation/validate-ai-contracts.ts` retains the validation import surface,
-delegating to focused brain, observation, dependency-edge, transport and squad validators. Canonical JSON values live
-in `brain/persistence/canonical-ai-value.ts`, while `brain/persistence/canonical-ai-serialization.ts` owns deterministic ordering and digests.
-These boundaries do not change persisted schema names or serialized field order.
+`contracts/brain-state/` file. `contracts/validation/validate-ai-contracts.ts` retains the validation import surface, delegating to focused brain, observation, dependency-edge, transport and squad validators. Canonical JSON values live in `brain/persistence/canonical-ai-value.ts`, while `brain/persistence/canonical-ai-serialization.ts` owns deterministic ordering and digests. These boundaries do not change persisted schema names or serialized field order.
 
 ## Brain composition and lifecycle
 
@@ -75,7 +72,7 @@ The [difficulty specification](../testing/classic-rts-and-difficulty-scenarios.m
 The macro manager derives total army demand and dated economic obligations using [C1/C2](../testing/classic-rts-and-difficulty-scenarios.md#c2--desired-army-size-and-spending-have-a-source) before assigning role shares. Reproduction manifests and diagnostic completeness are typed contracts; they cannot be retrofitted as untyped live-world debug queries.
 
 | Setting                                | Easy | Normal | Hard |
-| -------------------------------------- | ---- | ------ | ---- |
+|----------------------------------------|------|--------|------|
 | Decision interval, ticks               | 40   | 20     | 10   |
 | New intent proposals / step            | 16   | 32     | 64   |
 | Accepted command batches / step        | 4    | 8      | 12   |

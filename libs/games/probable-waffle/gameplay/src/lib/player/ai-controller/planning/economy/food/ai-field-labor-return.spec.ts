@@ -1,6 +1,10 @@
 import { ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiObservedActor } from "../../../contracts/observation/ai-observation";
-import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "../../../testing/fixtures/coordination/ai-test-fixtures";
+import {
+  createAiTestObservation,
+  createAiTestOwnedActor,
+  unknownAiValue
+} from "../../../testing/fixtures/coordination/ai-test-fixtures";
 import { catalog, completedOpeningState } from "../../../testing/fixtures/production/ai-macro-test-fixtures";
 import { proposeAiFieldLabor } from "./ai-field-labor-proposal";
 
@@ -103,18 +107,13 @@ describe("Field labor during native food returns", () => {
     };
     expect(f.propose()).toMatchObject({ sourceActorId: "field", actorIds: ["returning"] });
   });
-  it("assigns another Field while reserving the ambiguous returning farmer's source", () => {
+  it("assigns another Field while reserving the ambiguous returning farmer's source", () =>
     expect(fixture(ResourceType.Food, 2).propose()).toMatchObject({
       sourceActorId: "field-2",
       actorIds: ["wood-worker"]
-    });
-  });
-  it("defers another farmer when cargo identity is unavailable at a food-capable dropoff", () => {
-    expect(fixture(null).propose()).toBeNull();
-  });
-  it("does not confuse known wood delivery with a returning farmer", () => {
-    expect(fixture(ResourceType.Wood).propose()).toMatchObject({ sourceActorId: "field", actorIds: ["wood-worker"] });
-  });
+    }));
+  it("defers another farmer when cargo identity is unavailable at a food-capable dropoff", () => expect(fixture(null).propose()).toBeNull());
+  it("does not confuse known wood delivery with a returning farmer", () => expect(fixture(ResourceType.Wood).propose()).toMatchObject({ sourceActorId: "field", actorIds: ["wood-worker"] }));
   it("assigns a Field to its closest eligible farmer before using stable geometry tie-breaks", () => {
     const f = fixture(ResourceType.Wood);
     const field = {
@@ -131,9 +130,15 @@ describe("Field labor during native food returns", () => {
     };
     const self = [
       ...f.self.map((actor) =>
-        actor.actorId === "field" ? field : actor.actorId === "wood-worker"
-          ? { ...actor, logicalPosition: { status: "known" as const, value: { x: 45, y: 22, z: 0 }, observedTick: 20 } }
-          : actor),
+        actor.actorId === "field"
+          ? field
+          : actor.actorId === "wood-worker"
+            ? {
+                ...actor,
+                logicalPosition: { status: "known" as const, value: { x: 45, y: 22, z: 0 }, observedTick: 20 }
+              }
+            : actor
+      ),
       near,
       far
     ];

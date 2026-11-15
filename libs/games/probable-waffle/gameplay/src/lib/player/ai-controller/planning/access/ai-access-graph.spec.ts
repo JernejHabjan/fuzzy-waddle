@@ -1,4 +1,4 @@
-import { buildAiAccessGraph, queryAiAccessRoute, type AiAccessCell } from "./ai-access-graph";
+import { type AiAccessCell, buildAiAccessGraph, queryAiAccessRoute } from "./ai-access-graph";
 
 const cells: readonly AiAccessCell[] = [
   {
@@ -46,9 +46,8 @@ const build = (inputCells: readonly AiAccessCell[]) =>
   });
 
 describe("Stage 8 access graph", () => {
-  it("produces identical stable regions and shore transfers for permuted map input", () => {
-    expect(build(cells).graph).toEqual(build([...cells].reverse()).graph);
-  });
+  it("produces identical stable regions and shore transfers for permuted map input", () =>
+    expect(build(cells).graph).toEqual(build([...cells].reverse()).graph));
 
   it("never reports disconnected ground islands as a direct ground route", () => {
     const built = build(cells);

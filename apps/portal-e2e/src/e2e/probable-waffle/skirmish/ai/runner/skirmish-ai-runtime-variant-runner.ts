@@ -13,7 +13,10 @@ import { canStopAfterTerminal } from "./skirmish-ai-runtime-terminal";
 import { evaluateEvidenceStopAtCheckpoint } from "../evaluation/controls/skirmish-ai-runtime-evidence-stop-evaluation";
 import { collectRuntimePresetEvents } from "../setup/skirmish-ai-runtime-preset-event-results";
 import { captureRuntimeProductionAuthority } from "../production/capture/skirmish-ai-runtime-production-capture";
-import { buildRuntimeProductionReport, compactRuntimeProductionReport } from "../production/evidence/skirmish-ai-runtime-production-report";
+import {
+  buildRuntimeProductionReport,
+  compactRuntimeProductionReport
+} from "../production/evidence/skirmish-ai-runtime-production-report";
 import { advanceRuntimeFrames } from "./skirmish-ai-runtime-frame-driver";
 
 const runtimeProgressStartedAt = performance.now();
@@ -37,8 +40,7 @@ export async function runVariant(
   const context = await browser.newContext();
   const page = await context.newPage();
   page.on("console", (message) => {
-    if (message.text().startsWith("[AI_SKIRMISH_PRODUCTION_CAPTURE]"))
-      process.stdout.write(`${message.text()}\n`);
+    if (message.text().startsWith("[AI_SKIRMISH_PRODUCTION_CAPTURE]")) process.stdout.write(`${message.text()}\n`);
   });
   const checkpointPhases: {
     targetTick: number;
@@ -125,11 +127,10 @@ export async function runVariant(
         process.env.AI_SKIRMISH_DIAGNOSTIC_STOP_AT_CAPTURE_HORIZON === "1" &&
         closedProductionHorizon !== undefined &&
         targetTick >= closedProductionHorizon;
-      const stopAtTick =
-        diagnosticStopAtCaptureHorizon
-          ? closedProductionHorizon
-          : closedProductionHorizon !== undefined && targetTick >= closedProductionHorizon
-            ? closedProductionHorizon + 1
+      const stopAtTick = diagnosticStopAtCaptureHorizon
+        ? closedProductionHorizon
+        : closedProductionHorizon !== undefined && targetTick >= closedProductionHorizon
+          ? closedProductionHorizon + 1
           : targetTick;
       await advanceRuntimeToTick(page, fixture, stopAtTick, index);
       if (process.env.AI_SKIRMISH_DIAGNOSTIC_CHECKPOINT_TRACE === "1" && targetTick >= 4000)
@@ -262,11 +263,7 @@ export async function runVariant(
   }
 }
 
-async function captureRuntimeProductionAuthorityWithDiagnostics(
-  page: Page,
-  playerNumber: number,
-  targetTick: number
-) {
+async function captureRuntimeProductionAuthorityWithDiagnostics(page: Page, playerNumber: number, targetTick: number) {
   const trace = process.env.AI_SKIRMISH_DIAGNOSTIC_CHECKPOINT_TRACE === "1" && targetTick >= 4000;
   if (!trace) return captureRuntimeProductionAuthority(page, playerNumber);
 
@@ -302,12 +299,7 @@ async function captureRuntimeProductionAuthorityWithDiagnostics(
   }
 }
 
-async function advanceRuntimeToTick(
-  page: Page,
-  fixture: RuntimeFixture,
-  targetTick: number,
-  checkpointIndex: number
-) {
+async function advanceRuntimeToTick(page: Page, fixture: RuntimeFixture, targetTick: number, checkpointIndex: number) {
   if (fixture.recipe.fixedStepFrames)
     return advanceRuntimeFrames(page, fixture.recipe.aiPlayerNumber, targetTick, 1, false, (tick) => {
       if (tick % 500 === 0)

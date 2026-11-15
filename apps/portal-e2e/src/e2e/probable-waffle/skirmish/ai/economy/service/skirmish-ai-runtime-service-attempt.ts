@@ -1,6 +1,9 @@
-import type { AiRuntimeProductionFact } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
-import type { RuntimeRouteOrderLineage } from "../../navigation/controls/commands/skirmish-ai-runtime-route-order-lineage";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type {
+  RuntimeRouteOrderLineage
+} from "../../navigation/controls/commands/skirmish-ai-runtime-route-order-lineage";
 
 /** Exact native service-attempt ownership. A callee amount cannot supply resource credit or cargo provenance. */
 export interface RuntimeServiceAttempt {

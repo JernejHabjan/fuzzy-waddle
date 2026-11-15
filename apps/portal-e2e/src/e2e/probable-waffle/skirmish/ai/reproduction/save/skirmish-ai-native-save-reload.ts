@@ -1,11 +1,9 @@
 import { expect, type Page } from "@playwright/test";
-import type { AiRuntimeBrowserTestHost } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/browser/ai-runtime-browser-test-host";
+import type { AiRuntimeBrowserTestHost } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/browser/ai-runtime-browser-test-host";
 import { continueNativeEndGameDialog, openNativeGameAction } from "../../runner/skirmish-ai-native-game-menu";
 import { installRuntimeAccessor } from "../../runner/skirmish-ai-runtime-browser-accessor";
 import { ProbableWaffleGameInstanceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type GameProbableWaffleScene from
-  "@fuzzy-waddle/probable-waffle-phaser/world/scenes/GameProbableWaffleScene";
+import type GameProbableWaffleScene from "@fuzzy-waddle/probable-waffle-phaser/world/scenes/GameProbableWaffleScene";
 
 type NativeSaveKind = "quicksave" | "autosave" | "manual";
 const manualSaveName = "Reliability manual save";
@@ -13,51 +11,66 @@ const manualSaveName = "Reliability manual save";
 /** Native save actions capture the renderer snapshot and write through the encrypted repository. */
 export async function saveNativeMatch(page: Page, playerNumber: number, kind: NativeSaveKind = "quicksave") {
   const previous = await readNativeSaveHeaders(page, kind);
-  const boundary = await page.evaluate(({ playerNumber, supportedType, kind }) => {
-    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost;
-      __nativeSavedGameOwner?: AiRuntimeBrowserTestHost["game"]; __nativeSaveRealm?: string };
-    const host = realm.__fuzzyWaddleAiRuntimeBrowserTest;
-    const parts = window.__fuzzyWaddleAiRuntimeParts?.(playerNumber);
-    if (!host || !parts) throw new Error("native_save_original_owner_missing");
-    const scene = host.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
-      GameProbableWaffleScene | undefined;
-    if (scene?.baseGameData.gameInstance.gameInstanceMetadata.data.type !== supportedType)
-      throw new Error("native_save_requires_single_player_skirmish");
-    if (!parts.controller.isDecisionBoundarySettled()) throw new Error("native_save_boundary_has_inflight_ai_work");
-    const decisionSequence = parts.controller.getBrainState()?.scheduler.decisionSequence;
-    if (decisionSequence === undefined || !Number.isSafeInteger(decisionSequence))
-      throw new Error("native_save_original_decision_boundary_missing");
-    host.game.loop.wake();
-    realm.__nativeSavedGameOwner = host.game;
-    realm.__nativeSaveRealm = crypto.randomUUID();
-    const tick = parts.tickService.currentTick;
-    if (kind === "autosave") {
-      // Send the timer's real request at a settled boundary without waiting for the interval.
-      parts.tickService.resumeTick("manual");
-      scene.communicator.allScenes.emit({ name: "save-game", data: { kind } });
-    }
-    parts.tickService.pauseTick("manual");
-    return { tick, realmId: realm.__nativeSaveRealm, decisionSequence, kind };
-  }, { playerNumber, supportedType: ProbableWaffleGameInstanceType.Skirmish, kind });
+  const boundary = await page.evaluate(
+    ({ playerNumber, supportedType, kind }) => {
+      const realm = window as unknown as {
+        __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost;
+        __nativeSavedGameOwner?: AiRuntimeBrowserTestHost["game"];
+        __nativeSaveRealm?: string;
+      };
+      const host = realm.__fuzzyWaddleAiRuntimeBrowserTest;
+      const parts = window.__fuzzyWaddleAiRuntimeParts?.(playerNumber);
+      if (!host || !parts) throw new Error("native_save_original_owner_missing");
+      const scene = host.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
+        | GameProbableWaffleScene
+        | undefined;
+      if (scene?.baseGameData.gameInstance.gameInstanceMetadata.data.type !== supportedType)
+        throw new Error("native_save_requires_single_player_skirmish");
+      if (!parts.controller.isDecisionBoundarySettled()) throw new Error("native_save_boundary_has_inflight_ai_work");
+      const decisionSequence = parts.controller.getBrainState()?.scheduler.decisionSequence;
+      if (decisionSequence === undefined || !Number.isSafeInteger(decisionSequence))
+        throw new Error("native_save_original_decision_boundary_missing");
+      host.game.loop.wake();
+      realm.__nativeSavedGameOwner = host.game;
+      realm.__nativeSaveRealm = crypto.randomUUID();
+      const tick = parts.tickService.currentTick;
+      if (kind === "autosave") {
+        // Send the timer's real request at a settled boundary without waiting for the interval.
+        parts.tickService.resumeTick("manual");
+        scene.communicator.allScenes.emit({ name: "save-game", data: { kind } });
+      }
+      parts.tickService.pauseTick("manual");
+      return { tick, realmId: realm.__nativeSaveRealm, decisionSequence, kind };
+    },
+    { playerNumber, supportedType: ProbableWaffleGameInstanceType.Skirmish, kind }
+  );
   if (kind === "quicksave") await page.keyboard.press("Control+s");
   if (kind === "manual") {
     await openNativeGameAction(page, "save");
     await page.getByLabel("Save name").fill(manualSaveName);
     await page.getByRole("button", { name: "Save", exact: true }).click();
   }
-  await expect.poll(async () => {
-    const headers = await readNativeSaveHeaders(page, kind);
-    return headers.some((entry) => !previous.some((old) => old.id === entry.id && old.revision === entry.revision));
-  }, { timeout: 30_000 }).toBe(true);
-  const saved = (await readNativeSaveHeaders(page, kind)).find((entry) =>
-    !previous.some((old) => old.id === entry.id && old.revision === entry.revision));
+  await expect
+    .poll(
+      async () => {
+        const headers = await readNativeSaveHeaders(page, kind);
+        return headers.some((entry) => !previous.some((old) => old.id === entry.id && old.revision === entry.revision));
+      },
+      { timeout: 30_000 }
+    )
+    .toBe(true);
+  const saved = (await readNativeSaveHeaders(page, kind)).find(
+    (entry) => !previous.some((old) => old.id === entry.id && old.revision === entry.revision)
+  );
   if (!saved) throw new Error(`native_encrypted_${kind}_missing`);
   return { ...boundary, saveId: saved.id, revision: saved.revision };
 }
 
 /** Ordinary Load UI replaces Phaser in the retained realm, returning to the actual stored nonzero clock. */
 export async function reloadNativeMatch(
-  page: Page, playerNumber: number, boundary: Awaited<ReturnType<typeof saveNativeMatch>>
+  page: Page,
+  playerNumber: number,
+  boundary: Awaited<ReturnType<typeof saveNativeMatch>>
 ) {
   await continueNativeEndGameDialog(page);
   if (await page.getByRole("heading", { name: "Score Screen" }).isVisible()) {
@@ -68,23 +81,37 @@ export async function reloadNativeMatch(
   const row = page.locator(".aota-save-row").filter({ hasText: rowName });
   await expect(row).toHaveCount(1);
   await row.getByRole("button", { name: "Load", exact: true }).click();
-  await page.waitForFunction(() => {
-    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost;
-      __nativeSavedGameOwner?: AiRuntimeBrowserTestHost["game"] };
-    const current = realm.__fuzzyWaddleAiRuntimeBrowserTest;
-    return !!current && current.game !== realm.__nativeSavedGameOwner;
-  }, undefined, { timeout: 120_000 });
+  await page.waitForFunction(
+    () => {
+      const realm = window as unknown as {
+        __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost;
+        __nativeSavedGameOwner?: AiRuntimeBrowserTestHost["game"];
+      };
+      const current = realm.__fuzzyWaddleAiRuntimeBrowserTest;
+      return !!current && current.game !== realm.__nativeSavedGameOwner;
+    },
+    undefined,
+    { timeout: 120_000 }
+  );
   await installRuntimeAccessor(page);
-  await page.waitForFunction(({ playerNumber, tick, sequence }) => {
-    const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
-      .__fuzzyWaddleAiRuntimeBrowserTest;
-    const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
-      GameProbableWaffleScene | undefined;
-    const parts = window.__fuzzyWaddleAiRuntimeParts?.(playerNumber);
-    return scene?.getSceneGameData().initializers.sceneInitialized.getValue() === true &&
-      parts?.tickService.currentTick === tick && parts.controller.getBrainState()?.scheduler.decisionSequence === sequence &&
-      parts.controller.isDecisionBoundarySettled();
-  }, { playerNumber, tick: boundary.tick, sequence: boundary.decisionSequence }, { timeout: 30_000 });
+  await page.waitForFunction(
+    ({ playerNumber, tick, sequence }) => {
+      const host = (window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost })
+        .__fuzzyWaddleAiRuntimeBrowserTest;
+      const scene = host?.game.scene.getScenes(true).find((entry) => entry.scene.key.startsWith("Map")) as
+        | GameProbableWaffleScene
+        | undefined;
+      const parts = window.__fuzzyWaddleAiRuntimeParts?.(playerNumber);
+      return (
+        scene?.getSceneGameData().initializers.sceneInitialized.getValue() === true &&
+        parts?.tickService.currentTick === tick &&
+        parts.controller.getBrainState()?.scheduler.decisionSequence === sequence &&
+        parts.controller.isDecisionBoundarySettled()
+      );
+    },
+    { playerNumber, tick: boundary.tick, sequence: boundary.decisionSequence },
+    { timeout: 30_000 }
+  );
   const sameRealm = await page.evaluate((realmId) => {
     const realm = window as unknown as { __nativeSaveRealm?: string; __nativeSavedGameOwner?: unknown };
     const same = realm.__nativeSaveRealm === realmId;
@@ -112,12 +139,27 @@ async function readNativeSaveHeaders(page: Page, kind: NativeSaveKind): Promise<
         const transaction = database.transaction("game-saves", "readonly");
         const read = transaction.objectStore("game-saves").getAll();
         transaction.oncomplete = () => database.close();
-        transaction.onabort = () => { database.close(); reject(transaction.error); };
+        transaction.onabort = () => {
+          database.close();
+          reject(transaction.error);
+        };
         read.onerror = () => reject(read.error);
-        read.onsuccess = () => resolve((read.result as { id: string; revision: number; kind: string;
-          syncState: string; encodedGameInstanceData?: unknown }[])
-          .filter((record) => record.kind === kind && record.syncState !== "deleted" && !!record.encodedGameInstanceData)
-          .map(({ id, revision }) => ({ id, revision })));
+        read.onsuccess = () =>
+          resolve(
+            (
+              read.result as {
+                id: string;
+                revision: number;
+                kind: string;
+                syncState: string;
+                encodedGameInstanceData?: unknown;
+              }[]
+            )
+              .filter(
+                (record) => record.kind === kind && record.syncState !== "deleted" && !!record.encodedGameInstanceData
+              )
+              .map(({ id, revision }) => ({ id, revision }))
+          );
       };
     });
   }, kind);

@@ -1,7 +1,9 @@
-import type { AiRuntimeProductionWorld } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/world/ai-runtime-production-world";
-import type { AiRuntimeProductionQueue } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/queues/ai-runtime-production-queue";
+import type {
+  AiRuntimeProductionWorld
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/world/ai-runtime-production-world";
+import type {
+  AiRuntimeProductionQueue
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/queues/ai-runtime-production-queue";
 import type { ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 /** Diagnostic owned world at one exact sampled boundary; null position/reachability never means safe or reachable. */

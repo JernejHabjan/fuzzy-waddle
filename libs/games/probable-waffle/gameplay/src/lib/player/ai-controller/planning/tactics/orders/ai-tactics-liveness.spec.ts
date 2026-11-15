@@ -2,9 +2,12 @@ import { FactionType, ObjectNames, ProbableWaffleAiDifficulty } from "@fuzzy-wad
 import { createAiBrainState } from "../../../brain/state/create-ai-brain-state";
 import { aiDeadline } from "../../../contracts/ai-core-types";
 import type { AiBrainState, AiSquadState } from "../../../contracts/state/ai-state-contracts";
-import type { AiObservedActor, AiObservation } from "../../../contracts/observation/ai-observation";
+import type { AiObservation, AiObservedActor } from "../../../contracts/observation/ai-observation";
 import { createAiProfileConfig } from "../../../profiles/ai-profile-defaults";
-import { createAiTestObservation, createAiTestOwnedActor } from "../../../testing/fixtures/coordination/ai-test-fixtures";
+import {
+  createAiTestObservation,
+  createAiTestOwnedActor
+} from "../../../testing/fixtures/coordination/ai-test-fixtures";
 import { AiTacticsManager } from "./ai-tactics-manager";
 
 const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);

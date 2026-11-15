@@ -6,7 +6,8 @@ export async function applyRuntimePerturbation(
   perturbation: RuntimePerturbation,
   aiPlayerNumber: number
 ): Promise<{ id: string; tick: number; dispatchedActors: number; subjectName: string | null }> {
-  const targetActorId = await page.evaluate(({ playerNumber, targetObjectName }) => {
+  const targetActorId = await page.evaluate(
+    ({ playerNumber, targetObjectName }) => {
       const observation = window.__fuzzyWaddleAiRuntimeParts?.(playerNumber)?.controller.getCommittedObservation();
       return observation?.actors.find(
         (actor) =>
@@ -16,9 +17,16 @@ export async function applyRuntimePerturbation(
             ? actor.objectName === targetObjectName
             : actor.mainBuilding?.status === "known" && actor.mainBuilding.value)
       )?.actorId;
-  }, { playerNumber: aiPlayerNumber, targetObjectName: perturbation.targetObjectName });
+    },
+    { playerNumber: aiPlayerNumber, targetObjectName: perturbation.targetObjectName }
+  );
   if (!targetActorId) {
-    return { id: perturbation.id, tick: perturbation.tick, dispatchedActors: 0, subjectName: perturbation.targetObjectName ?? null };
+    return {
+      id: perturbation.id,
+      tick: perturbation.tick,
+      dispatchedActors: 0,
+      subjectName: perturbation.targetObjectName ?? null
+    };
   }
   const dispatched = await page.evaluate(
     ({ playerNumber, input, targetId }) => {

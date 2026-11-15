@@ -3,14 +3,27 @@ import type { RuntimeVariantResult } from "../../runner/skirmish-ai-runtime-vari
 
 export type PressureVariant = Pick<
   RuntimeVariantResult,
-  "variantId" | "pressureBranch" | "initialWorldDigest" | "initialOwnedActorCount" | "presetFixtureId" |
-  "presetCreatedActorNames" | "presetResourceStartCount" | "presetInitialResourceBalances" |
-  "initialWorkerCount" | "perturbations"
+  | "variantId"
+  | "pressureBranch"
+  | "initialWorldDigest"
+  | "initialOwnedActorCount"
+  | "presetFixtureId"
+  | "presetCreatedActorNames"
+  | "presetResourceStartCount"
+  | "presetInitialResourceBalances"
+  | "initialWorkerCount"
+  | "perturbations"
 > & {
   readonly checkpoints: readonly Pick<
     RuntimeCheckpoint,
-    "tick" | "visibleEnemyFacts" | "economyPosture" | "workforcePolicy" | "squads" |
-    "appliedCommands" | "workerCount" | "deliveredIncome"
+    | "tick"
+    | "visibleEnemyFacts"
+    | "economyPosture"
+    | "workforcePolicy"
+    | "squads"
+    | "appliedCommands"
+    | "workerCount"
+    | "deliveredIncome"
   >[];
 };
 
@@ -39,8 +52,10 @@ function evaluatePressurePair(raid: PressureVariant, control: PressureVariant): 
   if (!sameNonRaidWorld) failures.push("pressure_initial_world_mismatch");
   for (const variant of [raid, control]) {
     const balances = variant.presetInitialResourceBalances[2];
-    if (variant.presetResourceStartCount < 1 ||
-      ["food", "wood", "stone", "minerals"].some((resource) => balances?.[resource] !== 200)) {
+    if (
+      variant.presetResourceStartCount < 1 ||
+      ["food", "wood", "stone", "minerals"].some((resource) => balances?.[resource] !== 200)
+    ) {
       failures.push(`${variant.variantId}:pressure_resource_start`);
     }
   }
@@ -51,16 +66,18 @@ function evaluatePressurePair(raid: PressureVariant, control: PressureVariant): 
   );
   if (!firstContact) failures.push("pressure_contact_not_observed");
   else {
-    const responded = raid.checkpoints.some((checkpoint) =>
-      checkpoint.tick >= firstContact.tick && checkpoint.tick <= firstContact.tick + 600 &&
-      ["pressured", "emergency"].includes(checkpoint.economyPosture ?? "") &&
-      (checkpoint.workforcePolicy?.defensePermille ?? 0) > (checkpoint.workforcePolicy?.economyPermille ?? 1000) &&
-      checkpoint.squads.some((squad) =>
-        squad.role === "defense" && squad.actorNames.includes("TivaraSlingshotFemale")
-      ) &&
-      checkpoint.appliedCommands.some((command) =>
-        !firstContact.appliedCommands.some((prior) => prior.effectId === command.effectId)
-      )
+    const responded = raid.checkpoints.some(
+      (checkpoint) =>
+        checkpoint.tick >= firstContact.tick &&
+        checkpoint.tick <= firstContact.tick + 600 &&
+        ["pressured", "emergency"].includes(checkpoint.economyPosture ?? "") &&
+        (checkpoint.workforcePolicy?.defensePermille ?? 0) > (checkpoint.workforcePolicy?.economyPermille ?? 1000) &&
+        checkpoint.squads.some(
+          (squad) => squad.role === "defense" && squad.actorNames.includes("TivaraSlingshotFemale")
+        ) &&
+        checkpoint.appliedCommands.some(
+          (command) => !firstContact.appliedCommands.some((prior) => prior.effectId === command.effectId)
+        )
     );
     if (!responded) failures.push("pressure_defense_not_applied");
   }
@@ -71,14 +88,20 @@ function evaluatePressurePair(raid: PressureVariant, control: PressureVariant): 
   if (control.checkpoints.some((checkpoint) => checkpoint.economyPosture && checkpoint.economyPosture !== "safe")) {
     failures.push("pressure_control_abandoned_economy");
   }
-  if (!control.checkpoints.some((checkpoint) =>
-    checkpoint.economyPosture === "safe" &&
-    (checkpoint.workforcePolicy?.economyPermille ?? 0) > (checkpoint.workforcePolicy?.defensePermille ?? 1000)
-  )) {
+  if (
+    !control.checkpoints.some(
+      (checkpoint) =>
+        checkpoint.economyPosture === "safe" &&
+        (checkpoint.workforcePolicy?.economyPermille ?? 0) > (checkpoint.workforcePolicy?.defensePermille ?? 1000)
+    )
+  ) {
     failures.push("pressure_control_safe_budget_missing");
   }
-  if (!control.checkpoints.some((checkpoint) => checkpoint.workerCount > control.initialWorkerCount &&
-    checkpoint.deliveredIncome > 0)) {
+  if (
+    !control.checkpoints.some(
+      (checkpoint) => checkpoint.workerCount > control.initialWorkerCount && checkpoint.deliveredIncome > 0
+    )
+  ) {
     failures.push("pressure_control_no_growth");
   }
   return failures;

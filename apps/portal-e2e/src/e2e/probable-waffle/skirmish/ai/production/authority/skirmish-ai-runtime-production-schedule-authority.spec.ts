@@ -2,7 +2,9 @@ import { expect, test } from "@playwright/test";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { RuntimeNativeProductionEvidence } from "../evidence/skirmish-ai-runtime-native-production-evidence";
 import { productionAuthorityFixture } from "./skirmish-ai-runtime-production-authority-fixture";
-import { productionConsumedDecisionFixture } from "../decisions/skirmish-ai-runtime-production-consumed-decision-fixture";
+import {
+  productionConsumedDecisionFixture
+} from "../decisions/skirmish-ai-runtime-production-consumed-decision-fixture";
 import { productionContract, productionEvent } from "../fixtures/skirmish-ai-runtime-production-contract-fixtures";
 import { evaluateRuntimeProductionSchedule } from "../evaluation/skirmish-ai-runtime-production-schedule-evaluation";
 

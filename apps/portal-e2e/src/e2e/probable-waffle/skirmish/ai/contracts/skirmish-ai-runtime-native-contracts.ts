@@ -6,11 +6,18 @@ import { evaluateNativeScenarioVariant } from "../evaluation/scenario/skirmish-a
 
 /** Focused native delegates keep the general variant evaluator independent of each world's physical proof. */
 export function evaluateRuntimeNativeContracts(
-  scenarioId: string, assertion: RuntimeAssertion, variant: RuntimeVariantResult, fixture?: RuntimeFixture
+  scenarioId: string,
+  assertion: RuntimeAssertion,
+  variant: RuntimeVariantResult,
+  fixture?: RuntimeFixture
 ): string[] {
   if (scenarioId !== "EXP-02") return evaluateNativeScenarioVariant(scenarioId, assertion, variant, fixture);
-  const contract = assertion.requiredExpansionPressure, branch = contract?.branchByVariant[variant.variantId];
-  return contract?.latestTick === 3000 && contract.humanPlayerNumber === 1 && branch &&
+  const contract = assertion.requiredExpansionPressure,
+    branch = contract?.branchByVariant[variant.variantId];
+  return contract?.latestTick === 3000 &&
+    contract.humanPlayerNumber === 1 &&
+    branch &&
     ["expand", "home_pressure", "pressure_withdrawn", "combat_resolved"].includes(branch)
-    ? evaluateExpansionWorld(branch, variant, variant.opponentCapture) : ["expansion_pressure_variant_binding_missing"];
+    ? evaluateExpansionWorld(branch, variant, variant.opponentCapture)
+    : ["expansion_pressure_variant_binding_missing"];
 }

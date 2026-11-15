@@ -1,4 +1,4 @@
-import type { ActorId, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
+import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiBaseState, AiBrainState, AiRecoveryState } from "../../contracts/state/ai-state-contracts";
 import type { AiCapabilityCatalog } from "../../contracts/observation/ai-capability-catalog";

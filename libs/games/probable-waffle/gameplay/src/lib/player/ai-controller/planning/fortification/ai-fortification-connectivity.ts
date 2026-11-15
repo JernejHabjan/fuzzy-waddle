@@ -1,5 +1,6 @@
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import type { ConstructionCell } from "./ai-fortification-support";
+
 function reachable(
   cells: ReadonlyMap<string, ConstructionCell>,
   blocked: ReadonlySet<string>,

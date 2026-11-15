@@ -11,12 +11,12 @@ import type { AiObservation } from "../../contracts/observation/ai-observation";
 import type { AiProfileConfig } from "../../contracts/ai-profile-config";
 import type { AiManagerProposal, AiProposalManager } from "../coordination/ai-manager-proposal";
 
-import { hasUnmetMacroFloor, isDefensiveArchetype } from "./ai-fortification-support";
+import { hasUnmetMacroFloor, isDefensiveArchetype, resourceEntries } from "./ai-fortification-support";
 import { reconcileFortificationPlan } from "./ai-fortification-recovery";
 import { createFortificationPlanWithReason } from "./ai-fortification-plan";
-import { createFortificationIntents, createFortificationBreachResponse } from "./ai-fortification-orders";
-import { resourceEntries } from "./ai-fortification-support";
+import { createFortificationBreachResponse, createFortificationIntents } from "./ai-fortification-orders";
 import { isAvailableBuilder } from "../production/macro/ai-macro-observation";
+
 export {
   AI_FORTIFICATION_GRAPH_CAPS,
   AI_STANDARD_FORTIFICATION_SPEND_PERMILLE,

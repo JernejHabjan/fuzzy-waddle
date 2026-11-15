@@ -1,10 +1,17 @@
-import { ResourceType, type GameCommandOutcomeKind } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiMultiplayerQueueWorldSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/multiplayer/ai-multiplayer-queue-world-snapshot";
+import { type GameCommandOutcomeKind, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import type {
+  AiMultiplayerQueueWorldSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/multiplayer/ai-multiplayer-queue-world-snapshot";
 
-import { sameRuntimeQueueCommand as sameQueueCommand } from "../../production/ownership/skirmish-ai-runtime-queue-command-equality";
+import {
+  sameRuntimeQueueCommand as sameQueueCommand
+} from "../../production/ownership/skirmish-ai-runtime-queue-command-equality";
 
 /** Normalizes this narrow real queue experiment. It cannot populate RuntimeProductionEvidence or clear its AI/fairness gaps. */
-export function normalizeMultiplayerQueueBoundary(world: AiMultiplayerQueueWorldSnapshot, requireSenderRequest: boolean) {
+export function normalizeMultiplayerQueueBoundary(
+  world: AiMultiplayerQueueWorldSnapshot,
+  requireSenderRequest: boolean
+) {
   const failures: string[] = [];
   const setup = world.setup;
   const capture = world.capture;

@@ -163,10 +163,17 @@ describe("ECO-08 deterministic two-faction bootstrap", () => {
 
   it("orders opening workers by visible position before run-local actor IDs", () => {
     const observation = createAiTestObservation();
-    const later = { ...createAiTestOwnedActor("actor-a"), logicalPosition: { status: "known" as const,
-      value: { x: 8, y: 5, z: 0 }, observedTick: 20 } };
-    const earlier = { ...createAiTestOwnedActor("actor-z"), logicalPosition: { status: "known" as const,
-      value: { x: 2, y: 5, z: 0 }, observedTick: 20 } };
-    expect(owned({ ...observation, actors: [later, earlier] }).map((actor) => actor.actorId)).toEqual(["actor-z", "actor-a"]);
+    const later = {
+      ...createAiTestOwnedActor("actor-a"),
+      logicalPosition: { status: "known" as const, value: { x: 8, y: 5, z: 0 }, observedTick: 20 }
+    };
+    const earlier = {
+      ...createAiTestOwnedActor("actor-z"),
+      logicalPosition: { status: "known" as const, value: { x: 2, y: 5, z: 0 }, observedTick: 20 }
+    };
+    expect(owned({ ...observation, actors: [later, earlier] }).map((actor) => actor.actorId)).toEqual([
+      "actor-z",
+      "actor-a"
+    ]);
   });
 });

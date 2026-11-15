@@ -5,10 +5,9 @@ import {
   serializeCanonicalAiValue
 } from "../../brain/persistence/canonical-ai-serialization";
 import { buildAiScenario } from "./ai-scenario-builder";
-import { evaluateAiScenarioAssertion, type AiScenarioOracleFacts } from "./ai-scenario-oracle";
-import type { AiScenarioRunReport, AiScenario } from "./ai-scenario";
+import { type AiScenarioOracleFacts, evaluateAiScenarioAssertion } from "./ai-scenario-oracle";
+import type { AiScenario, AiScenarioDecisionRecord, AiScenarioRunReport } from "./ai-scenario";
 import type { AiIntent } from "../../contracts/commands/ai-intent";
-import type { AiScenarioDecisionRecord } from "./ai-scenario";
 
 /** Executes the pure decision boundary with no clock, Phaser, filesystem or random side effects. */
 export function runPureAiScenario(

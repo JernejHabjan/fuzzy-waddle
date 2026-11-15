@@ -1,9 +1,9 @@
 // prettier-ignore
-import type { AiRuntimePresetApplication } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-application";
+import type { AiRuntimePresetApplication } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-application";
 // prettier-ignore
-import type { AiRuntimePresetQueueApplication } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-queue-application";
+import type {
+  AiRuntimePresetQueueApplication
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-queue-application";
 import type { RuntimeCheckpoint } from "../capture/skirmish-ai-runtime-checkpoint";
 import type { RuntimeVariant } from "../setup/skirmish-ai-runtime-variant";
 import type { RuntimeProductionEvidence } from "../production/evidence/skirmish-ai-runtime-production-evidence";
@@ -22,8 +22,9 @@ import type { NativeSequenceProof } from "./skirmish-ai-native-sequence-runner";
 import type { NativeReproProof } from "../reproduction/incident/skirmish-ai-native-repro-runner";
 import type { exerciseNativeLiveWorkbench } from "../debug/skirmish-ai-native-live-workbench";
 // prettier-ignore
-import type { AiRuntimeProductionSnapshot } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
 
 export interface RuntimeVariantResult {
   readonly nativeSave?: NativeSaveProof;

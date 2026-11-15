@@ -1,5 +1,9 @@
-import type { AiDecisionIdentity } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/decision/ai-decision-identity";
-import type { AiDecisionInput } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/decision/ai-decision-input";
+import type {
+  AiDecisionIdentity
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/decision/ai-decision-identity";
+import type {
+  AiDecisionInput
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/decision/ai-decision-input";
 import type { RuntimeProductionFairInput } from "../world/skirmish-ai-runtime-production-fair-input";
 
 /** Selected planner boundary, including empty decisions. Observation age never substitutes for actual cadence. */

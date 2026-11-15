@@ -3,8 +3,8 @@ import { expect, test } from "@playwright/test";
 import {
   ProbableWaffleGameInstance,
   ProbableWafflePlayer,
-  ProbableWafflePlayerState,
-  ProbableWafflePlayerController
+  ProbableWafflePlayerController,
+  ProbableWafflePlayerState
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { AiRuntimeResourceCoverageCapture } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/economy/capture/ai-runtime-resource-coverage-capture";
 import { AiRuntimeRecipientResourceCapture } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/economy/capture/ai-runtime-recipient-resource-capture";

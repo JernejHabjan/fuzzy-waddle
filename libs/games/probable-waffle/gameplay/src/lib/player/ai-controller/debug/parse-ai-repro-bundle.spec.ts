@@ -41,9 +41,8 @@ const validBundle = {
 } satisfies AiReproBundle;
 
 describe("parseAiReproBundle / DBG-05", () => {
-  it("accepts a bounded permitted decision manifest", () => {
-    expect(parseAiReproBundle(JSON.stringify(validBundle), { access: "player" })).toEqual(validBundle);
-  });
+  it("accepts a bounded permitted decision manifest", () =>
+    expect(parseAiReproBundle(JSON.stringify(validBundle), { access: "player" })).toEqual(validBundle));
 
   it.each([
     ["malformed_json", "{"],
@@ -56,15 +55,12 @@ describe("parseAiReproBundle / DBG-05", () => {
       })
     ],
     ["unsafe_label", JSON.stringify({ ...validBundle, display: { label: "<img onerror=alert(1)>" } })]
-  ] as const)("rejects %s input", (code, json) => {
-    expect(() => parseAiReproBundle(json, { access: "developer" })).toThrow(new AiReproBundleValidationError(code));
-  });
+  ] as const)("rejects %s input", (code, json) => expect(() => parseAiReproBundle(json, { access: "developer" })).toThrow(new AiReproBundleValidationError(code)));
 
-  it("rejects oversized input before JSON parsing", () => {
+  it("rejects oversized input before JSON parsing", () =>
     expect(() => parseAiReproBundle(JSON.stringify(validBundle), { access: "developer", maxBytes: 8 })).toThrow(
       new AiReproBundleValidationError("oversized")
-    );
-  });
+    ));
 
   it("keeps runtime captures host/developer-only", () => {
     const runtime = { ...validBundle, kind: "runtime", privacy: "host_confidential" } as const;
@@ -74,11 +70,10 @@ describe("parseAiReproBundle / DBG-05", () => {
     expect(parseAiReproBundle(JSON.stringify(runtime), { access: "host" }).kind).toBe("runtime");
   });
 
-  it("publishes the bounded automatic capture policy", () => {
+  it("publishes the bounded automatic capture policy", () =>
     expect(AI_REPRO_CAPTURE_POLICY).toEqual({
       automaticCapturesPerCausalEpisode: 1,
       maxRetainedIncidentBundles: 5,
       sessionQuotaBytes: 64 * 1024 * 1024
-    });
-  });
+    }));
 });

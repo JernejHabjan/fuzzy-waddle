@@ -588,10 +588,13 @@ describe("AiAdaptationManager", () => {
 
     const noObjective = navalManager.propose({ ...makeObservation(100), actors: [main] }, navalOpening);
     expect(noObjective.statePatch?.openingArchetypeId).toBeUndefined();
-    const noObjectiveAfterOpening = navalManager.propose({ ...makeObservation(100), actors: [main] }, {
-      ...navalOpening,
-      opening: { ...navalOpening.opening, plan: { ...navalOpening.opening.plan, lifecycle: "completed" } }
-    });
+    const noObjectiveAfterOpening = navalManager.propose(
+      { ...makeObservation(100), actors: [main] },
+      {
+        ...navalOpening,
+        opening: { ...navalOpening.opening, plan: { ...navalOpening.opening.plan, lifecycle: "completed" } }
+      }
+    );
     expect(noObjectiveAfterOpening.statePatch?.openingArchetypeId).toBe(`opening:${FactionType.Tivara}:balanced`);
 
     const first = navalManager.propose(makeObservation(100), initial);

@@ -1,6 +1,8 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { producerRouteFixture } from "../../navigation/controls/routing/skirmish-ai-runtime-producer-route-fixture";
-import { normalizeRuntimeProducerRoutes } from "../../navigation/evaluation/skirmish-ai-runtime-producer-route-normalization";
+import {
+  normalizeRuntimeProducerRoutes
+} from "../../navigation/evaluation/skirmish-ai-runtime-producer-route-normalization";
 import { runtimeProductionRouteCurrent } from "./skirmish-ai-runtime-production-route-current";
 import type { RuntimeNativeProductionEvidence } from "../evidence/skirmish-ai-runtime-native-production-evidence";
 
@@ -101,8 +103,7 @@ test("a rebuild before resolution or during a preceding closed tick still refuse
       const native = path.terminal.spatial.navigation?.native;
       if (!native) throw new Error("native_fixture_missing");
       native.completedRebuild += 1;
-    }
-    else {
+    } else {
       const interval = evidence.coverage.intervals[0];
       if (!interval) throw new Error("closed_fixture_missing");
       interval.navigation.completedRebuild += 1;

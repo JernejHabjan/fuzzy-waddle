@@ -4,8 +4,8 @@ import type { AiObservedActor } from "../../../contracts/observation/ai-observat
 import {
   createAiTestObservation,
   createAiTestOwnedActor,
-  unknownAiValue,
-  requireAiTestEntry
+  requireAiTestEntry,
+  unknownAiValue
 } from "../../../testing/fixtures/coordination/ai-test-fixtures";
 import { canAffordAiEconomyCost, decideAiEconomyPolicy, observedAiEconomyThreats } from "./ai-economy-policy";
 
@@ -77,12 +77,7 @@ function foodSource(actorId: string, capacity: number) {
   };
 }
 
-function visibleRaider(
-  domain: "ground" | "air" = "ground",
-  actorId = "enemy",
-  x = 8,
-  y = 5
-) {
+function visibleRaider(domain: "ground" | "air" = "ground", actorId = "enemy", x = 8, y = 5) {
   return {
     ...createAiTestOwnedActor(actorId),
     objectName: ObjectNames.Banshee,

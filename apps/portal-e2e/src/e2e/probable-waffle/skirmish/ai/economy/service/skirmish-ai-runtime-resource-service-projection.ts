@@ -1,17 +1,23 @@
 // prettier-ignore
-import { AI_RUNTIME_MAX_FACTS } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/append-ai-runtime-production-fact";
+import {
+  AI_RUNTIME_MAX_FACTS
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/append-ai-runtime-production-fact";
 // prettier-ignore
-import type { AiRuntimeProductionSnapshot } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
 import type { RuntimeResourceCredit } from "../capture/ownership/skirmish-ai-runtime-resource-credit";
 import type { RuntimeResourceNeed } from "../capture/demand/skirmish-ai-runtime-resource-need";
 import type { RuntimeResourceServiceInterval } from "./skirmish-ai-runtime-resource-service-interval";
 import { normalizeRuntimeResourceNeeds } from "../capture/demand/skirmish-ai-runtime-resource-need-normalization";
 import { validateRuntimeResourceCoverage } from "../inputs/skirmish-ai-runtime-resource-coverage-validation";
 import { validateRuntimeResourceIntervals } from "../delivery/skirmish-ai-runtime-resource-interval-validation";
-import { projectRuntimeResourceNeedAccounting } from "../capture/demand/skirmish-ai-runtime-resource-need-accounting-projection";
-import { projectRuntimeResourceApplications } from "../capture/ownership/skirmish-ai-runtime-resource-application-projection";
+import {
+  projectRuntimeResourceNeedAccounting
+} from "../capture/demand/skirmish-ai-runtime-resource-need-accounting-projection";
+import {
+  projectRuntimeResourceApplications
+} from "../capture/ownership/skirmish-ai-runtime-resource-application-projection";
 
 /** Compose fail-closed diagnostic quantities. Complete unresolved need, throughput and capacity authority are still unsupported. */
 export function projectRuntimeResourceServices(

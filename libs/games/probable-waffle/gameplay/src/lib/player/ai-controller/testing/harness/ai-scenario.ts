@@ -1,7 +1,7 @@
 import type { FactionType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiBrainState } from "../../contracts/state/ai-state-contracts";
 import type { AiCommandOutcome } from "../../contracts/commands/ai-command-contracts";
-import type { AiIntentDecision, AiIntent } from "../../contracts/commands/ai-intent";
+import type { AiIntent, AiIntentDecision } from "../../contracts/commands/ai-intent";
 import type { AiObservation } from "../../contracts/observation/ai-observation";
 
 /** Stable harness mode. Runtime cases must cross the real Phaser command/application boundary. */

@@ -199,7 +199,7 @@ export abstract class GameInstanceLobbyClient extends GameInstanceEventClient {
       ...overrides,
       player: createPlayerLobbyDefinition(firstFreePlayerNumber, position ?? firstFreePosition),
       playerType: ProbableWafflePlayerType.AI,
-      difficulty: ProbableWaffleAiDifficulty.Medium
+      difficulty: overrides.difficulty ?? ProbableWaffleAiDifficulty.Medium
     } satisfies PositionPlayerDefinition;
 
     await this.addSelfOrAiPlayer(playerDefinition);

@@ -2,7 +2,14 @@ import { FactionType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { createAiBrainState } from "../../../brain/state/create-ai-brain-state";
 
 import { AI_CONCESSION_HOPELESS_TICKS } from "./ai-skirmish-manager";
-import { homeNode, enemyNode, unit, observation, profile, manager } from "../../../testing/fixtures/strategy/ai-skirmish-test-fixtures";
+import {
+  enemyNode,
+  homeNode,
+  manager,
+  observation,
+  profile,
+  unit
+} from "../../../testing/fixtures/strategy/ai-skirmish-test-fixtures";
 
 describe("AiSkirmishManager", () => {
   it("keeps the chosen opponent focus and does not recall a defender for a distant bait contact", () => {

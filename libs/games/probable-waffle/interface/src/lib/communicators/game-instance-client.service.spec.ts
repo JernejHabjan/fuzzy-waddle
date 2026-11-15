@@ -1,10 +1,11 @@
 import { TestBed } from "@angular/core/testing";
 
 import { GameInstanceClientService } from "./game-instance-client.service";
-import { provideHttpClientTesting } from "@angular/common/http/testing";
+import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 import { authServiceStub } from "@fuzzy-waddle/platform-identity/client/auth/auth.service.stub";
 import { provideRouter } from "@angular/router";
+import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
 import { provideHttpClient } from "@angular/common/http";
 import { GameSaveService } from "../services/game-save/game-save.service";
 import { SceneCommunicatorClientService } from "./scene-communicator-client.service";
@@ -14,6 +15,7 @@ import {
   GameSaveScope,
   ProbableWaffleGameInstance,
   ProbableWaffleGameState,
+  ProbableWaffleAiDifficulty,
   ProbableWafflePlayerType,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility
@@ -39,6 +41,22 @@ describe("GameInstanceClientService", () => {
 
   it("should be created", () => {
     expect(service).toBeTruthy();
+  });
+
+  it("does not register explicit local previews with the server and keeps their selected AI difficulty", async () => {
+    const authentication = jest.spyOn(authServiceStub, "isAuthenticated", "get").mockReturnValue(true);
+    const server = TestBed.inject(ServerHealthService);
+    const availability = jest.spyOn(server, "serverAvailable", "get").mockReturnValue(true);
+    try {
+      await service.createGameInstance("AI preview", ProbableWaffleGameInstanceVisibility.Private,
+        ProbableWaffleGameInstanceType.InstantGame, { localOnly: true });
+      const ai = await service.addAiPlayer(undefined, { difficulty: ProbableWaffleAiDifficulty.Easy });
+      expect(ai.difficulty).toBe(ProbableWaffleAiDifficulty.Easy);
+      TestBed.inject(HttpTestingController).expectNone((request) => request.url.endsWith("/start-game"));
+    } finally {
+      authentication.mockRestore();
+      availability.mockRestore();
+    }
   });
 
   it.each([1, 2])("restores the unique offline human slot with %s AI players", (aiCount) => {

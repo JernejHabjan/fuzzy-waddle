@@ -1,5 +1,5 @@
 import type { AiBrainState } from "../contracts/state/ai-state-contracts";
-import type { AiIntentDecision, AiIntent } from "../contracts/commands/ai-intent";
+import type { AiIntent, AiIntentDecision } from "../contracts/commands/ai-intent";
 import type { AiObservation } from "../contracts/observation/ai-observation";
 import type { AiStrategicIntentSummary } from "../contracts/diagnostics/ai-strategic-intent-summary";
 
@@ -117,11 +117,15 @@ function describeProduction(observation: AiObservation, state: AiBrainState): st
     actor.relation === "self" && actor.queue.status === "known" ? [actor.queue.value] : []
   );
   const freeSlots = queues.reduce((total, queue) => total + Math.max(0, queue.capacity - queue.occupied), 0);
-  const capacity = queues.length ? `; ${freeSlots} observed free queue slots (eligibility varies)` : "; queue capacity unknown";
+  const capacity = queues.length
+    ? `; ${freeSlots} observed free queue slots (eligibility varies)`
+    : "; queue capacity unknown";
   const evidence = state.economyProduction.adaptation.activeRoleTargets.find(
     (target) => target.role === demand.candidate.capabilityOrRole && target.evidenceIds.length
   );
-  const rationale = evidence ? `; supported by ${countNoun(evidence.evidenceIds.length, "committed evidence item")}` : "";
+  const rationale = evidence
+    ? `; supported by ${countNoun(evidence.evidenceIds.length, "committed evidence item")}`
+    : "";
   return `${need} ${purpose} (${demand.committed}/${demand.candidate.desired} committed)${capacity}${rationale}`;
 }
 
@@ -183,7 +187,8 @@ function describeNextAction(decisions: readonly AiIntentDecision[]): string {
 }
 
 function describeBlocker(state: AiBrainState, decisions: readonly AiIntentDecision[]): string | null {
-  const blocker = state.blockers.find((entry) => entry.status === "technical_fault") ??
+  const blocker =
+    state.blockers.find((entry) => entry.status === "technical_fault") ??
     state.blockers.find((entry) => entry.status !== "failed_optional");
   if (blocker) {
     const recovery = state.recovery.records.find((record) => record.planId === blocker.planId);

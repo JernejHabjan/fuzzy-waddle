@@ -247,9 +247,7 @@ describe("AI local defense sizing", () => {
     expect(securityContext.primaryOwnedActors.has("expansion-guard-0")).toBe(true);
   });
 
-  it("uses a bounded pair of defenders against one mobile home raider", () => {
-    expect(defendersFor(1)).toBe(2);
-  });
+  it("uses a bounded pair of defenders against one mobile home raider", () => expect(defendersFor(1)).toBe(2));
 
   it("keeps most of a large army available when a harmless mobile contact approaches home", () => {
     const context = defenseContextFor(1, false, false, 12, true);
@@ -259,9 +257,7 @@ describe("AI local defense sizing", () => {
     expect(context.primaryOwnedActors.size).toBe(defenders.length);
   });
 
-  it("scales defense to visible multi-unit home pressure instead of recalling only a quarter of the army", () => {
-    expect(defendersFor(3)).toBe(6);
-  });
+  it("scales defense to visible multi-unit home pressure instead of recalling only a quarter of the army", () => expect(defendersFor(3)).toBe(6));
 
   it("claims every defender so a retreat order cannot overlap the attack command", () => {
     const context = defenseContextFor(1);

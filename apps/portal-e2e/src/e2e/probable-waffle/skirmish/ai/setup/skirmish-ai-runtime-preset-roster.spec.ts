@@ -1,8 +1,9 @@
 import { expect, test } from "@playwright/test";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 // prettier-ignore
-import type { AiRuntimePresetApplication } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-application";
+import type {
+  AiRuntimePresetApplication
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/presets/setup/ai-runtime-preset-application";
 import type { RuntimePresetWorld } from "./skirmish-ai-runtime-preset-world";
 import { assertRuntimePresetRoster } from "./skirmish-ai-runtime-preset-roster";
 
@@ -43,14 +44,31 @@ test("strict roster retains multiplicity and permits ordinary inherited faction 
 
 test("strict roster includes native unfinished-site roles without pretending they were seeded finished actors", () => {
   const f = fixture();
-  const preset = { ...f.preset, constructionOrders: [{ fixtureActorId: "unfinished-site", actorName: ObjectNames.AnkGuard,
-    builderFixtureActorIds: ["worker-a"], position: { x: 800, y: 848, z: 0 } }] };
-  const application = { ...f.application, createdActorIds: { ...f.application.createdActorIds, "unfinished-site": "native-site" } };
+  const preset = {
+    ...f.preset,
+    constructionOrders: [
+      {
+        fixtureActorId: "unfinished-site",
+        actorName: ObjectNames.AnkGuard,
+        builderFixtureActorIds: ["worker-a"],
+        position: { x: 800, y: 848, z: 0 }
+      }
+    ]
+  };
+  const application = {
+    ...f.application,
+    createdActorIds: { ...f.application.createdActorIds, "unfinished-site": "native-site" }
+  };
   expect(() => assertRuntimePresetRoster(preset, application, 2, f.initial)).not.toThrow();
   expect(() => assertRuntimePresetRoster(preset, f.application, 2, f.initial)).toThrow("created_roster_mismatch");
-  expect(() => assertRuntimePresetRoster(preset, { ...application,
-    createdActorIds: { ...application.createdActorIds, "unfinished-site": "id-a" }
-  }, 2, f.initial)).toThrow("created_roster_mismatch");
+  expect(() =>
+    assertRuntimePresetRoster(
+      preset,
+      { ...application, createdActorIds: { ...application.createdActorIds, "unfinished-site": "id-a" } },
+      2,
+      f.initial
+    )
+  ).toThrow("created_roster_mismatch");
 });
 
 for (const damage of ["missing", "extra", "duplicate", "empty", "name", "multiplicity"] as const) {

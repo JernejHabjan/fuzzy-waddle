@@ -1,7 +1,9 @@
-import type { AiRuntimeProductionFact } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
-import type { AiRuntimeInitialConstruction } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/construction/ai-runtime-initial-construction";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type {
+  AiRuntimeInitialConstruction
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/construction/ai-runtime-initial-construction";
 import type { RuntimeProductionCausality } from "../../production/decisions/skirmish-ai-runtime-production-causality";
 
 /** Historical site ownership only. Every refund/teardown remains distinct; admission never proves payment or cancellation intent. */

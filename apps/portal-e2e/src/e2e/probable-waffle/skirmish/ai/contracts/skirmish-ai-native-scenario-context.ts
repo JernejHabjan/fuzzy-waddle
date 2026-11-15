@@ -1,4 +1,6 @@
-import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import type { RuntimeVariantResult } from "../runner/skirmish-ai-runtime-variant-result";
 import { runtimeClosedHistoryFailures } from "../capture/skirmish-ai-runtime-closed-history";
 import { normalizeRuntimeMovement } from "../navigation/skirmish-ai-runtime-movement-normalization";

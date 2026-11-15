@@ -8,10 +8,15 @@ import { recordAiBoundaryFailure, recoverAiBoundary } from "../brain/arbitration
 
 /** Optional diagnostics cannot discard a valid command result. Retries use the same saved cadence as proposers. */
 export function projectAiDebugSafely(
-  observation: AiObservation, state: AiBrainState, decisions: readonly AiIntentDecision[],
-  batches: readonly AiManagerProposal[], cadence: number, project = projectAiDebugSnapshot
+  observation: AiObservation,
+  state: AiBrainState,
+  decisions: readonly AiIntentDecision[],
+  batches: readonly AiManagerProposal[],
+  cadence: number,
+  project = projectAiDebugSnapshot
 ) {
-  const owner = "debug_projection", incidents = state.scheduler.boundaryFaults ?? [];
+  const owner = "debug_projection",
+    incidents = state.scheduler.boundaryFaults ?? [];
   const previous = incidents.find((fault) => fault.owner === owner);
   if (previous?.recoveredTick === null && observation.tick < previous.retryAtTick)
     return { state, snapshot: aiDebugFailureSnapshot(observation, state) };

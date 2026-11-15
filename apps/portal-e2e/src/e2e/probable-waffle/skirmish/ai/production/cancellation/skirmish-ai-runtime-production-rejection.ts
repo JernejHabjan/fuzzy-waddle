@@ -1,7 +1,8 @@
 import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
 import type { GameCommandInput, GameCommandOutcomeReason, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionFact } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 
 /** Native rejection diagnostic; no physical item, credited refund, useful effect or full production evidence is implied. */
 export interface RuntimeProductionRejection {

@@ -4,8 +4,11 @@ import type { AiCapabilityCatalog } from "../../../contracts/observation/ai-capa
 import type { AiObservedActor } from "../../../contracts/observation/ai-observation";
 import type { AiSkirmishProposalContext } from "./ai-skirmish-proposal-context";
 import { createAiProfileConfig } from "../../../profiles/ai-profile-defaults";
-import { createAiTestObservation, createAiTestOwnedActor } from "../../../testing/fixtures/coordination/ai-test-fixtures";
-import { buildAiAccessGraph, queryAiAccessRoute, type AiAccessCell } from "../../access/ai-access-graph";
+import {
+  createAiTestObservation,
+  createAiTestOwnedActor
+} from "../../../testing/fixtures/coordination/ai-test-fixtures";
+import { type AiAccessCell, buildAiAccessGraph, queryAiAccessRoute } from "../../access/ai-access-graph";
 import { AiSkirmishManager } from "./ai-skirmish-manager";
 import { routeCapability } from "./ai-skirmish-support";
 import { selectAiOffensiveForce } from "../offense/select-ai-offensive-force";

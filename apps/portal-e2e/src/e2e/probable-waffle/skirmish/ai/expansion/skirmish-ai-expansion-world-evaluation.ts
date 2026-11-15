@@ -1,5 +1,7 @@
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
 import type { RuntimeVariantResult } from "../runner/skirmish-ai-runtime-variant-result";
 import type { ExpansionBranch } from "./skirmish-ai-expansion-branch";
 import { runtimeClosedHistoryFailures } from "../capture/skirmish-ai-runtime-closed-history";
@@ -140,15 +142,14 @@ export function evaluateExpansionWorld(
     const observedTower = placementObservation?.observation?.actors.find(
       (actor) => actor.actorId === towerId && actor.visibility === "visible" && actor.logicalPosition.status === "known"
     );
-    const placementThreatIsCurrent = !!placementObservation && !!towerId && hasCurrentVisibleTowerObservation(
-      placementObservation, selected.fact.tick, towerId
-    );
-    const observedTowerPosition = observedTower?.logicalPosition.status === "known"
-      ? observedTower.logicalPosition.value
-      : undefined;
-    const observedTowerAttacks = observedTower?.combatProfile?.status === "known"
-      ? observedTower.combatProfile.value.attacks
-      : undefined;
+    const placementThreatIsCurrent =
+      !!placementObservation &&
+      !!towerId &&
+      hasCurrentVisibleTowerObservation(placementObservation, selected.fact.tick, towerId);
+    const observedTowerPosition =
+      observedTower?.logicalPosition.status === "known" ? observedTower.logicalPosition.value : undefined;
+    const observedTowerAttacks =
+      observedTower?.combatProfile?.status === "known" ? observedTower.combatProfile.value.attacks : undefined;
     const nativeTower = human.frontiers?.intervals
       .find((interval) => interval.closedFromTick <= fact.tick && interval.closedThroughTick >= fact.tick)
       ?.actors.find((actor) => actor.identity.actorId === towerId && actor.identity.active && actor.identity.alive);
@@ -258,7 +259,16 @@ export function hasCurrentVisibleTowerObservation(
   tick: number,
   towerId: string
 ): boolean {
-  return !input.gaps.length && !input.snapshotRestoreInProgress && input.observation?.tick === tick &&
-    input.observation.actors.some((actor) => actor.actorId === towerId && actor.visibility === "visible" &&
-      actor.logicalPosition.status === "known" && actor.combatProfile?.status === "known");
+  return (
+    !input.gaps.length &&
+    !input.snapshotRestoreInProgress &&
+    input.observation?.tick === tick &&
+    input.observation.actors.some(
+      (actor) =>
+        actor.actorId === towerId &&
+        actor.visibility === "visible" &&
+        actor.logicalPosition.status === "known" &&
+        actor.combatProfile?.status === "known"
+    )
+  );
 }

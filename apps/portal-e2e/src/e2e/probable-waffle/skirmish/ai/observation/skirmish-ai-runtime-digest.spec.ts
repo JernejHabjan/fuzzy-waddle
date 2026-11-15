@@ -2,8 +2,8 @@ import { expect, test } from "@playwright/test";
 import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
 import {
   digestRuntimeValue,
-  projectRuntimePresetQueueDigest,
-  projectRuntimeOutcomeDigestInput
+  projectRuntimeOutcomeDigestInput,
+  projectRuntimePresetQueueDigest
 } from "./skirmish-ai-runtime-digest";
 import { productionCheckpoint } from "./skirmish-ai-runtime-digest-fixtures";
 

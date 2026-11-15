@@ -1,14 +1,25 @@
 import type { Page } from "@playwright/test";
-import type { AiRuntimeBrowserTestHost } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/browser/ai-runtime-browser-test-host";
-import type { AiRuntimeDecisionRepro } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/reproduction/ai-runtime-decision-repro";
+import type {
+  AiRuntimeBrowserTestHost
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/browser/ai-runtime-browser-test-host";
+import type {
+  AiRuntimeDecisionRepro
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/reproduction/ai-runtime-decision-repro";
 
 /** Keep only exact-boundary fingerprints; full selected inputs remain inside the native scene observer callback. */
 export async function armNativeDecisionTrace(page: Page, playerNumber: number) {
   await page.evaluate((playerNumber) => {
-    type TraceEntry = { tick: number; sequence: number; inputDigest: string; resultDigest: string;
-      profileDigest: string; catalogDigest: string; observationDigest: string; priorStateDigest: string; outcomesDigest: string };
+    type TraceEntry = {
+      tick: number;
+      sequence: number;
+      inputDigest: string;
+      resultDigest: string;
+      profileDigest: string;
+      catalogDigest: string;
+      observationDigest: string;
+      priorStateDigest: string;
+      outcomesDigest: string;
+    };
     type DecisionInput = {
       profile: AiRuntimeDecisionRepro["profile"];
       catalog: AiRuntimeDecisionRepro["catalog"];
@@ -24,10 +35,13 @@ export async function armNativeDecisionTrace(page: Page, playerNumber: number) {
       read(): { overflow: boolean; records: TraceEntry[]; firstInput?: FirstInput; retainedInputs: DecisionInput[] };
       dispose(): void;
     };
-    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost;
-      __nativeDecisionTrace?: Handle };
+    const realm = window as unknown as {
+      __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost;
+      __nativeDecisionTrace?: Handle;
+    };
     realm.__nativeDecisionTrace?.dispose();
-    const scene = realm.__fuzzyWaddleAiRuntimeBrowserTest?.game.scene.getScenes(true)
+    const scene = realm.__fuzzyWaddleAiRuntimeBrowserTest?.game.scene
+      .getScenes(true)
       .find((entry) => entry.scene.key.startsWith("Map"));
     if (!scene) throw new Error("native_decision_trace_scene_missing");
     const records: TraceEntry[] = [];
@@ -36,8 +50,12 @@ export async function armNativeDecisionTrace(page: Page, playerNumber: number) {
     let overflow = false;
     const canonical = (value: unknown): unknown => {
       if (Array.isArray(value)) return value.map(canonical);
-      if (value !== null && typeof value === "object") return Object.fromEntries(Object.keys(value).sort()
-        .map((key) => [key, canonical((value as Record<string, unknown>)[key])]));
+      if (value !== null && typeof value === "object")
+        return Object.fromEntries(
+          Object.keys(value)
+            .sort()
+            .map((key) => [key, canonical((value as Record<string, unknown>)[key])])
+        );
       return value;
     };
     const digest = (value: unknown) => {
@@ -48,24 +66,50 @@ export async function armNativeDecisionTrace(page: Page, playerNumber: number) {
     };
     const receive = (capture: AiRuntimeDecisionRepro) => {
       if (capture.payload.observation.playerNumber !== playerNumber) return;
-      if (records.length >= 2048) { overflow = true; scene.events.off("ai-runtime-decision-repro", receive); return; }
+      if (records.length >= 2048) {
+        overflow = true;
+        scene.events.off("ai-runtime-decision-repro", receive);
+        return;
+      }
       const result = capture.payload.expectedResult;
-      if (!result) { overflow = true; return; }
-      const input = { profile: capture.profile, catalog: capture.catalog, observation: capture.payload.observation,
-        priorState: capture.payload.priorState, outcomes: capture.payload.outcomes };
+      if (!result) {
+        overflow = true;
+        return;
+      }
+      const input = {
+        profile: capture.profile,
+        catalog: capture.catalog,
+        observation: capture.payload.observation,
+        priorState: capture.payload.priorState,
+        outcomes: capture.payload.outcomes
+      };
       firstInput ??= structuredClone({ observation: input.observation, priorState: input.priorState });
       if (retainedInputs.length < 4) retainedInputs.push(structuredClone(input));
-      records.push({ tick: capture.payload.observation.tick, sequence: result.nextState.scheduler.decisionSequence,
-        inputDigest: digest(input), profileDigest: digest(input.profile), catalogDigest: digest(input.catalog),
-        observationDigest: digest(input.observation), priorStateDigest: digest(input.priorState), outcomesDigest: digest(input.outcomes),
-        resultDigest: digest({ nextState: result.nextState, acceptedIntents: result.acceptedIntents }) });
+      records.push({
+        tick: capture.payload.observation.tick,
+        sequence: result.nextState.scheduler.decisionSequence,
+        inputDigest: digest(input),
+        profileDigest: digest(input.profile),
+        catalogDigest: digest(input.catalog),
+        observationDigest: digest(input.observation),
+        priorStateDigest: digest(input.priorState),
+        outcomesDigest: digest(input.outcomes),
+        resultDigest: digest({ nextState: result.nextState, acceptedIntents: result.acceptedIntents })
+      });
     };
-    const handle: Handle = { read: () => ({ overflow, records: records.map((entry) => ({ ...entry })), firstInput,
-      retainedInputs: retainedInputs.map((entry) => structuredClone(entry)) }), dispose: () => {
-      scene.events.off("ai-runtime-decision-repro", receive);
-      scene.events.off("shutdown", handle.dispose);
-      if (realm.__nativeDecisionTrace === handle) delete realm.__nativeDecisionTrace;
-    } };
+    const handle: Handle = {
+      read: () => ({
+        overflow,
+        records: records.map((entry) => ({ ...entry })),
+        firstInput,
+        retainedInputs: retainedInputs.map((entry) => structuredClone(entry))
+      }),
+      dispose: () => {
+        scene.events.off("ai-runtime-decision-repro", receive);
+        scene.events.off("shutdown", handle.dispose);
+        if (realm.__nativeDecisionTrace === handle) delete realm.__nativeDecisionTrace;
+      }
+    };
     realm.__nativeDecisionTrace = handle;
     scene.events.on("ai-runtime-decision-repro", receive);
     scene.events.once("shutdown", handle.dispose);
@@ -74,16 +118,36 @@ export async function armNativeDecisionTrace(page: Page, playerNumber: number) {
 
 export async function closeNativeDecisionTrace(page: Page) {
   return page.evaluate(() => {
-    const realm = window as unknown as { __nativeDecisionTrace?: {
-      read(): { overflow: boolean; records: { tick: number; sequence: number; inputDigest: string; resultDigest: string;
-        profileDigest: string; catalogDigest: string; observationDigest: string; priorStateDigest: string; outcomesDigest: string }[];
-        firstInput?: { observation: AiRuntimeDecisionRepro["payload"]["observation"];
-          priorState: AiRuntimeDecisionRepro["payload"]["priorState"] };
-        retainedInputs: { profile: AiRuntimeDecisionRepro["profile"]; catalog: AiRuntimeDecisionRepro["catalog"];
-          observation: AiRuntimeDecisionRepro["payload"]["observation"];
-          priorState: AiRuntimeDecisionRepro["payload"]["priorState"];
-          outcomes: AiRuntimeDecisionRepro["payload"]["outcomes"] }[] };
-      dispose(): void } };
+    const realm = window as unknown as {
+      __nativeDecisionTrace?: {
+        read(): {
+          overflow: boolean;
+          records: {
+            tick: number;
+            sequence: number;
+            inputDigest: string;
+            resultDigest: string;
+            profileDigest: string;
+            catalogDigest: string;
+            observationDigest: string;
+            priorStateDigest: string;
+            outcomesDigest: string;
+          }[];
+          firstInput?: {
+            observation: AiRuntimeDecisionRepro["payload"]["observation"];
+            priorState: AiRuntimeDecisionRepro["payload"]["priorState"];
+          };
+          retainedInputs: {
+            profile: AiRuntimeDecisionRepro["profile"];
+            catalog: AiRuntimeDecisionRepro["catalog"];
+            observation: AiRuntimeDecisionRepro["payload"]["observation"];
+            priorState: AiRuntimeDecisionRepro["payload"]["priorState"];
+            outcomes: AiRuntimeDecisionRepro["payload"]["outcomes"];
+          }[];
+        };
+        dispose(): void;
+      };
+    };
     if (!realm.__nativeDecisionTrace) throw new Error("native_decision_trace_owner_missing");
     const result = realm.__nativeDecisionTrace.read();
     realm.__nativeDecisionTrace.dispose();

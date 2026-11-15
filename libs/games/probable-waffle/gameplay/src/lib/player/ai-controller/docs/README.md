@@ -2,33 +2,25 @@
 
 These documents describe the shipped AI controller by responsibility. They are not a pull-request implementation roadmap.
 
-The controller coordinates openings, sustainable economy, useful production, scouting, squads, combat, research,
-placement, expansion, fortification and recovery through a fair deterministic decision cycle. Shared runtime
-validation applies the same ownership, cost, queue, placement and targeting rules to human and AI commands.
-The debug workbench explains committed intent and alternatives without participating in gameplay decisions.
+The controller coordinates openings, sustainable economy, useful production, scouting, squads, combat, research, placement, expansion, fortification and recovery through a fair deterministic decision cycle. Shared runtime validation applies the same ownership, cost, queue, placement and targeting rules to human and AI commands. The debug workbench explains committed intent and alternatives without participating in gameplay decisions.
 
-When reviewing changes, follow the observation/state/command contracts first, then the affected pure manager,
-Phaser application and lifecycle owner, and finally its typed fixture and independent physical outcome oracle.
-Data fixtures do not require an LLM evaluator. Browser scenarios exercise real native gameplay; pure tests and
-local skirmishes do not establish socket-backed peer equality.
+When reviewing changes, follow the observation/state/command contracts first, then the affected pure manager, Phaser application and lifecycle owner, and finally its typed fixture and independent physical outcome oracle. Data fixtures do not require an LLM evaluator. Browser scenarios exercise real native gameplay; pure tests and local skirmishes do not establish socket-backed peer equality.
 
 ## Source layout
 
-| Owner | Responsibilities |
-| --- | --- |
-| `brain/` | Decision orchestration, `arbitration/`, durable `state/` creation/projection and `persistence/` |
-| `contracts/` | Observation, commands, execution, planning, diagnostics, state and boundary validation |
-| `planning/` | Economy, production, construction, expansion, fortification, strategy, tactics, transport and recovery |
-| `testing/` | Pure harness, domain fixtures/scenarios, coverage and reproduction |
-| Phaser `player/ai-controller/` | Controller lifecycle, fair observation, decision capture, commands and outcomes |
-| Phaser `player/ai-controller/test-support/` | Explicitly gated game-side setup, capture and diagnostic controls |
-| `apps/portal-e2e/src/e2e/probable-waffle/skirmish/ai/` | Browser drivers, domain scenarios and independent physical-outcome readers |
-| `tools/probable-waffle/skirmish/ai/` | TypeScript CLI/matrix tools, reports, registration and nested JSON test data |
+| Owner                                                  | Responsibilities                                                                                       |
+|--------------------------------------------------------|--------------------------------------------------------------------------------------------------------|
+| `brain/`                                               | Decision orchestration, `arbitration/`, durable `state/` creation/projection and `persistence/`        |
+| `contracts/`                                           | Observation, commands, execution, planning, diagnostics, state and boundary validation                 |
+| `planning/`                                            | Economy, production, construction, expansion, fortification, strategy, tactics, transport and recovery |
+| `testing/`                                             | Pure harness, domain fixtures/scenarios, coverage and reproduction                                     |
+| Phaser `player/ai-controller/`                         | Controller lifecycle, fair observation, decision capture, commands and outcomes                        |
+| Phaser `player/ai-controller/test-support/`            | Explicitly gated game-side setup, capture and diagnostic controls                                      |
+| `apps/portal-e2e/src/e2e/probable-waffle/skirmish/ai/` | Browser drivers, domain scenarios and independent physical-outcome readers                             |
+| `tools/probable-waffle/skirmish/ai/`                   | TypeScript CLI/matrix tools, reports, registration and nested JSON test data                           |
 
-Pawn order executors remain under Phaser `prefabs/ai-agents/`, grouped by actions, behaviors, orders, resources,
-controller and debugging. They serve ordinary gameplay as well as skirmish AI. The
-[tooling guide](../../../../../../../../../tools/probable-waffle/skirmish/ai/README.md) explains fixture naming,
-manifest-relative references and direct Node execution. Generic repository tools remain outside the game directory.
+Pawn order executors remain under Phaser `prefabs/ai-agents/`, grouped by actions, behaviors, orders, resources, controller and debugging. They serve ordinary gameplay as well as skirmish AI. The
+[tooling guide](../../../../../../../../../tools/probable-waffle/skirmish/ai/README.md) explains fixture naming, manifest-relative references and direct Node execution. Generic repository tools remain outside the game directory.
 
 ## Architecture
 
@@ -53,5 +45,4 @@ manifest-relative references and direct Node execution. Generic repository tools
 The executable scenario authority is `tools/probable-waffle/skirmish/ai/testing/fixtures/skirmish-scenario-manifest.json`. Assertions belong in typed fixtures and tests; this documentation explains contracts and operating policy rather than duplicating expected values.
 
 Current evidence, explicit exclusions and independently resumable follow-up issues are recorded in
-[coverage and follow-ups](./testing/coverage-status.md). The executable manifests and fixtures own scenario selection;
-GitHub issues own deferred work.
+[coverage and follow-ups](./testing/coverage-status.md). The executable manifests and fixtures own scenario selection; GitHub issues own deferred work.

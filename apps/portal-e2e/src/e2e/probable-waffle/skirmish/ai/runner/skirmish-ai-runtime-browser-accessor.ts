@@ -12,8 +12,10 @@ declare global {
 export async function installRuntimeAccessor(page: Page): Promise<void> {
   await page.waitForFunction(
     () => {
-      const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: unknown;
-        __fuzzyWaddleAiMultiplayerBrowserTest?: unknown };
+      const realm = window as unknown as {
+        __fuzzyWaddleAiRuntimeBrowserTest?: unknown;
+        __fuzzyWaddleAiMultiplayerBrowserTest?: unknown;
+      };
       return !!(realm.__fuzzyWaddleAiRuntimeBrowserTest ?? realm.__fuzzyWaddleAiMultiplayerBrowserTest);
     },
     undefined,
@@ -31,8 +33,10 @@ export async function installRuntimeAccessor(page: Page): Promise<void> {
           };
         };
       };
-      const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: Host;
-        __fuzzyWaddleAiMultiplayerBrowserTest?: Host };
+      const realm = window as unknown as {
+        __fuzzyWaddleAiRuntimeBrowserTest?: Host;
+        __fuzzyWaddleAiMultiplayerBrowserTest?: Host;
+      };
       const host = realm.__fuzzyWaddleAiRuntimeBrowserTest ?? realm.__fuzzyWaddleAiMultiplayerBrowserTest;
       const scene = host?.game.scene
         .getScenes(true)

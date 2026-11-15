@@ -6,10 +6,13 @@ import { evaluateNativeDifficultyFairness } from "../../difficulty/skirmish-ai-n
 import { evaluateNativeEasyContinuity } from "../../difficulty/skirmish-ai-native-easy-continuity";
 import { evaluateNativeChurn } from "../../recovery/skirmish-ai-native-churn-evaluation";
 import { evaluateNativeDifficultyPressure } from "../../difficulty/skirmish-ai-native-difficulty-pressure";
-import { evaluateNativeEconomySequence, evaluateNativeSupplySequence } from "../../economy/policy/skirmish-ai-native-economy-sequences";
 import {
-  evaluateNativeFortificationSequence,
-  evaluateNativeAdaptationSequence
+  evaluateNativeEconomySequence,
+  evaluateNativeSupplySequence
+} from "../../economy/policy/skirmish-ai-native-economy-sequences";
+import {
+  evaluateNativeAdaptationSequence,
+  evaluateNativeFortificationSequence
 } from "../../combat/effects/skirmish-ai-native-combat-sequences";
 import { evaluateNativeDebugComparison } from "../../debug/skirmish-ai-native-debug-comparison-evaluation";
 import { evaluateNativeOptionalRelease } from "../../recovery/skirmish-ai-native-optional-release";
@@ -19,7 +22,10 @@ import bindings from "@fuzzy-waddle/probable-waffle-skirmish-ai-tools/testing/bi
 import type { RuntimeAssertion } from "../controls/skirmish-ai-runtime-assertion";
 import type { RuntimeFixture } from "../../contracts/skirmish-ai-runtime-fixture";
 import type { RuntimeVariantResult } from "../../runner/skirmish-ai-runtime-variant-result";
-import { nativeScenarioContext, nativeScenarioRequiresResourceCoverage } from "../../contracts/skirmish-ai-native-scenario-context";
+import {
+  nativeScenarioContext,
+  nativeScenarioRequiresResourceCoverage
+} from "../../contracts/skirmish-ai-native-scenario-context";
 import { nativeLifecycleProofFailures } from "../../lifecycle/matches/skirmish-ai-native-lifecycle-evaluation";
 import { nativeImportProofFailures } from "../../reproduction/import/skirmish-ai-native-import-evaluation";
 import { nativeSaveProofFailures } from "../../reproduction/save/skirmish-ai-native-save-evaluation";
@@ -38,11 +44,13 @@ import { evaluateNativeDomain } from "../../combat/access/skirmish-ai-native-dom
 import { evaluateNativeClassic } from "./skirmish-ai-native-classic-evaluation";
 import { evaluateNativeRecovery } from "../../recovery/skirmish-ai-native-recovery-evaluation";
 import { evaluateNativeAuthority } from "../../lifecycle/authority/skirmish-ai-native-authority-evaluation";
-import { evaluateNativeResourcePriority } from "../../economy/capture/policy/skirmish-ai-native-resource-priority-evaluation";
 import {
-  evaluateNativeRaidStrategy,
+  evaluateNativeResourcePriority
+} from "../../economy/capture/policy/skirmish-ai-native-resource-priority-evaluation";
+import {
   evaluateNativeComeback,
-  evaluateNativeFinish
+  evaluateNativeFinish,
+  evaluateNativeRaidStrategy
 } from "../../combat/missions/skirmish-ai-native-raid-strategy-evaluation";
 
 /** Mandatory matrix binding; existing partial owner-world experiments remain explicitly outside full case registration. */

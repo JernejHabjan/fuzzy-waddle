@@ -1,7 +1,7 @@
 import type { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
 import type { AiBrainState } from "../../contracts/state/ai-state-contracts";
-import type { AiCapabilityCatalogEntry, AiCapabilityCatalog } from "../../contracts/observation/ai-capability-catalog";
+import type { AiCapabilityCatalog, AiCapabilityCatalogEntry } from "../../contracts/observation/ai-capability-catalog";
 import type { AiDemand } from "../../contracts/planning/ai-plan-contracts";
 import type { AiIntent } from "../../contracts/commands/ai-intent";
 import type { AiObservation } from "../../contracts/observation/ai-observation";
@@ -150,7 +150,8 @@ function archetypeFallback(
   const unsupported =
     (purpose === "air_control" && !producerPathAvailable("anti_air")) ||
     (purpose === "turtle_air" && !producerPathAvailable("air_pressure")) ||
-    (purpose === "naval" && (navalAccessUnavailable || !producerPathAvailable("water_control") || navalSearchExhausted)) ||
+    (purpose === "naval" &&
+      (navalAccessUnavailable || !producerPathAvailable("water_control") || navalSearchExhausted)) ||
     (purpose === "expeditionary" && !transport);
   return unsupported
     ? {

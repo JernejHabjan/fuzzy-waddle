@@ -3,7 +3,7 @@ import { createAiTestOwnedActor } from "../../../testing/fixtures/coordination/a
 import { createAiProductionPolicyFixture } from "../../../testing/fixtures/production/ai-production-policy-fixture";
 import { proposeAiMilitaryUnits } from "./ai-military-unit-proposal";
 
-describe("military production prerequisites", () => {
+describe("military production prerequisites", () =>
   it("waits for a finished prerequisite and uses a legal alternative when one exists", () => {
     const f = createAiProductionPolicyFixture();
     const unit = f.catalog.entries.find((entry) => entry.sourceObjectName === f.unitName);
@@ -58,5 +58,4 @@ describe("military production prerequisites", () => {
         { ...temple, constructionProgress: { ...temple.constructionProgress, value: 100 } }
       ])
     ).toContainEqual(expect.objectContaining({ objectName: f.unitName }));
-  });
-});
+  }));

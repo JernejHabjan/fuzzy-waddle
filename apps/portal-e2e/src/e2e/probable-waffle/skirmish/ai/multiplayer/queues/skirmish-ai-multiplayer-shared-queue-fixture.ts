@@ -1,13 +1,21 @@
 import {
-  ObjectNames,
-  ResearchType,
   type GameCommand,
-  type GameCommandOutcome
+  type GameCommandOutcome,
+  ObjectNames,
+  ResearchType
 } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiMultiplayerSharedQueueWorldSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/multiplayer/ai-multiplayer-shared-queue-world-snapshot";
-import type { AiRuntimeProductionFact } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
-import type { AiRuntimeProductionQueue } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/queues/ai-runtime-production-queue";
-import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
+import type {
+  AiMultiplayerSharedQueueWorldSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/multiplayer/ai-multiplayer-shared-queue-world-snapshot";
+import type {
+  AiRuntimeProductionFact
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
+import type {
+  AiRuntimeProductionQueue
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/queues/ai-runtime-production-queue";
+import {
+  requireAiTestEntry
+} from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
 
 /** Synthetic adapter contract input, with deliberately synthetic prices. Never a legal-world or runtime report fixture. */
 export function multiplayerSharedQueueFixture(
@@ -104,20 +112,18 @@ export function multiplayerSharedQueueFixture(
     const command = commandFor(role);
     append({ sequence: 0, tick: command.tick, playerNumber: 1, kind: "command_delivered", command });
   };
-  const item = (role: string): AiRuntimeProductionQueue["lanes"][number]["items"][number] => {
-    return {
-      itemId: `queue:producer:${role}`,
-      identitySource: "command",
-      commandId: role,
-      effectId: null,
-      objectName: role === "train" ? ObjectNames.TivaraWorker : null,
-      researchType: role === "train" ? null : role === "resume" ? target : source,
-      totalTimeMs: 5000,
-      remainingTimeMs: 5000,
-      payment: "immediate",
-      charge: role === "train" ? setup.train.price : role === "resume" ? setup.replacement.price : setup.research.price
-    };
-  };
+  const item = (role: string): AiRuntimeProductionQueue["lanes"][number]["items"][number] => ({
+    itemId: `queue:producer:${role}`,
+    identitySource: "command",
+    commandId: role,
+    effectId: null,
+    objectName: role === "train" ? ObjectNames.TivaraWorker : null,
+    researchType: role === "train" ? null : role === "resume" ? target : source,
+    totalTimeMs: 5000,
+    remainingTimeMs: 5000,
+    payment: "immediate",
+    charge: role === "train" ? setup.train.price : role === "resume" ? setup.replacement.price : setup.research.price
+  });
   const pay = (role: string, tick: number, before: number, after: number, refund = false) => {
     const purchase = commandFor(role);
     const queued = item(role);

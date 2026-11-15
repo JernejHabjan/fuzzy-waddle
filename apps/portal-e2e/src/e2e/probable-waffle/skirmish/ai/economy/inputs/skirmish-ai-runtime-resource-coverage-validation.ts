@@ -1,6 +1,10 @@
 import { isDeepStrictEqual } from "node:util";
-import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
-import type { AiRuntimeResourceCoverage } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/economy/setup/ai-runtime-resource-coverage";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeResourceCoverage
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/economy/setup/ai-runtime-resource-coverage";
 
 /** Validate all read/cohort tails, including monotone terminal loss; legacy omission is a gap, never implicit completeness. */
 export function validateRuntimeResourceCoverage(capture: AiRuntimeProductionSnapshot) {

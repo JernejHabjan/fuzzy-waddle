@@ -13,7 +13,7 @@ function context(reservations: unknown[], before: unknown) {
   } as unknown as Parameters<typeof nativeWaitingExposureFailures>[0];
 }
 
-test("the first decision does not require a prior-claims snapshot when no cash is waiting", () => {
+test("the first decision does not require a prior-claims snapshot when no cash is waiting", () =>
   expect(
     nativeWaitingExposureFailures(
       context([], {
@@ -22,10 +22,9 @@ test("the first decision does not require a prior-claims snapshot when no cash i
         gaps: ["unspent_selected_decision_missing"]
       })
     )
-  ).toEqual([]);
-});
+  ).toEqual([]));
 
-test("older provisional cash still requires original input and ownership evidence", () => {
+test("older provisional cash still requires original input and ownership evidence", () =>
   expect(
     nativeWaitingExposureFailures(
       context(
@@ -43,5 +42,4 @@ test("older provisional cash still requires original input and ownership evidenc
         }
       )
     )
-  ).toEqual(["resources_waiting_exposure_original_cash_or_ownership_missing"]);
-});
+  ).toEqual(["resources_waiting_exposure_original_cash_or_ownership_missing"]));

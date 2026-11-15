@@ -1,4 +1,4 @@
-import { test as it, expect } from "@playwright/test";
+import { expect, test as it } from "@playwright/test";
 import { nativeSaveProofFailures } from "./skirmish-ai-native-save-evaluation";
 import type { NativeSaveProof } from "./skirmish-ai-native-save-proof";
 import {
@@ -129,10 +129,10 @@ it("requires exact native setup payment identity and no post-charge refund for a
     proof: NativeSaveProof = {
       ...base,
       branch: "during_active",
-    saved: { ...boundary(tick), owner: { ...boundary(tick).owner, decisionSequence: 5 } },
+      saved: { ...boundary(tick), owner: { ...boundary(tick).owner, decisionSequence: 5 } },
       restored: boundary(tick),
-    controlTraceCount: 15,
-    resumedTraceCount: 15,
+      controlTraceCount: 15,
+      resumedTraceCount: 15,
       premises: {
         ...base.premises,
         tick,
@@ -198,13 +198,26 @@ it("requires the first resumed decision to match but allows later decisions to f
     firstTraceDifference: laterDecisionDifference,
     controlTraceDigest: "control-tail",
     resumedTraceDigest: "resumed-tail",
-    control: { ...base.control, worldDigest: "control-world", brainDigest: "control-brain", authorityDigest: "control-authority" },
-    resumed: { ...base.resumed, worldDigest: "resumed-world", brainDigest: "resumed-brain", authorityDigest: "resumed-authority" }
+    control: {
+      ...base.control,
+      worldDigest: "control-world",
+      brainDigest: "control-brain",
+      authorityDigest: "control-authority"
+    },
+    resumed: {
+      ...base.resumed,
+      worldDigest: "resumed-world",
+      brainDigest: "resumed-brain",
+      authorityDigest: "resumed-authority"
+    }
   };
 
   expect(nativeSaveProofFailures("before_apply", proof)).toEqual([]);
   expect(
-    nativeSaveProofFailures("before_apply", { ...proof, firstTraceDifference: { ...laterDecisionDifference, index: 0 } })
+    nativeSaveProofFailures("before_apply", {
+      ...proof,
+      firstTraceDifference: { ...laterDecisionDifference, index: 0 }
+    })
   ).toContain("native_save_next_legitimate_decisions_incomplete_or_reset");
   expect(
     nativeSaveProofFailures("before_apply", {

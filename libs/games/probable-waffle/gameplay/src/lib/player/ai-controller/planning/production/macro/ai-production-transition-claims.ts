@@ -14,29 +14,39 @@ export function productionTransitionClaims(
   demands: readonly AiDemand[]
 ): { readonly forecastReservations: readonly AiReservation[]; readonly releasedOptionalPlanIds: readonly AiPlanId[] } {
   const previous = state.economyProduction.transition;
-  const releasedOptionalPlanIds = previous && (transition?.planId !== previous.planId || transition.status !== "committed")
-    ? [previous.planId] : [];
+  const releasedOptionalPlanIds =
+    previous && (transition?.planId !== previous.planId || transition.status !== "committed") ? [previous.planId] : [];
   if (!transition || transition.status !== "committed" || transition.planId === previous?.planId) {
     return { forecastReservations: [], releasedOptionalPlanIds };
   }
-  const cost = catalog.entries.find((entry) => entry.sourceObjectName === transition.productObjectName)
-    ?.constructionProfile?.resourceCost ?? {};
+  const cost =
+    catalog.entries.find((entry) => entry.sourceObjectName === transition.productObjectName)?.constructionProfile
+      ?.resourceCost ?? {};
   const demand = demands.find((entry) => entry.demandId === transition.demandId);
-  const missing = demand ? Math.max(0, demand.desired - demand.satisfiedActorIds.length - demand.queuedIds.length -
-    demand.acceptedNotObservedEffectIds.length) : 0;
+  const missing = demand
+    ? Math.max(
+        0,
+        demand.desired -
+          demand.satisfiedActorIds.length -
+          demand.queuedIds.length -
+          demand.acceptedNotObservedEffectIds.length
+      )
+    : 0;
   return {
     releasedOptionalPlanIds,
-    forecastReservations: [{
-      claimId: `claim:${transition.planId}:forecast`,
-      subjectKey: `future:${transition.planId}`,
-      ownerPlanId: transition.planId,
-      state: { kind: "forecast" },
-      prerequisites: Object.entries(cost).map(([resourceType, amount]) => ({
-        kind: "resource" as const,
-        resourceType: resourceType as ResourceType,
-        amount: (amount ?? 0) * missing
-      })),
-      createdTick: transition.committedTick
-    }]
+    forecastReservations: [
+      {
+        claimId: `claim:${transition.planId}:forecast`,
+        subjectKey: `future:${transition.planId}`,
+        ownerPlanId: transition.planId,
+        state: { kind: "forecast" },
+        prerequisites: Object.entries(cost).map(([resourceType, amount]) => ({
+          kind: "resource" as const,
+          resourceType: resourceType as ResourceType,
+          amount: (amount ?? 0) * missing
+        })),
+        createdTick: transition.committedTick
+      }
+    ]
   };
 }

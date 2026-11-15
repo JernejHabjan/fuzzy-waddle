@@ -12,8 +12,13 @@ export function compareAiActorsByVisibleGeometry(
   const leftPosition = left.logicalPosition.status === "known" ? left.logicalPosition.value : null;
   const rightPosition = right.logicalPosition.status === "known" ? right.logicalPosition.value : null;
   if (leftPosition && rightPosition) {
-    return leftPosition.y - rightPosition.y || leftPosition.x - rightPosition.x || leftPosition.z - rightPosition.z ||
-      left.objectName.localeCompare(right.objectName) || left.actorId.localeCompare(right.actorId);
+    return (
+      leftPosition.y - rightPosition.y ||
+      leftPosition.x - rightPosition.x ||
+      leftPosition.z - rightPosition.z ||
+      left.objectName.localeCompare(right.objectName) ||
+      left.actorId.localeCompare(right.actorId)
+    );
   }
   if (leftPosition) return -1;
   if (rightPosition) return 1;

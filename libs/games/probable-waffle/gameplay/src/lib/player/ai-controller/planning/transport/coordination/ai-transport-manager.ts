@@ -33,7 +33,9 @@ export class AiTransportManager implements AiProposalManager {
     const transport = [...state.transport]
       .sort((left, right) => left.planId.localeCompare(right.planId))
       .map((plan) => (plan.lifecycle ? advanceAiTransportPlan({ ...plan, lifecycle: plan.lifecycle }, context) : plan));
-    const establishment = context.catalog ? proposeAiIslandEstablishment(observation, { ...state, transport }, context.catalog) : undefined;
+    const establishment = context.catalog
+      ? proposeAiIslandEstablishment(observation, { ...state, transport }, context.catalog)
+      : undefined;
     const newPlans = establishment?.statePatch?.transportAppend ?? [];
     return {
       managerId: this.managerId,

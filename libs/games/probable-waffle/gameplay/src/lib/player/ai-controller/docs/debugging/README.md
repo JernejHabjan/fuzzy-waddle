@@ -4,8 +4,7 @@ The in-game AI panel explains committed facts without becoming gameplay authorit
 
 ## Required views
 
-- A one-glance strategic summary: primary objective and target, force size/domain, mission phase/deadline, production
-  purpose, economy priority, next action, and the current blocker/recovery action.
+- A one-glance strategic summary: primary objective and target, force size/domain, mission phase/deadline, production purpose, economy priority, next action, and the current blocker/recovery action.
 - Current purpose, opening/build-order checkpoint and blocker/recovery age.
 - Resource demand, worker duties, supply, obligations and placement/service rationale.
 - Production capacity, queues, desired composition, counters and research scoring.
@@ -19,15 +18,8 @@ Long values must remain inspectable at supported resolutions. Player switching, 
 
 Why-not inspection distinguishes not evaluated, rejected, unresolved and not recorded. It reports the committed alternative set and reason; it does not rerun live planning to invent an answer.
 
-The strategic summary must use player-facing language rather than raw manager IDs and reason codes. Detailed IDs remain
-available in drill-down views for correlation with commands, effects, saves, and incident bundles.
-Its economy line shows the committed workforce target and queue, assigned gatherers, food runway, useful food-source
-demand, threat posture, spending split, and a diagnosed saturation blocker when present. These are snapshots of the
-last committed macro decision, not a live recomputation when the panel opens.
+The strategic summary must use player-facing language rather than raw manager IDs and reason codes. Detailed IDs remain available in drill-down views for correlation with commands, effects, saves, and incident bundles. Its economy line shows the committed workforce target and queue, assigned gatherers, food runway, useful food-source demand, threat posture, spending split, and a diagnosed saturation blocker when present. These are snapshots of the last committed macro decision, not a live recomputation when the panel opens.
 
-The overview is projected only from the committed observation, brain state, and arbitration decisions. Historical
-overview/strategy views use their retained snapshot; categories requiring an unretained historical observation/state
-must say so instead of mixing in current facts. The live panel selects one cloned snapshot and does not clone the full
-bounded history on every refresh. A selected historical decision may clone that history for navigation.
+The overview is projected only from the committed observation, brain state, and arbitration decisions. Historical overview/strategy views use their retained snapshot; categories requiring an unretained historical observation/state must say so instead of mixing in current facts. The live panel selects one cloned snapshot and does not clone the full bounded history on every refresh. A selected historical decision may clone that history for navigation.
 
 See [incident reproduction](./incident-reproduction.md) for capture and offline comparison.

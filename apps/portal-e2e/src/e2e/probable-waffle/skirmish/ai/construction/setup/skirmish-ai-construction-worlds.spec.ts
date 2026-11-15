@@ -1,5 +1,5 @@
 const workspaceRoot = resolve(__dirname, "../../../../../../../../..");
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { execFileSync } from "node:child_process";
 import { resolve } from "node:path";
 import { constructionRecoveryWorld } from "./skirmish-ai-construction-world";
@@ -9,7 +9,10 @@ import { evaluateRuntimeVariant } from "../../evaluation/controls/skirmish-ai-ru
 import { digestRuntimeValue } from "../../observation/skirmish-ai-runtime-digest";
 import { encodeRuntimeProductionWorld } from "../../production/world/skirmish-ai-runtime-production-world-storage";
 
-test.skip(process.env.AI_CONSTRUCTION_WORLD_E2E !== "1", "Explicit native owner control, not full scenario acceptance.");
+test.skip(
+  process.env.AI_CONSTRUCTION_WORLD_E2E !== "1",
+  "Explicit native owner control, not full scenario acceptance."
+);
 test.setTimeout(360_000);
 
 for (const branch of ["builder_loss", "intact", "cancel_site"] as const) {
@@ -25,13 +28,18 @@ for (const branch of ["builder_loss", "intact", "cancel_site"] as const) {
       ...evaluateConstructionRecoveryWorld(branch, result)
     ];
     await testInfo.attach(`construction-${branch}-summary.json`, {
-      body: Buffer.from(JSON.stringify({
-        branch, source, failures: failures.slice(0, 12).map((failure) => failure.slice(0, 80)),
-        omittedFailures: Math.max(0, failures.length - 12),
-        shortenedFailureDetails: failures.slice(0, 12).filter((failure) => failure.length > 80).length,
-        site: result.presetCreatedActorIds["unfinished-producer"], tick: result.checkpoints.at(-1)?.tick,
-        limitations: ["Tivara owner control; static envelopes do not prove unit transit, spawn, walls or peer/replay"]
-      })),
+      body: Buffer.from(
+        JSON.stringify({
+          branch,
+          source,
+          failures: failures.slice(0, 12).map((failure) => failure.slice(0, 80)),
+          omittedFailures: Math.max(0, failures.length - 12),
+          shortenedFailureDetails: failures.slice(0, 12).filter((failure) => failure.length > 80).length,
+          site: result.presetCreatedActorIds["unfinished-producer"],
+          tick: result.checkpoints.at(-1)?.tick,
+          limitations: ["Tivara owner control; static envelopes do not prove unit transit, spawn, walls or peer/replay"]
+        })
+      ),
       contentType: "application/json"
     });
     // Existing single-copy storage retains proof locally; only the bounded summary is intended for model context.

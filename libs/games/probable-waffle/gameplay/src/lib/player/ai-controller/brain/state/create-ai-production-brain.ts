@@ -14,10 +14,23 @@ import { AiAdaptationManager } from "../../planning/adaptation/ai-adaptation-man
 
 /** Shared production owner/order for live decisions and isolated replay; no scene or dispatch capability is installed here. */
 export function createAiProductionBrain(
-  profile: AiProfileConfig, catalog: () => AiCapabilityCatalog | undefined, hooks?: AiBrainBoundaryHooks
+  profile: AiProfileConfig,
+  catalog: () => AiCapabilityCatalog | undefined,
+  hooks?: AiBrainBoundaryHooks
 ): PureAiBrain {
-  return new PureAiBrain(profile, [new AiMacroManager(catalog), new AiResourceServiceManager(catalog),
-    new AiTransportManager(catalog), new AiSkirmishManager(profile, catalog), new AiBaseManager(profile, catalog),
-    new AiFortificationManager(profile, catalog), new AiRecoveryManager(catalog), new AiTacticsManager(profile, catalog),
-    new AiAdaptationManager(profile, catalog)], hooks);
+  return new PureAiBrain(
+    profile,
+    [
+      new AiMacroManager(catalog),
+      new AiResourceServiceManager(catalog),
+      new AiTransportManager(catalog),
+      new AiSkirmishManager(profile, catalog),
+      new AiBaseManager(profile, catalog),
+      new AiFortificationManager(profile, catalog),
+      new AiRecoveryManager(catalog),
+      new AiTacticsManager(profile, catalog),
+      new AiAdaptationManager(profile, catalog)
+    ],
+    hooks
+  );
 }

@@ -3,8 +3,8 @@ import { evaluateRuntimeProductionContract } from "../evaluation/skirmish-ai-run
 import { evaluateRuntimeProductionPayments } from "./skirmish-ai-runtime-production-refund-evaluation";
 import {
   productionContract,
-  productionEvidence,
   productionEvent,
+  productionEvidence,
   productionSnapshot
 } from "../fixtures/skirmish-ai-runtime-production-contract-fixtures";
 
@@ -98,11 +98,10 @@ function pendingRefund() {
   };
 }
 
-test("PRO-07 useful train and research occupy one real shared lane and independently complete", () => {
+test("PRO-07 useful train and research occupy one real shared lane and independently complete", () =>
   expect(
     evaluateRuntimeProductionContract("PRO-07", productionContract("PRO-07", "shared_contention"), contention())
-  ).toEqual([]);
-});
+  ).toEqual([]));
 
 test("PRO-07 unrelated completions cannot stand in for the items that actually contended", () => {
   const evidence = contention();
@@ -146,11 +145,10 @@ test("PRO-07 unrelated completions cannot stand in for the items that actually c
   ).toContain("production_useful_train_research_completion_missing");
 });
 
-test("PRO-07 pending refund cannot fund an order before application, including same-tick application ordering", () => {
+test("PRO-07 pending refund cannot fund an order before application, including same-tick application ordering", () =>
   expect(
     evaluateRuntimeProductionContract("PRO-07", productionContract("PRO-07", "cancel_pending_refund"), pendingRefund())
-  ).toEqual([]);
-});
+  ).toEqual([]));
 
 test("PRO-07 rejects separate lanes masquerading as contention, overbooking and unpriced free orders", () => {
   const contract = productionContract("PRO-07", "shared_contention");

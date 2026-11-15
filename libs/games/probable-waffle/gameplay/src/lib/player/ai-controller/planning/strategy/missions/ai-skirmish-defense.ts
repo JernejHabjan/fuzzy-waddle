@@ -1,4 +1,4 @@
-import { aiDeadline, type AiAccessNodeId, type AiPlanId, type AiSquadId } from "../../../contracts/ai-core-types";
+import { type AiAccessNodeId, aiDeadline, type AiPlanId, type AiSquadId } from "../../../contracts/ai-core-types";
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiSquadState } from "../../../contracts/state/ai-state-contracts";
 import type { AiProfileConfig } from "../../../contracts/ai-profile-config";

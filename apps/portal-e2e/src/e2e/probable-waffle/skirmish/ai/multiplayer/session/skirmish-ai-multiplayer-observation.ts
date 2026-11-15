@@ -19,31 +19,45 @@ export async function observeMultiplayerPeer(page: Page, aiPlayerNumber: number)
   return page.evaluate((playerNumber) => {
     type Relay = MultiplayerPeerObservation["relay"];
     type Hashes = MultiplayerPeerObservation["hashes"];
-    const host = (window as unknown as {
-      __fuzzyWaddleAiMultiplayerBrowserTest?: {
-        game: { scene: { getScenes(active: boolean): {
-          scene: { key: string };
-          getSceneGameData(): { services: unknown[]; systems: unknown[] };
-        }[] } };
-      };
-    }).__fuzzyWaddleAiMultiplayerBrowserTest;
+    const host = (
+      window as unknown as {
+        __fuzzyWaddleAiMultiplayerBrowserTest?: {
+          game: {
+            scene: {
+              getScenes(active: boolean): {
+                scene: { key: string };
+                getSceneGameData(): { services: unknown[]; systems: unknown[] };
+              }[];
+            };
+          };
+        };
+      }
+    ).__fuzzyWaddleAiMultiplayerBrowserTest;
     const scene = host?.game.scene.getScenes(true).find((candidate) => candidate.scene.key === "MapAiMultiplayer");
     if (!scene) throw new Error("multiplayer_test_scene_missing");
     const graph = scene.getSceneGameData();
-    const diagnostics = graph.services.find((candidate): candidate is {
-      kind: "ai-multiplayer-browser-diagnostics";
-      getSnapshot(aiPlayerNumber: number): {
-        relay: Relay;
-        processedAiCommandIds: readonly string[];
-        hashes: Hashes;
-      };
-    } =>
-      !!candidate && (candidate as { kind?: unknown }).kind === "ai-multiplayer-browser-diagnostics" &&
-      typeof (candidate as { getSnapshot?: unknown }).getSnapshot === "function"
+    const diagnostics = graph.services.find(
+      (
+        candidate
+      ): candidate is {
+        kind: "ai-multiplayer-browser-diagnostics";
+        getSnapshot(aiPlayerNumber: number): {
+          relay: Relay;
+          processedAiCommandIds: readonly string[];
+          hashes: Hashes;
+        };
+      } =>
+        !!candidate &&
+        (candidate as { kind?: unknown }).kind === "ai-multiplayer-browser-diagnostics" &&
+        typeof (candidate as { getSnapshot?: unknown }).getSnapshot === "function"
     );
-    const handler = graph.systems.find((candidate): candidate is {
-      getAiPlayerController(player: number): unknown;
-    } => !!candidate && typeof (candidate as { getAiPlayerController?: unknown }).getAiPlayerController === "function");
+    const handler = graph.systems.find(
+      (
+        candidate
+      ): candidate is {
+        getAiPlayerController(player: number): unknown;
+      } => !!candidate && typeof (candidate as { getAiPlayerController?: unknown }).getAiPlayerController === "function"
+    );
     if (!diagnostics || !handler) throw new Error("multiplayer_observation_service_missing");
     const snapshot = diagnostics.getSnapshot(playerNumber);
     return {

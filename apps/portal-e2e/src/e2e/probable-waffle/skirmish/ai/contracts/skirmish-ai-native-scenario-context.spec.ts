@@ -38,33 +38,20 @@ test("exact native transaction, strategy and combat proof do not require unrelat
   for (const id of ["RAID-01", "RAID-02", "RAID-03"]) expect(nativeScenarioRequiresResourceCoverage(id)).toBe(false);
 });
 
-test("STRAT-09 comeback proof uses exact native attack effects instead of broad resource coverage", () => {
-  expect(nativeScenarioRequiresResourceCoverage("STRAT-09")).toBe(false);
-});
+test("STRAT-09 comeback proof uses exact native attack effects instead of broad resource coverage", () =>
+  expect(nativeScenarioRequiresResourceCoverage("STRAT-09")).toBe(false));
 
-test("H-10 backlog recovery uses exact income events instead of the invalidated broad resource ledger", () => {
-  expect(nativeScenarioRequiresResourceCoverage("H-10")).toBe(false);
-});
+test("H-10 backlog recovery uses exact income events instead of the invalidated broad resource ledger", () => expect(nativeScenarioRequiresResourceCoverage("H-10")).toBe(false));
 
-test("H-12 atomic bundles use exact cost, payment, delivery and foreign-bank evidence", () => {
-  expect(nativeScenarioRequiresResourceCoverage("H-12")).toBe(false);
-});
+test("H-12 atomic bundles use exact cost, payment, delivery and foreign-bank evidence", () => expect(nativeScenarioRequiresResourceCoverage("H-12")).toBe(false));
 
-test("H-13 optional-budget evidence uses exact waiting exposure and paid physical outcomes", () => {
-  expect(nativeScenarioRequiresResourceCoverage("H-13")).toBe(false);
-});
+test("H-13 optional-budget evidence uses exact waiting exposure and paid physical outcomes", () => expect(nativeScenarioRequiresResourceCoverage("H-13")).toBe(false));
 
-test("H-14 lane-priority evidence uses exact native consideration, service and outcome events", () => {
-  expect(nativeScenarioRequiresResourceCoverage("H-14")).toBe(false);
-});
+test("H-14 lane-priority evidence uses exact native consideration, service and outcome events", () => expect(nativeScenarioRequiresResourceCoverage("H-14")).toBe(false));
 
-test("H-15 emergency evidence uses exact damage, defense and delayed-receipt events", () => {
-  expect(nativeScenarioRequiresResourceCoverage("H-15")).toBe(false);
-});
+test("H-15 emergency evidence uses exact damage, defense and delayed-receipt events", () => expect(nativeScenarioRequiresResourceCoverage("H-15")).toBe(false));
 
-test("H-30 fault isolation uses exact injection, recovery and reconciliation events", () => {
-  expect(nativeScenarioRequiresResourceCoverage("H-30")).toBe(false);
-});
+test("H-30 fault isolation uses exact injection, recovery and reconciliation events", () => expect(nativeScenarioRequiresResourceCoverage("H-30")).toBe(false));
 
 test("authority fault evidence relies on exact native output transactions instead of broad resource coverage", () => {
   expect(nativeScenarioRequiresResourceCoverage("H-06")).toBe(false);

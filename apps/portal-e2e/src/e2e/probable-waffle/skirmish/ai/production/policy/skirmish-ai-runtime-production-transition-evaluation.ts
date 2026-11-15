@@ -1,4 +1,6 @@
-import { evaluateRuntimeProductionAbandonment } from "../cancellation/skirmish-ai-runtime-production-abandonment-evaluation";
+import {
+  evaluateRuntimeProductionAbandonment
+} from "../cancellation/skirmish-ai-runtime-production-abandonment-evaluation";
 import type { RuntimeProductionContract } from "../lifecycle/skirmish-ai-runtime-production-contract";
 import type { RuntimeProductionEvidence } from "../evidence/skirmish-ai-runtime-production-evidence";
 

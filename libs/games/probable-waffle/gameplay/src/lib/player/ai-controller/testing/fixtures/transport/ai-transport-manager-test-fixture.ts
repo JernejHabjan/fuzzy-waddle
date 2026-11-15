@@ -1,6 +1,6 @@
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiCapabilityCatalog } from "../../../contracts/observation/ai-capability-catalog";
-import type { AiObservedActor, AiObservation } from "../../../contracts/observation/ai-observation";
+import type { AiObservation, AiObservedActor } from "../../../contracts/observation/ai-observation";
 import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "../coordination/ai-test-fixtures";
 import { buildAiAccessGraph, queryAiAccessRoute } from "../../../planning/access/ai-access-graph";
 
@@ -114,12 +114,7 @@ export const catalog: AiCapabilityCatalog = {
   ]
 };
 
-export function actor(
-  actorId: string,
-  objectName: ObjectNames,
-  nodeId: typeof fromNodeId,
-  x: number
-): AiObservedActor {
+export function actor(actorId: string, objectName: ObjectNames, nodeId: typeof fromNodeId, x: number): AiObservedActor {
   return {
     ...createAiTestOwnedActor(actorId),
     objectName,

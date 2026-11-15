@@ -1,5 +1,11 @@
 import { safeRetreatPosition } from "../../../planning/tactics/combat/ai-tactics-geometry";
-import { combatActor, squad, fixtureState, observation, manager } from "../../fixtures/tactics/ai-tactics-test-fixtures";
+import {
+  combatActor,
+  fixtureState,
+  manager,
+  observation,
+  squad
+} from "../../fixtures/tactics/ai-tactics-test-fixtures";
 import { AiTacticsManager } from "../../../planning/tactics/orders/ai-tactics-manager";
 import { createAiProfileConfig } from "../../../profiles/ai-profile-defaults";
 import { ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
@@ -37,7 +43,11 @@ describe("combat and scouting scenario contracts", () => {
       elevation: 0,
       observedBlocked: false
     }));
-    const map = { ...world.map, bounds: { ...world.map.bounds, value: { width: 128, height: 32 } }, constructionCells: cells };
+    const map = {
+      ...world.map,
+      bounds: { ...world.map.bounds, value: { width: 128, height: 32 } },
+      constructionCells: cells
+    };
 
     expect(safeRetreatPosition({ ...world, map }, fixtureState([]), [scout])).toEqual({ x: 100, y: 0, z: 0 });
   });

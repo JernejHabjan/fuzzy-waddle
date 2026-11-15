@@ -1,8 +1,8 @@
 import { AiFortificationManager, fortificationPreservesConnectivity } from "./ai-fortification-manager";
 import {
-  profile,
   catalog,
   observation,
+  profile,
   threatenedState
 } from "../../testing/fixtures/fortification/ai-fortification-test-fixture";
 import { requireAiTestEntry } from "../../testing/fixtures/coordination/ai-test-fixtures";

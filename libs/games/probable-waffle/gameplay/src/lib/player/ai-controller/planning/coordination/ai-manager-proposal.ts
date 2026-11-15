@@ -1,14 +1,14 @@
 import type { AiObservation } from "../../contracts/observation/ai-observation";
 import type { AiIntent } from "../../contracts/commands/ai-intent";
-import type { AiBrainState } from "../../contracts/state/ai-state-contracts";
 import type {
   AiBaseState,
+  AiBrainState,
   AiEconomyProductionState,
   AiFortificationState,
   AiOpeningState,
   AiSkirmishState,
-  AiStrategyState,
   AiSquadState,
+  AiStrategyState,
   AiSupportState,
   AiTransportState
 } from "../../contracts/state/ai-state-contracts";

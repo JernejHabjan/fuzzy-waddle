@@ -1,17 +1,17 @@
 import { projectRuntimeResourceCredits } from "./skirmish-ai-runtime-resource-credit-projection";
 // prettier-ignore
-import { AI_RUNTIME_MAX_FACTS } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/append-ai-runtime-production-fact";
+import {
+  AI_RUNTIME_MAX_FACTS
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/append-ai-runtime-production-fact";
 // prettier-ignore
-import type { AiRuntimeProductionSnapshot } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
 import type { ResourceCargoSample } from "@fuzzy-waddle/probable-waffle-phaser/entity/components/resource/resource-cargo-sample";
 import type { RuntimeResourceCredit } from "./skirmish-ai-runtime-resource-credit";
 import type { RuntimeCargoContribution } from "../../service/skirmish-ai-runtime-cargo-contribution";
 import { normalizeRuntimeServiceAttempts } from "../../service/skirmish-ai-runtime-service-attempt-normalization";
-import {
-  validateRuntimeResourceService
-} from "../../service/skirmish-ai-runtime-resource-service-validation";
+import { validateRuntimeResourceService } from "../../service/skirmish-ai-runtime-resource-service-validation";
 import { runtimeRouteOrderFenced } from "../../../navigation/controls/commands/skirmish-ai-runtime-route-order-fence";
 
 /** Retrospective whole-pile lineage. Unknown cargo and partial allocation remain unavailable; actual credit is independent. */
@@ -200,7 +200,17 @@ export function normalizeRuntimeResourceCredits(
     states.set(value.cargoId, state);
   }
   const credits = projectRuntimeResourceCredits({
-    capture, candidates, offers, removals, entries, attempts, sameCargo, fenced, available, failures, gaps
+    capture,
+    candidates,
+    offers,
+    removals,
+    entries,
+    attempts,
+    sameCargo,
+    fenced,
+    available,
+    failures,
+    gaps
   });
   if (!candidates.length) gaps.add("production_resource_credit_observation_missing");
   if (validation.overflow) gaps.add("production_resource_service_group_overflow");

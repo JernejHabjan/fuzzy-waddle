@@ -1,6 +1,6 @@
 import { OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiCapabilityCatalog } from "../../../contracts/observation/ai-capability-catalog";
-import type { AiObservedActor, AiObservation } from "../../../contracts/observation/ai-observation";
+import type { AiObservation, AiObservedActor } from "../../../contracts/observation/ai-observation";
 
 const WORKER_FLOOR = 6;
 const WORKER_LIMIT = 18;
@@ -94,14 +94,12 @@ export function observedAiEconomyThreats(observation: AiObservation): AiObserved
     const position = enemy.logicalPosition.value;
     return Math.min(
       ...protectedPositions.map(
-        (protectedPosition) =>
-          Math.abs(protectedPosition.x - position.x) + Math.abs(protectedPosition.y - position.y)
+        (protectedPosition) => Math.abs(protectedPosition.x - position.x) + Math.abs(protectedPosition.y - position.y)
       )
     );
   };
   return threats.sort(
-    (left, right) =>
-      protectedDistance(left) - protectedDistance(right) || left.actorId.localeCompare(right.actorId)
+    (left, right) => protectedDistance(left) - protectedDistance(right) || left.actorId.localeCompare(right.actorId)
   );
 }
 
@@ -129,8 +127,7 @@ export function hasCredibleAiHomeThreat(observation: AiObservation): boolean {
     if (threat.logicalPosition.status !== "known") return false;
     const threatPosition = threat.logicalPosition.value;
     return mainBuildingPositions.some((position) => {
-      const distance =
-        Math.abs(position.x - threatPosition.x) + Math.abs(position.y - threatPosition.y);
+      const distance = Math.abs(position.x - threatPosition.x) + Math.abs(position.y - threatPosition.y);
       return distance <= LOCAL_THREAT_DISTANCE;
     });
   });

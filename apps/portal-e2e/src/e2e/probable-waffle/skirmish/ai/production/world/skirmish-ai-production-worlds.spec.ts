@@ -1,6 +1,6 @@
 const workspaceRoot = resolve(__dirname, "../../../../../../../../..");
-import { test, expect } from "@playwright/test";
-import { readFileSync, mkdirSync, writeFileSync, existsSync } from "node:fs";
+import { expect, test } from "@playwright/test";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { execFileSync } from "node:child_process";
 import type { RuntimeFixture } from "../../contracts/skirmish-ai-runtime-fixture";
@@ -13,7 +13,13 @@ import type { RuntimeProductionPairInput } from "../lifecycle/skirmish-ai-runtim
 
 const root = workspaceRoot;
 const source = JSON.parse(
-  readFileSync(resolve(root, "tools/probable-waffle/skirmish/ai/testing/fixtures/native/production/production-authority-native-gameplay.json"), "utf8")
+  readFileSync(
+    resolve(
+      root,
+      "tools/probable-waffle/skirmish/ai/testing/fixtures/native/production/production-authority-native-gameplay.json"
+    ),
+    "utf8"
+  )
 ) as RuntimeFixture;
 const requested = process.env.AI_PRODUCTION_WORLD_HORIZON;
 test.skip(

@@ -8,7 +8,11 @@ import { createAiBrainState } from "../../../brain/state/create-ai-brain-state";
 import { digestCanonicalAiValue } from "../../../brain/persistence/canonical-ai-serialization";
 import type { AiCapabilityCatalog } from "../../../contracts/observation/ai-capability-catalog";
 import { createAiProfileConfig } from "../../../profiles/ai-profile-defaults";
-import { createAiTestObservation, createAiTestOwnedActor, requireAiTestEntry } from "../../../testing/fixtures/coordination/ai-test-fixtures";
+import {
+  createAiTestObservation,
+  createAiTestOwnedActor,
+  requireAiTestEntry
+} from "../../../testing/fixtures/coordination/ai-test-fixtures";
 import { calculateAiHousingDemand } from "./ai-housing-demand";
 import { AiMacroManager } from "../macro/ai-macro-manager";
 

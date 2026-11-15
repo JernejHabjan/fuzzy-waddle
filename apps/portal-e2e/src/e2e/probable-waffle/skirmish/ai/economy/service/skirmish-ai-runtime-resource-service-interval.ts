@@ -1,5 +1,6 @@
-import type { AiRuntimeResourceServiceInterval } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/economy/setup/ai-runtime-resource-service-interval";
+import type {
+  AiRuntimeResourceServiceInterval
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/economy/setup/ai-runtime-resource-service-interval";
 import type { RuntimeResourceNeed } from "../capture/demand/skirmish-ai-runtime-resource-need";
 
 /** Legacy publication-position diagnostics; native application positions live in applicationIntervals separately.

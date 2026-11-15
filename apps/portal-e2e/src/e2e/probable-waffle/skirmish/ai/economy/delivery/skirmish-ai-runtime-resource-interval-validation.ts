@@ -1,5 +1,7 @@
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiRuntimeProductionSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
+import type {
+  AiRuntimeProductionSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/production/lifecycle/ai-runtime-production-snapshot";
 
 /** Independent fixed dates/floors; validate every declaration tail and reject overlapping use of one beneficiary/resource. */
 export function validateRuntimeResourceIntervals(capture: AiRuntimeProductionSnapshot) {

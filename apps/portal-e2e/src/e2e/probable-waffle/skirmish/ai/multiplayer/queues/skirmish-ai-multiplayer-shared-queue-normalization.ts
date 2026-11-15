@@ -1,11 +1,15 @@
 import type { GameCommandOutcomeKind } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiMultiplayerSharedQueueWorldSnapshot } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/multiplayer/ai-multiplayer-shared-queue-world-snapshot";
+import type {
+  AiMultiplayerSharedQueueWorldSnapshot
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/multiplayer/ai-multiplayer-shared-queue-world-snapshot";
 import { sameRuntimeQueueCommand } from "../../production/ownership/skirmish-ai-runtime-queue-command-equality";
 import {
   normalizeRuntimeScopedQueuePayments,
   sameRuntimeQueueVector
 } from "../../production/ownership/skirmish-ai-runtime-scoped-queue-payments";
-import { evaluateMultiplayerResearchCancellation } from "../session/skirmish-ai-multiplayer-research-cancellation-evaluation";
+import {
+  evaluateMultiplayerResearchCancellation
+} from "../session/skirmish-ai-multiplayer-research-cancellation-evaluation";
 
 /** Normalizes shared human authority only; raw AI/fairness gaps remain and no RuntimeProductionEvidence is produced. */
 export function normalizeMultiplayerSharedQueueWorld(world: AiMultiplayerSharedQueueWorldSnapshot, sender: boolean) {
@@ -96,7 +100,10 @@ export function normalizeMultiplayerSharedQueueWorld(world: AiMultiplayerSharedQ
     )
       failures.push("shared_queue_outcome_lineage_invalid");
   }
-  const outcome = (role: AiMultiplayerSharedQueueWorldSnapshot["commands"][number]["role"], kind: GameCommandOutcomeKind) => {
+  const outcome = (
+    role: AiMultiplayerSharedQueueWorldSnapshot["commands"][number]["role"],
+    kind: GameCommandOutcomeKind
+  ) => {
     const id = world.commands.find((entry) => entry.role === role)?.command.execution?.commandId;
     return outcomes.filter((fact) => fact.outcome.commandId === id && fact.outcome.kind === kind);
   };

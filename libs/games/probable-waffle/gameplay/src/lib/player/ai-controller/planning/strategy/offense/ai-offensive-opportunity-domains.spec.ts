@@ -2,7 +2,13 @@ import type { AiBrainState } from "../../../contracts/state/ai-state-contracts";
 
 import { buildAiAccessGraph } from "../../access/ai-access-graph";
 
-import { guard, core, world, brain, manager } from "../../../testing/fixtures/strategy/ai-offensive-opportunity-test-fixtures";
+import {
+  brain,
+  core,
+  guard,
+  manager,
+  world
+} from "../../../testing/fixtures/strategy/ai-offensive-opportunity-test-fixtures";
 
 describe("fastest credible offense", () => {
   it("does not count shoreline ground troops as a naval force against a water objective", () => {

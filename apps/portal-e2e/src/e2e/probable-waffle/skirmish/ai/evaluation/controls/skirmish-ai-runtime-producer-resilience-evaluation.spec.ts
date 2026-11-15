@@ -2,8 +2,8 @@ import { expect, test } from "@playwright/test";
 import { evaluateRuntimeProductionContract } from "../../production/evaluation/skirmish-ai-runtime-production-contract-evaluation";
 import {
   productionContract,
-  productionEvidence,
   productionEvent,
+  productionEvidence,
   productionSnapshot,
   proofProducer
 } from "../../production/fixtures/skirmish-ai-runtime-production-contract-fixtures";
@@ -33,11 +33,10 @@ function resilient() {
   );
 }
 
-test("PRO-06 safe redundancy survives the scheduled critical loss and produces a new retained useful identity", () => {
+test("PRO-06 safe redundancy survives the scheduled critical loss and produces a new retained useful identity", () =>
   expect(
     evaluateRuntimeProductionContract("PRO-06", productionContract("PRO-06", "critical_exposed"), resilient())
-  ).toEqual([]);
-});
+  ).toEqual([]));
 
 test("PRO-06 controls decline redundant capacity for safely served, low-value and absent demand", () => {
   for (const branch of ["safe_served", "low_value", "no_demand"] as const) {

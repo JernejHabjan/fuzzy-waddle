@@ -1,7 +1,7 @@
 import { ObjectNames, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
 
 import type { AiCapabilityCatalog } from "../../../contracts/observation/ai-capability-catalog";
-import type { AiObservedActor, AiObservation } from "../../../contracts/observation/ai-observation";
+import type { AiObservation, AiObservedActor } from "../../../contracts/observation/ai-observation";
 import { createAiProfileConfig } from "../../../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "../coordination/ai-test-fixtures";
 import { buildAiAccessGraph } from "../../../planning/access/ai-access-graph";

@@ -1,21 +1,28 @@
 import type { Page } from "@playwright/test";
-import type { AiRuntimeBrowserTestHost } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/browser/ai-runtime-browser-test-host";
-import type { armAiRuntimeIncidentCaptureProbe } from
-  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/reproduction/ai-runtime-incident-capture-probe";
+import type {
+  AiRuntimeBrowserTestHost
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/browser/ai-runtime-browser-test-host";
+import type {
+  armAiRuntimeIncidentCaptureProbe
+} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/reproduction/ai-runtime-incident-capture-probe";
 import { nativeDebugWorldDigest } from "./skirmish-ai-native-debug-comparison";
 import { captureNativeDisposal } from "../lifecycle/cleanup/skirmish-ai-native-disposal";
 import type { NativeDebugParityProof } from "./skirmish-ai-native-debug-parity-proof";
 
 /** Arm the real scene-owned diagnostic capture, including its shutdown subscriber, before the first selected input. */
 export async function armNativeDebugParity(page: Page, sourceRevision: string, dirtySourceDigest: string | null) {
-  await page.evaluate(({ sourceRevision, dirtySourceDigest }) => {
-    const realm = window as unknown as { __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost;
-      __nativeDebugQuota?: ReturnType<typeof armAiRuntimeIncidentCaptureProbe> };
-    const arm = realm.__fuzzyWaddleAiRuntimeBrowserTest?.armIncidentCaptureProbe;
-    if (!arm) throw new Error("native_debug_incident_owner_missing");
-    realm.__nativeDebugQuota = arm(sourceRevision, dirtySourceDigest);
-  }, { sourceRevision, dirtySourceDigest });
+  await page.evaluate(
+    ({ sourceRevision, dirtySourceDigest }) => {
+      const realm = window as unknown as {
+        __fuzzyWaddleAiRuntimeBrowserTest?: AiRuntimeBrowserTestHost;
+        __nativeDebugQuota?: ReturnType<typeof armAiRuntimeIncidentCaptureProbe>;
+      };
+      const arm = realm.__fuzzyWaddleAiRuntimeBrowserTest?.armIncidentCaptureProbe;
+      if (!arm) throw new Error("native_debug_incident_owner_missing");
+      realm.__nativeDebugQuota = arm(sourceRevision, dirtySourceDigest);
+    },
+    { sourceRevision, dirtySourceDigest }
+  );
 }
 
 /** Finite functional quota pressure leaves the paused authoritative world untouched, then actual shutdown releases ownership. */
@@ -25,18 +32,32 @@ export async function captureNativeDebugParity(page: Page) {
     const probe = (window as unknown as { __nativeDebugQuota?: ReturnType<typeof armAiRuntimeIncidentCaptureProbe> })
       .__nativeDebugQuota;
     if (!probe) throw new Error("native_debug_incident_capture_missing");
-    let accepted = 0, rejected = false;
+    let accepted = 0,
+      rejected = false;
     for (let i = 0; i < 32; i++) {
       const result = probe.captureEpisode(`diagnostic-quota-${i}`);
       if (result === "captured") accepted++;
-      if (result === "quota_exceeded") { rejected = true; break; }
+      if (result === "quota_exceeded") {
+        rejected = true;
+        break;
+      }
     }
     const history = window.__fuzzyWaddleAiRuntimeParts?.(2)?.controller.getBrainDebugHistory();
-    const first = history?.[0], last = history?.at(-1);
+    const first = history?.[0],
+      last = history?.at(-1);
     if (!history || !first || !last) throw new Error("native_debug_retained_history_missing");
-    return { accepted, rejected, repeated: probe.captureEpisode("diagnostic-quota-0"), peak: probe.metrics(),
-      history: { count: history.length, firstSequence: first.decisionSequence,
-        lastSequence: last.decisionSequence, missingThroughTick: first.tick - 10 } };
+    return {
+      accepted,
+      rejected,
+      repeated: probe.captureEpisode("diagnostic-quota-0"),
+      peak: probe.metrics(),
+      history: {
+        count: history.length,
+        firstSequence: first.decisionSequence,
+        lastSequence: last.decisionSequence,
+        missingThroughTick: first.tick - 10
+      }
+    };
   });
   const afterDigest = await nativeDebugWorldDigest(page);
   const nativeDisposal = await captureNativeDisposal(page);

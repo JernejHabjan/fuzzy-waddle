@@ -13,14 +13,16 @@ export async function attachMultiplayerEvidence(
   }
 ): Promise<void> {
   await testInfo.attach("skirmish-multiplayer-peers.json", {
-    body: Buffer.from(JSON.stringify({
-      schemaVersion: 1,
-      lobbyName: evidence.lobbyName,
-      host: evidence.host,
-      peer: evidence.peer,
-      peerBeforeInterruption: evidence.peerBeforeInterruption,
-      checkpointComparisons: evidence.checkpointComparisons.slice(-16)
-    })),
+    body: Buffer.from(
+      JSON.stringify({
+        schemaVersion: 1,
+        lobbyName: evidence.lobbyName,
+        host: evidence.host,
+        peer: evidence.peer,
+        peerBeforeInterruption: evidence.peerBeforeInterruption,
+        checkpointComparisons: evidence.checkpointComparisons.slice(-16)
+      })
+    ),
     contentType: "application/json"
   });
 }

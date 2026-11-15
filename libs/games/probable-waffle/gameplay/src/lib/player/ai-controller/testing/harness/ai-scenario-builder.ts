@@ -1,5 +1,8 @@
-import { canonicalizeAiBrainState, canonicalizeAiObservation } from "../../brain/persistence/canonical-ai-serialization";
-import type { AiScenarioAssertion, AiScenario } from "./ai-scenario";
+import {
+  canonicalizeAiBrainState,
+  canonicalizeAiObservation
+} from "../../brain/persistence/canonical-ai-serialization";
+import type { AiScenario, AiScenarioAssertion } from "./ai-scenario";
 
 /** Copies and canonicalizes fixture input so a test cannot mutate a later repetition. */
 export function buildAiScenario(input: AiScenario): AiScenario {

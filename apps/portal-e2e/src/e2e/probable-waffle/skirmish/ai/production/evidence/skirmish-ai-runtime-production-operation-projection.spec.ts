@@ -6,6 +6,7 @@ import { productionOperationFixture } from "../fixtures/skirmish-ai-runtime-prod
 import { normalizeRuntimeProductionCausality } from "../decisions/skirmish-ai-runtime-production-causality-normalization";
 import { calculateRuntimeQueueLiabilities } from "../ownership/skirmish-ai-runtime-queue-liabilities";
 import { evaluateRuntimeProductionCausality } from "../decisions/skirmish-ai-runtime-production-causality-evaluation";
+
 test.describe("production operation synthetic contract tests", () => {
   test("pairs successful charges with actual-shaped advanced boundaries, including final and initially zero heads", () => {
     for (const remaining of [100, 50, 0]) {

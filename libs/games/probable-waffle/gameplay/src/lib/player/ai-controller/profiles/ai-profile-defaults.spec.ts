@@ -25,9 +25,8 @@ describe("createAiProfileConfig", () => {
     }
   );
 
-  it("rejects an unknown lobby difficulty", () => {
-    expect(() => createAiProfileConfig(99 as ProbableWaffleAiDifficulty)).toThrow("unsupported_ai_difficulty");
-  });
+  it("rejects an unknown lobby difficulty", () =>
+    expect(() => createAiProfileConfig(99 as ProbableWaffleAiDifficulty)).toThrow("unsupported_ai_difficulty"));
 
   it("selects a repeatable opening from the match seed, player and faction", () => {
     const easy = createAiProfileConfig(ProbableWaffleAiDifficulty.Easy);

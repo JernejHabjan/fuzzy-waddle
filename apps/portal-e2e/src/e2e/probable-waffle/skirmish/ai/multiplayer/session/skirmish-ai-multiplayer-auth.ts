@@ -50,17 +50,26 @@ export async function createMultiplayerTestIdentities(): Promise<{
 
 /** Install actual Supabase sessions before Angular initializes; no test-side AI state is injected. */
 export async function installMultiplayerIdentity(
-  context: BrowserContext, identity: MultiplayerTestIdentity
+  context: BrowserContext,
+  identity: MultiplayerTestIdentity
 ): Promise<void> {
   const publicKey = process.env.AI_MULTIPLAYER_SUPABASE_PUBLIC_KEY;
   if (!publicKey) throw new Error("local_multiplayer_public_key_required");
-  await context.addInitScript(({ key, session }) => {
-    if (window.location.origin !== "http://127.0.0.1:4200") return;
-    window.sessionStorage.setItem("fuzzy-waddle:multiplayer-e2e-auth", JSON.stringify({
-      schemaVersion: 1, url: "http://127.0.0.1:54321", publicAnonKey: key
-    }));
-    window.sessionStorage.setItem("fuzzy-waddle:ai-runtime-browser-test", "map-only");
-    window.sessionStorage.setItem("fuzzy-waddle:ai-multiplayer-browser-test", "1");
-    window.localStorage.setItem("sb-127-auth-token", JSON.stringify(session));
-  }, { key: publicKey, session: identity.session });
+  await context.addInitScript(
+    ({ key, session }) => {
+      if (window.location.origin !== "http://127.0.0.1:4200") return;
+      window.sessionStorage.setItem(
+        "fuzzy-waddle:multiplayer-e2e-auth",
+        JSON.stringify({
+          schemaVersion: 1,
+          url: "http://127.0.0.1:54321",
+          publicAnonKey: key
+        })
+      );
+      window.sessionStorage.setItem("fuzzy-waddle:ai-runtime-browser-test", "map-only");
+      window.sessionStorage.setItem("fuzzy-waddle:ai-multiplayer-browser-test", "1");
+      window.localStorage.setItem("sb-127-auth-token", JSON.stringify(session));
+    },
+    { key: publicKey, session: identity.session }
+  );
 }

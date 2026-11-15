@@ -75,7 +75,8 @@ export function nativeSaveProofFailures(
     proof.resumedUsefulWork.tick !== proof.resumed.owner.tick ||
     proof.resumedUsefulWork.advancedQueueAttempts +
       proof.resumedUsefulWork.completedQueueItems +
-      proof.resumedUsefulWork.nativeDamageEvents < 1
+      proof.resumedUsefulWork.nativeDamageEvents <
+      1
   )
     failures.push("native_save_useful_work_did_not_continue_after_restore");
   const savedDecisionSequence = proof.saved.owner.decisionSequence;
