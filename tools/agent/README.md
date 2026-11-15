@@ -10,7 +10,7 @@ measurement and review. These tools support development and are independent of t
   scenario browser's descriptions and update its generator, tests and CI references.
 - [ ] Reduce scenario fixture duplication by reusing common world setups and actions. Consolidate duplicate cases only
   when meaningful behavior remains covered. See [scenario cleanup proposals](./scenario-cleanup.md).
-- [ ] Remove completed AI handoffs after moving any still-useful guidance and unresolved acceptance into durable
+- [x] Remove completed AI handoffs after moving any still-useful guidance and unresolved acceptance into durable
   documentation or issues. Update links before deletion.
 - [ ] Review `ai-controller/docs/` for outdated plans, unfinished work presented as complete, excessive detail and
   duplication. Keep concise current behavior, testing guidance and unresolved follow-ups; update links.
