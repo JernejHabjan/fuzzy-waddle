@@ -23,14 +23,14 @@ measurement and review. These tools support development and are independent of t
   benchmark records for redundant maintenance.
 - [ ] Remove the cancelled difficulty-calibration campaign tooling and update its dependencies. Preserve normal
   difficulty settings and their correctness checks.
-- [ ] Audit the new AI map asset packs and tilemaps against their scenes, scenario recipes and test-map contracts.
+- [x] Audit the new AI map asset packs and tilemaps against their scenes, scenario recipes and test-map contracts.
   Remove redundant assets only after confirming their consumers and keeping required maps playable.
-- [ ] Audit unused code introduced by this PR, including `dispatchAiOrder` and related helpers, tests and exports.
+- [x] Audit unused code introduced by this PR, including `dispatchAiOrder` and related helpers, tests and exports.
   Trace runtime and test consumers before removal.
 - [ ] Organize added or updated specs under owner-local `tests/` folders where requested. Gameplay, Phaser and AI tool
   specs remain organized there. Per user direction, keep `apps/portal-e2e` files in their original folders; move no
   portal E2E specs or support modules into `/tests`.
-- [ ] Review generated comments, overly granular one-use files and repeated test documentation. Remove duplication
+- [x] Review generated comments, overly granular one-use files and repeated test documentation. Remove duplication
   only where the remaining code and docs still explain the behavior and its ownership.
 - [ ] Fix missing actor sprites in interactive AI scenarios, starting with `wall-01-tivara-terrain` and the missing
   `warrior_walk` texture. The shared asset pack declares `warrior_walk`, and current browser playback produced no
