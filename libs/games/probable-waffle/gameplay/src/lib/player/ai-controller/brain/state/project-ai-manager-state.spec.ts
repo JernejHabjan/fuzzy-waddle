@@ -1,4 +1,5 @@
 import { FactionType, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
+import { aiDeadline } from "../../contracts/ai-core-types";
 import type { AiBrainState, AiSquadState } from "../../contracts/state/ai-state-contracts";
 import type { AiManagerProposal } from "../../planning/coordination/ai-manager-proposal";
 import { createAiProfileConfig } from "../../profiles/ai-profile-defaults";
@@ -192,5 +193,35 @@ describe("projectAiManagerState", () => {
       "squad:attack:primary",
       "squad:attack:primary:domain:ground"
     ]);
+  });
+
+  it("retains a raid abort when tactics still sees the previous attack", () => {
+    const raid = createSquad({
+      squadId: "squad:attack:raid:1",
+      lifecycle: {
+        targetPlayerNumber: 2,
+        targetRegionId: null,
+        protectedBaseId: null,
+        rallyNodeId: null,
+        retreatNodeId: null,
+        createdTick: 0,
+        assemblyDeadline: aiDeadline(40),
+        effectDeadline: aiDeadline(200),
+        lastUsefulEffectTick: null,
+        recoveryAttempt: 0,
+        terminalReason: null
+      }
+    });
+    const result = projectAiManagerState(createState([raid]), [
+      createProposal({
+        squads: [{ ...raid, state: "retreat", lifecycle: { ...raid.lifecycle!, terminalReason: "raid_counterforce_abort" } }]
+      }),
+      createProposal({ squadUpdates: [{ ...raid, state: "engage" }] })
+    ]);
+
+    expect(result.squads[0]).toMatchObject({
+      state: "retreat",
+      lifecycle: { terminalReason: "raid_counterforce_abort" }
+    });
   });
 });

@@ -2,12 +2,14 @@ import type { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiCapabilityCatalog } from "../../contracts/observation/ai-capability-catalog";
 import type { AiObservation } from "../../contracts/observation/ai-observation";
 import { isFinishedActor } from "../production/macro/ai-macro-observation";
+import type { AiAdaptationRole } from "./ai-adaptation-role";
 import { matchesAdaptationRole } from "./ai-adaptation-role-match";
 
 /** Finds the shortest currently buildable chain to an anti-air product, without assuming a faction recipe. */
 export function counterInfrastructurePath(
   catalog: AiCapabilityCatalog,
-  self: readonly AiObservation["actors"][number][]
+  self: readonly AiObservation["actors"][number][],
+  role: AiAdaptationRole = "anti_air"
 ): readonly ObjectNames[] | undefined {
   const entries = new Map(catalog.entries.map((entry) => [entry.sourceObjectName, entry]));
   const ready = new Set(self.filter(isFinishedActor).map((actor) => actor.objectName));
@@ -37,7 +39,7 @@ export function counterInfrastructurePath(
   for (const producer of catalog.entries) {
     for (const name of producer.produces) {
       const product = entries.get(name);
-      if (!product || !matchesAdaptationRole(product, "anti_air")) continue;
+      if (!product || !matchesAdaptationRole(product, role)) continue;
       const path: ObjectNames[] = [];
       for (const requirement of [
         producer.sourceObjectName,

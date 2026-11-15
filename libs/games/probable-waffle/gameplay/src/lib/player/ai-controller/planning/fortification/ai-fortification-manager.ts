@@ -1,5 +1,9 @@
-import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AiBrainState, AiFortificationState } from "../../contracts/state/ai-state-contracts";
+import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import type {
+  AiBrainState,
+  AiFortificationNodeState,
+  AiFortificationState
+} from "../../contracts/state/ai-state-contracts";
 import type { AiCapabilityCatalog } from "../../contracts/observation/ai-capability-catalog";
 
 import type { AiIntent } from "../../contracts/commands/ai-intent";
@@ -9,8 +13,10 @@ import type { AiManagerProposal, AiProposalManager } from "../coordination/ai-ma
 
 import { hasUnmetMacroFloor, isDefensiveArchetype } from "./ai-fortification-support";
 import { reconcileFortificationPlan } from "./ai-fortification-recovery";
-import { createFortificationPlan } from "./ai-fortification-plan";
+import { createFortificationPlanWithReason } from "./ai-fortification-plan";
 import { createFortificationIntents, createFortificationBreachResponse } from "./ai-fortification-orders";
+import { resourceEntries } from "./ai-fortification-support";
+import { isAvailableBuilder } from "../production/macro/ai-macro-observation";
 export {
   AI_FORTIFICATION_GRAPH_CAPS,
   AI_STANDARD_FORTIFICATION_SPEND_PERMILLE,
@@ -53,7 +59,7 @@ export class AiFortificationManager implements AiProposalManager {
     let plan = planNeedingWork;
     if (!plan) {
       if (hasUnmetMacroFloor(state)) return this.result(reconciled, [], ["macro_survival_or_supply_floor_unmet"]);
-      const createdPlan = createFortificationPlan(
+      const created = createFortificationPlanWithReason(
         this.profile,
         this.gateObjectName,
         observation,
@@ -62,10 +68,15 @@ export class AiFortificationManager implements AiProposalManager {
         activeBase.anchorPosition,
         catalog
       );
-      if (!createdPlan) return this.result(reconciled, [], ["no_justified_connected_choke"]);
-      plan = createdPlan;
+      if (!created.plan) return this.result(reconciled, [], [created.reason]);
+      plan = created.plan;
       reconciled.push(plan);
     }
+
+    plan = this.refreshBudget(plan, reconciled, observation, catalog);
+    const refreshedPlanId = plan.planId;
+    const refreshedPlanIndex = reconciled.findIndex((candidate) => candidate.planId === refreshedPlanId);
+    if (refreshedPlanIndex >= 0) reconciled[refreshedPlanIndex] = plan;
 
     const defendedIncident = state.skirmish.incidents.some(
       (candidate) => candidate.baseId === null || candidate.baseId === activeBase.baseId
@@ -98,17 +109,22 @@ export class AiFortificationManager implements AiProposalManager {
       ...createFortificationIntents(this.profile, plan, observation, catalog, state),
       ...createFortificationBreachResponse(this.profile, plan, observation, state)
     ];
+    const waitReason = this.constructionWaitReason(plan, intents, observation, catalog);
+    if (plan.graph && plan.graph.waitReason !== (waitReason ?? null))
+      plan = { ...plan, graph: { ...plan.graph, waitReason: waitReason ?? null } };
     const selectedPlan = plan;
     const plans = reconciled.map((candidate) =>
       candidate.planId === selectedPlan.planId
-        ? this.markProposedEffects(candidate, intents, observation.tick)
+        ? this.markProposedEffects(selectedPlan, intents, observation.tick, catalog)
         : candidate
     );
-    return this.result(plans, intents, [
+    const reasons = [
       `plan:${plan.planId}:${plan.lifecycle}`,
       `nodes:${plan.completedNodeIds.length}/${plan.nodeIds.length}`,
       `opening:${plan.graph?.openingNodeId ?? "legacy"}`
-    ]);
+    ];
+    if (waitReason) reasons.push(waitReason);
+    return this.result(plans, intents, reasons);
   }
 
   private empty(reason: string, evaluated: boolean): AiManagerProposal {
@@ -139,7 +155,8 @@ export class AiFortificationManager implements AiProposalManager {
   private markProposedEffects(
     plan: AiFortificationState,
     intents: readonly AiIntent[],
-    tick: number
+    tick: number,
+    catalog: AiCapabilityCatalog
   ): AiFortificationState {
     if (!plan.graph) return plan;
     const effects = new Map(
@@ -151,16 +168,142 @@ export class AiFortificationManager implements AiProposalManager {
       intents.find(
         (intent) => intent.kind === "move" && intent.reasonCode.startsWith("fortification:breach_defenders:")
       )?.effectId ?? null;
+    const nodes = plan.graph.nodes.map((current) => {
+      const effectId = effects.get(current.nodeId);
+      return effectId ? { ...current, effectId } : current;
+    });
+    const committedByResource: Partial<Record<ResourceType, number>> = {};
+    const remainingByResource: Partial<Record<ResourceType, number>> = { ...plan.graph.budget.remainingByResource };
+    for (const current of nodes) {
+      if (!(current.lifecycle === "finished" || current.lifecycle === "requested" || current.effectId)) continue;
+      const cost =
+        catalog.entries.find((entry) => entry.sourceObjectName === current.objectName)?.constructionProfile
+          ?.resourceCost ?? {};
+      for (const [resourceType, amount] of resourceEntries(cost))
+        committedByResource[resourceType] = (committedByResource[resourceType] ?? 0) + amount;
+    }
+    for (const intent of intents) {
+      if (intent.kind !== "construct") continue;
+      const nodeId = intent.siteKey.replace(/^fortification:/, "");
+      const current = plan.graph.nodes.find((candidate) => candidate.nodeId === nodeId);
+      if (!current || current.effectId) continue;
+      const cost =
+        catalog.entries.find((entry) => entry.sourceObjectName === current.objectName)?.constructionProfile
+          ?.resourceCost ?? {};
+      for (const [resourceType, amount] of resourceEntries(cost))
+        remainingByResource[resourceType] = Math.max(0, (remainingByResource[resourceType] ?? 0) - amount);
+    }
     return {
       ...plan,
       graph: {
         ...plan.graph,
-        nodes: plan.graph.nodes.map((current) => {
-          const effectId = effects.get(current.nodeId);
-          return effectId ? { ...current, effectId } : current;
-        }),
+        nodes,
+        budget: { ...plan.graph.budget, committedByResource, remainingByResource },
         breach: breachEffect ? { ...plan.graph.breach, responseEffectId: breachEffect } : plan.graph.breach
       }
     };
+  }
+
+  private refreshBudget(
+    plan: AiFortificationState,
+    plans: readonly AiFortificationState[],
+    observation: AiObservation,
+    catalog: AiCapabilityCatalog
+  ): AiFortificationState {
+    if (!plan.graph) return plan;
+    const committedByResource: Partial<Record<ResourceType, number>> = {};
+    const finishedByResource: Partial<Record<ResourceType, number>> = {};
+    for (const candidate of plans) {
+      if (!candidate.graph || candidate.lifecycle === "abandoned") continue;
+      for (const node of candidate.graph.nodes) {
+        if (!(node.lifecycle === "finished" || node.lifecycle === "requested" || node.effectId)) continue;
+        const cost =
+          catalog.entries.find((entry) => entry.sourceObjectName === node.objectName)?.constructionProfile
+            ?.resourceCost ?? {};
+        for (const [resourceType, amount] of resourceEntries(cost))
+          committedByResource[resourceType] = (committedByResource[resourceType] ?? 0) + amount;
+        if (node.lifecycle === "finished") {
+          for (const [resourceType, amount] of resourceEntries(cost))
+            finishedByResource[resourceType] = (finishedByResource[resourceType] ?? 0) + amount;
+        }
+      }
+    }
+    const remainingByResource: Partial<Record<ResourceType, number>> = {};
+    for (const ledger of observation.resources) {
+      const spendable = Math.max(0, ledger.stockpile - ledger.reservedUnspent - ledger.obligationsDue);
+      const committed = committedByResource[ledger.resourceType] ?? 0;
+      const capital = spendable + (finishedByResource[ledger.resourceType] ?? 0);
+      const ceiling = Math.floor((capital * plan.graph.budget.spendPermille) / 1000);
+      remainingByResource[ledger.resourceType] = Math.max(0, ceiling - committed);
+    }
+    const localCommitted: Partial<Record<ResourceType, number>> = {};
+    for (const node of plan.graph.nodes) {
+      if (!(node.lifecycle === "finished" || node.lifecycle === "requested" || node.effectId)) continue;
+      const cost =
+        catalog.entries.find((entry) => entry.sourceObjectName === node.objectName)?.constructionProfile
+          ?.resourceCost ?? {};
+      for (const [resourceType, amount] of resourceEntries(cost))
+        localCommitted[resourceType] = (localCommitted[resourceType] ?? 0) + amount;
+    }
+    return {
+      ...plan,
+      graph: {
+        ...plan.graph,
+        budget: { ...plan.graph.budget, committedByResource: localCommitted, remainingByResource }
+      }
+    };
+  }
+
+  private constructionWaitReason(
+    plan: AiFortificationState,
+    intents: readonly AiIntent[],
+    observation: AiObservation,
+    catalog: AiCapabilityCatalog
+  ): string | undefined {
+    if (!plan.graph || intents.some((intent) => intent.kind === "construct")) return undefined;
+    const graph = plan.graph;
+    const finished = new Set(graph.nodes.filter((node) => node.lifecycle === "finished").map((node) => node.nodeId));
+    const candidates = graph.constructionSequenceNodeIds
+      .map((id) => graph.nodes.find((node) => node.nodeId === id))
+      .filter(
+        (node): node is AiFortificationNodeState =>
+          node !== undefined &&
+          node.objectName !== null &&
+          (node.lifecycle === "planned" || node.lifecycle === "destroyed") &&
+          node.retryAfterTick <= observation.tick &&
+          (node.dependsOnNodeId === null || finished.has(node.dependsOnNodeId))
+      );
+    if (!candidates.length) return undefined;
+    const cells = new Map(observation.map?.constructionCells?.map((cell) => [cell.tileKey, cell]));
+    const unblocked = candidates.filter((node) =>
+      node.footprintTileKeys.every((key) => {
+        const cell = cells.get(key);
+        return !cell || (cell.groundPassable && !cell.observedBlocked);
+      })
+    );
+    if (!unblocked.length) return "fortification:waiting_for_clear_site";
+    const funded = unblocked.some((node) => {
+      const cost =
+        catalog.entries.find((entry) => entry.sourceObjectName === node.objectName)?.constructionProfile
+          ?.resourceCost ?? {};
+      return resourceEntries(cost).every(
+        ([resourceType, amount]) => (graph.budget.remainingByResource[resourceType] ?? 0) >= amount
+      );
+    });
+    if (!funded) return "fortification:waiting_for_budget";
+    const canBuild = unblocked.some((node) => {
+      const objectName = node.objectName;
+      if (objectName === null) return false;
+      return observation.actors.some(
+        (actor) =>
+          actor.relation === "self" &&
+          actor.visibility === "owned" &&
+          isAvailableBuilder(actor) &&
+          catalog.entries.some(
+            (entry) => entry.sourceObjectName === actor.objectName && entry.constructs.includes(objectName)
+          )
+      );
+    });
+    return canBuild ? "fortification:waiting_for_command_capacity" : "fortification:waiting_for_builder";
   }
 }

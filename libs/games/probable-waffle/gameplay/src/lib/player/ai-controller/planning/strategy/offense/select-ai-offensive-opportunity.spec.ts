@@ -3,7 +3,14 @@ import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 import { createAiTestOwnedActor } from "../../../testing/fixtures/coordination/ai-test-fixtures";
 
-import { guard, core, producer, world, brain, manager } from "../../../testing/fixtures/strategy/ai-offensive-opportunity-test-fixtures";
+import {
+  guard,
+  core,
+  producer,
+  world,
+  brain,
+  manager
+} from "../../../testing/fixtures/strategy/ai-offensive-opportunity-test-fixtures";
 
 describe("fastest credible offense", () => {
   it("STRAT-09 chooses an observed exposed producer while a stronger enemy reserve guards its core", () => {
@@ -78,6 +85,32 @@ describe("fastest credible offense", () => {
     expect(renewed.intents).toContainEqual(expect.objectContaining({ kind: "attack", targetActorId: "enemy-core" }));
   });
 
+  it("raises the force gate after a raid aborted for counterforce", () => {
+    const initial = brain();
+    const force = Array.from({ length: 5 }, (_, index) => guard(`raid-memory-${index}`, "self", 0));
+    const target = producer("repeat-raid-target");
+    const observation = world([...force, target]);
+    const baseline = manager.propose(observation, initial).statePatch?.strategy?.assessment;
+    const previous = manager.propose(observation, initial).statePatch?.squads?.find((squad) => squad.role === "attack");
+    if (!baseline || !previous?.lifecycle) throw new Error("missing_raid_memory_baseline");
+    const failedRaid = {
+      ...previous,
+      squadId: `squad:attack:raid:${target.actorId}` as typeof previous.squadId,
+      actorIds: [],
+      objectiveId: target.actorId,
+      state: "completed" as const,
+      lifecycle: { ...previous.lifecycle, terminalReason: "raid_counterforce_abort" }
+    };
+
+    const retry = manager.propose(observation, { ...initial, squads: [failedRaid] }).statePatch?.strategy?.assessment;
+
+    expect(retry).toMatchObject({
+      targetActorId: target.actorId,
+      requiredForce: (baseline.requiredForce ?? 0) + 2,
+      recentFailure: { repeatedFailures: 1, targetActorId: target.actorId }
+    });
+  });
+
   it("attributes a failed mission to its saved objective after the current assessment changes target", () => {
     const initial = brain();
     const actors = [guard("a", "self", 0), guard("b", "self", 0), core("enemy-core")];
@@ -124,8 +157,12 @@ describe("fastest credible offense", () => {
       logicalPosition: { status: "known" as const, value: { x: 25, y: 0, z: 0 }, observedTick: 20 }
     };
     const result = manager.propose(
-      world([...Array.from({ length: 9 }, (_, index) => guard(`attacker-${index}`, "self", 0)), ...enemies,
-        core("enemy-core"), distantProducer]),
+      world([
+        ...Array.from({ length: 9 }, (_, index) => guard(`attacker-${index}`, "self", 0)),
+        ...enemies,
+        core("enemy-core"),
+        distantProducer
+      ]),
       brain()
     );
 
@@ -172,7 +209,11 @@ describe("fastest credible offense", () => {
     const enemyBarracks = producer("enemy-barracks");
     const enemyRange = producer("enemy-range");
     const first = manager.propose(world([...guards, rememberedCore, enemyBarracks, enemyRange]), initial);
-    if (!first.statePatch?.strategy || !first.statePatch.skirmish || !first.statePatch.squads?.some((squad) => squad.role === "scout"))
+    if (
+      !first.statePatch?.strategy ||
+      !first.statePatch.skirmish ||
+      !first.statePatch.squads?.some((squad) => squad.role === "scout")
+    )
       throw new Error("missing_remembered_core_scout");
 
     const visibleCore = core("frostforge");
@@ -302,9 +343,9 @@ describe("fastest credible offense", () => {
     expect(result.statePatch?.strategy?.assessment).toEqual(
       expect.objectContaining({ targetActorId: producerTarget.actorId, selectionSource: "working_objective" })
     );
-    expect(result.intents.some((intent) => intent.kind === "attack" && intent.targetActorId === producerTarget.actorId)).toBe(
-      false
-    );
+    expect(
+      result.intents.some((intent) => intent.kind === "attack" && intent.targetActorId === producerTarget.actorId)
+    ).toBe(false);
 
     const arrivedGuards = ["a", "b"].map((id) => ({
       ...guard(id, "self", 0),
@@ -316,9 +357,7 @@ describe("fastest credible offense", () => {
     }));
     const arrived = manager.propose(world([...arrivedGuards, rememberedProducer, visibleWorker, visibleCore], 140), {
       ...initial,
-      squads: [
-        { ...attack, objectiveId: `hypothesis:${rememberedProducer.evidenceId}` as never, state: "engage" }
-      ],
+      squads: [{ ...attack, objectiveId: `hypothesis:${rememberedProducer.evidenceId}` as never, state: "engage" }],
       strategy: first.statePatch.strategy,
       skirmish: first.statePatch.skirmish
     });
@@ -376,7 +415,13 @@ describe("fastest credible offense", () => {
       logicalPosition: { status: "known" as const, value: { x: 0, y: 0, z: 0 }, observedTick: 20 }
     };
     const first = manager.propose(
-      world([guard("a", "self", 0), guard("b", "self", 0), guard("c", "self", 0), guard("d", "self", 0), producerTarget]),
+      world([
+        guard("a", "self", 0),
+        guard("b", "self", 0),
+        guard("c", "self", 0),
+        guard("d", "self", 0),
+        producerTarget
+      ]),
       initial
     );
     const attack = first.statePatch?.squads?.find((squad) => squad.role === "attack");
@@ -408,16 +453,23 @@ describe("fastest credible offense", () => {
       ...guard(id, "self", 10),
       activeOrder: {
         status: "known" as const,
-        value: { orderType: OrderType.Attack, targetActorId: "intercepted-enemy", targetPosition: { x: 0, y: 0, z: 0 } },
+        value: {
+          orderType: OrderType.Attack,
+          targetActorId: "intercepted-enemy",
+          targetPosition: { x: 0, y: 0, z: 0 }
+        },
         observedTick: 100
       }
     }));
-    const attackMoving = manager.propose(world([...attackMovingGuards, producerTarget, visibleCore, ...coreGuards], 120), {
-      ...initial,
-      squads: [attack],
-      strategy: first.statePatch.strategy,
-      skirmish: first.statePatch.skirmish
-    });
+    const attackMoving = manager.propose(
+      world([...attackMovingGuards, producerTarget, visibleCore, ...coreGuards], 120),
+      {
+        ...initial,
+        squads: [attack],
+        strategy: first.statePatch.strategy,
+        skirmish: first.statePatch.skirmish
+      }
+    );
     expect(attackMoving.statePatch?.strategy?.assessment).toEqual(
       expect.objectContaining({ targetActorId: producerTarget.actorId, selectionSource: "working_objective" })
     );

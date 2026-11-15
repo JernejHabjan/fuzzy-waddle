@@ -50,6 +50,21 @@ describe("Stage 2 AI invariant guards", () => {
     ).toThrow("invalid_ai_deadline:strategy.commitmentDeadline");
   });
 
+  it("accepts legacy openings but rejects an invalid pending-selection marker", () => {
+    const state = createAiBrainState({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile: createAiProfileConfig(ProbableWaffleAiDifficulty.Medium),
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    expect(() => assertAiBrainState(state)).not.toThrow();
+    expect(() => assertAiBrainState({
+      ...state,
+      opening: { ...state.opening, selectionStatus: "maybe" }
+    })).toThrow("malformed_ai_state:opening_selection_status");
+  });
+
   it("rejects an inconsistent persisted workforce budget", () => {
     const state = createAiBrainState({
       playerNumber: 1,

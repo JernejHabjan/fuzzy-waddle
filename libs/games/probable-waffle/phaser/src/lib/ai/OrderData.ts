@@ -18,6 +18,10 @@ export class OrderData {
       targetGameObject?: GameObject;
       targetTileLocation?: Vector3Simple;
       targetGameObjectId?: string;
+      /** Tile where the current AI pursuit target was first acquired. */
+      pursuitTargetOrigin?: Vector3Simple;
+      /** Target whose automatic pursuit reached its boundary during this order. */
+      pursuitReleasedTargetActorId?: string;
       commandContext?: {
         execution: GameCommandExecution;
         playerNumber: PlayerNumber;
@@ -34,6 +38,10 @@ export class OrderData {
         targetGameObjectId: order.data.targetGameObject
           ? getActorComponent(order.data.targetGameObject, IdComponent)?.id
           : order.data.targetGameObjectId,
+        ...(order.data.pursuitTargetOrigin ? { pursuitTargetOrigin: { ...order.data.pursuitTargetOrigin } } : {}),
+        ...(order.data.pursuitReleasedTargetActorId
+          ? { pursuitReleasedTargetActorId: order.data.pursuitReleasedTargetActorId }
+          : {}),
         commandContext: order.data.commandContext ? structuredClone(order.data.commandContext) : undefined
       }
     };
@@ -45,6 +53,8 @@ export class OrderData {
       targetGameObject?: GameObject;
       targetTileLocation?: Vector3Simple;
       targetGameObjectId?: string;
+      pursuitTargetOrigin?: Vector3Simple;
+      pursuitReleasedTargetActorId?: string;
       commandContext?: {
         execution: GameCommandExecution;
         playerNumber: PlayerNumber;
@@ -60,6 +70,12 @@ export class OrderData {
       data.targetGameObjectId = targetGameObjectId;
       // Fixes desync from wall-clock restore ordering by resolving actor references on simulation ticks.
       OrderData.resolveTargetGameObjectDeterministic(scene, data, targetGameObjectId);
+    }
+    if (record.data?.pursuitTargetOrigin) {
+      data.pursuitTargetOrigin = record.data.pursuitTargetOrigin as Vector3Simple;
+    }
+    if (typeof record.data?.pursuitReleasedTargetActorId === "string") {
+      data.pursuitReleasedTargetActorId = record.data.pursuitReleasedTargetActorId;
     }
     if (record.data?.commandContext) data.commandContext = structuredClone(record.data.commandContext);
     return new OrderData(orderType, data);

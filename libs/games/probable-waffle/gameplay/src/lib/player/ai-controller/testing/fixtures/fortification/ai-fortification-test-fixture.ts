@@ -50,7 +50,7 @@ export const catalog: AiCapabilityCatalog = {
       housingCost: null,
       cargoCapacity: null,
       constructionProfile: {
-        resourceCost: { [ResourceType.Stone]: 25 },
+        resourceCost: { [ResourceType.Stone]: 15 },
         footprintRadiusTiles: 0,
         visionRange: 10,
         navigableHeight: 42,
@@ -73,7 +73,7 @@ export const catalog: AiCapabilityCatalog = {
       housingCost: null,
       cargoCapacity: null,
       constructionProfile: {
-        resourceCost: { [ResourceType.Stone]: 250 },
+        resourceCost: { [ResourceType.Stone]: 150 },
         footprintRadiusTiles: 0,
         visionRange: 18,
         navigableHeight: 104,
@@ -96,7 +96,7 @@ export const catalog: AiCapabilityCatalog = {
       housingCost: null,
       cargoCapacity: null,
       constructionProfile: {
-        resourceCost: { [ResourceType.Stone]: 25 },
+        resourceCost: { [ResourceType.Stone]: 15 },
         footprintRadiusTiles: 0,
         visionRange: 10,
         navigableHeight: 24,

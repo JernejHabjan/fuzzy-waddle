@@ -15,6 +15,63 @@ import {
 } from "../../../testing/fixtures/tactics/ai-tactics-test-fixtures";
 
 describe("AiTacticsManager", () => {
+  it("releases a raid mission when its objective is no longer present in observed enemy contacts", () => {
+    const raider = combatActor("raider", "self", 12);
+    const raid = {
+      ...squad("squad:attack:raid:destroyed-target", "attack", [raider.actorId]),
+      objectiveId: "destroyed-target",
+      state: "moving" as const
+    };
+
+    const update = manager.propose(observation([raider], 100), fixtureState([raid])).statePatch?.squadUpdates?.[0];
+
+    expect(update).toMatchObject({
+      squadId: "squad:attack:raid:destroyed-target",
+      state: "completed",
+      lifecycle: { terminalReason: "raid_target_lost_or_destroyed" },
+      tactics: { stateReason: "raid_target_lost_or_destroyed" }
+    });
+  });
+
+  it("moves a countered raid to safety, then closes it once its survivors arrive", () => {
+    const raider = combatActor("raider", "self", 10);
+    const target = combatActor("countered-target", "enemy", 12);
+    const raid = {
+      ...squad("squad:attack:raid:countered-target", "attack", [raider.actorId]),
+      objectiveId: "countered-target",
+      state: "retreat" as const,
+      lifecycle: {
+        ...squad("squad:attack:raid:countered-target", "attack", [raider.actorId]).lifecycle!,
+        terminalReason: "raid_counterforce_abort"
+      }
+    };
+
+    const retreatProposal = manager.propose(observation([raider, target], 200), fixtureState([raid]));
+    const retreatUpdate = retreatProposal.statePatch?.squadUpdates?.[0];
+    expect(retreatUpdate).toMatchObject({
+      state: "retreat",
+      lifecycle: { terminalReason: "raid_counterforce_abort" }
+    });
+    expect(retreatProposal.intents).toContainEqual(
+      expect.objectContaining({ kind: "move", actorIds: ["raider"], logicalPosition: { x: 0, y: 0, z: 0 } })
+    );
+    if (!retreatUpdate) throw new Error("countered_raid_retreat_update_missing");
+
+    const arrived = {
+      ...raider,
+      logicalPosition: { status: "known" as const, value: { x: 0, y: 0, z: 0 }, observedTick: 220 }
+    };
+    const update = manager.propose(observation([arrived, target], 220), fixtureState([retreatUpdate])).statePatch
+      ?.squadUpdates?.[0];
+
+    expect(update).toMatchObject({
+      squadId: "squad:attack:raid:countered-target",
+      state: "completed",
+      lifecycle: { terminalReason: "raid_counterforce_abort" },
+      tactics: { stateReason: "raid_disengagement_complete" }
+    });
+  });
+
   it("breaks equal-distance immediate-threat ties by visible geometry", () => {
     const attackers = [
       combatActor("attacker-a", "self", 10, "ground", 1000, { damage: 100 }),
@@ -649,6 +706,7 @@ describe("AiTacticsManager", () => {
     const updates = proposal.statePatch?.squadUpdates ?? [];
     expect(updates.find((entry) => entry.squadId === "squad:defense")?.actorIds).toEqual(["guard-a"]);
     expect(updates.find((entry) => entry.squadId === "squad:attack")?.actorIds).toEqual(["guard-b"]);
+    expect(updates.find((entry) => entry.squadId === "squad:attack")?.tactics?.observedLossCount).toBe(1);
   });
 
   it("H-24 releases a lost target and records observed squad casualties without resetting the mission", () => {

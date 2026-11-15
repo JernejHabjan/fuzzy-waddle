@@ -2,7 +2,6 @@ import type { AiSquadState } from "../../../contracts/state/ai-state-contracts";
 import { distance, knownPosition, movementDomains } from "../combat/ai-tactics-geometry";
 import {
   AI_TACTICS_ATTACK_RATIO_PERMILLE,
-  AI_TACTICS_RETREAT_RATIO_PERMILLE,
   AI_TACTICS_RETREAT_RELEASE_RATIO_PERMILLE,
   TACTICAL_RECONSIDERATION_TICKS
 } from "../combat/ai-tactics-rules";
@@ -47,11 +46,11 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
     estimate.ratioPermille >= AI_TACTICS_RETREAT_RELEASE_RATIO_PERMILLE &&
     estimate.confidencePermille >= 750 &&
     estimate.predictedFriendlyLossPermille <= 400;
-  const unfavorable =
-    estimate.ratioPermille < AI_TACTICS_RETREAT_RATIO_PERMILLE ||
-    (estimate.predictedFriendlyLossPermille > 0 &&
-      members.filter((actor) => actor.healthPermille?.status === "known" && actor.healthPermille.value <= 250).length >=
-        Math.max(1, Math.ceil(members.length / 3)));
+  // Owned actors remain observable while reassigned or in transport. Count missing
+  // roster members, rather than treating every reduction in this step's force as a death.
+  const missingMembers = squad.actorIds.filter((actorId) => !input.actorById.has(actorId)).length;
+  const observedLossCount = (squad.tactics?.observedLossCount ?? 0) + missingMembers;
+  const majorityOfCommittedForceLost = observedLossCount > squad.actorIds.length - missingMembers;
   const scoutUnderFire = members.some(
     (member) => member.healthPermille?.status === "known" && member.healthPermille.value < 1000
   );
@@ -96,6 +95,10 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
     })
     .map((member) => member.actorId);
   const endangeredMemberThreat = endangeredActorIds.length > 0;
+  const entireSquadCriticallyExposed =
+    endangeredMemberThreat &&
+    endangeredActorIds.length === members.length &&
+    members.every((member) => member.healthPermille?.status === "known" && member.healthPermille.value <= 250);
   // A healthy home defender should contest an attacker already threatening the economy, even when
   // the full fight is unfavorable. Once injured it returns to the normal retreat policy.
   const urgentHomeDefense =
@@ -171,6 +174,20 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
     ["attack", "escort", "reinforcement", "scout"].includes(squad.role) &&
     !missionProgressed &&
     (squad.lifecycle?.effectDeadline.dueTick ?? Number.MAX_SAFE_INTEGER) <= observation.tick;
+  const raidAbortRequested =
+    squad.squadId.startsWith("squad:attack:raid:") && squad.lifecycle?.terminalReason === "raid_counterforce_abort";
+  const raidAbortReachedSafety =
+    raidAbortRequested &&
+    retreat !== null &&
+    members.length > 0 &&
+    members.every((member) => {
+      const memberPosition = knownPosition(member);
+      return memberPosition !== null && distance(memberPosition, retreat) <= 3;
+    });
+  const raidTargetLost =
+    !raidAbortRequested &&
+    squad.squadId.startsWith("squad:attack:raid:") &&
+    !observation.actors.some((actor) => actor.actorId === squad.objectiveId && actor.relation === "enemy");
   const missionRecoveryExhausted = missionExpired && (squad.lifecycle?.recoveryAttempt ?? 0) >= 1;
   const emptyRecoveryExhausted = members.length === 0 && (squad.state === "recover" || squad.state === "recovering");
   const quietState: AiSquadState["state"] = landedForRegroup
@@ -190,36 +207,37 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
                 : squad.state === "recover" || squad.state === "recovering"
                   ? "rally"
                   : "advance";
+  const shouldWithdrawAfterLosses =
+    majorityOfCommittedForceLost && localEnemies.length > 0 && !favorableRecovery;
+  const shouldWithdraw =
+    scoutNeedsSafeWithdrawal ||
+    (retreat !== null && (entireSquadCriticallyExposed || topologyLost || shouldWithdrawAfterLosses));
   const proposedState: AiSquadState["state"] =
-    emptyRecoveryExhausted || missionRecoveryExhausted
+    emptyRecoveryExhausted ||
+    missionRecoveryExhausted ||
+    raidTargetLost ||
+    raidAbortReachedSafety ||
+      (raidAbortRequested && members.length === 0)
       ? "completed"
-      : members.length === 0
-        ? "recover"
-        : missionExpired
-          ? squad.state === "recover" || squad.state === "recovering"
-            ? quietState
-            : "recover"
-          : scoutNeedsSafeWithdrawal
-            ? "retreat"
-            : endangeredMemberThreat
-              ? members.some(
-                  (member) =>
-                    !endangeredActorIds.includes(member.actorId) &&
-                    member.combatProfile?.status === "known" &&
-                    member.combatProfile.value.attacks.length > 0
-                ) && localEnemies.length > 0
-                ? "engage"
-                : "retreat"
-              : urgentHomeDefense
+      : raidAbortRequested && retreat && !missionExpired
+        ? "retreat"
+        : members.length === 0
+          ? "recover"
+          : missionExpired
+            ? squad.state === "recover" || squad.state === "recovering"
+              ? quietState
+              : "recover"
+            : shouldWithdraw
+              ? "retreat"
+              : endangeredMemberThreat ||
+                  urgentHomeDefense ||
+                  (localEnemies.length > 0 && (squad.state === "engage" || squad.state === "engaged"))
                 ? "engage"
                 : committedPressure
                   ? localEnemies.length > 0
                     ? "engage"
                     : "advance"
-                  : (unfavorable ||
-                        topologyLost ||
-                        (recoveringFromRetreat && localEnemies.length > 0 && !favorableRecovery)) &&
-                      retreat
+                  : recoveringFromRetreat && localEnemies.length > 0 && !favorableRecovery && retreat
                     ? "retreat"
                     : awaitingStrategicLaunch
                       ? "assemble"
@@ -229,22 +247,63 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
                         : localEnemies.length > 0
                           ? "regroup"
                           : quietState;
+  const holdQuietRetreat =
+    previousRetreat &&
+    observation.tick < (squad.tactics?.nextReconsiderTick ?? observation.tick + 2 * TACTICAL_RECONSIDERATION_TICKS);
+  const holdCombatRetreat =
+    localEnemies.length > 0 &&
+    (!favorableRecovery ||
+      (squad.tactics !== undefined &&
+        (squad.tactics.oscillationCount ?? 0) !== 1 &&
+        observation.tick - squad.tactics.lastTransitionTick < 2 * TACTICAL_RECONSIDERATION_TICKS));
   const holdRetreat =
     !endangeredMemberThreat &&
     !urgentHomeDefense &&
     !committedPressure &&
+    !raidTargetLost &&
+    !raidAbortRequested &&
     recoveringFromRetreat &&
-    squad.tactics !== undefined &&
     !missionExpired &&
     !topologyLost &&
-    Boolean(retreat) &&
-    (localEnemies.length > 0
-      ? !favorableRecovery ||
-        (squad.tactics.oscillationCount !== 1 &&
-          observation.tick - squad.tactics.lastTransitionTick < 2 * TACTICAL_RECONSIDERATION_TICKS)
-      : observation.tick < squad.tactics.nextReconsiderTick);
+    (localEnemies.length > 0 ? holdCombatRetreat : holdQuietRetreat);
   const nextState: AiSquadState["state"] = holdRetreat ? "retreat" : proposedState;
   const nowRetreat = nextState === "retreat";
+  const stateReason =
+    nextState === "retreat"
+      ? raidAbortRequested
+        ? "raid_counterforce_abort"
+        : shouldWithdrawAfterLosses
+          ? "majority_committed_losses"
+          : entireSquadCriticallyExposed
+            ? "whole_squad_critically_exposed"
+            : topologyLost
+              ? "defender_post_topology_lost"
+              : scoutNeedsSafeWithdrawal
+                ? "scout_withdraws_under_fire"
+                : holdRetreat
+                  ? localEnemies.length > 0
+                    ? "hold_safe_retreat_from_local_threat"
+                    : "hold_retreat_during_regroup_window"
+                  : recoveringFromRetreat
+                    ? "continue_withdrawal_until_recovery_ready"
+                    : "tactical_withdrawal"
+      : nextState === "engage"
+        ? previousRetreat && favorableRecovery
+          ? "force_ready_to_reengage"
+          : endangeredActorIds.length > 0
+            ? "squad_engages_with_individual_fallback"
+            : "local_threat_in_range"
+        : nextState === "recover"
+          ? "safe_regroup_recovery"
+          : nextState === "defend"
+            ? "return_to_defense_post"
+            : nextState === "completed"
+              ? raidTargetLost
+                ? "raid_target_lost_or_destroyed"
+                : raidAbortReachedSafety
+                  ? "raid_disengagement_complete"
+                  : "mission_completed_or_exhausted"
+              : "continue_committed_mission";
   const oscillationCount =
     previousRetreat !== nowRetreat && squad.tactics && observation.tick <= squad.tactics.nextReconsiderTick
       ? squad.tactics.oscillationCount + 1
@@ -283,7 +342,8 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
     recoveringFromRetreat,
     favorable,
     favorableRecovery,
-    unfavorable,
+    majorityOfCommittedForceLost,
+    observedLossCount,
     awaitingLaunch,
     forcedDecision,
     usefulEffectTick,
@@ -292,6 +352,9 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
     awaitingStrategicLaunch,
     committedPressure,
     missionExpired,
+    raidAbortRequested,
+    raidAbortReachedSafety,
+    raidTargetLost,
     missionRecoveryExhausted,
     emptyRecoveryExhausted,
     endangeredActorIds,
@@ -299,6 +362,7 @@ export function decideAiTacticalSquad(input: NonNullable<ReturnType<typeof prepa
     holdRetreat,
     quietState,
     nextState,
+    stateReason,
     nowRetreat,
     oscillationCount,
     script

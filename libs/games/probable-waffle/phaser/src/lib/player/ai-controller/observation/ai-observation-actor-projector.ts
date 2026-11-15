@@ -218,6 +218,9 @@ export function projectAiObservedActor(
               ? {
                   orderType: currentOrder.orderType,
                   targetActorId: orderTargetId,
+                  ...(currentOrder.data.pursuitReleasedTargetActorId
+                    ? { pursuitReleasedTargetActorId: currentOrder.data.pursuitReleasedTargetActorId }
+                    : {}),
                   ...(currentOrder.data.targetTileLocation
                     ? { targetPosition: { ...currentOrder.data.targetTileLocation } }
                     : {})
@@ -234,6 +237,9 @@ export function projectAiObservedActor(
               ? {
                   orderType: pendingOrder.orderType,
                   targetActorId: pendingTargetId,
+                  ...(pendingOrder.data.pursuitReleasedTargetActorId
+                    ? { pursuitReleasedTargetActorId: pendingOrder.data.pursuitReleasedTargetActorId }
+                    : {}),
                   ...(pendingOrder.data.targetTileLocation
                     ? { targetPosition: { ...pendingOrder.data.targetTileLocation } }
                     : {})

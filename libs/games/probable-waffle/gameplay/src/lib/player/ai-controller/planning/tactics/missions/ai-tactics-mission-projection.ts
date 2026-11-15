@@ -49,12 +49,16 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
     alternatives,
     bestTarget,
     committedTarget,
+    endangeredActorIds,
     estimate,
     fortificationPlan,
     localEnemies,
     members,
     missionExpired,
     missionProgressed,
+    raidAbortRequested,
+    raidAbortReachedSafety,
+    raidTargetLost,
     nextState,
     observation,
     origin,
@@ -64,6 +68,7 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
     retainPrevious,
     retreat,
     script,
+    stateReason,
     squad,
     state,
     target,
@@ -263,6 +268,13 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
         visibleTarget &&
         (finalState === "engage" || finalState === "advance") &&
         activeOrder?.orderType === OrderType.Attack &&
+        activeOrder.pursuitReleasedTargetActorId === visibleTarget.actorId
+      )
+        return false;
+      if (
+        visibleTarget &&
+        (finalState === "engage" || finalState === "advance") &&
+        activeOrder?.orderType === OrderType.Attack &&
         activeOrder.targetActorId
       ) {
         if (activeOrder.targetActorId === visibleTarget.actorId && canTarget(actor, visibleTarget)) return false;
@@ -342,14 +354,21 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
                 : {}),
             ...(finalState === "completed"
               ? {
-                  terminalReason: members.length === 0 ? "no_members_released" : "effect_deadline_exhausted"
+                  terminalReason: raidTargetLost
+                    ? "raid_target_lost_or_destroyed"
+                    : raidAbortReachedSafety
+                      ? "raid_counterforce_abort"
+                      : members.length === 0
+                        ? "no_members_released"
+                        : "effect_deadline_exhausted"
                 }
               : {}),
             ...(!missionExpired &&
             (squad.state === "recover" || squad.state === "recovering") &&
             finalState !== "recover"
               ? { terminalReason: null }
-              : {})
+              : {}),
+            ...(raidAbortRequested ? { terminalReason: "raid_counterforce_abort" } : {})
           }
         }
       : {}),
@@ -357,6 +376,8 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
       taskForceId: `task-force:${squad.lifecycle?.targetPlayerNumber ?? "local"}`,
       script,
       targetActorId: targetId ?? null,
+      stateReason: finalState === nextState ? stateReason : "regroup_after_retreat_oscillation",
+      individualFallbackActorIds: finalState === "engage" ? endangeredActorIds : [],
       targetScore: committedTarget
         ? (alternatives.find((candidate) => candidate.objectiveId === committedTarget.actorId)?.score ?? 0)
         : retainPrevious
@@ -367,7 +388,7 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
       predictedFriendlyLossPermille: estimate.predictedFriendlyLossPermille,
       predictedEnemyLossPermille: estimate.predictedEnemyLossPermille,
       lastObservedMemberCount: members.length,
-      observedLossCount: (squad.tactics?.observedLossCount ?? 0) + Math.max(0, previousMemberCount - members.length),
+      observedLossCount: input.observedLossCount,
       lastTransitionTick:
         squad.state === finalState ? (squad.tactics?.lastTransitionTick ?? observation.tick) : observation.tick,
       nextReconsiderTick:
@@ -404,6 +425,7 @@ export function projectAiTacticalSquad(input: ReturnType<typeof decideAiTactical
     finalState,
     previousDamageEffectIds,
     damageReservations,
+    endangeredActorIds,
     orderSignature,
     previouslyOrderedActorIds,
     actorsNeedingOrder,

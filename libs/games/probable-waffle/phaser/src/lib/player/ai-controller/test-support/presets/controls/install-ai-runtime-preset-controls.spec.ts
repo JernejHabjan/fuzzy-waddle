@@ -15,7 +15,7 @@ import { installAiRuntimePresetControls } from "./install-ai-runtime-preset-cont
 jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 jest.mock("../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
-function fixture(research = false) {
+function fixture(research = false, source?: "ai") {
   const tick$ = new Subject<number>(),
     onShutdown = new Subject<void>();
   const clock = { currentTick: 0, tick$ };
@@ -39,9 +39,9 @@ function fixture(research = false) {
               ? { allItems }
               : undefined) as never
     );
-  const dispatchDeterministic = jest.fn((input) => ({
+  const dispatchDeterministic = jest.fn((input, commandSource = "human") => ({
     status: "dispatched",
-    command: { ...input, tick: clock.currentTick, execution: { source: "human", commandId: "native-cancel" } }
+    command: { ...input, tick: clock.currentTick, execution: { source: commandSource, commandId: "native-cancel" } }
   }));
   const bus = { dispatchDeterministic, commandOutcome$: new Subject() };
   jest
@@ -59,6 +59,7 @@ function fixture(research = false) {
         id: "cancel-paid-tail",
         requestTick: 1,
         applicationTick: 4,
+        ...(source ? { source } : {}),
         producerFixtureActorId: "producer",
         action: { kind: research ? "cancel_research" : "cancel_production", setupQueueIndex: 1 }
       }
@@ -111,4 +112,12 @@ it("shutdown detaches pending controls", () => {
   f.onShutdown.next();
   f.advance(4);
   expect(f.dispatchDeterministic).not.toHaveBeenCalled();
+});
+
+it("uses an explicit AI command source for native order controls when requested", () => {
+  const f = fixture(false, "ai");
+  f.advance(1);
+  f.advance(4);
+  expect(f.dispatchDeterministic).toHaveBeenCalledWith(expect.anything(), "ai");
+  expect(f.records[1]).toMatchObject({ phase: "applied", command: { execution: { source: "ai" } } });
 });

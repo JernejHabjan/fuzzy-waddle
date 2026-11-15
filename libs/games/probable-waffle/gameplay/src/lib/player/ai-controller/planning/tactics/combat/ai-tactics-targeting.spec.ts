@@ -134,7 +134,13 @@ describe("AiTacticsManager", () => {
     expect(healthy.statePatch?.squadUpdates?.[0]?.state).toBe("engage");
     const injured = { ...defender, healthPermille: { status: "known" as const, value: 300, observedTick: 100 } };
     const weak = manager.propose(observation([injured, workers, ...raiders]), fixtureState([defense]));
-    expect(weak.statePatch?.squadUpdates?.[0]).toEqual(expect.objectContaining({ state: "retreat" }));
+    expect(weak.statePatch?.squadUpdates?.[0]).toEqual(
+      expect.objectContaining({
+        state: "engage",
+        tactics: expect.objectContaining({ individualFallbackActorIds: [defender.actorId] })
+      })
+    );
+    expect(weak.intents).toContainEqual(expect.objectContaining({ kind: "move", actorIds: [defender.actorId] }));
     const woundedFighter = combatActor("wounded", "self", 3, "ground", 200, { damage: 5 });
     if (woundedFighter.combatProfile?.status !== "known") throw new Error("Missing combat fixture");
     const melee = {
@@ -159,7 +165,7 @@ describe("AiTacticsManager", () => {
       logicalPosition: { status: "known" as const, value: { x: 25, y: 0, z: 0 }, observedTick: 100 }
     };
     const noEmergency = manager.propose(observation([defender, unthreatened, ...raiders]), fixtureState([defense]));
-    expect(noEmergency.statePatch?.squadUpdates?.[0]?.state).toBe("retreat");
+    expect(noEmergency.statePatch?.squadUpdates?.[0]?.state).toBe("regroup");
     const firstRaider = raiders[0];
     if (firstRaider?.combatProfile?.status !== "known") throw new Error("Missing raider combat fixture");
     const weapon = firstRaider.combatProfile.value.attacks[0];
@@ -185,7 +191,7 @@ describe("AiTacticsManager", () => {
       observation([defender, distantWorker, domainSpecific, ...raiders.slice(1)]),
       fixtureState([defense])
     );
-    expect(wrongDomain.statePatch?.squadUpdates?.[0]?.state).toBe("retreat");
+    expect(wrongDomain.statePatch?.squadUpdates?.[0]?.state).toBe("regroup");
   });
 
   it("moves toward a player-visible target until the member has local vision to attack", () => {

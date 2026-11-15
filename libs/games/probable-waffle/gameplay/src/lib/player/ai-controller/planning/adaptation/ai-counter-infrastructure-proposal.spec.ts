@@ -29,13 +29,22 @@ it("constructs a missing counter prerequisite only for confirmed unfilled air de
       producer,
       {
         ...unit,
+        movementDomains: ["air" as const],
         targetDomains: ["air" as const],
         constructionProfile: {
           ...unit.constructionProfile,
           requiredObjectNames: [ObjectNames.Temple]
         }
       },
-      temple
+      temple,
+      { ...temple, produces: [ObjectNames.Banshee] },
+      {
+        ...unit,
+        sourceObjectName: ObjectNames.Banshee,
+        movementDomains: ["air" as const],
+        targetDomains: ["ground" as const],
+        constructionProfile: { ...unit.constructionProfile, requiredObjectNames: [ObjectNames.Temple] }
+      }
     ]
   };
   const flyer = {
@@ -72,6 +81,14 @@ it("constructs a missing counter prerequisite only for confirmed unfilled air de
     });
   expect(propose()).toMatchObject({ kind: "construct", objectName: ObjectNames.Temple });
   expect(new AiMacroManager(() => catalog).propose(observation, confirmed).intents).toContainEqual(
+    expect.objectContaining({ kind: "construct", objectName: ObjectNames.Temple })
+  );
+  const turtleAirState = {
+    ...f.state,
+    opening: { ...f.state.opening, archetypeId: "opening:tivara:turtle_air" }
+  };
+  const turtleAirAdaptation = projectAiManagerState(turtleAirState, [manager.propose(observation, turtleAirState)]);
+  expect(new AiMacroManager(() => catalog).propose(observation, turtleAirAdaptation).intents).toContainEqual(
     expect.objectContaining({ kind: "construct", objectName: ObjectNames.Temple })
   );
   expect(propose(observation, first)).toBeNull();

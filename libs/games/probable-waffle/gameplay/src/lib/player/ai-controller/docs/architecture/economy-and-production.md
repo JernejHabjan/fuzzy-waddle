@@ -106,6 +106,14 @@ Once renewable income is reachable, a separate current-workforce demand maintain
 toward dated spending demand, useful resource-service capacity and an 18-worker safety ceiling. Owned, queued and
 accepted-but-unobserved replacements count once. Losses do not reopen historical opening steps.
 
+The initial strategic archetype is selected deterministically from the real match seed, AI player number and faction,
+then persisted with the brain state. A new selection waits for the first committed faction catalog and map observation;
+that evidence filters out air, naval and transport openings without a usable production path or coastal route. The
+selection-pending marker is save-safe, while older saves and already-resolved openings preserve their persisted choice.
+Easy selects between balanced and Turtle, with broader eligible plans available at higher difficulties. An archetype
+changes legal spending priorities and dated missions, not starting resources or unit stats. The Production & Tech debug
+view shows its current checkpoint and follow-through.
+
 After an observed failed attack, the strategic assessment may require a larger compatible force. Macro production
 uses that requirement, bounded by a 24-unit planning ceiling, rather than stopping at the ordinary 12-unit standing
 target. Additional military producers are requested only while the owned and queued force leaves enough dated work

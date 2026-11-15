@@ -2,6 +2,24 @@ import type { PlayerAiController } from "../../../../player/ai-controller/player
 
 /** Formats committed decision facts; historical views never borrow current observation or state. */
 export class AiCommittedDebugLines {
+  static getFortificationPieceLines(nodes: readonly { kind: string; lifecycle: string }[]): string[] {
+    const pieces = nodes.filter((node) => node.kind !== "gate_slot");
+    const formatCounts = (entries: typeof pieces) => {
+      const counts = new Map<string, number>();
+      entries.forEach((node) => counts.set(node.kind, (counts.get(node.kind) ?? 0) + 1));
+      return (
+        [...counts.entries()]
+          .sort(([left], [right]) => left.localeCompare(right))
+          .map(([kind, count]) => `${kind}:${count}`)
+          .join(", ") || "none"
+      );
+    };
+    return [
+      `  completed pieces: ${formatCounts(pieces.filter((node) => node.lifecycle === "finished"))}`,
+      `  remaining pieces: ${formatCounts(pieces.filter((node) => node.lifecycle !== "finished"))}`
+    ];
+  }
+
   static getCommittedPlanningLines(
     controller: PlayerAiController,
     brain: ReturnType<PlayerAiController["getBrainDebugSnapshot"]> | undefined,
@@ -65,7 +83,7 @@ export class AiCommittedDebugLines {
         `Difficulty profile: ${brain.profileDifficulty} (${brain.profileVersion})`,
         `Archetype: ${brain.archetypeId}; adaptation every ${historyOffset === 0 ? "committed eligible decision" : "recorded decision"}`,
         "Engage band: ≥1200‰ local estimate with sufficient confidence",
-        "Retreat band: <800‰ local estimate or critical health",
+        "Full withdrawal: majority losses, whole squad critically exposed, scout under fire, or defender route lost",
         "Target switch: ≥20% score improvement",
         "Values shown are committed policy, not live recalculation"
       ];
@@ -200,6 +218,9 @@ export class AiCommittedDebugLines {
     if (!brain?.skirmish.squads.length) lines.push("No active squads");
     for (const squad of brain?.skirmish.squads ?? []) {
       lines.push(`${squad.squadId}: ${squad.state}/${squad.script ?? "basic"} [${squad.domain}] ${squad.members}`);
+      lines.push(`  reason ${squad.stateReason}; individual fallback ${squad.individualFallbackCount}`);
+      if (squad.pursuitReleasedTargetIds.length > 0)
+        lines.push(`  pursuit released: ${squad.pursuitReleasedTargetIds.join(", ")}`);
       lines.push(
         `  task force ${squad.taskForceId ?? "none"}, objective ${squad.objectiveId ?? "none"}, target ${squad.targetActorId ?? "none"}`
       );
@@ -232,18 +253,22 @@ export class AiCommittedDebugLines {
 
   static getRuntimeLines(
     brain: ReturnType<PlayerAiController["getBrainDebugSnapshot"]> | undefined,
-    historyLength: number
+    historyLength: number,
+    matchContext: { readonly mapName: string; readonly seed: number | null }
   ): string[] {
-    if (!brain) return ["=== RUNTIME & LIMITS ===", "No committed decision snapshot"];
     const lines = [
       "=== RUNTIME & LIMITS ===",
+      `Match ${matchContext.mapName}, seed ${matchContext.seed ?? "unavailable"}`
+    ];
+    if (!brain) return [...lines, "No committed decision snapshot"];
+    lines.push(
       `Tick ${brain.tick}, generation ${brain.generation}, decision ${brain.runtimeLimits.decisionSequence}`,
       `History ${historyLength}, trace decisions ${brain.runtimeLimits.retainedTraceDecisions}`,
       `Completeness o=${brain.completeness.observation}/s=${brain.completeness.priorState}/` +
         `r=${brain.completeness.outcomes}/a=${brain.completeness.alternatives}`,
       `Truncated events ${brain.completeness.truncatedEventCount}`,
       "--- Lane service ---"
-    ];
+    );
     for (const lane of brain.runtimeLimits.laneService)
       lines.push(`${lane.lane}: deficit ${lane.deficit}, serviced ${lane.lastServicedTick}`);
     lines.push("--- Cursors ---");

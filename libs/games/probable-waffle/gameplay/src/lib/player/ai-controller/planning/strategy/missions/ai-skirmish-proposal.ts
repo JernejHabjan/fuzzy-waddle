@@ -3,7 +3,7 @@ import type { AiCapabilityCatalog } from "../../../contracts/observation/ai-capa
 import type { AiObservation } from "../../../contracts/observation/ai-observation";
 import type { AiProfileConfig } from "../../../contracts/ai-profile-config";
 import type { AiManagerProposal } from "../../coordination/ai-manager-proposal";
-import { advanceAiSkirmishDefense } from "./ai-skirmish-defense";
+import { advanceAiExpansionSecurity, advanceAiSkirmishDefense } from "./ai-skirmish-defense";
 import { finalizeAiSkirmishProposal } from "./ai-skirmish-finalizer";
 import { advanceAiSkirmishOffense } from "../offense/ai-skirmish-offense";
 import { createAiSkirmishProposalContext } from "./ai-skirmish-proposal-draft";
@@ -17,6 +17,7 @@ export function proposeAiSkirmish(
 ): AiManagerProposal {
   const context = createAiSkirmishProposalContext(observation, state, catalog);
   advanceAiSkirmishDefense(context, profile);
+  advanceAiExpansionSecurity(context);
   advanceAiSkirmishScouting(context);
   const transportProposal = advanceAiSkirmishOffense(context, profile);
   if (transportProposal) return transportProposal;

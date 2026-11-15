@@ -298,9 +298,15 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
   }
 
   private getRuntimeLines(controller: PlayerAiController): string[] {
+    const gameInstance = this.mainSceneWithActors.baseGameData.gameInstance;
+    const seed = gameInstance.gameInstanceMetadata.data.rndSeed;
     return AiCommittedDebugLines.getRuntimeLines(
       this.getSelectedBrainSnapshot(controller),
-      controller.getBrainDebugHistory().length
+      controller.getBrainDebugHistory().length,
+      {
+        mapName: this.mainSceneWithActors.mapInfo.name,
+        seed: Number.isSafeInteger(seed) ? seed : null
+      }
     );
   }
 
@@ -332,15 +338,21 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
 
   /** Reads only committed graph facts and renders no hidden or freshly queried topology. */
   private getFortificationLines(controller: PlayerAiController): string[] {
-    const fortifications = this.getSelectedBrainSnapshot(controller)?.fortifications ?? [];
+    const snapshot = this.getSelectedBrainSnapshot(controller);
+    const fortifications = snapshot?.fortifications ?? [];
     if (!fortifications.length) {
       this.clearFortificationOverlay();
-      return ["", "No justified fortification graph"];
+      const reason = snapshot?.fortificationPlanningReason;
+      return [
+        "",
+        reason ? `Fortification planning: ${reason.replaceAll("_", " ")}` : "No justified fortification graph"
+      ];
     }
     const lines = ["", "=== FORTIFICATIONS ==="];
     for (const plan of fortifications) {
       const finished = plan.nodes.filter((node) => node.lifecycle === "finished").length;
       lines.push(`${plan.planId}: ${plan.lifecycle}, ${finished}/${plan.nodes.length}`);
+      lines.push(...AiCommittedDebugLines.getFortificationPieceLines(plan.nodes));
       lines.push(
         `  paths whole=${plan.wholeConnectivity}, prefixes=${plan.incrementalConnectivity}, cap=${plan.spendPermille ?? "?"}‰`
       );
@@ -350,6 +362,7 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
       lines.push(
         `  budget ${plan.budgetRemaining.map((entry) => `${entry.resourceType}:${entry.amount}`).join(",") || "none"}`
       );
+      if (plan.waitReason) lines.push(`  waiting: ${plan.waitReason.replaceAll("_", " ")}`);
       lines.push(
         `  opening ${plan.openingNodeId ?? "legacy"}, breach ${plan.breachReason ?? "none"} ` +
           `(${plan.breachRisk}), recovery ${plan.recoveryAttempts}`

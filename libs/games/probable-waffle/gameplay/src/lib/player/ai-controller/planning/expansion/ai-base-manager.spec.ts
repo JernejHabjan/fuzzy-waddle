@@ -136,13 +136,15 @@ describe("AiBaseManager", () => {
   });
 
   it("creates one stable expansion reservation from a visible distant resource instead of duplicate same-tick plans", () => {
-    const state = createAiBrainState({
-      playerNumber: 1,
-      faction: FactionType.Tivara,
-      profile,
-      tick: 0,
-      archetypeId: "balanced"
-    });
+    const state = withCompletedOpening(
+      createAiBrainState({
+        playerNumber: 1,
+        faction: FactionType.Tivara,
+        profile,
+        tick: 0,
+        archetypeId: "opening:tivara:expansion"
+      })
+    );
     const distantResource = {
       ...actor("wood-remote", ObjectNames.Tree1, 50),
       owner: null,
@@ -160,33 +162,43 @@ describe("AiBaseManager", () => {
         observedTick: AI_EXPANSION_SATURATION_TICKS
       }
     } satisfies AiObservedActor;
-    const completedState = withCompletedOpening(state);
+    const completedState = state;
+    const localResource = {
+      ...distantResource,
+      actorId: "wood-local",
+      logicalPosition: { status: "known" as const, value: { x: 6, y: 0, z: 0 }, observedTick: 20 }
+    };
     const first = manager.propose(
       observation(
-        AI_EXPANSION_SATURATION_TICKS,
+        20,
         [
           actor("sandhold", ObjectNames.Sandhold, 4, true),
           actor("worker", ObjectNames.TivaraWorker, 5),
+          localResource,
           distantResource
         ],
-        0
+        5
       ),
       completedState
     );
     const second = manager.propose(
       observation(
-        AI_EXPANSION_SATURATION_TICKS + 20,
+        40,
         [
           actor("sandhold", ObjectNames.Sandhold, 4, true),
           actor("worker", ObjectNames.TivaraWorker, 5),
+          localResource,
           distantResource
         ],
-        0
+        5
       ),
       { ...completedState, bases: first.statePatch!.bases! }
     );
 
     expect(first.statePatch?.bases?.filter((base) => base.baseId.startsWith("base:expansion:"))).toHaveLength(1);
+    expect(first.statePatch?.bases?.find((base) => base.baseId.startsWith("base:expansion:"))?.expansion?.trigger).toBe(
+      "opening_expansion"
+    );
     expect(second.statePatch?.bases?.filter((base) => base.baseId.startsWith("base:expansion:"))).toHaveLength(1);
   });
 
@@ -280,12 +292,16 @@ describe("AiBaseManager", () => {
       }
     } as const;
     const proposal = manager.propose(
-      observation(620, [
-        actor("sandhold", ObjectNames.Sandhold, 4, true),
-        actor("worker", ObjectNames.TivaraWorker, 5),
-        actor("workmill", ObjectNames.WorkMill, 49),
-        remote
-      ], 0),
+      observation(
+        620,
+        [
+          actor("sandhold", ObjectNames.Sandhold, 4, true),
+          actor("worker", ObjectNames.TivaraWorker, 5),
+          actor("workmill", ObjectNames.WorkMill, 49),
+          remote
+        ],
+        0
+      ),
       { ...initial, bases: [pending] }
     );
 

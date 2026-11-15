@@ -4,6 +4,8 @@ import { OrderData } from "../../../ai/OrderData";
 import { Subject } from "rxjs";
 import { PawnOrderObservation } from "../orders/pawn-order-observation";
 
+export const RELEASED_PURSUIT_TARGET_MEMORY_KEY = "releasedPursuitTargetActorId";
+
 export class PawnAiBlackboard extends Blackboard {
   private orderQueue: OrderData[] = [];
   private currentOrder?: OrderData;

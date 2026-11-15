@@ -5,6 +5,8 @@ import type { AiPlan } from "../planning/ai-plan-contracts";
 export interface AiOpeningState {
   readonly archetypeId: string;
   readonly archetypeVersion: string;
+  /** Missing on older saves means the persisted choice has already been finalized. */
+  readonly selectionStatus?: "pending_eligibility" | "resolved";
   readonly selectedAtTick: AiSimulationTick;
   readonly plan: AiPlan;
 }

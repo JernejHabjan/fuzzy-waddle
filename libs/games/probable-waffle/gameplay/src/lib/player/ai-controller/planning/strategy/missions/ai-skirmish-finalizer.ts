@@ -55,7 +55,7 @@ export function finalizeAiSkirmishProposal(context: AiSkirmishProposalContext): 
   }
   const retainedSquads = state.squads.filter(
     (squad) =>
-      !["defense", "attack", "reserve", "scout"].includes(squad.role) &&
+      !["defense", "attack", "reserve", "scout", "escort"].includes(squad.role) &&
       squad.state !== "completed" &&
       squad.state !== "cancelled"
   );

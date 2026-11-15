@@ -24,6 +24,8 @@ export interface AiFortificationState {
       readonly committedByResource: Readonly<Partial<Record<ResourceType, number>>>;
       readonly remainingByResource: Readonly<Partial<Record<ResourceType, number>>>;
     }>;
+    /** Optional, committed construction blocker for the read-only Bases & Placement debug view. */
+    readonly waitReason?: string | null;
     readonly nodes: readonly AiFortificationNodeState[];
     /** Stable topological build order; unlike keyed node sets this sequence is not sorted during save. */
     readonly constructionSequenceNodeIds: readonly string[];

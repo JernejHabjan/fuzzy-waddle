@@ -7,6 +7,8 @@ export interface AiRuntimePresetControl {
   readonly id: string;
   readonly requestTick: number;
   readonly applicationTick: number;
+  /** Normal controls act as human orders; set only to verify AI-owned native order behavior. */
+  readonly source?: "ai";
   readonly producerFixtureActorId: string;
   readonly action:
     | { readonly kind: "rally"; readonly targetFixtureActorId: string }

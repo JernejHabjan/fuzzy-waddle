@@ -134,11 +134,15 @@ export function projectCatalogDefinition(
       requiresAssignedBuilder: (definition.components?.constructable?.maxAssignedBuilders ?? 0) > 0,
       resourceCost: { ...(definition.components?.productionCost?.resources ?? {}) },
       requiredObjectNames: [...(definition.components?.requirements?.actors ?? [])].sort(),
-      footprintRadiusTiles: Math.floor(
-        ((definition.components?.representable?.width ?? 0) *
-          (definition.components?.collider?.colliderFactorReduction || 1)) /
-          (getSceneComponent(scene, TilemapComponent)?.tilemap?.tileWidth ?? TilemapComponent.tileWidth) /
-          2
+      footprintRadiusTiles: Math.max(
+        0,
+        Math.ceil(
+          (((definition.components?.representable?.width ?? 0) *
+            (definition.components?.collider?.colliderFactorReduction || 1)) /
+            (getSceneComponent(scene, TilemapComponent)?.tilemap?.tileWidth ?? TilemapComponent.tileWidth) -
+            1) /
+            2
+        )
       ),
       visionRange: definition.components?.vision?.range ?? null,
       navigableHeight: definition.components?.navigable?.navigableHeight ?? null,

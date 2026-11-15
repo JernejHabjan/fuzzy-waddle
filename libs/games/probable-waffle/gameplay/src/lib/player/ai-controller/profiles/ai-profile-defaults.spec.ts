@@ -29,8 +29,9 @@ describe("createAiProfileConfig", () => {
     expect(() => createAiProfileConfig(99 as ProbableWaffleAiDifficulty)).toThrow("unsupported_ai_difficulty");
   });
 
-  it("D-02/D-03 selects a persisted fair personality from difficulty and stable seed only", () => {
+  it("selects a repeatable opening from the match seed, player and faction", () => {
     const easy = createAiProfileConfig(ProbableWaffleAiDifficulty.Easy);
+    const medium = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
     const hard = createAiProfileConfig(ProbableWaffleAiDifficulty.Hard);
     const first = selectAiOpeningArchetype({
       faction: FactionType.Tivara,
@@ -52,6 +53,62 @@ describe("createAiProfileConfig", () => {
     });
     expect(first).toEqual(restored);
     expect(["turtle", "balanced"]).toContain(first.purpose);
-    expect(["rush", "macro", "tech", "air_control", "naval", "expeditionary"]).toContain(hardArchetype.purpose);
+    expect([
+      "rush",
+      "expansion",
+      "macro",
+      "tech",
+      "turtle_air",
+      "air_control",
+      "harassment",
+      "naval",
+      "expeditionary"
+    ]).toContain(hardArchetype.purpose);
+
+    const easyPurposes = new Set(
+      Array.from(
+        { length: 24 },
+        (_, seed) =>
+          selectAiOpeningArchetype({
+            faction: FactionType.Tivara,
+            playerNumber: 1,
+            profile: easy,
+            seed
+          }).purpose
+      )
+    );
+    expect(easyPurposes).toEqual(new Set(["turtle", "balanced"]));
+
+    const mediumPurposes = new Set(
+      Array.from(
+        { length: 24 },
+        (_, seed) =>
+          selectAiOpeningArchetype({
+            faction: FactionType.Tivara,
+            playerNumber: 1,
+            profile: medium,
+            seed
+          }).purpose
+      )
+    );
+    expect(mediumPurposes.size).toBeGreaterThan(1);
+    expect(mediumPurposes).toContain("rush");
+
+    const eligibleNaval = selectAiOpeningArchetype({
+      faction: FactionType.Tivara,
+      playerNumber: 1,
+      profile: hard,
+      seed: 759,
+      eligiblePurposes: ["naval"]
+    });
+    expect(eligibleNaval.purpose).toBe("naval");
+    const noKnownEligiblePurpose = selectAiOpeningArchetype({
+      faction: FactionType.Tivara,
+      playerNumber: 1,
+      profile: hard,
+      seed: 759,
+      eligiblePurposes: []
+    });
+    expect(noKnownEligiblePurpose.purpose).toBe("balanced");
   });
 });

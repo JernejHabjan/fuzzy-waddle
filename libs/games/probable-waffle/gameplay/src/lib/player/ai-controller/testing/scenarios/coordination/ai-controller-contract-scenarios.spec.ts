@@ -1,6 +1,7 @@
 import { ProbableWaffleAiDifficulty, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiBrainState } from "../../../contracts/state/ai-state-contracts";
 import type { AiProgressContract } from "../../../contracts/execution/ai-progress-contracts";
+import type { AiManagerProposal } from "../../../planning/coordination/ai-manager-proposal";
 import { aiDeadline } from "../../../contracts/ai-core-types";
 import { createAiProfileConfig } from "../../../profiles/ai-profile-defaults";
 import { AiRecoveryManager } from "../../../planning/recovery/ai-recovery-manager";
@@ -204,5 +205,21 @@ describe("difficulty and debug scenario contracts", () => {
       reason: null
     });
     expect(JSON.stringify(snapshot)).toBe(before);
+  });
+
+  it("DBG-03 preserves the fortification proposal reason when no graph is justified", () => {
+    const f = createAiProductionPolicyFixture();
+    const proposal: AiManagerProposal = {
+      managerId: "stage-11-fortifications",
+      lane: "optional_infrastructure_tech",
+      evaluated: true,
+      intents: [],
+      reasons: ["fortification_terrain_choke_not_found"]
+    };
+
+    const snapshot = projectAiDebugSnapshot(createAiTestObservation(), f.state, [], [proposal]);
+
+    expect(snapshot.fortifications).toEqual([]);
+    expect(snapshot.fortificationPlanningReason).toBe("fortification_terrain_choke_not_found");
   });
 });

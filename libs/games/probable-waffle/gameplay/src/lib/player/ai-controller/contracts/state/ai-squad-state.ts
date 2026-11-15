@@ -59,6 +59,10 @@ export interface AiSquadState {
       | "rampart_reinforce"
       | "rampart_withdraw";
     readonly targetActorId: ActorId | null;
+    /** Stable explanation for the squad's last committed tactical state. */
+    readonly stateReason?: string;
+    /** Members currently assigned an individual safety fallback while the squad stays engaged. */
+    readonly individualFallbackActorIds?: readonly ActorId[];
     readonly targetScore: number;
     readonly engagementRatioPermille: number;
     readonly confidencePermille: number;

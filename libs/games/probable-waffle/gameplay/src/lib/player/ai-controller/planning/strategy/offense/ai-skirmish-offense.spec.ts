@@ -10,7 +10,10 @@ import type { AiBrainState } from "../../../contracts/state/ai-state-contracts";
 import type { AiCapabilityCatalog } from "../../../contracts/observation/ai-capability-catalog";
 import type { AiObservedActor } from "../../../contracts/observation/ai-observation";
 import { createAiProfileConfig } from "../../../profiles/ai-profile-defaults";
-import { createAiTestObservation, createAiTestOwnedActor } from "../../../testing/fixtures/coordination/ai-test-fixtures";
+import {
+  createAiTestObservation,
+  createAiTestOwnedActor
+} from "../../../testing/fixtures/coordination/ai-test-fixtures";
 import { buildAiAccessGraph } from "../../access/ai-access-graph";
 import { AiSkirmishManager } from "../missions/ai-skirmish-manager";
 import { ownedCombat } from "../missions/ai-skirmish-support";
@@ -266,7 +269,6 @@ describe("AiSkirmishManager offense target selection", () => {
     expect(recalled.intents.filter((intent) => intent.kind === "move")).toEqual([
       expect.objectContaining({ actorIds: [defender.actorId], logicalPosition: { x: 0, y: 0, z: 0 } })
     ]);
-
   });
 
   it("keeps an active frontier scout out of a newly formed attack force", () => {
@@ -466,6 +468,113 @@ describe("AiSkirmishManager offense target selection", () => {
     );
     const raid = attackSquads.find((squad) => squad.squadId.startsWith("squad:attack:raid:"));
     expect(raid?.actorIds).toHaveLength(3);
+
+    const largerArmy = Array.from({ length: 24 }, (_, index) => actor(`large-army-${index}`, homeNode, 0));
+    const defenders = Array.from({ length: 4 }, (_, index) => ({
+      ...actor(`raid-defender-${index}`, enemyNode, 1),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const
+    }));
+    const largerForceProposal = new AiSkirmishManager(profile, () => catalog).propose(
+      {
+        ...observation,
+        tick: 20,
+        actors: [...largerArmy, enemyMain, enemyWorker, ...defenders],
+        map: {
+          bounds: { status: "known", value: { width: 2, height: 1 }, observedTick: 20 },
+          staticRevision: 1,
+          frontierAccessNodeIds: [enemyNode],
+          scoutCoverageAccessNodeIds: [],
+          dynamicObstacleActorIds: [],
+          regionGeneration: { generation: 1, status: "ready", continuationCursor: 0 },
+          accessGraph: graph.graph
+        }
+      },
+      createAiBrainState({
+        playerNumber: 1,
+        faction: FactionType.Tivara,
+        profile,
+        tick: 0,
+        archetypeId: "balanced"
+      })
+    );
+    const largerSquads = largerForceProposal.statePatch?.squads ?? [];
+    const largerRaid = largerSquads.find((squad) => squad.squadId.startsWith("squad:attack:raid:"));
+    const primary = largerSquads.find((squad) => squad.squadId === "squad:attack:primary");
+    expect(largerRaid?.objectiveId).toBe("enemy-worker");
+    expect(largerRaid?.actorIds.length).toBeGreaterThan(4);
+    expect(primary?.actorIds.length).toBeGreaterThan(largerRaid?.actorIds.length ?? 0);
+  });
+
+  it("disengages a raid when new visible defenders make its force inadequate and a return route remains", () => {
+    const army = Array.from({ length: 12 }, (_, index) => actor(`raid-force-${index}`, homeNode, 0));
+    const enemyMain = {
+      ...actor("enemy-main", enemyNode, 1),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const,
+      housingCost: { status: "known" as const, value: 0, observedTick: 20 },
+      capabilities: [],
+      mainBuilding: { status: "known" as const, value: true, observedTick: 20 }
+    };
+    const enemyWorker = {
+      ...actor("enemy-worker", enemyNode, 1),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const,
+      housingCost: { status: "known" as const, value: 0, observedTick: 20 },
+      capabilities: [
+        {
+          id: "enemy-worker:gather",
+          family: "gather" as const,
+          level: 1,
+          domains: ["ground" as const],
+          targetDomains: [],
+          capacity: { status: "known" as const, value: 1, observedTick: 20 }
+        }
+      ]
+    };
+    const initial = createAiBrainState({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const makeObservation = (actors: readonly AiObservedActor[]) => ({
+      ...createAiTestObservation(),
+      tick: 20,
+      actors,
+      map: {
+        bounds: { status: "known" as const, value: { width: 2, height: 1 }, observedTick: 20 },
+        staticRevision: 1,
+        frontierAccessNodeIds: [enemyNode],
+        scoutCoverageAccessNodeIds: [],
+        dynamicObstacleActorIds: [],
+        regionGeneration: { generation: 1, status: "ready" as const, continuationCursor: 0 },
+        accessGraph: graph.graph
+      }
+    });
+    const planner = new AiSkirmishManager(profile, () => catalog);
+    const first = planner.propose(makeObservation([...army, enemyMain, enemyWorker]), initial);
+    const raid = first.statePatch?.squads?.find((squad) => squad.squadId.startsWith("squad:attack:raid:"));
+    if (!raid) throw new Error("exposed_target_raid_not_launched");
+    const defenders = Array.from({ length: 4 }, (_, index) => ({
+      ...actor(`new-defender-${index}`, enemyNode, 1),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const
+    }));
+
+    const update = planner
+      .propose(makeObservation([...army, enemyMain, enemyWorker, ...defenders]), {
+        ...initial,
+        squads: first.statePatch?.squads ?? []
+      })
+      .statePatch?.squads?.find((squad) => squad.squadId === raid.squadId);
+
+    expect(update).toMatchObject({ state: "retreat", lifecycle: { terminalReason: "raid_counterforce_abort" } });
   });
 
   it("sends an idle naval attacker to a remembered coast target on a separate front", () => {
@@ -853,13 +962,13 @@ describe("AiSkirmishManager offense target selection", () => {
         role: "attack",
         domain: "water",
         objectiveId: hostileBoat.actorId,
-        actorIds: expect.arrayContaining([navalCombatBoat.actorId, navalCombatBoat2.actorId])
+        actorIds: [navalCombatBoat.actorId]
       })
     );
     expect(visibleNavalCombat.intents).toContainEqual(
       expect.objectContaining({
         kind: "move",
-        actorIds: expect.arrayContaining([navalCombatBoat.actorId, navalCombatBoat2.actorId]),
+        actorIds: [navalCombatBoat.actorId],
         logicalPosition: waterFiringTile.position
       })
     );

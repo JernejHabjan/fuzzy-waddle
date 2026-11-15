@@ -44,7 +44,7 @@ export function hasUnmetMacroFloor(state: AiBrainState): boolean {
 
 /** Legacy `safe` saves retain the same defensive intent as the Stage-14 `turtle` profile. */
 export function isDefensiveArchetype(archetypeId: string): boolean {
-  return archetypeId.endsWith(":safe") || archetypeId.endsWith(":turtle");
+  return archetypeId.endsWith(":safe") || archetypeId.endsWith(":turtle") || archetypeId.endsWith(":turtle_air");
 }
 
 export function threatPosition(observation: AiObservation, anchor: Vector3Simple): Vector3Simple | null {

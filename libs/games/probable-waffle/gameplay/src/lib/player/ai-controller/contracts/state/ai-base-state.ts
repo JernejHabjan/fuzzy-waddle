@@ -18,7 +18,7 @@ export interface AiBaseState {
     readonly reason: string;
   }[];
   readonly expansion?: Readonly<{
-    readonly trigger: "resource_life" | "worker_capacity" | "manual";
+    readonly trigger: "opening_expansion" | "resource_life" | "worker_capacity" | "manual";
     readonly requestedAtTick: AiSimulationTick;
     readonly transportPlanId: AiTransportPlanId | null;
     readonly evacuationRouteNodeId: string | null;

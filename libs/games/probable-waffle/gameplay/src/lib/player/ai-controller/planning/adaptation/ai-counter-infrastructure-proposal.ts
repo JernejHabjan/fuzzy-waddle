@@ -11,39 +11,43 @@ import { nextIds, unresolvedReservedEffectIds } from "../production/macro/ai-mac
 import { selectAiMilitaryCapacitySite } from "../production/capacity/ai-military-capacity-site";
 import { canAffordAiEconomyCost } from "../economy/service/ai-economy-policy";
 import { createAiResourceCostClaims } from "../economy/forecast/ai-resource-cost-claims";
+import type { AiAdaptationRole } from "./ai-adaptation-role";
 
 /** Adds one missing counter dependency only while confirmed, unfilled demand still exists. */
-export function proposeAiCounterInfrastructure(args: {
-  observation: AiObservation;
-  state: AiBrainState;
-  catalog: AiCapabilityCatalog;
-  self: readonly AiObservation["actors"][number][];
-  reservedActorIds: ReadonlySet<string>;
-  selectedConstructionTileKeys: Set<string>;
-  priorIntents: readonly AiIntent[];
-  ordinal: number;
-}): AiIntent | null {
+export function proposeAiCounterInfrastructure(
+  args: {
+    observation: AiObservation;
+    state: AiBrainState;
+    catalog: AiCapabilityCatalog;
+    self: readonly AiObservation["actors"][number][];
+    reservedActorIds: ReadonlySet<string>;
+    selectedConstructionTileKeys: Set<string>;
+    priorIntents: readonly AiIntent[];
+    ordinal: number;
+  },
+  role: AiAdaptationRole = "anti_air"
+): AiIntent | null {
   const { observation, state, catalog, self, reservedActorIds, selectedConstructionTileKeys, priorIntents, ordinal } =
     args;
-  const demand = state.economyProduction.demands.find((item) => item.demandId === "demand:adapt:anti_air");
+  const demand = state.economyProduction.demands.find((item) => item.demandId === `demand:adapt:${role}`);
   if (!demand) return null;
   const target = adaptationRoleTargets(mergeAdaptationEvidence(state, observation), state).find(
-    (item) => item.role === "anti_air"
+    (item) => item.role === role
   );
   if (!target) return null;
   const readyCount = self.filter(isFinishedActor).filter((actor) => {
     const entry = catalog.entries.find((candidate) => candidate.sourceObjectName === actor.objectName);
-    return entry && matchesAdaptationRole(entry, "anti_air");
+    return entry && matchesAdaptationRole(entry, role);
   }).length;
   const committed = state.reservations.filter(
-    (reservation) => reservation.subjectKey?.startsWith("effect:effect:stage14:anti_air:") === true
+    (reservation) => reservation.subjectKey?.startsWith(`effect:effect:stage14:${role}:`) === true
   ).length;
   if (
-    readyCount + queuedAdaptationRoleItemIds(observation, catalog, "anti_air").length + committed >=
+    readyCount + queuedAdaptationRoleItemIds(observation, catalog, role).length + committed >=
     Math.min(demand.desired, target.desired)
   )
     return null;
-  const path = counterInfrastructurePath(catalog, self);
+  const path = counterInfrastructurePath(catalog, self, role);
   const objectName = path?.[0];
   if (
     !objectName ||
@@ -108,7 +112,7 @@ export function proposeAiCounterInfrastructure(args: {
         effectId: next.effectId
       }
     ],
-    reasonCode: `counter_infrastructure:anti_air:${objectName}`,
+    reasonCode: `counter_infrastructure:${role}:${objectName}`,
     builderIds: [selected.builder.actorId],
     objectName,
     logicalPosition: selected.position,

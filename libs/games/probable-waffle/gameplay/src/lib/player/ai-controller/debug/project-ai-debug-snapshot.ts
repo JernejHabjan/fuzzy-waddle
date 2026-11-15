@@ -75,6 +75,15 @@ export function projectAiDebugSnapshot(
       role: squad.role,
       domain: squad.domain,
       state: squad.state,
+      stateReason: squad.tactics?.stateReason ?? "legacy_reason_unavailable",
+      individualFallbackCount: squad.tactics?.individualFallbackActorIds?.length ?? 0,
+      pursuitReleasedTargetIds: observation.actors
+        .filter((actor) => actor.relation === "self" && squad.actorIds.includes(actor.actorId))
+        .flatMap((actor) => {
+          const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
+          return order?.pursuitReleasedTargetActorId ? [order.pursuitReleasedTargetActorId] : [];
+        })
+        .filter((targetId, index, ids) => ids.indexOf(targetId) === index),
       members: squad.actorIds.length,
       objectiveId: squad.objectiveId,
       targetActorId: squad.tactics?.targetActorId ?? null,
@@ -145,8 +154,10 @@ export function projectAiDebugSnapshot(
     budgetRemaining: Object.entries(plan.graph?.budget.remainingByResource ?? {})
       .filter((entry): entry is [string, number] => entry[1] !== undefined)
       .map(([resourceType, amount]) => ({ resourceType, amount }))
-      .sort((left, right) => left.resourceType.localeCompare(right.resourceType))
+      .sort((left, right) => left.resourceType.localeCompare(right.resourceType)),
+    waitReason: plan.graph?.waitReason ?? null
   }));
+  const fortificationProposal = proposals.find((proposal) => proposal.managerId === "stage-11-fortifications");
   const recovery = state.recovery.records.slice(0, 32).map((entry) => ({
     recoveryKey: entry.recoveryKey,
     domain: entry.domain,
@@ -230,6 +241,8 @@ export function projectAiDebugSnapshot(
     skirmish,
     bases,
     fortifications,
+    fortificationPlanningReason:
+      fortifications.length === 0 ? fortificationProposal?.reasons.join(",") ?? null : null,
     recovery,
     support,
     adaptation,

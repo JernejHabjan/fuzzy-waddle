@@ -116,7 +116,8 @@ function producerForRole(
 function archetypeFallback(
   state: AiBrainState,
   observation: AiObservation,
-  catalog: AiCapabilityCatalog
+  catalog: AiCapabilityCatalog,
+  evidence: AiBrainState["economyProduction"]["adaptation"]["evidence"]
 ): { readonly id: string; readonly reason: string } | undefined {
   const archetypeParts = state.opening.archetypeId.split(":");
   const purpose = archetypeParts[archetypeParts.length - 1];
@@ -128,6 +129,18 @@ function archetypeFallback(
       })
     );
   const mapHasWater = observation.map?.accessGraph?.nodes.some((node) => node.domain === "water") ?? false;
+  const navalAccessUnavailable = !mapHasWater && observation.map?.regionGeneration.status !== "not_ready";
+  const visibleEnemyIds = new Set(
+    observation.actors
+      .filter((actor) => actor.relation === "enemy" && actor.visibility === "visible")
+      .map((actor) => actor.actorId)
+  );
+  const meaningfulNavalObjective = evidence.some(
+    (entry) => entry.kind === "water_or_transport" && visibleEnemyIds.has(entry.sourceContactId)
+  );
+  // An opening can be chosen before scouting finds a target. Keep it while
+  // its early build is underway, and require a useful objective to continue it.
+  const navalSearchExhausted = state.opening.plan.lifecycle === "completed" && !meaningfulNavalObjective;
   const transport = catalog.entries.some((entry) =>
     entry.produces.some((candidate) => {
       const product = entryFor(catalog, candidate);
@@ -136,12 +149,16 @@ function archetypeFallback(
   );
   const unsupported =
     (purpose === "air_control" && !producerPathAvailable("anti_air")) ||
-    (purpose === "naval" && (!mapHasWater || !producerPathAvailable("water_control"))) ||
+    (purpose === "turtle_air" && !producerPathAvailable("air_pressure")) ||
+    (purpose === "naval" && (navalAccessUnavailable || !producerPathAvailable("water_control") || navalSearchExhausted)) ||
     (purpose === "expeditionary" && !transport);
   return unsupported
     ? {
         id: `opening:${observation.faction}:balanced`,
-        reason: `archetype_fallback:${purpose}:capability_or_access_unavailable`
+        reason:
+          purpose === "naval"
+            ? `archetype_fallback:${purpose}:objective_capability_or_access_unavailable`
+            : `archetype_fallback:${purpose}:capability_or_access_unavailable`
       }
     : undefined;
 }
@@ -329,7 +346,7 @@ export class AiAdaptationManager implements AiProposalManager {
       });
     }
 
-    const fallback = archetypeFallback(state, observation, catalog);
+    const fallback = archetypeFallback(state, observation, catalog, evidence);
     const researchReason = scoredResearch
       ? `research_score:${scoredResearch.score}`
       : survivalThreatVisible

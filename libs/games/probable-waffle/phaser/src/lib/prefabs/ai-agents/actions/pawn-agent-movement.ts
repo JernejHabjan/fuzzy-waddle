@@ -12,7 +12,7 @@ import { AttackComponent } from "../../../entity/components/combat/components/at
 import { getActorSystem } from "../../../data/actor-system";
 import { getRandomTileInNavigableRadius, MovementSystem } from "../../../entity/systems/movement.system";
 import { OrderType } from "../../../ai/order-type";
-import { PawnAiBlackboard } from "../controller/pawn-ai-blackboard";
+import { PawnAiBlackboard, RELEASED_PURSUIT_TARGET_MEMORY_KEY } from "../controller/pawn-ai-blackboard";
 import { GathererComponent } from "../../../entity/components/resource/gatherer-component";
 import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
@@ -26,8 +26,10 @@ import { NavigableComponent } from "../../../entity/components/movement/navigabl
 import { getGameObjectCurrentTile } from "../../../data/game-object-helper";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 
 const ATTACK_APPROACH_RETRY_TICKS = 20;
+const AI_PURSUIT_RADIUS_TILES = 10;
 
 /** Owns native range/reachability probes and movement actions. Each method keeps its own order reads across awaits.
  * Actor-local collaborators own no subscriptions, timers or saved state; the controller owns their lifetime.
@@ -227,15 +229,41 @@ export class PawnAgentMovement {
         return State.FAILED;
       }
       // console.log("[Build] MoveToTarget: Moving to target, type=", type);
+      let nextPursuitCheckTick = clock?.currentTick ?? 0;
+      const checkPursuitLeash = () => {
+        if (this.blackboard.getCurrentOrder() !== currentOrder) return;
+        const pursuitOrigin = currentOrder.data.pursuitTargetOrigin;
+        if (!pursuitOrigin) return;
+        if (clock) {
+          if (clock.currentTick < nextPursuitCheckTick) return;
+          nextPursuitCheckTick = clock.currentTick + 5;
+        }
+        if (
+          (DistanceHelper.getTileDistanceBetweenGameObjectAndTile(target, pursuitOrigin) ?? 0) >
+          AI_PURSUIT_RADIUS_TILES
+        ) {
+          const targetId = getActorComponent(target, IdComponent)?.id ?? currentOrder.data.targetGameObjectId;
+          if (targetId) this.blackboard.remember(RELEASED_PURSUIT_TARGET_MEMORY_KEY, targetId);
+          currentOrder.data.pursuitReleasedTargetActorId = targetId;
+          currentOrder.data.targetGameObject = undefined;
+          currentOrder.data.targetGameObjectId = undefined;
+          currentOrder.data.targetTileLocation ??= { ...pursuitOrigin };
+          currentOrder.data.pursuitTargetOrigin = undefined;
+          movementSystem.cancelMovement();
+        }
+      };
       const success = await movementSystem.moveToActorByAdjustingPathDynamically(
         target,
         {
           radiusTilesAroundDestination: range,
+          // Simulation ticks keep leash behavior stable under fast-forward and render-rate changes.
+          ...(clock ? { onUpdate: checkPursuitLeash } : {}),
           onUpdateThrottled: () => {
             if (this.blackboard.getCurrentOrder() !== currentOrder) return;
+            if (!clock) checkPursuitLeash();
             // if the target is not alive, stop moving
             const healthComponent = getActorComponent(target, HealthComponent);
-            if (healthComponent && healthComponent.killed) {
+            if (healthComponent && healthComponent.killed && this.blackboard.getCurrentOrder() === currentOrder) {
               this.agent.Stop("MoveToTarget");
             }
           }
@@ -243,6 +271,17 @@ export class PawnAgentMovement {
         MovementQueryObservation.capture(this.gameObject, this.blackboard, currentOrder, "actor_movement")
       );
       // console.log("[Build] MoveToTarget: Movement result=", success ? "SUCCESS" : "FAILED");
+      if (
+        !success &&
+        this.blackboard.getCurrentOrder() === currentOrder &&
+        currentOrder.data.pursuitReleasedTargetActorId &&
+        !currentOrder.data.targetGameObject &&
+        currentOrder.data.targetTileLocation
+      ) {
+        // The movement cancellation is intentional. Keep the attack-move order alive so
+        // the next behavior-tree pass resumes toward the saved anchor.
+        return State.SUCCEEDED;
+      }
       if (!success) this.stopFailedMove(currentOrder);
       return success ? State.SUCCEEDED : State.FAILED;
     } catch (e) {
@@ -290,8 +329,14 @@ export class PawnAgentMovement {
             onUpdateThrottled: () => {
               if (this.blackboard.getCurrentOrder() !== currentOrder) return;
               const enemy = this.closestAttackableEnemy();
-              if (enemy) {
+              const enemyId = enemy ? getActorComponent(enemy, IdComponent)?.id : undefined;
+              if (enemy && enemyId && enemyId !== currentOrder.data.pursuitReleasedTargetActorId) {
                 currentOrder.data.targetGameObject = enemy;
+                currentOrder.data.targetGameObjectId = enemyId;
+                if (currentOrder.data.commandContext?.execution.source === "ai") {
+                  const enemyTile = getGameObjectCurrentTile(enemy);
+                  if (enemyTile) currentOrder.data.pursuitTargetOrigin = { ...enemyTile, z: 0 };
+                }
                 movementSystem.cancelMovement();
               }
             }

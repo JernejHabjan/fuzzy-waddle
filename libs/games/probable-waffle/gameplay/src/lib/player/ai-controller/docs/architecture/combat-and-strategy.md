@@ -108,6 +108,7 @@ They do not use the occupied building center as a movement waypoint when no lega
 
 ## Tactical execution
 
+- Full-squad withdrawal is driven by committed-fight losses or a genuinely catastrophic exposure, not a momentary force ratio, brief damage or a shot cooldown. Endangered members may fall back individually while healthy squad members continue fighting. Automatic pursuit releases at the fixed mission/guard leash and resumes the strategic order; a fleeing target cannot drag that anchor, while an explicit human target order may pursue deliberately.
 - Engagement estimates combine the force's effective damage and remaining durability, rather than summing individual
   duels against a durable target. Domain, range, health and permitted cooldown facts still limit that estimate.
   The firing interval determines sustained DPS; starting an ordinary shot cooldown does not independently trigger

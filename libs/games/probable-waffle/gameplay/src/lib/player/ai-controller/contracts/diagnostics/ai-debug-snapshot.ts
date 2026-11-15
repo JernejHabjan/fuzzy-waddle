@@ -99,6 +99,9 @@ export interface AiDebugSnapshot {
       readonly role: string;
       readonly domain: string;
       readonly state: string;
+      readonly stateReason: string;
+      readonly individualFallbackCount: number;
+      readonly pursuitReleasedTargetIds: readonly string[];
       readonly members: number;
       readonly objectiveId: string | null;
       readonly targetActorId: string | null;
@@ -179,7 +182,10 @@ export interface AiDebugSnapshot {
     readonly defenderPosts: number;
     readonly reachableDefenderPosts: number;
     readonly budgetRemaining: readonly { readonly resourceType: string; readonly amount: number }[];
+    readonly waitReason: string | null;
   }[];
+  /** Current fortification proposal outcome; present even when no persistent graph was justified. */
+  readonly fortificationPlanningReason: string | null;
   /** Saved Stage-12 recovery ladder facts; no panel may re-evaluate a live blocker. */
   readonly recovery: readonly {
     readonly recoveryKey: string;

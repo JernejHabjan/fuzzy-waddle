@@ -6,9 +6,37 @@ import type { AiCapabilityCatalogEntry, AiCapabilityCatalog } from "../../contra
 import type { AiObservation } from "../../contracts/observation/ai-observation";
 import type { AiProfileConfig } from "../../contracts/ai-profile-config";
 
-import { AI_FORTIFICATION_GRAPH_CAPS, tileKey, positionOf, constructionEntry, type ConstructionCell } from "./ai-fortification-support";
+import {
+  AI_FORTIFICATION_GRAPH_CAPS,
+  tileKey,
+  positionOf,
+  constructionEntry,
+  type ConstructionCell
+} from "./ai-fortification-support";
 import { fortificationPreservesConnectivity } from "./ai-fortification-connectivity";
 type Axis = "x" | "y";
+export type FortificationLayoutRejection =
+  | "fortification_front_unobserved"
+  | "fortification_terrain_choke_not_found"
+  | "fortification_wall_corridor_not_viable"
+  | "fortification_tower_footprint_unavailable"
+  | "fortification_gate_capability_unavailable"
+  | "fortification_layout_exceeds_bounded_graph"
+  | "fortification_elevated_access_missing"
+  | "fortification_footprint_blocked"
+  | "fortification_shore_egress_conflict"
+  | "fortification_route_would_be_sealed";
+
+export interface FortificationLayout {
+  routedNodes: AiFortificationNodeState[];
+  gate: AiFortificationNodeState;
+  terrainAnchorTileKeys: string[];
+}
+
+export type FortificationLayoutResult =
+  | { layout: FortificationLayout; reason: null }
+  | { layout: null; reason: FortificationLayoutRejection };
+
 function node(
   planId: AiFortificationState["planId"],
   kind: AiFortificationNodeState["kind"],
@@ -80,7 +108,7 @@ export function createFortificationLayout(
   gateObjectName: ObjectNames | null,
   catalog: AiCapabilityCatalog,
   profile: AiProfileConfig
-) {
+): FortificationLayoutResult {
   const byKey = new Map((observation.map?.constructionCells ?? []).map((cell) => [cell.tileKey, cell]));
   const dx = target.x - anchor.x;
   const dy = target.y - anchor.y;
@@ -111,6 +139,10 @@ export function createFortificationLayout(
   let negativeAnchor: number | null = null;
   let positiveAnchor: number | null = null;
   let offsets: number[] | null = null;
+  let passableFrontAvailable = false;
+  let terrainBoundariesAvailable = false;
+  let wallCorridorAvailable = false;
+  let towerFootprintAvailable = false;
   // Relocate only a few tiles along the same front; don't replace the measured approach with a remote choke.
   const crossOffsets = [0, -1, 1, -2, 2];
   for (const frontDistance of [4, 5, 3, 6, 7, 8]) {
@@ -118,6 +150,7 @@ export function createFortificationLayout(
       center = centerAt(frontDistance, crossOffset);
       const openingCell = byKey.get(tileKey(center));
       if (!openingCell?.groundPassable || openingCell.waterPassable || openingCell.observedBlocked) continue;
+      passableFrontAvailable = true;
       let candidateNegative: number | null = null;
       let candidatePositive: number | null = null;
       for (let offset = 1; offset <= 8; offset += 1) {
@@ -125,23 +158,37 @@ export function createFortificationLayout(
         if (candidatePositive === null && isAnchor(offset)) candidatePositive = offset;
       }
       if (candidateNegative === null || candidatePositive === null) continue;
-      // Keep one clear tile on each side of the intentional opening for native worker/army movement.
+      terrainBoundariesAvailable = true;
+      // Keep the full wide-unit route clear around the intentional opening. A tower footprint
+      // can otherwise leave the gate tile open while narrowing the native army lane to one tile.
+      const openingClearance = Math.max(
+        1,
+        towerEntry.constructionProfile?.footprintRadiusTiles ?? 0,
+        wallEntry.constructionProfile?.footprintRadiusTiles ?? 0
+      );
       const firstCandidateOffset = candidateNegative + 1;
       const candidateOffsets = Array.from(
         { length: candidatePositive - candidateNegative - 1 },
         (_, index) => firstCandidateOffset + index
-      ).filter((offset) => Math.abs(offset) > 1);
+      ).filter(
+        (offset) => Math.abs(offset) > openingClearance + (towerEntry.constructionProfile?.footprintRadiusTiles ?? 0)
+      );
       if (
-        candidateOffsets.length < 4 ||
+        candidateOffsets.length < 2 ||
         candidateOffsets.length > AI_FORTIFICATION_GRAPH_CAPS.walls + AI_FORTIFICATION_GRAPH_CAPS.towers ||
         candidateOffsets.some((offset) => !byKey.get(tileKey(atOffset(offset)))?.groundPassable) ||
-        candidateOffsets.filter((offset) =>
-          hasClearFootprint(atOffset(offset), towerEntry.constructionProfile?.footprintRadiusTiles ?? 0, byKey)
-        ).length < 1 ||
         (!candidateOffsets.some((offset) => offset < 0) && candidateNegative !== -1) ||
         (!candidateOffsets.some((offset) => offset > 0) && candidatePositive !== 1)
       )
         continue;
+      wallCorridorAvailable = true;
+      if (
+        !candidateOffsets.some((offset) =>
+          hasClearFootprint(atOffset(offset), towerEntry.constructionProfile?.footprintRadiusTiles ?? 0, byKey)
+        )
+      )
+        continue;
+      towerFootprintAvailable = true;
       negativeAnchor = candidateNegative;
       positiveAnchor = candidatePositive;
       offsets = candidateOffsets;
@@ -149,10 +196,23 @@ export function createFortificationLayout(
     }
     if (offsets !== null) break;
   }
-  if (negativeAnchor === null || positiveAnchor === null || offsets === null) return null;
+  if (negativeAnchor === null || positiveAnchor === null || offsets === null)
+    return {
+      layout: null,
+      reason: !passableFrontAvailable
+        ? "fortification_front_unobserved"
+        : !terrainBoundariesAvailable
+          ? "fortification_terrain_choke_not_found"
+          : !wallCorridorAvailable
+            ? "fortification_wall_corridor_not_viable"
+            : !towerFootprintAvailable
+              ? "fortification_tower_footprint_unavailable"
+              : "fortification_wall_corridor_not_viable"
+    };
 
   const gateEntry = gateObjectName ? constructionEntry(catalog, gateObjectName) : null;
-  if (gateObjectName && !gateEntry?.constructionProfile) return null;
+  if (gateObjectName && !gateEntry?.constructionProfile)
+    return { layout: null, reason: "fortification_gate_capability_unavailable" };
   const gate = node(
     planId,
     "gate_slot",
@@ -174,28 +234,34 @@ export function createFortificationLayout(
     firstOffset === undefined ||
     lastOffset === undefined
   )
-    return null;
+    return { layout: null, reason: "fortification_wall_corridor_not_viable" };
   const clearTowerOffsets = offsets.filter((offset) =>
     hasClearFootprint(atOffset(offset), towerEntry.constructionProfile?.footprintRadiusTiles ?? 0, byKey)
   );
   const towerFootprintRadius = towerEntry.constructionProfile?.footprintRadiusTiles ?? 0;
   let towerPair: [number, number] | null = null;
-  for (const first of clearTowerOffsets) {
-    const second = [...clearTowerOffsets]
-      .reverse()
-      .find((candidate) => Math.abs(candidate - first) > towerFootprintRadius * 2);
-    if (second !== undefined) {
-      towerPair = [first, second];
-      break;
+  if (clearTowerOffsets.length >= 4) {
+    for (const first of clearTowerOffsets) {
+      const second = [...clearTowerOffsets]
+        .reverse()
+        .find((candidate) => Math.abs(candidate - first) > towerFootprintRadius * 2);
+      if (second !== undefined) {
+        towerPair = [first, second];
+        break;
+      }
     }
   }
   const singleTowerOffset = [...clearTowerOffsets].sort(
     (left, right) =>
       offsets.filter((offset) => offset !== left && Math.abs(offset - left) <= towerFootprintRadius).length -
         offsets.filter((offset) => offset !== right && Math.abs(offset - right) <= towerFootprintRadius).length ||
-      left - right
+      right - left
   )[0];
-  const towerOffsets: number[] = towerPair ? [...towerPair] : singleTowerOffset === undefined ? [] : [singleTowerOffset];
+  const towerOffsets: number[] = towerPair
+    ? [...towerPair]
+    : singleTowerOffset === undefined
+      ? []
+      : [singleTowerOffset];
   const covered = new Set<string>();
   const nodes: AiFortificationNodeState[] = [gate];
   for (const side of [negativeOffsets, positiveOffsets] as const) {
@@ -233,7 +299,7 @@ export function createFortificationLayout(
     }
     const rootFootprintRadius = towerOffsets.includes(rootOffset)
       ? towerFootprintRadius
-      : wallEntry.constructionProfile?.footprintRadiusTiles ?? 0;
+      : (wallEntry.constructionProfile?.footprintRadiusTiles ?? 0);
     const stairFootprintRadius = stairEntry.constructionProfile?.footprintRadiusTiles ?? 0;
     const stairPosition = atOffset(rootOffset, -(rootFootprintRadius + stairFootprintRadius + 1));
     if (byKey.get(tileKey(stairPosition))?.groundPassable) {
@@ -268,15 +334,17 @@ export function createFortificationLayout(
     routedNodes.length > profile.maxPlacementCandidatesPerStep ||
     routedNodes.filter((candidate) => candidate.kind === "wall").length > AI_FORTIFICATION_GRAPH_CAPS.walls ||
     routedNodes.filter((candidate) => candidate.kind === "tower").length > AI_FORTIFICATION_GRAPH_CAPS.towers ||
-    routedNodes.filter((candidate) => candidate.kind === "stair").length > AI_FORTIFICATION_GRAPH_CAPS.stairs ||
-    routedNodes.some((candidate) => candidate.kind !== "gate_slot" && !candidate.defenderPostReachable)
+    routedNodes.filter((candidate) => candidate.kind === "stair").length > AI_FORTIFICATION_GRAPH_CAPS.stairs
   )
-    return null;
+    return { layout: null, reason: "fortification_layout_exceeds_bounded_graph" };
+  if (routedNodes.some((candidate) => candidate.kind !== "gate_slot" && !candidate.defenderPostReachable))
+    return { layout: null, reason: "fortification_elevated_access_missing" };
   const occupiedFootprints = new Set<string>();
   for (const candidate of routedNodes) {
     if (candidate.footprintTileKeys.some((key) => !byKey.get(key)?.groundPassable || byKey.get(key)?.observedBlocked))
-      return null;
-    if (candidate.footprintTileKeys.some((key) => occupiedFootprints.has(key))) return null;
+      return { layout: null, reason: "fortification_footprint_blocked" };
+    if (candidate.footprintTileKeys.some((key) => occupiedFootprints.has(key)))
+      return { layout: null, reason: "fortification_footprint_blocked" };
     candidate.footprintTileKeys.forEach((key) => occupiedFootprints.add(key));
   }
 
@@ -295,7 +363,7 @@ export function createFortificationLayout(
         })
     )
   )
-    return null;
+    return { layout: null, reason: "fortification_shore_egress_conflict" };
   const blocked = routedNodes
     .filter((candidate) => candidate.kind !== "gate_slot")
     .flatMap((candidate) => candidate.footprintTileKeys);
@@ -318,14 +386,18 @@ export function createFortificationLayout(
       protectedPosition,
       openingPosition: gate.position,
       exteriorPosition,
-      requiredPositions
+      requiredPositions,
+      clearanceRadiusTiles: 1
     })
   )
-    return null;
+    return { layout: null, reason: "fortification_route_would_be_sealed" };
 
   return {
-    routedNodes,
-    gate,
-    terrainAnchorTileKeys: [tileKey(atOffset(negativeAnchor)), tileKey(atOffset(positiveAnchor))]
+    layout: {
+      routedNodes,
+      gate,
+      terrainAnchorTileKeys: [tileKey(atOffset(negativeAnchor)), tileKey(atOffset(positiveAnchor))]
+    },
+    reason: null
   };
 }

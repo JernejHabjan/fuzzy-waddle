@@ -4,8 +4,14 @@ import type { AiBrainState } from "../../contracts/state/ai-state-contracts";
 import { aiDeadline } from "../../contracts/ai-core-types";
 import type { AiIntent } from "../../contracts/commands/ai-intent";
 import { arbitrateAiIntents } from "../../brain/arbitration/ai-intent-arbiter";
-import { AiFortificationManager } from "./ai-fortification-manager";
-import { profile, catalog, actor, observation, threatenedState } from "../../testing/fixtures/fortification/ai-fortification-test-fixture";
+import { AiFortificationManager, fortificationPreservesConnectivity } from "./ai-fortification-manager";
+import {
+  profile,
+  catalog,
+  actor,
+  observation,
+  threatenedState
+} from "../../testing/fixtures/fortification/ai-fortification-test-fixture";
 
 describe("AiFortificationManager", () => {
   const manager = new AiFortificationManager(profile, () => catalog);
@@ -23,16 +29,111 @@ describe("AiFortificationManager", () => {
     expect(first.intents.find((intent) => intent.kind === "construct")?.urgencyClass).toBe(0);
   });
 
-  it("keeps fortification at optional priority when a defensive profile has no live threat", () => {
+  it.each(["opening:1:safe", "opening:1:turtle", "opening:1:turtle_air"])(
+    "keeps fortification at optional priority for %s when no live threat exists",
+    (archetypeId) => {
+      const state = threatenedState();
+      const unpressured = {
+        ...state,
+        opening: { ...state.opening, archetypeId },
+        skirmish: { ...state.skirmish, incidents: [] }
+      };
+      const proposal = manager.propose(observation(), unpressured);
+
+      expect(proposal.intents.find((intent) => intent.kind === "construct")?.urgencyClass).toBe(4);
+    }
+  );
+
+  it("funds only affordable connected wall prefixes and leaves later tower work for earned stone", () => {
     const state = threatenedState();
-    const unpressured = {
+    const turtle = {
       ...state,
-      opening: { ...state.opening, archetypeId: "opening:1:safe" },
+      opening: { ...state.opening, archetypeId: "opening:tivara:turtle" },
       skirmish: { ...state.skirmish, incidents: [] }
     };
-    const proposal = manager.propose(observation(), unpressured);
+    const lowStone = {
+      ...observation(),
+      resources: observation().resources.map((entry) =>
+        entry.resourceType === ResourceType.Stone ? { ...entry, stockpile: 400 } : entry
+      )
+    };
 
-    expect(proposal.intents.find((intent) => intent.kind === "construct")?.urgencyClass).toBe(4);
+    const proposal = manager.propose(lowStone, turtle);
+    const graph = proposal.statePatch?.fortifications?.[0]?.graph;
+    const builds = proposal.intents.filter((intent) => intent.kind === "construct");
+
+    expect(graph?.nodes.filter((node) => node.objectName !== null)).toHaveLength(6);
+    expect(builds).toHaveLength(2);
+    expect(builds.every((intent) => intent.kind === "construct" && intent.objectName === ObjectNames.Wall)).toBe(true);
+    expect(graph?.budget.remainingByResource[ResourceType.Stone]).toBe(90);
+    const gate = graph?.nodes.find((node) => node.kind === "gate_slot");
+    if (!gate) throw new Error("fortification_gate_missing");
+    expect(
+      fortificationPreservesConnectivity({
+        cells: lowStone.map?.constructionCells ?? [],
+        blockedTileKeys: builds.flatMap((intent) =>
+          intent.kind === "construct" ? [`${intent.logicalPosition.x},${intent.logicalPosition.y}`] : []
+        ),
+        protectedPosition: { x: 8, y: 10, z: 0 },
+        openingPosition: gate.position,
+        exteriorPosition: { x: 10, y: 10, z: 0 },
+        requiredPositions: []
+      })
+    ).toBe(true);
+  });
+
+  it("starts a narrow measured choke with an affordable wall before optional tower work", () => {
+    const source = observation();
+    const sourceMap = source.map;
+    if (!sourceMap) throw new Error("fortification_test_map_missing");
+    const narrowChoke = {
+      ...source,
+      resources: source.resources.map((entry) =>
+        entry.resourceType === ResourceType.Stone ? { ...entry, stockpile: 400 } : entry
+      ),
+      map: {
+        ...sourceMap,
+        constructionCells: (sourceMap.constructionCells ?? []).map((cell) => {
+          const boundary = cell.tileKey === "9,7" || cell.tileKey === "9,13";
+          return { ...cell, groundPassable: !boundary, observedBlocked: boundary };
+        })
+      }
+    };
+    const state = {
+      ...threatenedState(),
+      opening: { ...threatenedState().opening, archetypeId: "opening:tivara:turtle" },
+      skirmish: { ...threatenedState().skirmish, incidents: [] }
+    };
+
+    const proposal = manager.propose(narrowChoke, state);
+    const graph = proposal.statePatch?.fortifications?.[0]?.graph;
+    const firstBuild = proposal.intents.find((intent) => intent.kind === "construct");
+
+    expect(graph?.wholeConnectivity).toBe("preserved");
+    expect(graph?.nodes.filter((node) => node.kind === "wall")).toHaveLength(1);
+    expect(firstBuild).toMatchObject({ kind: "construct", objectName: ObjectNames.Wall });
+  });
+
+  it("reports a funding wait when the next safe construction prefix exceeds the current allowance", () => {
+    const state = threatenedState();
+    const turtle = {
+      ...state,
+      opening: { ...state.opening, archetypeId: "opening:tivara:turtle" },
+      skirmish: { ...state.skirmish, incidents: [] }
+    };
+    const prepared = manager.propose(observation(), turtle).statePatch?.fortifications ?? [];
+    const noStone = {
+      ...observation(),
+      resources: observation().resources.map((entry) =>
+        entry.resourceType === ResourceType.Stone ? { ...entry, stockpile: 0 } : entry
+      )
+    };
+
+    const proposal = manager.propose(noStone, { ...turtle, fortifications: prepared });
+
+    expect(proposal.intents.filter((intent) => intent.kind === "construct")).toHaveLength(0);
+    expect(proposal.reasons).toContain("fortification:waiting_for_budget");
+    expect(proposal.statePatch?.fortifications?.[0]?.graph?.waitReason).toBe("fortification:waiting_for_budget");
   });
 
   it("admits threatened construction before a competing essential gather claim on its builder", () => {
@@ -109,7 +210,7 @@ describe("AiFortificationManager", () => {
     expect(graph?.wholeConnectivity).toBe("preserved");
   });
 
-  it("uses an adjacent terrain anchor and places wide towers inside the clear footprint", () => {
+  it("uses an adjacent terrain anchor and preserves a wide opening beside tower footprints", () => {
     const source = observation();
     const sourceMap = source.map;
     if (!sourceMap) throw new Error("fortification_test_map_missing");
@@ -142,12 +243,22 @@ describe("AiFortificationManager", () => {
 
     expect(graph?.terrainAnchorTileKeys).toEqual(["9,4", "9,11"]);
     expect(graph?.nodes.some((node) => node.kind === "wall")).toBe(true);
-    expect(towers.map((tower) => tower.position)).toEqual([{ x: 9, y: 8, z: 0 }]);
+    expect(towers.map((tower) => tower.position)).toEqual([{ x: 9, y: 7, z: 0 }]);
     expect(
       towers.every((tower) =>
-        tower.footprintTileKeys.every((key) =>
-          (sourceMap.constructionCells ?? []).find((cell) => cell.tileKey === key)?.groundPassable
+        tower.footprintTileKeys.every(
+          (key) => terrainBounded.map.constructionCells?.find((cell) => cell.tileKey === key)?.groundPassable
         )
+      )
+    ).toBe(true);
+    const opening = graph?.nodes.find((node) => node.kind === "gate_slot")?.position;
+    expect(opening).toBeDefined();
+    expect(
+      towers.every((tower) =>
+        tower.footprintTileKeys.every((key) => {
+          const [x, y] = key.split(",").map(Number);
+          return Math.abs(x - opening!.x) > 1 || Math.abs(y - opening!.y) > 1;
+        })
       )
     ).toBe(true);
     expect(graph?.wholeConnectivity).toBe("preserved");
@@ -171,7 +282,7 @@ describe("AiFortificationManager", () => {
     );
 
     expect(proposal.statePatch?.fortifications).toEqual([]);
-    expect(proposal.reasons).toContain("no_justified_connected_choke");
+    expect(proposal.reasons).toContain("fortification_terrain_choke_not_found");
   });
 
   it("WALL-03 records marginal tower coverage and only definition-supported target domains", () => {
@@ -223,7 +334,9 @@ describe("AiFortificationManager", () => {
     const proposal = manager.propose(observation([transit]), threatenedState());
 
     const nodes = proposal.statePatch?.fortifications?.[0]?.graph?.nodes ?? [];
-    const occupied = new Set(nodes.filter((node) => node.kind !== "gate_slot").flatMap((node) => node.footprintTileKeys));
+    const occupied = new Set(
+      nodes.filter((node) => node.kind !== "gate_slot").flatMap((node) => node.footprintTileKeys)
+    );
 
     expect(nodes.some((node) => node.kind === "wall")).toBe(true);
     expect(["9,9", "9,10", "9,11"].every((tile) => !occupied.has(tile))).toBe(true);
@@ -267,7 +380,7 @@ describe("AiFortificationManager", () => {
     );
 
     expect(proposal.statePatch?.fortifications).toEqual([]);
-    expect(proposal.reasons).toContain("no_justified_connected_choke");
+    expect(proposal.reasons).toContain("fortification_shore_egress_conflict");
   });
 
   it("reuses the reserved opening node for a future gate-capable definition without redesigning the graph", () => {

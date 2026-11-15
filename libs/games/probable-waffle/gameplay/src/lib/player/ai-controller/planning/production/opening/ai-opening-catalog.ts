@@ -40,9 +40,14 @@ export function openingBudget(archetypeId: string): {
       return { firstForce: 4, supplyBuffer: 3, rangedPermille: 300 };
     case "macro":
       return { firstForce: 4, supplyBuffer: 5, rangedPermille: 400 };
+    case "expansion":
+      return { firstForce: 3, supplyBuffer: 5, rangedPermille: 300 };
+    case "harassment":
+      return { firstForce: 4, supplyBuffer: 3, rangedPermille: 400 };
     case "tech":
       return { firstForce: 5, supplyBuffer: 4, rangedPermille: 500 };
     case "turtle":
+    case "turtle_air":
     case "safe":
       return { firstForce: 6, supplyBuffer: 4, rangedPermille: 500 };
     default:

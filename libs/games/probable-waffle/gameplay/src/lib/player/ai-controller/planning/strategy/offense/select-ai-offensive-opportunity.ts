@@ -1,6 +1,7 @@
 import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiStrategyAssessment } from "../../../contracts/planning/ai-strategy-assessment";
 import type { AiObservedActor } from "../../../contracts/observation/ai-observation";
+import type { AiDomain } from "../../../contracts/observation/ai-observation";
 import { queryAiAccessRoute } from "../../access/ai-access-graph";
 import type { AiSkirmishProposalContext } from "../missions/ai-skirmish-proposal-context";
 import { canFight, canTarget, distance, domains, position } from "../missions/ai-skirmish-support";
@@ -34,7 +35,8 @@ function recentFailedMission(context: AiSkirmishProposalContext): AiStrategyAsse
         squad.role === "attack" &&
         squad.state === "completed" &&
         (squad.lifecycle?.terminalReason === "no_members_released" ||
-          squad.lifecycle?.terminalReason === "effect_deadline_exhausted")
+          squad.lifecycle?.terminalReason === "effect_deadline_exhausted" ||
+          squad.lifecycle?.terminalReason === "raid_counterforce_abort")
     )
     .sort((left, right) => (right.lifecycle?.createdTick ?? 0) - (left.lifecycle?.createdTick ?? 0))[0];
   if (!completed?.lifecycle || remembered?.missionCreatedTick === completed.lifecycle.createdTick) return remembered;
@@ -86,41 +88,44 @@ function nearbyWaterThreatBonus(context: AiSkirmishProposalContext, actor: AiObs
   return nearbyFriendly ? 1200 : 0;
 }
 
-function threatNear(
+function threatsNear(
   context: AiSkirmishProposalContext,
   target: AiObservedActor,
   attackers: readonly AiObservedActor[],
   additionalThreats: readonly AiObservedActor[] = []
-): number {
+): AiObservedActor[] {
   const targetPosition = position(target);
-  if (!targetPosition) return 0;
+  if (!targetPosition) return [];
   const navalObjective = domains(target).includes("water");
   const contacts = new Map(context.visibleEnemies.map((enemy) => [enemy.actorId, enemy]));
   for (const enemy of [...context.observation.actors, ...additionalThreats]) {
-    const lastKnownPositionTick = enemy.logicalPosition.status === "known"
-      ? enemy.logicalPosition.observedTick
-      : enemy.observedTick;
+    const lastKnownPositionTick =
+      enemy.logicalPosition.status === "known" ? enemy.logicalPosition.observedTick : enemy.observedTick;
     const age = context.observation.tick - lastKnownPositionTick;
-    if (enemy.relation === "enemy" && enemy.visibility === "last_seen" && age >= 0 && age <= REMEMBERED_THREAT_MAX_AGE_TICKS) {
+    if (
+      enemy.relation === "enemy" &&
+      enemy.visibility === "last_seen" &&
+      age >= 0 &&
+      age <= REMEMBERED_THREAT_MAX_AGE_TICKS
+    ) {
       contacts.set(enemy.actorId, enemy);
     }
   }
-  return [...contacts.values()].reduce((threatCount, enemy) => {
+  return [...contacts.values()].filter((enemy) => {
     const enemyPosition = position(enemy);
     if (enemy.visibility === "last_seen") {
-      if (enemy.actorId === target.actorId || enemy.wasCombatant !== true) return threatCount;
+      if (enemy.actorId === target.actorId || enemy.wasCombatant !== true) return false;
       const distanceToTarget = enemyPosition ? distance(targetPosition, enemyPosition) : Number.POSITIVE_INFINITY;
-      if (distanceToTarget > 18) return threatCount;
-      const lastKnownPositionTick = enemy.logicalPosition.status === "known"
-        ? enemy.logicalPosition.observedTick
-        : enemy.observedTick;
+      if (distanceToTarget > 18) return false;
+      const lastKnownPositionTick =
+        enemy.logicalPosition.status === "known" ? enemy.logicalPosition.observedTick : enemy.observedTick;
       const evidenceAge = context.observation.tick - lastKnownPositionTick;
-      return evidenceAge <= REMEMBERED_THREAT_MAX_AGE_TICKS ? threatCount + 1 : threatCount;
+      return evidenceAge <= REMEMBERED_THREAT_MAX_AGE_TICKS;
     }
     if (navalObjective) {
-      if (enemyPosition === undefined || distance(targetPosition, enemyPosition) > 18) return threatCount;
+      if (enemyPosition === undefined || distance(targetPosition, enemyPosition) > 18) return false;
       if (enemy.actorId === target.actorId && canFight(enemy) && attackers.some((actor) => canTarget(enemy, actor)))
-        return threatCount + 1;
+        return true;
       const attacks = enemy.combatProfile?.status === "known" ? enemy.combatProfile.value.attacks : [];
       const threatensAttacker = attackers.some((attacker) => {
         const attackerPosition = position(attacker);
@@ -134,9 +139,9 @@ function threatNear(
             separation <= attack.range + (enemyPosition.z > attackerPosition.z ? attack.highGroundRangeBonus : 0)
         );
       });
-      return threatCount + Number(threatensAttacker);
+      return threatensAttacker;
     }
-    const threatensAttacker = (
+    return (
       enemyPosition !== undefined &&
       distance(targetPosition, enemyPosition) <= 18 &&
       (enemy.combatProfile?.status === "known"
@@ -145,7 +150,38 @@ function threatNear(
           )
         : canFight(enemy) && attackers.some((actor) => canTarget(enemy, actor)))
     );
-    return threatCount + Number(threatensAttacker);
+  });
+}
+
+function combatDps(actor: AiObservedActor, targetDomains: readonly AiDomain[]): number | undefined {
+  if (actor.combatProfile?.status !== "known") return undefined;
+  const dps = actor.combatProfile.value.attacks
+    .filter((attack) => targetDomains.some((domain) => attack.targetDomains.includes(domain)))
+    .map((attack) => (attack.cooldownTicks > 0 ? (attack.damage * 60) / attack.cooldownTicks : attack.damage));
+  return dps.length > 0 ? Math.max(...dps) : undefined;
+}
+
+/** Estimate visible combat strength in ordinary-unit equivalents, with unknown profiles retaining one-unit weight. */
+function threatForceEquivalent(threats: readonly AiObservedActor[], attackers: readonly AiObservedActor[]): number {
+  const defendedDomains = [...new Set(threats.flatMap(domains))];
+  const attackingDomains = [...new Set(attackers.flatMap(domains))];
+  const friendlyStats = attackers.flatMap((actor) => {
+    const dps = combatDps(actor, defendedDomains);
+    const profile = actor.combatProfile?.status === "known" ? actor.combatProfile.value : undefined;
+    return dps !== undefined && profile ? [{ dps, durability: profile.maxHealth + profile.maxArmour }] : [];
+  });
+  if (friendlyStats.length === 0) return threats.length;
+  const average = (values: readonly number[]) => values.reduce((total, value) => total + value, 0) / values.length;
+  const baselineDps = average(friendlyStats.map((entry) => entry.dps));
+  const baselineDurability = average(friendlyStats.map((entry) => entry.durability));
+  return threats.reduce((total, threat) => {
+    const enemyDps = combatDps(threat, attackingDomains);
+    const profile = threat.combatProfile?.status === "known" ? threat.combatProfile.value : undefined;
+    if (enemyDps === undefined || !profile || baselineDps <= 0 || baselineDurability <= 0) return total + 1;
+    const offenseRatio = enemyDps / baselineDps;
+    const durabilityRatio = (profile.maxHealth + profile.maxArmour) / baselineDurability;
+    const equivalent = Math.sqrt(Math.max(0, offenseRatio) * Math.max(0, durabilityRatio));
+    return total + Math.min(2.5, Math.max(0.5, equivalent));
   }, 0);
 }
 
@@ -183,7 +219,9 @@ export function selectAiOffensiveOpportunity(
       const viable = selectAiOffensiveForce(context, opponent, attackers);
       if (!viable) return [];
       const { group: compatibleAttackers, route } = viable;
-      const threats = threatNear(context, opponent, compatibleAttackers, options.threatContacts);
+      const nearbyThreats = threatsNear(context, opponent, compatibleAttackers, options.threatContacts);
+      const threats = nearbyThreats.length;
+      const threatEquivalents = threatForceEquivalent(nearbyThreats, compatibleAttackers);
       const producers = productionNear(context, opponent);
       const capable = compatibleAttackers.length;
       const failurePenalty =
@@ -195,10 +233,25 @@ export function selectAiOffensiveOpportunity(
         (route.kind === "direct" || route.kind === "air_or_naval_objective") &&
         route.domain === "water" &&
         compatibleAttackers.some((actor) => domains(actor).includes("water"));
+      const isEarlyRushEconomyTarget =
+        context.state.opening.archetypeId.endsWith(":rush") &&
+        context.state.opening.plan.lifecycle !== "completed" &&
+        opponent.visibility === "visible" &&
+        !isCore(opponent) &&
+        (opponent.capabilities.some((capability) => capability.family === "gather") ||
+          opponent.capabilities.some((capability) => capability.family === "produce")) &&
+        threats === 0 &&
+        producers <= 1 &&
+        route.kind === "direct" &&
+        route.domain === "ground";
       const required = navalMission
-        ? Math.max(1, Math.ceil(Math.max(0, threats - 1) * 1.5) + 1) + failurePenalty
-        : Math.max(producers >= 2 && !options.raid ? 8 : isCore(opponent) ? 2 : 3, Math.ceil(threats * 1.5) + 1) +
-          failurePenalty;
+        ? Math.max(1, Math.ceil(Math.max(0, threatEquivalents - 1) * 1.5) + 1) + failurePenalty
+        : isEarlyRushEconomyTarget
+          ? 2 + failurePenalty
+          : Math.max(
+              producers >= 2 && !options.raid ? 8 : isCore(opponent) ? 2 : 3,
+              Math.ceil(threatEquivalents * 1.5) + 1
+            ) + failurePenalty;
       const travel =
         position(compatibleAttackers[0]) && position(opponent)
           ? distance(position(compatibleAttackers[0])!, position(opponent)!)

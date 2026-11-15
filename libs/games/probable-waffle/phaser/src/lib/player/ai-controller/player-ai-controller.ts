@@ -25,8 +25,9 @@ import { migrateAiBrainState } from "@fuzzy-waddle/probable-waffle-gameplay/play
 import { canonicalizeAiBrainState } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/persistence/canonical-ai-serialization";
 import { createAiProfileConfig } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-profile-defaults";
 import type { PureAiBrain } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain";
-import type { AiDebugSnapshot, AiProfileConfig } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiDebugSnapshot, AiObservation, AiProfileConfig } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { selectAiOpeningArchetype } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-opening-archetypes";
+import { eligibleAiOpeningPurposes } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-opening-eligibility";
 import { readAiRuntimeCalibrationOpening } from "./test-support/browser/ai-runtime-calibration";
 import type { AiIntent } from "@fuzzy-waddle/probable-waffle-gameplay";
 import type { AiBrainStepResult } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain-step-result";
@@ -354,7 +355,44 @@ export class PlayerAiController {
 
   private createInitialBrainState(): AiBrainState | undefined {
     const context = this.getBrainMigrationContext();
-    return context ? createAiBrainState(context) : undefined;
+    if (!context) return undefined;
+    const initial = createAiBrainState(context);
+    return {
+      ...initial,
+      opening: { ...initial.opening, selectionStatus: context.openingSelectionStatus }
+    };
+  }
+
+  /** Finalizes only a fresh, uncommitted selection once its faction catalog and map are observed. */
+  private resolvePendingOpeningEligibility(observation: AiObservation): boolean {
+    const previous = this.brainState;
+    if (!previous || previous.opening?.selectionStatus !== "pending_eligibility") return true;
+    const catalog = this.playerAiControllerAgent.getCommittedCapabilityCatalog();
+    if (!catalog) return false;
+    // Large maps build the access graph across observations. Give Hard's
+    // map-dependent openings a chance to qualify before finalizing the choice.
+    if (
+      this.profile.difficulty === "hard" &&
+      observation.map?.regionGeneration.status === "not_ready" &&
+      observation.tick - previous.opening.selectedAtTick < 400
+    )
+      return false;
+    const faction = this.player.playerController.data.playerDefinition?.factionType;
+    const playerNumber = this.player.playerNumber;
+    if (faction === undefined || observation.faction !== faction || playerNumber === undefined) return false;
+    const matchSeed = this.scene.baseGameData.gameInstance.gameInstanceMetadata.data.rndSeed;
+    const archetype = selectAiOpeningArchetype({
+      faction,
+      playerNumber,
+      profile: this.profile,
+      seed: Number.isSafeInteger(matchSeed) ? matchSeed : playerNumber,
+      eligiblePurposes: eligibleAiOpeningPurposes(observation, catalog)
+    });
+    this.brainState = {
+      ...previous,
+      opening: { ...previous.opening, archetypeId: archetype.id, selectionStatus: "resolved" }
+    };
+    return true;
   }
 
   /** Runs the persisted pure planner synchronously against the committed observation. */
@@ -362,6 +400,7 @@ export class PlayerAiController {
     const observation = this.playerAiControllerAgent.getCommittedObservation();
     const bridge = this.getBrainCommandBridgeSnapshot();
     if (!observation || !this.brainState || !this.pureBrain) return;
+    if (!this.resolvePendingOpeningEligibility(observation)) return;
     beginAiResourceDecision(this.scene, this.player.playerNumber, observation);
     // Outcomes can arrive between decisions or synchronously during dispatch. Admission must consume the live frontier.
     const previous = { ...this.brainState, authority: bridge?.authority ?? this.brainState.authority };
@@ -448,20 +487,23 @@ export class PlayerAiController {
     const definition = this.player.playerController.data.playerDefinition;
     const faction = definition?.factionType;
     if (playerNumber === undefined || faction === undefined) return undefined;
-    const profile =
-      this.profile ?? createAiProfileConfig(definition?.difficulty ?? ProbableWaffleAiDifficulty.Medium);
+    const profile = this.profile ?? createAiProfileConfig(definition?.difficulty ?? ProbableWaffleAiDifficulty.Medium);
     const archetype = selectAiOpeningArchetype({
       faction,
       playerNumber,
       profile,
-      seed: playerNumber
+      seed: Number.isSafeInteger(this.scene.baseGameData.gameInstance.gameInstanceMetadata.data.rndSeed)
+        ? this.scene.baseGameData.gameInstance.gameInstanceMetadata.data.rndSeed
+        : playerNumber
     });
+    const calibrationOpening = readAiRuntimeCalibrationOpening(this.scene, playerNumber, faction);
     return {
       playerNumber,
       faction,
       profile,
       tick: getSceneService(this.scene, SimulationTickService)?.currentTick ?? 0,
-      archetypeId: readAiRuntimeCalibrationOpening(this.scene, playerNumber, faction) ?? archetype.id,
+      archetypeId: calibrationOpening ?? archetype.id,
+      openingSelectionStatus: calibrationOpening ? ("resolved" as const) : ("pending_eligibility" as const),
       satisfiedOpeningStepIds: []
     } as const;
   }

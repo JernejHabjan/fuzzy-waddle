@@ -1,9 +1,14 @@
 import Phaser from "phaser";
-import { isGameObjectActiveInActiveScene, onObjectReady } from "../../data/game-object-helper";
+import {
+  getGameObjectCurrentTile,
+  isGameObjectActiveInActiveScene,
+  onObjectReady
+} from "../../data/game-object-helper";
 import { Subscription } from "rxjs";
 import { getActorComponent } from "../../data/actor-component";
 import { HealthComponent } from "../components/combat/components/health-component";
 import { PawnAiController } from "../../prefabs/ai-agents/controller/pawn-ai-controller";
+import { RELEASED_PURSUIT_TARGET_MEMORY_KEY } from "../../prefabs/ai-agents/controller/pawn-ai-blackboard";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { AttackComponent } from "../components/combat/components/attack-component";
 import { OrderData } from "../../ai/OrderData";
@@ -190,13 +195,44 @@ export class ActionSystem {
   ): boolean {
     const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
     if (!payerPawnAiController) return false;
+    // A fresh human order opts back into a previously released target. AI may keep
+    // reissuing the same mission while the pawn is returning to its anchor.
+    const releasedPursuitTargetId = payerPawnAiController.blackboard.recall<string>(RELEASED_PURSUIT_TARGET_MEMORY_KEY);
+    const requestedTargetId = targetGameObject ? getActorComponent(targetGameObject, IdComponent)?.id : undefined;
+    if (commandContext?.execution.source !== "ai" || (requestedTargetId && requestedTargetId !== releasedPursuitTargetId)) {
+      payerPawnAiController.blackboard.forget(RELEASED_PURSUIT_TARGET_MEMORY_KEY);
+    }
 
     let action: OrderData | null = null;
 
     if (orderType) {
+      const boundAiPursuit =
+        orderType === OrderType.Attack && !!targetGameObject && commandContext?.execution.source === "ai";
+      const blackboard = payerPawnAiController.blackboard;
+      const currentOrder = boundAiPursuit
+        ? (blackboard.peekNextPlayerOrder() ?? blackboard.getCurrentOrder())
+        : undefined;
+      const previous = currentOrder?.orderType === OrderType.Attack ? currentOrder.data : undefined;
+      const samePursuit =
+        boundAiPursuit && previous?.pursuitTargetOrigin !== undefined && previous.targetGameObject === targetGameObject;
+      const released =
+        boundAiPursuit &&
+        requestedTargetId !== undefined &&
+        (requestedTargetId === releasedPursuitTargetId || requestedTargetId === previous?.pursuitReleasedTargetActorId);
+      const anchor = released || samePursuit ? previous?.targetTileLocation : undefined;
+      if (released && !anchor) return false;
+      const targetTile =
+        boundAiPursuit && targetGameObject && !released && !samePursuit
+          ? getGameObjectCurrentTile(targetGameObject)
+          : undefined;
+      const targetPosition = targetTile ? { ...targetTile, z: 0 } : undefined;
       action = new OrderData(orderType, {
-        targetGameObject,
-        targetTileLocation: tileVec3,
+        targetGameObject: released ? undefined : targetGameObject,
+        targetTileLocation: released ? anchor : (anchor ?? tileVec3 ?? targetPosition),
+        pursuitTargetOrigin: released
+          ? undefined
+          : ((samePursuit ? previous?.pursuitTargetOrigin : undefined) ?? targetPosition),
+        pursuitReleasedTargetActorId: released ? requestedTargetId : undefined,
         commandContext
       });
     } else if (targetGameObject) {

@@ -1,4 +1,9 @@
-import { FactionType, ObjectNames, OrderType, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  FactionType,
+  ObjectNames,
+  OrderType,
+  ProbableWaffleAiDifficulty
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { createAiBrainState } from "../../../brain/state/create-ai-brain-state";
 import type { AiCapabilityCatalog } from "../../../contracts/observation/ai-capability-catalog";
 import type { AiObservedActor } from "../../../contracts/observation/ai-observation";
@@ -8,8 +13,10 @@ import {
   createAiTestObservation,
   createAiTestOwnedActor
 } from "../../../testing/fixtures/coordination/ai-test-fixtures";
-import { advanceAiSkirmishDefense } from "./ai-skirmish-defense";
+import { buildAiAccessGraph } from "../../access/ai-access-graph";
+import { advanceAiExpansionSecurity, advanceAiSkirmishDefense } from "./ai-skirmish-defense";
 import { createAiSkirmishProposalContext } from "./ai-skirmish-proposal-draft";
+import { finalizeAiSkirmishProposal } from "./ai-skirmish-finalizer";
 
 const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
 const catalog: AiCapabilityCatalog = { schemaVersion: 1, generation: 1, entries: [], unsupported: [] };
@@ -101,6 +108,145 @@ function defendersFor(raiderCount: number): number {
 }
 
 describe("AI local defense sizing", () => {
+  it("releases a persistent expansion guard when its site or safe route is no longer available", () => {
+    const baseState = createAiBrainState({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 20,
+      archetypeId: "balanced"
+    });
+    const priorGuard = {
+      squadId: "squad:escort:expansion:base:expansion:remote" as const,
+      role: "escort" as const,
+      domain: "ground" as const,
+      actorIds: ["former-guard"],
+      objectiveId: "expansion-guard:base:expansion:remote",
+      state: "defend" as const
+    };
+    const state = { ...baseState, squads: [priorGuard] };
+    const context = createAiSkirmishProposalContext(createAiTestObservation(), state, catalog);
+
+    advanceAiExpansionSecurity(context);
+    const proposal = finalizeAiSkirmishProposal(context);
+
+    expect(proposal.statePatch?.squads).toContainEqual(
+      expect.objectContaining({
+        squadId: priorGuard.squadId,
+        actorIds: [],
+        state: "completed"
+      })
+    );
+  });
+
+  it("stations one reachable guard at a developed expansion when army size permits", () => {
+    const graph = buildAiAccessGraph({
+      generation: 1,
+      staticRevision: 1,
+      dynamicRevision: 1,
+      threatRevision: 0,
+      builtTick: 20,
+      continuationCursor: 0,
+      includeAirRegion: true,
+      cells: [0, 1, 2, 3, 4].map((x) => ({
+        x,
+        y: 0,
+        ground: true,
+        water: false,
+        elevation: 0,
+        groundNeighborKeys: [x > 0 ? `${x - 1},0` : "1,0", x < 4 ? `${x + 1},0` : "3,0"],
+        knowledge: "known_static" as const,
+        clearance: 2
+      }))
+    });
+    const homeNode = graph.groundNodeByTileKey.get("0,0")!;
+    const expansionNode = graph.groundNodeByTileKey.get("4,0")!;
+    const home = {
+      ...createAiTestOwnedActor("main"),
+      objectName: ObjectNames.Sandhold,
+      mainBuilding: { status: "known" as const, value: true, observedTick: 20 }
+    };
+    const guards = Array.from({ length: 8 }, (_, index) => ({
+      ...combatant(`expansion-guard-${index}`, "self", 0),
+      accessNodeId: { status: "known" as const, value: homeNode, observedTick: 20 }
+    }));
+    const baseObservation = createAiTestObservation();
+    const observation = {
+      ...baseObservation,
+      actors: [home, ...guards],
+      map: {
+        bounds: { status: "known" as const, value: { width: 5, height: 1 }, observedTick: 20 },
+        staticRevision: 1,
+        frontierAccessNodeIds: [],
+        scoutCoverageAccessNodeIds: [],
+        scoutSearchPoints: [],
+        dynamicObstacleActorIds: [],
+        regionGeneration: { generation: 1, status: "ready" as const, continuationCursor: 0 },
+        accessGraph: graph.graph,
+        tacticalCells: [
+          {
+            tileKey: "3,0",
+            position: { x: 3, y: 0, z: 0 },
+            groundPassable: true,
+            waterPassable: false,
+            elevation: 0,
+            observedBlocked: false,
+            groundAccessNodeId: expansionNode
+          }
+        ]
+      }
+    };
+    const state = {
+      ...createAiBrainState({
+        playerNumber: 1,
+        faction: FactionType.Tivara,
+        profile,
+        tick: 20,
+        archetypeId: "balanced"
+      }),
+      bases: [
+        {
+          baseId: "base:main:main" as const,
+          anchorActorId: home.actorId,
+          memberActorIds: [],
+          active: true,
+          accessNodeId: homeNode,
+          anchorPosition: { x: 0, y: 0, z: 0 }
+        },
+        {
+          baseId: "base:expansion:remote" as const,
+          anchorActorId: "expansion-structure" as const,
+          memberActorIds: [],
+          active: true,
+          accessNodeId: expansionNode,
+          anchorPosition: { x: 4, y: 0, z: 0 }
+        }
+      ]
+    };
+    const context = createAiSkirmishProposalContext(observation, state, catalog);
+    const securityContext = {
+      ...context,
+      homeBaseActor: home,
+      primaryOwnedActors: new Set(context.primaryOwnedActors)
+    };
+
+    advanceAiExpansionSecurity(securityContext);
+
+    expect(securityContext.nextSquads).toContainEqual(
+      expect.objectContaining({
+        squadId: "squad:escort:expansion:base:expansion:remote",
+        role: "escort",
+        actorIds: ["expansion-guard-0"],
+        objectiveId: "expansion-guard:base:expansion:remote",
+        state: "moving"
+      })
+    );
+    expect(securityContext.intents).toContainEqual(
+      expect.objectContaining({ kind: "move", actorIds: ["expansion-guard-0"], logicalPosition: { x: 3, y: 0, z: 0 } })
+    );
+    expect(securityContext.primaryOwnedActors.has("expansion-guard-0")).toBe(true);
+  });
+
   it("uses a bounded pair of defenders against one mobile home raider", () => {
     expect(defendersFor(1)).toBe(2);
   });
@@ -197,9 +343,9 @@ describe("AI local defense sizing", () => {
 
     advanceAiSkirmishDefense(context, profile);
 
-    expect(context.intents.filter((intent) => intent.kind === "attack").flatMap((intent) => intent.actorIds)).not.toContain(
-      defender.actorId
-    );
+    expect(
+      context.intents.filter((intent) => intent.kind === "attack").flatMap((intent) => intent.actorIds)
+    ).not.toContain(defender.actorId);
   });
 
   it("recalls a defender attacking a visible target far from home", () => {

@@ -21,6 +21,7 @@ export function createFortificationIntents(
     graph.nodes.filter((current) => current.lifecycle === "finished").map((current) => current.nodeId)
   );
   const cells = new Map(observation.map?.constructionCells?.map((cell) => [cell.tileKey, cell]));
+  const remainingBudget = new Map(resourceEntries(graph.budget.remainingByResource));
   const candidates = graph.nodes
     .filter((current) => current.objectName !== null)
     .filter(
@@ -41,6 +42,14 @@ export function createFortificationIntents(
         graph.constructionSequenceNodeIds.indexOf(left.nodeId) -
           graph.constructionSequenceNodeIds.indexOf(right.nodeId) || left.nodeId.localeCompare(right.nodeId)
     )
+    .filter((current) => {
+      const cost = constructionEntry(catalog, current.objectName!)?.constructionProfile?.resourceCost ?? {};
+      const entries = resourceEntries(cost);
+      if (!entries.every(([resourceType, amount]) => (remainingBudget.get(resourceType) ?? 0) >= amount)) return false;
+      for (const [resourceType, amount] of entries)
+        remainingBudget.set(resourceType, (remainingBudget.get(resourceType) ?? 0) - amount);
+      return true;
+    })
     .slice(0, Math.min(2, profile.maxAcceptedCommandBatchesPerStep));
   const claimed = new Set(
     state.reservations.flatMap((reservation) =>
@@ -71,10 +80,8 @@ export function createFortificationIntents(
       );
     if (!builder) return [];
     claimed.add(builder.actorId);
-    const effectId =
-      `effect:fortification:${plan.planId}:${current.nodeId}:${current.attempt}` as AiIntent["effectId"];
-    const intentId =
-      `intent:fortification:${plan.planId}:${current.nodeId}:${current.attempt}` as AiIntent["intentId"];
+    const effectId = `effect:fortification:${plan.planId}:${current.nodeId}:${current.attempt}` as AiIntent["effectId"];
+    const intentId = `intent:fortification:${plan.planId}:${current.nodeId}:${current.attempt}` as AiIntent["intentId"];
     const resourceClaims = resourceEntries(entry?.constructionProfile?.resourceCost ?? {}).map(
       ([resourceType, amount], claimIndex) => ({
         claimId:
@@ -95,9 +102,10 @@ export function createFortificationIntents(
         lane: "optional_infrastructure_tech" as const,
         proposedTick: observation.tick,
         urgencyClass: current.lifecycle === "destroyed" ? 1 : activeThreat ? 0 : 4,
-        utility: activeThreat && current.lifecycle !== "destroyed"
-          ? 985
-          : Math.min(900, 500 + current.marginalCoverage * 10 + (current.lifecycle === "destroyed" ? 200 : 0)),
+        utility:
+          activeThreat && current.lifecycle !== "destroyed"
+            ? 985
+            : Math.min(900, 500 + current.marginalCoverage * 10 + (current.lifecycle === "destroyed" ? 200 : 0)),
         preconditions: [
           { kind: "actor_exists" as const, actorId: builder.actorId },
           ...resourceClaims.map((claim) => ({

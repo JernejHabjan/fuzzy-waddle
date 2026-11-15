@@ -1,11 +1,7 @@
 import type { ActorId, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type {
-  AiBrainState,
-  AiFortificationNodeState,
-  AiFortificationState
-} from "../../contracts/state/ai-state-contracts";
-import type { AiCapabilityCatalogEntry, AiCapabilityCatalog } from "../../contracts/observation/ai-capability-catalog";
+import type { AiBrainState, AiFortificationState } from "../../contracts/state/ai-state-contracts";
+import type { AiCapabilityCatalog } from "../../contracts/observation/ai-capability-catalog";
 
 import type { AiObservation } from "../../contracts/observation/ai-observation";
 import type { AiProfileConfig } from "../../contracts/ai-profile-config";
@@ -19,22 +15,24 @@ import {
   AI_TURTLE_FORTIFICATION_SPEND_PERMILLE,
   AI_STANDARD_FORTIFICATION_SPEND_PERMILLE
 } from "./ai-fortification-support";
-import { createFortificationLayout } from "./ai-fortification-layout";
-function sumCost(
-  nodes: readonly AiFortificationNodeState[],
-  entries: ReadonlyMap<string, AiCapabilityCatalogEntry>
-): Partial<Record<ResourceType, number>> {
-  const result: Partial<Record<ResourceType, number>> = {};
-  for (const current of nodes) {
-    if (!current.objectName) continue;
-    const cost = entries.get(current.objectName)?.constructionProfile?.resourceCost ?? {};
-    for (const [resourceType, amount] of resourceEntries(cost))
-      result[resourceType] = (result[resourceType] ?? 0) + amount;
-  }
-  return result;
-}
+import { createFortificationLayout, type FortificationLayoutRejection } from "./ai-fortification-layout";
 
 /** Creates one justified layout and prices its actual definition-backed nodes against protected macro funds. */
+export type FortificationPlanCreation =
+  | { plan: AiFortificationState; reason: "plan_created" }
+  | {
+      plan: null;
+      reason:
+        | "defense_trigger_not_justified"
+        | "fortification_target_unknown"
+        | "fortification_capability_unavailable"
+        | "fortification_builder_coverage_unmet"
+        | "fortification_height_incompatible"
+        | "fortification_first_stage_missing"
+        | "first_stage_over_protected_macro_budget"
+        | FortificationLayoutRejection;
+    };
+
 export function createFortificationPlan(
   profile: AiProfileConfig,
   gateObjectName: ObjectNames | null,
@@ -44,18 +42,31 @@ export function createFortificationPlan(
   anchor: Vector3Simple,
   catalog: AiCapabilityCatalog
 ): AiFortificationState | null {
+  return createFortificationPlanWithReason(profile, gateObjectName, observation, state, baseId, anchor, catalog).plan;
+}
+
+export function createFortificationPlanWithReason(
+  profile: AiProfileConfig,
+  gateObjectName: ObjectNames | null,
+  observation: AiObservation,
+  state: AiBrainState,
+  baseId: AiFortificationState["protectedBaseIds"][number],
+  anchor: Vector3Simple,
+  catalog: AiCapabilityCatalog
+): FortificationPlanCreation {
   const incident = state.skirmish.incidents
     .filter((candidate) => candidate.baseId === null || candidate.baseId === baseId)
     .sort((left, right) => right.severity - left.severity || left.incidentId.localeCompare(right.incidentId))[0];
   const defensiveProfile = isDefensiveArchetype(state.opening.archetypeId);
-  if ((!incident || incident.severity < 100) && !defensiveProfile) return null;
+  if ((!incident || incident.severity < 100) && !defensiveProfile)
+    return { plan: null, reason: "defense_trigger_not_justified" };
   const enemy = threatPosition(observation, anchor);
   const target =
     enemy ??
     (observation.map?.bounds.status === "known"
       ? { x: observation.map.bounds.value.width / 2, y: observation.map.bounds.value.height / 2, z: 0 }
       : null);
-  if (!target) return null;
+  if (!target) return { plan: null, reason: "fortification_target_unknown" };
 
   const wallEntry = constructionEntry(catalog, ObjectNames.Wall);
   const towerEntry = constructionEntry(catalog, ObjectNames.WatchTower);
@@ -71,23 +82,19 @@ export function createFortificationPlan(
           )
       )
     );
-  if (
-    !wallEntry?.constructionProfile ||
-    !towerEntry?.constructionProfile ||
-    !stairEntry?.constructionProfile ||
-    builders.length < 2
-  )
-    return null;
+  if (!wallEntry?.constructionProfile || !towerEntry?.constructionProfile || !stairEntry?.constructionProfile)
+    return { plan: null, reason: "fortification_capability_unavailable" };
+  if (builders.length < 2) return { plan: null, reason: "fortification_builder_coverage_unmet" };
   if (
     stairEntry.constructionProfile.enterHeight !== 0 ||
     stairEntry.constructionProfile.exitHeight === null ||
     stairEntry.constructionProfile.exitHeight !== wallEntry.constructionProfile.enterHeight ||
     stairEntry.constructionProfile.exitHeight !== towerEntry.constructionProfile.enterHeight
   )
-    return null;
+    return { plan: null, reason: "fortification_height_incompatible" };
 
   const planId = `fortification:${baseId}` as AiFortificationState["planId"];
-  const layout = createFortificationLayout(
+  const layoutResult = createFortificationLayout(
     observation,
     anchor,
     target,
@@ -99,14 +106,15 @@ export function createFortificationPlan(
     catalog,
     profile
   );
-  if (!layout) return null;
+  if (!layoutResult.layout) return { plan: null, reason: layoutResult.reason };
+  const layout = layoutResult.layout;
   const { routedNodes, gate, terrainAnchorTileKeys } = layout;
   const entries = new Map([
     [ObjectNames.Wall, wallEntry],
     [ObjectNames.WatchTower, towerEntry],
     [ObjectNames.Stairs, stairEntry]
   ]);
-  const committedByResource = sumCost(routedNodes, entries);
+  const committedByResource: Partial<Record<ResourceType, number>> = {};
   const priorCommittedByResource: Partial<Record<ResourceType, number>> = {};
   for (const existing of state.fortifications.filter(
     (candidate) => candidate.graph?.baseId !== baseId && candidate.lifecycle !== "abandoned"
@@ -118,17 +126,33 @@ export function createFortificationPlan(
   const spendPermille = defensiveProfile
     ? AI_TURTLE_FORTIFICATION_SPEND_PERMILLE
     : AI_STANDARD_FORTIFICATION_SPEND_PERMILLE;
+  const constructionSequenceNodeIds = [
+    ...routedNodes.filter((candidate) => candidate.kind !== "gate_slot").map((candidate) => candidate.nodeId),
+    ...routedNodes
+      .filter((candidate) => candidate.kind === "gate_slot" && candidate.objectName !== null)
+      .map((candidate) => candidate.nodeId)
+  ];
+  const firstBuildable = constructionSequenceNodeIds
+    .map((id) => routedNodes.find((candidate) => candidate.nodeId === id))
+    .find((candidate) => candidate?.objectName !== null);
+  if (!firstBuildable?.objectName) return { plan: null, reason: "fortification_first_stage_missing" };
+  const firstBuildableCost = entries.get(firstBuildable.objectName)?.constructionProfile?.resourceCost ?? {};
   const remainingByResource: Partial<Record<ResourceType, number>> = {};
-  for (const [resourceType, amount] of resourceEntries(committedByResource)) {
+  for (const [resourceType, amount] of resourceEntries(firstBuildableCost)) {
     const ledger = observation.resources.find((entry) => entry.resourceType === resourceType);
-    const available = Math.max(
+    const spendable = Math.max(
       0,
       (ledger?.stockpile ?? 0) - (ledger?.reservedUnspent ?? 0) - (ledger?.obligationsDue ?? 0)
     );
-    const ceiling = Math.floor((available * spendPermille) / 1000);
+    const ceiling = Math.floor(((spendable + (priorCommittedByResource[resourceType] ?? 0)) * spendPermille) / 1000);
     const prior = priorCommittedByResource[resourceType] ?? 0;
-    if (prior + amount > ceiling) return null;
-    remainingByResource[resourceType] = ceiling - prior - amount;
+    if (prior + amount > ceiling) return { plan: null, reason: "first_stage_over_protected_macro_budget" };
+  }
+  for (const ledger of observation.resources) {
+    const spendable = Math.max(0, ledger.stockpile - ledger.reservedUnspent - ledger.obligationsDue);
+    const prior = priorCommittedByResource[ledger.resourceType] ?? 0;
+    const ceiling = Math.floor(((spendable + prior) * spendPermille) / 1000);
+    remainingByResource[ledger.resourceType] = Math.max(0, ceiling - prior);
   }
   const protectedAssetIds = observation.actors
     .filter((actor) => actor.relation === "self")
@@ -147,34 +171,32 @@ export function createFortificationPlan(
     )
   ].sort();
   return {
-    planId,
-    nodeIds: routedNodes.map((candidate) => candidate.nodeId),
-    completedNodeIds: gate.objectName === null ? [gate.nodeId] : [],
-    protectedBaseIds: [baseId],
-    lifecycle: "planned",
-    graph: {
-      baseId,
-      createdTick: observation.tick,
-      terrainAnchorTileKeys,
-      openingNodeId: gate.nodeId,
-      protectedAssetIds,
-      wholeConnectivity: "preserved",
-      incrementalConnectivity: "preserved",
-      budget: { spendPermille, committedByResource, remainingByResource },
-      nodes: routedNodes,
-      constructionSequenceNodeIds: [
-        ...routedNodes.filter((candidate) => candidate.kind !== "gate_slot").map((candidate) => candidate.nodeId),
-        ...routedNodes
-          .filter((candidate) => candidate.kind === "gate_slot" && candidate.objectName !== null)
-          .map((candidate) => candidate.nodeId)
-      ],
-      defenderPosts: routedNodes
-        .filter((candidate) => candidate.kind === "tower")
-        .map((candidate, index) => {
-          const defenderId = eligibleDefenderIds[index];
-          return { nodeId: candidate.nodeId, assignedActorIds: defenderId ? [defenderId] : [], reachable: false };
-        }),
-      breach: { missingNodeIds: [], reason: null, risk: "none", responseEffectId: null, recoveryAttempts: 0 }
+    reason: "plan_created",
+    plan: {
+      planId,
+      nodeIds: routedNodes.map((candidate) => candidate.nodeId),
+      completedNodeIds: gate.objectName === null ? [gate.nodeId] : [],
+      protectedBaseIds: [baseId],
+      lifecycle: "planned",
+      graph: {
+        baseId,
+        createdTick: observation.tick,
+        terrainAnchorTileKeys,
+        openingNodeId: gate.nodeId,
+        protectedAssetIds,
+        wholeConnectivity: "preserved",
+        incrementalConnectivity: "preserved",
+        budget: { spendPermille, committedByResource, remainingByResource },
+        nodes: routedNodes,
+        constructionSequenceNodeIds,
+        defenderPosts: routedNodes
+          .filter((candidate) => candidate.kind === "tower")
+          .map((candidate, index) => {
+            const defenderId = eligibleDefenderIds[index];
+            return { nodeId: candidate.nodeId, assignedActorIds: defenderId ? [defenderId] : [], reachable: false };
+          }),
+        breach: { missingNodeIds: [], reason: null, risk: "none", responseEffectId: null, recoveryAttempts: 0 }
+      }
     }
   };
 }

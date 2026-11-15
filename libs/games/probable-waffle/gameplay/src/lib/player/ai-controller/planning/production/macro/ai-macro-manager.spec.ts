@@ -14,12 +14,41 @@ import { createAiProfileConfig } from "../../../profiles/ai-profile-defaults";
 
 import { createAiBrainState } from "../../../brain/state/create-ai-brain-state";
 
-import { createAiTestObservation, createAiTestOwnedActor } from "../../../testing/fixtures/coordination/ai-test-fixtures";
+import {
+  createAiTestObservation,
+  createAiTestOwnedActor
+} from "../../../testing/fixtures/coordination/ai-test-fixtures";
 
-import { AiMacroManager } from "./ai-macro-manager";
+import { AiMacroManager, aiMacroInfrastructureRoles } from "./ai-macro-manager";
 import { catalog } from "../../../testing/fixtures/production/ai-macro-test-fixtures";
 
 describe("AI macro opening and gathering", () => {
+  it("schedules the shared air and naval infrastructure paths for confirmed live strategy needs", () => {
+    const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
+    const initial = createAiBrainState({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const state = {
+      ...initial,
+      economyProduction: {
+        ...initial.economyProduction,
+        adaptation: {
+          ...initial.economyProduction.adaptation,
+          activeRoleTargets: [
+            { role: "air_pressure" as const, desired: 2, evidenceIds: ["evidence:air"] },
+            { role: "water_control" as const, desired: 3, evidenceIds: ["evidence:coast"] }
+          ]
+        }
+      }
+    };
+
+    expect(aiMacroInfrastructureRoles(state)).toEqual(["air_pressure", "anti_air", "water_control"]);
+  });
+
   it("keeps bootstrap demand stable and proposes the legal missing worker", () => {
     const profile = createAiProfileConfig(ProbableWaffleAiDifficulty.Medium);
     const state = createAiBrainState({

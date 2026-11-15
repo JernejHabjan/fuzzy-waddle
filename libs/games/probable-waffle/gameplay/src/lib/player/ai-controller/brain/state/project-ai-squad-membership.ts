@@ -36,11 +36,25 @@ export function projectAiSquadMembership(
     (actorId) => !owners.has(actorId) || owners.get(actorId) === family(update.squadId)
   );
   const currentMission = current.find((squad) => squad.squadId === family(update.squadId)) ?? currentSquad;
+  // Tactics reads the previous decision. Keep a new strategic raid abort until
+  // the tactical update has actually evaluated that withdrawal.
+  const newRaidAbort =
+    currentMission?.lifecycle?.terminalReason === "raid_counterforce_abort" &&
+    update.lifecycle?.terminalReason !== "raid_counterforce_abort" &&
+    previous.find((squad) => squad.squadId === currentMission.squadId)?.lifecycle?.terminalReason !==
+      "raid_counterforce_abort";
+  const lifecycle = update.lifecycle ?? currentMission?.lifecycle;
   return {
     ...update,
+    ...(newRaidAbort && lifecycle
+      ? { state: "retreat", lifecycle: { ...lifecycle, terminalReason: "raid_counterforce_abort" } }
+      : {}),
     objectiveId: currentMission ? currentMission.objectiveId : update.objectiveId,
     actorIds: [
-      ...new Set([...introducedMembers.filter((actorId) => !assignedToSibling.has(actorId)), ...allowed])
+      ...new Set([
+        ...introducedMembers.filter((actorId) => !assignedToSibling.has(actorId)),
+        ...(newRaidAbort && update.actorIds.length === 0 ? (currentSquad?.actorIds ?? []) : allowed)
+      ])
     ].sort()
   };
 }

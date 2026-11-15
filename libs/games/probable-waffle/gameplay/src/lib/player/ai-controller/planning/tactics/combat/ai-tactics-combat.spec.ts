@@ -420,7 +420,7 @@ describe("AiTacticsManager", () => {
       state: "retreat" as const,
       objectiveId: enemy.actorId
     };
-    for (let tick = 100; tick <= 140; tick += 20) {
+    for (let tick = 100; tick <= 110; tick += 10) {
       const result = manager.propose(observation([guard, enemy], tick), fixtureState([mission]));
       const updated = requireValue(result.statePatch?.squadUpdates?.[0], "missing_defense_update");
       expect(updated.state).toBe("retreat");
@@ -458,12 +458,20 @@ describe("AiTacticsManager", () => {
   it("holds a safe retreat through its reconsideration window when the threat temporarily disappears", () => {
     const guard = combatActor("guard", "self", 0, "ground", 1000, { damage: 1 });
     const enemy = combatActor("enemy", "enemy", 25, "ground", 1000, { damage: 100 });
+    const priorRetreat = squad("squad:defense", "defense", [guard.actorId]);
     const initial = manager.propose(
       observation([guard, enemy], 100),
-      fixtureState([{ ...squad("squad:defense", "defense", [guard.actorId]), objectiveId: enemy.actorId }])
+      fixtureState([
+        {
+          ...priorRetreat,
+          state: "retreat",
+          objectiveId: enemy.actorId,
+          tactics: { ...priorRetreat.tactics!, nextReconsiderTick: 140, script: "protected_retreat" }
+        }
+      ])
     );
     const retreated = requireValue(initial.statePatch?.squadUpdates?.[0], "missing_retreat_update");
-    const quiet = manager.propose(observation([guard], 120), fixtureState([retreated]));
+    const quiet = manager.propose(observation([guard], 110), fixtureState([retreated]));
 
     expect(quiet.statePatch?.squadUpdates?.[0]?.state).toBe("retreat");
     const afterWindow = manager.propose(
@@ -478,7 +486,17 @@ describe("AiTacticsManager", () => {
     const enemy = combatActor("enemy", "enemy", 3, "ground", 1000, { damage: 10 });
     const initial = manager.propose(
       observation([guard, enemy], 100),
-      fixtureState([squad("squad:attack", "attack", [guard.actorId])])
+      fixtureState([
+        {
+          ...squad("squad:attack", "attack", [guard.actorId]),
+          state: "retreat",
+          tactics: {
+            ...squad("squad:attack", "attack", [guard.actorId]).tactics!,
+            observedLossCount: 2,
+            lastObservedMemberCount: 1
+          }
+        }
+      ])
     );
     const retreating = requireValue(initial.statePatch?.squadUpdates?.[0], "missing_retreat_update");
     const safe = manager.propose(observation([guard], 120), fixtureState([retreating]));
@@ -507,6 +525,33 @@ describe("AiTacticsManager", () => {
       fixtureState([requireValue(earlyReinforcements.statePatch?.squadUpdates?.[0], "missing_locked_retreat_update")])
     );
     expect(reinforced.statePatch?.squadUpdates?.[0]?.state).toBe("engage");
+  });
+
+  it("does not restart an AI chase after the native order releases that target", () => {
+    const enemy = combatActor("fleeing-worker", "enemy", 3, "ground");
+    const guard = {
+      ...combatActor("guard", "self", 0, "ground"),
+      activeOrder: {
+        status: "known" as const,
+        observedTick: 120,
+        value: {
+          orderType: OrderType.Attack,
+          targetActorId: null,
+          pursuitReleasedTargetActorId: enemy.actorId,
+          targetPosition: { x: 2, y: 0, z: 0 }
+        }
+      }
+    };
+    const mission = {
+      ...squad("squad:attack", "attack", [guard.actorId]),
+      state: "engage" as const,
+      objectiveId: enemy.actorId
+    };
+    const result = manager.propose(observation([guard, enemy], 120), fixtureState([mission]));
+
+    expect(result.intents.some((intent) => intent.kind === "attack" && intent.targetActorId === enemy.actorId)).toBe(
+      false
+    );
   });
 
   it("FIGHT-04 reserves expected impact and spreads fire after lethal damage is covered", () => {
@@ -603,6 +648,62 @@ describe("AiTacticsManager", () => {
       })
     );
     expect(relaunch.intents.some((intent) => intent.kind === "attack")).toBe(false);
+  });
+
+  it("FIGHT-07 keeps a squad engaged when the estimated exchange is poor but most committed units remain", () => {
+    const members = Array.from({ length: 4 }, (_, index) =>
+      combatActor(`fighter-${index}`, "self", index, "ground", 1000, { damage: 10 })
+    );
+    const enemies = [
+      combatActor("enemy-a", "enemy", 6, "ground", 1000, { damage: 100 }),
+      combatActor("enemy-b", "enemy", 7, "ground", 1000, { damage: 100 })
+    ];
+    const mission = {
+      ...squad(
+        "squad:attack",
+        "attack",
+        members.map((actor) => actor.actorId)
+      ),
+      state: "engage" as const,
+      tactics: {
+        ...squad(
+          "squad:attack",
+          "attack",
+          members.map((actor) => actor.actorId)
+        ).tactics!,
+        lastObservedMemberCount: members.length,
+        observedLossCount: 1
+      }
+    };
+
+    const result = manager.propose(observation([...members, ...enemies]), fixtureState([mission]));
+
+    expect(result.statePatch?.squadUpdates?.[0]?.state).toBe("engage");
+    expect(
+      result.intents.some((intent) => intent.kind === "move" && intent.reasonCode.includes("protected_retreat"))
+    ).toBe(false);
+  });
+
+  it("FIGHT-07 begins a full retreat after more than half the committed force is lost", () => {
+    const survivor = combatActor("survivor", "self", 5, "ground", 1000, { damage: 10 });
+    const enemy = combatActor("enemy", "enemy", 7, "ground", 1000, { damage: 10 });
+    const mission = {
+      ...squad("squad:attack", "attack", [survivor.actorId, "lost-a", "lost-b"]),
+      state: "engage" as const,
+      tactics: {
+        ...squad("squad:attack", "attack", [survivor.actorId]).tactics!,
+        lastObservedMemberCount: 3,
+        observedLossCount: 0
+      }
+    };
+
+    const result = manager.propose(observation([survivor, enemy]), fixtureState([mission]));
+
+    expect(result.statePatch?.squadUpdates?.[0]?.state).toBe("retreat");
+    expect(result.statePatch?.squadUpdates?.[0]?.tactics).toMatchObject({
+      observedLossCount: 2,
+      stateReason: "majority_committed_losses"
+    });
   });
 
   it("FIGHT-04 coordinates capped healing and manual spells while leaving autocast-owned spells alone", () => {

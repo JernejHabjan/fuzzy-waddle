@@ -113,36 +113,62 @@ export function createAiSkirmishProposalContext(
       .flatMap((base) => [base.anchorActorId, ...base.memberActorIds])
       .filter((actorId): actorId is ActorId => actorId !== null)
   ]);
-  const homeThreat = homeBaseActor && home
-    ? visibleEnemies
-        .filter((candidate) => {
-          const candidatePosition = position(candidate);
-          if (!candidatePosition) return false;
-          const ordersHomeAttack =
-            candidate.activeOrder?.status === "known" &&
-            candidate.activeOrder.value?.targetActorId === homeBaseActor.actorId;
-          const mobileThreat = candidate.housingCost.status === "known" && candidate.housingCost.value > 0;
-          return ordersHomeAttack || (mobileThreat && distance(home, candidatePosition) <= 12);
-        })
-        .sort((left, right) => {
-          const targetsHome = (candidate: AiObservedActor) =>
-            candidate.activeOrder?.status === "known" &&
-            candidate.activeOrder.value?.targetActorId === homeBaseActor.actorId
-              ? 0
-              : 1;
-          const distanceToHome = (candidate: AiObservedActor) => {
+  const homeThreat =
+    homeBaseActor && home
+      ? visibleEnemies
+          .filter((candidate) => {
             const candidatePosition = position(candidate);
-            return candidatePosition ? distance(home, candidatePosition) : Number.POSITIVE_INFINITY;
-          };
-          return (
-            targetsHome(left) - targetsHome(right) ||
-            distanceToHome(left) - distanceToHome(right) ||
-            left.actorId.localeCompare(right.actorId)
-          );
-        })[0]
-    : undefined;
+            if (!candidatePosition) return false;
+            const ordersHomeAttack =
+              candidate.activeOrder?.status === "known" &&
+              candidate.activeOrder.value?.targetActorId === homeBaseActor.actorId;
+            const mobileThreat = candidate.housingCost.status === "known" && candidate.housingCost.value > 0;
+            return ordersHomeAttack || (mobileThreat && distance(home, candidatePosition) <= 12);
+          })
+          .sort((left, right) => {
+            const targetsHome = (candidate: AiObservedActor) =>
+              candidate.activeOrder?.status === "known" &&
+              candidate.activeOrder.value?.targetActorId === homeBaseActor.actorId
+                ? 0
+                : 1;
+            const distanceToHome = (candidate: AiObservedActor) => {
+              const candidatePosition = position(candidate);
+              return candidatePosition ? distance(home, candidatePosition) : Number.POSITIVE_INFINITY;
+            };
+            return (
+              targetsHome(left) - targetsHome(right) ||
+              distanceToHome(left) - distanceToHome(right) ||
+              left.actorId.localeCompare(right.actorId)
+            );
+          })[0]
+      : undefined;
+  const expansionThreat = visibleEnemies
+    .map((enemy) => {
+      const enemyPosition = position(enemy);
+      if (!enemyPosition) return undefined;
+      const nearbyBaseDistance = state.bases
+        .filter((base) => base.active && base.anchorActorId !== homeBaseActor?.actorId && base.anchorPosition)
+        .map((base) => {
+          const ordersBaseAttack =
+            enemy.activeOrder?.status === "known" &&
+            (enemy.activeOrder.value?.targetActorId === base.anchorActorId ||
+              base.memberActorIds.includes(enemy.activeOrder.value?.targetActorId ?? ""));
+          const separation = distance(base.anchorPosition!, enemyPosition);
+          const mobileThreat = enemy.housingCost.status === "known" && enemy.housingCost.value > 0;
+          return ordersBaseAttack || (mobileThreat && separation <= 12) ? separation : Number.POSITIVE_INFINITY;
+        })
+        .sort((left, right) => left - right)[0];
+      return nearbyBaseDistance !== undefined && Number.isFinite(nearbyBaseDistance)
+        ? { enemy, distance: nearbyBaseDistance }
+        : undefined;
+    })
+    .filter((entry): entry is { enemy: AiObservedActor; distance: number } => entry !== undefined)
+    .sort(
+      (left, right) => left.distance - right.distance || left.enemy.actorId.localeCompare(right.enemy.actorId)
+    )[0]?.enemy;
   const localThreat =
     homeThreat ??
+    expansionThreat ??
     observedAiEconomyThreats(observation)[0] ??
     (home
       ? visibleEnemies.find((candidate) => {

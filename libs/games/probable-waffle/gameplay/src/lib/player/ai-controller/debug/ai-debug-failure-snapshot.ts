@@ -13,7 +13,7 @@ export function aiDebugFailureSnapshot(observation: AiObservation, state: AiBrai
     topReasons: ["debug_projection_fault"], decisions: [], nextActions: [], mainBlockingReason: "debug_projection_fault",
     strategicIntentSummary: { headline: "Diagnostics unavailable", objective: "Not recorded", force: "Not recorded",
       production: "Not recorded", economy: "Not recorded", blocker: "debug_projection_fault", nextAction: "Not recorded" },
-    whyNot: [], transportOperations: [], bases: [], fortifications: [], recovery: [], support: [],
+    whyNot: [], transportOperations: [], bases: [], fortifications: [], fortificationPlanningReason: null, recovery: [], support: [],
     skirmish: { questions: [], incidents: [], squads: [], timeline: [],
       mode: { state: "not_recorded", hopelessSinceTick: null, concessionIntentId: null, reason: "debug_projection_fault" } },
     adaptation: { evidence: [], roleTargets: [], lastTransitionTick: null, lastTransitionReason: null,

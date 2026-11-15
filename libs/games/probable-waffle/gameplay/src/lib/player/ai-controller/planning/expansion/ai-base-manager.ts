@@ -64,11 +64,13 @@ function hasOwnedResourceService(
   const resourceType = resource.resourceState.value.resourceType;
   return owned.some((service) => {
     const servicePosition = position(service);
-    return !!servicePosition &&
+    return (
+      !!servicePosition &&
       distance(servicePosition, resourcePosition) <= AI_RESOURCE_SERVICE_RADIUS &&
-      catalog.entries.some((entry) =>
-        entry.sourceObjectName === service.objectName && entry.acceptsResources?.includes(resourceType)
-      );
+      catalog.entries.some(
+        (entry) => entry.sourceObjectName === service.objectName && entry.acceptsResources?.includes(resourceType)
+      )
+    );
   });
 }
 
@@ -80,9 +82,11 @@ function hasUnservedResourceNearExpansionSite(
 ): boolean {
   return resources.some((resource) => {
     const resourcePosition = position(resource);
-    return !!resourcePosition &&
+    return (
+      !!resourcePosition &&
       distance(site, resourcePosition) <= EXPANSION_SITE_RADIUS &&
-      !hasOwnedResourceService(resource, owned, catalog);
+      !hasOwnedResourceService(resource, owned, catalog)
+    );
   });
 }
 
@@ -186,7 +190,8 @@ export class AiBaseManager implements AiProposalManager {
         prior.lifecycle === "proposed" &&
         prior.anchorPosition &&
         !hasUnservedResourceNearExpansionSite(prior.anchorPosition, currentResources, owned, catalog)
-      ) continue;
+      )
+        continue;
       // Stage 12 transfers a rejected site's backoff history to the next Stage 10
       // decision by clearing its reservation. The primary base now owns that global
       // history, so the terminal shell must not accumulate as a fake reserved base.
@@ -236,13 +241,6 @@ export class AiBaseManager implements AiProposalManager {
       0
     );
     const openingComplete = state.opening.plan.lifecycle === "completed";
-    const expansionTrigger = !openingComplete
-      ? null
-      : localResourceValue === 0
-        ? "resource_life"
-        : deliveredIncome === 0 && observation.tick >= AI_EXPANSION_SATURATION_TICKS
-          ? "worker_capacity"
-          : null;
     const distantResources = currentResources
       .filter((resource) => distance(primary.anchorPosition!, position(resource)!) > BASE_MEMBER_RADIUS)
       .filter((resource) => !hasOwnedResourceService(resource, owned, catalog))
@@ -251,6 +249,16 @@ export class AiBaseManager implements AiProposalManager {
           distance(primary.anchorPosition!, position(left)!) - distance(primary.anchorPosition!, position(right)!) ||
           left.actorId.localeCompare(right.actorId)
       );
+    const purpose = state.opening.archetypeId.split(":").at(-1);
+    const expansionTrigger = !openingComplete
+      ? null
+      : purpose === "expansion" && distantResources.length > 0
+        ? "opening_expansion"
+        : localResourceValue === 0
+          ? "resource_life"
+          : deliveredIncome === 0 && observation.tick >= AI_EXPANSION_SATURATION_TICKS
+            ? "worker_capacity"
+            : null;
     const intents: AiIntent[] = [];
     const existingExpansion = bases.find(
       (base) =>
@@ -331,7 +339,8 @@ export class AiBaseManager implements AiProposalManager {
     const expansion = bases.find(
       (base) => base.lifecycle === "proposed" && base.anchorPosition && base.reservedSiteKey
     );
-    const macroOpening = state.opening.archetypeId.endsWith(":macro");
+    const priorityOpening =
+      state.opening.archetypeId.endsWith(":macro") || state.opening.archetypeId.endsWith(":expansion");
     const mainObject = anchors[0]?.objectName;
     const observedExpansionSite =
       expansion && mainObject
@@ -377,7 +386,7 @@ export class AiBaseManager implements AiProposalManager {
           lane: "optional_infrastructure_tech",
           proposedTick: observation.tick,
           urgencyClass: 4,
-          utility: macroOpening ? 660 : 520,
+          utility: priorityOpening ? 660 : 520,
           preconditions: [{ kind: "actor_exists", actorId: builder.actorId }],
           claims: [
             ...createAiResourceCostClaims(claimId, construction.resourceCost),
@@ -389,7 +398,7 @@ export class AiBaseManager implements AiProposalManager {
             },
             { claimId: `${claimId}:effect` as AiIntent["claims"][number]["claimId"], kind: "effect", effectId }
           ],
-          reasonCode: `expansion:${expansion.expansion?.trigger ?? "unknown"}:${macroOpening ? "macro_priority" : "candidate_reserved"}`,
+          reasonCode: `expansion:${expansion.expansion?.trigger ?? "unknown"}:${priorityOpening ? "opening_priority" : "candidate_reserved"}`,
           builderIds: [builder.actorId],
           objectName: mainObject!,
           logicalPosition: expansion.anchorPosition,

@@ -41,6 +41,14 @@ it("bounds movement and distinguishes an owned destination from a live opposing 
   ]) expect(validAiRuntimePresetControls(withAction(action), owners)).toBe(false);
 });
 
+it("allows AI-source only for an explicit opposing attack control", () => {
+  expect(validAiRuntimePresetControls([{ ...rally, source: "ai", action: { kind: "attack", targetFixtureActorId: "enemy" } }], owners))
+    .toBe(true);
+  expect(validAiRuntimePresetControls([{ ...rally, source: "human", action: { kind: "attack", targetFixtureActorId: "enemy" } }], owners))
+    .toBe(false);
+  expect(validAiRuntimePresetControls([{ ...rally, source: "ai" }], owners)).toBe(false);
+});
+
 it.each(["enemy", "resource", "missing", "producer"])("rejects invalid rally target %s", (targetFixtureActorId) => {
   expect(validAiRuntimePresetControls([{ ...rally, action: { ...rally.action, targetFixtureActorId } }], owners)).toBe(
     false

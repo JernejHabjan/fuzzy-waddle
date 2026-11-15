@@ -7,14 +7,17 @@ import { VisionComponent } from "../../../entity/components/vision-component";
 import { DistanceHelper } from "../../../library/distance-helper";
 import { AttackComponent } from "../../../entity/components/combat/components/attack-component";
 import { OrderType } from "../../../ai/order-type";
-import { PawnAiBlackboard } from "../controller/pawn-ai-blackboard";
+import { PawnAiBlackboard, RELEASED_PURSUIT_TARGET_MEMORY_KEY } from "../controller/pawn-ai-blackboard";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { OrderData } from "../../../ai/OrderData";
 import { HealingComponent } from "../../../entity/components/combat/components/healing-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
+import { OwnerComponent } from "../../../entity/components/owner-component";
+import { ProbableWafflePlayerType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { getSimulationNow } from "../../../world/services/simulation-time";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
+import { getGameObjectCurrentTile } from "../../../data/game-object-helper";
 
 /** Owns combat/healing actions and deterministic visible-enemy selection against the live actor components.
  * Actor-local collaborators own no subscriptions, timers or saved state; the controller owns their lifetime.
@@ -65,6 +68,14 @@ export class PawnAgentCombat {
     const enemy = this.getClosestAttackableVisibleEnemy();
     if (!enemy) return State.FAILED;
     currentOrder.data.targetGameObject = enemy;
+    if (currentOrder.data.commandContext?.execution.source === "ai") {
+      const enemyId = getActorComponent(enemy, IdComponent)?.id;
+      const enemyTile = getGameObjectCurrentTile(enemy);
+      currentOrder.data.targetGameObjectId = enemyId;
+      if (enemyTile && !currentOrder.data.pursuitTargetOrigin) {
+        currentOrder.data.pursuitTargetOrigin = { ...enemyTile, z: 0 };
+      }
+    }
     return State.SUCCEEDED;
   }
 
@@ -135,7 +146,14 @@ export class PawnAgentCombat {
       case "vision":
         const visibleEnemy = this.getClosestAttackableVisibleEnemy();
         if (!visibleEnemy) return State.FAILED;
-        this.blackboard.addOrder(new OrderData(OrderType.Attack, { targetGameObject: visibleEnemy }));
+        const enemyTile = this.isAiOwnedPawn() ? getGameObjectCurrentTile(visibleEnemy) : undefined;
+        this.blackboard.addOrder(
+          new OrderData(OrderType.Attack, {
+            targetGameObject: visibleEnemy,
+            targetGameObjectId: getActorComponent(visibleEnemy, IdComponent)?.id,
+            ...(enemyTile ? { pursuitTargetOrigin: { ...enemyTile, z: 0 } } : {})
+          })
+        );
         return State.SUCCEEDED;
       case "retaliation": // todo
         const healthComponent = getActorComponent(this.gameObject, HealthComponent);
@@ -145,7 +163,20 @@ export class PawnAgentCombat {
         const attacker = latestDamage.damageInitiator;
         if (!attacker) return State.FAILED;
         if (!this.canAttackTarget(attacker)) return State.FAILED;
-        this.blackboard.addOrder(new OrderData(OrderType.Attack, { targetGameObject: attacker }));
+        const attackerId = getActorComponent(attacker, IdComponent)?.id;
+        const aiOwned = this.isAiOwnedPawn();
+        if (aiOwned && attackerId && attackerId === this.blackboard.recall(RELEASED_PURSUIT_TARGET_MEMORY_KEY))
+          return State.FAILED;
+        const attackerTile = aiOwned ? getGameObjectCurrentTile(attacker) : undefined;
+        this.blackboard.addOrder(
+          new OrderData(OrderType.Attack, {
+            targetGameObject: attacker,
+            targetGameObjectId: attackerId,
+            ...(attackerTile
+              ? { targetTileLocation: { ...attackerTile, z: 0 }, pursuitTargetOrigin: { ...attackerTile, z: 0 } }
+              : {})
+          })
+        );
         return State.SUCCEEDED;
       default:
         console.error("Invalid source for AssignEnemy.");
@@ -163,7 +194,25 @@ export class PawnAgentCombat {
     const visionComponent = getActorComponent(this.gameObject, VisionComponent);
     if (!visionComponent) return null;
 
-    const attackableEnemies = visionComponent.getVisibleEnemies().filter((enemy) => this.canAttackTarget(enemy));
+    const visibleEnemies = visionComponent.getVisibleEnemies();
+    const attackableEnemies = visibleEnemies.filter((enemy) => this.canAttackTarget(enemy));
+    const currentOrder = this.blackboard.getCurrentOrder();
+    const rememberedReleasedTargetId = this.blackboard.recall<string>(RELEASED_PURSUIT_TARGET_MEMORY_KEY);
+    if (
+      rememberedReleasedTargetId &&
+      !visibleEnemies.some((enemy) => getActorComponent(enemy, IdComponent)?.id === rememberedReleasedTargetId)
+    ) {
+      this.blackboard.forget(RELEASED_PURSUIT_TARGET_MEMORY_KEY);
+    }
+    const releasedTargetId =
+      currentOrder?.data.pursuitReleasedTargetActorId ??
+      this.blackboard.recall<string>(RELEASED_PURSUIT_TARGET_MEMORY_KEY);
+    if (releasedTargetId) {
+      const eligibleEnemies = attackableEnemies.filter(
+        (enemy) => getActorComponent(enemy, IdComponent)?.id !== releasedTargetId
+      );
+      attackableEnemies.splice(0, attackableEnemies.length, ...eligibleEnemies);
+    }
     if (attackableEnemies.length === 0) return null;
 
     // Deterministic target ordering: closest first, then stable actor identity.
@@ -198,6 +247,23 @@ export class PawnAgentCombat {
     const aStable = `${a.name}:${aId ?? ""}`;
     const bStable = `${b.name}:${bId ?? ""}`;
     return aStable.localeCompare(bStable);
+  }
+
+  private isAiOwnedPawn(): boolean {
+    const owner = getActorComponent(this.gameObject, OwnerComponent)?.getOwner();
+    if (owner === undefined) return false;
+    const players = (
+      this.gameObject.scene as Phaser.Scene & {
+        players?: Array<{
+          playerNumber?: number;
+          playerController?: { data?: { playerDefinition?: { playerType?: ProbableWafflePlayerType } } };
+        }>;
+      }
+    ).players;
+    return (
+      players?.find((player) => player.playerNumber === owner)?.playerController?.data?.playerDefinition?.playerType ===
+      ProbableWafflePlayerType.AI
+    );
   }
 
   private canAttackTarget(target: Phaser.GameObjects.GameObject): boolean {

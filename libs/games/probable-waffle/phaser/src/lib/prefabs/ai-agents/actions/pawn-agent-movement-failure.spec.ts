@@ -8,7 +8,7 @@ import { getSceneService } from "../../../world/services/scene-component-helpers
 import { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
-import { PawnAiBlackboard } from "../controller/pawn-ai-blackboard";
+import { PawnAiBlackboard, RELEASED_PURSUIT_TARGET_MEMORY_KEY } from "../controller/pawn-ai-blackboard";
 import { PawnAgentMovement } from "./pawn-agent-movement";
 import { PawnAgentOrders } from "../orders/pawn-agent-orders";
 import { AttackComponent } from "../../../entity/components/combat/components/attack-component";
@@ -196,6 +196,43 @@ describe("native Move refusal settles its command", () => {
     f.nativeMove.mockResolvedValue(true);
     await expect(f.move.MoveToTarget("attack")).resolves.toBe(State.SUCCEEDED);
     expect(f.nativeMove).toHaveBeenCalledTimes(1);
+  });
+
+  it("releases an AI pursuit at its target leash and resumes attack-move at the saved anchor", async () => {
+    const f = fixture(OrderType.Attack);
+    const target = new Phaser.GameObjects.GameObject(f.actor.scene, "target");
+    f.order.data.targetGameObject = target;
+    f.order.data.targetGameObjectId = "fleeing-target";
+    f.order.data.pursuitTargetOrigin = { x: 1, y: 1, z: 0 };
+    jest
+      .spyOn(gameObjectHelpers, "getGameObjectCurrentTile")
+      .mockImplementation((actor) => (actor === target ? { x: 20, y: 1 } : { x: 0, y: 0 }));
+    const components = jest.mocked(getActorComponent).getMockImplementation();
+    jest.mocked(getActorComponent).mockImplementation((actor, token) => {
+      if (token === AttackComponent) return { getAttackRange: () => 1 } as never;
+      if (token === IdComponent) return { id: actor === target ? "fleeing-target" : "pawn" } as never;
+      return components?.(actor, token);
+    });
+    f.canMoveTo.mockResolvedValue(true);
+    const movementMock = f.nativeMove as unknown as jest.Mock<
+      Promise<boolean>,
+      [unknown, { onUpdate?: () => void; onUpdateThrottled?: () => void }]
+    >;
+    movementMock.mockImplementation(async (_target, config) => {
+      config.onUpdate?.();
+      return false;
+    });
+
+    await expect(f.move.MoveToTarget("attack")).resolves.toBe(State.SUCCEEDED);
+    expect(f.order.data.targetGameObject).toBeUndefined();
+    expect(f.order.data.targetGameObjectId).toBeUndefined();
+    expect(f.order.data.pursuitReleasedTargetActorId).toBe("fleeing-target");
+    expect(f.order.data.targetTileLocation).toEqual({ x: 25, y: 28, z: 0 });
+    expect(f.order.data.pursuitTargetOrigin).toBeUndefined();
+    expect(f.board.getCurrentOrder()).toBe(f.order);
+    expect(f.board.recall(RELEASED_PURSUIT_TARGET_MEMORY_KEY)).toBe("fleeing-target");
+    expect(f.report).not.toHaveBeenCalled();
+    expect(f.cancelMovement).toHaveBeenCalledTimes(1);
   });
 
   it("does not terminate a replacement order when an earlier movement resolves false", async () => {

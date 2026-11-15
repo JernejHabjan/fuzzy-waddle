@@ -23,17 +23,27 @@ it("finds a legal prerequisite chain and stops once an existing route is ready",
       producer,
       {
         ...unit,
+        movementDomains: ["air" as const],
         targetDomains: ["air" as const],
         constructionProfile: {
           ...unit.constructionProfile,
           requiredObjectNames: [ObjectNames.Temple]
         }
       },
-      temple
+      temple,
+      { ...temple, produces: [ObjectNames.Banshee] },
+      {
+        ...unit,
+        sourceObjectName: ObjectNames.Banshee,
+        movementDomains: ["air" as const],
+        targetDomains: ["ground" as const],
+        constructionProfile: { ...unit.constructionProfile, requiredObjectNames: [ObjectNames.Temple] }
+      }
     ]
   };
   const workers = f.observation.actors.filter((actor) => actor.objectName === worker.sourceObjectName);
   expect(counterInfrastructurePath(catalog, workers)).toEqual([f.producerName, ObjectNames.Temple]);
+  expect(counterInfrastructurePath(catalog, workers, "air_pressure")).toEqual([f.producerName, ObjectNames.Temple]);
   expect(counterInfrastructurePath(catalog, [...workers, f.producer])).toEqual([ObjectNames.Temple]);
   const finishedTemple = { ...createAiTestOwnedActor("temple"), objectName: ObjectNames.Temple };
   expect(counterInfrastructurePath(catalog, [...workers, f.producer, finishedTemple])).toEqual([]);

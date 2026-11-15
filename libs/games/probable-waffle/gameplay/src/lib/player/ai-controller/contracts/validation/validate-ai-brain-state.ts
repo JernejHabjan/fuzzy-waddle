@@ -39,6 +39,14 @@ export function isAiBrainState(value: unknown): value is AiBrainState {
 /** Rejects malformed counters and duplicate identities in a typed brain state. */
 export function assertAiBrainState(value: unknown): asserts value is AiBrainState {
   if (!isAiBrainState(value)) throw new Error("malformed_ai_state:v1_shape");
+  const openingSelectionStatus = value.opening.selectionStatus;
+  if (
+    openingSelectionStatus !== undefined &&
+    openingSelectionStatus !== "pending_eligibility" &&
+    openingSelectionStatus !== "resolved"
+  ) {
+    throw new Error("malformed_ai_state:opening_selection_status");
+  }
   assertAiProductionTransition(value.economyProduction.transition);
   assertAiNonNegativeInteger(value.playerNumber, "playerNumber");
   assertAiNonNegativeInteger(value.lastCommittedTick, "lastCommittedTick");

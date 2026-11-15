@@ -30,4 +30,18 @@ describe("PawnAiBlackboard", () => {
 
     expect(discarded).toEqual([]);
   });
+
+  it("persists a released pursuit across native order restoration", () => {
+    const original = new OrderData(OrderType.Attack, {
+      targetTileLocation: { x: 8, y: 4, z: 0 },
+      pursuitReleasedTargetActorId: "fleeing-worker"
+    });
+    const record = OrderData.mapFromOrderDataClassToRecord(original);
+    const restored = OrderData.mapFromRecordToOrderDataClass(record, {} as never);
+
+    expect(restored.data).toMatchObject({
+      targetTileLocation: { x: 8, y: 4, z: 0 },
+      pursuitReleasedTargetActorId: "fleeing-worker"
+    });
+  });
 });

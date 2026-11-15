@@ -34,6 +34,25 @@ const recorded = {
 } as unknown as NonNullable<ReturnType<PlayerAiController["getBrainDebugSnapshot"]>>;
 
 describe("committed AI debug lines", () => {
+  it("identifies completed and remaining fortification piece kinds without counting the open gate", () => {
+    expect(
+      AiCommittedDebugLines.getFortificationPieceLines([
+        { kind: "gate_slot", lifecycle: "finished" },
+        { kind: "wall", lifecycle: "finished" },
+        { kind: "stair", lifecycle: "finished" },
+        { kind: "tower", lifecycle: "planned" }
+      ])
+    ).toEqual(["  completed pieces: stair:1, wall:1", "  remaining pieces: tower:1"]);
+  });
+
+  it("reports map and real match seed in the runtime view even before the first decision", () => {
+    expect(AiCommittedDebugLines.getRuntimeLines(undefined, 0, { mapName: "Ember Enclave", seed: 12345 })).toEqual([
+      "=== RUNTIME & LIMITS ===",
+      "Match Ember Enclave, seed 12345",
+      "No committed decision snapshot"
+    ]);
+  });
+
   it("renders the recorded strategic overview even when current state is unavailable", () => {
     const controller = {
       getBrainState: jest.fn(() => undefined),
@@ -87,5 +106,48 @@ describe("committed AI debug lines", () => {
     expect(lines).toContain("Force: 3/2 compatible units; route unknown; confidence 1000‰");
     expect(lines).toContain("Alternative enemy-field: lower_expected_effect");
     expect(controller.getBrainState).not.toHaveBeenCalled();
+  });
+
+  it("shows majority-loss withdrawal policy and the committed tactical reason", () => {
+    const controller = {} as PlayerAiController;
+    const thresholdLines = AiCommittedDebugLines.getCommittedPlanningLines(controller, recorded, 0, "thresholds");
+    const supportLines = AiCommittedDebugLines.getSquadSupportLines({
+      ...recorded,
+      support: [],
+      skirmish: {
+        ...recorded.skirmish,
+        squads: [
+          {
+            squadId: "squad:defense",
+            state: "retreat",
+            stateReason: "majority_committed_losses",
+            individualFallbackCount: 1,
+            pursuitReleasedTargetIds: ["fleeing-worker"],
+            script: "protected_retreat",
+            domain: "ground",
+            members: 4,
+            taskForceId: "task-force:2",
+            objectiveId: "enemy-worker",
+            targetActorId: "enemy-worker",
+            engagementRatioPermille: 600,
+            confidencePermille: 900,
+            predictedFriendlyLossPermille: 700,
+            observedLossCount: 3,
+            lastUsefulEffectTick: null,
+            orderedActorCount: 4,
+            damageReservationCount: 0,
+            mobileReserveCount: 0,
+            oscillationCount: 0,
+            objectiveAlternatives: []
+          }
+        ]
+      }
+    } as unknown as NonNullable<ReturnType<PlayerAiController["getBrainDebugSnapshot"]>>);
+
+    expect(thresholdLines).toContain(
+      "Full withdrawal: majority losses, whole squad critically exposed, scout under fire, or defender route lost"
+    );
+    expect(supportLines).toContain("  reason majority_committed_losses; individual fallback 1");
+    expect(supportLines).toContain("  pursuit released: fleeing-worker");
   });
 });

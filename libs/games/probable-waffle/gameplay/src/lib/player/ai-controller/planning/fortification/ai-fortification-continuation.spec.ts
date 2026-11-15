@@ -1,8 +1,14 @@
 import { AiFortificationManager, fortificationPreservesConnectivity } from "./ai-fortification-manager";
-import { profile, catalog, observation, threatenedState } from "../../testing/fixtures/fortification/ai-fortification-test-fixture";
+import {
+  profile,
+  catalog,
+  observation,
+  threatenedState
+} from "../../testing/fixtures/fortification/ai-fortification-test-fixture";
 import { requireAiTestEntry } from "../../testing/fixtures/coordination/ai-test-fixtures";
-import { createFortificationPlan } from "./ai-fortification-plan";
+import { createFortificationPlan, createFortificationPlanWithReason } from "./ai-fortification-plan";
 import type { AiBrainState } from "../../contracts/state/ai-state-contracts";
+import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 const manager = new AiFortificationManager(profile, () => catalog);
 
@@ -25,7 +31,7 @@ describe("fortification continuation and placement contracts", () => {
     ).toBe(false);
   });
 
-  it("WALL-01 refuses a fresh layout whose opening or wall footprint is occupied", () => {
+  it("WALL-01 explains when an occupied opening leaves no viable connected wall corridor", () => {
     const source = observation();
     const proposal = manager.propose(
       {
@@ -42,9 +48,62 @@ describe("fortification continuation and placement contracts", () => {
     );
     expect(proposal.intents).toEqual([]);
     expect(proposal.statePatch?.fortifications).toEqual([]);
+    expect(proposal.reasons).toContain("fortification_wall_corridor_not_viable");
   });
 
-  it("H-28 prices cumulative other-base commitments instead of admitting a second short prefix against the full budget", () => {
+  it("reports actionable reasons when a fortification graph cannot be created", () => {
+    const source = observation();
+    const initial = threatenedState();
+    const withoutThreat = {
+      ...initial,
+      skirmish: { ...initial.skirmish, incidents: [] }
+    };
+    expect(
+      createFortificationPlanWithReason(
+        profile,
+        null,
+        source,
+        withoutThreat,
+        "base:main:main",
+        { x: 5, y: 10, z: 0 },
+        catalog
+      )
+    ).toMatchObject({ plan: null, reason: "defense_trigger_not_justified" });
+
+    const oneBuilder = {
+      ...source,
+      actors: source.actors.filter((actor) => actor.actorId !== "worker-reserve")
+    };
+    expect(
+      createFortificationPlanWithReason(
+        profile,
+        null,
+        oneBuilder,
+        initial,
+        "base:main:main",
+        { x: 5, y: 10, z: 0 },
+        catalog
+      )
+    ).toMatchObject({ plan: null, reason: "fortification_builder_coverage_unmet" });
+
+    const withoutStone = {
+      ...source,
+      resources: source.resources.map((ledger) => ({ ...ledger, stockpile: 0 }))
+    };
+    expect(
+      createFortificationPlanWithReason(
+        profile,
+        null,
+        withoutStone,
+        initial,
+        "base:main:main",
+        { x: 5, y: 10, z: 0 },
+        catalog
+      )
+    ).toMatchObject({ plan: null, reason: "first_stage_over_protected_macro_budget" });
+  });
+
+  it("H-28 deducts other-base commitments while admitting an affordable first construction stage", () => {
     const initial = threatenedState();
     const prior = requireAiTestEntry(manager.propose(observation(), initial).statePatch?.fortifications, 0);
     if (!prior.graph) throw new Error("fortification_graph_missing");
@@ -64,9 +123,16 @@ describe("fortification continuation and placement contracts", () => {
         }
       ]
     };
-    expect(
-      createFortificationPlan(profile, null, observation(), state, "base:main:main", { x: 5, y: 10, z: 0 }, catalog)
-    ).toBeNull();
+    const staged = createFortificationPlan(
+      profile,
+      null,
+      observation(),
+      state,
+      "base:main:main",
+      { x: 5, y: 10, z: 0 },
+      catalog
+    );
+    expect(staged?.graph?.budget.remainingByResource[ResourceType.Stone]).toBe(280);
     expect(
       createFortificationPlan(profile, null, observation(), initial, "base:main:main", { x: 5, y: 10, z: 0 }, catalog)
     ).not.toBeNull();

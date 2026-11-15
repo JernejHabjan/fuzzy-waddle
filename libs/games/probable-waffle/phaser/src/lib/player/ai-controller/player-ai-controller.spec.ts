@@ -1,6 +1,6 @@
 import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
 import type { AiIntent, AiObservation } from "@fuzzy-waddle/probable-waffle-gameplay";
-import { FactionType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { FactionType, ProbableWaffleAiDifficulty, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { OrderType } from "../../ai/order-type";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
@@ -13,6 +13,8 @@ import { rememberAiResourceInputRead } from "@fuzzy-waddle/probable-waffle-gamep
 import { createAiProductionPolicyFixture } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/production/ai-production-policy-fixture";
 import { PureAiBrain } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain";
 import type { AiAuthorityState } from "@fuzzy-waddle/probable-waffle-gameplay";
+import { createAiProfileConfig } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-profile-defaults";
+import { selectAiOpeningArchetype } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-opening-archetypes";
 
 jest.mock("../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
@@ -32,6 +34,95 @@ const baseIntent = {
 
 describe("PlayerAiController pure planner integration", () => {
   afterEach(() => jest.clearAllMocks());
+
+  it("uses the match seed for its persisted opening choice", () => {
+    const controller = Object.create(PlayerAiController.prototype) as PlayerAiController;
+    const scene = {
+      baseGameData: {
+        gameInstance: { gameInstanceMetadata: { data: { rndSeed: 42 } } }
+      }
+    };
+    Reflect.set(controller, "scene", scene);
+    Reflect.set(controller, "player", {
+      playerNumber: 1,
+      playerController: {
+        data: { playerDefinition: { factionType: FactionType.Tivara, difficulty: ProbableWaffleAiDifficulty.Medium } }
+      }
+    });
+    const context = (
+      controller as unknown as { getBrainMigrationContext(): { archetypeId: string } }
+    ).getBrainMigrationContext();
+    const expected = selectAiOpeningArchetype({
+      faction: FactionType.Tivara,
+      playerNumber: 1,
+      profile: createAiProfileConfig(ProbableWaffleAiDifficulty.Medium),
+      seed: 42
+    });
+
+    expect(context?.archetypeId).toBe(expected.id);
+    expect(expected.id).not.toBe(
+      selectAiOpeningArchetype({
+        faction: FactionType.Tivara,
+        playerNumber: 1,
+        profile: createAiProfileConfig(ProbableWaffleAiDifficulty.Medium),
+        seed: 1
+      }).id
+    );
+  });
+
+  it("resolves a fresh opening against the committed faction catalog but preserves a restored choice", () => {
+    const f = createAiProductionPolicyFixture();
+    const controller = Object.create(PlayerAiController.prototype) as PlayerAiController;
+    const scene = {
+      baseGameData: { gameInstance: { gameInstanceMetadata: { data: { rndSeed: 759 } } } }
+    };
+    const player = {
+      playerNumber: 1,
+      playerController: {
+        data: { playerDefinition: { factionType: FactionType.Tivara, difficulty: ProbableWaffleAiDifficulty.Hard } }
+      }
+    };
+    Reflect.set(controller, "scene", scene);
+    Reflect.set(controller, "player", player);
+    Reflect.set(controller, "profile", createAiProfileConfig(ProbableWaffleAiDifficulty.Hard));
+    Reflect.set(controller, "playerAiControllerAgent", {
+      getCommittedCapabilityCatalog: () => f.catalog
+    });
+    Reflect.set(controller, "brainState", {
+      ...f.state,
+      opening: {
+        ...f.state.opening,
+        archetypeId: "opening:Tivara:naval",
+        selectionStatus: "pending_eligibility"
+      }
+    });
+
+    const resolve = (
+      controller as unknown as { resolvePendingOpeningEligibility(observation: AiObservation): boolean }
+    ).resolvePendingOpeningEligibility.bind(controller);
+    const pendingMap = {
+      bounds: { status: "unknown", reason: "not_observed" },
+      staticRevision: 1,
+      frontierAccessNodeIds: [],
+      scoutCoverageAccessNodeIds: [],
+      dynamicObstacleActorIds: [],
+      regionGeneration: { generation: 1, status: "not_ready", continuationCursor: 0 }
+    } as const;
+    expect(resolve({ ...f.observation, map: pendingMap })).toBe(false);
+    expect(controller.getBrainState()?.opening.selectionStatus).toBe("pending_eligibility");
+    expect(resolve(f.observation)).toBe(true);
+    expect(controller.getBrainState()?.opening.selectionStatus).toBe("resolved");
+    expect(controller.getBrainState()?.opening.archetypeId).not.toBe("opening:Tivara:naval");
+
+    const resolvedState = controller.getBrainState();
+    if (!resolvedState) throw new Error("expected_resolved_brain_state");
+    Reflect.set(controller, "brainState", {
+      ...resolvedState,
+      opening: { ...resolvedState.opening, archetypeId: "opening:Tivara:naval" }
+    });
+    expect(resolve(f.observation)).toBe(true);
+    expect(controller.getBrainState()?.opening.archetypeId).toBe("opening:Tivara:naval");
+  });
 
   it("uses current authority for admission and saves the frontier after synchronous dispatch callbacks", () => {
     const f = createAiProductionPolicyFixture(),

@@ -55,6 +55,8 @@ export interface AiObservedResourceState {
 export interface AiObservedOrder {
   readonly orderType: OrderType;
   readonly targetActorId: ActorId | null;
+  /** Target the native order deliberately released at its automatic pursuit boundary. */
+  readonly pursuitReleasedTargetActorId?: ActorId;
   /** Native tile destination for owned move orders when the pawn order provides one. */
   readonly targetPosition?: Vector3Simple | null;
 }

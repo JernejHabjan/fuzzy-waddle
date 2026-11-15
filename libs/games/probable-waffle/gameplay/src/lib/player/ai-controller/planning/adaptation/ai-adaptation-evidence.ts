@@ -100,9 +100,7 @@ function isExposedValuableBackline(actor: AiObservation["actors"][number], obser
   });
 }
 
-function knownPosition(
-  actor: AiObservation["actors"][number]
-): { readonly x: number; readonly y: number } | undefined {
+function knownPosition(actor: AiObservation["actors"][number]): { readonly x: number; readonly y: number } | undefined {
   return actor.logicalPosition.status === "known"
     ? { x: actor.logicalPosition.value.x, y: actor.logicalPosition.value.y }
     : undefined;
@@ -182,6 +180,7 @@ export function adaptationRoleTargets(
       .map((entry) => entry.evidenceId)
       .sort();
   const offensiveObjective = ["pressure", "expand", "finish"].includes(state.strategy.stance);
+  const openingPurpose = state.opening.archetypeId.split(":").at(-1);
   const actualFlyers = confirmed.filter(
     (entry) => entry.kind === "flyer" && entry.permittedFacts.includes("visible_air_movement")
   ).length;
@@ -191,12 +190,12 @@ export function adaptationRoleTargets(
     { role: "anti_air", desired: antiAir, evidenceIds: byKind("flyer") },
     {
       role: "air_pressure",
-      desired: Math.min(1, byKind("exposed_backline").length),
+      desired: Math.max(openingPurpose === "turtle_air" ? 1 : 0, Math.min(6, byKind("exposed_backline").length)),
       evidenceIds: byKind("exposed_backline")
     },
     {
       role: "water_control",
-      desired: Math.min(2, byKind("water_or_transport").length),
+      desired: Math.max(openingPurpose === "naval" ? 1 : 0, Math.min(6, byKind("water_or_transport").length)),
       evidenceIds: byKind("water_or_transport")
     },
     { role: "ranged", desired: Math.min(2, byKind("area_damage").length), evidenceIds: byKind("area_damage") },

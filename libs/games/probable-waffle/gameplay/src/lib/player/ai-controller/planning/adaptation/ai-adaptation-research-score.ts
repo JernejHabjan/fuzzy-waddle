@@ -12,7 +12,8 @@ export function scoreAdaptationResearch(
   const upgradeTarget = candidate.benefit.kind === "unit_level" ? candidate.benefit.targetObjectName : null;
   const queuedItemIds = new Set<string>();
   const queuedBeneficiaries = upgradeTarget
-    ? self.flatMap((actor) => actor.queue.status === "known" ? actor.queue.value.items ?? [] : [])
+    ? self
+        .flatMap((actor) => (actor.queue.status === "known" ? (actor.queue.value.items ?? []) : []))
         .filter((item) => item.kind === "production" && item.objectName === upgradeTarget)
         .filter((item) => {
           if (queuedItemIds.has(item.itemId)) return false;
@@ -33,7 +34,12 @@ export function scoreAdaptationResearch(
   const survivalCost = observation.threatSummary.visibleEnemyActorIds.length > 0 ? 400 : 0;
   const archetypeParts = state.opening.archetypeId.split(":");
   const purpose = archetypeParts[archetypeParts.length - 1];
-  const archetypeBias = purpose === "tech" ? 200 : purpose === "rush" || purpose === "pressure" ? -100 : 0;
+  const archetypeBias =
+    purpose === "tech" || purpose === "turtle_air" || purpose === "turtle"
+      ? 200
+      : purpose === "rush" || purpose === "pressure"
+        ? -100
+        : 0;
   return Math.max(
     0,
     Math.min(

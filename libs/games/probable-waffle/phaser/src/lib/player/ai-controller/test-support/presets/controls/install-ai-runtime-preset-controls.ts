@@ -84,7 +84,7 @@ export function installAiRuntimePresetControls(
       const outcomes: GameCommandOutcome[] = [];
       const listener = bus.commandOutcome$.subscribe((outcome) => outcomes.push(structuredClone(outcome)));
       try {
-        const receipt = bus.dispatchDeterministic(command, "human");
+        const receipt = bus.dispatchDeterministic(command, control.source ?? "human");
         if (receipt.status !== "dispatched") throw new Error(`runtime_preset_control_admission_failed:${control.id}`);
         record(
           "applied",

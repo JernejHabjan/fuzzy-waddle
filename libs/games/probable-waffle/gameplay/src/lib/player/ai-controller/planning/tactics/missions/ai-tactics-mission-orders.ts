@@ -55,19 +55,17 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
   );
   const safeFiringMovesNeeded = actorsNeedingOrder.some((actorId) => safeFiringMoveIds.has(actorId));
   const protectedMembers = members.filter((member) => protectedIds.has(member.actorId));
-  const protectedMembersNeedingMove = retreat
-    ? protectedMembers.filter((member) => {
-        if (safeFiringActorIds.has(member.actorId)) return false;
-        const position = member.logicalPosition.status === "known" ? member.logicalPosition.value : null;
-        const activeOrder = member.activeOrder?.status === "known" ? member.activeOrder.value : null;
-        return !(
-          activeOrder?.orderType === OrderType.Move &&
-          activeOrder.targetPosition != null &&
-          position !== null &&
-          distance(activeOrder.targetPosition, position) > 1
-        );
-      })
-    : [];
+  const protectedMembersNeedingMove = protectedMembers.filter((member) => {
+    if (safeFiringActorIds.has(member.actorId)) return false;
+    const position = member.logicalPosition.status === "known" ? member.logicalPosition.value : null;
+    const activeOrder = member.activeOrder?.status === "known" ? member.activeOrder.value : null;
+    return !(
+      activeOrder?.orderType === OrderType.Move &&
+      activeOrder.targetPosition != null &&
+      position !== null &&
+      distance(activeOrder.targetPosition, position) > 1
+    );
+  });
   const damageReservations = allDamageReservations.filter(
     (reservation) =>
       !protectedIds.has(reservation.actorId) &&
@@ -185,6 +183,7 @@ export function proposeAiTacticalOrders(input: ReturnType<typeof projectAiTactic
       const reservedTarget = actorById.get(reservation.targetActorId);
       if (!attacker || !reservedTarget || !canTarget(attacker, reservedTarget)) continue;
       const activeOrder = attacker.activeOrder?.status === "known" ? attacker.activeOrder.value : null;
+      if (activeOrder?.pursuitReleasedTargetActorId === reservedTarget.actorId) continue;
       // A damage forecast expires before a native attack job; replacing that job restarts its approach/windup.
       if (activeOrder?.orderType === OrderType.Attack && activeOrder.targetActorId === reservedTarget.actorId) continue;
       const single = { ...updated, actorIds: [attacker.actorId] };

@@ -18,6 +18,19 @@ import { productionTransitionClaims } from "./ai-production-transition-claims";
 import { proposeAiConstructionRecovery } from "../../construction/ai-construction-recovery-proposal";
 import { nextAiMilitarySpendingReserve } from "../capacity/ai-military-spending-reserve";
 import { proposeAiCounterInfrastructure } from "../../adaptation/ai-counter-infrastructure-proposal";
+import type { AiAdaptationRole } from "../../adaptation/ai-adaptation-role";
+
+/** Shared macro infrastructure follows strategic openings and confirmed live role deficits. */
+export function aiMacroInfrastructureRoles(state: AiBrainState): readonly AiAdaptationRole[] {
+  const roles = new Set<AiAdaptationRole>(["anti_air"]);
+  if (state.opening.archetypeId.endsWith(":turtle_air")) roles.add("air_pressure");
+  if (state.opening.archetypeId.endsWith(":naval")) roles.add("water_control");
+  for (const target of state.economyProduction.adaptation.activeRoleTargets) {
+    if (target.desired > 0 && (target.role === "air_pressure" || target.role === "water_control"))
+      roles.add(target.role);
+  }
+  return [...roles].sort();
+}
 
 /**
  * Macro proposal owner. It derives opening, supply and composition demand
@@ -133,17 +146,22 @@ export class AiMacroManager implements AiProposalManager {
       }
       ordinal += 1;
     }
-    const counterInfrastructure = proposeAiCounterInfrastructure({
-      observation,
-      state,
-      catalog,
-      self,
-      reservedActorIds,
-      selectedConstructionTileKeys,
-      priorIntents: intents,
-      ordinal
-    });
-    if (counterInfrastructure) {
+    const infrastructureRoles = aiMacroInfrastructureRoles(state);
+    for (const role of infrastructureRoles) {
+      const counterInfrastructure = proposeAiCounterInfrastructure(
+        {
+          observation,
+          state,
+          catalog,
+          self,
+          reservedActorIds,
+          selectedConstructionTileKeys,
+          priorIntents: intents,
+          ordinal
+        },
+        role
+      );
+      if (!counterInfrastructure) continue;
       intents.push(counterInfrastructure);
       if (counterInfrastructure.kind === "construct") {
         counterInfrastructure.builderIds.forEach((actorId) => reservedActorIds.add(actorId));

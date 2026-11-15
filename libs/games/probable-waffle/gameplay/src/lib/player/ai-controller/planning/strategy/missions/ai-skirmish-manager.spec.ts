@@ -426,4 +426,71 @@ describe("AiSkirmishManager", () => {
       expect.objectContaining({ role: "defense", objectiveId: "raider", actorIds: ["guard"] })
     );
   });
+
+  it("routes a compatible defender to an established expansion under local pressure", () => {
+    const initial = createAiBrainState({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "opening:tivara:expansion"
+    });
+    const main = {
+      ...unit("main", homeNode, 0),
+      housingCost: { status: "known" as const, value: 0, observedTick: 0 },
+      capabilities: [],
+      mainBuilding: { status: "known" as const, value: true, observedTick: 0 }
+    };
+    const expansion = {
+      ...unit("expansion", enemyNode, 29),
+      housingCost: { status: "known" as const, value: 0, observedTick: 0 },
+      capabilities: [],
+      mainBuilding: { status: "known" as const, value: true, observedTick: 0 }
+    };
+    const raider = {
+      ...unit("raider", enemyNode, 30),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const
+    };
+    const state = {
+      ...initial,
+      bases: [
+        {
+          baseId: "base:main:main" as const,
+          anchorActorId: main.actorId,
+          memberActorIds: [main.actorId],
+          active: true,
+          lifecycle: "active" as const,
+          accessNodeId: homeNode,
+          anchorPosition: { x: 0, y: 0, z: 0 }
+        },
+        {
+          baseId: "base:expansion:site" as const,
+          anchorActorId: expansion.actorId,
+          memberActorIds: [expansion.actorId],
+          active: true,
+          lifecycle: "active" as const,
+          accessNodeId: enemyNode,
+          anchorPosition: { x: 29, y: 0, z: 0 }
+        }
+      ]
+    };
+
+    const proposal = manager.propose(observation(20, [main, expansion, unit("guard", homeNode, 0), raider]), state);
+    const defense = proposal.statePatch?.squads?.find((squad) => squad.role === "defense");
+
+    expect(defense?.lifecycle).toMatchObject({
+      protectedBaseId: "base:expansion:site",
+      rallyNodeId: enemyNode,
+      retreatNodeId: enemyNode
+    });
+    expect(
+      proposal.intents.some(
+        (intent) =>
+          (intent.kind === "attack" && intent.targetActorId === raider.actorId) ||
+          (intent.kind === "move" && intent.actorIds.includes("guard"))
+      )
+    ).toBe(true);
+  });
 });

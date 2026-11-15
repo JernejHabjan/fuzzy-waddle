@@ -2,8 +2,10 @@ import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/playe
 import type Phaser from "phaser";
 import { FactionType, ObjectNames, type ProbableWafflePlayer } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiCapabilityCatalogEntry } from "@fuzzy-waddle/probable-waffle-gameplay";
-import { getSceneService } from "../../../../world/services/scene-component-helpers";
-import { projectAvailableCatalogEntries } from "./ai-observation-catalog";
+import { getSceneComponent, getSceneService } from "../../../../world/services/scene-component-helpers";
+import { projectAvailableCatalogEntries, projectCatalogDefinition } from "./ai-observation-catalog";
+import { watchTowerDefinition } from "../../../../prefabs/buildings/tivara/WatchTower/watch-tower.definition";
+import { wallDefinition } from "../../../../prefabs/buildings/tivara/wall/wall.definition";
 
 jest.mock("../../../../world/services/scene-component-helpers", () => ({
   getSceneService: jest.fn(),
@@ -75,4 +77,14 @@ it("does not expose a counter that still requires research", () => {
     catalog
   );
   expect(catalog.size).toBe(0);
+});
+
+it("rounds wide construction footprints up to the occupied tile radius", () => {
+  (getSceneComponent as jest.Mock).mockReturnValue({ tilemap: { tileWidth: 64 } });
+
+  const tower = projectCatalogDefinition({} as Phaser.Scene, ObjectNames.WatchTower, watchTowerDefinition, 1, []);
+  const wall = projectCatalogDefinition({} as Phaser.Scene, ObjectNames.Wall, wallDefinition, 1, []);
+
+  expect(tower.constructionProfile?.footprintRadiusTiles).toBe(1);
+  expect(wall.constructionProfile?.footprintRadiusTiles).toBe(0);
 });

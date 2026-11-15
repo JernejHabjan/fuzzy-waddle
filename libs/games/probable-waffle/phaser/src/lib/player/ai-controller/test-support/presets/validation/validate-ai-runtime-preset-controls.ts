@@ -13,9 +13,9 @@ export function validAiRuntimePresetControls(value: unknown, owners: ReadonlyMap
   const only = (entry: Record<string, unknown>, keys: string[]) =>
     Object.keys(entry).every((key) => keys.includes(key));
   return value.every((entry) => {
-    if (!record(entry) || !only(entry, ["id", "requestTick", "applicationTick", "producerFixtureActorId", "action"]))
+    if (!record(entry) || !only(entry, ["id", "requestTick", "applicationTick", "producerFixtureActorId", "source", "action"]))
       return false;
-    const { id, requestTick, applicationTick, producerFixtureActorId, action } = entry;
+    const { id, requestTick, applicationTick, producerFixtureActorId, source, action } = entry;
     if (
       typeof id !== "string" ||
       !/^[a-z0-9][a-z0-9-]{2,63}$/.test(id) ||
@@ -30,9 +30,11 @@ export function validAiRuntimePresetControls(value: unknown, owners: ReadonlyMap
       typeof producerFixtureActorId !== "string" ||
       !owners.has(producerFixtureActorId) ||
       owners.get(producerFixtureActorId) === null ||
+      (source !== undefined && source !== "ai") ||
       !record(action)
     )
       return false;
+    if (source === "ai" && action["kind"] !== "attack") return false;
     ids.add(id);
     if (action["kind"] === "cast") {
       const target = action["targetFixtureActorId"];

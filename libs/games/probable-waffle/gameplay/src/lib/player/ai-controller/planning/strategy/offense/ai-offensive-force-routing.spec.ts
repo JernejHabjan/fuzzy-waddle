@@ -1,6 +1,13 @@
 import type { AiObservedActor } from "../../../contracts/observation/ai-observation";
 import { buildAiAccessGraph } from "../../access/ai-access-graph";
-import { guard, core, producer, world, brain, manager } from "../../../testing/fixtures/strategy/ai-offensive-opportunity-test-fixtures";
+import {
+  guard,
+  core,
+  producer,
+  world,
+  brain,
+  manager
+} from "../../../testing/fixtures/strategy/ai-offensive-opportunity-test-fixtures";
 import { createAiSkirmishProposalContext } from "../missions/ai-skirmish-proposal-draft";
 import { selectAiOffensiveOpportunity } from "./select-ai-offensive-opportunity";
 
@@ -14,6 +21,103 @@ function flyer(id: string): AiObservedActor {
 }
 
 describe("offensive force routing and domain readiness", () => {
+  it("raises the force gate for visible defenders with materially greater combat strength", () => {
+    const profile = (damage: number, maxHealth: number) => ({
+      status: "known" as const,
+      observedTick: 20,
+      value: {
+        maxHealth,
+        maxArmour: 0,
+        armourPermille: 0,
+        passiveRegenerationPerSecond: 0,
+        attacks: [
+          {
+            damage,
+            cooldownTicks: 60,
+            remainingCooldownTicks: null,
+            range: 2,
+            minRange: 0,
+            highGroundRangeBonus: 0,
+            impactDelayTicks: 0,
+            areaRadius: 0,
+            targetDomains: ["ground" as const]
+          }
+        ],
+        healing: null,
+        spells: [],
+        statuses: []
+      }
+    });
+    const attackers = [guard("strong-attacker-1", "self", 0), guard("strong-attacker-2", "self", 0)].map((actor) => ({
+      ...actor,
+      combatProfile: profile(10, 100)
+    }));
+    const target = producer("exposed-workmill");
+    const defender = {
+      ...guard("heavy-defender", "enemy", 1),
+      combatProfile: profile(20, 200)
+    };
+    const context = createAiSkirmishProposalContext(world([...attackers, target, defender]), brain(), {
+      schemaVersion: 1,
+      generation: 1,
+      unsupported: [],
+      entries: []
+    });
+
+    expect(selectAiOffensiveOpportunity(context, attackers).assessment).toMatchObject({
+      visibleThreatCount: 1,
+      requiredForce: 4
+    });
+  });
+
+  it("lets an early rush strike a visible, undefended economic target with two units", () => {
+    const attackers = [guard("rush-1", "self", 0), guard("rush-2", "self", 0)];
+    const target = producer("exposed-workmill");
+    const state = {
+      ...brain(),
+      opening: {
+        ...brain().opening,
+        archetypeId: "opening:tivara:rush"
+      }
+    };
+    const observation = world([...attackers, target]);
+    const context = createAiSkirmishProposalContext(observation, state, {
+      schemaVersion: 1,
+      generation: 1,
+      unsupported: [],
+      entries: []
+    });
+
+    expect(selectAiOffensiveOpportunity(context, attackers).assessment).toMatchObject({
+      targetActorId: target.actorId,
+      readyForce: 2,
+      requiredForce: 2,
+      reason: "credible_force_and_route"
+    });
+  });
+
+  it("does not apply the rush force reduction after the opening plan completes", () => {
+    const attackers = [guard("rush-1", "self", 0), guard("rush-2", "self", 0)];
+    const target = producer("exposed-workmill");
+    const base = brain();
+    const state = {
+      ...base,
+      opening: {
+        ...base.opening,
+        archetypeId: "opening:tivara:rush",
+        plan: { ...base.opening.plan, lifecycle: "completed" as const }
+      }
+    };
+    const context = createAiSkirmishProposalContext(world([...attackers, target]), state, {
+      schemaVersion: 1,
+      generation: 1,
+      unsupported: [],
+      entries: []
+    });
+
+    expect(selectAiOffensiveOpportunity(context, attackers).assessment.requiredForce).toBe(3);
+  });
+
   it("uses recent last-seen defenders as raid risk without making them target candidates", () => {
     const attackers = Array.from({ length: 3 }, (_, index) => guard(`raid-attacker-${index}`, "self", 0));
     const target = producer("raid-workmill");
@@ -29,28 +133,39 @@ describe("offensive force routing and domain readiness", () => {
       schemaVersion: 1 as const,
       generation: 1,
       unsupported: [],
-      entries: [{
-        capabilityId: "remembered-maceman",
-        family: "military",
-        sourceObjectName: defenders[0]!.objectName,
-        effectiveLevel: 1,
-        movementDomains: ["ground" as const],
-        targetDomains: ["ground" as const],
-        produces: [], constructs: [], researches: [], gathers: [],
-        housingCapacity: null, housingCost: 1, cargoCapacity: null
-      }]
+      entries: [
+        {
+          capabilityId: "remembered-maceman",
+          family: "military",
+          sourceObjectName: defenders[0]!.objectName,
+          effectiveLevel: 1,
+          movementDomains: ["ground" as const],
+          targetDomains: ["ground" as const],
+          produces: [],
+          constructs: [],
+          researches: [],
+          gathers: [],
+          housingCapacity: null,
+          housingCost: 1,
+          cargoCapacity: null
+        }
+      ]
     };
     const context = createAiSkirmishProposalContext(observation, brain(), catalog);
-    const choice = selectAiOffensiveOpportunity(
-      { ...context, rememberedEnemies: [] },
-      attackers,
-      { raid: true, threatContacts: defenders, candidateFilter: (actor) => actor.actorId === target.actorId }
-    );
+    const choice = selectAiOffensiveOpportunity({ ...context, rememberedEnemies: [] }, attackers, {
+      raid: true,
+      threatContacts: defenders,
+      candidateFilter: (actor) => actor.actorId === target.actorId
+    });
 
     expect(choice.opponent?.actorId).toBe(target.actorId);
     expect(choice.assessment).toMatchObject({ requiredForce: 13, visibleThreatCount: 8 });
 
-    const nearExpiryContext = { ...context, observation: { ...context.observation, tick: 1020 }, rememberedEnemies: [] };
+    const nearExpiryContext = {
+      ...context,
+      observation: { ...context.observation, tick: 1020 },
+      rememberedEnemies: []
+    };
     const nearExpiryChoice = selectAiOffensiveOpportunity(nearExpiryContext, attackers, {
       raid: true,
       threatContacts: defenders,
@@ -97,10 +212,46 @@ describe("offensive force routing and domain readiness", () => {
       continuationCursor: 0,
       includeAirRegion: true,
       cells: [
-        { x: 0, y: 0, ground: true, water: false, elevation: 0, groundNeighborKeys: ["1,0"], knowledge: "known_static", clearance: 2 },
-        { x: 1, y: 0, ground: true, water: false, elevation: 0, groundNeighborKeys: ["0,0"], knowledge: "known_static", clearance: 2 },
-        { x: 0, y: 1, ground: false, water: true, elevation: 0, groundNeighborKeys: [], knowledge: "known_static", clearance: 2 },
-        { x: 1, y: 1, ground: false, water: true, elevation: 0, groundNeighborKeys: [], knowledge: "known_static", clearance: 2 }
+        {
+          x: 0,
+          y: 0,
+          ground: true,
+          water: false,
+          elevation: 0,
+          groundNeighborKeys: ["1,0"],
+          knowledge: "known_static",
+          clearance: 2
+        },
+        {
+          x: 1,
+          y: 0,
+          ground: true,
+          water: false,
+          elevation: 0,
+          groundNeighborKeys: ["0,0"],
+          knowledge: "known_static",
+          clearance: 2
+        },
+        {
+          x: 0,
+          y: 1,
+          ground: false,
+          water: true,
+          elevation: 0,
+          groundNeighborKeys: [],
+          knowledge: "known_static",
+          clearance: 2
+        },
+        {
+          x: 1,
+          y: 1,
+          ground: false,
+          water: true,
+          elevation: 0,
+          groundNeighborKeys: [],
+          knowledge: "known_static",
+          clearance: 2
+        }
       ]
     });
     const navalActor = (id: string, relation: "self" | "enemy", x: number): AiObservedActor => ({
@@ -108,16 +259,42 @@ describe("offensive force routing and domain readiness", () => {
       objectName: "VikingBoat",
       accessNodeId: { status: "known", value: access.waterNodeByTileKey.get(`${x},1`)!, observedTick: 20 },
       logicalPosition: { status: "known", value: { x, y: 1, z: 0 }, observedTick: 20 },
-      capabilities: [{
-        id: `${id}:attack`, family: "military", level: 1, domains: ["water"], targetDomains: ["ground", "water"],
-        capacity: { status: "known", value: 0, observedTick: 20 }
-      }],
-      combatProfile: { status: "known", observedTick: 20, value: {
-        maxHealth: 240, maxArmour: 30, passiveRegenerationPerSecond: 0, armourPermille: 0,
-        attacks: [{ damage: 12, cooldownTicks: 60, remainingCooldownTicks: null, range: 7, minRange: 2,
-          highGroundRangeBonus: 1, impactDelayTicks: 0, areaRadius: 0, targetDomains: ["ground", "water"] }],
-        healing: null, spells: [], statuses: []
-      } }
+      capabilities: [
+        {
+          id: `${id}:attack`,
+          family: "military",
+          level: 1,
+          domains: ["water"],
+          targetDomains: ["ground", "water"],
+          capacity: { status: "known", value: 0, observedTick: 20 }
+        }
+      ],
+      combatProfile: {
+        status: "known",
+        observedTick: 20,
+        value: {
+          maxHealth: 240,
+          maxArmour: 30,
+          passiveRegenerationPerSecond: 0,
+          armourPermille: 0,
+          attacks: [
+            {
+              damage: 12,
+              cooldownTicks: 60,
+              remainingCooldownTicks: null,
+              range: 7,
+              minRange: 2,
+              highGroundRangeBonus: 1,
+              impactDelayTicks: 0,
+              areaRadius: 0,
+              targetDomains: ["ground", "water"]
+            }
+          ],
+          healing: null,
+          spells: [],
+          statuses: []
+        }
+      }
     });
     const groundForce = guard("frontline", "self", 0);
     const groundForce2 = guard("frontline-2", "self", 0);
@@ -127,46 +304,107 @@ describe("offensive force routing and domain readiness", () => {
     const prior = manager.propose(world([groundForce, groundForce2, enemyCore]), brain());
     const priorState = {
       ...brain(),
-      squads: prior.statePatch?.squads?.map((squad) => squad.role === "attack" && squad.lifecycle
-        ? { ...squad, lifecycle: { ...squad.lifecycle, lastUsefulEffectTick: 100 } }
-        : squad),
+      squads: prior.statePatch?.squads?.map((squad) =>
+        squad.role === "attack" && squad.lifecycle
+          ? { ...squad, lifecycle: { ...squad.lifecycle, lastUsefulEffectTick: 100 } }
+          : squad
+      ),
       strategy: prior.statePatch?.strategy,
       skirmish: prior.statePatch?.skirmish
     };
     const observation = world([groundForce, groundForce2, boat, enemyBoat, enemyCore], 120);
-    const context = createAiSkirmishProposalContext({
-      ...observation,
-      map: { ...observation.map!, accessGraph: access.graph }
-    }, priorState, { schemaVersion: 1, generation: 1, unsupported: [], entries: [] });
+    const context = createAiSkirmishProposalContext(
+      {
+        ...observation,
+        map: { ...observation.map!, accessGraph: access.graph }
+      },
+      priorState,
+      { schemaVersion: 1, generation: 1, unsupported: [], entries: [] }
+    );
 
     const choice = selectAiOffensiveOpportunity(context, [groundForce, groundForce2, boat]);
 
-    expect(choice.assessment).toMatchObject({ targetActorId: "enemy-vessel", routeDomain: "water", readyForce: 1, requiredForce: 1 });
+    expect(choice.assessment).toMatchObject({
+      targetActorId: "enemy-vessel",
+      routeDomain: "water",
+      readyForce: 1,
+      requiredForce: 1
+    });
     expect(choice.attackers.map((actor) => actor.actorId)).toEqual(["naval-reserve"]);
   });
 
   it("uses a water firing position for a remembered coastal producer", () => {
     const access = buildAiAccessGraph({
-      generation: 1, staticRevision: 1, dynamicRevision: 1, threatRevision: 0, builtTick: 0,
-      continuationCursor: 0, includeAirRegion: true,
+      generation: 1,
+      staticRevision: 1,
+      dynamicRevision: 1,
+      threatRevision: 0,
+      builtTick: 0,
+      continuationCursor: 0,
+      includeAirRegion: true,
       cells: [
-        { x: 0, y: 0, ground: true, water: false, elevation: 0, groundNeighborKeys: [], knowledge: "known_static", clearance: 2 },
-        { x: 1, y: 0, ground: false, water: true, elevation: 0, groundNeighborKeys: [], knowledge: "known_static", clearance: 2 }
+        {
+          x: 0,
+          y: 0,
+          ground: true,
+          water: false,
+          elevation: 0,
+          groundNeighborKeys: [],
+          knowledge: "known_static",
+          clearance: 2
+        },
+        {
+          x: 1,
+          y: 0,
+          ground: false,
+          water: true,
+          elevation: 0,
+          groundNeighborKeys: [],
+          knowledge: "known_static",
+          clearance: 2
+        }
       ]
     });
     const boat = {
       ...guard("coastal-boat", "self", 1),
       objectName: "VikingBoat",
       accessNodeId: { status: "known" as const, value: access.waterNodeByTileKey.get("1,0")!, observedTick: 20 },
-      capabilities: [{ id: "coastal-boat:attack", family: "military", level: 1,
-        domains: ["water" as const], targetDomains: ["ground" as const],
-        capacity: { status: "known" as const, value: 0, observedTick: 20 } }],
-      combatProfile: { status: "known" as const, observedTick: 20, value: {
-        maxHealth: 240, maxArmour: 30, passiveRegenerationPerSecond: 0, armourPermille: 0,
-        attacks: [{ damage: 12, cooldownTicks: 60, remainingCooldownTicks: 0, range: 7, minRange: 2,
-          highGroundRangeBonus: 1, impactDelayTicks: 0, areaRadius: 0, targetDomains: ["ground" as const] }],
-        healing: null, spells: [], statuses: []
-      } }
+      capabilities: [
+        {
+          id: "coastal-boat:attack",
+          family: "military",
+          level: 1,
+          domains: ["water" as const],
+          targetDomains: ["ground" as const],
+          capacity: { status: "known" as const, value: 0, observedTick: 20 }
+        }
+      ],
+      combatProfile: {
+        status: "known" as const,
+        observedTick: 20,
+        value: {
+          maxHealth: 240,
+          maxArmour: 30,
+          passiveRegenerationPerSecond: 0,
+          armourPermille: 0,
+          attacks: [
+            {
+              damage: 12,
+              cooldownTicks: 60,
+              remainingCooldownTicks: 0,
+              range: 7,
+              minRange: 2,
+              highGroundRangeBonus: 1,
+              impactDelayTicks: 0,
+              areaRadius: 0,
+              targetDomains: ["ground" as const]
+            }
+          ],
+          healing: null,
+          spells: [],
+          statuses: []
+        }
+      }
     };
     const target = {
       ...producer("coastal-workmill"),

@@ -581,6 +581,18 @@ describe("AiAdaptationManager", () => {
       tick: 0,
       archetypeId: "opening:1:balanced"
     });
+    const navalOpening = {
+      ...initial,
+      opening: { ...initial.opening, archetypeId: "opening:1:naval" }
+    };
+
+    const noObjective = navalManager.propose({ ...makeObservation(100), actors: [main] }, navalOpening);
+    expect(noObjective.statePatch?.openingArchetypeId).toBeUndefined();
+    const noObjectiveAfterOpening = navalManager.propose({ ...makeObservation(100), actors: [main] }, {
+      ...navalOpening,
+      opening: { ...navalOpening.opening, plan: { ...navalOpening.opening.plan, lifecycle: "completed" } }
+    });
+    expect(noObjectiveAfterOpening.statePatch?.openingArchetypeId).toBe(`opening:${FactionType.Tivara}:balanced`);
 
     const first = navalManager.propose(makeObservation(100), initial);
     expect(
@@ -603,6 +615,11 @@ describe("AiAdaptationManager", () => {
     expect(second.statePatch?.adaptationDemands).toContainEqual(
       expect.objectContaining({ demandId: "demand:adapt:water_control", desired: 1 })
     );
+    const supportedNavalOpening = navalManager.propose(makeObservation(140), {
+      ...navalOpening,
+      economyProduction: { ...navalOpening.economyProduction, adaptation: firstAdaptation }
+    });
+    expect(supportedNavalOpening.statePatch?.openingArchetypeId).toBeUndefined();
   });
 
   it("does not propose an evidence-backed counter that the current resource ledger cannot afford", () => {
@@ -820,6 +837,16 @@ describe("AiAdaptationManager", () => {
     });
     const fallback = manager.propose(observation(100, [main]), naval);
     expect(fallback.statePatch?.openingArchetypeId).toBe(`opening:${FactionType.Tivara}:balanced`);
+    const turtleAir = createAiBrainState({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "opening:1:turtle_air"
+    });
+    expect(manager.propose(observation(100, [main]), turtleAir).statePatch?.openingArchetypeId).toBe(
+      `opening:${FactionType.Tivara}:balanced`
+    );
     const balanced = createAiBrainState({
       playerNumber: 1,
       faction: FactionType.Tivara,
@@ -885,6 +912,41 @@ describe("AiAdaptationManager", () => {
       expect.objectContaining({ demandId: "demand:adapt:air_pressure", desired: 1 })
     );
     expect(second.intents).toContainEqual(
+      expect.objectContaining({
+        kind: "produce",
+        objectName: ObjectNames.Banshee,
+        demandId: "demand:adapt:air_pressure"
+      })
+    );
+  });
+
+  it("starts turtle-air production when a legal producer path is already available", () => {
+    const airManager = new AiAdaptationManager(profile, () => airPressureCatalog);
+    const producer = { ...createAiTestOwnedActor("air-producer"), objectName: ObjectNames.Temple };
+    const turtleAir = createAiBrainState({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "opening:1:turtle_air"
+    });
+    const world = {
+      ...observation(100, [producer]),
+      resources: [ResourceType.Food, ResourceType.Wood].map((resourceType) => ({
+        resourceType,
+        stockpile: 2000,
+        reservedUnspent: 0,
+        obligationsDue: 0,
+        deliveredIncomePerMinute: { status: "known" as const, value: 30, observedTick: 100 }
+      }))
+    };
+
+    const proposal = airManager.propose(world, turtleAir);
+
+    expect(proposal.statePatch?.adaptationDemands).toContainEqual(
+      expect.objectContaining({ demandId: "demand:adapt:air_pressure", desired: 1 })
+    );
+    expect(proposal.intents).toContainEqual(
       expect.objectContaining({
         kind: "produce",
         objectName: ObjectNames.Banshee,
