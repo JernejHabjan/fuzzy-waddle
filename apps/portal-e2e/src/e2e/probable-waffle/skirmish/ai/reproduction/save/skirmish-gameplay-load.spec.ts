@@ -1,3 +1,4 @@
+import { readNativeScenarioFixture } from "@fuzzy-waddle/probable-waffle-skirmish-ai-tools/scenarios/registration/read-native-scenario-fixture";
 import { expect, type Page, test } from "@playwright/test";
 import type Phaser from "phaser";
 import { execFileSync } from "node:child_process";
@@ -20,15 +21,7 @@ for (const kind of ["fresh start", "quicksave", "autosave", "manual"] as const) 
   test(`preserves elevation, camera and human input after ${kind}`, async ({ page }) => {
     const root = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
     const source = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
-    const fixture: RuntimeFixture = JSON.parse(
-      readFileSync(
-        join(
-          root,
-          "tools/probable-waffle/skirmish/ai/testing/fixtures/native/combat/fight-01-reassess-and-retreat-regroup-within-bound-runtime.json"
-        ),
-        "utf8"
-      )
-    );
+    const fixture: RuntimeFixture = readNativeScenarioFixture(join(root, "tools/probable-waffle/skirmish/ai/testing/fixtures"), "native/combat/fight-01-reassess-and-retreat-regroup-within-bound-runtime.json");
     const selected = fixture.recipe.variants.find((variant) => variant.id === "fight-01-tivara-quiet");
     if (!selected) throw new Error("load_projection_fixture_missing");
     const errors: string[] = [];

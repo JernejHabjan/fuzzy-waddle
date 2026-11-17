@@ -3,7 +3,8 @@ import { validAiRuntimePresetProvenance } from "@fuzzy-waddle/probable-waffle-ph
 import { expect, test } from "@playwright/test";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
+import { readNativeScenarioFixture } from "@fuzzy-waddle/probable-waffle-skirmish-ai-tools/scenarios/registration/read-native-scenario-fixture";
 import { join } from "node:path";
 import { prepareRuntimeVariant } from "../setup/skirmish-ai-runtime-variant-setup";
 import { captureCheckpoint } from "../capture/skirmish-ai-runtime-checkpoint-capture";
@@ -31,8 +32,8 @@ for (let repetition = 1; repetition <= 3; repetition++) {
       workload !== "combat"
         ? "economy/opening-workforce-native-gameplay.json"
         : "combat/fight-01-reassess-and-retreat-regroup-within-bound-runtime.json";
-    const fixture: RuntimeFixture = JSON.parse(
-      readFileSync(join(root, "tools/probable-waffle/skirmish/ai/testing/fixtures/native", fixturePath), "utf8")
+    const fixture: RuntimeFixture = readNativeScenarioFixture(
+      join(root, "tools/probable-waffle/skirmish/ai/testing/fixtures"), `native/${fixturePath}`
     );
     const selected = fixture.recipe.variants.find(
       (candidate) => candidate.id === (workload !== "combat" ? "tivara-no-worker-opening" : "fight-01-tivara-quiet")

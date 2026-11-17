@@ -1,6 +1,6 @@
+import { readNativeScenarioFixture } from "@fuzzy-waddle/probable-waffle-skirmish-ai-tools/scenarios/registration/read-native-scenario-fixture";
 import { expect, test } from "@playwright/test";
 import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { digestCanonicalAiValue } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/persistence/canonical-ai-serialization";
@@ -18,15 +18,7 @@ test.setTimeout(60_000);
 test("a ranged unit uses its melee weapon against an adjacent ground target", async ({ page }) => {
   const root = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
   const source = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
-  const fixture: RuntimeFixture = JSON.parse(
-    readFileSync(
-      join(
-        root,
-        "tools/probable-waffle/skirmish/ai/testing/fixtures/native/combat/fight-01-reassess-and-retreat-regroup-within-bound-runtime.json"
-      ),
-      "utf8"
-    )
-  );
+  const fixture: RuntimeFixture = readNativeScenarioFixture(join(root, "tools/probable-waffle/skirmish/ai/testing/fixtures"), "native/combat/fight-01-reassess-and-retreat-regroup-within-bound-runtime.json");
   const selected = fixture.recipe.variants.find((entry) => entry.id === "fight-01-tivara-quiet");
   if (!selected?.presetWorld) throw new Error("close_range_fixture_missing");
   const variant = {
