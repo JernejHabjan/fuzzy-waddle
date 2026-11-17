@@ -88,6 +88,8 @@ export function evaluateNativeFortification(
                   fact.control.command?.execution?.commandId &&
                 movement.tick < openingPrefixTick &&
                 movement.spatial.phase === "arrived" &&
+                fact.control.command?.type === "ACTOR_ACTION" &&
+                fact.control.command.tileVec3 !== undefined &&
                 movement.spatial.actualTile?.x === fact.control.command.tileVec3.x &&
                 movement.spatial.actualTile?.y === fact.control.command.tileVec3.y
             )

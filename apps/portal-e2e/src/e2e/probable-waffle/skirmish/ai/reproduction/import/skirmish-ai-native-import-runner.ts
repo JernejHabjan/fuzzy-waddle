@@ -139,7 +139,7 @@ export async function runNativeImportVariant(
         await match.dispose();
       }
     },
-    async (page) => await page.addInitScript(() => sessionStorage.setItem("fuzzy-waddle:ai-runtime-import", "1"))
+    async (page) => { await page.addInitScript(() => sessionStorage.setItem("fuzzy-waddle:ai-runtime-import", "1")); }
   );
   if (!nativeImport) throw new Error("native_import_not_captured");
   return { ...result, nativeImport };

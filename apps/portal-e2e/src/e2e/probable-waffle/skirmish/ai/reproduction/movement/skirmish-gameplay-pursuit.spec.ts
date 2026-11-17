@@ -345,6 +345,7 @@ for (const mode of Object.keys(pursuitCases) as (keyof typeof pursuitCases)[]) {
       return;
     }
     if (equalSpeed) {
+      const first = observations[0];
       const last = observations.at(-1);
       if (!first?.pursuer || !last?.pursuer) throw new Error("equal_speed_positions_missing");
       expect(first.chasingRunner).toBe(true);
@@ -400,11 +401,12 @@ for (const mode of Object.keys(pursuitCases) as (keyof typeof pursuitCases)[]) {
       expect(engagement.every((row) => row.chasingRunner)).toBe(true);
       const first = observations[0];
       if (!first?.runnerTile) throw new Error("autonomous_pursuit_origin_missing");
+      const origin = first.runnerTile;
       const releasedIndex = observations.findIndex((row) => {
         const tile = row.runnerTile;
         if (!tile) return false;
-        const dx = tile.x - first.runnerTile.x;
-        const dy = tile.y - first.runnerTile.y;
+        const dx = tile.x - origin.x;
+        const dy = tile.y - origin.y;
         return (row.tick ?? 0) > 60 && !row.chasingRunner && Math.floor(Math.hypot(dx, dy)) > 10;
       });
       expect(releasedIndex).toBeGreaterThan(0);
