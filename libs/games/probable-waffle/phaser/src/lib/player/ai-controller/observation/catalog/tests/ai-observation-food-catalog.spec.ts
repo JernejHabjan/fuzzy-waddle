@@ -1,0 +1,90 @@
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
+import type Phaser from "phaser";
+import { FactionType, ObjectNames, type ProbableWafflePlayer } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { AiCapabilityCatalogEntry } from "@fuzzy-waddle/probable-waffle-gameplay";
+import { getSceneComponent, getSceneService } from "../../../../../world/services/scene-component-helpers";
+import { projectAvailableCatalogEntries, projectCatalogDefinition } from "../ai-observation-catalog";
+import { watchTowerDefinition } from "../../../../../prefabs/buildings/tivara/WatchTower/watch-tower.definition";
+import { wallDefinition } from "../../../../../prefabs/buildings/tivara/wall/wall.definition";
+
+jest.mock("../../../../world/services/scene-component-helpers", () => ({
+  getSceneService: jest.fn(),
+  getSceneComponent: jest.fn()
+}));
+
+it.each([true, false])(
+  "exposes locked food prerequisite prices only when faction content is allowed: %s",
+  (allowed) => {
+    (getSceneService as jest.Mock).mockReturnValue({
+      getFactionActorIds: () => [ObjectNames.Field],
+      isAvailable: () => false,
+      isContentAllowed: () => allowed,
+      getResearchedLevelForUnit: () => 0
+    });
+    const catalog = new Map<string, AiCapabilityCatalogEntry>();
+    projectAvailableCatalogEntries(
+      {} as Phaser.Scene,
+      { factionType: FactionType.Tivara } as ProbableWafflePlayer,
+      2,
+      catalog
+    );
+    if (!allowed) expect(catalog.size).toBe(0);
+    else {
+      const field = requireAiTestEntry([...catalog.values()], 0);
+      expect(field.sourceObjectName).toBe(ObjectNames.Field);
+      expect(field.constructionProfile?.requiredObjectNames).toEqual([ObjectNames.Granary]);
+      expect(field.constructionProfile?.resourceCost.wood).toBeGreaterThan(0);
+    }
+  }
+);
+
+it.each([true, false])("exposes a locked faction counter recipe only when content is allowed: %s", (allowed) => {
+  (getSceneService as jest.Mock).mockReturnValue({
+    getFactionActorIds: () => [ObjectNames.TivaraSlingshotFemale],
+    isAvailable: () => false,
+    isContentAllowed: () => allowed,
+    getResearchedLevelForUnit: () => 1,
+    getPrerequisites: () => ({ prereqs: { researchTypes: [] } })
+  });
+  const catalog = new Map<string, AiCapabilityCatalogEntry>();
+  projectAvailableCatalogEntries(
+    {} as Phaser.Scene,
+    { factionType: FactionType.Tivara } as ProbableWafflePlayer,
+    2,
+    catalog
+  );
+  if (!allowed) expect(catalog.size).toBe(0);
+  else {
+    const counter = requireAiTestEntry([...catalog.values()], 0);
+    expect(counter.targetDomains).toContain("air");
+    expect(counter.constructionProfile?.requiredObjectNames).toContain(ObjectNames.Temple);
+  }
+});
+
+it("does not expose a counter that still requires research", () => {
+  (getSceneService as jest.Mock).mockReturnValue({
+    getFactionActorIds: () => [ObjectNames.TivaraSlingshotFemale],
+    isAvailable: () => false,
+    isContentAllowed: () => true,
+    getResearchedLevelForUnit: () => 1,
+    getPrerequisites: () => ({ prereqs: { researchTypes: ["missing-research"] } })
+  });
+  const catalog = new Map<string, AiCapabilityCatalogEntry>();
+  projectAvailableCatalogEntries(
+    {} as Phaser.Scene,
+    { factionType: FactionType.Tivara } as ProbableWafflePlayer,
+    2,
+    catalog
+  );
+  expect(catalog.size).toBe(0);
+});
+
+it("rounds wide construction footprints up to the occupied tile radius", () => {
+  (getSceneComponent as jest.Mock).mockReturnValue({ tilemap: { tileWidth: 64 } });
+
+  const tower = projectCatalogDefinition({} as Phaser.Scene, ObjectNames.WatchTower, watchTowerDefinition, 1, []);
+  const wall = projectCatalogDefinition({} as Phaser.Scene, ObjectNames.Wall, wallDefinition, 1, []);
+
+  expect(tower.constructionProfile?.footprintRadiusTiles).toBe(1);
+  expect(wall.constructionProfile?.footprintRadiusTiles).toBe(0);
+});
