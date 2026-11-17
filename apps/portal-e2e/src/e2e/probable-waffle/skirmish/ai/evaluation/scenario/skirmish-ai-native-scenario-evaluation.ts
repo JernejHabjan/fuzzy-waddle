@@ -18,7 +18,7 @@ import { evaluateNativeDebugComparison } from "../../debug/skirmish-ai-native-de
 import { evaluateNativeOptionalRelease } from "../../recovery/skirmish-ai-native-optional-release";
 import { evaluateNativeDebugParity } from "../../debug/skirmish-ai-native-debug-parity-evaluation";
 import { evaluateNativeIslandEstablishment } from "../../combat/access/skirmish-ai-native-island-establishment";
-import bindings from "@fuzzy-waddle/probable-waffle-skirmish-ai-tools/testing/bindings/native-scenario-bindings.json";
+import { nativeScenarioBinding } from "./skirmish-ai-native-binding";
 import type { RuntimeAssertion } from "../controls/skirmish-ai-runtime-assertion";
 import type { RuntimeFixture } from "../../contracts/skirmish-ai-runtime-fixture";
 import type { RuntimeVariantResult } from "../../runner/skirmish-ai-runtime-variant-result";
@@ -60,7 +60,7 @@ export function evaluateNativeScenarioVariant(
   result: RuntimeVariantResult,
   fixture?: RuntimeFixture
 ): string[] {
-  const definition = Object.entries(bindings.cases).find(([scenarioId]) => scenarioId === id)?.[1];
+  const definition = nativeScenarioBinding(id);
   const contract = assertion.requiredNativeScenario;
   if (!definition) return contract ? ["native_scenario_unknown_contract"] : [];
   if (!fixture && !contract) return [];

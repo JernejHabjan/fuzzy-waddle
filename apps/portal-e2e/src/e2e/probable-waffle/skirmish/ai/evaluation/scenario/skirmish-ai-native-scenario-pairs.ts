@@ -1,4 +1,4 @@
-import bindings from "@fuzzy-waddle/probable-waffle-skirmish-ai-tools/testing/bindings/native-scenario-bindings.json";
+import { nativeScenarioBinding } from "./skirmish-ai-native-binding";
 import type { RuntimeFixture } from "../../contracts/skirmish-ai-runtime-fixture";
 import type { RuntimeVariantResult } from "../../runner/skirmish-ai-runtime-variant-result";
 import { nativeScenarioContext } from "../../contracts/skirmish-ai-native-scenario-context";
@@ -11,7 +11,7 @@ export function evaluateNativeScenarioPairs(
   fixture: RuntimeFixture,
   results: readonly RuntimeVariantResult[]
 ): string[] {
-  const definition = Object.entries(bindings.cases).find(([scenarioId]) => scenarioId === id)?.[1];
+  const definition = nativeScenarioBinding(id);
   if (!definition) return [];
   const contract = fixture.assertions[id]?.requiredNativeScenario;
   if (!contract || contract.scenarioId !== id || contract.latestTick !== definition.latestTick)

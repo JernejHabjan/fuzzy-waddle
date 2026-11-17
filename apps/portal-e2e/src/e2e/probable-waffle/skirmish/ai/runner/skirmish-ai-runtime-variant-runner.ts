@@ -38,10 +38,6 @@ export async function runVariant(
   const profiling = process.env.AI_SKIRMISH_PROFILE === "1";
   const variantStartedAt = performance.now();
   const context = await browser.newContext();
-  const page = await context.newPage();
-  page.on("console", (message) => {
-    if (message.text().startsWith("[AI_SKIRMISH_PRODUCTION_CAPTURE]")) process.stdout.write(`${message.text()}\n`);
-  });
   const checkpointPhases: {
     targetTick: number;
     advanceMs: number;
@@ -53,6 +49,10 @@ export async function runVariant(
   const effectiveSeed = requestedSeed ?? variant.seed;
 
   try {
+    const page = await context.newPage();
+    page.on("console", (message) => {
+      if (message.text().startsWith("[AI_SKIRMISH_PRODUCTION_CAPTURE]")) process.stdout.write(`${message.text()}\n`);
+    });
     await beforeVariant?.(page);
     const initialBoundary = await prepareRuntimeVariant(
       page,
