@@ -20,7 +20,10 @@ for (const injured of [false, true])
     async ({ page }, testInfo) => {
       const root = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
       const source = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
-      const fixture: RuntimeFixture = readRuntimeFixture(root, "native/combat/fight-01-reassess-and-retreat-regroup-within-bound-runtime.json");
+      const fixture: RuntimeFixture = readRuntimeFixture(
+        root,
+        "native/combat/fight-01-reassess-and-retreat-regroup-within-bound-runtime.json"
+      );
       const selected = fixture.recipe.variants.find((variant) => variant.id === "fight-01-tivara-quiet");
       if (!selected?.presetWorld) throw new Error("mixed_force_fixture_missing");
       const flyers = [0, 1].map((index) => ({

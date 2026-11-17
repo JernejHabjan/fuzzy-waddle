@@ -32,9 +32,7 @@ for (let repetition = 1; repetition <= 3; repetition++) {
       workload !== "combat"
         ? "economy/opening-workforce-native-gameplay.json"
         : "combat/fight-01-reassess-and-retreat-regroup-within-bound-runtime.json";
-    const fixture: RuntimeFixture = readRuntimeFixture(
-      root, `native/${fixturePath}`
-    );
+    const fixture: RuntimeFixture = readRuntimeFixture(root, `native/${fixturePath}`);
     const selected = fixture.recipe.variants.find(
       (candidate) => candidate.id === (workload !== "combat" ? "tivara-no-worker-opening" : "fight-01-tivara-quiet")
     );

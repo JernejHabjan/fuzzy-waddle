@@ -24,7 +24,10 @@ for (const addProduction of [false, true])
     async ({ page }, testInfo) => {
       const root = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
       const source = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
-      const fixture: RuntimeFixture = readRuntimeFixture(root, "native/combat/fight-01-reassess-and-retreat-regroup-within-bound-runtime.json");
+      const fixture: RuntimeFixture = readRuntimeFixture(
+        root,
+        "native/combat/fight-01-reassess-and-retreat-regroup-within-bound-runtime.json"
+      );
       const selected = fixture.recipe.variants.find((entry) => entry.id === "fight-01-tivara-quiet");
       if (!selected?.presetWorld) throw new Error("large_army_fixture_missing");
       const extra = Array.from({ length: 4 }, (_, index) => ({

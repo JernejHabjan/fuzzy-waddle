@@ -10,9 +10,15 @@ const fixtures = fileURLToPath(new URL("../../../testing/fixtures/", import.meta
 
 test("generated recipes retain their scenario identity and return independent worlds", () => {
   for (const [id, reference] of [
-    ["PLACE-01", "native/placement/place-01-efficient-aligned-field-layout-in-safe-economic-space-valid-tending-deposit-runtime.json"],
+    [
+      "PLACE-01",
+      "native/placement/place-01-efficient-aligned-field-layout-in-safe-economic-space-valid-tending-deposit-runtime.json"
+    ],
     ["FIGHT-01", "native/combat/fight-01-reassess-and-retreat-regroup-within-bound-runtime.json"],
-    ["WALL-04", "native/fortification/wall-04-repair-rebuild-needed-nodes-and-reposition-defenders-or-abandon-invalid-perimeter-runtime.json"]
+    [
+      "WALL-04",
+      "native/fortification/wall-04-repair-rebuild-needed-nodes-and-reposition-defenders-or-abandon-invalid-perimeter-runtime.json"
+    ]
   ]) {
     const first = readNativeScenarioFixture(fixtures, reference);
     const second = readNativeScenarioFixture(fixtures, reference);
