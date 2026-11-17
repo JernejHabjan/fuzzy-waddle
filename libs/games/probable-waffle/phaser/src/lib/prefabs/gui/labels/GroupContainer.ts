@@ -13,6 +13,7 @@ import {
   SelectionGroupsComponent
 } from "../../../player/human-controller/selection-groups.component";
 import { Subscription } from "rxjs";
+import { listenToSelectionEvents } from "../../../data/scene-data";
 /* END-USER-IMPORTS */
 
 export default class GroupContainer extends Phaser.GameObjects.Container {
@@ -101,10 +102,7 @@ export default class GroupContainer extends Phaser.GameObjects.Container {
   }
 
   private listenToSelectionEvents() {
-    this.selectionChangedSubscription = this.mainSceneWithActors.communicator.allScenes?.subscribe((p) => {
-      if (!p.name.startsWith("selection.")) return;
-      this.selectionChanged();
-    });
+    this.selectionChangedSubscription = listenToSelectionEvents(this.scene)?.subscribe(() => this.selectionChanged());
   }
 
   private selectionChanged() {

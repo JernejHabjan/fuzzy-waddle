@@ -540,7 +540,7 @@ export default class GameActionsLayer extends ProbableWaffleScene {
   }
 
   private get isVisibleSaveButton() {
-    return !this.isReplay;
+    return !this.isReplay && !this.isSpectator;
   }
 
   private get isVisibleLoadButton() {

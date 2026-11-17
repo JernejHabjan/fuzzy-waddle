@@ -6,6 +6,7 @@ import {
   type ProbableWaffleGameInstanceData,
   ProbableWaffleGameInstanceType,
   type ProbableWaffleReplayCommandBatch,
+  type GameCommandOutcome,
   type ProbableWaffleReplayData,
   type ProbableWaffleReplayDesyncDiagnostic,
   type CampaignMissionRuntimeEvent
@@ -20,7 +21,7 @@ import { ProbableWaffleSceneEventName } from "../recovery/probable-waffle-scene-
 import { CampaignMissionDirector } from "../../../campaign/campaign-mission-director";
 
 const REPLAY_FORMAT_VERSION = "2";
-const REPLAY_COMPATIBILITY_VERSION = "lockstep-v1";
+const REPLAY_COMPATIBILITY_VERSION = "lockstep";
 const CAMPAIGN_REPLAY_COMPATIBILITY_VERSION = "campaign-lockstep-v2";
 
 /**
@@ -31,9 +32,11 @@ const CAMPAIGN_REPLAY_COMPATIBILITY_VERSION = "campaign-lockstep-v2";
 export class ReplayRecorderService {
   private static readonly MAX_DESYNC_DIAGNOSTICS = 256;
   private batchSub?: Subscription;
+  private outcomeSub?: Subscription;
   private campaignEventSub?: Subscription;
   private initialGameInstanceData?: ProbableWaffleGameInstanceData;
   private readonly recordedBatches: ProbableWaffleReplayCommandBatch[] = [];
+  private readonly recordedOutcomes: GameCommandOutcome[] = [];
   private readonly recordedCampaignEvents: CampaignMissionRuntimeEvent[] = [];
   private readonly desyncDiagnostics: ProbableWaffleReplayDesyncDiagnostic[] = [];
   private replayPersistStarted = false;
@@ -60,6 +63,9 @@ export class ReplayRecorderService {
     this.initialGameInstanceData = structuredClone(scene.baseGameData.gameInstance.data);
     this.batchSub = commandBus.commandBatch$.subscribe((batch) => {
       this.recordedBatches.push(batch);
+    });
+    this.outcomeSub = commandBus.commandOutcome$.subscribe((outcome) => {
+      this.recordedOutcomes.push(structuredClone(outcome));
     });
     this.campaignEventSub = getSceneService(scene, CampaignMissionDirector)?.events$.subscribe((event) => {
       if (event.kind === "dialogue.acknowledged" || event.kind === "cinematic.finished") {
@@ -116,6 +122,7 @@ export class ReplayRecorderService {
           userId: player.playerController.data.userId
         })),
       commands: structuredClone(this.recordedBatches),
+      commandOutcomes: structuredClone(this.recordedOutcomes),
       campaignEvents: structuredClone(this.recordedCampaignEvents),
       campaignMissionInitialState: this.initialGameInstanceData.gameStateData?.campaignMission
         ? structuredClone(this.initialGameInstanceData.gameStateData.campaignMission)
@@ -190,6 +197,7 @@ export class ReplayRecorderService {
   /** Documents the destroy member and its declared contract at this boundary. */
   destroy(): void {
     this.batchSub?.unsubscribe();
+    this.outcomeSub?.unsubscribe();
     this.campaignEventSub?.unsubscribe();
     this.scene?.events.off(ProbableWaffleSceneEventName.DesyncDiagnostics, this.onDesyncDiagnostics);
   }
