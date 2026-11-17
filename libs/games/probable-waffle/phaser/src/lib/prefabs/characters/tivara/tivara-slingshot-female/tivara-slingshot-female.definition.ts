@@ -18,7 +18,7 @@ import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { SoundType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-type";
 import { ActorPhysicalType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/actor-physical-type";
 import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
-import { AiType } from "../../../ai-agents/ai-type";
+import { AiType } from "../../../ai-agents/controller/ai-type";
 import { SpellType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/spell-type";
 
 export const tivaraSlingshotFemaleDefinition = {
@@ -62,7 +62,7 @@ export const tivaraSlingshotFemaleDefinition = {
     productionCost: {
       resources: {
         [ResourceType.Wood]: 25,
-        [ResourceType.Food]: 120
+        [ResourceType.Food]: 80
       },
       refundFactor: 0.5,
       productionTime: 10000,
@@ -101,7 +101,8 @@ export const tivaraSlingshotFemaleDefinition = {
   },
   systems: {
     movement: { enabled: true },
-    action: { enabled: true }
+    action: { enabled: true },
+    spellCasting: { enabled: true }
   },
   meta: {
     maxLevel: 3,
