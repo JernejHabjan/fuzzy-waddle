@@ -6,8 +6,8 @@ import type { ProbableWaffleScene } from "../../../../core/probable-waffle.scene
 import { ProbableWaffleSceneEventName } from "../probable-waffle-scene-events";
 import { StateHashService } from "../state-hash.service";
 
-jest.mock("../../../data/scene-data", () => ({ getCommunicator: jest.fn() }));
-jest.mock("../scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../data/scene-data", () => ({ getCommunicator: jest.fn() }));
+jest.mock("../../scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
 describe("state-hash match ownership", () => {
   it("replaces subscriptions and fences an old scene shutdown without detaching the new match", () => {

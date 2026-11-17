@@ -6,7 +6,7 @@ import { SimulationTickService } from "../../simulation-tick.service";
 import { ActorIndexSystem } from "../../ActorIndexSystem";
 import { StateHashProjection } from "../state-hash-projection";
 
-jest.mock("../scene-component-helpers", () => ({ getSceneService: jest.fn(), getSceneSystem: jest.fn() }));
+jest.mock("../../scene-component-helpers", () => ({ getSceneService: jest.fn(), getSceneSystem: jest.fn() }));
 
 it("compares current live controller/authority state rather than the last saved copies", () => {
   const stale = { marker: "last-save" },
