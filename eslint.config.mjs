@@ -127,6 +127,8 @@ export default [
   {
     files: ["**/*.ts", "**/*.tsx"],
     rules: {
+      // Newly surfaced by the flat preset; the workspace had not configured this rule before migration.
+      "prefer-const": "off",
       "no-extra-semi": "off"
     }
   },
