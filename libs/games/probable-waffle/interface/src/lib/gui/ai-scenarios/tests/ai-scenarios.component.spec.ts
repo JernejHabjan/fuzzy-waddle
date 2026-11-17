@@ -13,6 +13,8 @@ import { activeAiScenarios } from "../active-ai-scenario";
 import type { AiScenarioCatalog } from "../ai-scenario-catalog";
 import type { AiScenarioRecipe } from "../ai-scenario-recipe";
 import { AiScenariosComponent } from "../ai-scenarios.component";
+import { launchAiScenario } from "../launch-ai-scenario";
+import type { GameInstanceClientServiceInterface } from "../../../communicators/game-instance-client.service.interface";
 
 describe("AiScenariosComponent", () => {
   const assetRoot = "dev/ai-scenarios";
@@ -84,5 +86,26 @@ describe("AiScenariosComponent", () => {
     expect(client.startGame).toHaveBeenCalledTimes(1);
     expect(activeAiScenarios.get(match)?.config.seed).toBe(759940);
     http.verify();
+  });
+
+  it("stops a pending launch before mutating a replacement match", async () => {
+    let releaseSlot!: () => void;
+    const slot = new Promise<void>((resolve) => { releaseSlot = resolve; });
+    const client = {
+      gameInstance: new ProbableWaffleGameInstance(),
+      createGameInstance: jest.fn().mockResolvedValue(undefined),
+      playerSlotOpened: jest.fn(() => slot),
+      addSelfAsSpectator: jest.fn()
+    };
+    const launching = launchAiScenario(
+      client as unknown as GameInstanceClientServiceInterface,
+      catalog.scenarios[0], recipe, variant, catalog.sourceRevision, new AbortController().signal
+    );
+    await Promise.resolve();
+    expect(client.playerSlotOpened).toHaveBeenCalledTimes(1);
+    client.gameInstance = new ProbableWaffleGameInstance();
+    releaseSlot();
+    await expect(launching).rejects.toThrow("The local match was replaced.");
+    expect(client.addSelfAsSpectator).not.toHaveBeenCalled();
   });
 });

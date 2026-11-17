@@ -94,6 +94,11 @@ export async function launchAiScenario(
   );
   const match = client.gameInstance;
   if (!match) throw new Error("The local match could not be created.");
+  const ensureMatch = () => {
+    signal.throwIfAborted();
+    if (client.gameInstance !== match) throw new Error("The local match was replaced.");
+  };
+  ensureMatch();
   const team = (playerNumber: number) =>
     variant.lobbyTeams?.find((player) => player.playerNumber === playerNumber)?.team;
   await client.playerSlotOpened({
@@ -102,15 +107,17 @@ export async function launchAiScenario(
     factionType: FactionType[variant.humanFaction],
     team: team(1)
   } satisfies PositionPlayerDefinition);
+  ensureMatch();
   await client.addSelfAsSpectator();
+  ensureMatch();
   await client.gameModeChanged("map", { map: map.id });
+  ensureMatch();
   const players = [
     { playerNumber: recipe.recipe.aiPlayerNumber, faction: variant.aiFaction, difficulty: variant.difficulty },
     ...(variant.additionalAiPlayers ?? [])
   ].sort((left, right) => left.playerNumber - right.playerNumber);
   for (const player of players) {
-    signal.throwIfAborted();
-    if (client.gameInstance !== match) throw new Error("The local match was replaced.");
+    ensureMatch();
     const ai = await client.addAiPlayer(undefined, {
       factionType: FactionType[player.faction],
       team: team(player.playerNumber),
@@ -119,8 +126,7 @@ export async function launchAiScenario(
     if (ai.player.playerNumber !== player.playerNumber)
       throw new Error("The scenario player slots could not be assigned.");
   }
-  signal.throwIfAborted();
-  if (client.gameInstance !== match) throw new Error("The local match was replaced.");
+  ensureMatch();
   activeAiScenarios.set(match, { title, config });
   try {
     await client.startGame();
