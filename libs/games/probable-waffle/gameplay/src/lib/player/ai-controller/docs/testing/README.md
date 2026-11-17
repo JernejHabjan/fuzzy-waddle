@@ -190,10 +190,18 @@ observation -> demand/mission -> intent/claim -> command application -> outcome 
 
 `tools/probable-waffle/skirmish/ai/testing/fixtures/skirmish-scenario-manifest.json` owns the required IDs, driver requirement, fixture registration and baseline compatibility. Typed fixture builders and assertions own setup and expected behavior. The coverage gate must fail when a supported required row is missing rather than reducing the denominator.
 
-The [generated scenario catalog](./scenario-catalog.md) joins every manifest ID to its requirement, registered pure fixture, ID-referencing specs, and real-game recipe/map/checkpoint data. It reports wiring, not passing evidence. Edit the linked requirement and fixture sources, then regenerate with `node tools/probable-waffle/skirmish/ai/cli/generate-skirmish-test-catalog.ts --write`; the catalog can be checked locally. Automatic extended AI CI is currently disabled. Existing browser recipes still use changing product maps; [frozen test maps](./test-map-contract.md) and their migration remain implementation work under #816. Until that migration is done, do not describe a changing-map run as a stable reference-map regression.
+## Scenario descriptions and inventory
 
-For bounded authoring triage, `node tools/probable-waffle/skirmish/ai/cli/generate-skirmish-test-catalog.ts --inventory` prints one line per registered runtime recipe:
-IDs, variant/run counts, preset coverage, maximum tick and migration flags. It reads the manifest/fixtures without launching the game. Flags are an inventory, not proof of a failing test or an excuse to drop a required row.
+The requirement tables in `strategic-scenarios.md`, `adversarial-scenarios.md`,
+`classic-rts-and-difficulty-scenarios.md` and `debugging-scenarios.md` are the concise source for scenario setup and
+outcome descriptions. The development scenario browser reads the same tables. A tooling test rejects a missing,
+duplicate or unregistered description; there is no generated Markdown catalog to maintain.
+
+For an on-demand runtime-recipe inventory, run `pnpm ai:skirmish:catalog`. It prints IDs, variant/run counts, preset
+coverage, maximum tick and migration flags without launching the game. It is authoring metadata, not execution evidence
+or permission to drop a required row. Automatic extended AI CI is disabled. Existing browser recipes still use changing
+product maps; [frozen test maps](./test-map-contract.md) remain work under #816, so do not describe a changing-map run
+as a stable reference-map regression.
 
 The current catalog contains 120 named cases before variants. Registered pure fixtures still require complete semantic and native acceptance where declared; see [coverage and follow-ups](./coverage-status.md).
 

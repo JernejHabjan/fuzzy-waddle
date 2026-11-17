@@ -84,7 +84,7 @@ Ordinary `pnpm e2e` has an extended AI hook enabled by the exact value `RUN_AI_R
 - [World access and defense](../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/architecture/world-access-and-defense.md)
 - [Resilience and lifecycle](../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/architecture/resilience-and-lifecycle.md)
 - [Testing commands](../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/README.md)
-- [Generated scenario catalog](../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/scenario-catalog.md)
+- [Scenario requirements and inventory](../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/README.md#scenario-descriptions-and-inventory)
 - [Native E2E contract](../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/runtime-e2e.md)
 - [Debugging workbench](../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/debugging/README.md)
 - [Incident reproduction](../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/debugging/incident-reproduction.md)

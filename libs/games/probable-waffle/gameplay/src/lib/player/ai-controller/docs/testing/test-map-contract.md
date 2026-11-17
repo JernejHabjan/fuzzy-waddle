@@ -4,7 +4,7 @@
 
 Test-owned open-economy, bridge-crossing and three-spawn multiplayer maps are committed. Their scenes, tilemaps and asset packs are pinned in `tools/probable-waffle/skirmish/ai/testing/fixtures/maps/frozen-skirmish-test-map-topology.json`. SHA-256 hashes use UTF-8 text with CRLF normalized to LF, matching Git's stored representation; changed JSON content still fails. Static topology contracts check the pinned files, legal spawn structure, resources and absence of inherited campaign actors. A separate regression verifies line-ending parity and rejects changed content.
 
-`MapAiOpenEconomy` has two owned spawns, neutral Tree6 wood/stone/minerals and flat grass tiles; food comes from normal faction construction. Ordinary map browsing and matchmaking exclude test maps; the explicit local runtime-test lobby can select them. Some recipes still use mutable shipped maps. The manifest and [scenario catalog](./scenario-catalog.md)
+`MapAiOpenEconomy` has two owned spawns, neutral Tree6 wood/stone/minerals and flat grass tiles; food comes from normal faction construction. Ordinary map browsing and matchmaking exclude test maps; the explicit local runtime-test lobby can select them. Some recipes still use mutable shipped maps. The manifest and
 identify each actual selection; [coverage status](./coverage-status.md) records executed outcomes and their limits. Static contracts alone do not prove physical path, placement or transport outcomes. Natural playtests on the latest shipped maps remain a separate compatibility signal.
 
 ## Target map set

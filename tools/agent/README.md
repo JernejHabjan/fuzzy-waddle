@@ -6,14 +6,15 @@ measurement and review. These tools support development and are independent of t
 
 ## Cleanup checklist
 
-- [ ] Replace the large generated scenario catalog with concise guidance and an on-demand listing. Preserve the
-  scenario browser's descriptions and update its generator, tests and CI references.
-- [ ] Reduce scenario fixture duplication by reusing common world setups and actions. Consolidate duplicate cases only
-  when meaningful behavior remains covered. See [scenario cleanup proposals](./scenario-cleanup.md).
+- [x] Replace the large generated scenario catalog with concise guidance and an on-demand inventory. The scenario
+  browser retains its descriptions; requirement validation and the CI inventory command use the same source.
+- [x] Reduce scenario fixture duplication by reusing common world setups and actions. SCOUT-02 and WALL-02 now use
+  their typed faction/branch world builders; their scenario IDs, controls and assertions remain unchanged.
 - [x] Remove completed AI handoffs after moving any still-useful guidance and unresolved acceptance into durable
   documentation or issues. Update links before deletion.
-- [ ] Review `ai-controller/docs/` for outdated plans, unfinished work presented as complete, excessive detail and
-  duplication. Keep concise current behavior, testing guidance and unresolved follow-ups; update links.
+- [x] Review `ai-controller/docs/` for outdated plans, unfinished work presented as complete, excessive detail and
+  duplication. Current docs keep behavior, testing guidance and unresolved issues; generated-catalog links were
+  removed in favor of concise requirements and the on-demand inventory.
 - [x] Disable the remaining manual trigger of `.github/disabled-workflows/ai-regression.yml` and explain in the workflow that
   extended AI regression is too slow for routine CI. Automatic tag triggering is already disabled. When enabled later,
   the workflow should select all supported scenarios from the manifest, without a separate scout profile or a

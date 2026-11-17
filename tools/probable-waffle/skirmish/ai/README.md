@@ -36,7 +36,7 @@ deadlines and positive/negative predicates explicit. Move data together with its
 ```sh
 pnpm ai:tools:typecheck
 pnpm ai:tools:test
-pnpm ai:skirmish:catalog -- --check
+pnpm ai:skirmish:catalog
 pnpm ai:regression -- --list
 pnpm ai:regression
 pnpm ai:regression -- --profile scout

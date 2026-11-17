@@ -5,6 +5,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { resolveAiRegressionSelection } from "../regression/ai-regression-selection.ts";
 import { executeAiRegressionCases } from "../regression/ai-regression-execution.ts";
+import { readNativeScenarioFixture } from "../scenarios/registration/read-native-scenario-fixture.ts";
 
 import { workspaceRoot as root } from "../shared/workspace-paths.ts";
 const args = parseArgs(process.argv.slice(2));
@@ -14,7 +15,7 @@ const manifest = readJson(join(fixtureDirectory, "skirmish-scenario-manifest.jso
 const selection = resolveAiRegressionSelection(
   pack,
   manifest,
-  (reference) => readJson(join(fixtureDirectory, reference)),
+  (reference) => readNativeScenarioFixture(fixtureDirectory, reference),
   args.profile
 );
 

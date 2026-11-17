@@ -1,8 +1,9 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { groupNames, readRequirements } from "./generate-skirmish-test-catalog.ts";
+import { groupNames, readScenarioRequirements, validateScenarioRequirements } from "./scenario-requirements.ts";
 import { digestString, readHead, requireSha } from "../matrix/skirmish-matrix-io.ts";
 import { fixtureDirectory, workspaceRoot } from "../shared/workspace-paths.ts";
+import { readNativeScenarioFixture } from "../scenarios/registration/read-native-scenario-fixture.ts";
 import type { ScenarioManifest } from "../contracts/scenarios/scenario-manifest.ts";
 
 /** Stages only manifest-linked browser recipes for the development portal. */
@@ -12,7 +13,8 @@ function prepareScenarioBrowser(): void {
     readFileSync(join(fixtureDirectory, "skirmish-scenario-manifest.json"), "utf8")
   );
   const sourceRevision = requireSha(readHead(), "scenario_browser_source");
-  const requirements = readRequirements();
+  validateScenarioRequirements(manifest);
+  const requirements = readScenarioRequirements();
   const recipes = new Map<string, { name: string; digest: string }>();
   mkdirSync(output, { recursive: true });
 
@@ -24,7 +26,7 @@ function prepareScenarioBrowser(): void {
       }
       recipe = recipes.get(row.fixture) ?? null;
       if (!recipe) {
-        const text = readFileSync(join(fixtureDirectory, row.fixture), "utf8");
+        const text = JSON.stringify(readNativeScenarioFixture(fixtureDirectory, row.fixture));
         const digest = digestString(text);
         recipe = { name: `recipe-${recipes.size + 1}.json`, digest };
         writeFileSync(join(output, recipe.name), text);

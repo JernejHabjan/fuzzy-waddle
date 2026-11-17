@@ -35,7 +35,7 @@ Pawn order executors remain under Phaser `prefabs/ai-agents/`, grouped by action
 ## Verification and operation
 
 - [Testing](./testing/README.md): test layers, source locations and stable commands.
-- [Scenario test catalog](./testing/scenario-catalog.md): all required cases, setups, outcomes, fixture/test links and current runtime maps.
+- [Scenario requirements](./testing/README.md#scenario-descriptions-and-inventory): concise descriptions, inventory and runnable commands.
 - [Test map contract](./testing/test-map-contract.md): planned frozen CI maps and map/fixture authority boundaries.
 - [Runtime E2E](./testing/runtime-e2e.md): Playwright matrix, execution contracts and optional broader certification.
 - [Debugging](./debugging/README.md): in-game workbench contracts.

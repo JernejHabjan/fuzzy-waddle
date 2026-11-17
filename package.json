@@ -17,7 +17,7 @@
     "ai:skirmish:production": "node tools/probable-waffle/skirmish/ai/cli/run-skirmish-matrix.ts --scenarios PRO-01,PRO-02,PRO-03,PRO-04,PRO-05,PRO-06,PRO-07 --mode runtime",
     "ai:skirmish:land-sequences": "node tools/probable-waffle/skirmish/ai/cli/run-skirmish-matrix.ts --scenarios SEQ-01,SEQ-02 --mode runtime",
     "ai:skirmish:report": "node tools/probable-waffle/skirmish/ai/reports/summarize-skirmish-report.ts",
-    "ai:skirmish:catalog": "node tools/probable-waffle/skirmish/ai/cli/generate-skirmish-test-catalog.ts",
+    "ai:skirmish:catalog": "node tools/probable-waffle/skirmish/ai/cli/list-skirmish-scenarios.ts",
     "ai:skirmish:report:failures": "node tools/probable-waffle/skirmish/ai/reports/summarize-skirmish-report.ts --failures-only --details",
     "ai:skirmish:multiplayer": "node tools/probable-waffle/skirmish/ai/cli/run-multiplayer-e2e.ts",
     "ai:regression": "node tools/probable-waffle/skirmish/ai/cli/run-ai-regression.ts",

@@ -8,6 +8,7 @@ import { pureFixtureReference, runtimeFixtureReference } from "../scenarios/vali
 import { digestString, readHead, readJson, readWorkingTreeSource } from "./skirmish-matrix-io.ts";
 import { createRuntimeResultPath, readRuntimeResultOutcome } from "./skirmish-runtime-result.ts";
 import { writeRuntimeRequest } from "../shared/transport/skirmish-ai-runtime-request-transport.ts";
+import { readNativeScenarioFixture } from "../scenarios/registration/read-native-scenario-fixture.ts";
 
 export function invokeSelectedHarness(input, context) {
   const { manifest, fixtureDirectory } = context;
@@ -191,7 +192,7 @@ function invokeRuntimeHarness(input, context) {
     ...new Map<string, { reference: string; digest: string }>(
       input.rows.map((row) => {
         const reference = runtimeFixtureReference(row);
-        return [reference, readJson(join(fixtureDirectory, reference), 1024 * 1024)];
+        return [reference, readNativeScenarioFixture(fixtureDirectory, reference)];
       })
     ).values()
   ];
@@ -202,7 +203,7 @@ function invokeRuntimeHarness(input, context) {
     ...new Map<string, { reference: string; digest: string }>(
       input.rows.map((row) => {
         const reference = runtimeFixtureReference(row);
-        const fixture = readJson(join(fixtureDirectory, reference), 1024 * 1024);
+        const fixture = readNativeScenarioFixture(fixtureDirectory, reference);
         return [
           reference,
           { reference, digest: `sha256:${createHash("sha256").update(JSON.stringify(fixture)).digest("hex")}` }
@@ -212,7 +213,7 @@ function invokeRuntimeHarness(input, context) {
   ].sort((left, right) => left.reference.localeCompare(right.reference));
   const scenarioSources = input.rows.map((row) => {
     const reference = runtimeFixtureReference(row);
-    const fixture = readJson(join(fixtureDirectory, reference), 1024 * 1024);
+    const fixture = readNativeScenarioFixture(fixtureDirectory, reference);
     return { scenarioId: row.id, group: row.group, reference, map: fixture.recipe.mapLabel };
   });
   const resultArtifact = createRuntimeResultPath(
@@ -295,7 +296,7 @@ function invokeRuntimeHarness(input, context) {
     rows: input.rows.map((row) => row.id),
     contexts: input.rows.map((row) => ({
       scenarioId: row.id,
-      ...readJson(join(fixtureDirectory, runtimeFixtureReference(row)), 1024 * 1024).context
+      ...readNativeScenarioFixture(fixtureDirectory, runtimeFixtureReference(row)).context
     })),
     workCounts: {
       scenarios: input.rows.length,

@@ -3,11 +3,17 @@ import { appendFileSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { resolveAiRegressionSelection } from "../regression/ai-regression-selection.ts";
+import { readNativeScenarioFixture } from "../scenarios/registration/read-native-scenario-fixture.ts";
 
 const directory = fileURLToPath(new URL("../testing/fixtures/", import.meta.url));
 const pack = readJson("periodic-native-regression-profiles.json");
 const manifest = readJson("skirmish-scenario-manifest.json");
-const selection = resolveAiRegressionSelection(pack, manifest, readJson, process.env.AI_REGRESSION_PROFILE ?? "core");
+const selection = resolveAiRegressionSelection(
+  pack,
+  manifest,
+  (reference) => readNativeScenarioFixture(directory, reference),
+  process.env.AI_REGRESSION_PROFILE ?? "core"
+);
 const matrix = JSON.stringify({
   include: selection.selected.map(({ caseId, scenarioId, variantId }) => ({
     id: caseId,

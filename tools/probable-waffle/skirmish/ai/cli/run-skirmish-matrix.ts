@@ -26,6 +26,7 @@ import {
   resolveExplicitPath,
   workspaceRoot
 } from "../matrix/skirmish-matrix-io.ts";
+import { readNativeScenarioFixture } from "../scenarios/registration/read-native-scenario-fixture.ts";
 
 const args = parseArguments(process.argv.slice(2));
 if (args.help === true) {
@@ -200,7 +201,7 @@ function selectedDiagnosticVariant(options, rows, mode) {
   const row = rows[0];
   const reference = runtimeFixtureReference(row);
   if (!reference) throw new Error(`diagnostic_runtime_fixture_missing:${row.id}`);
-  const fixture = readJson(join(fixtureDirectory, reference), 1024 * 1024);
+  const fixture = readNativeScenarioFixture(fixtureDirectory, reference);
   return selectDiagnosticVariant(options, row.id, mode, fixture);
 }
 

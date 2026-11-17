@@ -8,6 +8,7 @@ import { validEconomyContracts, validResourceRecoveryContract } from "./skirmish
 import { readNativeRecipeDraft } from "../registration/native-recipe-drafts.ts";
 import { validExpansionPressureRecipe } from "./skirmish-runtime-expansion-pressure-fixture.ts";
 import { validNativeScenarioFixture } from "./skirmish-runtime-native-scenario-fixture.ts";
+import { readNativeScenarioFixture } from "../registration/read-native-scenario-fixture.ts";
 
 export function validateManifest(value, fixtureDirectory) {
   if (!value || value.schemaVersion !== 1 || value.manifestVersion !== "skirmish" || !Array.isArray(value.rows))
@@ -31,7 +32,7 @@ export function validateManifest(value, fixtureDirectory) {
     }
     if (row.fixture !== null) {
       if (!safeReference(row.fixture)) throw new Error(`unsafe_fixture_reference:${row.id}`);
-      const fixture = readJson(join(fixtureDirectory, row.fixture), 1024 * 1024);
+      const fixture = readNativeScenarioFixture(fixtureDirectory, row.fixture);
       if (!Array.isArray(fixture.scenarioIds) || !fixture.scenarioIds.includes(row.id)) {
         throw new Error(`fixture_identity_mismatch:${row.id}`);
       }
@@ -79,7 +80,7 @@ export function fixtureReference(row) {
 export function pureFixtureReference(row, fixtureDirectory) {
   return (
     row.authoredFixture ??
-    (row.fixture && readJson(join(fixtureDirectory, row.fixture), 1024 * 1024).driver === "pure" ? row.fixture : null)
+    (row.fixture && readNativeScenarioFixture(fixtureDirectory, row.fixture).driver === "pure" ? row.fixture : null)
   );
 }
 
