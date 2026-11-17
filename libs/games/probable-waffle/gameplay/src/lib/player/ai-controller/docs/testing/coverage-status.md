@@ -16,12 +16,12 @@ Paths below are relative to the gameplay AI-controller directory. Inspect their 
 
 | Decision                       | Focused source                                                                                                           |
 |--------------------------------|--------------------------------------------------------------------------------------------------------------------------|
-| Start useful scouting          | planning/strategy/scouting/ai-scouting-admission.spec.ts, ai-scout-search-questions.spec.ts, ai-skirmish-offense.spec.ts |
-| Investigate stale intelligence | planning/adaptation/ai-adaptation-manager.spec.ts, ai-tactics-scouting.spec.ts; Phaser observation memory/coverage specs |
-| Justify air production         | planning/adaptation/ai-adaptation-manager.spec.ts, ai-adaptation-scenarios.spec.ts                                       |
-| Harass and withdraw            | planning/strategy/offense/ai-skirmish-offense.spec.ts and RAID-01/02 fixtures                                            |
-| Time upgrades                  | planning/adaptation/ai-adaptation-manager.spec.ts TECH-01/02                                                             |
-| Adapt composition/strategy     | planning/adaptation/ai-adaptation-scenarios.spec.ts and offense controls                                                 |
+| Start useful scouting          | planning/strategy/scouting/tests/ai-scouting-admission.spec.ts, ai-scout-search-questions.spec.ts; planning/strategy/offense/tests/ai-skirmish-offense.spec.ts |
+| Investigate stale intelligence | planning/adaptation/tests/ai-adaptation-manager.spec.ts; planning/tactics/orders/tests/ai-tactics-scouting.spec.ts; Phaser observation memory/coverage specs |
+| Justify air production         | planning/adaptation/tests/ai-adaptation-manager.spec.ts and ai-adaptation-scenarios.spec.ts |
+| Harass and withdraw            | planning/strategy/offense/tests/ai-skirmish-offense.spec.ts and RAID-01/02 fixtures |
+| Time upgrades                  | planning/adaptation/tests/ai-adaptation-manager.spec.ts TECH-01/02 |
+| Adapt composition/strategy     | planning/adaptation/tests/ai-adaptation-scenarios.spec.ts and offense controls |
 
 ## Independently resumable work
 
@@ -47,6 +47,6 @@ These are separately tracked follow-ups to the single-player delivery. Their bro
 
 ## Execution policy
 
-Automatic AI regression/matrix jobs and tag triggers are commented out. Manual dispatch remains available when the dedicated workflow is registered on the default branch. Local `pnpm ai:regression` and its scout profile remain usable; the strict `RUN_AI_REGRESSION=true` E2E hook is documented in [testing commands](./README.md#periodic-regression-profiles). Repository variables and tags alone cannot activate commented jobs. Do not re-enable them without a new request.
+The AI regression workflow is stored under `.github/disabled-workflows/`; both its manual and tag triggers are commented out. Local `pnpm ai:regression` and its scout profile remain usable; the strict `RUN_AI_REGRESSION=true` E2E hook is documented in [testing commands](./README.md#periodic-regression-profiles). Do not re-enable the workflow without a new request.
 
 Use focused causal checks before affected native confirmation. Keep one local native runner and each invocation at or below 30 minutes. Retain valid evidence and avoid unchanged full-family reruns. Missing or infrastructure-only results are not gameplay passes. PR review/readiness is separate from broader matrix certification; merging remains a user-controlled action.
