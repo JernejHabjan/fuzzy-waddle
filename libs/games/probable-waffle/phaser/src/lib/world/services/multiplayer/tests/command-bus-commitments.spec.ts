@@ -4,7 +4,7 @@ import {
   type GameCommandAuthorityState
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { CommandBusService } from "../command-bus.service";
-import { commandBusTestScene } from "../command-bus-test-scene";
+import { commandBusTestScene } from "./command-bus-test-scene";
 
 const key = "ai:bootstrap-worker:effect:0:0";
 function setup(saved?: GameCommandAuthorityState) {

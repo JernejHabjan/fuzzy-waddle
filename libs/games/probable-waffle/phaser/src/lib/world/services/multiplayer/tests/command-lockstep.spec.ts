@@ -5,7 +5,7 @@ import {
   type ProbableWaffleGameCommandEvent,
   type GameCommand
 } from "@fuzzy-waddle/probable-waffle-protocol";
-import { commandBusTestScene } from "../command-bus-test-scene";
+import { commandBusTestScene } from "./command-bus-test-scene";
 import { CommandLockstep } from "../command-lockstep";
 import { SimulationTickService } from "../../simulation-tick.service";
 

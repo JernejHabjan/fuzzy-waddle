@@ -9,7 +9,7 @@ import {
   createPlayerLobbyDefinition,
   type GameCommandAuthorityState
 } from "@fuzzy-waddle/probable-waffle-protocol";
-import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
+import { ProbableWaffleScene } from "../../../../core/probable-waffle.scene";
 
 /** Headless native scene and real protocol players; only renderer/host plugins are omitted. */
 export function commandBusTestScene(commandAuthority?: GameCommandAuthorityState): ProbableWaffleScene {

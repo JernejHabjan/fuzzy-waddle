@@ -1,6 +1,6 @@
 import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/fixtures/coordination/ai-test-fixtures";
 import type { GameCommand, ProbableWaffleReplayCommandBatch } from "@fuzzy-waddle/probable-waffle-protocol";
-import { commandBusTestScene } from "../command-bus-test-scene";
+import { commandBusTestScene } from "./command-bus-test-scene";
 import { CommandLockstep } from "../command-lockstep";
 import { SimulationTickService } from "../../simulation-tick.service";
 import { restoreSavedCommandInput } from "../restore-saved-command-input";

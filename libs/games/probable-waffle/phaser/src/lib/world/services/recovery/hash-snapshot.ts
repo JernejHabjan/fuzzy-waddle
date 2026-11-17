@@ -6,10 +6,7 @@ import type { ProbableWaffleStateHashDiagnostics } from "@fuzzy-waddle/probable-
  * callers remain compatible.
  */
 export interface HashSnapshot {
-  /**
-   * boolean policy/value on {@link HashSnapshot} that explicitly controls whether the associated behavior is
-   * active; do not infer it from unrelated state.
-   */
+  /** Deterministic hash of the authoritative state projection. */
   hash: string;
   /**
    * Optional diagnostics value carried by {@link HashSnapshot}. Its declared type is the compatibility boundary

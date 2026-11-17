@@ -1,10 +1,10 @@
 import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import type { NavigationHeightGraph } from "../navigation-height-graph";
 import { GroundNavigationPathfinder } from "../ground-navigation-pathfinder";
-import { NavigationPathfinderDouble } from "../navigation-pathfinder-double";
+import { NavigationPathfinderDouble } from "./navigation-pathfinder-double";
 
 jest.mock("easystarjs", () => ({
-  js: jest.requireActual<typeof import("../navigation-pathfinder-double")>("./navigation-pathfinder-double")
+  js: jest.requireActual<typeof import("./navigation-pathfinder-double")>("./navigation-pathfinder-double")
     .NavigationPathfinderDouble
 }));
 
