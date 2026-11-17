@@ -6,6 +6,7 @@ import { GameInstanceClientService } from "../../communicators/game-instance-cli
 import type { AiScenarioCatalog, AiScenarioEntry } from "./ai-scenario-catalog";
 import type { AiScenarioRecipe, AiScenarioVariant } from "./ai-scenario-recipe";
 import { launchAiScenario, scenarioMapLabel, scenarioPlaybackBlocker } from "./launch-ai-scenario";
+import { isAiScenarioCatalog, isAiScenarioRecipe } from "./validate-ai-scenario-data";
 
 const assets = "dev/ai-scenarios";
 
@@ -59,7 +60,9 @@ export class AiScenariosComponent {
   protected async loadCatalog(): Promise<void> {
     this.catalogError.set(false);
     try {
-      this.catalog.set(await firstValueFrom(this.http.get<AiScenarioCatalog>(`${assets}/catalog.json`)));
+      const catalog = await firstValueFrom(this.http.get<unknown>(`${assets}/catalog.json`));
+      if (!isAiScenarioCatalog(catalog)) throw new Error("Invalid scenario catalog");
+      this.catalog.set(catalog);
     } catch {
       this.catalogError.set(true);
     }
@@ -77,7 +80,10 @@ export class AiScenariosComponent {
     try {
       let recipe = this.recipes.get(name);
       if (!recipe) {
-        recipe = firstValueFrom(this.http.get<AiScenarioRecipe>(`${assets}/${name}`));
+        recipe = firstValueFrom(this.http.get<unknown>(`${assets}/${name}`)).then((value) => {
+          if (!isAiScenarioRecipe(value)) throw new Error("Invalid scenario recipe");
+          return value;
+        });
         this.recipes.set(name, recipe);
       }
       const loaded = await recipe;

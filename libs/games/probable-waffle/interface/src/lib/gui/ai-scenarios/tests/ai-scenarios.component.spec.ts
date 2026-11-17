@@ -109,4 +109,29 @@ describe("AiScenariosComponent", () => {
     await expect(launching).rejects.toThrow("The local match was replaced.");
     expect(client.addSelfAsSpectator).not.toHaveBeenCalled();
   });
+
+  it("shows an error for malformed recipe data and allows a retry", async () => {
+    TestBed.configureTestingModule({
+      imports: [AiScenariosComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([]),
+        { provide: GameInstanceClientService, useValue: {} }]
+    });
+    const fixture = TestBed.createComponent(AiScenariosComponent);
+    const http = TestBed.inject(HttpTestingController);
+    http.expectOne(`${assetRoot}/catalog.json`).flush(catalog);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const select = () => fixture.nativeElement.querySelector(".scenario-row").click();
+    select();
+    http.expectOne(`${assetRoot}/recipe-1.json`).flush({ scenarioIds: ["C-05"], recipe: {} });
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain("The scenario setup could not be loaded.");
+    select();
+    http.expectOne(`${assetRoot}/recipe-1.json`).flush(recipe);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain("Bait and pursuit");
+    http.verify();
+  });
 });
