@@ -91,12 +91,15 @@ describe("AiScenariosComponent", () => {
     fixture.detectChanges();
     const page: HTMLElement = fixture.nativeElement;
     expect(page.textContent).toContain("Transport");
-    const search = page.querySelector<HTMLInputElement>('input[type="search"]')!;
+    const search = page.querySelector<HTMLInputElement>('input[type="search"]');
+    if (!search) throw new Error("scenario_search_missing");
     search.value = "bait";
     search.dispatchEvent(new Event("input"));
     fixture.detectChanges();
     expect(page.querySelectorAll(".scenario-row")).toHaveLength(1);
-    page.querySelector<HTMLButtonElement>(".scenario-row")!.click();
+    const scenarioRow = page.querySelector<HTMLButtonElement>(".scenario-row");
+    if (!scenarioRow) throw new Error("scenario_row_missing");
+    scenarioRow.click();
     http.expectOne(`${assetRoot}/recipe-1.json`).flush(recipe);
     await fixture.whenStable();
     fixture.detectChanges();
