@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 
 const fixture = JSON.parse(
   readFileSync(
-    new URL("../../testing/fixtures/native/production/production-composition-native-gameplay.json", import.meta.url),
+    new URL("../../../testing/fixtures/native/production/production-composition-native-gameplay.json", import.meta.url),
     "utf8"
   )
 );
@@ -17,9 +17,9 @@ const requirement = fixture.assertions["PRO-04"];
 test("ready and paid-queue production pairs validate independently for both factions", () => {
   assert.equal(validProductionCompositionPair(fixture.recipe, requirement, "PRO-04"), true);
   const manifest = JSON.parse(
-    readFileSync(new URL("../../testing/fixtures/skirmish-scenario-manifest.json", import.meta.url), "utf8")
+    readFileSync(new URL("../../../testing/fixtures/skirmish-scenario-manifest.json", import.meta.url), "utf8")
   );
-  validateManifest(manifest, fileURLToPath(new URL("../../testing/fixtures/", import.meta.url)));
+  validateManifest(manifest, fileURLToPath(new URL("../../../testing/fixtures/", import.meta.url)));
   assert.equal(
     manifest.rows.find((row) => row.id === "PRO-04").fixture,
     "native/production/production-composition-native-gameplay.json"

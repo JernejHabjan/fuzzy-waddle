@@ -7,7 +7,7 @@ import { executeAiRegressionCases } from "../ai-regression-execution.ts";
 import { parseAiRegressionFlag, runE2eWithAiRegression } from "../ai-regression-hook.ts";
 import { resolveAiRegressionSelection } from "../ai-regression-selection.ts";
 
-const fixtures = fileURLToPath(new URL("../testing/fixtures/", import.meta.url));
+const fixtures = fileURLToPath(new URL("../../testing/fixtures/", import.meta.url));
 const manifest = readJson("skirmish-scenario-manifest.json");
 const pack = readJson("periodic-native-regression-profiles.json");
 const readFixture = (reference) => readJson(reference);

@@ -5,7 +5,7 @@ import { validProductionCapacityPair } from "../skirmish-runtime-production-capa
 
 const fixture = JSON.parse(
   readFileSync(
-    new URL("../../testing/fixtures/native/production/production-capacity-native-gameplay.json", import.meta.url),
+    new URL("../../../testing/fixtures/native/production/production-capacity-native-gameplay.json", import.meta.url),
     "utf8"
   )
 );

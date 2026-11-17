@@ -6,7 +6,7 @@ import { validateRuntimeRecipeMetadata } from "../skirmish-runtime-recipe-metada
 
 const fixture = JSON.parse(
   readFileSync(
-    new URL("../../testing/fixtures/native/production/production-authority-native-gameplay.json", import.meta.url),
+    new URL("../../../testing/fixtures/native/production/production-authority-native-gameplay.json", import.meta.url),
     "utf8"
   )
 );

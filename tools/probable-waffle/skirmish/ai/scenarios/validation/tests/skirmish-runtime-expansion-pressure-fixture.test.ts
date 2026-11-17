@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 
 const fixture = JSON.parse(
   readFileSync(
-    new URL("../../testing/fixtures/native/placement/expansion-pressure-native-gameplay.json", import.meta.url),
+    new URL("../../../testing/fixtures/native/placement/expansion-pressure-native-gameplay.json", import.meta.url),
     "utf8"
   )
 );
@@ -16,12 +16,12 @@ const valid = (value) => validExpansionPressureRecipe(value.recipe, value.assert
 test("EXP-02 registers eight paired native branches and keeps every declared branch bound", () => {
   assert.equal(valid(fixture), true);
   const manifest = JSON.parse(
-    readFileSync(new URL("../../testing/fixtures/skirmish-scenario-manifest.json", import.meta.url), "utf8")
+    readFileSync(new URL("../../../testing/fixtures/skirmish-scenario-manifest.json", import.meta.url), "utf8")
   );
   const row = manifest.rows.find((entry) => entry.id === "EXP-02");
   assert.equal(row.fixture, "native/placement/expansion-pressure-native-gameplay.json");
   assert.equal(row.runtimeRecipeDraft, undefined);
-  validateManifest(manifest, fileURLToPath(new URL("../../testing/fixtures/", import.meta.url)));
+  validateManifest(manifest, fileURLToPath(new URL("../../../testing/fixtures/", import.meta.url)));
 });
 
 test("a missing faction/branch, arbitrary map/seed or altered budget cannot impersonate a pressure pair", () => {

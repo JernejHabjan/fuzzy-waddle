@@ -22,14 +22,14 @@ test("H-30 holds the faction's late native queue command and samples after relea
 test("all supported native bindings are connected and no executable registration hides behind a draft", () => {
   const drafts = JSON.parse(
     readFileSync(
-      new URL("../../testing/fixtures/authoring/unexecuted-native-scenario-recipes.json", import.meta.url),
+      new URL("../../../testing/fixtures/authoring/unexecuted-native-scenario-recipes.json", import.meta.url),
       "utf8"
     )
   );
   assert.deepEqual(drafts.scenarioIds, []);
   assert.deepEqual(drafts.cases, []);
   const manifest = JSON.parse(
-    readFileSync(new URL("../../testing/fixtures/skirmish-scenario-manifest.json", import.meta.url), "utf8")
+    readFileSync(new URL("../../../testing/fixtures/skirmish-scenario-manifest.json", import.meta.url), "utf8")
   );
   assert.deepEqual(
     manifest.rows.filter((row) => row.drivers.includes("runtime") && !row.fixture && !row.runtimeSupport),
@@ -176,7 +176,7 @@ test("recovery bindings preserve actual obstruction, healthy work and finite pen
 
 test("H-21 native larger-unit clearance is explicitly deferred by the user", () => {
   const manifest = JSON.parse(
-    readFileSync(new URL("../../testing/fixtures/skirmish-scenario-manifest.json", import.meta.url), "utf8")
+    readFileSync(new URL("../../../testing/fixtures/skirmish-scenario-manifest.json", import.meta.url), "utf8")
   );
   const row = manifest.rows.find((row) => row.id === "H-21");
   assert.equal(Object.hasOwn(nativeScenarioBindings.cases, "H-21"), false);

@@ -7,12 +7,12 @@ import { nativeScenarioBindings } from "../native-scenario-registration.ts";
 
 const fixture = JSON.parse(
   readFileSync(
-    new URL("../../testing/fixtures/authoring/unexecuted-native-scenario-recipes.json", import.meta.url),
+    new URL("../../../testing/fixtures/authoring/unexecuted-native-scenario-recipes.json", import.meta.url),
     "utf8"
   )
 );
 const manifest = JSON.parse(
-  readFileSync(new URL("../../testing/fixtures/skirmish-scenario-manifest.json", import.meta.url), "utf8")
+  readFileSync(new URL("../../../testing/fixtures/skirmish-scenario-manifest.json", import.meta.url), "utf8")
 );
 const readerFixture = {
   ...fixture,

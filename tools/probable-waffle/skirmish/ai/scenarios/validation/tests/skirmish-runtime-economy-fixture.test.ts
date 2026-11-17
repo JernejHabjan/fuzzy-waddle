@@ -5,13 +5,13 @@ import { validEconomyContracts, validResourceRecoveryContract } from "../skirmis
 
 const economy = JSON.parse(
   readFileSync(
-    new URL("../../testing/fixtures/native/economy/economy-delivery-native-gameplay.json", import.meta.url),
+    new URL("../../../testing/fixtures/native/economy/economy-delivery-native-gameplay.json", import.meta.url),
     "utf8"
   )
 );
 const recovery = JSON.parse(
   readFileSync(
-    new URL("../../testing/fixtures/native/economy/resource-recovery-native-gameplay.json", import.meta.url),
+    new URL("../../../testing/fixtures/native/economy/resource-recovery-native-gameplay.json", import.meta.url),
     "utf8"
   )
 );
