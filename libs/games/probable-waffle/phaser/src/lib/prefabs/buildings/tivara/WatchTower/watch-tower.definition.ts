@@ -51,7 +51,7 @@ export const watchTowerDefinition = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Stone]: 250
+        [ResourceType.Stone]: 150
       },
       refundFactor: 0.5,
       productionTime: 30000,

@@ -48,7 +48,7 @@ export const stairsDefinition = {
     },
     productionCost: {
       resources: {
-        [ResourceType.Stone]: 25
+        [ResourceType.Stone]: 15
       },
       refundFactor: 0.5,
       productionTime: 5000,

@@ -7,7 +7,7 @@ import { SelectionGroupsComponent } from "../player/human-controller/selection-g
 import { CameraMovementHandler } from "../player/human-controller/cameraMovementHandler";
 import { type ActorId } from "@fuzzy-waddle/platform-game-sessions";
 import { ProbableWafflePlayerType, ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
-import { AiPlayerHandler } from "../player/ai-controller/ai-player-handler";
+import { AiPlayerHandler } from "../player/ai-controller/commands/ai-player-handler";
 import { emitEventSelection, getSelectableSceneChildren } from "./scene-data";
 import { getActorComponent } from "./actor-component";
 import { SelectableComponent } from "../entity/components/selectable-component";
