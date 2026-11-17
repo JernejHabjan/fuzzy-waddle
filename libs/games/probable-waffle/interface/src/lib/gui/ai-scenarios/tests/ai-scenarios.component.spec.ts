@@ -76,6 +76,7 @@ describe("AiScenariosComponent", () => {
     expect(actions[1].disabled).toBe(true);
     actions[0].click();
     await fixture.whenStable();
+    await new Promise((resolve) => setTimeout(resolve, 0));
     expect(client.gameModeChanged).toHaveBeenCalledWith("map", { map: ProbableWaffleMapEnum.AiOpenEconomy });
     expect(client.playerSlotOpened).toHaveBeenCalledWith(expect.objectContaining({
       player: expect.objectContaining({ playerNumber: 1, playerName: "Scenario opponent", joined: false }),
