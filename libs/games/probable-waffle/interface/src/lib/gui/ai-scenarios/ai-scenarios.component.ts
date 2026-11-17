@@ -36,20 +36,26 @@ export class AiScenariosComponent {
   protected readonly visibleGroups = computed(() => {
     const query = this.query().trim().toLowerCase();
     const category = this.group();
-    const filtered = (this.catalog()?.scenarios ?? []).filter((entry) =>
-      (!category || entry.group === category) &&
-      [entry.id, entry.title, entry.group, entry.setup, entry.outcome].join(" ").toLowerCase().includes(query)
+    const filtered = (this.catalog()?.scenarios ?? []).filter(
+      (entry) =>
+        (!category || entry.group === category) &&
+        [entry.id, entry.title, entry.group, entry.setup, entry.outcome].join(" ").toLowerCase().includes(query)
     );
-    return this.groups().map((name) => ({ name, entries: filtered.filter((entry) => entry.group === name) }))
+    return this.groups()
+      .map((name) => ({ name, entries: filtered.filter((entry) => entry.group === name) }))
       .filter(({ entries }) => entries.length > 0);
   });
   protected readonly variants = computed(() => {
     const recipe = this.recipe();
     const scenario = this.selected();
     if (!recipe || !scenario) return [];
-    return recipe.recipe.variants.filter((variant) => variant.scenarioIds?.includes(scenario.id) ?? true)
-      .map((variant) => ({ variant, map: scenarioMapLabel(recipe, variant),
-        blocker: scenarioPlaybackBlocker(scenario.id, recipe, variant) }));
+    return recipe.recipe.variants
+      .filter((variant) => variant.scenarioIds?.includes(scenario.id) ?? true)
+      .map((variant) => ({
+        variant,
+        map: scenarioMapLabel(recipe, variant),
+        blocker: scenarioPlaybackBlocker(scenario.id, recipe, variant)
+      }));
   });
 
   constructor() {

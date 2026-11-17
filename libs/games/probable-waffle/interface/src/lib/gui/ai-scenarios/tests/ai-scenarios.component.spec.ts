@@ -21,19 +21,47 @@ describe("AiScenariosComponent", () => {
   const catalog = {
     sourceRevision: "a".repeat(40),
     scenarios: [
-      { id: "C-05", title: "Protect the home base", group: "Combat", setup: null, outcome: "Resist bait",
-        unavailable: null, recipe: { name: "recipe-1.json", digest: "fnv1a32:aaaaaaaa" } },
-      { id: "H-29", title: "Island landing", group: "Transport", setup: null, outcome: null,
-        unavailable: "The island map is unavailable.", recipe: null }
+      {
+        id: "C-05",
+        title: "Protect the home base",
+        group: "Combat",
+        setup: null,
+        outcome: "Resist bait",
+        unavailable: null,
+        recipe: { name: "recipe-1.json", digest: "fnv1a32:aaaaaaaa" }
+      },
+      {
+        id: "H-29",
+        title: "Island landing",
+        group: "Transport",
+        setup: null,
+        outcome: null,
+        unavailable: "The island map is unavailable.",
+        recipe: null
+      }
     ]
   } satisfies AiScenarioCatalog;
-  const variant = { id: "tivara-bait", seed: 759940, aiFaction: "Tivara", humanFaction: "Skaduwee", difficulty: "Normal" } as const;
+  const variant = {
+    id: "tivara-bait",
+    seed: 759940,
+    aiFaction: "Tivara",
+    humanFaction: "Skaduwee",
+    difficulty: "Normal"
+  } as const;
   const recipe = {
-    purpose: "Bait and pursuit", scenarioIds: ["C-05"],
-    acceptance: { actions: ["Bait the defenders"], required: ["Protect the base"], forbidden: ["Chase too far"],
-      measurements: ["Defender position"] },
-    recipe: { mapLabel: "AI Open Economy (test only)", aiPlayerNumber: 2,
-      variants: [variant, { ...variant, id: "peer-only", requiresMultiplayer: true }] }
+    purpose: "Bait and pursuit",
+    scenarioIds: ["C-05"],
+    acceptance: {
+      actions: ["Bait the defenders"],
+      required: ["Protect the base"],
+      forbidden: ["Chase too far"],
+      measurements: ["Defender position"]
+    },
+    recipe: {
+      mapLabel: "AI Open Economy (test only)",
+      aiPlayerNumber: 2,
+      variants: [variant, { ...variant, id: "peer-only", requiresMultiplayer: true }]
+    }
   } satisfies AiScenarioRecipe;
 
   it("filters the grouped catalog and starts the selected local variant", async () => {
@@ -49,8 +77,12 @@ describe("AiScenariosComponent", () => {
     };
     TestBed.configureTestingModule({
       imports: [AiScenariosComponent],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([]),
-        { provide: GameInstanceClientService, useValue: client }]
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        { provide: GameInstanceClientService, useValue: client }
+      ]
     });
     const fixture = TestBed.createComponent(AiScenariosComponent);
     const http = TestBed.inject(HttpTestingController);
@@ -81,11 +113,13 @@ describe("AiScenariosComponent", () => {
     await fixture.whenStable();
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(client.gameModeChanged).toHaveBeenCalledWith("map", { map: ProbableWaffleMapEnum.AiOpenEconomy });
-    expect(client.playerSlotOpened).toHaveBeenCalledWith(expect.objectContaining({
-      player: expect.objectContaining({ playerNumber: 1, playerName: "Scenario opponent", joined: false }),
-      playerType: ProbableWafflePlayerType.NetworkOpen,
-      factionType: FactionType.Skaduwee
-    }));
+    expect(client.playerSlotOpened).toHaveBeenCalledWith(
+      expect.objectContaining({
+        player: expect.objectContaining({ playerNumber: 1, playerName: "Scenario opponent", joined: false }),
+        playerType: ProbableWafflePlayerType.NetworkOpen,
+        factionType: FactionType.Skaduwee
+      })
+    );
     expect(client.addSelfAsSpectator).toHaveBeenCalledTimes(1);
     expect(client.startGame).toHaveBeenCalledTimes(1);
     expect(activeAiScenarios.get(match)?.config.seed).toBe(759940);
@@ -94,7 +128,9 @@ describe("AiScenariosComponent", () => {
 
   it("stops a pending launch before mutating a replacement match", async () => {
     let releaseSlot!: () => void;
-    const slot = new Promise<void>((resolve) => { releaseSlot = resolve; });
+    const slot = new Promise<void>((resolve) => {
+      releaseSlot = resolve;
+    });
     const client = {
       gameInstance: new ProbableWaffleGameInstance(),
       createGameInstance: jest.fn().mockResolvedValue(undefined),
@@ -105,7 +141,11 @@ describe("AiScenariosComponent", () => {
     if (!scenario) throw new Error("scenario_fixture_missing");
     const launching = launchAiScenario(
       client as unknown as GameInstanceClientServiceInterface,
-      scenario, recipe, variant, catalog.sourceRevision, new AbortController().signal
+      scenario,
+      recipe,
+      variant,
+      catalog.sourceRevision,
+      new AbortController().signal
     );
     await Promise.resolve();
     expect(client.playerSlotOpened).toHaveBeenCalledTimes(1);
@@ -118,8 +158,12 @@ describe("AiScenariosComponent", () => {
   it("shows an error for malformed recipe data and allows a retry", async () => {
     TestBed.configureTestingModule({
       imports: [AiScenariosComponent],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([]),
-        { provide: GameInstanceClientService, useValue: {} }]
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        { provide: GameInstanceClientService, useValue: {} }
+      ]
     });
     const fixture = TestBed.createComponent(AiScenariosComponent);
     const http = TestBed.inject(HttpTestingController);
@@ -143,15 +187,26 @@ describe("AiScenariosComponent", () => {
   it("does not replace a newer selection when an older recipe arrives late", async () => {
     TestBed.configureTestingModule({
       imports: [AiScenariosComponent],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([]),
-        { provide: GameInstanceClientService, useValue: {} }]
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        { provide: GameInstanceClientService, useValue: {} }
+      ]
     });
     const fixture = TestBed.createComponent(AiScenariosComponent);
     const http = TestBed.inject(HttpTestingController);
     http.expectOne(`${assetRoot}/catalog.json`).flush({
       ...catalog,
-      scenarios: [catalog.scenarios[0], { ...catalog.scenarios[0], id: "C-06", title: "Second",
-        recipe: { name: "recipe-2.json", digest: "fnv1a32:bbbbbbbb" } }]
+      scenarios: [
+        catalog.scenarios[0],
+        {
+          ...catalog.scenarios[0],
+          id: "C-06",
+          title: "Second",
+          recipe: { name: "recipe-2.json", digest: "fnv1a32:bbbbbbbb" }
+        }
+      ]
     });
     await fixture.whenStable();
     fixture.detectChanges();
