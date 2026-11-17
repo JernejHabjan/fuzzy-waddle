@@ -73,8 +73,11 @@ describe("AiScenariosComponent", () => {
     expect(page.textContent).toContain("Chase too far");
     expect(page.textContent).toContain("Defender position");
     const actions = page.querySelectorAll<HTMLButtonElement>(".variants button");
-    expect(actions[1].disabled).toBe(true);
-    actions[0].click();
+    const playable = actions.item(0);
+    const blocked = actions.item(1);
+    if (!playable || !blocked) throw new Error("scenario_actions_missing");
+    expect(blocked.disabled).toBe(true);
+    playable.click();
     await fixture.whenStable();
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(client.gameModeChanged).toHaveBeenCalledWith("map", { map: ProbableWaffleMapEnum.AiOpenEconomy });
@@ -98,9 +101,11 @@ describe("AiScenariosComponent", () => {
       playerSlotOpened: jest.fn(() => slot),
       addSelfAsSpectator: jest.fn()
     };
+    const scenario = catalog.scenarios[0];
+    if (!scenario) throw new Error("scenario_fixture_missing");
     const launching = launchAiScenario(
       client as unknown as GameInstanceClientServiceInterface,
-      catalog.scenarios[0], recipe, variant, catalog.sourceRevision, new AbortController().signal
+      scenario, recipe, variant, catalog.sourceRevision, new AbortController().signal
     );
     await Promise.resolve();
     expect(client.playerSlotOpened).toHaveBeenCalledTimes(1);
