@@ -3,6 +3,12 @@ export function tile(x, y, z = 0) {
   return { x: (x - y) * 32 + 32, y: (x + y) * 16 + 16, z };
 }
 
+export function actor(role, name, owner, x, y) {
+  return { fixtureActorId: role, actorName: name, owner, position: tile(x, y) };
+}
+
+export const defaultContactRoles = ["contact-group", "noise-scout", "front-target-a", "front-target-b"];
+
 export function melee(faction) {
   return faction === "Tivara" ? "TivaraMacemanMale" : "SkaduweeWarriorMale";
 }

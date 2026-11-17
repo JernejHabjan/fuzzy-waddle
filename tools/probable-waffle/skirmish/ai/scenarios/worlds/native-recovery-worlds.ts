@@ -1,17 +1,15 @@
 import type { NativeScenarioWorld } from "../../contracts/scenarios/native-scenario-world.ts";
 import { nativeScenarioWorld, tile, melee, producer } from "./native-scenario-worlds.ts";
 import { control } from "./native-domain-worlds.ts";
+import { actor, defaultContactRoles } from "./native-world-geometry.ts";
 
 /** Recovery premises are native obstructions, jobs and paid work; no saved planner state or synthetic progress is seeded. */
 export function nativeRecoveryWorld(id, faction, branch): NativeScenarioWorld {
   const world = nativeScenarioWorld(id, faction, branch),
     enemy = faction === "Tivara" ? "Skaduwee" : "Tivara";
-  const actor = (role, name, owner, x, y) => ({ fixtureActorId: role, actorName: name, owner, position: tile(x, y) });
   const move = (role, tick, x, y) =>
     world.controls.push(control(`recovery-${role}-${tick}`, role, tick, { kind: "move", worldPosition: tile(x, y) }));
-  world.actors = world.actors.filter(
-    (a) => !["contact-group", "noise-scout", "front-target-a", "front-target-b"].includes(a.fixtureActorId)
-  );
+  world.actors = world.actors.filter((a) => !defaultContactRoles.includes(a.fixtureActorId));
   world.actors.push(actor("mission-target", "WorkMill", 1, 18, 26));
   world.actors.find((a) => a.fixtureActorId === "scout-probe").position = tile(23, 26);
   world.initialOrders.push({ workerFixtureActorId: "worker-1", sourceFixtureActorId: "own-source", kind: "gather" });

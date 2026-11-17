@@ -2,15 +2,13 @@ import type { NativeScenarioWorld } from "../../contracts/scenarios/native-scena
 import { readFileSync } from "node:fs";
 import { nativeScenarioWorld, tile, melee, producer } from "./native-scenario-worlds.ts";
 import { control } from "./native-domain-worlds.ts";
+import { actor, defaultContactRoles } from "./native-world-geometry.ts";
 
 /** Actual scarce/stress budgets, native duties and consumer-only receipt faults; no brain/claim/payment state injection. */
 export function nativeAuthorityWorld(id, faction, branch): NativeScenarioWorld {
   const world = nativeScenarioWorld(id, faction, branch),
     enemy = faction === "Tivara" ? "Skaduwee" : "Tivara";
-  const actor = (role, name, owner, x, y) => ({ fixtureActorId: role, actorName: name, owner, position: tile(x, y) });
-  world.actors = world.actors.filter(
-    (a) => !["contact-group", "noise-scout", "front-target-a", "front-target-b"].includes(a.fixtureActorId)
-  );
+  world.actors = world.actors.filter((a) => !defaultContactRoles.includes(a.fixtureActorId));
   if (["H-06", "H-07"].includes(id)) {
     // These cases need a real paid unit whose receipt can be withheld. The shared
     // eight-unit opening already satisfies the Skaduwee force target, so it only
