@@ -22,7 +22,7 @@ const readerFixture = {
       ...nativeScenarioBindings.cases["D-01"].acceptance,
       scenarioId: "D-01",
       status: "authored_not_executed",
-      world: "difficulty",
+      world: "open",
       maximumTick: 2000,
       branches: ["normal"],
       executionBlockers: ["native_case_binding"],

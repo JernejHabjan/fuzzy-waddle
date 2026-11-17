@@ -6,11 +6,12 @@ import test from "node:test";
 import { executeAiRegressionCases } from "../ai-regression-execution.ts";
 import { parseAiRegressionFlag, runE2eWithAiRegression } from "../ai-regression-hook.ts";
 import { resolveAiRegressionSelection } from "../ai-regression-selection.ts";
+import { readNativeScenarioFixture } from "../../scenarios/registration/read-native-scenario-fixture.ts";
 
 const fixtures = fileURLToPath(new URL("../../testing/fixtures/", import.meta.url));
 const manifest = readJson("skirmish-scenario-manifest.json");
 const pack = readJson("periodic-native-regression-profiles.json");
-const readFixture = (reference) => readJson(reference);
+const readFixture = (reference) => readNativeScenarioFixture(fixtures, reference);
 
 test("AI regression selection binds exact manifest variants and reports every omission", () => {
   const resolved = resolveAiRegressionSelection(pack, manifest, readFixture);
