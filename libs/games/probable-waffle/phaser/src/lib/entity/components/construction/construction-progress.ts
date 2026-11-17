@@ -19,4 +19,3 @@ export function constructionVitalityIncrement(
   if (productionTime <= 0) return totalVitalityToGain;
   return (totalVitalityToGain / productionTime) * constructionProgress;
 }
-
