@@ -139,4 +139,33 @@ describe("AiScenariosComponent", () => {
     expect(fixture.nativeElement.textContent).toContain("Bait and pursuit");
     http.verify();
   });
+
+  it("does not replace a newer selection when an older recipe arrives late", async () => {
+    TestBed.configureTestingModule({
+      imports: [AiScenariosComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([]),
+        { provide: GameInstanceClientService, useValue: {} }]
+    });
+    const fixture = TestBed.createComponent(AiScenariosComponent);
+    const http = TestBed.inject(HttpTestingController);
+    http.expectOne(`${assetRoot}/catalog.json`).flush({
+      ...catalog,
+      scenarios: [catalog.scenarios[0], { ...catalog.scenarios[0], id: "C-06", title: "Second",
+        recipe: { name: "recipe-2.json", digest: "fnv1a32:bbbbbbbb" } }]
+    });
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const buttons = fixture.nativeElement.querySelectorAll(".scenario-row");
+    buttons[0].click();
+    const older = http.expectOne(`${assetRoot}/recipe-1.json`);
+    buttons[1].click();
+    http.expectOne(`${assetRoot}/recipe-2.json`).flush({ ...recipe, purpose: "Newer recipe", scenarioIds: ["C-06"] });
+    await Promise.resolve();
+    older.flush(recipe);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain("Newer recipe");
+    expect(fixture.nativeElement.textContent).not.toContain("Bait and pursuit");
+    http.verify();
+  });
 });

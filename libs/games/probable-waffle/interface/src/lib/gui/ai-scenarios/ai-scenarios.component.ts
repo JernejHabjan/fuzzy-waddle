@@ -62,9 +62,9 @@ export class AiScenariosComponent {
     try {
       const catalog = await firstValueFrom(this.http.get<unknown>(`${assets}/catalog.json`));
       if (!isAiScenarioCatalog(catalog)) throw new Error("Invalid scenario catalog");
-      this.catalog.set(catalog);
+      if (!this.lifetime.signal.aborted) this.catalog.set(catalog);
     } catch {
-      this.catalogError.set(true);
+      if (!this.lifetime.signal.aborted) this.catalogError.set(true);
     }
   }
 
@@ -77,8 +77,8 @@ export class AiScenariosComponent {
     this.loadingRecipe.set(!!scenario.recipe);
     if (!scenario.recipe) return;
     const name = scenario.recipe.name;
+    let recipe = this.recipes.get(name);
     try {
-      let recipe = this.recipes.get(name);
       if (!recipe) {
         recipe = firstValueFrom(this.http.get<unknown>(`${assets}/${name}`)).then((value) => {
           if (!isAiScenarioRecipe(value)) throw new Error("Invalid scenario recipe");
@@ -88,12 +88,13 @@ export class AiScenariosComponent {
       }
       const loaded = await recipe;
       if (!loaded.scenarioIds.includes(scenario.id)) throw new Error("Mismatched scenario recipe");
-      if (request === this.selectionRequest) this.recipe.set(loaded);
+      if (!this.lifetime.signal.aborted && request === this.selectionRequest) this.recipe.set(loaded);
     } catch {
-      this.recipes.delete(name);
-      if (request === this.selectionRequest) this.error.set("The scenario setup could not be loaded.");
+      if (this.recipes.get(name) === recipe) this.recipes.delete(name);
+      if (!this.lifetime.signal.aborted && request === this.selectionRequest)
+        this.error.set("The scenario setup could not be loaded.");
     } finally {
-      if (request === this.selectionRequest) this.loadingRecipe.set(false);
+      if (!this.lifetime.signal.aborted && request === this.selectionRequest) this.loadingRecipe.set(false);
     }
   }
 
