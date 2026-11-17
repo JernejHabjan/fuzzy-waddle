@@ -6,9 +6,10 @@
     "allowJs": true,
     "types": ["@playwright/test", "node"],
     "ignoreDeprecations": "6.0",
-    "rootDir": "."
+    "rootDir": "../..",
+    "allowImportingTsExtensions": true
   },
-  "include": ["src/**/*.ts", "src/**/*.js", "playwright.config.ts"],
+  "include": ["src/**/*.ts", "src/**/*.js", "playwright*.config.ts"],
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
