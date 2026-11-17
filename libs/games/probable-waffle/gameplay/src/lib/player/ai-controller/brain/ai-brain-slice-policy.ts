@@ -25,6 +25,7 @@ const policy = (slice: AiBrainSliceName, reducerOwner: string): AiBrainSlicePoli
 
 /** Complete current slice policy manifest used by migration and coverage tests. */
 export const AI_BRAIN_SLICE_POLICIES: readonly AiBrainSlicePolicy[] = [
+  policy("profileDifficulty", "profile reducer"),
   policy("strategy", "strategy reducer"),
   policy("opening", "opening reducer"),
   policy("knowledge", "knowledge reducer"),

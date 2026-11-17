@@ -3,6 +3,7 @@ import { AI_BRAIN_SLICE_POLICIES, type AiBrainSliceName } from "../ai-brain-slic
 describe("AI_BRAIN_SLICE_POLICIES", () =>
   it("assigns every persisted current slice exactly one owner/default/migration/serializer", () => {
     const expected = [
+      "profileDifficulty",
       "strategy",
       "opening",
       "knowledge",
