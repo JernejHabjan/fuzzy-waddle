@@ -39,7 +39,15 @@ for (let repetition = 1; repetition <= 3; repetition++) {
     );
     if (!selected) throw new Error("profile_workload_missing");
     // Broad authority capture is a separate evidence workload; it must not dominate rendered gameplay profiling.
-    const variant = { ...selected, captureConstruction: undefined, captureCombat: undefined };
+    const variant = {
+      ...selected,
+      captureConstruction: undefined,
+      captureCombat: undefined,
+      ...(workload === "multi_ai" ? {
+        mapLabel: "AI Multiplayer (test only)",
+        additionalAiPlayers: [{ playerNumber: 3, faction: "Skaduwee" as const, difficulty: "Normal" as const }]
+      } : {})
+    };
     const errors: string[] = [];
     const fixtureDigest = digestCanonicalAiValue(fixture);
     if (!validAiRuntimePresetProvenance({ sourceRevision: source, fixtureDigest }))
@@ -68,10 +76,7 @@ for (let repetition = 1; repetition <= 3; repetition++) {
       true,
       errors,
       undefined,
-      false,
-      workload === "multi_ai"
-        ? { targetPlayerNumber: 1, difficulty: "Normal", opponentArchetype: "balanced" }
-        : undefined
+      false
     );
     const readControllerSequences = () =>
       page.evaluate((playerNumber) => {
@@ -80,7 +85,7 @@ for (let repetition = 1; repetition <= 3; repetition++) {
         return {
           tick: parts.tickService.currentTick,
           decisionSequence: parts.controller.getBrainState()?.scheduler.decisionSequence ?? 0,
-          opponentSequence: window.__fuzzyWaddleAiRuntimeParts?.(3 - playerNumber)?.controller.getBrainState()
+          opponentSequence: window.__fuzzyWaddleAiRuntimeParts?.(3)?.controller.getBrainState()
             ?.scheduler.decisionSequence
         };
       }, fixture.recipe.aiPlayerNumber);
