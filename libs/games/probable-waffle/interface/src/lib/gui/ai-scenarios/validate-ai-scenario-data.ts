@@ -6,6 +6,8 @@ const record = (value: unknown): value is Record<string, unknown> =>
 const text = (value: unknown): value is string => typeof value === "string" && value.length > 0;
 const optionalText = (value: unknown): boolean => value === null || typeof value === "string";
 const strings = (value: unknown): value is string[] => Array.isArray(value) && value.every(text);
+const faction = (value: unknown) => ["Tivara", "Skaduwee"].includes(String(value));
+const difficulty = (value: unknown) => ["Easy", "Normal", "Hard"].includes(String(value));
 
 /** Reject malformed staged catalog data before signals and asset paths consume it. */
 export function isAiScenarioCatalog(value: unknown): value is AiScenarioCatalog {
@@ -34,18 +36,13 @@ export function isAiScenarioCatalog(value: unknown): value is AiScenarioCatalog 
 /** Validate the browser-consumed recipe shape; the existing runtime guard validates each preset at launch. */
 export function isAiScenarioRecipe(value: unknown): value is AiScenarioRecipe {
   if (!record(value) || !text(value.purpose) || !strings(value.scenarioIds) || !record(value.recipe)) return false;
-  if (
-    value.acceptance !== undefined &&
-    (!record(value.acceptance) ||
-      ["setup", "actions", "measurements", "required", "forbidden", "branches"].some(
-        (key) =>
-          value.acceptance &&
-          record(value.acceptance) &&
-          value.acceptance[key] !== undefined &&
-          !strings(value.acceptance[key])
-      ))
-  )
-    return false;
+  const acceptance = value.acceptance;
+  if (acceptance !== undefined) {
+    if (!record(acceptance)) return false;
+    if (["setup", "actions", "measurements", "required", "forbidden", "branches"].some(
+      (key) => acceptance[key] !== undefined && !strings(acceptance[key])
+    )) return false;
+  }
   const recipe = value.recipe;
   return (
     text(recipe.mapLabel) &&
@@ -57,9 +54,9 @@ export function isAiScenarioRecipe(value: unknown): value is AiScenarioRecipe {
         record(variant) &&
         text(variant.id) &&
         Number.isSafeInteger(variant.seed) &&
-        ["Tivara", "Skaduwee"].includes(String(variant.aiFaction)) &&
-        ["Tivara", "Skaduwee"].includes(String(variant.humanFaction)) &&
-        ["Easy", "Normal", "Hard"].includes(String(variant.difficulty)) &&
+        faction(variant.aiFaction) &&
+        faction(variant.humanFaction) &&
+        difficulty(variant.difficulty) &&
         (variant.scenarioIds === undefined || strings(variant.scenarioIds)) &&
         (variant.mapLabel === undefined || text(variant.mapLabel)) &&
         (variant.requiresMultiplayer === undefined || typeof variant.requiresMultiplayer === "boolean") &&
@@ -76,8 +73,8 @@ export function isAiScenarioRecipe(value: unknown): value is AiScenarioRecipe {
               (player: unknown) =>
                 record(player) &&
                 Number.isSafeInteger(player.playerNumber) &&
-                ["Tivara", "Skaduwee"].includes(String(player.faction)) &&
-                ["Easy", "Normal", "Hard"].includes(String(player.difficulty))
+                faction(player.faction) &&
+                difficulty(player.difficulty)
             ))) &&
         (variant.perturbations === undefined || Array.isArray(variant.perturbations))
     )
