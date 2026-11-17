@@ -8,12 +8,17 @@ test("closes the allocated context when creating its page fails", async () => {
   let closed = false;
   const browser = {
     newContext: async () => ({
-      newPage: async () => { throw failure; },
-      close: async () => { closed = true; }
+      newPage: async () => {
+        throw failure;
+      },
+      close: async () => {
+        closed = true;
+      }
     })
   } as unknown as Browser;
 
-  await expect(runVariant(browser, {} as RuntimeFixture, { seed: 1 } as RuntimeVariant, null, [], "revision", "digest"))
-    .rejects.toThrow("page_creation_failed");
+  await expect(
+    runVariant(browser, {} as RuntimeFixture, { seed: 1 } as RuntimeVariant, null, [], "revision", "digest")
+  ).rejects.toThrow("page_creation_failed");
   expect(closed).toBe(true);
 });

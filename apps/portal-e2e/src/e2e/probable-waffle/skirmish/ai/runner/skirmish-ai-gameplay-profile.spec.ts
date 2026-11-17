@@ -43,10 +43,12 @@ for (let repetition = 1; repetition <= 3; repetition++) {
       ...selected,
       captureConstruction: undefined,
       captureCombat: undefined,
-      ...(workload === "multi_ai" ? {
-        mapLabel: "AI Multiplayer (test only)",
-        additionalAiPlayers: [{ playerNumber: 3, faction: "Skaduwee" as const, difficulty: "Normal" as const }]
-      } : {})
+      ...(workload === "multi_ai"
+        ? {
+            mapLabel: "AI Multiplayer (test only)",
+            additionalAiPlayers: [{ playerNumber: 3, faction: "Skaduwee" as const, difficulty: "Normal" as const }]
+          }
+        : {})
     };
     const errors: string[] = [];
     const fixtureDigest = digestCanonicalAiValue(fixture);
@@ -85,8 +87,8 @@ for (let repetition = 1; repetition <= 3; repetition++) {
         return {
           tick: parts.tickService.currentTick,
           decisionSequence: parts.controller.getBrainState()?.scheduler.decisionSequence ?? 0,
-          opponentSequence: window.__fuzzyWaddleAiRuntimeParts?.(3)?.controller.getBrainState()
-            ?.scheduler.decisionSequence
+          opponentSequence: window.__fuzzyWaddleAiRuntimeParts?.(3)?.controller.getBrainState()?.scheduler
+            .decisionSequence
         };
       }, fixture.recipe.aiPlayerNumber);
     const before = await readControllerSequences();

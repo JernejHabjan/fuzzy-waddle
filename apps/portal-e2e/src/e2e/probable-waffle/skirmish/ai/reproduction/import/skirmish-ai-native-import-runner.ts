@@ -1,14 +1,10 @@
 import type { Browser } from "@playwright/test";
-import type {
-  AiRuntimeDecisionRepro
-} from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/reproduction/ai-runtime-decision-repro";
+import type { AiRuntimeDecisionRepro } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/reproduction/ai-runtime-decision-repro";
 import type {
   AiRuntimeReproArtifact,
   AiRuntimeReproProvenance
 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/test-support/reproduction/ai-runtime-scenario-bridge";
-import {
-  digestCanonicalAiValue
-} from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/persistence/canonical-ai-serialization";
+import { digestCanonicalAiValue } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/persistence/canonical-ai-serialization";
 import type { RuntimeFixture } from "../../contracts/skirmish-ai-runtime-fixture";
 import type { RuntimeVariant } from "../../setup/skirmish-ai-runtime-variant";
 import type { RuntimeRequest } from "../../runner/skirmish-ai-runtime-request";
@@ -139,7 +135,9 @@ export async function runNativeImportVariant(
         await match.dispose();
       }
     },
-    async (page) => { await page.addInitScript(() => sessionStorage.setItem("fuzzy-waddle:ai-runtime-import", "1")); }
+    async (page) => {
+      await page.addInitScript(() => sessionStorage.setItem("fuzzy-waddle:ai-runtime-import", "1"));
+    }
   );
   if (!nativeImport) throw new Error("native_import_not_captured");
   return { ...result, nativeImport };
