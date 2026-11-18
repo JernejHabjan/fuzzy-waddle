@@ -39,9 +39,12 @@ export function isAiScenarioRecipe(value: unknown): value is AiScenarioRecipe {
   const acceptance = value.acceptance;
   if (acceptance !== undefined) {
     if (!record(acceptance)) return false;
-    if (["setup", "actions", "measurements", "required", "forbidden", "branches"].some(
-      (key) => acceptance[key] !== undefined && !strings(acceptance[key])
-    )) return false;
+    if (
+      ["setup", "actions", "measurements", "required", "forbidden", "branches"].some(
+        (key) => acceptance[key] !== undefined && !strings(acceptance[key])
+      )
+    )
+      return false;
   }
   const recipe = value.recipe;
   return (
