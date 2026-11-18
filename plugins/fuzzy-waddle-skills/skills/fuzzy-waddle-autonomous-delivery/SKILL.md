@@ -20,7 +20,8 @@ Read repo workflow for verification/ownership rules. For a user-approved staged 
 3. Implement the smallest complete change and update meaningful tests.
 4. Run focused validation, self-review, omission audit, and final closure audit.
 5. Commit only task-owned files, push a focused branch, and open a draft PR.
-6. In the PR, state the issue, behavior change, checks, manual playtest, risks, and any follow-up.
+6. Write the PR for a reviewer seeing the complete diff: summarize the outcome, group meaningful changes by responsibility, and state actual checks, limitations and relevant follow-ups. Scale detail to the change; omit empty sections and never imply unrun checks passed.
+7. Preserve real Markdown line breaks and blank lines. With `gh`, write multiline text to a temporary UTF-8 file and use `--body-file` (do not pass literal `\\n` sequences). Read the published body back and verify the headings and paragraphs render as intended; correct malformed line breaks before finishing.
 
 ## Decision-pr protocol
 
