@@ -54,6 +54,7 @@ export async function runVariant(
   const aiErrors: string[] = [];
   const effectiveSeed = requestedSeed ?? variant.seed;
   let lastProgressTick = 0;
+  let lastProof: { tick: number; failures: readonly string[] } | undefined;
   const checkForFatalAiError = (tick: number) => {
     lastProgressTick = tick;
     if (nativeEvidence && aiErrors.length)
@@ -235,11 +236,8 @@ export async function runVariant(
         stopReason = "terminal_result";
         break;
       }
-      if (
-        probe &&
-        nativeEvidence &&
-        productionCapture &&
-        (await nativeEvidence.accepts(page, {
+      if (probe && nativeEvidence && productionCapture) {
+        const failures = await nativeEvidence.failures(page, {
           ...variantStart,
           stopReason: "native_evidence_satisfied",
           outcomeDigest: "",
@@ -247,10 +245,12 @@ export async function runVariant(
           checkpoints,
           perturbations,
           aiErrors: [...aiErrors]
-        }))
-      ) {
-        stopReason = "native_evidence_satisfied";
-        break;
+        });
+        if (failures.length === 0) {
+          stopReason = "native_evidence_satisfied";
+          break;
+        }
+        lastProof = { tick: checkpoint.tick, failures };
       }
       if (variant.evidenceStop) {
         const next = evaluateEvidenceStopAtCheckpoint({
@@ -331,7 +331,8 @@ export async function runVariant(
               ":tick=" +
               lastProgressTick +
               ":budget_ms=" +
-              nativeEvidence.wallClockBudgetMs
+              nativeEvidence.wallClockBudgetMs +
+              (lastProof ? ":proof_tick=" + lastProof.tick + ":" + lastProof.failures.slice(0, 3).join("|") : "")
           )
         );
       }, nativeEvidence.wallClockBudgetMs);
