@@ -7,14 +7,14 @@ import type GameProbableWaffleScene from "../../../../../../world/scenes/GamePro
 import type { SceneActorCreator } from "../../../../../../world/services/scene-actor-creator";
 
 jest.mock("@fuzzy-waddle/environments/environment", () => ({ environment: { production: false } }));
-jest.mock("../../production/capture/install-ai-runtime-production-capture", () => ({ installAiRuntimeProductionCapture: jest.fn() }));
-jest.mock("../../browser/ai-runtime-browser-test-config", () => ({
+jest.mock("../../../production/capture/install-ai-runtime-production-capture", () => ({ installAiRuntimeProductionCapture: jest.fn() }));
+jest.mock("../../../browser/ai-runtime-browser-test-config", () => ({
   readAiRuntimeBrowserTestConfig: jest.fn(() => ({
     presetWorld: { terrainPatches: [{ x: 24, y: 19, terrain: "grass", blocked: true }] }
   })),
   recordAiRuntimePresetApplication: jest.fn()
 }));
-jest.mock("../../navigation/controls/ai-runtime-terrain-patches", () => ({ applyAiRuntimeTerrainPatches: jest.fn() }));
+jest.mock("../../../navigation/controls/ai-runtime-terrain-patches", () => ({ applyAiRuntimeTerrainPatches: jest.fn() }));
 
 it("restores only authored map terrain without replaying fixture actors, resources, queues, faults or events", () => {
   const scene = {

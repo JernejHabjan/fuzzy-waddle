@@ -5,7 +5,7 @@ import { scheduleAiRuntimePresetSetup } from "../../presets/setup/schedule-ai-ru
 import type { AiRuntimeBrowserTestHost } from "../ai-runtime-browser-test-host";
 import { startAiScenarioPreview } from "../start-ai-scenario-preview";
 
-jest.mock("../presets/setup/schedule-ai-runtime-preset-setup", () => ({ scheduleAiRuntimePresetSetup: jest.fn() }));
+jest.mock("../../presets/setup/schedule-ai-runtime-preset-setup", () => ({ scheduleAiRuntimePresetSetup: jest.fn() }));
 
 describe("interactive AI scenario startup", () => {
   const scene = { game: {} } as ProbableWaffleScene;

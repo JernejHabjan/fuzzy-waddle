@@ -12,9 +12,9 @@ import { ResourceSourceComponent } from "../../../../../../entity/components/res
 import { applyAiRuntimeRecoveryStart } from "../apply-ai-runtime-recovery-start";
 import { AI_RUNTIME_RECOVERY_SETUP_EVENT, type AiRuntimeRecoverySetup } from "../ai-runtime-recovery-setup";
 
-jest.mock("../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../../../data/scene-data", () => ({ emitResource: jest.fn(), getPlayer: jest.fn() }));
+jest.mock("../../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../../../data/scene-data", () => ({ emitResource: jest.fn(), getPlayer: jest.fn() }));
 
 function fixture(workerCount = 1, remaining = 0) {
   const workers = Array.from({ length: workerCount }, (_, index) => ({ name: ObjectNames.TivaraWorkerMale, id: `worker-${index}` }));

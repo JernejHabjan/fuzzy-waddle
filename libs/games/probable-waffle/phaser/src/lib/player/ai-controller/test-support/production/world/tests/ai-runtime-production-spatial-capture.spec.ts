@@ -24,10 +24,10 @@ import type { HeightNavigationGraph } from "../../../../../../world/services/hei
 import { NavigationProvenance } from "../../../../../../world/services/navigation-provenance";
 import type { NavigationNativeQuery } from "../../../../../../world/services/navigation-native-query";
 
-jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../../../data/game-object-helper", () => ({ getGameObjectCurrentTile: jest.fn() }));
-jest.mock("../../../../../data/scene-data", () => ({ isSnapshotApplyInProgress: jest.fn() }));
-jest.mock("../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../../../data/game-object-helper", () => ({ getGameObjectCurrentTile: jest.fn() }));
+jest.mock("../../../../../../data/scene-data", () => ({ isSnapshotApplyInProgress: jest.fn() }));
+jest.mock("../../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
 /** Synthetic native service seam. No route query is added by observation and no live-world proof is claimed. */
 function fixture() {

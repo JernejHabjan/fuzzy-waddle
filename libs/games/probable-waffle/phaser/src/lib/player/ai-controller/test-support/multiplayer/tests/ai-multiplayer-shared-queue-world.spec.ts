@@ -20,14 +20,14 @@ import { prepareAiMultiplayerSharedQueueWorld } from "../prepare-ai-multiplayer-
 import { AiMultiplayerSharedQueueWorld } from "../ai-multiplayer-shared-queue-world";
 import type { AiMultiplayerSharedQueueWorldSnapshot } from "../ai-multiplayer-shared-queue-world-snapshot";
 
-jest.mock("../production/capture/ai-runtime-production-capture");
-jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("./prepare-ai-multiplayer-shared-queue-world", () => ({
+jest.mock("../../production/capture/ai-runtime-production-capture");
+jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../prepare-ai-multiplayer-shared-queue-world", () => ({
   prepareAiMultiplayerSharedQueueWorld: jest.fn(),
   SHARED_QUEUE_CANCEL_WINDOW_TICKS: 20,
   SHARED_QUEUE_STABILITY_TICKS: 20
 }));
-jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
 function fixture(branch: AiMultiplayerSharedQueueWorldSnapshot["branch"], localPlayerNumber = 1) {
   const outcomes = new Subject<GameCommandOutcome>();

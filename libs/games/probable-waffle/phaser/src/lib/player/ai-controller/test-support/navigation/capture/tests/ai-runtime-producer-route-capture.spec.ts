@@ -20,11 +20,11 @@ import { OrderData } from "../../../../../../ai/OrderData";
 import { MovementQueryObservation } from "../../../../../../entity/systems/movement-query-observation";
 import { OrderType } from "../../../../../../ai/order-type";
 
-jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../../../data/game-object-helper", () => ({ getGameObjectCurrentTile: jest.fn() }));
-jest.mock("../../../../../entity/components/production/production-component", () => ({ ProductionComponent: class {} }));
-jest.mock("../../harness/capture/capture-ai-runtime-created-actor", () => ({ captureAiRuntimeCreatedActor: jest.fn() }));
-jest.mock("../../../../../prefabs/ai-agents/controller/pawn-ai-controller", () => ({ PawnAiController: class {} }));
+jest.mock("../../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../../../data/game-object-helper", () => ({ getGameObjectCurrentTile: jest.fn() }));
+jest.mock("../../../../../../entity/components/production/production-component", () => ({ ProductionComponent: class {} }));
+jest.mock("../../../harness/capture/capture-ai-runtime-created-actor", () => ({ captureAiRuntimeCreatedActor: jest.fn() }));
+jest.mock("../../../../../../prefabs/ai-agents/controller/pawn-ai-controller", () => ({ PawnAiController: class {} }));
 
 /** Synthetic service instance and mutable result; proves only passive call/identity/disposal contracts once executed. */
 function fixture() {

@@ -17,14 +17,14 @@ import { PawnAiBlackboard } from "../../../../prefabs/ai-agents/controller/pawn-
 import { OrderData } from "../../../../ai/OrderData";
 import { OrderType } from "../../../../ai/order-type";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../data/game-object-helper", () => ({
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../data/game-object-helper", () => ({
   getGameObjectCurrentTile: jest.fn(),
   isGameObjectActiveInActiveScene: jest.fn()
 }));
-jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneComponent: jest.fn() }));
-jest.mock("../../../library/tile-under-object", () => ({ getTileCoordsUnderObject: jest.fn() }));
-jest.mock("./high-ground.helper", () => ({ getHighGroundRangeBonus: jest.fn() }));
+jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneComponent: jest.fn() }));
+jest.mock("../../../../library/tile-under-object", () => ({ getTileCoordsUnderObject: jest.fn() }));
+jest.mock("../high-ground.helper", () => ({ getHighGroundRangeBonus: jest.fn() }));
 
 const scene = {} as Phaser.Scene;
 const attacker = { scene } as Phaser.GameObjects.GameObject;

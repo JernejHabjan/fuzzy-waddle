@@ -22,7 +22,7 @@ import { QueueComponent } from "../queue-component";
 import { QUEUE_MUTATION_EVENT, type QueueMutationEvent } from "../queue-mutation-event";
 import { mutateSharedQueueItem } from "../mutate-shared-queue-item";
 
-jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
 function fixture(research = false) {
   const ticks = new Subject<number>();

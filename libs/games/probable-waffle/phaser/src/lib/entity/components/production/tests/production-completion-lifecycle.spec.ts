@@ -3,7 +3,7 @@ import { spawnProductionActor } from "../production-spawner";
 import type { ProductionQueueItem } from
   "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/game-object";
 
-jest.mock("./production-spawner", () => ({ spawnProductionActor: jest.fn(() => "native-output") }));
+jest.mock("../production-spawner", () => ({ spawnProductionActor: jest.fn(() => "native-output") }));
 
 describe("retained paid completion lifecycle fence", () => {
   beforeEach(() => jest.clearAllMocks());

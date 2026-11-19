@@ -3,12 +3,12 @@ import { StatusEffectType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { StatusEffectComponent } from "../status-effect-component";
 import { getSimulationNow } from "../../../../world/services/simulation-time";
 
-jest.mock("../../../data/game-object-helper", () => ({
+jest.mock("../../../../data/game-object-helper", () => ({
   isGameObjectActiveInActiveScene: () => true,
   onObjectReady: () => undefined
 }));
-jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: () => undefined }));
-jest.mock("../../../world/services/simulation-time", () => ({ getSimulationNow: jest.fn() }));
+jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: () => undefined }));
+jest.mock("../../../../world/services/simulation-time", () => ({ getSimulationNow: jest.fn() }));
 
 describe("StatusEffectComponent periodic refresh", () => {
   it("continues healing when a zone refreshes the effect at its tick boundary", () => {

@@ -9,7 +9,7 @@ import { readAiRuntimeBrowserTestConfig } from "../../../browser/ai-runtime-brow
 import { createAiRuntimeBrainHooks, AI_RUNTIME_BRAIN_FAULT_EVENT } from "../create-ai-runtime-brain-hooks";
 import { AI_RUNTIME_PROPOSAL_ORDER_EVENT } from "../../../authority/controls/ai-runtime-proposal-order";
 
-jest.mock("../../browser/ai-runtime-browser-test-config", () => ({ readAiRuntimeBrowserTestConfig: jest.fn() }));
+jest.mock("../../../browser/ai-runtime-browser-test-config", () => ({ readAiRuntimeBrowserTestConfig: jest.fn() }));
 jest.mock("@fuzzy-waddle/environments/environment", () => ({ environment: { production: false } }));
 
 const originalWindow = Object.getOwnPropertyDescriptor(globalThis, "window");

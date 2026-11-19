@@ -12,8 +12,8 @@ import type { AiRuntimePresetWorld } from "../../setup/ai-runtime-preset-world";
 import { AI_RUNTIME_PRESET_CONTROL_EVENT, type AiRuntimePresetControlEvent } from "../ai-runtime-preset-control-event";
 import { installAiRuntimePresetControls } from "../install-ai-runtime-preset-controls";
 
-jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
 function fixture(research = false, source?: "ai") {
   const tick$ = new Subject<number>(),

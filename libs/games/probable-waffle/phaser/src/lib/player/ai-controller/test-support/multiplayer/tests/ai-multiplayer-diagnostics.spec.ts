@@ -6,7 +6,7 @@ import type { CommandBusService } from "../../../../../world/services/multiplaye
 import { getCommunicator } from "../../../../../data/scene-data";
 import { AiMultiplayerDiagnostics } from "../ai-multiplayer-diagnostics";
 
-jest.mock("../../../../data/scene-data", () => ({ getCommunicator: jest.fn() }));
+jest.mock("../../../../../data/scene-data", () => ({ getCommunicator: jest.fn() }));
 
 describe("AiMultiplayerDiagnostics", () => {
   it("retains only bounded credential-free real relay and local-hash facts", () => {

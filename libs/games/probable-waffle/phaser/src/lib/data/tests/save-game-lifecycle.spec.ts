@@ -5,7 +5,7 @@ import { SaveGame } from "../save-game";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { SceneActorCreator } from "../../world/services/scene-actor-creator";
 
-jest.mock("../world/services/scene-component-helpers", () => ({
+jest.mock("../../world/services/scene-component-helpers", () => ({
   getSceneService: jest.fn(), getSceneSystem: jest.fn(), getSceneComponent: jest.fn()
 }));
 

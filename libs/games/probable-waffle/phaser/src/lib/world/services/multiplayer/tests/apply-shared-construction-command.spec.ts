@@ -25,12 +25,12 @@ import {
 } from "../production-spatial-authority-event";
 import { applySharedConstructionCommand } from "../apply-shared-construction-command";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../data/actor-system", () => ({ getActorSystem: jest.fn() }));
-jest.mock("../../../data/scene-data", () => ({ getPlayer: jest.fn() }));
-jest.mock("../../../entity/components/production/cost-utils", () => ({ getCostForObjectName: jest.fn() }));
-jest.mock("../../../library/tile-under-object", () => ({ getTileCoordsUnderObject: jest.fn() }));
-jest.mock("../scene-component-helpers", () => ({ getSceneService: jest.fn(), getSceneComponent: jest.fn() }));
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../data/actor-system", () => ({ getActorSystem: jest.fn() }));
+jest.mock("../../../../data/scene-data", () => ({ getPlayer: jest.fn() }));
+jest.mock("../../../../entity/components/production/cost-utils", () => ({ getCostForObjectName: jest.fn() }));
+jest.mock("../../../../library/tile-under-object", () => ({ getTileCoordsUnderObject: jest.fn() }));
+jest.mock("../../scene-component-helpers", () => ({ getSceneService: jest.fn(), getSceneComponent: jest.fn() }));
 
 /** Real shared application function behind synthetic authorities; no legal live-site proof. */
 function fixture() {

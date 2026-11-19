@@ -19,10 +19,10 @@ import { captureAiRuntimeCreatedActor } from "../../../harness/capture/capture-a
 import type { AiRuntimeProductionSpatial } from "../../../production/world/ai-runtime-production-spatial";
 import { productionCaptureItem } from "../../../production/fixtures/ai-runtime-production-capture-fixtures";
 
-jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../../../prefabs/ai-agents/controller/pawn-ai-controller", () => ({ PawnAiController: class {} }));
-jest.mock("../../harness/capture/capture-ai-runtime-created-actor", () => ({ captureAiRuntimeCreatedActor: jest.fn() }));
-jest.mock("../../../../../data/game-object-helper", () => ({ getGameObjectCurrentTile: jest.fn() }));
+jest.mock("../../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../../../prefabs/ai-agents/controller/pawn-ai-controller", () => ({ PawnAiController: class {} }));
+jest.mock("../../../harness/capture/capture-ai-runtime-created-actor", () => ({ captureAiRuntimeCreatedActor: jest.fn() }));
+jest.mock("../../../../../../data/game-object-helper", () => ({ getGameObjectCurrentTile: jest.fn() }));
 
 function fixture() {
   const scene = {} as Phaser.Scene,

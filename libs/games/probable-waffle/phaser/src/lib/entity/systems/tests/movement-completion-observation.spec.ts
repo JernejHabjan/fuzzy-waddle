@@ -5,7 +5,7 @@ import { MovementCompletionObservation } from "../movement-completion-observatio
 import type { MovementCompletionEvent } from "../movement-completion-event";
 import type { MovementQueryContext } from "../movement-query-context";
 
-jest.mock("../../data/game-object-helper", () => ({ getGameObjectCurrentTile: jest.fn() }));
+jest.mock("../../../data/game-object-helper", () => ({ getGameObjectCurrentTile: jest.fn() }));
 
 describe("passive physical movement boundaries", () => {
   beforeEach(() => jest.clearAllMocks());

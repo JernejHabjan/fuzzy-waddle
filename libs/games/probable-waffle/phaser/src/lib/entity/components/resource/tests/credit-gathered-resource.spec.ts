@@ -4,7 +4,7 @@ import { type ProbableWafflePlayer, ResourceType } from "@fuzzy-waddle/probable-
 import { emitResource, getPlayer, isSnapshotApplyInProgress } from "../../../../data/scene-data";
 import { creditGatheredResource, GATHERED_RESOURCE_CREDITED } from "../credit-gathered-resource";
 
-jest.mock("../../../data/scene-data", () => ({
+jest.mock("../../../../data/scene-data", () => ({
   emitResource: jest.fn(),
   getPlayer: jest.fn(),
   isSnapshotApplyInProgress: jest.fn(() => false)

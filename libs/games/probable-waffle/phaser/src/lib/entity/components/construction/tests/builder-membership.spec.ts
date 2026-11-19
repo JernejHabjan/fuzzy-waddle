@@ -4,8 +4,8 @@ import { BuilderComponent } from "../builder-component";
 import { ConstructionSiteComponent } from "../construction-site-component";
 import { getActorComponent } from "../../../../data/actor-component";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../data/game-object-helper", () => ({ onObjectReady: jest.fn() }));
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../data/game-object-helper", () => ({ onObjectReady: jest.fn() }));
 
 function fixture() {
   const events = new Phaser.Events.EventEmitter();

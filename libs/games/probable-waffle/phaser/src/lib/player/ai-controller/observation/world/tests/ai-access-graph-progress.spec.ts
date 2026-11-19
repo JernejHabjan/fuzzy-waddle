@@ -2,7 +2,7 @@ import type Phaser from "phaser";
 import { getSceneComponent, getSceneService } from "../../../../../world/services/scene-component-helpers";
 import { AiAccessGraphAdapter } from "../ai-access-graph.adapter";
 
-jest.mock("../../../../world/services/scene-component-helpers", () => ({
+jest.mock("../../../../../world/services/scene-component-helpers", () => ({
   getSceneComponent: jest.fn(),
   getSceneService: jest.fn()
 }));

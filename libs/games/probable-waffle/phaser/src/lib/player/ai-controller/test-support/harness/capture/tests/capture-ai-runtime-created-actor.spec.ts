@@ -6,8 +6,8 @@ import { getSceneService } from "../../../../../../world/services/scene-componen
 import { OwnerComponent } from "../../../../../../entity/components/owner-component";
 import { captureAiRuntimeCreatedActor } from "../capture-ai-runtime-created-actor";
 
-jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
 it("retains the last actual indexed identity after destruction without retaining live-state credit", () => {
   const actor = {

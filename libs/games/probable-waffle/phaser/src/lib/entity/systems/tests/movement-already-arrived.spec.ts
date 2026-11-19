@@ -12,18 +12,18 @@ import { CommandBusService } from "../../../world/services/multiplayer/command-b
 import { Subject } from "rxjs";
 import type { GameCommand } from "@fuzzy-waddle/probable-waffle-protocol";
 
-jest.mock("../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../world/services/scene-component-helpers", () => ({
+jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../world/services/scene-component-helpers", () => ({
   getSceneComponent: jest.fn(),
   getSceneService: jest.fn()
 }));
-jest.mock("../../data/game-object-helper", () => ({
+jest.mock("../../../data/game-object-helper", () => ({
   getGameObjectCurrentTile: jest.fn(),
   isGameObjectActiveInActiveScene: jest.fn(),
   isSceneActive: jest.fn(),
   onObjectReady: jest.fn()
 }));
-jest.mock("../../prefabs/ai-agents/controller/pawn-ai-controller", () => ({ PawnAiController: class {} }));
+jest.mock("../../../prefabs/ai-agents/controller/pawn-ai-controller", () => ({ PawnAiController: class {} }));
 
 function fixture() {
   const f = movementTestFixture(),

@@ -5,14 +5,14 @@ import { AI_DECISION_DISPATCH_EVENT } from "../../../../commands/ai-decision-dis
 import { unspentClaimFixture } from "../../../authority/claims/ai-runtime-unspent-claim-fixtures";
 import { productionCaptureFixture as setup } from "../../../production/fixtures/ai-runtime-production-capture-fixtures";
 
-jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../../../data/scene-data", () => ({
+jest.mock("../../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../../../data/scene-data", () => ({
   getPlayer: jest.fn(),
   getCommunicator: jest.fn(),
   emitResource: jest.fn(),
   isSnapshotApplyInProgress: jest.fn()
 }));
-jest.mock("../../../../../world/services/scene-component-helpers", () => ({
+jest.mock("../../../../../../world/services/scene-component-helpers", () => ({
   getSceneService: jest.fn(),
   getSceneSystem: jest.fn()
 }));

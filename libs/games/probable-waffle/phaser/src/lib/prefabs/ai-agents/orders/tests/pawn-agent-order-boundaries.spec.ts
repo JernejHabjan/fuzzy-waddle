@@ -18,8 +18,8 @@ import { ContainerComponent } from "../../../../entity/components/building/conta
 import { ColliderComponent } from "../../../../entity/components/movement/collider-component";
 import { NavigableComponent } from "../../../../entity/components/movement/navigable-component";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../data/actor-system", () => ({ getActorSystem: jest.fn() }));
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../data/actor-system", () => ({ getActorSystem: jest.fn() }));
 
 /** Native boundary doubles supply no navigation, arrival or useful-effect evidence. */
 function fixture() {

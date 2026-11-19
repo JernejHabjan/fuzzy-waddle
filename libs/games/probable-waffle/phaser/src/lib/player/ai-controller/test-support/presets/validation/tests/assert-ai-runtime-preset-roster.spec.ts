@@ -10,7 +10,7 @@ import type { SceneActorCreator } from "../../../../../../world/services/scene-a
 import { AI_RUNTIME_BROWSER_TEST_CONFIG_KEY } from "../../../browser/ai-runtime-browser-test-config";
 import { IsoHelper } from "../../../../../../world/tilemap/iso-helper";
 
-jest.mock("../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
 function fixture(faction = FactionType.Tivara) {
   const tech = new TechTreeService();

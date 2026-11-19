@@ -6,9 +6,9 @@ import { getSceneService, getSceneSystem } from "../../scene-component-helpers";
 import { HostMigrationService } from "../host-migration.service";
 import type { SnapshotService } from "../snapshot.service";
 
-jest.mock("../../../data/scene-data", () => ({ getCommunicator: jest.fn() }));
-jest.mock("../scene-component-helpers", () => ({ getSceneService: jest.fn(), getSceneSystem: jest.fn() }));
-jest.mock("../multiplayer/multiplayer-client-logger", () => ({
+jest.mock("../../../../data/scene-data", () => ({ getCommunicator: jest.fn() }));
+jest.mock("../../scene-component-helpers", () => ({ getSceneService: jest.fn(), getSceneSystem: jest.fn() }));
+jest.mock("../../multiplayer/multiplayer-client-logger", () => ({
   createMultiplayerClientLogger: () => ({ info: jest.fn() })
 }));
 
