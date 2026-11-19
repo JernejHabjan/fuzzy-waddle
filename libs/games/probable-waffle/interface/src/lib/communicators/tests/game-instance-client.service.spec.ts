@@ -4,6 +4,7 @@ import { GameInstanceClientService } from "../game-instance-client.service";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 import { authServiceStub } from "@fuzzy-waddle/platform-identity/client/auth/auth.service.stub";
+import { CurrentUserProfileService } from "@fuzzy-waddle/platform-identity/client/profile-data/current-user-profile.service";
 import { provideRouter } from "@angular/router";
 import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
 import { provideHttpClient } from "@angular/common/http";
@@ -78,6 +79,25 @@ describe("GameInstanceClientService", () => {
       });
     } finally {
       changed.mockRestore();
+    }
+  });
+
+  it("rejects a spectator join after its match is replaced during profile lookup", async () => {
+    let releaseProfile!: () => void;
+    const profile = jest.spyOn(TestBed.inject(CurrentUserProfileService), "getCurrentUserProfile").mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          releaseProfile = () => resolve(null);
+        })
+    );
+    try {
+      service.gameInstance = new ProbableWaffleGameInstance();
+      const joining = service.addSelfAsSpectator();
+      service.gameInstance = new ProbableWaffleGameInstance();
+      releaseProfile();
+      await expect(joining).rejects.toThrow("The local match was replaced.");
+    } finally {
+      profile.mockRestore();
     }
   });
 

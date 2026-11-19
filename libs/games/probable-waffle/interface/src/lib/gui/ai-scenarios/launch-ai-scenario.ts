@@ -86,14 +86,12 @@ export async function launchAiScenario(
 
   signal.throwIfAborted();
   const title = `${scenario.id} · ${variant.id}`;
-  await client.createGameInstance(
+  const match = await client.createGameInstance(
     title,
     ProbableWaffleGameInstanceVisibility.Private,
     ProbableWaffleGameInstanceType.InstantGame,
     { localOnly: true }
   );
-  const match = client.gameInstance;
-  if (!match) throw new Error("The local match could not be created.");
   const ensureMatch = () => {
     signal.throwIfAborted();
     if (client.gameInstance !== match) throw new Error("The local match was replaced.");
@@ -108,7 +106,7 @@ export async function launchAiScenario(
     team: team(1)
   } satisfies PositionPlayerDefinition);
   ensureMatch();
-  await client.addSelfAsSpectator();
+  await client.addSelfAsSpectator(signal);
   ensureMatch();
   await client.gameModeChanged("map", { map: map.id });
   ensureMatch();
