@@ -101,6 +101,15 @@ describe("GameInstanceClientService", () => {
     }
   });
 
+  it("does not start a replacement match during lobby setup", async () => {
+    service.gameInstance = new ProbableWaffleGameInstance();
+    const changed = jest.spyOn(service, "gameInstanceMetadataChanged");
+    const starting = service.startGame();
+    service.gameInstance = new ProbableWaffleGameInstance();
+    await expect(starting).rejects.toThrow("The local match was replaced.");
+    expect(changed).not.toHaveBeenCalled();
+  });
+
   it.each([1, 2])("restores the unique offline human slot with %s AI players", (aiCount) => {
     const game = new ProbableWaffleGameInstance();
     game.gameInstanceMetadata.data.type = ProbableWaffleGameInstanceType.Skirmish;

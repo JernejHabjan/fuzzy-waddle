@@ -30,17 +30,26 @@ import { GameInstanceEventClient } from "./game-instance-event-client";
 /** Owns lobby membership, matchmaking and navigation over the same subscribed client instance. */
 @Injectable()
 export abstract class GameInstanceLobbyClient extends GameInstanceEventClient {
-  async startGame(): Promise<void> {
-    await this.assignMissingFactionTypes();
-    await this.assignMissingTeams();
+  /** Complete faction and team assignment against the lobby that requested the start. */
+  async startGame(signal?: AbortSignal): Promise<void> {
+    const match = this.gameInstance;
+    if (!match) throw new Error("There is no game to start.");
+    const ensureMatch = () => {
+      signal?.throwIfAborted();
+      if (this.gameInstance !== match) throw new Error("The local match was replaced.");
+    };
+    await this.assignMissingFactionTypes(match, ensureMatch);
+    await this.assignMissingTeams(match, ensureMatch);
 
+    ensureMatch();
     await this.gameInstanceMetadataChanged("sessionState", { sessionState: GameSessionState.MovingPlayersToGame });
   }
 
-  protected async assignMissingFactionTypes() {
-    const players = this.gameInstance!.players;
+  private async assignMissingFactionTypes(match: ProbableWaffleGameInstance, ensureMatch: () => void) {
+    const players = match.players;
     for (const player of players) {
       if (!player.playerController.data.playerDefinition!.factionType) {
+        ensureMatch();
         const factionType = getRandomFactionType();
         await this.playerChanged(
           "playerController.data.playerDefinition.factionType" as ProbableWafflePlayerDataChangeEventProperty,
@@ -53,11 +62,12 @@ export abstract class GameInstanceLobbyClient extends GameInstanceEventClient {
     }
   }
 
-  protected async assignMissingTeams() {
-    const players = this.gameInstance!.players;
+  private async assignMissingTeams(match: ProbableWaffleGameInstance, ensureMatch: () => void) {
+    const players = match.players;
     const teamsSet = new Set(players.map((p) => p.playerController.data.playerDefinition!.team));
     for (const player of players) {
       if (player.playerController.data.playerDefinition!.team === undefined) {
+        ensureMatch();
         // assign first free team
         let team = 1;
         while (teamsSet.has(team)) {
