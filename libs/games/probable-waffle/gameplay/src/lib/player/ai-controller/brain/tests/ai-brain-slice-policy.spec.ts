@@ -10,6 +10,7 @@ describe("AI_BRAIN_SLICE_POLICIES", () =>
       "skirmish",
       "bases",
       "economyProduction",
+      "recovery",
       "reservations",
       "waitEdges",
       "pendingOutcomes",
