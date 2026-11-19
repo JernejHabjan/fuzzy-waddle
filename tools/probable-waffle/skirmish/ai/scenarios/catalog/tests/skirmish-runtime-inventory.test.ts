@@ -32,9 +32,30 @@ test("runtime inventory counts shared variants once and exposes focused migratio
     runs: 4,
     presetVariants: 0,
     maximumTick: 3000,
+    scheduledTicks: 12000,
+    scheduledCheckpoints: 8,
+    combatCaptureVariants: 0,
+    evidenceStopVariants: 0,
     flags: ["mixed_focused_continuous", "focused_without_preset", "focused_over_2000", "repeated"]
   });
   assert.match(renderRuntimeInventory(inventory), /2\/4 registered, 1 supported missing, 1 deferred/);
+});
+
+test("the static workload counts only checkpoints reachable for the selected rows", () => {
+  const manifest = {
+    rows: [{ id: "X-01", group: "example", drivers: ["runtime"], fixture: "bounded.json" }]
+  };
+  const inventory = collectRuntimeInventory(manifest, () => ({
+    assertions: { "X-01": { maximumTick: 200 } },
+    recipe: {
+      checkpointTicks: [20, 200, 400],
+      variants: [{ id: "subject", executionKind: "focused_preset", presetWorld: {}, captureCombat: true, repetitions: 2 }]
+    }
+  }));
+  assert.equal(inventory.recipes[0].maximumTick, 200);
+  assert.equal(inventory.recipes[0].scheduledTicks, 400);
+  assert.equal(inventory.recipes[0].scheduledCheckpoints, 4);
+  assert.equal(inventory.recipes[0].combatCaptureVariants, 1);
 });
 
 test("native authoring specifications do not reduce missing executable coverage", () => {
