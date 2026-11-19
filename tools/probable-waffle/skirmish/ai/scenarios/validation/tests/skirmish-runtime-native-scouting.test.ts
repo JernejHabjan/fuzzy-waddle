@@ -67,6 +67,23 @@ test("scouting captures combat history only where it proves the hidden-health mu
   }
 });
 
+test("SCOUT-01 retains both hidden starts and one scout without inherited combat probes", () => {
+  const fixture = nativeScenarioFixture("SCOUT-01");
+  for (const faction of ["Tivara", "Skaduwee"]) {
+    const variants = fixture.recipe.variants.filter((entry) => entry.aiFaction === faction);
+    assert.equal(variants.length, 2);
+    const contacts = variants.map((variant) => {
+      const roles = variant.presetWorld.actors.map((actor) => actor.fixtureActorId);
+      assert.ok(roles.includes("scout-probe"));
+      assert.ok(roles.includes("own-source") && roles.includes("enemy-source"));
+      assert.ok(!roles.includes("ranged-probe") && !roles.includes("front-target-a"));
+      return variant.presetWorld.actors.find((actor) => actor.fixtureActorId === "contact-group")?.position;
+    });
+    assert.ok(contacts.every(Boolean));
+    assert.notDeepEqual(contacts[0], contacts[1]);
+  }
+});
+
 test("SCOUT-02 hidden branches withdraw beyond the AI army while preserving an independent position mutation", () => {
   const fixture = nativeScenarioFixture("SCOUT-02");
   for (const variant of fixture.recipe.variants.filter(

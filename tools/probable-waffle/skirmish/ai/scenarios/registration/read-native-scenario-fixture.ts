@@ -7,7 +7,8 @@ export function readNativeScenarioFixture(fixtureDirectory: string, reference: s
   const fixture = readJson(join(fixtureDirectory, reference), 1024 * 1024);
   const generatedScenarioId = fixture?.generatedScenarioId;
   if (
-    ["SCOUT-02", "WALL-02", "PLACE-01", "FIGHT-01", "WALL-04", "H-23", "H-25", "RAID-03"].includes(generatedScenarioId)
+    ["SCOUT-01", "SCOUT-02", "WALL-02", "PLACE-01", "FIGHT-01", "WALL-04", "H-23", "H-25", "RAID-03"]
+      .includes(generatedScenarioId)
   ) {
     return nativeScenarioFixture(generatedScenarioId);
   }

@@ -1,4 +1,5 @@
 import { selectedRuntimeCheckpoints } from "../validation/skirmish-runtime-recipe-metadata.ts";
+import { nativeScenarioBindings } from "../registration/native-scenario-registration.ts";
 
 function applicableRows(rows, variant) {
   return rows.filter((row) => !variant.scenarioIds || variant.scenarioIds.includes(row.id));
@@ -18,7 +19,8 @@ export function collectRuntimeInventory(manifest, readFixture) {
       const matches = applicableRows(rows, variant);
       if (!matches.length) return [];
       const checkpoints = selectedRuntimeCheckpoints(fixture, variant, matches.map((row) => row.id));
-      return [{ variant, checkpoints, maximumTick: Math.max(0, ...checkpoints) }];
+      const nativeProbe = matches.length === 1 && nativeScenarioBindings.cases[matches[0].id]?.evidenceCheckpoints;
+      return [{ variant, checkpoints, maximumTick: Math.max(0, ...checkpoints), nativeProbe: !!nativeProbe }];
     });
     const focused = variants.filter(({ variant }) => variant.executionKind?.startsWith("focused_"));
     const continuous = variants.filter(({ variant }) => variant.executionKind === "continuous");
@@ -42,7 +44,7 @@ export function collectRuntimeInventory(manifest, readFixture) {
         0
       ),
       combatCaptureVariants: variants.filter(({ variant }) => variant.captureCombat === true).length,
-      evidenceStopVariants: variants.filter(({ variant }) => variant.evidenceStop !== undefined).length,
+      evidenceStopVariants: variants.filter(({ variant, nativeProbe }) => nativeProbe || variant.evidenceStop !== undefined).length,
       flags
     };
   });
