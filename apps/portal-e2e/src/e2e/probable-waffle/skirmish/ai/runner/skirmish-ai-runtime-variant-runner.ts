@@ -84,6 +84,7 @@ export async function runVariant(
     const variantStart = projectRuntimeVariantStart(variant, initialBoundary, effectiveSeed, fixture.recipe.mapLabel);
     const checkpoints: RuntimeCheckpoint[] = [];
     const perturbations: { id: string; tick: number; dispatchedActors: number; subjectName: string | null }[] = [];
+    let acceptedPresetEvents: RuntimeVariantResult["perturbations"] | undefined;
     const pendingPerturbations = [...(variant.perturbations ?? [])].sort(
       (left, right) => left.tick - right.tick || left.id.localeCompare(right.id)
     );
@@ -237,16 +238,18 @@ export async function runVariant(
         break;
       }
       if (probe && nativeEvidence && productionCapture) {
+        const presetEvents = await collectRuntimePresetEvents(page, variant);
         const failures = await nativeEvidence.failures(page, {
           ...variantStart,
           stopReason: "native_evidence_satisfied",
           outcomeDigest: "",
           productionCapture,
           checkpoints,
-          perturbations,
+          perturbations: [...perturbations, ...presetEvents],
           aiErrors: [...aiErrors]
         });
         if (failures.length === 0) {
+          acceptedPresetEvents = presetEvents;
           stopReason = "native_evidence_satisfied";
           break;
         }
@@ -273,7 +276,7 @@ export async function runVariant(
       }
     }
     await beforeFinalize?.(page);
-    perturbations.push(...(await collectRuntimePresetEvents(page, variant)));
+    perturbations.push(...(acceptedPresetEvents ?? (await collectRuntimePresetEvents(page, variant))));
 
     const outcomeDigest = digestRuntimeValue({
       checkpoints: projectRuntimeOutcomeDigestInput(
