@@ -19,6 +19,7 @@ import { evaluateNativeOptionalRelease } from "../../recovery/skirmish-ai-native
 import { evaluateNativeDebugParity } from "../../debug/skirmish-ai-native-debug-parity-evaluation";
 import { evaluateNativeIslandEstablishment } from "../../combat/access/skirmish-ai-native-island-establishment";
 import { nativeScenarioBinding } from "./skirmish-ai-native-binding";
+import { nativeEvidenceWindow } from "./skirmish-ai-native-proof-window";
 import type { RuntimeAssertion } from "../controls/skirmish-ai-runtime-assertion";
 import type { RuntimeFixture } from "../../contracts/skirmish-ai-runtime-fixture";
 import type { RuntimeVariantResult } from "../../runner/skirmish-ai-runtime-variant-result";
@@ -36,6 +37,7 @@ import { nativeSequenceProofFailures } from "../controls/skirmish-ai-native-sequ
 import { nativeReproProofFailures } from "../../reproduction/incident/skirmish-ai-native-repro-evaluation";
 import { evaluateNativeScouting, nativeScoutingFairness } from "../controls/skirmish-ai-native-scouting-evaluation";
 import { evaluateNativeStrategy } from "../../combat/missions/skirmish-ai-native-strategy-evaluation";
+import { evaluateNativeRaidWithdrawal } from "../../combat/missions/skirmish-ai-native-raid-withdrawal";
 import { evaluateNativeCombat } from "../../combat/effects/skirmish-ai-native-combat-evaluation";
 import { evaluateNativePlacement } from "../../construction/evaluation/skirmish-ai-native-placement-evaluation";
 import { evaluateNativeFortification } from "../../fortification/skirmish-ai-native-fortification-evaluation";
@@ -44,9 +46,7 @@ import { evaluateNativeDomain } from "../../combat/access/skirmish-ai-native-dom
 import { evaluateNativeClassic } from "./skirmish-ai-native-classic-evaluation";
 import { evaluateNativeRecovery } from "../../recovery/skirmish-ai-native-recovery-evaluation";
 import { evaluateNativeAuthority } from "../../lifecycle/authority/skirmish-ai-native-authority-evaluation";
-import {
-  evaluateNativeResourcePriority
-} from "../../economy/capture/policy/skirmish-ai-native-resource-priority-evaluation";
+import { evaluateNativeResourcePriority } from "../../economy/capture/policy/skirmish-ai-native-resource-priority-evaluation";
 import {
   evaluateNativeComeback,
   evaluateNativeFinish,
@@ -196,7 +196,8 @@ export function evaluateNativeScenarioVariant(
   }
   const extraPlayers = variant?.additionalAiPlayers ?? [];
   const captureCombat =
-    !("combatCaptureBranches" in definition) || definition.combatCaptureBranches.some((candidate) => candidate === branch);
+    !("combatCaptureBranches" in definition) ||
+    definition.combatCaptureBranches.some((candidate) => candidate === branch);
   if (
     !contract ||
     contract.schemaVersion !== 1 ||
@@ -223,10 +224,13 @@ export function evaluateNativeScenarioVariant(
     win && sealed !== undefined && sealed >= win.tick && sealed <= contract.latestTick ? sealed : undefined;
   if (id === "STRAT-08" && terminalPrefix === undefined)
     return ["native_finish_has_no_sealed_authoritative_win_prefix"];
+  const evidenceWindow = nativeEvidenceWindow(id, result, fixture, variant, contract.latestTick);
+  if (result.stopReason === "native_evidence_satisfied" && !evidenceWindow)
+    return ["native_scenario_evidence_window_invalid"];
   const context = nativeScenarioContext(
     result,
-    terminalPrefix ?? contract.latestTick,
-    terminalPrefix !== undefined ? contract.latestTick : undefined,
+    evidenceWindow?.[0] ?? terminalPrefix ?? contract.latestTick,
+    evidenceWindow?.[1] ?? (terminalPrefix !== undefined ? contract.latestTick : undefined),
     // These worlds assert exact native transactions/outcomes; routine actor/source changes invalidate broad coverage.
     { requireResourceCoverage: nativeScenarioRequiresResourceCoverage(id) }
   );
@@ -264,6 +268,7 @@ export function evaluateNativeScenarioVariant(
     failures.push(...evaluateNativeRecovery(id, branch, context));
   else if (["STRAT-02", "STRAT-03", "RAID-03"].includes(id))
     failures.push(...evaluateNativeRaidStrategy(id, branch, context));
+  else if (id === "RAID-02") failures.push(...evaluateNativeRaidWithdrawal(branch, context, variant));
   else if (id === "STRAT-08") failures.push(...evaluateNativeFinish(branch, context));
   else if (id === "STRAT-09") failures.push(...evaluateNativeComeback(branch, context));
   else if (id.startsWith("DOMAIN-")) failures.push(...evaluateNativeDomain(id, branch, context));

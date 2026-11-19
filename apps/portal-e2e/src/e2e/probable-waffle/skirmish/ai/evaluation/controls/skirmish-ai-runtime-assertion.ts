@@ -100,7 +100,6 @@ export interface RuntimeAssertion {
   };
   readonly requiredDefenseTargetName?: string;
   readonly requiredDefenseActorName?: string;
-  readonly requireMissionRedirectionAfterRaid?: boolean;
   readonly requireHiddenStateParity?: boolean;
   readonly requiredHiddenActorName?: string;
   readonly requireWaterTopology?: boolean;

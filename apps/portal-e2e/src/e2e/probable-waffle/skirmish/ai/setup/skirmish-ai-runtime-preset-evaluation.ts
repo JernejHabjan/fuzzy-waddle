@@ -56,25 +56,5 @@ export function evaluateRuntimePresetWorld(assertion: RuntimeAssertion, variant:
     );
     if (!compatibleDefense) failures.push(`${variant.variantId}:compatible_defense_not_observed`);
   }
-  if (assertion.requireMissionRedirectionAfterRaid) {
-    const raid = variant.perturbations.find((perturbation) => perturbation.id === "home-raid");
-    const engagedRaidTarget = variant.checkpoints.some(
-      (checkpoint) =>
-        checkpoint.tick >= (raid?.tick ?? Number.MAX_SAFE_INTEGER) &&
-        checkpoint.objectiveContacts.some((contact) => contact.objectName === "Banshee")
-    );
-    const redirected = variant.checkpoints.some(
-      (checkpoint) =>
-        checkpoint.tick > (raid?.tick ?? Number.MAX_SAFE_INTEGER) &&
-        checkpoint.squads.some((squad) => {
-          if (squad.role !== "attack" || squad.actorCount === 0) return false;
-          const contact = checkpoint.objectiveContacts.find((candidate) => candidate.squadId === squad.squadId);
-          return contact?.objectName !== undefined && contact.objectName !== "Banshee";
-        })
-    );
-    if (!raid || raid.dispatchedActors <= 0) failures.push(`${variant.variantId}:raid_not_dispatched`);
-    if (!engagedRaidTarget) failures.push(`${variant.variantId}:raid_target_not_engaged`);
-    if (!redirected) failures.push(`${variant.variantId}:mission_not_redirected`);
-  }
   return failures;
 }

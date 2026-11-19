@@ -1,4 +1,4 @@
-const executionKinds = new Set(["focused_preset", "focused_natural", "continuous"]);
+const executionKinds = new Set(["focused_preset", "focused_natural", "continuous", "continuous_preset"]);
 const variantRoles = new Set(["subject", "control", "standalone"]);
 const monotonicAssertionKeys = new Set([
   "maximumTick",
@@ -33,6 +33,17 @@ export function selectedRuntimeCheckpoints(fixture, variant, scenarioIds: readon
   return [...new Set(checkpoints)].filter((tick) => tick <= ceiling).sort((left, right) => left - right);
 }
 
+export function runtimeVariantInterventions(variant): { readonly id: string; readonly tick: number }[] {
+  return [
+    ...(variant.perturbations ?? []),
+    ...(variant.presetWorld?.events ?? []),
+    ...(variant.presetWorld?.controls ?? []).map((control) => ({
+      id: control.id,
+      tick: Math.max(control.requestTick, control.applicationTick)
+    }))
+  ];
+}
+
 /** A shortened observation window must still reach every authored intervention in the selected branch. */
 export function validateRuntimeScenarioWindow(fixture, scenarioId: string): void {
   const variants = fixture.recipe.variants.filter(
@@ -42,15 +53,7 @@ export function validateRuntimeScenarioWindow(fixture, scenarioId: string): void
   for (const variant of variants) {
     const lastTick = selectedRuntimeCheckpoints(fixture, variant, [scenarioId]).at(-1);
     if (lastTick === undefined) throw new Error(`runtime_recipe_window_empty:${scenarioId}:${variant.id}`);
-    const interventions = [
-      ...(variant.perturbations ?? []),
-      ...(variant.presetWorld?.events ?? []),
-      ...(variant.presetWorld?.controls ?? []).map((control) => ({
-        id: control.id,
-        tick: Math.max(control.requestTick, control.applicationTick)
-      }))
-    ];
-    const unreachable = interventions.find((event) => event.tick > lastTick);
+    const unreachable = runtimeVariantInterventions(variant).find((event) => event.tick > lastTick);
     if (unreachable)
       throw new Error(`runtime_recipe_intervention_outside_window:${scenarioId}:${variant.id}:${unreachable.id}`);
   }
@@ -70,10 +73,9 @@ export function validateRuntimeRecipeMetadata(recipe) {
       members.push(variant);
       pairs.set(variant.pairId, members);
     } else if (variant.pairId !== undefined) throw new Error(`runtime_recipe_standalone_pair:${variant.id}`);
-    if (kind === "focused_preset" && !variant.presetWorld)
-      throw new Error(`runtime_recipe_preset_missing:${variant.id}`);
-    if (kind !== "focused_preset" && variant.presetWorld)
-      throw new Error(`runtime_recipe_unexpected_preset:${variant.id}`);
+    const expectsPreset = kind === "focused_preset" || kind === "continuous_preset";
+    if (expectsPreset && !variant.presetWorld) throw new Error(`runtime_recipe_preset_missing:${variant.id}`);
+    if (!expectsPreset && variant.presetWorld) throw new Error(`runtime_recipe_unexpected_preset:${variant.id}`);
     if (kind === "focused_natural" && !nonempty(variant.setupRationale))
       throw new Error(`runtime_recipe_natural_rationale_missing:${variant.id}`);
     if (kind !== "continuous" && deadline > 2000 && !nonempty(variant.deadlineRationale))

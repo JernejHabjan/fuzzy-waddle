@@ -390,7 +390,7 @@
       "id": "RAID-02",
       "stages": [13],
       "group": "combat",
-      "fixture": "native/access/defense-native-gameplay.json",
+      "fixture": "native/combat/raid-02-withdraw-after-target-reinforcement-runtime.json",
       "authoredFixture": "pure/combat/tactical-domain-support-and-transport-controls.json",
       "drivers": ["pure", "runtime"]
     },
