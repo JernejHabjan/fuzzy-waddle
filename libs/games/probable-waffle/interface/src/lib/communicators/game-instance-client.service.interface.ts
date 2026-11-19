@@ -61,7 +61,7 @@ export interface GameInstanceClientServiceInterface {
    * for implementers and callers; keep ordering, return semantics, and error behavior aligned across
    * implementations.
    */
-  startGame(): Promise<void>;
+  startGame(signal?: AbortSignal): Promise<void>;
   /**
    * operation exposed by {@link GameInstanceClientServiceInterface}. Its signature is the compatibility boundary
    * for implementers and callers; keep ordering, return semantics, and error behavior aligned across

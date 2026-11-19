@@ -127,7 +127,7 @@ export async function launchAiScenario(
   ensureMatch();
   activeAiScenarios.set(match, { title, config });
   try {
-    await client.startGame();
+    await client.startGame(signal);
   } catch (error) {
     activeAiScenarios.delete(match);
     throw error;
