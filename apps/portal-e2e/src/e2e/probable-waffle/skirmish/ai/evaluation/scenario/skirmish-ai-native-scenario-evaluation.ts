@@ -195,6 +195,8 @@ export function evaluateNativeScenarioVariant(
     return failures;
   }
   const extraPlayers = variant?.additionalAiPlayers ?? [];
+  const captureCombat =
+    !("combatCaptureBranches" in definition) || definition.combatCaptureBranches.some((candidate) => candidate === branch);
   if (
     !contract ||
     contract.schemaVersion !== 1 ||
@@ -205,7 +207,7 @@ export function evaluateNativeScenarioVariant(
     !definition.branches.includes(branch) ||
     !variant?.presetWorld ||
     variant.captureConstruction !== true ||
-    variant.captureCombat !== true ||
+    variant.captureCombat !== (captureCombat ? true : undefined) ||
     variant.evidenceStop ||
     result.presetFixtureId !== variant.presetWorld.fixtureId ||
     extraPlayers.length !== (result.otherOpponentCaptures?.length ?? 0) ||
