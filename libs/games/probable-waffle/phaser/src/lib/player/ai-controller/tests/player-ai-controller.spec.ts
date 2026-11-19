@@ -16,7 +16,7 @@ import type { AiAuthorityState } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { createAiProfileConfig } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-profile-defaults";
 import { selectAiOpeningArchetype } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-opening-archetypes";
 
-jest.mock("../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
 const baseIntent = {
   intentId: "intent:test",

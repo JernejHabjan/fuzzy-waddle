@@ -20,13 +20,13 @@ import { getSceneService } from "../../../../world/services/scene-component-help
 import { AiObservationVisibilityPolicy } from "../../observation/knowledge/ai-observation-visibility-policy";
 import { captureAiProducerExposure } from "../capture-ai-producer-exposure";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../data/game-object-helper", () => ({
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../data/game-object-helper", () => ({
   getGameObjectCurrentTile: jest.fn(),
   getGameObjectLogicalTransform: jest.fn(),
   isGameObjectActiveInActiveScene: jest.fn(() => true)
 }));
-jest.mock("../../../world/services/scene-component-helpers", () => ({
+jest.mock("../../../../world/services/scene-component-helpers", () => ({
   getSceneService: jest.fn(),
   getSceneComponent: jest.fn()
 }));

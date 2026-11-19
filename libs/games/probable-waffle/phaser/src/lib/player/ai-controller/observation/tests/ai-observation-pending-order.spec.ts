@@ -13,18 +13,18 @@ import { VisionComponent } from "../../../../entity/components/vision-component"
 import { productionCaptureItem } from "../../test-support/production/fixtures/ai-runtime-production-capture-fixtures";
 import { getPwActorDefinition } from "../../../../prefabs/definitions/actor-definitions";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../data/actor-level-utils", () => ({ getResearchedLevelForActor: () => 1 }));
-jest.mock("../../../data/game-object-helper", () => ({
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../data/actor-level-utils", () => ({ getResearchedLevelForActor: () => 1 }));
+jest.mock("../../../../data/game-object-helper", () => ({
   getGameObjectLogicalTransform: () => undefined,
   getGameObjectCurrentTile: () => undefined
 }));
-jest.mock("../../../prefabs/definitions/actor-definitions", () => ({
+jest.mock("../../../../prefabs/definitions/actor-definitions", () => ({
   getPwActorDefinition: jest.fn(() => undefined)
 }));
-jest.mock("../../../prefabs/ai-agents/controller/pawn-ai-controller", () => ({ PawnAiController: class {} }));
-jest.mock("./catalog/ai-observation-catalog", () => ({ projectActorCapabilities: () => [] }));
-jest.mock("./catalog/ai-observation-combat-profile", () => ({ projectAiCombatProfile: () => undefined }));
+jest.mock("../../../../prefabs/ai-agents/controller/pawn-ai-controller", () => ({ PawnAiController: class {} }));
+jest.mock("../catalog/ai-observation-catalog", () => ({ projectActorCapabilities: () => [] }));
+jest.mock("../catalog/ai-observation-combat-profile", () => ({ projectAiCombatProfile: () => undefined }));
 
 it("projects queued intake before activation, clears it after removal and keeps opponents' queued orders private", () => {
   const board = new PawnAiBlackboard();

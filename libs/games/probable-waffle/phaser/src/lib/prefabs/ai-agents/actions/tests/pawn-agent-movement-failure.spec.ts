@@ -15,9 +15,9 @@ import { AttackComponent } from "../../../../entity/components/combat/components
 import * as gameObjectHelpers from "../../../../data/game-object-helper";
 import { DistanceHelper } from "../../../../library/distance-helper";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../data/actor-system", () => ({ getActorSystem: jest.fn() }));
-jest.mock("../../../world/services/scene-component-helpers", () => ({
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../data/actor-system", () => ({ getActorSystem: jest.fn() }));
+jest.mock("../../../../world/services/scene-component-helpers", () => ({
   getSceneService: jest.fn(),
   getSceneComponent: jest.fn()
 }));
