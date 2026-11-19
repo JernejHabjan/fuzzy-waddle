@@ -4,6 +4,7 @@ import type { RuntimeVariantResult } from "../../runner/skirmish-ai-runtime-vari
 import { nativeScenarioContext } from "../../contracts/skirmish-ai-native-scenario-context";
 import { nativeCompletedPlacements } from "../../construction/evaluation/skirmish-ai-native-construction-evidence";
 import { evaluateDifficultyFairnessPairs } from "../../difficulty/skirmish-ai-native-difficulty-fairness";
+import { nativeEvidenceWindow } from "./skirmish-ai-native-proof-window";
 
 /** Full-case coverage and counterfactual comparisons; a successful individual diagnostic world remains partial. */
 export function evaluateNativeScenarioPairs(
@@ -84,7 +85,7 @@ export function evaluateNativeScenarioPairs(
     if (id === "D-03")
       failures.push(...evaluateDifficultyFairnessPairs(worlds, (world) => contract.branchByVariant[world.variantId]));
     if (id === "SCOUT-01")
-      failures.push(...hiddenParity(find("hidden_a"), find("hidden_b"), definition.latestTick, true));
+      failures.push(...hiddenParity(find("hidden_a"), find("hidden_b"), definition.latestTick, fixture));
     if (id === "SCOUT-02")
       for (const branch of ["hidden_position", "hidden_health", "hidden_queue"])
         failures.push(...hiddenParity(find("withdrawn"), find(branch), definition.latestTick));
@@ -129,12 +130,26 @@ function hiddenParity(
   a: RuntimeVariantResult | undefined,
   b: RuntimeVariantResult | undefined,
   latestTick: number,
-  differentSetup = false
+  firstContactFixture?: RuntimeFixture
 ): string[] {
-  if (!a || !b || (differentSetup && a.initialWorldDigest === b.initialWorldDigest))
+  if (!a || !b || (firstContactFixture && a.initialWorldDigest === b.initialWorldDigest))
     return ["scouting_hidden_counterfactual_world_missing"];
-  const left = nativeScenarioContext(a, latestTick, undefined, { requireResourceCoverage: false });
-  const right = nativeScenarioContext(b, latestTick, undefined, { requireResourceCoverage: false });
+  const makeContext = (result: RuntimeVariantResult) => {
+    const variant = firstContactFixture?.recipe.variants.find((entry) => entry.id === result.variantId);
+    const early = nativeEvidenceWindow("SCOUT-01", result, firstContactFixture, variant, latestTick);
+    if (result.stopReason === "native_evidence_satisfied" && !early) return undefined;
+    const through = early?.[0] ?? latestTick;
+    return {
+      through,
+      context: nativeScenarioContext(result, through, early?.[1], { requireResourceCoverage: false })
+    };
+  };
+  const leftProof = makeContext(a);
+  const rightProof = makeContext(b);
+  if (!leftProof || !rightProof) return ["scouting_hidden_pair_native_history_incomplete"];
+  const through = Math.min(leftProof.through, rightProof.through);
+  const left = { ...leftProof.context, frames: leftProof.context.frames.filter((frame) => frame.tick <= through) };
+  const right = { ...rightProof.context, frames: rightProof.context.frames.filter((frame) => frame.tick <= through) };
   if (left.failures.length || right.failures.length) return ["scouting_hidden_pair_native_history_incomplete"];
   let compared = 0;
   for (const frame of left.frames) {

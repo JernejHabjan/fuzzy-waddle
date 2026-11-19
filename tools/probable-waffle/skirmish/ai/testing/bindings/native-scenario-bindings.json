@@ -362,6 +362,7 @@
       "latestTick": 2000,
       "branches": ["hidden_a", "hidden_b"],
       "combatCaptureBranches": [],
+      "evidenceCheckpoints": [600, 1000, 1600],
       "acceptance": {
         "requirementSource": "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/strategic-scenarios.md",
         "requiredOutcome": "Assign reachable information objectives; discover legally rather than target hidden IDs",

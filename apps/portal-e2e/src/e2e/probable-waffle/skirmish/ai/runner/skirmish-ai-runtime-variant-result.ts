@@ -60,7 +60,7 @@ export interface RuntimeVariantResult {
   readonly variantId: string;
   readonly repetition?: number;
   readonly mapLabel: string;
-  readonly stopReason: "terminal_result" | "evidence_satisfied" | "checkpoint_ceiling";
+  readonly stopReason: "terminal_result" | "evidence_satisfied" | "native_evidence_satisfied" | "checkpoint_ceiling";
   readonly seed: number;
   readonly aiFaction: RuntimeVariant["aiFaction"];
   readonly initialOwnedActorCount: number;
