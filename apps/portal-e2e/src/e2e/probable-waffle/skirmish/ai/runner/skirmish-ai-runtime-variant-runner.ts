@@ -53,8 +53,13 @@ export async function runVariant(
   let perturbationMs = 0;
   const aiErrors: string[] = [];
   const effectiveSeed = requestedSeed ?? variant.seed;
-
-  try {
+  let lastProgressTick = 0;
+  const checkForFatalAiError = (tick: number) => {
+    lastProgressTick = tick;
+    if (nativeEvidence && aiErrors.length)
+      throw new Error("runtime_focused_ai_error:" + variant.id + ":tick=" + tick + ":" + aiErrors[0]);
+  };
+  const run = async () => {
     const page = await context.newPage();
     page.on("console", (message) => {
       if (message.text().startsWith("[AI_SKIRMISH_PRODUCTION_CAPTURE]")) process.stdout.write(`${message.text()}\n`);
@@ -71,6 +76,9 @@ export async function runVariant(
       aiErrors,
       debugProbe
     );
+    checkForFatalAiError(0);
+    const advanceTo = (tick: number, index: number) =>
+      advanceRuntimeToTick(page, fixture, tick, index, nativeEvidence ? checkForFatalAiError : undefined);
     const setupMs = Math.round(performance.now() - variantStartedAt);
     const variantStart = projectRuntimeVariantStart(variant, initialBoundary, effectiveSeed, fixture.recipe.mapLabel);
     const checkpoints: RuntimeCheckpoint[] = [];
@@ -124,7 +132,7 @@ export async function runVariant(
         const perturbation = pendingPerturbations.shift();
         if (!perturbation) break;
         const perturbationStartedAt = performance.now();
-        await advanceRuntimeToTick(page, fixture, perturbation.tick, index);
+        await advanceTo(perturbation.tick, index);
         await setSimulationState(page, fixture.recipe.aiPlayerNumber, "pause", fixture.recipe.simulationTimeScale);
         await waitForSettledDecision(page, fixture.recipe.aiPlayerNumber);
         perturbations.push(await applyRuntimePerturbation(page, perturbation, fixture.recipe.aiPlayerNumber));
@@ -140,7 +148,7 @@ export async function runVariant(
         : closedProductionHorizon !== undefined && targetTick >= closedProductionHorizon
           ? closedProductionHorizon + 1
           : targetTick;
-      await advanceRuntimeToTick(page, fixture, stopAtTick, index);
+      await advanceTo(stopAtTick, index);
       if (process.env.AI_SKIRMISH_DIAGNOSTIC_CHECKPOINT_TRACE === "1" && targetTick >= 4000)
         process.stdout.write(`[AI_SKIRMISH_CHECKPOINT] tick=${targetTick} phase=advance complete\n`);
       const settleStartedAt = performance.now();
@@ -167,6 +175,7 @@ export async function runVariant(
       );
       if (process.env.AI_SKIRMISH_DIAGNOSTIC_CHECKPOINT_TRACE === "1" && targetTick >= 4000)
         process.stdout.write(`[AI_SKIRMISH_CHECKPOINT] tick=${targetTick} phase=checkpoint complete\n`);
+      checkForFatalAiError(checkpoint.tick);
       checkpoints.push(checkpoint);
       const pendingEventTicks = [
         ...pendingPerturbations.map((event) => event.tick),
@@ -191,7 +200,7 @@ export async function runVariant(
           (checkpoint.gameResult === "win" &&
             applicableScenarioIds.some((id) => fixture.assertions[id]?.requireAiVictory)))
       ) {
-        await advanceRuntimeToTick(page, fixture, checkpoint.tick + 1, index);
+        await advanceTo(checkpoint.tick + 1, index);
         if (probe) await waitForSettledDecision(page, fixture.recipe.aiPlayerNumber);
       }
       if (captureProduction) {
@@ -309,7 +318,27 @@ export async function runVariant(
     // Lifecycle controls act only after the original match's native history, event facts and result have been detached.
     await afterVariant?.(page, result);
     return result;
+  };
+  let watchdog: ReturnType<typeof setTimeout> | undefined;
+  try {
+    if (!nativeEvidence) return await run();
+    const deadline = new Promise<never>((_, reject) => {
+      watchdog = setTimeout(() => {
+        reject(
+          new Error(
+            "runtime_focused_variant_timeout:" +
+              variant.id +
+              ":tick=" +
+              lastProgressTick +
+              ":budget_ms=" +
+              nativeEvidence.wallClockBudgetMs
+          )
+        );
+      }, nativeEvidence.wallClockBudgetMs);
+    });
+    return await Promise.race([run(), deadline]);
   } finally {
+    clearTimeout(watchdog);
     await context.close();
   }
 }
@@ -350,9 +379,16 @@ async function captureRuntimeProductionAuthorityWithDiagnostics(page: Page, play
   }
 }
 
-async function advanceRuntimeToTick(page: Page, fixture: RuntimeFixture, targetTick: number, checkpointIndex: number) {
+async function advanceRuntimeToTick(
+  page: Page,
+  fixture: RuntimeFixture,
+  targetTick: number,
+  checkpointIndex: number,
+  onProgress?: (tick: number) => void
+) {
   if (fixture.recipe.fixedStepFrames)
     return advanceRuntimeFrames(page, fixture.recipe.aiPlayerNumber, targetTick, 1, false, (tick) => {
+      onProgress?.(tick);
       if (tick % 500 === 0)
         process.stdout.write(
           `[AI_SKIRMISH_PROGRESS] ${fixture.scenarioIds.join(",")} ${tick}/${targetTick} elapsedMs=${Math.round(

@@ -7,7 +7,11 @@ export function installRuntimeErrorListeners(page: Page, aiErrors: string[]) {
   detachByPage.get(page)?.();
   const consoleListener = (message: ConsoleMessage) => {
     const text = message.text();
-    if (/Error (stepping behaviour tree|updating AI on simulation tick|scheduling next AI step)/i.test(text))
+    if (
+      /Error (stepping (?:behaviour tree|AI controller)|updating AI on simulation tick|scheduling next AI step)/i.test(
+        text
+      )
+    )
       aiErrors.push(text);
   };
   const errorListener = (error: Error) => {
