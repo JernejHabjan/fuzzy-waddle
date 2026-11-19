@@ -5,6 +5,7 @@ import { evaluateRuntimePlacementPrefixes } from "../construction/evaluation/ski
 import { nativeProtectedTransits } from "../construction/evaluation/skirmish-ai-native-placement-evaluation";
 import { nativeWeaponHits } from "../combat/effects/skirmish-ai-native-combat-effects";
 import { runtimeControlTransitFailures } from "../navigation/skirmish-ai-runtime-control-transit";
+import { nativeCompletedFortificationWallCount } from "./skirmish-ai-native-completed-fortification";
 import { nativeFortificationBudgetFailures } from "./skirmish-ai-native-fortification-budget";
 
 /** Real paid prefixes, friendly passage, hostile access and occupied compatible firing stay separate obligations. */
@@ -47,9 +48,9 @@ export function evaluateNativeFortification(
     if (
       branch !== "no_value" &&
       (!nativeWeaponHits(context, context.roles["contact-group"]).length ||
-        !plans.some((plan) => plan.graph?.nodes.some((node) => node.kind === "wall" && node.lifecycle === "finished")))
+        nativeCompletedFortificationWallCount(context) === undefined)
     )
-      failures.push("fortification_graph_has_no_native_defensive_effect");
+      failures.push("fortification_graph_incomplete_or_has_no_native_defensive_effect");
     if (branch === "no_value" && nodes.some((node) => node.fact.tick > 200 && node.value.command.tileVec3.x < 34))
       failures.push("fortification_obsolete_remote_asset_still_funded");
   }

@@ -200,10 +200,10 @@
         "requiredOutcome": "Useful connected defense exploits terrain, covers assets and reduces required artificial wall length",
         "setup": [
           "Bind actual cliff/water edges, one important hostile ground approach and protected assets",
-          "Use a faction with legal wall/stair definitions and affordable measured defensive demand"
+          "Use the same base, force and resource start in both positive branches; widen only the terrain anchors in the control"
         ],
         "actions": [
-          "Let AI construct a connected defensive prefix against the real approach",
+          "Let AI finish the selected defense graph against the real approach, leaving the reserved opening clear",
           "Drive ordinary hostile and friendly traversal and occupy planned defender posts"
         ],
         "measurements": [

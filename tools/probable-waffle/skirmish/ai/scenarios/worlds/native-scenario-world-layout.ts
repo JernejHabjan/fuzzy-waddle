@@ -95,7 +95,7 @@ export function nativeScenarioActors(id: string, own: string, enemy: string, bra
 /** Actual native tile geometry on the frozen open map; not a fictitious map label or an AI access-graph injection. */
 export function nativeScenarioTerrain(id, branch) {
   const bridge =
-    (id === "WALL-01" && branch === "terrain") ||
+    id === "WALL-01" ||
     id === "WALL-05" ||
     (id === "SCOUT-04" && branch === "approach") ||
     (id === "STRAT-11" && branch === "bridge");
@@ -106,8 +106,9 @@ export function nativeScenarioTerrain(id, branch) {
         if ((y >= 20 && y <= 25) || (id === "SCOUT-04" && y >= 34 && y <= 37)) continue;
         patches.push({ x, y, terrain: "water", blocked: false });
       }
-  if (id === "WALL-01" && branch === "terrain")
-    for (const y of [12, 22]) patches.push({ x: 29, y, terrain: "grass", blocked: true });
+  if (id === "WALL-01")
+    for (const y of branch === "freestanding" ? [12, 25] : [12, 22])
+      patches.push({ x: 29, y, terrain: "grass", blocked: true });
   if (id === "STRAT-05" && branch === "blocked_retreat") {
     // Keep the opening target reachable, but separate the forward force from its home-side fallback.
     for (let x = 0; x < 50; x++) patches.push({ x, y: 28, terrain: "grass", blocked: true });
