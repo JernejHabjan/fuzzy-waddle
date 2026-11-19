@@ -1,0 +1,21 @@
+/** Stable machine-readable application reasons shared by AI, replay and debug. */
+export type GameCommandOutcomeReason =
+  | "accepted_for_dispatch"
+  | "applied"
+  | "duplicate_command"
+  | "stale_authority_epoch"
+  | "invalid_command_metadata"
+  | "invalid_owner"
+  | "missing_actor"
+  | "inactive_actor"
+  | "invalid_target"
+  | "hidden_target"
+  | "illegal_site"
+  | "insufficient_resources"
+  | "capacity_full"
+  | "cooldown_active"
+  | "unsupported_action"
+  | "application_failed"
+  | "lost_outcome"
+  | "outcome_backlog_overflow"
+  | "cancelled";
