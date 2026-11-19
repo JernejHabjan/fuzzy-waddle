@@ -29,6 +29,8 @@
         "aiFaction": "Tivara",
         "humanFaction": "Skaduwee",
         "difficulty": "Normal",
+        "captureConstruction": true,
+        "captureCombat": true,
         "determinismGroup": "air-defense-recovery",
         "repetitions": 3,
         "presetWorld": {

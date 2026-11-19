@@ -1,3 +1,5 @@
+import { nativeScenarioContext } from "../contracts/skirmish-ai-native-scenario-context";
+import { nativeWeaponHits } from "../combat/effects/skirmish-ai-native-combat-effects";
 import type { RuntimeAssertion } from "../evaluation/controls/skirmish-ai-runtime-assertion";
 import type { RuntimeVariantResult } from "../runner/skirmish-ai-runtime-variant-result";
 
@@ -17,19 +19,34 @@ export function evaluateRuntimePresetWorld(assertion: RuntimeAssertion, variant:
     }
   }
   if (assertion.requiredDefenseTargetName !== undefined || assertion.requiredDefenseActorName !== undefined) {
-    const compatibleDefense = variant.checkpoints.some((checkpoint) =>
-      checkpoint.squads.some((squad) => {
-        if (!["attack", "defense", "escort"].includes(squad.role) || !squad.objectiveId) return false;
-        const contact = checkpoint.objectiveContacts.find((candidate) => candidate.squadId === squad.squadId);
-        return (
+    const raid = variant.perturbations.find((event) => event.id === "home-raid" && event.dispatchedActors > 0);
+    if (assertion.maximumTick === undefined) return [...failures, "compatible_defense_horizon_missing"];
+    const context = nativeScenarioContext(variant, assertion.maximumTick, undefined, {
+      requireResourceCoverage: false
+    });
+    const compatibleDefense =
+      raid &&
+      !context.failures.length &&
+      nativeWeaponHits(context, undefined, raid.tick).some(
+        ({ damage, tick }) =>
           (assertion.requiredDefenseTargetName === undefined ||
-            contact?.objectName === assertion.requiredDefenseTargetName) &&
+            damage.target.canonicalObjectName === assertion.requiredDefenseTargetName) &&
           (assertion.requiredDefenseActorName === undefined ||
-            squad.actorNames.includes(assertion.requiredDefenseActorName))
-        );
-      })
-    );
-    if (!compatibleDefense) failures.push(`${variant.variantId}:compatible_defense_not_observed`);
+            damage.initiator?.canonicalObjectName === assertion.requiredDefenseActorName) &&
+          context.frames.some(
+            (frame) =>
+              frame.tick <= tick &&
+              frame.decision.missionState?.squads.some(
+                (squad) =>
+                  ["defense", "escort", "attack"].includes(squad.role) &&
+                  (squad.objectiveId === damage.target.actorId ||
+                    squad.tactics?.targetActorId === damage.target.actorId) &&
+                  !!damage.initiator?.actorId &&
+                  squad.actorIds.some((actorId) => actorId === damage.initiator?.actorId)
+              )
+          )
+      );
+    if (!compatibleDefense) failures.push(`${variant.variantId}:compatible_defense_native_hit_missing`);
   }
   return failures;
 }
