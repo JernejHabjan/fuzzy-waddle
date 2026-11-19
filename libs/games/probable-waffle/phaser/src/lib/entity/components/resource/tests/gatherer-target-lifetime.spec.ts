@@ -9,9 +9,9 @@ import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/compo
 import { GathererTargetSelection } from "../gatherer-target-selection";
 import type { GathererComponent } from "../gatherer-component";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("../../../library/distance-helper", () => ({ DistanceHelper: { batchGetDistancesBetweenGameObjects: jest.fn() } }));
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../library/distance-helper", () => ({ DistanceHelper: { batchGetDistancesBetweenGameObjects: jest.fn() } }));
 
 describe("drop-off selection across asynchronous path lookup", () => {
   beforeEach(() => jest.resetAllMocks());

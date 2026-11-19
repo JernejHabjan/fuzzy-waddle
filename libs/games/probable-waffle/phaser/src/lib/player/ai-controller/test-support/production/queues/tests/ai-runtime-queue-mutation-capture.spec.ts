@@ -4,9 +4,9 @@ import { isSnapshotApplyInProgress } from "../../../../../../data/scene-data";
 import { mutateSharedQueueItem } from "../../../../../../entity/components/queue/mutate-shared-queue-item";
 import { QUEUE_MUTATION_EVENT } from "../../../../../../entity/components/queue/queue-mutation-event";
 import { productionCaptureFixture, productionCaptureItem } from "../../fixtures/ai-runtime-production-capture-fixtures";
-jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../../../data/scene-data", () => ({ getPlayer: jest.fn(), isSnapshotApplyInProgress: jest.fn() }));
-jest.mock("../../../../../world/services/scene-component-helpers", () => ({
+jest.mock("../../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../../../data/scene-data", () => ({ getPlayer: jest.fn(), isSnapshotApplyInProgress: jest.fn() }));
+jest.mock("../../../../../../world/services/scene-component-helpers", () => ({
   getSceneService: jest.fn(),
   getSceneSystem: jest.fn()
 }));

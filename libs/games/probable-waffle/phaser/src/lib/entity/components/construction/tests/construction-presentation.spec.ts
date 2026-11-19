@@ -17,15 +17,15 @@ import { ProbableWaffleSceneEventName } from "../../../../world/services/recover
 import { HealthComponent } from "../../combat/components/health-component";
 import { startConstructionPayment, refundConstructionPayment } from "../construction-payment";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../data/game-object-helper", () => ({ onObjectReady: jest.fn(), getGameObjectVisibility: jest.fn() }));
-jest.mock("../../../data/actor-data", () => ({ upgradeFromConstructingToFullActorData: jest.fn() }));
-jest.mock("../../../data/actor-level-utils", () => ({ getResearchedLevelForActor: () => null }));
-jest.mock("../../../prefabs/definitions/actor-definitions", () => ({ getPwActorDefinition: jest.fn() }));
-jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("../../../world/services/audio.service.ts", () => ({ AudioService: class {} }));
-jest.mock("./construction-progress-ui-component", () => ({ ConstructionProgressUiComponent: jest.fn() }));
-jest.mock("./construction-payment", () => ({
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../data/game-object-helper", () => ({ onObjectReady: jest.fn(), getGameObjectVisibility: jest.fn() }));
+jest.mock("../../../../data/actor-data", () => ({ upgradeFromConstructingToFullActorData: jest.fn() }));
+jest.mock("../../../../data/actor-level-utils", () => ({ getResearchedLevelForActor: () => null }));
+jest.mock("../../../../prefabs/definitions/actor-definitions", () => ({ getPwActorDefinition: jest.fn() }));
+jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../world/services/audio.service.ts", () => ({ AudioService: class {} }));
+jest.mock("../construction-progress-ui-component", () => ({ ConstructionProgressUiComponent: jest.fn() }));
+jest.mock("../construction-payment", () => ({
   startConstructionPayment: jest.fn(),
   refundConstructionPayment: jest.fn()
 }));

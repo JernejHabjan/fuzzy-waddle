@@ -10,8 +10,8 @@ import { PawnAiBlackboard, RELEASED_PURSUIT_TARGET_MEMORY_KEY } from "../../cont
 import { PawnAgentCombat } from "../pawn-agent-combat";
 import { ProbableWafflePlayerType } from "@fuzzy-waddle/probable-waffle-protocol";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../data/game-object-helper", () => ({ getGameObjectCurrentTile: jest.fn() }));
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../data/game-object-helper", () => ({ getGameObjectCurrentTile: jest.fn() }));
 
 function fixture(playerType: ProbableWafflePlayerType) {
   const scene = {

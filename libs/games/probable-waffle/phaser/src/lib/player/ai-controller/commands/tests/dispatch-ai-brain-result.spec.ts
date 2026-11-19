@@ -14,7 +14,7 @@ import { dispatchAiBrainResult } from "../dispatch-ai-brain-result";
 import { dispatchAiIntents } from "../ai-intent-dispatcher";
 import { pendingCommandIntent } from "../../test-support/authority/claims/ai-runtime-pending-command-fixtures";
 
-jest.mock("./ai-intent-dispatcher", () => ({ dispatchAiIntents: jest.fn() }));
+jest.mock("../ai-intent-dispatcher", () => ({ dispatchAiIntents: jest.fn() }));
 
 /** Synthetic result shape, deliberately separate from proof that the real planner selected useful runtime work. */
 function fixture(empty = false) {

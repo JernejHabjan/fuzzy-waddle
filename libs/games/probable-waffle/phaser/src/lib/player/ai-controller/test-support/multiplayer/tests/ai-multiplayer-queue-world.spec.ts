@@ -13,9 +13,9 @@ import { AiRuntimeProductionCapture } from "../../production/capture/ai-runtime-
 import { prepareAiMultiplayerQueueWorld } from "../prepare-ai-multiplayer-queue-world";
 import { AiMultiplayerQueueWorld } from "../ai-multiplayer-queue-world";
 
-jest.mock("../production/capture/ai-runtime-production-capture");
-jest.mock("./prepare-ai-multiplayer-queue-world");
-jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../production/capture/ai-runtime-production-capture");
+jest.mock("../prepare-ai-multiplayer-queue-world");
+jest.mock("../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
 function fixture(localPlayerNumber = 1) {
   const outcomes = new Subject<GameCommandOutcome>();

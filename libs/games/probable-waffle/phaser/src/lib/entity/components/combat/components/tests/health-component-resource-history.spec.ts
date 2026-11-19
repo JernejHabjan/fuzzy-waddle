@@ -15,7 +15,7 @@ import { AiRuntimeResourceCoverageCapture } from "../../../../../player/ai-contr
 import type { AiRuntimeProductionFact } from "../../../../../player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import type { ProbableWaffleScene } from "../../../../../core/probable-waffle.scene";
 
-jest.mock("./health-presentation", () => ({
+jest.mock("../health-presentation", () => ({
   HealthPresentation: class {
     attach() {}
     init() {}
@@ -30,32 +30,32 @@ jest.mock("./health-presentation", () => ({
     setVisibilityUiComponent() {}
   }
 }));
-jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../../data/game-object-helper", () => ({
+jest.mock("../../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../../data/game-object-helper", () => ({
   onObjectReady: jest.fn(),
   isGameObjectActiveInActiveScene: jest.fn(),
   getGameObjectVisibility: () => ({ visible: false })
 }));
-jest.mock("../../../../data/scene-data", () => ({ getCurrentPlayerNumber: jest.fn(), getPlayer: jest.fn() }));
-jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("../../../../campaign/campaign-progression-modifier", () => ({
+jest.mock("../../../../../data/scene-data", () => ({ getCurrentPlayerNumber: jest.fn(), getPlayer: jest.fn() }));
+jest.mock("../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../../campaign/campaign-progression-modifier", () => ({
   applyCampaignProgressionModifiers: jest.fn()
 }));
-jest.mock("../../../../world/services/simulation-time", () => ({
+jest.mock("../../../../../world/services/simulation-time", () => ({
   getSimulationNow: () => 0,
   CancelableSimDelay: class {
     remove() {}
   }
 }));
-jest.mock("../../../../world/services/simulation-tick.service.ts", () => ({ SimulationTickService: class {} }));
-jest.mock("../../../../world/services/audio.service.ts", () => ({ AudioService: class {} }));
-jest.mock("../../owner-component", () => ({ OwnerComponent: class {} }));
-jest.mock("../../selectable-component", () => ({ SelectableComponent: class {} }));
-jest.mock("../../actor-audio/audio-actor-component", () => ({ AudioActorComponent: class {} }));
-jest.mock("../../animation/animation-actor-component", () => ({ AnimationActorComponent: class {} }));
-jest.mock("../../construction/construction-site-component", () => ({ ConstructionSiteComponent: class {} }));
-jest.mock("../../building/fade-out-component", () => ({ FadeOutComponent: class {} }));
-jest.mock("../../building/building-destruction-effect", () => ({
+jest.mock("../../../../../world/services/simulation-tick.service.ts", () => ({ SimulationTickService: class {} }));
+jest.mock("../../../../../world/services/audio.service.ts", () => ({ AudioService: class {} }));
+jest.mock("../../../owner-component", () => ({ OwnerComponent: class {} }));
+jest.mock("../../../selectable-component", () => ({ SelectableComponent: class {} }));
+jest.mock("../../../actor-audio/audio-actor-component", () => ({ AudioActorComponent: class {} }));
+jest.mock("../../../animation/animation-actor-component", () => ({ AnimationActorComponent: class {} }));
+jest.mock("../../../construction/construction-site-component", () => ({ ConstructionSiteComponent: class {} }));
+jest.mock("../../../building/fade-out-component", () => ({ FadeOutComponent: class {} }));
+jest.mock("../../../building/building-destruction-effect", () => ({
   BuildingDestructionEffect: { spawnDestructionEffects: jest.fn() }
 }));
 

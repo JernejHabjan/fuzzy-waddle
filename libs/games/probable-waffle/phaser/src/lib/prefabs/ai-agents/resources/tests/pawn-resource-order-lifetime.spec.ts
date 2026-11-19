@@ -8,7 +8,7 @@ import { ResourceSourceComponent } from "../../../../entity/components/resource/
 import { PawnAiBlackboard } from "../../controller/pawn-ai-blackboard";
 import { PawnAgentResources } from "../pawn-agent-resources";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 
 function deferred<T>() {
   let resolve!: (value: T) => void;

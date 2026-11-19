@@ -12,7 +12,7 @@ import { installAiRuntimeReceiptFault } from "../install-ai-runtime-receipt-faul
 import type { AiRuntimePresetWorld } from "../../../presets/setup/ai-runtime-preset-world";
 import { AI_RUNTIME_AUTHORITY_DELIVERY_EVENT } from "../ai-runtime-authority-delivery";
 
-jest.mock("../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
 function deliveryFixture(commandKind: "any" | "research" = "any") {
   const ticks = new Subject<void>(), shutdown = new Subject<void>(), events = new EventEmitter();

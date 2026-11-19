@@ -4,8 +4,8 @@ import { getTileCoordsUnderObject } from "../../../library/tile-under-object";
 import { ColliderComponent } from "../../../entity/components/movement/collider-component";
 import { NavigationObjectGrid } from "../navigation-object-grid";
 
-jest.mock("../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../library/tile-under-object", () => ({ getTileCoordsUnderObject: jest.fn() }));
+jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../library/tile-under-object", () => ({ getTileCoordsUnderObject: jest.fn() }));
 
 it("can omit transient colliders for persistent route-clearance projections", () => {
   const scene = {} as Phaser.Scene;

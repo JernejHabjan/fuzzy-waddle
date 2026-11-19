@@ -4,8 +4,8 @@ import type { ProbableWaffleScene } from "../../../../core/probable-waffle.scene
 import { getCommunicator } from "../../../../data/scene-data";
 import { SnapshotService } from "../snapshot.service";
 
-jest.mock("../../../data/scene-data", () => ({ getCommunicator: jest.fn() }));
-jest.mock("../simulation-time", () => ({
+jest.mock("../../../../data/scene-data", () => ({ getCommunicator: jest.fn() }));
+jest.mock("../../simulation-time", () => ({
   CancelableSimDelay: jest.fn().mockImplementation(() => ({ remove: jest.fn() }))
 }));
 

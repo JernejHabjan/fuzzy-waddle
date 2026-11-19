@@ -6,10 +6,10 @@ import { getSelectableGameObject, onSceneInitialized } from "../../../data/game-
 import { IsoHelper } from "../../../world/tilemap/iso-helper";
 import { getSceneComponent } from "../../../world/services/scene-component-helpers";
 
-jest.mock("../../data/actor-component");
-jest.mock("../../data/game-object-helper");
-jest.mock("../../world/tilemap/iso-helper");
-jest.mock("../../world/services/scene-component-helpers");
+jest.mock("../../../data/actor-component");
+jest.mock("../../../data/game-object-helper");
+jest.mock("../../../world/tilemap/iso-helper");
+jest.mock("../../../world/services/scene-component-helpers");
 
 describe("SingleSelectionHandler", () => {
   const pointerUpEvent = "pointerup";

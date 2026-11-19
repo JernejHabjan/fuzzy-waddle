@@ -10,7 +10,7 @@ import { QUEUE_RESOURCE_EMISSION_EVENT, type QueueResourceEmissionEvent } from "
 import type { QueueResourceEmissionRecord } from "../queue-resource-emission-record";
 import type { QueueResourceEmissionScope } from "../queue-resource-emission-scope";
 
-jest.mock("./scene-data", () => ({
+jest.mock("../scene-data", () => ({
   emitResource: jest.fn(),
   getCommunicator: jest.fn(),
   getPlayer: jest.fn(),

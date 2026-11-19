@@ -6,8 +6,8 @@ import { QueueComponent } from "../../queue/queue-component";
 import { HealthComponent } from "../../combat/components/health-component";
 import { hasPendingPlayerResearch } from "../has-pending-player-research";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
 it("rejects the same paid research across owned producers while allowing other tech and released work", () => {
   const scene = {} as Phaser.Scene;

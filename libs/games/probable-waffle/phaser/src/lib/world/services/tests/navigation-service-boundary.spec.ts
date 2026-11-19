@@ -17,11 +17,11 @@ import { WaterNavigationHelper } from "../water-navigation.helper";
 import { NavigationService, TerrainType } from "../navigation.service";
 import { TerrainType as NativeTerrainType } from "../navigation-terrain-type";
 
-jest.mock("../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../data/game-object-helper", () => ({ onSceneInitialized: jest.fn() }));
-jest.mock("../../library/tile-under-object", () => ({ getCenterTileCoordUnderObject: jest.fn() }));
-jest.mock("../../library/distance-helper", () => ({ DistanceHelper: { clearNavigationCache: jest.fn() } }));
-jest.mock("./scene-component-helpers", () => ({ getSceneComponent: jest.fn(), getSceneService: jest.fn() }));
+jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../data/game-object-helper", () => ({ onSceneInitialized: jest.fn() }));
+jest.mock("../../../library/tile-under-object", () => ({ getCenterTileCoordUnderObject: jest.fn() }));
+jest.mock("../../../library/distance-helper", () => ({ DistanceHelper: { clearNavigationCache: jest.fn() } }));
+jest.mock("../scene-component-helpers", () => ({ getSceneComponent: jest.fn(), getSceneService: jest.fn() }));
 
 function fixture() {
   const events = { on: jest.fn(), once: jest.fn(), off: jest.fn() };

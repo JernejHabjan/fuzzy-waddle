@@ -16,8 +16,8 @@ import { AiCommandReconciliation } from "../../../../player/ai-controller/outcom
 import { PawnAiBlackboard } from "../../controller/pawn-ai-blackboard";
 import { PawnAgentResources } from "../pawn-agent-resources";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
 function fixture() {
   const scene = { sys: { isActive: () => true, queueDepthSort: () => undefined } } as unknown as Phaser.Scene;

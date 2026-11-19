@@ -10,13 +10,13 @@ import { AiRuntimeResourceCoverageCapture } from "../../../player/ai-controller/
 import type { AiRuntimeProductionFact } from "../../../player/ai-controller/test-support/production/lifecycle/ai-runtime-production-fact";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 
-jest.mock("./owner-presentation", () => ({ OwnerPresentation: class {
+jest.mock("../owner-presentation", () => ({ OwnerPresentation: class {
   attach() {} tryToSetComponents() {} assignOwnerColor() {} setOwnerColorToActor() {} playBlinkEffect() {}
 } }));
-jest.mock("../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../data/player-relation", () => ({ arePlayersAllied: jest.fn() }));
-jest.mock("../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("../../world/services/ActorIndexSystem", () => ({ ActorIndexSystem: class {} }));
+jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../data/player-relation", () => ({ arePlayersAllied: jest.fn() }));
+jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../world/services/ActorIndexSystem", () => ({ ActorIndexSystem: class {} }));
 
 function fixture() {
   const player = new ProbableWafflePlayer(new ProbableWafflePlayerState(), new ProbableWafflePlayerController());

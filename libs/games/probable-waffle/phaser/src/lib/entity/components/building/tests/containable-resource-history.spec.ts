@@ -4,7 +4,7 @@ import { subscribeSceneResourceLoss } from "../../../../data/scene-resource-obse
 import { ContainableComponent } from "../containable-component";
 import { ContainerComponent } from "../container-component";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 
 describe("containable resource history boundary (authored; final gate pending)", () => {
   beforeEach(() => { jest.clearAllMocks(); });

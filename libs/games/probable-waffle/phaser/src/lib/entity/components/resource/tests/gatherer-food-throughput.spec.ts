@@ -12,9 +12,9 @@ import { createDefaultGatherData } from "../create-default-gather-data";
 import { PawnAiBlackboard } from "../../../../prefabs/ai-agents/controller/pawn-ai-blackboard";
 import { PlayerPawnAiControllerAgent } from "../../../../prefabs/ai-agents/controller/player-pawn-ai-controller.agent";
 
-jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
-jest.mock("../../../data/game-object-helper", () => ({
+jest.mock("../../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../../data/game-object-helper", () => ({
   onObjectReady: jest.fn(),
   isSceneActive: () => true,
   getGameObjectVisibility: jest.fn(),
